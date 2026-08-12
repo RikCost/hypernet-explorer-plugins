@@ -1842,9 +1842,11 @@
         playSeSafe('Cancel1', 70, 80);
     };
 
-    // Export for extension plugins (HexphoneTetris-style hooks)
+    // Export for extension plugins (HexphoneTetris-style hooks, and
+    // PublicPhoneSystem.js's own booth scene, which reuses this button sprite)
     window.Scene_AnokiPhone = Scene_AnokiPhone;
     window.Scene_Hexphone = Scene_AnokiPhone;
+    window.Sprite_AnokiButton = Sprite_AnokiButton;
 
     //=============================================================================
     // Sprite_AnokiButton

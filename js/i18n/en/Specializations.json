@@ -1,0 +1,3219 @@
+   {
+  "_comment": "Display text for the specialization table. Structure (ids, stat, category, classStart, traitStart, wtypeId) stays in js/db/Skills/Specialization.json, and the English name there is the LOOKUP KEY every by-name call site uses, so it is never translated: this file carries what the player reads, keyed by id.",
+  "level": {
+    "Untrained": "Untrained",
+    "Beginner": "Beginner",
+    "Intermediate": "Intermediate",
+    "Advanced": "Advanced",
+    "Master": "Master"
+  },
+  "category": {
+    "Combat": "Combat",
+    "Weapons": "Weapons",
+    "Athletics": "Athletics",
+    "Arcana": "Arcana",
+    "Occult": "Occult",
+    "Medicine": "Medicine",
+    "Science": "Science",
+    "Technology": "Technology",
+    "Crafting": "Crafting",
+    "Survival": "Survival",
+    "Social": "Social",
+    "Crime": "Crime",
+    "Academia": "Academia",
+    "Commerce": "Commerce",
+    "Vehicles": "Vehicles",
+    "Arts": "Arts",
+    "Culinary": "Culinary"
+  },
+  "spec": {
+    "490": {
+      "name": "3D Modeling and Printing",
+      "description": "Building objects as digital meshes and producing them on an additive printer."
+    },
+    "1": {
+      "name": "Accounting",
+      "description": "Keeping and interpreting financial records: ledgers, statements and reconciliation."
+    },
+    "492": {
+      "name": "Acoustics",
+      "description": "The behaviour of sound in a space, and shaping rooms and materials to control it."
+    },
+    "2": {
+      "name": "Acrobatics",
+      "description": "Controlled tumbling, vaulting and balance work in motion."
+    },
+    "3": {
+      "name": "Acting",
+      "description": "Portraying a character convincingly for an audience or a camera."
+    },
+    "493": {
+      "name": "Actuarial Science",
+      "description": "Pricing risk with statistics: mortality, claims and long-term liabilities."
+    },
+    "306": {
+      "name": "Aerial Silks",
+      "description": "Climbing, wrapping and dropping on suspended fabric."
+    },
+    "494": {
+      "name": "Aerobics",
+      "description": "Sustained rhythmic exercise that trains the heart and lungs."
+    },
+    "4": {
+      "name": "Aerodynamics Theory",
+      "description": "How air behaves around a moving body: lift, drag and flow separation."
+    },
+    "307": {
+      "name": "Agroforestry",
+      "description": "Growing crops and livestock among managed trees on the same land."
+    },
+    "6": {
+      "name": "Aikido",
+      "description": "A Japanese art of redirecting an attacker's force into throws and joint locks."
+    },
+    "308": {
+      "name": "Air Traffic Control",
+      "description": "Sequencing and separating aircraft by radio and radar."
+    },
+    "8": {
+      "name": "Aircraft Piloting",
+      "description": "Flying a fixed-wing aircraft, from preflight checks to landing."
+    },
+    "309": {
+      "name": "Alchemy",
+      "description": "The pre-chemical art of transmutation, distillation and the tria prima."
+    },
+    "9": {
+      "name": "Alcohol Tolerance",
+      "description": "Absorbing drink without losing coordination or judgement."
+    },
+    "10": {
+      "name": "Ambush Tactics",
+      "description": "Choosing ground, concealment and timing to strike first."
+    },
+    "618": {
+      "name": "Ammunition Handloading",
+      "description": "Assembling cartridges from primer, powder, case and projectile."
+    },
+    "11": {
+      "name": "Anatomy",
+      "description": "The structure of the body: bones, muscles, vessels and organs, and where they lie."
+    },
+    "12": {
+      "name": "Animal Husbandry",
+      "description": "Breeding, feeding and keeping livestock in health."
+    },
+    "13": {
+      "name": "Animal Training",
+      "description": "Conditioning an animal to work with cues, reward and repetition."
+    },
+    "495": {
+      "name": "Animation",
+      "description": "Making drawn or modelled figures move frame by frame."
+    },
+    "14": {
+      "name": "Animism",
+      "description": "Reading the world as populated by spirits, and treating with them."
+    },
+    "15": {
+      "name": "Anthropology",
+      "description": "The comparative study of human cultures, kinship and material life."
+    },
+    "310": {
+      "name": "Antique Gunsmithing",
+      "description": "Repairing and restoring pre-modern firearms and their actions."
+    },
+    "725": {
+      "name": "Antique Restoration",
+      "description": "Returning old objects to sound condition without erasing their age."
+    },
+    "16": {
+      "name": "Applied Science",
+      "description": "Turning established theory into working method and apparatus."
+    },
+    "496": {
+      "name": "Appraising",
+      "description": "Judging what an object is worth, and why."
+    },
+    "497": {
+      "name": "Aquaponics",
+      "description": "Growing plants and fish in one loop, the fish waste feeding the crop."
+    },
+    "18": {
+      "name": "Architecture",
+      "description": "Designing buildings that stand, function and can actually be built."
+    },
+    "19": {
+      "name": "Arm Wrestling",
+      "description": "Beating another arm across a table with leverage and grip."
+    },
+    "498": {
+      "name": "Armor Piercing",
+      "description": "Defeating armour: angles, penetrators and the weak seams."
+    },
+    "20": {
+      "name": "Armor Smithing",
+      "description": "Forming, fitting and articulating plate and mail."
+    },
+    "312": {
+      "name": "Art Forgery",
+      "description": "Reproducing another artist's hand, materials and provenance."
+    },
+    "21": {
+      "name": "Art History",
+      "description": "Placing works in period, school and context."
+    },
+    "499": {
+      "name": "Art Restoration",
+      "description": "Cleaning, consolidating and retouching damaged works."
+    },
+    "313": {
+      "name": "Asbestos Removal",
+      "description": "Stripping friable insulation without releasing fibre."
+    },
+    "860": {
+      "name": "Astral Projection",
+      "description": "Separating awareness from the body and travelling without it."
+    },
+    "835": {
+      "name": "Astrobiology",
+      "description": "The search for, and study of, life beyond Earth and its conditions."
+    },
+    "22": {
+      "name": "Astrology",
+      "description": "Reading character and event from the positions of the planets."
+    },
+    "23": {
+      "name": "Astronomy",
+      "description": "Observing and interpreting the sky: bodies, motions and distances."
+    },
+    "314": {
+      "name": "Astrophotography",
+      "description": "Photographing faint sky objects through long exposure and tracking."
+    },
+    "24": {
+      "name": "Athletics",
+      "description": "General running, jumping and throwing ability under exertion."
+    },
+    "501": {
+      "name": "Auctioneering",
+      "description": "Running a sale: chant, bid spotting and closing the lot."
+    },
+    "846": {
+      "name": "Audiology",
+      "description": "Testing hearing and fitting the aids that correct it."
+    },
+    "502": {
+      "name": "Auditing",
+      "description": "Checking accounts and processes against evidence and rule."
+    },
+    "503": {
+      "name": "Auto Detailing",
+      "description": "Restoring a vehicle's finish inside and out."
+    },
+    "315": {
+      "name": "Avionics Repair",
+      "description": "Diagnosing and fixing aircraft electronics and instruments."
+    },
+    "891": {
+      "name": "Axe",
+      "description": "Fighting with hand axes and their weight-forward chopping arcs."
+    },
+    "863": {
+      "name": "Axe Throwing",
+      "description": "Throwing an axe for rotation and stick at a set distance."
+    },
+    "504": {
+      "name": "Baggage Handling",
+      "description": "Moving and sorting luggage at load without damage or delay."
+    },
+    "505": {
+      "name": "Bail Bonding",
+      "description": "Posting surety for a defendant and recovering the risk."
+    },
+    "26": {
+      "name": "Baking",
+      "description": "Working dough and batter: hydration, proof and oven heat."
+    },
+    "27": {
+      "name": "Ballet",
+      "description": "Classical dance technique of turnout, line and set positions."
+    },
+    "28": {
+      "name": "Ballistics",
+      "description": "The flight of a projectile, and what it does at the far end."
+    },
+    "506": {
+      "name": "Balloon Sculpting",
+      "description": "Twisting inflated balloons into recognisable figures."
+    },
+    "316": {
+      "name": "Banjo Playing",
+      "description": "Playing the five-string banjo, rolls and clawhammer."
+    },
+    "317": {
+      "name": "Barrel Making",
+      "description": "Coopering staves and hoops into watertight casks."
+    },
+    "178": {
+      "name": "Bartending",
+      "description": "Mixing drinks to spec and running a bar under pressure."
+    },
+    "30": {
+      "name": "Barter",
+      "description": "Trading goods for goods, without money changing hands."
+    },
+    "318": {
+      "name": "Base Building",
+      "description": "Laying out a defensible, workable settlement or camp."
+    },
+    "32": {
+      "name": "Base Jumping",
+      "description": "Parachuting from a fixed object with almost no altitude to spare."
+    },
+    "31": {
+      "name": "Baseball",
+      "description": "Batting, fielding and pitching in the nine-inning game."
+    },
+    "319": {
+      "name": "Basket Weaving",
+      "description": "Weaving prepared fibre or cane into vessels and containers."
+    },
+    "34": {
+      "name": "Basketball",
+      "description": "Shooting, passing and defending on the court."
+    },
+    "507": {
+      "name": "Baton Twirling",
+      "description": "Spinning and tossing a metal baton in routine."
+    },
+    "854": {
+      "name": "Beach Combing",
+      "description": "Working a shoreline for what the tide has left."
+    },
+    "35": {
+      "name": "Beatboxing",
+      "description": "Producing percussion and bass with the voice alone."
+    },
+    "36": {
+      "name": "Beekeeping",
+      "description": "Keeping hives in health and taking honey without losing the colony."
+    },
+    "509": {
+      "name": "Bicycle Repair",
+      "description": "Truing, adjusting and rebuilding a bicycle's mechanisms."
+    },
+    "37": {
+      "name": "Billiards",
+      "description": "Cue control, angles and position play on the table."
+    },
+    "510": {
+      "name": "Binding",
+      "description": "Holding a spirit, creature or force to a set of terms."
+    },
+    "320": {
+      "name": "Bio-Juice Extraction",
+      "description": "Rendering biological matter down to usable fluid."
+    },
+    "511": {
+      "name": "Biochemical Engineering",
+      "description": "Designing processes that use living systems at industrial scale."
+    },
+    "38": {
+      "name": "Biokinesis",
+      "description": "Steering living tissue by will: growth, healing, change."
+    },
+    "39": {
+      "name": "Biomancy",
+      "description": "Magic worked directly on flesh and its processes."
+    },
+    "840": {
+      "name": "Biometric Security",
+      "description": "Identity systems built on fingerprints, irises and gait."
+    },
+    "512": {
+      "name": "Bionic Installation",
+      "description": "Fitting powered prosthetics and implants to living tissue."
+    },
+    "406": {
+      "name": "Bird Watching",
+      "description": "Identifying birds by sight, call and behaviour in the field."
+    },
+    "40": {
+      "name": "Blacksmithing",
+      "description": "Forging and shaping hot iron and steel at the anvil."
+    },
+    "321": {
+      "name": "Bladesmithing",
+      "description": "Forging, grinding and heat-treating edged blades."
+    },
+    "514": {
+      "name": "Blogging",
+      "description": "Writing regularly for an audience that arrives on its own."
+    },
+    "515": {
+      "name": "Blood Magic",
+      "description": "Working with blood as the price and the medium."
+    },
+    "41": {
+      "name": "Board Game Strategy",
+      "description": "Reading position, tempo and odds across the board."
+    },
+    "516": {
+      "name": "Boat Building",
+      "description": "Building hulls from frame and plank, or from moulded shell."
+    },
+    "42": {
+      "name": "Boat Piloting",
+      "description": "Handling a powered boat in traffic, current and weather."
+    },
+    "517": {
+      "name": "Bobsledding",
+      "description": "Driving a sled down an iced track at speed."
+    },
+    "864": {
+      "name": "Bocce",
+      "description": "Rolling weighted balls to the jack on an uneven court."
+    },
+    "43": {
+      "name": "Bodybuilding",
+      "description": "Training and diet aimed at muscular size and definition."
+    },
+    "322": {
+      "name": "Bonsai Cultivation",
+      "description": "Keeping a tree small, healthy and shaped over years."
+    },
+    "518": {
+      "name": "Bookbinding",
+      "description": "Sewing, gluing and casing pages into a durable book."
+    },
+    "323": {
+      "name": "Boomerang Crafting",
+      "description": "Carving an airfoil that comes back."
+    },
+    "519": {
+      "name": "Boomerang Throwing",
+      "description": "Throwing for the return, reading wind and layover."
+    },
+    "44": {
+      "name": "Botany",
+      "description": "The classification, structure and life of plants."
+    },
+    "324": {
+      "name": "Bouldering",
+      "description": "Short, hard climbing without rope, close to the ground."
+    },
+    "894": {
+      "name": "Bow",
+      "description": "Shooting a bow: draw, anchor, release and range estimation."
+    },
+    "46": {
+      "name": "Boxing",
+      "description": "Punching, guard and footwork under the boxing rules."
+    },
+    "522": {
+      "name": "Brain Surgery",
+      "description": "Operating inside the skull without taking the person with it."
+    },
+    "47": {
+      "name": "Brainwashing",
+      "description": "Breaking down and rebuilding what somebody believes."
+    },
+    "523": {
+      "name": "Brass Catching",
+      "description": "Recovering spent casings before they hit the ground."
+    },
+    "48": {
+      "name": "Breath Holding",
+      "description": "Extending apnoea by tolerance, technique and calm."
+    },
+    "49": {
+      "name": "Brewing",
+      "description": "Mashing, boiling and fermenting grain into beer."
+    },
+    "524": {
+      "name": "Brewing Potions",
+      "description": "Compounding liquid preparations that carry a magical effect."
+    },
+    "50": {
+      "name": "Bricklaying",
+      "description": "Laying brick to line, level and bond with sound mortar joints."
+    },
+    "325": {
+      "name": "Brickmaking",
+      "description": "Forming and firing clay into bricks of even size and hardness."
+    },
+    "525": {
+      "name": "Broadcast Journalism",
+      "description": "Reporting to camera and microphone against a deadline."
+    },
+    "526": {
+      "name": "Bull Riding",
+      "description": "Staying on a bucking bull for the eight seconds."
+    },
+    "326": {
+      "name": "Bungee Cord Testing",
+      "description": "Load-testing elastic cord to the point it must not fail."
+    },
+    "51": {
+      "name": "Bungee Jumping",
+      "description": "Jumping on a measured cord and surviving the rebound."
+    },
+    "52": {
+      "name": "Butchery",
+      "description": "Breaking a carcass down into named cuts with minimal waste."
+    },
+    "53": {
+      "name": "Cabinetry",
+      "description": "Fine joinery: cases, drawers and doors that stay square."
+    },
+    "327": {
+      "name": "Cable Splicing",
+      "description": "Joining cable so the join carries load or signal as well as the run."
+    },
+    "528": {
+      "name": "Calisthenics",
+      "description": "Strength training with body weight alone."
+    },
+    "527": {
+      "name": "Call Center Operations",
+      "description": "Handling queued calls to script, target and temper."
+    },
+    "54": {
+      "name": "Calligraphy",
+      "description": "Writing letterforms as a controlled, deliberate hand."
+    },
+    "328": {
+      "name": "Campfire Cooking",
+      "description": "Cooking on open fire and coals, with what is carried."
+    },
+    "55": {
+      "name": "Canoeing",
+      "description": "Paddling and reading water from an open boat."
+    },
+    "529": {
+      "name": "Capoeira",
+      "description": "A Brazilian art of kicks, sweeps and evasion set to rhythm."
+    },
+    "56": {
+      "name": "Car Driving",
+      "description": "Handling a road car: control, traffic sense and hazard reading."
+    },
+    "57": {
+      "name": "Card Counting",
+      "description": "Tracking the remaining deck to know when the odds turn."
+    },
+    "58": {
+      "name": "Carpentry",
+      "description": "Cutting and joining timber into structure and fitting."
+    },
+    "530": {
+      "name": "Carpet Laying",
+      "description": "Fitting, stretching and seaming floor covering."
+    },
+    "59": {
+      "name": "Cartography",
+      "description": "Surveying and drawing maps that can be navigated by."
+    },
+    "531": {
+      "name": "Cave Diving",
+      "description": "Diving in flooded passage, on line, with no way straight up."
+    },
+    "331": {
+      "name": "Caving",
+      "description": "Moving safely through cave systems: rigging, squeezes and route."
+    },
+    "185": {
+      "name": "Celestial Navigation",
+      "description": "Fixing position from sun, stars and the horizon."
+    },
+    "851": {
+      "name": "Chainmail Weaving",
+      "description": "Riveting and closing rings into mail of even weave."
+    },
+    "532": {
+      "name": "Chainsaw Operation",
+      "description": "Felling and bucking with a saw without binding or kickback."
+    },
+    "870": {
+      "name": "Chalk Art",
+      "description": "Drawing in chalk at scale, knowing it will be washed away."
+    },
+    "533": {
+      "name": "Charcuterie",
+      "description": "Curing, salting and fermenting meat for keeping."
+    },
+    "60": {
+      "name": "Cheese Making",
+      "description": "Setting curd, pressing and ageing milk into cheese."
+    },
+    "61": {
+      "name": "Chemistry",
+      "description": "The composition and reactions of substances, and how to run them."
+    },
+    "62": {
+      "name": "Chess",
+      "description": "Opening, middlegame and endgame play on the sixty-four squares."
+    },
+    "534": {
+      "name": "Childcare",
+      "description": "Keeping children safe, fed and occupied over long hours."
+    },
+    "63": {
+      "name": "Chiropractic",
+      "description": "Manual adjustment of the spine and joints."
+    },
+    "873": {
+      "name": "Chocolate Tempering",
+      "description": "Working couverture through its crystal curve for snap and shine."
+    },
+    "535": {
+      "name": "Choir Singing",
+      "description": "Singing a part in tune and blend with other voices."
+    },
+    "64": {
+      "name": "Chopping",
+      "description": "Splitting and felling with axe or maul, efficiently and repeatedly."
+    },
+    "65": {
+      "name": "Chronokinesis",
+      "description": "Bending the local rate of time by will."
+    },
+    "536": {
+      "name": "Cinematography",
+      "description": "Lighting and framing a scene for the camera."
+    },
+    "66": {
+      "name": "Clairvoyance",
+      "description": "Perceiving what is distant or hidden without the senses."
+    },
+    "897": {
+      "name": "Claw",
+      "description": "Fighting with hand claws and their close, tearing range."
+    },
+    "743": {
+      "name": "Clay Shooting",
+      "description": "Breaking flying clay targets on a swinging lead."
+    },
+    "538": {
+      "name": "Clock and Watchmaking",
+      "description": "Building and servicing mechanical timepieces."
+    },
+    "539": {
+      "name": "Cloud Reading",
+      "description": "Forecasting the coming hours from cloud form and movement."
+    },
+    "540": {
+      "name": "CNC Machining",
+      "description": "Programming and running computer-controlled cutting machines."
+    },
+    "336": {
+      "name": "Cob Building",
+      "description": "Building walls from clay, sand and straw, layer by layer."
+    },
+    "874": {
+      "name": "Coffee Roasting",
+      "description": "Taking green coffee through first crack to a chosen profile."
+    },
+    "68": {
+      "name": "Cold Reading",
+      "description": "Producing accurate-sounding detail from cues and probability."
+    },
+    "69": {
+      "name": "Cold Tolerance",
+      "description": "Working and thinking clearly in cold that would stop others."
+    },
+    "71": {
+      "name": "Complex Mathematics",
+      "description": "Advanced formal mathematics past routine calculation."
+    },
+    "541": {
+      "name": "Composting",
+      "description": "Rotting organic waste down into usable soil at the right heat."
+    },
+    "72": {
+      "name": "Computers",
+      "description": "Operating, configuring and troubleshooting computer systems."
+    },
+    "542": {
+      "name": "Concrete Mixing",
+      "description": "Batching cement, aggregate and water to a workable, sound mix."
+    },
+    "544": {
+      "name": "Conspiracy Theorizing",
+      "description": "Assembling scattered facts into a hidden pattern that holds together."
+    },
+    "545": {
+      "name": "Contact Juggling",
+      "description": "Rolling and isolating a sphere across hands and body."
+    },
+    "74": {
+      "name": "Contortion",
+      "description": "Extreme controlled flexibility of the spine and joints."
+    },
+    "75": {
+      "name": "Cooking",
+      "description": "Preparing meals: heat, seasoning, timing and what goes with what."
+    },
+    "546": {
+      "name": "Copywriting",
+      "description": "Writing text that sells, in the fewest words that work."
+    },
+    "337": {
+      "name": "Coral Reef Restoration",
+      "description": "Propagating and replanting coral on damaged reef."
+    },
+    "547": {
+      "name": "Corpse Butchery",
+      "description": "Dismembering a body cleanly, whatever the reason."
+    },
+    "76": {
+      "name": "Cosplay",
+      "description": "Building and wearing accurate costume of a known character."
+    },
+    "881": {
+      "name": "Counterfeiting",
+      "description": "Producing forged currency or documents that pass inspection."
+    },
+    "548": {
+      "name": "Couponing",
+      "description": "Stacking offers and discounts to strip a bill down."
+    },
+    "549": {
+      "name": "Crane Operation",
+      "description": "Lifting and placing loads by crane within sight and signal."
+    },
+    "550": {
+      "name": "Creative Writing",
+      "description": "Writing fiction, verse and narrative with intent."
+    },
+    "551": {
+      "name": "Cricket",
+      "description": "Batting, bowling and fielding across the innings."
+    },
+    "552": {
+      "name": "Crime Scene Investigation",
+      "description": "Recording, preserving and lifting evidence from a scene."
+    },
+    "339": {
+      "name": "Criminology",
+      "description": "The study of crime, offenders and what actually deters them."
+    },
+    "77": {
+      "name": "Crocheting",
+      "description": "Making fabric from a single hooked loop of yarn."
+    },
+    "553": {
+      "name": "Crop Rotation",
+      "description": "Sequencing crops across fields to keep soil in heart."
+    },
+    "554": {
+      "name": "Crossfit",
+      "description": "High-intensity mixed training against the clock."
+    },
+    "520": {
+      "name": "Crowd Control",
+      "description": "Moving and holding a crowd without it turning."
+    },
+    "857": {
+      "name": "Crowd Reading",
+      "description": "Judging mood, intent and the dangerous edge of a crowd."
+    },
+    "555": {
+      "name": "Crowd Surfing",
+      "description": "Being carried across raised hands without going down."
+    },
+    "80": {
+      "name": "Cryokinesis",
+      "description": "Drawing heat out of matter by will."
+    },
+    "79": {
+      "name": "Cryptography",
+      "description": "Encrypting, key handling and breaking weak ciphers."
+    },
+    "340": {
+      "name": "Cryptozoology",
+      "description": "Pursuing animals that are reported but not catalogued."
+    },
+    "823": {
+      "name": "Crystallography",
+      "description": "Determining structure from how crystals diffract."
+    },
+    "556": {
+      "name": "Curling",
+      "description": "Delivering and sweeping stones to the house."
+    },
+    "557": {
+      "name": "Customer Service",
+      "description": "Handling people, complaints and returns without losing either side."
+    },
+    "558": {
+      "name": "Cybernetics",
+      "description": "Control and feedback in machines and living systems, and the joins between."
+    },
+    "900": {
+      "name": "Cycling",
+      "description": "Riding a bicycle with efficiency, balance and traffic sense."
+    },
+    "559": {
+      "name": "Dairy Production",
+      "description": "Milking, handling and processing milk at scale and in hygiene."
+    },
+    "848": {
+      "name": "Damascus Steel Forging",
+      "description": "Forge-welding layered steel into patterned billets."
+    },
+    "82": {
+      "name": "Dancing",
+      "description": "Moving in time and shape to music, alone or led."
+    },
+    "83": {
+      "name": "Data Analysis",
+      "description": "Cleaning, summarising and drawing defensible conclusions from data."
+    },
+    "561": {
+      "name": "Debt Collection",
+      "description": "Recovering money owed, legally and persistently."
+    },
+    "562": {
+      "name": "Decathlon",
+      "description": "Ten track and field events, scored as one."
+    },
+    "84": {
+      "name": "Deception",
+      "description": "Lying convincingly, in word and in bearing."
+    },
+    "341": {
+      "name": "Deep Sea Diving",
+      "description": "Working at depth on mixed gas, with decompression discipline."
+    },
+    "85": {
+      "name": "Demolitions",
+      "description": "Placing charges to bring structure down where it is meant to fall."
+    },
+    "86": {
+      "name": "Dentistry",
+      "description": "Diagnosing and treating teeth, gums and the bite."
+    },
+    "563": {
+      "name": "Dialect Coaching",
+      "description": "Teaching an accent until it survives improvisation."
+    },
+    "564": {
+      "name": "Digital Marketing",
+      "description": "Reaching an audience through search, mail and metrics."
+    },
+    "88": {
+      "name": "Diplomacy",
+      "description": "Negotiating between parties who would rather not agree."
+    },
+    "89": {
+      "name": "Directing",
+      "description": "Shaping performance, staging and cut into one intended whole."
+    },
+    "565": {
+      "name": "Direction Sense",
+      "description": "Knowing where north, the exit and the way back are."
+    },
+    "567": {
+      "name": "Disaster Management",
+      "description": "Coordinating response, triage and supply after catastrophe."
+    },
+    "568": {
+      "name": "Disc Golf",
+      "description": "Throwing discs to the basket in the fewest strokes."
+    },
+    "569": {
+      "name": "Dishwashing",
+      "description": "Clearing a service's worth of plates fast and clean."
+    },
+    "570": {
+      "name": "Distilling",
+      "description": "Separating spirit from wash by heat, and cutting heads from hearts."
+    },
+    "571": {
+      "name": "Divination",
+      "description": "Reading answers out of lots, cards, entrails or smoke."
+    },
+    "90": {
+      "name": "DJing",
+      "description": "Beatmatching and sequencing records to hold a floor."
+    },
+    "91": {
+      "name": "Dodging",
+      "description": "Reading an incoming attack early enough to not be there."
+    },
+    "343": {
+      "name": "Dog Sledding",
+      "description": "Driving and handling a working dog team over snow."
+    },
+    "572": {
+      "name": "Dog Walking",
+      "description": "Managing several dogs on lead without incident."
+    },
+    "573": {
+      "name": "Doll Making",
+      "description": "Building jointed figures, from armature to face."
+    },
+    "574": {
+      "name": "Drafting",
+      "description": "Producing dimensioned technical drawings others can build from."
+    },
+    "92": {
+      "name": "Drawing",
+      "description": "Rendering what is seen or imagined in line and tone."
+    },
+    "575": {
+      "name": "Dressage",
+      "description": "Riding a horse through precise schooled movements."
+    },
+    "576": {
+      "name": "Drone Piloting",
+      "description": "Flying a remote aircraft by line of sight or camera."
+    },
+    "93": {
+      "name": "Druidism",
+      "description": "Old practice bound to trees, seasons and the land's own law."
+    },
+    "344": {
+      "name": "Drum Making",
+      "description": "Building shells and heading drums to tone."
+    },
+    "345": {
+      "name": "Dry-stone Walling",
+      "description": "Building walls that stand on fit and gravity, without mortar."
+    },
+    "577": {
+      "name": "Drywall Installation",
+      "description": "Hanging, taping and finishing plasterboard flat."
+    },
+    "346": {
+      "name": "E-commerce",
+      "description": "Running an online shop: listings, stock, payment and returns."
+    },
+    "347": {
+      "name": "Earthquake Survival",
+      "description": "Acting correctly in the shaking and in the hours after."
+    },
+    "94": {
+      "name": "Earthshaping",
+      "description": "Moving and reforming earth and stone by will."
+    },
+    "95": {
+      "name": "Eidetic Memory",
+      "description": "Recalling detail exactly, long after seeing it once."
+    },
+    "578": {
+      "name": "Electrical Engineering",
+      "description": "Designing circuits, power systems and the machines they drive."
+    },
+    "96": {
+      "name": "Electrical Wiring",
+      "description": "Running, terminating and testing domestic and industrial wiring."
+    },
+    "97": {
+      "name": "Electrokinesis",
+      "description": "Directing electric current by will."
+    },
+    "824": {
+      "name": "Electron Microscopy",
+      "description": "Imaging matter below the wavelength of light."
+    },
+    "98": {
+      "name": "Electronics",
+      "description": "Reading, building and repairing circuits at component level."
+    },
+    "349": {
+      "name": "Elephant Handling",
+      "description": "Working with elephants safely, by voice, hook and habit."
+    },
+    "579": {
+      "name": "Elevator Repair",
+      "description": "Servicing lift machinery, controls and safeties."
+    },
+    "99": {
+      "name": "Embroidery",
+      "description": "Stitching decoration onto cloth by hand or frame."
+    },
+    "348": {
+      "name": "EMP Device Crafting",
+      "description": "Building pulse devices that kill electronics without a bang."
+    },
+    "843": {
+      "name": "Endocrinology",
+      "description": "The hormone systems, and what happens when they misfire."
+    },
+    "580": {
+      "name": "Engraving",
+      "description": "Cutting line into metal, glass or stone."
+    },
+    "581": {
+      "name": "Entomology",
+      "description": "The study of insects: identification, life cycles and control."
+    },
+    "878": {
+      "name": "Epigraphy",
+      "description": "Reading and dating inscriptions cut in hard material."
+    },
+    "582": {
+      "name": "Escape Artistry",
+      "description": "Getting out of ropes, cuffs and boxes, quickly."
+    },
+    "350": {
+      "name": "Espionage",
+      "description": "Collecting protected information without being identified."
+    },
+    "583": {
+      "name": "Esports",
+      "description": "Competitive videogame play at trained, timed level."
+    },
+    "585": {
+      "name": "Etiquette",
+      "description": "Knowing the expected form in any room, and using it."
+    },
+    "586": {
+      "name": "Evangelism",
+      "description": "Preaching a conviction to people who did not ask."
+    },
+    "461": {
+      "name": "Evasion and Escape Training",
+      "description": "Breaking contact, moving unseen and getting back."
+    },
+    "101": {
+      "name": "Event Planning",
+      "description": "Running an event's logistics, budget and schedule."
+    },
+    "87": {
+      "name": "Excavation",
+      "description": "Digging a site in controlled layers, recording as you go."
+    },
+    "587": {
+      "name": "Excavator Operation",
+      "description": "Working a tracked excavator with precision and stability."
+    },
+    "588": {
+      "name": "Exorcism",
+      "description": "Driving out a possessing spirit by rite and will."
+    },
+    "589": {
+      "name": "Extreme Ironing",
+      "description": "Pressing laundry somewhere it has no business being pressed."
+    },
+    "102": {
+      "name": "Fabrication",
+      "description": "Cutting, forming and welding raw stock into finished parts."
+    },
+    "103": {
+      "name": "Falconry",
+      "description": "Training and hunting with birds of prey."
+    },
+    "590": {
+      "name": "Fanfiction Writing",
+      "description": "Writing new stories inside somebody else's world."
+    },
+    "104": {
+      "name": "Farming",
+      "description": "Working land and stock through the season: sowing, tending, harvest."
+    },
+    "105": {
+      "name": "Fasting",
+      "description": "Going without food deliberately, and staying functional."
+    },
+    "591": {
+      "name": "Fence Building",
+      "description": "Setting posts and straining wire or rail to a true line."
+    },
+    "592": {
+      "name": "Feng Shui",
+      "description": "Arranging a space so the flow through it is favourable."
+    },
+    "107": {
+      "name": "Fermentation",
+      "description": "Culturing food and drink under controlled spoilage."
+    },
+    "108": {
+      "name": "Figure Skating",
+      "description": "Jumps, spins and edge work on ice."
+    },
+    "594": {
+      "name": "Film Criticism",
+      "description": "Analysing film in terms of craft, form and intent."
+    },
+    "595": {
+      "name": "Financial Planning",
+      "description": "Mapping income, risk and time into a plan somebody can keep."
+    },
+    "596": {
+      "name": "Fire Dancing",
+      "description": "Performing with lit poi, staff or fans."
+    },
+    "353": {
+      "name": "Fire Juggling",
+      "description": "Juggling burning props without dropping them."
+    },
+    "109": {
+      "name": "Fire Starting",
+      "description": "Getting flame from spark, friction or lens in poor conditions."
+    },
+    "597": {
+      "name": "Firearms Cleaning",
+      "description": "Stripping, cleaning and reassembling a weapon to function."
+    },
+    "354": {
+      "name": "Firewalking",
+      "description": "Crossing hot coals on the physics of contact time."
+    },
+    "837": {
+      "name": "Firmware Reverse Engineering",
+      "description": "Pulling apart embedded code to find what it really does."
+    },
+    "110": {
+      "name": "First Aid",
+      "description": "Keeping the injured alive and stable until better help arrives."
+    },
+    "355": {
+      "name": "Fish Filleting",
+      "description": "Taking clean fillets off a fish with minimal waste."
+    },
+    "112": {
+      "name": "Fishing",
+      "description": "Taking fish by rod, line, net or trap."
+    },
+    "477": {
+      "name": "Flag Identification",
+      "description": "Naming a nation or a signal from its flag."
+    },
+    "598": {
+      "name": "Fleet Management",
+      "description": "Keeping a fleet of vehicles serviced, insured and moving."
+    },
+    "599": {
+      "name": "Flint Knapping",
+      "description": "Striking stone into edges and points by controlled fracture."
+    },
+    "114": {
+      "name": "Flirting",
+      "description": "Signalling interest without committing to it."
+    },
+    "600": {
+      "name": "Floral Arrangement",
+      "description": "Composing cut flowers by line, mass and lasting order."
+    },
+    "828": {
+      "name": "Fluid Dynamics",
+      "description": "How liquids and gases move: flow, turbulence and pressure."
+    },
+    "601": {
+      "name": "Foley Sound Design",
+      "description": "Making a scene's sounds by hand in a studio."
+    },
+    "115": {
+      "name": "Foraging",
+      "description": "Finding and identifying edible wild food safely."
+    },
+    "357": {
+      "name": "Forcefield Generation",
+      "description": "Raising a barrier of pure force."
+    },
+    "358": {
+      "name": "Forestry",
+      "description": "Managing woodland: planting, thinning, felling and yield."
+    },
+    "603": {
+      "name": "Forklift Operation",
+      "description": "Lifting, stacking and manoeuvring loads on the truck."
+    },
+    "116": {
+      "name": "Fortune Telling",
+      "description": "Telling a client their future in terms they will accept."
+    },
+    "876": {
+      "name": "Franchise Management",
+      "description": "Running outlets to a brand's standard and margin."
+    },
+    "117": {
+      "name": "Freediving",
+      "description": "Diving deep on one breath and coming back up."
+    },
+    "360": {
+      "name": "Fungal Resistance",
+      "description": "The body's tolerance of spores, rot and fungal toxins."
+    },
+    "606": {
+      "name": "Game Design",
+      "description": "Designing rules and systems that stay interesting to play."
+    },
+    "118": {
+      "name": "Gardening",
+      "description": "Growing and maintaining ornamental and kitchen plants."
+    },
+    "361": {
+      "name": "Gem Cutting",
+      "description": "Faceting rough stone for light return and symmetry."
+    },
+    "119": {
+      "name": "Gemology",
+      "description": "Identifying, grading and valuing gemstones."
+    },
+    "607": {
+      "name": "Genealogy",
+      "description": "Tracing descent through records and their gaps."
+    },
+    "825": {
+      "name": "Genome Sequencing",
+      "description": "Reading a genome and assembling it into a usable sequence."
+    },
+    "362": {
+      "name": "Geocaching",
+      "description": "Finding hidden caches by coordinate and clue."
+    },
+    "120": {
+      "name": "Geography",
+      "description": "Land, climate, population, and how they distribute."
+    },
+    "844": {
+      "name": "Gerontology",
+      "description": "The medicine and care of the ageing body and mind."
+    },
+    "363": {
+      "name": "Glaciology",
+      "description": "The study of ice sheets, glaciers and their movement."
+    },
+    "608": {
+      "name": "Glass Cutting",
+      "description": "Scoring and breaking glass to a clean intended line."
+    },
+    "849": {
+      "name": "Glass Etching",
+      "description": "Frosting and cutting pattern into glass by acid or abrasive."
+    },
+    "121": {
+      "name": "Glassblowing",
+      "description": "Gathering, inflating and shaping hot glass at the pipe."
+    },
+    "898": {
+      "name": "Glove",
+      "description": "Fighting with gloved fists at close punching range."
+    },
+    "122": {
+      "name": "Go Strategy",
+      "description": "Territory, life and death on the nineteen-line board."
+    },
+    "364": {
+      "name": "Gold Panning",
+      "description": "Washing gravel down to what is heavy and yellow."
+    },
+    "609": {
+      "name": "Golemancy",
+      "description": "Making an inert body and setting it to work."
+    },
+    "123": {
+      "name": "Golf",
+      "description": "Driving, approach and putting across a course."
+    },
+    "877": {
+      "name": "Grant Writing",
+      "description": "Writing applications that actually get funded."
+    },
+    "611": {
+      "name": "Graphic Design",
+      "description": "Arranging type, image and space to communicate."
+    },
+    "124": {
+      "name": "Grappling",
+      "description": "Controlling a body at close quarters: holds, throws and locks."
+    },
+    "612": {
+      "name": "Grave Digging",
+      "description": "Opening and closing graves to depth, in any ground."
+    },
+    "613": {
+      "name": "Greenhouse Management",
+      "description": "Running heat, humidity and light under glass."
+    },
+    "614": {
+      "name": "Grocery Shopping",
+      "description": "Provisioning well against a list, a budget and a use-by date."
+    },
+    "615": {
+      "name": "Guerilla Warfare",
+      "description": "Fighting a stronger force by raid, terrain and withdrawal."
+    },
+    "896": {
+      "name": "Gun",
+      "description": "Handling and shooting firearms accurately under pressure."
+    },
+    "366": {
+      "name": "Gunpowder Milling",
+      "description": "Milling and corning black powder without setting it off."
+    },
+    "616": {
+      "name": "Gunsmithing",
+      "description": "Building, fitting and repairing firearms."
+    },
+    "125": {
+      "name": "Gymnastics",
+      "description": "Strength and control on floor and apparatus."
+    },
+    "367": {
+      "name": "Habitat Restoration",
+      "description": "Rebuilding a damaged habitat until it holds its own species."
+    },
+    "126": {
+      "name": "Hacking",
+      "description": "Getting into systems by flaw, misconfiguration, or the person using them."
+    },
+    "127": {
+      "name": "Haggling",
+      "description": "Talking a price down without killing the deal."
+    },
+    "128": {
+      "name": "Hairdressing",
+      "description": "Cutting, colouring and setting hair to a plan."
+    },
+    "617": {
+      "name": "Hammer Throw",
+      "description": "Throwing the weighted wire hammer for distance."
+    },
+    "365": {
+      "name": "Handwriting Analysis",
+      "description": "Reading a hand for authorship, forgery or state of mind."
+    },
+    "130": {
+      "name": "Hang Gliding",
+      "description": "Flying an unpowered wing on lift and terrain."
+    },
+    "368": {
+      "name": "Harpsichord Playing",
+      "description": "Playing plucked-string keyboard, where touch cannot change volume."
+    },
+    "131": {
+      "name": "Heat Tolerance",
+      "description": "Working in heat that would put others down."
+    },
+    "890": {
+      "name": "Heavy",
+      "description": "Fighting with heavy two-handed weapons and their committed swings."
+    },
+    "620": {
+      "name": "Heavy Armor Training",
+      "description": "Moving, fighting and lasting in full plate and load."
+    },
+    "132": {
+      "name": "Heavy Machinery Operation",
+      "description": "Running large plant safely on a working site."
+    },
+    "369": {
+      "name": "Helicopter Mechanics",
+      "description": "Maintaining rotor systems, gearboxes and turbines."
+    },
+    "133": {
+      "name": "Helicopter Piloting",
+      "description": "Flying rotorcraft, including hover and autorotation."
+    },
+    "370": {
+      "name": "Herbal Poultice Crafting",
+      "description": "Preparing herb dressings that draw, soothe or close."
+    },
+    "134": {
+      "name": "Herbalism",
+      "description": "Identifying and preparing plants for medicine."
+    },
+    "831": {
+      "name": "Herpetology",
+      "description": "The study of reptiles and amphibians."
+    },
+    "383": {
+      "name": "Hide Tanning",
+      "description": "Turning raw hide into leather that will not rot."
+    },
+    "622": {
+      "name": "High Jump",
+      "description": "Clearing a raised bar from a running approach."
+    },
+    "371": {
+      "name": "High-Altitude Acclimatization",
+      "description": "Adapting to thin air without falling ill."
+    },
+    "621": {
+      "name": "Historical European Martial Arts",
+      "description": "Fighting from the surviving European fencing manuals."
+    },
+    "135": {
+      "name": "History",
+      "description": "What happened, in what order, and on what evidence."
+    },
+    "624": {
+      "name": "Home Staging",
+      "description": "Dressing a property so it shows and sells."
+    },
+    "100": {
+      "name": "Horse Riding",
+      "description": "Riding and controlling a horse at all paces."
+    },
+    "856": {
+      "name": "Hostage Negotiation",
+      "description": "Talking a barricaded situation down without a body."
+    },
+    "625": {
+      "name": "Hot Air Ballooning",
+      "description": "Flying a balloon on burner, ballast and the wind you choose."
+    },
+    "868": {
+      "name": "Hovercraft Piloting",
+      "description": "Handling an air-cushion craft over land and water."
+    },
+    "372": {
+      "name": "Hula Dancing",
+      "description": "Hawaiian dance where the hands carry the story."
+    },
+    "626": {
+      "name": "Hula Hooping",
+      "description": "Keeping hoops turning on body and limbs."
+    },
+    "627": {
+      "name": "Human Resources",
+      "description": "Hiring, contracts, grievance, and the paperwork of people."
+    },
+    "628": {
+      "name": "Hunting",
+      "description": "Tracking, stalking and taking game cleanly."
+    },
+    "136": {
+      "name": "HVAC Repair",
+      "description": "Servicing heating, ventilation and cooling plant."
+    },
+    "373": {
+      "name": "Hydrogeology",
+      "description": "Groundwater: where it is, how it moves and what it carries."
+    },
+    "629": {
+      "name": "Hydroponics",
+      "description": "Growing crops in nutrient solution without soil."
+    },
+    "137": {
+      "name": "Hypnosis",
+      "description": "Inducing suggestible trance and working within it."
+    },
+    "630": {
+      "name": "Hypochondriac Self-Diagnosis",
+      "description": "Finding the worst plausible explanation for any symptom."
+    },
+    "861": {
+      "name": "Ice Climbing",
+      "description": "Climbing frozen falls and ice on tools and crampons."
+    },
+    "855": {
+      "name": "Ice Core Drilling",
+      "description": "Extracting and logging cores that hold the old climate."
+    },
+    "374": {
+      "name": "Ice Fishing",
+      "description": "Fishing through cut ice, and reading the ice first."
+    },
+    "631": {
+      "name": "Ice Sculpting",
+      "description": "Carving blocks of ice against a melting clock."
+    },
+    "138": {
+      "name": "Ice Skating",
+      "description": "Edges, balance and speed on blades."
+    },
+    "832": {
+      "name": "Ichthyology",
+      "description": "The study of fish: species, anatomy and stocks."
+    },
+    "375": {
+      "name": "Igloo Building",
+      "description": "Cutting and laying snow blocks into a spiral shelter."
+    },
+    "632": {
+      "name": "Illusion Magic",
+      "description": "Making the senses report what is not there."
+    },
+    "634": {
+      "name": "Immunology",
+      "description": "The immune system, its defences and its mistakes."
+    },
+    "635": {
+      "name": "Improv Comedy",
+      "description": "Building a scene live, from nothing, with other people."
+    },
+    "376": {
+      "name": "Improvised Explosives",
+      "description": "Making charges out of what is to hand, and surviving them."
+    },
+    "744": {
+      "name": "Industrial Arts",
+      "description": "Shop work across metal, wood and machine."
+    },
+    "636": {
+      "name": "Injection Molding",
+      "description": "Running moulds, gates and cycles for cast plastic parts."
+    },
+    "184": {
+      "name": "Instrument Navigation",
+      "description": "Navigating on instruments alone, without outside reference."
+    },
+    "637": {
+      "name": "Insurance Underwriting",
+      "description": "Deciding what to cover, on what terms, at what premium."
+    },
+    "377": {
+      "name": "Intelligence Gathering",
+      "description": "Collecting, sorting and weighting information into usable fact."
+    },
+    "797": {
+      "name": "Interface Design",
+      "description": "Laying out controls so people can use them without being told."
+    },
+    "141": {
+      "name": "Interior Design",
+      "description": "Planning a room's function, light, colour and furniture."
+    },
+    "139": {
+      "name": "Interrogation",
+      "description": "Getting truthful information out of someone unwilling."
+    },
+    "140": {
+      "name": "Intimidation",
+      "description": "Making someone believe the consequences of refusing."
+    },
+    "638": {
+      "name": "Investigative Journalism",
+      "description": "Digging out a story somebody is keeping."
+    },
+    "639": {
+      "name": "Investment Banking",
+      "description": "Raising capital, pricing deals and taking a cut."
+    },
+    "640": {
+      "name": "Ironing",
+      "description": "Pressing cloth flat without scorching or shining it."
+    },
+    "537": {
+      "name": "Janitorial Cleaning",
+      "description": "Keeping a building clean, stocked and safe overnight."
+    },
+    "641": {
+      "name": "Javelin Throw",
+      "description": "Throwing the javelin for distance on a legal release."
+    },
+    "642": {
+      "name": "Jet Skiing",
+      "description": "Handling a personal watercraft at speed and in chop."
+    },
+    "643": {
+      "name": "Jewelry Making",
+      "description": "Fabricating and setting jewellery from metal and stone."
+    },
+    "644": {
+      "name": "Jigsaw Puzzles",
+      "description": "Assembling cut pictures by edge, colour and shape."
+    },
+    "70": {
+      "name": "Joke Telling",
+      "description": "Timing, setup and delivery that lands the punchline."
+    },
+    "142": {
+      "name": "Journalism",
+      "description": "Reporting: sourcing, checking, and writing it straight."
+    },
+    "645": {
+      "name": "Jousting",
+      "description": "Riding at another rider with a lance and staying seated."
+    },
+    "143": {
+      "name": "Judo",
+      "description": "Throws, holds and chokes from the Japanese grappling art."
+    },
+    "144": {
+      "name": "Juggling",
+      "description": "Keeping objects in the air in pattern."
+    },
+    "145": {
+      "name": "Karate",
+      "description": "Striking art of blocks, punches and kicks from set forms."
+    },
+    "646": {
+      "name": "Kart Racing",
+      "description": "Racing light karts on line, brake and momentum."
+    },
+    "146": {
+      "name": "Kayaking",
+      "description": "Paddling a closed boat, including roll and rough water."
+    },
+    "380": {
+      "name": "Kelp Farming",
+      "description": "Growing and harvesting kelp on line at sea."
+    },
+    "148": {
+      "name": "Kendo",
+      "description": "Japanese fencing with the shinai, in armour and rule."
+    },
+    "149": {
+      "name": "Kickboxing",
+      "description": "Punching and kicking under the full-contact rules."
+    },
+    "381": {
+      "name": "Kintsugi Repair",
+      "description": "Rejoining broken pottery in gold, leaving the break visible."
+    },
+    "647": {
+      "name": "Kite Flying",
+      "description": "Launching, flying and landing kites in changing wind."
+    },
+    "150": {
+      "name": "Knitting",
+      "description": "Making fabric on needles from continuous yarn."
+    },
+    "151": {
+      "name": "Knot Tying",
+      "description": "Choosing and tying the knot that will hold, and untie after."
+    },
+    "152": {
+      "name": "Krav Maga",
+      "description": "Practical Israeli close combat aimed at ending it fast."
+    },
+    "382": {
+      "name": "Labyrinth Navigation",
+      "description": "Keeping orientation and route inside a deliberate maze."
+    },
+    "649": {
+      "name": "Lacrosse",
+      "description": "Cradling, passing and shooting with the netted stick."
+    },
+    "153": {
+      "name": "Landscaping",
+      "description": "Grading, planting and hard landscaping to a design."
+    },
+    "650": {
+      "name": "Laser Tag",
+      "description": "Infrared skirmish play: cover, angles and hit avoidance."
+    },
+    "651": {
+      "name": "Lassoing",
+      "description": "Throwing and closing a rope loop on a moving target."
+    },
+    "652": {
+      "name": "Laundry Management",
+      "description": "Sorting, washing and turning around volume laundry."
+    },
+    "155": {
+      "name": "Law",
+      "description": "The statutes, procedure and argument that decide a case."
+    },
+    "521": {
+      "name": "Lawn Bowls",
+      "description": "Rolling biased bowls to the jack across the green."
+    },
+    "653": {
+      "name": "Lawn Care",
+      "description": "Mowing, feeding and repairing turf through the year."
+    },
+    "156": {
+      "name": "Leadership",
+      "description": "Getting a group to act together, and keep acting."
+    },
+    "157": {
+      "name": "Leatherworking",
+      "description": "Cutting, stitching and finishing leather goods."
+    },
+    "654": {
+      "name": "Lifeguarding",
+      "description": "Watching water, spotting trouble early and getting people out."
+    },
+    "888": {
+      "name": "Light",
+      "description": "Fighting with light, quick weapons that trade reach for speed."
+    },
+    "655": {
+      "name": "Light Armor Training",
+      "description": "Fighting in light armour and keeping the mobility it is for."
+    },
+    "158": {
+      "name": "Lightfooted",
+      "description": "Moving quietly and lightly, leaving little to hear or track."
+    },
+    "656": {
+      "name": "Lighting Design",
+      "description": "Lighting a stage or set for mood, focus and visibility."
+    },
+    "833": {
+      "name": "Limnology",
+      "description": "The study of lakes, rivers and their inland ecology."
+    },
+    "657": {
+      "name": "Line Dancing",
+      "description": "Dancing set choreographed steps in formation."
+    },
+    "159": {
+      "name": "Linguistics",
+      "description": "The structure of language: sound, grammar and change."
+    },
+    "160": {
+      "name": "Lip Reading",
+      "description": "Reading speech from the mouth without hearing it."
+    },
+    "161": {
+      "name": "Lockpicking",
+      "description": "Opening locks by tension and feel, without the key."
+    },
+    "862": {
+      "name": "Log Rolling",
+      "description": "Staying upright on a spinning floating log."
+    },
+    "384": {
+      "name": "Loom Weaving",
+      "description": "Warping and weaving cloth on a loom."
+    },
+    "164": {
+      "name": "Lucid Dreaming",
+      "description": "Becoming aware inside a dream and acting deliberately in it."
+    },
+    "659": {
+      "name": "Lumberjacking",
+      "description": "Felling, limbing and moving timber in the woods."
+    },
+    "660": {
+      "name": "Lye Making",
+      "description": "Leaching wood ash into caustic lye, safely."
+    },
+    "385": {
+      "name": "Machine Learning",
+      "description": "Training statistical models to do a task from data."
+    },
+    "661": {
+      "name": "Macrame",
+      "description": "Knotting cord into patterned textile without needle or loom."
+    },
+    "165": {
+      "name": "Magic Theory",
+      "description": "The formal principles under a working: correspondence, cost and limit."
+    },
+    "166": {
+      "name": "Magus",
+      "description": "The full practice of a trained magician, not one school of it."
+    },
+    "167": {
+      "name": "Maintenance",
+      "description": "Keeping a building or machine running through routine care."
+    },
+    "168": {
+      "name": "Makeup Artistry",
+      "description": "Painting a face for camera, stage or effect."
+    },
+    "663": {
+      "name": "Mantra Chanting",
+      "description": "Sustained repetition of a formula for effect on mind or world."
+    },
+    "387": {
+      "name": "Manual Tooling",
+      "description": "Working a lathe, mill and file by hand to a tolerance."
+    },
+    "664": {
+      "name": "Map Reading",
+      "description": "Turning a map and terrain into a route and a position."
+    },
+    "388": {
+      "name": "Maple Syruping",
+      "description": "Tapping, collecting and boiling sap to syrup."
+    },
+    "169": {
+      "name": "Marathon Running",
+      "description": "Running the distance on pace, fuel and pacing discipline."
+    },
+    "170": {
+      "name": "Marine Biology",
+      "description": "The life of the sea, from plankton to reef and whale."
+    },
+    "389": {
+      "name": "Marine Navigation",
+      "description": "Charting and holding a course at sea by fix and dead reckoning."
+    },
+    "795": {
+      "name": "Martial Arts Tricking",
+      "description": "Acrobatic kicks and flips performed as display."
+    },
+    "665": {
+      "name": "Masonry",
+      "description": "Cutting and laying stone into wall, arch and course."
+    },
+    "822": {
+      "name": "Mass Spectrometry",
+      "description": "Identifying substances by ionising them and weighing the fragments."
+    },
+    "172": {
+      "name": "Massage Therapy",
+      "description": "Working soft tissue for pain, mobility and circulation."
+    },
+    "390": {
+      "name": "Matchmaking",
+      "description": "Introducing two people who will actually suit each other."
+    },
+    "391": {
+      "name": "Meat Curing",
+      "description": "Preserving meat with salt, smoke, nitrate and time."
+    },
+    "666": {
+      "name": "Mechanical Engineering",
+      "description": "Designing machines, mechanisms and the loads they carry."
+    },
+    "173": {
+      "name": "Mechanics",
+      "description": "Diagnosing and repairing engines and drivetrains."
+    },
+    "667": {
+      "name": "Mediation",
+      "description": "Bringing two sides to an agreement neither dictated."
+    },
+    "668": {
+      "name": "Medical Billing",
+      "description": "Coding treatment and getting it paid."
+    },
+    "174": {
+      "name": "Meditation",
+      "description": "Sustained attention practice, and the settling that follows."
+    },
+    "175": {
+      "name": "Mental Math",
+      "description": "Calculating accurately in the head, quickly."
+    },
+    "670": {
+      "name": "Metal Detecting",
+      "description": "Sweeping ground and reading signal before digging."
+    },
+    "176": {
+      "name": "Metalworking",
+      "description": "Cutting, forming and joining metal stock."
+    },
+    "393": {
+      "name": "Meteorite Hunting",
+      "description": "Finding and recognising fallen space rock in the field."
+    },
+    "177": {
+      "name": "Meteorology",
+      "description": "Reading and forecasting weather from data and sky."
+    },
+    "671": {
+      "name": "Microbiology",
+      "description": "The study of bacteria, viruses and what they do to a host."
+    },
+    "672": {
+      "name": "Mime",
+      "description": "Telling a story in gesture and body alone."
+    },
+    "395": {
+      "name": "Miniature Golf",
+      "description": "Putting through obstacles on a short built course."
+    },
+    "673": {
+      "name": "Miniature Painting",
+      "description": "Painting small figures at high detail."
+    },
+    "674": {
+      "name": "Mining",
+      "description": "Extracting ore and stone, and knowing what is worth extracting."
+    },
+    "675": {
+      "name": "Model Rocketry",
+      "description": "Building and flying small rockets on recovery and stability."
+    },
+    "396": {
+      "name": "Molecular Gastronomy",
+      "description": "Cooking on chemistry: gels, foams and phase changes."
+    },
+    "882": {
+      "name": "Money Laundering",
+      "description": "Passing dirty money through clean books."
+    },
+    "867": {
+      "name": "Monorail Operation",
+      "description": "Driving and dispatching a monorail on schedule."
+    },
+    "179": {
+      "name": "Morse Code",
+      "description": "Sending and reading code by key, light or sound."
+    },
+    "397": {
+      "name": "Mosaics",
+      "description": "Setting tesserae into image and pattern."
+    },
+    "676": {
+      "name": "Motocross",
+      "description": "Racing motorcycles over dirt, jumps and ruts."
+    },
+    "180": {
+      "name": "Motorcycle Riding",
+      "description": "Riding and controlling a motorcycle on road and lean."
+    },
+    "181": {
+      "name": "Mountaineering",
+      "description": "Climbing high ground with route, weather and altitude judgement."
+    },
+    "182": {
+      "name": "Muay Thai",
+      "description": "Thai striking with fists, elbows, knees and shins."
+    },
+    "677": {
+      "name": "Mural Painting",
+      "description": "Painting at architectural scale, on a wall that stays."
+    },
+    "398": {
+      "name": "Mushroom Cultivation",
+      "description": "Growing edible fungi on prepared substrate."
+    },
+    "183": {
+      "name": "Music Composition",
+      "description": "Writing music: line, harmony and structure."
+    },
+    "399": {
+      "name": "Mutagen Crafting",
+      "description": "Compounding agents that rewrite living tissue."
+    },
+    "678": {
+      "name": "Mutational Adaptation",
+      "description": "Surviving change to your own body and turning it to use."
+    },
+    "830": {
+      "name": "Mycology",
+      "description": "The study of fungi: identification, ecology and toxicity."
+    },
+    "400": {
+      "name": "Nanotechnology",
+      "description": "Engineering matter at the scale of molecules."
+    },
+    "679": {
+      "name": "Naturopathy",
+      "description": "Treating illness with diet, herbs and regimen."
+    },
+    "186": {
+      "name": "Negotiation",
+      "description": "Reaching terms both sides will sign and keep."
+    },
+    "401": {
+      "name": "Neon Sign Making",
+      "description": "Bending and filling glass tube into lit sign."
+    },
+    "680": {
+      "name": "Netmaking",
+      "description": "Knotting and repairing nets to gauge."
+    },
+    "681": {
+      "name": "Network Administration",
+      "description": "Running networks: routing, addressing, uptime and access."
+    },
+    "402": {
+      "name": "Neurohacking",
+      "description": "Intervening directly in a nervous system to change how it runs."
+    },
+    "682": {
+      "name": "Neurology",
+      "description": "The nervous system, its diseases and their diagnosis."
+    },
+    "187": {
+      "name": "Nimble",
+      "description": "Quickness of hand and foot in tight, awkward moments."
+    },
+    "683": {
+      "name": "Nuclear Physics",
+      "description": "The nucleus: decay, fission, fusion and cross-sections."
+    },
+    "879": {
+      "name": "Numismatics",
+      "description": "The study and collecting of coins and their issue."
+    },
+    "188": {
+      "name": "Nursing",
+      "description": "Bedside care, observation and the practical side of medicine."
+    },
+    "342": {
+      "name": "Nutrition",
+      "description": "What food does in the body, and what a diet lacks."
+    },
+    "404": {
+      "name": "Oboe Playing",
+      "description": "Playing the oboe, reed making included."
+    },
+    "684": {
+      "name": "Obstacle Course Racing",
+      "description": "Running a course of climbs, carries and crawls."
+    },
+    "405": {
+      "name": "Oceanography",
+      "description": "The physics, chemistry and circulation of the sea."
+    },
+    "685": {
+      "name": "Oil Drilling",
+      "description": "Drilling, casing and controlling a well."
+    },
+    "686": {
+      "name": "Opera Singing",
+      "description": "Singing trained classical repertoire without amplification."
+    },
+    "687": {
+      "name": "Optometry",
+      "description": "Testing sight and prescribing correction."
+    },
+    "189": {
+      "name": "Orienteering",
+      "description": "Racing between control points on map and compass."
+    },
+    "190": {
+      "name": "Origami",
+      "description": "Folding paper into form without cutting."
+    },
+    "688": {
+      "name": "Packing",
+      "description": "Fitting what is needed into what will actually carry."
+    },
+    "191": {
+      "name": "Pain Tolerance",
+      "description": "Staying functional through pain that would stop others."
+    },
+    "689": {
+      "name": "Paintball",
+      "description": "Marker skirmish: cover, angles and suppression."
+    },
+    "192": {
+      "name": "Painting",
+      "description": "Working in paint: colour, value and surface."
+    },
+    "407": {
+      "name": "Paleobotany",
+      "description": "Fossil plants, and the climates they record."
+    },
+    "690": {
+      "name": "Paleontology",
+      "description": "Excavating and interpreting fossils and the life they came from."
+    },
+    "193": {
+      "name": "Pankration",
+      "description": "Ancient Greek all-in fighting: striking and grappling together."
+    },
+    "408": {
+      "name": "Paper Mache",
+      "description": "Building form from paste and layered paper."
+    },
+    "691": {
+      "name": "Paper Making",
+      "description": "Pulping, forming and drying sheets by hand."
+    },
+    "880": {
+      "name": "Papyrology",
+      "description": "Reading and conserving texts written on papyrus."
+    },
+    "194": {
+      "name": "Parachuting",
+      "description": "Jumping, canopy control and landing."
+    },
+    "692": {
+      "name": "Paragliding",
+      "description": "Flying a foot-launched canopy on thermals and ridge lift."
+    },
+    "409": {
+      "name": "Paramedicine",
+      "description": "Emergency medicine in the field, before hospital."
+    },
+    "195": {
+      "name": "Parkour",
+      "description": "Moving through built terrain by vault, climb and drop."
+    },
+    "410": {
+      "name": "Parquet Flooring",
+      "description": "Laying patterned wood flooring true and tight."
+    },
+    "826": {
+      "name": "Particle Physics",
+      "description": "The fundamental particles and the forces between them."
+    },
+    "693": {
+      "name": "Pastry Baking",
+      "description": "Laminating, piping and baking fine pastry."
+    },
+    "411": {
+      "name": "Pearl Diving",
+      "description": "Diving for oysters on breath, and shucking for pearl."
+    },
+    "196": {
+      "name": "Pen Spinning",
+      "description": "Rotating a pen through the fingers in patterns."
+    },
+    "412": {
+      "name": "Perfumery",
+      "description": "Blending top, heart and base notes into a scent that lasts."
+    },
+    "853": {
+      "name": "Permaculture Design",
+      "description": "Designing a growing system that mostly maintains itself."
+    },
+    "696": {
+      "name": "Pest Control",
+      "description": "Identifying, excluding and eliminating infestation."
+    },
+    "413": {
+      "name": "Pewter Casting",
+      "description": "Melting and casting pewter into moulds."
+    },
+    "197": {
+      "name": "Pharmacology",
+      "description": "What drugs do, at what dose, and what they do together."
+    },
+    "198": {
+      "name": "Pharmacy Dispensing",
+      "description": "Filling prescriptions accurately and checking interactions."
+    },
+    "199": {
+      "name": "Philosophy",
+      "description": "Argument about knowledge, being, ethics and mind."
+    },
+    "697": {
+      "name": "Phlebotomy",
+      "description": "Drawing blood cleanly and labelling it correctly."
+    },
+    "201": {
+      "name": "Photography",
+      "description": "Exposure, focus and composition, in camera."
+    },
+    "200": {
+      "name": "Photokinesis",
+      "description": "Bending and generating light by will."
+    },
+    "414": {
+      "name": "Phrenology",
+      "description": "Reading character from the bumps of the skull, as the old books had it."
+    },
+    "202": {
+      "name": "Physics",
+      "description": "Matter, energy, motion and the laws they obey."
+    },
+    "415": {
+      "name": "Phytoremediation",
+      "description": "Cleaning contaminated ground with plants that take up the poison."
+    },
+    "698": {
+      "name": "Pickleball",
+      "description": "Paddle play on a short court with a perforated ball."
+    },
+    "203": {
+      "name": "Pickpocketing",
+      "description": "Lifting from a person without them registering it."
+    },
+    "416": {
+      "name": "Picture Framing",
+      "description": "Cutting, mounting and glazing work for display."
+    },
+    "700": {
+      "name": "Pigeon Racing",
+      "description": "Breeding, training and timing homing pigeons."
+    },
+    "205": {
+      "name": "Pilates",
+      "description": "Controlled core conditioning through set movement."
+    },
+    "701": {
+      "name": "Pipe Bending",
+      "description": "Bending pipe and conduit to angle without kinking it."
+    },
+    "417": {
+      "name": "Pipelaying",
+      "description": "Laying, jointing and bedding pipe to fall."
+    },
+    "702": {
+      "name": "Pixel Art",
+      "description": "Drawing at the level of the individual pixel."
+    },
+    "418": {
+      "name": "Planetarium Operation",
+      "description": "Running a dome projector and the show that goes with it."
+    },
+    "419": {
+      "name": "Plastering",
+      "description": "Floating and finishing plaster flat and hard."
+    },
+    "206": {
+      "name": "Playing Bass",
+      "description": "Holding the low end in time with the drums."
+    },
+    "207": {
+      "name": "Playing Drums",
+      "description": "Keeping and shaping time on a kit."
+    },
+    "208": {
+      "name": "Playing Guitar",
+      "description": "Playing guitar: chords, lead and tone."
+    },
+    "209": {
+      "name": "Playing Piano",
+      "description": "Playing piano with both hands, reading or by ear."
+    },
+    "210": {
+      "name": "Playing Violin",
+      "description": "Bowing and stopping the violin in tune."
+    },
+    "211": {
+      "name": "Plumbing",
+      "description": "Running, jointing and testing water and waste."
+    },
+    "845": {
+      "name": "Podiatry",
+      "description": "Treating feet, gait and the problems they cause upstream."
+    },
+    "212": {
+      "name": "Poetry",
+      "description": "Writing verse that earns its line breaks."
+    },
+    "213": {
+      "name": "Poison Resistance",
+      "description": "A body that has learned to survive doses that should not be survived."
+    },
+    "214": {
+      "name": "Poker",
+      "description": "Betting, reading and folding across the hand."
+    },
+    "420": {
+      "name": "Poker Face",
+      "description": "Giving nothing away in the face, under pressure."
+    },
+    "704": {
+      "name": "Pole Vaulting",
+      "description": "Clearing a bar on a planted, loaded pole."
+    },
+    "705": {
+      "name": "Police Sketching",
+      "description": "Drawing a usable likeness from a witness description."
+    },
+    "706": {
+      "name": "Political Science",
+      "description": "How power, institutions and voting actually behave."
+    },
+    "421": {
+      "name": "Polygraph Operation",
+      "description": "Running and interpreting a polygraph, for what that is worth."
+    },
+    "707": {
+      "name": "Pool Cleaning",
+      "description": "Keeping a pool balanced, filtered and clear."
+    },
+    "215": {
+      "name": "Pottery",
+      "description": "Throwing, trimming and firing clay vessels."
+    },
+    "278": {
+      "name": "Power Throwing",
+      "description": "Throwing heavy objects hard, with the whole body behind it."
+    },
+    "216": {
+      "name": "Powerlifting",
+      "description": "Maximal strength in the squat, bench and deadlift."
+    },
+    "279": {
+      "name": "Precision Throwing",
+      "description": "Hitting a small target with a thrown object at range."
+    },
+    "710": {
+      "name": "Primitive Fire Making",
+      "description": "Making fire by friction alone, with prepared materials."
+    },
+    "217": {
+      "name": "Programming",
+      "description": "Writing, structuring and debugging code."
+    },
+    "711": {
+      "name": "Project Management",
+      "description": "Scope, schedule and people, held together to delivery."
+    },
+    "895": {
+      "name": "Projectile",
+      "description": "Fighting with thrown and launched weapons at range."
+    },
+    "712": {
+      "name": "Prop Making",
+      "description": "Building convincing objects for stage or camera."
+    },
+    "425": {
+      "name": "Prosthetics Design",
+      "description": "Designing limbs and devices that a body can actually use."
+    },
+    "713": {
+      "name": "Psychiatry",
+      "description": "Diagnosing and treating mental illness, medication included."
+    },
+    "426": {
+      "name": "Psychoanalysis",
+      "description": "Reading the unconscious through talk, dream and slip."
+    },
+    "714": {
+      "name": "Psychology",
+      "description": "How people think, learn and behave, and how that is tested."
+    },
+    "709": {
+      "name": "Public Relations",
+      "description": "Managing what is said about a client, and by whom."
+    },
+    "218": {
+      "name": "Public Speaking",
+      "description": "Holding a room from the front, with structure and voice."
+    },
+    "715": {
+      "name": "Puppetry",
+      "description": "Giving a puppet weight, focus and life."
+    },
+    "219": {
+      "name": "Pyrokinesis",
+      "description": "Igniting and steering fire by will."
+    },
+    "716": {
+      "name": "Qi Gong",
+      "description": "Coordinated posture, breath and intent as a practice."
+    },
+    "717": {
+      "name": "Quality Assurance",
+      "description": "Testing to find the failure before the customer does."
+    },
+    "427": {
+      "name": "Quantum Computing",
+      "description": "Computing on superposition and interference rather than bits alone."
+    },
+    "836": {
+      "name": "Quantum Cryptography",
+      "description": "Key exchange that a measurement would give away."
+    },
+    "428": {
+      "name": "Quilling",
+      "description": "Rolling and shaping paper strips into relief design."
+    },
+    "718": {
+      "name": "Quilting",
+      "description": "Piecing and stitching layered cloth into quilts."
+    },
+    "719": {
+      "name": "Racquetball",
+      "description": "Fast enclosed-court play off every wall."
+    },
+    "720": {
+      "name": "Radiation Management",
+      "description": "Working with sources safely: shielding, dose and time."
+    },
+    "429": {
+      "name": "Radio Astronomy",
+      "description": "Observing the sky at radio wavelengths."
+    },
+    "220": {
+      "name": "Radio Operation",
+      "description": "Working a radio set: bands, procedure and traffic."
+    },
+    "721": {
+      "name": "Radio Scavenging",
+      "description": "Pulling working parts and signal out of dead equipment."
+    },
+    "842": {
+      "name": "Radiology",
+      "description": "Producing and reading medical images."
+    },
+    "821": {
+      "name": "Raman Spectroscopy",
+      "description": "Identifying substances by how they scatter laser light."
+    },
+    "221": {
+      "name": "Rapping",
+      "description": "Writing and delivering rhymed verse in time."
+    },
+    "430": {
+      "name": "Raptor Rehabilitation",
+      "description": "Treating and releasing injured birds of prey."
+    },
+    "431": {
+      "name": "Reading Micro-expressions",
+      "description": "Catching the expression that shows before it is controlled."
+    },
+    "722": {
+      "name": "Real Estate Appraisal",
+      "description": "Valuing property against comparables and condition."
+    },
+    "432": {
+      "name": "Redsmithing",
+      "description": "Working copper and its alloys at the bench."
+    },
+    "723": {
+      "name": "Refereeing",
+      "description": "Officiating a game consistently, and being obeyed."
+    },
+    "724": {
+      "name": "Resin Casting",
+      "description": "Mixing and casting resin without bubbles or heat damage."
+    },
+    "338": {
+      "name": "Resuscitation",
+      "description": "Restarting breathing and circulation."
+    },
+    "726": {
+      "name": "Retail Management",
+      "description": "Running a shop floor: stock, staff and takings."
+    },
+    "727": {
+      "name": "Rhythmic Gymnastics",
+      "description": "Apparatus work with ribbon, hoop, ball and clubs."
+    },
+    "728": {
+      "name": "Robotics",
+      "description": "Building machines that sense, decide and move."
+    },
+    "224": {
+      "name": "Rock Climbing",
+      "description": "Roped climbing on rock: technique, protection and rope work."
+    },
+    "435": {
+      "name": "Roller Derby",
+      "description": "Blocking, jamming and skating in a pack."
+    },
+    "225": {
+      "name": "Roller Skating",
+      "description": "Balance, speed and stops on wheels."
+    },
+    "226": {
+      "name": "Roofing",
+      "description": "Covering and flashing a roof so it stays watertight."
+    },
+    "729": {
+      "name": "Rope Making",
+      "description": "Laying fibre into rope of even twist and strength."
+    },
+    "730": {
+      "name": "Rowing",
+      "description": "Driving a boat with oars, in rhythm and in crew."
+    },
+    "228": {
+      "name": "Rugby",
+      "description": "Contact, handling and set piece in the running game."
+    },
+    "610": {
+      "name": "Rumormongering",
+      "description": "Starting a story that will travel and stick."
+    },
+    "731": {
+      "name": "Runecrafting",
+      "description": "Cutting and charging runes so they hold what is put in them."
+    },
+    "437": {
+      "name": "Runic Translation",
+      "description": "Reading runic inscription and knowing which futhark it is."
+    },
+    "732": {
+      "name": "RV Driving",
+      "description": "Driving a large motorhome: length, height and weight."
+    },
+    "883": {
+      "name": "Safecracking",
+      "description": "Opening a safe by manipulation, drilling or the owner's habits."
+    },
+    "434": {
+      "name": "Sail Rigging",
+      "description": "Setting up standing and running rigging correctly."
+    },
+    "229": {
+      "name": "Sailing",
+      "description": "Working a boat under sail on wind, tide and trim."
+    },
+    "438": {
+      "name": "Sailmaking",
+      "description": "Cutting and sewing sails that hold their shape."
+    },
+    "733": {
+      "name": "Sales",
+      "description": "Finding the need, matching it and closing."
+    },
+    "869": {
+      "name": "Sand Sculpture",
+      "description": "Packing and carving sand into form before it dries."
+    },
+    "734": {
+      "name": "Sandblasting",
+      "description": "Stripping and texturing surfaces with abrasive under pressure."
+    },
+    "838": {
+      "name": "Satellite Uplink Operation",
+      "description": "Aligning a dish and holding a link to a satellite."
+    },
+    "820": {
+      "name": "Saxophone",
+      "description": "Playing the saxophone: reed, breath and phrasing."
+    },
+    "735": {
+      "name": "Scaffolding",
+      "description": "Erecting and tying scaffold that will take the load."
+    },
+    "736": {
+      "name": "Scrapbooking",
+      "description": "Composing photographs and ephemera into kept pages."
+    },
+    "439": {
+      "name": "Scrimshaw",
+      "description": "Engraving and inking designs into bone or ivory."
+    },
+    "737": {
+      "name": "Scroll Scribing",
+      "description": "Writing a working onto a scroll so it will fire when read."
+    },
+    "230": {
+      "name": "Scuba Diving",
+      "description": "Diving on compressed air with buoyancy and gas discipline."
+    },
+    "440": {
+      "name": "Scythe Mowing",
+      "description": "Mowing standing grass with a scythe, and peening the blade."
+    },
+    "441": {
+      "name": "Search and Rescue",
+      "description": "Finding missing people and getting them out alive."
+    },
+    "738": {
+      "name": "Search Engine Optimization",
+      "description": "Getting a page to rank on what people actually search."
+    },
+    "231": {
+      "name": "Seduction",
+      "description": "Drawing someone in deliberately, and knowing when it is working."
+    },
+    "442": {
+      "name": "Seismology",
+      "description": "Recording and interpreting ground movement and earthquakes."
+    },
+    "233": {
+      "name": "Sewing",
+      "description": "Joining cloth by hand or machine to a seam that holds."
+    },
+    "740": {
+      "name": "Sheep Shearing",
+      "description": "Taking a fleece off in one piece without cutting the sheep."
+    },
+    "741": {
+      "name": "Shelter Building",
+      "description": "Building shelter from terrain and materials at hand."
+    },
+    "444": {
+      "name": "Shepherding",
+      "description": "Moving, grazing and guarding a flock."
+    },
+    "742": {
+      "name": "Shipping",
+      "description": "Freight, manifests, customs and getting cargo there."
+    },
+    "234": {
+      "name": "Shoemaking",
+      "description": "Lasting, sewing and soling footwear."
+    },
+    "746": {
+      "name": "Show Jumping",
+      "description": "Riding a course of fences clear and inside the time."
+    },
+    "865": {
+      "name": "Shuffleboard",
+      "description": "Sliding weighted discs to scoring zones."
+    },
+    "887": {
+      "name": "Siege Engineering",
+      "description": "Building and using engines that take fortifications down."
+    },
+    "238": {
+      "name": "Sign Language",
+      "description": "Signed conversation, with its own grammar and space."
+    },
+    "747": {
+      "name": "Sign Spinning",
+      "description": "Throwing and spinning an advertising board for attention."
+    },
+    "448": {
+      "name": "Silkworm Breeding",
+      "description": "Raising silkworms and reeling their cocoons."
+    },
+    "239": {
+      "name": "Silversmithing",
+      "description": "Raising, soldering and finishing silver."
+    },
+    "240": {
+      "name": "Singing",
+      "description": "Pitch, breath and tone with the trained voice."
+    },
+    "241": {
+      "name": "Skateboarding",
+      "description": "Riding, balance and tricks on a board."
+    },
+    "748": {
+      "name": "Skydiving",
+      "description": "Freefall stability, canopy and landing."
+    },
+    "749": {
+      "name": "Slacklining",
+      "description": "Balancing and walking flat webbing under tension."
+    },
+    "750": {
+      "name": "Sledding",
+      "description": "Steering and braking a sled downhill."
+    },
+    "242": {
+      "name": "Sleep Deprivation",
+      "description": "Functioning after the sleep the body was owed."
+    },
+    "243": {
+      "name": "Sleight of Hand",
+      "description": "Doing something with the hands nobody sees."
+    },
+    "450": {
+      "name": "Snake Handling",
+      "description": "Handling snakes, venomous ones included, without being bitten."
+    },
+    "751": {
+      "name": "Snorkeling",
+      "description": "Surface diving and swimming on mask and snorkel."
+    },
+    "246": {
+      "name": "Snowboarding",
+      "description": "Edges, carving and terrain on a board."
+    },
+    "752": {
+      "name": "Snowmobiling",
+      "description": "Riding a snowmobile over deep snow and ice."
+    },
+    "451": {
+      "name": "Snowplow Operation",
+      "description": "Clearing roads of snow without taking the road with it."
+    },
+    "753": {
+      "name": "Snowshoeing",
+      "description": "Travelling over deep snow without sinking."
+    },
+    "754": {
+      "name": "Soap Making",
+      "description": "Saponifying fat with lye into cured soap."
+    },
+    "247": {
+      "name": "Soccer",
+      "description": "Ball control, passing and shooting in the eleven-a-side game."
+    },
+    "248": {
+      "name": "Sociology",
+      "description": "How societies, classes and institutions actually behave."
+    },
+    "756": {
+      "name": "Softball",
+      "description": "Batting, pitching and fielding in the underhand game."
+    },
+    "757": {
+      "name": "Software Testing",
+      "description": "Designing tests that find real defects, not just pass."
+    },
+    "834": {
+      "name": "Soil Science",
+      "description": "Soil structure, chemistry and fertility."
+    },
+    "249": {
+      "name": "Soldering",
+      "description": "Joining metal and electronics with filler and controlled heat."
+    },
+    "250": {
+      "name": "Sound Engineering",
+      "description": "Recording, mixing and reinforcing sound."
+    },
+    "901": {
+      "name": "Spacecraft Piloting",
+      "description": "Handling a ship in space: burns, orbit and setting down."
+    },
+    "251": {
+      "name": "Spatial Manipulation",
+      "description": "Folding distance and volume by will."
+    },
+    "899": {
+      "name": "Spear",
+      "description": "Fighting with the spear: reach, thrust and set."
+    },
+    "452": {
+      "name": "Spearfishing",
+      "description": "Taking fish underwater with sling or gun on breath."
+    },
+    "253": {
+      "name": "Speed Reading",
+      "description": "Reading fast without losing what was on the page."
+    },
+    "759": {
+      "name": "Speed Skating",
+      "description": "Long, low blade work at racing pace."
+    },
+    "453": {
+      "name": "Speed Stacking",
+      "description": "Stacking and unstacking cups against the clock."
+    },
+    "227": {
+      "name": "Speedcubing",
+      "description": "Solving twisty puzzles by algorithm at speed."
+    },
+    "254": {
+      "name": "Speedrunning",
+      "description": "Completing a game by the fastest route known, and finding faster ones."
+    },
+    "73": {
+      "name": "Spell Concentration",
+      "description": "Holding a working together while being hit, moved or distracted."
+    },
+    "255": {
+      "name": "Spellcraft",
+      "description": "Constructing and casting a spell from its components."
+    },
+    "760": {
+      "name": "Spinning Yarn",
+      "description": "Drafting and twisting fibre into yarn on wheel or spindle."
+    },
+    "106": {
+      "name": "Sport Fencing",
+      "description": "Foil, epee and sabre under competition rules."
+    },
+    "761": {
+      "name": "Sports Coaching",
+      "description": "Training athletes, and getting a team to play as one."
+    },
+    "847": {
+      "name": "Sports Medicine",
+      "description": "Treating and preventing the injuries sport causes."
+    },
+    "257": {
+      "name": "Sprinting",
+      "description": "Maximum speed over short distance, from the start."
+    },
+    "762": {
+      "name": "Squash",
+      "description": "Fast enclosed-court racquet play off the front wall."
+    },
+    "893": {
+      "name": "Staff",
+      "description": "Fighting with the staff and its two-ended leverage."
+    },
+    "763": {
+      "name": "Stained Glass Making",
+      "description": "Cutting, leading and soldering coloured glass into panel."
+    },
+    "764": {
+      "name": "Stand-up Paddleboarding",
+      "description": "Standing and paddling a board on open water."
+    },
+    "258": {
+      "name": "Statistics",
+      "description": "Sampling, inference and knowing what a number does not say."
+    },
+    "456": {
+      "name": "Steadicam Operation",
+      "description": "Carrying a stabilised camera and walking a shot smooth."
+    },
+    "765": {
+      "name": "Stealth Kills",
+      "description": "Ending a fight before it starts, from behind."
+    },
+    "245": {
+      "name": "Stealth Movement",
+      "description": "Moving unseen and unheard past attention."
+    },
+    "745": {
+      "name": "Stenography",
+      "description": "Taking speech down verbatim at speaking speed."
+    },
+    "457": {
+      "name": "Stilt Walking",
+      "description": "Walking, turning and working at height on stilts."
+    },
+    "259": {
+      "name": "Stock Trading",
+      "description": "Buying and selling securities on analysis and nerve."
+    },
+    "766": {
+      "name": "Stone Cutting",
+      "description": "Splitting and dressing stone to dimension."
+    },
+    "458": {
+      "name": "Stone Skipping",
+      "description": "Throwing a flat stone for the maximum number of bounces."
+    },
+    "260": {
+      "name": "Stormshaping",
+      "description": "Calling and steering weather by will."
+    },
+    "459": {
+      "name": "Street Magic",
+      "description": "Close-up conjuring with no stage and no angles."
+    },
+    "767": {
+      "name": "Street Sweeping",
+      "description": "Clearing streets by machine and by hand."
+    },
+    "261": {
+      "name": "Streetwise",
+      "description": "Reading a city's rules: who to ask, where not to go."
+    },
+    "262": {
+      "name": "Structural Engineering",
+      "description": "Sizing structure so it carries load and stays standing."
+    },
+    "768": {
+      "name": "Stunt Driving",
+      "description": "Slides, jumps and precision driving on a mark."
+    },
+    "769": {
+      "name": "Submarine Piloting",
+      "description": "Handling a submersible on trim, depth and ballast."
+    },
+    "263": {
+      "name": "Sumo Wrestling",
+      "description": "Driving an opponent out of the ring, or down inside it."
+    },
+    "770": {
+      "name": "Supply Chain Management",
+      "description": "Keeping parts and stock moving from supplier to shelf."
+    },
+    "264": {
+      "name": "Surfing",
+      "description": "Reading, catching and riding a wave."
+    },
+    "265": {
+      "name": "Surgery",
+      "description": "Operating: opening, repairing and closing a living body."
+    },
+    "771": {
+      "name": "Surveying",
+      "description": "Measuring land and setting out levels and boundaries."
+    },
+    "266": {
+      "name": "Survival",
+      "description": "Staying alive outdoors: water, shelter, fire, food."
+    },
+    "872": {
+      "name": "Sushi Preparation",
+      "description": "Rice, cutting and handling raw fish to standard."
+    },
+    "267": {
+      "name": "Swimming",
+      "description": "Efficient strokes and staying safe in open water."
+    },
+    "889": {
+      "name": "Sword",
+      "description": "Fighting with the sword: guard, cut and thrust."
+    },
+    "462": {
+      "name": "Sword Swallowing",
+      "description": "Passing a blade down the throat without injury."
+    },
+    "772": {
+      "name": "Synchronized Swimming",
+      "description": "Figures and lifts performed in time, mostly underwater."
+    },
+    "773": {
+      "name": "Table Tennis",
+      "description": "Spin, placement and speed across the table."
+    },
+    "268": {
+      "name": "Taekwondo",
+      "description": "Korean striking art built on fast, high kicks."
+    },
+    "775": {
+      "name": "Tai Chi",
+      "description": "Slow internal form practised for balance, health and structure."
+    },
+    "774": {
+      "name": "Tailgating",
+      "description": "Running a car-park party properly, food and all."
+    },
+    "269": {
+      "name": "Tailoring",
+      "description": "Cutting and fitting garments to a body."
+    },
+    "776": {
+      "name": "Tallow Rendering",
+      "description": "Rendering animal fat clean for candles, soap and cooking."
+    },
+    "270": {
+      "name": "Tango",
+      "description": "Close partner dance of lead, pause and walk."
+    },
+    "271": {
+      "name": "Tarot Reading",
+      "description": "Laying and interpreting the cards for a querent."
+    },
+    "778": {
+      "name": "Tattoo Artistry",
+      "description": "Putting ink in skin: line, shade and healing."
+    },
+    "272": {
+      "name": "Taxidermy",
+      "description": "Skinning, mounting and posing an animal to look alive."
+    },
+    "463": {
+      "name": "Tea Leaf Reading",
+      "description": "Reading the shapes left in the cup."
+    },
+    "779": {
+      "name": "Tear Gas Tolerance",
+      "description": "Keeping working in gas that is designed to stop you."
+    },
+    "273": {
+      "name": "Technomancy",
+      "description": "Working magic through machines and code."
+    },
+    "274": {
+      "name": "Telekinesis",
+      "description": "Moving objects at a distance by will."
+    },
+    "780": {
+      "name": "Telemarketing",
+      "description": "Selling by telephone to people who did not call."
+    },
+    "275": {
+      "name": "Telepathy",
+      "description": "Reading and sending thought without speech."
+    },
+    "781": {
+      "name": "Teleportation",
+      "description": "Moving from one place to another without crossing the gap."
+    },
+    "464": {
+      "name": "Telescope Making",
+      "description": "Grinding, figuring and mounting optics that hold a star."
+    },
+    "276": {
+      "name": "Tennis",
+      "description": "Serve, groundstrokes and court movement."
+    },
+    "45": {
+      "name": "Tenpin Bowling",
+      "description": "Line, hook and spare shooting on the lanes."
+    },
+    "465": {
+      "name": "Teratology",
+      "description": "The study of malformation: what goes wrong in development, and how."
+    },
+    "466": {
+      "name": "Terrarium Building",
+      "description": "Building a closed planted vessel that keeps itself."
+    },
+    "782": {
+      "name": "Thatching",
+      "description": "Roofing in reed or straw so it sheds water for decades."
+    },
+    "277": {
+      "name": "Theology",
+      "description": "Doctrine, scripture and the arguments inside a faith."
+    },
+    "469": {
+      "name": "Thermite Crafting",
+      "description": "Mixing metal oxide and fuel into a charge that cuts steel."
+    },
+    "827": {
+      "name": "Thermodynamics",
+      "description": "Heat, work and what cannot be got back."
+    },
+    "871": {
+      "name": "Throat Singing",
+      "description": "Producing two or more tones at once with one voice."
+    },
+    "783": {
+      "name": "Tightrope Walking",
+      "description": "Crossing a tensioned wire on balance alone."
+    },
+    "784": {
+      "name": "Tiling",
+      "description": "Setting, spacing and grouting tile flat and level."
+    },
+    "470": {
+      "name": "Tinsmithing",
+      "description": "Cutting, forming and seaming sheet tin."
+    },
+    "471": {
+      "name": "Topiary",
+      "description": "Clipping living shrubs into held shapes."
+    },
+    "280": {
+      "name": "Torture",
+      "description": "Inflicting pain to a purpose, and what that is actually worth."
+    },
+    "785": {
+      "name": "Touch Typing",
+      "description": "Typing accurately at speed without looking."
+    },
+    "786": {
+      "name": "Tour Guiding",
+      "description": "Leading a group and holding their attention while walking."
+    },
+    "788": {
+      "name": "Toxicology",
+      "description": "Poisons: dose, effect, detection and antidote."
+    },
+    "281": {
+      "name": "Tracking",
+      "description": "Following sign left by people and animals."
+    },
+    "789": {
+      "name": "Tractor Driving",
+      "description": "Driving and operating a tractor and its implements."
+    },
+    "790": {
+      "name": "Train Conducting",
+      "description": "Running a train's schedule, signals and passengers."
+    },
+    "791": {
+      "name": "Trampolining",
+      "description": "Height, shape and control off the bed."
+    },
+    "282": {
+      "name": "Translation",
+      "description": "Carrying meaning between languages, not just words."
+    },
+    "283": {
+      "name": "Trapping",
+      "description": "Setting, placing and checking traps for game."
+    },
+    "792": {
+      "name": "Trash Collection",
+      "description": "Working a collection round: route, lift and load."
+    },
+    "793": {
+      "name": "Tree Climbing",
+      "description": "Ascending trees on rope and spurs, safely."
+    },
+    "886": {
+      "name": "Trench Warfare Tactics",
+      "description": "Holding, raiding and living in fixed lines."
+    },
+    "794": {
+      "name": "Triathlon",
+      "description": "Swim, bike and run, with the transitions between."
+    },
+    "796": {
+      "name": "Triple Jump",
+      "description": "Hop, step and jump off a single run-up."
+    },
+    "285": {
+      "name": "Truck Driving",
+      "description": "Driving heavy goods vehicles: load, brakes and hours."
+    },
+    "472": {
+      "name": "Truffle Hunting",
+      "description": "Finding truffles with a trained dog and a good nose."
+    },
+    "473": {
+      "name": "Typography",
+      "description": "Setting type: face, size, spacing and rhythm."
+    },
+    "474": {
+      "name": "UFOlogy",
+      "description": "Collecting and assessing reports of unidentified craft."
+    },
+    "798": {
+      "name": "Ultimate Frisbee",
+      "description": "Disc handling, cuts and defence in the running game."
+    },
+    "286": {
+      "name": "Unarmed Combat",
+      "description": "Fighting with the body alone: strikes, clinch and control."
+    },
+    "460": {
+      "name": "Underwater Welding",
+      "description": "Welding at depth, where electricity and water meet."
+    },
+    "799": {
+      "name": "Unicycling",
+      "description": "Riding, turning and idling on one wheel."
+    },
+    "287": {
+      "name": "Upholstery",
+      "description": "Stripping, padding and covering furniture frames."
+    },
+    "476": {
+      "name": "Urban Exploration",
+      "description": "Getting into disused structures, and back out."
+    },
+    "288": {
+      "name": "Urban Planning",
+      "description": "Zoning, transport and how a city grows or chokes."
+    },
+    "787": {
+      "name": "Vehicle Towing",
+      "description": "Recovering and towing vehicles safely and legally."
+    },
+    "800": {
+      "name": "Ventriloquism",
+      "description": "Speaking without visible movement, and placing the voice."
+    },
+    "801": {
+      "name": "Veterinary Medicine",
+      "description": "Diagnosing and treating animals that cannot say where it hurts."
+    },
+    "478": {
+      "name": "Viaduct Engineering",
+      "description": "Designing and building long elevated spans."
+    },
+    "289": {
+      "name": "Video Editing",
+      "description": "Cutting footage into sequence, pace and sense."
+    },
+    "290": {
+      "name": "Video Gaming",
+      "description": "Playing videogames well: reflex, systems and pattern."
+    },
+    "479": {
+      "name": "Vintage Car Restoration",
+      "description": "Rebuilding an old car to running, original condition."
+    },
+    "850": {
+      "name": "Violin Making",
+      "description": "Carving, graduating and varnishing violins."
+    },
+    "803": {
+      "name": "Voice Acting",
+      "description": "Acting with the voice alone, to picture or page."
+    },
+    "829": {
+      "name": "Volcanology",
+      "description": "Volcanoes: their behaviour, warning signs and products."
+    },
+    "804": {
+      "name": "Volleyball",
+      "description": "Serve, set, spike and block over the net."
+    },
+    "292": {
+      "name": "Wakeboarding",
+      "description": "Riding and jumping the wake behind a boat."
+    },
+    "805": {
+      "name": "Wand Making",
+      "description": "Selecting, turning and pairing wood into a working wand."
+    },
+    "480": {
+      "name": "Water Dowsing",
+      "description": "Finding water with a rod, and the confidence to dig there."
+    },
+    "806": {
+      "name": "Water Polo",
+      "description": "Swimming, holding position and shooting in the water game."
+    },
+    "294": {
+      "name": "Water Skiing",
+      "description": "Riding skis behind a boat, on a wake and across it."
+    },
+    "222": {
+      "name": "Weapon Reloading",
+      "description": "Reloading fast and correctly, without looking at it."
+    },
+    "807": {
+      "name": "Weaponsmithing",
+      "description": "Making weapons that balance, hold an edge and take use."
+    },
+    "809": {
+      "name": "Web Development",
+      "description": "Building sites and web applications, front and back."
+    },
+    "295": {
+      "name": "Weightlifting",
+      "description": "The snatch and the clean and jerk, done technically."
+    },
+    "296": {
+      "name": "Welding",
+      "description": "Fusing metal with a sound, load-bearing bead."
+    },
+    "810": {
+      "name": "Well Digging",
+      "description": "Sinking and lining a well to reliable water."
+    },
+    "811": {
+      "name": "Wheelchair Racing",
+      "description": "Racing a track chair on push technique and line."
+    },
+    "892": {
+      "name": "Whip",
+      "description": "Fighting with the whip: reach, crack and entanglement."
+    },
+    "297": {
+      "name": "Whittling",
+      "description": "Cutting small objects from wood with a knife alone."
+    },
+    "482": {
+      "name": "Wig Making",
+      "description": "Ventilating and dressing hair into wigs that pass."
+    },
+    "859": {
+      "name": "Wild Shape Attunement",
+      "description": "Holding a borrowed animal form without losing yourself in it."
+    },
+    "852": {
+      "name": "Wilderness First Response",
+      "description": "Emergency medicine hours from any road."
+    },
+    "483": {
+      "name": "Wind Turbine Repair",
+      "description": "Servicing turbines up-tower, in the weather."
+    },
+    "812": {
+      "name": "Window Washing",
+      "description": "Cleaning glass streak-free, at height if needed."
+    },
+    "298": {
+      "name": "Windsurfing",
+      "description": "Sailing a board on rig, trim and stance."
+    },
+    "758": {
+      "name": "Wine Tasting",
+      "description": "Assessing wine by sight, nose and palate, and naming it."
+    },
+    "299": {
+      "name": "Winemaking",
+      "description": "Crushing, fermenting and ageing grapes into wine."
+    },
+    "484": {
+      "name": "Wire Making",
+      "description": "Drawing metal down into wire of even gauge."
+    },
+    "300": {
+      "name": "Woodcarving",
+      "description": "Cutting figure and relief into wood with chisel and gouge."
+    },
+    "301": {
+      "name": "Wrestling",
+      "description": "Takedowns, control and pins on the mat."
+    },
+    "814": {
+      "name": "X-Ray Operation",
+      "description": "Positioning, exposing and shielding for a usable radiograph."
+    },
+    "485": {
+      "name": "Xylophone Playing",
+      "description": "Playing tuned bars with mallets, in time."
+    },
+    "304": {
+      "name": "Yo-Yo",
+      "description": "String tricks, sleep and return on the yo-yo."
+    },
+    "487": {
+      "name": "Yodeling",
+      "description": "Singing across the break between chest and head voice, fast."
+    },
+    "303": {
+      "name": "Yoga",
+      "description": "Postures, breath and attention held together."
+    },
+    "817": {
+      "name": "Zamboni Operation",
+      "description": "Resurfacing ice evenly, in one pass, before the next period."
+    },
+    "866": {
+      "name": "Zeppelin Piloting",
+      "description": "Flying a rigid airship on ballast, trim and slow decisions."
+    },
+    "818": {
+      "name": "Zine Making",
+      "description": "Writing, laying out and photocopying a small self-published magazine."
+    },
+    "819": {
+      "name": "Zookeeping",
+      "description": "Feeding, enriching and managing captive animals."
+    },
+    "305": {
+      "name": "Zoology",
+      "description": "The study of animals: classification, anatomy and behaviour."
+    }
+  }
+}

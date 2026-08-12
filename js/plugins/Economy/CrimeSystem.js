@@ -17,6 +17,18 @@
  * @type variable
  * @default 66
  *
+ * @param heatVariable
+ * @text Wanted Heat Variable ID
+ * @desc Variable holding how badly the police want the party, 0-100 (default: 131). Officer events wake on it.
+ * @type variable
+ * @default 131
+ *
+ * @param legacyHeatVariable
+ * @text Legacy Officer Variable ID
+ * @desc Off (0). Set to a variable id only to mirror the heat onto an old officer event that still reads one.
+ * @type variable
+ * @default 0
+ *
  * @param displayDuration
  * @text Crime Display Duration
  * @desc Duration in frames to show crime notification (60 = 1 second)
@@ -235,6 +247,8 @@
  * @value weaponsTrafficking
  * @option Terrorism
  * @value terrorism
+ * @option Bioterrorism
+ * @value bioterrorism
  * @option Treason
  * @value treason
  * @option Espionage
@@ -258,7 +272,23 @@
  * @command clearBounty
  * @text Clear Bounty
  * @desc Clear all crimes and reset bounty to 0
- * 
+ *
+ * @command raiseHeat
+ * @text Raise Wanted Heat
+ * @desc Put the police on the party. Never lowers the heat; it fades on its own and dies with the bounty.
+ *
+ * @arg amount
+ * @text Heat
+ * @desc How badly they are wanted (0-100). Officers give chase from 50.
+ * @type number
+ * @min 0
+ * @max 100
+ * @default 50
+ *
+ * @command clearHeat
+ * @text Clear Wanted Heat
+ * @desc Call the manhunt off without touching the bounty.
+ *
     * @command addCrimeFromVariable
  * @text Add Crime (Bounty from Variable)
  * @desc Add a new crime with bounty amount read from Variable 79
@@ -276,7 +306,119 @@
     const pluginName = 'CrimeSystem';
     const parameters = PluginManager.parameters(pluginName);
     const bountyVariableId = parseInt(parameters['bountyVariable'] || 66);
+    const heatVariableId = parseInt(parameters['heatVariable'] || 131);
+    const legacyHeatVariableId = parseInt(parameters['legacyHeatVariable'] || 0);
     const displayDuration = parseInt(parameters['displayDuration'] || 300);
+
+    // ======================================================================
+    // Wanted heat
+    // ======================================================================
+    // How badly the police want the party, 0-100, and the only thing an
+    // officer event reads. It used to be Variable 85, which is the steal
+    // failure reroll and nobody's idea of a wanted level: it was rolled at
+    // random whenever a steal was caught, whether or not a charge was ever
+    // filed, and nothing put it back down, so one botched pickpocket left the
+    // party hunted for the rest of the savegame with an empty record and a
+    // bounty of zero. That is the bug this whole block exists to answer.
+    //
+    // Four rules, and they are all the officer events need to know:
+    //   - any crime raises it, by what the crime is worth;
+    //   - AT ZERO THE PARTY IS COLD. An officer standing in the street does
+    //     not recognise a face nobody is looking for, so the spotting sweep
+    //     only ever adds to a manhunt that is already running. The one way
+    //     onto their radar from cold is to walk up and talk to one;
+    //   - once it is running, walking into an officer's cone of vision pins
+    //     it at 100, on authored and procedural maps alike (the sweep reads
+    //     $gameMap, not a map id);
+    //   - it fades with the clock, so a few hours spent walking, working,
+    //     waiting or sleeping it off clears it, and it can never outlive the
+    //     bounty. No bounty, no manhunt.
+    const HEAT_MAX = 100;
+    // At and above this an officer gives chase (their page condition).
+    const HEAT_CHASE = 50;
+    // How long a manhunt takes to blow over on its own: full heat is shed over
+    // this many in-game hours. It used to be 2 points a minute, i.e. under an
+    // hour from a murder to the police having forgotten it, which is no time
+    // at all when a map minute is ten walked steps. Read off the world clock
+    // rather than off steps, so a night at an inn or a Bethesda-style wait
+    // (TimeDateSystem's sleep advance) cools the trail exactly as fast as
+    // pacing the street does.
+    const HEAT_DECAY_HOURS = 4;
+    const HEAT_DECAY_PER_MINUTE = HEAT_MAX / (HEAT_DECAY_HOURS * 60);
+    // What stopping an officer for a chat is worth. Deliberately one short of
+    // the chase, so the conversation the player asked for actually plays: the
+    // page condition is still false when the interpreter picks the talk list
+    // up, and the ordinary spotting sweep then pins them at 100 a moment later
+    // because the party is standing right in front of the man.
+    const HEAT_TALK = HEAT_CHASE - 1;
+    // How far an officer can recognise a wanted party, and how wide the arc
+    // they are actually looking down. An officer is not a proximity trigger:
+    // they see what is in front of them, and a wall or a corner hides the
+    // party the same way it hides them from a roaming monster
+    // (BSE.Helpers.hasLineOfSight, the same tile walk the creatures use).
+    const HEAT_SPOT_RANGE = 5;
+    const HEAT_SPOT_CONE = 120;
+    // Inside this many tiles they notice whoever is beside them, cone or no
+    // cone: nobody walks into a constable's shoulder unseen.
+    const HEAT_SPOT_TOUCH = 1;
+    // The officer events read the heat themselves now (two pages apiece, the
+    // arrest page conditioned on PoliceHeat >= 50; tools/crime/gen_officer_pages.js
+    // wrote them). They used to read Variable 85, the steal failure reroll,
+    // which is why this bridge exists at all: point the legacy parameter at a
+    // variable and the chase is mirrored onto it, 6 while it is on and 0 the
+    // rest of the time. It is off, and it is not a second source of truth.
+    const LEGACY_CHASE_VALUE = 6;
+    // What a crime is worth in heat: jaywalking 4, petty theft 9, murder 52,
+    // genocide 86. Bounties run 15 to 500,000, so it is read on a log scale.
+    function heatForBounty(bounty) {
+        const worth = Math.max(0, Number(bounty) || 0);
+        if (worth <= 0) return 0;
+        return Math.min(HEAT_MAX, Math.round(20 * Math.log10(1 + worth / 25)));
+    }
+
+    // An officer is whoever answers to the police common events, or is simply
+    // named as one. Procedural maps deal their populace out by name, so the
+    // name is checked first and the pages only where it does not answer.
+    const OFFICER_NAME = /officer|police|polizia|poliziotto|carabinier|gendarm|constable|\bcop\b/i;
+    const OFFICER_COMMON_EVENTS = [124, 130];
+    // Is the party inside the arc this officer is facing? The maths is the one
+    // the roaming creatures use for their own sight cones.
+    function inSightCone(officer, tx, ty, cone) {
+        if (!cone || cone >= 360) return true;
+        const dx = tx - officer.x;
+        const dy = ty - officer.y;
+        let along, perp;
+        switch (officer.direction()) {
+            case 2: along = dy; perp = Math.abs(dx); break;
+            case 8: along = -dy; perp = Math.abs(dx); break;
+            case 6: along = dx; perp = Math.abs(dy); break;
+            case 4: along = -dx; perp = Math.abs(dy); break;
+            default: return true;
+        }
+        if (along <= 0) return false;
+        return perp <= along * Math.tan((cone / 2) * Math.PI / 180);
+    }
+
+    // A wall between them hides the party. Borrowed from the encounter system
+    // so a constable and a wolf read the same corner the same way; without it
+    // the check falls back to plain distance.
+    function hasSightLine(x0, y0, x1, y1) {
+        const helpers = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
+        if (helpers && helpers.hasLineOfSight) return helpers.hasLineOfSight(x0, y0, x1, y1);
+        return true;
+    }
+
+    function isOfficerEvent(gameEvent) {
+        const data = gameEvent && gameEvent.event && gameEvent.event();
+        if (!data) return false;
+        if (OFFICER_NAME.test(data.name || "")) return true;
+        for (const page of data.pages || []) {
+            for (const cmd of page.list || []) {
+                if (cmd.code === 117 && OFFICER_COMMON_EVENTS.includes(cmd.parameters[0])) return true;
+            }
+        }
+        return false;
+    }
 
     // Language check
     const useTranslation = ConfigManager.language === 'it';
@@ -344,6 +486,7 @@
     shoplifting: "Pickpocketing",
     // Lockpicking
     burglary: "Lockpicking",
+    graverobbing: "Lockpicking",
     breakingAndEntering: "Lockpicking",
     unlawfulEntry: "Lockpicking",
     trespassing: "Lockpicking",
@@ -399,6 +542,7 @@
     manslaughter: "Ambush Tactics",
     serialKilling: "Ambush Tactics",
     // Chemistry
+    bioterrorism: "Chemistry",
     drugPossession: "Chemistry",
     environmentalCrime: "Chemistry",
     pollutionViolation: "Chemistry",
@@ -456,6 +600,14 @@
     }
 
     class CrimeSystem {
+        // There is no law in an empty world, because there is nobody left to
+        // keep it (WorldManager.populationMode). Read rather than cached: the
+        // answer belongs to the world, and a session can change worlds.
+        static isEmptyWorld() {
+            const WM = window.WorldManager;
+            return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+        }
+
         static initialize() {
             if (!$dataSystem.switches) return;
 
@@ -473,8 +625,207 @@
             }
         }
 
+        // ------------------------------------------------------------------
+        // The record and the variable say the same thing
+        // ------------------------------------------------------------------
+        // The bounty lives in two places: the itemised record in $gameSystem
+        // (per savegame, in the binary save) and the variable the HUD, the
+        // officer events and the trial all read. window.playerCrimes is worse
+        // than either, being a window global that survives a savegame swap
+        // inside one session, so a fresh party inherited the last one's
+        // charges. Reconciled here on new game and on load.
+        static syncBounty() {
+            this.initialize();
+            if (!$gameVariables) return;
+
+            const data = $gameSystem._crimeData;
+            const shown = $gameVariables.value(bountyVariableId) || 0;
+
+            if (data.crimes.length) {
+                if (shown <= 0) {
+                    // Settled somewhere that only wrote the variable (time
+                    // served, a pardon, a savegame written before this):
+                    // the sheet goes with it, or the next crime committed
+                    // re-totals it and hands the party their old bounty back.
+                    data.crimes = [];
+                    data.totalBounty = 0;
+                } else {
+                    this.recalculateBounty();
+                }
+            } else if (shown < 0) {
+                $gameVariables.setValue(bountyVariableId, 0);
+            }
+
+            window.playerCrimes = data.crimes.map(c => c.id).filter(Boolean);
+            $gameSystem._crimeHeatMinute = this.worldMinute();
+            this.updateHeat();
+        }
+
+        // ------------------------------------------------------------------
+        // Heat
+        // ------------------------------------------------------------------
+        static worldMinute() {
+            return ($gameVariables && Number($gameVariables.value(114))) || 0;
+        }
+
+        static getHeat() {
+            if (!$gameVariables) return 0;
+            return Math.max(0, Number($gameVariables.value(heatVariableId)) || 0);
+        }
+
+        static setHeat(value) {
+            if (!$gameVariables) return 0;
+            const next = Math.max(0, Math.min(HEAT_MAX, Math.round(value) || 0));
+            if (next === this.getHeat()) {
+                this.syncLegacyHeat();
+                return next;
+            }
+            $gameVariables.setValue(heatVariableId, next);
+            this.syncLegacyHeat();
+            // The officer pages are conditioned on it, so the map has to
+            // re-read them for a chase to start or stop.
+            if ($gameMap) $gameMap.requestRefresh();
+            return next;
+        }
+
+        // Bridge to the officer events as they stand today (see LEGACY_CHASE_VALUE).
+        static syncLegacyHeat() {
+            if (!legacyHeatVariableId || !$gameVariables) return;
+            const want = this.isWanted() ? LEGACY_CHASE_VALUE : 0;
+            if (($gameVariables.value(legacyHeatVariableId) || 0) === want) return;
+            $gameVariables.setValue(legacyHeatVariableId, want);
+            if ($gameMap) $gameMap.requestRefresh();
+        }
+
+        static clearHeat() {
+            return this.setHeat(0);
+        }
+
+        static isWanted() {
+            return this.getHeat() >= HEAT_CHASE;
+        }
+
+        // The heat as the menu prints it.
+        static heatPercent() {
+            return Math.round((this.getHeat() / HEAT_MAX) * 100);
+        }
+
+        static heatChaseThreshold() {
+            return HEAT_CHASE;
+        }
+
+        // Called on the map tick. Three rules, in order: a manhunt with nothing
+        // to charge the party with is called off, an officer close enough to
+        // recognise a party who is ALREADY being hunted pins it at full, and
+        // otherwise the trail cools with the clock.
+        static updateHeat() {
+            if (!$gameVariables) return;
+            const now = this.worldMinute();
+            const heat = this.getHeat();
+            // Whatever else happens this tick, the officer events are told the
+            // truth: StealCaught still rolls the legacy variable behind us.
+            this.syncLegacyHeat();
+
+            if (($gameVariables.value(bountyVariableId) || 0) <= 0) {
+                $gameSystem._crimeHeatMinute = now;
+                if (heat > 0) this.clearHeat();
+                return;
+            }
+
+            // Cold is cold. A bounty on a sheet nobody is currently chasing is
+            // not a face in every constable's mind, so an officer walked past
+            // at heat 0 takes no notice: the sweep can only feed a manhunt that
+            // is already running. Talking to one is the way back onto it.
+            if (heat <= 0) {
+                $gameSystem._crimeHeatMinute = now;
+                return;
+            }
+
+            if (this.officerInSight()) {
+                $gameSystem._crimeHeatMinute = now;
+                this.setHeat(HEAT_MAX);
+                return;
+            }
+
+            const since = $gameSystem._crimeHeatMinute;
+            if (typeof since !== 'number' || since > now) {
+                $gameSystem._crimeHeatMinute = now;
+                return;
+            }
+            const minutes = now - since;
+            if (minutes <= 0) return;
+            const shed = Math.floor(minutes * HEAT_DECAY_PER_MINUTE);
+            if (shed < 1) return;
+            // Spend only the minutes that paid for a whole point. At this rate
+            // a point costs a couple of minutes, so moving the anchor to `now`
+            // would throw the remainder away on every tick and the trail would
+            // never actually cool; carrying it is what makes an hour of waiting
+            // worth an hour however often this is called.
+            $gameSystem._crimeHeatMinute = since + shed / HEAT_DECAY_PER_MINUTE;
+            this.setHeat(heat - shed);
+        }
+
+        // Has an officer laid eyes on a wanted party? Read off the live map, so
+        // a procedural settlement's constable counts exactly as much as a
+        // hand-placed one, and read as sight rather than as proximity: inside
+        // their range, inside the arc they are facing, and with nothing in the
+        // way. Walking behind one is how you get past them.
+        static officerInSight() {
+            return !!this.spottingOfficer();
+        }
+
+        static spottingOfficer() {
+            if (!$gameMap || !$gamePlayer || !SceneManager._scene) return null;
+            const scene = SceneManager._scene;
+            if (!(scene instanceof Scene_Map)) return null;
+            // Nobody is being watched while the screen is black. Sleeping,
+            // waiting and cryo all run their clock advance from inside
+            // Scene_Map (TimeDateSystem), so without this an officer who
+            // happened to be standing outside the inn would re-pin the heat
+            // every second of the night and the party would wake as wanted as
+            // they went to bed, which is the opposite of what resting is for.
+            if (scene._sleepSequenceState || scene._sleepAdvance || scene._cryoSequenceState) return null;
+            const px = $gamePlayer.x;
+            const py = $gamePlayer.y;
+            for (const ev of $gameMap.events()) {
+                if (!ev || ev._erased) continue;
+                const dx = Math.abs($gameMap.deltaX(ev.x, px));
+                const dy = Math.abs($gameMap.deltaY(ev.y, py));
+                if (dx > HEAT_SPOT_RANGE || dy > HEAT_SPOT_RANGE) continue;
+                const distance = dx + dy;
+                if (distance > HEAT_SPOT_RANGE) continue;
+                if (!isOfficerEvent(ev)) continue;
+                if (distance > HEAT_SPOT_TOUCH) {
+                    if (!inSightCone(ev, px, py, HEAT_SPOT_CONE)) continue;
+                    if (!hasSightLine(ev.x, ev.y, px, py)) continue;
+                }
+                return ev;
+            }
+            return null;
+        }
+
+        // Only ever raises it, never lowers it: the decay and the settlement of
+        // the record are the only two things that bring it down.
+        static raiseHeat(amount) {
+            const next = Math.max(this.getHeat(), Math.round(amount) || 0);
+            $gameSystem._crimeHeatMinute = this.worldMinute();
+            return this.setHeat(next);
+        }
+
         static addCrime(crimeName, bountyAmount, crimeId = null) {
             this.initialize();
+
+            // A crime needs somebody to have been wronged and somebody left to
+            // answer to. An empty world has neither: nothing is filed, no
+            // bounty is totalled, no heat is raised and the whole apparatus
+            // (police, trial, the N€police portal) stays inert, because they
+            // all read the charge sheet this would have written to.
+            if (this.isEmptyWorld()) {
+                if (window.ParchmentToast) {
+                    window.ParchmentToast.show(T('Crime.nobodyLeftToJudgeYou'));
+                }
+                return;
+            }
 
             // Sandbox mode: the player self-pardons on the spot, no bounty added.
             const isSandbox = !!($gameSystem && $gameSystem._isSandboxMode);
@@ -516,6 +867,18 @@
 
             // Update bounty variable
             if ($gameVariables) $gameVariables.setValue(bountyVariableId, $gameSystem._crimeData.totalBounty);
+
+            // The police hear about it: what the act was worth is what it adds
+            // to how badly they want the party. ANY charge that lands on the
+            // record moves it, so the smallest offence is still worth a point
+            // after the log scale and the Streetwise discount have rounded its
+            // own share away, and a party who had gone cold is being looked for
+            // again the moment they do something. A crime the game has decided
+            // did not happen (sandbox self-pardon, Eris immunity) carries no
+            // bounty and so raises nothing, which is the standing rule.
+            if (bountyAmount > 0) {
+                this.raiseHeat(this.getHeat() + Math.max(1, heatForBounty(bountyAmount)));
+            }
 
             // Show crime notification
             if (isSandbox) {
@@ -640,7 +1003,10 @@
 
         }
 
-        static clearBounty() {
+        // options.silent: settle the record without the message box, for the
+        // callers that are already in the middle of their own scene (a prison
+        // release, an acquittal).
+        static clearBounty(options) {
             this.initialize();
 
             $gameSystem._crimeData = {
@@ -653,6 +1019,10 @@
 
             // Reset bounty variable
             if ($gameVariables) $gameVariables.setValue(bountyVariableId, 0);
+            // Forgiven crimes call the manhunt off with them.
+            this.clearHeat();
+
+            if (options && options.silent) return;
             window.skipLocalization = true;
 
             $gameMessage.add(`\\C[3]${gettext('bountyCleared')}\\C[0]\n${gettext('allCrimesForgi')}`);
@@ -709,7 +1079,45 @@
             const total = this.getCrimes().reduce((sum, c) => sum + (c.bounty || 0), 0);
             if ($gameSystem._crimeData) $gameSystem._crimeData.totalBounty = total;
             if ($gameVariables) $gameVariables.setValue(bountyVariableId, total);
+            if (total <= 0) this.clearHeat();
             return total;
+        }
+
+        // Settle the bounty down to a figure rather than by named charge (time
+        // served in a cell grinds it down by the minute). It is written onto
+        // the record, oldest charge first, because writing the variable alone
+        // left the sheet standing and the next crime committed re-totalled it,
+        // handing the party back everything they had already paid for.
+        static setTotalBounty(amount) {
+            this.initialize();
+            const target = Math.max(0, Math.round(amount) || 0);
+            if (target <= 0) {
+                this.clearBounty({ silent: true });
+                return 0;
+            }
+
+            const crimes = this.getCrimes();
+            if (!crimes.length) {
+                // Nothing itemised to trim (a bounty set outright by a debug
+                // tool or an event): the variable is all there is.
+                if ($gameVariables) $gameVariables.setValue(bountyVariableId, target);
+                if ($gameSystem._crimeData) $gameSystem._crimeData.totalBounty = target;
+                return target;
+            }
+
+            let total = crimes.reduce((sum, c) => sum + (c.bounty || 0), 0);
+            while (crimes.length && total > target) {
+                const oldest = crimes[0];
+                const worth = oldest.bounty || 0;
+                if (worth <= total - target) {
+                    total -= worth;
+                    this.removeCrime(0);
+                } else {
+                    oldest.bounty = worth - (total - target);
+                    total = target;
+                }
+            }
+            return this.recalculateBounty();
         }
     }
 
@@ -738,8 +1146,22 @@
     });
     PluginManager.registerCommand(pluginName, "addCrimeFromVariable", args => {
         const crimeName = String(args.crimeName);
-        const bountyAmount = $gameVariables.value(79);
-        if (bountyAmount > 0) CrimeSystem.addCrime(crimeName, bountyAmount);
+        // Variable 79 holds what was being lifted. Most of what an NPC carries
+        // is priced at 0, and filing nothing while StealCaught still called out
+        // the police is what put officers on a party with an empty record: a
+        // caught thief is charged with petty theft at the least.
+        const stolenValue = Number($gameVariables.value(79)) || 0;
+        const preset = CrimeSystem.getPresetCrime('pettyTheft');
+        const bountyAmount = Math.max(stolenValue, (preset && preset.bounty) || 0);
+        if (bountyAmount > 0) CrimeSystem.addCrime(crimeName, bountyAmount, 'pettyTheft');
+    });
+
+    PluginManager.registerCommand(pluginName, "raiseHeat", args => {
+        CrimeSystem.raiseHeat(Number(args.amount) || 0);
+    });
+
+    PluginManager.registerCommand(pluginName, "clearHeat", () => {
+        CrimeSystem.clearHeat();
     });
     // Global access for script calls
     window.CrimeSystem = CrimeSystem;
@@ -750,6 +1172,17 @@
     DataManager.createGameObjects = function () {
         _DataManager_createGameObjects.call(this);
         CrimeSystem.initialize();
+        // A new party starts with a clean sheet even when the session has one
+        // loaded already: playerCrimes is a window global, not save data.
+        window.playerCrimes = [];
+    };
+
+    // The record travels in the binary save; the variable, the heat and the
+    // window global are reconciled against it the moment it lands.
+    const _DataManager_extractSaveContents = DataManager.extractSaveContents;
+    DataManager.extractSaveContents = function (contents) {
+        _DataManager_extractSaveContents.call(this, contents);
+        CrimeSystem.syncBounty();
     };
 
     const _DataManager_makeSaveContents = DataManager.makeSaveContents;
@@ -757,5 +1190,42 @@
         const contents = _DataManager_makeSaveContents.call(this);
         CrimeSystem.initialize();
         return contents;
+    };
+
+    // ----------------------------------------------------------------------
+    // Talking to an officer
+    // ----------------------------------------------------------------------
+    // The one way onto the police radar from cold. A wanted party at heat 0
+    // walks past a constable unrecognised; a wanted party who stops one in the
+    // street and starts a conversation has handed him their face. It is worth
+    // HEAT_TALK rather than the full 100 so the talk page is still the live one
+    // when the interpreter picks the event up: the chat plays out, the spotting
+    // sweep pins them at 100 while it does, and the arrest page is armed by the
+    // time they walk away. raiseHeat only ever raises, so an officer already
+    // giving chase is not calmed down by touching the party.
+    const _Game_Event_start = Game_Event.prototype.start;
+    Game_Event.prototype.start = function () {
+        const wasStarting = this._starting;
+        _Game_Event_start.call(this);
+        if (wasStarting || !this._starting) return;
+        // Action button and the two touch triggers are somebody meeting
+        // somebody; autorun and parallel pages are not a conversation.
+        if (this._trigger > 2) return;
+        if (!$gameSystem || !$gameVariables) return;
+        if (($gameVariables.value(bountyVariableId) || 0) <= 0) return;
+        if (!isOfficerEvent(this)) return;
+        CrimeSystem.raiseHeat(HEAT_TALK);
+    };
+
+    // The heat is read off the clock rather than off steps, so it fades while
+    // the party sleeps, works a shift or fast travels too. Once a second.
+    const HEAT_TICK_FRAMES = 60;
+    let heatTick = 0;
+    const _Scene_Map_update = Scene_Map.prototype.update;
+    Scene_Map.prototype.update = function () {
+        _Scene_Map_update.call(this);
+        if (++heatTick < HEAT_TICK_FRAMES) return;
+        heatTick = 0;
+        if ($gameSystem && $gameVariables) CrimeSystem.updateHeat();
     };
 })();

@@ -1,0 +1,11 @@
+{
+  "title": "FLOOR SELECT",
+  "noFloors": "NO OTHER FLOORS DISCOVERED",
+  "unknown": "???",
+  "omegaCity": "F-22 - OMEGA CITY",
+  "tipOfTheSpear": "F-92 - TIP OF DA SPEAR",
+  "lowerFloor": "F{num} - {name}",
+  "hypernetPoint": "F0 - HYPERNET POINT",
+  "unknownMap": "UNKNOWN",
+  "floorHud": "FLOOR: {num}"
+}

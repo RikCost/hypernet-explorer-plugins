@@ -17,7 +17,6 @@
   "inProgress": "In Corso",
   "done": "Risolto",
   "noQuests": "Nessuna missione",
-  "colShiftMoveCardOk": "↑↓ · ←→ col · Shift+←→ sposta · OK dettagli · Esc chiudi",
   "back": "Indietro",
   "questLog": "Registro Missioni",
   "appName": "Task Master",
@@ -30,6 +29,7 @@
     "Fallite"
   ],
   "showOnMapAt": "Mostra sulla mappa ({x}, {y}) · Shift",
+  "mapMarker": "Indicatore mappa",
   "notify": {
     "newQuest": "Nuovo incarico: {title}",
     "newQuestUnknown": "Nuovo incarico: ???",

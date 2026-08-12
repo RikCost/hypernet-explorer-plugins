@@ -66,7 +66,7 @@
         #hv-mini .cs-rate { font-size:21px; opacity:0.85; min-width:63px; text-align:right; font-variant-numeric:tabular-nums; }
         #cs-mini .cs-empty, #hv-mini .cs-empty { text-align:center; opacity:0.62; font-size:23px;
             padding:72px 15px; font-style:italic; }
-        #cs-mini .cs-qty-overlay, #hv-mini .cs-qty-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.58);
+        #cs-mini .cs-qty-overlay, #hv-mini .cs-qty-overlay { position:absolute; top:0; right:0; bottom:0; left:0; background:rgba(0,0,0,0.58);
             display:flex; align-items:center; justify-content:center; }
         #cs-mini .cs-qty-box { background: var(--bg-panel,#211a13); border:1px solid var(--border-gold-amber,#7a6039);
             border-radius:11px; padding:24px 27px; width:80%; text-align:center; }

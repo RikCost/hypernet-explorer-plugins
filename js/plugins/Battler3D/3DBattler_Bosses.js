@@ -121,8 +121,10 @@
         colossus: { variant: 'colossus', scale: 5.0, texturePool: 'stone', bodyColor: 0x7a7064, accent: 0xff8833, hue: [0.08, 0.05], sat: [0.12, 0.08], lit: [0.42, 0.10] },
         witch:    { variant: 'witch', scale: 3.0, texturePool: 'void', bodyColor: 0x2a1838, accent: 0xb060ff, hue: [0.78, 0.10], sat: [0.45, 0.15], lit: [0.28, 0.10] },
         reaper:   { variant: 'reaper', scale: 3.4, texturePool: 'bone', bodyColor: 0xd0e0e8, robe: 0x14110f, accent: 0xff33eb, hue: [0.11, 0.04], sat: [0.10, 0.06], lit: [0.78, 0.08] },
-        // Postgame: ancient oil-elemental (reuses the colossus rig, oil-black skin + amber glow).
-        petrodemon: { variant: 'colossus', scale: 4.8, texturePool: 'metal', bodyColor: 0x0b0c08, accent: 0xcbff2e, hue: [0.07, 0.04], sat: [0.55, 0.12], lit: [0.08, 0.04] },
+        // Petrodemon: a hulking heap of crude with other creatures' parts stuck
+        // in it. Every one is generated per battle, so its own rig rolls the
+        // heap, the sheen and the grafts from the seed its notebox carries.
+        petrodemon: { variant: 'petrodemon', scale: 4.8, texturePool: 'metal', bodyColor: 0x07070a, accent: 0xcbff2e, hue: [0.07, 0.04], sat: [0.55, 0.12], lit: [0.08, 0.04] },
         // Ultimate boss: Eris, discord goddess who consumed Maat (witch rig, chaos-purple body + Maat gold).
         eris: { variant: 'witch', scale: 4.2, texturePool: 'void', bodyColor: 0x1a0f2e, accent: 0xffd24a, hue: [0.80, 0.18], sat: [0.55, 0.18], lit: [0.32, 0.12] },
         // Postgame superboss: the discarded corpse of Maat, goddess of order (vast eldritch rig, decayed gold).
@@ -181,9 +183,9 @@
             this._materials = [];
             this._baseY = null;
             this._floaters = [];
-            // Bipedal bosses (colossus/witch/reaper) face front; the eldritch
-            // mass keeps the angled 3/4 view.
-            if (this.variant !== 'eldritch') this.facingYaw = 0;
+            // Bipedal bosses (colossus/witch/reaper) face front; a shapeless
+            // mass (eldritch, petrodemon) keeps the angled 3/4 view.
+            if (this.variant !== 'eldritch' && this.variant !== 'petrodemon') this.facingYaw = 0;
         }
 
         async load(physicsWorld, startX = 0, startY = 0, startZ = 0) {
@@ -197,6 +199,7 @@
                 case 'bosvampire': this._buildBosVampire(); break;
                 case 'bosangel':   this._buildBosAngel(); break;
                 case 'bosdragon':  this._buildBosDragon(); break;
+                case 'petrodemon': this._buildPetrodemon(); break;
                 default:           this._buildEldritch(); break;
             }
             this.model = this.bodyGroup;
@@ -803,6 +806,301 @@
             this.bodyGroup.add(g); return g;
         }
 
+        // ── Petrodemon ───────────────────────────────────────────────────────
+        // Every other model is keyed to its enemy id, which is what makes a
+        // species look the same wherever it is met. A petrodemon is generated
+        // per battle into ONE reused scratch enemy slot, so the id says nothing
+        // about it: it carries its own <PetroSeed:> and every roll here reads
+        // that instead, which is what makes each one a different creature.
+        _petroReseed() {
+            let seed = 0;
+            const ed = (this.battler && this.battler.enemy) ? this.battler.enemy() : null;
+            if (ed && ed.meta && ed.meta.PetroSeed) seed = parseInt(ed.meta.PetroSeed, 10) || 0;
+            if (!seed) seed = 1 + Math.floor(Math.random() * 0x7ffffffe);
+            let s = seed >>> 0;
+            const rng = () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+            // Crude is black; what differs between two heaps is the film on top
+            // of it, so the roll goes into the sheen rather than the body.
+            this.color.setHSL(rng(), 0.30 + rng() * 0.45, 0.06 + rng() * 0.05);
+            this._sheenHue = rng();
+            const pool = (window.Battler3D.TEXTURE_POOLS || {}).metal;
+            if (pool && pool.length) this.skinTextureFile = pool[Math.floor(rng() * pool.length)];
+            this._skinTextureObj = null;                 // rebuilt from the new colour
+            this.scale *= 0.90 + rng() * 0.32;
+            this.shapeXYZ.x *= 0.92 + rng() * 0.24;
+            this.shapeXYZ.y *= 0.90 + rng() * 0.28;
+            this.shapeXYZ.z *= 0.92 + rng() * 0.24;
+            this._pRand = rng;
+            return rng;
+        }
+
+        // One graft: a part torn off something else and set into the crude.
+        // Built pointing +Y, so the caller only has to aim and plant it.
+        _petroGraft(kind, oil, bone, chitin) {
+            const rng = this._pRand;
+            const g = new THREE.Group();
+            const seg = (mat, r1, r2, len, y) => {
+                const m = new THREE.Mesh(new THREE.CylinderGeometry(r1, r2, len, 8), mat);
+                m.position.y = y; g.add(m); return m;
+            };
+            switch (kind) {
+                case 'insectleg': {                                  // i18n-ignore: internal tag
+                    const a = seg(chitin, 0.07, 0.05, 0.7, 0.35);
+                    const b = seg(chitin, 0.05, 0.02, 0.8, 1.05); b.rotation.z = 0.9; b.position.x = 0.28;
+                    const claw = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.22, 6), bone);
+                    claw.position.set(0.62, 1.32, 0); claw.rotation.z = 2.3; g.add(claw);
+                    a.rotation.z = -0.15;
+                    break;
+                }
+                case 'wing': {                                       // i18n-ignore: internal tag
+                    const shape = new THREE.Shape();
+                    shape.moveTo(0, 0); shape.quadraticCurveTo(0.9, 0.7, 1.25, 0.05);
+                    shape.quadraticCurveTo(0.8, 0.15, 0.75, -0.35); shape.quadraticCurveTo(0.4, -0.1, 0, 0);
+                    const w = new THREE.Mesh(new THREE.ShapeGeometry(shape), bone);
+                    w.material.side = THREE.DoubleSide;
+                    w.position.y = 0.55; w.rotation.y = 0.3; g.add(w);
+                    for (let i = 0; i < 3; i++) {
+                        const rib = seg(bone, 0.035, 0.012, 0.75, 0.55);
+                        rib.rotation.z = -1.0 - i * 0.28; rib.position.x = 0.3;
+                    }
+                    break;
+                }
+                case 'batwing': {                                    // i18n-ignore: internal tag
+                    const membrane = new THREE.Mesh(new THREE.CircleGeometry(0.62, 10, 0, Math.PI), oil);
+                    membrane.position.y = 0.6; membrane.rotation.z = -0.4; g.add(membrane);
+                    for (let i = 0; i < 3; i++) {
+                        const rib = seg(chitin, 0.03, 0.01, 0.9, 0.62);
+                        rib.rotation.z = -0.8 - i * 0.35; rib.position.x = 0.22;
+                    }
+                    break;
+                }
+                case 'clawarm': {                                    // i18n-ignore: internal tag
+                    seg(chitin, 0.13, 0.09, 0.85, 0.42);
+                    const fore = seg(chitin, 0.09, 0.07, 0.7, 1.1); fore.rotation.z = 0.5; fore.position.x = 0.2;
+                    for (let i = -1; i <= 1; i++) {
+                        const c = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.32, 6), bone);
+                        c.position.set(0.48 + i * 0.02, 1.42 + i * 0.08, i * 0.09);
+                        c.rotation.z = 2.1 + i * 0.25; g.add(c);
+                    }
+                    break;
+                }
+                case 'handarm': {                                    // i18n-ignore: internal tag
+                    seg(bone, 0.12, 0.09, 0.8, 0.4);
+                    seg(bone, 0.09, 0.08, 0.7, 1.12);
+                    const palm = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.22, 0.1), bone);
+                    palm.position.y = 1.55; g.add(palm);
+                    for (let i = 0; i < 4; i++) {
+                        const f = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.02, 0.24, 5), bone);
+                        f.position.set(-0.075 + i * 0.05, 1.74, 0); f.rotation.z = (i - 1.5) * 0.12; g.add(f);
+                    }
+                    break;
+                }
+                case 'tentacle': {                                   // i18n-ignore: internal tag
+                    let r = 0.16, y = 0, bend = 0;
+                    const chain = new THREE.Group();
+                    let node = chain;
+                    for (let i = 0; i < 6; i++) {
+                        const s = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), oil);
+                        s.position.set(0, 0.26, 0); s.rotation.z = bend;
+                        node.add(s); node = s; r *= 0.82; bend = (rng() - 0.5) * 0.5; y += 0.26;
+                    }
+                    chain.position.y = 0.2; g.add(chain); g._chain = chain;
+                    break;
+                }
+                case 'skull': {                                      // i18n-ignore: internal tag
+                    const s = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 10), bone);
+                    s.scale.set(0.9, 1.0, 1.15); s.position.y = 0.5; g.add(s);
+                    const jaw = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.1, 0.3), bone);
+                    jaw.position.set(0, 0.3, 0.1); g.add(jaw);
+                    const socket = this._mat(0x02020a, 1.0, 0.4, this.color.getHex());
+                    for (const sx of [-0.11, 0.11]) {
+                        const e = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), socket);
+                        e.position.set(sx, 0.55, 0.26); g.add(e);
+                    }
+                    for (let i = -1; i <= 1; i += 2) {
+                        const horn = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.4, 6), bone);
+                        horn.position.set(i * 0.2, 0.78, -0.05); horn.rotation.z = -i * 0.6; g.add(horn);
+                    }
+                    break;
+                }
+                case 'antlers': {                                    // i18n-ignore: internal tag
+                    const main = seg(bone, 0.055, 0.02, 0.9, 0.45); main.rotation.z = 0.2;
+                    for (let i = 0; i < 3; i++) {
+                        const b = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.012, 0.4, 5), bone);
+                        b.position.set(-0.1 - i * 0.05, 0.5 + i * 0.24, 0);
+                        b.rotation.z = 0.9 + i * 0.2; g.add(b);
+                    }
+                    break;
+                }
+                case 'mandibles': {                                  // i18n-ignore: internal tag
+                    for (let i = -1; i <= 1; i += 2) {
+                        const m = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.65, 6), chitin);
+                        m.position.set(i * 0.16, 0.35, 0); m.rotation.z = -i * 0.5; g.add(m);
+                    }
+                    const gullet = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2), this._mat(0x02020a, 1.0, 0.5));
+                    gullet.position.y = 0.12; g.add(gullet);
+                    break;
+                }
+                case 'eyestalk': {                                   // i18n-ignore: internal tag
+                    seg(oil, 0.06, 0.05, 0.8, 0.4);
+                    this._eye(g, 0, 0.86, 0, 0.16, this.profile.accent);
+                    break;
+                }
+                case 'piston': {                                     // i18n-ignore: internal tag
+                    const barrel = seg(this._mat(0x3a3a42, 1.0, 0.35), 0.11, 0.11, 0.6, 0.3);
+                    barrel.material.metalness = 0.9;
+                    const rod = seg(this._mat(0x8a8a92, 1.0, 0.2), 0.045, 0.045, 0.7, 0.85);
+                    rod.material.metalness = 1.0;
+                    g._piston = rod;
+                    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.1, 8), barrel.material);
+                    cap.position.y = 1.22; g.add(cap);
+                    break;
+                }
+                case 'vine': {                                       // i18n-ignore: internal tag
+                    const stem = seg(this._mat(0x2a3a1a, 1.0, 0.8), 0.05, 0.03, 1.0, 0.5);
+                    stem.rotation.z = 0.25;
+                    for (let i = 0; i < 4; i++) {
+                        const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.11, 8, 6), stem.material);
+                        leaf.scale.set(1.0, 0.25, 0.5);
+                        leaf.position.set((i % 2 ? 0.14 : -0.14), 0.3 + i * 0.22, 0);
+                        leaf.rotation.z = (i % 2 ? -0.6 : 0.6); g.add(leaf);
+                    }
+                    break;
+                }
+                default: {                                           // ribcage
+                    for (let i = 0; i < 4; i++) {
+                        const rib = new THREE.Mesh(new THREE.TorusGeometry(0.24 - i * 0.03, 0.03, 6, 14, Math.PI), bone);
+                        rib.position.y = 0.25 + i * 0.2; rib.rotation.y = Math.PI / 2; g.add(rib);
+                    }
+                    seg(bone, 0.04, 0.04, 0.95, 0.55);
+                    break;
+                }
+            }
+            // Where it meets the crude it is drowned in it.
+            const sump = new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 8), oil);
+            sump.scale.set(1.2, 0.6, 1.2); g.add(sump);
+            return g;
+        }
+
+        _buildPetrodemon() {
+            const p = this.profile;
+            const rng = this._petroReseed();
+            const oil = this._skinMat(p.bodyColor, 0.10);
+            oil.metalness = 0.9;
+            oil.emissive = new THREE.Color().setHSL(this._sheenHue, 0.85, 0.22);
+            oil.emissiveIntensity = 0.5;
+            this._oilMat = oil;
+            const bone = this._mat(0xcabd92, 1.0, 0.75);
+            const chitin = this._mat(0x241a14, 1.0, 0.45);
+
+            // The heap: lobes of crude piled and boiling, never the same twice.
+            this.body = new THREE.Group();
+            this._blobs = [];
+            const lobes = 7 + Math.floor(rng() * 6);
+            let topY = 0, topR = 0;
+            for (let i = 0; i < lobes; i++) {
+                const r = 0.42 + rng() * 0.55;
+                const m = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 12), oil);
+                const a = rng() * Math.PI * 2, rad = rng() * 0.85 * (1 - i / (lobes * 1.6));
+                const y = 0.45 + (i / lobes) * 1.9 + rng() * 0.3;
+                m.position.set(Math.cos(a) * rad, y, Math.sin(a) * rad * 0.85);
+                m.scale.set(1 + rng() * 0.35, 0.78 + rng() * 0.5, 1 + rng() * 0.35);
+                m._t = rng() * 6.28; m._r = r; m._home = m.position.clone();
+                this.body.add(m); this._blobs.push(m);
+                if (y > topY) { topY = y; topR = r; }
+            }
+            this.bodyGroup.add(this.body);
+
+            // The pool it stands in, and the crude running back down into it.
+            const pool = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.7, 0.12, 20), oil);
+            pool.position.y = 0.06; this.bodyGroup.add(pool);
+            this._drips = [];
+            for (let i = 0; i < 9; i++) {
+                const d = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), oil);
+                d.scale.set(0.7, 1.8, 0.7);
+                const a = rng() * Math.PI * 2, rad = 0.5 + rng() * 0.9;
+                d.position.set(Math.cos(a) * rad, 0.4 + rng() * 1.8, Math.sin(a) * rad * 0.8);
+                d._x = d.position.x; d._z = d.position.z;
+                d._top = 0.6 + rng() * 1.7; d._t = rng();
+                d._spd = 0.5 + rng() * 0.9;
+                this.bodyGroup.add(d); this._drips.push(d);
+            }
+
+            // The head is the crowning lobe: eyes it never grew and a maw.
+            this.head = new THREE.Group();
+            this.head.position.set(0, topY + topR * 0.5, 0.1);
+            const eyes = 2 + Math.floor(rng() * 5);
+            for (let i = 0; i < eyes; i++) {
+                this._eye(this.head, (rng() - 0.5) * 0.7, (rng() - 0.5) * 0.5,
+                    0.28 + rng() * 0.2, 0.07 + rng() * 0.09, p.accent);
+            }
+            const maw = new THREE.Mesh(new THREE.SphereGeometry(0.34, 12, 10, 0, Math.PI * 2, 0, Math.PI / 2), this._mat(0x02020a, 1.0, 0.4));
+            maw.position.set(0, -0.28, 0.24); maw.rotation.x = -1.5; this.head.add(maw);
+            for (let i = 0; i < 6; i++) {
+                const tooth = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.16, 5), bone);
+                const a = (i / 6) * Math.PI - Math.PI / 2;
+                tooth.position.set(Math.sin(a) * 0.22, -0.24, 0.26 + Math.cos(a) * 0.06);
+                tooth.rotation.x = 0.4; this.head.add(tooth);
+            }
+            this.bodyGroup.add(this.head);
+
+            // The grafts: whatever the well swallowed, still moving.
+            const KINDS = ['insectleg', 'wing', 'batwing', 'clawarm', 'handarm', 'tentacle',
+                'skull', 'antlers', 'mandibles', 'eyestalk', 'piston', 'vine', 'ribcage'];
+            this._grafts = [];
+            const n = 6 + Math.floor(rng() * 5);
+            for (let i = 0; i < n; i++) {
+                const kind = KINDS[Math.floor(rng() * KINDS.length)];
+                const g = this._petroGraft(kind, oil, bone, chitin);
+                const a = (i / n) * Math.PI * 2 + rng() * 0.6;
+                const rad = 0.55 + rng() * 0.65;
+                g.position.set(Math.cos(a) * rad, 0.5 + rng() * 1.7, Math.sin(a) * rad * 0.85);
+                g.rotation.z = -Math.cos(a) * (0.5 + rng() * 0.7);
+                g.rotation.x = Math.sin(a) * (0.4 + rng() * 0.6);
+                g.rotation.y = rng() * 0.8 - 0.4;
+                const s = 0.75 + rng() * 0.8;
+                g.scale.set(s, s, s);
+                g._t = rng() * 6.28;
+                g._sway = 0.06 + rng() * 0.14;
+                this.bodyGroup.add(g); this._grafts.push(g);
+            }
+
+            const [a1, a2, l1, l2] = this._grafts;
+            this._mapCommon({ head: this.head, body: this.body, leftArm: a1, rightArm: a2, leftLeg: l1, rightLeg: l2 });
+            this._simpleCascade({ head: this.head, body: this.body, leftArm: a1, rightArm: a2, leftLeg: l1, rightLeg: l2 });
+        }
+
+        _animatePetrodemon(t, fast) {
+            // The heap never settles: every lobe boils on its own clock.
+            const heat = fast ? 2.4 : 1.0;
+            for (const b of this._blobs || []) {
+                if (!b.visible) continue;
+                const w = Math.sin(t * (1.4 + b._r) + b._t) * 0.09 * heat;
+                b.position.y = b._home.y + w;
+                b.scale.y = (0.78 + b._r * 0.2) * (1 - w * 0.5);
+                b.scale.x = b.scale.z = 1 + w * 0.35;
+            }
+            // The film on the crude turns as it moves.
+            if (this._oilMat) {
+                this._oilMat.emissive.setHSL((this._sheenHue + t * 0.05) % 1, 0.85, fast ? 0.32 : 0.2);
+            }
+            // Grafts twitch with whatever is left of the creature they came off.
+            for (const g of this._grafts || []) {
+                if (!g.visible) continue;
+                g.rotation.y += Math.sin(t * (fast ? 7 : 2.2) + g._t) * g._sway * 0.05;
+                g.position.y += Math.sin(t * (fast ? 6 : 1.8) + g._t) * 0.004;
+                if (g._chain) g._chain.rotation.z = Math.sin(t * (fast ? 5 : 1.6) + g._t) * 0.3;
+                if (g._piston) g._piston.position.y = 0.85 + Math.abs(Math.sin(t * (fast ? 9 : 3) + g._t)) * 0.18;
+            }
+            // Crude runs down it and is swallowed by the pool at its feet.
+            for (const d of this._drips || []) {
+                d._t += 0.016 * d._spd * (fast ? 1.8 : 1);
+                if (d._t > 1) d._t -= 1;
+                d.position.y = d._top * (1 - d._t) + 0.08;
+                d.scale.y = 1.8 + d._t * 1.6;
+            }
+        }
+
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
             const t = this.animTime;
@@ -842,6 +1140,7 @@
                 [this.rightArm, this.leftLeg].forEach(l => { if (l && l.rotation) l.rotation.x = Math.sin(t * sway + Math.PI) * 0.12; });
             }
             if (this.variant === 'bosreaper' && this.tail && this.tail.visible) this.tail.rotation.z = Math.sin(t * (fast ? 5 : 1.8)) * 0.2;
+            if (this.variant === 'petrodemon') this._animatePetrodemon(t, fast);
         }
 
         deathPose(deltaTime) {
@@ -849,6 +1148,13 @@
             const prog = Math.min(1.0, t / 1.4);
             for (const mat of this._materials) mat.opacity = Math.min(mat.opacity, 1.0 - prog);
             if (this._baseY === null) this._baseY = this.model.position.y;
+            // A heap of crude does not topple, it loses its hold and spreads.
+            if (this.variant === 'petrodemon') {
+                const flat = 1 - prog * 0.88, sh = this.shapeXYZ, s = this.scale;
+                this.model.scale.set(s * sh.x * (1 + prog * 0.7), s * sh.y * flat, s * sh.z * (1 + prog * 0.7));
+                this.model.position.y = this._baseY - prog * 0.2 * this.scale;
+                return;
+            }
             this.model.position.y = this._baseY - prog * 0.6 * this.scale;
             this.model.rotation.z = prog * (this.variant === 'colossus' ? 1.3 : 0.7);
         }

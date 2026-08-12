@@ -80,6 +80,7 @@
   "forgeBlurb": "Choose a dominant spell and a recessive component (spell or skill) known by {actor} to fuse them into a new ability. Its MP and AP cost is the sum of the components; the forging itself is paid in Knowledge, priced off what teaching those components would cost. If the recessive is a skill, the result is a skill. Components are forgotten. You hold {knowledge} KP.",
   "kpMultiplier3x": "3.0X KP",
   "kpMultiplier15x": "1.5X KP",
+  "foreignSchool": "SELF-TAUGHT (3x cost)",
   "graph": {
     "legendLearned": "Learned",
     "legendOpen": "Open",
@@ -87,6 +88,34 @@
     "locked": "LOCKED",
     "lockedBy": "Unlocked by: {skills}",
     "lockedHint": "Nothing you know borders this skill yet.",
+    "lockedBySchool": "Sealed in the heart of the circle. The whole school must be known first; still missing: {skills}",
     "lockedToast": "{skill} does not border anything this pupil knows."
+  },
+  "atlas": {
+    "progress": "{learned} of {total} learned",
+    "hint": "Drag to pan · Wheel to zoom · Shift for the whole circle",
+    "schoolOf": "{index} / {total}",
+    "held": "You hold {knowledge} KP"
+  },
+  "tag": {
+    "esoteric": "Esoteric",
+    "forbidden": "Forbidden"
+  },
+  "carry": {
+    "take": "Carry into battle",
+    "drop": "Leave on the bench",
+    "locked": "Always carried",
+    "full": "Loadout full",
+    "takenToast": "{skill} is carried into battle.",
+    "droppedToast": "{skill} is left on the bench.",
+    "fullToast": "The loadout already carries {max}. Bench something first.",
+    "lockedToast": "{skill} is always carried and spends no slot."
+  },
+  "fusion": {
+    "rename": "Rename",
+    "delete": "Unmake",
+    "confirm": "Save",
+    "confirmDelete": "Unmake {skill}? Its components are already spent. Press again to confirm.",
+    "deleted": "{skill} is unmade."
   }
 }

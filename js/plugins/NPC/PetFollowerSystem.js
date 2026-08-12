@@ -181,10 +181,11 @@ window.Game_PetFollower = Game_PetFollower;
     // so the pool is asked for fresh each time rather than memoized: activating
     // another world changes the answer (window.SpriteCatalog does the caching).
     function _randomSkabSprite() {
-        const pool = (window.SpriteCatalog?.npcKeys() || [])
-            .filter(k => k.indexOf("Skab/") === 0);
-        if (!pool.length) return null;
-        const name = pool[Math.floor(Math.random() * pool.length)];
+        const skab = (k) => k.indexOf("Skab/") === 0;
+        const name = window.SpriteCatalog?.pickNpcKey
+            ? window.SpriteCatalog.pickNpcKey(Math.random(), { filter: skab })
+            : null;
+        if (!name) return null;
         // A "!$" sheet holds one character in a 3x4 grid, so its index is always 0.
         const index = name.includes("!$") ? 0 : Math.floor(Math.random() * 8);
         return { characterName: name, characterIndex: index };
@@ -324,6 +325,11 @@ window.Game_PetFollower = Game_PetFollower;
         },
 
         recruitPet(record) {
+            // Last gate on the rule EnemyTalkSystem owns: a <NoRecruit> creature
+            // (a petrodemon) is never a pet, a follower or anyone's company,
+            // whichever path asked.
+            const unrecruitable = window.EnemyTalk && window.EnemyTalk.isUnrecruitableData;
+            if (record && unrecruitable && unrecruitable({ note: record.note || '' })) return null;
             const pet = this.registerPet(record);
             if (pet) this.setActivePet(pet.id);
             return pet;

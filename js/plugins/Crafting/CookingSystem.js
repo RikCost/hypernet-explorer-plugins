@@ -240,6 +240,10 @@
             // taken from a stale roll and disagree with the shown flavor text.
             const cookedName = this.createCookedItemName(item1, item2);
 
+            // A meal made is a thing the party did (Diary.js). Written here so
+            // the name is the one already rolled, never a second roll.
+            if (window.Diary) window.Diary.onCrafted('cook', cookedName, 1);
+
             if (isSameItem) {
                 // For same item, use random adjective effect multiplier
                 multiplier = this.getMultiplierForSameItem();

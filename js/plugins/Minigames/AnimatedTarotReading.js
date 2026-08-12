@@ -1466,14 +1466,12 @@
             hudText(bmp, this._banner, bx, by + 4, bw, 'center', GOLD_HI, 8);
         }
 
-        // The control legend gets its own black strip. Left to sit on the
-        // tablecloth it was the least readable line on the screen.
-        drawControls(bmp, hint) {
+        // The black strip that closes the HUD off at the bottom.
+        drawControls(bmp) {
             const w = hudW();
             const y = hudH() - 13;
             bmp.fillRect(0, y, w, 13, DECO().black || '#08070b');
             bmp.fillRect(0, y, w, 1, GOLD_LO);
-            hudText(bmp, hint, 5, y + 1, w - 10, 'left', GOLD_DIM, 8);
         }
 
         // Targeting brackets locked onto a card in screen space. This is the
@@ -1780,7 +1778,7 @@
         drawSelectHud(bmp) {
             const w = hudW();
             const H = HUD();
-            this.drawTitlePlate(bmp, uiText('title'), 'CHOOSE A SPREAD');
+            this.drawTitlePlate(bmp, uiText('title'), uiText('chooseSpread'));
 
             // Wide enough that a blurb gets two full lines instead of being
             // guillotined mid-sentence, which is what a one line clamp did.
@@ -1813,14 +1811,14 @@
             hudText(bmp, 'READER  ' + ($gameParty.leader() ? $gameParty.leader().name() : 'NOBODY'),
                 px + 6, fy + 4, pw - 12, 'right', VIOLET, 8);
 
-            this.drawControls(bmp, 'OK BEGIN   ESC LEAVE   DRAG / R-STICK LOOK   WHEEL / L2-R2 ZOOM   SHIFT+LOOK PAN');
+            this.drawControls(bmp);
         }
 
         drawReadingHud(bmp) {
             const w = hudW();
             const cards = this._table.cards;
             const spread = this._spread;
-            this.drawTitlePlate(bmp, spread.name, this._phase === 'done' ? 'READING COMPLETE' : uiText('title'));
+            this.drawTitlePlate(bmp, spread.name, this._phase === 'done' ? uiText('readingComplete') : uiText('title'));
 
             // Left column: the positions and what has been turned. The plate is
             // cut to the longest name the deck can print, never narrower than it
@@ -1893,10 +1891,7 @@
             // The meaning box across the bottom.
             this.drawMeaningBox(bmp, focus);
 
-            const hint = this._phase === 'done'
-                ? 'ARROWS REVIEW   ESC CLOSE   DRAG / R-STICK LOOK   WHEEL / L2-R2 ZOOM   SHIFT+LOOK PAN'
-                : 'OK TURN   ARROWS SELECT   DRAG / R-STICK LOOK   WHEEL / L2-R2 ZOOM   SHIFT TAP RECENTRE';
-            this.drawControls(bmp, hint);
+            this.drawControls(bmp);
         }
 
         drawMeaningBox(bmp, card) {
@@ -1913,7 +1908,7 @@
                 plate(bmp, 3, by, w - 6, bh, {
                     title: card.label, titleRight: 'FACE DOWN', headerH: 11, accent: GOLD_LO
                 });
-                hudText(bmp, 'THE CARD LIES FACE DOWN. PRESS OK TO TURN IT.',
+                hudText(bmp, 'THE CARD LIES FACE DOWN.',
                     8, by + 20, w - 16, 'left', DIMINK, 8);
                 hudText(bmp, 'NOTHING IS DECIDED UNTIL IT IS SEEN.',
                     8, by + 32, w - 16, 'left', FAINT, 8);
@@ -1955,8 +1950,6 @@
                 SPREADS.forEach((s, i) => {
                     line((i === this._menuIndex ? ' > ' : '   ') + s.name + '  (' + s.count + ')');
                 });
-                line('');
-                line('OK BEGIN   ESC LEAVE');
                 return;
             }
             line('== ' + this._spread.name + ' ==');
@@ -2210,7 +2203,7 @@
             if (this._phase === 'result') {
                 this.drawResultCard(bmp);
                 this.drawBanner(bmp);
-                this.drawControls(bmp, 'OK CLOSE');
+                this.drawControls(bmp);
                 return;
             }
 
@@ -2221,8 +2214,7 @@
             }
 
             this.drawBanner(bmp);
-            this.drawControls(bmp,
-                'OK CHOOSE   UP/DOWN SELECT   DRAG / R-STICK LOOK   WHEEL / L2-R2 ZOOM   SHIFT+LOOK PAN');
+            this.drawControls(bmp);
         }
 
         drawChoices(bmp, card) {
@@ -2305,7 +2297,7 @@
                     line((i === this._choiceIndex ? ' > ' : '   ') + c.slice(0, 60));
                 });
             } else if (this._phase === 'result') {
-                line(T('AnimatedTarotReading.ui.readingDonePrompt'));
+                line(T('AnimatedTarotReading.ui.readingDone'));
             }
         }
     }

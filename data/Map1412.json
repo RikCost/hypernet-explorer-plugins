@@ -1742,10 +1742,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Fantasy_Characters1",
+            "characterName": "NPCs/!$Bubba1",
             "direction": 8,
             "pattern": 1,
-            "characterIndex": 1
+            "characterIndex": 0
           },
           "list": [
             {

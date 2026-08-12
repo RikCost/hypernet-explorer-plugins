@@ -616,7 +616,6 @@
     "femme",
     "non binaire"
   ],
-  "genderChanged": "Tes hormones ont provoqué un changement de genre vers {gender} !",
   "unit": {
     "breathsPerMinute": "{n} resp/min",
     "millionPerDay": "{n} M /jour"

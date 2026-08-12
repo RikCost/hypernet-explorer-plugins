@@ -1,7 +1,8 @@
 {
   "noRooms": "Non ci sono stanze disponibili in affitto.",
+  "bookedBy": "Già prenotata dal gruppo di {name}",
+  "someoneElse": "un altro gruppo",
   "ui": {
-    "rooms": "Stanze",
-    "hint": "↑↓ naviga · OK per affittare · Esc per chiudere"
+    "rooms": "Stanze"
   }
 }

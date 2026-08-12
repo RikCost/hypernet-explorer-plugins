@@ -146,6 +146,30 @@
   const prisonY = parseInt(parameters["prisonY"] || 7);
   const bountyReductionRate = parseInt(parameters["bountyReductionRate"] || 100);
 
+  // The bounty is two things that have to agree: the itemised record in
+  // CrimeSystem and the variable everything else reads. Writing the variable
+  // alone (which is what the court used to do) left the record standing, and
+  // the next crime committed re-totalled it and handed the party back the
+  // whole sheet they had just served time for. Both settlements go through
+  // CrimeSystem now, which also calls off the manhunt.
+  function settleBountyTo(amount) {
+    const target = Math.max(0, Math.round(amount) || 0);
+    if (window.CrimeSystem && window.CrimeSystem.setTotalBounty) {
+      return window.CrimeSystem.setTotalBounty(target);
+    }
+    if ($gameVariables) $gameVariables.setValue(bountyVariableId, target);
+    return target;
+  }
+
+  function forgiveBounty() {
+    if (window.CrimeSystem && window.CrimeSystem.clearBounty) {
+      window.CrimeSystem.clearBounty({ silent: true });
+      return;
+    }
+    if (window.playerCrimes) window.playerCrimes = [];
+    if ($gameVariables) $gameVariables.setValue(bountyVariableId, 0);
+  }
+
   // Eris's mood, shown as a real IconSet glyph instead of an emoji (indices
   // per js/db/Sprites/Icons.json). MOOD_ICON_DEFAULT stands in for an unknown
   // mood: an hourglass, the court still deliberating.
@@ -322,8 +346,7 @@
       }
 
       // Reduce bounty based on minutes passed (bountyReductionRate per minute)
-      const newBounty = Math.max(0, currentBounty - (bountyReductionRate * timeDelta));
-      $gameVariables.setValue(bountyVariableId, newBounty);
+      const newBounty = settleBountyTo(Math.max(0, currentBounty - (bountyReductionRate * timeDelta)));
 
       if (this._bountyWindow) {
         this._bountyWindow.setBounty(newBounty);
@@ -335,19 +358,12 @@
     }
 
     async releasePrisoner() {
-      const servedSentence = this._servedSentence;
       this.stopPrisonTime();
 
-      // Clear player crimes
-      if (window.playerCrimes) {
-        window.playerCrimes = [];
-      }
-
-      // Time served settles the debt: a fixed-term sentence never touched the
-      // bounty while it ran, so it is written off here instead.
-      if (servedSentence) {
-        $gameVariables.setValue(bountyVariableId, 0);
-      }
+      // Time served settles the debt, record and all: a fixed-term sentence
+      // never touched the bounty while it ran, so it is written off here, and
+      // an open-ended one has already been ground down to nothing.
+      forgiveBounty();
 
       // Show release message
       await this.showReleaseMessage();
@@ -602,6 +618,9 @@
       if (window.prisonManager) {
         window.prisonManager.startPrisonTime(bounty, sentence);
       }
+      // The day the doors closed, in the party's own diary (Diary.js), which
+      // puts the sentence into words of its own.
+      if (window.Diary) window.Diary.onTrial('prison', { minutes: sentence });
       $gameTemp._startPrisonOnLoad = false;
       $gameTemp._prisonBounty = null;
       $gameTemp._prisonSentenceMinutes = null;
@@ -2215,6 +2234,9 @@
         return;
       }
 
+      // Standing in the dock is a day the party will remember (Diary.js).
+      if (window.Diary) window.Diary.onTrial('start', {});
+
       // Before the bailiffs open the door: who is arguing for you, and what
       // that buys against the mood she happens to be in today. Bubba never gets
       // this far, his charges are gone before they are read.
@@ -3112,6 +3134,14 @@
       // was in the room, win or lose (ErisLawyers.recordTrial).
       ErisLawyers.recordTrial(this.lawyer, this.verdict);
 
+      // What the bench decided, in the party's own diary (Diary.js).
+      if (window.Diary) {
+        window.Diary.onTrial('verdict', {
+          verdict: this.verdict,
+          sentence: (this.sentence && this.sentence.name) || ""
+        });
+      }
+
       // Whoever did the arguing learns something from it.
       this.awardLawExperience();
 
@@ -3282,10 +3312,7 @@
         $gameTemp._prisonSentenceMinutes = (this.sentence && this.sentence.minutes) || 0;
       } else {
         // Clear crimes and bounty when found innocent
-        if (window.playerCrimes) {
-          window.playerCrimes = [];
-        }
-        $gameVariables.setValue(bountyVariableId, 0);
+        forgiveBounty();
 
         const mapId = $gameVariables.value(returnMapVariable) || 1;
         const x = $gameVariables.value(returnXVariable) || 0;

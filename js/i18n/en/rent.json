@@ -5,6 +5,7 @@
     "already_rented": "You have already rented this room",
     "for_24h_rent": "for 24h rent",
     "cancel": "Cancel",
+    "bash": "Bash the door in",
     "free_access_granted": "Free access granted to",
     "access_restored": "Access restored to",
     "rented_for_24h": "Enjoy your stay!",
@@ -16,6 +17,7 @@
     "available_rooms": "Available Rooms",
     "hours_remaining": "hours remaining",
     "rent_now": "Rent Now",
-    "no_rooms": "No rooms available"
+    "no_rooms": "No rooms available",
+    "empty_world": "The door is already open and the ledger is bare. There is nobody left to rent this from."
   }
 }

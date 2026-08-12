@@ -5209,8 +5209,8 @@
           "moveType": 0,
           "priorityType": 0,
           "stepAnime": false,
-          "through": true,
-          "trigger": 1,
+          "through": false,
+          "trigger": 2,
           "walkAnime": true
         }
       ],
@@ -5292,7 +5292,7 @@
           "priorityType": 0,
           "stepAnime": false,
           "through": false,
-          "trigger": 1,
+          "trigger": 2,
           "walkAnime": true
         }
       ],

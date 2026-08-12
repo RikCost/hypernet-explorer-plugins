@@ -126,6 +126,10 @@
         if (!enemy) return true;
         if (typeof enemy.name === "string" && enemy.name.startsWith("<--")) return true;
         if (/<LevelBracket>/i.test(enemy.note || "")) return true;
+        // The petrodemon scratch slot is not a creature the world holds: it is
+        // one reused entry rewritten per fight (BattleSystemEnhancedEncounters
+        // section 17), so whatever is in it belongs to no bestiary page.
+        if (enemy._bsePetrodemon) return true;
         return false;
     };
 
@@ -149,7 +153,10 @@
     Game_System.prototype.initialize = function () {
         _Game_System_initialize.call(this);
         this._usedMonstersInBattle = [];
-        this._encounteredMonsters = [];
+        // The catalogue itself is NOT emptied here. It belongs to the world
+        // rather than to the playthrough (WorldManager's bestiary.json), so a
+        // new game started in a world opens the book its other savegames have
+        // been filling in. The list is created lazily below instead.
     };
 
     Game_System.prototype.encounteredMonsters = function () {
@@ -158,6 +165,10 @@
     };
 
     Game_System.prototype.markMonsterAsEncountered = function (enemyId) {
+        // The sandbox already reads as having met everything, so recording
+        // what it meets would only pour a throwaway session's creatures into
+        // the world's own book, permanently.
+        if (this._isSandboxMode) return;
         if (!this._encounteredMonsters) this._encounteredMonsters = [];
         if (!this._encounteredMonsters.includes(enemyId)) {
             this._encounteredMonsters.push(enemyId);
@@ -273,12 +284,12 @@
             this._selectedIndex = 0;
             this._activeTab = 0; // 0: Info, 1: Combat, 2: Ecology, 3: Drops
             this._activeArea = 'list'; // 'list' or 'tabs'
-            this._pageTab = 0; // Left-page pockets: 0 = Earth, 1 = Aliens
+            this._pageTab = 0; // Left-page pockets: 0 = Earth, 1 = Petrodemons, 2 = Aliens
 
             this._spriteAnimFrame = 1;
             this._spriteAnimTimer = 0;
 
-            // Portrait view mode: 3D procedural model vs the 2D battler sketch.
+            // Portrait view mode: 3D procedural model vs the walking sprite.
             this._show3DBestiary = (typeof THREE !== 'undefined' && window.Battler3D && !!window.Battler3D.create);
             // Per-enemy generation seed for the 3D portrait (world seed by default,
             // re-rollable from the button under the viewport).
@@ -368,7 +379,10 @@
             this._bestiary3D = state;
 
             // Fake battler so the model uses its deterministic per-id look.
-            const fakeBattler = { enemyId: () => enemyData.id, index: () => 0 };
+            // It answers enemy() too: a model whose look is rolled from its own
+            // notebox rather than from its id (the petrodemon's <PetroSeed:>)
+            // reads it off the data object, and would otherwise draw a stranger.
+            const fakeBattler = { enemyId: () => enemyData.id, index: () => 0, enemy: () => enemyData };
             // Build under this entry's generation seed (world seed unless the
             // player re-rolled it). All seeded draws happen in the constructor, so
             // the global seed is restored immediately after create.
@@ -524,9 +538,11 @@
         }
 
         buildUIBestiaryData() {
-            // Earth tab: encountered hardcoded enemies. Alien tab: discovered
-            // procedural species (each keyed to a base enemy for stats/look but
-            // shown under its procedural name).
+            // Earth tab: encountered hardcoded enemies. Petrodemon tab: the ones
+            // the party has felled, each read out of the copy of its record the
+            // codex kept (it was never a database creature). Alien tab:
+            // discovered procedural species (each keyed to a base enemy for
+            // stats/look but shown under its procedural name).
             this._earthList = [];
             const allEnemies = $dataEnemies.filter(enemy => enemy && enemy.id > 0 && !isDividerEnemy(enemy));
             allEnemies.forEach(enemy => {
@@ -542,6 +558,28 @@
                         noteData: noteData
                     });
                 }
+            });
+
+            this._petroList = [];
+            const codex = ($gameSystem.petrodemonCodex && $gameSystem.petrodemonCodex()) || [];
+            codex.forEach(entry => {
+                if (!entry || !entry.enemy) return;
+                // Its own page, not whatever the scratch enemy slot holds now:
+                // the description travels with the entry.
+                const noteData = this.parseMonsterNotes(entry.enemy.note, 0);
+                if (entry.description) noteData.description = entry.description;
+                this._petroList.push({
+                    id: entry.enemy.id,
+                    name: entry.name,
+                    battlerName: entry.enemy.battlerName,
+                    character: noteData.character,
+                    enemy: entry.enemy,
+                    noteData: noteData,
+                    isPetrodemon: true,
+                    // Its look was rolled from its own seed, so that is what
+                    // keeps its portrait its own.
+                    speciesKey: 'petro:' + entry.seed
+                });
             });
 
             this._alienList = [];
@@ -564,11 +602,12 @@
             });
 
             if (this._pageTab == null) this._pageTab = 0;
-            this._monsterList = this._pageTab === 1 ? this._alienList : this._earthList;
+            this._monsterList = this._pageTab === 2 ? this._alienList
+                : (this._pageTab === 1 ? this._petroList : this._earthList);
         }
 
-        // Switch the left-page pockets between Earth and Alien species. Forces the
-        // cached list DOM to rebuild for the newly active tab.
+        // Switch the left-page pockets between Earth, petrodemons and alien
+        // species. Forces the cached list DOM to rebuild for the newly active tab.
         switchBestiaryPageTab(tab) {
             if (tab === this._pageTab) return;
             this._pageTab = tab;
@@ -606,7 +645,8 @@
                             </div>
                             <div id="bestiary-page-tabs" style="display:flex; gap:8px; justify-content:center; margin-bottom:12px;">
                               <div class="bestiary-page-tab focusable" data-page="0" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold;">${T('Bestiary.earth')}</div>
-                              <div class="bestiary-page-tab focusable" data-page="1" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold;">${T('Bestiary.aliens')}</div>
+                              <div class="bestiary-page-tab focusable" data-page="1" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold;">${T('Bestiary.petrodemons')}</div>
+                              <div class="bestiary-page-tab focusable" data-page="2" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold;">${T('Bestiary.aliens')}</div>
                             </div>
                             <div class="list-viewport" id="bestiary-list-viewport"></div>
                         </div>
@@ -635,7 +675,8 @@
                     if (viewport) viewport.scrollTop += e.deltaY;
                 }, { passive: false });
 
-                // Earth / Aliens page-tab clicks (wired once on the persistent layout).
+                // Earth / Petrodemons / Aliens page-tab clicks (wired once on the
+                // persistent layout).
                 container.querySelectorAll(".bestiary-page-tab").forEach(tabEl => {
                     tabEl.addEventListener("click", () => {
                         this.switchBestiaryPageTab(parseInt(tabEl.getAttribute("data-page"), 10));
@@ -764,17 +805,19 @@
                             <div style="font-size:40px; color:rgba(94,47,23,0.3); font-style:italic;">${T('Bestiary.drawing')}</div>
                         `;
 
-                        if (enemy.battlerName) {
-                            const path = `img/enemies/${enemy.battlerName}.png`;
-                            imgHTML = `<img class="portrait-sketch-image" src="${path}" />`;
+                        // Without a model the portrait is the creature's own
+                        // walking sprite, blown up; the flat battler
+                        // illustration it used to be retired with the 2D mode.
+                        if (mon.character) {
+                            imgHTML = `<canvas id="bestiary-portrait-sprite" class="portrait-sketch-image" width="192" height="192" style="image-rendering:pixelated; width:100%; height:100%; max-height:380px; object-fit:contain;"></canvas>`;
                         }
 
-                        // 3D/2D toggle (only when a procedural archetype exists).
+                        // 3D/sprite toggle (only when a procedural archetype exists).
                         let toggleHTML = "";
                         if (archKey) {
                             const label = can3D
                                 ? (T('Bestiary.3dModel'))
-                                : (T('Bestiary.2dSketch'));
+                                : (T('Bestiary.spritePortrait'));
                             toggleHTML = `<button id="bestiary-3d-toggle" style="position:absolute; top:8px; right:8px; z-index:5; cursor:pointer; padding:4px 10px; font-family:inherit; font-size:12px; font-weight:bold; color:#5e2f17; background:rgba(244,232,208,0.92); border:1.5px solid #5e2f17; border-radius:4px;"><span style="margin-right:4px;">&#x21c4;</span>${label}</button>`;
                         }
 
@@ -1106,6 +1149,8 @@
                         ? window.Battler3D.resolveKey(mon2.enemy) : null;
                     if (this._activeTab === 0 && this._show3DBestiary && archKey2) {
                         this.initBestiary3D(mon2.enemy, archKey2, seedKey2);
+                    } else if (this._activeTab === 0) {
+                        this.drawBestiaryPortraitSprite(mon2);
                     }
                 }
             }
@@ -1143,6 +1188,31 @@
             const canvases = document.querySelectorAll(".monster-sprite-canvas");
             canvases.forEach(canvas => {
                 this._intersectionObserver.observe(canvas);
+            });
+        }
+
+        // The Lexicon portrait when no 3D model stands in for the creature:
+        // its walking sprite, facing the reader, drawn as large as the frame
+        // allows without smoothing so the pixels stay pixels.
+        drawBestiaryPortraitSprite(mon) {
+            const canvas = document.getElementById('bestiary-portrait-sprite');
+            if (!canvas || !mon || !mon.character) return;
+            const bitmap = ImageManager.loadCharacter('Monsters/' + mon.character);
+            bitmap.addLoadListener(() => {
+                if (!canvas.isConnected) return;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return;
+                const single = mon.character.startsWith('$');
+                const pw = single ? bitmap.width / 3 : bitmap.width / 12;
+                const ph = single ? bitmap.height / 4 : bitmap.height / 8;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.imageSmoothingEnabled = false;
+                // Fit the frame inside the square without distorting it.
+                const scale = Math.min(canvas.width / pw, canvas.height / ph);
+                const dw = pw * scale;
+                const dh = ph * scale;
+                ctx.drawImage(bitmap.canvas, pw, 0, pw, ph,
+                    (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
             });
         }
 

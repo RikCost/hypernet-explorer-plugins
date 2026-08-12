@@ -196,6 +196,39 @@
         return cat.nameKey && window.T ? T(cat.nameKey) : cat.name;
     }
 
+    // How many categories stand on one row of the left-page grid. Every index
+    // the cursor carries is an index into sortedCategories(), so the grid and
+    // the keyboard read the same order.
+    const CATEGORY_COLUMNS = 3;
+
+    // The categories in the order the page draws them: alphabetical by the name
+    // the player actually reads, so a translated label sorts under its own
+    // letter. Memoised per language, since resolving the keys costs a lookup
+    // each and the order only moves when the language does.
+    let _sortedCategories = null;
+    let _sortedCategoriesLang = null;
+    function sortedCategories() {
+        const lang = ConfigManager ? ConfigManager.language : "en";
+        if (_sortedCategories && _sortedCategoriesLang === lang) return _sortedCategories;
+        _sortedCategoriesLang = lang;
+        _sortedCategories = CATEGORIES.slice().sort((a, b) =>
+            categoryName(a).localeCompare(categoryName(b), lang || undefined));
+        return _sortedCategories;
+    }
+
+    // Where a category stands in the drawn order (0 when it is not listed, so a
+    // stale symbol lands on the first tile rather than off the grid).
+    function categoryIndexOf(symbol) {
+        const idx = sortedCategories().findIndex(c => c.symbol === symbol);
+        return idx < 0 ? 0 : idx;
+    }
+
+    // The category the sandbox opens on: the first entry of the authored table
+    // (the Disk of Discord shortcut), wherever the alphabet has since put it.
+    function defaultCategoryIndex() {
+        return categoryIndexOf(CATEGORIES[0].symbol);
+    }
+
     // =========================================================================
     //  NPC Manipulation actions (see Scene_SandboxMenu.applyNpcAction).
     //  A single flat list; each action runs against the current target scope
@@ -320,12 +353,23 @@
             const len = list.length;
             if (len === 0) return;
 
+            // The left page is a grid, so up/down step a whole row there while
+            // the right page stays a single column; both are clamped rather than
+            // wrapped on the grid, or a step down off the last row would land on
+            // a different column.
+            const step = onLeft ? CATEGORY_COLUMNS : 1;
             if (Input.isTriggered('down') || Input.isRepeated('down')) {
-                index = (index + 1) % len;
-                moved = true;
+                index = onLeft ? Math.min(len - 1, index + step) : (index + 1) % len;
+                moved = index !== (onLeft ? this.scene._focusedCategoryIndex : this.scene._focusedActionIndex);
             } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
-                index = (index - 1 + len) % len;
-                moved = true;
+                index = onLeft ? Math.max(0, index - step) : (index - 1 + len) % len;
+                moved = index !== (onLeft ? this.scene._focusedCategoryIndex : this.scene._focusedActionIndex);
+            } else if (onLeft && (Input.isTriggered('right') || Input.isRepeated('right'))) {
+                index = Math.min(len - 1, index + 1);
+                moved = index !== this.scene._focusedCategoryIndex;
+            } else if (onLeft && (Input.isTriggered('left') || Input.isRepeated('left'))) {
+                index = Math.max(0, index - 1);
+                moved = index !== this.scene._focusedCategoryIndex;
             } else if (Input.isTriggered('ok')) {
                 const item = list[index];
                 if (item) {
@@ -349,7 +393,7 @@
 
                 if (onLeft) {
                     this.scene._focusedCategoryIndex = index;
-                    const symbol = CATEGORIES[index].symbol;
+                    const symbol = sortedCategories()[index].symbol;
                     this.scene._listWindow.setMode(symbol);
                     this.scene._focusedActionIndex = 0;
                     // Category change only affects the right-page actions list;
@@ -443,7 +487,7 @@
             this._activeLeftFocus = true;
         }
 
-        this._focusedCategoryIndex = 0;
+        this._focusedCategoryIndex = this._isWishMode ? 0 : defaultCategoryIndex();
         this._focusedActionIndex = 0;
         this._searchQuery = "";
         this._searchFocusActive = false;
@@ -530,14 +574,15 @@
     // right-page actions list to match, mirroring keyboard navigation.
     Scene_SandboxMenu.prototype.moveCategoryFocus = function (dir) {
         if (this._isWishMode) return;
-        const len = CATEGORIES.length;
+        const cats = sortedCategories();
+        const len = cats.length;
         const idx = Math.max(0, Math.min(len - 1, this._focusedCategoryIndex + dir));
         if (idx === this._focusedCategoryIndex) return;
         this._activeLeftFocus = true;
         this._searchFocusActive = false;
         this._focusedCategoryIndex = idx;
         this._focusedActionIndex = 0;
-        this._listWindow.setMode(CATEGORIES[idx].symbol);
+        this._listWindow.setMode(cats[idx].symbol);
         SoundManager.playCursor();
         this.refreshActionsListDOM();
         UISandboxInputManager.updateFocus();
@@ -618,12 +663,15 @@
                 </div>
             `;
         } else {
+            // The categories are tiles on a three-across grid, in alphabetical
+            // order, so the whole table is read at a glance instead of scrolled
+            // through. The cursor index is an index into that same order.
             let categoriesHTML = "";
-            CATEGORIES.forEach((cat, idx) => {
+            sortedCategories().forEach((cat, idx) => {
                 categoriesHTML += `
-                    <div class="category-item focusable" data-symbol="${cat.symbol}" data-index="${idx}" onclick="SceneManager._scene.selectCategoryByClick('${cat.symbol}', ${idx})" style="padding: 8px 12px; text-align: left; display: flex; align-items: center; gap: 10px; margin-bottom: 3px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px;">
-                        <canvas class="cat-icon" width="20" height="20" data-icon="${cat.icon}" style="display:block; image-rendering:pixelated;"></canvas>
-                        <span style="font-family: 'Lora', serif; font-size: 0.95em; color: var(--text-primary-hover); font-weight: bold; letter-spacing: 0.5px;">${escapeHtml(categoryName(cat))}</span>
+                    <div class="category-item focusable" data-symbol="${cat.symbol}" data-index="${idx}" onclick="SceneManager._scene.selectCategoryByClick('${cat.symbol}', ${idx})" style="padding: 10px 6px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 6px; min-height: 62px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px; border: 1px solid rgba(88,24,13,0.10);">
+                        <canvas class="cat-icon" width="20" height="20" data-icon="${cat.icon}" style="display:block; image-rendering:pixelated; flex: 0 0 auto;"></canvas>
+                        <span style="font-family: 'Lora', serif; font-size: 0.8em; line-height: 1.25; color: var(--text-primary-hover); font-weight: bold; letter-spacing: 0.3px; overflow-wrap: anywhere;">${escapeHtml(categoryName(cat))}</span>
                     </div>
                 `;
             });
@@ -637,7 +685,7 @@
                           </div>
                           <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${sandboxTitle}</h2>
                         </div>
-                        <div class="categories-list" style="display: flex; flex-direction: column; max-height: 60vh; overflow-y: auto; padding-right: 4px; border-bottom: 1px solid rgba(88,24,13,0.08); padding-bottom: 10px; margin-bottom: 10px;">
+                        <div class="categories-list" style="display: grid; grid-template-columns: repeat(${CATEGORY_COLUMNS}, minmax(0, 1fr)); gap: 6px; align-content: start; max-height: 60vh; overflow-y: auto; padding-right: 4px; border-bottom: 1px solid rgba(88,24,13,0.08); padding-bottom: 10px; margin-bottom: 10px;">
                             ${categoriesHTML}
                         </div>
                     </div>
@@ -980,7 +1028,7 @@
             this._searchQuery = "";
             this._searchFocusActive = false;
             this._activeLeftFocus = true;
-            this._focusedCategoryIndex = 0;
+            this._focusedCategoryIndex = defaultCategoryIndex();
             this._focusedActionIndex = 0;
             this._listWindow.setMode(CATEGORIES[0].symbol);
             this.refreshUIDOM();

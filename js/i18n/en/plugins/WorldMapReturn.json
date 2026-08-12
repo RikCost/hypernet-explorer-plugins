@@ -1,6 +1,7 @@
 {
   "needDivingSuit": "You need a diving suit",
   "returnToWorldMap": "Return to world map",
+  "chooseLandingSite": "Choose landing site",
   "goToSurface": "Go to the surface",
   "goUnderground": "Go underground",
   "toggleWorldMap": "Toggle world map",
@@ -12,5 +13,7 @@
   "stop": "Stop",
   "worldMapMenu": "World map",
   "wilderness": "Wilderness",
-  "mapNumbered": "Map {id}"
+  "mapNumbered": "Map {id}",
+  "underground": "underground level {depth}",
+  "atTile": "at {x},{y}"
 }

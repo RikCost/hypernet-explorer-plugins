@@ -1,7 +1,541 @@
 {
-  "windowTitle": "Hypernet Explorer -  Dispatcher",
   "appName": "Hypernet Explorer",
+  "windowTitle": "Hypernet Explorer",
+  "windowTitlePage": "{title} - Hypernet Explorer",
+  "version": "6.0 (Build 2001.9.3)",
   "linkLost": "Collegamento di trasmissione perso. Impossibile caricare la pagina Hypernet richiesta.",
   "linkStable": "COLLEGAMENTO DI TRASMISSIONE STABILE",
-  "secureSsl": "SSL SICURO: MASSIMO"
+  "secureSsl": "SSL SICURO: MASSIMO",
+
+  "menu": {
+    "file": "File",
+    "edit": "Modifica",
+    "view": "Visualizza",
+    "favorites": "Preferiti",
+    "tools": "Strumenti",
+    "help": "Guida"
+  },
+
+  "file": {
+    "newTab": "Nuova scheda",
+    "duplicateTab": "Duplica scheda",
+    "open": "Apri...",
+    "save": "Salva",
+    "saveAs": "Salva con nome...",
+    "pageSetup": "Imposta pagina...",
+    "print": "Stampa...",
+    "printPreview": "Anteprima di stampa",
+    "closeTab": "Chiudi scheda",
+    "exit": "Esci"
+  },
+
+  "edit": {
+    "cut": "Taglia",
+    "copy": "Copia",
+    "paste": "Incolla",
+    "selectAll": "Seleziona tutto",
+    "find": "Trova in questa pagina..."
+  },
+
+  "view": {
+    "toolbars": "Barre degli strumenti",
+    "standardButtons": "Pulsanti standard",
+    "addressBar": "Barra degli indirizzi",
+    "linksBar": "Collegamenti",
+    "tabBar": "Riga delle schede",
+    "statusBar": "Barra di stato",
+    "explorerBar": "Barra di Explorer",
+    "search": "Cerca",
+    "favorites": "Preferiti",
+    "history": "Cronologia",
+    "goTo": "Vai a",
+    "back": "Indietro",
+    "forward": "Avanti",
+    "home": "Pagina iniziale",
+    "stop": "Interrompi",
+    "refresh": "Aggiorna",
+    "textSize": "Dimensione testo",
+    "zoom": "Zoom",
+    "encoding": "Codifica",
+    "source": "Origine",
+    "fullScreen": "Schermo intero"
+  },
+
+  "textSize": {
+    "largest": "Massima",
+    "larger": "Grande",
+    "medium": "Media",
+    "smaller": "Piccola",
+    "smallest": "Minima"
+  },
+
+  "encoding": {
+    "western": "Europeo occidentale",
+    "unicode": "Unicode (UTF-8)",
+    "cyrillic": "Cirillico",
+    "hexagram": "Glifico Hexagram"
+  },
+
+  "fav": {
+    "add": "Aggiungi a Preferiti...",
+    "organize": "Organizza Preferiti...",
+    "imported": "Segnalibri importati",
+    "empty": "(Vuoto)",
+    "bar": "Collegamenti",
+    "other": "Altri preferiti",
+    "barLabel": "Collegamenti",
+    "hint": "Usa Preferiti, Aggiungi a Preferiti per fissare qui un sito.",
+    "added": "{name} aggiunto ai Preferiti.",
+    "removed": "{name} rimosso dai Preferiti.",
+    "exists": "Quella pagina è già nei Preferiti.",
+    "dialogTitle": "Aggiungi a Preferiti",
+    "name": "Nome:",
+    "address": "Indirizzo:",
+    "createIn": "Crea in:",
+    "organizeTitle": "Organizza Preferiti",
+    "newFolder": "Nuova cartella",
+    "rename": "Rinomina",
+    "delete": "Elimina",
+    "moveUp": "Sposta su",
+    "moveDown": "Sposta giù",
+    "folderPrompt": "Nome della nuova cartella:"
+  },
+
+  "tools": {
+    "mail": "Posta e news",
+    "readMail": "Leggi la posta",
+    "newMessage": "Nuovo messaggio",
+    "readNews": "Leggi le news",
+    "synchronize": "Sincronizza...",
+    "popupBlocker": "Blocco popup",
+    "blockerOn": "Blocca i popup",
+    "blockerOff": "Consenti i popup",
+    "downloads": "Mostra i download",
+    "connection": "Stato della connessione",
+    "options": "Opzioni Hypernet..."
+  },
+
+  "help": {
+    "topics": "Sommario della Guida",
+    "support": "Assistenza in linea",
+    "tip": "Suggerimento del giorno",
+    "about": "Informazioni su Hypernet Explorer"
+  },
+
+  "toolbar": {
+    "back": "Indietro",
+    "forward": "Avanti",
+    "stop": "Interrompi",
+    "refresh": "Aggiorna",
+    "home": "Pagina iniziale",
+    "search": "Cerca",
+    "favorites": "Preferiti",
+    "history": "Cronologia",
+    "print": "Stampa",
+    "random": "Mi sento fortunato",
+    "mail": "Posta",
+    "go": "Vai",
+    "address": "Indirizzo",
+    "newTab": "Nuova scheda",
+    "closeTab": "Chiudi scheda"
+  },
+
+  "status": {
+    "ready": "Pronto",
+    "done": "Completato",
+    "opening": "Apertura di {address}...",
+    "loading": "Caricamento di {address}...",
+    "stopped": "Interrotto dall'utente.",
+    "notFound": "Impossibile visualizzare la pagina.",
+    "zone": "Zona Hypernet",
+    "zoneProtected": "Zona Hypernet (protetta)",
+    "offline": "Non in linea",
+    "popupBlocked": "Un popup è stato bloccato. Fai clic qui per le opzioni.",
+    "popupAllowed": "I popup sono consentiti nella zona Hypernet.",
+    "external": "Indirizzo esterno. Il gateway Hypernet non ha alcuna rotta verso {address}.",
+    "downloadStarted": "Download di {name} in corso...",
+    "downloadDone": "Download completato: {name}",
+    "saved": "Salvato in {path}",
+    "saveFailed": "Impossibile salvare il documento.",
+    "copied": "Copiato negli appunti.",
+    "pasted": "Incollato dagli appunti.",
+    "cut": "Tagliato negli appunti.",
+    "selectedAll": "Tutto il contenuto della pagina è selezionato.",
+    "nothingToCopy": "Non c'è nulla di selezionato da copiare.",
+    "encodingSet": "Codifica impostata su {name}.",
+    "zoomSet": "Zoom: {percent}%",
+    "textSizeSet": "Dimensione testo: {name}",
+    "syncing": "Sincronizzazione delle pagine non in linea...",
+    "synced": "{count} pagine sincronizzate.",
+    "printing": "Invio di {title} allo spooler...",
+    "printed": "{title} inviato alla stampante Hypernet.",
+    "homeSet": "Pagina iniziale impostata su {address}.",
+    "historyCleared": "Cronologia cancellata.",
+    "blockerOn": "Blocco popup attivo.",
+    "blockerOff": "Blocco popup disattivato.",
+    "barShown": "{name} visibile.",
+    "barHidden": "{name} nascosta."
+  },
+
+  "find": {
+    "label": "Trova:",
+    "next": "Successivo",
+    "previous": "Precedente",
+    "matchCase": "Maiuscole/minuscole",
+    "highlight": "Evidenzia tutto",
+    "close": "Chiudi",
+    "count": "{count} corrispondenze",
+    "none": "Nessuna corrispondenza",
+    "unreadable": "Questa pagina non si lascia leggere dal cercatore."
+  },
+
+  "address": {
+    "placeholder": "Digita un indirizzo Hypernet, oppure una frase da cercare",
+    "suggestHistory": "Cronologia",
+    "suggestSite": "Hypernet",
+    "suggestSearch": "Cerca \"{query}\" su Noodle"
+  },
+
+  "tab": {
+    "untitled": "Nuova scheda",
+    "loading": "Caricamento..."
+  },
+
+  "home": {
+    "beta": "BETA",
+    "searchButton": "Cerca con Noodle",
+    "luckyButton": "Mi sento fortunato",
+    "footer": "(c) 2001 Noodle - Il motore di ricerca dell'Hypernet",
+    "stats": "Circa {count} risultati ({seconds} secondi)",
+    "noResults": "La ricerca di {query} non ha prodotto risultati.",
+    "directory": "Elenco Hypernet",
+    "directoryHint": "Da questo terminale sono raggiungibili {count} siti. Scegli una lettera.",
+    "connecting": "Contatto con l'indice Noodle in corso...",
+    "indexOffline": "L'indice Noodle non è raggiungibile. L'elenco qui sotto è letto direttamente dalla cache locale del gateway.",
+    "suggestion": "Prova con un'altra frase, oppure sfoglia l'elenco qui sotto."
+  },
+
+  "error": {
+    "title": "Impossibile visualizzare la pagina",
+    "heading": "Impossibile visualizzare la pagina",
+    "body": "La pagina cercata non si trova su questo gateway, oppure il nome è stato digitato male.",
+    "address": "Indirizzo: {address}",
+    "tryTitle": "Prova quanto segue:",
+    "try1": "Controlla che l'indirizzo Hypernet sia scritto correttamente.",
+    "try2": "Cerca sull'indice Noodle le parole che ti interessano.",
+    "try3": "Apri l'Elenco Hypernet e scegli il sito dalla lista.",
+    "didYouMean": "Forse cercavi:",
+    "searchFor": "Cerca \"{query}\" su Noodle",
+    "code": "Hypernet Explorer - risposta del gateway 404 (nessuna rotta verso il documento)",
+    "external": "Quell'indirizzo vive fuori dall'Hypernet. Questo terminale non ha alcuna rotta per raggiungerlo.",
+    "friendlyOff": "GATEWAY 404. NESSUNA ROTTA. DOCUMENTO NON PRESENTE IN LOCALE."
+  },
+
+  "history": {
+    "title": "Cronologia",
+    "heading": "Cronologia",
+    "hint": "Tutte le pagine aperte da questo terminale, dalla più recente.",
+    "empty": "Non è ancora stato visitato nulla.",
+    "today": "Oggi",
+    "earlier": "In precedenza",
+    "clear": "Cancella cronologia",
+    "visits": "{count} visite",
+    "openIt": "Apri"
+  },
+
+  "downloads": {
+    "title": "Download",
+    "heading": "Download",
+    "hint": "I file prelevati dall'Hypernet finiscono in C:\\Documents.",
+    "empty": "Nessun download.",
+    "file": "File",
+    "from": "Origine",
+    "state": "Stato",
+    "inProgress": "Download in corso...",
+    "complete": "Completato",
+    "failed": "Non riuscito",
+    "clear": "Svuota l'elenco",
+    "open": "Apri"
+  },
+
+  "mail": {
+    "title": "Posta Hypernet",
+    "heading": "Posta in arrivo",
+    "hint": "Posta trattenuta per questo terminale. Non si può rispondere a nulla: il ripetitore va in una sola direzione dal passaggio al 2000.",
+    "from": "Da",
+    "subject": "Oggetto",
+    "received": "Ricevuto",
+    "unread": "Da leggere",
+    "read": "Letto",
+    "compose": "Nuovo messaggio",
+    "composeTitle": "Nuovo messaggio",
+    "composeTo": "A:",
+    "composeSubject": "Oggetto:",
+    "composeBody": "Messaggio:",
+    "send": "Invia",
+    "sent": "Messaggio in coda. Il ripetitore lo porterà quando il ripetitore tornerà.",
+    "news": "Newsgroup",
+    "newsHint": "Il server delle news rifiuta le credenziali di questo terminale.",
+    "messages": [
+      {
+        "from": "postmaster@hypernet.eu",
+        "subject": "Benvenuto sull'Hypernet",
+        "body": "Il tuo terminale è stato registrato presso il gateway. Non tentare di raggiungere indirizzi fuori dalla zona Hypernet. Il gateway non ha rotte verso di essi e il tentativo viene registrato."
+      },
+      {
+        "from": "billing@noodle.com",
+        "subject": "Il tuo abbonamento all'indice Noodle",
+        "body": "Ti ricordiamo per cortesia che l'indice Noodle resta gratuito per i terminali domestici. I terminali commerciali sono fatturati a interrogazione, retroattivamente, da una data che sarà comunicata."
+      },
+      {
+        "from": "no-reply@omegatower.eu",
+        "subject": "Manutenzione programmata",
+        "body": "Il traffico degli strati sarà deviato attraverso la Torre per tutta la durata dei lavori. Le pagine potrebbero arrivare nell'ordine sbagliato. Le pagine potrebbero arrivare prima di essere richieste. È previsto."
+      },
+      {
+        "from": "listserv@metaforum.hypernet.eu",
+        "subject": "Digest: 41 nuovi messaggi",
+        "body": "Discussione: anche a voi tornano indietro i vostri messaggi con un giorno di anticipo. Discussione: re: anche a voi tornano indietro i vostri messaggi con un giorno di anticipo. Discussione: re: re: sì."
+      },
+      {
+        "from": "sales@hexasteel-dynamics.eu",
+        "subject": "La tua richiesta",
+        "body": "Grazie per l'interesse verso i nostri prodotti. Un incaricato è stato inviato all'indirizzo registrato. Rimani al terminale."
+      }
+    ]
+  },
+
+  "source": {
+    "title": "Origine di {address}",
+    "heading": "Origine del documento",
+    "unavailable": "Impossibile leggere l'origine di questo documento.",
+    "bytes": "{count} byte",
+    "wrap": "A capo automatico"
+  },
+
+  "open": {
+    "title": "Apri",
+    "hint": "Digita l'indirizzo di un documento Hypernet, oppure scegline uno dalla lista.",
+    "label": "Apri:",
+    "filter": "Filtro:",
+    "ok": "OK",
+    "cancel": "Annulla",
+    "browse": "Elenco",
+    "count": "{count} documenti"
+  },
+
+  "save": {
+    "title": "Salva pagina web",
+    "label": "Nome file:",
+    "folder": "Salva in:",
+    "type": "Salva come:",
+    "typeHtml": "Pagina web, completa (*.html)",
+    "typeText": "File di testo (*.txt)",
+    "ok": "Salva",
+    "cancel": "Annulla"
+  },
+
+  "pageSetup": {
+    "title": "Imposta pagina",
+    "paper": "Formato:",
+    "orientation": "Orientamento:",
+    "portrait": "Verticale",
+    "landscape": "Orizzontale",
+    "margins": "Margini (mm):",
+    "header": "Intestazione:",
+    "footer": "Piè di pagina:",
+    "ok": "OK",
+    "cancel": "Annulla",
+    "saved": "Impostazioni di pagina memorizzate."
+  },
+
+  "print": {
+    "title": "Anteprima di stampa",
+    "printer": "Stampante:",
+    "printerName": "Stampante di linea Hypernet (LPT1)",
+    "copies": "Copie:",
+    "range": "Pagine:",
+    "all": "Tutte",
+    "ok": "Stampa",
+    "cancel": "Annulla",
+    "pageOf": "Pagina {page} di {total}"
+  },
+
+  "options": {
+    "title": "Opzioni Hypernet",
+    "tabGeneral": "Generale",
+    "tabSecurity": "Protezione",
+    "tabAdvanced": "Avanzate",
+    "homePage": "Pagina iniziale",
+    "homeAddress": "Indirizzo:",
+    "useCurrent": "Pagina corrente",
+    "useDefault": "Predefinita",
+    "useBlank": "Vuota",
+    "historyGroup": "Cronologia",
+    "historyDays": "Giorni di permanenza delle pagine nella cronologia:",
+    "clearHistory": "Cancella cronologia",
+    "clearCookies": "Elimina i cookie",
+    "cookiesCleared": "Cookie eliminati. Il gateway ti riconosce lo stesso.",
+    "appearance": "Aspetto",
+    "textSize": "Dimensione testo:",
+    "encoding": "Codifica:",
+    "zone": "Zona di protezione",
+    "zoneLow": "Bassa: esegui tutto ciò che la pagina chiede",
+    "zoneMedium": "Media: chiedi conferma prima di eseguire riti non firmati",
+    "zoneHigh": "Alta: niente della pagina è considerato affidabile",
+    "blocker": "Blocca le finestre popup",
+    "advanced": "Impostazioni avanzate",
+    "showImages": "Mostra le immagini",
+    "playSounds": "Riproduci i suoni nelle pagine web",
+    "smoothScroll": "Usa lo scorrimento morbido",
+    "friendlyErrors": "Mostra messaggi di errore descrittivi",
+    "underlineLinks": "Sottolinea i collegamenti",
+    "openInNewTab": "Apri i collegamenti in una nuova scheda",
+    "ok": "OK",
+    "cancel": "Annulla",
+    "apply": "Applica",
+    "saved": "Impostazioni applicate."
+  },
+
+  "sync": {
+    "title": "Sincronizza",
+    "hint": "Le pagine non in linea vengono copiate nella cache del gateway per poter essere lette a collegamento assente.",
+    "start": "Sincronizza",
+    "close": "Chiudi",
+    "working": "Sincronizzazione di {name}...",
+    "done": "Sincronizzazione completata."
+  },
+
+  "connection": {
+    "title": "Stato della connessione",
+    "gateway": "Gateway",
+    "gatewayValue": "hypernet-gw-01.eu",
+    "protocol": "Protocollo",
+    "protocolValue": "HTX/1.1 su vetro",
+    "speed": "Velocità di linea",
+    "speedValue": "56,6 kbps (negoziata)",
+    "latency": "Latenza",
+    "packets": "Documenti presenti in locale",
+    "cipher": "Cifratura",
+    "cipherValue": "Hexagram-128",
+    "uptime": "Sessione",
+    "close": "Chiudi"
+  },
+
+  "about": {
+    "title": "Informazioni su Hypernet Explorer",
+    "product": "Hypernet Explorer",
+    "versionLabel": "Versione:",
+    "cipherLabel": "Robustezza della cifratura:",
+    "cipher": "128 bit (Hexagram)",
+    "gatewayLabel": "Gateway:",
+    "documentsLabel": "Documenti su questo gateway:",
+    "notice": "Questo prodotto è concesso in licenza a chi detiene il terminale. La licenza non è trasferibile e, oltre un certo punto, non lo è nemmeno chi lo detiene.",
+    "close": "OK"
+  },
+
+  "helpPage": {
+    "title": "Guida di Hypernet Explorer",
+    "heading": "Guida di Hypernet Explorer",
+    "intro": "Tutto quello che questo browser sa fare, e il tasto che lo fa.",
+    "navHeading": "Muoversi",
+    "navBody": "Digita un indirizzo nella barra degli indirizzi e premi Invio. Un indirizzo senza punti viene invece cercato. Una pagina che non si trova su questo gateway mostra l'avviso 404 del gateway con sotto gli indirizzi più simili.",
+    "keysHeading": "Tastiera",
+    "keys": [
+      "Ctrl+T - nuova scheda",
+      "Ctrl+W - chiudi scheda",
+      "Ctrl+L - vai alla barra degli indirizzi",
+      "Ctrl+D - aggiungi la pagina ai Preferiti",
+      "Ctrl+F - trova in questa pagina",
+      "Ctrl+H - cronologia",
+      "Ctrl+J - download",
+      "Ctrl+U - mostra l'origine",
+      "Ctrl+P - anteprima di stampa",
+      "F5 - aggiorna",
+      "Alt+Sinistra / Alt+Destra - indietro e avanti",
+      "Esc - interrompi il caricamento"
+    ],
+    "favHeading": "Preferiti",
+    "favBody": "I Preferiti sono conservati nel registro del terminale, quindi sopravvivono allo spegnimento della macchina e viaggiano col salvataggio.",
+    "offlineHeading": "Quando il collegamento cade",
+    "offlineBody": "Il gateway conserva una copia locale di ogni documento della zona Hypernet, perciò le pagine si aprono anche a linea caduta. Solo gli indirizzi fuori dalla zona avrebbero bisogno della linea, e non ce ne sono.",
+    "close": "Chiudi"
+  },
+
+  "popup": {
+    "blockedBar": "Popup bloccato. Per vederlo, fai clic qui.",
+    "showIt": "Mostra il popup",
+    "always": "Consenti sempre",
+    "close": "Chiudi",
+    "ads": [
+      {
+        "title": "CONGRATULAZIONI",
+        "body": "Sei la milionesima anima ad arrivare a questo gateway. Riscuoti il premio prima che il contatore si azzeri e ne scelga un'altra.",
+        "button": "Riscuoti ora"
+      },
+      {
+        "title": "SINGLE BOLLENTI NEL TUO STRATO",
+        "body": "Tre entità entro quattro metri dal tuo terminale vogliono parlarti. Due di loro ti stanno già parlando.",
+        "button": "Incontrale"
+      },
+      {
+        "title": "IL TUO TERMINALE POTREBBE ESSERE INFETTO",
+        "body": "Una scansione che non hai avviato ha trovato 41 problemi su un disco che non possiedi. Scarica subito la cura.",
+        "button": "Pulisci il terminale"
+      },
+      {
+        "title": "OPZIONI SUL PETROLIO GRATIS",
+        "body": "I futures sul petrolio si muovono. Muoviti con loro. Nessuna esperienza, nessun capitale, nessuna anima richiesta in anticipo.",
+        "button": "Inizia a fare trading"
+      },
+      {
+        "title": "ABBASSA IL TUO PREMIO",
+        "body": "Nel tuo comune si paga troppo per la copertura sulla reincarnazione. Un modulo, una firma, una vita.",
+        "button": "Chiedi un preventivo"
+      }
+    ]
+  },
+
+  "tip": {
+    "title": "Suggerimento del giorno",
+    "next": "Suggerimento successivo",
+    "close": "Chiudi",
+    "tips": [
+      "Un indirizzo senza punti viene trattato come una ricerca. Digita una frase e premi Invio.",
+      "Sei a metà di una pagina lunga? Ctrl+F trova una parola senza doverla cercare a mano.",
+      "La barra Collegamenti accetta tutti i Preferiti che vuoi fissarci.",
+      "Ctrl+T apre una scheda. Ogni scheda tiene il proprio Indietro e Avanti.",
+      "Origine (Ctrl+U) mostra la pagina esattamente come l'ha inviata il gateway.",
+      "L'Elenco Hypernet nella pagina iniziale riporta ogni sito conservato dal gateway.",
+      "Una pagina che non si apre mostra gli indirizzi più simili a quello richiesto.",
+      "Lo zoom sta sulla barra di stato. Fai clic sulla percentuale per farlo girare.",
+      "I popup sono bloccati per impostazione predefinita. Strumenti, Blocco popup cambia le cose, a tuo rischio.",
+      "Tutto quello che salvi da una pagina finisce in C:\\Documents e compare in Risorse del computer."
+    ]
+  },
+
+  "context": {
+    "back": "Indietro",
+    "forward": "Avanti",
+    "refresh": "Aggiorna",
+    "selectAll": "Seleziona tutto",
+    "copy": "Copia",
+    "viewSource": "Mostra origine",
+    "addFavorite": "Aggiungi a Preferiti",
+    "openNewTab": "Apri in una nuova scheda",
+    "properties": "Proprietà"
+  },
+
+  "properties": {
+    "title": "Proprietà",
+    "protocol": "Protocollo:",
+    "protocolValue": "Documento Hypernet",
+    "type": "Tipo:",
+    "typeValue": "Documento ipertestuale Hypernet",
+    "address": "Indirizzo:",
+    "file": "Copia locale:",
+    "size": "Dimensione:",
+    "zone": "Zona:",
+    "close": "OK"
+  }
 }

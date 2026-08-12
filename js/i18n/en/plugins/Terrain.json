@@ -24,5 +24,12 @@
   "signShop": "Shop",
   "signInn": "Inn",
   "needPickaxe": "You need a pickaxe or a heavy tool to break this.",
-  "statue": "A statue depicting {subject}."
+  "statue": "A statue depicting {subject}.",
+  "rummage": "Rummage through it",
+  "sit": "Sit down",
+  "graffiti": "Sprayed on the wall: \"{text}\"",
+  "poster": "The poster reads: \"{text}\"",
+  "signStop": "STOP",
+  "signDanger": "Danger. Works in progress.",
+  "signHelipad": "Helipad. Keep clear."
 }

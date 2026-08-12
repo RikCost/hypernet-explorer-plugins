@@ -336,7 +336,12 @@
                 const el = this.win.querySelector(sel);
                 if (el) el.textContent = text;
             };
-            set('#ed-date', stats.date || T('Eurodemics.awaitingReport'));
+            // In an empty world the observatory stopped reporting with
+            // everything else, so the bulletin is dated the day it stopped
+            // rather than left blank (window.HypernetOS.staleDate).
+            const stale = window.HypernetOS && window.HypernetOS.staleDate
+                ? window.HypernetOS.staleDate() : null;
+            set('#ed-date', stale || stats.date || T('Eurodemics.awaitingReport'));
             set('#ed-count', T('Eurodemics.activeClosed', { active: stats.active, closed: stats.past }));
             set('#ed-message', this.message || '');
         },

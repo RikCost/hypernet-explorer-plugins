@@ -123,6 +123,7 @@
     --text-text-alt-6-active: #d8d8d8;
     --text-text-alt-7: #e0e0e0;
     --text-text-alt-8: #bbbbbb;
+    --text-text-alt-9: #c8a064;
     --text-text-alt-9-translucent-50: rgba(200, 160, 100, 0.6);
     --text-warning-hover: #ffffff;
     --text-gold-dark: #c8a040;
@@ -420,13 +421,25 @@
     letter-spacing: 0.3px;
 }
 
-/* Selection sub-label under a chosen archetype card ("Primary" / "Secondary").
-   The inline reds/purples are too dark to read on the near-black card. */
+/* Selection sub-label under a chosen archetype card ("Primary" / "Secondary")
+   and the same pair of marks in the archetype dossier. Both carry the
+   parchment reds and purples, which are too dark to read on the near-black
+   page. The [style*=] rules are kept for any caller still inlining the hex. */
+.cc-role-badge.primary,
+.cc-archetype-role.primary,
 .cc-presets-board .cc-wanted-card [style*="#822d2d"] {
     color: #f0a48c !important;
 }
+.cc-role-badge.secondary,
+.cc-archetype-role.secondary,
 .cc-presets-board .cc-wanted-card [style*="#5a3d75"] {
     color: #cda6ec !important;
+}
+.cc-role-badge.primary {
+    background: rgba(240, 164, 140, 0.14);
+}
+.cc-role-badge.secondary {
+    background: rgba(205, 166, 236, 0.14);
 }
 
 /* ==========================================================================
@@ -1439,4 +1452,68 @@ select option:hover {
     border-color: var(--border-gold-amber-30) !important;
     color: var(--text-pure-white) !important;
     box-shadow: none !important;
+}
+
+/* ==========================================================================
+   The shop counter (#shop-container)
+   theme.css draws the shop from the shared tokens, which on the tower page
+   leave the two smallest-set runs of text too quiet to read: the left page's
+   labels (funds, tabs, the per-line owned/weight captions) sit at mid greys,
+   and the right page's item prose borrows --text-text-alt-7. Re-ink both on
+   the black page: labels in the tower's amber, prose in plain white.
+   ========================================================================== */
+
+/* --- Left page: labels and captions. --- */
+#shop-container .shop-funds {
+    color: var(--accent-cream-light) !important;
+}
+#shop-container .shop-tab {
+    color: rgba(244, 233, 201, 0.62) !important;
+}
+#shop-container .shop-tab.active {
+    color: var(--accent-amber-glow) !important;
+    border-bottom-color: var(--accent-amber-glow) !important;
+}
+#shop-container .category-btn {
+    color: rgba(244, 233, 201, 0.72) !important;
+    border-color: var(--border-gold-amber-30) !important;
+}
+#shop-container .category-btn.active {
+    background: var(--accent-amber-glow) !important;
+    color: var(--bg-dark-warm-translucent-96) !important;
+}
+#shop-container .item-card-name {
+    color: var(--accent-amber-glow) !important;
+}
+#shop-container .item-card-sub,
+#shop-container .item-card-stock {
+    color: rgba(244, 233, 201, 0.68) !important;
+    font-weight: normal !important;
+}
+#shop-container .shop-sell-hint,
+#shop-container .shop-selection-bar .selection-count {
+    color: var(--accent-cream-light) !important;
+}
+
+/* --- Right page: the dossier's own prose. --- */
+#shop-container .detail-desc,
+#shop-container .detail-lore {
+    color: var(--text-pure-white) !important;
+}
+#shop-container .detail-desc {
+    background: var(--bg-dark-warm-translucent-96) !important;
+    border-left-color: var(--accent-amber-glow) !important;
+}
+#shop-container .detail-name {
+    color: var(--accent-amber-glow) !important;
+}
+#shop-container .badge-lbl {
+    color: var(--text-primary-hover) !important;
+}
+#shop-container .badge-val,
+#shop-container .detail-effect-chip {
+    color: var(--accent-cream-light) !important;
+}
+#shop-container .detail-effect-chip {
+    border-color: var(--border-gold-amber-30) !important;
 }

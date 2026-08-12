@@ -144,7 +144,7 @@
             this._levelText.position.set(Graphics.width - 250, 40);
             this._container.addChild(this._levelText);
 
-            const instrStr = this._isDemo ? 'DEMO MODE - SPECTATING' : 'ARROWS TURN AND THRUST, OK/SPACE TO FIRE';
+            const instrStr = this._isDemo ? 'DEMO MODE - SPECTATING' : '';
             this._instructionText = new PIXI.Text(instrStr, {
                 fontFamily: font,
                 fontSize: 14,

@@ -1,0 +1,33 @@
+{
+  "startingSpecializations": "STARTIN' SPECIALIZATIONS",
+  "levelUpList": "LEVEL UP LIST",
+  "stats": "STATS",
+  "skillCategories": "SKILL CATEGORIES",
+  "prestige": "PRESTIGE",
+  "confirmClass": "CONFIRM CLASS",
+  "cancel": "CANCEL",
+  "noLevelUpSkills": "NO LEVEL-UP SKILLS FOR DIS CLASS!",
+  "noSkillCategories": "NO SKILL CATEGORIES DEFINED!",
+  "primary": "PRIMARY:",
+  "secondary": "SECONDARY:",
+  "elementHeading": "ELEMENT:",
+  "element": {
+    "1": "PHYSICAL",
+    "2": "FIRE",
+    "3": "ICE",
+    "4": "THUNDER",
+    "5": "WATER",
+    "6": "PETRO",
+    "7": "WIND",
+    "8": "SACRED",
+    "9": "CURSED"
+  },
+  "noSkillsAtLevel1": "NO SKILLS AT LEVEL 1",
+  "selectYourClass": "SELECT YA CLASS",
+  "ui": {
+    "covenantStamp": "COVENANT",
+    "nonSentient": "NON SENTIENT",
+    "sentient": "SENTIENT"
+  },
+  "vocation": "VOCATION"
+}

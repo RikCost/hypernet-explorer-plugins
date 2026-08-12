@@ -495,67 +495,129 @@
 
   //=============================================================================
   // Creature classes , which classes an EnemyArchetypes archetype can be played
-  // as. The table lives in js/db/Health/ArchetypeClasses.json (DataService loads
-  // it as window.Health.ArchetypeClasses) and is keyed by archetype name.
+  // as. Every archetype in js/db/Health/EnemyArchetypes.json carries its own
+  // roster (DataService loads the file as window.Health.EnemyArchetypes), as
+  // two arrays of $dataClasses ids:
+  //
+  //   classes         , the civilised roster, ids 1-62. The humanoids, the
+  //                     slime and the mimic take all 62, everyone else the
+  //                     classes their culture, creed or nature supports.
+  //   creatureClasses , the monstrous roster, ids 63-70 (Feral, Mimic,
+  //                     Monster, Mana Cyborg, Ghost, Zombie, Mutant, Drone).
+  //                     Never empty, so every archetype can be played as the
+  //                     thing it is.
   //
   // A creature built from two archetypes is offered the classes supported by
   // BOTH of them; when the two share nothing, only the fallback (Monster) is
-  // offered. Class names are resolved against $dataClasses on every call, so a
-  // renamed or removed class simply drops out of the roster.
+  // offered. Ids are checked against $dataClasses on every call, so a removed
+  // class simply drops out of the roster.
   //=============================================================================
+
+  // Offered when an archetype (or a hybrid) supports nothing else.
+  const CREATURE_FALLBACK_CLASS_ID = 65; // Monster
+
+  // Highest id of the civilised roster. Everything above it, Feral (63) and
+  // every class after it, is a creature class and is only ever reached through
+  // an archetype's creatureClasses roster: a person is never built from one,
+  // nor rolled into one by any of the randomizers.
+  const SENTIENT_CLASS_MAX = 62;
 
   const CreatureClasses = {
     _data() {
-      return (window.Health && window.Health.ArchetypeClasses) || null;
+      return (window.Health && window.Health.EnemyArchetypes) || null;
     },
 
-    _classIdByName() {
-      const map = {};
-      $dataClasses.forEach((c) => {
-        if (c && c.name) map[c.name] = c.id;
-      });
-      return map;
+    // Drops ids no class in the database answers to.
+    _known(ids) {
+      if (!Array.isArray(ids)) return [];
+      return ids.filter((id) => $dataClasses[id] && $dataClasses[id].name);
+    },
+
+    // Severed hides every Magical class, unbound hides every Mundane one
+    // (both/untagged always pass); see window.MagicNature. Freelancer (1)
+    // and Monster (65, CREATURE_FALLBACK_CLASS_ID) are tagged
+    // <Nature: Both> in Classes.json specifically so this never strips them.
+    // Falls back to the unfiltered set when a scope would be emptied
+    // entirely, so a narrow archetype or hybrid is never left with nothing
+    // to be at all.
+    _magicAllowed(ids) {
+      const MN = window.MagicNature;
+      if (!MN || !MN.isFiltering()) return ids;
+      const kept = ids.filter((id) => MN.allowsData($dataClasses[id]));
+      return kept.length > 0 ? kept : ids;
     },
 
     // Class id of the "nothing fits" class, Monster by default.
     fallbackId() {
-      const data = this._data();
-      const name = (data && data.fallbackClass) || "Monster";
-      return this._classIdByName()[name] || 65;
+      return CREATURE_FALLBACK_CLASS_ID;
     },
 
-    // Class ids supported by a single archetype key, [] when the archetype is
-    // unknown or supports nothing. "*" expands to every class except the ones
-    // listed in wildcardExcludes.
+    // Highest class id a person can be built from.
+    sentientMax() {
+      return SENTIENT_CLASS_MAX;
+    },
+
+    // True when the id belongs to the monstrous roster (Feral upward).
+    isCreatureClass(classId) {
+      return Number(classId) > SENTIENT_CLASS_MAX;
+    },
+
+    // Every class a person may be built from or rolled into, the one list the
+    // humanoid randomizers draw on.
+    sentientRoster() {
+      const ids = ($dataClasses || [])
+        .filter((c) => c && c.id > 0 && c.id <= SENTIENT_CLASS_MAX && c.name)
+        .map((c) => c.id);
+      return this._magicAllowed(ids);
+    },
+
+    // The civilised roster of a single archetype key, [] when the archetype is
+    // unknown.
+    civilisedFor(key) {
+      const data = this._data();
+      if (!key || !data || !data[key]) return [];
+      return this._magicAllowed(this._known(data[key].classes));
+    },
+
+    // The monstrous roster of a single archetype key, [] when the archetype is
+    // unknown.
+    creatureFor(key) {
+      const data = this._data();
+      if (!key || !data || !data[key]) return [];
+      return this._magicAllowed(this._known(data[key].creatureClasses));
+    },
+
+    // Everything a single archetype can be played as, its own kind last.
     forArchetype(key) {
-      const data = this._data();
-      if (!key || !data || !data.archetypes) return [];
-      const entry = data.archetypes[key];
-      if (!entry) return [];
-      const byName = this._classIdByName();
-      if (entry === "*") {
-        const excluded = new Set(
-          (data.wildcardExcludes || []).map((n) => byName[n]).filter(Boolean)
-        );
-        return $dataClasses
-          .filter((c) => c && c.id > 0 && !excluded.has(c.id))
-          .map((c) => c.id);
-      }
-      if (!Array.isArray(entry)) return [];
-      return entry.map((n) => byName[n]).filter(Boolean);
+      return this.civilisedFor(key).concat(this.creatureFor(key));
     },
 
-    // Class ids offered for a finished creature. One archetype: its own roster.
-    // Two: the intersection. Never empty , an unsupported combination falls back
-    // to the Monster class alone.
-    forArchetypes(key1, key2) {
-      let ids = this.forArchetype(key1);
-      if (key2 && key2 !== key1) {
-        const second = new Set(this.forArchetype(key2));
-        ids = ids.filter((id) => second.has(id));
+    // The two rosters a finished creature is offered, kept apart so the class
+    // browser can head them ("Non Sentient" / "Sentient"). One archetype: its
+    // own two lists. Two: the intersection of each. The creature list is never
+    // empty , a pair that shares nothing at all is still a Monster.
+    groupsForArchetypes(key1, key2) {
+      const pick = (getter) => {
+        let ids = this[getter](key1);
+        if (key2 && key2 !== key1) {
+          const second = new Set(this[getter](key2));
+          ids = ids.filter((id) => second.has(id));
+        }
+        return ids;
+      };
+      const creature = pick("creatureFor");
+      const sentient = pick("civilisedFor");
+      if (!creature.length && !sentient.length) {
+        return { creature: [this.fallbackId()], sentient: [] };
       }
-      if (!ids.length) return [this.fallbackId()];
-      return ids;
+      return { creature, sentient };
+    },
+
+    // The same two rosters as one flat list, the creature's own kind first.
+    // Never empty.
+    forArchetypes(key1, key2) {
+      const groups = this.groupsForArchetypes(key1, key2);
+      return groups.creature.concat(groups.sentient);
     },
 
     // Same, resolved from an actor's stored archetype ("A" or "A / B", written

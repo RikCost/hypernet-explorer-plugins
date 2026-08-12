@@ -205,6 +205,11 @@
             if (fs.existsSync(path.join(base, 'AlienPlanet', biomeName))) {
                 return 'AlienPlanet/' + biomeName;
             }
+            // A directional variant is the same place seen from another angle:
+            // "Road cross" and "River vertical" are a road and a river, and
+            // they have never had folders of their own to look in.
+            const stem = biomeName.split(' ')[0];
+            if (stem !== biomeName && fs.existsSync(path.join(base, stem))) return stem;
         } catch (e) { /* fall through */ }
         return biomeName;
     }

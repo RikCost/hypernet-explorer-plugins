@@ -159,12 +159,20 @@
         return $gameSystem._npcPartyJoinMinutes;
     }
 
+    // A summon (SummonSystem.js) borrows a party slot for the length of a fight
+    // and is gone before it ends. It never travelled with anyone, so it is not a
+    // companion and has no place in the roster ledger: neither a join stamp nor
+    // a departure snapshot is taken for it.
+    function isSummonProxy(actorId) {
+        return !!window.SummonSystem?.isProxyActor?.(actorId);
+    }
+
     // Stamp the join so a departure snapshot can report how long they rode along.
     const _Game_Party_addActor = Game_Party.prototype.addActor;
     Game_Party.prototype.addActor = function(actorId) {
         const wasInParty = this._actors.includes(actorId);
         _Game_Party_addActor.call(this, actorId);
-        if (wasInParty || !$gameSystem) return;
+        if (wasInParty || !$gameSystem || isSummonProxy(actorId)) return;
         joinMinutes()[actorId] = nowMinute();
     };
 
@@ -221,7 +229,7 @@
         const retiring = $gameTemp && $gameTemp._partyRetiringActorId === actorId;
         const died = !!(actor && actor.isDead());
         _Game_Party_removeActor.call(this, actorId);
-        if (!wasInParty || actorId === 1) return;
+        if (!wasInParty || actorId === 1 || isSummonProxy(actorId)) return;
         recordDeparture(actor, retiring ? "retired" : (died ? "died" : "left"));
     };
 
@@ -551,6 +559,11 @@
         callThoughtsMenuMarkov(actorId, markovString);
         registerNPCHouse(eventName);                       // owned/resided house -> Assets + build rights
         $gameSelfSwitches.setValue(selfSwitchKey, true);
+        // ...and record the loss in the world folder, so this person is gone
+        // from every savegame of the world rather than only from this one
+        // (NPCSystem.js, GoneRegistry). The procedural map records its own
+        // recruits per world tile, further down.
+        window.NPCGone?.record($gameMap.mapId(), eventId, eventName, 'joined');
 
         // The event is now hidden behind its blank page-2 (self-switch A), so drop
         // its roaming NPCController. Otherwise the controller keeps driving the

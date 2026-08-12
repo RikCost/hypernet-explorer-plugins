@@ -1,0 +1,244 @@
+{
+  "power": {
+    "holyvaticanempire": {
+      "govType": "THEOCRACY",
+      "headTitle": "SUPREME PONTIFEX",
+      "legislature": "HOLY CURIA",
+      "partyKind": "ORDER",
+      "electorTitle": "CARDINAL",
+      "electorTitlePlural": "CARDINALS"
+    },
+    "ussr": {
+      "govType": "SINGLE-PARTY STATE",
+      "headTitle": "GENERAL SECRETARY",
+      "legislature": "SUPREME SOVIET",
+      "partyKind": "FACTION",
+      "electorTitle": "POLITBURO MEMBER",
+      "electorTitlePlural": "POLITBURO MEMBERS"
+    },
+    "britannia": {
+      "govType": "PARLIAMENTARY MONARCHY",
+      "headTitle": "PRIME MINISTER",
+      "legislature": "PARLIAMENT",
+      "partyKind": "PARTY"
+    },
+    "archivefoundation": {
+      "govType": "TECHNOCRACY",
+      "headTitle": "FIRST ARCHIVIST",
+      "legislature": "INDEX COUNCIL",
+      "partyKind": "SCHOOL"
+    },
+    "ottomanempire": {
+      "govType": "SULTANATE",
+      "headTitle": "SULTAN",
+      "legislature": "DIVAN",
+      "partyKind": "COURT FACTION"
+    },
+    "thegods": {
+      "govType": "DIVINE PANTHEON",
+      "headTitle": "PRIME DEITY",
+      "legislature": "CELESTIAL COURT",
+      "partyKind": "HOUSE"
+    },
+    "sanmarinorepublic": {
+      "govType": "SERENE REPUBLIC",
+      "headTitle": "CAPTAIN REGENT",
+      "legislature": "GRAND COUNCIL",
+      "partyKind": "PARTY"
+    },
+    "hypercapitalistcollective": {
+      "govType": "CORPORATOCRACY",
+      "headTitle": "CHIEF EXECUTIVE SOVEREIGN",
+      "legislature": "DA BOARD",
+      "partyKind": "BLOC"
+    },
+    "goblinhorde": {
+      "govType": "WARBAND CONFEDERACY",
+      "headTitle": "BIG BOSS",
+      "legislature": "DA MOOT",
+      "partyKind": "CLAN"
+    },
+    "thetourists": {
+      "govType": "CASTE HIERARCHY",
+      "headTitle": "TOUR DIRECTOR",
+      "legislature": "DA ITINERARY",
+      "partyKind": "CASTE",
+      "electorTitle": "OVERSEER",
+      "electorTitlePlural": "OVERSEERS"
+    },
+    "thedargos": {
+      "govType": "PRACTICAL JOKE",
+      "headTitle": "FIRST DARGOS",
+      "legislature": "DA BIT",
+      "partyKind": "ROUTINE"
+    },
+    "default": {
+      "govType": "REPUBLIC",
+      "headTitle": "PRESIDENT",
+      "legislature": "ASSEMBLY",
+      "partyKind": "PARTY",
+      "electorTitle": "ELECTOR",
+      "electorTitlePlural": "ELECTORS"
+    }
+  },
+  "election": {
+    "conclave": "CONCLAVE",
+    "plenum": "PARTY PLENUM",
+    "shareholder": "ANNUAL GENERAL MEETIN'",
+    "moot": "DA MOOT",
+    "tournament": "ASCENSION TOURNAMENT",
+    "succession": "SUCCESSION",
+    "examination": "GREAT EXAMINATION",
+    "parliamentary": "GENERAL ELECTION"
+  },
+  "office": {
+    "mayor": "MAYOR",
+    "guardCaptain": "CAPTAIN OF DA GUARD",
+    "taxCollector": "TAX COLLECTOR",
+    "highPriest": "HIGH PRIEST"
+  },
+  "policy": {
+    "taxRate": "DA TAX RATE",
+    "censorship": "CENSORSHIP",
+    "conscription": "CONSCRIPTION",
+    "welfare": "WELFARE",
+    "festivals": "FESTIVALS"
+  },
+  "rumorKind": {
+    "affair": "AFFAIR",
+    "embezzlement": "EMBEZZLEMENT",
+    "secretPact": "SECRET PACT",
+    "forgedCredentials": "FORGED CREDENTIALS",
+    "midnightRitual": "MIDNIGHT RITUAL",
+    "doubleLife": "DOUBLE LIFE",
+    "hiddenFortune": "HIDDEN FORTUNE",
+    "blackmail": "BLACKMAIL"
+  },
+  "gripe": {
+    "curfew": "DA CURFEW",
+    "taxes": "DA TAXES",
+    "censors": "DA CENSORS",
+    "draft": "DA DRAFT"
+  },
+  "tag": {
+    "collectivist": "COLLECTIVIST",
+    "freeMarketeer": "FREE-MARKETEER",
+    "libertarian": "LIBERTARIAN",
+    "authoritarian": "AUTHORITARIAN",
+    "progressive": "PROGRESSIVE",
+    "traditionalist": "TRADITIONALIST",
+    "pacifist": "PACIFIST",
+    "militarist": "MILITARIST",
+    "rationalist": "RATIONALIST",
+    "mystic": "MYSTIC",
+    "moderate": "MODERATE"
+  },
+  "fallback": {
+    "nobody": "NOBODY",
+    "noOne": "NO ONE",
+    "oldGuard": "OLD GUARD",
+    "partsUnknown": "PARTS UNKNOWN",
+    "spoiledBallot": "SPOILED BALLOT",
+    "establishment": "ESTABLISHMENT"
+  },
+  "event": {
+    "founding": "{power} REGISTERED AS A HYPERPOWER ({govType}; {n} MEMBER TERRITORIES)!",
+    "election": "{election}: {winner} PREVAILS.",
+    "electionWithHead": "{election}: {winner} PREVAILS; {head} IZ {title}.",
+    "scandal": "{name} ENGULFED IN SCANDAL (#{n}).",
+    "edict": "{title}'S GOVERNMENT ADJUSTS {policy}: {before} → {after}!",
+    "protest": "MASS PROTESTS AGAINST DA {govType} SWEEP {place}!",
+    "riot": "RIOTS BREAK OUT; DA {legislature} ORDERS A CRACKDOWN!",
+    "festival": "A GRAND STATE FESTIVAL LIFTS SPIRITS ACROSS {power}!",
+    "referendum": "NATIONAL REFERENDUM SHIFTS {policy} BY {delta}!",
+    "coup": "COUP: {name} SEIZES POWER IN {power}; {elections}S SUSPENDED!",
+    "coupFailed": "A COUP ATTEMPT AGAINST DA {title} IZ CRUSHED!",
+    "revolution": "REVOLUTION: DA {govType} OF {power} IZ OVERTHROWN; A PROVISIONAL GOVERNMENT CALLS AN EMERGENCY {election}!",
+    "assassination": "{name}, {title} OF {power}, IZ ASSASSINATED.",
+    "politicianDies": "{name} DIES AT {age}.",
+    "headDies": "{name} DIES AT {age}. {power} MOURNS ITS {title}."
+  },
+  "note": {
+    "coalition": "COALITION FORMED WIT {party}.",
+    "conclaveBallots": {
+      "one": "DECIDED AFTER ONE BALLOT OF DA {electors}!",
+      "other": "DECIDED AFTER {count} BALLOTS OF DA {electors}!"
+    },
+    "purged": "DA {party} WAZ PURGED FROM DA {legislature}.",
+    "officialResults": "OFFICIAL RESULTS. ACTUAL SENTIMENTS UNRECORDED!",
+    "oneCreditOneVote": "ONE CREDIT, ONE VOTE.",
+    "mootLoser": "{name} LOST DA MOOT AN' WAZ FED TA DA WOLFPIGS!",
+    "biggestWins": "BIGGEST AN' LOUDEST WINS.",
+    "ascension": "DECIDED BY ASCENSION TOURNAMENT BEFORE DA CELESTIAL COURT!",
+    "successionWar": "DA SUCCESSION DESCENDED INTO OPEN WARFARE BETWEEN DA HEIRS!",
+    "successionCasualty": "{name} DID NOT SURVIVE DA WAR OF SUCCESSION!",
+    "palaceIntrigue": "SETTLED BY PALACE INTRIGUE IN DA DIVAN!",
+    "examinationScore": "SCORED {score}/160 ON DA GREAT EXAMINATION!"
+  },
+  "identity": {
+    "sympathized": "CAME TA SYMPATHIZE WIT DA {party}!",
+    "awakened": "FORMED POLITICAL OPINIONS!",
+    "conversion": "LEFT DA {from} FOR DA {to}.",
+    "radicalized": "HARDENED VIEWS AS UNREST SPREAD!",
+    "grudge": "BITTER ABOUT {winner} WINNIN' DA {election}!",
+    "electedMayor": "ELECTED MAYOR OF {group} ({votes}/{total} VOTES)!",
+    "appointed": "APPOINTED {office} OF {group}."
+  },
+  "story": {
+    "electedMayor": "ELECTED MAYOR OF {group}",
+    "appointed": "APPOINTED {office} OF {group}"
+  },
+  "death": {
+    "wolfpigs": "FED TA DA WOLFPIGS AFTER LOSIN' DA MOOT",
+    "succession": "KILLED IN DA WAR OF SUCCESSION",
+    "assassinated": "ASSASSINATED",
+    "naturalCauses": "DIED OF NATURAL CAUSES AT {age}"
+  },
+  "report": {
+    "noPower": "NO HYPERPOWER NAMED \"{power}\".",
+    "noIdentity": "{name}: NO POLITICAL IDENTITY.",
+    "header": "=== {power}, {govType} ===",
+    "head": "{title}: {value}",
+    "headValue": "{name} (APPROVAL {approval}%)",
+    "vacant": "VACANT",
+    "ruling": "RULIN' {partyKind}: {party}{partners}",
+    "coalitionPartners": {
+      "one": "(+1 COALITION PARTNER)",
+      "other": "(+{n} COALITION PARTNERS)"
+    },
+    "meters1": "LEGITIMACY {legitimacy} STABILITY {stability}",
+    "meters2": "UNREST {unrest} ECONOMY {economy}",
+    "policies": "POLICIES: TAX {tax}% · CENSORSHIP {censorship} · CONSCRIPTION {conscription} · WELFARE {welfare}{curfew}",
+    "curfew": "CURFEW",
+    "lastElection": "LAST {election}: {date}, {winner} ({share}%).",
+    "nextElection": "NEXT {election}: {date}.",
+    "recentEvents": "RECENT EVENTS:",
+    "electionHeader": "=== {power}, {election} HISTORY ===",
+    "next": "NEXT: {date}",
+    "electionRow": "{date}{snap}, WINNER: {winner}{turnout}",
+    "snap": "(SNAP)",
+    "turnout": "TURNOUT {turnout}%",
+    "resultRow": "   {share}%{seats}, {name}",
+    "seats": {
+      "one": "(1 SEAT)",
+      "other": "({n} SEATS)"
+    },
+    "citizen": "{name}, CITIZEN OF {country} ({power}).",
+    "sympathizes": "SYMPATHIZES WIT DA {party}.",
+    "leanings": "LEANINGS: {tags}.",
+    "engagement": "POLITICAL ENGAGEMENT: {engagement}/100{note}!",
+    "apathetic": "(APATHETIC)",
+    "activist": "(ACTIVIST)",
+    "holdsOffice": "HOLDS OFFICE: {office} OF {group}.",
+    "lastVote": "LAST VOTE: {party} ({date}).",
+    "grudge": "HOLDS A GRUDGE AGAINST DA {party}!"
+  },
+  "officeState": {
+    "disgraced": "DISGRACED",
+    "deposed": "DEPOSED"
+  },
+  "accession": {
+    "elected": "ELECTED",
+    "coup": "COUP"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "caste": {
+    "grey": "Grigio",
+    "crimson": "Analizzatore Cremisi",
+    "pale": "Distorsore Pallido",
+    "dargos": "Dargos"
+  },
+  "casteDesc": {
+    "grey": "Venuto per guardare. Guarda ancora. Fotografa tutto e non ne capisce quasi nulla.",
+    "crimson": "Sostiene che nulla sia compreso finché non è stato aperto, e porta una katana perché il bisturi è lento.",
+    "pale": "Piega le menti e le distanze invece di attraversarle. Parla di rado, e mai con la bocca.",
+    "dargos": "Da Titania, dove l'intero apparato diplomatico è un unico lungo scherzo alle spalle dell'umanità."
+  },
+  "origin": {
+    "zetareticulia": "Zeta Reticuli A",
+    "zetareticulib": "Zeta Reticuli B",
+    "titania": "Titania"
+  }
+}

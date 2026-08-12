@@ -959,6 +959,10 @@ var WeaponSystemProcedural = {
 
   finish(model, weapon) {
     if (!model || !weapon) return model;
+    // A sheathed blade is deliberately buried inside the shaft it hides in, so
+    // it has to be declared before the welder decides it is a part that came
+    // out in the wrong place.
+    this.prepareCane(model);
     // Pull anything that came out floating back onto the weapon, before the
     // gun parts are tagged (prepareGun measures the muzzle off the geometry).
     this.weldLooseParts(model);
@@ -1290,6 +1294,97 @@ var WeaponSystemProcedural = {
     }
   },
 
+  // ============================================================
+  // Sword canes
+  // ============================================================
+  // A cane that hides a blade has one moving part and the whole weapon reads
+  // on it, so it is driven the way a gun's action is rather than left to the
+  // ambient tickModelParts loop: the blade only ever moves while the weapon is
+  // being swung, and it has to be back in the shaft by the time the clip ends.
+  //
+  //   userData.cane = 'blade'   slides along +Y by userData.caneTravel
+  //   userData.cane = 'flash'   shown only while the blade is travelling
+  //
+  // The windows are fractions of the attack clip's own duration, and they are
+  // the same timeline MOTIONS.swordcane is written against.
+  CANE_DRAW: { out: 0.16, outEnd: 0.30, in: 0.80, inEnd: 0.96 },
+  CANE_TRAVEL: 0.4,
+
+  /**
+   * Marks the tagged parts so they survive welding and the static merge, the
+   * way prepareGun does for a firearm's action. Runs once per build.
+   */
+  prepareCane(model) {
+    if (!model) return model;
+    model.traverse((obj) => {
+      if (obj.userData && obj.userData.cane) obj.userData.dynamic = true;
+    });
+    return model;
+  },
+
+  /** Resolves the tagged parts of this instance. */
+  canePartsOf(model) {
+    if (model._caneParts) return model._caneParts;
+    const parts = {};
+    model.traverse((obj) => {
+      const tag = obj.userData && obj.userData.cane;
+      if (!tag || parts[tag]) return;
+      parts[tag] = obj;
+      obj.userData._caneRest = obj.position.y;
+    });
+    model._caneParts = parts;
+    return parts;
+  },
+
+  /** Starts a draw. Called when a sword-cane animation is played. */
+  beginCaneDraw(model, durationMs) {
+    if (!model) return;
+    if (!this.canePartsOf(model).blade) return;
+    model._caneDraw = { elapsed: 0, duration: Math.max(1, durationMs || 700) };
+  },
+
+  /**
+   * Drives the blade out of the shaft and back into it. Cheap when nothing is
+   * being drawn: a single property check.
+   */
+  tickCane(model, dtMs) {
+    const draw = model && model._caneDraw;
+    if (!draw) return;
+    const parts = this.canePartsOf(model);
+    const blade = parts.blade;
+    if (!blade) { model._caneDraw = null; return; }
+
+    draw.elapsed += dtMs;
+    const t = draw.elapsed / draw.duration;
+    const w = this.CANE_DRAW;
+    // Out fast and hard, back in unhurried: a spring, not a screw.
+    let k;
+    if (t <= w.out) k = 0;
+    else if (t < w.outEnd) k = 1 - Math.pow(1 - (t - w.out) / (w.outEnd - w.out), 3);
+    else if (t <= w.in) k = 1;
+    else if (t < w.inEnd) { const u = (t - w.in) / (w.inEnd - w.in); k = 1 - u * u; }
+    else k = 0;
+
+    blade.position.y = blade.userData._caneRest + k * (blade.userData.caneTravel || this.CANE_TRAVEL);
+
+    if (parts.flash) {
+      const lit = t > w.out && t < w.outEnd;
+      parts.flash.visible = lit;
+      if (lit) {
+        const glow = Math.sin(k * Math.PI);
+        const s = 0.5 + glow;
+        parts.flash.scale.set(s, s, s);
+        if (parts.flash.material) parts.flash.material.opacity = glow;
+      }
+    }
+
+    if (t >= 1) {
+      blade.position.y = blade.userData._caneRest;
+      if (parts.flash) parts.flash.visible = false;
+      model._caneDraw = null;
+    }
+  },
+
   /**
    * Re-tints every material into gold while keeping the model's own light and
    * shade: the hue and saturation are replaced, the lightness the builder chose
@@ -1363,6 +1458,9 @@ var WeaponSystemProcedural = {
     [/<Halberd>/i, 'createHalberdModel'],
     [/<Trident>/i, 'createTridentModel'],
     [/<Nunchaku>/i, 'createNunchakuModel'],
+    // A stick that is a scabbard. The blade is a `cane`-tagged part, run out
+    // of the shaft by tickCane on the HiddenBlade animation.
+    [/<HiddenBlade>/i, 'createBastoneInfernaleModel'],
     // Ranged / thrown subtypes
     [/<Railgun>/i, 'createRailgunModel'],
     [/<ArmCannon>/i, 'createArmCannonModel'],
@@ -1811,6 +1909,7 @@ var WeaponSystemProcedural = {
     Block: { kind: 'guard' },
     Parry: { kind: 'guard', dir: -1 },
     Riposte: { kind: 'guard', riposte: true },
+    HiddenBlade: { kind: 'swordcane' },
     Recoil: { kind: 'recoil' },
     RevolverRecoil: { kind: 'recoil', power: 1.25 },
     RifleRecoil: { kind: 'recoil', power: 1.5 },
@@ -1876,7 +1975,11 @@ var WeaponSystemProcedural = {
       motion = Object.assign({}, motion, { profile: this.gunProfileFor(weapon) });
       if (model) this.beginGunFire(model, weapon);
     }
-    return build.call(this, m, motion, H);
+    const clip = build.call(this, m, motion, H);
+    // The blade has to leave the shaft on the same clock the shaft is moving
+    // on, so the draw is started from the finished clip's own duration.
+    if (motion.kind === 'swordcane' && model) this.beginCaneDraw(model, clip.duration);
+    return clip;
   },
 
   MOTIONS: {
@@ -2001,6 +2104,37 @@ var WeaponSystemProcedural = {
           { t: hit, x: -dir * drift, y: drift * 0.5, z: 220, rx: 14, ry: -dir * 6, rz: -dir * 4, scale: zoom, ease: 'snap' },
           { t: hit + 0.06, x: -dir * drift * 1.2, y: drift * 0.7, z: 240, rx: 16, ry: -dir * 4, rz: -dir * 2, scale: zoom * 1.03, ease: 'inOut' },
           { t: 0.8, x: -dir * drift * 0.4, y: drift * 0.2, z: 90, rx: 6, ry: 0, rz: 0, scale: 1 + (zoom - 1) * 0.3, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A sword cane. The weapon starts the beat as a stick and finishes it as a
+    // stick; the only reason it hits at all happens in the middle, when the
+    // blade leaves the shaft. The clip is written around that: a long settle
+    // while nothing is showing, the kick of the release, the thrust down the
+    // line, and a withdrawal that ends on the ferrule tapping the floor.
+    // Depth is scale under the orthographic overlay camera, as with `thrust`.
+    // tickCane drives the blade itself over the same duration, so the windows
+    // in CANE_DRAW and the keyframe times below are one timeline.
+    swordcane(m, o, H) {
+      const power = o.power || 1;
+      const pull = (0.09 + m.heft * 0.08) * H;
+      const zoom = 1 + (0.30 + m.reach * 0.34) * power;
+      const drift = (0.04 + m.reach * 0.05) * H;
+      return {
+        duration: 620 + m.heft * 300 + m.reach * 150,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          // Turned point-forward while the shaft is still shut.
+          { t: 0.16, x: pull, y: -pull * 0.5, z: -50, rx: -14, ry: 18, rz: 12, scale: 0.88, ease: 'out' },
+          // The blade clears the mouth and the cane kicks in the hand.
+          { t: 0.30, x: pull * 0.66, y: -pull * 0.78, z: -30, rx: -22, ry: 10, rz: 5, scale: 0.93, ease: 'expoOut' },
+          { t: 0.46, x: -drift, y: drift * 0.5, z: 230, rx: 12, ry: -6, rz: -3, scale: zoom, ease: 'snap' },
+          { t: 0.54, x: -drift * 1.2, y: drift * 0.7, z: 250, rx: 14, ry: -4, rz: -2, scale: zoom * 1.03, ease: 'inOut' },
+          { t: 0.80, x: -drift * 0.3, y: drift * 0.15, z: 70, rx: 5, ry: 0, rz: 0, scale: 1 + (zoom - 1) * 0.22, ease: 'out' },
+          // Seated again, and set down.
+          { t: 0.94, x: 0, y: pull * 0.18, z: 0, rx: -3, ry: 0, rz: 0, scale: 1.01, ease: 'inOut' },
           { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
         ]
       };
@@ -3174,6 +3308,8 @@ var WeaponSystemProcedural = {
         // Trigger, action, ejected case and muzzle flash, while a shot is
         // still working through the gun.
         WeaponSystemProcedural.tickGun(this._model, deltaMs);
+        // The blade leaving a sword cane's shaft and going back into it.
+        WeaponSystemProcedural.tickCane(this._model, deltaMs);
       }
 
       // ---- Tick Verlet rope physics for whips and flails ----

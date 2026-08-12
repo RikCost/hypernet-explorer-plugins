@@ -1,0 +1,453 @@
+{
+  "event": {
+    "basic": {
+      "political": {
+        "assassination attempt": "ASSASSINATION ATTEMPT ON {leader} OF {actor} FOILED!",
+        "election": "{actor} HOLDS CONTROVERSIAL ELECTIONS, {leader} MAINTAINS POWER!",
+        "coup attempt": "MILITARY COUP ATTEMPT IN {actor} CRUSHED BY {leader}!",
+        "reforms": "{leader} ANNOUNCES SWEEPIN' {ideology} REFORMS IN {actor}!",
+        "scandal": "CORRUPTION SCANDAL ROCKS {actor} GOVERNMENT UNDER {leader}!",
+        "purge": "{leader} PURGES DA {actor} INNER CIRCLE; DOZENS OF OFFICIALS IZ NEVER SEEN AGAIN!",
+        "treaty signing": "{actor} SIGNS A MUTUAL DEFENCE TREATY UNDER {leader}!",
+        "constitutional crisis": "A CONSTITUTIONAL CRISIS PARALYSES {actor} FOR ELEVEN WEEKS!",
+        "mass exile": "THOUSANDS OF DISSIDENTS IZ EXPELLED FROM {actor} BY DECREE OF {leader}!",
+        "secret police expansion": "{actor} TRIPLES DA BUDGET OF ITS SECRET POLICE!",
+        "referendum": "A REFERENDUM IN {actor} PASSES BY A MARGIN NOBODY BELIEVES!",
+        "state funeral": "{actor} STAGES AN ENORMOUS STATE FUNERAL FOR A MINISTER WHO DIED IN OFFICE!",
+        "propaganda campaign": "{leader} LAUNCHES A NATIONWIDE PROPAGANDA CAMPAIGN ACROSS {actor}!",
+        "censorship decree": "{actor} OUTLAWS SIXTY BOOKS AN' FOUR SONGS IN A SINGLE DECREE!",
+        "party schism": "DA RULIN' PARTY OF {actor} SPLITS IN TWO OVER DOCTRINE!",
+        "border treaty": "{actor} REDRAWS A DISPUTED BORDER ON PAPER BEFORE ANYONE REDRAWS IT IN BLOOD!",
+        "amnesty": "{leader} GRANTS A SWEEPIN' AMNESTY IN {actor}; DA PRISONS EMPTY OVERNIGHT!",
+        "show trial": "A SHOW TRIAL IN {actor} CONVICTS MEN WHO WAZ ALREADY DEAD!"
+      },
+      "military": {
+        "border skirmish": "BORDER SKIRMISH BETWEEN {actor} FORCES AN' NEIGHBORIN' TERRITORY!",
+        "naval encounter": "{actor} NAVAL FORCES ENCOUNTER MYSTERIOUS VESSELS!",
+        "weapon development": "{actor} SCIENTISTS DEVELOP NEW EXPERIMENTAL TECHNOLOGY!",
+        "military parade": "{leader} REVIEWS MASSIVE MILITARY PARADE IN {actor}!",
+        "siege": "{actor} LAYS SIEGE TA A FORTIFIED TOWN FOR DA WHOLE OF DA WINTER!",
+        "aerial bombardment": "{actor} BOMBERS STRIKE A RAIL HUB; DA RAID IZ CALLED A TRAININ' ACCIDENT!",
+        "mutiny": "AN ENTIRE {actor} REGIMENT MUTINIES AN' IZ DISBANDED IN SILENCE!",
+        "blockade": "{actor} BLOCKADES A RIVAL'S PORTS; GRAIN PRICES DOUBLE!",
+        "armistice talks": "ARMISTICE TALKS OPEN IN A NEUTRAL HOTEL; {leader} SENDS NO DELEGATE!",
+        "conscription drive": "{actor} CONSCRIPTS A FULL GENERATION OF ITS YOUNG!",
+        "fortification project": "{actor} BEGINS A FORTIFICATION LINE DAT WILL NEVER BE FINISHED!",
+        "mercenary contract": "{leader} QUIETLY HIRES A MERCENARY COMPANY FOR {actor}!",
+        "submarine incident": "AN UNIDENTIFIED SUBMARINE IZ FOUND AGROUND ON AN {actor} BEACH!",
+        "proxy war": "{actor} FUNDS BOTH SIDES OF A WAR IT CLAIMS NOT TA BE IN!",
+        "airship disaster": "AN {actor} MILITARY AIRSHIP BURNS IN FULL VIEW OF A CROWD!",
+        "cavalry charge": "{actor} CAVALRY CHARGE A MACHINE-GUN LINE; DA SURVIVORS IZ DECORATED!",
+        "chemical trial": "{actor} TESTS A CHEMICAL AGENT ON AN EVACUATED VALLEY!",
+        "high defection": "A SENIOR {actor} OFFICER DEFECTS, TAKIN' DA CODEBOOKS WIT DEM!"
+      },
+      "economic": {
+        "market crash": "{actor} STOCK MARKET CRASHES, ECONOMY LOSES VALUE!",
+        "trade agreement": "{actor} SIGNS LUCRATIVE TRADE DEAL!",
+        "industrial growth": "{actor} INDUSTRIAL OUTPUT INCREASES BY 15%!",
+        "resource discovery": "VALUABLE MINERAL DEPOSITS DISCOVERED IN {actor}!",
+        "famine": "FAMINE GRIPS DA COUNTRYSIDE OF {actor}; DA CITIES IZ TOLD NOTHIN'!",
+        "currency reform": "{actor} DEVALUES ITS CURRENCY OVERNIGHT; SAVINGS EVAPORATE!",
+        "general strike": "A GENERAL STRIKE SHUTS DOWN EVERY FACTORY IN {actor} FOR NINE DAYS!",
+        "bank collapse": "DA LARGEST BANK IN {actor} COLLAPSES, TAKIN' THREE MINISTRIES WIT IT!",
+        "smuggling ring": "A SMUGGLIN' RING IZ FOUND MOVIN' RELICS OUT OF {actor} BY DA CRATE!",
+        "gold rush": "A GOLD RUSH EMPTIES HALF A PROVINCE OF {actor}!",
+        "rationing": "{actor} INTRODUCES RATIONIN' AN' CALLS IT A PATRIOTIC DIET!",
+        "monopoly formed": "A SINGLE HOUSE WINS A MONOPOLY OVER {actor} SHIPPIN'!",
+        "hyperinflation": "HYPERINFLATION IN {actor}; A LOAF OF BREAD COSTS A WHEELBARROW OF NOTES!",
+        "trade embargo": "{actor} IZ PLACED UNDER EMBARGO AN' STARTS TRADIN' THROUGH THIRD PARTIES!",
+        "railway boom": "A RAILWAY BOOM STITCHES {actor} TOGETHER IN UNDER TWO YEARS!",
+        "harvest failure": "DA HARVEST FAILS ACROSS {actor} FOR DA SECOND YEAR RUNNIN'!",
+        "guild charter": "A NEW MERCHANT GUILD IZ CHARTERED IN {actor} WIT ALARMIN' PRIVILEGES!"
+      },
+      "social": {
+        "plague outbreak": "MYSTERIOUS PLAGUE STRIKES {actor}!",
+        "technological breakthrough": "{actor} ACHIEVES BREAKTHROUGH IN RADIO/TELECOM!",
+        "cultural festival": "GRAND CULTURAL FESTIVAL CELEBRATES {actor} HERITAGE!",
+        "religious event": "MIRACULOUS APPARITION REPORTED IN {actor}!",
+        "mass migration": "TWO HUNDRED THOUSAND PEOPLE LEAVE {actor} IN A SINGLE SEASON!",
+        "university founded": "A UNIVERSITY IZ FOUNDED IN {actor} WIT A LOCKED WING NOBODY DISCUSSES!",
+        "sporting triumph": "{actor} WINS AN INTERNATIONAL TOURNAMENT AN' DECLARES A HOLIDAY!",
+        "great fire": "A GREAT FIRE TAKES A THIRD OF AN {actor} CITY!",
+        "public execution": "{actor} HOLDS ITS LAST PUBLIC EXECUTION; DA CROWD IZ ENORMOUS!",
+        "medical discovery": "{actor} PHYSICIANS PUBLISH A CURE AN' IZ IMMEDIATELY SUED!",
+        "literary movement": "A LITERARY MOVEMENT OUT OF {actor} DECLARES DA NOVEL DEAD!",
+        "riot": "BREAD RIOTS IN {actor} IZ PUT DOWN BY {leader} WITHIN DA WEEK!",
+        "temperance crusade": "A TEMPERANCE CRUSADE SWEEPS {actor}; DA STILLS MOVE UNDERGROUND!",
+        "quarantine": "{actor} QUARANTINES AN ENTIRE DISTRICT AN' FORGETS TA LIFT DA ORDER!",
+        "census": "DA {actor} CENSUS COUNTS MORE HOUSEHOLDS DEN PEOPLE!",
+        "cinema opens": "DA FIRST PICTURE HOUSE OPENS IN {actor}; DA AUDIENCE FLEES DA FIRST REEL!",
+        "radio craze": "RADIO SETS SELL OUT ACROSS {actor} AFTER A BROADCAST NOBODY CAN SOURCE!",
+        "schism of faith": "A SCHISM SPLITS DA FAITHFUL OF {actor} INTO TWO HOSTILE CHURCHES!"
+      },
+      "paranormal": {
+        "StrangeLightsInSky": "UNEXPLAINED LIGHTS DANCE ACROSS {actor} SKIES!",
+        "MysteriousDisappearances": "ENTIRE VILLAGE VANISHES IN {actor}!",
+        "PropheticDreams": "{leader} CLAIMS {skill} GUIDE {actor}.",
+        "CryptidSighting": "WITNESSES REPORT A PETRODEMON NEAR {actor}!",
+        "ThoughtTransmittedDisease": "TTD OUTBREAK IN {actor}; CITIZENS WEAR TINFOILDAMS!",
+        "TimeAnomaly": "{actor} EXPERIENCES A TIMEANOMALY; HISTORY IZ SHIFTED!",
+        "RainOfFish": "FISH FALL ON {actor} FOR THREE HOURS; NONE BELONG TA ANY KNOWN SEA!",
+        "BleedingStatues": "EVERY STATUE IN AN {actor} CATHEDRAL WEEPS BLOOD ON DA SAME MORNIN'!",
+        "SpontaneousCombustion": "NINE {actor} CITIZENS BURN FROM WITHIN; DA CHAIRS IZ UNTOUCHED!",
+        "GhostTrain": "A TRAIN DAT WAZ SCRAPPED IN 1904 ARRIVES ON TIME AT AN {actor} STATION!",
+        "MirrorPlague": "MIRRORS ACROSS {actor} BEGIN TA LAG HALF A SECOND BEHIND DEY OWNERS!",
+        "DoppelgangerEpidemic": "{actor} REGISTERS FOUR HUNDRED CITIZENS WHO MEET THEMSELVES IN DA STREET!",
+        "SleepwalkingPilgrimage": "THOUSANDS SLEEPWALK OUT OF {actor} TOWARDS A HILL DAT IZ NOT ON DA MAPS!",
+        "GravityInversion": "GRAVITY FAILS FOR ELEVEN MINUTES OVER AN {actor} VALLEY!",
+        "SecondMoon": "A SECOND MOON IZ PHOTOGRAPHED ABOVE {actor}, DEN DENIED BY EVERY OBSERVATORY!",
+        "WhisperingWells": "WELLS ACROSS {actor} WHISPER DA NAMES OF DA DROWNED!",
+        "LivingShadows": "SHADOWS IN {actor} BEGIN MOVIN' BEFORE DA BODIES DAT CAST DEM!",
+        "MemoryFog": "A FOG ROLLS OVER {actor}; DOZE WHO WALK IN IT FORGET DA LAST DECADE!",
+        "HollowChildren": "CHILDREN BORN IN {actor} DIS MONTH CAST NO REFLECTION!",
+        "SoulHarvest": "{actor} RECORDS A MONTH OF DEATHS WIT NO CAUSE AN' NO CORPSES!",
+        "DimensionalRift": "A RIFT OPENS ABOVE {actor}; SOMETHIN' ON DA OTHER SIDE IZ TAKIN' NOTES!",
+        "ReverseRain": "RAIN FALLS UPWARD ACROSS {actor} FOR A FULL DAY!",
+        "SingingStones": "DA STANDIN' STONES OF {actor} HOLD ONE CHORD FOR A WEEK!",
+        "ClockworkPossession": "EVERY CLOCK IN {actor} STRIKES THIRTEEN AN' KEEPS PERFECT TIME THEREAFTER!",
+        "PoltergeistUprising": "A POLTERGEIST UPRISIN' EMPTIES FOUR {actor} APARTMENT BLOCKS!",
+        "MassHallucination": "SIXTY THOUSAND PEOPLE IN {actor} SEE DA SAME FUNERAL DAT NEVER HAPPENED!",
+        "AngelicSighting": "SOMETHIN' ENORMOUS AN' WINGED IZ SEEN OVER {actor}; IT DOES NOT SPEAK!",
+        "DemonicIncursion": "A DEMONIC INCURSION IZ REPELLED IN {actor} BY {leader} PERSONALLY!",
+        "LeyLineSurge": "A LEYLINE SURGES BENEATH {actor}; EVERY CANDLE IN DA REGION RELIGHTS!",
+        "NumberStation": "AN UNLICENSED STATION BROADCASTS NUMBERS OVER {actor} IN A DEAD CHILD'S VOICE!",
+        "GeometryFailure": "A STREET IN {actor} BECOMES LONGER TA WALK BACK DOWN DEN TA WALK UP!",
+        "LanguageDecay": "A DIALECT OF {actor} LOSES ITS VERBS; SPEAKERS STOP REFERRIN' TA DA FUTURE!",
+        "ThePaleVisitor": "A PALE VISITOR CALLS ON {actor} HOUSEHOLDS BY NAME; DA CALLERS IZ NEVER TWICE DA SAME!",
+        "WeepingSky": "DA SKY OVER {actor} WEEPS SALT WATER FOR NINE DAYS!",
+        "InfiniteStaircase": "AN {actor} MINISTRY STAIRWELL GAINS A FLOOR DAT IZ NOT IN DA PLANS!",
+        "TelepathicPlague": "A TELEPATHIC PLAGUE SPREADS THROUGH {actor}; PRIVACY BECOMES A MEDICAL CONDITION!",
+        "ColorLoss": "{actor} LOSES DA COLOR BLUE FOR A FORTNIGHT; NOBODY CAN DESCRIBE WHAT IZ MISSIN'!",
+        "MoonSickness": "MOON SICKNESS TAKES DA HERDS AN' DEN DA HERDSMEN OF {actor}!",
+        "SkyLeviathan": "SOMETHIN' DA SIZE OF A CATHEDRAL SWIMS THROUGH DA CLOUDS ABOVE {actor}!",
+        "ChronoEcho": "{actor} LIVES DA SAME THURSDAY THREE TIMES; DA PAPERWORK IZ FILED ONCE!",
+        "CorpseAwakening": "DA DEAD OF AN {actor} CEMETERY SIT UP, LISTEN, AN' LIE BACK DOWN!",
+        "FleshTelegraph": "MESSAGES APPEAR AS WELTS ON DA SKIN OF {actor} TELEGRAPH OPERATORS!",
+        "StaticSermon": "A SERMON NOBODY PREACHED IZ HEARD BETWEEN STATIONS ACROSS {actor}!",
+        "DreamQuarantine": "{actor} QUARANTINES A DREAM DAT SPREADS BY BEING DESCRIBED!",
+        "ShadowTax": "AN {actor} DISTRICT REPORTS DAT SOMETHIN' HAB BEEN COLLECTIN' SHADOWS DOOR TA DOOR!",
+        "UnbornChoir": "A CHOIR OF UNBORN VOICES IZ RECORDED IN AN {actor} MATERNITY WARD!",
+        "GlassRain": "GLASS RAIN FALLS ON {actor}; DA SHARDS LAND EDGE-UP AN' HUM!",
+        "CompassFailure": "EVERY COMPASS IN {actor} POINTS AT DA SAME UNREMARKABLE FARMHOUSE!",
+        "AnimalCouncil": "DA ANIMALS OF AN {actor} FOREST IZ FOUND SITTIN' IN A CIRCLE, FACIN' INWARD!",
+        "NameTheft": "CITIZENS OF {actor} REPORT DEY NAMES BEING USED BY SOMEONE ELSE!"
+      },
+      "occult": {
+        "grimoire recovered": "{leader} RECOVERS A GRIMOIRE FROM A SEALED {actor} VAULT!",
+        "coven exposed": "A COVEN IZ EXPOSED AT DA HEART OF DA {actor} CIVIL SERVICE!",
+        "ritual sacrifice": "A RITUAL SACRIFICE IN {actor} IZ DISCOVERED TOO LATE TA BE INTERRUPTED!",
+        "summoning gone wrong": "A SUMMONIN' IN {actor} TAKES DA SUMMONERS INSTEAD!",
+        "relic consecration": "{actor} CONSECRATES A RELIC DAT HUMS WHEN CARRIED WEST!",
+        "ley survey": "{actor} COMPLETES DA FIRST FULL SURVEY OF ITS LEYLINES AN' CLASSIFIES IT!",
+        "public exorcism": "A PUBLIC EXORCISM IN {actor} IZ BROADCAST, DEN STRUCK FROM DA SCHEDULE!",
+        "alchemical breakthrough": "{actor} ALCHEMISTS TRANSMUTE SOMETHIN' DEY REFUSE TA NAME!",
+        "necromantic scandal": "A NECROMANTIC SCANDAL REACHES {leader}'S OWN HOUSEHOLD IN {actor}!",
+        "blood moon rite": "{actor} CULTS PERFORM A BLOOD MOON RITE; DA MOON OBLIGES!",
+        "oracle installed": "{leader} INSTALLS AN ORACLE AS A FORMAL ADVISOR TA {actor}!",
+        "curse laid": "A CURSE IZ LAID UPON {actor} BY AN EXILE AT DA BORDER STONE!",
+        "canonization": "{actor} CANONIZES A SAINT WHO HAB NOT YET DIED!",
+        "heresy trial": "A HERESY TRIAL IN {actor} ENDS WIT DA JUDGES RECANTIN'!",
+        "astrological decree": "{actor} SETS ITS HARVEST AN' ITS WAR CALENDAR BY DA STARS!",
+        "spirit binding": "A SPIRIT IZ BOUND INTO AN {actor} RESERVOIR TA KEEP DA WATER SWEET!",
+        "occult academy founded": "AN OCCULT ACADEMY IZ FOUNDED IN {actor} UNDER STATE LICENCE!",
+        "forbidden translation": "A FORBIDDEN TEXT IZ TRANSLATED IN {actor}; DA TRANSLATORS GO QUIET!"
+      },
+      "scientific": {
+        "polar expedition": "AN {actor} POLAR EXPEDITION RETURNS WIT ONE MORE MAN DEN IT LEFT WIT!",
+        "observatory built": "{actor} COMPLETES AN OBSERVATORY AIMED AT A FIXED POINT IN EMPTY SKY!",
+        "particle experiment": "{actor} PHYSICISTS SPLIT SOMETHIN' DAT WAZ NOT SUPPOSED TA BE DIVISIBLE!",
+        "vaccine trial": "{actor} TRIALS A VACCINE ON A WHOLE PROVINCE AT ONCE!",
+        "archaeological dig": "AN {actor} DIG UNCOVERS A CITY BENEATH A CITY BENEATH A CITY!",
+        "failed prototype": "AN {actor} PROTOTYPE FAILS LOUDLY AN' TAKES A TESTIN' GROUND WIT IT!",
+        "radio anomaly research": "{actor} RESEARCHERS CATALOGUE A SIGNAL DAT ANSWERS QUESTIONS!",
+        "cryptozoological survey": "{actor} FUNDS A SURVEY OF ANIMALS IT OFFICIALLY DENIES!",
+        "deep drilling": "{actor} DRILLS DEEPER DEN ANYONE HAB DRILLED AN' STOPS ABRUPTLY!",
+        "flight record": "AN {actor} PILOT SETS A RECORD AN' LANDS TWO HOURS BEFORE TAKEOFF!",
+        "vivisection scandal": "A VIVISECTION SCANDAL CLOSES THREE {actor} LABORATORIES!",
+        "element isolated": "{actor} ISOLATES A NEW ELEMENT AN' NO CAN FIT IT IN DA TABLE!",
+        "seismic study": "{actor} SEISMOGRAPHS RECORD A HEARTBEAT BENEATH DA BEDROCK!",
+        "surgical first": "{actor} SURGEONS PERFORM AN OPERATION DAT HAB BEEN THOUGHT FATAL!",
+        "computing engine": "{actor} BUILDS A CALCULATIN' ENGINE DAT FINISHES EARLY!",
+        "rocket test": "AN {actor} ROCKET CLEARS DA ATMOSPHERE AN' IZ NOT HEARD FROM AGAIN!"
+      },
+      "disaster": {
+        "earthquake": "AN EARTHQUAKE LEVELS AN {actor} CITY IN NINETY SECONDS!",
+        "flood": "FLOODS TAKE DA LOW COUNTRY OF {actor} AN' DO NOT RECEDE FOR MONTHS!",
+        "volcanic eruption": "AN ERUPTION BURIES {actor} FARMLAND UNDER ASH!",
+        "mine collapse": "A ME COLLAPSE IN {actor} KILLS A WHOLE VILLAGE'S WORTH OF MEN!",
+        "shipwreck": "AN {actor} LINER GOES DOWN WIT EVERYONE ABOARD AN' NO DISTRESS CALL!",
+        "firestorm": "A FIRESTORM CROSSES {actor} FASTER DEN HORSES CAN RUN!",
+        "blizzard": "A BLIZZARD CUTS {actor} OFF FROM DA WORLD FOR FIVE WEEKS!",
+        "meteor strike": "A METEOR STRIKES {actor}; DA CRATER IZ FENCED OFF AN' GUARDED!",
+        "dam failure": "A DAM FAILS ABOVE AN {actor} VALLEY DAT WAZ TOLD IT WAZ SAFE!",
+        "train wreck": "AN {actor} EXPRESS DERAILS ON A CLEAR NIGHT ON A STRAIGHT TRACK!",
+        "landslide": "A LANDSLIDE ERASES TWO {actor} VILLAGES FROM DA MAP!",
+        "drought": "A DROUGHT EMPTIES DA RIVERS OF {actor} AN' EXPOSES WHAT WAZ IN DEM!",
+        "locust swarm": "LOCUSTS STRIP {actor} BARE IN A SINGLE AFTERNOON!",
+        "bridge collapse": "AN {actor} BRIDGE COLLAPSES UNDER A PARADE!"
+      },
+      "criminal": {
+        "heist": "THIEVES EMPTY DA NATIONAL VAULT OF {actor} WITHOUT TRIPPIN' A SINGLE LOCK!",
+        "serial killer": "A KILLER WORKS {actor} FOR TWO YEARS BEFORE ANYONE CONNECTS DA DEATHS!",
+        "smuggling bust": "{actor} CUSTOMS SEIZE A CARGO DEY WILL NOT ITEMISE!",
+        "assassin guild": "AN ASSASSIN'S GUILD IZ FOUND OPERATIN' FROM AN {actor} MINISTRY ANNEX!",
+        "black market": "A BLACK MARKET IN {actor} OUTGROWS DA LEGAL ECONOMY!",
+        "kidnapping": "AN HEIR OF {actor} IZ KIDNAPPED AN' RETURNED WRONG!",
+        "forgery scandal": "A FORGERY SCANDAL IN {actor} CALLS A DECADE OF DOCUMENTS INTO DOUBT!",
+        "prison break": "EVERY PRISONER WALKS OUT OF AN {actor} FORTRESS PRISON IN ONE NIGHT!",
+        "arson ring": "AN ARSON RING BURNS {actor} ARCHIVES TA DA GROUND, BUILDIN' BY BUILDIN'!",
+        "body snatching": "{actor} GRAVES IZ EMPTIED FASTER DEN DEY CAN BE FILLED!",
+        "counterfeit relics": "{actor} MARKETS FLOOD WIT COUNTERFEIT RELICS; SOME OF DEM WORK!",
+        "gang war": "A GANG WAR COSTS {actor} MORE LIVES DIS YEAR DEN DA BORDER DID!"
+      },
+      "royal": {
+        "royal wedding": "GRAND ROYAL WEDDIN' UNITES {actor} NOBILITY!",
+        "succession crisis": "{actor} FACES SUCCESSION CRISIS.",
+        "royal scandal": "SCANDAL ROCKS {actor} COURT.",
+        "coronation": "{actor} CROWNS A NEW SOVEREIGN IN A CEREMONY LASTIN' NINE HOURS!",
+        "abdication": "DA SOVEREIGN OF {actor} ABDICATES AN' LEAVES BY A SERVICE DOOR!",
+        "royal birth": "AN HEIR IZ BORN TA DA HOUSE OF {actor}, A MONTH BEFORE IT WAZ POSSIBLE!",
+        "dynastic pact": "{actor} BINDS ITSELF TA A FOREIGN HOUSE BY MARRIAGE CONTRACT!",
+        "regicide": "A REGICIDE IN {actor} IZ BLAMED ON A MAN WHO NO CAN READ!",
+        "jubilee": "{actor} CELEBRATES A JUBILEE IT NO CAN AFFORD!",
+        "royal exile": "DA {actor} ROYAL FAMILY IZ PUT ON A TRAIN AN' ASKED NOT TA WRITE!",
+        "pretender emerges": "A PRETENDER TA DA {actor} THRONE APPEARS WIT BETTER DOCUMENTS DEN DA INCUMBENT!"
+      }
+    },
+    "weird": {
+      "political": {
+        "assassination attempt": "{leader} SURVIVED AN ASSASSINATION ATTEMPT BY DEY OWN FUTURE SELF!",
+        "election": "DA ELECTION IN {actor} RESULTED IN A TIE BETWEEN {leader} AN' A SENTIENT CLOUD!",
+        "reforms": "{leader} LEGALIZES 'SOUL-TRADIN'' IN {actor}!",
+        "referendum": "{actor} HOLDS A REFERENDUM ON WHETHER DA REFERENDUM HAPPENED!",
+        "censorship decree": "{actor} BANS A COLOR, A CHORD, AN' DA NUMBER BETWEEN SIX AN' SEVEN!",
+        "state funeral": "{actor} BURIES A MINISTER WHO IZ STILL ATTENDIN' MEETINGS!"
+      },
+      "military": {
+        "border skirmish": "A BORDER SKIRMISH IN {actor} WAZ FOUGHT USING WEAPONS DAT DELETE MEMORIES!",
+        "weapon development": "{actor} DEVELOPS A BOMB DAT EXPLODES INTO 'PURE MEANIN''!",
+        "conscription drive": "{actor} BEGINS CONSCRIPTIN' DA UNBORN AN' DA RECENTLY FORGOTTEN!",
+        "blockade": "{actor} BLOCKADES A PORT DAT EXISTS ONLY ON THURSDAYS!"
+      },
+      "economic": {
+        "currency reform": "{actor} PEGS ITS CURRENCY TA DA COLLECTIVE MOOD AN' INFLATES BY WEEPIN'!",
+        "market crash": "DA {actor} MARKET CRASHES RETROACTIVELY; LAST YEAR'S FORTUNES IZ GONE!",
+        "monopoly formed": "A SINGLE FIRM IN {actor} ACQUIRES EXCLUSIVE RIGHTS TA TUESDAYS!"
+      },
+      "social": {
+        "radio craze": "EVERY SET IN {actor} PLAYS DA SAME BROADCAST, DATED NEXT YEAR!",
+        "census": "DA {actor} CENSUS FINDS ELEVEN THOUSAND PEOPLE WHO WAZ NEVER BORN!",
+        "plague outbreak": "AN {actor} PLAGUE TRANSMITS BY EYE CONTACT AN' CURES ITSELF BY APOLOGY!"
+      },
+      "paranormal": {
+        "TimeAnomaly": "{actor} IZ EXPERIENCIN' TUESDAY TWICE EVERY WEEK DUE TA A TEMPORAL LEAK!",
+        "MysteriousDisappearances": "PEOPLE IN {actor} IZ BEING REPLACED BY 2D CARDBOARD CUTOUTS!",
+        "ThoughtTransmittedDisease": "A VIRAL IDEA IN {actor} CAUSES CITIZENS TA SPEAK ONLY IN CAMELCASE!",
+        "MemoryFog": "{actor} FORGETS AN ENTIRE DECADE AN' FILES IT AS A CLERICAL ERROR!",
+        "GeometryFailure": "THREE {actor} STREETS NOW MEET AT AN ANGLE DAT ADDS UP TA 400 DEGREES!",
+        "ColorLoss": "{actor} TRADES AWAY DA COLOR GREEN TA SETTLE A DEBT!",
+        "LanguageDecay": "DA {actor} LANGUAGE LOSES DA PAST TENSE; DA ARCHIVES BECOME FICTION!",
+        "ShadowTax": "{actor} FORMALISES DA SHADOW TAX AN' ISSUES RECEIPTS!",
+        "NumberStation": "DA NUMBERS STATION OVER {actor} BEGINS READIN' OUT LISTENERS' NAMES!",
+        "HollowChildren": "HOLLOW CHILDREN IN {actor} IZ ISSUED IDENTITY PAPERS AN' ENROLLED IN SCHOOL!",
+        "SkyLeviathan": "DA THING ABOVE {actor} HAB BEGUN NESTIN'!",
+        "DreamQuarantine": "{actor} MAKES IT A CRIMINAL OFFENCE TA DREAM ABOUT DA MINISTRY!"
+      },
+      "occult": {
+        "oracle installed": "DA {actor} ORACLE IZ PLACED IN CHARGE OF DA RAILWAY TIMETABLE!",
+        "spirit binding": "{actor} BINDS A SPIRIT INTO DA CENSUS AN' IT STARTS EDITIN'!",
+        "canonization": "{actor} CANONIZES A SAINT WHO EXISTS ONLY IN DA THIRD PERSON!"
+      },
+      "scientific": {
+        "computing engine": "DA {actor} ENGINE SOLVES A PROBLEM NOBODY POSED AN' ASKS FOR ANOTHER!",
+        "particle experiment": "AN {actor} EXPERIMENT PRODUCES A PARTICLE DAT REMEMBERS BEING OBSERVED!",
+        "rocket test": "AN {actor} ROCKET RETURNS BEFORE LAUNCH, SCORCHED AN' EMPTY!"
+      },
+      "criminal": {
+        "heist": "THIEVES STEAL A DECADE FROM DA {actor} TREASURY; DA LEDGERS SKIP IT!",
+        "forgery scandal": "{actor} FORGERS PRODUCE A PROVINCE DAT BRIEFLY APPEARS ON MAPS!"
+      }
+    },
+    "generic": "{type} OCCURS IN {actor}."
+  },
+  "leader": {
+    "unknown": "UNKNOWN LEADER",
+    "unknownIdeology": "UNKNOWN"
+  },
+  "government": {
+    "Theocracy": "THEOCRACY",
+    "Single-Party State": "SINGLE-PARTY STATE",
+    "Parliamentary Monarchy": "PARLIAMENTARY MONARCHY",
+    "Technocracy": "TECHNOCRACY",
+    "Sultanate": "SULTANATE",
+    "Divine Pantheon": "DIVINE PANTHEON",
+    "Serene Republic": "SERENE REPUBLIC",
+    "Corporatocracy": "CORPORATOCRACY",
+    "Warband Confederacy": "WARBAND CONFEDERACY",
+    "Free Confederation": "FREE CONFEDERATION",
+    "Crown Protectorate": "CROWN PROTECTORATE",
+    "Punitive Colony Regime": "PUNITIVE COLONY REGIME",
+    "Puppet Government": "PUPPET GOVERNMENT",
+    "Parliamentary Republic": "PARLIAMENTARY REPUBLIC",
+    "Constitutional Monarchy": "CONSTITUTIONAL MONARCHY",
+    "Federal Republic": "FEDERAL REPUBLIC",
+    "Confederation of Cantons": "CONFEDERATION OF CANTONS",
+    "City-State Council": "CITY-STATE COUNCIL",
+    "Crowned Republic": "CROWNED REPUBLIC",
+    "old order": "OLD ORDER"
+  },
+  "fixed": {
+    "1914-07": "WORLD WAR ME BEGINS: ARCHDUKE FRANZ FERDINAND IZ ASSASSINATED. DA ALLIANCE SYSTEMS OF DA HYPERPOWERS TRIGGER A GLOBAL CONFLICT!",
+    "1917-10": "OCTOBER REVOLUTION: DA SOVIET UNION EMERGES FROM DA ASHES OF IMPERIAL RUSSIA. VLADIMIR LENIN SEIZES CONTROL OF DA ARCHIVE FOUNDATION!",
+    "1918-11": "WWI ENDS: ARMISTICE SIGNED. DA MAP OF EUROPE IZ REDRAWN. OTTOMAN EMPIRE BEGINS ITS SLOW DECLINE!",
+    "1939-09": "WORLD WAR II BEGINS: INVASION OF POLAND. TOTAL WAR ENGULFS DA GLOBE. DA ATLANTIC PROTECTORATE IZ MOBILIZED BY BRITANNIA!",
+    "1945-05": "WWII ENDS IN EUROPE: VE DAY. SOVIET UNION AN' BRITANNIA EMERGE AS DA DOMINANT GLOBAL FORCES!",
+    "1970-05": "DA SOVIET UNION OPENS DA KOLA SUPERDEEP BOREHOLE. A MASSIVE GOBLIN HORDE EMERGES FROM DA DEPTHS OF DA EARTH!",
+    "1978-10": "POPE JOHN PAUL II ELECTED: CARDINAL KAROL WOJTYŁA IZ ELECTED POPE, TAKIN' DA NAME JOHN PAUL II. HE IZ SET AS DA HOLY LEADER OF DA HOLY VATICAN EMPIRE, PROTECTED BY DESTINY!",
+    "1981-05": "POPE JOHN PAUL II ASSASSINATION ATTEMPT: MEHMET ALI AĞCA, A TURKISH NATIONALIST FROM DA OTTOMAN EMPIRE, SHOOTS POPE JOHN PAUL II IN ST. PETER'S SQUARE. DA POPE SURVIVES DUE TA DIVINE PROTECTION. MEHMET ALI AĞCA IZ CAPTURED AN' BECOMES A FOOTNOTE IN HISTORY!",
+    "1992-01": "DA SQUISHIN' BEGINS: REALITY STARTS TA FEEL 'THIN'. DIMENSIONAL STABILITY DROPS BY 15%. ANOMALIES REPORTED WORLDWIDE!",
+    "2001-09": "SEPTEMBER 11: NEW YORK IZ STRUCK BY TEONUCLEAR WEAPONS. DA BLAST STRIPS OUT DA SOULS OF 3 MILLION CITIZENS, LEAVIN' 'HOLLOW SHELLS'!"
+  },
+  "artifactDescription": "A UNIQUE ARTIFACT OF IMMENSE POWER!",
+  "artifactName": {
+    "template": "{adj} {noun}",
+    "adjectives": [
+      "LEGENDARY",
+      "ANCIENT",
+      "PUZZLIN'",
+      "ALIEN",
+      "DIVINE",
+      "CURSED",
+      "ETHEREAL",
+      "QUANTUM",
+      "FORGOTTEN",
+      "ASTRAL"
+    ],
+    "adjectivesFem": [
+      "LEGENDARY",
+      "ANCIENT",
+      "PUZZLIN'",
+      "ALIEN",
+      "DIVINE",
+      "CURSED",
+      "ETHEREAL",
+      "QUANTUM",
+      "FORGOTTEN",
+      "ASTRAL"
+    ],
+    "nounGender": {},
+    "itemNouns": [
+      "CORE",
+      "RELIC",
+      "CRYSTAL",
+      "PRISM",
+      "DEVICE",
+      "CODEX",
+      "IDOL"
+    ],
+    "weaponNouns": [
+      "BLADE",
+      "AXE",
+      "STAFF",
+      "BOW",
+      "GLAIVE",
+      "HAMMER",
+      "GUN"
+    ],
+    "armorNouns": [
+      "AEGIS",
+      "PLATE",
+      "CLOAK",
+      "SHIELD",
+      "HELM",
+      "MANTLE",
+      "CUIRASS"
+    ]
+  },
+  "reason": {
+    "dawn": "STATUS AT DA DAWN OF DA CENTURY",
+    "independence": "INDEPENDENCE FROM {power}",
+    "annexation": "ANNEXATION",
+    "conquest": "CONQUEST (FORMERLY {power})"
+  },
+  "conquest": {
+    "independence": "{nation} BREAKS FREE OF {power}; DA {prevGov} IZ DISMANTLED AN' A {gov} RESTORED!",
+    "annex": "{conqueror} ANNEXES {nation}; DA {prevGov} IZ REPLACED BY A {gov}!",
+    "wrest": "{conqueror} WRESTS {nation} FROM {power}; DA {prevGov} IZ REPLACED BY A {gov}!"
+  },
+  "epidemic": {
+    "hysteriaName": "DA {disease} OF {origin}, {year}",
+    "medicalName": "{disease} OUTBREAK, {origin} {year}",
+    "spread": " IT REACHES {places} BEFORE IT BURNS OUT!",
+    "hysteria": "{disease} TAKES HOLD IN {origin}: {infected} IZ SWEPT UP OVER {months} MONTH(S), AN' DA AUTHORITIES INSIST DERE IZ NOTHIN' TA CATCH.{spread}",
+    "medical": "{disease} BREAKS OUT IN {origin}, {infected} INFECTED AN' {deaths} DEAD OVER {months} MONTH(S).{spread}"
+  },
+  "artifact": {
+    "transfer": "{holder} {action} DA {artifact}{from}.",
+    "from": " FROM {holder}",
+    "found": "{holder} {action} DA {artifact}.",
+    "stoleFrom": "STOLE FROM {holder}",
+    "discovered": "DISCOVERED",
+    "action": {
+      "discovered": "DISCOVERED",
+      "crafted": "CRAFTED",
+      "exhumed": "EXHUMED",
+      "seized": "SEIZED",
+      "purchased": "PURCHASED",
+      "inherited": "INHERITED",
+      "stole": "STOLE",
+      "was gifted": "WAZ GIFTED"
+    }
+  },
+  "leaderDeath": {
+    "assassinated": "ASSASSINATED IN {place}",
+    "executed": "EXECUTED AFTER A FAILED PLOT IN {place}"
+  },
+  "internal": {
+    "electionWin": "{winner} WINS DA ELECTION IN {place}, REPLACIN' {loser}!",
+    "electionHold": "{leader} MAINTAINS POWER IN {place} AFTER A TIGHT ELECTION!",
+    "coupWin": "MILITARY COUP! {winner} SEIZES POWER IN {place}, OVERTHROWIN' {loser}!",
+    "coupFail": "A COUP ATTEMPT BY {rival} IN {place} WAZ SUPPRESSED!",
+    "plotFailedOddly": "AN ASSASSINATION PLOT AGAINST {leader} IN {place} FAILED MYSTERIOUSLY!",
+    "assassinated": "{leader} WAZ ASSASSINATED! {rival} TAKES CONTROL OF {place}!",
+    "plotFailedEscape": "AN ASSASSINATION PLOT AGAINST {leader} IN {place} FAILED. DA CONSPIRATOR {rival} ESCAPED JUSTICE!",
+    "plotFailedExecuted": "ASSASSINATION ATTEMPT ON {leader} FAILED. RIVAL {rival} WAZ EXECUTED!",
+    "alliance": "{leader} AN' {rival} FORM AN UNEASY POLITICAL ALLIANCE IN {place}!"
+  },
+  "effect": {
+    "ecoCrash": "ECO -20%",
+    "ecoBoom": "ECO +15%",
+    "popLoss": "POP -5%",
+    "ecoDamage": "ECO -7%",
+    "infoGain": "INFO +20",
+    "techGain": "VEL +20",
+    "arcaneGain": "ARC +10",
+    "militaryGain": "MIL +10"
+  },
+  "log": {
+    "blank": "DA HISTORY BOOKS IZ BLANK!",
+    "noEra": "NO SIGNIFICANT RECORDS REMAIN FROM DAT ERA!",
+    "fact": "[{date}] {description}"
+  },
+  "ui": {
+    "back": "BACK",
+    "continue": "CONTINUE",
+    "artifactBadge": "ARTIFACT",
+    "military": "MILITARY",
+    "economy": "ECONOMY"
+  },
+  "assembly": {
+    "motion": "DA ASSEMBLY VOTED ON {title}. {result} BY {forCount} TA {againstCount} WIT {abstainCount} ABSTAININ', ON A {ballot} BALLOT. {envoy} SPOKE {stance} {delegation}!",
+    "graveMotion": "DA ASSEMBLY TOOK UP {title} AN' REFERRED IT TA DA SECURITY COUNCIL. {result} BY {forCount} TA {againstCount} WIT {abstainCount} ABSTAININ', ON A {ballot} BALLOT. {envoy} SPOKE {stance} {delegation}!",
+    "unattendedMotion": "DA ASSEMBLY VOTED ON {title}. {result} BY {forCount} TA {againstCount} WIT {abstainCount} ABSTAININ', ON A {ballot} BALLOT!",
+    "unattendedGraveMotion": "DA ASSEMBLY TOOK UP {title} AN' REFERRED IT TA DA SECURITY COUNCIL. {result} BY {forCount} TA {againstCount} WIT {abstainCount} ABSTAININ', ON A {ballot} BALLOT!"
+  },
+  "battle": {
+    "bossSlain": "DA PARTY OF {leader} DEFEATED {enemy}.",
+    "petrodemonSlain": "DA PARTY OF {leader} DEFEATED DA PETRODEMON {enemy}!"
+  },
+  "party": {
+    "wipe": "DA PARTY OF {party} WAZ LOST WIT ALL HANDS!",
+    "wipeAt": "DA PARTY OF {party} WAZ LOST WIT ALL HANDS AT {place}!"
+  }
+}

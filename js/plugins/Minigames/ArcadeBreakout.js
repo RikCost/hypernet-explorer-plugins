@@ -127,7 +127,7 @@
             this._levelText.position.set(Graphics.width - 250, 40);
             this._container.addChild(this._levelText);
 
-            const instrStr = this._isDemo ? 'DEMO MODE - SPECTATING' : 'MOVE ARROWS, OK/SPACE TO LAUNCH';
+            const instrStr = this._isDemo ? 'DEMO MODE - SPECTATING' : '';
             this._instructionText = new PIXI.Text(instrStr, {
                 fontFamily: font,
                 fontSize: 14,

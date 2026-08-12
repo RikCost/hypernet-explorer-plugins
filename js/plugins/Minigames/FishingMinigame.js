@@ -2003,9 +2003,18 @@
             this._grantCatch(f);
         }
 
+        // js/db/Items/fishDatabase.json holds the English name as the record's
+        // own label; what the player reads comes from Fishing.fish.<id>, so the
+        // db name stays the identifier the rest of the file matches on.
+        _fishName(data) {
+            if (!data) return '';
+            const key = 'Fishing.fish.' + data.id;
+            return (data.id != null && T.has(key)) ? T(key) : (data.name || '');
+        }
+
         _entityName(ent) {
             if (ent.type === 'monster') return ent.enemyName || (ent.data && ent.data.name) || T('Fishing.something');
-            return (ent.data && ent.data.name) || T('Fishing.something');
+            return this._fishName(ent.data) || T('Fishing.something');
         }
 
         _entityWeight(ent) {

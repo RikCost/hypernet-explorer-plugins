@@ -735,6 +735,13 @@
     },
   };
 
+  // A room for the night. RentSystem reads the name the same loose way (a
+  // "Room" is what it is called, whatever else the mapper wrote beside it).
+  const ROOM_NAME = /^room\b/;
+  function _isRoomEvent(ev) {
+    return ROOM_NAME.test((ev?.event()?.name || "").toLowerCase());
+  }
+
   // Register the generic capabilities from the design doc's catalogue (§2).
   // Each ties an event-name/note signature to the need(s) it can satisfy and
   // a 0-100 desirability score (§3.2), higher-scoring matches are preferred.
@@ -771,9 +778,7 @@
   InteractionScanner.registerCapability({
     id: "rentable_room",
     needs: ["sleep", "comfort"],
-    match(ev) {
-      return (ev.event()?.name || "") === "Room";
-    },
+    match: (ev) => _isRoomEvent(ev),
     weight(profile, need) {
       const tier = profile?.wealthTierBase ?? 0;
       if (tier < 1) return 0; // can't afford rent yet, fall back to home/wandering
@@ -881,25 +886,46 @@
     },
   });
 
-  // ---- Event-name → need(s) lookup table -------------------------------
+  // ---- Event-name → need(s) keyword table -------------------------------
   // Quick-add structure for simple "this event name satisfies these needs"
   // bindings, without writing a bespoke detector/weight pair each time.
-  // Matches on exact (lower-cased) event name. Extend this table to teach
-  // NPCs about new everyday objects (e.g. add "shower": ["hygiene"]).
+  //
+  // Matched as KEYWORDS ANYWHERE IN THE NAME rather than as the whole name,
+  // because a mapper names the thing, not the need: an exact table found "WC"
+  // and missed "WC ornated", "Public Toilet" and "Shower (broken)", which are
+  // the same washroom. Short words are held to word boundaries so a Barrel is
+  // not a bar, and a stem is spelled with its tail (`bath\w*`) where the
+  // longer words are the same object (bathtub, bathhouse).
+  //
+  // This table is the ONE place both the town's NPCs (BehaviorDispatcher) and
+  // a loose party member (Core/AutoIdleExplorer.js) ask what a thing on the
+  // map is good for, so teaching one teaches the other.
   const EVENT_NAME_NEEDS = {
-    "wc":   ["hygiene"],
-    "sink": ["hygiene"],
-    "pc":   ["social", "leisure"],
+    hygiene: /\b(wc|toilet|latrine|lavatory|bathroom|washroom|washbasin|basin|sink|shower|bath\w*|fountain)\b/,
+    leisure: /\b(arcade|cabinet|pinball|jukebox|piano|tv|television|radio|billiard\w*|pool table|bowling|slot machine|casino|swing|playground)\b/,
+    social:  /\b(pc|phone|bar|pub|tavern|inn|cafe|caffe|canteen|counter)\b/,
+    comfort: /\b(bench|chair|stool|sofa|couch|armchair|seat|bed)\b/,
   };
 
-  for (const [evName, needs] of Object.entries(EVENT_NAME_NEEDS)) {
+  for (const [need, pattern] of Object.entries(EVENT_NAME_NEEDS)) {
     InteractionScanner.registerCapability({
-      id: `named_${evName}`,
-      needs,
-      match(ev) { return (ev.event()?.name || "").toLowerCase() === evName; },
+      id: `named_${need}`,
+      needs: [need],
+      match(ev) { return pattern.test((ev.event()?.name || "").toLowerCase()); },
       weight() { return 40; },
     });
   }
+
+  // What a name says it is good for, for anything that wants the answer
+  // without the scan (the party AI reads it off a single event).
+  InteractionScanner.needsOfName = function (name) {
+    const n = String(name || "").toLowerCase();
+    const out = [];
+    for (const [need, pattern] of Object.entries(EVENT_NAME_NEEDS)) {
+      if (pattern.test(n)) out.push(need);
+    }
+    return out;
+  };
 
   // ============================================================================
   // SECTION 6, BEHAVIOUR DISPATCHER
@@ -1551,16 +1577,23 @@
     }
   });
 
-  // Rentable room: paid sleep/comfort upgrade, mirrors RentSystem.rent's
-  // price deduction, but skips the 24h-stay scene since the NPC isn't the
-  // player. Restores sleep fully and nudges them toward a better home tier.
+  // Rentable room: a paid night, taken through RentSystem itself rather than
+  // simulated beside it. The room has to actually be FREE (the party may be in
+  // it, or another NPC may have taken it an hour ago) and the NPC pays the
+  // price that room asks, out of their own purse. Taking it puts it off the
+  // market for the night, so a town with three beds cannot put a hundred
+  // people up in them.
   EventBus.on("npc:interact", ({ name, targetEvent }) => {
-    if ((targetEvent?.event()?.name || "") !== "Room") return;
+    if (!_isRoomEvent(targetEvent)) return;
     const profile = $gameSystem?._npcSociety?.[name];
-    if (!profile) return;
+    if (!profile || !window.RentSystem) return;
 
-    const price = 200 + Math.floor((profile.wealthTierBase ?? 0) * 150);
+    const mapId = $gameMap?.mapId();
+    const eventId = targetEvent.eventId();
+    const price = window.RentSystem.priceOf(mapId, eventId);
+    if (!window.RentSystem.isFree(mapId, eventId)) return;
     if ((profile.money ?? 0) < price) return;
+    if (!window.RentSystem.rentForNPC(name, mapId, eventId, profile.money)) return;
 
     profile.money -= price;
     profile.sleep = 100;

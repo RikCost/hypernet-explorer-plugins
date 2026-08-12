@@ -1070,7 +1070,7 @@
     // matches the parchment book theme and never freezes the canvas).
     const CONFIRM_MODAL_CSS = `
         .save-modal-overlay {
-            position: fixed; inset: 0; z-index: 1200;
+            position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1200;
             display: flex; align-items: center; justify-content: center;
             background: rgba(0, 0, 0, 0.62);
             font-family: 'Lora', 'Times New Roman', serif;
@@ -1397,10 +1397,37 @@
         return false;
     }
 
+    // Where the party fell, named the way the world names places, so the entry
+    // reads as a record rather than as a map id.
+    function wipePlace() {
+        try {
+            if (window.WorldMapTransfer && window.WorldMapTransfer.locationName) {
+                const name = window.WorldMapTransfer.locationName();
+                if (name) return String(name);
+            }
+        } catch (e) { /* the location service is optional */ }
+        return $gameMap && $gameMap.displayName ? String($gameMap.displayName() || "") : "";
+    }
+
+    function recordPermadeathWipe() {
+        const hm = window.HistoryManager;
+        if (!hm || typeof hm.recordPartyWipe !== "function") return;
+        if (!window.$gameParty || !$gameParty.members) return;
+        const names = $gameParty.members().map((member) => member && member.name()).filter(Boolean);
+        if (!names.length) return;
+        try { hm.recordPartyWipe(names, wipePlace()); }
+        catch (e) { console.warn("[SaveSystem] party wipe record failed", e); }
+    }
+
     // Entry point for a terminal death. Wipes the manual save (only in a
     // Switch 9 run), stops audio, and opens the Game Over screen.
     window.SaveSystem.triggerGameOver = function () {
         if (window.$gameSwitches && $gameSwitches.value(9)) {
+            // The savegame is about to stop existing, so the only place this
+            // party can still be read afterwards is the world's own history,
+            // which every other playthrough of the world shares. Written
+            // before the wipe, while there is still a party to name.
+            recordPermadeathWipe();
             window.SaveSystem.deletePlaythroughSaves();
         }
         if (window.AudioManager) {

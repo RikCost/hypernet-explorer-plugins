@@ -1,59 +1,59 @@
 /*:
- * @plugindesc v3.6 High-performance fog of war system with vision cones and smooth transitions (Optimized, Persistent, Configurable).
+ * @plugindesc v4.0 High-performance fog of war system with vision cones and smooth transitions (Optimized, Persistent, Configurable).
  * @author Omni-Lex (Modified)
- * 
+ *
  * @param Vision Angle
  * @desc Default vision angle for the player in degrees (360 for full circle)
  * @default 120
  * @type number
  * @min 1
  * @max 360
- * 
+ *
  * @param Exempt Event Names
  * @desc Events with these names will always be visible (comma-separated)
  * @default NPC,Chest,Trigger
  * @type text
- * 
+ *
  * @param Vision Blocking Event Names
  * @desc Events with these names will block vision (comma-separated)
  * @default Wall,Pillar,Column,Obstacle
  * @type text
- * 
+ *
  * @param Update Frequency
  * @desc How often to update fog of war (1 = every frame, 2 = every other frame, etc.)
  * @default 3
  * @type number
  * @min 1
- * 
+ *
  * @param Ray Count
- * @desc Number of rays to cast for vision (higher = more accurate but slower)
+ * @desc Minimum number of rays cast for vision. More rays are added automatically when the vision range needs them.
  * @default 60
  * @type number
  * @min 10
  * @max 360
- * 
+ *
  * @param Reset On New Game
  * @desc Reset fog of war data when starting a new game
  * @default true
  * @type boolean
- * 
+ *
  * @param Chunk Size
  * @desc Size of each fog of war rendering chunk in tiles (smaller = more responsive, larger = better performance)
  * @default 8
  * @type number
  * @min 4
  * @max 32
- * 
+ *
  * @param Never Seen Color
  * @desc Color for tiles never seen (CSS format)
  * @default #000000
  * @type string
- * 
+ *
  * @param Previously Seen Color
  * @desc Color for tiles seen before but not currently visible (CSS format)
  * @default rgba(0,0,0,0.6)
  * @type string
- * 
+ *
  * @param Vision Smoothing
  * @desc How smoothly vision follows the player (0-1, higher is smoother)
  * @default 0.5
@@ -61,14 +61,14 @@
  * @decimals 2
  * @min 0.1
  * @max 1.0
- * 
+ *
  * @param Transition Duration
  * @desc Duration of transition between visible and previously seen (in frames)
  * @default 15
  * @type number
  * @min 1
  * @max 120
- * 
+ *
  * @param Edge Feathering
  * @desc How much to soften the edges of visible area (0-1, higher is softer)
  * @default 0.3
@@ -76,31 +76,31 @@
  * @decimals 2
  * @min 0
  * @max 1
- * 
+ *
  * @param Add To Options Menu
  * @desc Add Fog of War toggle to options menu
  * @default true
  * @type boolean
- * 
+ *
  * @param Options Menu Text
  * @desc Text to display in the options menu
  * @default Fog of War
  * @type string
- * 
+ *
  * @command toggleFogOfWar
  * @text Toggle Fog of War
  * @desc Enables or disables the fog of war system
- * 
+ *
  * @param enable
  * @text Enable
  * @desc Enable or disable fog of war
  * @type boolean
  * @default true
- * 
+ *
  * @command resetFogOfWar
  * @text Reset Fog of War
  * @desc Resets fog of war data for the current map or all maps
- * 
+ *
  * @param target
  * @text Target
  * @desc Reset current map or all maps
@@ -110,14 +110,14 @@
  * @option All Maps
  * @value all
  * @default current
- * 
+ *
  * @param Reveal Transition Duration
  * @desc Duration of transition when revealing tiles (in frames). Lower values = faster transition.
  * @default 10
  * @type number
  * @min 1
  * @max 60
- * 
+ *
  * @command revealEntireMap
  * @text Reveal Entire Map
  * @desc Reveals the entire current map
@@ -136,30 +136,66 @@
 (function () {
     'use strict';
 
-    const pluginName = "FOG_OF_WAR";
+    // RMMZ keys BOTH the parameter set and the plugin commands by the file name
+    // (Utils.extractFileName over the plugins.js entry, lowercased), so a plugin
+    // that names itself anything else reads an empty parameter set and every
+    // event command it registers is a silent no-op. This file is FogOfWar.js and
+    // the events call it as "Map/FogOfWar", so the file name is the one name
+    // that answers; "FOG_OF_WAR" is kept as a command alias for the older events
+    // that still address it that way.
+    const pluginName = "FogOfWar";
+    const LEGACY_PLUGIN_NAME = "FOG_OF_WAR";
+    const COMMAND_KEYS = [pluginName, LEGACY_PLUGIN_NAME];
     const parameters = PluginManager.parameters(pluginName);
 
+    function registerFogCommand(commandName, handler) {
+        for (const key of COMMAND_KEYS) {
+            PluginManager.registerCommand(key, commandName, handler);
+        }
+    }
+
+    //=============================================================================
     // Constants & Configuration
+    //
+    // Three declared parameters are deliberately NOT read: "Vision Angle" (the
+    // cone is fixed at VISION_ANGLE below, and the configured 360 would turn
+    // every character into a lighthouse), "Transition Duration" (superseded by
+    // "Reveal Transition Duration") and "Edge Feathering" (the feathering pass
+    // was removed). They stay declared so the plugins.js parameter set is not
+    // rewritten under existing installs.
+    //=============================================================================
+
     const DEFAULT_VISION_RANGE = 10;
-    const EXEMPT_EVENT_NAMES = (parameters['Exempt Event Names'] || "NPC,Chest,Trigger").split(',').map(s => s.trim());
-    const VISION_BLOCKING_EVENT_NAMES = ("Dungeon door,Door,Locked Door,Wall,Pillar,Door,Column,Room,Obstacle").split(',').map(s => s.trim().toLowerCase());  // i18n-ignore  event names
-    const UPDATE_FREQUENCY = Number(parameters['Update Frequency'] || 3);
-    const RAY_COUNT = Number(parameters['Ray Count'] || 120);
-    const RESET_ON_NEW_GAME = parameters['Reset On New Game'] !== 'false';
-    const CHUNK_SIZE = Number(parameters['Chunk Size'] || 8);
+    const EXEMPT_EVENT_NAMES = (parameters['Exempt Event Names'] || "NPC,Chest,Trigger").split(',').map(s => s.trim()).filter(Boolean);
+    const VISION_BLOCKING_EVENT_NAMES = ("Dungeon door,Door,Locked Door,Wall,Pillar,Column,Room,Obstacle").split(',').map(s => s.trim().toLowerCase());  // i18n-ignore  event names
+    const UPDATE_FREQUENCY = Math.max(1, Number(parameters['Update Frequency'] || 3));
+    const CHUNK_SIZE = Math.max(2, Number(parameters['Chunk Size'] || 8));
     const NEVER_SEEN_COLOR = parameters['Never Seen Color'] || '#000000';
     const PREVIOUSLY_SEEN_COLOR = parameters['Previously Seen Color'] || 'rgba(0,0,0,0.4)';
-    const REVEAL_TRANSITION_DURATION = Number(parameters['Reveal Transition Duration'] || 16);
-    const BASE_ALPHA = (function () {
-        const css = parameters['Previously Seen Color'] || 'rgba(0,0,0,0.4)';
-        const match = css.match(/rgba\(\d+,\s*\d+,\s*\d+,\s*([\d.]+)\)/);
-        return match ? parseFloat(match[1]) : 0.4;
-    })();
-    const VISION_ANGLE = 110;
+    const REVEAL_TRANSITION_DURATION = Math.max(1, Number(parameters['Reveal Transition Duration'] || 16));
     const VISION_SMOOTHING = Number(parameters['Vision Smoothing'] || 0.9);
-    const EDGE_FEATHERING = 0;
     const ADD_TO_OPTIONS_MENU = parameters['Add To Options Menu'] !== 'false';
     const OPTIONS_MENU_TEXT = parameters['Options Menu Text'] || 'Fog of War';
+    const RESET_ON_NEW_GAME = parameters['Reset On New Game'] !== 'false';
+
+    const VISION_ANGLE = 110;
+    const VISION_ARC = VISION_ANGLE * Math.PI / 180;
+
+    // How many rays the cone is cut into. The configured "Ray Count" is only a
+    // FLOOR: a fixed fan is a fan of gaps, because the distance between two
+    // neighbouring rays grows with the range. At the configured 10 rays over a
+    // 110 degree cone, 18% of the tiles inside the cone at range 10 (and 35% at
+    // the range 15 a rooftop grants) were never touched by any ray and stayed
+    // pitch black, which is what read as "the screen goes black". Two rays per
+    // tile of arc at the far edge covers the cone completely at every range.
+    const MIN_RAY_COUNT = Math.min(720, Math.max(8, Number(parameters['Ray Count'] || 60)));
+    const RAYS_PER_ARC_TILE = 2;
+    const MAX_RAY_COUNT = 720;
+
+    function rayCountFor(range, arc) {
+        const arcTiles = Math.max(1, range * Math.max(0.05, arc));
+        return Math.min(MAX_RAY_COUNT, Math.max(MIN_RAY_COUNT, Math.ceil(arcTiles * RAYS_PER_ARC_TILE)));
+    }
 
     // Map Feature Constants
     const TERRAIN_WALL = 4;
@@ -177,39 +213,165 @@
     // actually facing them (inside the vision cone).
     const REGION_FOG_EXEMPT = 31;
 
-    let fogOfWarEnabled = true;
+    const OCEAN_BIOME = "Ocean";  // i18n-ignore  biome id
+
+    // Fog states.
+    const STATE_UNSEEN = 0;
+    const STATE_SEEN = 1;
+    const STATE_VISIBLE = 2;
+
+    // Vision blocker classes stored in the terrain cache.
+    const BLOCK_NONE = 0;
+    const BLOCK_WALL = 1;
+    const BLOCK_ROOF = 2;
+    const BLOCK_ALWAYS = 3;
+
+    // Buffers rebuilt from scratch by initializeFogOfWar on every Game_Map.setup
+    // (which also runs on load). They are made non-enumerable so JsonEx leaves
+    // them out of the savegame: they are large typed arrays and _eventMap holds
+    // live Game_Event references, which JsonEx would serialize as a second copy
+    // of every event on the map.
+    const TRANSIENT_MAP_FIELDS = [
+        '_fogOfWarData', '_fogTransitionTimers', '_dirtyChunks', '_dirtyChunkScratch',
+        '_activeTransitions', '_terrainCache', '_eventMap', '_eventMapSig',
+        '_visibleIndices', '_lastVisibleIndices', '_currentFrameVisible',
+        '_fogExemptIndices', '_fogPeekDividerIndices', '_eventVisionConeTiles',
+        '_fogDiveWater', '_fogDiveKey'
+    ];
+
+    //=============================================================================
+    // Module state
+    //=============================================================================
+
+    // Enabled by the plugin command; ANDed with the player's option below.
+    let commandEnabled = true;
+    // Set when the fog keeps throwing. The player's saved option is never
+    // rewritten (the old code wrote ConfigManager.fogOfWar = false and saved it,
+    // so one transient error turned the feature off for good); a single failure
+    // only takes the current map out, and the session is given up on after
+    // ERROR_LIMIT of them.
+    const ERROR_LIMIT = 3;
+    let sessionDisabled = false;
+    let errorCount = 0;
     let updateCounter = 0;
+
+    // Deferred full refresh, in frames. Replaces the old setTimeout(..., 100)
+    // calls, which ran on wall-clock time and could land in another scene.
+    let pendingRefreshFrames = 0;
+    let pendingRefreshReload = false;
+
+    function fogEnabled() {
+        return !sessionDisabled && commandEnabled && ConfigManager.fogOfWar !== false;
+    }
+
+    function requestFullRefresh(frames, reload) {
+        pendingRefreshFrames = Math.max(pendingRefreshFrames, Math.max(1, frames | 0));
+        if (reload) pendingRefreshReload = true;
+    }
+
+    function fogError(e) {
+        errorCount++;
+        if ($gameMap) $gameMap._fogOfWarDisabled = true;
+        if (errorCount >= ERROR_LIMIT) sessionDisabled = true;
+        console.error(`FogOfWar: error ${errorCount}/${ERROR_LIMIT}, fog off for this map` +
+            (sessionDisabled ? ' and for the rest of the session' : ''), e);
+    }
+
+    // Hide the transient buffers from JsonEx. Called from both initialize and
+    // setup: a Game_Map restored from a savegame is decoded, never constructed,
+    // so its property descriptors have to be re-declared on load.
+    function hideTransientFields(map) {
+        for (const key of TRANSIENT_MAP_FIELDS) {
+            const desc = Object.getOwnPropertyDescriptor(map, key);
+            if (desc && !desc.enumerable) continue;
+            if (desc && !desc.configurable) continue;
+            Object.defineProperty(map, key, {
+                value: desc ? map[key] : undefined,
+                writable: true,
+                enumerable: false,
+                configurable: true
+            });
+        }
+    }
+
+    function parseCssColor(cssColor) {
+        const css = String(cssColor || '').trim();
+        if (css.startsWith('#')) {
+            const hex = css.slice(1);
+            if (hex.length === 3) {
+                const r = parseInt(hex[0] + hex[0], 16);
+                const g = parseInt(hex[1] + hex[1], 16);
+                const b = parseInt(hex[2] + hex[2], 16);
+                return (r << 16) | (g << 8) | b;
+            }
+            const value = parseInt(hex.slice(0, 6), 16);
+            return isNaN(value) ? 0x000000 : value;
+        }
+        const rgbaMatch = css.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+        if (rgbaMatch) {
+            return (parseInt(rgbaMatch[1], 10) << 16) | (parseInt(rgbaMatch[2], 10) << 8) | parseInt(rgbaMatch[3], 10);
+        }
+        return 0x000000;
+    }
+
+    // One reading of "how opaque is a tile that has been seen but is not visible
+    // now". The old code answered this twice with different fallbacks (0.4 in
+    // the state target, 1.0 in the palette), so a hex colour made the two
+    // disagree and the palette stopped separating seen from never-seen.
+    function cssAlpha(cssColor, fallback) {
+        const match = String(cssColor || '').match(/rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*([\d.]+)\s*\)/);
+        if (match) {
+            const value = parseFloat(match[1]);
+            if (!isNaN(value)) return Math.min(1, Math.max(0, value));
+        }
+        const hex = String(cssColor || '').trim();
+        if (/^#[0-9a-f]{8}$/i.test(hex)) return parseInt(hex.slice(7, 9), 16) / 255;
+        return fallback;
+    }
+
+    const BASE_ALPHA = cssAlpha(PREVIOUSLY_SEEN_COLOR, 0.4);
+    const SEEN_TIMER_TARGET = Math.floor(BASE_ALPHA * 255);
+
+    function timerTargetFor(state) {
+        if (state === STATE_VISIBLE) return 0;
+        if (state === STATE_SEEN) return SEEN_TIMER_TARGET;
+        return 255;
+    }
+
+    function visionSources() {
+        const list = [];
+        if ($gamePlayer) list.push($gamePlayer);
+        const split = window.$gameSplitScreen;
+        if (split && split.active && split.p2Event) list.push(split.p2Event);
+        return list;
+    }
 
     //=============================================================================
     // Plugin Commands
     //=============================================================================
 
-    PluginManager.registerCommand(pluginName, "toggleFogOfWar", args => {
-        fogOfWarEnabled = args.enable === "true";
+    registerFogCommand("toggleFogOfWar", args => {
+        commandEnabled = args.enable === "true";
+        if (commandEnabled) sessionDisabled = false;
         if (ADD_TO_OPTIONS_MENU) {
-            ConfigManager.fogOfWar = fogOfWarEnabled;
+            ConfigManager.fogOfWar = commandEnabled;
             ConfigManager.save();
         }
-        if (SceneManager._scene instanceof Scene_Map) {
-            SceneManager._scene._spriteset.refreshFogOfWar();
+        if (SceneManager._scene instanceof Scene_Map && SceneManager._scene._spriteset) {
+            SceneManager._scene._spriteset.refreshFogOfWar(true);
         }
     });
 
-    PluginManager.registerCommand(pluginName, "disableFogForMap", args => {
+    registerFogCommand("disableFogForMap", args => {
         const disable = args.disable === "true";
+        if (!$gameMap) return;
         $gameMap._fogOfWarDisabled = disable;
-        if (SceneManager._scene instanceof Scene_Map) {
-            const container = SceneManager._scene._spriteset._fogContainer;
-            if (container) {
-                container.visible = !disable && fogOfWarEnabled;
-                if (!disable && fogOfWarEnabled) {
-                    SceneManager._scene._spriteset.refreshFogOfWar(true);
-                }
-            }
+        if (SceneManager._scene instanceof Scene_Map && SceneManager._scene._spriteset) {
+            SceneManager._scene._spriteset.refreshFogOfWar(!disable);
         }
     });
 
-    PluginManager.registerCommand(pluginName, "resetFogOfWar", args => {
+    registerFogCommand("resetFogOfWar", args => {
         const target = args.target || "current";
         if (target === "current") {
             $gameSystem.resetFogOfWarForMap($gameMap.mapId());
@@ -217,22 +379,22 @@
             $gameSystem.resetAllFogOfWar();
         }
         $gameMap.initializeFogOfWar();
-        if (SceneManager._scene instanceof Scene_Map) {
-            SceneManager._scene._spriteset.refreshFogOfWar();
+        if (SceneManager._scene instanceof Scene_Map && SceneManager._scene._spriteset) {
+            SceneManager._scene._spriteset.refreshFogOfWar(true);
         }
     });
 
-    PluginManager.registerCommand(pluginName, "revealEntireMap", args => {
-        if ($gameMap && $gameMap._fogOfWarData) {
-            for (let i = 0; i < $gameMap._fogOfWarData.length; i++) {
-                $gameMap.setFogOfWarStateByIndex(i, 2);
-            }
-            $gameMap._forceVisionUpdate = true;
-            $gameMap.markAllChunksDirty();
-            $gameSystem.saveCurrentFogData();
-            if (SceneManager._scene instanceof Scene_Map) {
-                SceneManager._scene._spriteset.refreshFogOfWar();
-            }
+    registerFogCommand("revealEntireMap", () => {
+        if (!$gameMap || !$gameMap.ensureFogBuffers()) return;
+        const data = $gameMap._fogOfWarData;
+        for (let i = 0; i < data.length; i++) {
+            $gameMap.setFogOfWarStateByIndex(i, STATE_VISIBLE, true);
+        }
+        $gameMap._forceVisionUpdate = true;
+        $gameMap.markAllChunksDirty();
+        $gameSystem.saveCurrentFogData();
+        if (SceneManager._scene instanceof Scene_Map && SceneManager._scene._spriteset) {
+            SceneManager._scene._spriteset.refreshFogOfWar();
         }
     });
 
@@ -261,14 +423,13 @@
     ConfigManager.applyData = function (config) {
         _ConfigManager_applyData.call(this, config);
         this.fogOfWar = this.readFlag(config, 'fogOfWar', true);
-        fogOfWarEnabled = this.fogOfWar;
     };
 
     if (ADD_TO_OPTIONS_MENU) {
         if (window.GameOptions) {
-            window.GameOptions.registerOption('fogOfWar', OPTIONS_MENU_TEXT, 
-                () => ConfigManager.fogOfWar, 
-                (value) => ConfigManager.fogOfWar = value, 
+            window.GameOptions.registerOption('fogOfWar', OPTIONS_MENU_TEXT,
+                () => ConfigManager.fogOfWar,
+                (value) => ConfigManager.fogOfWar = value,
                 'gameplay', 'boolean');
         } else {
             const _Window_Options_addGeneralOptions = Window_Options.prototype.addGeneralOptions;
@@ -280,14 +441,11 @@
     }
 
     //=============================================================================
-    // Game_System
+    // Game_System - fog persistence
+    //
+    // Fog states live in window.$fogOfWarData (one entry per map) and are
+    // written to their own save file, not into the savegame object graph.
     //=============================================================================
-
-    const _Game_System_initialize = Game_System.prototype.initialize;
-    Game_System.prototype.initialize = function () {
-        _Game_System_initialize.call(this);
-        // Data is now stored in window.$fogOfWarData and saved separately
-    };
 
     Game_System.prototype.getFogOfWarData = function (mapId) {
         if (!window.$fogOfWarData) window.$fogOfWarData = {};
@@ -300,12 +458,11 @@
     };
 
     Game_System.prototype.saveCurrentFogData = function () {
-        if ($gameMap && $gameMap._fogOfWarData && $gameMap._fogTransitionTimers) {
-            this.setFogOfWarData($gameMap.mapId(), {
-                states: Array.from($gameMap._fogOfWarData),
-                timers: Array.from($gameMap._fogTransitionTimers)
-            });
-        }
+        if (!$gameMap || !$gameMap._fogOfWarData || !$gameMap._fogTransitionTimers) return;
+        this.setFogOfWarData($gameMap.mapId(), {
+            states: Array.from($gameMap._fogOfWarData),
+            timers: Array.from($gameMap._fogTransitionTimers)
+        });
     };
 
     Game_System.prototype.resetFogOfWarForMap = function (mapId) {
@@ -318,14 +475,17 @@
         window.$fogOfWarData = {};
     };
 
-    //=============================================================================
-    // DataManager - External Save/Load
-    //=============================================================================
+    Game_System.prototype.reloadFogOfWarLighting = function () {
+        if (!$gameMap) return;
+        $gameMap._terrainCacheDirty = true;
+        $gameMap.initializeFogOfWar();
+        if ($gamePlayer) $gameMap.updateFogOfWar();
+    };
 
     const _DataManager_saveGame = DataManager.saveGame;
-    DataManager.saveGame = function(savefileId) {
-        // Fog data is no longer serialized periodically during play, so sync
-        // the current map's fog into window.$fogOfWarData at save time.
+    DataManager.saveGame = function (savefileId) {
+        // Fog data is not serialized during play, so sync the current map's fog
+        // into window.$fogOfWarData at save time.
         if ($gameSystem) $gameSystem.saveCurrentFogData();
         return _DataManager_saveGame.call(this, savefileId).then(contents => {
             if (window.$fogOfWarData) {
@@ -340,74 +500,74 @@
     };
 
     const _DataManager_loadGame = DataManager.loadGame;
-    DataManager.loadGame = function(savefileId) {
+    DataManager.loadGame = function (savefileId) {
         return _DataManager_loadGame.call(this, savefileId).then(success => {
-            if (success) {
-                return StorageManager.loadObject(`fog_${savefileId}`).then(fogData => {
-                    window.$fogOfWarData = fogData || {};
-                    return true;
-                }).catch(e => {
-                    console.log("FogOfWar: No fog data found or error loading it", e);
-                    window.$fogOfWarData = {};
-                    return true; // Still success for main load
-                });
-            }
-            return success;
+            if (!success) return success;
+            return StorageManager.loadObject(`fog_${savefileId}`).then(fogData => {
+                window.$fogOfWarData = fogData || {};
+                return true;
+            }).catch(e => {
+                console.log("FogOfWar: No fog data found or error loading it", e);
+                window.$fogOfWarData = {};
+                return true; // Still success for main load
+            });
         });
     };
 
-    Game_System.prototype.reloadFogOfWarLighting = function () {
-        if (!$gameMap) return;
-        $gameMap._lastUpdateTime = 0;
-        $gameMap._playerIdleTime = 0;
-        $gameMap._playerWasMoving = false;
-        $gameMap._terrainCacheDirty = true;
-
-        const size = $gameMap.width() * $gameMap.height();
-        $gameMap._fogTransitionTimers = new Int16Array(size);
-        $gameMap._activeTransitions = new Set();
-
-        $gameMap.markAllChunksDirty();
-        if ($gamePlayer) $gameMap.updateFogOfWar();
-    };
-
     //=============================================================================
-    // Game_Map
+    // Game_Map - lifecycle
     //=============================================================================
 
     const _Game_Map_initialize = Game_Map.prototype.initialize;
     Game_Map.prototype.initialize = function () {
         _Game_Map_initialize.call(this);
+        hideTransientFields(this);
         this._fogOfWarData = null;
         this._fogTransitionTimers = null;
         this._dirtyChunks = null;
         this._activeTransitions = new Set();
+        this._terrainCache = null;
+        this._eventMap = [];
+        this._eventMapSig = null;
+        this._visibleIndices = [];
+        this._lastVisibleIndices = [];
+        this._currentFrameVisible = null;
+        this._fogExemptIndices = [];
+        this._fogPeekDividerIndices = [];
+        this._fogDiveWater = null;
+        this.resetVisionTracking();
+        this._visionRange = DEFAULT_VISION_RANGE;
+        this._forceVisionUpdate = true;
+    };
+
+    Game_Map.prototype.resetVisionTracking = function () {
         this._playerLastX = -1;
         this._playerLastY = -1;
         this._playerLastDir = -1;
         this._player2LastX = -1;
         this._player2LastY = -1;
         this._player2LastDir = -1;
-        this._lastUpdateTime = 0;
-        this._visionRange = DEFAULT_VISION_RANGE;
         this._visionX = 0;
         this._visionY = 0;
         this._visionX2 = 0;
         this._visionY2 = 0;
-        this._playerIdleTime = 0;
-        this._playerIdleThreshold = 10;
-        this._playerWasMoving = false;
-        this._terrainCache = null;
-        this._eventMap = [];
-        this._visibleIndices = [];
-        this._lastVisibleIndices = [];
-        this._currentFrameVisible = null;
-        this._forceVisionUpdate = true;
+        this._dividerFogKey = null;
     };
 
     const _Game_Map_setup = Game_Map.prototype.setup;
     Game_Map.prototype.setup = function (mapId) {
+        const previousMapId = this._mapId;
         _Game_Map_setup.call(this, mapId);
+        hideTransientFields(this);
+
+        // MovementInteractionSystem caches the diving water tiles on the map it
+        // built them for. It is a Set on Game_Map, so it does not survive a
+        // savegame (JsonEx turns it into a plain {} whose .has throws) and it is
+        // not cleared on a transfer, which left the fog reading another map's
+        // tile indices. Drop it whenever the map underneath it changes.
+        if (previousMapId !== mapId || !this.hasUsableDiveWater()) {
+            this._underwaterWaterTiles = null;
+        }
 
         this._fogOfWarDisabled = false;
         this._visibleFogOfWar = false;
@@ -428,29 +588,25 @@
             this._fogOfWarDisabled = true;
         }
 
-        // Interior dividers (region 30) block vision even when this map has fog
-        // disabled, so scan for them up front and cache the result.
-        this._hasVisionDividers = this.detectVisionDividers();
-        this._dividerFogKey = null;
-
+        this.resetVisionTracking();
         this.initializeFogOfWar();
         this.loadVisionRangeFromMapNotes();
 
-        this._visionX = $gamePlayer.x;
-        this._visionY = $gamePlayer.y;
-        if (window.$gameSplitScreen && window.$gameSplitScreen.active && window.$gameSplitScreen.p2Event) {
-            this._visionX2 = window.$gameSplitScreen.p2Event.x;
-            this._visionY2 = window.$gameSplitScreen.p2Event.y;
+        // $gamePlayer is still standing on the outgoing map's tile here
+        // (performTransfer locates it after setup), so these are placeholders;
+        // _forceVisionUpdate makes the first real update snap them into place.
+        if ($gamePlayer) {
+            this._visionX = $gamePlayer.x;
+            this._visionY = $gamePlayer.y;
+        }
+        const split = window.$gameSplitScreen;
+        if (split && split.active && split.p2Event) {
+            this._visionX2 = split.p2Event.x;
+            this._visionY2 = split.p2Event.y;
         } else {
             this._visionX2 = this._visionX;
             this._visionY2 = this._visionY;
         }
-    };
-
-    Game_Map.prototype.normalizePos = function (x, y) {
-        if (this.isLoopHorizontal()) x = (x + this.width()) % this.width();
-        if (this.isLoopVertical()) y = (y + this.height()) % this.height();
-        return { x, y, isValid: x >= 0 && y >= 0 && x < this.width() && y < this.height() };
     };
 
     Game_Map.prototype.loadVisionRangeFromMapNotes = function () {
@@ -465,24 +621,28 @@
     };
 
     Game_Map.prototype.visionRange = function () {
-        return this._visionRange;
+        return this._visionRange || DEFAULT_VISION_RANGE;
     };
 
     Game_Map.prototype.initializeFogOfWar = function () {
+        hideTransientFields(this);
+
         const size = this.width() * this.height();
-        const savedData = $gameSystem.getFogOfWarData(this._mapId);
+        const savedData = $gameSystem ? $gameSystem.getFogOfWarData(this._mapId) : null;
 
         if (savedData && savedData.states && savedData.states.length === size) {
             this._fogOfWarData = new Uint8Array(savedData.states);
-            this._fogTransitionTimers = new Int16Array(savedData.timers);
+            this._fogTransitionTimers = new Int16Array(savedData.timers && savedData.timers.length === size ? savedData.timers : size);
+            if (!savedData.timers || savedData.timers.length !== size) {
+                for (let i = 0; i < size; i++) {
+                    this._fogTransitionTimers[i] = timerTargetFor(this._fogOfWarData[i]);
+                }
+            }
         } else {
             this._fogOfWarData = (savedData && savedData.length === size) ? new Uint8Array(savedData) : new Uint8Array(size);
             this._fogTransitionTimers = new Int16Array(size);
             for (let i = 0; i < size; i++) {
-                const state = this._fogOfWarData[i];
-                if (state === 0) this._fogTransitionTimers[i] = 255;
-                else if (state === 1) this._fogTransitionTimers[i] = Math.floor(BASE_ALPHA * 255);
-                else this._fogTransitionTimers[i] = 0;
+                this._fogTransitionTimers[i] = timerTargetFor(this._fogOfWarData[i]);
             }
         }
 
@@ -500,11 +660,14 @@
         this._currentFrameVisible = new Uint8Array(size);
         this._lastVisibleIndices = [];
 
-        this.scanFogRegionTiles();
+        // One pass over the map fills the terrain cache AND the region lists
+        // (the old code walked every tile three separate times).
+        this.refreshTerrainCache();
+        this.refreshDiveRestriction();
         this.applyFogExemptTiles(true);
 
         for (let i = 0; i < size; i++) {
-            if (this._fogOfWarData[i] === 2) this._lastVisibleIndices.push(i);
+            if (this._fogOfWarData[i] === STATE_VISIBLE) this._lastVisibleIndices.push(i);
         }
 
         this._playerLastX = -1;
@@ -513,18 +676,65 @@
         this._player2LastX = -1;
         this._player2LastY = -1;
         this._player2LastDir = -1;
-        this._lastUpdateTime = 0;
+        this._dividerFogKey = null;
         this._forceVisionUpdate = true;
     };
 
+    // Every entry point calls this before touching the buffers. A Game_Map that
+    // came back from a savegame, or one whose map size changed under it, can be
+    // holding plain objects where typed arrays are expected (JsonEx does not
+    // preserve either typed arrays or Sets), and the old code answered that in
+    // four different places with three different guards.
+    Game_Map.prototype.ensureFogBuffers = function () {
+        const size = this.width() * this.height();
+        if (size <= 0) return false;
+
+        const badStates = !this._fogOfWarData || typeof this._fogOfWarData.fill !== 'function' || this._fogOfWarData.length !== size;
+        const badTimers = !this._fogTransitionTimers || typeof this._fogTransitionTimers.fill !== 'function' || this._fogTransitionTimers.length !== size;
+        if (badStates || badTimers) {
+            this.initializeFogOfWar();
+            return !!this._fogOfWarData && this._fogOfWarData.length === size;
+        }
+
+        if (!(this._activeTransitions instanceof Set)) this._activeTransitions = new Set();
+        if (!this._currentFrameVisible || typeof this._currentFrameVisible.fill !== 'function' || this._currentFrameVisible.length !== size) {
+            this._currentFrameVisible = new Uint8Array(size);
+        }
+        if (!Array.isArray(this._visibleIndices)) this._visibleIndices = [];
+        if (!Array.isArray(this._lastVisibleIndices)) this._lastVisibleIndices = [];
+        if (!Array.isArray(this._fogExemptIndices)) this._fogExemptIndices = [];
+        if (!Array.isArray(this._fogPeekDividerIndices)) this._fogPeekDividerIndices = [];
+        if (!Array.isArray(this._eventMap)) this._eventMap = [];
+
+        const chunkCount = Math.ceil(this.width() / CHUNK_SIZE) * Math.ceil(this.height() / CHUNK_SIZE);
+        if (!this._dirtyChunks || typeof this._dirtyChunks.fill !== 'function' || this._dirtyChunks.length !== chunkCount) {
+            this._dirtyChunks = new Uint8Array(chunkCount).fill(1);
+        }
+        if (!this._terrainCache || typeof this._terrainCache.fill !== 'function' || this._terrainCache.length !== size) {
+            this._terrainCache = new Uint8Array(size);
+            this._terrainCacheDirty = true;
+        }
+        return true;
+    };
+
+    Game_Map.prototype.normalizePos = function (x, y) {
+        if (this.isLoopHorizontal()) x = (x + this.width()) % this.width();
+        if (this.isLoopVertical()) y = (y + this.height()) % this.height();
+        return { x, y, isValid: x >= 0 && y >= 0 && x < this.width() && y < this.height() };
+    };
+
+    //=============================================================================
+    // Game_Map - event map
+    //=============================================================================
+
     // Rebuild the event map only when an event actually changed tile (or its
-    // priority changed) since the last rebuild — the full rebuild is expensive.
+    // priority changed) since the last rebuild - the full rebuild is expensive.
     Game_Map.prototype.refreshEventMapIfNeeded = function () {
         const events = this.events();
         const needed = events.length * 3;
         let sig = this._eventMapSig;
         let dirty = false;
-        if (!sig || sig.length !== needed) {
+        if (!sig || typeof sig.length !== 'number' || sig.length !== needed || typeof sig.subarray !== 'function') {
             sig = new Int32Array(needed);
             this._eventMapSig = sig;
             dirty = true;
@@ -546,7 +756,7 @@
     Game_Map.prototype.refreshEventMap = function () {
         const width = this.width();
         const size = width * this.height();
-        if (!this._eventMap || this._eventMap.length !== size) {
+        if (!Array.isArray(this._eventMap) || this._eventMap.length !== size) {
             this._eventMap = new Array(size);
         }
         for (let i = 0; i < size; i++) {
@@ -568,53 +778,316 @@
         }
     };
 
-    Game_Map.prototype.fogOfWarState = function (x, y) {
-        if (window.dreamActive) return 2;
-        // On divider maps the real fog data still matters even when fog is
-        // globally off / disabled for the map, so we don't short-circuit here.
-        if ((this._fogOfWarDisabled || !fogOfWarEnabled) && !this._hasVisionDividers) return 2;
-        const pos = this.normalizePos(x, y);
-        if (!pos.isValid) return 0;
-        if (this.regionId(pos.x, pos.y) === REGION_FOG_EXEMPT) return 2;
-        return this._fogOfWarData[pos.y * this.width() + pos.x] || 0;
+    Game_Map.prototype.isVisionBlockingEvent = function (event) {
+        if (!event || typeof event.event !== 'function') return false;
+        const data = event.event();
+        if (!data || (typeof event.priorityType === 'function' && event.priorityType() !== 1)) return false;
+
+        const name = (data.name || "").toLowerCase();
+        return VISION_BLOCKING_EVENT_NAMES.some(blocker => blocker && name.includes(blocker));
     };
 
-    // Cache the fog-exempt tiles (region 31) and the divider tiles (region 30)
-    // sitting next to one of them, so the per-frame passes are list walks
-    // instead of full-map scans.
-    Game_Map.prototype.scanFogRegionTiles = function () {
-        const w = this.width();
-        const h = this.height();
-        const exempt = [];
-        const peek = [];
+    Game_Map.prototype.isEnemyEvent = function (event) {
+        if (!event || typeof event.event !== 'function') return false;
+        const data = event.event();
+        return !!(data && data.note && /^\d+$/.test(data.note.trim()));
+    };
 
-        for (let y = 0; y < h; y++) {
-            for (let x = 0; x < w; x++) {
-                if (this.regionId(x, y) === REGION_FOG_EXEMPT) exempt.push(y * w + x);
-            }
+    Game_Map.prototype.isExemptEventName = function (event) {
+        if (!event || typeof event.event !== 'function') return false;
+        // Event names are static, so cache the result on the event.
+        if (event._fowExempt === undefined) {
+            const data = event.event();
+            event._fowExempt = !!(data && EXEMPT_EVENT_NAMES.some(exempt => (data.name || "").includes(exempt)));
+        }
+        return event._fowExempt;
+    };
+
+    //=============================================================================
+    // Game_Map - terrain cache and region lists
+    //=============================================================================
+
+    // One walk of the map answers three questions: what blocks vision, where
+    // the fog-exempt tiles (region 31) are, and which divider tiles (region 30)
+    // touch one of them.
+    Game_Map.prototype.refreshTerrainCache = function () {
+        const width = this.width();
+        const height = this.height();
+        const size = width * height;
+
+        if (!this._terrainCache || typeof this._terrainCache.fill !== 'function' || this._terrainCache.length !== size) {
+            this._terrainCache = new Uint8Array(size);
         }
 
-        if (exempt.length > 0) {
-            const checked = new Uint8Array(w * h);
-            for (let i = 0; i < exempt.length; i++) {
-                const x = exempt[i] % w;
-                const y = (exempt[i] / w) | 0;
-                for (let oy = -1; oy <= 1; oy++) {
-                    for (let ox = -1; ox <= 1; ox++) {
-                        const nx = x + ox;
-                        const ny = y + oy;
-                        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-                        const index = ny * w + nx;
-                        if (checked[index]) continue;
-                        checked[index] = 1;
-                        if (this.regionId(nx, ny) === REGION_DIVIDER) peek.push(index);
-                    }
+        const exempt = [];
+        const dividers = [];
+        let hasDividers = false;
+
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const index = y * width + x;
+                const tag = this.terrainTag(x, y);
+                const region = this.regionId(x, y);
+
+                let blockType = BLOCK_NONE;
+                if (region === REGION_BLOCK) blockType = BLOCK_ALWAYS;
+                else if (region === REGION_DIVIDER) blockType = BLOCK_ALWAYS; // interior divider: always blocks
+                else if (region === REGION_EXTENDED_VIEW) blockType = BLOCK_NONE;
+                else if (tag === TERRAIN_WALL) blockType = BLOCK_WALL;
+                else if (tag === TERRAIN_ROOF) blockType = BLOCK_ROOF;
+
+                this._terrainCache[index] = blockType;
+
+                if (region === REGION_FOG_EXEMPT) exempt.push(index);
+                else if (region === REGION_DIVIDER) {
+                    hasDividers = true;
+                    dividers.push(index);
                 }
             }
         }
 
         this._fogExemptIndices = exempt;
-        this._fogPeekDividerIndices = peek;
+        this._fogPeekDividerIndices = exempt.length > 0 ? this.dividersTouching(exempt, dividers) : [];
+        this._hasVisionDividers = this._fogOfWarForceOff ? false : hasDividers;
+        this._terrainCacheDirty = false;
+    };
+
+    // The divider tiles standing in the 8-neighbourhood of a fog-exempt tile.
+    Game_Map.prototype.dividersTouching = function (exempt, dividers) {
+        if (!dividers.length) return [];
+        const width = this.width();
+        const height = this.height();
+        const isDivider = new Uint8Array(width * height);
+        for (let i = 0; i < dividers.length; i++) isDivider[dividers[i]] = 1;
+
+        const taken = new Uint8Array(width * height);
+        const peek = [];
+        for (let i = 0; i < exempt.length; i++) {
+            const x = exempt[i] % width;
+            const y = (exempt[i] / width) | 0;
+            for (let oy = -1; oy <= 1; oy++) {
+                for (let ox = -1; ox <= 1; ox++) {
+                    const nx = x + ox;
+                    const ny = y + oy;
+                    if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+                    const index = ny * width + nx;
+                    if (taken[index] || !isDivider[index]) continue;
+                    taken[index] = 1;
+                    peek.push(index);
+                }
+            }
+        }
+        return peek;
+    };
+
+    Game_Map.prototype.detectVisionDividers = function () {
+        if (this._fogOfWarForceOff) return false;
+        if (this._terrainCacheDirty) this.refreshTerrainCache();
+        return !!this._hasVisionDividers;
+    };
+
+    Game_Map.prototype.isVisionBlocking = function (x, y, playerOnRoof = false) {
+        const width = this.width();
+        if (x < 0 || y < 0 || x >= width || y >= this.height()) return true;
+        if (this._terrainCacheDirty) this.refreshTerrainCache();
+
+        const staticBlocks = this._terrainCache[y * width + x];
+        if (playerOnRoof ? (staticBlocks === BLOCK_ALWAYS) : (staticBlocks > BLOCK_NONE)) return true;
+
+        const events = this._eventMap ? this._eventMap[y * width + x] : null;
+        if (events) {
+            for (let i = 0; i < events.length; i++) {
+                if (events[i]._isVisionBlocking) return true;
+            }
+        }
+        return false;
+    };
+
+    //=============================================================================
+    // Game_Map - the diving restriction
+    //
+    // While the party is underwater only water tiles may be revealed, so the
+    // dry map around the dive stays black. That rule used to be evaluated per
+    // TILE inside setFogOfWarStateByIndex (re-deriving the proc-gen dive state,
+    // Array.includes and all, several hundred times a frame) and, worse, it
+    // refused EVERY reveal when the map carried no water cache - which is the
+    // case on any map the dive did not start on, on a savegame loaded while
+    // underwater, and on a procedural ocean layer, where nothing calls
+    // enterDiveMode at all. The result was a map nothing could ever reveal:
+    // one flat black sheet over the whole screen.
+    //
+    // It is now resolved ONCE per fog pass into a tile set, and when no usable
+    // water answer exists the restriction is simply dropped.
+    //=============================================================================
+
+    Game_Map.prototype.hasUsableDiveWater = function () {
+        const set = this._underwaterWaterTiles;
+        return !!(set && typeof set.has === 'function' && typeof set.size === 'number' && set.size > 0);
+    };
+
+    Game_Map.prototype.isPartyDiving = function () {
+        if ($gamePlayer && $gamePlayer._isDiving) return true;
+        const pg = $gameSystem && $gameSystem._procGenData;
+        if (!pg || !pg.biomeLayerStack || pg.biomeLayerStack.length === 0) return false;
+        return pg.currentBiome === OCEAN_BIOME || pg.biomeLayerStack.indexOf(OCEAN_BIOME) >= 0;
+    };
+
+    Game_Map.prototype.buildDiveWaterSet = function () {
+        const width = this.width();
+        const height = this.height();
+        const set = new Set();
+        const ask = window.MovementSystem && typeof window.MovementSystem.isWaterTile === 'function'
+            ? window.MovementSystem.isWaterTile
+            : null;
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const isWater = ask ? ask(x, y) : (this.regionId(x, y) === 99 || this.terrainTag(x, y) === 3);
+                if (isWater) set.add(y * width + x);
+            }
+        }
+        return set;
+    };
+
+    Game_Map.prototype.refreshDiveRestriction = function () {
+        const diving = this.isPartyDiving();
+        const key = diving ? this._mapId + ':' + this.width() + 'x' + this.height() : '';
+        if (key === this._fogDiveKey) return;
+        this._fogDiveKey = key;
+
+        if (!diving) {
+            this._fogDiveWater = null;
+            return;
+        }
+        if (this.hasUsableDiveWater()) {
+            this._fogDiveWater = this._underwaterWaterTiles;
+            return;
+        }
+        const built = this.buildDiveWaterSet();
+        // No water anywhere means the "diving" reading is wrong for this map
+        // (a stale proc-gen layer stack, a transfer out of the dive). Leave the
+        // map unrestricted rather than blacking it out.
+        this._fogDiveWater = built.size > 0 ? built : null;
+    };
+
+    //=============================================================================
+    // Game_Map - fog state
+    //=============================================================================
+
+    Game_Map.prototype.fogOfWarState = function (x, y) {
+        if (window.dreamActive) return STATE_VISIBLE;
+        // On divider maps the real fog data still matters even when fog is
+        // globally off / disabled for the map, so we don't short-circuit here.
+        if ((this._fogOfWarDisabled || !fogEnabled()) && !this._hasVisionDividers) return STATE_VISIBLE;
+        const pos = this.normalizePos(x, y);
+        if (!pos.isValid) return STATE_UNSEEN;
+        if (this.regionId(pos.x, pos.y) === REGION_FOG_EXEMPT) return STATE_VISIBLE;
+        if (!this._fogOfWarData) return STATE_VISIBLE;
+        return this._fogOfWarData[pos.y * this.width() + pos.x] || STATE_UNSEEN;
+    };
+
+    Game_Map.prototype.isPositionVisible = function (x, y) {
+        return this.fogOfWarState(x, y) === STATE_VISIBLE;
+    };
+
+    Game_Map.prototype.fogTransitionTimer = function (x, y) {
+        const pos = this.normalizePos(x, y);
+        if (!pos.isValid || !this._fogTransitionTimers) return 0;
+        return this._fogTransitionTimers[pos.y * this.width() + pos.x] || 0;
+    };
+
+    Game_Map.prototype.setFogOfWarState = function (x, y, state, force = false) {
+        const pos = this.normalizePos(x, y);
+        if (pos.isValid) {
+            this.setFogOfWarStateByIndex(pos.y * this.width() + pos.x, state, force);
+        }
+    };
+
+    // force = reveal even under the diving restriction. Used for the tiles a
+    // vision source is standing on, which must never be blacked out.
+    Game_Map.prototype.setFogOfWarStateByIndex = function (index, state, force = false) {
+        const data = this._fogOfWarData;
+        if (!data || index < 0 || index >= data.length) return;
+
+        if (state === STATE_VISIBLE && !force && this._fogDiveWater && !this._fogDiveWater.has(index)) {
+            return; // Do not reveal tiles that are not water while diving
+        }
+
+        if (data[index] !== state) {
+            data[index] = state;
+            if (!(this._activeTransitions instanceof Set)) this._activeTransitions = new Set();
+            this._activeTransitions.add(index);
+
+            const width = this.width();
+            this.markChunkDirty(index % width, (index / width) | 0);
+        }
+
+        if (state === STATE_VISIBLE && this._currentFrameVisible && !this._currentFrameVisible[index]) {
+            this._currentFrameVisible[index] = 1;
+            this._visibleIndices.push(index);
+        }
+    };
+
+    Game_Map.prototype.markChunkDirty = function (x, y) {
+        if (!this._dirtyChunks) return;
+        const chunkX = (x / CHUNK_SIZE) | 0;
+        const chunkY = (y / CHUNK_SIZE) | 0;
+        const chunksX = Math.ceil(this.width() / CHUNK_SIZE);
+        const chunksY = Math.ceil(this.height() / CHUNK_SIZE);
+        if (chunkX >= 0 && chunkY >= 0 && chunkX < chunksX && chunkY < chunksY) {
+            this._dirtyChunks[chunkY * chunksX + chunkX] = 1;
+        }
+    };
+
+    Game_Map.prototype.markAllChunksDirty = function () {
+        const chunksX = Math.ceil(this.width() / CHUNK_SIZE);
+        const chunksY = Math.ceil(this.height() / CHUNK_SIZE);
+        this._dirtyChunks = new Uint8Array(chunksX * chunksY).fill(1);
+    };
+
+    Game_Map.prototype.getDirtyChunks = function () {
+        // Reuse a scratch array; callers consume the result synchronously.
+        const result = Array.isArray(this._dirtyChunkScratch) ? this._dirtyChunkScratch : (this._dirtyChunkScratch = []);
+        result.length = 0;
+        if (!this._dirtyChunks) return result;
+        for (let i = 0; i < this._dirtyChunks.length; i++) {
+            if (this._dirtyChunks[i]) result.push(i);
+        }
+        return result;
+    };
+
+    Game_Map.prototype.clearDirtyChunks = function () {
+        if (this._dirtyChunks && typeof this._dirtyChunks.fill === 'function') {
+            this._dirtyChunks.fill(0);
+        }
+    };
+
+    Game_Map.prototype.updateTransitionTimers = function () {
+        if (!(this._activeTransitions instanceof Set) || this._activeTransitions.size === 0) return;
+        if (!this._fogOfWarData || !this._fogTransitionTimers) return;
+
+        const width = this.width();
+        const timers = this._fogTransitionTimers;
+        const data = this._fogOfWarData;
+        const step = Math.ceil(255 / REVEAL_TRANSITION_DURATION);
+        const done = [];
+
+        for (const index of this._activeTransitions) {
+            if (index < 0 || index >= data.length) { done.push(index); continue; }
+            const target = timerTargetFor(data[index]);
+            const current = timers[index];
+
+            if (current < target) {
+                timers[index] = Math.min(target, current + step);
+                this.markChunkDirty(index % width, (index / width) | 0);
+            } else if (current > target) {
+                timers[index] = Math.max(target, current - step);
+                this.markChunkDirty(index % width, (index / width) | 0);
+            }
+
+            if (timers[index] === target) done.push(index);
+        }
+
+        for (let i = 0; i < done.length; i++) this._activeTransitions.delete(done[i]);
     };
 
     // Force every region-31 tile to the revealed state. Passing snap = true
@@ -629,23 +1102,13 @@
             const index = list[i];
             if (index >= data.length) continue;
 
-            if (data[index] !== 2) {
-                data[index] = 2;
-                if (!(this._activeTransitions instanceof Set)) this._activeTransitions = new Set();
-                this._activeTransitions.add(index);
-                this.markChunkDirty(index % width, (index / width) | 0);
-            }
+            // Exempt tiles are exempt from the diving restriction too.
+            this.setFogOfWarStateByIndex(index, STATE_VISIBLE, true);
 
             if (snap && this._fogTransitionTimers && this._fogTransitionTimers[index] !== 0) {
                 this._fogTransitionTimers[index] = 0;
                 if (this._activeTransitions instanceof Set) this._activeTransitions.delete(index);
                 this.markChunkDirty(index % width, (index / width) | 0);
-            }
-
-            // Keep them out of the "was visible, now isn't" demotion pass.
-            if (this._currentFrameVisible && !this._currentFrameVisible[index]) {
-                this._currentFrameVisible[index] = 1;
-                this._visibleIndices.push(index);
             }
         }
     };
@@ -668,7 +1131,7 @@
         let diff = Math.atan2(dy, dx) - baseAngle;
         while (diff > Math.PI) diff -= Math.PI * 2;
         while (diff < -Math.PI) diff += Math.PI * 2;
-        return Math.abs(diff) <= (VISION_ANGLE * Math.PI / 180) / 2;
+        return Math.abs(diff) <= VISION_ARC / 2;
     };
 
     // Reveal the divider tiles bordering a region-31 tile, but only the ones a
@@ -684,37 +1147,29 @@
             const y = (index / width) | 0;
             for (let c = 0; c < chars.length; c++) {
                 if (this.isTileInVisionCone(chars[c], x, y)) {
-                    this.setFogOfWarStateByIndex(index, 2);
+                    this.setFogOfWarStateByIndex(index, STATE_VISIBLE, true);
                     break;
                 }
             }
         }
     };
 
+    //=============================================================================
+    // Game_Map - divider-only fog
+    //=============================================================================
+
     // True when this map should render fog purely to enforce interior dividers
-    // (region 30) — i.e. it has dividers but fog is otherwise inactive.
+    // (region 30) - i.e. it has dividers but fog is otherwise inactive.
     Game_Map.prototype.isDividerOnlyFog = function () {
         if (this._fogOfWarForceOff) return false;
         return !!this._hasVisionDividers &&
-            (!ConfigManager.fogOfWar || this._fogOfWarDisabled) &&
+            (!fogEnabled() || this._fogOfWarDisabled) &&
             !window.dreamActive;
-    };
-
-    Game_Map.prototype.detectVisionDividers = function () {
-        if (this._fogOfWarForceOff) return false;
-        const w = this.width();
-        const h = this.height();
-        for (let y = 0; y < h; y++) {
-            for (let x = 0; x < w; x++) {
-                if (this.regionId(x, y) === REGION_DIVIDER) return true;
-            }
-        }
-        return false;
     };
 
     // Flood-fill the player's current interior, stopping at region-30 dividers
     // (the divider tiles themselves are included so their walls stay visible).
-    // Returns a Uint8Array mask (1 = visible), or null for "no enclosure" —
+    // Returns a Uint8Array mask (1 = visible), or null for "no enclosure" -
     // the player is standing on a divider or the area isn't walled off, in
     // which case the caller reveals everything (mirrors MousePan's semantics).
     Game_Map.prototype.computeInteriorTiles = function (px, py) {
@@ -733,10 +1188,9 @@
             const idx = stack.pop();
             const x = idx % w;
             const y = (idx / w) | 0;
-            const neighbors = [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]];
-            for (let n = 0; n < neighbors.length; n++) {
-                const nx = neighbors[n][0];
-                const ny = neighbors[n][1];
+            for (let n = 0; n < 4; n++) {
+                const nx = x + (n === 0 ? -1 : n === 1 ? 1 : 0);
+                const ny = y + (n === 2 ? -1 : n === 3 ? 1 : 0);
                 if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
                 const nidx = ny * w + nx;
                 if (visited[nidx]) continue;
@@ -757,16 +1211,10 @@
     // Reveal only the player's current interior and black out everything else.
     // Used when fog is otherwise inactive but the map has region-30 dividers.
     Game_Map.prototype.updateDividerFog = function () {
+        if (!this.ensureFogBuffers() || !$gamePlayer) return;
         const size = this.width() * this.height();
-        if (!this._fogOfWarData || this._fogOfWarData.length !== size) {
-            this.initializeFogOfWar();
-        }
-        if (!$gamePlayer) return;
-
-        const sources = [$gamePlayer];
-        if (window.$gameSplitScreen && window.$gameSplitScreen.active && window.$gameSplitScreen.p2Event) {
-            sources.push(window.$gameSplitScreen.p2Event);
-        }
+        const sources = visionSources();
+        if (sources.length === 0) return;
 
         const force = this._forceVisionUpdate;
         // Facing is part of the key: the peeked divider tiles depend on it.
@@ -781,6 +1229,7 @@
         }
         this._dividerFogKey = key;
         this._forceVisionUpdate = false;
+        this.refreshDiveRestriction();
 
         // Union each vision source's interior. A null (open / on-divider) result
         // means that source can see everything.
@@ -798,7 +1247,13 @@
 
         for (let i = 0; i < size; i++) {
             const see = revealAll || (mask && mask[i]);
-            this.setFogOfWarStateByIndex(i, see ? 2 : 0);
+            this.setFogOfWarStateByIndex(i, see ? STATE_VISIBLE : STATE_UNSEEN);
+        }
+
+        // Whatever else the pass decided, the tiles the party is standing on
+        // are visible: a fog rule must never blind the player to their own feet.
+        for (let i = 0; i < sources.length; i++) {
+            this.setFogOfWarState(Math.round(sources[i].x), Math.round(sources[i].y), STATE_VISIBLE, true);
         }
 
         this.applyFogExemptTiles();
@@ -809,10 +1264,7 @@
             // instead of fading in on map entry.
             const timers = this._fogTransitionTimers;
             const data = this._fogOfWarData;
-            for (let i = 0; i < size; i++) {
-                const st = data[i];
-                timers[i] = st === 2 ? 0 : (st === 1 ? Math.floor(BASE_ALPHA * 255) : 255);
-            }
+            for (let i = 0; i < size; i++) timers[i] = timerTargetFor(data[i]);
             if (this._activeTransitions instanceof Set) this._activeTransitions.clear();
             this.markAllChunksDirty();
         }
@@ -821,124 +1273,9 @@
         this.updateEventVisibility(force);
     };
 
-    Game_Map.prototype.fogTransitionTimer = function (x, y) {
-        const pos = this.normalizePos(x, y);
-        if (!pos.isValid) return 0;
-        return this._fogTransitionTimers[pos.y * this.width() + pos.x] || 0;
-    };
-
-    Game_Map.prototype.setFogOfWarState = function (x, y, state) {
-        const pos = this.normalizePos(x, y);
-        if (pos.isValid) {
-            this.setFogOfWarStateByIndex(pos.y * this.width() + pos.x, state);
-        }
-    };
-
-    Game_Map.prototype.setFogOfWarStateByIndex = function (index, state) {
-        if (state === 2) {
-            const x = index % this.width();
-            const y = Math.floor(index / this.width());
-            
-            const procGenData = $gameSystem._procGenData;
-            const isProcDiving = procGenData && 
-                                 procGenData.biomeLayerStack && procGenData.biomeLayerStack.length > 0 &&
-                                 (procGenData.currentBiome === "Ocean" || procGenData.biomeLayerStack.includes("Ocean"));  // i18n-ignore  biome id
-
-            const isDiving = $gamePlayer && ($gamePlayer._isDiving || isProcDiving);
-            
-            const isWater = this._underwaterWaterTiles && this._underwaterWaterTiles.has(index);
-            if (isDiving && !isWater) {
-                return; // Do not reveal tiles that are not water while diving
-            }
-        }
-
-        if (this._fogOfWarData[index] !== state) {
-            this._fogOfWarData[index] = state;
-            if (!(this._activeTransitions instanceof Set)) this._activeTransitions = new Set();
-            this._activeTransitions.add(index);
-
-            const width = this.width();
-            this.markChunkDirty(index % width, (index / width) | 0);
-        }
-
-        if (state === 2 && this._currentFrameVisible && !this._currentFrameVisible[index]) {
-            this._currentFrameVisible[index] = 1;
-            this._visibleIndices.push(index);
-        }
-    };
-
-    Game_Map.prototype.markChunkDirty = function (x, y) {
-        const chunkX = (x / CHUNK_SIZE) | 0;
-        const chunkY = (y / CHUNK_SIZE) | 0;
-        const chunksX = Math.ceil(this.width() / CHUNK_SIZE);
-        const chunksY = Math.ceil(this.height() / CHUNK_SIZE);
-        if (chunkX >= 0 && chunkY >= 0 && chunkX < chunksX && chunkY < chunksY) {
-            this._dirtyChunks[chunkY * chunksX + chunkX] = 1;
-        }
-    };
-
-    Game_Map.prototype.updateTransitionTimers = function () {
-        if (!this._activeTransitions || !(this._activeTransitions instanceof Set) || this._activeTransitions.size === 0) return;
-
-        const width = this.width();
-        const frames = Math.max(1, REVEAL_TRANSITION_DURATION);
-        const toDelete = [];
-        const step = Math.ceil(255 / frames);
-
-        for (const index of this._activeTransitions) {
-            const state = this._fogOfWarData[index];
-            let target = 0;
-            if (state === 0) target = 255;
-            else if (state === 1) target = Math.floor(BASE_ALPHA * 255);
-            else if (state === 2) target = 0;
-
-            const current = this._fogTransitionTimers[index];
-            if (current < target) {
-                this._fogTransitionTimers[index] = Math.min(target, current + step);
-                this.markChunkDirty(index % width, (index / width) | 0);
-            } else if (current > target) {
-                this._fogTransitionTimers[index] = Math.max(target, current - step);
-                this.markChunkDirty(index % width, (index / width) | 0);
-            }
-
-            if (this._fogTransitionTimers[index] === target) {
-                toDelete.push(index);
-            }
-        }
-
-        for (const index of toDelete) {
-            this._activeTransitions.delete(index);
-        }
-    };
-
-    Game_Map.prototype.markAllChunksDirty = function () {
-        const chunksX = Math.ceil(this.width() / CHUNK_SIZE);
-        const chunksY = Math.ceil(this.height() / CHUNK_SIZE);
-        this._dirtyChunks = new Uint8Array(chunksX * chunksY).fill(1);
-    };
-
-    Game_Map.prototype.getDirtyChunks = function () {
-        // Reuse a scratch array; callers consume the result synchronously.
-        const result = this._dirtyChunkScratch || (this._dirtyChunkScratch = []);
-        result.length = 0;
-        if (!this._dirtyChunks) return result;
-        for (let i = 0; i < this._dirtyChunks.length; i++) {
-            if (this._dirtyChunks[i]) {
-                result.push(i);
-            }
-        }
-        return result;
-    };
-
-    Game_Map.prototype.clearDirtyChunks = function () {
-        if (this._dirtyChunks && typeof this._dirtyChunks.fill === 'function') {
-            this._dirtyChunks.fill(0);
-        }
-    };
-
-    Game_Map.prototype.isPositionVisible = function (x, y) {
-        return this.fogOfWarState(x, y) === 2;
-    };
+    //=============================================================================
+    // Game_Map - the vision pass
+    //=============================================================================
 
     Game_Map.prototype.updateFogOfWar = function () {
         if (window.dreamActive) return;
@@ -950,62 +1287,52 @@
             return;
         }
 
-        if (!ConfigManager.fogOfWar) {
-            fogOfWarEnabled = false;
-            return;
-        }
-        fogOfWarEnabled = true;
+        if (!fogEnabled() || this._fogOfWarDisabled) return;
+        if (!$gamePlayer || !this.ensureFogBuffers()) return;
 
-        if (this._fogOfWarDisabled) return;
-
-        // Vision sources (P1 and P2)
-        const players = [{ char: $gamePlayer, id: 1 }];
-        if (window.$gameSplitScreen && window.$gameSplitScreen.active && window.$gameSplitScreen.p2Event) {
-            players.push({ char: window.$gameSplitScreen.p2Event, id: 2 });
-        }
+        const sources = visionSources();
+        if (sources.length === 0) return;
 
         const isInitial = this._forceVisionUpdate;
         let needsVisionUpdate = isInitial;
 
         this.updateTransitionTimers();
 
-        // Process movement and smoothing for all vision sources
-        for (const p of players) {
-            const char = p.char;
-            const lastX = p.id === 1 ? this._playerLastX : this._player2LastX;
-            const lastY = p.id === 1 ? this._playerLastY : this._player2LastY;
-            const lastDir = p.id === 1 ? this._playerLastDir : this._player2LastDir;
-            const visionX = p.id === 1 ? this._visionX : this._visionX2;
-            const visionY = p.id === 1 ? this._visionY : this._visionY2;
+        // Movement and vision smoothing, per source.
+        for (let i = 0; i < sources.length; i++) {
+            const char = sources[i];
+            const primary = i === 0;
+            const lastX = primary ? this._playerLastX : this._player2LastX;
+            const lastY = primary ? this._playerLastY : this._player2LastY;
+            const lastDir = primary ? this._playerLastDir : this._player2LastDir;
+            let visionX = primary ? this._visionX : this._visionX2;
+            let visionY = primary ? this._visionY : this._visionY2;
 
             const positionChanged = Math.abs(char.x - lastX) > 0.2 || Math.abs(char.y - lastY) > 0.2;
             const directionChanged = char.direction() !== lastDir;
 
-            const realX = char.x + (char._realX - char.x);
-            const realY = char.y + (char._realY - char.y);
+            const realX = char._realX;
+            const realY = char._realY;
             const isSmoothing = Math.abs(visionX - realX) > 0.05 || Math.abs(visionY - realY) > 0.05;
 
             if (positionChanged || directionChanged || isSmoothing) needsVisionUpdate = true;
 
-            // Update vision smoothing coords for this source
             if (directionChanged || isInitial || Math.abs(realX - visionX) > 2 || Math.abs(realY - visionY) > 2) {
-                if (p.id === 1) { this._visionX = realX; this._visionY = realY; }
-                else { this._visionX2 = realX; this._visionY2 = realY; }
+                visionX = realX;
+                visionY = realY;
             } else if (positionChanged) {
-                if (p.id === 1) {
-                    this._visionX += (realX - this._visionX) * VISION_SMOOTHING;
-                    this._visionY += (realY - this._visionY) * VISION_SMOOTHING;
-                } else {
-                    this._visionX2 += (realX - this._visionX2) * VISION_SMOOTHING;
-                    this._visionY2 += (realY - this._visionY2) * VISION_SMOOTHING;
-                }
+                visionX += (realX - visionX) * VISION_SMOOTHING;
+                visionY += (realY - visionY) * VISION_SMOOTHING;
             } else {
-                if (p.id === 1) { this._visionX = realX; this._visionY = realY; }
-                else { this._visionX2 = realX; this._visionY2 = realY; }
+                visionX = realX;
+                visionY = realY;
             }
 
+            if (primary) { this._visionX = visionX; this._visionY = visionY; }
+            else { this._visionX2 = visionX; this._visionY2 = visionY; }
+
             if (positionChanged || directionChanged) {
-                if (p.id === 1) {
+                if (primary) {
                     this._playerLastX = char.x;
                     this._playerLastY = char.y;
                     this._playerLastDir = char.direction();
@@ -1019,25 +1346,19 @@
 
         if (needsVisionUpdate) {
             this._forceVisionUpdate = false;
-            // After save/load a Uint8Array can come back as a plain object that
-            // lost its typed-array methods, so recreate it when needed.
-            if (!this._currentFrameVisible || typeof this._currentFrameVisible.fill !== 'function') {
-                this._currentFrameVisible = new Uint8Array(this._fogOfWarData ? this._fogOfWarData.length : 0);
-            } else {
-                this._currentFrameVisible.fill(0);
-            }
+            this.refreshDiveRestriction();
+            this._currentFrameVisible.fill(0);
             this._visibleIndices = [];
             this.refreshEventMapIfNeeded();
 
-            // Calculate vision for all sources
-            for (const p of players) {
-                const visionX = p.id === 1 ? this._visionX : this._visionX2;
-                const visionY = p.id === 1 ? this._visionY : this._visionY2;
-                this.calculateVision(visionX, visionY, p.char.direction(), p.char);
+            for (let i = 0; i < sources.length; i++) {
+                const visionX = i === 0 ? this._visionX : this._visionX2;
+                const visionY = i === 0 ? this._visionY : this._visionY2;
+                this.calculateVision(visionX, visionY, sources[i].direction(), sources[i]);
             }
 
             this.applyFogExemptTiles();
-            this.revealPeekedDividers(players.map(p => p.char));
+            this.revealPeekedDividers(sources);
 
             if (isInitial) {
                 for (let i = 0; i < this._visibleIndices.length; i++) {
@@ -1054,10 +1375,9 @@
                 // Full scan on forced updates: external reveals (plugin
                 // commands, refreshFogOfWar) may have set tiles to state 2
                 // outside the tracked visible set.
-                const size = fogData.length;
-                for (let i = 0; i < size; i++) {
-                    if (fogData[i] === 2 && !currentVisible[i]) {
-                        this.setFogOfWarStateByIndex(i, 1);
+                for (let i = 0; i < fogData.length; i++) {
+                    if (fogData[i] === STATE_VISIBLE && !currentVisible[i]) {
+                        this.setFogOfWarStateByIndex(i, STATE_SEEN);
                     }
                 }
             } else {
@@ -1065,8 +1385,8 @@
                 const last = this._lastVisibleIndices;
                 for (let i = 0; i < last.length; i++) {
                     const index = last[i];
-                    if (fogData[index] === 2 && !currentVisible[index]) {
-                        this.setFogOfWarStateByIndex(index, 1);
+                    if (fogData[index] === STATE_VISIBLE && !currentVisible[index]) {
+                        this.setFogOfWarStateByIndex(index, STATE_SEEN);
                     }
                 }
             }
@@ -1076,16 +1396,9 @@
         this.updateEventVisibility(isInitial);
     };
 
-    Game_Map.prototype.calculateVision = function (centerX, centerY, direction, character) {
-        let range = this.visionRange();
-        const char = character || $gamePlayer;
-        const charActualX = Math.round(char._realX);
-        const charActualY = Math.round(char._realY);
-        const playerOnRoof = this.terrainTag(charActualX, charActualY) === TERRAIN_ROOF || this.regionId(charActualX, charActualY) === REGION_EXTENDED_VIEW;
-
-        if (playerOnRoof) range *= 1.5;
-
-        // Eye check
+    // Which eyes the vision source still has. A character whose archetype has
+    // no eye parts at all sees normally.
+    Game_Map.prototype.visionEyesFor = function (char) {
         let actor = null;
         if (char === $gamePlayer) {
             actor = $gameParty.leader();
@@ -1093,40 +1406,65 @@
             actor = $gameParty.members()[1];
         }
 
-        let hasLeftEye = true;
-        let hasRightEye = true;
-        
+        let left = true;
+        let right = true;
         if (actor && actor._bodyParts) {
-            const leftEye = actor._bodyParts["LEFT_EYE"];
-            const rightEye = actor._bodyParts["RIGHT_EYE"];
-            if (leftEye && (leftEye.damaged || leftEye.currentHp <= 0)) hasLeftEye = false;
-            if (rightEye && (rightEye.damaged || rightEye.currentHp <= 0)) hasRightEye = false;
+            const leftEye = actor._bodyParts["LEFT_EYE"];   // i18n-ignore  body part key
+            const rightEye = actor._bodyParts["RIGHT_EYE"]; // i18n-ignore  body part key
+            if (leftEye && (leftEye.damaged || leftEye.currentHp <= 0)) left = false;
+            if (rightEye && (rightEye.damaged || rightEye.currentHp <= 0)) right = false;
         }
+        return { left, right, blind: !left && !right };
+    };
 
-        const hasZeroEyes = !hasLeftEye && !hasRightEye;
-        
+    Game_Map.prototype.calculateVision = function (centerX, centerY, direction, character) {
+        if (!this.ensureFogBuffers()) return;
+
+        const char = character || $gamePlayer;
+        if (!char) return;
+
+        const charActualX = Math.round(char._realX);
+        const charActualY = Math.round(char._realY);
+        const playerOnRoof = this.terrainTag(charActualX, charActualY) === TERRAIN_ROOF ||
+            this.regionId(charActualX, charActualY) === REGION_EXTENDED_VIEW;
+
+        let range = this.visionRange();
+        if (playerOnRoof) range *= 1.5;
+
+        const eyes = this.visionEyesFor(char);
+        const blind = eyes.blind;
+
+        // A passable terrain-4 tile (a gate cut into a wall, a walkable rampart,
+        // a rock arch) still reads as vision blocking, and the rays start one
+        // tile behind the character, so the first tile every forward ray walks
+        // into is the one the character is standing on. Exempt that single tile
+        // so the cone is exactly what it would be on open ground.
+        const standingIndex = charActualY * this.width() + charActualX;
+        const exemptIndex = (this.terrainTag(charActualX, charActualY) === TERRAIN_WALL &&
+            this.checkPassage(charActualX, charActualY, 0x0f)) ? standingIndex : -1;
+
         if (char === $gamePlayer) {
-            this._hasZeroEyes = hasZeroEyes;
-            if (hasZeroEyes) {
-                this._eventVisionConeTiles = new Set();
+            this._hasZeroEyes = blind;
+            if (blind) this._eventVisionConeTiles = new Set();
+        }
+
+        // The tile underfoot and its neighbours are always revealed, blind or
+        // not: a character can feel where they are standing, and without this a
+        // blind party had literally nothing on screen, which is indistinguishable
+        // from the fog being broken. Only the tile actually stood on ignores the
+        // diving restriction (it is water anyway while diving), so the look of a
+        // dive is unchanged.
+        this.setFogOfWarState(charActualX, charActualY, STATE_VISIBLE, true);
+        for (let oy = -1; oy <= 1; oy++) {
+            for (let ox = -1; ox <= 1; ox++) {
+                if (ox === 0 && oy === 0) continue;
+                const nx = charActualX + ox;
+                const ny = charActualY + oy;
+                if (this.isValid(nx, ny)) this.setFogOfWarState(nx, ny, STATE_VISIBLE);
             }
         }
 
-        if (!hasZeroEyes) {
-            this.setFogOfWarState(charActualX, charActualY, 2);
-
-            const frontX = this.roundXWithDirection(charActualX, direction);
-            const frontY = this.roundYWithDirection(charActualY, direction);
-            if (this.isValid(frontX, frontY)) {
-                this.setFogOfWarState(frontX, frontY, 2);
-            }
-
-            const backX = this.roundXWithDirection(charActualX, 10 - direction);
-            const backY = this.roundYWithDirection(charActualY, 10 - direction);
-            if (this.isValid(backX, backY)) {
-                this.setFogOfWarState(backX, backY, 2);
-            }
-
+        if (!blind) {
             this.revealWallTilesAbovePlayer(charActualX, charActualY);
         }
 
@@ -1139,87 +1477,27 @@
         const visionOriginY = centerY + 0.5 + dy;
         const effectiveRange = range + offsetDist;
 
-        const angleInRadians = VISION_ANGLE * Math.PI / 180;
-        const halfAngle = angleInRadians / 2;
-
+        const halfAngle = VISION_ARC / 2;
         let startAngle = baseAngle - halfAngle;
-        let angleSpan = angleInRadians;
-        
-        if (hasZeroEyes) {
-            startAngle = baseAngle - halfAngle;
-            angleSpan = angleInRadians;
-        } else if (!hasLeftEye) {
+        let angleSpan = VISION_ARC;
+
+        // One eye sees half the cone, on that eye's side.
+        if (!blind && !eyes.left) {
             startAngle = baseAngle;
             angleSpan = halfAngle;
-        } else if (!hasRightEye) {
+        } else if (!blind && !eyes.right) {
             startAngle = baseAngle - halfAngle;
             angleSpan = halfAngle;
         }
 
-        for (let i = 0; i < RAY_COUNT; i++) {
-            const angle = startAngle + (angleSpan * (i + 0.5) / RAY_COUNT);
-            this.castRay(visionOriginX, visionOriginY, angle, effectiveRange, playerOnRoof, hasZeroEyes);
+        const rays = rayCountFor(effectiveRange, angleSpan);
+        for (let i = 0; i < rays; i++) {
+            const angle = startAngle + (angleSpan * (i + 0.5) / rays);
+            this.castRay(visionOriginX, visionOriginY, angle, effectiveRange, playerOnRoof, blind, exemptIndex);
         }
     };
 
-    Game_Map.prototype.revealWallTilesAbovePlayer = function (playerX, playerY) {
-        const checkAndReveal = (x, basePathY) => {
-            if (this.isValid(x, basePathY) && this.terrainTag(x, basePathY) === TERRAIN_WALL) {
-                for (let y = 1; y <= 4; y++) {
-                    const tileY = basePathY + 1 - y;
-                    if (this.isValid(x, tileY)) this.setFogOfWarState(x, tileY, 2);
-                }
-            }
-        };
-
-        checkAndReveal(playerX, playerY - 1);
-        checkAndReveal(playerX - 1, playerY);
-        checkAndReveal(playerX + 1, playerY);
-
-        const wallY = playerY - 1;
-        if (this.isValid(playerX, wallY) && this.terrainTag(playerX, wallY) === TERRAIN_WALL) {
-            for (let y = 1; y <= 4; y++) {
-                const tileY = playerY - y;
-                if (this.isValid(playerX - 1, tileY) && this.terrainTag(playerX - 1, tileY) === TERRAIN_WALL) {
-                    this.setFogOfWarState(playerX - 1, tileY, 2);
-                }
-                if (this.isValid(playerX + 1, tileY) && this.terrainTag(playerX + 1, tileY) === TERRAIN_WALL) {
-                    this.setFogOfWarState(playerX + 1, tileY, 2);
-                }
-            }
-        }
-    };
-
-    Game_Map.prototype.applyEdgeFeathering = function (centerX, centerY) {
-        // Feature intentionally disabled
-        return;
-    };
-
-    Game_Map.prototype.revealConnectedTerrainTiles = function (startX, startY) {
-        const originTag = this.terrainTag(startX, startY);
-        const width = this.width();
-        const queue = [[startX, startY]];
-        const visited = new Set();
-        visited.add(startY * width + startX);
-        const MAX_TILES = 300;
-
-        while (queue.length > 0 && visited.size <= MAX_TILES) {
-            const [x, y] = queue.shift();
-            const neighbors = [[x, y - 1], [x, y + 1], [x - 1, y], [x + 1, y]];
-            for (const [nx, ny] of neighbors) {
-                if (!this.isValid(nx, ny)) continue;
-                const idx = ny * width + nx;
-                if (visited.has(idx)) continue;
-                visited.add(idx);
-                if (this.terrainTag(nx, ny) === originTag) {
-                    this.setFogOfWarState(nx, ny, 2);
-                    queue.push([nx, ny]);
-                }
-            }
-        }
-    };
-
-    Game_Map.prototype.castRay = function (startX, startY, angle, maxDistance, playerOnRoof = false, zeroEyes = false) {
+    Game_Map.prototype.castRay = function (startX, startY, angle, maxDistance, playerOnRoof = false, blind = false, exemptIndex = -1) {
         const dx = Math.cos(angle);
         const dy = Math.sin(angle);
         const width = this.width();
@@ -1227,32 +1505,30 @@
         const isLoopH = this.isLoopHorizontal();
         const isLoopV = this.isLoopVertical();
 
-        let x = startX;
-        let y = startY;
-        let tileX = Math.floor(x);
-        let tileY = Math.floor(y);
+        let tileX = Math.floor(startX);
+        let tileY = Math.floor(startY);
 
-        let sideDistX;
-        let sideDistY;
         const deltaDistX = dx === 0 ? Infinity : Math.abs(1 / dx);
         const deltaDistY = dy === 0 ? Infinity : Math.abs(1 / dy);
+        let sideDistX;
+        let sideDistY;
         let stepX;
         let stepY;
 
         if (dx < 0) {
             stepX = -1;
-            sideDistX = dx === 0 ? Infinity : (x - tileX) * deltaDistX;
+            sideDistX = dx === 0 ? Infinity : (startX - tileX) * deltaDistX;
         } else {
             stepX = 1;
-            sideDistX = dx === 0 ? Infinity : (tileX + 1.0 - x) * deltaDistX;
+            sideDistX = dx === 0 ? Infinity : (tileX + 1.0 - startX) * deltaDistX;
         }
 
         if (dy < 0) {
             stepY = -1;
-            sideDistY = dy === 0 ? Infinity : (y - tileY) * deltaDistY;
+            sideDistY = dy === 0 ? Infinity : (startY - tileY) * deltaDistY;
         } else {
             stepY = 1;
-            sideDistY = dy === 0 ? Infinity : (tileY + 1.0 - y) * deltaDistY;
+            sideDistY = dy === 0 ? Infinity : (tileY + 1.0 - startY) * deltaDistY;
         }
 
         let dist = 0;
@@ -1277,117 +1553,110 @@
 
             if (checkX < 0 || checkY < 0 || checkX >= width || checkY >= height) break;
 
-            if (this.isVisionBlocking(checkX, checkY, playerOnRoof)) {
-                if (zeroEyes) {
-                    if (!this._eventVisionConeTiles) this._eventVisionConeTiles = new Set();
-                    this._eventVisionConeTiles.add(checkY * width + checkX);
-                } else {
-                    const wasRevealed = this._fogOfWarData[checkY * width + checkX] === 2;
-                    this.setFogOfWarState(checkX, checkY, 2);
-                    if (!wasRevealed) {
-                        const tag = this.terrainTag(checkX, checkY);
-                        if (tag === TERRAIN_WALL || (tag === TERRAIN_ROOF && this._isExteriorMap)) {
-                            this.revealConnectedTerrainTiles(checkX, checkY);
-                        }
+            const checkIndex = checkY * width + checkX;
+            const blocked = checkIndex !== exemptIndex && this.isVisionBlocking(checkX, checkY, playerOnRoof);
+
+            if (blind) {
+                // A blind character maps the room by ear and touch: the cone is
+                // still traced, but only so events inside it can be sensed. No
+                // terrain is revealed.
+                if (!this._eventVisionConeTiles) this._eventVisionConeTiles = new Set();
+                this._eventVisionConeTiles.add(checkIndex);
+                if (blocked) break;
+                continue;
+            }
+
+            if (blocked) {
+                const wasRevealed = this._fogOfWarData[checkIndex] === STATE_VISIBLE;
+                this.setFogOfWarStateByIndex(checkIndex, STATE_VISIBLE);
+                if (!wasRevealed) {
+                    const tag = this.terrainTag(checkX, checkY);
+                    if (tag === TERRAIN_WALL || (tag === TERRAIN_ROOF && this._isExteriorMap)) {
+                        this.revealConnectedTerrainTiles(checkX, checkY);
                     }
                 }
                 break;
             }
 
-            if (zeroEyes) {
-                if (!this._eventVisionConeTiles) this._eventVisionConeTiles = new Set();
-                this._eventVisionConeTiles.add(checkY * width + checkX);
-            } else {
-                this.setFogOfWarState(checkX, checkY, 2);
-            }
-            if (dist > maxDistance - (maxDistance * EDGE_FEATHERING)) {
-                this.applyEdgeFeathering(checkX, checkY);
-            }
+            this.setFogOfWarStateByIndex(checkIndex, STATE_VISIBLE);
         }
     };
 
-    Game_Map.prototype.refreshTerrainCache = function () {
-        const width = this.width();
-        const height = this.height();
-        const size = width * height;
-
-        if (!this._terrainCache || this._terrainCache.length !== size) {
-            this._terrainCache = new Uint8Array(size);
-        }
-
-        for (let y = 0; y < height; y++) {
-            for (let x = 0; x < width; x++) {
-                const tag = this.terrainTag(x, y);
-                const region = this.regionId(x, y);
-
-                let blockType = 0;
-                if (region === REGION_BLOCK) blockType = 3;
-                else if (region === REGION_DIVIDER) blockType = 3; // interior divider: always blocks
-                else if (region === REGION_EXTENDED_VIEW) blockType = 0;
-                else if (tag === TERRAIN_WALL) blockType = 1;
-                else if (tag === TERRAIN_ROOF) blockType = 2;
-
-                this._terrainCache[y * width + x] = blockType;
+    Game_Map.prototype.revealWallTilesAbovePlayer = function (playerX, playerY) {
+        const checkAndReveal = (x, basePathY) => {
+            if (this.isValid(x, basePathY) && this.terrainTag(x, basePathY) === TERRAIN_WALL) {
+                for (let y = 1; y <= 4; y++) {
+                    const tileY = basePathY + 1 - y;
+                    if (this.isValid(x, tileY)) this.setFogOfWarState(x, tileY, STATE_VISIBLE);
+                }
             }
-        }
-        this._terrainCacheDirty = false;
-    };
+        };
 
-    Game_Map.prototype.isVisionBlocking = function (x, y, playerOnRoof = false) {
-        if (x < 0 || y < 0 || x >= this.width() || y >= this.height()) return true;
-        if (this._terrainCacheDirty) this.refreshTerrainCache();
+        checkAndReveal(playerX, playerY - 1);
+        checkAndReveal(playerX - 1, playerY);
+        checkAndReveal(playerX + 1, playerY);
 
-        const staticBlocks = this._terrainCache[y * this.width() + x];
-        if (playerOnRoof ? (staticBlocks === 3) : (staticBlocks > 0)) return true;
-
-        if (this._eventMap) {
-            const events = this._eventMap[y * this.width() + x];
-            if (events) {
-                for (let i = 0; i < events.length; i++) {
-                    if (events[i]._isVisionBlocking) return true;
+        const wallY = playerY - 1;
+        if (this.isValid(playerX, wallY) && this.terrainTag(playerX, wallY) === TERRAIN_WALL) {
+            for (let y = 1; y <= 4; y++) {
+                const tileY = playerY - y;
+                if (this.isValid(playerX - 1, tileY) && this.terrainTag(playerX - 1, tileY) === TERRAIN_WALL) {
+                    this.setFogOfWarState(playerX - 1, tileY, STATE_VISIBLE);
+                }
+                if (this.isValid(playerX + 1, tileY) && this.terrainTag(playerX + 1, tileY) === TERRAIN_WALL) {
+                    this.setFogOfWarState(playerX + 1, tileY, STATE_VISIBLE);
                 }
             }
         }
-        return false;
     };
 
-    Game_Map.prototype.isVisionBlockingEvent = function (event) {
-        if (!event || typeof event.event !== 'function') return false;
-        const data = event.event();
-        if (!data || (typeof event.priorityType === 'function' && event.priorityType() !== 1)) return false;
+    // Seeing one tile of a wall face reveals the run of wall it belongs to, so
+    // a room's outline appears whole rather than in slivers.
+    Game_Map.prototype.revealConnectedTerrainTiles = function (startX, startY) {
+        const originTag = this.terrainTag(startX, startY);
+        const width = this.width();
+        const MAX_TILES = 300;
 
-        const name = (data.name || "").toLowerCase();
-        return VISION_BLOCKING_EVENT_NAMES.some(blocker => blocker && name.includes(blocker));
-    };
+        // A queue with a head index: Array.shift() on a 300-entry queue is
+        // quadratic and this runs on every newly sighted wall tile.
+        const queue = [startY * width + startX];
+        const visited = new Set(queue);
+        let head = 0;
 
-    Game_Map.prototype.isEnemyEvent = function (event) {
-        if (!event || typeof event.event !== 'function') return false;
-        const data = event.event();
-        return data && data.note && /^\d+$/.test(data.note.trim());
-    };
-
-    Game_Map.prototype.isExemptEventName = function (event) {
-        if (!event || typeof event.event !== 'function') return false;
-        // Event names are static, so cache the result on the event.
-        if (event._fowExempt === undefined) {
-            const data = event.event();
-            event._fowExempt = !!(data && EXEMPT_EVENT_NAMES.some(exempt => (data.name || "").includes(exempt)));
+        while (head < queue.length && visited.size <= MAX_TILES) {
+            const idx = queue[head++];
+            const x = idx % width;
+            const y = (idx / width) | 0;
+            for (let n = 0; n < 4; n++) {
+                const nx = x + (n === 0 ? -1 : n === 1 ? 1 : 0);
+                const ny = y + (n === 2 ? -1 : n === 3 ? 1 : 0);
+                if (!this.isValid(nx, ny)) continue;
+                const nidx = ny * width + nx;
+                if (visited.has(nidx)) continue;
+                visited.add(nidx);
+                if (this.terrainTag(nx, ny) === originTag) {
+                    this.setFogOfWarStateByIndex(nidx, STATE_VISIBLE);
+                    queue.push(nidx);
+                }
+            }
         }
-        return event._fowExempt;
     };
+
+    //=============================================================================
+    // Game_Map - event visibility
+    //=============================================================================
 
     Game_Map.prototype.updateEventVisibility = function (snap = false) {
         this._eventVisibilityCounter = (this._eventVisibilityCounter || 0) + 1;
         if (this._eventVisibilityCounter < 3 && !snap) return;
         this._eventVisibilityCounter = 0;
+        if (!$gamePlayer) return;
 
         const p1x = $gamePlayer.x;
         const p1y = $gamePlayer.y;
-        let p2 = null;
-        if (window.$gameSplitScreen && window.$gameSplitScreen.active && window.$gameSplitScreen.p2Event) {
-            p2 = window.$gameSplitScreen.p2Event;
-        }
-
+        const split = window.$gameSplitScreen;
+        const p2 = (split && split.active && split.p2Event) ? split.p2Event : null;
+        const width = this.width();
         const events = this.events();
 
         for (let i = 0; i < events.length; i++) {
@@ -1398,15 +1667,15 @@
             if (!isBordering && p2) {
                 isBordering = Math.abs(event.x - p2.x) <= 1 && Math.abs(event.y - p2.y) <= 1;
             }
-            let isVisible = false;
-            
+
+            let isVisible;
             if (this._hasZeroEyes) {
-                isVisible = this._eventVisionConeTiles && this._eventVisionConeTiles.has(event.y * this.width() + event.x);
+                isVisible = !!(this._eventVisionConeTiles && this._eventVisionConeTiles.has(event.y * width + event.x));
             } else {
                 isVisible = this.isPositionVisible(event.x, event.y);
             }
 
-            if (this._visibleFogOfWar && this.fogOfWarState(event.x, event.y) >= 1) {
+            if (this._visibleFogOfWar && this.fogOfWarState(event.x, event.y) >= STATE_SEEN) {
                 isVisible = true;
             }
 
@@ -1429,94 +1698,78 @@
         this._fogOfWarBorderingPlayer = false;
     };
 
+    // An enemy event out of sight fades out after a beat; anything else simply
+    // greys out, so the player keeps the map furniture they have already found.
+    const ENEMY_FADE_DELAY = 60;
+
     Game_Event.prototype.updateFogOfWarVisibility = function (isVisible, snap = false) {
         if (this._fogOfWarBorderingPlayer) isVisible = true;
+        if (this._fogOfWarVisible === isVisible) return;
 
-        if (this._fogOfWarVisible !== isVisible) {
-            this._isEnemy = $gameMap.isEnemyEvent(this);
-            const isExempt = $gameMap.isExemptEventName(this);
+        this._isEnemy = $gameMap.isEnemyEvent(this);
+        const hides = this._isEnemy && !$gameMap.isExemptEventName(this) && !this._fogOfWarBorderingPlayer;
 
-            this._fogOfWarVisible = isVisible;
+        this._fogOfWarVisible = isVisible;
 
-            if (snap) {
-                this._fogOfWarTransitioning = false;
-                this._fogOfWarTransitionTimer = 0;
-                if (!isVisible) {
-                    if (this._isEnemy && !isExempt && !this._fogOfWarBorderingPlayer) {
-                        this._opacity = 0;
-                        this._transparent = true;
-                    } else {
-                        this._opacity = 255;
-                        this._transparent = false;
-                    }
-                } else {
-                    this._opacity = 255;
-                    this._transparent = false;
-                }
-            } else {
-                this._fogOfWarTransitioning = true;
-                this._fogOfWarTransitionTimer = REVEAL_TRANSITION_DURATION;
+        if (isVisible) {
+            this._opacity = 255;
+            this._transparent = false;
+            this._fogOfWarTransitioning = !snap;
+            this._fogOfWarTransitionTimer = snap ? 0 : REVEAL_TRANSITION_DURATION;
+            return;
+        }
 
-                if (!isVisible) {
-                    if (this._isEnemy && !isExempt && !this._fogOfWarBorderingPlayer) {
-                        // Start fading out
-                        const delay = 60; // 1 second delay
-                        const fadeDuration = REVEAL_TRANSITION_DURATION * 4;
-                        this._fogOfWarTransitionTimer = delay + fadeDuration;
-                    } else {
-                        this._opacity = 255;
-                        this._transparent = false;
-                        this._fogOfWarTransitioning = false;
-                    }
-                } else {
-                    this._opacity = 255;
-                    this._transparent = false;
-                    // Fade in logic if needed
-                    this._fogOfWarTransitioning = true;
-                }
-            }
+        if (!hides) {
+            this._opacity = 255;
+            this._transparent = false;
+            this._fogOfWarTransitioning = false;
+            this._fogOfWarTransitionTimer = 0;
+            return;
+        }
+
+        if (snap) {
+            this._fogOfWarTransitioning = false;
+            this._fogOfWarTransitionTimer = 0;
+            this._opacity = 0;
+            this._transparent = true;
+        } else {
+            this._fogOfWarTransitioning = true;
+            this._fogOfWarTransitionTimer = ENEMY_FADE_DELAY + REVEAL_TRANSITION_DURATION * 4;
         }
     };
 
     Game_Event.prototype.updateFogOfWarTransition = function () {
-        if (this._fogOfWarTransitioning) {
+        if (!this._fogOfWarTransitioning) return;
 
-            this._fogOfWarTransitionTimer--;
-            const duration = REVEAL_TRANSITION_DURATION;
+        this._fogOfWarTransitionTimer--;
+        const duration = REVEAL_TRANSITION_DURATION;
 
-            if (this._isEnemy && !$gameMap.isExemptEventName(this)) {
-                if (!this._fogOfWarVisible) {
-                    // Fading out
-                    const fadeDuration = duration * 4;
-                    
-                    if (this._fogOfWarTransitionTimer > fadeDuration) {
-                        // 1 second delay before fading starts
-                        this._opacity = 255;
-                    } else {
-                        const fadeRatio = Math.max(0, this._fogOfWarTransitionTimer / fadeDuration);
-                        this._opacity = Math.floor(255 * fadeRatio);
-                    }
-                    
-                    if (this._fogOfWarTransitionTimer <= 0) {
-                        this._fogOfWarTransitioning = false;
-                        this._opacity = 0;
-                        this._transparent = true;
-                    }
-                } else {
-                    // Fading in
-                    const fadeRatio = Math.max(0, 1 - (this._fogOfWarTransitionTimer / duration));
-                    this._opacity = Math.floor(255 * fadeRatio);
-                    this._transparent = false;
-                    if (this._fogOfWarTransitionTimer <= 0) {
-                        this._fogOfWarTransitioning = false;
-                        this._opacity = 255;
-                    }
-                }
-            } else {
-                if (this._fogOfWarTransitionTimer <= 0) {
-                    this._fogOfWarTransitioning = false;
-                }
+        if (!this._isEnemy || $gameMap.isExemptEventName(this)) {
+            if (this._fogOfWarTransitionTimer <= 0) this._fogOfWarTransitioning = false;
+            return;
+        }
+
+        if (this._fogOfWarVisible) {
+            const fadeRatio = Math.max(0, 1 - (this._fogOfWarTransitionTimer / duration));
+            this._opacity = Math.floor(255 * fadeRatio);
+            this._transparent = false;
+            if (this._fogOfWarTransitionTimer <= 0) {
+                this._fogOfWarTransitioning = false;
+                this._opacity = 255;
             }
+            return;
+        }
+
+        const fadeDuration = duration * 4;
+        if (this._fogOfWarTransitionTimer > fadeDuration) {
+            this._opacity = 255; // still inside the delay
+        } else {
+            this._opacity = Math.floor(255 * Math.max(0, this._fogOfWarTransitionTimer / fadeDuration));
+        }
+        if (this._fogOfWarTransitionTimer <= 0) {
+            this._fogOfWarTransitioning = false;
+            this._opacity = 0;
+            this._transparent = true;
         }
     };
 
@@ -1539,28 +1792,17 @@
     // Game_Player
     //=============================================================================
 
-    const _Game_Player_update = Game_Player.prototype.update;
-    Game_Player.prototype.update = function (sceneActive) {
-        _Game_Player_update.call(this, sceneActive);
-        if (sceneActive) {
-            // Fog updates are driven by the single throttled call in
-            // Spriteset_Map.update; only track idle state here.
-            if (this.isMoving()) {
-                $gameMap._playerIdleTime = 0;
-                $gameMap._playerWasMoving = true;
-            } else if ($gameMap._playerWasMoving) {
-                $gameMap._playerIdleTime++;
-            }
-        }
-    };
-
     const _Game_Player_updateNonmoving = Game_Player.prototype.updateNonmoving;
     Game_Player.prototype.updateNonmoving = function (wasMoving, sceneActive) {
         _Game_Player_updateNonmoving.call(this, wasMoving, sceneActive);
-        if (wasMoving && sceneActive) {
-            $gameMap._playerIdleTime = 0;
-            $gameMap._playerWasMoving = true;
-            $gameMap.updateFogOfWar();
+        // A step just finished: refresh the cone now rather than waiting for the
+        // throttled call in Spriteset_Map.update.
+        if (wasMoving && sceneActive && $gameMap) {
+            try {
+                $gameMap.updateFogOfWar();
+            } catch (e) {
+                fogError(e);
+            }
         }
     };
 
@@ -1573,9 +1815,10 @@
             $gameSystem.saveCurrentFogData();
         }
         _Game_Player_performTransfer.call(this);
-        if (sameMap && fogOfWarEnabled && $gameMap) {
+        if (sameMap && $gameMap) {
             $gameMap._forceVisionUpdate = true;
-            $gameMap.updateFogOfWar();
+            $gameMap._dividerFogKey = null;
+            requestFullRefresh(1, false);
         }
     };
 
@@ -1586,51 +1829,19 @@
     const _Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
     Scene_Map.prototype.onMapLoaded = function () {
         _Scene_Map_onMapLoaded.call(this);
-        if (this._spriteset && fogOfWarEnabled) {
-            const scene = this;
-            const mapId = $gameMap ? $gameMap.mapId() : -1;
-            setTimeout(() => {
-                // Bail if the scene terminated or the map changed within the window.
-                if (SceneManager._scene !== scene || !scene._spriteset) return;
-                if (!$gameMap || $gameMap.mapId() !== mapId) return;
-                scene._spriteset.refreshFogOfWar(true);
-            }, 100);
-        }
+        // Events and prefabs are still being injected on this frame, so let a
+        // few frames pass before the definitive refresh. Frames, not
+        // setTimeout: a wall-clock timer could fire in another scene entirely.
+        requestFullRefresh(4, false);
     };
 
     const _Scene_Map_start = Scene_Map.prototype.start;
     Scene_Map.prototype.start = function () {
         _Scene_Map_start.call(this);
         if ($gameSystem && $gameSystem._needsFogOfWarRefresh) {
-            const scene = this;
-            const mapId = $gameMap ? $gameMap.mapId() : -1;
-            setTimeout(() => {
-                // Ignore if the scene terminated or the map changed within the window.
-                if (SceneManager._scene !== scene) return;
-                if (!$gameMap || $gameMap.mapId() !== mapId) return;
-                if (this._spriteset && $gameMap) {
-                    if ($gameSystem._forceFogReload) {
-                        $gameSystem.reloadFogOfWarLighting();
-                        $gameMap.initializeFogOfWar();
-                        $gameMap._playerLastX = -1;
-                        $gameMap._playerLastY = -1;
-                        $gameMap._playerLastDir = -1;
-                        if ($gamePlayer) {
-                            $gameMap._visionX = $gamePlayer.x;
-                            $gameMap._visionY = $gamePlayer.y;
-                        }
-                        $gameSystem._forceFogReload = false;
-                    }
-                    this._spriteset.refreshFogOfWar(true);
-                    if ($gameMap) {
-                        $gameMap.markAllChunksDirty();
-                        $gameMap.updateFogOfWar();
-                        $gameMap.updateTransitionTimers();
-                    }
-                    this._spriteset.updateEventVisibility();
-                }
-                $gameSystem._needsFogOfWarRefresh = false;
-            }, 100);
+            requestFullRefresh(4, !!$gameSystem._forceFogReload);
+            $gameSystem._needsFogOfWarRefresh = false;
+            $gameSystem._forceFogReload = false;
         }
     };
 
@@ -1645,11 +1856,6 @@
     // Spriteset_Map
     //=============================================================================
 
-    const _Spriteset_Map_createLowerLayer = Spriteset_Map.prototype.createLowerLayer;
-    Spriteset_Map.prototype.createLowerLayer = function () {
-        _Spriteset_Map_createLowerLayer.call(this);
-    };
-
     const _Spriteset_Map_createUpperLayer = Spriteset_Map.prototype.createUpperLayer;
     Spriteset_Map.prototype.createUpperLayer = function () {
         _Spriteset_Map_createUpperLayer.call(this);
@@ -1659,51 +1865,70 @@
     Spriteset_Map.prototype.createFogOfWarLayer = function () {
         this._fogContainer = new PIXI.Container();
         this.addChild(this._fogContainer);
-        
+
         this._fogCanvas = document.createElement('canvas');
         this._fogCanvas.width = 1;
         this._fogCanvas.height = 1;
         this._fogCtx = this._fogCanvas.getContext('2d', { willReadFrequently: true });
-        
+
         this._fogTexture = PIXI.Texture.from(this._fogCanvas);
         this._fogTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
         this._fogSprite = new PIXI.Sprite(this._fogTexture);
+        this._fogSprite.scale.set($gameMap ? $gameMap.tileWidth() : 48, $gameMap ? $gameMap.tileHeight() : 48);
         this._fogContainer.addChild(this._fogSprite);
-        
-        this._lastDisplayX = -999;
-        this._lastDisplayY = -999;
+
+        this._fogPixels = null;
+        this._fogImageData = null;
         this._wasFogOfWarActive = false;
         this.refreshFogOfWar(true);
+    };
+
+    // True when the fog layer should be drawn at all on this map.
+    Spriteset_Map.prototype.isFogOfWarActive = function () {
+        if (window.dreamActive || !$gameMap) return false;
+        if ($gameMap.isDividerOnlyFog()) return true;
+        return fogEnabled() && !$gameMap._fogOfWarDisabled;
     };
 
     const _Spriteset_Map_update = Spriteset_Map.prototype.update;
     Spriteset_Map.prototype.update = function () {
         _Spriteset_Map_update.call(this);
-        const dividerOnly = $gameMap && $gameMap.isDividerOnlyFog();
-        if (window.dreamActive || (!dividerOnly && (!fogOfWarEnabled || ($gameMap && $gameMap._fogOfWarDisabled)))) {
-            if (this._fogContainer) {
-                this._fogContainer.visible = false;
-            }
+        if (!this._fogContainer) return;
+
+        if (!this.isFogOfWarActive()) {
+            this._fogContainer.visible = false;
             if (this._wasFogOfWarActive) {
                 this.cleanupFogOfWarEvents();
                 this._wasFogOfWarActive = false;
             }
+            pendingRefreshFrames = 0;
+            pendingRefreshReload = false;
             return;
         }
-        this._wasFogOfWarActive = true;
 
-        const displayX = $gameMap.displayX();
-        const displayY = $gameMap.displayY();
-
-        this._fogContainer.x = -Math.round(displayX * $gameMap.tileWidth());
-        this._fogContainer.y = -Math.round(displayY * $gameMap.tileHeight());
-
-        if (Math.abs(displayX - this._lastDisplayX) >= 0.25 || Math.abs(displayY - this._lastDisplayY) >= 0.25) {
-            this._lastDisplayX = displayX;
-            this._lastDisplayY = displayY;
+        // Coming back from disabled (option toggled, map note lifted) has to
+        // rebuild the layer: the old code only ever set visible = false here and
+        // left the fog invisible until something else called refreshFogOfWar.
+        if (!this._wasFogOfWarActive) {
+            this._wasFogOfWarActive = true;
+            requestFullRefresh(1, false);
         }
+        this._fogContainer.visible = true;
+
+        this._fogContainer.x = -Math.round($gameMap.displayX() * $gameMap.tileWidth());
+        this._fogContainer.y = -Math.round($gameMap.displayY() * $gameMap.tileHeight());
 
         try {
+            if (pendingRefreshFrames > 0 && --pendingRefreshFrames === 0) {
+                const reload = pendingRefreshReload;
+                pendingRefreshReload = false;
+                if (reload && $gameSystem) $gameSystem.reloadFogOfWarLighting();
+                $gameMap._forceVisionUpdate = true;
+                this.refreshFogOfWar(true);
+                this.updateEventVisibility();
+                return;
+            }
+
             // Single throttled call site for fog updates. On skipped frames
             // still tick transitions and event visibility so fades and event
             // reveal keep their original per-frame cadence.
@@ -1714,18 +1939,17 @@
                 $gameMap.updateTransitionTimers();
                 $gameMap.updateEventVisibility(false);
             }
-        } catch (e) {
-            console.error('FogOfWar: disabling due to error', e);
-            $gameMap._fogOfWarDisabled = true;
-            ConfigManager.fogOfWar = false;
-            fogOfWarEnabled = false;
-            return;
-        }
 
-        const dirtyChunks = $gameMap.getDirtyChunks();
-        if (dirtyChunks.length > 0) {
-            this.updateDirtyChunks(dirtyChunks);
-            $gameMap.clearDirtyChunks();
+            const dirtyChunks = $gameMap.getDirtyChunks();
+            if (dirtyChunks.length > 0) {
+                this.updateDirtyChunks(dirtyChunks);
+                $gameMap.clearDirtyChunks();
+            }
+        } catch (e) {
+            // Session-only: the player's saved option is never rewritten.
+            fogError(e);
+            this._fogContainer.visible = false;
+            return;
         }
 
         this.updateEventVisibility();
@@ -1744,132 +1968,162 @@
             }
         }
         for (let i = 0; i < this._characterSprites.length; i++) {
-            const sprite = this._characterSprites[i];
-            if (sprite._fogColorFilter) {
-                if (sprite.filters) {
-                    sprite.filters = sprite.filters.filter(f => f !== sprite._fogColorFilter);
-                    if (!sprite.filters.length) sprite.filters = null;
-                }
-            }
+            this.clearFogFilter(this._characterSprites[i]);
         }
     };
 
+    Spriteset_Map.prototype.clearFogFilter = function (sprite) {
+        if (!sprite || !sprite._fogColorFilter || !sprite.filters) return;
+        sprite.filters = sprite.filters.filter(f => f !== sprite._fogColorFilter);
+        if (!sprite.filters.length) sprite.filters = null;
+    };
+
+    // Size the fog canvas to the map. Returns false when the map is not ready.
+    Spriteset_Map.prototype.resizeFogCanvas = function () {
+        if (!$gameMap || !$dataMap || !this._fogCanvas) return false;
+        const mapWidth = $gameMap.width();
+        const mapHeight = $gameMap.height();
+        if (mapWidth <= 0 || mapHeight <= 0) return false;
+
+        if (this._fogPixels && this._fogCanvas.width === mapWidth && this._fogCanvas.height === mapHeight) {
+            return true;
+        }
+
+        this._fogCanvas.width = mapWidth;
+        this._fogCanvas.height = mapHeight;
+        this._fogImageData = this._fogCtx.createImageData(mapWidth, mapHeight);
+        this._fogPixels = this._fogImageData.data;
+
+        // Build the replacement BEFORE destroying the old one, so the sprite is
+        // never left holding a destroyed texture for even one frame.
+        const previous = this._fogTexture;
+        delete this._fogCanvas._pixiId;
+        this._fogTexture = PIXI.Texture.from(this._fogCanvas);
+        this._fogTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+        this._fogSprite.texture = this._fogTexture;
+        this._fogSprite.scale.set($gameMap.tileWidth(), $gameMap.tileHeight());
+        if (previous && previous !== this._fogTexture) {
+            try {
+                previous.destroy(true);
+            } catch (e) {
+                console.warn('FogOfWar: could not release the previous fog texture', e);
+            }
+        }
+        return true;
+    };
+
     Spriteset_Map.prototype.refreshFogOfWar = function (fullRefresh = false) {
-        const dividerOnly = $gameMap && $gameMap.isDividerOnlyFog();
-        if (window.dreamActive || (!dividerOnly && (!fogOfWarEnabled || ($gameMap && $gameMap._fogOfWarDisabled)))) {
+        if (!this._fogContainer) return;
+        if (!this.isFogOfWarActive()) {
             this._fogContainer.visible = false;
             return;
         }
         this._fogContainer.visible = true;
+        this._wasFogOfWarActive = true;
 
-        if (fullRefresh) {
-            if ($gameMap && $dataMap) {
-                const mapWidth = $gameMap.width();
-                const mapHeight = $gameMap.height();
-                if (!this._fogPixels || this._fogCanvas.width !== mapWidth || this._fogCanvas.height !== mapHeight) {
-                    this._fogCanvas.width = mapWidth;
-                    this._fogCanvas.height = mapHeight;
-                    this._fogImageData = this._fogCtx.createImageData(mapWidth, mapHeight);
-                    this._fogPixels = this._fogImageData.data;
-                    
-                    if (this._fogTexture) {
-                        this._fogTexture.destroy(true);
-                        delete this._fogCanvas._pixiId;
-                    }
-                    this._fogTexture = PIXI.Texture.from(this._fogCanvas);
-                    this._fogTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-                    this._fogSprite.texture = this._fogTexture;
-                    this._fogSprite.scale.set($gameMap.tileWidth(), $gameMap.tileHeight());
-                }
-
-                if (dividerOnly) {
+        try {
+            if (fullRefresh && this.resizeFogCanvas()) {
+                $gameMap.ensureFogBuffers();
+                if ($gameMap.isDividerOnlyFog()) {
                     // Interior-divider maps reveal the whole current room rather
                     // than a vision cone.
                     $gameMap._forceVisionUpdate = true;
+                    $gameMap._dividerFogKey = null;
                     $gameMap.updateDividerFog();
                 } else {
-                    const players = [$gamePlayer];
-                    if (window.$gameSplitScreen && window.$gameSplitScreen.active && window.$gameSplitScreen.p2Event) {
-                        players.push(window.$gameSplitScreen.p2Event);
-                    }
-
-                    players.forEach((p, i) => {
+                    const sources = visionSources();
+                    $gameMap.refreshDiveRestriction();
+                    $gameMap.refreshEventMapIfNeeded();
+                    for (let i = 0; i < sources.length; i++) {
+                        const p = sources[i];
                         if (i === 0) {
-                            $gameMap._visionX = p.x;
-                            $gameMap._visionY = p.y;
+                            $gameMap._visionX = p._realX;
+                            $gameMap._visionY = p._realY;
                         } else {
-                            $gameMap._visionX2 = p.x;
-                            $gameMap._visionY2 = p.y;
+                            $gameMap._visionX2 = p._realX;
+                            $gameMap._visionY2 = p._realY;
                         }
-                        $gameMap.calculateVision(p.x, p.y, p.direction(), p);
-                    });
+                        $gameMap.calculateVision(p._realX, p._realY, p.direction(), p);
+                    }
                     $gameMap.applyFogExemptTiles(true);
-                    $gameMap.revealPeekedDividers(players);
+                    $gameMap.revealPeekedDividers(sources);
                     $gameMap.updateTransitionTimers();
                 }
+                $gameMap.markAllChunksDirty();
             }
-            $gameMap.markAllChunksDirty();
-        }
 
-        const dirtyChunks = $gameMap.getDirtyChunks();
-        this.updateDirtyChunks(dirtyChunks);
-        $gameMap.clearDirtyChunks();
+            const dirtyChunks = $gameMap.getDirtyChunks();
+            if (dirtyChunks.length > 0) {
+                this.updateDirtyChunks(dirtyChunks);
+                $gameMap.clearDirtyChunks();
+            }
+        } catch (e) {
+            fogError(e);
+            this._fogContainer.visible = false;
+        }
     };
 
-    Spriteset_Map.prototype.buildColorLut = function() {
+    // alpha (0-255) -> RGBA. A tile darker than the "previously seen" level is
+    // one that was never seen, so it takes the never-seen colour.
+    Spriteset_Map.prototype.buildColorLut = function () {
         this._colorLut = new Uint8ClampedArray(256 * 4);
-        const neverSeen = this.parseColor(NEVER_SEEN_COLOR);
-        const prevSeen = this.parseColor(PREVIOUSLY_SEEN_COLOR);
-        const baseAlpha = this.extractAlpha(PREVIOUSLY_SEEN_COLOR);
-        
+        const neverSeen = parseCssColor(NEVER_SEEN_COLOR);
+        const prevSeen = parseCssColor(PREVIOUSLY_SEEN_COLOR);
+
         const nsR = (neverSeen >> 16) & 0xFF;
         const nsG = (neverSeen >> 8) & 0xFF;
         const nsB = neverSeen & 0xFF;
-        
+
         const psR = (prevSeen >> 16) & 0xFF;
         const psG = (prevSeen >> 8) & 0xFF;
         const psB = prevSeen & 0xFF;
-        
+
         for (let i = 0; i < 256; i++) {
-            const vAlpha = i / 255;
-            const isBlack = vAlpha > baseAlpha + 0.05;
+            const isBlack = (i / 255) > BASE_ALPHA + 0.05;
             this._colorLut[i * 4 + 0] = isBlack ? nsR : psR;
             this._colorLut[i * 4 + 1] = isBlack ? nsG : psG;
             this._colorLut[i * 4 + 2] = isBlack ? nsB : psB;
-            this._colorLut[i * 4 + 3] = i; 
+            this._colorLut[i * 4 + 3] = i;
         }
     };
 
     Spriteset_Map.prototype.updateDirtyChunks = function (dirtyChunks) {
-        if (!dirtyChunks || dirtyChunks.length === 0 || !$gameMap || !$gameMap._fogOfWarData) return;
-        if (!this._fogPixels) return;
-        
-        if (!this._colorLut) this.buildColorLut();
-        
+        if (!dirtyChunks || dirtyChunks.length === 0 || !$gameMap) return;
+        if (!this._fogPixels && !this.resizeFogCanvas()) return;
+
+        const timers = $gameMap._fogTransitionTimers;
         const mapWidth = $gameMap.width();
         const mapHeight = $gameMap.height();
+        // A timer array that does not match the canvas would write garbage (or
+        // undefined, which reads as a fully transparent tile) across the map.
+        if (!timers || timers.length !== mapWidth * mapHeight) return;
+        if (this._fogCanvas.width !== mapWidth || this._fogCanvas.height !== mapHeight) {
+            if (!this.resizeFogCanvas()) return;
+        }
+
+        if (!this._colorLut) this.buildColorLut();
+
         const chunksX = Math.ceil(mapWidth / CHUNK_SIZE);
-        
-        const timers = $gameMap._fogTransitionTimers;
+        const chunksY = Math.ceil(mapHeight / CHUNK_SIZE);
         const pixels = this._fogPixels;
         const lut = this._colorLut;
-        
+
         for (let i = 0; i < dirtyChunks.length; i++) {
             const chunkIndex = dirtyChunks[i];
             const chunkX = chunkIndex % chunksX;
             const chunkY = (chunkIndex / chunksX) | 0;
-            
+            if (chunkY >= chunksY) continue;
+
             const startX = chunkX * CHUNK_SIZE;
             const startY = chunkY * CHUNK_SIZE;
             const endX = Math.min(startX + CHUNK_SIZE, mapWidth);
             const endY = Math.min(startY + CHUNK_SIZE, mapHeight);
-            
+
             for (let y = startY; y < endY; y++) {
                 let pixelIndex = (y * mapWidth + startX) * 4;
                 let timerIndex = y * mapWidth + startX;
                 for (let x = startX; x < endX; x++) {
-                    const alpha = timers[timerIndex++];
-                    const lutIdx = alpha * 4;
+                    const lutIdx = (timers[timerIndex++] & 0xFF) * 4;
                     pixels[pixelIndex++] = lut[lutIdx];
                     pixels[pixelIndex++] = lut[lutIdx + 1];
                     pixels[pixelIndex++] = lut[lutIdx + 2];
@@ -1877,49 +2131,34 @@
                 }
             }
         }
-        
+
         this._fogCtx.putImageData(this._fogImageData, 0, 0);
         if (this._fogTexture && this._fogTexture.baseTexture && this._fogTexture.baseTexture.resource) {
             this._fogTexture.update();
         }
     };
 
-    Spriteset_Map.prototype.parseColor = function (cssColor) {
-        if (cssColor.startsWith('#')) return parseInt(cssColor.slice(1), 16);
-        const rgbaMatch = cssColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-        if (rgbaMatch) return (parseInt(rgbaMatch[1]) << 16) | (parseInt(rgbaMatch[2]) << 8) | parseInt(rgbaMatch[3]);
-        return 0x000000;
-    };
-
-    Spriteset_Map.prototype.extractAlpha = function (cssColor) {
-        const match = cssColor.match(/rgba\(\d+,\s*\d+,\s*\d+,\s*([\d.]+)\)/);
-        return match ? parseFloat(match[1]) : 1.0;
-    };
-
     Spriteset_Map.prototype.updateEventVisibility = function () {
         for (let i = 0; i < this._characterSprites.length; i++) {
             const sprite = this._characterSprites[i];
-            if (sprite._character instanceof Game_Event) {
-                const event = sprite._character;
-                sprite.opacity = event.opacity();
+            if (!(sprite._character instanceof Game_Event)) continue;
+            const event = sprite._character;
+            sprite.opacity = event.opacity();
 
-                const isGrayscale = event.isFogOfWarGrayscale() || (event.isFogOfWarTransitioning && event.isFogOfWarTransitioning());
+            const isGrayscale = event.isFogOfWarGrayscale() ||
+                (event.isFogOfWarTransitioning && event.isFogOfWarTransitioning());
 
-                if (isGrayscale) {
-                    if (!sprite._fogColorFilter) {
-                        sprite._fogColorFilter = new PIXI.filters.ColorMatrixFilter();
-                        sprite._fogColorFilter.saturate(-1);
-                    }
-                    if (!sprite.filters || !sprite.filters.includes(sprite._fogColorFilter)) {
-                        sprite.filters = sprite.filters || [];
-                        sprite.filters.push(sprite._fogColorFilter);
-                    }
-                } else if (sprite._fogColorFilter) {
-                    if (sprite.filters) {
-                        sprite.filters = sprite.filters.filter(f => f !== sprite._fogColorFilter);
-                        if (!sprite.filters.length) sprite.filters = null;
-                    }
+            if (isGrayscale) {
+                if (!sprite._fogColorFilter) {
+                    sprite._fogColorFilter = new PIXI.filters.ColorMatrixFilter();
+                    sprite._fogColorFilter.saturate(-1);
                 }
+                if (!sprite.filters || !sprite.filters.includes(sprite._fogColorFilter)) {
+                    sprite.filters = sprite.filters || [];
+                    sprite.filters.push(sprite._fogColorFilter);
+                }
+            } else {
+                this.clearFogFilter(sprite);
             }
         }
     };

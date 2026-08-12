@@ -3,21 +3,9 @@
  * @plugindesc [v2.6] Grid-based character sprite selector with bust selection window.
  * @author OmniLex (Modified by Claude)
  *
- * @param GridColumns
- * @text Grid Columns
- * @desc Number of columns to display in the sprite selection grid.
- * @type number
- * @min 1
- * @max 10
- * @default 5
- *
- * @param GridRows
- * @text Grid Rows
- * @desc Maximum number of rows to display per page in the sprite selection grid.
- * @type number
- * @min 1
- * @max 8
- * @default 4
+ * The board lays itself out from the page it is given (see SPRITE_GRID_COLS);
+ * the old GridColumns / GridRows parameters only ever sized a preload batch
+ * and are gone with it.
  *
  * @command OpenSpriteSelector
  * @text Open Sprite Selector
@@ -48,9 +36,6 @@
 
 (() => {
   const pluginName = "CharacterSpriteGridSelector";
-  const params = PluginManager.parameters(pluginName);
-  const gridColumns = Number(params["GridColumns"] || 5);
-  const gridRows = Number(params["GridRows"] || 4);
 
   // Bust categories are ids (the bust file name prefix). This is the one place
   // they are shown, so this is the one place they are translated.
@@ -90,7 +75,7 @@
     "Skab/!$BotGuardian": { cutoff: 0 },
     "Skab/!$GnomeExplorer": { cutoff: 0 },
     "Skab/!$28": { cutoff: 0 },
-    "Skab/!$CatBoy": { cutoff: 0 },
+    "Skab/!$Catboy": { cutoff: 0 },
     "Skab/!$CatCourier": { cutoff: 0 },
     "Skab/!$ElvenPirate": { cutoff: 0 },
     "Skab/!$32": { cutoff: 0 },
@@ -118,22 +103,6 @@
     "Skab/!$Nurse2": { cutoff: 0 },
     "Skab/!$PrimaryDoctor": { cutoff: 0 },
     "Skab/!$WastelandParamedic": { cutoff: 0 },
-    NPCs03Color: { cutoff: 0 },
-    Actor2: { cutoff: 0 },
-    Heroes02Color: { cutoff: 6 },
-    Actor3RMVX: { cutoff: 0 },
-    Actor1: { cutoff: 0 },
-    Heroes01Color: { cutoff: 0 },
-    Evil01: { cutoff: 0 },
-    Actor2RMVX: { cutoff: 0 },
-    School01RM: { cutoff: 0 },
-    Actor1RMVX: { cutoff: 0 },
-    NPCs02Color: { cutoff: null },
-    NPCs01Color: { cutoff: null },
-    FarmCharacters01RM: { cutoff: null },
-    Actor3: { cutoff: null },
-    Evil01Color: { cutoff: null },
-    emPath: { cutoff: null },
   };
 
   // Sprite sheets offered in the grid are driven by NPCs.json. window.WorldGen.NPCs
@@ -141,25 +110,55 @@
   // the NPCSystem character pool uses). SPRITE_SHEET_CONFIG is kept only as an
   // optional per-sheet cutoff override (see loop below); it no longer decides
   // which sheets appear. Falls back to the config keys if the DB is unavailable.
-  // Only characters flagged "npc": true are offered. Beta sheets (NPCs.json →
-  // beta) are additionally offered only when the world was created with beta
-  // sprites enabled (window.SpriteCatalog.betaEnabled()), since a world that
-  // opted out was populated without them. The grid still lazy-loads a page at
-  // a time, so the longer list costs nothing to enter.
+  // ONE rule decides what is on the board: "npc": true, nothing else. Beta
+  // sheets (NPCs.json -> beta, a sheet outside the original folder) are on it
+  // too, but they are dealt AFTER every ordinary sheet, under their own header,
+  // so the top of the board is always the curated set. The grid lazy-loads a
+  // page at a time, so the longer list costs nothing to enter.
   const npcDatabase = window.WorldGen && window.WorldGen.NPCs;
-  const betaEnabled = !!(window.SpriteCatalog && window.SpriteCatalog.betaEnabled());
-  const spriteSheets = (npcDatabase
-    ? Object.keys(npcDatabase).filter((k) => {
-        const entry = npcDatabase[k];
-        if (!entry) return false;
-        // Always offer NPC characters; beta sheets only when the world enabled them.
-        return entry.npc === true || (betaEnabled && entry.beta === true);
-      })
-    : Object.keys(SPRITE_SHEET_CONFIG)
-  );
+  const isBetaSheet = (name) =>
+    !!(npcDatabase && npcDatabase[name] && npcDatabase[name].beta === true);
+  // A goblin world offers goblin faces and a monster world offers nothing that
+  // reads as a person: the board is the world's own wardrobe, so it answers to
+  // the same rule the procedural inhabitants are dealt from
+  // (SpriteCatalog.allowedInPopulation). The board is built at load, before any
+  // world is active, so it is rebuilt whenever the mode it was built for is no
+  // longer the one in force (see rebuildSpriteBoard).
+  // The board is keyed on BOTH world answers, since either can narrow it: the
+  // alternate timeline (goblin / monster) and the magic level (severed bans
+  // every magical face, unbound bans every ordinary one).
+  const populationMode = () => {
+    const pop = (window.SpriteCatalog && window.SpriteCatalog.populationMode)
+      ? window.SpriteCatalog.populationMode() : "normal";
+    const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
+    return pop + ":" + magic;
+  };
+  const allowedSheet = (name) => {
+    const SC = window.SpriteCatalog;
+    if (!SC) return true;
+    const entry = npcDatabase && npcDatabase[name];
+    if (SC.allowedInMagic && !SC.allowedInMagic(name, entry)) return false;
+    if (SC.allowedInPopulation && !SC.allowedInPopulation(name, entry)) return false;
+    return true;
+  };
+  const spriteSheets = [];
+  function rebuildSpriteSheets() {
+    spriteSheets.length = 0;
+    const offered = (npcDatabase
+      ? Object.keys(npcDatabase).filter(
+          (k) => npcDatabase[k] && npcDatabase[k].npc === true,
+        )
+      : Object.keys(SPRITE_SHEET_CONFIG)
+    ).filter(allowedSheet);
+    for (const name of offered) if (!isBetaSheet(name)) spriteSheets.push(name);
+    for (const name of offered) if (isBetaSheet(name)) spriteSheets.push(name);
+  }
+  rebuildSpriteSheets();
 
   // Build a comprehensive list of all sprite options (file + index) considering cutoffs
   const spriteOptions = [];
+  // Where the beta block starts in that list, -1 when the board holds none.
+  let BETA_START = -1;
 
   const decamelCase = (str) => {
     if (!str) return "";
@@ -171,30 +170,39 @@
       .trim();
   };
 
-  for (const name of spriteSheets) {
-    const config = SPRITE_SHEET_CONFIG[name];
-    // Determine cutoff index for this sheet (use config or default based on sheet type)
-    let cutoffIndex = config && config.cutoff !== null ? config.cutoff : null;
-    if (cutoffIndex === null) {
-      // No cutoff given: default to 0 for single ($) sheets, or 7 for standard sheets (8 sprites)
-      cutoffIndex = name.includes("$") ? 0 : 7;
-    } else {
-      // If cutoff provided, clamp it within valid range
-      if (name.includes("$")) {
-        cutoffIndex = 0; // single-character sheet can only have index 0
-      } else if (cutoffIndex > 7) {
-        cutoffIndex = 7; // multi-character sheets have at most indices 0-7
+  function rebuildSpriteOptions() {
+    spriteOptions.length = 0;
+    BETA_START = -1;
+    for (const name of spriteSheets) {
+      const config = SPRITE_SHEET_CONFIG[name];
+      // Determine cutoff index for this sheet (use config or default based on sheet type)
+      let cutoffIndex = config && config.cutoff !== null ? config.cutoff : null;
+      if (cutoffIndex === null) {
+        // No cutoff given: default to 0 for single ($) sheets, or 7 for standard sheets (8 sprites)
+        cutoffIndex = name.includes("$") ? 0 : 7;
+      } else {
+        // If cutoff provided, clamp it within valid range
+        if (name.includes("$")) {
+          cutoffIndex = 0; // single-character sheet can only have index 0
+        } else if (cutoffIndex > 7) {
+          cutoffIndex = 7; // multi-character sheets have at most indices 0-7
+        }
+      }
+
+      // Add each sprite (up to cutoff index) as a separate option
+      if (BETA_START < 0 && isBetaSheet(name)) BETA_START = spriteOptions.length;
+      for (let index = 0; index <= cutoffIndex; index++) {
+        spriteOptions.push({ name: name, index: index });
       }
     }
-
-    // Add each sprite (up to cutoff index) as a separate option
-    for (let index = 0; index <= cutoffIndex; index++) {
-      spriteOptions.push({ name: name, index: index });
-    }
   }
+  rebuildSpriteOptions();
 
   // Function to select a random sprite from available options
   function selectRandomSprite(actorId) {
+    // A random face is drawn from the world's own wardrobe, so the board is
+    // re-dealt first if this is the first ask inside a narrowed world.
+    rebuildSpriteBoard();
     // Guard against empty sprite options
     if (!spriteOptions || spriteOptions.length === 0) {
       return undefined;
@@ -211,20 +219,31 @@
     }
     actor.setCharacterImage(randomSprite.name, randomSprite.index);
 
-    // Refresh player if this is the party leader
-    if (actorId === $gameParty.leader().actorId()) {
+    // Refresh player if this is the party leader. The party is genuinely empty
+    // for part of character creation (it is rebuilt member by member), so the
+    // leader is asked for rather than assumed.
+    const leader = $gameParty && $gameParty.leader();
+    if (leader && actorId === leader.actorId()) {
       $gamePlayer.refresh();
     }
 
     return randomSprite;
   }
 
-  // Columns in the sprite board and the height each sprite is drawn at. Six
-  // columns across the left page leaves room for double-size sprites; the
-  // selection window's maxCols() must match, or the cursor and the visible
-  // grid disagree about what sits above and below a cell.
+  // Columns in the sprite board and the box each sprite is fitted into. Six
+  // columns across the left page leaves room for double-size sprites. The
+  // cursor and the board read this same number, so they can never disagree
+  // about what sits above and below a cell.
   const SPRITE_GRID_COLS = 6;
   const SPRITE_GRID_SIZE = 96;
+  // The right page's own portrait used to paint at SPRITE_GRID_SIZE and let a
+  // CSS transform blow it up 2x afterward. A transform repaints outside the
+  // element's box without the flex column ever reserving room for it, so the
+  // walking sprite was drawn straight over the bust above it. Painting it at
+  // its real final size instead means the layout actually holds space for
+  // what is on screen. The no-bust plate has nothing above it to overlap, so
+  // it keeps painting at SPRITE_GRID_SIZE and growing via CSS transform.
+  const SPRITE_PREVIEW_SIZE = 192;
 
   // A dozen of the curated sheets are not the 3x4 grid RPG Maker assumes for a
   // "$" character: they hold a single facing row (DrivingInstructor, Jester,
@@ -288,21 +307,173 @@
     };
   };
 
-  // Scene to handle sprite grid selection
+  //===========================================================================
+  // Sprite board
+  //
+  // The catalogue is 706 sheets. The old board built a card for every one of
+  // them up front, and painted each card BEFORE its sheet had loaded: with no
+  // bitmap there is no frame size, so the cell was written out as a 96x96
+  // square with the whole sheet stretched into it, and a load listener resized
+  // it the moment the file arrived. That is the squash-and-snap every sprite
+  // did on the way in. Two rules replace it:
+  //
+  //   1. The grid is virtualised, the same way the bust gallery is: only the
+  //      rows on screen exist as elements, three dozen cards rather than 706,
+  //      and scrolling recycles them rather than building more.
+  //   2. Nothing is ever painted at a guessed size. A cell is laid out at a
+  //      fixed size and its art stays blank until the sheet reports its real
+  //      frame, so a sprite appears at the right proportions and never resizes
+  //      under the player.
+  //
+  // Nothing is drawn through Window_Base any more: the old Window_SpriteGrid
+  // was held at opacity 0 behind the overlay and still blitted the visible
+  // rows, and redrew the selected one every twelve frames.
+  //===========================================================================
+
+  const SPRITE_DIR = "img/characters/";
+  const SPRITE_GRID_GAP = 10;
+  const SPRITE_GRID_OVERSCAN = 1;
+  // The card: the art box plus its padding.
+  const SPRITE_CELL_H = SPRITE_GRID_SIZE + 16;
+  // Frames between walk frames, and between the facings the selected sprite
+  // turns through. Both were read off Graphics.frameCount before.
+  const SPRITE_WALK_FRAMES = 12;
+  const SPRITE_TURN_FRAMES = 48;
+  // The band the "Beta sprites" header sits in, between the two blocks.
+  const SPRITE_HEADER_H = 36;
+
+  // The rows of the board, laid out once. A row belongs to one block or the
+  // other and carries its own top, so the header's band is folded in here and
+  // nowhere else: every other reader (the cursor, the virtualiser, the cell
+  // placer) asks this table where a row stands rather than multiplying an
+  // index by a row height. Columns stay plain arithmetic within a row, since a
+  // block always starts a fresh one.
+  const spriteRows = [];
+  const spriteRowOfIndex = [];
+  // Where the header band stands, -1 when the board holds no beta sheets.
+  let spriteHeaderTop = -1;
+  let spriteCanvasH = 0;
+  function rebuildSpriteRows() {
+    spriteRows.length = 0;
+    spriteRowOfIndex.length = 0;
+    for (let i = 0; i < spriteOptions.length; i++) spriteRowOfIndex.push(0);
+    spriteHeaderTop = -1;
+    let top = 0;
+    const pushBlock = (from, to, beta) => {
+      for (let i = from; i <= to; i += SPRITE_GRID_COLS) {
+        const last = Math.min(to, i + SPRITE_GRID_COLS - 1);
+        for (let k = i; k <= last; k++) spriteRowOfIndex[k] = spriteRows.length;
+        spriteRows.push({ from: i, to: last, top, beta });
+        top += SPRITE_CELL_H + SPRITE_GRID_GAP;
+      }
+    };
+    const end = spriteOptions.length - 1;
+    const ordinaryEnd = (BETA_START < 0 ? spriteOptions.length : BETA_START) - 1;
+    if (ordinaryEnd >= 0) pushBlock(0, ordinaryEnd, false);
+    if (BETA_START >= 0 && BETA_START <= end) {
+      // A board that is nothing but beta sheets needs no divider.
+      if (ordinaryEnd >= 0) {
+        spriteHeaderTop = top;
+        top += SPRITE_HEADER_H + SPRITE_GRID_GAP;
+      }
+      pushBlock(BETA_START, end, true);
+    }
+    spriteCanvasH = Math.max(0, top - SPRITE_GRID_GAP);
+  }
+  rebuildSpriteRows();
+
+  // The whole board, re-dealt for the world in force. Cheap (a few thousand
+  // array pushes) and only ever done when the answer has actually changed, so
+  // opening the grid twice in one world costs nothing.
+  // The bust gallery's half of the same rule. Categories the world has nothing
+  // left in are dropped by the caller; a mode that filters everything away
+  // keeps the gallery as it was, so a data gap is never a locked door.
+  function filterBustCategories(categories) {
+    const SC = window.SpriteCatalog;
+    if (!SC || typeof SC.bustAllowedInPopulation !== "function") return categories;
+    if (!SC.allowedBustNames || !SC.allowedBustNames()) return categories;
+    const out = {};
+    let kept = 0;
+    for (const cat of Object.keys(categories || {})) {
+      out[cat] = (categories[cat] || []).filter((n) => SC.bustAllowedInPopulation(n));
+      kept += out[cat].length;
+    }
+    return kept ? out : categories;
+  }
+
+  let boardPopulationMode = populationMode();
+  function rebuildSpriteBoard() {
+    const mode = populationMode();
+    if (mode === boardPopulationMode && spriteOptions.length) return;
+    boardPopulationMode = mode;
+    rebuildSpriteSheets();
+    rebuildSpriteOptions();
+    rebuildSpriteRows();
+  }
+
+  // Sheet names carry a folder and characters like "!$", which a path keeps
+  // but a url must escape. encodeURI leaves the slash alone.
+  const spriteSheetUrl = (name) => `${SPRITE_DIR}${encodeURI(name)}.png`;
+
+  const spriteFrameKey = (name, index) => `${name}#${index}`;
+
+  // The bust a sheet is drawn with, if it has one. NPCs.json carries one entry
+  // per sprite index; a sheet with a single bust lends it to every index.
+  const bustForSprite = (name, index) => {
+    let busts = null;
+    if (window.SpriteCatalog && window.SpriteCatalog.busts) {
+      busts = window.SpriteCatalog.busts(name);
+    }
+    if ((!busts || !busts.length) && window.Sprites && window.Sprites.SpritesAssociation) {
+      busts = window.Sprites.SpritesAssociation[name];
+    }
+    if (!busts || !busts.length) return null;
+    return busts[index] !== undefined && busts[index] !== null ? busts[index] : busts[0];
+  };
+
+  // Paints one frame of a sheet onto an element, and answers whether it could.
+  // Until the bitmap can report its real frame the element is left blank and
+  // the paint repeats when the sheet arrives: writing a guessed size first and
+  // correcting it after is what made every sprite squash and snap.
+  const paintSpriteFrame = (el, name, index, box, pattern, directionRow) => {
+    if (!el) return false;
+    const key = spriteFrameKey(name, index);
+    el.dataset.sprite = key;
+    const geo = spriteFrameGeometry(name);
+    if (!geo.ready) {
+      el.style.backgroundImage = "none";
+      el.style.opacity = "0";
+      if (geo.bitmap) {
+        geo.bitmap.addLoadListener(() => {
+          // The element may have been recycled onto another sheet meanwhile.
+          if (el.dataset.sprite !== key) return;
+          paintSpriteFrame(el, name, index, box, pattern, directionRow);
+        });
+      }
+      return false;
+    }
+    const frame = spriteFrameBackground(geo, index, pattern, directionRow);
+    const size = spriteFrameBox(geo, box);
+    el.style.width = `${size.width}px`;
+    el.style.height = `${size.height}px`;
+    el.style.backgroundImage = `url("${spriteSheetUrl(name)}")`;
+    el.style.backgroundPosition = frame.position;
+    el.style.backgroundSize = frame.size;
+    el.style.opacity = "1";
+    return true;
+  };
+
   class Scene_SpriteGridSelector extends Scene_MenuBase {
     constructor() {
       super();
-      this._actorId = 1; // Default to Actor 1
+      this._actorId = 1;
     }
 
-    // Add a method to set the actor ID
     setActor(actorId) {
-      this._actorId = actorId;
+      this._actorId = actorId || 1;
     }
 
     create() {
-      // Make sure stylesheet is loaded
-
       // The creation common event opens this selector with a fixed actor id, so
       // retarget it at the party member actually being created; otherwise the
       // second and third characters would paint their sprite, bust and portrait
@@ -312,504 +483,468 @@
         this._actorId = (window.Scene_CharacterCreation._currentPartyMemberIndex || 0) + 1;
       }
 
+      // The board is the wardrobe of the world being played in, and this
+      // plugin's lists are built at load, before a world is active.
+      rebuildSpriteBoard();
+
       super.create();
-      this._lastSelectedIndex = -1;
-      this._lastRenderedPattern = -1;
-      this._lastRenderedDirection = -1;
-      this._wasdInput = { up: false, down: false, left: false, right: false };
+      this._alive = true;
+      this._index = 0;
+      this._cells = new Map();
+      this._pool = [];
+      this._headerEl = null;
+      this._cellW = 0;
+      this._gridDirty = true;
+      this._needsCursorScroll = false;
+      this._pattern = 1;
+      this._direction = 0;
+      this._wasd = { up: false, down: false, left: false, right: false };
+      this.bindKeys();
+      this.buildOverlay();
+      this.refreshSelection();
+    }
+
+    //-- lifecycle ------------------------------------------------------------
+
+    bindKeys() {
       this._wasdListener = (event) => {
-        if (!this._gridWindow || !this._gridWindow.active) return;
-        const key = event.key.toLowerCase();
-        // Only handle WASD here. Arrow keys and controller are handled by Input.isTriggered/repeated.
-        if (key === "w") {
-          this._wasdInput.up = true;
-          event.preventDefault();
-        }
-        if (key === "s") {
-          this._wasdInput.down = true;
-          event.preventDefault();
-        }
-        if (key === "a") {
-          this._wasdInput.left = true;
-          event.preventDefault();
-        }
-        if (key === "d") {
-          this._wasdInput.right = true;
-          event.preventDefault();
-        }
+        if (!this._alive) return;
+        const key = String(event.key || "").toLowerCase();
+        // WASD only. Arrows and the pad are read through Input in update().
+        const dir = { w: "up", s: "down", a: "left", d: "right" }[key];
+        if (!dir) return;
+        this._wasd[dir] = true;
+        event.preventDefault();
       };
       window.addEventListener("keydown", this._wasdListener);
-      this.preloadSprites();
-      this.createHelpWindow();
-      this.createGridWindow();
-      this.createUIOverlay();
+      this._resizeListener = () => {
+        this._cellW = 0;
+        this._gridDirty = true;
+      };
+      window.addEventListener("resize", this._resizeListener);
     }
 
     terminate() {
       super.terminate();
+      this._alive = false;
       if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
-      if (this._wasdListener) {
-        window.removeEventListener("keydown", this._wasdListener);
-      }
-      if (this._dndContainer) {
-        this._dndContainer.innerHTML = ""; // Clear HTML immediately!
-        this._dndContainer.style.display = "none";
+      window.removeEventListener("keydown", this._wasdListener);
+      window.removeEventListener("resize", this._resizeListener);
+      this._cells.clear();
+      this._pool.length = 0;
+      this._headerEl = null;
+      if (this._overlay) {
+        this._overlay.innerHTML = "";
+        this._overlay.style.display = "none";
       }
     }
 
-    createUIOverlay() {
-      // 1. Mute MZ windows
-      if (this._helpWindow) {
-        this._helpWindow.visible = false;
-        this._helpWindow.opacity = 0;
-      }
-      if (this._gridWindow) {
-        this._gridWindow.visible = false;
-        this._gridWindow.opacity = 0;
-      }
+    //-- the page -------------------------------------------------------------
 
-      // 2. Create container
+    buildOverlay() {
       let container = document.getElementById("character-creation-container");
       if (!container) {
         container = document.createElement("div");
         container.id = "character-creation-container";
         document.body.appendChild(container);
       }
-
-      // Clear any pending timeout and ensure styles are clean
       if (window._ccOverlayTimeout) {
         clearTimeout(window._ccOverlayTimeout);
         window._ccOverlayTimeout = null;
       }
+      this._overlay = container;
+      container.style.display = "flex";
+      container.style.opacity = "1";
+      container.style.pointerEvents = "auto";
+      container.innerHTML = "";
+      if (window.CCScroll) window.CCScroll.bindWheel(container);
 
-      this._dndContainer = container;
-      this._dndContainer.style.display = "flex";
-      this._dndContainer.style.opacity = "1";
-      this._dndContainer.style.pointerEvents = "auto";
-      this._dndContainer.innerHTML = ""; // Wipe clean to prevent stale DOM layout leaking
+      container.innerHTML = `
+        <div class="cc-pockets-spread">
+          <div class="cc-page cc-page-left" style="padding: 24px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden;">
+            <h2 class="cc-header-gothic" style="margin-bottom: 8px; width: 100%; text-align: center;"></h2>
+            <div class="cc-presets-board cc-sprite-vgrid" style="flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; width: 100%; padding-right: 4px;">
+              <div class="cc-sprite-vcanvas"></div>
+            </div>
+          </div>
+          <div class="cc-page cc-page-right" style="padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; overflow: hidden;">
+            <div class="cc-sprite-portrait">
+              <div class="cc-sprite-portrait-bust"></div>
+              <div class="cc-sprite-portrait-sprite"></div>
+            </div>
+            <div class="cc-dossier-card" style="width: 90%; text-align: center;">
+              <div class="cc-option-title"></div>
+              <div class="cc-wanted-class cc-sprite-index"></div>
+            </div>
+            <div class="cc-button-panel" style="margin-top: 24px;"></div>
+          </div>
+        </div>
+      `;
 
-      // Wheel + L2/R2 scrolling for the sprite board. See CCScroll.
-      if (window.CCScroll) window.CCScroll.bindWheel(this._dndContainer);
+      this._gridEl = container.querySelector(".cc-sprite-vgrid");
+      this._canvasEl = container.querySelector(".cc-sprite-vcanvas");
+      this._portraitEl = container.querySelector(".cc-sprite-portrait");
+      this._bustEl = container.querySelector(".cc-sprite-portrait-bust");
+      this._previewEl = container.querySelector(".cc-sprite-portrait-sprite");
+      this._nameEl = container.querySelector(".cc-page-right .cc-option-title");
+      this._indexEl = container.querySelector(".cc-sprite-index");
+      container.querySelector(".cc-page-left h2").textContent = T("CharCreate.selectSprite");
 
-      this.refreshUIOverlayDOM();
+      const buttons = container.querySelector(".cc-button-panel");
+      const back = document.createElement("button");
+      back.className = "cc-btn-treaty";
+      back.textContent = T("CharCreate.back");
+      back.addEventListener("click", () => this.popScene());
+      const confirm = document.createElement("button");
+      confirm.className = "cc-btn-treaty confirm";
+      confirm.textContent = T("CharCreate.continue2");
+      confirm.addEventListener("click", () => this.onSpriteConfirm());
+      buttons.appendChild(back);
+      buttons.appendChild(confirm);
 
-      // Selector overlay is now rendered and visible, drop the transition veil
-      // so it does not stay covering the sprite selector as a black screen.
+      // One listener on the board rather than an inline handler a card: the
+      // grid rebuilds its cells constantly and must not re-bind on every pass.
+      this._gridEl.addEventListener("click", (event) => {
+        const card = event.target.closest(".cc-sprite-card");
+        if (card) this.onSpriteCardClick(Number(card.dataset.index));
+      });
+      this._gridEl.addEventListener("scroll", () => {
+        this._gridDirty = true;
+      });
+
+      // The board is up: the veil can come off without waiting for the sheets.
       if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
     }
 
-    getSpriteStyle(spriteName, spriteIndex, animate = false, size = 48) {
-      if (!spriteName) return "";
-      const geo = spriteFrameGeometry(spriteName);
-      const url = `img/characters/${spriteName}.png`;
+    //-- the virtualised grid -------------------------------------------------
 
-      let pattern = 1; // Standing middle
-      let directionRow = 0; // Facing down by default
-      if (animate) {
-        const frame = Math.floor(Graphics.frameCount / 12) % 4;
-        pattern = frame === 3 ? 1 : frame;
-        directionRow = Math.floor(Graphics.frameCount / 48) % 4;
-      }
-
-      const bg = spriteFrameBackground(geo, spriteIndex, pattern, directionRow);
-      const box = spriteFrameBox(geo, size);
-
-      // The sheet decides both the slice and the frame proportions, so a sprite
-      // whose bitmap has not arrived yet is restyled once it does.
-      if (!geo.ready && geo.bitmap) {
-        geo.bitmap.addLoadListener(() => {
-          const className = `cc-sprite-img-${spriteName.replace(/[^a-zA-Z0-9]/g, "_")}-${spriteIndex}`;
-          const els = document.querySelectorAll(`.${className}`);
-          if (els.length === 0) return;
-          const loaded = spriteFrameGeometry(spriteName);
-          const loadedBg = spriteFrameBackground(
-            loaded,
-            spriteIndex,
-            pattern,
-            directionRow,
-          );
-          const loadedBox = spriteFrameBox(loaded, size);
-          els.forEach((el) => {
-            el.style.width = `${loadedBox.width}px`;
-            el.style.height = `${loadedBox.height}px`;
-            el.style.backgroundSize = loadedBg.size;
-            el.style.backgroundPosition = loadedBg.position;
-          });
-        });
-      }
-
-      return `background-image: url('${url}'); background-position: ${bg.position}; background-size: ${bg.size}; width: ${box.width}px; height: ${box.height}px; image-rendering: pixelated;`;
+    measureGrid() {
+      const width = this._gridEl.clientWidth - 4;
+      if (width <= 0) return false;
+      this._cellW = Math.floor(
+        (width - SPRITE_GRID_GAP * (SPRITE_GRID_COLS - 1)) / SPRITE_GRID_COLS,
+      );
+      this._canvasEl.style.height = `${spriteCanvasH}px`;
+      this.placeSectionHeader();
+      return true;
     }
 
-    refreshUIOverlayDOM() {
-      if (!this._dndContainer) return;
-      const getLocalizedText = (en, it) =>
-        ConfigManager.language === "it" ? it : en;
-
-      const activeIndex = this._gridWindow.index();
-      const activeItem = spriteOptions[activeIndex];
-
-      // Find or create .cc-pockets-spread structure once to avoid layout thrashing and preserve scroll positions
-      let spread = this._dndContainer.querySelector(".cc-pockets-spread");
-      if (!spread) {
-        this._dndContainer.innerHTML = `
-                    <div class="cc-pockets-spread">
-                        <div class="cc-page cc-page-left"></div>
-                        <div class="cc-page cc-page-right" style="align-items: center; justify-content: center;"></div>
-                    </div>
-                `;
-        spread = this._dndContainer.querySelector(".cc-pockets-spread");
+    // The "Beta sprites" band between the two blocks. It scrolls with the
+    // board, so it lives in the canvas beside the cards rather than over the
+    // pane, and it is built once: the virtualiser never recycles it.
+    placeSectionHeader() {
+      if (spriteHeaderTop < 0) return;
+      if (!this._headerEl) {
+        this._headerEl = document.createElement("div");
+        this._headerEl.className = "cc-sprite-section";
+        this._headerEl.textContent = T("CharCreate.betaSprites");
+        this._canvasEl.appendChild(this._headerEl);
       }
+      this._headerEl.style.top = `${spriteHeaderTop}px`;
+      this._headerEl.style.height = `${SPRITE_HEADER_H}px`;
+    }
 
-      const leftPage = spread.querySelector(".cc-page-left");
-      const rightPage = spread.querySelector(".cc-page-right");
+    takeCell() {
+      const cell = this._pool.pop();
+      if (cell) return cell;
+      const card = document.createElement("div");
+      card.className = "cc-wanted-card cc-sprite-card";
+      const art = document.createElement("div");
+      art.className = "cc-wanted-sprite";
+      card.appendChild(art);
+      card._art = art;
+      return card;
+    }
 
-      // Update Left Page Content (RECRUIT INVENTORY selection grid)
-      if (leftPage) {
-        if (leftPage.innerHTML.trim() === "") {
-          // Perform initial render of the left page
-          const cards = spriteOptions
-            .map((entry, idx) => {
-              const isSelected = idx === activeIndex;
-              const spriteDivStyle = this.getSpriteStyle(
-                entry.name,
-                entry.index,
-                isSelected,
-                SPRITE_GRID_SIZE,
-              );
-              const className = `cc-sprite-img-${entry.name.replace(/[^a-zA-Z0-9]/g, '_')}-${entry.index}`;
+    renderGrid() {
+      if (!this._cellW && !this.measureGrid()) {
+        // The page has not been laid out yet: try again next frame.
+        this._gridDirty = true;
+        return;
+      }
+      const total = spriteOptions.length;
+      if (!total) return;
+      if (this._needsCursorScroll) {
+        this._needsCursorScroll = false;
+        this.scrollCursorIntoView();
+      }
+      // Which rows are on screen, read off the row table rather than divided
+      // out of a uniform row height: the header band makes the rows below it
+      // stand lower than their index alone would say.
+      const rowHeight = SPRITE_CELL_H + SPRITE_GRID_GAP;
+      const top = this._gridEl.scrollTop - SPRITE_GRID_OVERSCAN * rowHeight;
+      const bottom =
+        this._gridEl.scrollTop + this._gridEl.clientHeight + SPRITE_GRID_OVERSCAN * rowHeight;
+      let from = -1;
+      let to = -1;
+      for (const row of spriteRows) {
+        if (row.top + SPRITE_CELL_H < top) continue;
+        if (row.top > bottom) break;
+        if (from < 0) from = row.from;
+        to = row.to;
+      }
+      if (from < 0) {
+        for (const [index, cell] of this._cells) {
+          cell.remove();
+          this._pool.push(cell);
+          this._cells.delete(index);
+        }
+        return;
+      }
+      to = Math.min(total - 1, to);
 
-              return `
-                            <div class="cc-wanted-card cc-sprite-card ${isSelected ? "selected" : ""}" style="display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid ${isSelected ? "#8b5a2b" : "transparent"}; border-radius: 6px; padding: 4px; box-shadow: none; background: ${isSelected ? "rgba(139, 90, 43, 0.15)" : "none"}; width: 100%; min-width: 0; min-height: 0; height: ${SPRITE_GRID_SIZE + 16}px; overflow: hidden; box-sizing: border-box; transition: all 0.2s ease; margin: 0;" onclick="SceneManager._scene.onSpriteCardClick(${idx})">
-                                <div class="cc-wanted-sprite ${className}" style="${spriteDivStyle} margin: 0;"></div>
-                            </div>
-                        `;
-            })
-            .join("");
-
-          // The board fills the page and stretches its cells, so the sprites
-          // get the whole left page instead of a 580px letterbox.
-          leftPage.innerHTML = `
-                        <h2 class="cc-header-gothic">${T('CharCreate.selectSprite')}</h2>
-
-                        <div class="cc-presets-board" style="grid-template-columns: repeat(${SPRITE_GRID_COLS}, minmax(0, 1fr)); flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; gap: 10px; padding: 14px; justify-items: stretch; align-content: start;">
-                            ${cards}
-                        </div>
-                    `;
-        } else {
-          // Update only selected card states and reset previously selected cards' walking patterns to 1 (standing)
-          const cards = leftPage.querySelectorAll(".cc-wanted-card");
-          cards.forEach((card, idx) => {
-            const entry = spriteOptions[idx];
-            const spriteDiv = card.querySelector(".cc-wanted-sprite");
-            if (idx === activeIndex) {
-              card.classList.add("selected");
-              card.style.borderColor = "#8b5a2b";
-              card.style.backgroundColor = "rgba(139, 90, 43, 0.15)";
-            } else {
-              if (card.classList.contains("selected")) {
-                card.classList.remove("selected");
-                card.style.borderColor = "transparent";
-                card.style.backgroundColor = "transparent";
-                // Reset to standing middle frame (pattern = 1)
-                if (spriteDiv && entry) {
-                  spriteDiv.style.backgroundPosition =
-                    this.getBackgroundPosition(entry.name, entry.index, 1, 0);
-                }
-              }
-            }
-          });
+      for (const [index, cell] of this._cells) {
+        if (index < from || index > to) {
+          cell.remove();
+          this._pool.push(cell);
+          this._cells.delete(index);
         }
       }
 
-      // Update Right Page Content (SPECIMEN PROFILE preview & buttons)
-      if (rightPage && activeItem) {
-        // The sheet file name is CamelCase (GoblinIllusionist); the dossier
-        // reads it back as words.
-        const cleanName = decamelCase(
-          activeItem.name
-            .split("/")
-            .pop()
-            .replace(/^[$!]+/, ""),
-        );
-        const spriteDivStyle = this.getSpriteStyle(
-          activeItem.name,
-          activeItem.index,
-          true,
-        );
-
-        rightPage.innerHTML = `
-
-                    
-                    <div class="cc-incubator-frame" style="width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, #f7eed7 0%, #ecdcb9 100%); margin: 24px 0; display: flex; align-items: center; justify-content: center;">
-                        <div id="cc-preview-sprite" style="${spriteDivStyle} transform: scale(2.5);"></div>
-                    </div>
-
-                    <div class="cc-dossier-card" style="width: 90%; text-align: center;">
-                        <div class="cc-option-title">${cleanName}</div>
-                        <div class="cc-wanted-class" style="color: #8b5a2b; font-weight: bold; margin-top: 4px;">${T('CharCreate.spriteIndex')}: ${activeItem.index}</div>
-                    </div>
-
-
-                    <div class="cc-button-panel" style="margin-top: 24px;">
-                        <button class="cc-btn-treaty" onclick="SceneManager._scene.popScene()">${T('CharCreate.back')}</button>
-                        <button class="cc-btn-treaty confirm" onclick="SceneManager._scene.onSpriteCardConfirm()">${T('CharCreate.continue2')}</button>
-                    </div>
-                `;
-      }
-
-      // Auto-scroll selected card into view
-      setTimeout(() => {
-        const selectedCard = this._dndContainer.querySelector(
-          ".cc-wanted-card.selected",
-        );
-        if (selectedCard) {
-          selectedCard.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      for (let index = from; index <= to; index++) {
+        if (this._cells.has(index)) {
+          this.placeCell(this._cells.get(index), index);
+          continue;
         }
-      }, 10);
+        const cell = this.takeCell();
+        this._cells.set(index, cell);
+        this.fillCell(cell, index);
+        this.placeCell(cell, index);
+        this._canvasEl.appendChild(cell);
+      }
+    }
+
+    placeCell(cell, index) {
+      const row = spriteRows[spriteRowOfIndex[index]];
+      const col = index - row.from;
+      cell.style.left = `${col * (this._cellW + SPRITE_GRID_GAP)}px`;
+      cell.style.top = `${row.top}px`;
+      cell.style.width = `${this._cellW}px`;
+      cell.style.height = `${SPRITE_CELL_H}px`;
+      cell.classList.toggle("selected", index === this._index);
+    }
+
+    fillCell(cell, index) {
+      const entry = spriteOptions[index];
+      cell.dataset.index = String(index);
+      // An unselected card stands still facing the player; the selected one
+      // joins the walk already in progress rather than standing there until
+      // the next frame comes round.
+      const walking = index === this._index;
+      paintSpriteFrame(
+        cell._art,
+        entry.name,
+        entry.index,
+        SPRITE_GRID_SIZE,
+        walking ? this._pattern : 1,
+        walking ? this._direction : 0,
+      );
+    }
+
+    scrollCursorIntoView() {
+      const pane = this._gridEl;
+      // Before the page has been laid out the pane has no height, and every
+      // row reads as below the fold: scrolling to one then would jump the
+      // board off the top row. Leave it to the first reconcile instead.
+      if (!this._cellW || pane.clientHeight <= 0) {
+        this._needsCursorScroll = true;
+        return;
+      }
+      const row = spriteRows[spriteRowOfIndex[this._index]];
+      if (!row) return;
+      // Stepping onto the first beta row shows the header that names it.
+      const top = row.beta && row.top === spriteHeaderTop + SPRITE_HEADER_H + SPRITE_GRID_GAP
+        ? spriteHeaderTop
+        : row.top;
+      if (top < pane.scrollTop) pane.scrollTop = top;
+      else if (top + SPRITE_CELL_H > pane.scrollTop + pane.clientHeight) {
+        pane.scrollTop = top + SPRITE_CELL_H - pane.clientHeight;
+      }
+    }
+
+    //-- selection ------------------------------------------------------------
+
+    selectedEntry() {
+      return spriteOptions[this._index] || null;
+    }
+
+    refreshSelection() {
+      const entry = this.selectedEntry();
+      if (!entry) return;
+      for (const [index, cell] of this._cells) {
+        const wasSelected = cell.classList.contains("selected");
+        const isSelected = index === this._index;
+        cell.classList.toggle("selected", isSelected);
+        // A card that has just been let go goes back to standing still.
+        if (wasSelected && !isSelected) {
+          const other = spriteOptions[index];
+          paintSpriteFrame(cell._art, other.name, other.index, SPRITE_GRID_SIZE, 1, 0);
+        }
+      }
+      this.scrollCursorIntoView();
+
+      // The right page: the sheet's own bust, with the sprite standing beside
+      // it rather than over it, so neither hides the other.
+      const bust = bustForSprite(entry.name, entry.index);
+      this._portraitEl.classList.toggle("no-bust", !bust);
+      this._bustEl.style.backgroundImage = bust ? `url("${bustArtUrl(bust)}")` : "none";
+      // The sheet file name is CamelCase (GoblinIllusionist); the dossier reads
+      // it back as words.
+      this._nameEl.textContent = decamelCase(
+        entry.name.split("/").pop().replace(/^[$!]+/, ""),
+      );
+      this._indexEl.textContent = `${T("CharCreate.spriteIndex")}: ${entry.index}`;
+      this.paintAnimated(true);
+    }
+
+    // The selected sprite walks, on the card and on the right page.
+    paintAnimated(force) {
+      const entry = this.selectedEntry();
+      if (!entry) return;
+      const frame = Math.floor(Graphics.frameCount / SPRITE_WALK_FRAMES) % 4;
+      const pattern = frame === 3 ? 1 : frame;
+      const direction = Math.floor(Graphics.frameCount / SPRITE_TURN_FRAMES) % 4;
+      if (!force && pattern === this._pattern && direction === this._direction) return;
+      this._pattern = pattern;
+      this._direction = direction;
+      const previewBox = this._portraitEl && this._portraitEl.classList.contains("no-bust")
+        ? SPRITE_GRID_SIZE
+        : SPRITE_PREVIEW_SIZE;
+      paintSpriteFrame(this._previewEl, entry.name, entry.index, previewBox, pattern, direction);
+      const cell = this._cells.get(this._index);
+      if (cell) {
+        paintSpriteFrame(cell._art, entry.name, entry.index, SPRITE_GRID_SIZE, pattern, direction);
+      }
     }
 
     onSpriteCardClick(index) {
-      if (this._gridWindow) {
-        if (this._gridWindow.index() === index) {
-          this.onSpriteCardConfirm();
-        } else {
-          this._gridWindow.select(index);
-          this.refreshUIOverlayDOM();
-        }
+      if (!(index >= 0) || index >= spriteOptions.length) return;
+      if (index === this._index) {
+        this.onSpriteConfirm();
+        return;
       }
+      SoundManager.playCursor();
+      this._index = index;
+      this.refreshSelection();
     }
 
-    onSpriteCardConfirm() {
-      if (this._gridWindow) {
-        this._gridWindow.processOk();
-      }
+    onSpriteConfirm() {
+      this.onSpriteSelected();
     }
 
-    updateUIInput() {
-      const windowObj = this._gridWindow;
-      if (!windowObj || !windowObj.active) return;
+    //-- input ----------------------------------------------------------------
 
-      const maxItems = windowObj.maxItems();
-      if (maxItems <= 0) return;
+    ccScrollTarget() {
+      return this._gridEl;
+    }
 
+    updateInput() {
+      const held = (name) => Input.isTriggered(name) || Input.isRepeated(name);
+      const down = held("down") || this._wasd.down;
+      const up = held("up") || this._wasd.up;
+      const right = held("right") || this._wasd.right;
+      const left = held("left") || this._wasd.left;
+      this._wasd.up = this._wasd.down = this._wasd.left = this._wasd.right = false;
+
+      const count = spriteOptions.length;
+      if (!count) return;
+      let index = this._index;
       let moved = false;
-      let index = windowObj.index();
+      // The cursor walks the row table, not an index divided by the column
+      // count: the two blocks each start a fresh row, so the last ordinary row
+      // may be a short one and stepping down off it must land under the column
+      // it was standing in.
+      const rowIndex = spriteRowOfIndex[index] || 0;
+      const row = spriteRows[rowIndex];
+      const col = row ? index - row.from : 0;
+      const stepToRow = (target) => (target ? Math.min(target.from + col, target.to) : index);
 
-      const isDown = Input.isTriggered("down") || Input.isRepeated("down") || this._wasdInput.down;
-      const isUp = Input.isTriggered("up") || Input.isRepeated("up") || this._wasdInput.up;
-      const isRight = Input.isTriggered("right") || Input.isRepeated("right") || this._wasdInput.right;
-      const isLeft = Input.isTriggered("left") || Input.isRepeated("left") || this._wasdInput.left;
-
-      // Consume WASD inputs
-      this._wasdInput.up = false;
-      this._wasdInput.down = false;
-      this._wasdInput.left = false;
-      this._wasdInput.right = false;
-
-      if (isDown) {
-        const cols = windowObj.maxCols();
-        if (index + cols < maxItems) {
-          index += cols;
-        } else {
-          index = index % cols;
-        }
+      if (down) {
+        index = stepToRow(spriteRows[rowIndex + 1] || spriteRows[0]);
         moved = true;
-      } else if (isUp) {
-        const cols = windowObj.maxCols();
-        if (index - cols >= 0) {
-          index -= cols;
-        } else {
-          let target =
-            Math.floor((maxItems - 1) / cols) * cols + (index % cols);
-          if (target >= maxItems) target -= cols;
-          index = target >= 0 ? target : 0;
-        }
+      } else if (up) {
+        index = stepToRow(spriteRows[rowIndex - 1] || spriteRows[spriteRows.length - 1]);
         moved = true;
-      } else if (isRight) {
-        const cols = windowObj.maxCols();
-        if (cols > 1 && index % cols < cols - 1 && index + 1 < maxItems) {
+      } else if (right) {
+        if (row && index < row.to) {
           index += 1;
           moved = true;
         }
-      } else if (isLeft) {
-        const cols = windowObj.maxCols();
-        if (cols > 1 && index % cols > 0) {
+      } else if (left) {
+        if (row && index > row.from) {
           index -= 1;
           moved = true;
         }
       } else if (Input.isTriggered("ok")) {
         SoundManager.playOk();
-        this.onSpriteCardConfirm();
+        this.onSpriteConfirm();
+        return;
       } else if (Input.isTriggered("cancel")) {
         SoundManager.playCancel();
         this.popScene();
+        return;
       }
 
-      if (moved) {
-        SoundManager.playCursor();
-        windowObj.select(index);
-        this.refreshUIOverlayDOM();
-      }
+      if (!moved) return;
+      SoundManager.playCursor();
+      this._index = index;
+      this.refreshSelection();
     }
 
     update() {
       super.update();
-      if (this._dndContainer && this._dndContainer.style.display !== "none") {
-        this.updateUIInput();
-        if (window.CCScroll) window.CCScroll.update(this._dndContainer);
-        const activeIndex = this._gridWindow.index();
-        const frame = Math.floor(Graphics.frameCount / 12) % 4;
-        const pattern = frame === 3 ? 1 : frame;
-        const directionRow = Math.floor(Graphics.frameCount / 48) % 4;
-
-        if (this._lastSelectedIndex !== activeIndex) {
-          this._lastSelectedIndex = activeIndex;
-          this._lastRenderedPattern = pattern;
-          this._lastRenderedDirection = directionRow;
-          this.refreshUIOverlayDOM();
-        } else if (
-          this._lastRenderedPattern !== pattern ||
-          this._lastRenderedDirection !== directionRow
-        ) {
-          this._lastRenderedPattern = pattern;
-          this._lastRenderedDirection = directionRow;
-          this.updateSpriteAnimations(pattern, directionRow);
-        }
+      if (!this._overlay || this._overlay.style.display === "none") return;
+      this.updateInput();
+      if (window.CCScroll) window.CCScroll.update(this._overlay);
+      if (this._gridDirty) {
+        this._gridDirty = false;
+        this.renderGrid();
       }
+      this.paintAnimated(false);
     }
 
-    getBackgroundPosition(spriteName, spriteIndex, pattern, directionRow = 0) {
-      if (!spriteName) return "";
-      const geo = spriteFrameGeometry(spriteName);
-      return spriteFrameBackground(geo, spriteIndex, pattern, directionRow)
-        .position;
-    }
-
-    updateSpriteAnimations(pattern, directionRow) {
-      const activeIndex = this._gridWindow.index();
-      const activeItem = spriteOptions[activeIndex];
-      if (!activeItem) return;
-
-      const bp = this.getBackgroundPosition(
-        activeItem.name,
-        activeItem.index,
-        pattern,
-        directionRow,
-      );
-
-      // 1. Update specimen incubator preview sprite
-      const previewEl = document.getElementById("cc-preview-sprite");
-      if (previewEl) {
-        previewEl.style.backgroundPosition = bp;
-      }
-
-      // 2. Update selected card's walking sprite
-      const selectedCardSpriteEl = this._dndContainer.querySelector(
-        ".cc-wanted-card.selected .cc-wanted-sprite",
-      );
-      if (selectedCardSpriteEl) {
-        selectedCardSpriteEl.style.backgroundPosition = bp;
-      }
-    }
-
-    createHelpWindow() {
-      const rect = this.helpWindowRect();
-      this._helpWindow = new Window_Help(rect);
-      this._helpWindow.setText(T('CharCreate.selectCharacterSprite'));
-      this.addWindow(this._helpWindow);
-    }
-
-    helpWindowRect() {
-      const wx = 0;
-      const wy = 0;
-      const ww = Graphics.boxWidth;
-      const wh = this.calcWindowHeight(1, false);
-      return new Rectangle(wx, wy, ww, wh);
-    }
-
-    createGridWindow() {
-      const rect = this.gridWindowRect();
-      this._gridWindow = new Window_SpriteGrid(rect);
-      this._gridWindow.setHandler("ok", this.onSpriteSelected.bind(this));
-      this._gridWindow.setHandler("cancel", this.popScene.bind(this));
-      this.addWindow(this._gridWindow);
-      this._gridWindow.activate();
-      this._gridWindow.select(0);
-    }
-
-    gridWindowRect() {
-      const wx = 0;
-      const wy = this._helpWindow.height;
-      const ww = Graphics.boxWidth;
-      const wh = Graphics.boxHeight - wy;
-      return new Rectangle(wx, wy, ww, wh);
-    }
-
-    preloadSprites() {
-      // Only warm the first page of sheets; the grid lazy-loads the rest per
-      // visible cell (drawCharacterSprite). Bulk-loading every npc:true sheet
-      // (hundreds) up front would spike memory and stall scene entry.
-      const firstPageCount = gridColumns * gridRows;
-      const uniqueSheets = [
-        ...new Set(spriteOptions.slice(0, firstPageCount).map((o) => o.name)),
-      ];
-      uniqueSheets.forEach((filename) => {
-        ImageManager.loadCharacter(filename);
-      });
-    }
+    //-- leaving --------------------------------------------------------------
 
     onSpriteSelected() {
-      const index = this._gridWindow.index();
-      if (index >= 0 && index < spriteOptions.length) {
-        const entry = spriteOptions[index];
-        const actor = $gameActors.actor(this._actorId);
+      const entry = this.selectedEntry();
+      if (!entry) return;
+      const actor = $gameActors.actor(this._actorId);
+      if (!actor) return;
 
-        // Apply the selected sprite to the specified actor
-        actor.setCharacterImage(entry.name, entry.index);
+      // Apply the selected sprite to the specified actor
+      actor.setCharacterImage(entry.name, entry.index);
 
-        // Refresh player if this is the party leader
-        if (this._actorId === $gameParty.leader().actorId()) {
-          $gamePlayer.refresh();
-        }
-
-        SoundManager.playOk();
-
-        // Portrait style is exclusive (chosen on the wizard's portrait step):
-        // a "model" character skips the bust gallery entirely and goes straight
-        // to the 3D editor, a "bust" character never sees the editor.
-        if (actor && actor.portraitMode && actor.portraitMode() === "model" &&
-            window.Scene_CC3DModel && window.CC3DModel && window.CC3DModel.isAvailable()) {
-          let suggestedBase = null;
-          if (window.CC3DModel.suggestBaseFromName) {
-            suggestedBase = window.CC3DModel.suggestBaseFromName(entry.name || "");
-          }
-          window.Scene_CC3DModel.setup(this._actorId, null, {
-            suggestedBase: suggestedBase,
-            returnByPop: true,
-          });
-          SceneManager.push(window.Scene_CC3DModel);
-          return;
-        }
-
-        // Look up associated bust from SpritesAssociation
-        let preselectedBust = null;
-        const spritesAssoc =
-          window.Sprites && window.Sprites.SpritesAssociation;
-        if (spritesAssoc && spritesAssoc[entry.name]) {
-          const busts = spritesAssoc[entry.name];
-          preselectedBust =
-            busts[entry.index] !== undefined ? busts[entry.index] : busts[0];
-        }
-
-        // Open bust selection window
-        this.createBustSelectionScene(preselectedBust);
+      // Refresh player if this is the party leader. Same rule as
+      // selectRandomSprite: the board is reachable while the party is empty.
+      const leader = $gameParty && $gameParty.leader();
+      if (leader && this._actorId === leader.actorId()) {
+        $gamePlayer.refresh();
       }
+
+      SoundManager.playOk();
+
+      // Portrait style is exclusive (chosen on the wizard's portrait step): a
+      // "model" character skips the bust gallery entirely and goes straight to
+      // the 3D editor, a "bust" character never sees the editor.
+      if (actor.portraitMode && actor.portraitMode() === "model" &&
+          window.Scene_CC3DModel && window.CC3DModel && window.CC3DModel.isAvailable()) {
+        let suggestedBase = null;
+        if (window.CC3DModel.suggestBaseFromName) {
+          suggestedBase = window.CC3DModel.suggestBaseFromName(entry.name || "");
+        }
+        window.Scene_CC3DModel.setup(this._actorId, null, {
+          suggestedBase: suggestedBase,
+          returnByPop: true,
+        });
+        SceneManager.push(window.Scene_CC3DModel);
+        return;
+      }
+
+      this.createBustSelectionScene(bustForSprite(entry.name, entry.index));
     }
 
     createBustSelectionScene(preselectedBust) {
-      const sceneClass = Scene_BustSelector;
-      SceneManager.push(sceneClass);
+      SceneManager.push(Scene_BustSelector);
       if (SceneManager._nextScene) {
         SceneManager._nextScene.setActor(this._actorId);
         if (preselectedBust) {
@@ -819,260 +954,177 @@
     }
   }
 
-  // Window to display the sprite grid
-  class Window_SpriteGrid extends Window_Selectable {
-    constructor(rect) {
-      super(rect);
-      this._sprites = spriteOptions;
-      this._characterSprites = [];
-      this._bustBitmaps = new Map(); // Cache for bust bitmaps
-      this._lastAnimFrame = 0;
-      this._animationCount = 0;
-      this._lastSelectedIndex = -1;
-      this.refresh();
+  //===========================================================================
+  // Bust gallery
+  //
+  // img/busts holds 690 portraits, 883x1200 apiece and better than half a
+  // megabyte a file: 412 MB of art. The old gallery put every bust of the open
+  // category into the DOM at once, so opening Human (456 of them) asked the
+  // browser for some 260 MB of files and, as they arrived, close to 2 GB of
+  // decoded pixels. What holds that down now is the grid itself: it is
+  // virtualised, so only the rows on screen (plus a row of overscan either
+  // side) exist as elements, about a dozen cards whatever the category's size,
+  // and scrolling recycles them rather than building more.
+  //
+  // The art is the bust file itself, whole and uncropped, at whatever size it
+  // ships. bustArtUrl() is the single place that decides where a card's image
+  // comes from, so pointing the gallery at a folder of downscaled copies later
+  // is a one line change.
+  //
+  // Nothing is drawn through Window_Base any more. The old Window_BustList and
+  // Window_BustPreview were held at opacity 0 behind the overlay and still
+  // blitted an 883x1200 bitmap on every cursor move.
+  //===========================================================================
+
+  const BUST_DIR = "img/busts/";
+  // Placeholder art ships at ~4 KB; a real bust is half a megabyte.
+  const BUST_MIN_BYTES = 50000;
+
+  const BUST_GRID_COLS = 3;
+  const BUST_GRID_GAP = 16;
+  const BUST_GRID_OVERSCAN = 1;
+  // The busts' own 883x1200. A cell of that shape holds a whole portrait with
+  // nothing cut off it and no empty band beside it.
+  const BUST_CELL_RATIO = 1200 / 883;
+  const CATEGORY_COLS = 2;
+  // Frames the cursor must rest before the right page loads the portrait, so
+  // holding a direction does not walk a whole category through the decoder.
+  const PREVIEW_SETTLE_FRAMES = 12;
+
+  const nodeRequire = (name) => {
+    try {
+      return require(name);
+    } catch (e) {
+      return null;
     }
+  };
 
-    processCursorMove() {
-      // All cursor movement is handled by Scene_SpriteGridSelector.updateUIInput()
-      // to support WASD, arrow keys, and controller without double-movement issues.
+  // Where a bust's picture comes from. The one place to change when the
+  // downscaled copies land in a folder of their own.
+  const bustArtUrl = (name) => `${BUST_DIR}${encodeURIComponent(name)}.png`;
+
+  const gameRoot = () => {
+    const path = nodeRequire("path");
+    if (!path || typeof process === "undefined" || !process.mainModule) return null;
+    try {
+      return path.dirname(process.mainModule.filename);
+    } catch (e) {
+      return null;
     }
+  };
 
-    maxCols() {
-      return SPRITE_GRID_COLS;
-    }
+  // Category ids in the order the species list shows them. A bust belongs to
+  // the first id its file name starts with, and to Human when it starts with
+  // none of them. The label is resolved by bustCategoryLabel() where it is
+  // drawn, so these stay ids.
+  // i18n-ignore-start: category ids, matched against the bust file name prefix
+  const BUST_CATEGORIES = [
+    "Human", "Goblin", "Orc", "Dwarven", "Rabbit", "Cyclop", "Gnome", "Elven",
+    "Bot", "Undead", "Devil", "Dog", "Android", "Avian", "Cat", "Elephant",
+    "Goat", "Kobold", "Alien", "Exotic", "Insectoid",
+  ];
+  const BUST_FALLBACK_CATEGORY = "Human";
+  // i18n-ignore-end
 
-    maxItems() {
-      return this._sprites.length;
-    }
+  //---------------------------------------------------------------------------
+  // The list of busts and how they group. Scanned once per session: the scene
+  // is entered again for every party member and the folder does not change
+  // under it.
+  //---------------------------------------------------------------------------
+  const BustCatalogue = {
+    _load: null,
 
-    itemWidth() {
-      return Math.floor(
-        (this.innerWidth - this.colSpacing() * (this.maxCols() - 1)) /
-          this.maxCols(),
-      );
-    }
+    // Promise of { names, sizes (name -> bytes), categories (id -> names) }.
+    load() {
+      if (!this._load) this._load = this._scan();
+      return this._load;
+    },
 
-    itemHeight() {
-      // Increased height to accommodate sprite name under the image
-      return 90;
-    }
+    // Whatever has already been scanned, for callers that cannot wait.
+    peek() {
+      return this._data || null;
+    },
 
-    spacing() {
-      return 8;
-    }
-
-    colSpacing() {
-      return this.spacing();
-    }
-
-    rowSpacing() {
-      return this.spacing();
-    }
-
-    update() {
-      super.update();
-
-      // Check if selection changed
-      if (this.index() !== this._lastSelectedIndex) {
-        if (this._lastSelectedIndex >= 0) {
-          this.redrawItem(this._lastSelectedIndex);
-        }
-        this._lastSelectedIndex = this.index();
-      }
-
-      // Update animation for selected sprite only
-      if (this.index() >= 0) {
-        this._animationCount++;
-        if (this._animationCount % 12 === 0) {
-          this.updateCharacterAnimation();
-        }
-      }
-    }
-
-    updateCharacterAnimation() {
-      const index = this.index();
-      if (index >= 0) {
-        this.redrawItem(index);
-      }
-    }
-
-    drawAllItems() {
-      super.drawAllItems();
-
-      // Clear any existing character sprites
-      if (this._characterSprites) {
-        this._characterSprites.forEach((sprite) => {
-          if (sprite && sprite.parent) {
-            sprite.parent.removeChild(sprite);
+    async _scan() {
+      let names = [];
+      const sizes = new Map();
+      const fs = nodeRequire("fs");
+      const path = nodeRequire("path");
+      const root = gameRoot();
+      if (fs && path && root) {
+        try {
+          const dir = path.join(root, BUST_DIR);
+          const files = await fs.promises.readdir(dir);
+          // The byte size doubles as the thumbnail cache key, so a repainted
+          // bust invalidates its own thumbnail without any versioning.
+          const scanned = await Promise.all(
+            files.map(async (file) => {
+              if (!/\.(png|jpg|jpeg|gif|webp)$/i.test(file)) return null;
+              try {
+                const stat = await fs.promises.stat(path.join(dir, file));
+                if (!stat.isFile() || stat.size <= BUST_MIN_BYTES) return null;
+                return { name: file.replace(/\.[^.]+$/, ""), size: stat.size };
+              } catch (e) {
+                return null;
+              }
+            }),
+          );
+          for (const entry of scanned) {
+            if (!entry) continue;
+            names.push(entry.name);
+            sizes.set(entry.name, entry.size);
           }
-        });
+        } catch (e) {
+          names = [];
+        }
       }
-      this._characterSprites = [];
-    }
+      // No file system (a browser build): fall back to every bust the sprite
+      // catalogue names, which is the set the game actually references.
+      if (!names.length) names = this._fromSpriteCatalogue();
+      names.sort((a, b) => a.localeCompare(b));
+      this._data = { names, sizes, categories: this._categorize(names) };
+      return this._data;
+    },
 
-    drawItem(index) {
-      if (!this._sprites[index]) return;
-
-      const sprite = this._sprites[index];
-      const rect = this.itemRect(index);
-
-      // Draw a background for the item
-      this.drawItemBackground(index);
-
-      // Shift sprite up slightly to make room for name
-      const spriteY = rect.y + rect.height / 2 - 12;
-      this.drawCharacterSprite(
-        sprite.name,
-        sprite.index,
-        rect.x + rect.width / 2,
-        spriteY,
-        index === this.index(),
-      );
-
-      // Draw sprite name minus prefixes
-      this.drawSpriteName(sprite.name, rect);
-    }
-
-    drawSpriteName(name, rect) {
-      const fileName = name.split("/").pop();
-      const displayName = fileName.replace(/^[$!]+/, "");
-      this.contents.fontSize = 14;
-      this.drawText(
-        displayName,
-        rect.x,
-        rect.y + rect.height - 24,
-        rect.width,
-        "center",
-      );
-      this.resetFontSettings();
-    }
-
-    drawCharacterSprite(characterName, characterIndex, x, y, isSelected) {
-      // Find the index in the sprite options array
-      const spriteIndex = this._sprites.findIndex(
-        (s) => s.name === characterName && s.index === characterIndex,
-      );
-
-      // Get the complete item rect
-      const rect = this.itemRectWithPadding(this.indexToRect(spriteIndex));
-
-      // Load character bitmap
-      const bitmap = ImageManager.loadCharacter(characterName);
-      if (!bitmap.isReady()) {
-        bitmap.addLoadListener(() => this.redrawItem(spriteIndex));
-        return;
+    _fromSpriteCatalogue() {
+      const assoc = window.Sprites && window.Sprites.SpritesAssociation;
+      if (!assoc) return [];
+      const found = new Set();
+      for (const sheet of Object.keys(assoc)) {
+        const busts = assoc[sheet];
+        if (!Array.isArray(busts)) continue;
+        for (const bust of busts) if (bust) found.add(String(bust));
       }
+      return Array.from(found);
+    },
 
-      // Determine character sheet type and its real row count (a handful of
-      // sheets carry a single facing row, see spriteFrameGeometry)
-      const geo = spriteFrameGeometry(characterName);
-      const big = geo.isBig;
-
-      // Calculate pattern (animation frame) - only animate selected sprite
-      let pattern = 1; // Default to middle frame (standing)
-      if (isSelected) {
-        const frameCount = Graphics.frameCount || this._animationCount;
-        const animFrame = Math.floor((frameCount / 12) % 4);
-        // Pattern for walking: 0, 1, 2, 1
-        pattern = animFrame === 3 ? 1 : animFrame;
+    _categorize(names) {
+      const categories = {};
+      for (const id of BUST_CATEGORIES) categories[id] = [];
+      for (const name of names) {
+        const id = BUST_CATEGORIES.find(
+          (cat) => cat !== BUST_FALLBACK_CATEGORY && name.startsWith(cat),
+        );
+        categories[id || BUST_FALLBACK_CATEGORY].push(name);
       }
+      return categories;
+    },
+  };
 
-      // Face down (direction 2), clamped to the facings the sheet actually has
-      const direction = 2;
-      const dirRow = Math.min(direction / 2 - 1, geo.dirRows - 1);
-
-      // Calculate dimensions and source rectangle
-      const pw = geo.frameW;
-      const ph = geo.frameH;
-
-      // For big characters: pattern = column (animation frame), direction = row
-      // For regular characters: characterIndex determines position in grid
-      const sx = (big ? pattern : (characterIndex % 4) * 3 + pattern) * pw;
-      const sy =
-        (big ? dirRow : Math.floor(characterIndex / 4) * 4 + dirRow) * ph;
-
-      // Use integer scaling for pixel perfect rendering
-      const scale = 1; // 1x scale for compact grid
-      const dw = Math.floor(pw * scale);
-      const dh = Math.floor(ph * scale);
-
-      // Use integer coordinates for pixel perfect positioning
-      const dx = Math.floor(x - dw / 2);
-      const dy = Math.floor(y - dh / 2);
-
-      // Draw directly to the window contents with integer coordinates
-      this.contents.blt(
-        bitmap,
-        Math.floor(sx),
-        Math.floor(sy),
-        Math.floor(pw),
-        Math.floor(ph),
-        dx,
-        dy,
-        dw,
-        dh,
-      );
-    }
-
-    drawItemBackground(index) {
-      // Do nothing - no background highlight for selected item
-    }
-
-    // Helper method to convert index to rect coordinates
-    indexToRect(index) {
-      if (index < 0) return new Rectangle(0, 0, 0, 0);
-      const maxCols = this.maxCols();
-      const itemWidth = this.itemWidth();
-      const itemHeight = this.itemHeight();
-      const colSpacing = this.colSpacing();
-      const rowSpacing = this.rowSpacing();
-      const col = index % maxCols;
-      const row = Math.floor(index / maxCols);
-      const x = col * itemWidth + col * colSpacing;
-      const y = row * itemHeight + row * rowSpacing;
-      return new Rectangle(x, y, itemWidth, itemHeight);
-    }
-
-    // Add padding to rect
-    itemRectWithPadding(rect) {
-      const padding = this.itemPadding();
-      return new Rectangle(
-        rect.x + padding,
-        rect.y + padding,
-        rect.width - padding * 2,
-        rect.height - padding * 2,
-      );
-    }
-
-    select(index) {
-      const lastIndex = this.index();
-      super.select(index);
-
-      if (lastIndex !== index) {
-        // Force complete redraw of both the previous and new selected items
-        if (lastIndex >= 0) this.redrawItem(lastIndex);
-        if (index >= 0) this.redrawItem(index);
-      }
-    }
-
-    // Override the cursor rectangle to hide the selection border
-    refreshCursor() {
-      // Override to hide the cursor/border completely
-      this.setCursorRect(0, 0, 0, 0);
-    }
-  }
-
-  // Scene for bust selection
+  //---------------------------------------------------------------------------
+  // The gallery itself. Left page: the open category's busts, virtualised.
+  // Right page: the selected bust at full size, the species list and the
+  // buttons.
+  //---------------------------------------------------------------------------
   class Scene_BustSelector extends Scene_MenuBase {
     constructor() {
       super();
       this._actorId = 1;
-      this._bustList = [];
       this._preselectedBust = null;
     }
 
     setActor(actorId) {
-      this._actorId = actorId;
+      this._actorId = actorId || 1;
     }
 
     setPreselectedBust(bustName) {
@@ -1080,1011 +1132,610 @@
     }
 
     create() {
-      // Make sure stylesheet is loaded
-
       super.create();
-      this._lastSelectedIndex = -1;
-      this._lastCatMode = null;
-      this._lastCategoryRendered = null;
-      this._wasdInput = { up: false, down: false, left: false, right: false };
+      this._alive = true;
+      this._categories = [];
+      this._filtered = [];
+      this._all = {};
+      this._catIndex = 0;
+      this._bustIndex = 0;
+      this._openCategory = null;
+      this._busts = [];
+      this._needsCursorScroll = false;
+      this._mode = "category";
+      this._search = "";
+      this._cells = new Map();
+      this._pool = [];
+      this._cellW = 0;
+      this._cellH = 0;
+      this._gridDirty = false;
+      this._previewWait = 0;
+      this._previewShown = null;
+      this._wasd = { up: false, down: false, left: false, right: false };
+      this.bindKeys();
+      this.buildOverlay();
+      this.loadBustList();
+    }
+
+    //-- lifecycle ------------------------------------------------------------
+
+    bindKeys() {
       this._wasdListener = (event) => {
-        if (!this._bustListWindow || !this._bustListWindow.active) return;
-        const key = event.key.toLowerCase();
-        // Only handle WASD here. Arrow keys and controller are handled by Input.isTriggered/repeated.
-        if (key === "w") {
-          this._wasdInput.up = true;
-          event.preventDefault();
-        }
-        if (key === "s") {
-          this._wasdInput.down = true;
-          event.preventDefault();
-        }
-        if (key === "a") {
-          this._wasdInput.left = true;
-          event.preventDefault();
-        }
-        if (key === "d") {
-          this._wasdInput.right = true;
-          event.preventDefault();
-        }
+        if (!this._alive || document.activeElement === this._searchEl) return;
+        const key = String(event.key || "").toLowerCase();
+        // WASD only. Arrows and the pad are read through Input in update().
+        const dir = { w: "up", s: "down", a: "left", d: "right" }[key];
+        if (!dir) return;
+        this._wasd[dir] = true;
+        event.preventDefault();
       };
       window.addEventListener("keydown", this._wasdListener);
-      this.createHelpWindow();
-      this.createBustListWindow();
-      this.createBustPreviewWindow();
-      this.loadBustList();
-      if (this._preselectedBust) {
-        this._bustListWindow.preselectBust(this._preselectedBust);
-      }
-      this.createUIOverlay();
+      this._resizeListener = () => {
+        this._cellW = 0;
+        this._gridDirty = true;
+      };
+      window.addEventListener("resize", this._resizeListener);
     }
 
     terminate() {
       super.terminate();
+      this._alive = false;
       if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
-      if (this._wasdListener) {
-        window.removeEventListener("keydown", this._wasdListener);
-      }
-      if (this._dndContainer) {
-        this._dndContainer.innerHTML = ""; // Clear HTML immediately!
-        this._dndContainer.style.display = "none";
+      window.removeEventListener("keydown", this._wasdListener);
+      window.removeEventListener("resize", this._resizeListener);
+      if (this._previewEl) this._previewEl.removeAttribute("src");
+      this._cells.clear();
+      this._pool.length = 0;
+      if (this._overlay) {
+        this._overlay.innerHTML = "";
+        this._overlay.style.display = "none";
       }
     }
 
-    createUIOverlay() {
-      // 1. Mute MZ windows
-      if (this._helpWindow) {
-        this._helpWindow.visible = false;
-        this._helpWindow.opacity = 0;
-      }
-      if (this._bustListWindow) {
-        this._bustListWindow.visible = false;
-        this._bustListWindow.opacity = 0;
-      }
-      if (this._bustPreviewWindow) {
-        this._bustPreviewWindow.visible = false;
-        this._bustPreviewWindow.opacity = 0;
-      }
+    //-- the page -------------------------------------------------------------
 
-      // 2. Create container
+    buildOverlay() {
       let container = document.getElementById("character-creation-container");
       if (!container) {
         container = document.createElement("div");
         container.id = "character-creation-container";
         document.body.appendChild(container);
       }
-
-      // Clear any pending timeout and ensure styles are clean
       if (window._ccOverlayTimeout) {
         clearTimeout(window._ccOverlayTimeout);
         window._ccOverlayTimeout = null;
       }
+      this._overlay = container;
+      container.style.display = "flex";
+      container.style.opacity = "1";
+      container.style.pointerEvents = "auto";
+      container.innerHTML = "";
+      if (window.CCScroll) window.CCScroll.bindWheel(container);
 
-      this._dndContainer = container;
-      this._dndContainer.style.display = "flex";
-      this._dndContainer.style.opacity = "1";
-      this._dndContainer.style.pointerEvents = "auto";
-      this._dndContainer.innerHTML = ""; // Wipe clean to prevent stale DOM layout leaking
+      const pageStyle =
+        "padding: 24px; display: flex; flex-direction: column; height: 100%;" +
+        " box-sizing: border-box; overflow: hidden;";
+      container.innerHTML = `
+        <div class="cc-pockets-spread">
+          <div class="cc-page cc-page-left" style="${pageStyle} padding-right: 48px;">
+            <h2 class="cc-header-gothic cc-bust-title" style="margin-bottom: 8px; width: 100%; text-align: center;"></h2>
+            <div class="cc-presets-board cc-bust-vgrid" style="flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; width: 100%; padding-right: 4px;">
+              <div class="cc-bust-vcanvas"></div>
+            </div>
+          </div>
+          <div class="cc-page cc-page-right" style="${pageStyle}">
+            <div class="cc-bust-preview"><img alt="" /></div>
+            <h2 class="cc-header-gothic" style="margin-bottom: 8px; width: 100%; text-align: center;"></h2>
+            <input type="text" class="cc-species-search" />
+            <div class="cc-presets-board cc-categories-list" style="display: grid; grid-template-columns: repeat(${CATEGORY_COLS}, minmax(0, 1fr)); gap: 10px; flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; width: 100%; padding-right: 4px; align-content: start;"></div>
+            <div class="cc-button-panel" style="margin-top: 16px; width: 100%;"></div>
+          </div>
+        </div>
+      `;
 
-      // Wheel + L2/R2 scrolling for both boards. See CCScroll.
-      if (window.CCScroll) window.CCScroll.bindWheel(this._dndContainer);
+      this._titleEl = container.querySelector(".cc-bust-title");
+      this._gridEl = container.querySelector(".cc-bust-vgrid");
+      this._canvasEl = container.querySelector(".cc-bust-vcanvas");
+      this._previewEl = container.querySelector(".cc-bust-preview img");
+      this._listEl = container.querySelector(".cc-categories-list");
+      this._searchEl = container.querySelector(".cc-species-search");
+      this._buttonsEl = container.querySelector(".cc-button-panel");
+      container.querySelector(".cc-page-right h2").textContent = T("CharCreate.humanoidSpecies");
+      this._searchEl.placeholder = T("CharCreate.searchSpecies");
 
-      this.refreshUIOverlayDOM();
+      this.buildButtons();
+
+      // One listener a board rather than an inline handler a card: the grid
+      // rebuilds its cells constantly and must not re-bind on every pass.
+      this._gridEl.addEventListener("click", (event) => {
+        const card = event.target.closest(".cc-bust-card");
+        if (card) this.onBustCardClick(Number(card.dataset.index));
+      });
+      this._gridEl.addEventListener("scroll", () => {
+        this._gridDirty = true;
+      });
+      this._listEl.addEventListener("click", (event) => {
+        const card = event.target.closest(".cc-card-option");
+        if (card) this.onCategoryCardClick(String(card.dataset.category));
+      });
+      // The field owns the keyboard while it has focus, so neither RMMZ's
+      // Input nor the WASD listener sees what is typed into it. Escape and
+      // Enter hand it back, or there would be no way off the field on a
+      // keyboard.
+      for (const type of ["keydown", "keyup", "keypress"]) {
+        this._searchEl.addEventListener(type, (event) => {
+          event.stopPropagation();
+          if (type === "keydown" && (event.key === "Escape" || event.key === "Enter")) {
+            this._searchEl.blur();
+          }
+        });
+      }
+      this._searchEl.addEventListener("input", () => this.onCategorySearch(this._searchEl.value));
     }
 
-    refreshUIOverlayDOM() {
-      if (!this._dndContainer) return;
-      const getLocalizedText = (en, it) =>
-        ConfigManager.language === "it" ? it : en;
+    buildButtons() {
+      this._buttonsEl.innerHTML = "";
+      const back = document.createElement("button");
+      back.className = "cc-btn-treaty";
+      back.textContent = T("CharCreate.back");
+      back.addEventListener("click", () => this.onBustCancel());
+      this._buttonsEl.appendChild(back);
 
-      const isInCategoryMode = this._bustListWindow.isInCategoryMode();
-      const activeIndex = this._bustListWindow.index();
-
-      // Find all categories loaded in the bust list window
-      const categories = Object.keys(
-        this._bustListWindow._bustCategories,
-      ).filter((cat) => this._bustListWindow._bustCategories[cat].length > 0);
-
-      // Determine active category index and current category name
-      let activeCategoryIndex = -1;
-      let currentCat = "";
-      if (isInCategoryMode) {
-        activeCategoryIndex = activeIndex;
-        currentCat = categories[activeIndex] || categories[0];
-      } else {
-        currentCat = this._bustListWindow.getCurrentCategory() || categories[0];
-        activeCategoryIndex = categories.indexOf(currentCat);
-      }
-
-      // Left Page: Grid of presets for selected category
-      const busts = this._bustListWindow._bustCategories[currentCat] || [];
-      const bustCards = busts
-        .map((bName, idx) => {
-          const isSelected = !isInCategoryMode && idx === activeIndex;
-          const decamelName = decamelCase(bName);
-          return `
-                    <div class="cc-wanted-card cc-bust-card ${isSelected ? "selected" : ""}" onclick="SceneManager._scene.onBustCardClick(${idx})">
-                        <div class="cc-bust-image" style="background-image: url('img/busts/${bName}.png');"></div>
-                        <div class="cc-wanted-name">${decamelName}</div>
-                    </div>
-                `;
-        })
-        .join("");
-
-      const leftHtml = `
-                <div class="cc-page cc-page-left" style="padding: 24px 48px 24px 24px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden;">
-                    <h2 class="cc-header-gothic" style="margin-bottom: 8px; width: 100%; text-align: center;">${currentCat ? currentCat.toUpperCase() + " " : ""}${T('CharCreate.presets')}</h2>
-
-                    <div class="cc-presets-board" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; width: 100%; padding-right: 4px; align-content: start;">
-                        ${bustCards}
-                    </div>
-                </div>
-            `;
-
-      // Right Page: BIOMETRIC REGISTRY Categories list (Vertical List instead of Grid)
-      const searchTerm = (this._categorySearchTerm || "").trim().toLowerCase();
-      const categoryCards = categories
-        .map((cat, idx) => ({ cat, idx }))
-        .filter(({ cat }) => !searchTerm || cat.toLowerCase().includes(searchTerm))
-        .map(({ cat, idx }) => {
-          const isSelected = idx === activeCategoryIndex;
-          const count = this._bustListWindow._bustCategories[cat].length;
-          return `
-                    <div class="cc-card-option ${isSelected ? "selected" : ""}" onclick="SceneManager._scene.onCategoryCardClick(${idx})">
-                        <div class="cc-option-title">${bustCategoryLabel(cat)}</div>
-                        <span class="cc-element-badge">${count} ${T('CharCreate.presets2')}</span>
-                    </div>
-                `;
-        })
-        .join("");
-
-      const rightHtml = `
-                <div class="cc-page cc-page-right" style="padding: 24px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden;">
-                    <h2 class="cc-header-gothic" style="margin-bottom: 8px; width: 100%; text-align: center;">${T('CharCreate.humanoidSpecies')}</h2>
-                    <input type="text" class="cc-species-search" value="${(this._categorySearchTerm || "").replace(/"/g, "&quot;")}" placeholder="${T('CharCreate.searchSpecies')}" oninput="SceneManager._scene.onCategorySearch(this.value)" onkeydown="event.stopPropagation()" onkeyup="event.stopPropagation()" />
-                    <div class="cc-presets-board cc-categories-list" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; flex: 1; overflow-x: hidden; overflow-y: auto; padding-right: 4px; width: 100%; min-height: 0; margin-top: 0; align-content: start;">
-                        ${categoryCards}
-                    </div>
-
-                    <div class="cc-button-panel" style="margin-top: 16px; width: 100%;">
-                        <button class="cc-btn-treaty" onclick="SceneManager._scene.onBustCancel()">${T('CharCreate.back')}</button>
-                        ${
-                          !isInCategoryMode
-                            ? `
-                            <button class="cc-btn-treaty confirm" onclick="SceneManager._scene.onBustCardConfirm()">${T('CharCreate.continue')}</button>
-                        `
-                            : ""
-                        }
-                    </div>
-                </div>
-            `;
-
-      // Find or create .cc-pockets-spread structure once to avoid layout thrashing and preserve scroll positions
-      let spread = this._dndContainer.querySelector(".cc-pockets-spread");
-      const hasCategoryCards =
-        spread && spread.querySelector(".cc-card-option");
-      let shouldFullRender =
-        !spread || (!hasCategoryCards && categories.length > 0);
-
-      if (shouldFullRender) {
-        this._lastCategoryRendered = currentCat;
-        this._dndContainer.innerHTML = `
-                    <div class="cc-pockets-spread">
-                        ${leftHtml}
-                        ${rightHtml}
-                    </div>
-                `;
-      } else {
-        // Optimized path: just update selected classes or rebuild right column parts if category changed
-        const leftPage = spread.querySelector(".cc-page-left");
-        const rightPage = spread.querySelector(".cc-page-right");
-
-        if (this._lastCategoryRendered !== currentCat) {
-          this._lastCategoryRendered = currentCat;
-
-          // Update Left Page Header (since PRESETS is now on left page)
-          if (leftPage) {
-            const leftTitle = leftPage.querySelector(".cc-header-gothic");
-            if (leftTitle) {
-              leftTitle.innerHTML = `${currentCat ? currentCat.toUpperCase() + " " : ""}${T('CharCreate.presets')}`;
-            }
-
-            // Update presets board grid content (on left page)
-            const presetsBoard = leftPage.querySelector(".cc-presets-board");
-            if (presetsBoard) {
-              presetsBoard.innerHTML = bustCards;
-            }
-          }
-        }
-
-        // Update Right Page Category Cards Selected states (since BIOMETRIC REGISTRY is on right page)
-        if (rightPage) {
-          const catCards = rightPage.querySelectorAll(".cc-card-option");
-          catCards.forEach((card, idx) => {
-            card.classList.toggle("selected", idx === activeCategoryIndex);
-          });
-        }
-
-        // Update Left Page Presets Board Selected states (since PRESETS is on left page)
-        if (leftPage) {
-          const cards = leftPage.querySelectorAll(".cc-wanted-card");
-          cards.forEach((card, idx) => {
-            if (!isInCategoryMode && idx === activeIndex) {
-              card.classList.add("selected");
-            } else {
-              card.classList.remove("selected");
-            }
-          });
-        }
-
-        // Update confirm button presence in button panel (on right page)
-        if (rightPage) {
-          const btnPanel = rightPage.querySelector(".cc-button-panel");
-          if (btnPanel) {
-            let confirmBtn = btnPanel.querySelector(".confirm");
-            if (!isInCategoryMode) {
-              if (!confirmBtn) {
-                // Add confirm button
-                confirmBtn = document.createElement("button");
-                confirmBtn.className = "cc-btn-treaty confirm";
-                confirmBtn.onclick = () =>
-                  SceneManager._scene.onBustCardConfirm();
-                confirmBtn.textContent = T('CharCreate.confirmBust');
-                btnPanel.appendChild(confirmBtn);
-              }
-            } else {
-              if (confirmBtn) {
-                confirmBtn.remove();
-              }
-            }
-          }
-        }
-      }
-
-      // Auto-scroll selected card into view (Category card or Preset card depending on mode)
-      setTimeout(() => {
-        const isCat = this._bustListWindow.isInCategoryMode();
-        const selector = isCat
-          ? ".cc-card-option.selected"
-          : ".cc-wanted-card.selected";
-        const selectedCard = this._dndContainer.querySelector(selector);
-        if (selectedCard) {
-          selectedCard.scrollIntoView({ block: "nearest", behavior: "smooth" });
-        }
-      }, 10);
+      this._confirmEl = document.createElement("button");
+      this._confirmEl.className = "cc-btn-treaty confirm";
+      this._confirmEl.textContent = T("CharCreate.confirmBust");
+      this._confirmEl.addEventListener("click", () => this.onBustConfirm());
+      this._buttonsEl.appendChild(this._confirmEl);
+      this._confirmEl.style.display = "none";
     }
 
-    onCategorySearch(value) {
-      this._categorySearchTerm = value || "";
-      const term = this._categorySearchTerm.trim().toLowerCase();
-      if (!this._dndContainer) return;
-      const cards = this._dndContainer.querySelectorAll(
-        ".cc-page-right .cc-card-option",
-      );
-      cards.forEach((card) => {
-        const titleEl = card.querySelector(".cc-option-title");
-        const name = titleEl ? titleEl.textContent.toLowerCase() : "";
-        card.style.display = !term || name.includes(term) ? "flex" : "none";
+    //-- data -----------------------------------------------------------------
+
+    loadBustList() {
+      BustCatalogue.load().then((data) => {
+        if (!this._alive) return;
+        // A goblin world wears goblin faces and a monster world wears nothing
+        // that reads as a person's. The gallery is read off the img/busts
+        // folder, so the wardrobe has to say which of those files belong here.
+        const categories = filterBustCategories(data.categories);
+        this._categories = BUST_CATEGORIES.filter(
+          (cat) => categories[cat] && categories[cat].length > 0,
+        );
+        this._all = categories;
+        this._filtered = this._categories.slice();
+        this._openCategory = this._filtered[0] || null;
+        this.renderCategories();
+        if (this._preselectedBust) this.preselect(this._preselectedBust);
+        this.openCategoryBusts(this._openCategory);
+        this.refreshMode();
+        if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
       });
     }
 
-    onCategoryCardClick(index) {
-      if (this._bustListWindow) {
-        const categories = Object.keys(
-          this._bustListWindow._bustCategories,
-        ).filter((cat) => this._bustListWindow._bustCategories[cat].length > 0);
-        const category = categories[index];
-        if (category) {
-          this._bustListWindow._currentCategory = category;
-          this._bustListWindow._categoryMode = false;
-          this._bustListWindow.updateDisplayList();
-          this._bustListWindow._index = -1;
-          this._bustListWindow.select(0);
-          this._bustListWindow.refresh();
-          if (this._bustListWindow.isHandled("select")) {
-            this._bustListWindow.callHandler("select");
-          }
-          this.refreshUIOverlayDOM();
+    preselect(bustName) {
+      const category = this._categories.find(
+        (cat) => this._all[cat].indexOf(bustName) >= 0,
+      );
+      if (!category) return;
+      this._openCategory = category;
+      this._catIndex = Math.max(0, this._filtered.indexOf(category));
+      this._bustIndex = Math.max(0, this._all[category].indexOf(bustName));
+      this._mode = "bust";
+    }
+
+    openCategoryBusts(category) {
+      this._openCategory = category;
+      this._busts = (category && this._all[category]) || [];
+      if (this._bustIndex >= this._busts.length) this._bustIndex = 0;
+      this._titleEl.textContent = category
+        ? `${bustCategoryLabel(category).toUpperCase()} ${T("CharCreate.presets")}`
+        : T("CharCreate.presets");
+      // A new list means every cell holds the wrong bust: drop them all and
+      // let the next reconcile rebuild only what is on screen. The cells keep
+      // their size (only the count changed), so the board is not re-measured:
+      // walking the species list would otherwise force a layout a keypress.
+      this.releaseCells();
+      this._gridEl.scrollTop = 0;
+      this.updateCanvasHeight();
+      this._gridDirty = true;
+      // The board cannot be measured until it has been laid out, so a cursor
+      // that did not start at the top (a preselected bust) is scrolled to on
+      // the first reconcile that succeeds.
+      this._needsCursorScroll = true;
+      this.schedulePreview();
+    }
+
+    //-- the species list -----------------------------------------------------
+
+    renderCategories() {
+      this._listEl.innerHTML = "";
+      const fragment = document.createDocumentFragment();
+      this._catCards = new Map();
+      for (const category of this._categories) {
+        const card = document.createElement("div");
+        card.className = "cc-card-option";
+        card.dataset.category = category;
+        const title = document.createElement("div");
+        title.className = "cc-option-title";
+        title.textContent = bustCategoryLabel(category);
+        const count = document.createElement("span");
+        count.className = "cc-element-badge";
+        count.textContent = `${this._all[category].length} ${T("CharCreate.presets2")}`;
+        card.appendChild(title);
+        card.appendChild(count);
+        fragment.appendChild(card);
+        this._catCards.set(category, card);
+      }
+      this._listEl.appendChild(fragment);
+      this.refreshCategorySelection();
+    }
+
+    refreshCategorySelection() {
+      if (!this._catCards) return;
+      const current = this._filtered[this._catIndex];
+      for (const [category, card] of this._catCards) {
+        card.classList.toggle("selected", category === current);
+      }
+      const card = this._catCards.get(current);
+      if (card) this.scrollIntoPane(this._listEl, card.offsetTop, card.offsetHeight);
+    }
+
+    onCategorySearch(value) {
+      if (!this._catCards) return;
+      this._search = String(value || "");
+      const term = this._search.trim().toLowerCase();
+      const open = this._filtered[this._catIndex];
+      this._filtered = this._categories.filter(
+        (cat) => !term || bustCategoryLabel(cat).toLowerCase().includes(term),
+      );
+      for (const [category, card] of this._catCards) {
+        card.style.display = this._filtered.indexOf(category) >= 0 ? "flex" : "none";
+      }
+      const kept = this._filtered.indexOf(open);
+      this._catIndex = kept >= 0 ? kept : 0;
+      this.refreshCategorySelection();
+    }
+
+    //-- the virtualised grid -------------------------------------------------
+
+    measureGrid() {
+      const width = this._gridEl.clientWidth - 4;
+      if (width <= 0) return false;
+      this._cellW = Math.floor((width - BUST_GRID_GAP * (BUST_GRID_COLS - 1)) / BUST_GRID_COLS);
+      this._cellH = Math.round(this._cellW * BUST_CELL_RATIO);
+      this.updateCanvasHeight();
+      return true;
+    }
+
+    // The spacer under the cells is what the pane actually scrolls.
+    updateCanvasHeight() {
+      if (!this._cellH) return;
+      const rows = Math.ceil(this._busts.length / BUST_GRID_COLS);
+      const height = rows > 0 ? rows * (this._cellH + BUST_GRID_GAP) - BUST_GRID_GAP : 0;
+      this._canvasEl.style.height = `${height}px`;
+    }
+
+    releaseCells() {
+      for (const cell of this._cells.values()) {
+        cell.remove();
+        this._pool.push(cell);
+      }
+      this._cells.clear();
+    }
+
+    takeCell() {
+      const cell = this._pool.pop();
+      if (cell) return cell;
+      const card = document.createElement("div");
+      card.className = "cc-wanted-card cc-bust-card";
+      const art = document.createElement("div");
+      art.className = "cc-bust-image";
+      const name = document.createElement("div");
+      name.className = "cc-wanted-name";
+      card.appendChild(art);
+      card.appendChild(name);
+      card._art = art;
+      card._name = name;
+      return card;
+    }
+
+    renderGrid() {
+      if (!this._cellW && !this.measureGrid()) {
+        // The page has not been laid out yet: try again next frame.
+        this._gridDirty = true;
+        return;
+      }
+      const total = this._busts.length;
+      if (!total) {
+        this.releaseCells();
+        return;
+      }
+      if (this._needsCursorScroll) {
+        this._needsCursorScroll = false;
+        const row = Math.floor(this._bustIndex / BUST_GRID_COLS);
+        this.scrollIntoPane(this._gridEl, row * (this._cellH + BUST_GRID_GAP), this._cellH);
+      }
+      const rowHeight = this._cellH + BUST_GRID_GAP;
+      const firstRow = Math.max(0, Math.floor(this._gridEl.scrollTop / rowHeight) - BUST_GRID_OVERSCAN);
+      const lastRow =
+        Math.floor((this._gridEl.scrollTop + this._gridEl.clientHeight) / rowHeight) + BUST_GRID_OVERSCAN;
+      const from = firstRow * BUST_GRID_COLS;
+      const to = Math.min(total - 1, lastRow * BUST_GRID_COLS + BUST_GRID_COLS - 1);
+
+      for (const [index, cell] of this._cells) {
+        if (index < from || index > to) {
+          cell.remove();
+          this._pool.push(cell);
+          this._cells.delete(index);
         }
       }
+
+      for (let index = from; index <= to; index++) {
+        if (this._cells.has(index)) {
+          this.placeCell(this._cells.get(index), index);
+          continue;
+        }
+        const cell = this.takeCell();
+        this._cells.set(index, cell);
+        this.fillCell(cell, index);
+        this.placeCell(cell, index);
+        this._canvasEl.appendChild(cell);
+      }
+    }
+
+    placeCell(cell, index) {
+      const col = index % BUST_GRID_COLS;
+      const row = Math.floor(index / BUST_GRID_COLS);
+      cell.style.left = `${col * (this._cellW + BUST_GRID_GAP)}px`;
+      cell.style.top = `${row * (this._cellH + BUST_GRID_GAP)}px`;
+      cell.style.width = `${this._cellW}px`;
+      cell.style.height = `${this._cellH}px`;
+      cell.classList.toggle("selected", this._mode === "bust" && index === this._bustIndex);
+    }
+
+    fillCell(cell, index) {
+      const name = this._busts[index];
+      cell.dataset.index = String(index);
+      cell.dataset.bust = name;
+      cell._name.textContent = decamelCase(name);
+      cell._art.style.backgroundImage = `url("${bustArtUrl(name)}")`;
+    }
+
+    refreshBustSelection() {
+      for (const [index, cell] of this._cells) {
+        cell.classList.toggle("selected", this._mode === "bust" && index === this._bustIndex);
+      }
+      if (this._mode !== "bust" || !this._cellH) return;
+      const row = Math.floor(this._bustIndex / BUST_GRID_COLS);
+      this.scrollIntoPane(this._gridEl, row * (this._cellH + BUST_GRID_GAP), this._cellH);
+    }
+
+    // Straight scrollTop arithmetic. scrollIntoView({behavior:"smooth"}) on a
+    // timeout, which is what this used to be, animates on every cursor step
+    // and fights the next one.
+    scrollIntoPane(pane, top, height) {
+      if (top < pane.scrollTop) pane.scrollTop = top;
+      else if (top + height > pane.scrollTop + pane.clientHeight) {
+        pane.scrollTop = top + height - pane.clientHeight;
+      }
+    }
+
+    //-- the full size preview ------------------------------------------------
+
+    schedulePreview() {
+      this._previewWait = PREVIEW_SETTLE_FRAMES;
+    }
+
+    showPreview() {
+      const name = this.previewBust();
+      if (name === this._previewShown) return;
+      this._previewShown = name;
+      if (!name) {
+        this._previewEl.removeAttribute("src");
+        return;
+      }
+      // Drop the old one before asking for the next, and never hold two.
+      // The card on the left has already loaded this same file, so the page
+      // is a browser cache hit rather than a second decode.
+      this._previewEl.removeAttribute("src");
+      this._previewEl.src = bustArtUrl(name);
+    }
+
+    //-- selection ------------------------------------------------------------
+
+    // What Confirm would take: nothing at all while the cursor is on the
+    // species list.
+    selectedBust() {
+      if (this._mode !== "bust") return null;
+      return this._busts[this._bustIndex] || null;
+    }
+
+    // What the right page shows. Browsing species previews that species' first
+    // portrait, so the list reads as more than a row of counts.
+    previewBust() {
+      const index = this._mode === "bust" ? this._bustIndex : 0;
+      return this._busts[index] || null;
+    }
+
+    refreshMode() {
+      this._confirmEl.style.display = this._mode === "bust" ? "" : "none";
+      this.refreshBustSelection();
+      this.refreshCategorySelection();
+      this.schedulePreview();
+    }
+
+    enterCategory(category) {
+      if (!category) return;
+      const changed = category !== this._openCategory;
+      this._catIndex = Math.max(0, this._filtered.indexOf(category));
+      this._mode = "bust";
+      this._bustIndex = 0;
+      if (changed) this.openCategoryBusts(category);
+      this.refreshMode();
+    }
+
+    backToCategories() {
+      this._mode = "category";
+      this.refreshMode();
+    }
+
+    onCategoryCardClick(category) {
+      SoundManager.playOk();
+      this.enterCategory(category);
     }
 
     onBustCardClick(index) {
-      if (this._bustListWindow) {
-        const isInCategoryMode = this._bustListWindow.isInCategoryMode();
-        if (isInCategoryMode) {
-          const categories = Object.keys(
-            this._bustListWindow._bustCategories,
-          ).filter(
-            (cat) => this._bustListWindow._bustCategories[cat].length > 0,
-          );
-          const activeIndex = this._bustListWindow.index();
-          const category = categories[activeIndex] || categories[0];
-          if (category) {
-            this._bustListWindow._currentCategory = category;
-            this._bustListWindow._categoryMode = false;
-            this._bustListWindow.updateDisplayList();
-            this._bustListWindow._index = -1;
-            this._bustListWindow.select(index); // Select the clicked bust!
-            this._bustListWindow.refresh();
-            if (this._bustListWindow.isHandled("select")) {
-              this._bustListWindow.callHandler("select");
-            }
-            this.refreshUIOverlayDOM();
-            return;
-          }
-        }
-
-        if (this._bustListWindow.index() === index && !isInCategoryMode) {
-          this.onBustCardConfirm();
-        } else {
-          this._bustListWindow.select(index);
-          this.refreshUIOverlayDOM();
-        }
+      if (!(index >= 0) || index >= this._busts.length) return;
+      if (this._mode === "bust" && index === this._bustIndex) {
+        this.onBustConfirm();
+        return;
       }
+      SoundManager.playCursor();
+      this._mode = "bust";
+      this._bustIndex = index;
+      this.refreshMode();
     }
 
-    onBustCardConfirm() {
-      if (this._bustListWindow) {
-        this._bustListWindow.processOk();
-      }
+    //-- input ----------------------------------------------------------------
+
+    // CCScroll drives L2/R2 at whichever board holds the cursor.
+    ccScrollTarget() {
+      return this._mode === "bust" ? this._gridEl : this._listEl;
     }
 
-    updateUIInput() {
-      const windowObj = this._bustListWindow;
-      if (!windowObj || !windowObj.active) return;
+    readDirection() {
+      const held = (name) => Input.isTriggered(name) || Input.isRepeated(name);
+      const direction = {
+        up: held("up") || this._wasd.up,
+        down: held("down") || this._wasd.down,
+        left: held("left") || this._wasd.left,
+        right: held("right") || this._wasd.right,
+      };
+      this._wasd.up = this._wasd.down = this._wasd.left = this._wasd.right = false;
+      return direction;
+    }
 
-      const maxItems = windowObj.maxItems();
-      if (maxItems <= 0) return;
-
+    updateInput() {
+      if (document.activeElement === this._searchEl) return;
+      const direction = this.readDirection();
+      const inBusts = this._mode === "bust";
+      const count = inBusts ? this._busts.length : this._filtered.length;
+      // Leaving must work before the catalogue has finished loading.
+      if (!count) {
+        if (Input.isTriggered("cancel")) this.onBustCancel();
+        return;
+      }
+      const cols = inBusts ? BUST_GRID_COLS : CATEGORY_COLS;
+      let index = inBusts ? this._bustIndex : this._catIndex;
       let moved = false;
-      let index = windowObj.index();
-      const isCat = windowObj.isInCategoryMode();
 
-      const isDown = Input.isTriggered("down") || Input.isRepeated("down") || this._wasdInput.down;
-      const isUp = Input.isTriggered("up") || Input.isRepeated("up") || this._wasdInput.up;
-      const isRight = Input.isTriggered("right") || Input.isRepeated("right") || this._wasdInput.right;
-      const isLeft = Input.isTriggered("left") || Input.isRepeated("left") || this._wasdInput.left;
-
-      // Consume WASD inputs
-      this._wasdInput.up = false;
-      this._wasdInput.down = false;
-      this._wasdInput.left = false;
-      this._wasdInput.right = false;
-
-      if (isDown) {
-        const cols = windowObj.maxCols();
-        if (index + cols < maxItems) {
-          index += cols;
-        } else {
-          index = index % cols;
-        }
+      if (direction.down) {
+        index = index + cols < count ? index + cols : index % cols;
         moved = true;
-      } else if (isUp) {
-        const cols = windowObj.maxCols();
+      } else if (direction.up) {
         if (index - cols >= 0) {
           index -= cols;
         } else {
-          let target =
-            Math.floor((maxItems - 1) / cols) * cols + (index % cols);
-          if (target >= maxItems) target -= cols;
-          index = target >= 0 ? target : 0;
+          let target = Math.floor((count - 1) / cols) * cols + (index % cols);
+          if (target >= count) target -= cols;
+          index = Math.max(0, target);
         }
         moved = true;
-      } else if (isRight) {
-        const cols = windowObj.maxCols();
-        if (cols > 1 && index % cols < cols - 1 && index + 1 < maxItems) {
+      } else if (direction.right) {
+        if (index % cols < cols - 1 && index + 1 < count) {
           index += 1;
           moved = true;
         }
-      } else if (isLeft) {
-        const cols = windowObj.maxCols();
-        if (cols > 1 && index % cols > 0) {
+      } else if (direction.left) {
+        if (index % cols > 0) {
           index -= 1;
           moved = true;
         }
       } else if (Input.isTriggered("ok")) {
         SoundManager.playOk();
-        if (isCat) {
-          // Open category
-          windowObj.openCategory(index);
-        } else {
-          // Confirm bust
-          this.onBustCardConfirm();
-        }
+        if (inBusts) this.onBustConfirm();
+        else this.enterCategory(this._filtered[this._catIndex]);
+        return;
       } else if (Input.isTriggered("cancel")) {
-        SoundManager.playCancel();
-        if (isCat) {
-          SceneManager.pop();
-        } else {
-          windowObj.goBackToCategories();
-        }
+        this.onBustCancel();
+        return;
       }
 
-      if (moved) {
-        SoundManager.playCursor();
-        windowObj.select(index);
-        this.refreshUIOverlayDOM();
+      if (!moved) return;
+      SoundManager.playCursor();
+      if (inBusts) {
+        this._bustIndex = index;
+        this.refreshBustSelection();
+        this.schedulePreview();
+      } else {
+        this._catIndex = index;
+        this.refreshCategorySelection();
+        // The board follows the highlighted species, so the player reads the
+        // portraits without having to enter the category first.
+        this.openCategoryBusts(this._filtered[index]);
       }
     }
 
     update() {
       super.update();
-      if (this._dndContainer && this._dndContainer.style.display !== "none") {
-        this.updateUIInput();
-        if (window.CCScroll) window.CCScroll.update(this._dndContainer);
-        const activeIndex = this._bustListWindow.index();
-        const isCatMode = this._bustListWindow.isInCategoryMode();
-        if (
-          this._lastSelectedIndex !== activeIndex ||
-          this._lastCatMode !== isCatMode
-        ) {
-          this._lastSelectedIndex = activeIndex;
-          this._lastCatMode = isCatMode;
-          this.refreshUIOverlayDOM();
-        }
+      if (!this._overlay || this._overlay.style.display === "none") return;
+      this.updateInput();
+      if (window.CCScroll) window.CCScroll.update(this._overlay);
+      if (this._gridDirty) {
+        this._gridDirty = false;
+        this.renderGrid();
       }
+      if (this._previewWait > 0 && --this._previewWait === 0) this.showPreview();
     }
 
-    createHelpWindow() {
-      const rect = this.helpWindowRect();
-      this._helpWindow = new Window_Help(rect);
-      this._helpWindow.setText(T('CharCreate.selectBustImage'));
-      this.addWindow(this._helpWindow);
-    }
+    //-- leaving --------------------------------------------------------------
 
-    helpWindowRect() {
-      const wx = 0;
-      const wy = 0;
-      const ww = Graphics.boxWidth;
-      const wh = this.calcWindowHeight(1, false);
-      return new Rectangle(wx, wy, ww, wh);
-    }
+    onBustConfirm() {
+      const bustName = this.selectedBust();
+      if (!bustName) return;
+      // The bust belongs to the actor this selector was opened for, not always
+      // the first party member.
+      const actorId = this._actorId || 1;
+      const actor = $gameActors.actor(actorId);
+      if (!actor) return;
+      actor.setVnBust(bustName);
+      // Picking a bust settles this character's portrait style.
+      if (actor.setPortraitMode) actor.setPortraitMode("bust");
 
-    createBustListWindow() {
-      const rect = this.bustListWindowRect();
-      this._bustListWindow = new Window_BustList(rect);
-      this._bustListWindow.setHandler("ok", this.onBustSelected.bind(this));
-      this._bustListWindow.setHandler("cancel", this.onBustCancel.bind(this));
-      this._bustListWindow.setHandler("select", this.onBustSelect.bind(this));
-      this.addWindow(this._bustListWindow);
-      this._bustListWindow.activate();
-      this._bustListWindow.select(0);
-      this.onBustSelect();
-    }
-
-    createBustPreviewWindow() {
-      const rect = this.bustPreviewWindowRect();
-      this._bustPreviewWindow = new Window_BustPreview(rect);
-      this.addWindow(this._bustPreviewWindow);
-    }
-
-    bustListWindowRect() {
-      const wx = 0;
-      const wy = this._helpWindow.height;
-      const ww = Math.floor(Graphics.boxWidth * 0.3);
-      const wh = Graphics.boxHeight - wy;
-      return new Rectangle(wx, wy, ww, wh);
-    }
-
-    bustPreviewWindowRect() {
-      const wx = Math.floor(Graphics.boxWidth * 0.3);
-      const wy = this._helpWindow.height;
-      const ww = Graphics.boxWidth - wx;
-      const wh = Graphics.boxHeight - wy;
-      return new Rectangle(wx, wy, ww, wh);
-    }
-
-    loadBustList() {}
-
-    onBustSelect() {
-      const selectedBust = this._bustListWindow.getSelectedBust();
-      const isInCategoryMode = this._bustListWindow.isInCategoryMode();
-
-      if (isInCategoryMode) {
-        if (this._bustPreviewWindow) {
-          this._bustPreviewWindow.setBust(null);
-        }
-        this._helpWindow.setText(T('CharCreate.pressOkToOpenCategory'));
-      } else {
-        if (this._bustPreviewWindow) {
-          this._bustPreviewWindow.setBust(selectedBust);
-        }
-        this._helpWindow.setText(T('CharCreate.selectedBust', { name: selectedBust }));
+      // Reproduction type variable: 87 for actor 1, 115 / 116 for 2 / 3.
+      const reproductiveVar = actorId === 2 ? 115 : actorId === 3 ? 116 : 87;
+      // i18n-ignore-start: bust folder ids
+      if (this._openCategory === "Bot") {
+        $gameVariables.setValue(reproductiveVar, -1);
+      } else if (this._openCategory === "Goblin" && actor.gender() === 1) {
+        // i18n-ignore-end
+        $gameVariables.setValue(reproductiveVar, 2);
       }
-    }
 
-    onBustSelected() {
-      const isInCategoryMode = this._bustListWindow.isInCategoryMode();
+      SoundManager.playOk();
 
-      if (isInCategoryMode) {
-        const selectedIndex = this._bustListWindow.index();
-        this._bustListWindow.openCategory(selectedIndex);
-        SoundManager.playOk();
-      } else {
-        const selectedBust = this._bustListWindow.getSelectedBust();
-        if (selectedBust) {
-          // The bust belongs to the actor this selector was opened for, not
-          // always the first party member.
-          const actorId = this._actorId || 1;
-          const bustActor = $gameActors.actor(actorId);
-          bustActor.setVnBust(selectedBust);
-          // Picking a bust settles this character's portrait style.
-          if (bustActor.setPortraitMode) bustActor.setPortraitMode("bust");
-          const currentCategory = this._bustListWindow.getCurrentCategory();
-          const genderValue = bustActor.gender();
-          // Reproduction type variable: 87 for actor 1, 115 / 116 for 2 / 3.
-          const reproductiveVar = actorId === 2 ? 115 : actorId === 3 ? 116 : 87;
-
-          // i18n-ignore-start: bust folder ids
-          if (currentCategory === "Bot") {
-            $gameVariables.setValue(reproductiveVar, -1);
-          } else if (currentCategory === "Goblin" && genderValue === 1) {
-            // i18n-ignore-end
-            $gameVariables.setValue(reproductiveVar, 2);
-          }
-
-          SoundManager.playOk();
-
-          // A bust IS the character's portrait: the 3D model editor is the
-          // other, mutually exclusive branch (reached from the sprite step) and
-          // is never chained after a bust pick.
-          //
-          // Two pops by default: this gallery is opened from the sprite grid,
-          // so confirming leaves both and lands back on the map, where the
-          // creation common event resumes. A caller that pushed the gallery
-          // straight over its own scene (the Detailed creation editor) sets
-          // _confirmPops to 1 and gets its scene back instead.
-          const pops = Scene_BustSelector._confirmPops || 2;
-          Scene_BustSelector._confirmPops = 0;
-          for (let i = 0; i < pops; i++) SceneManager.pop();
-        }
-      }
+      // A bust IS the character's portrait: the 3D model editor is the other,
+      // mutually exclusive branch (reached from the sprite step) and is never
+      // chained after a bust pick.
+      //
+      // Two pops by default: this gallery is opened from the sprite grid, so
+      // confirming leaves both and lands back on the map, where the creation
+      // common event resumes. A caller that pushed the gallery straight over
+      // its own scene (the Detailed creation editor) sets _confirmPops to 1
+      // and gets its scene back instead.
+      const pops = Scene_BustSelector._confirmPops || 2;
+      Scene_BustSelector._confirmPops = 0;
+      for (let i = 0; i < pops; i++) SceneManager.pop();
     }
 
     onBustCancel() {
-      const isInCategoryMode = this._bustListWindow.isInCategoryMode();
-
-      if (isInCategoryMode) {
-        SoundManager.playCancel();
+      SoundManager.playCancel();
+      if (this._mode === "bust") {
+        this.backToCategories();
+      } else {
         Scene_BustSelector._confirmPops = 0;
         SceneManager.pop();
-      } else {
-        this._bustListWindow.goBackToCategories();
-        SoundManager.playCancel();
       }
-    }
-  }
-
-  // Window to display list of busts (left panel)
-  class Window_BustList extends Window_Selectable {
-    constructor(rect) {
-      super(rect);
-      this._bustFiles = [];
-      this._bustCategories = {};
-      this._allBusts = [];
-      this._categoryMode = true; // True = showing categories, False = showing busts in category
-      this._currentCategory = null;
-      this.loadBustFiles();
-      this.refresh();
-    }
-
-    async loadBustFiles() {
-      this._allBusts = [];
-
-      // Try to use Node.js fs module for file system access asynchronously
-      try {
-        const fs = require("fs").promises;
-        const path = require("path");
-        const bustsPath = path.join(
-          path.dirname(process.mainModule.filename),
-          "img/busts/",
-        );
-
-        const files = await fs.readdir(bustsPath);
-
-        // Load stats in parallel using Promise.all to maximize performance
-        const statPromises = files.map(async (file) => {
-          if (/\.(png|jpg|jpeg|gif|webp)$/i.test(file)) {
-            const filePath = path.join(bustsPath, file);
-            try {
-              const stat = await fs.stat(filePath);
-              // Only include files (not subdirectories) and only image files, ignoring corrupt placeholder images < 50KB (like 7.png)
-              if (stat.isFile() && stat.size > 50000) {
-                return file.replace(/\.(png|jpg|jpeg|gif|webp)$/i, "");
-              }
-            } catch (e) {
-              // Ignore single file read errors
-            }
-          }
-          return null;
-        });
-
-        const results = await Promise.all(statPromises);
-        this._allBusts = results.filter((name) => name !== null);
-      } catch (error) {
-        console.error("Error loading bust files asynchronously:", error);
-        // Fallback: try common numbering patterns if Node.js fs is unavailable
-        this.loadBustFilesFallback();
-        return;
-      }
-
-      // Sort alphabetically
-      this._allBusts.sort((a, b) => a.localeCompare(b));
-      this.categorizeBusts();
-
-      // Refresh window and UI overlay once the data loads
-      const scene = SceneManager._scene;
-      if (scene && scene._preselectedBust) {
-        this.preselectBust(scene._preselectedBust);
-      } else {
-        this.refresh();
-        this.select(0);
-      }
-
-      if (scene && typeof scene.refreshUIOverlayDOM === "function") {
-        scene.refreshUIOverlayDOM();
-      }
-      if (this.isHandled("select")) {
-        this.callHandler("select");
-      }
-      // Selector is now populated and visible, drop the transition veil.
-      if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
-    }
-
-    loadBustFilesFallback() {
-      // Fallback method using image loading tests
-      const commonNames = [
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        // i18n-ignore-start: img/characters file names
-        "Astronaut1",
-        "ElvenTrader",
-        "GoblinBard",
-        "GoblinCleric",
-        "GoblinMonk",
-        "GoblinVampire",
-        "Miner",
-        "Nurse1",
-        "Scavenger",
-        "VoidSpawn",
-        "Space Horrors 01",
-        "Space Horrors 03",
-        "Space Horrors 04",
-        // i18n-ignore-end
-      ];
-
-      let loadedCount = 0;
-      const totalToTry = commonNames.length;
-
-      commonNames.forEach((filename) => {
-        this.tryAddBust(filename, () => {
-          loadedCount++;
-          if (loadedCount === totalToTry) {
-            this._allBusts.sort((a, b) => a.localeCompare(b));
-            this.categorizeBusts();
-            const scene = SceneManager._scene;
-            if (scene && scene._preselectedBust) {
-              this.preselectBust(scene._preselectedBust);
-            } else {
-              this.refresh();
-              this.select(0);
-            }
-            if (scene && typeof scene.refreshUIOverlayDOM === "function") {
-              scene.refreshUIOverlayDOM();
-            }
-            if (this.isHandled("select")) {
-              this.callHandler("select");
-            }
-            if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
-          }
-        });
-      });
-    }
-
-    tryAddBust(filename, callback) {
-      // Create an image element to test if file exists
-      const image = new Image();
-      image.onload = () => {
-        // File exists, add it if not already in list
-        if (this._allBusts.indexOf(filename) === -1) {
-          this._allBusts.push(filename);
-        }
-        if (callback) callback();
-      };
-      image.onerror = () => {
-        // File doesn't exist, skip silently
-        if (callback) callback();
-      };
-      // Use crossOrigin to avoid CORS issues with local files
-      image.crossOrigin = "anonymous";
-      image.src = `img/busts/${filename}.png`;
-    }
-
-    categorizeBusts() {
-      // i18n-ignore-start: category ids, matched against the bust file name
-      // prefix; the label is resolved by bustCategoryLabel() where it is drawn.
-      this._bustCategories = {
-        Human: [],
-        Goblin: [],
-        Orc: [],
-        Dwarven: [],
-        Rabbit: [],
-        Cyclop: [],
-        Gnome: [],
-        Elven: [],
-        Bot: [],
-        Undead: [],
-        Devil: [],
-        Dog: [],
-        Android: [],
-        Avian: [],
-        Cat: [],
-        Elephant: [],
-        Goat: [],
-
-        Kobold: [],
-        Alien: [],
-        Exotic: [],
-        Insectoid: [],
-      };
-
-      for (const bust of this._allBusts) {
-        if (bust.startsWith("Orc")) {
-          this._bustCategories["Orc"].push(bust);
-        } else if (bust.startsWith("Goblin")) {
-          this._bustCategories["Goblin"].push(bust);
-        } else if (bust.startsWith("Elven")) {
-          this._bustCategories["Elven"].push(bust);
-        } else if (bust.startsWith("Bot")) {
-          this._bustCategories["Bot"].push(bust);
-        } else if (bust.startsWith("Exotic")) {
-          this._bustCategories["Exotic"].push(bust);
-        } else if (bust.startsWith("Elephant")) {
-          this._bustCategories["Elephant"].push(bust);
-        } else if (bust.startsWith("Goat")) {
-          this._bustCategories["Goat"].push(bust);
-        } else if (bust.startsWith("Cyclop")) {
-          this._bustCategories["Cyclop"].push(bust);
-        } else if (bust.startsWith("Dwarven")) {
-          this._bustCategories["Dwarven"].push(bust);
-        } else if (bust.startsWith("Rabbit")) {
-          this._bustCategories["Rabbit"].push(bust);
-        } else if (bust.startsWith("Gnome")) {
-          this._bustCategories["Gnome"].push(bust);
-        } else if (bust.startsWith("Android")) {
-          this._bustCategories["Android"].push(bust);
-        } else if (bust.startsWith("Cat")) {
-          this._bustCategories["Cat"].push(bust);
-        } else if (bust.startsWith("Kobold")) {
-          this._bustCategories["Kobold"].push(bust);
-        } else if (bust.startsWith("Alien")) {
-          this._bustCategories["Alien"].push(bust);
-        } else if (bust.startsWith("Undead")) {
-          this._bustCategories["Undead"].push(bust);
-        } else if (bust.startsWith("Devil")) {
-          this._bustCategories["Devil"].push(bust);
-        } else if (bust.startsWith("Insectoid")) {
-          this._bustCategories["Insectoid"].push(bust);
-        } else if (bust.startsWith("Dog")) {
-          this._bustCategories["Dog"].push(bust);
-        } else {
-          this._bustCategories["Human"].push(bust);
-        }
-      }
-      // i18n-ignore-end
-
-      // Update bust files to show categories if in category mode
-      this.updateDisplayList();
-    }
-
-    updateDisplayList() {
-      if (this._categoryMode) {
-        // Show categories
-        this._bustFiles = Object.keys(this._bustCategories).filter(
-          (cat) => this._bustCategories[cat].length > 0,
-        );
-      } else if (this._currentCategory) {
-        // Show busts in current category
-        this._bustFiles = [...this._bustCategories[this._currentCategory]];
-      }
-    }
-
-    isCategory(index) {
-      return this._categoryMode && this._bustFiles[index] !== undefined;
-    }
-
-    openCategory(index) {
-      const category = this._bustFiles[index];
-      if (category && this._bustCategories[category].length > 0) {
-        this._currentCategory = category;
-        this._categoryMode = false;
-        this.updateDisplayList();
-        this._index = -1; // Reset index
-        this.select(0);
-        this.refresh();
-        // Trigger the select handler to update preview
-        if (this.isHandled("select")) {
-          this.callHandler("select");
-        }
-        if (SceneManager._scene && SceneManager._scene.refreshUIOverlayDOM) {
-          SceneManager._scene.refreshUIOverlayDOM();
-        }
-      }
-    }
-
-    goBackToCategories() {
-      this._categoryMode = true;
-      this._currentCategory = null;
-      this.updateDisplayList();
-      this._index = -1; // Reset index
-      this.select(0);
-      this.refresh();
-      // Trigger the select handler to update preview
-      if (this.isHandled("select")) {
-        this.callHandler("select");
-      }
-      if (SceneManager._scene && SceneManager._scene.refreshUIOverlayDOM) {
-        SceneManager._scene.refreshUIOverlayDOM();
-      }
-    }
-
-    processCursorMove() {
-      // All cursor movement is handled by Scene_BustSelector.updateUIInput()
-      // to support WASD, arrow keys, and controller without double-movement issues.
-    }
-
-    maxCols() {
-      return this._categoryMode ? 1 : 3;
-    }
-
-    maxItems() {
-      return this._bustFiles.length;
-    }
-
-    itemHeight() {
-      return this.lineHeight();
-    }
-
-    drawItem(index) {
-      if (!this._bustFiles[index]) return;
-
-      const filename = this._bustFiles[index];
-      const rect = this.itemLineRect(index);
-
-      // If in category mode, add folder icon or special formatting
-      if (this._categoryMode) {
-        this.changeTextColor(this.systemColor());
-        this.drawText("" + filename, rect.x, rect.y, rect.width);
-        this.resetTextColor();
-      } else {
-        // In bust mode, remove category prefix from display name
-        this.drawText(filename, rect.x, rect.y, rect.width);
-      }
-    }
-
-    getSelectedBust() {
-      if (this.index() >= 0 && this.index() < this._bustFiles.length) {
-        return this._bustFiles[this.index()];
-      }
-      return null;
-    }
-
-    getCurrentCategory() {
-      return this._currentCategory;
-    }
-
-    isInCategoryMode() {
-      return this._categoryMode;
-    }
-
-    preselectBust(bustName) {
-      // Find which category contains this bust
-      let targetCategory = null;
-      for (const cat of Object.keys(this._bustCategories)) {
-        if (this._bustCategories[cat].includes(bustName)) {
-          targetCategory = cat;
-          break;
-        }
-      }
-
-      // If no category found, stay in default category view
-      if (!targetCategory) return;
-
-      // Switch into that category
-      this._currentCategory = targetCategory;
-      this._categoryMode = false;
-      this.updateDisplayList();
-
-      // Select the bust within the category
-      const bustIndex = this._bustFiles.indexOf(bustName);
-      this._index = -1;
-      this.select(bustIndex >= 0 ? bustIndex : 0);
-      this.refresh();
-      if (bustIndex >= 0) this.ensureCursorVisible();
-    }
-
-    select(index) {
-      super.select(index);
-      // Trigger the select handler when selection changes
-      if (this.isHandled("select")) {
-        this.callHandler("select");
-      }
-    }
-  }
-
-  // Window to display bust preview (right panel)
-  class Window_BustPreview extends Window_Base {
-    constructor(rect) {
-      super(rect);
-      this._bustBitmap = null;
-      this._currentBust = null;
-      this.refresh();
-    }
-
-    setBust(filename) {
-      if (this._currentBust !== filename) {
-        this._currentBust = filename;
-        this._bustBitmap = null;
-        this.refresh();
-      }
-    }
-
-    refresh() {
-      this.contents.clear();
-
-      if (!this._currentBust) {
-        this.drawText(T('CharCreate.selectABust'), 0, 0, this.contentsWidth(), "center");
-        return;
-      }
-
-      const bitmap = ImageManager.loadBitmap(`img/busts/`, this._currentBust);
-      if (!bitmap.isReady()) {
-        bitmap.addLoadListener(() => this.refresh());
-        return;
-      }
-
-      // Draw the bust image centered in the preview window, cropping top 180 pixels
-      const originalWidth = 889;
-      const originalHeight = 1200;
-      const cropTop = 180; // Crop top 180 pixels
-      const croppedHeight = originalHeight - cropTop; // 1020 pixels
-
-      const maxWidth = this.contentsWidth() - 16;
-      const maxHeight = this.contentsHeight() - 16;
-
-      // Calculate aspect ratio and scale accordingly based on cropped dimensions
-      const scale = Math.min(
-        maxWidth / originalWidth,
-        maxHeight / croppedHeight,
-      );
-      const scaledWidth = Math.floor(originalWidth * scale);
-      const scaledHeight = Math.floor(croppedHeight * scale);
-
-      // Center the bust in the window
-      const x = Math.floor((this.contentsWidth() - scaledWidth) / 2);
-      const y = Math.floor((this.contentsHeight() - scaledHeight) / 2);
-
-      // Draw the bust image with cropped top (starting from y=180 in the source image)
-      this.contents.blt(
-        bitmap,
-        0,
-        cropTop,
-        originalWidth,
-        croppedHeight,
-        x,
-        y,
-        scaledWidth,
-        scaledHeight,
-      );
     }
   }
 
@@ -2121,6 +1772,29 @@
   window.Scene_SpriteGridSelector = Scene_SpriteGridSelector;
   window.Scene_BustSelector = Scene_BustSelector;
 
+  // The sprite board's services. paintFrame is the one way to draw a frame of
+  // a character sheet into a DOM element without it flashing at the wrong size
+  // on the way in.
+  window.SpriteBoard = {
+    options: () => spriteOptions,
+    // The bust NPCs.json pairs with a sheet's sprite index, or null.
+    bustFor: bustForSprite,
+    sheetUrl: spriteSheetUrl,
+    paintFrame: paintSpriteFrame,
+  };
+
+  // The gallery's catalogue, for anyone who wants the bust list without
+  // opening the scene.
+  window.BustGallery = {
+    categoryIds: BUST_CATEGORIES,
+    // Promise of { names, sizes, categories }.
+    load: () => BustCatalogue.load(),
+    // Whatever has been scanned already, or null.
+    peek: () => BustCatalogue.peek(),
+    // Where a bust's picture is loaded from.
+    artUrl: bustArtUrl,
+  };
+
   // Register plugin commands
   PluginManager.registerCommand(pluginName, "OpenSpriteSelector", () => {
     SceneManager.push(Scene_SpriteGridSelector);
@@ -2149,38 +1823,63 @@
     return selectRandomSprite(actorId);
   };
 
-  // Global function to select a random bust and store it in appropriate variable
-  window.selectRandomBustForActor = function (actorId) {
-    // Get a list of all available bust files
-    const availableBusts = [];
+  // The list a random pick draws from, resolved once. Randomizing a whole
+  // party used to stat all 730 files once per member. The world it was
+  // resolved for is remembered with it, since a narrowed world draws from a
+  // narrower folder (see filterBustCategories for the gallery's half).
+  let randomBustPool = null;
+  let randomBustPoolMode = null;
 
-    // Try to use Node.js fs module for file system access
+  // What is left of a scanned folder once the world has had its say.
+  const narrowBustPool = (names) => {
+    const SC = window.SpriteCatalog;
+    if (!SC || typeof SC.bustAllowedInPopulation !== "function") return names;
+    if (!SC.allowedBustNames || !SC.allowedBustNames()) return names;
+    const kept = names.filter((n) => SC.bustAllowedInPopulation(n));
+    return kept.length ? kept : names;
+  };
+
+  const availableBustNames = () => {
+    const mode = populationMode();
+    if (randomBustPool && randomBustPoolMode === mode) return randomBustPool;
+    randomBustPoolMode = mode;
+    const scanned = BustCatalogue.peek();
+    if (scanned && scanned.names.length) {
+      randomBustPool = narrowBustPool(scanned.names);
+      return randomBustPool;
+    }
+    // Nothing scanned yet: read the folder once here and warm the catalogue
+    // for whoever asks next.
+    BustCatalogue.load();
+    const names = [];
     try {
       const fs = require("fs");
       const path = require("path");
       const bustsPath = path.join(
         path.dirname(process.mainModule.filename),
-        "img/busts/",
+        BUST_DIR,
       );
-      const files = fs.readdirSync(bustsPath);
-      for (const file of files) {
-        const filePath = path.join(bustsPath, file);
-        const stat = fs.statSync(filePath);
-        if (stat.isFile() && /\.(png|jpg|jpeg|gif|webp)$/i.test(file)) {
-          const nameWithoutExt = file.replace(
-            /\.(png|jpg|jpeg|gif|webp)$/i,
-            "",
-          );
-          availableBusts.push(nameWithoutExt);
+      for (const file of fs.readdirSync(bustsPath)) {
+        if (!/\.(png|jpg|jpeg|gif|webp)$/i.test(file)) continue;
+        const stat = fs.statSync(path.join(bustsPath, file));
+        // Skip the placeholder art, as the gallery does.
+        if (stat.isFile() && stat.size > BUST_MIN_BYTES) {
+          names.push(file.replace(/\.[^.]+$/, ""));
         }
       }
     } catch (error) {
-      console.warn("Could not load bust files via fs, using fallback list");
-      // Fallback: add some common bust names
-      for (let i = 1; i <= 200; i++) {
-        availableBusts.push(String(i));
+      const assoc = window.Sprites && window.Sprites.SpritesAssociation;
+      for (const sheet of Object.keys(assoc || {})) {
+        for (const bust of assoc[sheet] || []) if (bust) names.push(String(bust));
       }
     }
+    randomBustPool = narrowBustPool(names);
+    return randomBustPool;
+  };
+
+  // Global function to select a random bust and store it in appropriate variable
+  window.selectRandomBustForActor = function (actorId) {
+    const availableBusts = availableBustNames();
 
     if (availableBusts.length === 0) {
       console.warn("No bust files available for random selection");

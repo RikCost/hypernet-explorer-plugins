@@ -1,0 +1,14 @@
+{
+  "noThree": "THREE.JS IZ NOT LOADED, BASKETBALL IZ UNAVAILABLE!",
+  "player": "PLAYER",
+  "cpu": "CPU",
+  "cpuLiningUp": "CPU IZ LININ' UP...",
+  "aimPrompt": "PLAYER IZ LININ' UP DA SHOT",
+  "powerPrompt": "SETTIN' DA POWER",
+  "setTouch": "SETTIN' DA TOUCH",
+  "itsGood": "IT IZ GOOD!",
+  "swish": "SWISH!",
+  "score": "SCORE!",
+  "miss": "MISS",
+  "finalScore": "PLAYER: {player} CPU: {cpu}"
+}

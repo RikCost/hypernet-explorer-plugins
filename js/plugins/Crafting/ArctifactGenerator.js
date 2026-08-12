@@ -14,6 +14,10 @@
 * @text Add Totally Random Artifact
 * @desc Adds a completely random artifact to inventory
 *
+* @command SacrificeMemberForWeapon
+* @text Sacrifice Party Member for Weapon
+* @desc Choose an active party member to sacrifice; they die and a procedural weapon is forged from them. Outside battle only.
+*
 * @help
 * This plugin creates procedurally generated items with the <Category: Artifact> tag
 * and weapons/armor with <Category: Procedural> tag.
@@ -28,6 +32,7 @@
 * GenerateAllRandom           # Fills all slots with random procedural items
 * RandomArtifactByLevel       # Adds level-appropriate artifact to inventory
 * RandomArtifact              # Adds completely random artifact to inventory
+* SacrificeMemberForWeapon    # Choose a party member to sacrifice into a weapon
 *
 * ============================================================================
 * Terms of Use:
@@ -295,8 +300,11 @@ function generateArtifactName() {
         // Inverted case
         () => prefix.toLowerCase() + noun.toUpperCase() + " " + suffix,
         
-        // File extension format
-        () => prefix + noun + "." + suffix.split(" ")[1].substring(0, 3),
+        // File extension format. The extension is the suffix's second word,
+        // but a locale is free to write a suffix that is one word long (the
+        // Korean bank has one), so the whole suffix stands in for it rather
+        // than the format reaching past the end of the split.
+        () => prefix + noun + "." + (suffix.split(" ")[1] || suffix).substring(0, 3),
         
         // Time code format
         () => prefix + "[" + Math.floor(Math.random() * 24) + ":" + Math.floor(Math.random() * 60) + ":" + Math.floor(Math.random() * 60) + "]" + noun,
@@ -622,17 +630,90 @@ function addRandomArtifact() {
     }
 }
 
+// Sacrifice a party member into a procedural weapon. A ritual, never a battle
+// death: it is only ever offered outside a fight. The leader is never among
+// the choices (same rule CharacterPresets.retirePartyMember applies - hand
+// leadership over first), so the party can never end up leaderless or empty.
+function sacrificeEligibleMembers() {
+    if (!$gameParty) return [];
+    return $gameParty.members().filter((actor, index) => index > 0 && actor && !actor.isDead());
+}
+
+function sacrificeMemberIntoWeapon(actor) {
+    const level = Math.max(1, actor.level || 1);
+    const equipped = actor.weapons && actor.weapons()[0];
+    const typeId = equipped ? equipped.wtypeId : 0; // 0 lets generateWeapon roll one at random
+
+    const weaponId = generateWeapon(level, typeId);
+    if (weaponId === -1) {
+        if (window.ParchmentToast) {
+            window.ParchmentToast.show(T("Artifacts.sacrifice.noSlots"), { severity: "warning" });
+        }
+        return;
+    }
+
+    const weapon = $dataWeapons[weaponId];
+    weapon.name = T("Artifacts.sacrifice.namePattern", { name: actor.name(), weapon: weapon.name });
+    weapon.description = weapon.description + "\n\n" + T("Artifacts.sacrifice.descLine", { name: actor.name(), level: level });
+
+    const actorName = actor.name();
+    actor.die();
+    actor.refresh();
+    $gameParty.removeActor(actor.actorId());
+    $gameParty.gainItem(weapon, 1);
+
+    window.skipLocalization = true;
+    $gameMessage.add(T("Artifacts.sacrifice.result", { name: actorName, weapon: weapon.name }));
+    window.skipLocalization = false;
+}
+
+// The prompt: which member is spared to become the weapon. Defaults the
+// cursor to Cancel, since this is the one command in the plugin that is not
+// reversible by rolling again.
+function askSacrificeMember() {
+    if (!$gameParty || $gameParty.inBattle()) {
+        if (window.ParchmentToast) {
+            window.ParchmentToast.show(T("Artifacts.sacrifice.blockedInBattle"), { severity: "warning" });
+        }
+        return;
+    }
+    if (!$gameMessage || $gameMessage.isBusy()) return;
+
+    const members = sacrificeEligibleMembers();
+    if (!members.length) {
+        if (window.ParchmentToast) {
+            window.ParchmentToast.show(T("Artifacts.sacrifice.noEligible"), { severity: "warning" });
+        }
+        return;
+    }
+
+    window.skipLocalization = true;
+    $gameMessage.add(T("Artifacts.sacrifice.prompt"));
+    window.skipLocalization = false;
+    $gameMessage.setChoices(
+        members.map((actor) => actor.name()).concat(T("Artifacts.sacrifice.cancel")),
+        members.length,           // default cursor on Cancel
+        members.length            // the cancel row is also what Escape picks
+    );
+    $gameMessage.setChoiceCallback((index) => {
+        const actor = members[index];
+        if (actor) sacrificeMemberIntoWeapon(actor);
+    });
+}
+
 // MV and older plugin command handling
 const _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
 Game_Interpreter.prototype.pluginCommand = function(command, args) {
     _Game_Interpreter_pluginCommand.call(this, command, args);
-    
+
     if (command === "GenerateAllRandom") {
         generateAllRandom();
     } else if (command === "RandomArtifactByLevel") {
         addLevelAppropriateArtifact();
     } else if (command === "RandomArtifact") {
         addRandomArtifact();
+    } else if (command === "SacrificeMemberForWeapon") {
+        askSacrificeMember();
     }
 };
 
@@ -641,13 +722,17 @@ if (Utils.RPGMAKER_NAME === "MZ") {
     PluginManager.registerCommand(pluginName, "GenerateAllRandom", args => {
         generateAllRandom();
     });
-    
+
     PluginManager.registerCommand(pluginName, "RandomArtifactByLevel", args => {
         addLevelAppropriateArtifact();
     });
-    
+
     PluginManager.registerCommand(pluginName, "RandomArtifact", args => {
         addRandomArtifact();
+    });
+
+    PluginManager.registerCommand(pluginName, "SacrificeMemberForWeapon", args => {
+        askSacrificeMember();
     });
 }
 

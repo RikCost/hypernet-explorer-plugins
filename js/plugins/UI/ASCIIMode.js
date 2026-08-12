@@ -138,7 +138,6 @@
     let waterFlowDirection = 'S';
     let dialogueLines = [];
     let tilesetDb = null;
-    let spritesAssociationDb = null;
 
     function loadTilesetDb() {
         if (Utils.isNwjs()) {
@@ -164,28 +163,15 @@
         }
     }
 
-    function loadSpritesAssociationDb() {
-        if (Utils.isNwjs()) {
-            const fs = require('fs');
-            const path = require('path');
-            const filepath = path.join(process.cwd(), 'js', 'db', 'Sprites', 'AsciiSpritesAssociation.json');
-            if (fs.existsSync(filepath)) {
-                try {
-                    spritesAssociationDb = JSON.parse(fs.readFileSync(filepath, 'utf8'));
-                    console.log('ASCII Sprites Association DB loaded successfully');
-                } catch (e) {
-                    console.error('Failed to parse ASCII Sprites Association DB:', e);
-                }
-            }
-        } else {
-            fetch('js/db/Sprites/AsciiSpritesAssociation.json')
-                .then(response => response.json())
-                .then(data => {
-                    spritesAssociationDb = data;
-                    console.log('ASCII Sprites Association DB loaded successfully via fetch');
-                })
-                .catch(e => console.error('Failed to load ASCII Sprites Association DB via fetch:', e));
-        }
+    // The glyph and colour a character sheet is drawn as. There is no ASCII
+    // sprite table of its own any more: js/db/Sprites/AsciiSpritesAssociation.json
+    // held nothing but `chars` and `color` per sheet, which is exactly what the
+    // sprite catalogue (js/db/WorldGen/NPCs.json, window.SpriteCatalog) already
+    // carries for every sheet the game knows, so it was folded in and deleted.
+    function spriteGlyphEntry(characterName) {
+        if (!characterName) return null;
+        const SC = window.SpriteCatalog;
+        return (SC && SC.entry) ? SC.entry(characterName) : null;
     }
 
     function getColorHex(colorName) {
@@ -203,7 +189,6 @@
     }
 
     loadTilesetDb();
-    loadSpritesAssociationDb();
 
     function loadAsciiFont() {
         const fontName = 'Square';
@@ -666,13 +651,10 @@
         }
         let char = '';
 
-        // Check sprites association DB first (always priority)
-        const characterName = event.characterName();
-        if (characterName && spritesAssociationDb && spritesAssociationDb[characterName]) {
-            const association = spritesAssociationDb[characterName];
-            if (association.chars && association.chars.length > 0) {
-                char = association.chars[0];
-            }
+        // Check the sprite catalogue first (always priority)
+        const association = spriteGlyphEntry(event.characterName());
+        if (association && association.chars && association.chars.length > 0) {
+            char = association.chars[0];
         }
 
         // Fallbacks if not found in DB
@@ -899,12 +881,9 @@
                 return '#00FFFF'; // Cyan for Player 2
             case 'event':
                 if (event) {
-                    const characterName = event.characterName();
-                    if (characterName && spritesAssociationDb && spritesAssociationDb[characterName]) {
-                        const association = spritesAssociationDb[characterName];
-                        if (association.color) {
-                            return getColorHex(association.color);
-                        }
+                    const association = spriteGlyphEntry(event.characterName());
+                    if (association && association.color) {
+                        return getColorHex(association.color);
                     }
 
                     const eventName = event.event().name;
@@ -1889,6 +1868,9 @@
             if (type === 2) item = $dataArmors[id];
 
             if (item) {
+                // A sold-out line is off the shelf here too (ItemSystemShop keeps
+                // the stock record; this list is drawn after it was rolled).
+                if (typeof this.getStock === 'function' && this.getStock(item) <= 0) continue;
                 const finalPrice = priceOverride === 1 ? price : item.price;
                 resolved.push({ item, price: finalPrice });
             }
@@ -1897,7 +1879,9 @@
     };
 
     Scene_Shop.prototype.getSellableItems = function () {
-        const items = $gameParty.allItems();
+        // A key item is quest property, never merchandise: no shop buys one.
+        const items = $gameParty.allItems().filter(item =>
+            !(item && DataManager.isItem(item) && item.itypeId === 2));
         return items.map(item => ({ item, price: Math.floor(item.price / 2) }));
     };
 

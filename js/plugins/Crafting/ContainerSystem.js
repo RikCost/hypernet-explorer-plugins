@@ -351,6 +351,9 @@
             const name = (item.name || '').trim();
             if (name === '') return false;
             if (/^<--.*-->$/.test(name)) return false;
+            // A sealed vial of a live pathogen is contraband somebody bottled
+            // on purpose. It is never what is at the bottom of a crate.
+            if (item.note && /<category:\s*Diseases\s*>/i.test(item.note)) return false;
             return true;
         }
 
@@ -582,12 +585,82 @@
         showTheftToast(name, filed);
     }
 
+    //=============================================================================
+    // Where a container's contents live
+    //=============================================================================
+    // A chest standing in the world belongs to the WORLD, not to the party that
+    // opened it: emptying a cupboard in one savegame must leave it empty for
+    // every other savegame of the same world, and anything left inside one
+    // (artifacts included) has to be there for whoever walks in next. Those
+    // containers therefore live in save/worlds/<name>/containers.json.
+    //
+    // The party's own bags are the exception. The extradimensional container and
+    // the camper / car holds travel WITH a party rather than sitting somewhere on
+    // the map, so they stay in the binary savegame where the rest of the party's
+    // inventory is.
+    const WORLD_FILE = 'containers'; // i18n-ignore: world data file key
+
+    function worldStore() {
+        const W = window.WorldManager;
+        if (!W || typeof W.getFile !== 'function') return null;
+        // Never cache the object: setActiveWorld drops the whole file cache, so
+        // a held reference would go on writing into a world nobody is playing.
+        const store = W.getFile(WORLD_FILE);
+        if (!store.containers) store.containers = {};
+        if (!store.stocked)    store.stocked    = {};
+        return store;
+    }
+
+    // Writing every world file costs more than one item transfer is worth, so
+    // the flush is coalesced: the player empties a chest, and a moment after the
+    // last card moves the world folder catches up. A savegame write flushes on
+    // its own (DataManager), so nothing is ever left only in memory.
+    const WORLD_FLUSH_DELAY = 1000;
+    let flushTimer = null;
+
+    function requestWorldFlush() {
+        const W = window.WorldManager;
+        if (!W || typeof W.flush !== 'function' || flushTimer) return;
+        flushTimer = setTimeout(() => {
+            flushTimer = null;
+            try { W.flush(); } catch (e) { /* non-fatal */ }
+        }, WORLD_FLUSH_DELAY);
+    }
+
     class ContainerManager {
         static initialize() {
-            this._containers = {};
+            this._privateContainers = {};
+            this._privateStocked = {};
             this._extradimensionalContainer = {};
-            this._stocked = {};
             this.load();
+        }
+
+        // True for a container that stands somewhere in the world. The vehicle
+        // holds are the party's; the extradimensional container never reaches
+        // here at all (it is addressed by flag, not by id).
+        static isWorldContainer(containerId) {
+            if (!containerId) return false;
+            return String(containerId).indexOf('vehicle_') !== 0;
+        }
+
+        // The two ledgers a given container id is filed in: what it holds, and
+        // whether it has been stocked. Both answer from the world folder for a
+        // world container and from the savegame for a party bag, falling back to
+        // the savegame when no world is active (sandbox / playtest).
+        static _bag(containerId) {
+            if (this.isWorldContainer(containerId)) {
+                const store = worldStore();
+                if (store) return store.containers;
+            }
+            return this._privateContainers;
+        }
+
+        static _ledger(containerId) {
+            if (this.isWorldContainer(containerId)) {
+                const store = worldStore();
+                if (store) return store.stocked;
+            }
+            return this._privateStocked;
         }
 
         static getContainerId(mapId, eventId) {
@@ -596,8 +669,9 @@
         }
 
         static getContainer(containerId) {
-            if (!this._containers[containerId]) this._containers[containerId] = {};
-            return this._containers[containerId];
+            const bag = this._bag(containerId);
+            if (!bag[containerId]) bag[containerId] = {};
+            return bag[containerId];
         }
 
         static getExtradimensionalContainer() {
@@ -636,22 +710,23 @@
             if (pool.length === 0) return;
             const selected = ItemUtils.selectItemsByRarity(pool, actualCount);
             for (const s of selected) container[ItemUtils.encodeKey(s.item)] = s.quantity;
-            this._stocked[containerId] = true;
+            this._ledger(containerId)[containerId] = true;
             this.save();
         }
 
         static isStocked(containerId) {
-            return !!this._stocked[containerId];
+            return !!this._ledger(containerId)[containerId];
         }
 
         static markStocked(containerId) {
-            if (this._stocked[containerId]) return;
-            this._stocked[containerId] = true;
+            const ledger = this._ledger(containerId);
+            if (ledger[containerId]) return;
+            ledger[containerId] = true;
             this.save();
         }
 
         static isContainerEmpty(containerId) {
-            const container = this._containers[containerId];
+            const container = this._bag(containerId)[containerId];
             if (!container) return true;
             for (const itemId in container) { if (container[itemId] > 0) return false; }
             return true;
@@ -718,24 +793,52 @@
             }
         }
 
+        // The world containers are already written straight into the world
+        // file's own objects, so saving is only the party's bags plus a request
+        // to put the world folder on disk.
         static save() {
             $gameSystem._containerData = {
-                containers:        this._containers,
+                containers:        this._privateContainers,
                 extradimensional:  this._extradimensionalContainer,
-                stocked:           this._stocked
+                stocked:           this._privateStocked
             };
+            requestWorldFlush();
         }
 
         static load() {
-            if ($gameSystem._containerData) {
-                this._containers                = $gameSystem._containerData.containers || {};
-                this._extradimensionalContainer = $gameSystem._containerData.extradimensional || {};
-                // Saves made before containers were stocked-once carry no ledger:
-                // treat everything they already hold as stocked, so old chests
-                // keep their contents instead of rolling a fresh set.
-                this._stocked = $gameSystem._containerData.stocked ||
-                    Object.keys(this._containers).reduce((acc, id) => { acc[id] = true; return acc; }, {});
+            this._privateContainers = {};
+            this._privateStocked = {};
+            this._extradimensionalContainer = {};
+            const data = $gameSystem._containerData;
+            if (!data) return;
+
+            this._extradimensionalContainer = data.extradimensional || {};
+            const containers = data.containers || {};
+            // Saves made before containers were stocked-once carry no ledger:
+            // treat everything they already hold as stocked, so old chests keep
+            // their contents instead of rolling a fresh set.
+            const stocked = data.stocked ||
+                Object.keys(containers).reduce((acc, id) => { acc[id] = true; return acc; }, {});
+
+            // Everything a savegame made before this was world-shared is still
+            // filed in the binary save, world containers included. Hand those
+            // over to the world folder on the way in; the party's bags stay.
+            const store = worldStore();
+            const ids = new Set(Object.keys(containers).concat(Object.keys(stocked)));
+            for (const id of ids) {
+                if (store && this.isWorldContainer(id)) {
+                    // The world's own record always wins: a chest this world has
+                    // already dealt (or already had emptied) must never be
+                    // refilled from some other savegame's older copy of it.
+                    if (store.stocked[id] || store.containers[id]) continue;
+                    if (containers[id]) store.containers[id] = containers[id];
+                    if (stocked[id])    store.stocked[id]    = true;
+                } else {
+                    if (containers[id]) this._privateContainers[id] = containers[id];
+                    if (stocked[id])    this._privateStocked[id]    = true;
+                }
             }
+            if (store) requestWorldFlush();
         }
     }
 

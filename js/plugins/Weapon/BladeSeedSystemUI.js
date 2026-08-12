@@ -310,8 +310,9 @@
               <div class="inspect-lore">
                 <div class="inspect-section-title">${T('BladeSeed.spiritStats')}</div>
                 <div class="bs-stat-grid">
-                  ${[['HP',st.mhp],['MP',st.mmp],['ATK',st.atk],['DEF',st.def],
-                     ['MAT',st.mat],['MDF',st.mdf],['AGI',st.agi],['LUK',st.luk]]
+                  ${[['mhp',st.mhp],['mmp',st.mmp],['atk',st.atk],['def',st.def],
+                     ['mat',st.mat],['mdf',st.mdf],['agi',st.agi],['luk',st.luk]]
+                    .map(([k,v]) => [T('BladeSeed.stat.' + k), v])
                     .map(([n,v]) => `<div class="bs-stat-cell">
                       <span class="bs-stat-label">${n}</span>
                       <span class="bs-stat-value">+${v}</span>

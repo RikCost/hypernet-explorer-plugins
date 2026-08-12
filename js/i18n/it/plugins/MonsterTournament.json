@@ -17,11 +17,7 @@
   "skillAttack": "Attacco",
   "skillFinish": "Colpo finale",
   "ui": {
-    "hintCycle": "&#9664; &#9654;  Scorri&nbsp;&nbsp;&nbsp;Invio  Scegli&nbsp;&nbsp;&nbsp;Esc  Esci",
     "bet": "Puntata:",
-    "hintBet": "&#9664; &#9654;  &plusmn;1&nbsp;&nbsp;&nbsp;&#9650; &#9660;  &plusmn;10",
-    "hintConfirm": "Invio  Conferma&nbsp;&nbsp;&nbsp;Esc  Annulla",
-    "keepCurrentBet": "Mantieni la puntata attuale",
-    "hintChoose": "&#9650; &#9660;  Scegli&nbsp;&nbsp;&nbsp;Invio  Conferma"
+    "keepCurrentBet": "Mantieni la puntata attuale"
   }
 }

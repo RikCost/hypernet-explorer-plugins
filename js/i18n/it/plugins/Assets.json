@@ -75,6 +75,17 @@
     "collected": "Raccolto",
     "sold": "Venduto",
     "npcHome": "Casa di {name}",
-    "nowAPet": "{name} ora ti segue come animale domestico."
+    "nowAPet": "{name} ora ti segue come animale domestico.",
+    "diplomacy": "Diplomazia",
+    "diplomatFor": "Lavora come diplomatico per {faction}",
+    "delegate": "Delegato",
+    "delegation": "Delegazione",
+    "headOfDelegation": "Capo della delegazione",
+    "standing": "Considerazione",
+    "weeklyStipend": "Stipendio settimanale",
+    "annualValue": "Valore annuo",
+    "weeksServed": "Settimane di servizio",
+    "resignPost": "Dimettiti dall'incarico",
+    "resignConfirm": "Premi di nuovo per dimetterti"
   }
 }

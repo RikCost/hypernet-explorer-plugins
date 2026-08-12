@@ -1,0 +1,69 @@
+{
+  "festival": {
+    "foundersDay": "FOUNDERS' DAY",
+    "harvestLights": "DA HARVEST LIGHTS",
+    "lanternRegatta": "DA LANTERN REGATTA",
+    "saintElse": "SAINT ELSE'S FAIR",
+    "nightMarketWeek": "DA NIGHT MARKET WEEK",
+    "driftParade": "DA DRIFT PARADE",
+    "tinkersCarnival": "DA TINKERS' CARNIVAL",
+    "longTableFeast": "DA LONG TABLE FEAST"
+  },
+  "epidemic": {
+    "greyFever": "GREY FEVER",
+    "rustlung": "RUSTLUNG",
+    "shivers": "DA SHIVERS",
+    "dockPox": "DOCK POX",
+    "wireFlu": "WIRE FLU",
+    "hollowCough": "DA HOLLOW COUGH",
+    "marshAgue": "MARSH AGUE"
+  },
+  "band": {
+    "thriving": "THRIVIN'",
+    "steady": "STEADY",
+    "strained": "STRAINED",
+    "failing": "FAILIN'"
+  },
+  "episode": {
+    "crimeWaveStart": "A CRIME WAVE GRIPS {place}; DA GUARD ANNOUNCES A CRACKDOWN!",
+    "crimeWaveEnd": "DA CRACKDOWN HOLDS: {place}'S CRIME WAVE IZ OVER!",
+    "boomStart": "{place} IZ BOOMIN', WORK FOR ANYONE WHO WANTS IT!",
+    "boomEnd": "DA BOOM IN {place} COOLS OFF.",
+    "bustStart": "HARD TIMES HIT {place}: SHOPS SHUTTER, WORK DRIES UP!",
+    "bustEnd": "{place} CLAWS ITS WAY OUT OF DA SLUMP!",
+    "festivalStart": "{place} DECLARES {festival}, DA STREETS FILL UP!",
+    "festivalEnd": "{festival} ENDS; {place} SWEEPS UP DA CONFETTI!",
+    "festivalCancelled": "{festival} IZ CANCELLED AMID DA OUTBREAK!",
+    "epidemicStart": "AN OUTBREAK OF {disease} SPREADS THROUGH {place}!",
+    "epidemicEnd": "DA {disease} OUTBREAK IN {place} BURNS OUT!",
+    "mayorScandal": "MAYOR {mayor} {what}, TRUST IN DA OFFICE COLLAPSES!"
+  },
+  "news": {
+    "crimeWaveStart": "CRIME WAVE IN {loc}! GUARD PATROLS DOUBLED AS THEFTS SOAR!",
+    "crimeWaveEnd": "ORDER RESTORED IN {loc}, GUARD CREDITS DA LONG CRACKDOWN!",
+    "boomStart": "ECONOMIC BOOM IN {loc}: HIRIN' SURGES, RENTS FOLLOW!",
+    "boomEnd": "DA {loc} BOOM IZ OVER, ANALYSTS SAY. PRICES EASE!",
+    "bustStart": "DOWNTURN IN {loc}: LAYOFFS SPREAD AN' STOREFRONTS GO DARK!",
+    "bustEnd": "RECOVERY TAKES HOLD IN {loc} AS HIRIN' RESUMES!",
+    "festivalStart": "{loc} CELEBRATES {festival}! MARKETS CROWDED, SPIRITS HIGH!",
+    "epidemicStart": "OUTBREAK OF {disease} IN {loc}, MARKETS EMPTY AS RESIDENTS STAY HOME!",
+    "epidemicEnd": "HEALTH OFFICIALS DECLARE {loc} FREE OF DA {disease}!",
+    "mayorEvent": "MAYOR {mayor} OF {loc} {what}."
+  },
+  "active": {
+    "crimeWave": "A CRIME WAVE (CRACKDOWN UNDERWAY)",
+    "boom": "AN ECONOMIC BOOM",
+    "bust": "A SLUMP",
+    "festival": "{festival} (FESTIVAL)",
+    "epidemic": "AN OUTBREAK OF {disease}"
+  },
+  "report": {
+    "noPulse": "{group}: NO CIVIC PULSE RECORDED!",
+    "header": "{group}, CIVIC PULSE{power}",
+    "underPower": "(UNDER {power})",
+    "meters": "PROSPERITY {prosperity}/100 ({band}), SECURITY {security}/100, MOOD {mood}/100!",
+    "people": "PEOPLE: {population} KNOWN, {employed} WORKIN', {unemployed} IDLE, {imprisoned} IN PRISON, {retired} RETIRED, {criminals} OF ILL REPUTE!",
+    "rightNow": "RIGHT NOW: {list}.",
+    "quiet": "QUIET TIMES, NOTHIN' REMARKABLE UNDERWAY!"
+  }
+}

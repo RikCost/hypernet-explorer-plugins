@@ -1,0 +1,19 @@
+{
+  "caste": {
+    "grey": "Grey",
+    "crimson": "Crimson Analyzer",
+    "pale": "Pale Warper",
+    "dargos": "Dargos"
+  },
+  "casteDesc": {
+    "grey": "Came to look. Still looking. Photographs everything and understands almost none of it.",
+    "crimson": "Holds that nothing is understood until it has been opened, and carries a katana because a scalpel is slow.",
+    "pale": "Folds minds and distances rather than crossing them. Speaks rarely, and never with the mouth.",
+    "dargos": "From Titania, where the entire diplomatic apparatus is one long joke at humanity's expense."
+  },
+  "origin": {
+    "zetareticulia": "Zeta Reticuli A",
+    "zetareticulib": "Zeta Reticuli B",
+    "titania": "Titania"
+  }
+}

@@ -2733,7 +2733,11 @@
                 case 'fluxlingfurret': {
                     // Phase in and out of reality.
                     const phase = 0.4 + Math.abs(Math.sin(t * (fast ? 6 : 2.5))) * 0.6;
-                    for (const m of this._materials) if (m.transparent) m.opacity = phase;
+                    // Every body material, not only the ones already standing in
+                    // the transparent queue: a solid one is put back in the opaque
+                    // queue at build time (armFadeOnDemand) and rejoins the
+                    // transparent one the moment its opacity is driven under 1.
+                    for (const m of this._materials) m.opacity = phase;
                     if (this.motes) this.motes.forEach((m) => { const a = m._a + t * 2.2; m.position.set(Math.cos(a) * m._r, m._h + Math.sin(t * 2.5 + m._a) * 0.25, Math.sin(a) * m._r); });
                     this.model.rotation.y = Math.sin(t * 1.3) * 0.3;
                     if (this.tail) this.tail.rotation.z = -0.9 + Math.sin(t * 4) * 0.2;
@@ -2808,7 +2812,7 @@
                 case 'holographicdecoy': {
                     // Flicker + scanline drift.
                     const flick = (Math.sin(t * 13) > 0.85 || Math.sin(t * 31) > 0.9) ? 0.15 : (0.45 + Math.sin(t * 4) * 0.15);
-                    for (const m of this._materials) if (m.transparent) m.opacity = flick;
+                    for (const m of this._materials) m.opacity = flick;   // see fluxlingfurret
                     if (this.scanlines) this.scanlines.children.forEach((r, i) => { r.position.y = 0.5 + ((i * 0.35 + t * 0.6) % 1.8); });
                     if (this._beam && this._beam.material) this._beam.material.opacity = 0.15 + Math.abs(Math.sin(t * 3)) * 0.2;
                     if (this.head) this.head.rotation.y = Math.sin(t * 1.5) * 0.2;
@@ -2946,7 +2950,7 @@
                 case 'shadowcrawler': {
                     if (this._legs) this._legs.forEach((l, i) => { l.rotation.x = Math.sin(t * (fast ? 8 : 4) + i * 0.9) * 0.22; });
                     if (this.mandibles) this.mandibles.rotation.x = fast ? Math.abs(Math.sin(t * 10)) * 0.4 : Math.sin(t * 2) * 0.1;
-                    this._materials.forEach(m => { if (m.transparent) m.opacity = 0.55 + Math.sin(t * 1.5) * 0.22; }); // phasing
+                    this._materials.forEach(m => { m.opacity = 0.55 + Math.sin(t * 1.5) * 0.22; }); // phasing, see fluxlingfurret
                     break;
                 }
                 case 'shadowstalker': {

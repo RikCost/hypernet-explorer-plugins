@@ -1,0 +1,114 @@
+{
+  "stat": {
+    "str": "STR",
+    "wis": "WIS",
+    "dex": "DEX",
+    "psi": "PSI",
+    "con": "CON"
+  },
+  "rarity": {
+    "common": "Common",
+    "rare": "Rare",
+    "epic": "Epic",
+    "legendary": "Legendary"
+  },
+  "type": {
+    "monster": "Monster",
+    "weapon": "Weapon",
+    "armor": "Armour",
+    "effect": "Effect"
+  },
+  "duel": {
+    "you": "You",
+    "opponent": "Opponent",
+    "houseDeck": "The House",
+    "yourTurn": "Your turn",
+    "theirTurn": "{name} is thinking",
+    "clash": "The clash",
+    "deckCounts": "Deck {you}  |  Theirs {them}",
+    "quitBtn": "Leave",
+    "stakeNone": "Nothing staked",
+    "stakeMoney": "Staked: {amount}",
+    "stakeItem": "Staked: {mine} against {theirs}",
+    "wonMoney": "You take {amount}.",
+    "lostMoney": "You hand over {amount}.",
+    "wonItem": "You take the {item}.",
+    "lostItem": "You hand over the {item}.",
+    "gamblerFun": "Fun (a flutter)",
+    "cravingEased": "{name}: the itch for {substance} eases by {amount}.",
+    "victory": "You win",
+    "defeat": "You lose",
+    "draw": "A draw",
+    "streak": "{count} in a row.",
+    "packWon": "A booster pack for the win.",
+    "pickSecondTile": "Now pick the tile it moves to.",
+    "art3D": "Art: 3D",
+    "art2D": "Art: 2D"
+  },
+  "col": {
+    "title": "Card Collection",
+    "owned": "{cards} cards, {distinct} of a kind ({pct}%)",
+    "tab": {
+      "all": "All",
+      "monsters": "Monsters",
+      "weapons": "Weapons",
+      "armor": "Armour",
+      "effects": "Effects"
+    },
+    "tabDeck": "Deck ({n})",
+    "empty": "Nothing on the shelf yet. Open a booster pack.",
+    "pickACard": "Pick a card to read it.",
+    "power": "Power {n}",
+    "saveDeck": "Save deck",
+    "newDeck": "New deck",
+    "prevDeck": "Previous deck",
+    "nextDeck": "Next deck",
+    "autoDeck": "Best deck",
+    "shuffleDeck": "Shuffle a deck",
+    "reroll": "Re-roll look",
+    "practice": "Practice duel",
+    "close": "Close",
+    "deckName": "Deck {n}",
+    "unsavedDeck": "Unsaved deck",
+    "deckLegal": "Legal deck.",
+    "deckTooFew": "A deck needs at least {min} cards.",
+    "deckTooMany": "A deck holds at most {max} cards.",
+    "deckNotOwned": "This deck lists cards the party no longer owns.",
+    "deckEmpty": "No cards in this deck."
+  },
+  "pack": {
+    "title": "Booster Pack",
+    "sealed": "SEALED",
+    "newCard": "NEW",
+    "summary": "Best pull: {best}. New to the collection: {fresh}."
+  },
+  "effect": {
+    "halve": {
+      "name": "Blight",
+      "desc": "On a creature: every stat halved, whoever it belongs to. On bare ground: the tile is cursed, and the next creature to stand there arrives halved."
+    },
+    "double": {
+      "name": "Gild",
+      "desc": "On a creature: every stat doubled, whoever it belongs to. On bare ground: the tile is blessed, and the next creature to stand there arrives doubled."
+    },
+    "cull": {
+      "name": "Cull",
+      "desc": "On a creature: it is destroyed where it stands, whoever it belongs to. On bare ground: a trap, and the next creature to stand there dies at once."
+    },
+    "swap": {
+      "name": "Displace",
+      "desc": "Pick a creature, then a second tile: the two trade places, gear and curses included. The second tile may be bare ground, and the creature simply walks to it."
+    },
+    "ward": {
+      "name": "Ward",
+      "desc": "On a creature: it takes every drawn stat in the clash. On bare ground: the tile is shut to your opponent for their next turn."
+    }
+  },
+  "capture": {
+    "bound": "{name} is bound into a card and falls.",
+    "boundNew": "{name} is bound into a card, the first of its kind, and falls.",
+    "failed": "{name} slips the binding. ({chance}% needed)",
+    "tooStrong": "{name} is level {level} and will not be held by a party of {median}.",
+    "noCard": "There is no card {name} could ever be."
+  }
+}

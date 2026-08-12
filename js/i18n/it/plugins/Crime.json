@@ -10,5 +10,6 @@
     "errorUnknown": "Errore: Tipo di crimine sconosciuto:",
     "total": "Totale",
     "selfPardon": "Ti sei auto-perdonato questo crimine"
-  }
+  },
+  "nobodyLeftToJudgeYou": "Non e rimasto nessuno a giudicarti"
 }

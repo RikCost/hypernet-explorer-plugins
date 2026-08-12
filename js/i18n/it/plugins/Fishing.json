@@ -8,18 +8,40 @@
   "hint": {
     "loading": "Carico il lago...",
     "no3d": "Sistema 3D non disponibile",
-    "aim": "WASD / frecce / trascina per mirare     Conferma per lanciare     Annulla per uscire",
-    "power": "Conferma per fissare la potenza del lancio",
+    "aim": "Prendi la mira",
+    "power": "Carichi il lancio",
     "casting": "Lancio in corso...",
-    "waiting": "Aspetti che abbocchi     WASD per guardarti intorno",
-    "bite": "Conferma ORA per ferrare",
-    "reeling": "Tieni premuto Conferma per recuperare     rilascia per dare lenza",
-    "caught": "Preso     Conferma per lanciare di nuovo",
-    "miss": "Ti è scappato     Conferma per lanciare di nuovo"
+    "waiting": "Aspetti che abbocchi",
+    "bite": "Abbocca!",
+    "reeling": "Recuperi la lenza",
+    "caught": "Preso",
+    "miss": "Ti è scappato"
   },
   "meter": {
     "power": "POTENZA",
     "line": "LENZA - tienila fuori dal rosso",
     "dist": "DIST"
+  },
+  "fish": {
+    "1": "Carpa",
+    "2": "Persico trota",
+    "3": "Trota",
+    "4": "Salmone",
+    "5": "Pesce gatto",
+    "6": "Luccio",
+    "7": "Persico",
+    "8": "Anguilla",
+    "9": "Pesce rosso",
+    "10": "Tonno",
+    "11": "Pesce spada",
+    "12": "Pesce palla",
+    "13": "Pesce pagliaccio",
+    "14": "Rana pescatrice",
+    "15": "Piranha",
+    "16": "Storione",
+    "17": "Carpa koi",
+    "18": "Pesce palla spinoso",
+    "19": "Medusa",
+    "20": "Kraken"
   }
 }

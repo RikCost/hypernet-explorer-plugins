@@ -80,6 +80,13 @@
     transmitNoneResult:['name'],
     transmitMissNoBounty:      ['name'],
     transmitNoneResultNoBounty:['name'],
+    infectPrompt:      ['name', 'chance'],
+    infectUnseen:      ['name', 'disease'],
+    infectCaught:      ['name', 'disease'],
+    infectImmune:      ['name', 'disease'],
+    infectAlready:     ['name', 'disease'],
+    infectMember:      ['name', 'disease'],
+    infectMemberAlready:['name', 'disease'],
     workAs:          ['job', 'map'],
     workAsShopkeeper:['job', 'map'],
   };
@@ -170,7 +177,13 @@
   }
 
   function _getProfile(npcName) {
-    return window.NPCSocietyRegistry?.getProfile(npcName) ?? null;
+    const profile = window.NPCSocietyRegistry?.getProfile(npcName) ?? null;
+    // The society table is keyed by name and the profile itself does not carry
+    // one, but a standing has to be filed against somebody. Stamped here, at
+    // the one lookup the whole panel goes through, so every profile it touches
+    // knows who it belongs to.
+    if (profile && !profile._npcName) profile._npcName = npcName;
+    return profile;
   }
 
   // Finds the event a name refers to: the authored event name first (that is
@@ -186,17 +199,64 @@
   }
 
   // ── Social-interaction line bank (praise / joke / story / insult / ...) ──
-  let _socialLinesDb = null;
-  function _socialLines() {
-    if (_socialLinesDb) return _socialLinesDb;
-    if (window.NPC && window.NPC.SocialLines) { _socialLinesDb = window.NPC.SocialLines; return _socialLinesDb; }
+  // js/db/NPC/SocialLines.json holds the structure (ids, tone, baseDelta, tier,
+  // deltas, toneMult) and the English prose; js/i18n/<lang>/conversations/
+  // SocialLines.json holds that language's prose and is deep-merged over it, so
+  // an NPC speaks the language the game is being played in. The overlay keys
+  // `interactions` and `romance.actions` by id rather than by array position, so
+  // a translation never depends on the order the db happens to list them in.
+  function _readJson(url) {
     try {
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', 'js/db/NPC/SocialLines.json', false);
+      xhr.open('GET', url, false);
       xhr.send();
-      if (xhr.status === 200 || xhr.status === 0) { _socialLinesDb = JSON.parse(xhr.responseText); return _socialLinesDb; }
-    } catch (e) { console.warn('[NPCEmpathize] failed to load SocialLines.json', e); }
-    _socialLinesDb = { interactions: [], performances: {}, jokes: {} };
+      if (xhr.status === 200 || xhr.status === 0) return JSON.parse(xhr.responseText);
+    } catch (e) { /* no overlay for this language, English stands */ }
+    return null;
+  }
+  // Replace strings and string arrays, recurse objects, leave numbers alone. An
+  // entry the overlay does not carry keeps whatever the db said, so a partial
+  // translation falls back line-bank by line-bank rather than all at once.
+  function _mergeLines(base, over) {
+    if (!over || !base) return;
+    for (const k of Object.keys(over)) {
+      const o = over[k];
+      if (Array.isArray(o)) base[k] = o.slice();
+      else if (o && typeof o === 'object') {
+        if (!base[k] || typeof base[k] !== 'object') base[k] = {};
+        _mergeLines(base[k], o);
+      } else if (typeof o === 'string') base[k] = o;
+    }
+  }
+  // The db lists these as arrays of entries carrying their own `id`.
+  function _mergeById(list, over) {
+    if (!Array.isArray(list) || !over) return;
+    list.forEach(entry => _mergeLines(entry, over[entry.id]));
+  }
+  let _socialLinesDb = null;
+  let _socialLinesLang = null;
+  function _socialLines() {
+    const lang = ConfigManager.language || 'en';
+    if (_socialLinesDb && _socialLinesLang === lang) return _socialLinesDb;
+    _socialLinesLang = lang;
+    const db = (window.NPC && window.NPC.SocialLines)
+      ? JSON.parse(JSON.stringify(window.NPC.SocialLines))
+      : _readJson('js/db/NPC/SocialLines.json');
+    if (!db) {
+      console.warn('[NPCEmpathize] failed to load SocialLines.json');
+      _socialLinesDb = { interactions: [], performances: {}, jokes: {} };
+      return _socialLinesDb;
+    }
+    const over = _readJson(`js/i18n/${lang}/conversations/SocialLines.json`);
+    if (over) {
+      _mergeById(db.interactions, over.interactions);
+      if (over.romance) {
+        _mergeById(db.romance && db.romance.actions, over.romance.actions);
+        if (db.romance) _mergeLines(db.romance.rejection, over.romance.rejection);
+      }
+      ['performances', 'jokes', 'em', 'bubba'].forEach(s => _mergeLines(db[s], over[s]));
+    }
+    _socialLinesDb = db;
     return _socialLinesDb;
   }
   function _socialById() {
@@ -238,6 +298,35 @@
       ? (window.SpecializationXP.levelOf(actor, 'Public Speaking') - 1) * 4 : 0;
     const raw = JOIN_BASE + (Number(opinion) || 0) * 0.45 + persuasion;
     return Math.round(Math.max(JOIN_MIN, Math.min(JOIN_MAX, raw)));
+  }
+
+  // ── Infecting somebody out of a vial ──────────────────────────────────────
+  // A sealed culture vial names the disease in it, which is the only metadata
+  // the action needs: <DiseaseVial: influenza>, written by
+  // tools/health/gen_disease_vials.py onto all 228 of them.
+  function _diseaseVialId(item) {
+    const raw = item && item.meta && item.meta.DiseaseVial;
+    return typeof raw === 'string' ? raw.trim() : '';
+  }
+
+  // The vials the party is carrying. An empty list is what greys the action out.
+  function _diseaseVialItems() {
+    return ($gameParty?.items?.() ?? []).filter(item => item && item.itypeId === 1 && _diseaseVialId(item));
+  }
+
+  // Whether it is done unnoticed, the single source of truth for both the
+  // "(~N%)" the button advertises and the roll _infectWith() makes. The vial
+  // always goes in, this only decides whether they saw who put it there:
+  // knowing the dose is INT and getting it into them is DEX, and nothing else
+  // moves it. A failure is a bioterrorism charge and the end of the friendship.
+  const INFECT_BASE     = 10;   // the chance with no stats behind it at all
+  const INFECT_STAT_DIV = 6;    // (INT + DEX) over this, in percentage points
+  const INFECT_MIN      = 5;
+  const INFECT_MAX      = 95;
+  function _infectChance(actor) {
+    if (!actor) return INFECT_MIN;
+    const raw = INFECT_BASE + (((actor.mat || 0) + (actor.agi || 0)) / INFECT_STAT_DIV);
+    return Math.round(Math.max(INFECT_MIN, Math.min(INFECT_MAX, raw)));
   }
 
   // A recruit still has to be in the party's weight class: nobody more than
@@ -458,14 +547,21 @@
   // SECTION 3b, PER-ACTOR PREDISPOSITION
   // ============================================================================
 
+  // How far apart two creeds have to stand (mean axis distance, 0..200) before
+  // the difference stops being felt as agreement and starts being felt as
+  // disagreement, how hard each point past that lands, and the ceiling either
+  // way. Two ordinary people are typically 40-60 apart.
+  const CREED_NEUTRAL_DISTANCE = 45;
+  const CREED_OPINION_WEIGHT   = 0.5;
+  const CREED_OPINION_MAX      = 22;
+
   // Trait + ideology compatibility bonus an NPC feels toward ONE actor. This is
   // the innate, unchanging part of a reputation (who you are), on top of the
   // earned per-actor base opinion (what you've done).
   function _traitCompatBonus(profile, actor) {
     const npcTraitIds         = new Set(profile?.traitIds ?? []);
     const allTraits           = window.Health?.Traits ?? [];
-    const ideologies          = window._NPCSocietyDataLoader?.ideologies ?? [];
-    const npcIdeology         = profile?.ideologyIndex != null ? ideologies[profile.ideologyIndex] : null;
+    const npcIdeology         = window.NPCShared?.ideologyFor(profile) ?? null;
     const npcIdeologyTraitIds = new Set(npcIdeology?.traits ?? []);
     const actorTraitIds       = (actor?._selectedTraits ?? []).map(t => t.id);
 
@@ -489,6 +585,20 @@
           }
         }
       }
+    }
+
+    // Creed against creed. A party member only has one when they were built
+    // with a society profile of their own (the Detailed character editor gives
+    // every one it makes one), and where both sides have one the five-axis
+    // distance between what they believe is felt on sight: a shared creed
+    // opens the conversation warm, an opposed one closes it before it starts.
+    // Nothing changes for a party that has no creed on file.
+    const actorProfile = window.NPCSocietyRegistry?.getProfile?.(actor?.name?.() ?? "");
+    const actorIdeology = actorProfile ? window.NPCShared?.ideologyFor(actorProfile) : null;
+    if (actorIdeology && npcIdeology) {
+      const distance = window.NPCShared.ideologyDistance(npcIdeology, actorIdeology);
+      const felt = (CREED_NEUTRAL_DISTANCE - distance) * CREED_OPINION_WEIGHT;
+      bonus += Math.round(Math.max(-CREED_OPINION_MAX, Math.min(CREED_OPINION_MAX, felt)));
     }
     return bonus;
   }
@@ -701,7 +811,7 @@
     const traitIds = profile?.traitIds ?? [];
     const devout   = traitIds.includes(TRAIT_DEVOUT);
     const dl       = window._NPCSocietyDataLoader;
-    const ideology = profile?.ideologyIndex != null ? dl?.ideologies?.[profile.ideologyIndex] : null;
+    const ideology = window.NPCShared?.ideologyFor(profile) ?? null;
     const theocrat = /theocra/i.test(String(ideology?.id ?? ideology?.name ?? ''));
     const persName = _personalityName(profile);
     if (devout || theocrat || EM_ZEALOT_FACTIONS.has(profile?.factionIndex)) {
@@ -802,21 +912,177 @@
     _setNpcBaseOpinion(profile, actorId, (profile.playerOpinion ?? 0) + bonus);
   }
 
+  // ── Non-sentient party members (classes 63+) ────────────────────────────
+  // A creature played as one of the creature classes , Feral, Mimic, Monster,
+  // Mana Cyborg, Ghost, Zombie, Mutant, Drone (ids 63-70, the creatureClasses
+  // rosters in js/db/Health/EnemyArchetypes.json) , holds no conversation. When
+  // one of them is the party member doing the talking, the panel drops every
+  // spoken action and offers what a beast can actually do: noises, contact and
+  // teeth. Nobody talks BACK to it either; the NPC coos over it, backs away
+  // from it or shoos it off depending on what they think of it. Copy lives in
+  // js/i18n/<lang>/plugins/Empathize.json under the feral* keys.
+  const NONSENTIENT_CLASS_MIN = 63;
+
+  function _isNonSentientActor(actor) {
+    if (!actor) return false;
+    const id = actor.currentClass?.()?.id ?? actor._classId ?? 0;
+    return id >= NONSENTIENT_CLASS_MIN;
+  }
+
+  // What the NPC sees standing in front of them: the creature's archetype
+  // ("Beast", "Spider / Humanoid" reads as its first half), falling back to the
+  // class it is played as when it carries no anatomy.
+  function _feralKind(actor) {
+    if (!actor) return '';
+    const HC = window.HealthCore;
+    const stored = actor._currentArchetype;
+    if (stored && HC?.getArchetypeDisplayName) {
+      const first = String(stored).split('/')[0].trim();
+      const name = first ? HC.getArchetypeDisplayName(first) : '';
+      if (name) return name;
+    }
+    return actor.currentClass?.()?.name ?? '';
+  }
+
+  // How this NPC feels about the creature, in the four bands its lines are
+  // written for. Opinion is the standing of the creature itself, since every
+  // Empathize reaction is per party member.
+  function _feralBand(opinion) {
+    const o = Number(opinion) || 0;
+    if (o <= -20) return 'Hostile';
+    if (o < 15)   return 'Wary';
+    if (o < 50)   return 'Warm';
+    return 'Adoring';
+  }
+
+  // A line from the band's bank, with the NPC's name and the creature's kind
+  // filled in. `prefix` is the bank family ('feralGreet' / 'feralReact').
+  function _feralLine(prefix, opinion, npcName, kind) {
+    const T = _getT();
+    const line = _rand(T[prefix + _feralBand(opinion)] || []);
+    if (!line) return '';
+    return String(line)
+      .replace(/\{name\}/g, npcName || '')
+      .replace(/\{kind\}/g, kind || '');
+  }
+
+  // What a typed sentence comes out as. The player still writes words, the
+  // creature still has no mouth for them: the length of what was typed decides
+  // how long the noise is, and the noise itself is drawn from the bank.
+  function _feralGrowlFor(phrase) {
+    const T = _getT();
+    const bank = T.feralGrowlSyllables || [];
+    if (!bank.length) return String(phrase || '');
+    const words = String(phrase || '').trim().split(/\s+/).filter(Boolean).length;
+    const count = Math.max(1, Math.min(6, Math.round(words / 2) || 1));
+    const out = [];
+    for (let i = 0; i < count; i++) out.push(_rand(bank));
+    const text = out.join(' ');
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
+  // The Markov chain is seeded with what the player typed and therefore opens by
+  // repeating it back word for word. Nobody answers a question by reciting it,
+  // so the echo is cut off the front of the reply and only what the chain added
+  // of its own is spoken. Words are compared loosely (case and punctuation are
+  // rewritten by the generator, which capitalizes the first word and closes the
+  // last), and a reply left with nothing of its own is refused so the caller
+  // falls back to an unseeded line.
+  function _stripSeedEcho(response, seed) {
+    const norm  = w => String(w).toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+    const words = String(response || '').trim().split(/\s+/).filter(Boolean);
+    const seedW = String(seed || '').trim().split(/\s+/).filter(Boolean);
+    let i = 0;
+    while (i < words.length && i < seedW.length && norm(words[i]) === norm(seedW[i])) i++;
+    // Nothing was echoed: the chain bridged away from the seed on its own.
+    if (!i) return String(response || '');
+    const rest = words.slice(i);
+    if (rest.length < 3) return '';
+    rest[0] = rest[0].charAt(0).toUpperCase() + rest[0].slice(1);
+    return rest.join(' ');
+  }
+
+  // The only presents a creature understands to hand over: something to eat,
+  // or a piece of something that used to be alive.
+  const FERAL_GIFT_CATEGORIES = new Set(['food', 'bodypart']); // i18n-ignore: <category:> tag values
+
+  function _feralCanGift(item) {
+    const raw = window.ItemSystemUtils?.getRawCategoryFromNote?.(item)
+      ?? (String(item?.note || '').match(/<category:\s*(\w+)>/i) || [])[1];
+    return FERAL_GIFT_CATEGORIES.has(String(raw || '').toLowerCase());
+  }
+
+  // The noises and nudges a non-sentient member has instead of conversation.
+  // `op` is what it costs or earns them; `bank` is the creature's own line.
+  const FERAL_ACTIONS = [
+    { id: 'growl',  op:  -6, bank: 'feralActGrowl'  },
+    { id: 'roar',   op: -10, bank: 'feralActRoar'   },
+    { id: 'drool',  op:  -2, bank: 'feralActDrool'  },
+    { id: 'sniff',  op:   1, bank: 'feralActSniff'  },
+    { id: 'nuzzle', op:   6, bank: 'feralActNuzzle' },
+    { id: 'beg',    op:   3, bank: 'feralActBeg'    },
+  ];
+  const FERAL_ACTION_IDS = new Set(FERAL_ACTIONS.map(a => a.id));
+
   // ── Per-actor NPC reputation ────────────────────────────────────────────
   // Each party member earns their OWN standing with a given NPC, stored in
   // profile.opinions[actorId]. profile.playerOpinion stays as the party-wide
   // baseline the rest of the NPC sim consumes (conversation, decay, politics)
   // and seeds each per-actor value the first time it is touched.
+  // The key a party member's standing is filed under. An actor id alone will
+  // not do: actor 2 is a different person in every savegame of the world, and
+  // the profiles these are written into are world-shared (npcs.json), so three
+  // playthroughs were all writing their second member's reputation into one
+  // slot and reading each other's. The key names the playthrough as well
+  // (p<slot>a<actorId>, NPCSystem.js), so each member has a standing of their
+  // own that survives in the world folder whether that savegame is the one
+  // being played or not. A playthrough with no slot yet (the sandbox, a party
+  // before its first save) falls back to the bare actor id, which is exactly
+  // what it used to be.
+  function _opinionKey(actorId) {
+    if (actorId == null) return null;
+    const VP = window.PartyPresence;
+    const slot = VP && typeof VP.currentSlot === 'function' ? VP.currentSlot() : 0;
+    return slot > 0 ? VP.memberKey(slot, actorId) : String(actorId);
+  }
   function _npcBaseOpinion(profile, actorId) {
     if (!profile) return 0;
     const map = profile.opinions;
-    if (map && map[actorId] != null) return map[actorId];
+    if (map) {
+      const key = _opinionKey(actorId);
+      if (key != null && map[key] != null) return map[key];
+      // A standing earned before the key named the playthrough. Read it once
+      // more so nobody's reputation resets the day this is installed; the next
+      // write files it under the new key.
+      if (map[actorId] != null) return map[actorId];
+    }
     return profile.playerOpinion ?? 0;
   }
   function _setNpcBaseOpinion(profile, actorId, value) {
     if (!profile || actorId == null) return 0;
     const v = Math.max(-100, Math.min(100, Math.round(value)));
-    (profile.opinions ??= {})[actorId] = v;
+    // Becoming somebody's friend or somebody's enemy is a thing that happened
+    // to a party member, so the party diary hears about the crossing (Diary.js).
+    if (window.Diary) window.Diary.onOpinionChanged(profile, actorId, _npcBaseOpinion(profile, actorId), v);
+    const key = _opinionKey(actorId);
+    (profile.opinions ??= {})[key] = v;
+    // The legacy entry is dropped as it is superseded, so one member's
+    // standing is never held in two places at once.
+    if (key !== String(actorId) && profile.opinions[actorId] != null) {
+      delete profile.opinions[actorId];
+    }
+    // The same standing, filed the other way round: what this member thinks of
+    // that person, in the world folder rather than in the savegame, so a
+    // playthrough's whole social record outlives the savegame that earned it
+    // (party.json -> dispositions).
+    // Somebody else's party member is filed under their member key rather than
+    // their name, so the map reads member to member across playthroughs: two
+    // parties that have met each other in a world know what they thought.
+    const VP = window.PartyPresence;
+    if (VP && typeof VP.setDisposition === 'function' && key !== String(actorId)) {
+      const toward = profile._visitorKey || profile._npcName || null;
+      if (toward) VP.setDisposition(key, toward, v);
+    }
     return v;
   }
 
@@ -840,7 +1106,25 @@
   const SOCIAL_COMPANY_LIMIT = 6;
   // The actions whose whole effect is elsewhere (a shop, a heal, a signpost),
   // so nothing else would ever pay them their company.
-  const COMPANY_ACTIONS = new Set(['trade', 'treat', 'directions', 'buyHouse']);
+  const COMPANY_ACTIONS = new Set(['trade', 'treat', 'directions', 'buyHouse', 'cardTrade']);
+
+  // ── Cards ───────────────────────────────────────────────────────────────
+  // Nobody sits down at a table with somebody who cannot stand them, and
+  // nobody swaps a collection with them either. The line they refuse with is
+  // their own: a header naming what was turned down, plus the sentence their
+  // personality would actually say (Empathize.cardRefuseTone.<personality>).
+  const CARD_REFUSE_OPINION = -15;
+
+  function _cardRefusalLine(profile, npcName, kind) {
+    const T = _getT();
+    const head = kind === 'duel'
+      ? T('Empathize.cardRefuseDuel', { name: npcName })
+      : T('Empathize.cardRefuseTrade', { name: npcName });
+    const persona = String(_personalityName(profile) || '').toLowerCase();
+    const key = 'Empathize.cardRefuseTone.' + persona;
+    const tone = (persona && window.T.has(key)) ? T(key) : T('Empathize.cardRefuseTone.default');
+    return `${head} ${tone}`;
+  }
 
   // What one more exchange with this NPC is worth as company today, spending it
   // off their daily allowance as it is read.
@@ -1000,6 +1284,14 @@
       SceneManager.push(Scene_Shop);
       SceneManager.prepareNextScene(goods, false);
     }
+    // The card table is handed over the same way the shop is: the panel closes
+    // first and the duel opens from the map, so the overlay is never left
+    // hanging behind a scene it does not own.
+    if ($gameTemp._NPCEmpathizeOpenCardDuel) {
+      const config = $gameTemp._NPCEmpathizeOpenCardDuel;
+      $gameTemp._NPCEmpathizeOpenCardDuel = null;
+      if (window.CardDuel) window.CardDuel.start(config);
+    }
     if ($gameTemp._NPCEmpathizeStartBattle != null) {
       const troopId = $gameTemp._NPCEmpathizeStartBattle;
       const victim  = $gameTemp._NPCEmpathizeAttackTarget;
@@ -1048,6 +1340,10 @@
       if (killed && $gameSelfSwitches) {
         $gameSelfSwitches.setValue([victim.mapId, victim.eventId, 'A'], true);
         if ($gameMap?.mapId() === victim.mapId) $gameMap.event(victim.eventId)?.refresh();
+        // A death is the world's, not this savegame's: recorded in the world
+        // folder so the body stays where it fell in every playthrough of it
+        // (NPCSystem.js, GoneRegistry).
+        window.NPCGone?.record(victim.mapId, victim.eventId, victim.name, 'killed');
       }
     }
     _BattleManager_processVictory_npcAttack.call(this);
@@ -1232,9 +1528,9 @@
     // whenever the enemy's image changes, and 3D mode can hand a sprite back.
     const src = this._npcFaceSprite._enemySprite;
     if (src && !src._hidden) src.hide();
-    // 3D mode builds its model a tenth of a second into the battle. The NPC
-    // wears their own face instead, so the model comes straight back off the
-    // field the frame it appears.
+    // 3D mode builds its model a tick into the battle. The NPC wears their own
+    // face instead, so the model comes straight back off the field the frame it
+    // appears.
     const sc3d = this._battle3DScene;
     if (sc3d && !sc3d._disposed && sc3d.getModel) {
       const idx = $gameTroop.members().indexOf(this._npcFaceBattler);
@@ -1466,6 +1762,8 @@
       this._attackConfirm      = false;
       this._pickpocketConfirm  = false;
       this._transmitConfirm    = null;
+      this._infectMode         = false;
+      this._infectItems        = [];
       this._socialMode         = false;
       this._romanceMode        = false;
       this._directionsMode     = false;
@@ -1698,7 +1996,27 @@
     // never include the chat tab.
     _tabOrder() {
       if (this._entity) return this._entityTabs || ['overview'];
-      return ['chat', 'info', 'background', 'routine', 'biologics', 'health', 'romance', 'web', 'lifeHistory', 'wiki', 'more'];
+      const tabs = ['chat', 'info', 'background', 'routine', 'biologics', 'health', 'romance', 'web', 'lifeHistory', 'wiki', 'more'];
+      // Nothing is courting anybody through a muzzle: the romance tab is not
+      // on the table while a non-sentient member is the one doing the talking.
+      if (_isNonSentientActor(this._focusActor?.())) {
+        return tabs.filter(t => t !== 'romance');
+      }
+      // Nor is anybody courting a traveller who belongs to another
+      // playthrough of this world: a romance there would be a change to a
+      // savegame this one has no business writing to (NPCSystem.js,
+      // VisitingParties). They can be talked to and read, nothing else.
+      if (this._isVisitorTarget()) {
+        return tabs.filter(t => t !== 'romance');
+      }
+      return tabs;
+    }
+
+    // Is the person this panel is open on somebody else's party member?
+    _isVisitorTarget() {
+      if (this._entity || this._actorId != null) return false;
+      const name = _getNPCName(this._eventId) || this._npcName;
+      return !!name && !!window.PartyPresence?.isVisitorName?.(name);
     }
 
     _setTab(tab) {
@@ -1712,6 +2030,7 @@
       this._attackConfirm     = false;
       this._pickpocketConfirm = false;
       this._transmitConfirm   = null;
+      this._infectMode        = false;
       this._socialMode        = false;
       this._romanceMode       = false;
       this._directionsMode    = false;
@@ -1855,6 +2174,7 @@
         case 'bribe':      this._bribe();       break;
         case 'attack':     this._attack();      break;
         case 'pickpocket': this._pickpocket();  break;
+        case 'infect':     this._infect();      break;
         case 'trade':      this._trade();       break;
         case 'treat':      this._treatWounds(); break;
         case 'join':       this._join();        break;
@@ -1865,6 +2185,11 @@
         case 'socialize':  this._socialize();   break;
         case 'romance':    this._romance();     break;
         case 'directions': this._askDirections(); break;
+        case 'cardDuel':   this._cardDuel();    break;
+        case 'cardTrade':  this._cardTrade();   break;
+        default:
+          if (FERAL_ACTION_IDS.has(id)) this._feralAct(id);
+          break;
       }
       // These four never move an opinion, but haggling, being patched up, being
       // pointed at a door and buying a house off somebody are all time spent in
@@ -1933,6 +2258,7 @@
       this._stealMode         = false;
       this._attackConfirm     = false;
       this._pickpocketConfirm = false;
+      this._infectMode        = false;
       this._activeTab         = 'chat';
       this._menuIndex         = 0;
       this._joinMessage       = { type: 'reject', text: warn };
@@ -1989,6 +2315,128 @@
       this._render();
     }
 
+    // ── Infecting somebody out of a vial (Infect) ────────────────────────────
+    // The other half of the disease library: Cough/Spit/Bite pass on what the
+    // party is already carrying, this opens a sealed vial on somebody. The list
+    // is every <DiseaseVial:> item in the pack; with none the action is greyed
+    // out in the row and this refuses to open at all.
+    _infect() {
+      const T = _getT();
+      const vials = _diseaseVialItems();
+      if (!vials.length) { SoundManager.playBuzzer(); return; }
+      this._infectMode        = true;
+      this._infectItems       = vials;
+      this._giftMode          = false;
+      this._bribeMode         = false;
+      this._stealMode         = false;
+      this._attackConfirm     = false;
+      this._pickpocketConfirm = false;
+      this._transmitConfirm   = null;
+      this._socialMode        = false;
+      this._romanceMode       = false;
+      this._directionsMode    = false;
+      this._activeTab         = 'chat';
+      this._menuIndex         = 0;
+      // Party members are dosed openly and consent is assumed; only a stranger
+      // is worth warning the player about, and the warning is the odds.
+      this._joinMessage = this._actorId != null ? null : {
+        type: 'reject',
+        text: T.infectPrompt(
+          _getNPCName(this._eventId) || this._npcName || '',
+          _infectChance(this._focusActor())
+        ),
+      };
+      this._render();
+    }
+
+    // The vial goes in either way: the roll is only whether anybody saw who
+    // opened it. Unseen, nothing else happens at all: no bounty, and their
+    // opinion of the member who did it does not move. Caught, it is
+    // bioterrorism (a 10,000€ charge) and whatever they thought of that member
+    // is gone.
+    _infectWith(index) {
+      const item = this._infectItems?.[index];
+      if (!item) return;
+      const T         = _getT();
+      const DS        = window.DiseaseSystem;
+      const diseaseId = _diseaseVialId(item);
+      const disease   = DS && DS.getDisease ? DS.getDisease(diseaseId) : null;
+      if (!DS || !disease) { SoundManager.playBuzzer(); return; }
+      const dzName = disease.name || diseaseId;
+
+      // A party member, read off their own panel: no roll, no charge, nobody to
+      // hide it from. This is the same deliberate self-infection the vial's own
+      // common event offers, done from the sheet instead.
+      if (this._actorId != null) {
+        const actor = $gameActors?.actor(this._actorId);
+        if (!actor) { SoundManager.playBuzzer(); return; }
+        // Nothing is hidden here, so nothing is wasted either: a member already
+        // carrying it is told so and the seal stays on the vial.
+        if (DS.actorHasDisease(actor, diseaseId)) {
+          SoundManager.playBuzzer();
+          this._infectMode  = false;
+          this._joinMessage = { type: 'reject', text: T.infectMemberAlready(actor.name(), dzName) };
+          this._render();
+          return;
+        }
+        $gameParty.loseItem(item, 1);
+        DS.infectActor(actor, diseaseId, T.infectSource);
+        SoundManager.playOk();
+        this._infectMode  = false;
+        this._joinMessage = { type: 'accept', text: T.infectMember(actor.name(), dzName) };
+        this._render();
+        return;
+      }
+
+      const evId    = this._eventId;
+      const npcName = _getNPCName(evId) || this._npcName || '';
+      const profile = npcName ? _getProfile(npcName) : null;
+      if (!profile) { SoundManager.playBuzzer(); return; }
+
+      $gameParty.loseItem(item, 1);
+      const actor   = this._focusActor();
+      const actorId = actor?.actorId();
+
+      // Somebody who has had it, or is carrying it already, does not take it
+      // again; the attempt still happened and is still rolled for, which is what
+      // keeps a wasted vial from also being a free one.
+      const already = DS.npcHasDisease(profile, diseaseId);
+      const immune  = (profile.pastDiseases || []).includes(diseaseId);
+      const took    = !immune && !already && DS.infectNpc(profile, diseaseId);
+
+      const unseen = Math.random() * 100 < _infectChance(actor);
+      (profile.eventLog ??= []).push({
+        tag: 'crime', desc: unseen ? `covertly infected with ${diseaseId}` : `caught infecting with ${diseaseId}`, // i18n-ignore: event-log record ids
+        timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+      });
+
+      if (unseen) {
+        SoundManager.playOk();
+        this._joinMessage = {
+          type: 'accept',
+          text: took ? T.infectUnseen(npcName, dzName)
+            : already ? T.infectAlready(npcName, dzName)
+            : T.infectImmune(npcName, dzName),
+        };
+      } else {
+        // Seen doing it. Their standing with this member bottoms out the way it
+        // does after an assault, their faction hears about it, and the charge is
+        // filed at the preset bioterrorism rate.
+        _gainSocialFromOpinion(actorId, -100 - _npcBaseOpinion(profile, actorId), profile);
+        _setNpcBaseOpinion(profile, actorId, -100);
+        const dl      = window._NPCSocietyDataLoader;
+        const faction = (profile.factionIndex >= 0 && dl?.factions) ? dl.factions[profile.factionIndex] : null;
+        if (faction != null && window.$gameFactions?.changeReputation)
+          window.$gameFactions.changeReputation(profile.factionIndex, -25);
+        window.CrimeSystem?.addPresetCrime?.('bioterrorism'); // i18n-ignore: CrimeSystem preset key
+        SoundManager.playBuzzer();
+        this._joinMessage = { type: 'reject', text: T.infectCaught(npcName, dzName) };
+      }
+
+      this._infectMode = false;
+      this._render();
+    }
+
     // ── Focused (interacting) party member ──────────────────────────────────
     // A character switcher in the left panel picks which party member is
     // interacting; every reputation change lands on THAT member's own standing
@@ -2014,6 +2462,26 @@
       // whoever is now doing the talking.
       this._emGreeted = false;
       this._bubbaGreeted = false;
+      this._feralGreeted = false;
+      // Who is talking decides which buttons exist at all (a beast has no
+      // conversation, Bubba refuses half of them), so every half-finished
+      // action belongs to the member who is no longer holding it. Drop the
+      // lot rather than leave a submenu open over a list that just changed.
+      this._giftMode          = false;
+      this._bribeMode         = false;
+      this._stealMode         = false;
+      this._attackConfirm     = false;
+      this._pickpocketConfirm = false;
+      this._transmitConfirm   = null;
+      this._infectMode        = false;
+      this._socialMode        = false;
+      this._romanceMode       = false;
+      this._directionsMode    = false;
+      this._joinMessage       = null;
+      this._menuIndex         = 0;
+      // The new speaker may not have the tab that is open (Romance is closed to
+      // a non-sentient member); fall back to the one everybody has.
+      if (!this._tabOrder().includes(this._activeTab)) this._activeTab = 'chat';
       SoundManager.playCursor();
       this._render();
     }
@@ -2021,6 +2489,72 @@
       const n = $gameParty?.members()?.length ?? 1;
       if (n <= 1) return;
       this._selectFocusActor((((this._focusIndex() + dir) % n) + n) % n);
+    }
+
+    // ── Non-sentient interactions (growl / roar / drool / sniff / ...) ───────
+    // What a creature has instead of conversation. Each one is the creature's
+    // own noise, the NPC's reaction to it, and what it did to their opinion of
+    // the animal; all three read off the same disposition bands.
+    _feralAct(id) {
+      const def = FERAL_ACTIONS.find(a => a.id === id);
+      if (!def) return;
+      const T       = _getT();
+      const npcName = _getNPCName(this._eventId) || this._npcName || '';
+      const profile = npcName ? _getProfile(npcName) : null;
+      const actor   = this._focusActor();
+      const kind    = _feralKind(actor);
+
+      const own = _rand(T[def.bank] || []);
+      if (own) {
+        this._chatHistory.push({
+          role: 'player',
+          text: String(own).replace(/\{kind\}/g, kind).replace(/\{name\}/g, npcName),
+        });
+      }
+
+      // A creature that is liked gets away with more, one that is feared is
+      // forgiven less: the same growl costs twice as much from a beast they
+      // already want gone.
+      const before = this._focusOpinion(profile);
+      const mult   = def.op < 0 && before <= -20 ? 2 : 1;
+      const delta  = Math.round(def.op * mult);
+      if (profile) {
+        _addNpcOpinion(profile, actor?.actorId(), delta);
+        (profile.eventLog ??= []).push({
+          tag: 'feral', desc: id, // i18n-ignore: event-log record id
+          timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+        });
+      }
+
+      // Reaction to where they stand AFTER it, so a nuzzle that wins them over
+      // is answered warmly and a roar is answered by the person it frightened.
+      const reply = _feralLine('feralReact', this._focusOpinion(profile), npcName, kind);
+      if (reply) this._chatHistory.push({ role: 'npc', text: reply });
+      if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
+
+      if (delta >= 0) SoundManager.playOk(); else SoundManager.playBuzzer();
+      this._activeTab = 'chat';
+      this._render();
+      this._scrollChatToBottom();
+    }
+
+    // The NPC noticing what has wandered up to them. Mirrors _sayEmGreeting:
+    // one shot per focused member, appended as the newest line so the backlog
+    // survives, and re-armed when the conversation is handed to somebody else.
+    _prepareFeralMeeting() {
+      if (this._entity || this._actorId != null) return;
+      if (this._feralGreeted) return;
+      const actor = this._focusActor();
+      if (!_isNonSentientActor(actor)) return;
+      const npcName = _getNPCName(this._eventId) || this._npcName;
+      if (!npcName) return;
+      const line = _feralLine(
+        'feralGreet', this._focusOpinion(_getProfile(npcName)), npcName, _feralKind(actor)
+      );
+      if (!line) return;
+      this._feralGreeted = true;
+      this._chatHistory.push({ role: 'npc', text: line });
+      if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
     }
 
     // ── Social interactions (praise / joke / story / insult / ...) ───────────
@@ -2034,6 +2568,7 @@
       this._attackConfirm     = false;
       this._pickpocketConfirm = false;
       this._transmitConfirm   = null;
+      this._infectMode        = false;
       this._activeTab         = 'chat';
       this._menuIndex         = 0;
       this._render();
@@ -2052,6 +2587,7 @@
       this._attackConfirm     = false;
       this._pickpocketConfirm = false;
       this._transmitConfirm   = null;
+      this._infectMode        = false;
       this._activeTab         = 'chat';
       this._menuIndex         = 0;
       this._render();
@@ -2070,6 +2606,7 @@
       this._attackConfirm     = false;
       this._pickpocketConfirm = false;
       this._transmitConfirm   = null;
+      this._infectMode        = false;
       this._activeTab         = 'chat';
       this._menuIndex         = 0;
       this._render();
@@ -2079,7 +2616,7 @@
     _socialCatalog() {
       const lang = ConfigManager.language === 'it' ? 'it' : 'en';
       const db   = _socialLines();
-      const nm   = o => (lang === 'it' ? (o.label_it || o.label) : o.label) || o.id;
+      const nm   = o => o.label || o.id;
       const out  = [];
       (db.interactions || []).forEach(i => out.push({ id: i.id, label: nm(i), tone: i.tone }));
       ['story', 'poem'].forEach(id => { const p = db.performances?.[id]; if (p) out.push({ id, label: nm(p), tone: 'performance' }); });
@@ -2249,11 +2786,16 @@
 
     _gift() {
       this._giftMode          = true;
-      this._giftItems         = ($gameParty?.items() ?? []).filter(i => i.itypeId === 1);
+      // A creature hands over what a creature understands to hand over: food,
+      // or a piece of something that used to be alive.
+      const feral = _isNonSentientActor(this._focusActor());
+      this._giftItems         = ($gameParty?.items() ?? [])
+        .filter(i => i.itypeId === 1 && (!feral || _feralCanGift(i)));
       this._stealMode         = false;
       this._bribeMode         = false;
       this._attackConfirm     = false;
       this._pickpocketConfirm = false;
+      this._infectMode        = false;
       this._activeTab         = 'chat';
       this._menuIndex         = 0;
       this._render();
@@ -2344,6 +2886,7 @@
       this._stealMode         = false;
       this._attackConfirm     = false;
       this._pickpocketConfirm = false;
+      this._infectMode        = false;
       this._activeTab         = 'chat';
       this._menuIndex         = 0;
       this._render();
@@ -2433,6 +2976,7 @@
       this._bribeMode         = false;
       this._stealMode         = false;
       this._pickpocketConfirm = false;
+      this._infectMode        = false;
       this._activeTab         = 'chat';
       this._menuIndex         = 0;
       this._joinMessage       = { type: 'reject', text: T.attackWarning(npcName) };
@@ -2470,7 +3014,7 @@
       // current one; the panel may have been opened on a different event than
       // the one it ends up acting for (wiki navigation), so `evId` rules.
       if (evId != null && $gameMap)
-        $gameTemp._NPCEmpathizeAttackTarget = { mapId: $gameMap.mapId(), eventId: evId };
+        $gameTemp._NPCEmpathizeAttackTarget = { mapId: $gameMap.mapId(), eventId: evId, name: npcName };
       // The face the fight is fought against, taken here for the same reason.
       $gameTemp._NPCEmpathizeAttackFace = _buildBattleFace(npcName, $gameMap?.event(evId));
       $gameTemp._NPCEmpathizeStartBattle = 2;
@@ -2483,6 +3027,7 @@
       this._bribeMode         = false;
       this._stealMode         = false;
       this._attackConfirm     = false;
+      this._infectMode        = false;
       this._activeTab         = 'chat';
       this._menuIndex         = 0;
       this._joinMessage       = { type: 'reject', text: T.confirmPickpocket };
@@ -2512,10 +3057,12 @@
       this._stealMode         = false;
       this._pickpocketConfirm = false;
       this._attackConfirm     = false;
+      this._infectMode        = false;
       this._transmitConfirm   = null;
       this._socialMode        = false;
       this._romanceMode       = false;
       this._directionsMode    = false;
+      this._cardMode          = null;
       this._stealAttempted    = {};
       this._joinMessage       = null;
       this._menuIndex         = 0;
@@ -2604,6 +3151,205 @@
       this._releaseEventLock();
       SceneManager.pop();
       $gameTemp._NPCEmpathizeOpenTrade = { goods, sellFactor };
+    }
+
+    // ── Cards ───────────────────────────────────────────────────────────────
+
+    // Common gate for both card actions: the panel refuses in the NPC's own
+    // voice rather than opening a submenu that could only be cancelled.
+    _cardRefuse(profile, npcName, kind) {
+      SoundManager.playBuzzer();
+      this._joinMessage = { type: 'reject', text: _cardRefusalLine(profile, npcName, kind) };
+      this._render();
+    }
+
+    _cardBlocked(text) {
+      SoundManager.playBuzzer();
+      this._joinMessage = { type: 'reject', text };
+      this._render();
+    }
+
+    _cardDuel() {
+      const T       = _getT();
+      const npcName = _getNPCName(this._eventId);
+      const profile = _getProfile(npcName);
+      const CGx     = window.CardGame;
+      if (!CGx || !window.CardDuel) return;
+
+      if (this._focusOpinion(profile) <= CARD_REFUSE_OPINION) {
+        this._cardRefuse(profile, npcName, 'duel');
+        return;
+      }
+      // A duel is played out of a deck, and a party with nothing to play with
+      // is told so instead of being dealt an empty hand.
+      if (!CGx.canDuel()) {
+        this._cardBlocked(T('Empathize.cardNoDeck', { min: CGx.DECK_MIN }));
+        return;
+      }
+      if (CGx.hasDuelledToday(npcName)) {
+        this._cardBlocked(T('Empathize.cardAlreadyDuelled', { name: npcName }));
+        return;
+      }
+
+      SoundManager.playOk();
+      this._cancelSubModeQuiet();
+      this._cardMode  = 'stake';
+      this._menuIndex = 0;
+      this._render();
+    }
+
+    // Clears every other submenu without a re-render, so opening a card
+    // submenu does not blink the panel twice.
+    _cancelSubModeQuiet() {
+      this._giftMode = this._bribeMode = this._stealMode = false;
+      this._pickpocketConfirm = this._attackConfirm = false;
+      this._socialMode = this._romanceMode = this._directionsMode = false;
+      this._infectMode = false;
+      this._transmitConfirm = null;
+      this._joinMessage = null;
+      this._activeTab = 'chat';
+    }
+
+    // What can actually be put on the table: nothing, money neither purse would
+    // miss, or an item against one of theirs of comparable worth.
+    _cardStakeOptions() {
+      const npcName = _getNPCName(this._eventId);
+      const profile = _getProfile(npcName);
+      const purse   = Math.min($gameParty.gold(), Math.max(0, profile?.money ?? 0));
+      const tiers   = [0.05, 0.15, 0.35].map(f => Math.floor(purse * f)).filter(v => v >= 100);
+      return {
+        money: Array.from(new Set(tiers)),
+        item: this._cardItemStake(profile)
+      };
+    }
+
+    // The party puts up its dearest spare item; the NPC answers with whatever
+    // they own that is nearest it in price, out of the same pool the haggle
+    // reads (their items plus the gear they are wearing).
+    _cardItemStake(profile) {
+      const mine = $gameParty.items()
+        .filter(item => item && item.itypeId !== 2 && (item.price || 0) > 0)
+        .sort((a, b) => (b.price || 0) - (a.price || 0))[0];
+      if (!mine) return null;
+
+      const pool = [];
+      for (const id of (profile?.itemIds ?? [])) {
+        if ($dataItems?.[id] && ($dataItems[id].price || 0) > 0) pool.push({ kind: 0, id, obj: $dataItems[id] });
+      }
+      if (profile && window.NPCSocietyGetEquip) {
+        const ev    = $gameMap?.event(this._eventId);
+        const cid   = _extractClassId(ev) ?? profile.assignedClassId;
+        const equip = window.NPCSocietyGetEquip(_getNPCName(this._eventId), cid, profile.wealthTierBase ?? 2);
+        if (equip.weaponId && $dataWeapons?.[equip.weaponId]) {
+          pool.push({ kind: 1, id: equip.weaponId, obj: $dataWeapons[equip.weaponId] });
+        }
+        for (const aId of (equip.armorIds ?? [])) {
+          if ($dataArmors?.[aId]) pool.push({ kind: 2, id: aId, obj: $dataArmors[aId] });
+        }
+      }
+      if (!pool.length) return null;
+
+      const want = mine.price || 0;
+      pool.sort((a, b) => Math.abs((a.obj.price || 0) - want) - Math.abs((b.obj.price || 0) - want));
+      const theirs = pool[0];
+      return { playerItem: { kind: 0, id: mine.id }, npcItem: { kind: theirs.kind, id: theirs.id } };
+    }
+
+    _startCardDuel(stake) {
+      const npcName = _getNPCName(this._eventId);
+      const profile = _getProfile(npcName);
+      SoundManager.playOk();
+      // Same handover the haggle uses: close the panel, let go of the event,
+      // and let the map open the table on the next quiet frame.
+      this._removeOverlay();
+      this._releaseEventLock();
+      SceneManager.pop();
+      $gameTemp._NPCEmpathizeOpenCardDuel = {
+        opponentName: npcName,
+        opponentDeck: window.CardGame.npcDeck(npcName, profile),
+        npcName, profile, stake,
+        actorId: this._focusActor()?.actorId() ?? null
+      };
+    }
+
+    _cardTrade() {
+      const T       = _getT();
+      const npcName = _getNPCName(this._eventId);
+      const profile = _getProfile(npcName);
+      const CGx     = window.CardGame;
+      if (!CGx) return;
+
+      if (this._focusOpinion(profile) <= CARD_REFUSE_OPINION) {
+        this._cardRefuse(profile, npcName, 'trade');
+        return;
+      }
+      if (CGx.hasTradedToday(npcName)) {
+        this._cardBlocked(T('Empathize.cardAlreadyTraded', { name: npcName }));
+        return;
+      }
+      if (!this._cardSpares().length) {
+        this._cardBlocked(T('Empathize.cardNothingToSwap'));
+        return;
+      }
+
+      SoundManager.playOk();
+      this._cancelSubModeQuiet();
+      this._cardMode  = 'trade';
+      this._menuIndex = 0;
+      this._render();
+    }
+
+    // Copies the party can part with. A card the active deck is holding is not
+    // spare, so a swap can never quietly gut the deck being played with.
+    _cardSpares() {
+      const CGx = window.CardGame;
+      if (!CGx) return [];
+      const deck = CGx.activeDeck();
+      const held = {};
+      for (const key of (deck?.cards ?? [])) held[key] = (held[key] || 0) + 1;
+      return CGx.ownedKeys().filter(key => CGx.countOf(key) - (held[key] || 0) > 0);
+    }
+
+    // Every swap on the table: one of theirs, and what it would cost.
+    _cardTradeOffers() {
+      const CGx = window.CardGame;
+      if (!CGx) return [];
+      const npcName = _getNPCName(this._eventId);
+      const profile = _getProfile(npcName);
+      const spares  = this._cardSpares();
+      return CGx.npcCards(npcName, profile)
+        .map(wanted => ({ theirs: wanted, mine: CGx.tradeCounterOffer(wanted, spares) }))
+        .filter(offer => offer.mine)
+        .slice(0, 8);
+    }
+
+    _doCardTrade(index) {
+      const T       = _getT();
+      const CGx     = window.CardGame;
+      const offer   = this._cardTradeOffers()[index];
+      if (!CGx || !offer) { SoundManager.playBuzzer(); return; }
+      const npcName = _getNPCName(this._eventId);
+      const profile = _getProfile(npcName);
+
+      CGx.removeCard(offer.mine, 1);
+      CGx.addCard(offer.theirs, 1);
+      CGx.markTraded(npcName);
+
+      // Swapping cards with somebody is time spent with them, and they think a
+      // little better of whoever did the swapping.
+      _addNpcOpinion(profile, this._focusActor()?.actorId(), 3);
+      this._gainCompany();
+      try {
+        window.ParchmentToast?.show(
+          T('Empathize.cardSwapped', { mine: CGx.nameOf(offer.mine), theirs: CGx.nameOf(offer.theirs) }),
+          { severity: 'good', duration: 150 }
+        );
+      } catch (e) { /* a popup never breaks a trade */ }
+
+      AudioManager.playSe({ name: 'Casino/card_slide_2', volume: 65, pitch: 110, pan: 0 });
+      this._cardMode = null;
+      this._joinMessage = { type: 'accept', text: T('Empathize.cardSwapDone', { name: npcName }) };
+      this._render();
     }
 
     _treatWounds() {
@@ -2766,6 +3512,10 @@
       if (swEvId != null && $gameMap) {
         $gameSelfSwitches.setValue([$gameMap.mapId(), swEvId, 'A'], true);
         $gameMap.event(swEvId)?.refresh();
+        // The world loses this citizen, not just this savegame: recorded in the
+        // world folder so no other playthrough can recruit them again
+        // (NPCSystem.js, GoneRegistry).
+        window.NPCGone?.record($gameMap.mapId(), swEvId, npcName, 'joined');
       }
 
       // Show success in the chat, the player closes the panel when ready.
@@ -2805,6 +3555,10 @@
       }
       phrase = String(phrase || '').trim();
       if (!phrase) return;
+      // A non-sentient member types like anybody else and is heard like the
+      // animal it is: what leaves its throat is noise, and the noise is what
+      // the NPC answers.
+      if (_isNonSentientActor(this._focusActor())) phrase = _feralGrowlFor(phrase);
       this._askDraft = '';
       // Small talk moves no opinion, but it is still somebody to talk to.
       this._gainCompany();
@@ -2818,9 +3572,13 @@
         let response = '';
         if (window.generateMarkovString) {
           // Draw from ALL text databases combined, seeded with the player's own
-          // words so the reply riffs on what was just said.
-          try { response = window.generateMarkovString('all', { chainOrder: 2, minLength: 8, maxLength: 30, startText: phrase }); }
+          // words so the reply riffs on what was just said. The generator opens
+          // with the seed itself, so the lengths are asked for on top of it and
+          // the echo is pruned back off before the line is spoken.
+          const seedLen = phrase.split(/\s+/).filter(Boolean).length;
+          try { response = window.generateMarkovString('all', { chainOrder: 2, minLength: 8 + seedLen, maxLength: 30 + seedLen, startText: phrase }); }
           catch (e) {}
+          if (response && !/^ERROR:/i.test(response)) response = _stripSeedEcho(response, phrase);
           if (!response || /^ERROR:/i.test(response)) {
             try { response = window.generateMarkovString('all', { chainOrder: 2, minLength: 8, maxLength: 30 }); }
             catch (e) {}
@@ -3050,7 +3808,14 @@
     scene._bribeMode         = false;
     scene._attackConfirm     = false;
     scene._pickpocketConfirm = false;
+    scene._infectMode        = false;
+    scene._infectItems       = [];
     scene._webList       = null;
+    // A new subject has not met whoever is doing the talking yet, so every
+    // one-shot greeting is re-armed.
+    scene._emGreeted     = false;
+    scene._bubbaGreeted  = false;
+    scene._feralGreeted  = false;
     scene._render();
   }
 
@@ -3154,6 +3919,17 @@
       };
     },
 
+    // In an empty world nobody outlived 1 January 2000, so anyone the record
+    // still has standing is reported dead on that date instead. The two
+    // branches below store their dates in different formats (NPCPolitics
+    // writes "01 JAN 2000", HistorySimulator writes ISO), and the wiki prints
+    // whichever it is given verbatim, so each is answered in its own.
+    _emptyWorldDeath(format) {
+      const WM = window.WorldManager;
+      if (!WM || typeof WM.isEmptyWorld !== "function" || !WM.isEmptyWorld()) return null;
+      return { date: format === 'iso' ? '2000-01-01' : '01 JAN 2000', cause: null };
+    },
+
     getLeader(name) {
       const hm = this._hm();
       const found = window.NPCPolitics?.findPolitician?.(name);
@@ -3161,7 +3937,7 @@
         return {
           type: 'leader', kind: 'politician', name: found.pol.name,
           pol: found.pol, power: found.power,
-          death: found.pol.alive ? null : {
+          death: found.pol.alive ? this._emptyWorldDeath() : {
             date: found.pol.deathDate ?? null,
             cause: window.NPCPolitics?.textOf?.(found.pol.deathCause) || null,
           },
@@ -3182,7 +3958,8 @@
             return {
               type: 'leader', kind: 'historical', name,
               leader, of: groupName, ofType,
-              death: isDead ? (deaths[name] || { date: null, cause: null }) : null,
+              death: isDead ? (deaths[name] || { date: null, cause: null })
+                            : this._emptyWorldDeath('iso'),
               events: hm?.getEventsAbout?.(name, 12) ?? [],
             };
           }
@@ -3275,6 +4052,35 @@
       };
     },
 
+    // A NPCPolitics party, wherever it is seated (a party id already carries
+    // its own power, e.g. "party_HolyVaticanEmpire_0", but the wiki only ever
+    // has the bare id, so this is a real search rather than a parse).
+    getParty(id) {
+      const found = window.NPCPolitics?.findParty?.(id);
+      if (!found) return null;
+      const { power, party } = found;
+      const leader = power.politicians?.[party.leaderId] || null;
+      return {
+        type: 'party', id: party.id, name: party.name,
+        party, power, leader,
+        ideology: window.NPCShared?.ideologyById?.(party.ideologyId) || null,
+      };
+    },
+
+    // A creed from js/db/WorldGen/Ideology.json, with every live party (across
+    // every hyperpower) currently standing on it, since more than one always
+    // can. `id` is the ideology's own id, not a slot index.
+    getIdeology(id) {
+      const list = window.NPCShared?.ideologyList?.() || [];
+      const ideo = list.find(e => e && e.id === id) || null;
+      if (!ideo) return null;
+      const parties = (window.NPCPolitics?.listAllParties?.() || [])
+        .filter(({ party }) => party.ideologyId === id)
+        .map(({ party, powerName }) => ({ party, powerName }));
+      const label = window.T ? window.T(ideo.name) : ideo.id;
+      return { type: 'ideology', id: ideo.id, name: label, ideo, parties };
+    },
+
     get(type, id) {
       // Old faction names may now be hyperpowers - redirect if not found as faction
       if (type === 'faction') {
@@ -3289,6 +4095,8 @@
         case 'power':    return this.getPower(id);
         case 'leader':   return this.getLeader(id);
         case 'artifact': return this.getArtifact(id);
+        case 'party':    return this.getParty(id);
+        case 'ideology': return this.getIdeology(id);
       }
       return null;
     },
@@ -3365,6 +4173,30 @@
       return [...set].sort((a, b) => a.localeCompare(b));
     },
 
+    // Every party currently seated anywhere (power attached), for the wiki's
+    // Political Parties index; multiple entries can and do share an ideology.
+    listPartyNames() {
+      return (window.NPCPolitics?.listAllParties?.() || [])
+        .map(({ party, powerName }) => ({ id: party.id, name: party.name, powerName, ideologyId: party.ideologyId }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    },
+
+    // Every non-alien creed in Ideology.json, so the Ideologies index is the
+    // whole shelf and not only the handful presently in office; each carries
+    // how many live parties currently hold it.
+    listIdeologyNames() {
+      const list = window.NPCShared?.ideologyList?.() || [];
+      const parties = window.NPCPolitics?.listAllParties?.() || [];
+      const label = e => (window.T ? window.T(e.name) : e.id);
+      return list
+        .filter(e => e && !e.alien)
+        .map(e => ({
+          id: e.id, name: e.name,
+          partyCount: parties.reduce((n, { party }) => n + (party.ideologyId === e.id ? 1 : 0), 0),
+        }))
+        .sort((a, b) => (b.partyCount - a.partyCount) || label(a).localeCompare(label(b)));
+    },
+
     listArtifacts() {
       const out = [];
       const seen = new Set();
@@ -3414,6 +4246,8 @@
       const powers = (typeof $gameSystem !== 'undefined' && $gameSystem?._npcPolitics?.powers) || {};
       for (const p of Object.values(powers))
         for (const pol of Object.values(p?.politicians || {})) add(pol?.name, 'leader', pol?.name);
+      for (const p of Object.values(powers))
+        for (const party of (p?.parties || [])) add(party?.name, 'party', party?.id);
       for (const [key, r] of Object.entries(hm?.getArtifactRecords?.() || {})) add(r?.name, 'artifact', key);
       const generated = this._generatedArtifacts();
       if (generated) {
@@ -3554,8 +4388,15 @@
       _extractContacts, _countRecentInteractions, _lastInteractionDay,
       _forceHighJoinChance, _joinChance, _joinLevelOk, _partyMaxLevel,
       _travellingPartyCount, SPOKEN_LOG_MAX,
+      // Infecting somebody out of a vial: what is in the pack and the odds of
+      // not being seen doing it, both read by the UI layer's action row.
+      _diseaseVialId, _diseaseVialItems, _infectChance,
       // Social/romance maths, shared with the UI layer's romance submenu.
       _socialLines, _rand, _addNpcOpinion, _npcEffectiveOpinion,
+      // The ledger underneath _addNpcOpinion, for a caller that has already
+      // paid the company for this exchange and only wants the number moved
+      // (AutoIdleExplorer's two-sided party conversations).
+      _npcBaseOpinion, _setNpcBaseOpinion,
       _traitCompatBonus, _personalitySocialMult, _hygienePenalty, _hygieneReadout,
       // Em (Switch 48): stance resolution, shared with the UI layer so it can
       // hide what she is not allowed to do and label what she is walking into.
@@ -3563,6 +4404,9 @@
       // Bubba (Switch 49): the same for the man who built the Liminal Engine,
       // so the UI can hide what he refuses to do and label what he walks into.
       _bubbaPlaythrough, _isBubbaActor, _bubbaContext, _bubbaDb,
+      // Non-sentient members (classes 63+): the UI layer builds their action
+      // list out of these and hides everything a beast cannot do.
+      _isNonSentientActor, _feralKind, _feralBand, _feralCanGift, FERAL_ACTIONS,
     },
     _getT,
   };

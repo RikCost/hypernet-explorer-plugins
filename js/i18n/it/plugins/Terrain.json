@@ -24,5 +24,12 @@
   "signShop": "Negozio",
   "signInn": "Locanda",
   "needPickaxe": "Ti serve un piccone o uno strumento pesante per romperlo.",
-  "statue": "Una statua che raffigura {subject}."
+  "statue": "Una statua che raffigura {subject}.",
+  "rummage": "Fruga dentro",
+  "sit": "Siediti",
+  "graffiti": "Scritto sul muro: \"{text}\"",
+  "poster": "Il manifesto dice: \"{text}\"",
+  "signStop": "STOP",
+  "signDanger": "Pericolo. Lavori in corso.",
+  "signHelipad": "Eliporto. Non sostare."
 }

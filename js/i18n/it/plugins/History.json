@@ -335,14 +335,7 @@
       "Dimenticata",
       "Astrale"
     ],
-    "nounGender": {
-      "Reliquia": "f",
-      "Lama": "f",
-      "Ascia": "f",
-      "Pistola": "f",
-      "Egida": "f",
-      "Corazza": "f"
-    },
+    "nounGender": {},
     "itemNouns": [
       "Nucleo",
       "Reliquia",
@@ -442,5 +435,19 @@
     "artifactBadge": "ARTEFATTO",
     "military": "militare",
     "economy": "economia"
+  },
+  "assembly": {
+    "motion": "L'assemblea ha votato su {title}. {result} per {forCount} a {againstCount} con {abstainCount} astenuti, a scrutinio {ballot}. {envoy} ha parlato {stance} {delegation}.",
+    "graveMotion": "L'assemblea ha esaminato {title} e l'ha rimessa al Consiglio di Sicurezza. {result} per {forCount} a {againstCount} con {abstainCount} astenuti, a scrutinio {ballot}. {envoy} ha parlato {stance} {delegation}.",
+    "unattendedMotion": "L'assemblea ha votato su {title}. {result} con {forCount} voti contro {againstCount} e {abstainCount} astenuti, a scrutinio {ballot}.",
+    "unattendedGraveMotion": "L'assemblea ha discusso {title} e l'ha rimessa al Consiglio di Sicurezza. {result} con {forCount} voti contro {againstCount} e {abstainCount} astenuti, a scrutinio {ballot}."
+  },
+  "battle": {
+    "bossSlain": "La compagnia di {leader} ha sconfitto {enemy}.",
+    "petrodemonSlain": "La compagnia di {leader} ha sconfitto il petrodemone {enemy}."
+  },
+  "party": {
+    "wipe": "La compagnia di {party} è stata perduta al completo.",
+    "wipeAt": "La compagnia di {party} è stata perduta al completo a {place}."
   }
 }

@@ -1,0 +1,7 @@
+{
+  "defaultName": "COMPANION",
+  "defaultChildName": "LITTLE ONE",
+  "born": "{name} IZ BORN, AN' JOINS DA FAMILY!",
+  "cloneJoined": "{parent} DIVIDES. {name} TAKES UP A PLACE IN DA PARTY!",
+  "cloneFollows": "{parent} DIVIDES. DERE IZ NO ROOM IN DA PARTY, SO {name} FOLLOWS BEHIND!"
+}

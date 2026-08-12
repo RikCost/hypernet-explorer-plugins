@@ -1,0 +1,47 @@
+{
+  "info": {
+    "money": "MONEY: {value}",
+    "oilPrice": "OIL PRICE: {value}",
+    "oilShares": "OIL SHARES: {value}",
+    "oilValue": "OIL VALUE: {value}",
+    "netWorth": "NET WORTH: {value}",
+    "soulPrice": "SOUL PRICE: {value}",
+    "soulShares": "SOUL SHARES: {value}",
+    "soulValue": "SOUL VALUE: {value}"
+  },
+  "graph": {
+    "oilLabel": "OIL",
+    "soulLabel": "SOULS",
+    "oilCurrent": "OIL: {value}",
+    "soulCurrent": "SOULS: {value}"
+  },
+  "commands": {
+    "buy": "BUY",
+    "sell": "SELL",
+    "oil": "OIL",
+    "souls": "SOULS",
+    "cancel": "CANCEL",
+    "sellAll": "SELL ALL",
+    "share": "SHARE",
+    "shares": "SHARES"
+  },
+  "titles": {
+    "buyWhich": "BUY WHICH STOCK?",
+    "sellWhich": "SELL WHICH STOCK?",
+    "buyHowMany": "BUY HOW MANY {stock} SHARES?",
+    "sellHowMany": "SELL HOW MANY {stock} SHARES?"
+  },
+  "stockNames": {
+    "oil": "OIL",
+    "souls": "SOULS"
+  },
+  "appName": "QUANTUM PROJECTOR",
+  "portfolio": {
+    "liquid": "LIQUID GOLD",
+    "netWorth": "NET WORTH"
+  },
+  "ui": {
+    "oilTether": "OIL TETHER:",
+    "soulCrystal": "SOUL CRYSTAL:"
+  }
+}

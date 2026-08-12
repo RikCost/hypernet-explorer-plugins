@@ -90,6 +90,13 @@
     { key: "ageElder", lo: 61, hi: 90 },
   ];
 
+  // Every "pick" row gets a small random button beside it, except
+  // "specializations": its picker is a drill-down into categories rather than
+  // a flat list of values, so applying a uniformly random top-level option
+  // would only open a random category instead of rolling anything, and it
+  // already has its own dedicated "specsRandom" row right below it.
+  const RAND_ROW_EXCLUDE = new Set(["specializations"]);
+
   //===========================================================================
   // Localization + small HTML helpers
   //===========================================================================
@@ -241,6 +248,31 @@
     actor.recoverAll();
   }
 
+  // Blood type is otherwise rolled once from the actor's name the first time
+  // anything asks (window.BloodTypeService, Health_BiologicSimulation); this
+  // is the one place it can be set by hand instead, and the one place it can
+  // be re-rolled at random rather than staying pinned to the name.
+  function applyBloodType(id) {
+    const actor = editedActor();
+    if (!actor || !window.BloodTypeService) return;
+    window.BloodTypeService.setForActor(actor, id);
+  }
+
+  function randomizeBloodType() {
+    const actor = editedActor();
+    const BTS = window.BloodTypeService;
+    if (!actor || !BTS) return;
+    const table = BTS.list();
+    if (!table.length) return;
+    let roll = Math.random() * 100;
+    let chosen = table[0];
+    for (const entry of table) {
+      roll -= entry.percent;
+      if (roll <= 0) { chosen = entry; break; }
+    }
+    BTS.setForActor(actor, chosen.id);
+  }
+
   function applyAge(age) {
     if (!$gameSystem._ccBirthAge) $gameSystem._ccBirthAge = [];
     $gameSystem._ccBirthAge[Session.memberIndex] = age;
@@ -335,6 +367,16 @@
     if (!entry) return "";
     return window.ConfigManager && ConfigManager.language === "it"
       ? (entry.name_it || entry.name) : entry.name;
+  }
+
+  // A creed is written to the profile by slot AND by name: everything that
+  // reads one back (NPCShared.ideologyFor) answers on the id first, so setting
+  // the index alone would leave the character believing whatever they were
+  // first dealt. Both go together, always.
+  function setIdeology(profile, index) {
+    const list = (window.NPCShared && window.NPCShared.ideologyList()) || [];
+    profile.ideologyIndex = index;
+    profile.ideologyId = list[index] ? list[index].id : null;
   }
 
   function ideologyName(entry) {
@@ -560,17 +602,24 @@
   // editors (sprite, class browser, creature builder) are not opened; their
   // fields are filled with the same randomizers the wizard's own random paths
   // use, so this is a complete character and not a half-filled sheet.
-  function randomizeEverything() {
+  // `keepBuild` skips the one step that changes what the character mechanically
+  // is (their class, out of the sentient roster; a creature's archetype is
+  // never touched here at all, only the creature builder sets it), so the
+  // "keep kind & class" row can reroll everything else about a character
+  // without disturbing the build the player already settled on.
+  function randomizeEverything(opts) {
+    const keepBuild = !!(opts && opts.keepBuild);
     const actor = editedActor();
     if (!actor) return;
     randomName();
     applyGender(Math.floor(Math.random() * 4));
-    if (!isCreature()) {
-      const classes = ($dataClasses || []).filter((c) => c && c.id > 0 && c.id !== CREATURE_CLASS_ID);
-      const chosen = pick(classes);
+    if (!keepBuild && !isCreature()) {
+      // A person is rolled out of the sentient roster (1-62) alone; Feral and
+      // the classes above it are a creature's own.
+      const chosen = pick(window.CreatureClasses.sentientRoster());
       if (chosen) {
-        actor.changeClass(chosen.id, true);
-        if (window.equipRandomCompatibleWeapon) window.equipRandomCompatibleWeapon(actor, chosen.id);
+        actor.changeClass(chosen, true);
+        if (window.equipRandomCompatibleWeapon) window.equipRandomCompatibleWeapon(actor, chosen);
       }
     }
     if (window.selectRandomSpriteForActor) window.selectRandomSpriteForActor(actor.actorId());
@@ -584,6 +633,7 @@
     // After the class and the traits, so the points are spent on top of the
     // floors those two just settled.
     randomizeSpecializations();
+    randomizeBloodType();
     const towns = hometownList();
     if (towns.length) $gameSystem._ccHometown = pick(towns);
     const band = pick(AGE_BANDS);
@@ -596,7 +646,7 @@
         profile.personalityIndex = Math.floor(Math.random() * data.personalities.length);
       }
       if (data.ideologies && data.ideologies.length) {
-        profile.ideologyIndex = Math.floor(Math.random() * data.ideologies.length);
+        setIdeology(profile, Math.floor(Math.random() * data.ideologies.length));
       }
       if (data.factions && data.factions.length) {
         profile.factionIndex = Math.random() < 0.25
@@ -630,6 +680,19 @@
     const data = societyData();
     const creature = isCreature();
     const sections = [];
+
+    // Asked first, ahead of name, class or anything else: a creed is the
+    // lens the rest of the sheet is read through, so it is what the panel
+    // opens on rather than one more row buried in Standing.
+    sections.push({
+      title: T("detailed.section.ideology"),
+      rows: [
+        {
+          id: "ideology", label: T("detailed.row.ideology"),
+          value: ideologyName(profile ? window.NPCShared.ideologyFor(profile) : null), kind: "pick",
+        },
+      ],
+    });
 
     const identity = [
       { id: "name", label: T("detailed.row.name"), value: actor.name(), kind: "open" },
@@ -697,6 +760,14 @@
       ],
     });
 
+    sections.push({
+      title: T("detailed.section.biology"),
+      rows: [
+        { id: "bloodType", label: T("detailed.row.bloodType"), value: bloodTypeLabel(actor), kind: "pick" },
+        { id: "bloodTypeRandom", label: T("detailed.row.bloodTypeRandom"), value: "", kind: "run" },
+      ],
+    });
+
     const personalities = (data && data.personalities) || [];
     const ideologies = (data && data.ideologies) || [];
     const factions = (data && data.factions) || [];
@@ -707,10 +778,6 @@
         {
           id: "personality", label: T("detailed.row.personality"),
           value: personalityName(personalities[profile ? profile.personalityIndex : -1]), kind: "pick",
-        },
-        {
-          id: "ideology", label: T("detailed.row.ideology"),
-          value: ideologyName(ideologies[profile ? profile.ideologyIndex : -1]), kind: "pick",
         },
         {
           id: "faction", label: T("detailed.row.faction"),
@@ -759,6 +826,7 @@
     sections.push({
       title: T("detailed.section.finish"),
       rows: [
+        { id: "randomizeKeepBuild", label: T("detailed.row.randomizeKeepBuild"), value: "", kind: "run" },
         { id: "randomizeAll", label: T("detailed.row.randomizeAll"), value: "", kind: "run" },
         { id: "done", label: T("detailed.row.done"), value: "", kind: "run", primary: true },
       ],
@@ -774,6 +842,13 @@
   function reproductionLabel(value) {
     const key = "genital." + (String(value) === "-1" ? "none" : String(value));
     return window.T.has("Empathize." + key) ? TE(key) : T("detailed.unset");
+  }
+
+  function bloodTypeLabel(actor) {
+    const BTS = window.BloodTypeService;
+    if (!BTS || !actor) return T("detailed.unset");
+    const entry = BTS.forActor(actor);
+    return entry ? `${entry.type} (${entry.rarity})` : T("detailed.unset");
   }
 
   function moralityLabel(score) {
@@ -803,7 +878,7 @@
     }
     return ids.slice(0, 3).map((id) => {
       const spec = window.Specializations.byId.get(Number(id));
-      return spec ? spec.name : "";
+      return spec ? window.Specializations.displayName(spec) : "";
     }).filter(Boolean).join(", ") + (ids.length > 3 ? ` +${ids.length - 3}` : "");
   }
 
@@ -843,6 +918,17 @@
             { key: "model", label: T("detailed.portrait.model") },
           ],
         };
+      case "bloodType": {
+        const BTS = window.BloodTypeService;
+        const table = BTS ? BTS.list() : [];
+        return {
+          title: T("detailed.row.bloodType"),
+          options: table.map((raw) => {
+            const entry = BTS.describe(raw.id);
+            return { key: entry.id, label: `${entry.type} (${entry.rarity})`, sub: entry.name };
+          }),
+        };
+      }
       case "hometown":
         return {
           title: TE("hometownLbl"),
@@ -962,7 +1048,7 @@
               const granted = floor > 1 ? " " + T("detailed.specGranted", { level: window.Specializations.levelName(floor) }) : "";
               return {
                 key: String(spec.id),
-                label: spec.name,
+                label: window.Specializations.displayName(spec),
                 sub: `${window.Specializations.levelName(level)} · ${cost}${granted}`,
                 disabled: level < 5 && specStepCost(level) > specPointsLeft(),
               };
@@ -993,6 +1079,9 @@
       case "portraitStyle":
         if (actor && actor.setPortraitMode) actor.setPortraitMode(key);
         return false;
+      case "bloodType":
+        applyBloodType(key);
+        return false;
       case "hometown": {
         const towns = hometownList();
         $gameSystem._ccHometown = key === "__random" ? pick(towns) : key;
@@ -1014,7 +1103,7 @@
         if (profile) profile.personalityIndex = Number(key);
         return false;
       case "ideology":
-        if (profile) profile.ideologyIndex = Number(key);
+        if (profile) setIdeology(profile, Number(key));
         return false;
       case "faction":
         if (profile) profile.factionIndex = Number(key);
@@ -1100,13 +1189,15 @@
   function openClassBrowser() {
     if (!window.Scene_ClassSelection) return;
     clearWizardResume();
-    // A creature's roster is the one its archetypes support; a humanoid gets
-    // the whole list (the archetype-of-classes shortcut is the quick flow's).
+    // A creature's roster is the one its archetypes support, in the two groups
+    // the browser heads ("Non Sentient" / "Sentient"); a humanoid gets the
+    // whole sentient list (the archetype-of-classes shortcut is the quick
+    // flow's).
     if (isCreature() && window.CreatureClasses) {
       const actor = editedActor();
       const archetypes = String((actor && actor._currentArchetype) || "").split("/").map((s) => s.trim());
       window.$ccArchetypeClassFilter =
-        window.CreatureClasses.forArchetypes(archetypes[0] || null, archetypes[1] || null);
+        window.CreatureClasses.groupsForArchetypes(archetypes[0] || null, archetypes[1] || null);
     } else {
       window.$ccArchetypeClassFilter = null;
     }
@@ -1272,10 +1363,15 @@
       html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${esc(section.title)}</div>`;
       section.rows.forEach((row) => {
         const arrow = row.kind === "open" ? "›" : row.kind === "pick" ? "▾" : "✦";
+        const randBtn = row.kind === "pick" && !RAND_ROW_EXCLUDE.has(row.id)
+          ? `<span class="npc-cc-row-rand"
+               onmousedown="event.stopPropagation();SceneManager._scene._ccRandomizeRow('${row.id}')">${esc(T("detailed.random"))}</span>`
+          : "";
         html += `<div class="npc-cc-row${row.primary ? " npc-cc-row--primary" : ""}"
              onmousedown="event.stopPropagation();SceneManager._scene._ccActivateRow('${row.id}')">
           <span class="npc-cc-row-lbl">${esc(row.label)}</span>
           <span class="npc-cc-row-val">${esc(row.value || "")}</span>
+          ${randBtn}
           <span class="npc-cc-row-arrow">${arrow}</span>
         </div>`;
       });
@@ -1334,8 +1430,10 @@
         reconcileSpecPoints();
         break;
       case "specsRandom": randomizeSpecializations(); break;
+      case "bloodTypeRandom": randomizeBloodType(); break;
       case "rerollBackstory": rerollBackstory(); break;
       case "rerollLife": rerollLife(); break;
+      case "randomizeKeepBuild": randomizeEverything({ keepBuild: true }); break;
       case "randomizeAll": randomizeEverything(); break;
       case "done": this._leave(true); return;
       default:
@@ -1344,6 +1442,20 @@
           this._contentIndex = 0;
         }
     }
+    this._render();
+  };
+
+  // The small random button beside a "pick" row: rolls one option out of that
+  // row's own picker list and applies it directly, the same way choosing it
+  // by hand would, without ever opening the picker overlay.
+  Scene_NPCEmpathize.prototype._ccRandomizeRow = function (id) {
+    if (!isEditing(this)) return;
+    const data = buildPicker(id, null);
+    const choices = data ? data.options.filter((o) => !o.disabled) : [];
+    if (!choices.length) return;
+    SoundManager.playOk();
+    const option = choices[Math.floor(Math.random() * choices.length)];
+    applyPick(id, option.key, null);
     this._render();
   };
 

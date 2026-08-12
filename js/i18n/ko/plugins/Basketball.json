@@ -3,13 +3,9 @@
   "player": "플레이어",
   "cpu": "CPU",
   "cpuLiningUp": "CPU가 자세를 잡는 중...",
-  "aimPrompt": "플레이어: 좌우로 조준, 확인",
-  "powerPrompt": "힘을 정하고 확인을 누르세요",
-  "setTouch": "감각을 정하고 확인을 누르세요",
   "itsGood": "들어갔다!",
   "swish": "스위시!",
   "score": "득점!",
   "miss": "실패",
-  "finalScore": "플레이어: {player}  CPU: {cpu}",
-  "pressOkExit": "확인을 눌러 나가기"
+  "finalScore": "플레이어: {player}  CPU: {cpu}"
 }

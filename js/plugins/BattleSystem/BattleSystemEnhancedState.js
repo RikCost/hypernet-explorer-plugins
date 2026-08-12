@@ -238,6 +238,11 @@
         r.exp = this._rewards.exp || 0;
         r.gold = this._rewards.gold || 0;
         r.items = this._rewards.items ? this._rewards.items.slice() : [];
+        // The headline and the extra lines belong to the fight that just ended,
+        // never to the one before it.
+        r.title = null;
+        r.lines = [];
+        r.entries = [];
     };
 
     // Knowledge from a win is priced by how far above the party the troop was,
@@ -261,8 +266,74 @@
                 BSE.State.battleRewards.knowledge = knowledge;
             }
         }
+        // Anything the fight itself owes is paid AFTER the engine has made its
+        // rewards: makeRewards() rebuilds the item list from the drop table, so
+        // a crate of oil flasks added before it would be thrown away.
         _BattleManager_processVictory.call(this);
+        payPetrodemonSpoils();
+        recordBossVictory();
     };
+
+    // ========================================================================
+    // 4b. Felling something worth remembering
+    // ------------------------------------------------------------------------
+    // A petrodemon pays in crude: oil flasks and Crude Oil into the pack, OIL
+    // options into the party's holdings, all of it named in the spoils popup.
+    // ========================================================================
+    function payPetrodemonSpoils() {
+        if (!BSE.Functions.payPetrodemonSpoils) return;
+        const paid = BSE.Functions.payPetrodemonSpoils();
+        if (!paid) return;
+        const r = BSE.State.battleRewards;
+        r.title = T('Battle.petrodemon.slain', { name: paid.record.name });
+        r.lines = (r.lines || []).slice();
+        if (paid.shares > 0) r.lines.push(T('Battle.petrodemon.options', { n: paid.shares }));
+        // The crate is one entry carrying its own count, not one entry a flask.
+        r.entries = (r.entries || []).concat(paid.entries);
+    }
+
+    // The month a battle was fought in, on the same clock the assembly and the
+    // epidemics file their records by.
+    function battleHistoryDate() {
+        if (window.TimeDateSystem && typeof window.TimeDateSystem.getDateTimeFromMinutes === 'function') {
+            const dt = window.TimeDateSystem.getDateTimeFromMinutes($gameVariables.value(114));
+            if (dt && dt.year && dt.monthNum) return `${dt.year}-${dt.monthNum}`;
+        }
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    // Killing a boss is a thing the world remembers: it goes into the Archive
+    // alongside the century's wars, keyed rather than written out so the
+    // sentence is rebuilt in whatever language the world is later read in.
+    // Petrodemons are named as such; every other <Boss> creature is entered by
+    // its own name.
+    function recordBossVictory() {
+        const hm = window.HistoryManager;
+        if (!hm || typeof hm.recordEvent !== 'function') return;
+        const leader = $gameParty.leader();
+        if (!leader || !$gameTroop) return;
+        const date = battleHistoryDate();
+        const seen = [];
+        $gameTroop.members().forEach(battler => {
+            if (!battler || !battler.isDead || !battler.isDead()) return;
+            const data = battler.enemy ? battler.enemy() : null;
+            if (!data) return;
+            const petro = !!data._bsePetrodemon;
+            if (!petro && !/<Boss>/i.test(data.note || '')) return;
+            const name = battler.originalName ? battler.originalName() : data.name;
+            if (seen.indexOf(name) >= 0) return;   // one line per creature, not per body
+            seen.push(name);
+            hm.recordEvent({
+                date: date,
+                category: 'military',
+                type: petro ? 'petrodemon_slain' : 'boss_slain',
+                descKey: petro ? 'History.battle.petrodemonSlain' : 'History.battle.bossSlain',
+                descParams: { leader: leader.name(), enemy: name },
+                iconIndex: 115
+            });
+        });
+    }
 
     const _BattleManager_startTurn = BattleManager.startTurn;
     BattleManager.startTurn = function() {
@@ -933,19 +1004,24 @@
     Scene_Map.prototype.createRewardsPopup = function() {
         const r = BSE.State.battleRewards;
         const kp = r ? (r.knowledge || 0) : 0;
-        if (!r || (r.exp <= 0 && r.gold <= 0 && r.items.length === 0 && kp <= 0)) return;
+        const extra = (r && r.entries) ? r.entries : [];
+        const lines = (r && r.lines) ? r.lines : [];
+        if (!r || (r.exp <= 0 && r.gold <= 0 && r.items.length === 0 && kp <= 0 &&
+            !extra.length && !lines.length)) return;
 
         if (window.ParchmentToast) {
             window.ParchmentToast.reward({
-                title: null,
+                title: r.title || null,
                 exp: r.exp || 0,
                 gold: r.gold || 0,
                 knowledge: kp,
-                entries: (r.items || []).filter(Boolean).map(item => ({ obj: item, qty: 1 }))
+                lines: lines,
+                entries: (r.items || []).filter(Boolean).map(item => ({ obj: item, qty: 1 })).concat(extra)
             });
         }
 
         r.exp = 0; r.gold = 0; r.items = []; r.knowledge = 0;
+        r.title = null; r.lines = []; r.entries = [];
     };
 
     const _Scene_Map_update = Scene_Map.prototype.update;

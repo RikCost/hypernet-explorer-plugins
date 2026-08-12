@@ -1,0 +1,96 @@
+{
+  "title": "SKILLS",
+  "back": "BACK",
+  "unit": {
+    "ap": "AP",
+    "mp": "MP"
+  },
+  "cost": {
+    "mp": "{n} MP",
+    "ap": "{n} AP"
+  },
+  "discipline": {
+    "basic": "BASIC DISCIPLINE",
+    "standard": "STANDARD DISCIPLINE"
+  },
+  "section": {
+    "damage": "DAMAGE",
+    "skillEffects": "SKILL EFFECTS",
+    "classifications": "CLASSIFICATIONS",
+    "training": "TRAININ'"
+  },
+  "role": {
+    "offensive": {
+      "name": "OFFENSIVE",
+      "description": "SKILLS DAT DEAL DAMAGE.\nSTRIKE DOWN YA FOES!"
+    },
+    "healing": {
+      "name": "HEALIN'",
+      "description": "RESTORE HP AN' CURE AILMENTS.\nMEND YOURSELF AN' ALLIES!"
+    },
+    "support": {
+      "name": "SUPPORT",
+      "description": "BUFFS, DEBUFFS AN' UTILITY.\nSHIFT DA TIDE OF BATTLE!"
+    }
+  },
+  "cmd": {
+    "levelUp": "LEVEL UP",
+    "allSkills": "ALL SKILLS",
+    "use": "USE",
+    "cancel": "CANCEL",
+    "carry": "SYNC",
+    "bench": "DESYNC",
+    "basic": "BASIC",
+    "esoteric": "ESOTERIC"
+  },
+  "action": {
+    "useSkill": "[ USE SKILL ]",
+    "carry": "[ SYNC ]",
+    "bench": "[ DESYNC ]",
+    "back": "[ BACK ]"
+  },
+  "info": {
+    "type": "TYPE:",
+    "scale": "SCALE:",
+    "basic": "BASIC",
+    "none": "NONE",
+    "effect": "EFFECT:",
+    "hpDmg": "HP DAMAGE",
+    "mpDmg": "MP DAMAGE",
+    "hpHeal": "HP RECOVER",
+    "mpHeal": "MP RECOVER",
+    "hpDrain": "HP DRAIN",
+    "mpDrain": "MP DRAIN",
+    "buffs": "BUFFS",
+    "debuffs": "DEBUFFS",
+    "state": "STATE"
+  },
+  "target": {
+    "title": "TARGET COMPANION",
+    "prompt": "CHANNELIN' {skill}. SELECT DA TARGET COMPANION:",
+    "allCompanions": "ALL PARTY COMPANIONS"
+  },
+  "empty": {
+    "title": "GRIMOIRE CODICIL",
+    "hint": "SELECT A SKILL FROM DA LIST ON DA LEFT TA INSPECT ITS ELEMENTAL SCALE, USE COST, AN' ALCHEMICAL ACTIONS!",
+    "section": "NO SKILLS CATALOGED UNDER DIS SECTION!",
+    "category": "NO SKILLS CATALOGED IN DIS CATEGORY!"
+  },
+  "spec": {
+    "trains": "TRAINS",
+    "bonus": "SKILL BONUS"
+  },
+  "loadout": {
+    "skills": "SKILLS",
+    "magic": "MAGIC",
+    "count": "{group} {n}/{max}",
+    "carried": "SYNCED",
+    "benched": "DESYNCED",
+    "always": "ALWAYS",
+    "hint": "SHIFT SYNCS OR DESYNCS DA SELECTED SKILL",
+    "full": "{group} LOADOUT IZ FULL ({max} SYNCED). DESYNC ONE FIRST!"
+  },
+  "tag": {
+    "field": "FIELD"
+  }
+}

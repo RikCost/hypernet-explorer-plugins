@@ -164,10 +164,12 @@
     // was folded into it and deleted; its sheets (the historical dossier sprites
     // and their skins) live here as npc:false entries.
     //
-    //   { "Skab/!$Adept": { npc, busts, beta, animations,
+    //   { "Skab/!$Adept": { npc, aliens, busts, beta, animations,
     //                       Archetype, Gender, chars, color, classes, markovDB } }
     //
     //   npc        the sheet may be dealt to a procedural inhabitant
+    //   aliens     the sheet is not a person of this world. An alien is dealt at
+    //              a rate, never out of the ordinary pool, see alienShare below.
     //   beta       the sheet is not in the original folder (img/characters/Skab/
     //              Originals). A beta sheet is browsable in the character grid but
     //              is kept out of every automatic pick unless the world was created
@@ -203,13 +205,189 @@
     (function () {
         // Pools are rebuilt only when the beta answer changes, which happens at
         // most once per world activation.
-        const poolCache = { all: null, stable: null };
+        const poolCache = { all: null, stable: null, alienAll: null };
+
+        // How often a rolled face belongs to somebody who is not from here. An
+        // alien walking a town street is a rare sight; a travel interior is where
+        // they are actually met, so the whole PublicTransport map group (the
+        // trains, the bus, the metro, the starship cabin) deals them far more
+        // freely; and a hand-authored landing site on another world is their
+        // ground, not ours, so there a human face is the rarity. All three are
+        // shares of one draw, never a pool an alien sits in.
+        const ALIEN_SHARE = 0.01;
+        const ALIEN_SHARE_TRANSPORT = 0.25;
+        const ALIEN_SHARE_OFFWORLD = 0.90;
+        const TRANSPORT_GROUP = "PublicTransport"; // i18n-ignore: MapGroups.json key
 
         function db() {
             return (window.WorldGen && window.WorldGen.NPCs) || {};
         }
 
+        // ── The retired joined sheets ───────────────────────────────────────
+        // The 53 eight-character sheets that used to sit in the root of
+        // img/characters were cut into single-character !$ sheets under
+        // img/characters/NPCs/ and deleted. Every entry that came out of one
+        // records where it came from in its `source` field ("People2#3"), so
+        // the cut is its own migration table and nothing has to be listed here.
+        //
+        // Every map, prefab, actor and plugin parameter in the repository was
+        // repointed when the sheets were cut, but a sheet name also travels in
+        // things written BEFORE it: a world folder's npcs.json caches a
+        // snapshot of each dealt NPC's event pages (poolCache), and a savegame
+        // holds the party's own graphics. Those still name the joined sheet and
+        // its cell, which is a 404 on every load. legacySheet() answers what a
+        // (sheet, cell) pair is called now, and the hooks below apply it at the
+        // moment a graphic is set, so stale data renders the right person
+        // without the stored file being rewritten under the player.
+        //
+        // A cell the cut produced nothing for was a deliberately blank cell of
+        // the joined sheet, and answers "" (no graphic), which is what it drew.
+        let legacyIndex = null;
+        function legacyMap() {
+            if (legacyIndex) return legacyIndex;
+            legacyIndex = {};
+            for (const [key, entry] of Object.entries(db())) {
+                const src = entry && typeof entry === "object" ? entry.source : null;
+                if (typeof src !== "string") continue;
+                const cut = src.lastIndexOf("#");
+                if (cut <= 0) continue;
+                const sheet = src.slice(0, cut);
+                const cell = Number(src.slice(cut + 1));
+                if (!Number.isFinite(cell)) continue;
+                const slots = legacyIndex[sheet] || (legacyIndex[sheet] = {});
+                if (slots[cell] === undefined) slots[cell] = key;
+            }
+            return legacyIndex;
+        }
+
+        // ====================================================================
+        // window.MagicNature , how much magic this world has
+        // ====================================================================
+        // Every real entry of Skills, Enemies, Weapons, Armors, Items, Classes
+        // and States carries `<Nature: Magical>` or `<Nature: Mundane>` in its
+        // notebox; Traits.json carries a `nature` field and NPCs.json a
+        // `magical` boolean (all written by tools/nature/gen_nature_tags.js).
+        // This is the ONE place that reads them, so no caller has to know the
+        // tag's spelling or which of the three shapes a given table uses.
+        //
+        //   normal   , everything is allowed. `isFiltering()` is false and
+        //              every caller short-circuits, so an ordinary world pays
+        //              nothing at all for this.
+        //   severed  , magic never happened: nothing Magical exists.
+        //   unbound  , magic won: nothing Mundane is left.
+        //
+        // It is a SEPARATE axis from the alternate timeline (populationMode):
+        // both are resolved independently and every combination is legal.
+        //
+        // The two answers are deliberately asymmetric in one place only, and
+        // it is stated here rather than at each caller: a thing the party was
+        // GIVEN is never taken away. Character creation's starting kit, a
+        // quest reward already handed over and anything already in the pack
+        // stay exactly as they are; the level decides what the world will
+        // OFFER from now on, not what the party is holding.
+        const NATURE_RE = /<Nature:\s*([A-Za-z]+)\s*>/i;
+        window.MagicNature = {
+            // "normal" | "severed" | "unbound"
+            level() {
+                const WM = window.WorldManager;
+                if (!WM || typeof WM.magicalLevel !== "function") return "normal";
+                return WM.magicalLevel();
+            },
+
+            // False in an ordinary world, which is the fast path every caller
+            // tests first.
+            isFiltering() {
+                return this.level() !== "normal";
+            },
+
+            // Is a thing of this nature allowed here? Takes the string, since
+            // there are THREE answers and not two:
+            //
+            //   magical , only in a world that has magic
+            //   mundane , only in a world that does not. This is a narrow set
+            //             on purpose: it means "could only exist BECAUSE there
+            //             is no magic", which in practice is high technology,
+            //             the thing a world of working spells never had to
+            //             invent.
+            //   both    , a rope, a hammer, a horse, a sword, a loaf of bread.
+            //             Most of the world is this. It exists either way and
+            //             is never filtered out by either level.
+            //
+            // A boolean is still accepted (true = magical) for the callers
+            // that only ever have one.
+            allows(nature) {
+                const level = this.level();
+                if (level === "normal") return true;
+                const n = (nature === true) ? "magical"
+                        : (nature === false) ? "mundane"
+                        : String(nature || "").toLowerCase();
+                if (n === "both" || !n) return true;
+                return level === "severed" ? n !== "magical" : n !== "mundane";
+            },
+
+            // The nature of any RMMZ database entry (anything with a notebox):
+            // "magical", "mundane", "both", or null where nothing is tagged,
+            // which `allowsData` reads as "no opinion".
+            natureOf(data) {
+                const m = data && data.note ? String(data.note).match(NATURE_RE) : null;
+                if (!m) return null;
+                const raw = m[1].toLowerCase();
+                if (raw === "magical" || raw === "both") return raw;
+                return "mundane";
+            },
+
+            isMagicalData(data) {
+                return this.natureOf(data) === "magical";
+            },
+
+            // The gate for a database entry: an item, weapon, armor, skill,
+            // enemy, class or state. Untagged entries are always allowed.
+            allowsData(data) {
+                if (!this.isFiltering()) return true;
+                const nature = this.natureOf(data);
+                if (!nature) return true;
+                return this.allows(nature);
+            },
+
+            // The gate for a trait out of js/db/Health/Traits.json, which
+            // carries its answer as a field rather than in a notebox. Also
+            // reads a disease, which carries the same `nature` field.
+            //
+            // ASYMMETRIC ON PURPOSE, and this is the one place it is decided:
+            // a SEVERED world hides the magical traits, but an UNBOUND world
+            // hides nothing. There are 183 mundane traits against 19 magical
+            // ones, so applying the unbound rule here would cut a four-trait
+            // character down to a choice of nineteen and make every character
+            // in the world read the same. Being ordinary is not a thing magic
+            // winning takes away from you.
+            allowsTrait(trait) {
+                if (this.level() !== "severed") return true;
+                if (!trait || trait.nature === undefined) return true;
+                return String(trait.nature).toLowerCase() !== "magical";
+            },
+
+            // Convenience for the item tables, which are handed ids.
+            allowsItemId(id) { return this.allowsData($dataItems && $dataItems[id]); },
+            allowsWeaponId(id) { return this.allowsData($dataWeapons && $dataWeapons[id]); },
+            allowsArmorId(id) { return this.allowsData($dataArmors && $dataArmors[id]); },
+            allowsEnemyId(id) { return this.allowsData($dataEnemies && $dataEnemies[id]); },
+            allowsSkillId(id) { return this.allowsData($dataSkills && $dataSkills[id]); },
+        };
+
         window.SpriteCatalog = {
+            // What a cell of a retired joined sheet is called now, as
+            // { name, index }, or null when the sheet was never one of them
+            // (which is every sheet still on disk). The replacement is a
+            // single-character !$ sheet, so the index is always 0.
+            legacySheet(name, index) {
+                if (typeof name !== "string" || !name) return null;
+                const slots = legacyMap()[name];
+                if (!slots) return null;
+                const cell = Number(index);
+                const key = slots[Number.isFinite(cell) ? cell : 0];
+                return { name: key || "", index: 0 };
+            },
+
             // The full record for a sheet, or null when the sheet is unknown.
             entry(key) {
                 const e = db()[key];
@@ -234,6 +412,23 @@
                 return !!(e && e.animations === true);
             },
 
+            // Not a person of this world. Kept out of npcKeys() entirely: an
+            // alien is only ever dealt through pickNpcKey's own roll.
+            isAlien(key) {
+                const e = this.entry(key);
+                return !!(e && e.aliens === true);
+            },
+
+            // Whether a character sheet may be worn in this world's magic
+            // level. The wardrobe carries a plain `magical` boolean per entry
+            // (tools/nature/gen_nature_tags.js); see window.MagicNature.
+            allowedInMagic(key, entry) {
+                const MN = window.MagicNature;
+                if (!MN || !MN.isFiltering()) return true;
+                const e = entry || this.entry(key);
+                return MN.allows(e && e.magical === true);
+            },
+
             // Whether the active world was created with beta sprites enabled.
             betaEnabled() {
                 const WM = window.WorldManager;
@@ -242,23 +437,205 @@
                 return !!(info && info.betaSprites === true);
             },
 
+            // Who this world is populated with, answered once at creation
+            // (WorldManager.populationMode). Read here rather than stored, so a
+            // world switched under a running session is never read stale.
+            populationMode() {
+                const WM = window.WorldManager;
+                if (!WM || typeof WM.populationMode !== "function") return "normal";
+                return WM.populationMode();
+            },
+
+            // The archetypes a world of PEOPLE is made of. A monster world is
+            // defined as everything that is not one of these, so they are named
+            // once, here, rather than at each caller: the sprite and bust
+            // wardrobe, the creature-creation board and the enemies that roam
+            // the map all read this one list. A two-headed one is still a
+            // person, which is why DoubleHeadedHumanoid is on it.
+            PEOPLE_ARCHETYPES: ["Humanoid", "DoubleHeadedHumanoid", "Elven", "Goblin"],
+
+            // Whether one wardrobe entry belongs in this world at all. This is
+            // the single rule behind both the sprite a procedural inhabitant is
+            // dealt and the bust that comes with it (a bust is a field of the
+            // sheet's own entry, so gating the sheet gates the face with it).
+            //
+            //   goblin  , only goblins: the sheet says so in its name or the
+            //             entry carries the Goblin archetype outright.
+            //   monster , nothing that reads as a person: every archetype
+            //             except Humanoid, Elven and Goblin.
+            //   normal  , everything, which is every world made before this
+            //             option existed.
+            //
+            // An empty world is not filtered here: nothing is spawned in one at
+            // all (NPCSystem refuses the spawn), and narrowing the wardrobe of
+            // a world with nobody in it would only hide the player's own
+            // character sheets from them.
+            allowedInPopulation(key, entry, mode) {
+                const m = mode || this.populationMode();
+                if (m !== "goblin" && m !== "monster") return true;
+                const e = entry || this.entry(key);
+                const archetype = (e && e.Archetype) || "";
+                if (m === "goblin") {
+                    return String(key).toLowerCase().includes("goblin") ||
+                           archetype === "Goblin";
+                }
+                return !this.PEOPLE_ARCHETYPES.includes(archetype);
+            },
+
+            // The faces a narrowed world may wear, as a Set of bust names, or
+            // null where every bust in the folder is fair game (normal and
+            // empty worlds). The bust gallery reads the img/busts folder rather
+            // than this file, so it cannot derive the answer itself: a bust
+            // belongs to a world when some sheet that world allows lists it.
+            // Falls back to null rather than an empty gallery if the wardrobe
+            // has nothing to say, so a data gap is never a locked door.
+            allowedBustNames(mode) {
+                const m = mode || this.populationMode();
+                const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
+                const narrowed = (m === "goblin" || m === "monster") || magic !== "normal";
+                if (!narrowed) return null;
+                const slot = "bustNames:" + m + ":" + magic;
+                if (!poolCache[slot]) {
+                    const data = db();
+                    const names = new Set();
+                    Object.keys(data).forEach(k => {
+                        const e = data[k];
+                        if (!e || !this.allowedInMagic(k, e)) return;
+                        if (!this.allowedInPopulation(k, e, m)) return;
+                        (e.busts || []).forEach(b => { if (b) names.add(String(b)); });
+                    });
+                    poolCache[slot] = names.size ? names : null;
+                }
+                return poolCache[slot] || null;
+            },
+
+            // Whether one bust file may be worn in this world.
+            bustAllowedInPopulation(bustName, mode) {
+                const m = mode || this.populationMode();
+                const allowed = this.allowedBustNames(m);
+                if (!allowed) return true;
+                if (allowed.has(String(bustName))) return true;
+                // A goblin world also takes any face that says so itself, so a
+                // bust drawn for one but never wired to a sheet is still on it.
+                return m === "goblin" &&
+                       String(bustName).toLowerCase().includes("goblin");
+            },
+
             // Every sheet that may be dealt to a procedural inhabitant. Beta
             // sheets follow the world's answer unless includeBeta says otherwise
             // (the character grid passes true: the player browses everything).
+            // Aliens are never in it: they are dealt by pickNpcKey alone.
+            // The population mode is part of the cache key: a goblin world and
+            // a normal one are two different pools off the same file, and the
+            // cache outlives a world switch inside one session.
             npcKeys(options) {
                 const includeBeta = (options && options.includeBeta !== undefined)
                     ? !!options.includeBeta
                     : this.betaEnabled();
-                const slot = includeBeta ? "all" : "stable";
+                const mode = (options && options.populationMode)
+                    ? options.populationMode
+                    : this.populationMode();
+                const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
+                const slot = (includeBeta ? "all" : "stable") + ":" + mode + ":" + magic;
                 if (!poolCache[slot]) {
                     const data = db();
                     poolCache[slot] = Object.keys(data).filter(k => {
                         const e = data[k];
-                        if (!e || e.npc !== true) return false;
-                        return includeBeta || e.beta !== true;
+                        if (!e || e.npc !== true || e.aliens === true) return false;
+                        if (!includeBeta && e.beta === true) return false;
+                        if (!this.allowedInMagic(k, e)) return false;
+                        return this.allowedInPopulation(k, e, mode);
                     });
                 }
                 return poolCache[slot];
+            },
+
+            // The alien half of the same wardrobe. The beta answer does NOT
+            // apply here: it exists so a world is not populated with sheets
+            // outside the original wardrobe by accident, and an alien is never
+            // dealt by accident, only on the declared share below. Three of the
+            // six alien sheets sit outside the original folder, and gating them
+            // on it would leave two of the three Zeta castes unmeetable in
+            // almost every world.
+            // The population answer DOES apply here, unlike the beta one: a
+            // goblin world is goblins and a monster world has nothing that
+            // reads as a person in it, and all six alien sheets are Humanoid,
+            // so both modes empty this pool and pickNpcKey deals from the
+            // ordinary one alone.
+            alienKeys() {
+                const mode = this.populationMode();
+                const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
+                const slot = "alienAll:" + mode + ":" + magic;
+                if (!poolCache[slot]) {
+                    const data = db();
+                    poolCache[slot] = Object.keys(data).filter(k => {
+                        const e = data[k];
+                        if (!e || e.npc !== true || e.aliens !== true) return false;
+                        // Every alien sheet is mundane by decree, so an unbound
+                        // world has none of them and a severed one keeps all six.
+                        if (!this.allowedInMagic(k, e)) return false;
+                        return this.allowedInPopulation(k, e, mode);
+                    });
+                }
+                return poolCache[slot];
+            },
+
+            // Is this map one of the travel interiors? The PublicTransport map
+            // group is the answer, read from MapGroups.json rather than listed
+            // here, so a wagon added to the group is covered without a change.
+            isTransportMap(mapId) {
+                const id = Number(mapId);
+                if (!Number.isFinite(id)) return false;
+                const groups = (window.WorldGen && window.WorldGen.MapGroups) || null;
+                const maps = groups && groups[TRANSPORT_GROUP] && groups[TRANSPORT_GROUP].maps;
+                if (Array.isArray(maps)) return maps.indexOf(id) >= 0;
+                return !!(window.NPCSystem && window.NPCSystem.findMapGroupByMap &&
+                    window.NPCSystem.findMapGroupByMap(id) === TRANSPORT_GROUP);
+            },
+
+            // A hand-authored landing site on a world that is not Earth. Asked
+            // of GalaxySim, which is the only thing that knows where the ship
+            // set the party down (an authored map says nothing about it itself).
+            isOffworldSite(mapId) {
+                const GS = window.GalaxySim;
+                if (!GS || typeof GS.offworldLandingSite !== "function") return false;
+                const site = GS.offworldLandingSite();
+                if (!site) return false;
+                const id = Number(mapId);
+                return !Number.isFinite(id) || site.mapId === id;
+            },
+
+            // The share of rolled faces that are alien where this pick is made.
+            alienShare(options) {
+                const mapId = (options && options.mapId !== undefined)
+                    ? options.mapId
+                    : (window.$gameMap && $gameMap.mapId ? $gameMap.mapId() : null);
+                if (this.isOffworldSite(mapId)) return ALIEN_SHARE_OFFWORLD;
+                return this.isTransportMap(mapId) ? ALIEN_SHARE_TRANSPORT : ALIEN_SHARE;
+            },
+
+            // Deal one sheet from a single draw r in [0,1). The draw is read as
+            // an inverse CDF over the two pools rather than rolled twice, so a
+            // caller holding one seeded float (which is every caller: an NPC's
+            // face has to be the same face in every savegame of the world) still
+            // gets both the exact share and a uniform pick inside the pool.
+            // options: { mapId, includeBeta, filter }.
+            pickNpcKey(r, options) {
+                const opts = options || {};
+                let pool = this.npcKeys(opts);
+                let aliens = this.alienKeys();
+                if (typeof opts.filter === "function") {
+                    pool = pool.filter(opts.filter);
+                    aliens = aliens.filter(opts.filter);
+                }
+                if (!pool.length && !aliens.length) return null;
+                const draw = (typeof r === "number" && r >= 0 && r < 1) ? r : Math.random();
+                const share = aliens.length ? (pool.length ? this.alienShare(opts) : 1) : 0;
+                if (draw < share) {
+                    return aliens[Math.min(aliens.length - 1, Math.floor((draw / share) * aliens.length))];
+                }
+                const rest = (draw - share) / (1 - share);
+                return pool[Math.min(pool.length - 1, Math.floor(rest * pool.length))];
             },
 
             // May the spawn systems deal this sheet in this world?
@@ -267,6 +644,43 @@
                 if (!e || e.npc !== true) return false;
                 return e.beta !== true || this.betaEnabled();
             }
+        };
+    })();
+
+    // ── Retired sheets are repointed the moment a graphic is set ────────────
+    // One rule at the two doors every character graphic goes through, so a
+    // world folder or a savegame written before the sheets were cut renders
+    // the same people it always did. Game_CharacterBase.setImage covers every
+    // map character (a transplanted NPC event, the player, a follower, a
+    // vehicle) and Game_Actor.setCharacterImage the party's own graphics;
+    // characterName() then answers the new name, so the bust lookups that read
+    // it resolve too. ImageManager.loadCharacter is the backstop for a caller
+    // that draws a stored name without going through either, where the cell is
+    // not known and the sheet's first face has to stand for it.
+    (function () {
+        function repoint(name, index) {
+            const SC = window.SpriteCatalog;
+            return (SC && SC.legacySheet) ? SC.legacySheet(name, index) : null;
+        }
+
+        const _setImage = Game_CharacterBase.prototype.setImage;
+        Game_CharacterBase.prototype.setImage = function (characterName, characterIndex) {
+            const now = repoint(characterName, characterIndex);
+            if (now) return _setImage.call(this, now.name, now.index);
+            return _setImage.call(this, characterName, characterIndex);
+        };
+
+        const _setCharacterImage = Game_Actor.prototype.setCharacterImage;
+        Game_Actor.prototype.setCharacterImage = function (characterName, characterIndex) {
+            const now = repoint(characterName, characterIndex);
+            if (now) return _setCharacterImage.call(this, now.name, now.index);
+            return _setCharacterImage.call(this, characterName, characterIndex);
+        };
+
+        const _loadCharacter = ImageManager.loadCharacter;
+        ImageManager.loadCharacter = function (filename) {
+            const now = repoint(filename, 0);
+            return _loadCharacter.call(this, now ? now.name : filename);
         };
     })();
 

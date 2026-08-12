@@ -5,6 +5,8 @@
   "lore": "Lore",
   "states": "States",
   "elements": "Elements",
+  "diseases": "Diseases",
+  "history": "History",
   "hints": "Hints",
   "selectATopicToStart": "Select a topic to start reading...",
   "back": "Back",

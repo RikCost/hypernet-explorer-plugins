@@ -4,8 +4,6 @@
     "past": "Passato",
     "present": "Presente",
     "future": "Futuro",
-    "instruction": "Clicca su una carta per rivelare il suo significato",
-    "complete": "La tua lettura è completa. Premi ESC per uscire.",
     "upright": "Dritto",
     "reversed": "Rovesciato",
     "npcTitle": "Lettura dei Tarocchi per {name}",
@@ -14,8 +12,9 @@
     "layout": "LA DISPOSIZIONE",
     "readingDone": "LA LETTURA È CONCLUSA",
     "faceDown": "[ coperta ]",
-    "readingDonePrompt": "La lettura è conclusa. Premi OK.",
-    "unclearNumbered": "Il significato non è chiaro... ({n})"
+    "unclearNumbered": "Il significato non è chiaro... ({n})",
+    "chooseSpread": "SCEGLI UNA STESA",
+    "readingComplete": "LETTURA COMPLETATA"
   },
   "cards": {
     "The Fool": {
@@ -233,7 +232,7 @@
       "upright": [
         "L'equilibrio perfetto crea armonia in tutte le aree della vita.",
         "Pazienza e moderazione portano al successo duraturo.",
-        "Mescolare gli opposti crea una potente alchimia.",
+        "Mescolare gli opposti crea una potente alchimica.",
         "Il tempismo divino orchestra risultati perfetti."
       ],
       "reversed": [

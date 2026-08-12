@@ -555,7 +555,7 @@
     "critRate": "치명타 확률 +{bonus}%",
     "hitsTwice": "공격 한 번에 두 번 타격",
     "resistance": "{what} 저항 {value}%",
-    "tpGain": "행동으로 얻는 TP +{bonus}%",
+    "tpGain": "행동으로 얻는 AP +{bonus}%",
     "autoState": "전투 시작 시 자동 {state}"
   },
   "flavor": {

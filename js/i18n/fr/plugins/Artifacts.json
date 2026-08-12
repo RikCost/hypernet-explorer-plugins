@@ -555,7 +555,7 @@
     "critRate": "+{bonus} % de taux de coup critique",
     "hitsTwice": "Frappe deux fois par attaque",
     "resistance": "{value} % de résistance à {what}",
-    "tpGain": "+{bonus} % de PT gagnés par les actions",
+    "tpGain": "+{bonus} % d'AP gagnés par les actions",
     "autoState": "Auto-{state} au début du combat"
   },
   "flavor": {

@@ -125,5 +125,6 @@
   "interviewRecordedIn": "Intervista registrata a ",
   "interviewComplete": "Intervista completata: ",
   "debugQuestAccepted": "Missione debug accettata: ",
-  "theBoardIsBareNobodyIsPostingToday": "La bacheca è vuota. Nessuno affigge nulla oggi."
+  "theBoardIsBareNobodyIsPostingToday": "La bacheca è vuota. Nessuno affigge nulla oggi.",
+  "giverIsDead": "Impossibile da completare: chi ha affidato l’incarico e morto."
 }

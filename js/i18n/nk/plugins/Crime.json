@@ -1,0 +1,14 @@
+{
+  "text": {
+    "crimeRecord": "CRIME RECORD",
+    "totalBounty": "TOTAL BOUNTY",
+    "noCrimes": "NO CRIMES COMMITTED.",
+    "crimesCommitted": "CRIMES COMMITTED:",
+    "bountyCleared": "BOUNTY CLEARED!",
+    "allCrimesForgi": "ALL CRIMES HAB BEEN FORGIVEN!",
+    "availableCrimes": "AVAILABLE CRIMES BY CATEGORY",
+    "errorUnknown": "ERROR: UNKNOWN CRIME TYPE:",
+    "total": "TOTAL",
+    "selfPardon": "YOU SELF PARDON DIS CRIME"
+  }
+}

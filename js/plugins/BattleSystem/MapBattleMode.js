@@ -25,8 +25,15 @@
  *     same figure the Empathize panel shows) or when they are simply brave;
  *     they fight CPU-controlled off their society profile's own level, stats,
  *     skills and pouch (see section 9d)
- *   - the party's own map sprites (leader + followers) gather near the
- *     bumped enemy event
+ *   - the party fights from where it is standing. Whoever bumped the monster
+ *     holds the tile they bumped it from, and every other member who is on the
+ *     screen and near the brawl simply KEEPS THE TILE THEY ARE ON - the fight
+ *     opens around them rather than shuffling them into a formation first.
+ *     Only a member who is off the screen or most of a map away - which a Loose
+ *     party (Core/AutoIdleExplorer.js) makes routine - is placed, put straight
+ *     down on a muster tile a few tiles off the nearest monster (see section 5).
+ *     Nothing is walked in and nothing is waited for: the round opens on the
+ *     same frame the fight does.
  *   - the same HP/MP/AP HUD cards appear, plus a map-native command menu
  *   - a new "Move" command lets the acting battler reposition (range driven
  *     by DEX/agi) before choosing an action, FFT/Baldur's-Gate style
@@ -113,6 +120,24 @@
     const DEFAULT_RANGE = 4;
     const UNARMED_RANGE = 1;
     const DIR_LIST = [2, 4, 6, 8];
+
+    // --- The muster (section 5) ----------------------------------------------
+    // How far off the nearest monster the party forms up. Not shoulder to
+    // shoulder with it: a fight that opens with everybody already in contact has
+    // no opening move, so the line stands off far enough that closing in, or
+    // shooting across the gap, is a real first turn.
+    const MUSTER_MIN = 2;
+    const MUSTER_MAX = 4;
+    // How far around the member who bumped the monster a muster tile is looked
+    // for, so a placed member lands behind the one already in contact rather
+    // than on the far side of the creature.
+    const MUSTER_SCAN = 7;
+    // A member standing this close to the one who bumped the monster, and on
+    // the screen, keeps the tile they are already on: they are part of the
+    // scene as it stands. Anyone further off - or off the screen entirely,
+    // which a Loose party (Core/AutoIdleExplorer.js) makes routine - is placed
+    // on a muster tile instead.
+    const MUSTER_KEEP = 10;
 
     // How close a roaming "Enemy" event has to get to any combatant before it is
     // dragged into the fight (Manhattan tiles, same metric as every reach test
@@ -499,6 +524,10 @@
             if (idx === 1 && MBM.p2Event()) return MBM.p2Event();
             if (idx === 1) return $gamePlayer.followers().follower(0);
             if (idx === 2) return $gamePlayer.followers().follower(1);
+            // The fourth place in the line: a summon (SummonSystem.js) holds it
+            // for the length of a fight, and it fights from a tile like anyone
+            // else rather than from nowhere.
+            if (idx === 3) return $gamePlayer.followers().follower(2);
             return null;
         }
         if (battler.isEnemy && battler.isEnemy()) {
@@ -734,7 +763,11 @@
             this._updatePosition();
             this._duration--;
             this.opacity = Math.min(255, this._duration * 12);
-            if (this._duration <= 0 && this.parent) this.parent.removeChild(this);
+            if (this._duration > 0) return;
+            // Destroyed, not merely unparented: every popup carries its own
+            // 160x48 Bitmap, and a long fight throws hundreds of them.
+            if (this.parent) this.parent.removeChild(this);
+            this.destroy();
         }
     }
 
@@ -768,11 +801,18 @@
         // but replicate it here too for full parity with front-view battles.
         if (this._escaped || $gameParty.isAllDead() || $gameTroop.isAllDead()) {
             $gameSystem.setBattleEnded(true);
-            $gameParty.members().forEach((actor, index) => {
-                if (!actor.isDead()) return;
-                if (index === 0) $gameSystem.setActor1Died(true);
-                else if (index === 1) $gameSystem.setActor2Died(true, actor.name());
-                else if (index === 2) $gameSystem.setActor3Died(true, actor.name());
+            // Positional, exactly like BattleManager.checkActorDeaths, so the
+            // volunteers have to be invisible here for the same reason: with a
+            // one- or two-strong party an ally sits at index 1 or 2, and a dead
+            // volunteer would be filed as a dead companion - which, under
+            // Hardcore, permanently deletes a real one who is standing there.
+            MBM.withoutAllies(() => {
+                $gameParty.members().forEach((actor, index) => {
+                    if (!actor.isDead()) return;
+                    if (index === 0) $gameSystem.setActor1Died(true);
+                    else if (index === 1) $gameSystem.setActor2Died(true, actor.name());
+                    else if (index === 2) $gameSystem.setActor3Died(true, actor.name());
+                });
             });
         }
         if (this.isBattleTest()) {
@@ -897,6 +937,16 @@
     // tile it was walking to before the fight starts measuring anything.
     MBM._snapEvent = function (event) {
         if (event && event.isMoving()) event.locate(event.x, event.y);
+    };
+
+    // The same for a party member. Routed through _placeBattler so snapping the
+    // leader does not drag the whole follower train onto their tile
+    // (Game_Player.locate synchronizes it), and so a member snapped in a river
+    // is left in the right swim state.
+    MBM._snapCharacter = function (character) {
+        if (character && character.isMoving && character.isMoving()) {
+            MBM._placeBattler(character, character.x, character.y);
+        }
     };
 
     // Every bystander event banks `n` tiles of movement - roaming Enemy events
@@ -1073,6 +1123,9 @@
         MBM._battleMembersCache = null;
         MBM._roundStarted = false;
         MBM._hpBarKey = "";
+        // A fight that never reached _positionParty (no enemy event) must not
+        // leave the last one's follower states standing here to be restored.
+        MBM._followerThrough = [];
 
         BattleManager.setup(troopId, false, false);
         // No scene change means Scene_Map.stopAudioOnBattleStart never ran, so
@@ -1100,12 +1153,21 @@
         MBM._clearWorldSteps();
         MBM._positionParty();
         MBM._preparePet();
+        MBM._refreshHpBars();
+
+        // _positionParty() has already settled where everybody stands, so the
+        // fight opens on the same frame it was triggered on.
+        MBM._beginRounds();
+    };
+
+    // The fight proper begins: the volunteers are counted, the cards are dealt
+    // and BattleManager builds the first round.
+    MBM._beginRounds = function () {
         // Townspeople standing around the brawl decide whether to wade in as
         // soon as the party has taken its positions - before startBattle() builds
         // the first round, so a volunteer acts in it rather than watching it.
         MBM._considerNpcAllies();
         MBM._refreshHpBars();
-
         BattleManager.startBattle();
     };
 
@@ -1168,7 +1230,12 @@
             if (!(character instanceof Game_Event)) MBM._syncSwimState(character);
         }
 
-        $gamePlayer.gatherFollowers();
+        // Closing ranks is what a marching column does. A Loose party
+        // (Core/AutoIdleExplorer.js) has no column to close: gathering there
+        // would drag everybody onto the leader's tile the instant the fight
+        // ended, undoing the whole point of the formation, so they are left
+        // standing where they fought and pick their own lives back up.
+        if (!MBM._looseFormation()) $gamePlayer.gatherFollowers();
 
         MBM._enemyEvent = null;
         MBM._enemyEventFor = new Map();
@@ -1190,11 +1257,56 @@
         // re-running its start() hook (already aliased by
         // BattleSystemEnhancedState.js for corpses/respawn/rewards) now that
         // $gameSystem.isBattleEnded() is true.
-        SceneManager._scene.start();
+        //
+        // Scene_Map._transfer is set once in create() and never cleared, so on
+        // any map the party walked into - which is nearly all of them - the core
+        // start() would replay the whole arrival: a fade in from black, the map
+        // name banner, an autosave, and $gameMap.autoplay(), which restarts the
+        // map BGM over the victory fanfare the audio bookkeeping above just went
+        // to some trouble to protect. That transfer finished long ago; the flag
+        // is put down for the re-entry and handed straight back, since the scene
+        // (and Core/AutoIdleExplorer.js's own start hook) still reads it later.
+        const scene = SceneManager._scene;
+        const wasTransfer = scene._transfer;
+        scene._transfer = false;
+        MBM._reentering = true;
+        try {
+            scene.start();
+        } finally {
+            scene._transfer = wasTransfer;
+            MBM._reentering = false;
+        }
+    };
+
+    // True only inside the finish() re-entry above. Anything hung off
+    // Scene_Map.start that means "the party has just arrived somewhere" - the
+    // formation reset in Core/AutoIdleExplorer.js is the one that matters - has
+    // to sit this one out: the party has not arrived anywhere, it has been
+    // standing on this map fighting.
+    MBM._reentering = false;
+    MBM.isReentering = function () {
+        return !!MBM._reentering;
     };
 
     //=========================================================================
     // 5. Party positioning
+    //
+    // The party fights from where it is standing. Whoever bumped the monster
+    // holds the tile they bumped it from, and so does every other member who is
+    // ON THE SCREEN and within MUSTER_KEEP tiles of them: the fight opens
+    // around the scene as the player left it, with no shuffling and no waiting.
+    //
+    // The one case that has to be handled is the member who is not there at
+    // all. A Loose party (Core/AutoIdleExplorer.js) is not a column behind the
+    // leader: each member is off living their own life, routinely most of a map
+    // away and off the screen entirely. A battler with no line to the field can
+    // neither act nor be acted on, so that member is PLACED - put straight down
+    // on a muster tile standing MUSTER_MIN..MUSTER_MAX tiles off the nearest
+    // monster, near the member already in contact, dry land before water.
+    //
+    // Two smaller cases go the same way as being absent: a member standing on a
+    // tile another combatant already holds (a Close column freshly gathered
+    // onto the leader's tile), and one standing somewhere nothing can stand.
     //=========================================================================
 
     // Free tiles around the enemy to muster the rest of the party on, walking
@@ -1220,50 +1332,220 @@
         return flanks;
     };
 
+    // Every monster the party is forming up against. At the opening bell that is
+    // the one event that was bumped; reinforcements (section 9c) join later and
+    // are picked up by whatever asks again afterwards.
+    MBM._enemyAnchors = function () {
+        const list = [];
+        for (const entry of MBM._combatEnemyEvents) {
+            if (entry.event && !entry.event._erased) list.push(entry.event);
+        }
+        if (list.length === 0 && MBM._enemyEvent) list.push(MBM._enemyEvent);
+        return list;
+    };
+
+    MBM._nearestAnchorTo = function (character) {
+        let best = null;
+        let bestD = Infinity;
+        for (const foe of MBM._enemyAnchors()) {
+            const d = manhattan(character.x, character.y, foe.x, foe.y);
+            if (d < bestD) { best = foe; bestD = d; }
+        }
+        return best;
+    };
+
+    // A tile somebody can stand on: the same "impassable from every side" wall
+    // test _flankTiles and the line of sight use.
+    MBM._standable = function (x, y) {
+        if (!$gameMap.isValid(x, y)) return false;
+        return DIR_LIST.some(d => $gameMap.isPassable(x, y, d));
+    };
+
+    // The muster tiles themselves: standing off every monster by
+    // MUSTER_MIN..MUSTER_MAX tiles, as near as the terrain allows to the member
+    // who is already in contact, dry land before water. `blocked` is the set of
+    // "x,y" keys already spoken for and is added to as tiles are handed out.
+    MBM._musterTiles = function (anchor, count, blocked) {
+        if (count <= 0) return [];
+        const foes = MBM._enemyAnchors();
+        const nearestFoe = (x, y) =>
+            foes.reduce((best, f) => Math.min(best, manhattan(x, y, f.x, f.y)), Infinity);
+
+        const candidates = [];
+        for (let dy = -MUSTER_SCAN; dy <= MUSTER_SCAN; dy++) {
+            for (let dx = -MUSTER_SCAN; dx <= MUSTER_SCAN; dx++) {
+                const away = Math.abs(dx) + Math.abs(dy);
+                if (away > MUSTER_SCAN) continue;
+                const x = $gameMap.roundX(anchor.x + dx);
+                const y = $gameMap.roundY(anchor.y + dy);
+                if (blocked.has(x + "," + y)) continue;
+                if (!MBM._standable(x, y)) continue;
+                const foe = nearestFoe(x, y);
+                if (foe < MUSTER_MIN || foe > MUSTER_MAX) continue;
+                candidates.push({ x, y, away, foe, wet: MBM.isSwimmableWater(x, y) ? 1 : 0 });
+            }
+        }
+        // Dry land first, then the tiles nearest the member already in contact,
+        // then the ones nearest the monster: the line forms up around them.
+        candidates.sort((a, b) => (a.wet - b.wet) || (a.away - b.away) || (a.foe - b.foe));
+
+        const spots = [];
+        for (const c of candidates) {
+            if (spots.length >= count) break;
+            spots.push({ x: c.x, y: c.y });
+            blocked.add(c.x + "," + c.y);
+        }
+        // A corridor, a cave mouth or a jetty simply may not hold that many
+        // tiles at the right stand-off; fall back to the flanking ring so nobody
+        // is left without a place to stand.
+        if (spots.length < count && MBM._enemyEvent) {
+            const taken = [...blocked].map(k => {
+                const [x, y] = k.split(",").map(Number);
+                return { x, y };
+            });
+            for (const spot of MBM._flankTiles(MBM._enemyEvent, count - spots.length, taken)) {
+                spots.push(spot);
+                blocked.add(spot.x + "," + spot.y);
+            }
+        }
+        return spots;
+    };
+
+    // Is the party walking itself rather than marching in a column? Loose is
+    // the formation that scatters members over the map (Core/AutoIdleExplorer.js).
+    // Asked of the option rather than of Loose.anyLoose(), which also answers
+    // true for a Close party that merely has a pet trailing it.
+    const FORMATION_LOOSE = 1;
+    MBM._looseFormation = function () {
+        const loose = window.AutoIdleExplorer && window.AutoIdleExplorer.loose;
+        if (!loose || typeof loose.mode !== "function") return false;
+        return loose.mode() === FORMATION_LOOSE;
+    };
+
+    // Can this member fight from the tile they are already standing on? Only if
+    // the player can see them, they are near the brawl, the tile is one somebody
+    // can stand on, and nobody else has it.
+    MBM._holdsPosition = function (character, anchor, taken) {
+        if (taken.has(character.x + "," + character.y)) return false;
+        // Somewhere nobody can stand: a follower parked inside a wall by the
+        // permanent through state it walks the map with, which is exactly where
+        // a Close column ends up after a Gather Party. Water is not that - a
+        // member who swam out there is legitimately in it and keeps swimming.
+        if (!MBM._standable(character.x, character.y) &&
+            !MBM.isSwimmableWater(character.x, character.y)) return false;
+        if (manhattan(character.x, character.y, anchor.x, anchor.y) > MUSTER_KEEP) return false;
+        return MBM._isOnScreen(character);
+    };
+
     MBM._positionParty = function () {
         const enemy = MBM._enemyEvent;
         if (!enemy) return;
 
-        // Whoever bumped the enemy is already standing next to it; everyone else
-        // is pulled in around it. In split-screen that is the load-bearing half:
-        // the partner may be anywhere on the map when the fight opens, and a
-        // battler with no line to the field can neither act nor be acted on.
+        // A Loose party (Core/AutoIdleExplorer.js) is scattered over the map
+        // living its own life when the fight opens. Drop every errand and every
+        // speech bubble before anything else, or a member walks back to a stale
+        // goal the moment the battle ends - and nobody stands in the middle of a
+        // battlefield thinking about the flowers.
+        const loose = window.AutoIdleExplorer && window.AutoIdleExplorer.loose;
+        if (loose && typeof loose.standDown === "function") loose.standDown();
+
+        // Whoever bumped the enemy is the anchor: they are already in contact,
+        // and everybody near them is already in the scene. In split-screen that
+        // is the load-bearing half, since the partner may be anywhere on the map
+        // when the fight opens, and a battler with no line to the field can
+        // neither act nor be acted on.
         const activatedByP2 = !!MBM.p2Event() && $gameMessage._eventActivator === "p2";
         const triggerChar = activatedByP2 ? MBM.p2Event() : $gamePlayer;
+        MBM._snapCharacter(triggerChar);
 
         // Real party members only: a volunteer fights from wherever they were
-        // standing when they decided to, they are not marched into formation.
-        const movers = [];
+        // standing when they decided to, they are never placed.
+        const members = [];
         for (const actor of MBM.withoutAllies(() => $gameParty.battleMembers())) {
             const c = MBM.mapCharacterFor(actor);
             if (!c || c === triggerChar) continue;
             if (typeof c.actor === "function" && !c.actor()) continue;
-            if (!movers.includes(c)) movers.push(c);
+            if (!members.includes(c)) members.push(c);
         }
 
-        const flanks = MBM._flankTiles(enemy, movers.length, [
-            { x: triggerChar.x, y: triggerChar.y }
-        ]);
+        const taken = new Set([triggerChar.x + "," + triggerChar.y]);
+        for (const foe of MBM._enemyAnchors()) taken.add(foe.x + "," + foe.y);
 
+        // Two passes, and the order matters: everybody who is staying claims
+        // their tile first, so a member who has to be placed is never put down
+        // on top of one who was already standing there.
         MBM._followerThrough = [];
-        movers.forEach((character, i) => {
+        const placing = [];
+        for (const character of members) {
             if (character instanceof Game_Follower) {
-                // Followers are permanently through-walls outside battle (they have
-                // to be, to trail the leader through crowds). As tactical battlers
-                // they would otherwise walk straight through walls and other
-                // combatants, so solidify them for the fight and put them back in
+                // Followers are permanently through-walls outside battle (they
+                // have to be, to trail the leader through crowds). As tactical
+                // battlers they would walk straight through walls and other
+                // combatants, so they are solidified here and put back in
                 // finish().
                 MBM._followerThrough.push({ follower: character, through: character.isThrough() });
-                character.setThrough(false);
             }
-            const spot = flanks[i];
-            if (!spot) return;
-            character.locate(spot.x, spot.y);
-            character.setDirection(dirBetween(spot.x, spot.y, enemy.x, enemy.y) || 2);
-            // The muster spot can be water (a fight on a riverbank), so the
-            // arriving battler starts swimming rather than standing on the waves.
-            MBM._syncSwimState(character);
+            MBM._snapCharacter(character);
+            if (MBM._holdsPosition(character, triggerChar, taken)) {
+                taken.add(character.x + "," + character.y);
+                MBM._settleBattler(character);
+            } else {
+                placing.push(character);
+            }
+        }
+
+        const spots = MBM._musterTiles(triggerChar, placing.length, taken);
+        placing.forEach((character, i) => {
+            const spot = spots[i];
+            // No muster tile to be had (a corridor, a jetty, a cave mouth with
+            // the whole party outside it): leaving them where they stand beats
+            // dropping them into a wall.
+            if (spot) MBM._placeBattler(character, spot.x, spot.y);
+            MBM._settleBattler(character);
         });
+    };
+
+    // A member has taken their place: solid for the rest of the fight (only the
+    // leader keeps whatever through state they walked in with, for a debug pass
+    // or a permanently submerged biome), facing the nearest monster, and in the
+    // right swim state for the tile they ended up on.
+    MBM._settleBattler = function (character) {
+        if (character !== $gamePlayer) character.setThrough(false);
+        const foe = MBM._nearestAnchorTo(character);
+        if (foe) {
+            character.setDirection(
+                dirBetween(character.x, character.y, foe.x, foe.y) || character.direction()
+            );
+        }
+        MBM._syncSwimState(character);
+    };
+
+    // Is the character somewhere the camera can actually show? Takes a plain
+    // { x, y } as happily as a character, so a candidate tile can be tested too.
+    MBM._isOnScreen = function (pos) {
+        const x = $gameMap.adjustX(pos.x);
+        const y = $gameMap.adjustY(pos.y);
+        return x >= -1 && y >= -1 && x <= $gameMap.screenTileX() && y <= $gameMap.screenTileY();
+    };
+
+    // locate() on the leader drags the whole follower train onto their tile
+    // (Game_Player.locate synchronizes them), which would undo every muster spot
+    // handed out so far; put the followers back where they were standing.
+    MBM._placeBattler = function (character, x, y) {
+        if (character === $gamePlayer) {
+            const saved = $gamePlayer.followers().data()
+                .map(f => ({ f, x: f.x, y: f.y, d: f.direction() }));
+            character.locate(x, y);
+            for (const s of saved) {
+                s.f.locate(s.x, s.y);
+                s.f.setDirection(s.d);
+            }
+        } else {
+            character.locate(x, y);
+        }
+        // The tile can be water (a fight on a riverbank), so the arriving battler
+        // starts swimming rather than standing on the waves.
+        MBM._syncSwimState(character);
     };
 
     //=========================================================================
@@ -1652,10 +1934,14 @@
         }
     }
 
+    // Each highlight owns a tile-sized Bitmap, and a Move command paints one per
+    // reachable tile - a hundred and more on an open field, every turn, for the
+    // whole fight. Removing them from the stage is not enough: the texture stays
+    // on the GPU until the sprite is destroyed.
     MBM._clearTiles = function () {
-        const spriteset = currentSpriteset();
         for (const s of MBM._tileSprites) {
-            if (spriteset && s.parent) s.parent.removeChild(s);
+            if (s.parent) s.parent.removeChild(s);
+            if (s.destroy) s.destroy();
         }
         MBM._tileSprites = [];
     };
@@ -1804,8 +2090,18 @@
         }
         const path = MBM._pathFrom(st.prev, st.character, destKey);
         MBM._closeCursor(null, null);
-        MBM._moveUsedThisTurn[BattleManager.actor().actorId()] = true;
-        MBM._activeWalk = { character: st.character, path, i: 0, onDone: () => MBM._openCommandWindow(BattleManager.actor()) };
+        // The turn can end under the cursor (a slip-damage death, a scripted
+        // abort), and Move is then spent on nobody.
+        const actor = BattleManager.actor();
+        if (actor) MBM._moveUsedThisTurn[actor.actorId()] = true;
+        MBM._activeWalk = {
+            character: st.character,
+            path,
+            i: 0,
+            onDone: () => {
+                if (BattleManager.actor()) MBM._openCommandWindow(BattleManager.actor());
+            }
+        };
     };
 
     //=========================================================================
@@ -1856,11 +2152,6 @@
         return true;
     };
 
-    // Everyone this battler is currently trying to hit, as battlers.
-    MBM._aiFoes = function (subject) {
-        return subject.opponentsUnit().members().filter(b => b && b.isAlive());
-    };
-
     // Can the action the battler rolled actually land from where it stands? Also
     // pins the action onto a reachable target, otherwise Game_Action's random
     // pick could aim at someone behind a wall.
@@ -1880,8 +2171,11 @@
         const unit = forFriend ? subject.friendsUnit() : subject.opponentsUnit();
         const members = unit.members();
         const wantsDead = forFriend && action.isForDeadFriend();
+        // isAlive()/isDead() both answer false for a battler that has not
+        // appeared or has been hidden (a monster talked round mid-fight), so
+        // testing "not dead" would keep aiming at one that is no longer there.
         const reachable = members.filter(b =>
-            b && b.isDead() === !!wantsDead && MBM.canReach(subject, b, range));
+            b && (wantsDead ? b.isDead() : b.isAlive()) && MBM.canReach(subject, b, range));
         if (reachable.length === 0) return false;
         const pick = reachable[Math.floor(Math.random() * reachable.length)];
         action.setTarget(members.indexOf(pick));
@@ -1911,9 +2205,16 @@
 
         const nearest = (x, y) =>
             targets.reduce((best, t) => Math.min(best, manhattan(x, y, t.x, t.y)), Infinity);
+        // Built ONCE for the whole search. It used to be rebuilt inside the
+        // per-tile test, i.e. (reachable tiles x targets) walks of the whole
+        // combatant roster - several thousand list scans per AI turn on an open
+        // field, which is a visible hitch every time a monster moves. Passing
+        // the target itself is what the per-target build was for, and it buys
+        // nothing: hasLineOfSight never tests the endpoint tile.
+        const blockers = MBM._sightBlockers(character, null);
         const canStrikeFrom = (x, y) => targets.some(t =>
             manhattan(x, y, t.x, t.y) <= attackRange &&
-            MBM.hasLineOfSight(x, y, t.x, t.y, MBM._sightBlockers(character, t)));
+            MBM.hasLineOfSight(x, y, t.x, t.y, blockers));
 
         const moveRange = Math.max(1, Math.floor(subject.agi / MOVE_AGI_DIVISOR));
         const { dist, prev } = MBM._bfsReachable(character, moveRange);
@@ -2462,8 +2763,11 @@
         } else {
             pool = [];
         }
+        // Not `isDead() === false`: a battler that has not appeared, or one
+        // hidden by being talked round mid-fight, answers false to isDead() AND
+        // to isAlive(), and must not be offered as a target.
         const wantsDead = action.isForDeadFriend();
-        return pool.filter(b => b && b.isDead() === wantsDead);
+        return pool.filter(b => b && (wantsDead ? b.isDead() : b.isAlive()));
     };
 
     MBM._startTargeting = function (action) {
@@ -2520,6 +2824,7 @@
         if (!spriteset || !spriteset._tilemap) return;
         if (st.cursorSprite) {
             spriteset._tilemap.removeChild(st.cursorSprite);
+            if (st.cursorSprite.destroy) st.cursorSprite.destroy();
             st.cursorSprite = null;
         }
         const battler = st.list[st.index];
@@ -2544,7 +2849,10 @@
     MBM._closeCursor = function () {
         MBM._clearTiles();
         const sprite = MBM._cursorState && MBM._cursorState.cursorSprite;
-        if (sprite && sprite.parent) sprite.parent.removeChild(sprite);
+        if (sprite) {
+            if (sprite.parent) sprite.parent.removeChild(sprite);
+            if (sprite.destroy) sprite.destroy();
+        }
         MBM._cursorState = null;
     };
 
@@ -2574,8 +2882,12 @@
                     if (st.reachable.has(nx + "," + ny)) {
                         st.x = nx;
                         st.y = ny;
-                        st.cursorSprite._tx = nx;
-                        st.cursorSprite._ty = ny;
+                        // No sprite when the scene has no tilemap yet; the
+                        // destination still tracks, it simply is not drawn.
+                        if (st.cursorSprite) {
+                            st.cursorSprite._tx = nx;
+                            st.cursorSprite._ty = ny;
+                        }
                     }
                     MBM.consumeP2Input();
                     break;
@@ -2633,13 +2945,17 @@
             MBM._hpBars.push(sprite);
         });
 
-        const enemyW = 400;
+        // Reinforcements (section 9c) mean the troop has no fixed size, so the
+        // column is cut to what the screen actually holds rather than running
+        // the last few cards off the bottom edge.
+        const enemyW = 400, enemyStep = 90, enemyTop = 40;
+        const maxRows = Math.max(1, Math.floor((Graphics.height - enemyTop) / enemyStep));
         let row = 0;
         $gameTroop.members().forEach(enemy => {
-            if (!enemy.isAlive()) return;
+            if (!enemy.isAlive() || row >= maxRows) return;
             const sprite = new window.Sprite_BattleBar(enemy, false, enemyW);
             sprite.x = Graphics.width - enemyW - 40;
-            sprite.y = 40 + row * 90;
+            sprite.y = enemyTop + row * enemyStep;
             scene.addChild(sprite);
             MBM._hpBars.push(sprite);
             row++;

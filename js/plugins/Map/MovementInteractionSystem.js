@@ -268,6 +268,20 @@
     mirrorOpacityRate: 0.8
   };
 
+  // The diving suit: the one piece of gear that lets the party go under. Item
+  // 141 ("Diving suit"); 142 is the UV sunglasses sitting next to it in the
+  // database, which is what the dive checks used to ask for, so nobody could
+  // ever dive with the suit they were carrying. Mirrored in WorldMapReturn.js,
+  // which gates the procedural Ocean descent on the same item.
+  const DIVING_SUIT_ITEM_ID = 141;
+
+  // Drinking from a water tile: fresh water eases the drinker's hunger, salt
+  // water costs them the same kind of ground and leaves the whole party with
+  // Nausea (state 41).
+  const DRINK_HUNGER_GAIN = 8;
+  const SALT_WATER_HUNGER_COST = 5;
+  const SALT_WATER_STATE_ID = 41;
+
   // --- State ---
   let companionsVisible = true;
   let lastSwimSoundFrame = 0;
@@ -535,6 +549,9 @@
     // Game_Player.performTransfer, applied from Game_Player.update).
     applyTransferRearm(character, type) {
       switch (type) {
+        case "spawnRegion":
+          this.applySpawnRegionState(character);
+          break;
         case "seabed":
           if (!character._isSwimming && !character._isClimbing) {
             character._isSwimming = true;
@@ -577,6 +594,41 @@
           this.setCompanionsVisibility(false);
           character._currentClimbHeight = 0;
           break;
+      }
+    },
+
+    // The tile a character is standing on is remembered alongside the bridge
+    // layer, so a scene rebuild that does not move anybody (a menu, a battle)
+    // keeps the on/under state instead of recomputing it as "on the deck".
+    rememberBridgeState(character) {
+      if (!character || !$gameMap) return;
+      character._bridgeStateKey = $gameMap.mapId() + "," + character.x + "," + character.y;
+    },
+
+    bridgeStateMatchesTile(character) {
+      if (!character || !$gameMap) return false;
+      return character._bridgeStateKey ===
+        $gameMap.mapId() + "," + character.x + "," + character.y;
+    },
+
+    // Regions whose behaviour is a STATE rather than a rule (the bridge layer,
+    // swimming, climbing) have to be established the moment the map is up, so a
+    // party that spawns or is transferred onto such a tile already obeys the
+    // region before the first step is taken.
+    applySpawnRegionState(character) {
+      if (!character || !$gameMap) return;
+      const region = $gameMap.regionId(character.x, character.y);
+
+      // Bridge deck (region 12): arriving on it, by transfer or by load, always
+      // lands ON the deck, which is what makes the walk-off restriction apply.
+      character._onBridge = region === 12;
+      this.rememberBridgeState(character);
+
+      // A wall region cannot be stood on, so a character that spawns on one is
+      // already on the wall and starts the map climbing it.
+      if (!Config.disableClimbing && !character._isClimbing && !character._isSwimming &&
+          (region === 4 || Utils.isClimbableAndAccessible(character.x, character.y))) {
+        this.enterClimbMode(character);
       }
     },
 
@@ -724,9 +776,17 @@
       if (companionsVisible === visible) return;
       companionsVisible = visible;
 
+      // A companion is hidden while the player swims or climbs because in the
+      // marching column they have nowhere to be. A LOOSE party is different:
+      // each member walks the map themselves and gets into the water on their
+      // own (Core/AutoIdleExplorer.js), so hiding them would delete a swimmer
+      // the player can see.
+      const loose = window.AutoIdleExplorer && window.AutoIdleExplorer.loose;
       if ($gamePlayer.followers && $gamePlayer.followers()) {
         for (const follower of $gamePlayer.followers()._data) {
-          if (follower) follower.setTransparent(!visible);
+          if (!follower) continue;
+          if (!visible && loose && loose.activeFor && loose.activeFor(follower)) continue;
+          follower.setTransparent(!visible);
         }
       }
     },
@@ -745,24 +805,51 @@
       window._fishingMinigameResult = null;
     },
 
-    // Ocean/Beach biomes are salt water: drinking makes the party nauseous.
-    // Anywhere else the water is drinkable and eases hunger a little.
+    // Ocean/Beach biomes are salt water: drinking makes the party nauseous and
+    // takes hunger off the drinker instead of easing it, the way a mouthful of
+    // brine actually works on a body. Anywhere else the water is drinkable and
+    // eases hunger a little. What it did to the meters is reported through the
+    // shared toast, since the message box only ever says how it tasted.
     performDrinkWater(character) {
       const currentBiome = $gameSystem._procGenData ? $gameSystem._procGenData.currentBiome : null;
       const biomeLower = currentBiome ? currentBiome.toLowerCase() : "";
       const isSaltWater = biomeLower.includes("ocean") || biomeLower.includes("beach");
+      const leader = $gameParty.leader();
 
       $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
       window.skipLocalization = true;
       if (isSaltWater) {
-        $gameParty.members().forEach(actor => actor.addState(41));
+        $gameParty.members().forEach(actor => actor.addState(SALT_WATER_STATE_ID));
+        if (leader && leader.reduceHunger) leader.reduceHunger(SALT_WATER_HUNGER_COST);
         $gameMessage.add(T('Movement.drinkSaltWater'));
+        MovementSystem.announceDrink(leader, -SALT_WATER_HUNGER_COST, SALT_WATER_STATE_ID);
       } else {
-        const leader = $gameParty.leader();
-        if (leader && leader.addHunger) leader.addHunger(8);
+        if (leader && leader.addHunger) leader.addHunger(DRINK_HUNGER_GAIN);
         $gameMessage.add(T('Movement.drinkWater'));
+        MovementSystem.announceDrink(leader, DRINK_HUNGER_GAIN, 0);
       }
       window.skipLocalization = false;
+    },
+
+    // The mouthful, read as meters: the hunger the drinker gained or lost, and
+    // (salt water only) the state it left them in, one toast after the other.
+    announceDrink(actor, hungerDelta, stateId) {
+      const toast = window.ParchmentToast;
+      if (!toast || !toast.need) return;
+      const state = stateId ? $dataStates[stateId] : null;
+      const popups = [];
+      if (hungerDelta) {
+        popups.push(() => toast.need('hunger', hungerDelta, {
+          value: actor && actor.hungerPercent ? actor.hungerPercent() : null
+        }));
+      }
+      if (state) {
+        popups.push(() => toast.show(
+          window.translateText ? window.translateText(state.name) : state.name,
+          { severity: 'warning', icon: state.iconIndex, duration: 200 }
+        ));
+      }
+      toast.group(popups);
     },
 
     enterSitMode(character) {
@@ -916,9 +1003,14 @@
     _Scene_Map_start.call(this);
     if ($gamePlayer) {
       $gamePlayer._isFishing = false;
-      // Arriving directly on a bridge tile (via transfer) defaults to the deck;
-      // otherwise there is no active bridge layer.
-      $gamePlayer._onBridge = Utils.isBridgeTile($gamePlayer.x, $gamePlayer.y);
+      // Special regions are applied as soon as the map is up, so spawning or
+      // transferring onto one already behaves like walking onto it. A scene that
+      // rebuilds without moving the party (a menu, a battle) keeps the layer it
+      // had, so returning to the map does not lift a walker out from under a
+      // bridge deck.
+      if (!MovementSystem.bridgeStateMatchesTile($gamePlayer)) {
+        MovementSystem.applySpawnRegionState($gamePlayer);
+      }
     }
     mapWASDKeys();
   };
@@ -950,17 +1042,30 @@
       this._hasReflectiveWater = found;
     },
 
+    // The container and the sprites in it belong to ONE spriteset: a scene
+    // teardown destroys them along with it. A module-level handle kept across
+    // that change pointed at a destroyed, unparented container, and since it
+    // was still truthy nothing ever rebuilt it, so every reflection after the
+    // first menu, shop or battle was added to a container nobody renders.
+    // Rebuild whenever the handle no longer belongs to the spriteset on screen.
+    isContainerLive(spriteset) {
+      return !!reflectionContainer &&
+        !reflectionContainer._destroyed &&
+        reflectionContainer.parent === spriteset._baseSprite;
+    },
+
     initialize() {
       if (!SceneManager._scene || !SceneManager._scene._spriteset) return;
       const spriteset = SceneManager._scene._spriteset;
+      if (!spriteset._tilemap || !spriteset._baseSprite) return;
+      if (this.isContainerLive(spriteset)) return;
 
-      if (!reflectionContainer) {
-        reflectionContainer = new PIXI.Container();
-        reflectionContainer.z = 0;
-        if (spriteset._tilemap) {
-          spriteset._baseSprite.addChild(reflectionContainer);
-        }
-      }
+      // The old sprites went down with the old scene; keeping them would hand
+      // every character a destroyed reflection that can never be drawn again.
+      reflectionSprites.clear();
+      reflectionContainer = new PIXI.Container();
+      reflectionContainer.z = 0;
+      spriteset._baseSprite.addChild(reflectionContainer);
     },
 
     shouldHaveReflection(character) {
@@ -1058,15 +1163,17 @@
       if (this._hasReflectiveWater === null) this.scanReflectiveWater();
       if (!this._hasReflectiveWater) {
         if (reflectionSprites.size > 0) {
-          for (const [character, reflection] of reflectionSprites) {
-            if (reflectionContainer) reflectionContainer.removeChild(reflection);
+          for (const reflection of reflectionSprites.values()) {
+            if (reflection.parent) reflection.parent.removeChild(reflection);
           }
           reflectionSprites.clear();
         }
         return;
       }
 
-      if (!reflectionContainer) this.initialize();
+      // Cheap when the container is already the live one; rebuilds it after a
+      // scene change took the old spriteset (and everything in it) with it.
+      this.initialize();
       if (!reflectionContainer || !SceneManager._scene || !SceneManager._scene._spriteset) return;
 
       const spriteset = SceneManager._scene._spriteset;
@@ -1123,7 +1230,7 @@
       for (const [character, reflection] of reflectionSprites) {
         if (!charactersNeedingReflections.has(character)) {
           toRemove.push(character);
-          reflectionContainer.removeChild(reflection);
+          if (reflection.parent) reflection.parent.removeChild(reflection);
         }
       }
       for (const character of toRemove) reflectionSprites.delete(character);
@@ -1493,6 +1600,7 @@
       } else {
         this._onBridge = false;
       }
+      MovementSystem.rememberBridgeState(this);
     }
   };
 
@@ -1618,11 +1726,43 @@
   // meter where it actually lives, the actor for the player and the society
   // profile for a recruited companion, and clamps at full.
   const SWIM_HYGIENE_PER_STEP = 1;
+
+  // A stroke at a time is too small a change to notice, so the wash is only
+  // reported at the quarter marks, and only once each on the way up. A mark
+  // already announced stays quiet until the party has got a deadband dirtier
+  // than it, so swimming on at full hygiene reports 100% once rather than every
+  // step and says nothing again until they are back under 85.
+  const SWIM_HYGIENE_MARKS = [25, 50, 75, 100];
+  const SWIM_HYGIENE_DEADBAND = 15;
+  let swimHygieneMark = 0;
+
+  const partyHygiene = () => {
+    const median = window.PartyNeeds?.partyMedian ? window.PartyNeeds.partyMedian() : null;
+    const value = median ? median.hygiene : null;
+    return (value === null || value === undefined) ? null : Math.round(value);
+  };
+
+  const reportSwimHygiene = (before, after) => {
+    if (before === null || after === null) return;
+    if (swimHygieneMark && after < swimHygieneMark - SWIM_HYGIENE_DEADBAND) swimHygieneMark = 0;
+    const marks = SWIM_HYGIENE_MARKS.filter((m) => m <= after);
+    const mark = marks.length ? marks[marks.length - 1] : 0;
+    if (!mark || mark <= swimHygieneMark) return;
+    swimHygieneMark = mark;
+    if (!window.ParchmentToast?.need) return;
+    window.ParchmentToast.need("hygiene", after - before, {
+      value: after,
+      duration: 160
+    });
+  };
+
   const _Game_Player_increaseSteps = Game_Player.prototype.increaseSteps;
   Game_Player.prototype.increaseSteps = function () {
     _Game_Player_increaseSteps.call(this);
     if (this._isSwimming && window.PartyNeeds?.addNeedToAll) {
+      const before = partyHygiene();
       window.PartyNeeds.addNeedToAll("hygiene", SWIM_HYGIENE_PER_STEP);
+      reportSwimHygiene(before, partyHygiene());
     }
   };
 
@@ -1759,7 +1899,7 @@
         const hasEventInFront = Utils.hasEventOnTile(frontTile.x, frontTile.y);
 
         if ((!isMultiplayer || $gameMap.mapId() !== 636) && !hasEventInFront && $gameMap.regionId(character.x, character.y) === 99) {
-          if ($gameParty.hasItem($dataItems[142])) {
+          if ($gameParty.hasItem($dataItems[DIVING_SUIT_ITEM_ID])) {
             if (isPlayer ? Input.isTriggered("ok") : true) {
               if (character._isDiving) {
                 this.showNonProcResurfaceOption(character);
@@ -2231,7 +2371,7 @@
     const choices = [];
     if (!isMultiplayer) choices.push(T('Movement.swim'));
     if (Utils.hasFishingRod()) choices.push(T('Movement.fish'));
-    if ((!isMultiplayer || $gameMap.mapId() !== 636) && $gameParty.hasItem($dataItems[142])) choices.push(T('Movement.dive'));
+    if ((!isMultiplayer || $gameMap.mapId() !== 636) && $gameParty.hasItem($dataItems[DIVING_SUIT_ITEM_ID])) choices.push(T('Movement.dive'));
     choices.push(T('Movement.drink'));
     if (canBoat) choices.push(T('Movement.useBoat'));
     choices.push(T('Movement.cancel'));
@@ -2249,7 +2389,7 @@
         MovementSystem.performFishing(character);
       } else if (canBoat && index === choices.indexOf(T('Movement.useBoat'))) {
         useBoatOn(character);
-      } else if (index === choices.indexOf(T('Movement.dive')) && $gameParty.hasItem($dataItems[142])) {
+      } else if (index === choices.indexOf(T('Movement.dive')) && $gameParty.hasItem($dataItems[DIVING_SUIT_ITEM_ID])) {
         MovementSystem.enterSwimMode(character);
         character.moveStraight(character.direction());
         
@@ -2339,10 +2479,19 @@
     const currentRegion = $gameMap.regionId(x, y);
     const destRegion = $gameMap.regionId(x2, y2);
 
-    // Region 5 is always passable terrain (bridge-access step / guaranteed path).
-    // Its tile passability is already forced open in isPassable/checkPassage; here
-    // it is also exempted from the region-11 cliff directional restriction so it
-    // can be entered or left from any direction (still blocked only by events).
+    // Region 5 is always-passable terrain (bridge-access step / guaranteed path).
+    // Leaving it is possible in every direction toward every region except the
+    // blocked one (10): the tile passability of the destination is not consulted
+    // at all, only map bounds and the characters standing there.
+    if (currentRegion === 5 && destRegion !== 10) {
+      if (!$gameMap.isValid(x2, y2)) return false;
+      if (this.isThrough() || this.isDebugThrough()) return true;
+      return !this.isCollidedWithCharacters(x2, y2);
+    }
+
+    // Entering region 5 is exempt from the region-11 cliff directional
+    // restriction, so the step can be taken from any direction (still blocked
+    // only by events and by the tile's own passability).
     if (destRegion === 5) {
       const prevChecking = window._currentlyCheckingCharacter;
       window._currentlyCheckingCharacter = this;
@@ -2357,10 +2506,12 @@
     // Without this, a bridge that joins the cliff horizontally is unwalkable,
     // since leaving region 11 is otherwise only allowed heading south.
     if (destRegion === 12 || currentRegion === 12) {
-      // While standing ON the bridge deck (on top), the player may only step
-      // onto another bridge tile (12) or a bridge-access tile (5 or 11) — never
-      // walk straight off the deck onto arbitrary terrain. Passing UNDER the
-      // bridge (_onBridge false) is unrestricted so the ground path is walkable.
+      // While standing ON the bridge deck (on top), the walker may only step
+      // onto a bridge-access tile (region 11 or 5) or continue along the deck
+      // (region 12) — never walk straight off it onto arbitrary terrain. This
+      // holds however the deck was reached, a step or a map transfer included.
+      // Passing UNDER the bridge (_onBridge false) is unrestricted so the ground
+      // path beneath it stays walkable.
       if (currentRegion === 12 && this === $gamePlayer && this._onBridge &&
           destRegion !== 12 && destRegion !== 11 && destRegion !== 5) {
         return false;
@@ -2372,8 +2523,12 @@
       return result;
     }
 
-    if (currentRegion !== 11 && destRegion === 11 && d !== 8 && !_hasBridgeAt(x2, y2)) return false;
-    if (currentRegion === 11 && destRegion !== 11 && d !== 2 && !_hasBridgeAt(x, y)) return false;
+    // Cliff (region 11) directional rule, against ordinary ground (region 0)
+    // only: region 0 -> region 11 is possible heading North, region 11 -> region
+    // 0 heading South. Every other neighbouring region (the bridge-access and
+    // bridge regions above, water, blocked tiles) is left to its own rule.
+    if (currentRegion === 0 && destRegion === 11 && d !== 8 && !_hasBridgeAt(x2, y2)) return false;
+    if (currentRegion === 11 && destRegion === 0 && d !== 2 && !_hasBridgeAt(x, y)) return false;
 
     const prevChecking = window._currentlyCheckingCharacter;
     window._currentlyCheckingCharacter = this;
@@ -2593,7 +2748,7 @@
     this._pendingSwimClimbRearm = null;
 
     if ($gameSystem._procGenData && $gameSystem._procGenData.currentBiome === "SeaBed") {
-      this._pendingSwimClimbRearm = ["seabed"];
+      this._pendingSwimClimbRearm = ["spawnRegion", "seabed"];
       return;
     }
 
@@ -2603,7 +2758,7 @@
     // (region 99, or the Water terrain tag on the procedural map), they swim.
     // The decision is deferred to applyTransferRearm because the arrival tile is
     // not final yet; Scene_Map.onMapLoaded can still relocate the party.
-    const rearm = ["swimIfWater"];
+    const rearm = ["spawnRegion", "swimIfWater"];
 
     if (wasClimbing) {
       if (Utils.isClimbableAndAccessible(this.x, this.y)) {
@@ -2704,6 +2859,12 @@
           }
       }
   };
+
+  // Walking onto a damage floor tile (or taking step-based state damage while
+  // on the map) still runs the default engine's full-screen red flash. Damage
+  // itself is untouched; only the flash is silenced, and only outside battle,
+  // which is the only case this ever ran in to begin with.
+  Game_Actor.prototype.performMapDamage = function() {};
 
   // Export
   window.MovementSystem = {

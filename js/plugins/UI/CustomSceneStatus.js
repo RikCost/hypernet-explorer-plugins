@@ -48,12 +48,21 @@
  * - Correctly cropped bust portraits drawn dynamically inside an ornate portrait frame
  * - Sepia status gauges for Vitals (HP), Energy (MP), Tension (TP) and Level Progression (EXP)
  * - Embossed medallions grid showing STR, CON, DEX, INT, WIS, PSI and active stat modifiers
- * - Alignment elemental badge and character traits with dynamic icon blitting
+ * - Alignment elemental badge, and a traits page writing every trait out in full
+ * - Right-page sections (Attributes / Traits / Passives / Anatomy), the last one
+ *   read being the one the sheet opens on next time
  * - Scrollable biological limb-health vitals tracking (Dwarf Fortress limb damage)
  * - Fast, flicker-free rendering with left-page caching
  */
 
 (() => {
+  // A severed-magic world has no magic in it, so there is nothing to spend a
+  // magic meter on: the MP row is not drawn at all. See window.MagicNature.
+  function hideMpBar() {
+    const MN = window.MagicNature;
+    return !!(MN && typeof MN.level === "function" && MN.level() === "severed");
+  }
+
     'use strict';
 
     // ── Shared character-switcher hint helper (idempotent across plugins) ──────
@@ -380,6 +389,12 @@
         try {
             const response = await fetch(url);
             i18nData = await response.json();
+            // Trait names and descriptions are read straight out of this bank,
+            // so redraw a status screen that opened before the fetch landed.
+            const scene = SceneManager._scene;
+            if (scene instanceof Scene_Status && scene.refreshUIStatus) {
+                scene.refreshUIStatus();
+            }
         } catch (e) {
             console.error("CustomSceneStatus: Failed to load i18n data from " + url, e);
         }
@@ -389,6 +404,252 @@
         if (!path || !obj) return null;
         return path.split('.').reduce((acc, part) => acc && acc[part], obj);
     };
+
+    // A trait's name/description is either an i18n key path into traits.json
+    // (loaded into i18nData) or a legacy { en, it } object. Anything that does
+    // not resolve falls back to the raw value so a missing translation still
+    // reads as something.
+    const resolveTraitField = (value) => {
+        if (!value) return "";
+        if (typeof value === 'object') return _pickLocalized(value);
+        const text = String(value);
+        if (text.includes('.')) {
+            const resolved = i18nData ? resolveI18nPath(text, i18nData) : null;
+            if (typeof resolved === 'string') return resolved;
+        }
+        return text;
+    };
+
+    const escapeAttr = (text) => String(text || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
+    // Database display names, localized the way the rest of the menus do it.
+    const dbName = (entry) =>
+        window.CCDbName ? window.CCDbName(entry) : (entry && entry.name) || "";
+
+    const iconStyle = (iconIndex, size) => {
+        const box = `width:${size}px; height:${size}px; display:inline-block; flex:0 0 auto;`;
+        if (!iconIndex) return box;
+        const col = iconIndex % 16;
+        const row = Math.floor(iconIndex / 16);
+        return `${box} background-image:url('img/system/IconSet.png'); background-size:${size * 16}px auto; background-position:-${col * size}px -${row * size}px; image-rendering:pixelated;`;
+    };
+
+    const TRAIT_CATEGORY_KEYS = {
+        genetic: "tabGenetic",
+        physical: "tabPhysical",
+        mental: "tabMental",
+        magical: "tabMagical"
+    };   // i18n-ignore: keys into Traits.<tab*>
+
+    const paramDisplayName = (key) => ({
+        hp: _si18n("HP", "HP"),
+        mp: _si18n("MP", "MP"),
+        atk: _si18n("ATT", "STR"),
+        def: _si18n("DEF", "CON"),
+        mat: _si18n("M.ATT", "INT"),
+        mdf: _si18n("M.DEF", "WIS"),
+        agi: _si18n("AGILITY", "DEX"),
+        luk: _si18n("LUCK", "PSI"),
+        eva: "EVA"   // i18n-ignore: universal stat abbreviation
+    })[key] || key;
+
+    // Specializations (js/db/Skills/Specialization.json) this trait gives a head
+    // start in. Empty until window.Specializations finishes its async load.
+    const traitSpecializations = (trait) => {
+        if (!trait || typeof trait.name !== "string") return [];
+        if (!window.Specializations || !window.Specializations.ready) return [];
+        const slug = trait.name.split(".")[1];
+        if (!slug) return [];
+        const rows = [];
+        window.Specializations.list.forEach(spec => {
+            const level = spec.traitStart && spec.traitStart[slug];
+            if (level) rows.push(`${window.Specializations.displayName(spec)} (${window.Specializations.levelName(level)})`);
+        });
+        return rows.sort();
+    };
+
+    // A trait written out in full: what it is, what it says, and everything it
+    // does to the character. One of these is drawn per trait on the traits tab,
+    // so nothing about a trait is hidden behind a chip any more.
+    function buildTraitDossierHTML(trait) {
+        const name = resolveTraitField(trait.name);
+        const desc = resolveTraitField(trait.description);
+        const categoryKey = TRAIT_CATEGORY_KEYS[trait.category];
+
+        const badge = (label, color) =>
+            `<span class="status-trait-badge"${color ? ` style="color:${color};"` : ""}>${escapeAttr(label)}</span>`;
+
+        const iconBadge = (iconIndex, label, suffix) =>
+            `<span class="status-trait-badge"><span style="${iconStyle(iconIndex, 16)}"></span>${escapeAttr(label)}${suffix ? ` ${suffix}` : ""}</span>`;
+
+        const statBadges = (stats, color) => Object.keys(stats || {}).map(key => {
+            const value = stats[key];
+            return badge(`${paramDisplayName(key)} ${value > 0 ? "+" : ""}${value}`, color);
+        }).join("");
+
+        // trait.items is a flat array with one entry per copy, so tally by id.
+        const counted = (ids) => {
+            const tally = {};
+            (ids || []).forEach(id => { tally[id] = (tally[id] || 0) + 1; });
+            return tally;
+        };
+        const dbBadges = (ids, table) => {
+            const tally = counted(ids);
+            return Object.keys(tally).map(id => {
+                const entry = table[id];
+                return entry ? iconBadge(entry.iconIndex, dbName(entry), tally[id] > 1 ? `x${tally[id]}` : "") : "";
+            }).join("");
+        };
+
+        const skillBadges = (trait.skills || []).map(id => {
+            const skill = $dataSkills[id];
+            return skill ? iconBadge(skill.iconIndex, dbName(skill), "") : "";
+        }).join("");
+
+        const equipBadges = (trait.equipment || []).map(id => {
+            const entry = $dataWeapons[id] || $dataArmors[id];
+            return entry ? iconBadge(entry.iconIndex, dbName(entry), "") : "";
+        }).join("");
+
+        const specBadges = traitSpecializations(trait).map(text => badge(text)).join("");
+
+        const row = (label, content) => content ? `
+            <div class="status-trait-row">
+                <span class="status-trait-row-label">${label}</span>
+                <span class="status-trait-badges">${content}</span>
+            </div>
+        ` : "";
+
+        return `
+            <div class="status-trait-head">
+                <span style="${iconStyle(trait.icon, 22)}"></span>
+                <span>${escapeAttr(name)}</span>
+            </div>
+            <div class="status-trait-desc">${escapeAttr(desc) || T('SceneStatus.trait.noDescription')}</div>
+            ${row(T('SceneStatus.trait.category'), categoryKey ? badge(T('Traits.' + categoryKey)) : "")}
+            ${row(T('Traits.benefits'), statBadges(trait.positive, 'var(--text-forest-green)'))}
+            ${row(T('Traits.drawbacks'), statBadges(trait.negative, 'var(--accent-red-3)'))}
+            ${row(T('Traits.grantsSkills'), skillBadges)}
+            ${row(T('Traits.startingItems'), dbBadges(trait.items, $dataItems))}
+            ${row(T('SceneStatus.trait.equipment'), equipBadges)}
+            ${row(T('SceneStatus.trait.specializations'), specBadges)}
+        `;
+    }
+
+    // Every trait the character carries, each one fully written out. A stored
+    // entry is sometimes a trimmed copy (id, icon and name only), so the trait
+    // database is read over it before the dossier is built.
+    function buildTraitsPageHTML(actor) {
+        const stored = (actor && actor._selectedTraits) || [];
+        if (stored.length === 0) {
+            return `<div class="status-traits-empty">${T('SceneStatus.ui.noTraits')}</div>`;
+        }
+        return stored.map(entry => {
+            const full = getTraitById(entry.id);
+            const trait = full ? Object.assign({}, full, entry) : entry;
+            return `<div class="status-trait-entry">${buildTraitDossierHTML(trait)}</div>`;
+        }).join("");
+    }
+
+    //=============================================================================
+    // Right-page tabs
+    //
+    // The sheet is read one section at a time instead of stacking every card
+    // down a page that was never tall enough for them: the raw numbers (the
+    // default), the traits written out, what is permanently on, and the body's
+    // own condition. The chips are the shared bookmark-tab design the backpack
+    // and the shop already use (.backpack-tabs / .backpack-tab in css/theme.css).
+    //=============================================================================
+
+    const STATUS_TABS = [
+        { id: "attributes", labelKey: "SceneStatus.ui.tabAttributes" },
+        { id: "traits", labelKey: "SceneStatus.ui.tabTraits" },
+        { id: "passives", labelKey: "SceneStatus.ui.tabPassives" },
+        { id: "anatomy", labelKey: "SceneStatus.ui.tabAnatomy" },
+        { id: "diseases", labelKey: "SceneStatus.ui.tabDiseases" }
+    ];
+
+    // The section the sheet opens on. Attributes is what the page is for, and
+    // whichever tab was last read is kept on $gameSystem so re-opening the
+    // screen (or another character's) comes back to it rather than to the top.
+    const DEFAULT_STATUS_TAB = STATUS_TABS[0].id;
+
+    const rememberedStatusTab = () => {
+        const stored = $gameSystem ? $gameSystem._statusActiveTab : null;
+        return STATUS_TABS.some(tab => tab.id === stored) ? stored : DEFAULT_STATUS_TAB;
+    };
+
+    const rememberStatusTab = (tabId) => {
+        if ($gameSystem) $gameSystem._statusActiveTab = tabId;
+    };
+
+    // How far one press of up / down moves the traits page, in pixels.
+    const TRAIT_SCROLL_STEP = 48;
+
+    // The element a class declares (<elem: n> in its notebox) doubles as the
+    // emblem of its signature passive. 0 when the class declares none, which
+    // leaves the row's icon slot empty rather than printing a wrong sprite.
+    const ELEMENT_ICONS = [0, 96, 64, 65, 66, 67, 68, 69, 70, 71];
+
+    const classElementIcon = (actorClass) => {
+        const match = actorClass && actorClass.note && actorClass.note.match(/<elem:\s*(\d+)>/);
+        if (!match) return 0;
+        return ELEMENT_ICONS[parseInt(match[1], 10)] || 0;
+    };
+
+    // Everything that is always on for this character: the class's signature
+    // passive and the passive each selected trait carries, both read from
+    // BattleSystemPassiveSkills so the wording matches the creation screens.
+    function buildPassivesHTML(actor) {
+        const api = window.BattleSystemPassiveSkills;
+        const actorClass = actor.currentClass();
+        const rows = [];
+
+        if (api && actorClass) {
+            const name = api.getPassiveName(actorClass.id);
+            if (name) {
+                rows.push({
+                    icon: classElementIcon(actorClass),
+                    name: name,
+                    desc: api.getPassiveEffect(actorClass.id),
+                    tag: T("SceneStatus.ui.sourceClass")
+                });
+            }
+        }
+
+        if (api && api.getActorTraitPassives) {
+            api.getActorTraitPassives(actor).forEach(passive => {
+                const trait = getTraitById(passive.traitId);
+                rows.push({
+                    icon: (trait && trait.icon) || 0,
+                    name: passive.name,
+                    desc: passive.desc,
+                    tag: T("SceneStatus.ui.sourceTrait")
+                });
+            });
+        }
+
+        if (!rows.length) {
+            return `<div class="status-empty-note">${T("SceneStatus.ui.noPassives")}</div>`;
+        }
+
+        return rows.map(row => `
+            <div class="status-passive-row">
+                <span style="${iconStyle(row.icon, 32)}"></span>
+                <div class="status-passive-body">
+                    <div class="status-passive-name">
+                        <span>${escapeAttr(row.name)}</span>
+                        <span class="status-passive-tag">${escapeAttr(row.tag)}</span>
+                    </div>
+                    <div class="status-passive-desc">${escapeAttr(row.desc)}</div>
+                </div>
+            </div>
+        `).join("");
+    }
 
     //=============================================================================
     // Seeded Random Number Generator
@@ -543,6 +804,7 @@
         this._dndActiveSection = "stats"; // "stats", "bodyparts"
         this._dndSelectedIndex = 0;
         this._dndLastLeftPageKey = "";
+        this._dndActiveTab = rememberedStatusTab();
 
         this.createUIStatusOverlay();
         window.CharSwitcher.installTabKey(this, (dir) => {
@@ -657,7 +919,7 @@
                         </div>
                         
                         <div class="status-bust-wrapper">
-                            <canvas id="status-bust" width="440" height="500" style="width:440px; height:500px;"></canvas>
+                            <canvas id="status-bust" width="440" height="500"></canvas>
                         </div>
                         
                         <div class="status-gauges-box">
@@ -700,6 +962,7 @@
                                 <div class="status-gauge-bar-outer">
                                     <div class="status-gauge-bar-inner exp" id="status-exp-bar"></div>
                                 </div>
+                                <div class="status-gauge-note" id="status-exp-next"></div>
                             </div>
                             </div>
 
@@ -707,33 +970,60 @@
                         </div>
                     </div>
                     <div class="right-page" style="position:relative;">
-                        <div class="companion-switcher" id="status-companion-switcher" style="position:absolute; top:6px; right:0; z-index:5; justify-content:flex-end; min-height:26px;"></div>
-                        <h3 class="right-title">${T('SceneStatus.ui.attributesAbilities')}</h3>
-                        <div class="stats-medallions-grid" id="status-medallions"></div>
-                        
-                        <div class="alignment-traits-row">
-                            <div id="status-alignment-container" style="display:contents;"></div>
-                            <div class="status-traits-card">
-                                <div class="card-label">${T('SceneStatus.ui.characterTraits')}</div>
-                                <div class="traits-list-inline" id="status-traits"></div>
+                        <div class="status-right-header">
+                            <h3 class="right-title">${T('SceneStatus.ui.attributesAbilities')}</h3>
+                            <div class="companion-switcher" id="status-companion-switcher"></div>
+                        </div>
+
+                        <div class="backpack-tabs status-tabs" id="status-tabs"></div>
+
+                        <div id="status-lower-cards">
+                            <div class="status-tab-panel" data-status-tab="passives">
+                                <div class="bodyparts-card">
+                                    <div class="card-label">${T('SceneStatus.ui.passiveAbilities')}</div>
+                                    <div class="bodyparts-list" id="status-passives-list"></div>
+                                </div>
+                            </div>
+
+                            <div class="status-tab-panel" data-status-tab="anatomy">
+                                <div class="bodyparts-card status-card-fixed">
+                                    <div class="card-label" id="status-archetype-label">${T('SceneStatus.ui.archetype')}</div>
+                                    <div id="status-archetype" style="padding:4px 2px; font-family:'Lora',serif;"></div>
+                                </div>
+
+                                <div class="bodyparts-card">
+                                    <div class="card-label">${T('SceneStatus.ui.biologicalVitals')}</div>
+                                    <div class="bodyparts-list" id="bodyparts-scroll-container"></div>
+                                </div>
+                            </div>
+
+                            <div class="status-tab-panel" data-status-tab="attributes">
+                                <div id="status-attr-cards">
+                                    <div class="stats-medallions-grid" id="status-medallions"></div>
+                                </div>
+
+                                <div class="status-alignment-row">
+                                    <div id="status-alignment-container" style="display:contents;"></div>
+                                    <div id="status-magicsystem-container" style="display:contents;"></div>
+                                </div>
+                            </div>
+
+                            <div class="status-tab-panel" data-status-tab="traits">
+                                <div class="bodyparts-card">
+                                    <div class="card-label">${T('SceneStatus.ui.characterTraits')}</div>
+                                    <div class="status-traits-full" id="status-traits"></div>
+                                </div>
+                            </div>
+
+                            <div class="status-tab-panel" data-status-tab="diseases">
+                                <div class="bodyparts-card">
+                                    <div class="card-label">${T('SceneStatus.ui.tabDiseases')}</div>
+                                    <div class="bodyparts-list" id="status-diseases"></div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="bodyparts-card" style="margin-bottom:8px;">
-                            <div class="card-label" id="status-archetype-label">${T('SceneStatus.ui.archetype')}</div>
-                            <div id="status-archetype" style="padding:4px 2px; font-family:'Lora',serif;"></div>
-                        </div>
-
-                        <div class="bodyparts-card" style="margin-bottom:8px;">
-                            <div class="card-label" id="status-passive-label">${T('SceneStatus.ui.classAbility')}</div>
-                            <div id="status-class-passive" style="padding:4px 2px; font-family:'Lora',serif;"></div>
-                        </div>
-
-                        <div class="bodyparts-card">
-                            <div class="card-label">${T('SceneStatus.ui.biologicalVitals')}</div>
-                            <div class="bodyparts-list" id="bodyparts-scroll-container"></div>
-                        </div>
-                        
+                        <div class="status-actions" id="status-actions"></div>
                     </div>
                 </div>
             `;
@@ -757,6 +1047,26 @@
                 `<div class="companion-tabs-row" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">${companionTabsHTML}</div>`,
                 allMembers.length
             );
+        }
+
+        // 1b. Right page section tabs, and the actions bar sitting under them.
+        // Empathize is offered only while the panel plugin is loaded, since it
+        // is what owns the character sheet the button opens.
+        const tabsEl = spread.querySelector("#status-tabs");
+        if (tabsEl) {
+            tabsEl.innerHTML = STATUS_TABS.map(tab => `
+                <div class="backpack-tab focusable${tab.id === this._dndActiveTab ? " active" : ""}"
+                     data-status-tab-btn="${tab.id}"
+                     onclick="SceneManager._scene.selectStatusTab('${tab.id}')">${T(tab.labelKey)}</div>
+            `).join("");
+        }
+        this.applyStatusTab();
+
+        const actionsEl = spread.querySelector("#status-actions");
+        if (actionsEl) {
+            actionsEl.innerHTML = (window.NPCEmpathize && window.NPCEmpathize.openForActor)
+                ? `<div class="inspect-btn focusable" onclick="SceneManager._scene.openStatusEmpathize()">${T("SceneStatus.ui.empathize")}</div>`
+                : "";
         }
 
         // 2. Left Page content updates
@@ -788,14 +1098,39 @@
         if (mpTextEl) mpTextEl.textContent = `${actor.mp} / ${actor.mmp}`;
         const mpBarEl = spread.querySelector("#status-mp-bar");
         if (mpBarEl) mpBarEl.style.width = `${actor.mpRate() * 100}%`;
+        // Nothing to spend it on in a severed world: the whole row goes.
+        if (hideMpBar()) {
+            const row = (mpBarEl && mpBarEl.closest(".status-gauge-row")) ||
+                        (mpTextEl && mpTextEl.closest(".status-gauge-row"));
+            if (row) row.style.display = "none";
+            else {
+                if (mpTextEl) mpTextEl.style.display = "none";
+                if (mpBarEl && mpBarEl.parentElement) mpBarEl.parentElement.style.display = "none";
+            }
+        }
 
         const tpTextEl = spread.querySelector("#status-tp-text");
         if (tpTextEl) tpTextEl.textContent = `${actor.tp} / ${actor.maxTp()}`;
         const tpBarEl = spread.querySelector("#status-tp-bar");
         if (tpBarEl) tpBarEl.style.width = `${(actor.tp / actor.maxTp()) * 100}%`;
 
+        // The gauge counts the points earned inside the current level; the line
+        // under it says how many are still owed before the next one, which is
+        // what a player actually wants to know from this screen.
         const expTextEl = spread.querySelector("#status-exp-text");
-        if (expTextEl) expTextEl.textContent = `${expGainedThisLevel} / ${expForThisLevel}`;
+        const expNextEl = spread.querySelector("#status-exp-next");
+        if (actor.isMaxLevel()) {
+            if (expTextEl) expTextEl.textContent = T("SceneStatus.ui.expMax");
+            if (expNextEl) expNextEl.textContent = "";
+        } else {
+            if (expTextEl) expTextEl.textContent = `${expGainedThisLevel} / ${expForThisLevel}`;
+            if (expNextEl) {
+                expNextEl.textContent = T("SceneStatus.ui.expToNext", {
+                    exp: Math.max(0, expForThisLevel - expGainedThisLevel),
+                    level: actor.level + 1
+                });
+            }
+        }
         const expBarEl = spread.querySelector("#status-exp-bar");
         if (expBarEl) expBarEl.style.width = `${expRate * 100}%`;
 
@@ -929,48 +1264,43 @@
         const alignmentContainer = spread.querySelector("#status-alignment-container");
         if (alignmentContainer) alignmentContainer.innerHTML = elementHTML;
 
-        // Traits
-        let traitsHTML = "";
-        if (actor._selectedTraits && actor._selectedTraits.length > 0) {
-            actor._selectedTraits.forEach(trait => {
-                let traitName = "";
-                if (typeof trait.name === 'string' && trait.name.includes('.')) {
-                    traitName = (i18nData ? resolveI18nPath(trait.name, i18nData) : null) || trait.name;
-                } else if (trait.name && typeof trait.name === 'object') {
-                    traitName = _pickLocalized(trait.name);
-                } else {
-                    traitName = trait.name || "";
-                }
-
-                // Resolve trait description
-                let traitDesc = "";
-                if (trait.description) {
-                    if (typeof trait.description === 'object') {
-                        traitDesc = _pickLocalized(trait.description);
-                    } else {
-                        traitDesc = String(trait.description);
-                    }
-                }
-
-                const tx = (trait.icon % 16) * 32;
-                const ty = Math.floor(trait.icon / 16) * 32;
-
-                const tooltipContent = traitDesc
-                    ? `<strong>${traitName}</strong>${traitDesc}`
-                    : `<strong>${traitName}</strong>`;
-
-                traitsHTML += `
-                    <div class="status-trait-item">
-                        <span class="icon" style="background: url('img/system/IconSet.png') -${tx}px -${ty}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); vertical-align: middle;"></span>
-                        <div class="status-trait-tooltip">${tooltipContent}</div>
+        // Magic System badge (gen_class_magic_system_tags.js): only a
+        // magical class carries the tag at all, so a mundane profession's
+        // row simply stays empty rather than printing "None".
+        let magicSystemHTML = "";
+        if (actorClass && actorClass.note) {
+            const magicMatch = actorClass.note.match(/<MagicalSystem:\s*([^>]+)>/i);
+            if (magicMatch) {
+                const systemKey = magicMatch[1].trim();
+                const systemName = T('SkillsMenu.magicSystem.' + systemKey) || systemKey;
+                magicSystemHTML = `
+                    <div class="status-element-box">
+                        <span class="element-title">${T('SceneStatus.ui.magicSystem')}</span>
+                        <span class="element-badge">
+                            <span style="vertical-align: middle;">${systemName}</span>
+                        </span>
                     </div>
                 `;
-            });
-        } else {
-            traitsHTML = `<div style="font-family: 'Lora', serif; font-style: italic; color:var(--text-card-medium); font-size:0.8em; padding: 4px;">${T('SceneStatus.ui.noTraits')}</div>`;
+            }
         }
+        const magicSystemContainer = spread.querySelector("#status-magicsystem-container");
+        if (magicSystemContainer) magicSystemContainer.innerHTML = magicSystemHTML;
+
+        // Traits, each one written out in full on its own tab: the page they
+        // used to share was never tall enough for a dossier, so they were chips
+        // that had to be hovered one at a time to say anything.
         const traitsEl = spread.querySelector("#status-traits");
-        if (traitsEl) traitsEl.innerHTML = traitsHTML;
+        if (traitsEl) traitsEl.innerHTML = buildTraitsPageHTML(actor);
+
+        // The illnesses page is Health_DiseaseSystem's own sheet, printed
+        // verbatim, so the status screen and the Biologics tab can never
+        // disagree about what somebody is carrying or what would treat it.
+        const diseasesEl = spread.querySelector("#status-diseases");
+        if (diseasesEl) {
+            diseasesEl.innerHTML = window.DiseaseSystem && window.DiseaseSystem.panelHTML
+                ? window.DiseaseSystem.panelHTML(actor)
+                : `<div class="status-traits-empty">${T('SceneStatus.ui.noDiseaseData')}</div>`;
+        }
 
         // Body archetype, sourced from Health_Core. A creature built from two
         // archetypes is a hybrid and is named as both; the gestation term shown
@@ -1007,24 +1337,10 @@
             }
         }
 
-        // Class base skill (signature passive) sourced from BattleSystemPassiveSkills.
-        const passiveLabelEl = spread.querySelector("#status-passive-label");
-        if (passiveLabelEl) passiveLabelEl.textContent = T("SceneStatus.classAbility");
-        const passiveEl = spread.querySelector("#status-class-passive");
-        if (passiveEl) {
-            const api = window.BattleSystemPassiveSkills;
-            const passiveClassId = actorClass ? actorClass.id : 0;
-            const passiveName = api && passiveClassId ? api.getPassiveName(passiveClassId) : "";
-            const passiveEffect = api && passiveClassId ? api.getPassiveEffect(passiveClassId) : "";
-            if (passiveName) {
-                passiveEl.innerHTML = `
-                    <div style="font-weight:bold; color:var(--text-primary-hover); font-size:0.92em; margin-bottom:2px;">${passiveName}</div>
-                    <div style="color:var(--text-card-medium); font-size:0.8em; line-height:1.3;">${passiveEffect}</div>
-                `;
-            } else {
-                passiveEl.innerHTML = `<div style="font-style:italic; color:var(--text-card-medium); font-size:0.8em;">${T('SceneStatus.ui.noClassAbility')}</div>`;
-            }
-        }
+        // Passive abilities: the class's signature passive plus every trait
+        // passive this character carries, all of them always on.
+        const passivesEl = spread.querySelector("#status-passives-list");
+        if (passivesEl) passivesEl.innerHTML = buildPassivesHTML(actor);
 
         // Biological Body Parts List
         if (!actor._bodyParts && window.initializeBodyParts) {
@@ -1076,12 +1392,51 @@
         this.drawUIStatusBust(actor, "status-bust");
 
         // 5. Scroll selected body part into view if active
-        if (this._dndActiveSection === "bodyparts") {
+        if (this._dndActiveSection === "bodyparts" && this._dndActiveTab === "anatomy") {
             const selectedPart = spread.querySelector(".bodypart-row.selected");
             if (selectedPart) {
                 selectedPart.scrollIntoView({ block: "nearest", behavior: "smooth" });
             }
         }
+    };
+
+    //=============================================================================
+    // Right-page tab controller. Only the active panel is in the layout, so a
+    // section never has to share the page's height with the two it replaced.
+    //=============================================================================
+
+    Scene_Status.prototype.applyStatusTab = function () {
+        if (!this._dndContainer) return;
+        this._dndContainer.querySelectorAll(".status-tab-panel").forEach(panel => {
+            panel.classList.toggle("active", panel.dataset.statusTab === this._dndActiveTab);
+        });
+        this._dndContainer.querySelectorAll("[data-status-tab-btn]").forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.statusTabBtn === this._dndActiveTab);
+        });
+    };
+
+    Scene_Status.prototype.selectStatusTab = function (tabId, silent) {
+        if (!STATUS_TABS.some(tab => tab.id === tabId)) return;
+        if (this._dndActiveTab === tabId) return;
+        this._dndActiveTab = tabId;
+        rememberStatusTab(tabId);
+        if (!silent) SoundManager.playCursor();
+        this.refreshUIStatus();
+    };
+
+    Scene_Status.prototype.cycleStatusTab = function (direction) {
+        const index = STATUS_TABS.findIndex(tab => tab.id === this._dndActiveTab);
+        const next = (index + direction + STATUS_TABS.length) % STATUS_TABS.length;
+        this.selectStatusTab(STATUS_TABS[next].id);
+    };
+
+    // The full social sheet for this character, the same panel an NPC is read
+    // in. Pushed, so Cancel there comes straight back to this screen.
+    Scene_Status.prototype.openStatusEmpathize = function () {
+        const actor = this.actor();
+        if (!actor || !window.NPCEmpathize || !window.NPCEmpathize.openForActor) return;
+        SoundManager.playOk();
+        window.NPCEmpathize.openForActor(actor.actorId());
     };
 
     Scene_Status.prototype.drawUIStatusBust = function (actor, canvasId) {
@@ -1233,7 +1588,10 @@
         if (!canvas) {
             canvas = document.createElement('canvas');
             canvas.id = 'status-bust-3d';
-            canvas.style.cssText = 'width:440px; height:500px; display:block; cursor:grab;';
+            // Sized by the stylesheet (100% of the portrait box, letterboxed),
+            // never in pixels: a fixed size would spill over the gauges below
+            // once the page is shorter than the portrait.
+            canvas.style.cssText = 'display:block; cursor:grab;';
             wrapper.appendChild(canvas);
         }
         canvas.style.display = 'block';
@@ -1457,17 +1815,41 @@
             return;
         }
 
-        const allMembers = $gameParty.allMembers();
-
-        if (Input.isTriggered('right') || Input.isTriggered('pagedown')) {
+        // The shoulder buttons keep the party switcher they have on every other
+        // book spread; left / right now turn the page's own tabs, which is the
+        // only thing those keys can mean once the right page has sections.
+        if (Input.isTriggered('pagedown')) {
             this.nextActor();
             return;
         }
 
-        if (Input.isTriggered('left') || Input.isTriggered('pageup')) {
+        if (Input.isTriggered('pageup')) {
             this.previousActor();
             return;
         }
+
+        if (Input.isTriggered('right')) {
+            this.cycleStatusTab(1);
+            return;
+        }
+
+        if (Input.isTriggered('left')) {
+            this.cycleStatusTab(-1);
+            return;
+        }
+
+        // The traits page is a stack of dossiers rather than a list of rows, so
+        // there is nothing to move a cursor over: the keys scroll it.
+        if (this._dndActiveTab === "traits") {
+            const list = this._dndContainer && this._dndContainer.querySelector("#status-traits");
+            if (list) {
+                if (Input.isRepeated('down')) list.scrollTop += TRAIT_SCROLL_STEP;
+                else if (Input.isRepeated('up')) list.scrollTop -= TRAIT_SCROLL_STEP;
+            }
+            return;
+        }
+
+        if (this._dndActiveTab !== "anatomy") return;
 
         const actor = this.actor();
         if (actor && actor._bodyParts) {

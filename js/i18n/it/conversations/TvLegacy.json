@@ -135,7 +135,7 @@
     "'{soap_name}' - {character4} torna a {location} portando {evidence} e un nome che {nessuno|non} usa più.",
     "Stasera: {character2} e {character3} fanno lo stesso litigio per la nona mattina di fila a '{soap_name}'.",
     "'{soap_name}': {character1} e {revelation}. {character2} lo sa da quando si è spezzata la leyline.",
-    "A '{soap_name}', {betrayal} costa a {character3} la tenuta, la servitu e il pomeriggio.",
+    "A '{soap_name}', {betrayal} costa a {character3} la tenuta, la servitù e il pomeriggio.",
     "'{soap_name}': {character4} si dibatte con {internal_conflict} mentre {dramatic_event} chiude la strada est.",
     "Un episodio speciale di '{soap_name}': ogni personaggio di {location} ricorda un ieri diverso.",
     "'{soap_name}' si conclude: {mystery} trova risposta in {evidence}, e {nessuno|non} ne esce più felice.",
@@ -233,7 +233,7 @@
     "l'anatomia draconica",
     "gli studi elementali",
     "la traduzione di rune antiche",
-    "l'alchimia agricola"
+    "l'alchimica agricola"
   ],
   "criticism": [
     "eresia grammaticale",
@@ -375,7 +375,7 @@
     "Infestazioni di melme"
   ],
   "time_references": [
-    "martedi prossimo",
+    "martedì prossimo",
     "ieri sera",
     "il secolo scorso",
     "l'anno 2000",
@@ -421,7 +421,7 @@
   "actions": [
     "comparire nel vostro magazzino durante la notte",
     "manifestarsi nel vostro vialetto",
-    "materializzarsi durante la pausa caffe",
+    "materializzarsi durante la pausa caffè",
     "consegnarlo con un corvo",
     "forgiarlo nel fuoco di drago",
     "distillarlo sotto la luna piena"
@@ -763,7 +763,7 @@
     "Educazione Civica del Regno",
     "Anatomia Draconica 101",
     "Conosci i Tuoi Mostri",
-    "Alchimia Agricola"
+    "Alchimica Agricola"
   ],
   "companies": [
     "Birrificio Fortebarba",

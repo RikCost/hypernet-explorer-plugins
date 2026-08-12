@@ -1,0 +1,11 @@
+{
+  "errorName": "ERROR",
+  "unknownName": "UNKNOWN",
+  "error": "[ERROR] {message}",
+  "checkParams": "CHECK PLUGIN PARAMETERS.",
+  "noDatabases": "[ERROR] NO DIALOGUE DATABASES AVAILABLE!",
+  "databaseMissing": "[ERROR] TEXT DATABASE \"{id}\" NOT FOUND!",
+  "allDatabases": "ALL DATABASES COMBINED",
+  "combined": "COMBINED: {list}",
+  "seeded": "SEEDED: {list}"
+}

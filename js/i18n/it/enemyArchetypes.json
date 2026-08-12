@@ -248,6 +248,10 @@
       "head": {
         "name": "Testa"
       },
+      "mouth": {
+        "name": "Bocca",
+        "msg": "Fauci spezzate!"
+      },
       "body": {
         "name": "Corpo",
         "msg": "Corpo schiacciato in poltiglia!"

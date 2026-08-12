@@ -549,7 +549,7 @@
             if (!holder) { onOk(); return; }
 
             holder.innerHTML = `
-                <div style="position:absolute; inset:0; background:rgba(20,25,40,0.45); display:flex;
+                <div style="position:absolute; top:0; right:0; bottom:0; left:0; background:rgba(20,25,40,0.45); display:flex;
                             align-items:center; justify-content:center; z-index:10;">
                     <div style="background:#f6f5ee; border:2px solid #16305f; border-radius:4px; width:380px; max-width:85%;
                                 box-shadow:0 8px 22px rgba(0,0,0,0.4);">

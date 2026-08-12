@@ -374,6 +374,56 @@
   window.GalaxySim.planetBreathable = planetBreathable;
   window.GalaxySim.planetHasLife = planetHasLife;
 
+  // ============================================================================
+  // Life signs: what a scan actually reads off a world
+  // ============================================================================
+  // A biosphere is rare (planetHasLife above, and only on a supportLife type),
+  // but a dead world is not automatically an empty one. The alien biomes grow
+  // tentacles, tentacled rock and crystal tentacles - things the instruments
+  // cannot call life and cannot call geology - and a world carrying them scans
+  // as WEAK. Which biomes can grow them at all is a property of the biome
+  // (js/db/WorldGen/AlienBiomes.json: a feature flagged `lifeSign`), and which
+  // worlds of that biome actually do is a deterministic per-planet roll, so a
+  // given planet always reads the same in the info box, in the catalogue, in
+  // the biosignature sweep and on the ground.
+  const LIFE = { NONE: "none", WEAK: "weak", STRONG: "strong" };
+  const WEAK_LIFE_CHANCE = 0.34;
+  window.GalaxySim.LifeSigns = LIFE;
+
+  const _biosignBiomeCache = {};
+  // Does the biome a planet type lands on declare any `lifeSign` feature?
+  function biomeGrowsBiosigns(biomeName) {
+    if (!biomeName) return false;
+    if (_biosignBiomeCache[biomeName] === undefined) {
+      const list = (window.WorldGen && window.WorldGen.Biomes) || [];
+      const biome = list.find((b) => b && b.name === biomeName);
+      // Asked before DataService merged the alien biomes in: answer no, but do
+      // not cache it, or the whole sim would read as barren for the session.
+      if (!biome) return false;
+      _biosignBiomeCache[biomeName] = (biome.features || []).some(
+        (f) => f && typeof f === "object" && f.lifeSign
+      );
+    }
+    return _biosignBiomeCache[biomeName];
+  }
+  window.GalaxySim.biomeGrowsBiosigns = biomeGrowsBiosigns;
+
+  function planetLifeSigns(planet) {
+    if (planetHasLife(planet)) return LIFE.STRONG;
+    const info = planetTypeInfo(planet);
+    if (!info || !biomeGrowsBiosigns(info.biome)) return LIFE.NONE;
+    let seed = 19002001;
+    try {
+      if (window.HistoryManager && window.HistoryManager.getSeed) {
+        seed = window.HistoryManager.getSeed();
+      }
+    } catch (e) { /* default */ }
+    const name = (planet && planet.name) || "";
+    const roll = (fnv1a(name + "|biosign|" + seed) % 10000) / 10000;
+    return roll < WEAK_LIFE_CHANCE ? LIFE.WEAK : LIFE.NONE;
+  }
+  window.GalaxySim.planetLifeSigns = planetLifeSigns;
+
   // Alien surface = the procedural map (636) generated from an alien biome
   // (biome names produced by AlienBiomes.json all start with "Alien").
   function isAlienSurface() {
@@ -384,8 +434,22 @@
   function currentAlienHasLife() {
     return !!(typeof $gameSystem !== "undefined" && $gameSystem && $gameSystem._alienPlanetHasLife);
   }
+  // What the world under the party's feet scans as. The proc-gen reads this to
+  // decide whether the biome's biosign features (the tentacles) grow here; a
+  // world with a full biosphere carries them too, so STRONG counts as WEAK.
+  function currentAlienLifeSigns() {
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return LIFE.NONE;
+    if ($gameSystem._alienPlanetHasLife) return LIFE.STRONG;
+    return $gameSystem._alienLifeSigns || LIFE.NONE;
+  }
+  function currentAlienGrowsBiosigns() {
+    const signs = currentAlienLifeSigns();
+    return signs === LIFE.WEAK || signs === LIFE.STRONG;
+  }
   window.GalaxySim.isAlienSurface = isAlienSurface;
   window.GalaxySim.currentAlienHasLife = currentAlienHasLife;
+  window.GalaxySim.currentAlienLifeSigns = currentAlienLifeSigns;
+  window.GalaxySim.currentAlienGrowsBiosigns = currentAlienGrowsBiosigns;
 
   // ============================================================================
   // EVA suits: on a planet with a non-breathable atmosphere the whole party
@@ -498,6 +562,10 @@
     // forceLife overrides the deterministic 10% roll (Sandbox "with Life" variant),
     // guaranteeing the surface generates random procedural species.
     $gameSystem._alienPlanetHasLife = opts.forceLife ? true : planetHasLife(planet);
+    // What the surface scans as, which is what decides whether the biome's
+    // tentacles grow on this particular world (see currentAlienGrowsBiosigns).
+    $gameSystem._alienLifeSigns = ($gameSystem._alienPlanetHasLife || opts.forceLife)
+      ? LIFE.STRONG : planetLifeSigns(planet);
     $gameSystem._awayFromShip = true;
     $gameSystem._landedPlanet = makeLandedDescriptor(planet);
     if (breathable) { removeEVASuits(); } else { applyEVASuits(); }
@@ -559,15 +627,250 @@
   }
   window.GalaxySim.getAlienGridTextureCanvas = getAlienGridTextureCanvas;
 
-  // Teleport the party to a hand-authored landing site ({ name, mapId, x, y }),
-  // e.g. one of Earth's spaceports. Deliberately does not touch the scene stack
+  // ============================================================================
+  // Setting down again somewhere else on the same planet
+  // ----------------------------------------------------------------------------
+  // Not enterPlanetSurface: the party is already on this world, so the life
+  // roll, the life signs, the EVA suits and the enemy caches must all be left
+  // exactly as they are. Landing again is the grid cell, the two world-coordinate
+  // variables the generator reads and a fresh map, which is the same work a
+  // border crossing does (WorldMapReturn's alien branch) with the destination
+  // picked rather than walked into. A party that had gone underground comes back
+  // up: the ship sets down on the surface, never in the caves under it.
+  // ============================================================================
+  function relandOnPlanet(gx, gy) {
+    if (!isAlienSurface()) return false;
+    const grid = getAlienGridInfo();
+    if (!grid) return false;
+    const nx = ((Math.floor(gx) % grid.w) + grid.w) % grid.w;
+    const ny = ((Math.floor(gy) % grid.h) + grid.h) % grid.h;
+    grid.gx = nx;
+    grid.gy = ny;
+    $gameVariables.setValue(43, nx);
+    $gameVariables.setValue(44, ny);
+    $gameSystem._procGenData.biomeLayerStack = [];
+    if (!($gameSystem.generateProceduralMap && $gameSystem.generateProceduralMap())) return false;
+    const PROC_MAP_ID = 636, W = 64, H = 64;
+    $gamePlayer.reserveTransfer(PROC_MAP_ID, Math.floor(W / 2), Math.floor(H / 2), 2, 0);
+    return true;
+  }
+  window.GalaxySim.relandOnPlanet = relandOnPlanet;
+
+  // ============================================================================
+  // Landing-site picker on foot (Scene_AlienLandingGrid)
+  // ----------------------------------------------------------------------------
+  // In orbit the landing square is chosen from the star map's own overlay
+  // (GalaxySim_Overlay's showLandingGrid). On the ground there is no world map to
+  // go back to, so every "return to the world map" route diverts here instead:
+  // the same unwrapped planet texture cut into the same landing grid, the square
+  // the party is standing on marked in red, and confirming one sets the ship down
+  // on it. Cancelling leaves the party exactly where they were.
+  // ============================================================================
+  const LG_PAD = 40;      // page margin around the grid
+  const LG_TITLE_H = 52;  // strip above it
+  const LG_HELP_H = 40;   // strip below it
+
+  // The grid is drawn as large as the page allows while keeping its own cell
+  // aspect: the texture is equirectangular and planetGridSize keeps h at half of
+  // w, so the picture is twice as wide as it is tall and the squares stay square.
+  function landingGridDestSize(grid) {
+    const availW = Graphics.boxWidth - LG_PAD * 2;
+    const availH = Graphics.boxHeight - LG_PAD * 2 - LG_TITLE_H - LG_HELP_H;
+    let w = availW;
+    let h = Math.round((w * grid.h) / grid.w);
+    if (h > availH) {
+      h = availH;
+      w = Math.round((h * grid.w) / grid.h);
+    }
+    return { w: Math.max(1, w), h: Math.max(1, h) };
+  }
+
+  class Scene_AlienLandingGrid extends Scene_MenuBase {
+    create() {
+      super.create();
+      this._grid = getAlienGridInfo() || { w: 1, h: 1, gx: 0, gy: 0 };
+      this._planet = getSurfacePlanet();
+      this._cursor = { gx: this._grid.gx, gy: this._grid.gy };
+      this._leaving = false;
+      this.createGridSprite();
+      this.createTextSprite();
+      this.redrawAll();
+    }
+
+    createGridSprite() {
+      const size = landingGridDestSize(this._grid);
+      const sprite = new Sprite(new Bitmap(size.w, size.h));
+      sprite.x = Math.floor((Graphics.boxWidth - size.w) / 2);
+      sprite.y = LG_PAD + LG_TITLE_H +
+        Math.floor((Graphics.boxHeight - LG_PAD * 2 - LG_TITLE_H - LG_HELP_H - size.h) / 2);
+      this._gridSprite = sprite;
+      this.addChild(sprite);
+    }
+
+    createTextSprite() {
+      this._textSprite = new Sprite(new Bitmap(Graphics.boxWidth, Graphics.boxHeight));
+      this.addChild(this._textSprite);
+    }
+
+    redrawAll() {
+      const R3D = window.GalaxySim.Renderer3D;
+      const texture = getAlienGridTextureCanvas();
+      const bmp = this._gridSprite.bitmap;
+      bmp.clear();
+      if (R3D && R3D.drawPlanetGrid && texture) {
+        R3D.drawPlanetGrid(bmp.context, {
+          textureCanvas: texture,
+          destW: bmp.width, destH: bmp.height,
+          gridW: this._grid.w, gridH: this._grid.h,
+          highlightCell: this._cursor,
+          playerCell: { gx: this._grid.gx, gy: this._grid.gy },
+        });
+        bmp.baseTexture.update();
+      }
+      this.redrawText();
+    }
+
+    redrawText() {
+      const bmp = this._textSprite.bitmap;
+      const width = bmp.width - LG_PAD * 2;
+      bmp.clear();
+      bmp.fontFace = $gameSystem.mainFontFace();
+      bmp.outlineColor = "rgba(0, 0, 0, 0.75)";
+      bmp.fontSize = 26;
+      bmp.textColor = "#ffe9a8";
+      const name = (this._planet && this._planet.name) || "";
+      const title = name
+        ? `${T('Galaxy.hud.chooseLandingSite')} · ${name}`
+        : T('Galaxy.hud.chooseLandingSite');
+      bmp.drawText(title, LG_PAD, LG_PAD, width, LG_TITLE_H, "left");
+      bmp.fontSize = 18;
+      bmp.textColor = "#cfd8e6";
+      const helpY = Graphics.boxHeight - LG_PAD - LG_HELP_H;
+      bmp.drawText(`${this._cursor.gx}, ${this._cursor.gy}`, LG_PAD, helpY, width, LG_HELP_H, "right");
+    }
+
+    moveCursor(dx, dy) {
+      this._cursor.gx = ((this._cursor.gx + dx) % this._grid.w + this._grid.w) % this._grid.w;
+      this._cursor.gy = ((this._cursor.gy + dy) % this._grid.h + this._grid.h) % this._grid.h;
+      SoundManager.playCursor();
+      this.redrawAll();
+    }
+
+    // Which square a screen point falls on, or null off the picture.
+    cellAt(px, py) {
+      const sprite = this._gridSprite;
+      const bmp = sprite.bitmap;
+      const x = px - sprite.x;
+      const y = py - sprite.y;
+      if (x < 0 || y < 0 || x >= bmp.width || y >= bmp.height) return null;
+      return {
+        gx: Math.min(this._grid.w - 1, Math.floor((x / bmp.width) * this._grid.w)),
+        gy: Math.min(this._grid.h - 1, Math.floor((y / bmp.height) * this._grid.h)),
+      };
+    }
+
+    confirm() {
+      SoundManager.playOk();
+      this._leaving = true;
+      if (relandOnPlanet(this._cursor.gx, this._cursor.gy)) {
+        SceneManager.goto(Scene_Map);
+      } else {
+        SoundManager.playBuzzer();
+        this._leaving = false;
+      }
+    }
+
+    update() {
+      super.update();
+      // Never read the press that opened the scene, nor one made on the way out.
+      if (this._leaving || !this.isActive()) return;
+      let dx = 0, dy = 0;
+      if (Input.isRepeated("left")) dx = -1;
+      else if (Input.isRepeated("right")) dx = 1;
+      if (Input.isRepeated("up")) dy = -1;
+      else if (Input.isRepeated("down")) dy = 1;
+      if (dx || dy) this.moveCursor(dx, dy);
+      // A click picks the square outright, exactly as it does in orbit.
+      if (TouchInput.isTriggered()) {
+        const cell = this.cellAt(TouchInput.x, TouchInput.y);
+        if (cell) {
+          this._cursor = cell;
+          this.redrawAll();
+          this.confirm();
+          return;
+        }
+      }
+      if (Input.isTriggered("cancel") || TouchInput.isCancelled()) {
+        SoundManager.playCancel();
+        this.popScene();
+      } else if (Input.isTriggered("ok")) {
+        this.confirm();
+      }
+    }
+  }
+  window.Scene_AlienLandingGrid = Scene_AlienLandingGrid;
+
+  // Open the picker, or answer false when there is nothing to pick from (not on
+  // a planet surface, or the renderer that draws the planet is not loaded). Every
+  // "return to the world map" route asks this first while the party is planetside.
+  function openLandingGridPicker() {
+    if (!isAlienSurface() || !getAlienGridInfo() || !getSurfacePlanet()) return false;
+    const R3D = window.GalaxySim.Renderer3D;
+    if (!R3D || !R3D.drawPlanetGrid || !getAlienGridTextureCanvas()) return false;
+    SceneManager.push(Scene_AlienLandingGrid);
+    return true;
+  }
+  window.GalaxySim.openLandingGridPicker = openLandingGridPicker;
+
+  // Which hand-authored landing site the party is standing on, and whether it
+  // is off Earth. A landing site is an ordinary authored map with no biome and
+  // no procedural state of its own, so nothing about the map itself says the
+  // party is on another world: the answer is the system and planet the ship was
+  // orbiting when it set down, recorded here and held until the party leaves
+  // that map. Read it through offworldLandingSite() (the sprite catalogue asks
+  // it who is likely to be walking about, see SpriteCatalog.alienShare).
+  const HOME_SYSTEM = "Sol";     // i18n-ignore: system id
+  const HOME_PLANET = "Earth";   // i18n-ignore: planet id
+  function landingSiteRecord(loc) {
+    const dm = (typeof $gameSystem !== "undefined" && $gameSystem) ? $gameSystem.starMapData : null;
+    const ship = dm && dm.playerShip;
+    const system = (ship && ship.currentSystem) || null;
+    const planet = (ship && ship.currentPlanet) || null;
+    return {
+      name: loc.name || "", mapId: loc.mapId, x: loc.x || 1, y: loc.y || 1,
+      system, planet,
+      // Earth's own spaceports are landing sites too, and they are not alien
+      // ground. Anything the ship reached from another system or another world
+      // is: an unresolved system reads as home rather than guessing otherwise.
+      offworld: !!(system && (system !== HOME_SYSTEM || (planet && planet !== HOME_PLANET))),
+    };
+  }
+  function landingSite() {
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return null;
+    const rec = $gameSystem._gxLandingSite;
+    if (!rec || typeof $gameMap === "undefined" || !$gameMap) return null;
+    return $gameMap.mapId() === rec.mapId ? rec : null;
+  }
+  function offworldLandingSite() {
+    const rec = landingSite();
+    return (rec && rec.offworld) ? rec : null;
+  }
+  window.GalaxySim.landingSite = landingSite;
+  window.GalaxySim.offworldLandingSite = offworldLandingSite;
+
+  // Teleport the party to a hand-authored landing site ({ name, mapId, x, y },
+  // optionally `dir`: the direction the party is left facing, 2/4/6/8, down by
+  // default), e.g. one of Earth's spaceports. Deliberately does not touch the scene stack
   // (callers close/pop their own UI). When the site sits on the world map (315),
   // the Starship is parked one tile below the arrival point and the position is
   // persisted to VehiclePosition, mirroring FastTravelSystem's completeTravelAirship
   // so the ship is physically there and the player steps off it on foot.
   function teleportToLandingSite(loc) {
     if (!loc || loc.mapId == null) return false;
-    if (typeof $gameSystem !== "undefined" && $gameSystem) $gameSystem._awayFromShip = true;
+    if (typeof $gameSystem !== "undefined" && $gameSystem) {
+      $gameSystem._awayFromShip = true;
+      $gameSystem._gxLandingSite = landingSiteRecord(loc);
+    }
     // A landing site is a hand-authored map, never a procedural planet surface,
     // so the previous landing ends here (see clearAlienSurfaceState).
     clearAlienSurfaceState();
@@ -577,7 +880,8 @@
       if (shipVehicle) shipVehicle.setLocation(315, x, y + 1);
       window.VehiclePosition.set("airship", 315, x, y + 1, x, y + 1);
     }
-    $gamePlayer.reserveTransfer(loc.mapId, x, y, 2, 0);
+    const dir = [2, 4, 6, 8].includes(loc.dir) ? loc.dir : 2;
+    $gamePlayer.reserveTransfer(loc.mapId, x, y, dir, 0);
     return true;
   }
   window.GalaxySim.teleportToLandingSite = teleportToLandingSite;
@@ -600,6 +904,7 @@
       }
     }
     $gameSystem._alienPlanetHasLife = false;
+    $gameSystem._alienLifeSigns = LIFE.NONE;
     _alienGridTextureCache = null;
   }
   window.GalaxySim.clearAlienSurfaceState = clearAlienSurfaceState;
@@ -619,6 +924,11 @@
     if (mapId !== 636) {
       if ($gameSystem._evaSuitActive) removeEVASuits();
       $gameSystem._landedPlanet = null;
+    }
+    // The landing site is the map it names and nothing else: stepping off it
+    // (into a building, back onto the world map) ends it.
+    if ($gameSystem._gxLandingSite && $gameSystem._gxLandingSite.mapId !== mapId) {
+      $gameSystem._gxLandingSite = null;
     }
     if (mapId === SHIP_INTERIOR_MAP || mapId === EARTH_WORLD_MAP) {
       clearAlienSurfaceState();
@@ -1770,6 +2080,348 @@
     if (Anomaly.hasPendingBattle() && !this._transfer) {
       try { Anomaly.startBattle(); } catch (e) { console.error(e); Anomaly.end(); }
     }
+  };
+
+  // ============================================================================
+  // Nibiru: the world that is on its way
+  // ----------------------------------------------------------------------------
+  // One body, four states, and the calendar is the only thing that moves it
+  // (Variable 114, the world clock - see TimeDateSystem):
+  //
+  //   2001-01-01 .. 2010-01-01   APPROACH  a lone rogue planet in the star
+  //                              field, its own starless system, closing on the
+  //                              Sun and slowing as it comes.
+  //   2010-01-01 .. 2012-12-21   INBOUND   inside the Solar System: a planet of
+  //                              Sol falling in from beyond Eris onto Earth's
+  //                              own orbit, riding Earth's phase so the two
+  //                              arrive at the same place at the same moment.
+  //   2012-12-21 onward          whichever of the two endings the world earned:
+  //                              SATURN, if switch 200 is on when the day comes
+  //                              (Nibiru is taken by the giant instead and
+  //                              Saturn burns, very nearly a star), otherwise
+  //                              OMEGA - switch 199 goes on, Nibiru and Earth
+  //                              are both gone, and what stands in Earth's
+  //                              orbit is the Omega Tower.
+  //
+  // Nothing here is stored except which ending was taken: the position of the
+  // planet is a function of the clock and is recomputed whenever the day turns.
+  // DataManager._syncTimeline calls sync() from getSystem/getAllSystems, so the
+  // star map, the catalog and travel all read the same table; tick() keeps the
+  // clock running (and the switches honest) for a party that never looks up.
+  // ============================================================================
+  const NIBIRU_NAME = "Nibiru";          // i18n-ignore: body id
+  const OMEGA_TOWER_NAME = "Omega Tower"; // i18n-ignore: body id
+  const SATURN_NAME = "Saturn";           // i18n-ignore: body id
+  // Switch 200 ("TowerClimbed"): the Earth is spared - Saturn takes the blow.
+  // Switch 199 ("EarthDestroyed"): raised by the impact itself, the day Earth
+  // stops existing. Read the first, write the second; never the other way.
+  const SW_SPARE_EARTH = 200;
+  const SW_EARTH_LOST = 199;
+
+  // The world clock counts minutes from this moment (TimeDateSystem's epoch).
+  const CLOCK_EPOCH = new Date(2001, 0, 1, 10, 0, 0);
+  const minutesAt = (y, m, d) =>
+    Math.round((new Date(y, m, d, 0, 0, 0) - CLOCK_EPOCH) / 60000);
+  const T_ENTER = minutesAt(2010, 0, 1);    // crosses into the Solar System
+  const T_IMPACT = minutesAt(2012, 11, 21); // 21 December 2012
+
+  // How far out it starts, and the bearing it comes in on (a fixed direction:
+  // the thing has been falling toward us since long before anyone was counting).
+  const APPROACH_LY = 21.5;
+  const APPROACH_DIR = (() => {
+    const v = { x: 0.58, y: 0.13, z: -0.80 };
+    const L = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    return { x: v.x / L, y: v.y / L, z: v.z / L };
+  })();
+  // Where it enters the system, in AU: outside Eris, inside the far comets.
+  const ENTRY_AU = 62;
+
+  const gxClamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+  function nibiruNow() {
+    const TDS = window.TimeDateSystem;
+    if (TDS && TDS.getGameTimeMinutes) {
+      const m = TDS.getGameTimeMinutes();
+      if (typeof m === "number" && isFinite(m)) return Math.max(0, m);
+    }
+    if (typeof $gameVariables !== "undefined" && $gameVariables) {
+      return Math.max(0, Number($gameVariables.value(114)) || 0);
+    }
+    return 0;
+  }
+
+  // Which ending the world took, resolved once and then remembered. Switch 199
+  // is the world-shared half of the answer (it is what the rest of the game
+  // reads); `_gxNibiruOutcome` is this savegame's own record, and is what keeps
+  // a spared Earth spared even if switch 200 is turned off afterwards.
+  function nibiruOutcome() {
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return "omega";
+    if ($gameSystem._gxNibiruOutcome) return $gameSystem._gxNibiruOutcome;
+    const sw = (typeof $gameSwitches !== "undefined" && $gameSwitches) ? $gameSwitches : null;
+    if (sw && sw.value(SW_EARTH_LOST)) return ($gameSystem._gxNibiruOutcome = "omega");
+    const spared = !!(sw && sw.value(SW_SPARE_EARTH));
+    const res = spared ? "saturn" : "omega";
+    $gameSystem._gxNibiruOutcome = res;
+    if (res === "omega" && sw) sw.setValue(SW_EARTH_LOST, true);
+    return res;
+  }
+
+  function nibiruState() {
+    const t = nibiruNow();
+    if (t >= T_IMPACT) return { t, phase: nibiruOutcome() };
+    if (t >= T_ENTER) return { t, phase: "inbound" };
+    return { t, phase: "approach" };
+  }
+
+  // Resolve the state AND say so, once, on the turn it changes. A phase that has
+  // never been recorded (a fresh party, a save made after the fact) is written
+  // down silently: an announcement is for a crossing the player lived through.
+  function nibiruAdvance() {
+    const s = nibiruState();
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return s;
+    const seen = $gameSystem._gxNibiruPhase;
+    if (seen !== s.phase) {
+      $gameSystem._gxNibiruPhase = s.phase;
+      if (seen) {
+        if (s.phase === "inbound") notify(T('Galaxy.nibiru.entered'), "warning");
+        else if (s.phase === "saturn") notify(T('Galaxy.nibiru.hitSaturn'), "warning");
+        else if (s.phase === "omega") notify(T('Galaxy.nibiru.hitEarth'), "warning");
+      }
+    }
+    return s;
+  }
+
+  // --- The bodies ------------------------------------------------------------
+  function nibiruRogueSystem(t) {
+    const M = window.GalaxySim.Math || {};
+    const u = gxClamp(t / T_ENTER, 0, 1);
+    // Eased, so the decade is spent closing rather than crossing the sky at a
+    // constant rate: inside a light year by 2009, and never quite standing on
+    // the Sun (the floor keeps it its own dot on the map right up to the day it
+    // stops being one).
+    const d = Math.max(0.02, APPROACH_LY * Math.pow(1 - u, 1.35));
+    return {
+      name: NIBIRU_NAME,
+      type: "ROGUE_PLANET",
+      color: (M.STAR_COLORS && M.STAR_COLORS.ROGUE_PLANET) || "#2e3a4e",
+      position: { x: APPROACH_DIR.x * d, y: APPROACH_DIR.y * d, z: APPROACH_DIR.z * d },
+      mass: 1.26e-5,      // solar masses: about four Earths
+      radius: 0.0163,     // solar radii
+      temperature: 42,
+      luminosity: 0,
+      binary: false,
+      companions: null,
+      dyson: null,
+      feeding: null,
+      planetType: "rogue",
+      belts: null,
+      galaxy: null,
+      hardcoded: true,
+      planets: [],
+      note: T('Galaxy.nibiru.noteFar'),
+      // What makes the panel draw the countdown (see Overlay.impactCountdown).
+      impactBody: true,
+    };
+  }
+
+  function nibiruPlanet(sol, t) {
+    const M = window.GalaxySim.Math || {};
+    const v = gxClamp((t - T_ENTER) / (T_IMPACT - T_ENTER), 0, 1);
+    // Slow to leave the cold, and then a rush: most of the fall happens in the
+    // last months, which is exactly when anyone starts looking.
+    const r = 1 + (ENTRY_AU - 1) * Math.pow(1 - v, 0.75);
+    const earth = (sol.planets || []).find((p) => p.name === "Earth");   // i18n-ignore: body id
+    return {
+      name: NIBIRU_NAME,
+      type: "rogue",
+      color: (M.PLANET_COLORS && M.PLANET_COLORS.rogue) || "#4a3b34",
+      orbitRadius: r,
+      radius: 1.9,
+      mass: 4.2,
+      period: Math.sqrt(Math.pow(r, 3) / (sol.mass || 1)) * 365,
+      // Earth's own angle, held all the way in: the two are not going to miss.
+      phase: (earth && typeof earth.phase === "number") ? earth.phase : 0,
+      atmosphere: true,
+      landingLocations: null,
+      note: T('Galaxy.nibiru.noteNear'),
+      artificial: null,
+      probeStyle: null,
+      hubble: false,
+      noLanding: false,
+      debris: null,
+      moons: [],
+      impactBody: true,
+    };
+  }
+
+  function omegaTowerPlanet(earth) {
+    return {
+      name: OMEGA_TOWER_NAME,
+      type: "mega_iron",
+      color: "#0b0b10",
+      orbitRadius: (earth && earth.orbitRadius) || 1,
+      // Drawn at the size of the world it stands in for, the way every other
+      // artificial body here is (see the monolith): true scale would be a
+      // speck nobody could find in Earth's orbit.
+      radius: 1,
+      mass: 1e-9,
+      period: (earth && earth.period) || 365,
+      phase: (earth && typeof earth.phase === "number") ? earth.phase : 0,
+      atmosphere: false,
+      // The tower has one door and it is not on a surface anyone walks to: the
+      // landing grid is refused (noLanding) and this is the only way down.
+      landingLocations: [{
+        name: T('Galaxy.nibiru.towerLanding'), mapId: 635, x: 13, y: 38, dir: 8,
+      }],
+      note: T('Galaxy.nibiru.towerNote'),
+      artificial: "omegatower",
+      probeStyle: null,
+      hubble: false,
+      noLanding: true,
+      debris: null,
+      // The Moon outlived its world, and the base on it with it.
+      moons: (earth && earth.moons) || [],
+    };
+  }
+
+  // The ship cannot stay parked at something that no longer exists.
+  function nibiruReseatShip(dm) {
+    const ship = dm && dm.playerShip;
+    if (!ship) return;
+    if (ship.currentSystem === NIBIRU_NAME && !dm.systems.has(NIBIRU_NAME)) {
+      ship.currentSystem = "Sol";   // i18n-ignore: system id
+      ship.currentPlanet = NIBIRU_NAME;
+      if (typeof $gameVariables !== "undefined" && $gameVariables) {
+        $gameVariables.setValue(96, ship.currentSystem);
+      }
+      dm.currentSystem = ship.currentSystem;
+    }
+    const sys = dm.systems.get(ship.currentSystem);
+    if (sys && ship.currentPlanet &&
+      !(sys.planets || []).some((p) => p.name === ship.currentPlanet)) {
+      ship.currentPlanet = null;
+    }
+  }
+
+  // Rewrite the registry to match `s`. Returns false when the table is not
+  // loaded yet, so the caller retries rather than recording the state as done.
+  function nibiruApply(dm, s) {
+    const sol = dm.systems.get("Sol");   // i18n-ignore: system id
+    if (!sol || !Array.isArray(sol.planets)) return false;
+
+    // Whatever the last pass left, taken back out: every state is built whole.
+    const wasInSystem = dm.systems.has(NIBIRU_NAME);
+    if (s.phase !== "approach" && wasInSystem) {
+      dm.systems.delete(NIBIRU_NAME);
+      if (dm.hardcodedSystems) dm.hardcodedSystems.delete(NIBIRU_NAME);
+    }
+    if (s.phase !== "inbound") {
+      sol.planets = sol.planets.filter((p) => p.name !== NIBIRU_NAME);
+    }
+
+    if (s.phase === "approach") {
+      dm.systems.set(NIBIRU_NAME, nibiruRogueSystem(s.t));
+      if (dm.hardcodedSystems) dm.hardcodedSystems.add(NIBIRU_NAME);
+    } else if (s.phase === "inbound") {
+      const at = sol.planets.findIndex((p) => p.name === NIBIRU_NAME);
+      const body = nibiruPlanet(sol, s.t);
+      if (at >= 0) sol.planets[at] = body;
+      else sol.planets.push(body);
+    } else if (s.phase === "saturn") {
+      const saturn = sol.planets.find((p) => p.name === SATURN_NAME);
+      if (saturn && !saturn.ignited) {
+        // Not enough to be a star, and far too much to still be a planet.
+        saturn.type = "magma_planet";
+        saturn.ignited = true;
+        saturn.atmosphere = true;
+        saturn.color = "#ff7a2a";
+        saturn.note = T('Galaxy.nibiru.saturnNote');
+      }
+    } else if (s.phase === "omega") {
+      const at = sol.planets.findIndex((p) => p.name === "Earth");   // i18n-ignore: body id
+      if (at >= 0) sol.planets[at] = omegaTowerPlanet(sol.planets[at]);
+      else if (!sol.planets.some((p) => p.name === OMEGA_TOWER_NAME)) {
+        sol.planets.push(omegaTowerPlanet(null));
+      }
+    }
+
+    nibiruReseatShip(dm);
+    return true;
+  }
+
+  let _nibiruBusy = false;
+
+  const Nibiru = {
+    // The whole timeline, for anything that wants to ask.
+    ENTER_MINUTE: T_ENTER,
+    IMPACT_MINUTE: T_IMPACT,
+    phase() { return nibiruState().phase; },
+    minutesToImpact() { return Math.max(0, T_IMPACT - nibiruNow()); },
+
+    // Reconcile a DataManager's registry with the calendar. Called from
+    // getSystem/getAllSystems, so it must be cheap when nothing has changed:
+    // a state key of (phase, day, language) decides that in one comparison.
+    sync(dm) {
+      if (_nibiruBusy || !dm || !dm.systems) return;
+      if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+      const s = nibiruAdvance();
+      // The terminal states do not move, so they are keyed on the phase alone;
+      // the two travelling ones are recomputed once a day. Language is in the
+      // key because the notes and the landing site are written text.
+      const moving = s.phase === "approach" || s.phase === "inbound";
+      const lang = (window.T && T.language) ? T.language() : "";
+      const key = s.phase + "|" + (moving ? Math.floor(s.t / 1440) : 0) + "|" + lang;
+      if (key === dm._nibiruKey) return;
+      _nibiruBusy = true;
+      try {
+        if (nibiruApply(dm, s)) dm._nibiruKey = key;
+      } catch (e) {
+        console.error("[GalaxySim] Nibiru: could not apply the timeline", e);
+        dm._nibiruKey = key; // never loop on a broken state
+      } finally {
+        _nibiruBusy = false;
+      }
+    },
+
+    // "Earth Impact" for the body that is carrying it, null for everything else.
+    countdownFor(body) {
+      if (!body || !body.impactBody) return null;
+      const left = Math.max(0, T_IMPACT - nibiruNow());
+      if (left <= 0) return T('Galaxy.nibiru.countdownNow');
+      const total = Math.ceil(left);
+      const days = Math.floor(total / 1440);
+      const hh = String(Math.floor((total % 1440) / 60)).padStart(2, "0");
+      const mm = String(total % 60).padStart(2, "0");
+      const years = Math.floor(days / 365);
+      if (years > 0) {
+        return T('Galaxy.nibiru.countdownYears',
+          { years, days: days - years * 365, hh, mm });
+      }
+      return T('Galaxy.nibiru.countdownDays', { days, hh, mm });
+    },
+
+    // Keeps the timeline moving for a party that never opens the star map: the
+    // switches and the announcements do not wait on anyone looking up.
+    tick() {
+      if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+      if (typeof $gameSwitches === "undefined" || !$gameSwitches) return;
+      nibiruAdvance();
+      const dm = $gameSystem.starMapData;
+      if (dm && dm.systems && dm.systems.size > 0) this.sync(dm);
+    },
+  };
+  window.GalaxySim.Nibiru = Nibiru;
+
+  // Once a second is far more often than a calendar needs, and cheap enough
+  // that it never has to be thought about again.
+  const NIBIRU_TICK_FRAMES = 60;
+  let _nibiruTickCount = 0;
+  const _GS_Game_Map_update_nibiru = Game_Map.prototype.update;
+  Game_Map.prototype.update = function (sceneActive) {
+    _GS_Game_Map_update_nibiru.call(this, sceneActive);
+    if (++_nibiruTickCount < NIBIRU_TICK_FRAMES) return;
+    _nibiruTickCount = 0;
+    try { Nibiru.tick(); } catch (e) { console.error(e); }
   };
 
   console.log("GalaxySim_Core: Plugin initialized successfully");

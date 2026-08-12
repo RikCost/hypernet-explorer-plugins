@@ -1,7 +1,541 @@
 {
-  "windowTitle": "Hypernet Explorer -  Dispatcher",
   "appName": "Hypernet Explorer",
+  "windowTitle": "Hypernet Explorer",
+  "windowTitlePage": "{title} - Hypernet Explorer",
+  "version": "6.0 (Build 2001.9.3)",
   "linkLost": "Transmission link lost. The requested Hypernet page could not be loaded.",
   "linkStable": "TRANSMISSION LINK STABLE",
-  "secureSsl": "SECURE SSL: MAXIMUM"
+  "secureSsl": "SECURE SSL: MAXIMUM",
+
+  "menu": {
+    "file": "File",
+    "edit": "Edit",
+    "view": "View",
+    "favorites": "Favorites",
+    "tools": "Tools",
+    "help": "Help"
+  },
+
+  "file": {
+    "newTab": "New Tab",
+    "duplicateTab": "Duplicate Tab",
+    "open": "Open...",
+    "save": "Save",
+    "saveAs": "Save As...",
+    "pageSetup": "Page Setup...",
+    "print": "Print...",
+    "printPreview": "Print Preview",
+    "closeTab": "Close Tab",
+    "exit": "Exit"
+  },
+
+  "edit": {
+    "cut": "Cut",
+    "copy": "Copy",
+    "paste": "Paste",
+    "selectAll": "Select All",
+    "find": "Find on This Page..."
+  },
+
+  "view": {
+    "toolbars": "Toolbars",
+    "standardButtons": "Standard Buttons",
+    "addressBar": "Address Bar",
+    "linksBar": "Links",
+    "tabBar": "Tab Row",
+    "statusBar": "Status Bar",
+    "explorerBar": "Explorer Bar",
+    "search": "Search",
+    "favorites": "Favorites",
+    "history": "History",
+    "goTo": "Go To",
+    "back": "Back",
+    "forward": "Forward",
+    "home": "Home Page",
+    "stop": "Stop",
+    "refresh": "Refresh",
+    "textSize": "Text Size",
+    "zoom": "Zoom",
+    "encoding": "Encoding",
+    "source": "Source",
+    "fullScreen": "Full Screen"
+  },
+
+  "textSize": {
+    "largest": "Largest",
+    "larger": "Larger",
+    "medium": "Medium",
+    "smaller": "Smaller",
+    "smallest": "Smallest"
+  },
+
+  "encoding": {
+    "western": "Western European",
+    "unicode": "Unicode (UTF-8)",
+    "cyrillic": "Cyrillic",
+    "hexagram": "Hexagram Glyphic"
+  },
+
+  "fav": {
+    "add": "Add to Favorites...",
+    "organize": "Organize Favorites...",
+    "imported": "Imported Bookmarks",
+    "empty": "(Empty)",
+    "bar": "Links",
+    "other": "Other Favorites",
+    "barLabel": "Links",
+    "hint": "Use Favorites, Add to Favorites to pin a site here.",
+    "added": "Added {name} to Favorites.",
+    "removed": "Removed {name} from Favorites.",
+    "exists": "That page is already in your Favorites.",
+    "dialogTitle": "Add to Favorites",
+    "name": "Name:",
+    "address": "Address:",
+    "createIn": "Create in:",
+    "organizeTitle": "Organize Favorites",
+    "newFolder": "New Folder",
+    "rename": "Rename",
+    "delete": "Delete",
+    "moveUp": "Move Up",
+    "moveDown": "Move Down",
+    "folderPrompt": "Name of the new folder:"
+  },
+
+  "tools": {
+    "mail": "Mail and News",
+    "readMail": "Read Mail",
+    "newMessage": "New Message",
+    "readNews": "Read News",
+    "synchronize": "Synchronize...",
+    "popupBlocker": "Pop-up Blocker",
+    "blockerOn": "Block Pop-ups",
+    "blockerOff": "Allow Pop-ups",
+    "downloads": "Show Downloads",
+    "connection": "Connection Status",
+    "options": "Hypernet Options..."
+  },
+
+  "help": {
+    "topics": "Help Topics",
+    "support": "Online Support",
+    "tip": "Tip of the Day",
+    "about": "About Hypernet Explorer"
+  },
+
+  "toolbar": {
+    "back": "Back",
+    "forward": "Forward",
+    "stop": "Stop",
+    "refresh": "Refresh",
+    "home": "Home",
+    "search": "Search",
+    "favorites": "Favorites",
+    "history": "History",
+    "print": "Print",
+    "random": "Feeling Lucky",
+    "mail": "Mail",
+    "go": "Go",
+    "address": "Address",
+    "newTab": "New Tab",
+    "closeTab": "Close Tab"
+  },
+
+  "status": {
+    "ready": "Ready",
+    "done": "Done",
+    "opening": "Opening {address}...",
+    "loading": "Loading {address}...",
+    "stopped": "Stopped by user.",
+    "notFound": "The page cannot be displayed.",
+    "zone": "Hypernet Zone",
+    "zoneProtected": "Hypernet Zone (Protected)",
+    "offline": "Working Offline",
+    "popupBlocked": "A pop-up was blocked. Click here to see options.",
+    "popupAllowed": "Pop-ups are allowed on the Hypernet Zone.",
+    "external": "External address. The Hypernet gateway holds no route to {address}.",
+    "downloadStarted": "Downloading {name}...",
+    "downloadDone": "Download complete: {name}",
+    "saved": "Saved to {path}",
+    "saveFailed": "The document could not be saved.",
+    "copied": "Copied to clipboard.",
+    "pasted": "Pasted from clipboard.",
+    "cut": "Cut to clipboard.",
+    "selectedAll": "Everything on this page is selected.",
+    "nothingToCopy": "There is nothing selected to copy.",
+    "encodingSet": "Encoding set to {name}.",
+    "zoomSet": "Zoom: {percent}%",
+    "textSizeSet": "Text size: {name}",
+    "syncing": "Synchronizing offline pages...",
+    "synced": "{count} pages synchronized.",
+    "printing": "Sending {title} to the spooler...",
+    "printed": "{title} sent to Hypernet Printer.",
+    "homeSet": "Home page set to {address}.",
+    "historyCleared": "History cleared.",
+    "blockerOn": "Pop-up blocker on.",
+    "blockerOff": "Pop-up blocker off.",
+    "barShown": "{name} shown.",
+    "barHidden": "{name} hidden."
+  },
+
+  "find": {
+    "label": "Find:",
+    "next": "Next",
+    "previous": "Previous",
+    "matchCase": "Match case",
+    "highlight": "Highlight all",
+    "close": "Close",
+    "count": "{count} matches",
+    "none": "No matches",
+    "unreadable": "This page will not let the finder read it."
+  },
+
+  "address": {
+    "placeholder": "Type a Hypernet address, or a phrase to search for",
+    "suggestHistory": "History",
+    "suggestSite": "Hypernet",
+    "suggestSearch": "Search Noodle for \"{query}\""
+  },
+
+  "tab": {
+    "untitled": "New Tab",
+    "loading": "Loading..."
+  },
+
+  "home": {
+    "beta": "BETA",
+    "searchButton": "Noodle Search",
+    "luckyButton": "I'm Feeling Lucky",
+    "footer": "(c) 2001 Noodle - The Hypernet Search Engine",
+    "stats": "About {count} results ({seconds} seconds)",
+    "noResults": "Your search - {query} - did not match any documents.",
+    "directory": "Hypernet Directory",
+    "directoryHint": "{count} sites are reachable from this terminal. Pick a letter.",
+    "connecting": "Contacting the Noodle index...",
+    "indexOffline": "The Noodle index is unreachable. The directory below is read straight off the local gateway cache.",
+    "suggestion": "Try a different phrase, or browse the directory below."
+  },
+
+  "error": {
+    "title": "The page cannot be displayed",
+    "heading": "The page cannot be displayed",
+    "body": "The page you are looking for is not on this gateway, or the name was mistyped.",
+    "address": "Address: {address}",
+    "tryTitle": "Please try the following:",
+    "try1": "Check that the Hypernet address is spelled correctly.",
+    "try2": "Search the Noodle index for the words you were after.",
+    "try3": "Open the Hypernet Directory and pick the site from the list.",
+    "didYouMean": "Did you mean:",
+    "searchFor": "Search Noodle for \"{query}\"",
+    "code": "Hypernet Explorer - Gateway response 404 (no route to document)",
+    "external": "That address lives outside the Hypernet. This terminal holds no route to it.",
+    "friendlyOff": "GATEWAY 404. NO ROUTE. DOCUMENT NOT HELD LOCALLY."
+  },
+
+  "history": {
+    "title": "History",
+    "heading": "History",
+    "hint": "Every page this terminal has opened, newest first.",
+    "empty": "Nothing has been visited yet.",
+    "today": "Today",
+    "earlier": "Earlier",
+    "clear": "Clear History",
+    "visits": "{count} visits",
+    "openIt": "Open"
+  },
+
+  "downloads": {
+    "title": "Downloads",
+    "heading": "Downloads",
+    "hint": "Files pulled off the Hypernet land in C:\\Documents.",
+    "empty": "No downloads yet.",
+    "file": "File",
+    "from": "From",
+    "state": "Status",
+    "inProgress": "Downloading...",
+    "complete": "Complete",
+    "failed": "Failed",
+    "clear": "Clear List",
+    "open": "Open"
+  },
+
+  "mail": {
+    "title": "Hypernet Mail",
+    "heading": "Inbox",
+    "hint": "Mail held for this terminal. Nothing here can be replied to; the relay has been one-way since the Y2K rollover.",
+    "from": "From",
+    "subject": "Subject",
+    "received": "Received",
+    "unread": "Unread",
+    "read": "Read",
+    "compose": "New Message",
+    "composeTitle": "New Message",
+    "composeTo": "To:",
+    "composeSubject": "Subject:",
+    "composeBody": "Message:",
+    "send": "Send",
+    "sent": "Message queued. The relay will carry it when the relay comes back.",
+    "news": "Newsgroups",
+    "newsHint": "The news server refuses this terminal's credentials.",
+    "messages": [
+      {
+        "from": "postmaster@hypernet.eu",
+        "subject": "Welcome to the Hypernet",
+        "body": "Your terminal has been registered with the gateway. Please do not attempt to reach addresses outside the Hypernet Zone. The gateway holds no route to them and the attempt is logged."
+      },
+      {
+        "from": "billing@noodle.com",
+        "subject": "Your Noodle index subscription",
+        "body": "This is a courtesy reminder that the Noodle index remains free of charge for domestic terminals. Commercial terminals are billed per query, retroactively, from a date to be announced."
+      },
+      {
+        "from": "no-reply@omegatower.eu",
+        "subject": "Scheduled maintenance",
+        "body": "Layer traffic will be re-routed through the Tower for the duration of the works. Pages may arrive in the wrong order. Pages may arrive before they are requested. This is expected."
+      },
+      {
+        "from": "listserv@metaforum.hypernet.eu",
+        "subject": "Digest: 41 new posts",
+        "body": "Thread: is anyone else getting their own posts back a day early. Thread: re: is anyone else getting their own posts back a day early. Thread: re: re: yes."
+      },
+      {
+        "from": "sales@hexasteel-dynamics.eu",
+        "subject": "Your enquiry",
+        "body": "Thank you for your interest in our products. A representative has been dispatched to your registered address. Please remain at your terminal."
+      }
+    ]
+  },
+
+  "source": {
+    "title": "Source of {address}",
+    "heading": "Document source",
+    "unavailable": "The source of this document could not be read.",
+    "bytes": "{count} bytes",
+    "wrap": "Wrap lines"
+  },
+
+  "open": {
+    "title": "Open",
+    "hint": "Type the address of a Hypernet document, or pick one from the list.",
+    "label": "Open:",
+    "filter": "Filter:",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "browse": "Directory",
+    "count": "{count} documents"
+  },
+
+  "save": {
+    "title": "Save Web Page",
+    "label": "File name:",
+    "folder": "Save in:",
+    "type": "Save as type:",
+    "typeHtml": "Web Page, complete (*.html)",
+    "typeText": "Text File (*.txt)",
+    "ok": "Save",
+    "cancel": "Cancel"
+  },
+
+  "pageSetup": {
+    "title": "Page Setup",
+    "paper": "Paper size:",
+    "orientation": "Orientation:",
+    "portrait": "Portrait",
+    "landscape": "Landscape",
+    "margins": "Margins (mm):",
+    "header": "Header:",
+    "footer": "Footer:",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "saved": "Page setup stored."
+  },
+
+  "print": {
+    "title": "Print Preview",
+    "printer": "Printer:",
+    "printerName": "Hypernet Line Printer (LPT1)",
+    "copies": "Copies:",
+    "range": "Pages:",
+    "all": "All",
+    "ok": "Print",
+    "cancel": "Cancel",
+    "pageOf": "Page {page} of {total}"
+  },
+
+  "options": {
+    "title": "Hypernet Options",
+    "tabGeneral": "General",
+    "tabSecurity": "Security",
+    "tabAdvanced": "Advanced",
+    "homePage": "Home page",
+    "homeAddress": "Address:",
+    "useCurrent": "Use Current",
+    "useDefault": "Use Default",
+    "useBlank": "Use Blank",
+    "historyGroup": "History",
+    "historyDays": "Days to keep pages in history:",
+    "clearHistory": "Clear History",
+    "clearCookies": "Delete Cookies",
+    "cookiesCleared": "Cookies deleted. The gateway remembers you anyway.",
+    "appearance": "Appearance",
+    "textSize": "Text size:",
+    "encoding": "Encoding:",
+    "zone": "Security zone",
+    "zoneLow": "Low: run everything the page asks for",
+    "zoneMedium": "Medium: prompt before running unsigned rites",
+    "zoneHigh": "High: nothing on the page is trusted",
+    "blocker": "Block pop-up windows",
+    "advanced": "Advanced settings",
+    "showImages": "Show pictures",
+    "playSounds": "Play sounds in web pages",
+    "smoothScroll": "Use smooth scrolling",
+    "friendlyErrors": "Show friendly error messages",
+    "underlineLinks": "Underline links",
+    "openInNewTab": "Open links in a new tab",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "apply": "Apply",
+    "saved": "Settings applied."
+  },
+
+  "sync": {
+    "title": "Synchronize",
+    "hint": "Offline pages are copied into the gateway cache so they can be read with the link down.",
+    "start": "Synchronize",
+    "close": "Close",
+    "working": "Synchronizing {name}...",
+    "done": "Synchronization complete."
+  },
+
+  "connection": {
+    "title": "Connection Status",
+    "gateway": "Gateway",
+    "gatewayValue": "hypernet-gw-01.eu",
+    "protocol": "Protocol",
+    "protocolValue": "HTX/1.1 over glass",
+    "speed": "Line speed",
+    "speedValue": "56.6 kbps (negotiated)",
+    "latency": "Latency",
+    "packets": "Documents held locally",
+    "cipher": "Cipher",
+    "cipherValue": "Hexagram-128",
+    "uptime": "Session",
+    "close": "Close"
+  },
+
+  "about": {
+    "title": "About Hypernet Explorer",
+    "product": "Hypernet Explorer",
+    "versionLabel": "Version:",
+    "cipherLabel": "Cipher strength:",
+    "cipher": "128-bit (Hexagram)",
+    "gatewayLabel": "Gateway:",
+    "documentsLabel": "Documents on this gateway:",
+    "notice": "This product is licensed to the bearer of the terminal. The licence is not transferable, and neither, past a certain point, is the bearer.",
+    "close": "OK"
+  },
+
+  "helpPage": {
+    "title": "Hypernet Explorer Help",
+    "heading": "Hypernet Explorer Help",
+    "intro": "Everything this browser can do, and the key that does it.",
+    "navHeading": "Getting around",
+    "navBody": "Type an address in the Address bar and press Enter. An address with no dot in it is searched for instead. A page that is not on this gateway shows the gateway's own 404 notice with the nearest matching addresses under it.",
+    "keysHeading": "Keyboard",
+    "keys": [
+      "Ctrl+T - new tab",
+      "Ctrl+W - close tab",
+      "Ctrl+L - go to the Address bar",
+      "Ctrl+D - add the page to Favorites",
+      "Ctrl+F - find on this page",
+      "Ctrl+H - history",
+      "Ctrl+J - downloads",
+      "Ctrl+U - view source",
+      "Ctrl+P - print preview",
+      "F5 - refresh",
+      "Alt+Left / Alt+Right - back and forward",
+      "Escape - stop loading"
+    ],
+    "favHeading": "Favorites",
+    "favBody": "Favorites are kept in the terminal's registry, so they survive the machine being switched off and travel with the save.",
+    "offlineHeading": "When the link is down",
+    "offlineBody": "The gateway holds a local copy of every document in the Hypernet Zone, so pages open with the line down. Only addresses outside the Zone need the line, and there are none.",
+    "close": "Close"
+  },
+
+  "popup": {
+    "blockedBar": "Pop-up blocked. To see this pop-up, click here.",
+    "showIt": "Show pop-up",
+    "always": "Always allow",
+    "close": "Close",
+    "ads": [
+      {
+        "title": "CONGRATULATIONS",
+        "body": "You are the 1,000,000th soul to reach this gateway. Claim your prize before the counter resets and picks somebody else.",
+        "button": "Claim now"
+      },
+      {
+        "title": "HOT SINGLES IN YOUR LAYER",
+        "body": "Three entities within four metres of your terminal want to speak with you. Two of them are already speaking with you.",
+        "button": "Meet them"
+      },
+      {
+        "title": "YOUR TERMINAL MAY BE INFECTED",
+        "body": "A scan you did not run has found 41 problems on a drive you do not have. Download the cure at once.",
+        "button": "Clean my terminal"
+      },
+      {
+        "title": "FREE OIL OPTIONS",
+        "body": "Petroleum futures are moving. Move with them. No prior experience, no capital, no soul required up front.",
+        "button": "Start trading"
+      },
+      {
+        "title": "LOWER YOUR PREMIUM",
+        "body": "Householders in your postcode are overpaying for reincarnation cover. One form, one signature, one lifetime.",
+        "button": "Get a quote"
+      }
+    ]
+  },
+
+  "tip": {
+    "title": "Tip of the Day",
+    "next": "Next Tip",
+    "close": "Close",
+    "tips": [
+      "An address with no dot in it is treated as a search. Type a phrase and press Enter.",
+      "Middle of a long page? Ctrl+F finds a word without scrolling for it.",
+      "The Links bar takes as many Favorites as you care to pin to it.",
+      "Ctrl+T opens a tab. Each tab keeps its own Back and Forward.",
+      "Source (Ctrl+U) shows a page exactly as the gateway sent it.",
+      "The Hypernet Directory on the home page lists every site the gateway holds.",
+      "A page that will not display shows the nearest addresses it could have meant.",
+      "Zoom lives on the status bar. Click the percentage to cycle it.",
+      "Pop-ups are blocked by default. Tools, Pop-up Blocker changes that, at your own risk.",
+      "Anything saved off a page lands in C:\\Documents and shows up in My Computer."
+    ]
+  },
+
+  "context": {
+    "back": "Back",
+    "forward": "Forward",
+    "refresh": "Refresh",
+    "selectAll": "Select All",
+    "copy": "Copy",
+    "viewSource": "View Source",
+    "addFavorite": "Add to Favorites",
+    "openNewTab": "Open in New Tab",
+    "properties": "Properties"
+  },
+
+  "properties": {
+    "title": "Properties",
+    "protocol": "Protocol:",
+    "protocolValue": "Hypernet Document",
+    "type": "Type:",
+    "typeValue": "Hypernet Hypertext Document",
+    "address": "Address:",
+    "file": "Local copy:",
+    "size": "Size:",
+    "zone": "Zone:",
+    "close": "OK"
+  }
 }

@@ -35,7 +35,7 @@
       "ORA {hour}! {channel}! \"{title}\"! {NESSUNO|NON C'è NESSUNO CHE} HA IL CONTROLLO!",
       "Avete {trovato|localizzato|inciampato su} {channel}! Non potete più non trovarlo! \"{title}\"!",
       "{BENVENUTI BENVENUTI|CIAO CIAO|AVANTI AVANTI} su {channel}! E \"{title}\"!!!",
-      "{channel} vi {travolge|colpisce|assale} con \"{title}\"! Niente rimborsi, niente ancore, niente pieta!",
+      "{channel} vi {travolge|colpisce|assale} con \"{title}\"! Niente rimborsi, niente ancore, niente pietà!",
       "E \"{title}\"! SU {channel}! L'ANTENNA E PAGATA FINO ALLE {hour}!",
       "{channel}!! \"{title}\"!! {NON ABBIAMO PROVATO|NESSUNO HA PROVATO|NON C'è STATA NESSUNA PROVA}!!",
       "{ALZATE IL VOLUME|PIÙ FORTE|VOLUME SU}! {channel}! \"{title}\"! ORA {hour} E SI SALE!"
@@ -391,7 +391,7 @@
       "{Grazie a tutti quelli che sono passati|Grazie a tutti quelli che hanno chiamato|Grazie a chi è riuscito a entrare}, {e scusate ai quattro che sono rimasti fuori|e scusate a chi è ancora in attesa|e scusate a chi non abbiamo preso}."
     ],
     "science_report": [
-      "La revisione paritaria {e difficile|e dura|non è cosa da poco} quando metà dei revisori sono {dentro una bolla|dentro una bolla di loop|dentro una delle bolle} e stanno ancora revisionando martedi scorso.",
+      "La revisione paritaria {è difficile|è dura|non è cosa da poco} quando metà dei revisori sono {dentro una bolla|dentro una bolla di loop|dentro una delle bolle} e stanno ancora revisionando martedì scorso.",
       "{L'articolo è depositato presso la Gilda|L'articolo è andato alla Gilda|Il testo completo è alla Gilda}, {dove resterà fermo un anno|che non è veloce|che ci si siederà sopra}."
     ],
     "historical_epic": [

@@ -1,0 +1,83 @@
+{
+  "mapFallback": "MAP {id}",
+  "shopkeeperFallback": "SHOPKEEPER",
+  "frontier": "FRONTIER",
+  "placeOfCountry": "{place} OF {country}",
+  "placeSettlement": "{place} SETTLEMENT",
+  "thought": {
+    "flee": {
+      "named": [
+        "{name}... ME NEED TA GET AWAY!",
+        "STAY AWAY FROM ME, {name}!",
+        "ME NO CAN FACE {name} RIGHT NOW!"
+      ],
+      "anon": [
+        "STAY AWAY FROM ME!",
+        "LEAVE ME ALONE!",
+        "ME SHOULD RUN..."
+      ]
+    },
+    "disdain": {
+      "named": [
+        "{name}... TCH.",
+        "NOT YOU AGAIN, {name}.",
+        "{name}'S NOTHIN' BUT TROUBLE."
+      ],
+      "anon": [
+        "ME NO LIKE DA LOOK OF DIS PERSON!",
+        "BETTER KEEP ME DISTANCE.",
+        "DAT STRANGER GIVES ME BAD VIBES!"
+      ]
+    },
+    "distrust": {
+      "named": [
+        "ME NO TRUST {name}. NOT DEZE DAYS!",
+        "WHAT DOES {name} REALLY WANT?",
+        "EVEN {name} COULD BE DANGEROUS NOW..."
+      ],
+      "anon": [
+        "NO CAN TRUST ANYONE DEZE DAYS!",
+        "WHAT DO DEY WANT FROM ME?",
+        "BEST KEEP ME DISTANCE... IT IZ NOT SAFE ANYMORE!",
+        "DARK TIMES. STAY WARY OF STRANGERS!"
+      ]
+    },
+    "greet": {
+      "stranger": [
+        "HELLO DERE.",
+        "OH, A VISITOR.",
+        "GOOD DAY, STRANGER.",
+        "A NEW FACE AROUND HERE."
+      ],
+      "warm": [
+        "GOOD TA SEE YOU, {name}!",
+        "HEY {name}!",
+        "{name}! HOW'S IT GOING?"
+      ],
+      "polite": [
+        "OH, HELLO {name}.",
+        "HEY, {name}."
+      ],
+      "cold": [
+        "HMM.",
+        "...",
+        "OH. YOU AGAIN."
+      ]
+    },
+    "yield": [
+      "SORRY, LET ME GET OUT OF DA WAY!",
+      "COMIN' THROUGH, COMIN' THROUGH...",
+      "OH! YOU NEED TA PASS, NO YOU!",
+      "TOO NARROW IN HERE. ME WILL MOVE!",
+      "EXCUSE ME, ME WILL STEP ASIDE!"
+    ]
+  },
+  "visitor": {
+    "talk": "TALK",
+    "empathize": "EMPATHIZE",
+    "cancel": "CANCEL",
+    "silent": "DEY LOOK THROUGH YOU, SOMEWHERE ELSE ENTIRELY!",
+    "otherParty": "TRAVELLIN' WIT {leader}'S PARTY",
+    "readOnly": "DEY BELONG TA ANOTHER JOURNEY. YOU CAN TALK, AN' NOTHIN' MORE!"
+  }
+}

@@ -55,8 +55,72 @@
     // window closes on January 2012.
 
     const START_YEAR_MIN = 2001;
-    const START_YEAR_MAX = 2012;
+    const START_YEAR_MAX = 2013;
     const START_MONTH_MAX = 1; // last selectable month of START_YEAR_MAX
+    // The first year that begins AFTER 21 December 2012, so a world started in
+    // it opens with Earth already gone and the Omega Tower standing in its
+    // orbit (see GalaxySim.Nibiru and WorldMapTransfer.earthLost).
+    const EARTH_LOST_YEAR = 2013;
+
+    // What level the party is created at. A world can be begun by people who
+    // are already somebody, which is the only way the later years are playable:
+    // 2013 opens on monsters no level 1 party can stand in front of.
+    // The spinner walks a fixed ladder rather than adding a step, so it is
+    // symmetric (every press has an exact opposite), it always lands on a round
+    // number, and twenty presses cover the whole range: single levels while they
+    // still mean something, then fives, then tens, then the ceiling.
+    const START_LEVEL_STOPS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30,
+                               40, 50, 60, 70, 80, 90, 99];
+    const START_LEVEL_DEFAULT = START_LEVEL_STOPS[0];
+    // The rung a stored level sits on (or the nearest one below it).
+    function levelStopIndex(level) {
+        let at = 0;
+        for (let i = 0; i < START_LEVEL_STOPS.length; i++) {
+            if (START_LEVEL_STOPS[i] <= level) at = i;
+        }
+        return at;
+    }
+
+    // Who the world is populated with. The list is WorldManager's (it owns the
+    // stored value and the clamp); this is only the order the spinner walks
+    // them in, which is deliberately "normal" first so an untouched form makes
+    // the world every existing world already is. The choice is permanent: the
+    // world is populated, historied and priced from it, so there is no setter
+    // and the manage page prints it as a fact rather than a control.
+    const POPULATION_MODES =
+        (window.WorldManager && window.WorldManager.POPULATION_MODES) ||
+        ["normal", "goblin", "monster", "empty"];
+    const POPULATION_DEFAULT = POPULATION_MODES[0];
+
+    function populationLabel(mode) {
+        return T(`WorldManagerUI.populationModes.${mode}`);
+    }
+
+    // The one-line warning under the spinner saying what the mode costs you.
+    // "normal" has nothing to say, so it draws nothing.
+    function populationNoteFor(mode) {
+        const note = T(`WorldManagerUI.populationNotes.${mode}`);
+        return note && note.trim() ? note : "";
+    }
+
+    // How much magic the world has. A SEPARATE axis from the timeline above:
+    // both are asked, both are permanent, and every combination of the two is
+    // legal, so a severed-magic zombie apocalypse is a world you can make.
+    // WorldManager owns the list and the clamp; this is only the order the
+    // spinner walks them in.
+    const MAGICAL_LEVELS =
+        (window.WorldManager && window.WorldManager.MAGICAL_LEVELS) ||
+        ["normal", "severed", "unbound"];
+    const MAGICAL_DEFAULT = MAGICAL_LEVELS[0];
+
+    function magicalLabel(level) {
+        return T(`WorldManagerUI.magicalLevels.${level}`);
+    }
+
+    function magicalNoteFor(level) {
+        const note = T(`WorldManagerUI.magicalNotes.${level}`);
+        return note && note.trim() ? note : "";
+    }
 
     // Month names live in js/i18n/<lang>/plugins/WorldManagerUI.json.
 
@@ -66,6 +130,37 @@
 
     function monthName(month) {
         return T.list("WorldManagerUI.months")[month - 1] || "";
+    }
+
+    // What starting later costs you. The year is not a cosmetic choice: every
+    // spawn mode's level band climbs with the calendar (see the "Squishing"
+    // block in BattleSystemEnhancedEncounters, section 4b), so a world begun in
+    // 2005 opens with monsters a fresh party cannot fight. Say so on the form
+    // rather than let the player find out on the first tile.
+    const ENEMY_YEAR_STEP     = 10;   // levels a year adds, to 2010
+    const ENEMY_OPEN_YEAR     = 2010; // the whole table comes loose
+    const ENEMY_OPEN_CEILING  = 110;
+    const ENEMY_COLLAPSE_YEAR = 2012;
+    const ENEMY_COLLAPSE_FLOOR = 80;
+
+    // The line shown under the date, or "" for 2001 (nothing to warn about).
+    function enemyLevelNoticeFor(year) {
+        if (year >= ENEMY_COLLAPSE_YEAR) {
+            return T("WorldManagerUI.enemyFloorCollapse", { level: ENEMY_COLLAPSE_FLOOR });
+        }
+        if (year >= ENEMY_OPEN_YEAR) {
+            return T("WorldManagerUI.enemyFloorOpen", { level: ENEMY_OPEN_CEILING });
+        }
+        const floor = Math.max(0, year - START_YEAR_MIN) * ENEMY_YEAR_STEP;
+        if (floor <= 0) return "";
+        return T("WorldManagerUI.enemyFloor", { level: floor });
+    }
+
+    // The other thing a 2013 start costs, and it is not a difficulty setting:
+    // the world begins after the impact, so there is no Earth to walk on. Said
+    // plainly on the form, because nothing about "2013" says it on its own.
+    function earthLostNoticeFor(year) {
+        return year >= EARTH_LOST_YEAR ? T("WorldManagerUI.earthLost") : "";
     }
 
     // Months since January 2001, the single ordering the two spinners clamp on.
@@ -193,7 +288,7 @@
 
     // "wiki" is intentionally last, pressing OK on it pushes Scene_History
     // rather than switching tab content, so it never becomes _rightTab.
-    const RIGHT_TABS = ["info", "history", "balance", "wiki"];
+    const RIGHT_TABS = ["info", "history", "balance", "diaries", "wiki"];
 
     const WorldManageInputManager = {
         _scene: null,
@@ -244,8 +339,13 @@
                 if (typing) {
                     ae.blur();
                     scene._applyFocusHighlight();
+                } else if (scene._creatingWorld) {
+                    // Only closable when there is a world to fall back to;
+                    // otherwise Escape leaves the whole screen, as before.
+                    if (scene._focusables("list").length > 0) scene.closeCreateModal();
+                    else scene.popScene();
                 } else if (scene._focusSection === "tabs" || scene._focusSection === "actions") {
-                    scene._setFocus("list", 0);
+                    scene._setFocus(scene._focusables("list").length > 0 ? "list" : "newworld", 0);
                 } else {
                     scene.popScene();
                 }
@@ -257,7 +357,7 @@
             const wasdDir = this._consumeWasd(scene);
             if (wasdDir) { this.handleMove(wasdDir); return; }
 
-            if (Input.isTriggered("pageup") || Input.isTriggered("pagedown")) {
+            if (!scene._creatingWorld && (Input.isTriggered("pageup") || Input.isTriggered("pagedown"))) {
                 if (scene._selectedWorld) {
                     const dir  = Input.isTriggered("pageup") ? -1 : 1;
                     const next = (RIGHT_TABS.indexOf(scene._rightTab) + dir + RIGHT_TABS.length) % RIGHT_TABS.length;
@@ -282,45 +382,65 @@
             const els   = scene._focusables(sec);
             const hasWorlds      = scene._focusables("list").length > 0;
             const rightAvailable = !!scene._selectedWorld;
+            const canCloseModal  = scene._creatingWorld && hasWorlds;
+
+            // The create form is a modal: while it is open, navigation is
+            // trapped inside it (plus its own close button, when closable)
+            // rather than reaching the list or the right page behind it.
+            if (scene._creatingWorld) {
+                if (sec === "create") {
+                    const focusedId = els[idx] ? els[idx].id : "";
+                    if (dir === "up") {
+                        if (idx > 0)                        scene._setFocus("create", idx - 1);
+                        else if (canCloseModal)             scene._setFocus("modalclose", 0);
+                    } else if (dir === "down") {
+                        if (idx < els.length - 1)           scene._setFocus("create", idx + 1);
+                    } else if ((dir === "left" || dir === "right") && focusedId === "wm-start-month") {
+                        // Left/Right tunes the focused spinner; Up/Down still moves
+                        // between the form rows, so a controller reaches everything.
+                        scene._changeStartMonth(dir === "left" ? -1 : 1);
+                    } else if ((dir === "left" || dir === "right") && focusedId === "wm-start-year") {
+                        scene._changeStartYear(dir === "left" ? -1 : 1);
+                    } else if ((dir === "left" || dir === "right") && focusedId === "wm-start-level") {
+                        scene._changeStartLevel(dir === "left" ? -1 : 1);
+                    } else if ((dir === "left" || dir === "right") && focusedId === "wm-population") {
+                        scene._changePopulationMode(dir === "left" ? -1 : 1);
+                    } else if ((dir === "left" || dir === "right") && focusedId === "wm-magic") {
+                        scene._changeMagicalLevel(dir === "left" ? -1 : 1);
+                    } else if ((dir === "left" || dir === "right") && focusedId === "wm-beta-toggle") {
+                        scene._toggleBetaSprites();
+                    }
+                } else if (sec === "modalclose") {
+                    if (dir === "down")                     scene._setFocus("create", 0);
+                }
+                return;
+            }
 
             if (sec === "list") {
                 if (dir === "up"   && idx > 0)              scene._setFocus("list", idx - 1);
                 else if (dir === "down") {
                     if (idx < els.length - 1)               scene._setFocus("list", idx + 1);
-                    else                                    scene._setFocus("create", 0);
+                    else                                    scene._setFocus("newworld", 0);
                 }
                 else if (dir === "right" && rightAvailable) scene._setFocus("tabs", RIGHT_TABS.indexOf(scene._rightTab));
-            } else if (sec === "create") {
-                const focusedId = els[idx] ? els[idx].id : "";
-                if (dir === "up") {
-                    if (idx > 0)                            scene._setFocus("create", idx - 1);
-                    else if (hasWorlds)                     scene._setFocus("list", scene._focusables("list").length - 1);
-                } else if (dir === "down") {
-                    if (idx < els.length - 1)               scene._setFocus("create", idx + 1);
-                    else                                    scene._setFocus("back", 0);
-                } else if ((dir === "left" || dir === "right") && focusedId === "wm-start-month") {
-                    // Left/Right tunes the focused spinner; Up/Down still moves
-                    // between the form rows, so a controller reaches everything.
-                    scene._changeStartMonth(dir === "left" ? -1 : 1);
-                } else if ((dir === "left" || dir === "right") && focusedId === "wm-start-year") {
-                    scene._changeStartYear(dir === "left" ? -1 : 1);
-                } else if ((dir === "left" || dir === "right") && focusedId === "wm-beta-toggle") {
-                    scene._toggleBetaSprites();
-                } else if (dir === "right" && rightAvailable) {
-                    scene._setFocus("tabs", RIGHT_TABS.indexOf(scene._rightTab));
-                }
+            } else if (sec === "newworld") {
+                if (dir === "up" && hasWorlds)              scene._setFocus("list", scene._focusables("list").length - 1);
+                else if (dir === "down")                    scene._setFocus("back", 0);
+                else if (dir === "right" && rightAvailable) scene._setFocus("tabs", RIGHT_TABS.indexOf(scene._rightTab));
             } else if (sec === "back") {
-                if (dir === "up")                           scene._setFocus("create", scene._focusables("create").length - 1);
+                if (dir === "up")                           scene._setFocus("newworld", 0);
                 else if (dir === "right" && rightAvailable) scene._setFocus("tabs", RIGHT_TABS.indexOf(scene._rightTab));
             } else if (sec === "tabs") {
                 if (dir === "left") {
                     if (idx > 0)                            scene._setFocus("tabs", idx - 1);
-                    else if (hasWorlds)                     scene._setFocus("list", 0);
-                    else                                    scene._setFocus("create", 0);
+                    else                                    scene._setFocus(hasWorlds ? "list" : "newworld", 0);
                 } else if (dir === "right" && idx < els.length - 1) {
                     scene._setFocus("tabs", idx + 1);
                 } else if (dir === "down") {
-                    if (scene._rightTab === "info" && scene._focusables("actions").length > 0) {
+                    // Any tab whose body ends in a button panel is walkable:
+                    // the dossier's Set Active / Delete, and the diaries a
+                    // world holds.
+                    if (scene._focusables("actions").length > 0) {
                         scene._setFocus("actions", 0);
                     } else {
                         scene._scrollTabBody(60);
@@ -335,8 +455,7 @@
                 } else if (dir === "down" && idx < els.length - 1) {
                     scene._setFocus("actions", idx + 1);
                 } else if (dir === "left") {
-                    if (hasWorlds)                          scene._setFocus("list", 0);
-                    else                                    scene._setFocus("create", 0);
+                    scene._setFocus(hasWorlds ? "list" : "newworld", 0);
                 }
             }
         },
@@ -368,6 +487,18 @@
                 scene._changeStartYear(1);
                 return;
             }
+            if (el.id === "wm-start-level") {
+                scene._changeStartLevel(1);
+                return;
+            }
+            if (el.id === "wm-population") {
+                scene._changePopulationMode(1);
+                return;
+            }
+            if (el.id === "wm-magic") {
+                scene._changeMagicalLevel(1);
+                return;
+            }
             el.click();
         },
     };
@@ -385,14 +516,27 @@
 
         create() {
             super.create();
-            this._selectedWorld = null;
+            const WM = window.WorldManager;
+            const worlds = WM ? WM.listWorlds() : [];
+            const active = WM && WM.activeWorldName;
+            // Open on whichever world is already active, so the dossier the
+            // player last cared about is what greets them.
+            this._selectedWorld = (active && worlds.some(w => w.name === active)) ? active : null;
             this._rightTab = "info"; // "info" | "history" | "balance"  (never "wiki", that pushes a scene)
-            this._focusSection = Scene_WorldManage._mode === "create" ? "create" : "list";
+            // The create form is a modal: it opens by itself when there is no
+            // world to fall back to (mirrors the old "create" mode), otherwise
+            // it stays closed until the player asks for it.
+            this._creatingWorld = Scene_WorldManage._mode === "create" || worlds.length === 0;
+            this._focusSection = this._creatingWorld ? "create"
+                : (worlds.length > 0 ? "list" : "newworld");
             this._focusIndex = 0;
             this._suggestedName = window.WorldManager.randomWorldName();
             this._seedValue = DEFAULT_WORLD_SEED;
             this._startYear = START_YEAR_MIN;
             this._startMonth = 1;
+            this._startLevel = START_LEVEL_DEFAULT;
+            this._populationMode = POPULATION_DEFAULT;
+            this._magicalLevel = MAGICAL_DEFAULT;
             this._betaSprites = false;
             this._wasdInput = { up: false, down: false, left: false, right: false };
             this.createUIDOM();
@@ -414,11 +558,13 @@
             const c = this._container;
             if (!c) return [];
             switch (section) {
-                case "list":    return [...c.querySelectorAll(".wm-world-row")];
-                case "create":  return ["wm-name-input", "wm-start-month", "wm-start-year",
-                                        "wm-seed-input", "wm-seed-random-btn", "wm-beta-toggle",
-                                        "wm-create-btn"]
+                case "list":       return [...c.querySelectorAll(".wm-world-row")];
+                case "newworld":   return [document.getElementById("wm-create-open-btn")].filter(Boolean);
+                case "create":     return ["wm-name-input", "wm-start-month", "wm-start-year",
+                                        "wm-start-level", "wm-population", "wm-magic", "wm-seed-input",
+                                        "wm-seed-random-btn", "wm-beta-toggle", "wm-create-btn"]
                                     .map(id => document.getElementById(id)).filter(Boolean);
+                case "modalclose": return [document.getElementById("wm-create-close-btn")].filter(Boolean);
                 case "back":    return [document.getElementById("wm-back-btn")].filter(Boolean);
                 case "tabs":    return [...c.querySelectorAll(".wm-tabs .category-tab")];
                 case "actions": return [...c.querySelectorAll(".cc-page-right .cc-button-panel .cc-btn-treaty")];
@@ -438,7 +584,8 @@
             this._container.querySelectorAll(".kb-focus").forEach(el => el.classList.remove("kb-focus"));
             let els = this._focusables(this._focusSection);
             if (els.length === 0) {
-                this._focusSection = this._focusables("list").length > 0 ? "list" : "create";
+                this._focusSection = this._creatingWorld ? "create"
+                    : (this._focusables("list").length > 0 ? "list" : "newworld");
                 this._focusIndex = 0;
                 els = this._focusables(this._focusSection);
             }
@@ -488,6 +635,83 @@
                 const label = yearEl.querySelector(".wm-date-label");
                 if (label) label.textContent = String(this._startYear);
             }
+            const floorEl = document.getElementById("wm-enemy-floor");
+            if (floorEl) {
+                const notice = enemyLevelNoticeFor(this._startYear);
+                floorEl.textContent = notice;
+                floorEl.style.display = notice ? "" : "none";
+            }
+            const lostEl = document.getElementById("wm-earth-lost");
+            if (lostEl) {
+                const notice = earthLostNoticeFor(this._startYear);
+                lostEl.textContent = notice;
+                lostEl.style.display = notice ? "" : "none";
+            }
+        }
+
+        _changeStartLevel(delta) {
+            const from = this._startLevel || START_LEVEL_DEFAULT;
+            const at = levelStopIndex(from) + Math.sign(delta);
+            const next = START_LEVEL_STOPS[
+                Math.max(0, Math.min(START_LEVEL_STOPS.length - 1, at))];
+            if (next === from) return;
+            this._startLevel = next;
+            const el = document.getElementById("wm-start-level");
+            if (el) {
+                el.dataset.level = next;
+                const label = el.querySelector(".wm-date-label");
+                if (label) label.textContent = String(next);
+            }
+            SoundManager.playCursor();
+        }
+
+        // Who lives in this world. The spinner wraps (there is no "end" of the
+        // list to walk off), and it repaints its own label and note rather than
+        // rebuilding the form, which would drop the name being typed.
+        _changePopulationMode(delta) {
+            const at = POPULATION_MODES.indexOf(this._populationMode);
+            const from = at < 0 ? 0 : at;
+            const count = POPULATION_MODES.length;
+            const next = POPULATION_MODES[(from + delta % count + count) % count];
+            if (next === this._populationMode) return;
+            this._populationMode = next;
+            const el = document.getElementById("wm-population");
+            if (el) {
+                el.dataset.mode = next;
+                const label = el.querySelector(".wm-date-label");
+                if (label) label.textContent = populationLabel(next);
+            }
+            const noteEl = document.getElementById("wm-population-note");
+            if (noteEl) {
+                const note = populationNoteFor(next);
+                noteEl.textContent = note;
+                noteEl.style.display = note ? "" : "none";
+            }
+            SoundManager.playCursor();
+        }
+
+        // How much magic there is. Wraps like the timeline spinner and repaints
+        // its own label and note rather than rebuilding the form.
+        _changeMagicalLevel(delta) {
+            const at = MAGICAL_LEVELS.indexOf(this._magicalLevel);
+            const from = at < 0 ? 0 : at;
+            const count = MAGICAL_LEVELS.length;
+            const next = MAGICAL_LEVELS[(from + delta % count + count) % count];
+            if (next === this._magicalLevel) return;
+            this._magicalLevel = next;
+            const el = document.getElementById("wm-magic");
+            if (el) {
+                el.dataset.level = next;
+                const label = el.querySelector(".wm-date-label");
+                if (label) label.textContent = magicalLabel(next);
+            }
+            const noteEl = document.getElementById("wm-magic-note");
+            if (noteEl) {
+                const note = magicalNoteFor(next);
+                noteEl.textContent = note;
+                noteEl.style.display = note ? "" : "none";
+            }
+            SoundManager.playCursor();
         }
 
         _randomizeSeed() {
@@ -564,13 +788,20 @@
                     container.addEventListener(evt, e => e.stopPropagation(), { passive: true });
                 });
 
-                // Right-click anywhere on the overlay returns to the title screen.
+                // Right-click anywhere on the overlay backs out one level: closes
+                // the create modal if it is open and closable, otherwise returns
+                // to the title screen.
                 container.addEventListener("contextmenu", e => {
                     e.stopPropagation();
                     e.preventDefault();
+                    const scene = SceneManager._scene;
+                    if (scene && scene._creatingWorld) {
+                        scene.closeCreateModal();
+                        return;
+                    }
                     SoundManager.playCancel();
-                    if (SceneManager._scene && SceneManager._scene.popScene) {
-                        SceneManager._scene.popScene();
+                    if (scene && scene.popScene) {
+                        scene.popScene();
                     }
                 });
 
@@ -657,7 +888,12 @@
         }
 
         _buildLayout(worlds, active) {
-            const createFocused = Scene_WorldManage._mode === "create" || worlds.length === 0;
+            const hasWorlds = worlds.length > 0;
+            // The create form is a modal. It cannot be dismissed while there is
+            // no world to fall back to, so it is forced open in that case even
+            // if something earlier had closed it (e.g. deleting the last world).
+            if (!hasWorlds) this._creatingWorld = true;
+            const creating = !!this._creatingWorld;
 
             const prevInput = document.getElementById("wm-name-input");
             const nameValue = (prevInput && prevInput.value.trim())
@@ -672,6 +908,11 @@
             const start = clampStartDate(this._startYear || START_YEAR_MIN, this._startMonth || 1);
             this._startYear = start.year;
             this._startMonth = start.month;
+            const startLevel = this._startLevel || START_LEVEL_DEFAULT;
+            const populationMode = POPULATION_MODES.includes(this._populationMode)
+                ? this._populationMode : POPULATION_DEFAULT;
+            const magicalLevel = MAGICAL_LEVELS.includes(this._magicalLevel)
+                ? this._magicalLevel : MAGICAL_DEFAULT;
 
             this._container.innerHTML = `
                 <div class="book-spread">
@@ -680,8 +921,35 @@
                         <div class="wm-list" id="wm-world-list">
                             ${this._buildWorldRowsHTML(worlds, active)}
                         </div>
-                        <div class="wm-create ${createFocused ? "focused" : ""}">
+                        <div class="wm-list-actions">
+                            <button type="button" id="wm-create-open-btn" class="cc-btn-treaty"
+                                    onclick="SceneManager._scene.openCreateModal()">
+                                + ${T('WorldManagerUI.createWorld')}
+                            </button>
+                        </div>
+                        <div class="cc-button-panel">
+                            <button id="wm-back-btn" class="cc-btn-treaty" onclick="SoundManager.playCancel(); SceneManager._scene.popScene();">
+                                ${T('WorldManagerUI.back')}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="cc-page cc-page-right" id="wm-right-page">
+                        ${this.renderRightPage(worlds, active)}
+                    </div>
+                </div>
+                <div id="wm-create-overlay" class="wm-modal-overlay wm-create-overlay"
+                     style="${creating ? "" : "display:none;"}"
+                     onclick="if (event.target === this) SceneManager._scene.closeCreateModal();">
+                    <div class="wm-modal wm-create-modal" role="dialog" aria-modal="true">
+                        <div class="wm-create-modal-header">
                             <h3 class="cc-subheader">${T('WorldManagerUI.createWorld')}</h3>
+                            ${hasWorlds ? `
+                            <button type="button" id="wm-create-close-btn" class="wm-modal-x"
+                                    onclick="SceneManager._scene.closeCreateModal()"
+                                    aria-label="${T('WorldManagerUI.cancel')}">&times;</button>
+                            ` : ""}
+                        </div>
+                        <div class="wm-create wm-create-modal-body">
                             <label>${T('WorldManagerUI.worldName')}</label>
                             <input id="wm-name-input" type="text" maxlength="40"
                                    value="${escapeHtml(nameValue)}"
@@ -701,6 +969,45 @@
                                     <button type="button" class="wm-year-arrow" onclick="SceneManager._scene._changeStartYear(1)" aria-label="${T('WorldManagerUI.nextYear')}">&#9654;</button>
                                 </div>
                             </div>
+                            <div id="wm-enemy-floor" class="wm-enemy-floor" role="status"
+                                 style="${enemyLevelNoticeFor(start.year) ? "" : "display:none;"}"
+                            >${escapeHtml(enemyLevelNoticeFor(start.year))}</div>
+                            <div id="wm-earth-lost" class="wm-enemy-floor wm-earth-lost" role="status"
+                                 style="${earthLostNoticeFor(start.year) ? "" : "display:none;"}"
+                            >${escapeHtml(earthLostNoticeFor(start.year))}</div>
+                            <label>${T('WorldManagerUI.startingLevel')}</label>
+                            <div class="wm-date-row">
+                                <div id="wm-start-level" class="wm-year-selector" data-level="${startLevel}"
+                                     role="spinbutton" tabindex="0" aria-label="${T('WorldManagerUI.startingLevel')}">
+                                    <button type="button" class="wm-year-arrow" onclick="SceneManager._scene._changeStartLevel(-1)" aria-label="${T('WorldManagerUI.lowerLevel')}">&#9664;</button>
+                                    <span class="wm-date-label">${startLevel}</span>
+                                    <button type="button" class="wm-year-arrow" onclick="SceneManager._scene._changeStartLevel(1)" aria-label="${T('WorldManagerUI.raiseLevel')}">&#9654;</button>
+                                </div>
+                            </div>
+                            <label>${T('WorldManagerUI.populationMode')}</label>
+                            <div class="wm-date-row">
+                                <div id="wm-population" class="wm-year-selector" data-mode="${escapeHtml(populationMode)}"
+                                     role="spinbutton" tabindex="0" aria-label="${T('WorldManagerUI.populationMode')}">
+                                    <button type="button" class="wm-year-arrow" onclick="SceneManager._scene._changePopulationMode(-1)" aria-label="${T('WorldManagerUI.previousPopulation')}">&#9664;</button>
+                                    <span class="wm-date-label">${escapeHtml(populationLabel(populationMode))}</span>
+                                    <button type="button" class="wm-year-arrow" onclick="SceneManager._scene._changePopulationMode(1)" aria-label="${T('WorldManagerUI.nextPopulation')}">&#9654;</button>
+                                </div>
+                            </div>
+                            <div id="wm-population-note" class="wm-enemy-floor" role="status"
+                                 style="${populationNoteFor(populationMode) ? "" : "display:none;"}"
+                            >${escapeHtml(populationNoteFor(populationMode))}</div>
+                            <label>${T('WorldManagerUI.magicalLevel')}</label>
+                            <div class="wm-date-row">
+                                <div id="wm-magic" class="wm-year-selector" data-level="${escapeHtml(magicalLevel)}"
+                                     role="spinbutton" tabindex="0" aria-label="${T('WorldManagerUI.magicalLevel')}">
+                                    <button type="button" class="wm-year-arrow" onclick="SceneManager._scene._changeMagicalLevel(-1)" aria-label="${T('WorldManagerUI.previousMagic')}">&#9664;</button>
+                                    <span class="wm-date-label">${escapeHtml(magicalLabel(magicalLevel))}</span>
+                                    <button type="button" class="wm-year-arrow" onclick="SceneManager._scene._changeMagicalLevel(1)" aria-label="${T('WorldManagerUI.nextMagic')}">&#9654;</button>
+                                </div>
+                            </div>
+                            <div id="wm-magic-note" class="wm-enemy-floor" role="status"
+                                 style="${magicalNoteFor(magicalLevel) ? "" : "display:none;"}"
+                            >${escapeHtml(magicalNoteFor(magicalLevel))}</div>
                             <label>${T('WorldManagerUI.seed')}</label>
                             <div class="wm-seed-row" style="display:flex; gap:6px; align-items:center;">
                                 <input id="wm-seed-input" type="text" maxlength="40" style="flex:1;"
@@ -711,7 +1018,6 @@
                                         title="${T('WorldManagerUI.randomizeSeed')}"
                                         aria-label="${T('WorldManagerUI.randomizeSeed')}">&#9851;</button>
                             </div>
-                            <div class="cc-text-desc">${T('WorldManagerUI.worldHistory19002000Is')}</div>
                             <label>${T('WorldManagerUI.betaSprites')}</label>
                             <div id="wm-beta-toggle" class="wm-check-row" data-on="${this._betaSprites ? "1" : "0"}"
                                  role="checkbox" tabindex="0" aria-checked="${this._betaSprites ? "true" : "false"}"
@@ -719,28 +1025,39 @@
                                 <span class="wm-check-box">${this._betaSprites ? "☑" : "☐"}</span>
                                 <span class="wm-check-label">${T('WorldManagerUI.betaSpritesEnable')}</span>
                             </div>
-                            <div class="cc-text-desc">${T('WorldManagerUI.betaSpritesHelp')}</div>
                             <button id="wm-create-btn" class="cc-btn-treaty confirm" onclick="SceneManager._scene.onCreateWorld()">
                                 ${T('WorldManagerUI.createActivate')}
                             </button>
                             <div id="wm-status" class="wm-status"></div>
                         </div>
-                        <div class="cc-button-panel">
-                            <button id="wm-back-btn" class="cc-btn-treaty" onclick="SoundManager.playCancel(); SceneManager._scene.popScene();">
-                                ${T('WorldManagerUI.back')}
-                            </button>
-                        </div>
-                    </div>
-                    <div class="cc-page cc-page-right" id="wm-right-page">
-                        ${this.renderRightPage(worlds, active)}
                     </div>
                 </div>
             `;
 
-            if (createFocused) {
+            if (creating) {
                 const input = document.getElementById("wm-name-input");
                 if (input) setTimeout(() => { input.focus(); input.select(); }, 50);
             }
+        }
+
+        openCreateModal() {
+            if (this._busy || this._creatingWorld) return;
+            SoundManager.playOk();
+            this._creatingWorld = true;
+            this._suggestedName = this._suggestedName || (window.WorldManager && window.WorldManager.randomWorldName());
+            this.refreshUIDOM(true);
+            this._setFocus("create", 0);
+        }
+
+        closeCreateModal() {
+            if (!this._creatingWorld) return;
+            const worlds = window.WorldManager ? window.WorldManager.listWorlds() : [];
+            if (worlds.length === 0) return; // nothing to fall back to
+            SoundManager.playCancel();
+            this._creatingWorld = false;
+            this.setStatus("");
+            this.refreshUIDOM(true);
+            this._setFocus(this._focusables("list").length > 0 ? "list" : "newworld", 0);
         }
 
         // Patch only the world row list (preserves the create form).
@@ -774,6 +1091,8 @@
                          onclick="SceneManager._scene.onSelectTab('history')">${T('WorldManagerUI.history')}</div>
                     <div class="category-tab ${this._rightTab === "balance" ? "selected" : ""}"
                          onclick="SceneManager._scene.onSelectTab('balance')">${T('WorldManagerUI.balance')}</div>
+                    <div class="category-tab ${this._rightTab === "diaries" ? "selected" : ""}"
+                         onclick="SceneManager._scene.onSelectTab('diaries')">${T('Diary.worlds.tab')}</div>
                     <div class="category-tab wm-wiki-tab"
                          onclick="SceneManager._scene.onSelectTab('wiki')">${T('WorldManagerUI.wiki')} ↗</div>
                 </div>
@@ -783,6 +1102,7 @@
             switch (this._rightTab) {
                 case "history": body = this.renderHistoryTab(world); break;
                 case "balance": body = this.renderBalanceTab(world); break;
+                case "diaries": body = this.renderDiariesTab(world); break;
                 default:        body = this.renderInfoTab(world, active); break;
             }
 
@@ -828,6 +1148,18 @@
                             ? T('WorldManagerUI.betaSpritesOn')
                             : T('WorldManagerUI.betaSpritesOff')}</span>
                     </div>
+                    <div class="cc-dossier-row" title="${T('WorldManagerUI.populationLocked')}">
+                        <span class="cc-dossier-label">${T('WorldManagerUI.magicalLevel')}</span>
+                        <span class="cc-dossier-value">${escapeHtml(magicalLabel(
+                            MAGICAL_LEVELS.includes(world.magicalLevel)
+                                ? world.magicalLevel : MAGICAL_DEFAULT))}</span>
+                    </div>
+                    <div class="cc-dossier-row" title="${T('WorldManagerUI.populationLocked')}">
+                        <span class="cc-dossier-label">${T('WorldManagerUI.populationMode')}</span>
+                        <span class="cc-dossier-value">${escapeHtml(populationLabel(
+                            POPULATION_MODES.includes(world.populationMode)
+                                ? world.populationMode : POPULATION_DEFAULT))}</span>
+                    </div>
                 </div>
                 <div class="cc-button-panel">
                     <button class="cc-btn-treaty" ${isActive ? "disabled" : ""}
@@ -849,6 +1181,44 @@
                 <div class="cc-subheader">${T('WorldManagerUI.historicalArchive')}</div>
                 <div class="wm-history-list">${renderHistoryEvents(events)}</div>
             `;
+        }
+
+        // Every diary a world holds, whichever savegame kept it. A permadeath
+        // run whose savegame is long gone still has its diary here, which is
+        // the point of keeping them in the world folder rather than in a save.
+        renderDiariesTab(world) {
+            const D = window.Diary;
+            const diaries = (D && D.listForWorld) ? D.listForWorld(world.name) : [];
+            if (!diaries.length) {
+                return `<div class="wm-empty">${escapeHtml(T('Diary.worlds.none'))}</div>`;
+            }
+            const rows = diaries.map(book => {
+                const names = (book.party || []).map(m => m.name).filter(Boolean).join(", ")
+                    || T('Diary.worlds.unknownParty');
+                const meta = T('Diary.worlds.meta', {
+                    count: book.count,
+                    place: book.lastPlace || T('WorldManagerUI.noData')
+                });
+                const call = `SceneManager._scene.onReadDiary('${world.name.replace(/'/g, "\\'")}','${String(book.id).replace(/'/g, "\\'")}')`;
+                // A button rather than a card, so the pockets' own keyboard and
+                // controller walk ("actions") reaches every diary for free.
+                return `
+                    <button type="button" class="cc-btn-treaty wm-diary-row" onclick="${call}">
+                        <span class="wm-diary-names">${escapeHtml(names)}</span>
+                        <span class="wm-diary-meta">${escapeHtml(meta)}</span>
+                    </button>`;
+            }).join("");
+            return `<div class="cc-button-panel wm-diary-list">${rows}</div>`;
+        }
+
+        // Reading one needs the game objects the book scene expects, exactly as
+        // the wiki tab needs them for the archive.
+        onReadDiary(worldName, diaryId) {
+            if (!window.Scene_Diary) return;
+            if (!$gameSystem) DataManager.setupNewGame();
+            SoundManager.playOk();
+            window.Scene_Diary.prepare(worldName, diaryId);
+            SceneManager.push(window.Scene_Diary);
         }
 
         renderBalanceTab(world) {
@@ -1035,7 +1405,13 @@
                     // the pool the world is populated from already knows about it.
                     WM.createWorld(name, {
                         worldTimeMinutes, seed, startYear, startMonth,
-                        betaSprites: this._betaSprites === true
+                        startLevel: this._startLevel || START_LEVEL_DEFAULT,
+                        betaSprites: this._betaSprites === true,
+                        // Written before initializeWorld() below, so the pool
+                        // the world is populated from already knows who is in
+                        // it (and an empty world is never populated at all).
+                        populationMode: this._populationMode || POPULATION_DEFAULT,
+                        magicalLevel: this._magicalLevel || MAGICAL_DEFAULT
                     });
                     WM.setActiveWorld(name);
                     if (typeof FactionDataManager !== "undefined" &&
@@ -1058,9 +1434,11 @@
                     this._busy = false;
                     this._selectedWorld = name;
                     this._rightTab = "info";
+                    this._creatingWorld = false;
                     Scene_WorldManage._mode = "manage";
                     this._suggestedName = WM.randomWorldName();
                     this.refreshUIDOM(true);
+                    this._setFocus("tabs", RIGHT_TABS.indexOf(this._rightTab));
                 } catch (e) {
                     console.error("[WorldManagerUI] World creation failed", e);
                     SoundManager.playBuzzer();
@@ -1147,8 +1525,10 @@
             padding: 16px;
             text-align: center;
         }
+        /* No fill: the page is already dark, so a panel behind every row only
+           flattens the contrast the border and the title are read by. */
         #world-manage-container .wm-world-row {
-            background: var(--bg-primary-hover-translucent-35);
+            background: none;
             border: 1px dashed var(--scroll-thumb-hover-translucent-60);
             border-radius: 4px;
             padding: 10px 14px;
@@ -1193,7 +1573,7 @@
         }
         #world-manage-container .wm-create input,
         #world-manage-container .wm-create select {
-            background: var(--bg-primary-hover-translucent-35);
+            background: none;
             border: 1px solid var(--border-primary-hover-translucent-15);
             border-radius: 3px;
             color: var(--text-muted-hover);
@@ -1205,10 +1585,6 @@
         #world-manage-container .wm-create input:focus,
         #world-manage-container .wm-create select:focus {
             border-color: var(--border-focus-hover);
-        }
-        #world-manage-container .wm-create .cc-text-desc {
-            margin: 4px 0;
-            text-align: left;
         }
         #world-manage-container .wm-status {
             font-size: 0.8rem;
@@ -1234,12 +1610,31 @@
         #world-manage-container .wm-history-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 14px;
         }
+        #world-manage-container .wm-diary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        #world-manage-container .wm-diary-row {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            text-align: left;
+            width: 100%;
+        }
+        #world-manage-container .wm-diary-row .wm-diary-meta {
+            font-size: 0.78rem;
+            opacity: 0.7;
+        }
+        /* The category rule on the left is what tells one record from the next;
+           a filled card behind it added nothing but a second dark rectangle. */
         #world-manage-container .wm-event-card {
-            background: var(--bg-primary-hover-translucent-35);
-            border-radius: 4px;
-            padding: 10px 12px;
+            background: none;
+            border-radius: 0;
+            padding: 2px 0 2px 12px;
         }
         #world-manage-container .wm-card-header {
             display: flex;
@@ -1259,9 +1654,9 @@
             text-transform: uppercase;
         }
         #world-manage-container .wm-card-desc {
-            font-size: 0.9rem;
-            line-height: 1.4;
-            color: var(--text-muted-hover);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-primary-hover);
         }
         #world-manage-container .wm-card-results {
             margin-top: 6px;
@@ -1301,7 +1696,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: var(--bg-primary-hover-translucent-35);
+            background: none;
             border: 1px solid var(--border-primary-hover-translucent-15);
             border-radius: 3px;
             padding: 4px 8px;
@@ -1339,11 +1734,24 @@
         #world-manage-container .wm-date-row .wm-year-arrow {
             padding: 2px 8px;
         }
+        /* What a later starting year does to the monsters (enemyLevelNoticeFor). */
+        #world-manage-container .wm-enemy-floor {
+            margin: 4px 0 2px;
+            font-family: 'Lora', serif;
+            font-size: 0.82rem;
+            line-height: 1.3;
+            color: var(--text-highlight-active);
+        }
+        /* The one notice that is not about difficulty: there is no Earth left. */
+        #world-manage-container .wm-earth-lost {
+            font-weight: bold;
+            color: var(--text-secondary-active, #822d2d);
+        }
         #world-manage-container .wm-year-selector {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: var(--bg-primary-hover-translucent-35);
+            background: none;
             border: 1px solid var(--border-primary-hover-translucent-15);
             border-radius: 3px;
             padding: 4px 6px;
@@ -1410,6 +1818,55 @@
             display: flex;
             gap: 12px;
             justify-content: center;
+        }
+        /* "+ New World" pocket under the list, reopens the create modal. */
+        #world-manage-container .wm-list-actions {
+            flex-shrink: 0;
+            margin-bottom: 10px;
+        }
+        #world-manage-container .wm-list-actions .cc-btn-treaty {
+            width: 100%;
+        }
+        /* Create-world modal: same overlay pattern as the confirm dialog, but
+           wider and scrollable to hold the whole form. */
+        #world-manage-container .wm-create-overlay {
+            z-index: 15;
+        }
+        #world-manage-container .wm-create-modal {
+            width: min(480px, 90%);
+            max-height: 88%;
+            display: flex;
+            flex-direction: column;
+            padding: 18px 22px;
+        }
+        #world-manage-container .wm-create-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            border-bottom: 1px dashed var(--border-primary-hover-translucent-15);
+            padding-bottom: 8px;
+            margin-bottom: 4px;
+        }
+        #world-manage-container .wm-create-modal-header h3 { margin: 0; }
+        #world-manage-container .wm-modal-x {
+            background: none;
+            border: none;
+            color: var(--text-muted-hover);
+            font-size: 1.4rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 4px;
+            transition: color 0.15s ease;
+        }
+        #world-manage-container .wm-modal-x:hover {
+            color: var(--text-highlight-active);
+        }
+        #world-manage-container .wm-create-modal-body {
+            border-top: none;
+            padding-top: 4px;
+            overflow-y: auto;
+            min-height: 0;
         }
     `;
     document.head.appendChild(style);

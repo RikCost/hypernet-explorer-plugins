@@ -1,0 +1,8 @@
+{
+  "weight": "WEIGHT",
+  "value": "VALUE",
+  "stealSuccess": "YOU SUCCESSFULLY STOLE",
+  "stealFailed": "YOU FAILED TA STEAL",
+  "stealTitle": "STEAL",
+  "nothingNearby": "NOTHIN' TA STEAL NEARBY."
+}

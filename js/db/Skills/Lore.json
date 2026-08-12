@@ -314,72 +314,6 @@
         "the deep-earth listeners who never see the sun"
       ]
     },
-    "Elemental": {
-      "family": "ancient",
-      "art": [
-        "the element-craft",
-        "fire-and-frost sorcery",
-        "the first storm-calling",
-        "the ember-and-lightning rite",
-        "the four-hearth rite",
-        "storm-and-ember conjuring",
-        "the raw-air calling"
-      ],
-      "era": [
-        "kindled at the first Stone-Age hearth",
-        "tens of thousands of years deep",
-        "from the dawn of fire",
-        "older than any spoken language",
-        "remembered from the last ice age's long dark",
-        "of the age when fire was still a secret",
-        "older than the words for hot and cold"
-      ],
-      "mechanism": [
-        "bending flame, frost and thunder to a frightened hand",
-        "calling down fire and lightning at will",
-        "commanding the four elements as the first hunters did",
-        "wringing storm and ember from the raw air",
-        "pulling frost from the marrow of the winter air",
-        "striking spark from nothing as the first hunters did",
-        "turning a warm hand cold and a cold air to flame"
-      ],
-      "attrib": [
-        "the nameless cave-shamans of the deep Stone Age",
-        "the ice-age firekeepers",
-        "the first hunters who feared and courted the storm",
-        "the cavemen who knew it before writing",
-        "the hearth-tenders who guarded the only flame",
-        "the storm-fearing hunters of the frozen wastes",
-        "the ember-keepers of the deep caves"
-      ]
-    },
-    "Tempest": {
-      "family": "ancient",
-      "art": [
-        "the storm-songs",
-        "tempest-lore",
-        "the weather-craft",
-        "the gale-calling"
-      ],
-      "era": [
-        "as old as the Stone Age awe of thunder",
-        "sung since the first sky-watchers",
-        "of deep antiquity",
-        "from the age of ice and storm"
-      ],
-      "mechanism": [
-        "whistling up the gale from a clear sky",
-        "raising wind and rain over a whole province",
-        "loosing the fury of the skies",
-        "turning the weather against an army"
-      ],
-      "attrib": [
-        "the earliest sky-watchers",
-        "the ice-age hunters who whistled up the wind",
-        "the old storm-witches of the marshes",
-        "the shamans who bargained with the thunder"
-      ]
-    },
     "Bestial": {
       "family": "wild",
       "art": [
@@ -791,33 +725,6 @@
         "the changers who made the Rule of 80 livable"
       ]
     },
-    "Vainglory": {
-      "family": "modern",
-      "art": [
-        "glory-magic",
-        "the renown-rite",
-        "vainglorious sorcery",
-        "the acclaim-craft"
-      ],
-      "era": [
-        "new as the post-Squishing world",
-        "of the broken age",
-        "born of the new economy of fame",
-        "young as spent reputation"
-      ],
-      "mechanism": [
-        "spending reputation like coin",
-        "growing in raw power with each acclaim",
-        "measuring a soul's worth in renown",
-        "seizing levels and glory outright"
-      ],
-      "attrib": [
-        "the fame-brokers of the broken age",
-        "the spectacle-mages of the new world",
-        "the glory-hoarders of the Collective",
-        "those who chase renown across a ruined world"
-      ]
-    },
     "Chronomancy": {
       "family": "modern",
       "art": [
@@ -855,33 +762,6 @@
         "the clock-breakers who cheated the Rule of 80",
         "the hour-brokers of the loop-age markets",
         "the Collective's chronomancers who hoard the trade"
-      ]
-    },
-    "Whimsy": {
-      "family": "modern",
-      "art": [
-        "nonsense-magic",
-        "whimsy-craft",
-        "the absurd art",
-        "capricious sorcery"
-      ],
-      "era": [
-        "born of the post-Squishing loose reality",
-        "young as the broken world",
-        "of the leyline's silliest hour",
-        "made real only after 2003"
-      ],
-      "mechanism": [
-        "making the absurd suddenly real",
-        "confounding foes with sheer nonsense",
-        "turning contradiction into effect",
-        "loosing an irrational miracle no one can predict"
-      ],
-      "attrib": [
-        "the leyline-fools of the broken world",
-        "the jester-mages of the loose reality",
-        "those who indulge the absurd near the ley",
-        "the whimsy-callers half-feared by the guilds"
       ]
     },
     "PsychicAbilities": {
@@ -1388,33 +1268,6 @@
         "those who honour the old indentures"
       ]
     },
-    "Buffoonery": {
-      "family": "trade",
-      "art": [
-        "fool's craft",
-        "the buffoon's art",
-        "clowning",
-        "the jester's trade"
-      ],
-      "era": [
-        "from the medieval courts",
-        "as old as the first court fool",
-        "handed down by the jesters",
-        "harmless and barbed at once"
-      ],
-      "mechanism": [
-        "confounding foes with sheer nonsense",
-        "mocking a king and living to laugh",
-        "hiding a barb inside a pratfall",
-        "disarming a hall with absurdity"
-      ],
-      "attrib": [
-        "the court jesters of old",
-        "the fools who alone could mock the crown",
-        "the clowns of the medieval halls",
-        "the buffoons kept for their barbs"
-      ]
-    },
     "Cooking": {
       "family": "trade",
       "art": [
@@ -1442,60 +1295,6 @@
         "those who kept the old recipes"
       ]
     },
-    "Gluttony": {
-      "family": "trade",
-      "art": [
-        "the glutton's indulgence",
-        "appetite-magic",
-        "feasting-craft",
-        "the excess-rite"
-      ],
-      "era": [
-        "as old as the first surplus harvest",
-        "born where a settled people grew fat",
-        "of the old harvest-festivals",
-        "gluttonous and merry"
-      ],
-      "mechanism": [
-        "conjuring food to sate any need",
-        "feasting to restore body and spirit",
-        "turning appetite into raw power",
-        "keeping a table groaning past all reason"
-      ],
-      "attrib": [
-        "the feast-lords of the fat harvests",
-        "the gluttons of the old festivals",
-        "those who revelled while others starved",
-        "the excess-priests of the groaning table"
-      ]
-    },
-    "ChemicalArts": {
-      "family": "greek",
-      "art": [
-        "the chemist's art",
-        "transmutation-lore",
-        "the reaction-craft",
-        "alchemy"
-      ],
-      "era": [
-        "descended from Jabir ibn Hayyan (8th century)",
-        "refined by Paracelsus (1493-1541)",
-        "poured from medieval crucibles into modern retorts",
-        "of the old alchemists"
-      ],
-      "mechanism": [
-        "brewing potions and chemical reactions",
-        "transmuting base stock into potent draughts",
-        "distilling virtue from raw reagent",
-        "loosing a reaction where none should occur"
-      ],
-      "attrib": [
-        "Jabir ibn Hayyan of the 8th century",
-        "Paracelsus (1493-1541)",
-        "Nicolas Flamel (c.1330-1418)",
-        "the alchemists who fed the modern labs"
-      ]
-    },
     "Fusion": {
       "family": "fusion",
       "art": [
@@ -1521,33 +1320,6 @@
         "the post-Squishing fusers",
         "those who braided the strands",
         "the adepts who made two spells one"
-      ]
-    },
-    "Wayfaring": {
-      "family": "wayfaring",
-      "art": [
-        "road-craft",
-        "the wayfarer's art",
-        "the route-lore",
-        "travel-magic"
-      ],
-      "era": [
-        "as old as travel yet remade by the Road",
-        "born of the Squishing",
-        "of the post-collapse world",
-        "young as the Encompassing Road"
-      ],
-      "mechanism": [
-        "traversing great distances in an instant",
-        "holding 80 km/h against the reset",
-        "keeping the loops at bay with an Anoki phone",
-        "riding the sentient Road past every hazard"
-      ],
-      "attrib": [
-        "the Truckers' Society, knights of the Road",
-        "the drivers who keep the routes open",
-        "the wayfarers of the post-Squishing world",
-        "those who bargain safe passage"
       ]
     },
     "WpLight": {
@@ -2598,6 +2370,267 @@
         "the heirs who claim it and rarely keep it long",
         "the chroniclers who argue over who forged it",
         "those the world remembers only for having worn it"
+      ]
+    },
+    "Pyromancy": {
+      "family": "ancient",
+      "art": [
+        "pyromancy",
+        "the hearth-rite",
+        "flame-reading",
+        "the ember art",
+        "the kindling craft",
+        "salamander-calling",
+        "the ash-and-cinder rite"
+      ],
+      "era": [
+        "kindled at the first Stone-Age hearth",
+        "as old as the taming of fire",
+        "from the dawn of the burning brand",
+        "older than the word for warmth",
+        "of the age when fire was still a secret",
+        "remembered from the first forest that burned",
+        "older than any forge"
+      ],
+      "mechanism": [
+        "coaxing a flame out of nothing but intent",
+        "reading a future in the way a fire leans",
+        "feeding a flame on the caster and not on fuel",
+        "holding a fire in a bare palm without a burn",
+        "letting the heat out of a thing all at once",
+        "calling the salamander that lives in every ember",
+        "turning cold air to flame between two words"
+      ],
+      "attrib": [
+        "the hearth-tenders who guarded the only flame",
+        "the ember-keepers of the deep caves",
+        "the first shamans who read the smoke",
+        "the fire-eaters of the old road fairs",
+        "the forge-priests who never let it go out",
+        "the ash-readers of the burned villages",
+        "the ones who learned it from a lightning-struck tree"
+      ]
+    },
+    "Cryomancy": {
+      "family": "ancient",
+      "art": [
+        "cryomancy",
+        "the long-dark art",
+        "frost-binding",
+        "the still-water rite",
+        "the marrow-chill craft",
+        "winter-calling",
+        "the rime-work"
+      ],
+      "era": [
+        "remembered from the last ice age's long dark",
+        "older than the words for hot and cold",
+        "from the age of the great glaciers",
+        "as old as the first winter that did not end",
+        "older than any spoken language",
+        "of the centuries under the ice",
+        "from before the thaw"
+      ],
+      "mechanism": [
+        "pulling frost from the marrow of the winter air",
+        "taking the heat out of a thing and giving it nowhere to go",
+        "stilling water in the blood before it can move",
+        "letting the cold in through a name spoken slowly",
+        "holding a body at the moment before it shivers",
+        "growing ice inward from a single held breath",
+        "making the air remember the glacier that made it"
+      ],
+      "attrib": [
+        "the storm-fearing hunters of the frozen wastes",
+        "the ice-age shamans who outlived the thaw",
+        "the northern silence-keepers",
+        "the glacier-readers of the high passes",
+        "the ones who buried their dead in the ice",
+        "the winter-wives of the long dark",
+        "the frost-singers nobody could hear coming"
+      ]
+    },
+    "Electromancy": {
+      "family": "modern",
+      "art": [
+        "electromancy",
+        "the charge-craft",
+        "the arc discipline",
+        "galvanic sorcery",
+        "the coil rite",
+        "lightning-calling",
+        "the potential art"
+      ],
+      "era": [
+        "barely two centuries old",
+        "from the age of the copper coil",
+        "first written down in the 1790s",
+        "younger than the steam engine",
+        "of the century that learned to store a spark",
+        "from the first laboratory to kill a man by accident",
+        "no older than the telegraph"
+      ],
+      "mechanism": [
+        "gathering charge in the caster and letting it fall",
+        "closing a circuit that runs through the air and a body",
+        "reading the potential between two things that should not touch",
+        "striking faster than a nerve can carry the news",
+        "holding an arc open on the will alone",
+        "letting the difference resolve itself all at once",
+        "walking a current down a path only the caster can see"
+      ],
+      "attrib": [
+        "the coil-winders of the early laboratories",
+        "the lightning-struck who survived it",
+        "the galvanic societies of the last century",
+        "Nikola Tesla (1856-1943) and the men who copied his notes",
+        "the telegraph operators who learned to listen",
+        "the physicians who tried to raise the dead with it",
+        "the storm-chasers of the flat countries"
+      ]
+    },
+    "Idromancy": {
+      "family": "greek",
+      "art": [
+        "hydromancy",
+        "the still-basin art",
+        "the tide discipline",
+        "water-reading",
+        "the current rite",
+        "the drowned art",
+        "the rain-calling"
+      ],
+      "era": [
+        "written up in the Greek manuals",
+        "from the age of the temple springs",
+        "as old as the first well",
+        "of the centuries when oracles worked by water",
+        "older than the aqueducts",
+        "from the ports of the inner sea",
+        "set down before the first map of a coastline"
+      ],
+      "mechanism": [
+        "reading what surfaces in a still basin",
+        "turning a body of water toward a shore it was not going to",
+        "calling the rain down by naming the cloud that carries it",
+        "pulling the water out of a thing that needs it",
+        "holding a wave at the height of its rise",
+        "moving a current without moving the riverbed",
+        "letting the sea answer a question put to it politely"
+      ],
+      "attrib": [
+        "the spring-oracles of the old temples",
+        "the well-priests who charged for an answer",
+        "the harbour-witches of the inner sea",
+        "the ones who read the basins at Delphi",
+        "the dowsers who never missed",
+        "the drowned sailors who came back knowing it",
+        "the rain-callers the villages kept fed"
+      ]
+    },
+    "Aeromancy": {
+      "family": "ancient",
+      "art": [
+        "aeromancy",
+        "the sky-reading",
+        "the raw-air calling",
+        "the storm rite",
+        "weather-turning",
+        "the cloud discipline",
+        "the open-sky art"
+      ],
+      "era": [
+        "as old as the first watched horizon",
+        "from the age when a storm was a person",
+        "older than any spoken language",
+        "of the centuries before the barometer",
+        "from before there were words for the winds",
+        "remembered from the year the sky did not clear",
+        "older than the sail"
+      ],
+      "mechanism": [
+        "wringing storm and ember from the raw air",
+        "reading tomorrow in the way the birds turn",
+        "moving the air and everything that rides on it",
+        "calling a wind by naming the place it came from",
+        "holding a cloud together past the hour it should have broken",
+        "turning weather over a valley the way a page is turned",
+        "letting the pressure fall wherever the caster is looking"
+      ],
+      "attrib": [
+        "the first hunters who feared and courted the storm",
+        "the sky-watchers of the flat countries",
+        "the ones the villages paid not to call the rain",
+        "the shepherds who read the high cloud",
+        "the sail-makers who bargained with the wind",
+        "the storm-fearing hunters of the open plains",
+        "the weather-wives who were usually right"
+      ]
+    },
+    "ChaosMagic": {
+      "family": "modern",
+      "art": [
+        "chaos magic",
+        "the results-only art",
+        "the sigil discipline",
+        "the nonsense-rite",
+        "the fickle craft",
+        "the gambler-art",
+        "the unbound working"
+      ],
+      "era": [
+        "barely older than the photocopier",
+        "from the back rooms of the 1970s",
+        "assembled out of whatever was lying about",
+        "younger than most of its practitioners",
+        "of the age when belief became a tool",
+        "first written up in a zine nobody kept",
+        "no older than the paperback occult shelf"
+      ],
+      "mechanism": [
+        "believing something absurd hard enough that it holds",
+        "firing a sigil off and then refusing to think about it",
+        "treating luck as a resource and spending it",
+        "making the world flinch by doing the wrong thing on purpose",
+        "borrowing the shape of a rite and none of its faith",
+        "putting the whole working on a single coin toss",
+        "confounding the question until it answers itself"
+      ],
+      "attrib": [
+        "the zine-writers who made it up as they went",
+        "the back-room orders that never agreed on anything",
+        "Austin Osman Spare (1886-1956) and everyone who misread him",
+        "the street conjurers who found it worked",
+        "the gamblers who noticed the pattern",
+        "the ones who did it for a laugh and could not stop",
+        "the practitioners who left no consistent record"
+      ]
+    },
+    "Alchemistry": {
+      "family": "greek",
+      "art": [
+        "the chemist's art",
+        "transmutation-lore",
+        "the reaction-craft",
+        "alchemy"
+      ],
+      "era": [
+        "descended from Jabir ibn Hayyan (8th century)",
+        "refined by Paracelsus (1493-1541)",
+        "poured from medieval crucibles into modern retorts",
+        "of the old alchemists"
+      ],
+      "mechanism": [
+        "brewing potions and chemical reactions",
+        "transmuting base stock into potent draughts",
+        "distilling virtue from raw reagent",
+        "loosing a reaction where none should occur"
+      ],
+      "attrib": [
+        "Jabir ibn Hayyan of the 8th century",
+        "Paracelsus (1493-1541)",
+        "Nicolas Flamel (c.1330-1418)",
+        "the alchemists who fed the modern labs"
       ]
     }
   },

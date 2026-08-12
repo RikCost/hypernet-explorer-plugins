@@ -41,14 +41,14 @@
   "lp": "{points} LP",
   "expLine": "{exp} / {next} EXP",
   "stat": {
-    "mhp": "Max HP",
-    "mmp": "Max MP",
-    "atk": "Attack",
-    "def": "Defense",
-    "mat": "M.Attack",
-    "mdf": "M.Defense",
-    "agi": "Agility",
-    "luk": "Luck"
+    "mhp": "HP",
+    "mmp": "MP",
+    "atk": "STR",
+    "def": "CON",
+    "mat": "INT",
+    "mdf": "WIS",
+    "agi": "DEX",
+    "luk": "PSI"
   },
   "defaultSpirit": "Default Spirit",
   "weaponSkillNumbered": "Weapon Skill {id}",

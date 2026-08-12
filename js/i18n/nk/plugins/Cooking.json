@@ -1,0 +1,83 @@
+{
+  "adjectives": {
+    "positive": [
+      "WELL-COOKED",
+      "DELICIOUS",
+      "GOURMET",
+      "MASTERFUL",
+      "MYSTIC",
+      "DIVINE",
+      "PERFECT",
+      "SUCCULENT",
+      "EXTRAORDINARY",
+      "MAGICAL"
+    ],
+    "neutral": [
+      "PLAIN",
+      "SIMPLE",
+      "ORDINARY",
+      "BASIC",
+      "STANDARD",
+      "REGULAR",
+      "COMMON",
+      "MODEST",
+      "UNASSUMIN'",
+      "EVERYDAY"
+    ],
+    "negative": [
+      "CHARRED",
+      "RUINED",
+      "OVERCOOKED",
+      "BURNT",
+      "SPOILED",
+      "QUESTIONABLE",
+      "DUBIOUS",
+      "SUSPICIOUS",
+      "FAILED",
+      "DISASTROUS"
+    ]
+  },
+  "messages": {
+    "prepared": "YOU PREPARED {name}!",
+    "sameItemPositive": "\nIT TURNED OUT EXCEPTIONALLY WELL!",
+    "sameItemNeutral": "\nIT IZ NOTHIN' SPECIAL, BUT EDIBLE!",
+    "sameItemNegative": "\nPERHAPS YOU NO SHOULD HAB TRIED DAT...",
+    "recoveredHunger": "\nRECOVERED {percent}% HUNGER PER MEMBER",
+    "splitAmong": " (SPLIT AMONG {count} MEMBERS)",
+    "ate": "YOU ATE {name} RAW."
+  },
+  "ui": {
+    "selectFirstIngredient": "SELECT FIRST INGREDIENT TA COOK",
+    "selectSecondIngredient": "SELECT SECOND INGREDIENT TA COOK WIT {name}",
+    "confirmCook": "COOK {item1} AN' {item2} INTO {result}?",
+    "cookButton": "COOK",
+    "cancelButton": "CANCEL",
+    "eatButton": "EAT RAW",
+    "menuLabel": "COOKIN'",
+    "selectIngredients": "SELECT INGREDIENTS.",
+    "cookTheseItems": "COOK DEZE ITEMS?"
+  },
+  "back": "BACK",
+  "ingredients": "INGREDIENTS",
+  "cooking": "COOKIN'",
+  "nutritionalBase": "NUTRITIONAL BASE",
+  "aromaticBinder": "AROMATIC BINDER",
+  "yourBackpackContainsNoEdible": "YA BACKPACK CONTAINS NO EDIBLE INGREDIENTS...",
+  "selectBase": "SELECT BASE...",
+  "selectBinder": "SELECT BINDER...",
+  "extraordinaryEffect50": "EXTRAORDINARY EFFECT (+50%)",
+  "minorEffect25": "MINOR EFFECT (-25%)",
+  "disastrousEffect75": "DISASTROUS EFFECT (-75%)",
+  "calories": "CALORIES",
+  "protein": "PROTEIN",
+  "fat": "FAT",
+  "satietyPerMember": "SATIETY PER MEMBER",
+  "split": "SPLIT",
+  "combineANutritionalBaseAnd": "COMBINE A NUTRITIONAL BASE AN' AN AROMATIC BINDER TA CALCULATE DA TOTAL CALORIES AN' PARTY SATIETY RECOVERY DETAILS!",
+  "clearSelection": "CLEAR SELECTION",
+  "nutrition": {
+    "calories": "CALORIES",
+    "protein": "PROTEIN",
+    "fat": "FAT"
+  }
+}

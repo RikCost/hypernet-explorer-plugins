@@ -1,0 +1,15 @@
+{
+  "unattendedCar": "AN UNATTENDED CAR.",
+  "stealCar": "STEAL CAR",
+  "cancel": "CANCEL",
+  "usedSkeletonKey": "USED SKELETON KEY!",
+  "needLockpick": "YOU NEED A LOCKPICK TA HOTWIRE A CAR!",
+  "lockStuck": "DA LOCK WILL NOT BUDGE.",
+  "hotwired": "YOU HOTWIRE DA CAR AN' POCKET DA \\I[{icon}]{item}!",
+  "ranOver": "YOU RUN {name} DOWN.",
+  "ranOverInjured": "YOU RUN {name} DOWN. {injury}.",
+  "ramKilled": "{name} GOES UNDER DA WHEELS AN' DOES NOT GET UP!",
+  "ramAngered": "{name} PICKS ITSELF UP AN' COMES FOR YOU!",
+  "vehicleScuffed": "SOMETHIN' GIVES WAY AGAINST DA FRONT. DAMAGED: {parts}!",
+  "vehicleCrashed": "YOU CRASH INTO ANOTHER VEHICLE. DAMAGED: {parts}!"
+}

@@ -1,0 +1,13 @@
+{
+  "appName": "NOTEPAD",
+  "untitled": "UNTITLED",
+  "windowTitle": "NOTEPAD - {file}",
+  "menuFileTail": "ILE",
+  "menuEdit": "<u>E</u>DIT",
+  "menuFormat": "<u>F</u>ORMAT",
+  "menuHelp": "<u>H</u>ELP",
+  "save": "SAVE",
+  "exit": "EXIT",
+  "savePrompt": "ENTER A FILENAME TA SAVE IN C:/DOCUMENTS:",
+  "writeError": "SYSTEM ERROR: UNABLE TA WRITE TA VIRTUAL FILE SYSTEM!"
+}

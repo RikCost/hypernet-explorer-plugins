@@ -1,0 +1,77 @@
+{
+  "pronoun": {
+    "0": {
+      "sub": "HE",
+      "obj": "HIM",
+      "cap": "HE",
+      "pos": "HIS",
+      "was": "WAZ",
+      "is": "IZ",
+      "tries": "TRIES",
+      "has": "HAB",
+      "answers": "ANSWERS",
+      "born": "BORN"
+    },
+    "1": {
+      "sub": "SHE",
+      "obj": "HER",
+      "cap": "SHE",
+      "pos": "HER",
+      "was": "WAZ",
+      "is": "IZ",
+      "tries": "TRIES",
+      "has": "HAB",
+      "answers": "ANSWERS",
+      "born": "BORN"
+    },
+    "2": {
+      "sub": "DEY",
+      "obj": "DEM",
+      "cap": "DEY",
+      "pos": "DEY",
+      "was": "WAZ",
+      "is": "IZ",
+      "tries": "TRY",
+      "has": "HAB",
+      "answers": "ANSWER",
+      "born": "BORN"
+    },
+    "3": {
+      "sub": "XE",
+      "obj": "XEM",
+      "cap": "XE",
+      "pos": "XYR",
+      "was": "WAZ",
+      "is": "IZ",
+      "tries": "TRY",
+      "has": "HAB",
+      "answers": "ANSWER",
+      "born": "BORN"
+    }
+  },
+  "adjective": [
+    "RESTLESS",
+    "CURIOUS",
+    "CAUTIOUS",
+    "BOLD",
+    "QUIET"
+  ],
+  "bio": {
+    "uncertainTimes": "UNCERTAIN TIMES",
+    "wildsNear": "DA WILDS NEAR {city}",
+    "later": "LATER, {sub} {has} BEEN TOUCHED BY {event}!",
+    "moral": {
+      "high": "{cap} {is} KNOWN FOR AN UNWAVERIN' MORAL COMPASS!",
+      "good": "{cap} {tries} TA DO RIGHT BY PEOPLE, MOST OF DA TIME!",
+      "weary": "LIFE HAB LEFT {obj} WIT FEW ILLUSIONS!",
+      "loose": "{cap} {has} LEARNED DAT RULES IZ FOR OTHERS!",
+      "lawless": "{cap} {answers} TA NO CODE BUT {pos} OWN."
+    },
+    "creature": "{born} IN {place}, {sub} CAME INTO DA WORLD FAR FROM HUMAN CITIES, A {adj} CREATURE SHAPED BY {event}. {later} {moral}",
+    "turbulent": "{born} IN {year} IN {place} DURIN' A TURBULENT AGE, {sub} {has} LIVED THROUGH {event}. {later} {moral}",
+    "warYears": "{born} IN DA WAR YEARS, {sub} {has} SPENT CHILDHOOD IN {place} AN' {has} WITNESSED {event}. {later} {moral}",
+    "postwar": "{born} IN {year} IN {place}, {sub} {is} A {adj} SOUL SHAPED BY {event}. {later} {moral}",
+    "modern": "{born} IN {place} AS DA WORLD GREW STRANGE, {sub} {has} NEVER FORGOTTEN {event}. {later} {moral}",
+    "bornMeta": "BORN {year} · {place}"
+  }
+}

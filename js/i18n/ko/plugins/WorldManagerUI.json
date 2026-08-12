@@ -16,7 +16,6 @@
   "nextYear": "",
   "seed": "시드",
   "randomizeSeed": "",
-  "worldHistory19002000Is": "",
   "createActivate": "",
   "back": "뒤로",
   "dossier": "",
@@ -55,5 +54,8 @@
     "",
     ""
   ],
-  "confirmDelete": ""
+  "confirmDelete": "",
+  "enemyFloor": "압착이 한동안 진행되었습니다: 이곳의 배회하는 적은 어떤 생성 모드에서든 {level}레벨부터 시작합니다.",
+  "enemyFloorOpen": "생태계가 통제를 벗어났습니다: 1레벨부터 {level}레벨까지 무엇이든 온 세계를 떠돕니다.",
+  "enemyFloorCollapse": "역설이 완성되었습니다: {level}레벨 미만은 남지 않았고, 상한도 없습니다."
 }

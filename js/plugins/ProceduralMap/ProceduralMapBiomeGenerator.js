@@ -555,7 +555,7 @@
     }
 
     // Spread the hoards out, tightening the spacing until all of them fit: a
-    // cellar can be as small as one 9x7 vault, and the dossier promises the
+    // cellar can be as small as one 6x5 vault, and the dossier promises the
     // full count.
     const placed = [];
     for (const spacing of [4, 3, 2, 1]) {
@@ -1660,6 +1660,12 @@
       }
     }
 
+    // A lay-by: one or two parking signs on the verge. A settlement gets its
+    // camper-recall sign from its own generator; out on the open road this is
+    // also what RoadCarAI reads to decide where a car may pull over and let its
+    // driver out, so a highway has somewhere to stop rather than nowhere.
+    placeCivicSigns(mapData, biome, allFeatures, seed, { park: [1, 2] });
+
     // Create region data for water tile detection in MovementInteractionSystem
     const regiondata = new Array(width * height).fill(0);
 
@@ -1686,6 +1692,18 @@
           regiondata[regionIdx] = 99;
         }
       }
+    }
+
+    // The verge closes in over the carriageway, thicker every year from 2001
+    // (ProcGenDungeon.overgrowMapData / cityOvergrowth). It grows on the road
+    // itself, unlike the ordinary verge dressing above, which is deliberately
+    // kept ROAD_FEATURE_MARGIN tiles clear: the difference is that only
+    // walk-through plants are used on a carriageway, so a lane is never blocked
+    // and RoadCarAI still has a road to drive on.
+    if (window.ProcGenDungeon && window.ProcGenDungeon.overgrowMapData) {
+      window.ProcGenDungeon.overgrowMapData(
+        mapData, width, height, expandedAllFeatures || allFeatures,
+        biome && biome.tilesetId, seed);
     }
 
     // Attach region data to map data for $gameMap.regionId() calls
@@ -2522,6 +2540,14 @@
       cliffTiles
     );
 
+    // Prefab placement runs later still (DataManager.loadMapData,
+    // ProceduralMapPrefabs), after the cliff pass has already carved its rock
+    // into this array. mapData.mountainMask (attached by
+    // generateMountainBiomeTerrain) names by POSITION, not by tile id, which
+    // cells are genuine mountain, so that pass can re-stamp the mountain back
+    // over whatever a prefab just painted there: the mountain cuts through
+    // the building, the building does not displace the mountain.
+
     // Collect all water tile IDs for feature placement checks
     let waterTiles = [];
     for (const featureName of ["Water", "Ocean", "Beach"]) {
@@ -2643,6 +2669,26 @@
         blockedWaterTiles,
         pathTiles
       );
+    }
+
+    // Belt-and-suspenders sweep: blockedWaterTiles only keeps the scatter off
+    // cells whose CURRENT tile id happens to be a known mountain/water id, so
+    // a Ceiling cell painted with 0 (an undeclared feature reads as bare
+    // void) slips past it the same way an empty/unpainted cell would. The
+    // mask attached by generateMountainBiomeTerrain (mapData.mountainMask)
+    // knows by position, not by id, which cells are genuinely mountain, so a
+    // final pass over it strips any object-layer content (feature, ornament,
+    // anything else) that ended up painted on mountain or ceiling.
+    if (mapData.mountainMask) {
+      const mask = mapData.mountainMask;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (!mask[y * width + x]) continue;
+          for (let layer = 1; layer <= 3; layer++) {
+            mapData[calculateIndex(x, y, layer, width, height)] = 0;
+          }
+        }
+      }
     }
 
     // Clear any features in forbidden zones (borders and center)
@@ -4372,9 +4418,49 @@
     }
   }
 
+  // How many chests a patron's vault ends up holding. The map template only
+  // carries seven, which reads as a poor showing in a hall with a dozen
+  // strongrooms hung off it, so the rest are cloned from those seven.
+  const VAULT_CHEST_COUNT = 26;
+
+  /**
+   * Top the map up to VAULT_CHEST_COUNT chest events by cloning the ones the
+   * template carries. Idempotent: it counts what is already on the map, so the
+   * repeated calls this gets on every procedural map load never pile up. New
+   * events are given their character sprite by hand, because the spriteset was
+   * already built by the time the chest pass runs.
+   */
+  function ensureVaultChestEvents(chestNames) {
+    if (!$dataMap || !Array.isArray($dataMap.events) || !$gameMap) return;
+    const templates = $dataMap.events.filter((e) => e && chestNames.includes(e.name));
+    if (!templates.length) return;
+    const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
+    for (let i = templates.length; i < VAULT_CHEST_COUNT; i++) {
+      const src = templates[i % templates.length];
+      const data = JSON.parse(JSON.stringify(src));
+      data.id = $dataMap.events.length;
+      data.x = 0;
+      data.y = 0;
+      $dataMap.events[data.id] = data;
+      const ev = new Game_Event($gameMap._mapId, data.id);
+      $gameMap._events[data.id] = ev;
+      if (spriteset && spriteset._characterSprites && spriteset._tilemap) {
+        const sprite = new Sprite_Character(ev);
+        spriteset._characterSprites.push(sprite);
+        spriteset._tilemap.addChild(sprite);
+      }
+    }
+  }
+
   /**
    * Place Random Chests on the procedural map, biome-aware:
-   *   - Dungeon / Crypt / Sewer: 4-7 chests, biased into rooms (also corridors).
+   *   - A generated structure: the range its catalogue entry declares, biased
+   *     into rooms (also corridors). A dungeon holds 4-7, a cellar 1-2, a cave
+   *     den none; only the rare grand cellar (mapData.cellarGrand) is stocked
+   *     like a dungeon.
+   *   - Patron's vault: every chest the map template carries plus as many clones
+   *     as it takes to reach VAULT_CHEST_COUNT, so the strongrooms are actually
+   *     full of strongboxes.
    *   - Cave-family: loot is RARE - most coordinates have no chest; when one does
    *     spawn it rolls RARE loot (via $gameSystem._lootRarityBonus, read by
    *     RandomLootSystem). ~20% of cave maps carry a single chest.
@@ -4387,16 +4473,21 @@
 
     const chestNames = ["RandomItemChest", "RandomArmorChest", "RandomWeaponChest"];
     const biome = (procGenData.currentBiome || "").toLowerCase();
-    const isDungeonType = biome.startsWith("dungeon") || biome.startsWith("crypt") ||
-      biome.startsWith("sewer") ||
-      // Structure biomes with guaranteed chests: the loot cellar (StairsDown),
-      // the temple (StairsUp) and a patron's vault (their Hatch).
-      biome === "lootcellar" || biome === "templeinside" || biome === "patronvault";
-    const isCave = !isDungeonType && /cave/.test(biome); // Cave, CaveIce, CaveDen, ...
-    // A patron's vault gets every chest the map template carries; the rarity
-    // push it pays out comes from PatreonRewards.lootRarityBonus, so nothing is
-    // added here (the two would stack).
+    // How much a structure is worth carrying out of is its own business: the
+    // catalogue entry names the range (a cellar 1-2, a dungeon 4-7, a patron's
+    // vault every chest the template has). Ordinary cave squares keep the old
+    // rule, which is that loot down there is rare and good.
+    const D = window.ProcGenDungeon;
+    const struct = (D && typeof D.structure === "function") ? D.structure(biome) : null;
+    const isDungeonType = !!(struct && struct.chests && struct.chests[1] > 0);
+    const isCave = !isDungeonType && /cave/.test(biome); // Cave, CaveIce, ...
+    // A patron's vault gets every chest the map template carries AND enough
+    // clones of them to fill its strongrooms; the rarity push it pays out comes
+    // from PatreonRewards.lootRarityBonus, so nothing is added here (the two
+    // would stack).
     const isPatronVault = biome === "patronvault";
+    const isLootCellar = biome === "lootcellar";
+    if (isPatronVault) ensureVaultChestEvents(chestNames);
 
     const worldX = procGenData.worldX || $gameVariables.value(43) || 0;
     const worldY = procGenData.worldY || $gameVariables.value(44) || 0;
@@ -4408,10 +4499,14 @@
     // How many chests, and how rare their loot is.
     let numChests = 0;
     let rarityBonus = 0;
-    if (isPatronVault) {
-      numChests = 99;                        // capped to the chests that exist
+    if (isLootCellar &&
+        procGenData.generatedMapData && procGenData.generatedMapData.cellarGrand) {
+      // The rare grand cellar is stocked like a dungeon rather than like the
+      // cramped hole most cellars are.
+      numChests = 4 + Math.floor(rng() * 4);
     } else if (isDungeonType) {
-      numChests = 4 + Math.floor(rng() * 4); // 4..7 (all the map-636 chests)
+      const lo = struct.chests[0], hi = struct.chests[1];
+      numChests = lo + Math.floor(rng() * (hi - lo + 1));
     } else if (isCave) {
       numChests = rng() < 0.15 ? 1 : 0;      // very rare - most caves have none
       rarityBonus = 55;                      // but rare loot when present
@@ -4490,15 +4585,17 @@
   }
 
   /**
-   * Check whether the current procedural biome is Dungeon / Crypt / Sewer (or
-   * the TempleInside structure biome, which shares their hazards: spike traps,
-   * locked doors and key chests). LootCellar and CaveDen deliberately do NOT
-   * qualify - a treasure cellar and a natural den carry no built hazards.
+   * Does this structure carry BUILT hazards - spike traps, locked doors, key
+   * chests? A place somebody dug, walled and defended does; a natural cave, a
+   * cellar under a farmhouse and a smuggler's run do not. The answer is the
+   * `hazards` flag on the structure's catalogue entry
+   * (ProceduralMapStructureGenerator), so adding a structure decides it there
+   * rather than here.
    */
   function isCurrentBiomeDungeonType(biomeName) {
-    const b = (biomeName || "").toLowerCase();
-    return b.startsWith("dungeon") || b.startsWith("crypt") || b.startsWith("sewer") ||
-      b === "templeinside";
+    const D = window.ProcGenDungeon;
+    const S = (D && typeof D.structure === "function") ? D.structure(biomeName) : null;
+    return !!(S && S.hazards);
   }
 
   /**
@@ -4689,7 +4786,10 @@
     };
 
     // Secret and rare: little over a third of eligible world tiles carry any.
-    const numChests = rng() < 0.35 ? (1 + Math.floor(rng() * keyChestEvents.length)) : 0;
+    // A patron's vault is the exception - it carries every one of them.
+    const numChests = biome.toLowerCase() === "patronvault"
+      ? keyChestEvents.length
+      : (rng() < 0.35 ? (1 + Math.floor(rng() * keyChestEvents.length)) : 0);
 
     const order = keyChestEvents.slice();
     for (let i = order.length - 1; i > 0; i--) {

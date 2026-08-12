@@ -124,7 +124,7 @@
             this._container.addChild(this._levelText);
             
             // Instructions
-            const instrStr = this._isDemo ? 'DEMO MODE - SPECTATING' : 'MOVE ARROWS, OK/SPACE TO SHOOT';
+            const instrStr = this._isDemo ? 'DEMO MODE - SPECTATING' : '';
             this._instructionText = new PIXI.Text(instrStr, {
                 fontFamily: font,
                 fontSize: 14,

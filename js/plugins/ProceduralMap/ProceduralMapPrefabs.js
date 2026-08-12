@@ -109,12 +109,35 @@
     return h >>> 0;
   }
 
+  // City, Burg and Village generation each place their own building prefabs
+  // inline (lot-aligned, one per block) as the final step of laying out their
+  // streets, and everything they draw afterward (pavement, dressing) already
+  // respects those tiles. That inline call bypasses the WeakSet/fingerprint
+  // bookkeeping above, which only the DataManager.loadMapData hook normally
+  // writes, so without this the hook's own later pass never sees the map as
+  // "already prefabbed" and reruns applyPrefabsToMap a second time -- once
+  // more per block, on top of the lot-aligned building the generator already
+  // placed and the party's own dressing already deferred to. Callers that
+  // place prefabs inline must call this right after, so the generator's own
+  // placement takes priority over that redundant rerun instead of being
+  // half-buried under a second, uncoordinated building.
+  function markPrefabbed(mapData) {
+    prefabbedMapData.add(mapData);
+  }
+
   /**
    * Get biome by name
    */
   function getBiomeByName(biomeName) {
     const Biomes = getBiomes();
     return Biomes.find(b => b.name === biomeName);
+  }
+
+  /**
+   * Is this the name of an alien surface biome (AlienBiomes.json)?
+   */
+  function isAlienBiomeName(biomeName) {
+    return typeof biomeName === "string" && biomeName.indexOf("Alien") === 0;
   }
 
   /**
@@ -186,7 +209,9 @@
     _prefetchStarted = true;
     const ids = new Set();
     for (const biome of biomes) {
-      if (biome && Array.isArray(biome.prefabs)) {
+      // Alien surfaces are skipped by applyPrefabsToMap, so their prefab maps
+      // are never read and are not worth pulling off disk.
+      if (biome && Array.isArray(biome.prefabs) && !isAlienBiomeName(biome.name)) {
         for (const id of biome.prefabs.flat()) ids.add(id);
       }
     }
@@ -553,63 +578,90 @@
       return enforceNoPrefabCollisions(positions, SPACING);
     }
 
-    // City biomes use building lot hints from structure generator
+    // City biomes use building lot hints from structure generator. The
+    // authored building pool spans roughly 10 to 60 tiles a side, so a single
+    // prefab picked by lotIndex % prefabSizes.length used to be tried against
+    // a lot it often could not possibly fit in (a 40-wide building against a
+    // 14-tile lot), leaving that block bare pavement with nothing built on
+    // it. Biggest lots are matched first, and every candidate prefab is tried
+    // against a lot (largest-fitting first) rather than committing to one.
     if (isCity && blockHints && blockHints.length > 0) {
-      for (let lotIndex = 0; lotIndex < blockHints.length && prefabSizes.length > 0; lotIndex++) {
-        const lot = blockHints[lotIndex];
-        const prefabIndex = lotIndex % prefabSizes.length;
-        const prefab = prefabSizes[prefabIndex];
+      const lots = blockHints.slice().sort((a, b) => (b.w * b.h) - (a.w * a.h));
+      const byArea = prefabSizes.map((p, idx) => idx)
+        .sort((a, b) => (prefabSizes[b].width * prefabSizes[b].height) - (prefabSizes[a].width * prefabSizes[a].height));
+      const usedPrefabIdx = new Set();
+
+      for (const lot of lots) {
+        if (prefabSizes.length === 0) break;
+
+        // Prefer a prefab not yet used elsewhere on this map, falling back to
+        // reusing one once every candidate has already had a turn.
+        const fresh = byArea.filter(idx => !usedPrefabIdx.has(idx));
+        const order = fresh.length ? fresh : byArea;
 
         let finalX = null;
         let finalY = null;
+        let chosen = null;
+        let chosenIdx = -1;
 
-        // Strategy 1: Center in lot
-        const centerX = Math.floor(lot.x + (lot.w - prefab.width) / 2);
-        const centerY = Math.floor(lot.y + (lot.h - prefab.height) / 2);
+        for (const idx of order) {
+          const prefab = prefabSizes[idx];
+          // A tolerance of a couple of tiles lets a near-fit still be tried;
+          // anything that cannot possibly fit inside the lot isn't worth the
+          // placement attempts below.
+          if (prefab.width > lot.w + 3 || prefab.height > lot.h + 3) continue;
 
-        if (canPlacePrefabAt(centerX, centerY, prefab.width, prefab.height, allPlacedRects, satData, SPACING, waterSatData)) {
-          finalX = centerX;
-          finalY = centerY;
-        } else {
-          // Strategy 2: Try corners, but ensure they don't overlap existing placements
-          // We strictly validate candidates using canPlacePrefabAt which checks allPlacedRects
-          const corners = [
-            { x: lot.x, y: lot.y },
-            { x: lot.x + lot.w - prefab.width, y: lot.y },
-            { x: lot.x, y: lot.y + lot.h - prefab.height },
-            { x: lot.x + lot.w - prefab.width, y: lot.y + lot.h - prefab.height }
-          ];
+          // Strategy 1: Center in lot
+          const centerX = Math.floor(lot.x + (lot.w - prefab.width) / 2);
+          const centerY = Math.floor(lot.y + (lot.h - prefab.height) / 2);
 
-          for (const corner of corners) {
-            // Constrain to map bounds
-            if (corner.x < 0 || corner.y < 0) continue;
+          if (canPlacePrefabAt(centerX, centerY, prefab.width, prefab.height, allPlacedRects, satData, SPACING, waterSatData)) {
+            finalX = centerX;
+            finalY = centerY;
+          } else {
+            // Strategy 2: Try corners, but ensure they don't overlap existing placements
+            // We strictly validate candidates using canPlacePrefabAt which checks allPlacedRects
+            const corners = [
+              { x: lot.x, y: lot.y },
+              { x: lot.x + lot.w - prefab.width, y: lot.y },
+              { x: lot.x, y: lot.y + lot.h - prefab.height },
+              { x: lot.x + lot.w - prefab.width, y: lot.y + lot.h - prefab.height }
+            ];
 
-            // Constrain corner logic to be relatively close to the lot
-            const cx = Math.max(lot.x - 2, Math.min(corner.x, lot.x + lot.w - prefab.width + 2));
-            const cy = Math.max(lot.y - 2, Math.min(corner.y, lot.y + lot.h - prefab.height + 2));
+            for (const corner of corners) {
+              // Constrain to map bounds
+              if (corner.x < 0 || corner.y < 0) continue;
 
-            if (canPlacePrefabAt(cx, cy, prefab.width, prefab.height, allPlacedRects, satData, SPACING, waterSatData)) {
-              finalX = cx;
-              finalY = cy;
-              break;
+              // Constrain corner logic to be relatively close to the lot
+              const cx = Math.max(lot.x - 2, Math.min(corner.x, lot.x + lot.w - prefab.width + 2));
+              const cy = Math.max(lot.y - 2, Math.min(corner.y, lot.y + lot.h - prefab.height + 2));
+
+              if (canPlacePrefabAt(cx, cy, prefab.width, prefab.height, allPlacedRects, satData, SPACING, waterSatData)) {
+                finalX = cx;
+                finalY = cy;
+                break;
+              }
             }
           }
+
+          if (finalX !== null) { chosen = prefab; chosenIdx = idx; break; }
         }
 
-        if (finalX !== null) {
+        if (finalX !== null && chosen) {
           positions.push({
             x: finalX,
             y: finalY,
-            width: prefab.width,
-            height: prefab.height,
-            mapId: prefab.mapId
+            width: chosen.width,
+            height: chosen.height,
+            mapId: chosen.mapId
           });
           allPlacedRects.push({
             x: finalX,
             y: finalY,
-            width: prefab.width,
-            height: prefab.height
+            width: chosen.width,
+            height: chosen.height
           });
+          usedPrefabIdx.add(chosenIdx);
         }
       }
       return enforceNoPrefabCollisions(positions, SPACING);
@@ -841,6 +893,39 @@
     }
   }
 
+  /**
+   * Re-stamp the cliff overlay on a Mountain-family biome over a prefab's
+   * footprint, AFTER placePrefab has painted it. generateMountainBiomeTerrain
+   * carves its cliffs before any prefab position is known, so a building
+   * simply lands wherever the position generator put it, and this pass
+   * restores whatever rock (or bare Ceiling void) the noise pass carved
+   * there - the mountain cutting through the building rather than the
+   * building displacing the mountain. `cliffData` is the mapData snapshot
+   * taken right after mountain terrain generation (before any prefab drew on
+   * it); `mountainMask` is generateMountainBiomeTerrain's own by-POSITION
+   * record of which cells are mountain. A tile-id check is not reliable here:
+   * an undeclared Ceiling feature paints with id 0 (bare void), which would
+   * also match every ordinary unpainted cell and re-carve holes nowhere near
+   * any actual mountain (most visibly along a map edge, where a prefab's
+   * padded footprint runs off the generated area).
+   */
+  function stampMountainOverPrefab(mapData, position, cliffData, mountainMask) {
+    const x0 = Math.max(0, position.x);
+    const y0 = Math.max(0, position.y);
+    const x1 = Math.min(PROC_MAP_WIDTH, position.x + position.width);
+    const y1 = Math.min(PROC_MAP_HEIGHT, position.y + position.height);
+
+    for (let y = y0; y < y1; y++) {
+      for (let x = x0; x < x1; x++) {
+        if (!mountainMask[y * PROC_MAP_WIDTH + x]) continue;
+        for (let layer = 0; layer <= 3; layer++) {
+          const idx = calculateIndex(x, y, layer, PROC_MAP_WIDTH, PROC_MAP_HEIGHT);
+          mapData[idx] = cliffData[idx];
+        }
+      }
+    }
+  }
+
   // ==========================================================================
   // Player removals (ProceduralTerrainInteractions)
   // ==========================================================================
@@ -992,6 +1077,15 @@
    * Process a generated map to add prefabs
    */
   function applyPrefabsToMap(mapData, biomeName, worldCoords, allOtherData) {
+    // An alien surface takes no prefabs for the moment: the prefab pool is
+    // authored terrestrial architecture, and a GalaxySim landing has nothing
+    // for it to stand in. Every alien biome is named "Alien<Type>"
+    // (js/db/WorldGen/AlienBiomes.json), which is how GalaxySim.isAlienSurface
+    // reads one too.
+    if (isAlienBiomeName(biomeName)) {
+      return mapData;
+    }
+
     const biome = getBiomeByName(biomeName);
 
     if (!biome || !biome.prefabs || biome.prefabs.length === 0) {
@@ -1247,6 +1341,15 @@
     // guarantee of landing on (see carveCaveSpaceForPrefab).
     const caveFloorTile = mapData.caveFloorTile;
     const isCaveTerrain = caveFloorTile !== undefined && caveFloorTile !== null;
+    // Mountain-family biomes (see generateMountainSurfaceTerrainForBiome)
+    // attach their by-position mountainMask onto the array; a snapshot of
+    // the post-cliff data taken here (before any prefab is placed) lets each
+    // prefab's footprint be re-carved with rock (and bare Ceiling void)
+    // afterward (see stampMountainOverPrefab), so the mountain cuts through
+    // the building instead of the building displacing it.
+    const mountainMask = mapData.mountainMask;
+    const isMountainTerrain = !!mountainMask;
+    const mountainCliffData = isMountainTerrain ? mapData.slice() : null;
     const placedFootprints = [];
 
     // What the party has already cleared away on this exact world square.
@@ -1262,6 +1365,9 @@
           carveCaveSpaceForPrefab(mapData, position, caveFloorTile, placedFootprints);
         }
         placePrefab(mapData, prefabInfo.data, position, nonTerrainTileIds, removedTiles);
+        if (isMountainTerrain) {
+          stampMountainOverPrefab(mapData, position, mountainCliffData, mountainMask);
+        }
         placedFootprints.push({ x: position.x, y: position.y, width: position.width, height: position.height });
       }
     }
@@ -1293,7 +1399,11 @@
             // city & village prefabs align to lots instead of grid-fallback
             // placement (which ignored roads/buildings).
             // Only run the (expensive) prefab pass once per fresh map array, and
-            // never over an array that already carries its prefabs.
+            // never over an array that already carries its prefabs. City, Burg
+            // and Village generation places its own lot-aligned prefabs inline
+            // and calls markPrefabbed() right after, so prefabbedMapData.has()
+            // is already true here for them: their own placement takes priority
+            // and this pass must not rerun on top of it (see markPrefabbed).
             const alreadyPrefabbed = prefabbedMapData.has(mapData) ||
               (pg._prefabbedSig != null &&
                 pg._prefabbedSig === mapDataFingerprint(mapData, biomeName, worldCoords));
@@ -1305,12 +1415,15 @@
                 hints = Object.assign({}, hints, { roomHints: mapData.rooms });
               }
               applyPrefabsToMap(mapData, biomeName, worldCoords, hints);
-              prefabbedMapData.add(mapData);
-              // Fingerprinted AFTER the pass: applyPrefabsToMap grows the array
-              // to hold the shadow layer and rewrites tiles, so this is the
-              // finished square, which is what a later load will hand back.
-              pg._prefabbedSig = mapDataFingerprint(mapData, biomeName, worldCoords);
             }
+            // Keep the tracking current whether this pass just did the work or
+            // a city/burg/village generation pass already placed its own
+            // prefabs inline: either way the array is now finished and must
+            // never be prefabbed again, including after a save/reload loses
+            // its object identity. Fingerprinted here, after every other pass
+            // this map goes through, so it reflects the truly finished square.
+            prefabbedMapData.add(mapData);
+            pg._prefabbedSig = mapDataFingerprint(mapData, biomeName, worldCoords);
             if ($dataMap) {
               $dataMap.data = mapData;
             }
@@ -1323,6 +1436,7 @@
   // Expose functions for debugging
   window.ProceduralMapPrefabs = {
     applyPrefabsToMap,
+    markPrefabbed,
     loadPrefabSync,
     canPlacePrefabAt,
     loadMapDataSync: loadPrefabSync, // Alias for backward compatibility

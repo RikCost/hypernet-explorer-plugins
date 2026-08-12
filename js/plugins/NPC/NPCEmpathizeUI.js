@@ -25,10 +25,12 @@
     _computePartyPredisposition, _medianScore, _generatePartyThoughts,
     _extractContacts, _countRecentInteractions, _lastInteractionDay,
     _joinChance, _joinLevelOk, _travellingPartyCount, _hasSelfSwitchAPage,
+    _diseaseVialItems, _diseaseVialId, _infectChance,
     _socialLines, _rand, _addNpcOpinion, _personalitySocialMult,
     _hygienePenalty, _hygieneReadout,
     _emPlaythrough, _isEmActor, _isBubbaNpc, _emContext, _emStanceKey, _emStanceData,
     _bubbaPlaythrough, _isBubbaActor, _bubbaContext, _bubbaDb,
+    _isNonSentientActor, FERAL_ACTIONS,
   } = window.NPCEmpathize._helpers;
   const _getT = window.NPCEmpathize._getT;
 
@@ -241,7 +243,7 @@
     const rows = [];
     levelById.forEach((lvl, id) => {
       const spec = window.Specializations.byId.get(id);
-      if (spec) rows.push({ name: spec.name, levelName: window.Specializations.levelName(lvl) });
+      if (spec) rows.push({ name: window.Specializations.displayName(spec), levelName: window.Specializations.levelName(lvl) });
     });
     rows.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -258,7 +260,7 @@
     const rows = [];
     window.Specializations.list.forEach(spec => {
       const lvl = actor.specializationLevel(spec.id);
-      if (lvl > 1) rows.push({ name: spec.name, levelName: window.Specializations.levelName(lvl) });
+      if (lvl > 1) rows.push({ name: window.Specializations.displayName(spec), levelName: window.Specializations.levelName(lvl) });
     });
     rows.sort((a, b) => a.name.localeCompare(b.name));
     return rows;
@@ -341,6 +343,30 @@
     return (preset && $dataClasses?.[preset.classId]) ? $dataClasses[preset.classId].name : '';
   }
 
+  // The character sheet this person is actually wearing, which is the only
+  // thing that says whether they are from here at all. The society roll owns it
+  // where it made one; otherwise it is whatever the map event is drawn with, and
+  // for somebody read remotely (from the wiki or a chat link) their pool
+  // template, exactly the order _resolveBustPath reads them in.
+  function _npcSpriteKey(profile, npcName, evId) {
+    if (profile?.spriteKey) return profile.spriteKey;
+    const ev = evId != null ? $gameMap?.event(evId) : null;
+    const fromEvent = ev?.event()?.characterName ?? ev?.event()?.pages?.[0]?.image?.characterName;
+    if (fromEvent) return fromEvent;
+    if (npcName && window.NPCSystem?.findTemplateSprite) {
+      const tpl = window.NPCSystem.findTemplateSprite(npcName);
+      if (tpl?.characterName) return tpl.characterName;
+    }
+    return null;
+  }
+
+  // Who this person is when they are not from this world: caste, home system,
+  // and the power that claims them. Null for everybody else.
+  function _alienIdentity(profile, npcName, evId) {
+    if (!window.AlienOrigins) return null;
+    return window.AlienOrigins.identify(_npcSpriteKey(profile, npcName, evId), npcName);
+  }
+
   // ============================================================================
   // Wiki helpers, hyperlinks, linkified text, meters
   // ============================================================================
@@ -348,6 +374,23 @@
   function _wikiLink(type, id, label) {
     const safeId = encodeURIComponent(String(id));
     return `<span class="npc-wiki-link" onmousedown="event.stopPropagation();window.NPCEmpathize.openEntity('${type}','${safeId}')">${_escapeHtml(label ?? id)}</span>`;
+  }
+
+  // In an empty world nobody outlived 1 January 2000. Every roster the wiki
+  // prints marks its dead with a dagger and, where it has one, the date; these
+  // two answer both for a world where being alive is not on offer, so a
+  // listing agrees with the dossier the same name opens (see
+  // NPCEmpathize._emptyWorldDeath).
+  const EMPTY_WORLD_DEATH_DATE = '2000-01-01';
+  function _emptyWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isEmptyWorld === 'function' && WM.isEmptyWorld());
+  }
+  // Whether this name should read as dead, and the date to print beside it.
+  function _wikiIsDead(isDead) { return isDead || _emptyWorld(); }
+  function _wikiDeathDate(stored) {
+    if (stored) return stored;
+    return _emptyWorld() ? EMPTY_WORLD_DEATH_DATE : null;
   }
 
   // Escapes raw text and turns every known entity name (nations, hyperpowers,
@@ -371,6 +414,20 @@
         <span class="npc-vital-lbl">${_escapeHtml(label)}</span>
         <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${v}%;background:${color};"></div></div>
         <span class="npc-vital-pct">${v}</span>
+      </div>`;
+  }
+
+  // A -100..+100 political axis (econ/auth/trad/mil/myst), centered at 50%
+  // fill so the bar itself shows which side of neutral a creed leans to; the
+  // printed number stays signed, unlike _statBarRow's raw 0..max reading.
+  function _axisBarRow(label, value, color) {
+    const v = Math.round(Math.max(-100, Math.min(100, value ?? 0)));
+    const pct = (v + 100) / 2;
+    return `
+      <div class="npc-vital-row">
+        <span class="npc-vital-lbl">${_escapeHtml(label)}</span>
+        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${pct}%;background:${color};"></div></div>
+        <span class="npc-vital-pct" style="width:44px;">${v > 0 ? '+' : ''}${v}</span>
       </div>`;
   }
 
@@ -424,6 +481,8 @@
     leader:   { glyph: '☻', kickerKey: 'wikiKindLeader' },
     artifact: { glyph: '✦', kickerKey: 'wikiKindArtifact' },
     faction:  { glyph: '⚜', kickerKey: 'wikiKindFaction' },
+    party:    { glyph: '⚖', kickerKey: 'wikiKindParty' },
+    ideology: { glyph: '✪', kickerKey: 'wikiKindIdeology' },
   };
 
   function _emblemOf(type) {
@@ -432,7 +491,23 @@
     return { glyph: e.glyph, kicker: T('Empathize.' + e.kickerKey) };
   }
 
-  const PARAM_LABELS = ['MHP', 'MMP', 'ATK', 'DEF', 'MAT', 'MDF', 'AGI', 'LUK'];
+  // The localized display name of an Ideology.json creed, by id, or '' if the
+  // party carries none (which never happens for a curated real party, but a
+  // hand-authored one might).
+  function _ideologyLabel(ideologyId) {
+    if (!ideologyId) return '';
+    const ideo = window.NPCShared?.ideologyById?.(ideologyId);
+    if (!ideo) return '';
+    return window.T ? window.T(ideo.name) : ideologyId;
+  }
+
+  // The eight $dataItems.params labels, in param order, taken from the same
+  // stats.json bank _statLabels() reads further down so an artifact's stat line
+  // names the six attributes the way the rest of the game does.
+  const _paramLabels = () => {
+    const L = _statLabels();
+    return ['HP', 'MP', L.atk, L.def, L.mat, L.mdf, L.agi, L.luk];
+  };
   // Weapon and armor type names, indexed by wtypeId / atypeId. The database
   // carries the localized names, so read those and keep the table as the
   // fallback for a project that has not filled them in.
@@ -594,7 +669,8 @@
   // menu of verbs, i.e. while it is a list the player scrolls and chooses from.
   Scene_NPCEmpathize.prototype._inListSubMode = function () {
     return !!(this._directionsMode || this._giftMode || this._stealMode ||
-              this._bribeMode || this._socialMode || this._romanceMode);
+              this._bribeMode || this._socialMode || this._romanceMode ||
+              this._cardMode || this._infectMode);
   };
 
   Scene_NPCEmpathize.prototype._activeScrollPane = function () {
@@ -756,6 +832,10 @@
     // has a bad word about. Only one of the two can be in play at a time, since
     // they are different party members doing the talking.
     this._prepareBubbaMeeting?.();
+    // A non-sentient member (a creature class, 63+) is not greeted, it is
+    // noticed: cooed over, backed away from or shooed off by what this NPC
+    // makes of the animal in front of them.
+    this._prepareFeralMeeting?.();
 
     const predispositions = _computePartyPredisposition(profile);
     // Reputation is now per party member; use the focused (interacting) actor's
@@ -795,8 +875,19 @@
     const emCtx     = this._emCtx?.() ?? null;
     const bubbaOnly = !!emCtx?.bubba;
     const BUBBA_HIDDEN = new Set(
-      ['romance', 'attack', 'pickpocket', 'cough', 'spit', 'bite', 'bribe', 'join']
+      ['romance', 'attack', 'pickpocket', 'cough', 'spit', 'bite', 'bribe', 'join', 'infect']
     );
+
+    // Opening a vial on somebody: what the pack is carrying decides whether the
+    // action is live at all, and the label advertises the same odds of not being
+    // seen that _infectWith() rolls, for the member the switcher has focused.
+    const vialCount    = _diseaseVialItems().length;
+    const infectChance = _infectChance(this._focusActor());
+    // A party member is dosed openly (no roll, no charge), so their own panel's
+    // button states the act rather than the odds.
+    const infectAction = actorMode
+      ? { id: 'infect', label: T.infectLabel, disabled: !vialCount }
+      : { id: 'infect', label: `${T.infectLabel} (~${infectChance}%)`, disabled: !vialCount };
 
     this._chatActions = remoteMode
       ? []
@@ -804,6 +895,7 @@
       ? [
           { id: 'freeChat', label: T.freeChatLabel },
           { id: 'gift',  label: T.gift },
+          infectAction,
         ]
       : [
           // Opening the text field is an interaction like any other, never a
@@ -818,9 +910,23 @@
           { id: 'attack',     label: T.attack },
           { id: 'pickpocket', label: T.pickpocket },
           { id: 'trade',      label: T.trade, disabled: wasRecentlyAttacked },
+          // Cards: a game is once a day with any one person, and so is a swap.
+          // The deck gate is read here so the entry greys out rather than
+          // opening a table the party has nothing to bring to.
+          ...(window.CardGame ? [
+            {
+              id: 'cardDuel', label: T.cardDuelLabel,
+              disabled: window.CardGame.hasDuelledToday(npcName) || !window.CardGame.canDuel()
+            },
+            {
+              id: 'cardTrade', label: T.cardTradeLabel,
+              disabled: window.CardGame.hasTradedToday(npcName) || !window.CardGame.ownedKeys().length
+            }
+          ] : []),
           { id: 'cough',      label: T.coughLabel },
           { id: 'spit',       label: T.spitLabel  },
           { id: 'bite',       label: T.biteLabel  },
+          infectAction,
           ...(TREAT_CLASSES.includes(classId) ? [{ id: 'treat', label: T.treatWounds }] : []),
           ...(window.ProceduralHouseSystem?.canOfferPurchase?.()
             ? [{ id: 'buyHouse', label: `${T.buyHouse} (${_euros(window.ProceduralHouseSystem.getCurrentFloorPrice(opinion))})` }]
@@ -831,18 +937,57 @@
         ];
     if (bubbaOnly) this._chatActions = this._chatActions.filter(a => !BUBBA_HIDDEN.has(a.id));
 
+    // A non-sentient member (a creature class, 63+) has no conversation to
+    // offer, so the spoken half of the panel goes: socialising, courting,
+    // asking the way, haggling, bribery and property are all off the list.
+    // What is left is what a beast can do , noise, contact and teeth , plus
+    // the offer to follow the party, which is made whatever the party's size
+    // or the creature's standing: it is an animal deciding to come along.
+    if (!actorMode && !remoteMode && _isNonSentientActor?.(this._focusActor?.())) {
+      const FERAL_KEEP = new Set(['freeChat', 'gift', 'attack', 'cough', 'spit', 'bite']);
+      const kept = this._chatActions.filter(a => FERAL_KEEP.has(a.id));
+      const noises = (FERAL_ACTIONS || []).map(a => ({
+        id: a.id, label: T['feralLabel' + a.id.charAt(0).toUpperCase() + a.id.slice(1)],
+      }));
+      // Join stays on the board even when the party is full or the recruit is
+      // out of reach , _join() refuses those itself , so it reads as greyed
+      // out rather than missing. It goes only once they have actually joined.
+      const joinBlocked = _travellingPartyCount() >= 3 || !canVanishOnJoin || !joinLevelOk;
+      this._chatActions = [
+        ...kept.filter(a => a.id === 'freeChat'),
+        ...noises,
+        ...kept.filter(a => a.id !== 'freeChat'),
+        ...(this._justJoined === true
+          ? []
+          : [{ id: 'join', label: `${T.joinParty} (~${joinChance}%)`, disabled: joinBlocked }]),
+      ];
+    }
+
+    // Somebody else's party member, standing here because that playthrough was
+    // saved on this spot (NPCSystem.js, VisitingParties). Nothing done to them
+    // may reach into the savegame they belong to, so everything transactional
+    // or violent leaves the board: no recruiting them away from their own
+    // party, no fighting, no trading, no cards, no gifts, no money, no
+    // pickpocketing, no bargaining, no infecting them. What is left is what
+    // costs their journey nothing, talking, and the standing that earns is
+    // remembered in the world folder like everybody else's.
+    if (!actorMode && window.PartyPresence?.isVisitorName?.(npcName)) {
+      const VISITOR_KEEP = new Set(['freeChat', 'socialize', 'directions']);
+      this._chatActions = this._chatActions.filter(a => VISITOR_KEEP.has(a.id));
+    }
+
     // Bubba doing the talking (Switch 49): he does not rob, hit, or infect
     // anybody, and he is spoken for. Court survives only for a bubbaromantic,
     // where the single thing on offer is being turned down (_romanceOptions).
     if (!actorMode && !remoteMode && _isBubbaActor?.(this._focusActor?.())) {
-      const BUBBA_REFUSES = new Set(['attack', 'pickpocket', 'cough', 'spit', 'bite']);
+      const BUBBA_REFUSES = new Set(['attack', 'pickpocket', 'cough', 'spit', 'bite', 'infect']);
       const courtable = _isBubbaromanticNpc(npcName, profile);
       this._chatActions = this._chatActions.filter(
         a => !BUBBA_REFUSES.has(a.id) && (a.id !== 'romance' || courtable)
       );
       if (courtable) {
         const rom = _bubbaDb?.()?.romantic;
-        const label = lang === 'it' ? (rom?.label_it || rom?.label) : rom?.label;
+        const label = rom?.label;
         const entry = this._chatActions.find(a => a.id === 'romance');
         if (entry && label) entry.label = label;
       }
@@ -975,7 +1120,12 @@
       { id: 'wiki',        label: T.wikiTab },
       { id: 'more',        label: T.more },
     ];
-    return this._buildBackBtnHTML(T) + tabs.map(tab => `
+    // _tabOrder() is what the keyboard cycles through and it already drops the
+    // tabs the member doing the talking has no use for (Romance, for a
+    // non-sentient one), so the bar is drawn from it rather than beside it.
+    const order = this._tabOrder?.() ?? null;
+    const shown = Array.isArray(order) ? tabs.filter(t => order.includes(t.id)) : tabs;
+    return this._buildBackBtnHTML(T) + shown.map(tab => `
       <div class="npc-tab${this._activeTab === tab.id ? ' active' : ''}"
            onmousedown="event.stopPropagation();SceneManager._scene._setTab('${tab.id}')">${_escapeHtml(tab.label)}</div>
     `).join('');
@@ -1349,8 +1499,12 @@
       actionsHTML = this._buildInlineStealActions(T);
     } else if (this._giftMode) {
       actionsHTML = this._buildInlineGiftActions(T);
+    } else if (this._infectMode) {
+      actionsHTML = this._buildInlineInfectActions(T);
     } else if (this._bribeMode) {
       actionsHTML = this._buildInlineBribeActions(T, opinion, npcName);
+    } else if (this._cardMode) {
+      actionsHTML = this._buildInlineCardActions(T);
     } else {
       actionsHTML = (this._chatActions || []).map((item, i) => {
         const focused  = i === this._menuIndex ? ' npc-action-focused' : '';
@@ -1419,6 +1573,86 @@
           `<span style="color:#2a6e4a;margin-left:6px;">+${opDelta}♥</span></div>`;
       }).join('');
     }
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    return html;
+  };
+
+  // Which vial to open. One row per sealed vial in the pack, naming the illness
+  // it carries rather than the item, since that is what the choice is about; the
+  // odds of not being seen are printed on every row (they are the same for all
+  // of them) so the number is under the cursor at the moment of the decision.
+  // Party members are dosed openly, so their own panel prints no odds.
+  Scene_NPCEmpathize.prototype._buildInlineInfectActions = function (T) {
+    const items  = this._infectItems || [];
+    const covert = this._actorId == null;
+    const chance = _infectChance(this._focusActor());
+    let html = '';
+    if (!items.length) {
+      html = `<span style="opacity:0.6;font-style:italic;padding:4px 8px;font-size:1.08rem;">${_escapeHtml(T.noVialsToOpen)}</span>`;
+    } else {
+      const DS = window.DiseaseSystem;
+      html = items.map((item, i) => {
+        const id   = _diseaseVialId(item);
+        const name = (DS && DS.displayName ? DS.displayName(id) : '') || item.name;
+        const qty  = $gameParty.numItems(item);
+        return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._infectWith(${i})">` +
+          `${_iconSpan(item.iconIndex || 0, 15)}<span>${_escapeHtml(name)}</span>` +
+          `<span style="opacity:0.55;margin-left:4px;font-size:1.00rem;">×${qty}</span>` +
+          (covert ? `<span style="color:#8a2a2a;margin-left:6px;">~${chance}%</span>` : '') +
+          `</div>`;
+      }).join('');
+    }
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    return html;
+  };
+
+  // Cards submenu. Two shapes on one flag: what to put on the table before a
+  // duel, or which of their cards to swap for one of yours.
+  Scene_NPCEmpathize.prototype._buildInlineCardActions = function (T) {
+    const CGx = window.CardGame;
+    let html = '';
+
+    if (!CGx) {
+      html = '';
+    } else if (this._cardMode === 'stake') {
+      const stakes = this._cardStakeOptions();
+      html = `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._startCardDuel({type:'none'})">` +
+        `<span>${_escapeHtml(T.cardStakeFree)}</span></div>`;
+      html += stakes.money.map(amount =>
+        `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._startCardDuel({type:'money',amount:${amount}})">` +
+        `<span>${_escapeHtml(T.cardStakeMoney)}</span>, <span style="opacity:0.75;">${_euros(amount)}</span></div>`
+      ).join('');
+      if (stakes.item) {
+        const mine   = $dataItems[stakes.item.playerItem.id];
+        const theirs = stakes.item.npcItem.kind === 1 ? $dataWeapons[stakes.item.npcItem.id]
+          : stakes.item.npcItem.kind === 2 ? $dataArmors[stakes.item.npcItem.id]
+            : $dataItems[stakes.item.npcItem.id];
+        if (mine && theirs) {
+          const arg = JSON.stringify({ type: 'item', playerItem: stakes.item.playerItem, npcItem: stakes.item.npcItem })
+            .replace(/"/g, '&quot;');
+          html += `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._startCardDuel(${arg})">` +
+            `${_iconSpan(mine.iconIndex || 0, 15)}<span>${_escapeHtml(mine.name)}</span>` +
+            `<span style="opacity:0.6;margin:0 4px;">&rarr;</span>` +
+            `${_iconSpan(theirs.iconIndex || 0, 15)}<span>${_escapeHtml(theirs.name)}</span></div>`;
+        }
+      }
+    } else if (this._cardMode === 'trade') {
+      const offers = this._cardTradeOffers();
+      if (!offers.length) {
+        html = `<span style="opacity:0.6;font-style:italic;padding:4px 8px;font-size:1.08rem;">${_escapeHtml(T.cardNothingToSwap)}</span>`;
+      } else {
+        html = offers.map((offer, i) => {
+          const theirs = CGx.nameOf(offer.theirs);
+          const mine   = CGx.nameOf(offer.mine);
+          return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._doCardTrade(${i})">` +
+            `<span>${_escapeHtml(mine)}</span>` +
+            `<span style="opacity:0.6;margin:0 4px;">&rarr;</span>` +
+            `<span style="color:#2a6e4a;">${_escapeHtml(theirs)}</span>` +
+            `<span style="opacity:0.5;margin-left:6px;font-size:0.95em;">${CGx.statTotal(offer.mine)}/${CGx.statTotal(offer.theirs)}</span></div>`;
+        }).join('');
+      }
+    }
+
     html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
     return html;
   };
@@ -1561,7 +1795,7 @@
       const tags = preset.specializations.map(entry => {
         const spec = window.Specializations.byId.get(entry.id);
         if (!spec) return '';
-        return `<span class="npc-tag">${_escapeHtml(spec.name)} <span style="opacity:0.6;">(${_escapeHtml(window.Specializations.levelName(entry.level))})</span></span>`;
+        return `<span class="npc-tag">${_escapeHtml(window.Specializations.displayName(spec))} <span style="opacity:0.6;">(${_escapeHtml(window.Specializations.levelName(entry.level))})</span></span>`;
       }).filter(Boolean).join('');
       if (tags) specsHTML = `<div class="npc-sec-hdr" style="margin-top:6px;">${_escapeHtml(T.specializations)}</div><div class="npc-tag-wrap">${tags}</div>`;
     }
@@ -1623,7 +1857,7 @@
     const persName     = pers ? (lang === 'it' ? pers.name_it || pers.name : pers.name) : '';
     const persIcon     = pers?.iconIndex || 4;
     const faction      = (profile?.factionIndex >= 0 && dl?.factions) ? dl.factions[profile.factionIndex] : null;
-    const ideology     = dl?.ideologies?.[profile?.ideologyIndex];
+    const ideology     = window.NPCShared?.ideologyFor(profile) ?? null;
     const ideologyName = ideology
       ? ((window.DataService?.t?.(ideology.name)) ||
          (ideology.name || '').split('.').pop().split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))
@@ -1641,7 +1875,7 @@
       const emCtx = this._emCtx?.();
       if (emCtx) {
         const stanceLabel = lang === 'it'
-          ? (emCtx.data.label_it || emCtx.data.label)
+          ? emCtx.data.label
           : emCtx.data.label;
         if (stanceLabel) {
           const stanceColor = emCtx.key === 'zealot' ? '#c02020'
@@ -1657,7 +1891,7 @@
       const bubbaCtx = this._bubbaCtx?.();
       if (bubbaCtx) {
         const label = lang === 'it'
-          ? (bubbaCtx.data.label_it || bubbaCtx.data.label)
+          ? bubbaCtx.data.label
           : bubbaCtx.data.label;
         if (label) {
           identHTML += `<div class="npc-ident-row">${_iconSpan(79, 17)}` +
@@ -1675,21 +1909,37 @@
     // shown first, then the political nation/power when a political identity
     // exists. The row renders even for NPCs with no political identity.
     const citizenParts = [];
-    const homeTown = _homeTownLabel(profile?._homeGroupName);
-    if (homeTown) citizenParts.push(`<span>${_escapeHtml(homeTown)}</span>`);
-    // Nation of the home map: the simulated political identity when it exists,
-    // otherwise resolve straight from the home group so procedural citizens (and
-    // any NPC not yet processed by the politics sim) still show their nation.
-    const homeNation = identity?.country
-      || window.NPCPolitics?.nationOfGroup?.(profile?._homeGroupName)
-      || null;
-    if (homeNation) citizenParts.push(_wikiLink('nation', homeNation));
-    if (identity?.power && identity.power !== 'Neutral') citizenParts.push(_wikiLink('power', identity.power));
+    // Somebody who is not from here has no hometown and no nation: what they
+    // have is a system they came from and a power out there that claims them,
+    // so that is what the row says instead. Nothing on Earth applies to them.
+    const alien = _alienIdentity(profile, npcName, this._eventId);
+    if (alien) {
+      citizenParts.push(`<span>${_escapeHtml(alien.originName)}</span>`);
+      citizenParts.push(_wikiLink('power', alien.power, alien.powerName));
+    } else {
+      const homeTown = _homeTownLabel(profile?._homeGroupName);
+      if (homeTown) citizenParts.push(`<span>${_escapeHtml(homeTown)}</span>`);
+      // Nation of the home map: the simulated political identity when it exists,
+      // otherwise resolve straight from the home group so procedural citizens (and
+      // any NPC not yet processed by the politics sim) still show their nation.
+      const homeNation = identity?.country
+        || window.NPCPolitics?.nationOfGroup?.(profile?._homeGroupName)
+        || null;
+      if (homeNation) citizenParts.push(_wikiLink('nation', homeNation));
+      if (identity?.power && identity.power !== 'Neutral') citizenParts.push(_wikiLink('power', identity.power));
+    }
 
     if (identity || citizenParts.length) {
       politicsHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.politicsSection}</div>`;
       if (citizenParts.length) {
-        politicsHTML += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(T.citizenOf)}:</span>&nbsp;${citizenParts.join('&nbsp;·&nbsp;')}</div>`;
+        const label = alien ? T.originLbl : T.citizenOf;
+        politicsHTML += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(label)}:</span>&nbsp;${citizenParts.join('&nbsp;·&nbsp;')}</div>`;
+      }
+      if (alien) {
+        politicsHTML += `<div class="npc-ident-row">${_iconSpan(158, 17)}<span style="opacity:0.65;">${_escapeHtml(T.casteLbl)}:</span>&nbsp;<span>${_escapeHtml(alien.casteName)}</span></div>`;
+        if (alien.casteDesc) {
+          politicsHTML += `<div class="npc-ident-row" style="opacity:0.55;font-style:italic;">${_escapeHtml(alien.casteDesc)}</div>`;
+        }
       }
     }
     if (identity) {
@@ -1702,7 +1952,7 @@
         : eng < 75 ? (T.engActivist)
         : (T.engOrganizer);
 
-      if (party) politicsHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65;">${_escapeHtml(T.partyLbl)}:</span>&nbsp;<span>${_escapeHtml(party.name)}</span></div>`;
+      if (party) politicsHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65;">${_escapeHtml(T.partyLbl)}:</span>&nbsp;${_wikiLink('party', party.id, party.name)}</div>`;
       politicsHTML += `<div class="npc-ident-row">${_iconSpan(83, 17)}<span style="opacity:0.65;">${_escapeHtml(T.engagementLbl)}:</span>&nbsp;<span>${_escapeHtml(engLabel)} (${eng})</span></div>`;
       if (identity.localOffice) {
         const officeLabel = window.NPCPolitics?.LOCAL_OFFICE_LABELS?.[identity.localOffice] || identity.localOffice;
@@ -2336,9 +2586,48 @@
     return `
       ${headerHTML}
       <div class="npc-bio-archetype">${_escapeHtml(T.biologicsArchetype)}: <b>${_escapeHtml(label)}</b></div>
+      ${this._bloodTypeSectionHTML(T, window.BloodTypeService?.forActor(actor), actor)}
       ${vitalsHTML}
       <div class="npc-routine-sub-hdr">${_escapeHtml(T.biologicsParts)}</div>
       <div class="npc-bio-grid">${_bioPartRowsHTML(rows, T, condColor)}</div>`;
+  };
+
+  // Blood type line (real name + rarity), a universal donor/recipient badge
+  // where it applies, a note for the ultra-rare antigen-negative lineages,
+  // and, whenever the panel is being read on behalf of someone other than
+  // the person being displayed, a real ABO/Rh transfusion-compatibility
+  // verdict against the party member currently doing the talking
+  // (this._focusActor()). window.BloodTypeService (Health_BiologicSimulation)
+  // is the only place that data and that calculation live.
+  Scene_NPCEmpathize.prototype._bloodTypeSectionHTML = function (T, bloodEntry, subject) {
+    const BTS = window.BloodTypeService;
+    if (!BTS || !bloodEntry) return '';
+
+    const badges = [];
+    if (BTS.isUniversalDonor(bloodEntry.id)) badges.push(`<span class="npc-badge">${_escapeHtml(T.bloodUniversalDonor)}</span>`);
+    if (BTS.isUniversalRecipient(bloodEntry.id)) badges.push(`<span class="npc-badge">${_escapeHtml(T.bloodUniversalRecipient)}</span>`);
+    const badgeHTML = badges.length ? `<div class="npc-badge-row" style="margin:2px 0;">${badges.join('')}</div>` : '';
+    const rareNoteHTML = bloodEntry.rareAntigen
+      ? `<div class="npc-thought" style="margin-top:1px;">${_escapeHtml(T.bloodRareAntigenNote)}</div>` : '';
+
+    let compatHTML = '';
+    const focusActor = this._focusActor ? this._focusActor() : null;
+    if (focusActor && focusActor !== subject) {
+      const focusEntry = BTS.forActor(focusActor);
+      if (focusEntry) {
+        const canGive = BTS.canDonate(bloodEntry.id, focusEntry.id);
+        const canReceive = BTS.canDonate(focusEntry.id, bloodEntry.id);
+        const label = canGive && canReceive ? T.bloodCompatBoth
+          : canGive ? T.bloodCompatDonorOnly
+          : canReceive ? T.bloodCompatRecipientOnly
+          : T.bloodCompatNone;
+        compatHTML = `<div class="npc-bio-archetype">${_escapeHtml(T.bloodCompatTitle)}: <b>${_escapeHtml(label)}</b></div>`;
+      }
+    }
+
+    return `
+      <div class="npc-bio-archetype">${_escapeHtml(T.bloodType)}: <b>${_escapeHtml(bloodEntry.type)} (${_escapeHtml(bloodEntry.rarity)})</b></div>
+      ${badgeHTML}${rareNoteHTML}${compatHTML}`;
   };
 
   function _bioPartRowsHTML(rows, T, condColor) {
@@ -2413,6 +2702,7 @@
     return `
       ${headerHTML}
       <div class="npc-bio-archetype">${_escapeHtml(T.biologicsArchetype)}: <b>${_escapeHtml(archetype)}</b></div>
+      ${this._bloodTypeSectionHTML(T, window.BloodTypeService?.forNpc(npcName), npcName)}
       ${vitalsHTML}
       <div class="npc-routine-sub-hdr">${_escapeHtml(T.biologicsParts)}</div>
       <div class="npc-bio-grid">${_bioPartRowsHTML(rows, T, condColor)}</div>`;
@@ -2894,7 +3184,7 @@
       const rom = _bubbaDb?.()?.romantic || {};
       return [{
         id:     BUBBA_DECLINE_ID,
-        label:  (lang === 'it' ? rom.label_it || rom.label : rom.label) || T('Empathize.declineAdvances'),
+        label:  rom.label || T('Empathize.declineAdvances'),
         reason: null,
         reasonLabel: '',
         chance: 100,
@@ -2908,9 +3198,9 @@
       const pool   = reason ? _romanceRejection(reason) : null;
       return {
         id:     def.id,
-        label:  (lang === 'it' ? def.label_it || def.label : def.label) || def.id,
+        label:  def.label || def.id,
         reason,
-        reasonLabel: pool ? ((lang === 'it' ? pool.reasonLabel_it || pool.reasonLabel : pool.reasonLabel) || '') : '',
+        reasonLabel: pool ? (pool.reasonLabel || '') : '',
         chance: reason ? 0 : _romanceChance(profile, npcName, actor, def, opinion),
         gain:   Number(def.successDelta) || 0,
         loss:   Number(def.failDelta)    || 0,
@@ -3055,6 +3345,11 @@
 
     if (landed) SoundManager.playOk(); else SoundManager.playBuzzer();
 
+    // A suit pressed, and how it landed, in the party's own diary (Diary.js).
+    if (window.Diary && actor) {
+      window.Diary.onRomance(actor.name(), npcName, id, landed);
+    }
+
     this._romanceMode = false;
     this._activeTab   = 'chat';
     this._chatHistory.push({ role: 'player', text: playerLine });
@@ -3144,7 +3439,12 @@
       const dist = Math.round(Math.sqrt(dx * dx + dy * dy));
       // A door is listed (and asked about) by where it leads, never by the
       // editor name; people already carry the name the player knows them by.
-      if (_DIR_DOOR_RE.test(name)) doors.push({ name: _destinationName(name), dx, dy, dist });
+      // A Note on the event itself ("Dirty Inn") overrides the parsed name,
+      // matching MapLevelDisplay's door-name override on the arrival banner.
+      if (_DIR_DOOR_RE.test(name)) {
+        const noteOverride = (data?.note || '').trim();
+        doors.push({ name: noteOverride || _destinationName(name), dx, dy, dist });
+      }
       else if (_DIR_PERSON_RE.test(data?.note || '') || _getProfile(name)) people.push({ name, dx, dy, dist });
     }
     // Nearest first, then folded by name: every way into the same place is one
@@ -3430,6 +3730,10 @@
       rightHTML = tab === 'members' ? this._buildFactionMembersHTML(view, T)
         : tab === 'events' ? this._buildEntityEventsHTML(view, T)
         : this._buildFactionOverviewHTML(view, T);
+    } else if (view.type === 'party') {
+      rightHTML = this._buildPartyOverviewHTML(view, T);
+    } else if (view.type === 'ideology') {
+      rightHTML = this._buildIdeologyOverviewHTML(view, T);
     } else {
       rightHTML = this._buildEntityEventsHTML(view, T);
     }
@@ -3443,6 +3747,7 @@
     const kickerMap = {
       nation: T.wikiNation, power: T.wikiHyperpower, leader: T.wikiLeader,
       artifact: T.wikiArtifact, faction: T.wikiFaction,
+      party: T.wikiPoliticalParty, ideology: T.wikiIdeology,
     };
     const kicker = kickerMap[view.type] || emblem.kicker;
     const initials = String(view.name || '?').split(/\s+/).map(w => w[0]).filter(Boolean).slice(0, 2).join('');
@@ -3500,8 +3805,9 @@
       const data = view.data;
       if (data) {
         if (Array.isArray(data.params)) {
+          const PL = _paramLabels();
           data.params.forEach((v, i) => {
-            if (v) sideHTML += _statBarRow(PARAM_LABELS[i], v, 255, '#6a3aa0');
+            if (v) sideHTML += _statBarRow(PL[i], v, 255, '#6a3aa0');
           });
         }
         sideHTML += `<hr class="npc-r-sep">` +
@@ -3531,6 +3837,23 @@
         sideHTML += `<hr class="npc-r-sep">` +
           `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', view.parentPower)}</div>`;
       }
+    } else if (view.type === 'party') {
+      const p = view.party;
+      sideHTML = `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', view.power.name)}</div>`;
+      if (view.ideology) sideHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65;">${_escapeHtml(T.ideologyLbl)}:</span>&nbsp;${_wikiLink('ideology', view.ideology.id, _ideologyLabel(view.ideology.id))}</div>`;
+      if (view.leader) sideHTML += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65;">${_escapeHtml(T.leaderOfPartyLbl)}:</span>&nbsp;${_wikiLink('leader', view.leader.name)}</div>`;
+      sideHTML += `<hr class="npc-r-sep">`;
+      if (p.foundedYear != null) sideHTML += _kvRow(220, T.foundedLbl, `${p.foundedYear}`);
+      if (p.lastShare != null) sideHTML += _kvRow(216, T.lastShareLbl, `${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}`);
+      sideHTML += _kvRow(314, T.fundsLbl, _euros(p.funds));
+    } else if (view.type === 'ideology') {
+      const ax = view.ideo?.axes || {};
+      sideHTML =
+        _axisBarRow(T.axisEcon, ax.econ, '#b8860b') +
+        _axisBarRow(T.axisAuth, ax.auth, '#c02020') +
+        _axisBarRow(T.axisTrad, ax.trad, '#6a3aa0') +
+        _axisBarRow(T.axisMil,  ax.mil,  '#4070d0') +
+        _axisBarRow(T.axisMyst, ax.myst, '#2a6e4a');
     }
 
     let deadHTML = '';
@@ -3669,7 +3992,8 @@
       html += _kvRow(186, T.government, _escapeHtml(live.govType));
       if (head) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65;">${_escapeHtml(live.headTitle)}:</span>&nbsp;${_wikiLink('leader', head.name)}<span style="opacity:0.5;">&nbsp;(${T.approval} ${Math.round(head.approval)}%)</span></div>`;
       else html += _kvRow(215, live.headTitle, _escapeHtml(T.vacant));
-      if (ruling) html += _kvRow(187, T.rulingParty, _escapeHtml(ruling.name) + (live.coalition?.length > 1 ? ` <span style="opacity:0.55;">(+${live.coalition.length - 1})</span>` : ''));
+      if (ruling) html += _kvRow(187, T.rulingParty, _wikiLink('party', ruling.id, ruling.name) + (live.coalition?.length > 1 ? ` <span style="opacity:0.55;">(+${live.coalition.length - 1})</span>` : ''));
+      else if (head) html += _kvRow(187, T.rulingParty, _escapeHtml(T.independent));
       html += _kvRow(216, T.seats, `${live.seats}, ${_escapeHtml(live.legislature)}`);
       const dateOf = window.NPCPolitics?.dateOf;
       if (live.nextElectionMinute != null && dateOf) html += _kvRow(220, T.nextElection, _escapeHtml(dateOf(live.nextElectionMinute)));
@@ -3678,7 +4002,7 @@
         html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.partiesLbl}</div>`;
         for (const p of live.parties) {
           const leader = live.politicians?.[p.leaderId];
-          html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span>${_escapeHtml(p.name)}</span><span style="opacity:0.55;">&nbsp;— ${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}</span>${
+          html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span>${_wikiLink('party', p.id, p.name)}</span><span style="opacity:0.55;">&nbsp;— ${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}</span>${
             leader ? `<span style="opacity:0.55;">&nbsp;·&nbsp;</span>${_wikiLink('leader', leader.name)}` : ''
           }</div>`;
         }
@@ -3734,11 +4058,12 @@
       const deadList = hm?.getDeadLeaders?.() || [];
       html += `<div class="npc-routine-sub-hdr">${T.leadersTab}</div>`;
       html += histLeaders.map(l => {
-        const isDead = deadList.includes(l.name) || !!deaths[l.name];
+        const isDead = _wikiIsDead(deadList.includes(l.name) || !!deaths[l.name]);
+        const deathDate = _wikiDeathDate(deaths[l.name]?.date);
         return `
         <div class="npc-life-row">
           <span class="npc-life-time">${_escapeHtml(`${l.years?.[0] ?? '?'}–${l.years?.[1] ?? '?'}`)}</span>
-          <span>${_wikiLink('leader', l.name)}${isDead ? ` <span style="color:#8b1010;">✝${deaths[l.name]?.date ? ' ' + _escapeHtml(deaths[l.name].date) : ''}</span>` : ''}
+          <span>${_wikiLink('leader', l.name)}${isDead ? ` <span style="color:#8b1010;">✝${deathDate ? ' ' + _escapeHtml(deathDate) : ''}</span>` : ''}
             <span style="opacity:0.6;">— ${_escapeHtml(l.ideology || '?')}</span></span>
         </div>`;
       }).join('');
@@ -3751,7 +4076,10 @@
         .slice(0, 40);
       if (pols.length) {
         html += `<div class="npc-routine-sub-hdr">${T.politicalClass}</div><div class="npc-tag-wrap">`;
-        html += pols.map(p => `<span class="npc-tag"${p.alive ? '' : ' style="opacity:0.55;"'}>${_wikiLink('leader', p.name)}${p.alive ? '' : ' ✝'}</span>`).join('');
+        html += pols.map(p => {
+          const dead = _wikiIsDead(!p.alive);
+          return `<span class="npc-tag"${dead ? ' style="opacity:0.55;"' : ''}>${_wikiLink('leader', p.name)}${dead ? ' ✝' : ''}</span>`;
+        }).join('');
         html += `</div>`;
       }
     }
@@ -3779,7 +4107,8 @@
       }
       html += `<hr class="npc-r-sep">`;
       html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', power.name)}</div>`;
-      if (party) html += _kvRow(187, T.partyLbl, _escapeHtml(party.name));
+      if (party) html += _kvRow(187, T.partyLbl, _wikiLink('party', party.id, party.name));
+      else if (p.office) html += _kvRow(187, T.partyLbl, _escapeHtml(T.independent));
       if (p.office) html += _kvRow(215, T.status, _escapeHtml(polOffice));
       const age = window.NPCPolitics?.politicianAgeOf?.(p);
       if (age != null && !view.death) html += _kvRow(84, T.ageLbl, `${age}`);
@@ -3834,7 +4163,8 @@
 
     html += `<div class="npc-sec-hdr" style="margin-top:8px;">${T.stats}</div>`;
     if (Array.isArray(data?.params)) {
-      const parts = data.params.map((v, i) => v ? `${PARAM_LABELS[i]} +${v}` : null).filter(Boolean);
+      const PL = _paramLabels();
+      const parts = data.params.map((v, i) => v ? `${PL[i]} +${v}` : null).filter(Boolean);
       html += `<div class="npc-stats-row">${parts.length ? _escapeHtml(parts.join(' · ')) : '—'}</div>`;
     }
     html += `<div class="npc-ident-row" style="margin-top:5px;">${_iconSpan(314, 17)}<span>${T.valueLbl}: <strong>${_euros(data?.price)}</strong></span></div>`;
@@ -3884,7 +4214,7 @@
         const deadList = hm?.getDeadLeaders?.() || [];
         html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.pastLeaders}</div>`;
         html += leaders.map(l => {
-          const isDead = deadList.includes(l.name) || !!deaths[l.name];
+          const isDead = _wikiIsDead(deadList.includes(l.name) || !!deaths[l.name]);
           return `<div class="npc-life-row">
             <span class="npc-life-time">${_escapeHtml(`${l.years?.[0] ?? '?'}–${l.years?.[1] ?? '?'}`)}</span>
             <span>${_wikiLink('leader', l.name)}${isDead ? ' <span style="color:#8b1010;">✝</span>' : ''} <span style="opacity:0.6;">— ${_escapeHtml(l.ideology || '?')}</span></span>
@@ -3907,6 +4237,60 @@
     html += `<div class="npc-tag-wrap">` +
       view.members.map(n => `<span class="npc-tag">${_iconSpan(82, 15)}${_wikiLink('npc', n)}</span>`).join('') +
       `</div>`;
+    return html;
+  };
+
+  // ── Political party ─────────────────────────────────────────────────────────
+
+  Scene_NPCEmpathize.prototype._buildPartyOverviewHTML = function (view, T) {
+    const p = view.party;
+    const power = view.power;
+    let html = `<div class="npc-profile-name">${_escapeHtml(view.name)}</div>`;
+    const sub = [power.name, _ideologyLabel(view.ideology?.id)].filter(Boolean);
+    html += `<div class="npc-profile-sub">${_escapeHtml(sub.join(' · '))}</div>`;
+    if (power.rulingPartyId === p.id) {
+      html += `<div class="npc-dead-badge" style="background:#2a6e4a;">${_escapeHtml(T.rulingParty)}</div>`;
+    }
+    html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.overview}</div>`;
+    if (p.country) html += _kvRow(97, T.originLbl, _escapeHtml(p.country));
+    if (view.leader) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65;">${_escapeHtml(T.leaderOfPartyLbl)}:</span>&nbsp;${_wikiLink('leader', view.leader.name)}</div>`;
+    if (p.foundedYear != null) html += _kvRow(220, T.foundedLbl, `${p.foundedYear}`);
+    html += _kvRow(216, T.lastShareLbl, `${p.lastShare ?? 0}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}`);
+    html += _kvRow(314, T.fundsLbl, _euros(p.funds));
+
+    if (view.ideology) {
+      html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.platformLbl}</div>`;
+      const ax = p.platform || {};
+      html += _axisBarRow(T.axisEcon, ax.econ, '#b8860b')
+        + _axisBarRow(T.axisAuth, ax.auth, '#c02020')
+        + _axisBarRow(T.axisTrad, ax.trad, '#6a3aa0')
+        + _axisBarRow(T.axisMil,  ax.mil,  '#4070d0')
+        + _axisBarRow(T.axisMyst, ax.myst, '#2a6e4a');
+    }
+    return html;
+  };
+
+  // ── Ideology ─────────────────────────────────────────────────────────────────
+
+  Scene_NPCEmpathize.prototype._buildIdeologyOverviewHTML = function (view, T) {
+    let html = `<div class="npc-profile-name">${_escapeHtml(view.name)}</div><hr class="npc-r-sep">`;
+    html += `<div class="npc-sec-hdr">${T.heldByLbl} (${view.parties.length})</div>`;
+    if (!view.parties.length) {
+      html += `<p style="opacity:0.6;font-style:italic;margin-top:8px;">${_escapeHtml(T.noParties)}</p>`;
+    } else {
+      // Grouped by hyperpower, so "multiple parties, one ideology" reads as
+      // the pattern it is rather than a flat unsorted list.
+      const byPower = new Map();
+      for (const { party, powerName } of view.parties) {
+        if (!byPower.has(powerName)) byPower.set(powerName, []);
+        byPower.get(powerName).push(party);
+      }
+      for (const [powerName, parties] of byPower) {
+        html += `<div class="npc-ident-row" style="margin-top:8px;">${_iconSpan(97, 17)}${_wikiLink('power', powerName)}</div><div class="npc-tag-wrap">`;
+        html += parties.map(p => `<span class="npc-tag">${_wikiLink('party', p.id, p.name)}</span>`).join('');
+        html += `</div>`;
+      }
+    }
     return html;
   };
 
@@ -3942,13 +4326,15 @@
   // ============================================================================
 
   const WIKI_CATEGORIES = [
-    { id: 'party',     glyph: '', labelKey: 'wikiParty' },
-    { id: 'people',    glyph: '☺', labelKey: 'wikiPeople' },
-    { id: 'leaders',   glyph: '☻', labelKey: 'wikiLeaders' },
-    { id: 'powers',    glyph: '♛', labelKey: 'wikiHyperpowers' },
-    { id: 'nations',   glyph: '⚑', labelKey: 'wikiNations' },
-    { id: 'artifacts', glyph: '✦', labelKey: 'wikiArtifacts' },
-    { id: 'factions',  glyph: '⚜', labelKey: 'wikiFactions' },
+    { id: 'party',            glyph: '', labelKey: 'wikiParty' },
+    { id: 'people',           glyph: '☺', labelKey: 'wikiPeople' },
+    { id: 'leaders',          glyph: '☻', labelKey: 'wikiLeaders' },
+    { id: 'powers',           glyph: '♛', labelKey: 'wikiHyperpowers' },
+    { id: 'nations',          glyph: '⚑', labelKey: 'wikiNations' },
+    { id: 'artifacts',        glyph: '✦', labelKey: 'wikiArtifacts' },
+    { id: 'factions',         glyph: '⚜', labelKey: 'wikiFactions' },
+    { id: 'politicalParties', glyph: '⚖', labelKey: 'wikiPoliticalParties' },
+    { id: 'ideologies',       glyph: '✪', labelKey: 'wikiIdeologies' },
   ];
 
   // Past party members (NPCSystemParty's removeActor snapshots), excluding
@@ -3977,6 +4363,8 @@
       nations:   Wiki.listNations().length,
       artifacts: Wiki.listArtifacts().length,
       factions:  Wiki.listFactionNames().length,
+      politicalParties: Wiki.listPartyNames().length,
+      ideologies:       Wiki.listIdeologyNames().length,
     };
 
     // ── Category grid ─────────────────────────────────────────────────────────
@@ -4008,12 +4396,32 @@
         // Current members open in actor mode, full profile *and* the chat
         // tab, always available while they travel with you. Past members
         // open remotely by name (their NPC profile lives on in the society).
+        // Where this party was last written into the world folder, which is
+        // where any other savegame of the world would find them standing
+        // (NPCSystem.js, VisitingParties). Named as a place, not as a tile.
+        const VP = window.PartyPresence;
+        const ownLastSeen = VP?.lastSeenName?.(VP.currentSlot?.() ?? 0) ?? null;
+        const seenLine = where => (where
+          ? ` · ${_escapeHtml(T.partyLastSeen)} ${_escapeHtml(where)}`
+          : '');
         const current = ($gameParty?.members() ?? []);
         const curTiles = current.map(a => `
           <div class="npc-wiki-entry" onmousedown="event.stopPropagation();window.NPCEmpathize.openForActor(${a.actorId()})">
             <span class="npc-wiki-entry-name">${_escapeHtml(a.name())}</span>
-            <span class="npc-wiki-entry-sub">${_escapeHtml(T.partyCurrentMember)} · ${_escapeHtml(a.currentClass()?.name || '')} Lv.${a.level}</span>
+            <span class="npc-wiki-entry-sub">${_escapeHtml(T.partyCurrentMember)} · ${_escapeHtml(a.currentClass()?.name || '')} Lv.${a.level}${seenLine(ownLastSeen)}</span>
           </div>`).join('');
+        // The other playthroughs of this world, and where each was left. They
+        // are people this party can actually meet, so they are listed here with
+        // the same "last seen" line rather than being invisible until walked
+        // into; the tile opens their profile by name like any other.
+        const visitorTiles = (VP?.otherParties?.() ?? []).map(party => {
+          const where = VP.lastSeenName(party.slot);
+          return (party.members || []).map(m => `
+          <div class="npc-wiki-entry" onmousedown="event.stopPropagation();window.NPCEmpathize.openByName(decodeURIComponent('${encodeURIComponent(String(m.name))}'))">
+            <span class="npc-wiki-entry-name">${_escapeHtml(m.name)}</span>
+            <span class="npc-wiki-entry-sub">${_escapeHtml(T.partyOtherMember)}${party.leaderName ? ` (${_escapeHtml(party.leaderName)})` : ''}${seenLine(where)}</span>
+          </div>`).join('');
+        }).join('');
         // Former members carry how they left (NPCSystemParty's roster history):
         // retired to a dossier, dismissed, or dead, with the date it happened.
         const pastTiles = _pastPartyMembers().map(p => {
@@ -4046,7 +4454,7 @@
             <span class="npc-wiki-entry-sub">${_escapeHtml(typeLabel)}${activeSuffix} · Lv.${pet.level || 1}</span>
           </div>`;
         }).join('');
-        tiles = curTiles + pastTiles + petTiles;
+        tiles = curTiles + pastTiles + petTiles + visitorTiles;
         break;
       }
       case 'people':
@@ -4086,6 +4494,22 @@
         tiles = Wiki.listFactionNames().map(n =>
           _wikiEntryTile('faction', n, `⚜ ${_escapeHtml(n)}`, '')
         ).join('');
+        break;
+      case 'politicalParties':
+        tiles = Wiki.listPartyNames().map(p => {
+          const ideoLabel = _ideologyLabel(p.ideologyId);
+          const sub = [p.powerName, ideoLabel].filter(Boolean).join(' · ');
+          return _wikiEntryTile('party', p.id, `⚖ ${_escapeHtml(p.name)}`, _escapeHtml(sub));
+        }).join('');
+        break;
+      case 'ideologies':
+        tiles = Wiki.listIdeologyNames().map(e => {
+          const label = window.T ? window.T(e.name) : e.id;
+          const sub = e.partyCount
+            ? T.n('Empathize.ideologyPartyCount', e.partyCount, { n: e.partyCount })
+            : T.noParties;
+          return _wikiEntryTile('ideology', e.id, `✪ ${_escapeHtml(label)}`, _escapeHtml(sub));
+        }).join('');
         break;
     }
     if (!tiles) {

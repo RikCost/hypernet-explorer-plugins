@@ -1,0 +1,9 @@
+{
+  "noRooms": "NO ROOMS AVAILABLE TA RENT!",
+  "bookedBy": "ALREADY BOOKED BY {name}'S PARTY",
+  "someoneElse": "ANOTHER PARTY",
+  "ui": {
+    "rooms": "ROOMS",
+    "hint": "↑↓ NAVIGATE · OK TA RENT · ESC TA CLOSE"
+  }
+}

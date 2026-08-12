@@ -816,14 +816,14 @@
     ]
   },
   "stat": {
-    "0": "HP max",
-    "1": "MP max",
-    "2": "Attacco",
-    "3": "Difesa",
-    "4": "Magia",
-    "5": "Dif. Magica",
-    "6": "Agilità",
-    "7": "Fortuna"
+    "0": "HP",
+    "1": "MP",
+    "2": "FRZ",
+    "3": "COS",
+    "4": "INT",
+    "5": "SAG",
+    "6": "DES",
+    "7": "PSI"
   },
   "element": {
     "3": "Fuoco",
@@ -871,7 +871,7 @@
     "critRate": "+{bonus}% di probabilità di critico",
     "hitsTwice": "Colpisce due volte per attacco",
     "resistance": "{value}% di resistenza a {what}",
-    "tpGain": "+{bonus}% di TP guadagnati dalle azioni",
+    "tpGain": "+{bonus}% di AP guadagnati dalle azioni",
     "autoState": "{state} automatico all'inizio della battaglia"
   },
   "flavor": {
@@ -884,5 +884,15 @@
     "armor2": "Una protezione straordinaria di fama leggendaria.",
     "armor3": "Un'armatura divina che concede una protezione impareggiabile."
   },
-  "articleDefault": "Il "
+  "articleDefault": "Il ",
+  "sacrifice": {
+    "blockedInBattle": "Il rituale non può essere compiuto nel calore della battaglia.",
+    "noEligible": "Non c'è nessuno che possa essere destinato al rituale.",
+    "prompt": "Scegli chi sarà sacrificato per forgiare l'arma. Non si può tornare indietro.",
+    "cancel": "Annulla",
+    "noSlots": "Il rituale fallisce: non resta alcun vaso per l'arma.",
+    "namePattern": "{weapon} di {name}",
+    "descLine": "Forgiata dal corpo sacrificato di {name}, un tempo di livello {level}.",
+    "result": "{name} viene consumato dal rituale. {weapon} viene forgiata dai suoi resti."
+  }
 }

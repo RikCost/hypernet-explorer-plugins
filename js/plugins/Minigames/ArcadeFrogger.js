@@ -215,7 +215,7 @@
                     align: 'center'
                 });
             } else {
-                this._instructionText = new PIXI.Text('USE ARROWS TO MOVE GOLDEN @', {
+                this._instructionText = new PIXI.Text('GOLDEN @ IS THE FROG', {
                     fontFamily: font,
                     fontSize: 14,
                     fill: '#FFD700',

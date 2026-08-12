@@ -32,9 +32,9 @@
     "dimensional": ""
   },
   "defaultDestination": "안트베르펀",
-  "trainStationTitle": "기차역",
-  "stationBadge": "",
-  "stationLabel": "",
+  "hubTitle": "",
+  "hubBadge": "",
+  "hubLabel": "",
   "fuelRate": "",
   "rateMultiplier": "",
   "editing": "",

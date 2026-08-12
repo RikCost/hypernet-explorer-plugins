@@ -38,6 +38,8 @@
             this.createDetailsWindow();
 
             this._lastIndex = -1;
+            this._archiveMode = "timeline";   // i18n-ignore: shelf id
+            this._diseaseIndex = 0;
 
             this._historyWindow.activate();
             this._historyWindow.select(0);
@@ -62,6 +64,21 @@
                             : 2;
                 }
                 this.popScene();
+                return;
+            }
+
+            if (this._archiveMode === "diseases") {
+                const rows = this.archiveDiseases();
+                if (!rows.length) return;
+                const step = (Input.isTriggered('down') || Input.isRepeated('down')) ? 1
+                    : ((Input.isTriggered('up') || Input.isRepeated('up')) ? -1 : 0);
+                if (!step) return;
+                const next = Math.max(0, Math.min((this._diseaseIndex || 0) + step, rows.length - 1));
+                if (next === this._diseaseIndex) return;
+                this._diseaseIndex = next;
+                SoundManager.playCursor();
+                const box = this._uiContainer || document.getElementById("history-container");
+                if (box) this.renderDiseaseLibrary(box);
                 return;
             }
 
@@ -171,6 +188,83 @@
             }
         }
 
+        // The archive keeps two shelves. The timeline is the century that was
+        // simulated; the library is every illness the world knows, dossier and
+        // remedies included, which is the one place a player can look a disease
+        // up before ever meeting it. Switching shelf rebuilds the spread, since
+        // the two are laid out differently.
+        setArchiveMode(mode) {
+            if (this._archiveMode === mode) return;
+            this._archiveMode = mode;
+            this._diseaseIndex = 0;
+            this._lastIndex = -1;
+            this._uiSpread = null;
+            const container = this._uiContainer || document.getElementById("history-container");
+            if (container) container.innerHTML = "";
+            SoundManager.playCursor();
+            this.syncUIHistoryState();
+        }
+
+        archiveDiseases() {
+            const api = window.DiseaseSystem;
+            if (!api || !api.all) return [];
+            if (!this._diseaseList || !this._diseaseList.length) {
+                this._diseaseList = api.all().slice().sort((a, b) => a.name.localeCompare(b.name));
+            }
+            return this._diseaseList;
+        }
+
+        renderDiseaseLibrary(container) {
+            const api = window.DiseaseSystem;
+            const rows = this.archiveDiseases();
+            const at = Math.max(0, Math.min(this._diseaseIndex || 0, rows.length - 1));
+            const selected = rows[at];
+            const listHTML = rows.length ? rows.map((d, idx) => `
+                <div class="event-card ${idx === at ? "focused" : ""}" data-disease-idx="${idx}"
+                     style="border-left:5px solid var(--border-muted-focus, #8b5a2b);">
+                    <div class="card-header">
+                        <span class="card-date">${d.name}</span>
+                        <span class="card-badge">${T('Diseases.category.' + d.category)}</span>
+                    </div>
+                    <div class="card-desc">${d.desc}</div>
+                </div>
+            `).join("") : `<div style="text-align:center; font-style:italic; margin-top:50px;">${T('Diseases.ui.noLibrary')}</div>`;
+
+            const dossierHTML = selected && api && api.diseaseDossierHTML ? `
+                <div class="cc-dossier-card">
+                    <h3 class="cc-subheader">${selected.name}</h3>
+                    ${api.diseaseDossierHTML(selected.id)}
+                </div>` : "";
+
+            container.innerHTML = `
+                <div class="cc-pockets-spread" style="max-width:1400px; max-height:900px;">
+                    <div class="cc-page cc-page-left" style="gap:4px;">
+                        <h2 class="cc-header-gothic" style="font-size:1.6rem; margin-bottom:10px;">${T('Diseases.ui.library')}</h2>
+                        <div id="history-timeline-list">${listHTML}</div>
+                    </div>
+                    <div class="cc-page cc-page-right">
+                        <div class="dossier-wrapper">${dossierHTML}</div>
+                        <div class="cc-button-panel">
+                            <button class="cc-btn-treaty" id="history-mode-btn">${T('Diseases.ui.showTimeline')}</button>
+                            <button class="cc-btn-treaty confirm" id="history-continue-btn">${T('History.ui.continue')}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            this._uiSpread = container.querySelector(".cc-pockets-spread");
+            container.querySelectorAll("[data-disease-idx]").forEach(card => {
+                card.addEventListener("click", () => {
+                    this._diseaseIndex = parseInt(card.getAttribute("data-disease-idx"), 10);
+                    SoundManager.playCursor();
+                    this.renderDiseaseLibrary(container);
+                });
+            });
+            const modeBtn = container.querySelector("#history-mode-btn");
+            if (modeBtn) modeBtn.addEventListener("click", () => this.setArchiveMode("timeline"));
+            const contBtn = container.querySelector("#history-continue-btn");
+            if (contBtn) contBtn.addEventListener("click", () => { SoundManager.playOk(); this.popScene(); });
+        }
+
         syncUIHistoryState() {
             // Cache the container + spread element refs so the steady-state path
             // (index unchanged) does zero DOM queries. Re-resolve if either has
@@ -181,6 +275,11 @@
                 this._uiSpread = null;
             }
             if (!container) return;
+
+            if (this._archiveMode === "diseases") {
+                if (!this._uiSpread || !this._uiSpread.isConnected) this.renderDiseaseLibrary(container);
+                return;
+            }
 
             const currentIndex = this._historyWindow.index();
             let existingSpread = this._uiSpread;
@@ -211,7 +310,8 @@
                     'scientific': { color: 'var(--text-text-alt-16, #3d5e75)',           bg: 'var(--bg-bg-alt-6-translucent-12, rgba(61,94,117,0.05))' },
                     'disaster':   { color: 'var(--text-secondary-active, #822d2d)',      bg: 'var(--shadow-soft-active-translucent-25, rgba(130,45,45,0.05))' },
                     'criminal':   { color: 'var(--text-text-alt-5-hover, #b05c3c)',      bg: 'var(--border-primary-hover-translucent-15, rgba(176,92,60,0.05))' },
-                    'artifact':   { color: '#a07820',                                    bg: 'rgba(160,120,32,0.07)' }
+                    'artifact':   { color: '#a07820',                                    bg: 'rgba(160,120,32,0.07)' },
+                    'diplomatic': { color: 'var(--text-text-alt-16, #3d5e75)',           bg: 'var(--bg-bg-alt-6-translucent-12, rgba(61,94,117,0.05))' }
                 };
                 return map[category] || { color: 'var(--border-muted-focus, #8b5a2b)', bg: 'var(--border-secondary-hover-translucent-15, rgba(139,90,43,0.05))' };
             }
@@ -369,6 +469,7 @@
                             ${standingsHTML}
                             <div class="cc-button-panel">
                                 <button class="cc-btn-treaty" id="history-back-btn">${backLabel}</button>
+                                <button class="cc-btn-treaty" id="history-mode-btn">${T('Diseases.ui.showLibrary')}</button>
                                 <button class="cc-btn-treaty confirm" id="history-continue-btn">${continueLabel}</button>
                             </div>
                         </div>
@@ -390,6 +491,9 @@
                         }
                     });
                 });
+
+                const modeBtn = container.querySelector("#history-mode-btn");
+                if (modeBtn) modeBtn.addEventListener("click", () => this.setArchiveMode("diseases"));
 
                 const backBtn = container.querySelector("#history-back-btn");
                 if (backBtn) {

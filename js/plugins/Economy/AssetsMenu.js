@@ -288,6 +288,33 @@
       });
     }
 
+    // --- Diplomatic posts (ONUAssembly.js seats at the assembly) ---
+    // A seat is not a thing the party owns, it is a wage a member draws, so it
+    // is listed at its yearly value and never counted as a saleable holding.
+    if (window.ONUAssembly && typeof window.ONUAssembly.listPosts === 'function') {
+      const posts = window.ONUAssembly.listPosts() || [];
+      posts.forEach(p => {
+        assets.push({
+          cat: T('Assets.ui.diplomacy'),
+          name: T('Assets.ui.diplomatFor', { faction: p.factionName }),
+          sub: `${p.actorName} • ${p.standingLabel}`,
+          value: p.weeklyPay * 52,
+          bought: null,
+          color: '#4f6b8a',
+          diplomat: p,
+          details: [
+            { label: T('Assets.ui.delegate'), val: p.actorName },
+            { label: T('Assets.ui.delegation'), val: p.factionName },
+            ...(p.leader ? [{ label: T('Assets.ui.headOfDelegation'), val: p.leader }] : []),
+            ...(p.sg ? [] : [{ label: T('Assets.ui.standing'), val: `${p.standingLabel} (${p.standing})` }]),
+            { label: T('Assets.ui.weeklyStipend'), val: euro(p.weeklyPay) },
+            { label: T('Assets.ui.annualValue'), val: euro(p.weeklyPay * 52) },
+            { label: T('Assets.ui.weeksServed'), val: String(p.weeksServed) },
+          ],
+        });
+      });
+    }
+
     // --- Bank deposit ---
     if ($gameSystem && typeof $gameSystem.getBankBalance === 'function') {
       const bal = $gameSystem.getBankBalance();
@@ -340,7 +367,8 @@
     create() {
       super.create();
       this._selIndex = 0;
-      this._btnIndex = -1;   // cursor over the selected livestock's action buttons
+      this._btnIndex = -1;   // cursor over the selected asset's action buttons
+      this._confirmResign = null; // actorId whose seat is one press from being given up
       this._assets = [];
       this._lastOil = 0;
       this._lastSouls = 0;
@@ -497,7 +525,7 @@
         ${a.animal ? this.buildAnimalPortraitHTML(a.animal) : ''}
         <div class="inspect-section-title">${T('Assets.ui.pocketsDetail')}</div>
         ${rows}
-        ${a.animal ? this.buildAnimalActionsHTML(a.animal) : ''}`;
+        ${this.buildAssetActionsHTML(a)}`;
     }
 
     // Livestock gets its sprite drawn above the spec rows.
@@ -507,36 +535,53 @@
         width="128" height="104"></canvas>`;
     }
 
-    // Livestock is the one asset class the player can act on from here:
-    // collect what it has made, sell it back, or take it out of the portfolio
-    // for good by making it a pet.
-    // The action buttons the selected livestock offers, in the order drawn.
-    // Both the markup and the keyboard/pad cursor read this one list.
-    animalButtons(animal) {
-      const it = isItalian();
-      return [
-        { key: 'collect', cls: '', label: T('Assets.ui.collect'), enabled: animal.hasReady },
-        { key: 'sell', cls: ' ag-action-sell', label: `${T('Assets.ui.sell')} ${euro(animal.value)}`, enabled: true },
-        { key: 'pet', cls: ' ag-action-pet', label: T('Assets.ui.makePet'), enabled: true },
-      ];
+    // Two asset classes can be acted on from here: livestock (collect what it
+    // has made, sell it back, or take it out of the portfolio for good by
+    // making it a pet) and a diplomatic seat (resign it). The buttons the
+    // selected asset offers are declared once, in the order drawn: the markup,
+    // the keyboard cursor and the pad confirm all read this one list.
+    assetButtons(asset) {
+      if (!asset) return [];
+      if (asset.animal) {
+        const animal = asset.animal;
+        return [
+          { key: 'collect', cls: '', label: T('Assets.ui.collect'), enabled: animal.hasReady },
+          { key: 'sell', cls: ' ag-action-sell', label: `${T('Assets.ui.sell')} ${euro(animal.value)}`, enabled: true },
+          { key: 'pet', cls: ' ag-action-pet', label: T('Assets.ui.makePet'), enabled: true },
+        ];
+      }
+      if (asset.diplomat) {
+        // Resigning is destructive and costly, so it asks once first.
+        const armed = this._confirmResign === asset.diplomat.actorId;
+        return [
+          {
+            key: 'resign',
+            cls: ' ag-action-sell',
+            label: armed ? T('Assets.ui.resignConfirm') : T('Assets.ui.resignPost'),
+            enabled: true,
+          },
+        ];
+      }
+      return [];
     }
 
-    buildAnimalActionsHTML(animal) {
-      const html = this.animalButtons(animal).map((b, i) => {
+    buildAssetActionsHTML(asset) {
+      const btns = this.assetButtons(asset);
+      if (!btns.length) return '';
+      const html = btns.map((b, i) => {
         const focus = i === this._btnIndex ? ' focused' : '';
         const dis = b.enabled ? '' : ' disabled';
         const click = b.enabled
-          ? ` onclick="SceneManager._scene.runAnimalAction('${b.key}', ${animal.uid})"` : '';
+          ? ` onclick="SceneManager._scene.runAssetAction('${b.key}')"` : '';
         return `<div class="ag-action-btn${b.cls}${focus}${dis}" data-btn="${i}"${click}>${b.label}</div>`;
       }).join('');
       return `<div class="ag-actions">${html}</div>`;
     }
 
-    // Moves the button cursor over the enabled buttons of the selected animal.
-    moveAnimalButton(delta) {
+    // Moves the button cursor over the enabled buttons of the selected asset.
+    moveAssetButton(delta) {
       const a = this._assets[this._selIndex];
-      if (!a || !a.animal) return false;
-      const btns = this.animalButtons(a.animal);
+      const btns = this.assetButtons(a);
       const enabled = btns.map((b, i) => (b.enabled ? i : -1)).filter(i => i >= 0);
       if (enabled.length === 0) return false;
       const at = enabled.indexOf(this._btnIndex);
@@ -545,11 +590,11 @@
         : enabled[(at + delta + enabled.length) % enabled.length];
       this._btnIndex = next;
       SoundManager.playCursor();
-      this.refreshAnimalButtons();
+      this.refreshAssetButtons();
       return true;
     }
 
-    refreshAnimalButtons() {
+    refreshAssetButtons() {
       if (!this._container) return;
       this._container.querySelectorAll('.ag-action-btn').forEach(el => {
         el.classList.toggle('focused', Number(el.dataset.btn) === this._btnIndex);
@@ -557,19 +602,47 @@
     }
 
     // Fires whichever button the cursor is on (pad / keyboard confirm).
-    triggerAnimalButton() {
+    triggerAssetButton() {
       const a = this._assets[this._selIndex];
-      if (!a || !a.animal) return false;
-      const btn = this.animalButtons(a.animal)[this._btnIndex];
+      const btn = this.assetButtons(a)[this._btnIndex];
       if (!btn || !btn.enabled) return false;
-      this.runAnimalAction(btn.key, a.animal.uid);
+      this.runAssetAction(btn.key);
       return true;
     }
 
-    runAnimalAction(key, uid) {
-      if (key === 'collect') this.collectAnimal(uid);
-      else if (key === 'sell') this.sellAnimal(uid);
-      else if (key === 'pet') this.makeAnimalPet(uid);
+    runAssetAction(key) {
+      const a = this._assets[this._selIndex];
+      if (!a) return;
+      if (a.animal) {
+        const uid = a.animal.uid;
+        if (key === 'collect') this.collectAnimal(uid);
+        else if (key === 'sell') this.sellAnimal(uid);
+        else if (key === 'pet') this.makeAnimalPet(uid);
+        return;
+      }
+      if (a.diplomat && key === 'resign') this.resignPost(a.diplomat);
+    }
+
+    // Giving up a seat costs a great deal of standing, so the first press only
+    // arms the button and the second one goes through with it.
+    resignPost(post) {
+      if (this._confirmResign !== post.actorId) {
+        this._confirmResign = post.actorId;
+        SoundManager.playCursor();
+        const held = this._btnIndex;
+        this.refreshDOM();
+        this._btnIndex = held;
+        this.refreshAssetButtons();
+        return;
+      }
+      this._confirmResign = null;
+      if (window.ONUAssembly && window.ONUAssembly.resign(post.actorId)) {
+        SoundManager.playOk();
+      } else {
+        SoundManager.playBuzzer();
+      }
+      this._btnIndex = -1;
+      this.refreshDOM();
     }
 
     // Draws the sprite of the selected animal, if the detail card shows one.
@@ -693,6 +766,9 @@
       SoundManager.playCursor();
       this._selIndex = idx;
       this._btnIndex = -1;   // a new asset starts with no button focused
+      // Moving off an armed resign disarms it: the warning belongs to the row
+      // it was raised on, not to the menu.
+      this._confirmResign = null;
       // Only the detail panel needs to change on selection.
       const detail = this._container && this._container.querySelector('#assets-detail');
       if (detail) { detail.innerHTML = this.buildDetailHTML(); this.paintAnimalSprite(); }
@@ -721,11 +797,11 @@
       else if (Input.isRepeated('up') || this._wasdQueued.up) { this.moveSelection(-1); handled = true; }
       this._wasdQueued.up = this._wasdQueued.down = false;
 
-      // Livestock is the only asset with actions: left/right walks its
-      // Collect / Sell / Make Pet buttons and confirm fires the focused one.
-      if (!handled && Input.isRepeated('right')) { handled = this.moveAnimalButton(1); }
-      else if (!handled && Input.isRepeated('left')) { handled = this.moveAnimalButton(-1); }
-      if (!handled && Input.isTriggered('ok')) { handled = this.triggerAnimalButton(); }
+      // Livestock and diplomatic seats carry actions: left/right walks the
+      // selected asset's buttons and confirm fires the focused one.
+      if (!handled && Input.isRepeated('right')) { handled = this.moveAssetButton(1); }
+      else if (!handled && Input.isRepeated('left')) { handled = this.moveAssetButton(-1); }
+      if (!handled && Input.isTriggered('ok')) { handled = this.triggerAssetButton(); }
 
       if (!handled && (Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled())) {
         SoundManager.playCancel();

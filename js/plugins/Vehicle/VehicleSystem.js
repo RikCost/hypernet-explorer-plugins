@@ -1,5 +1,5 @@
 /*:
- * @plugindesc Merged Vehicle & Movement System v3.3
+ * @plugindesc Merged Vehicle & Movement System v3.4
  * @author Omni-Lex (Merged)
  * @target MZ
  *
@@ -77,6 +77,10 @@
  * @command summonBoat
  * @text Summon Boat
  * @desc Teleports the boat to a nearby water tile
+ *
+ * @command summonBroom
+ * @text Summon Flying Broom
+ * @desc Teleports the flying broom to a nearby tile (indoors included)
  *
  * @command summonAirship
  * @text Summon Airship
@@ -169,6 +173,16 @@
  *   - On foot: Speed locked at 4, no dash
  *   - In vehicle: Speed locked at 5
  * 
+ * ============================================================================
+ * CHANGELOG v3.4:
+ * - Added: the Flying Broom, a fifth vehicle sharing the engine 'boat' slot with
+ *   the Car, the Bike and the Boat. It is the Bike with the ground taken away:
+ *   fuel-free, allowed indoors, and stowed back into the pack as item 168.
+ * - Added: a `flying` config flag. A flying vehicle passes over every tile of
+ *   every map (walls, water, cliffs and events alike), and lands on anything its
+ *   rider could stand on, including rooftops (terrain tag 7), cliff tops
+ *   (region 11) and bridges (region 12). It sets down where it hovers, the way
+ *   the airship does, and is boarded again from the tile it landed on.
  * ============================================================================
  * CHANGELOG v3.3:
  * - Fixed: a vehicle left in one procedural biome no longer stands in the next
@@ -349,6 +363,46 @@
       summonItemId: 131
     };
 
+    // The Flying Broom shares the engine 'boat' vehicle slot with the Car, the
+    // Bike and the Boat (discriminated by $gameSystem._boatType === 'broom'). It
+    // is the Bike with the ground taken away: human-powered, fuel-free, stowed
+    // back into the pack as an item, and welcome indoors. What sets it apart is
+    // the `flying` flag: a flying vehicle answers true to every tile on the map
+    // and its rider passes through walls, cliffs, water and events alike (see
+    // isFlyingConfig / isFlyingLandingTile). It lands on anything the party could
+    // conceivably stand on, rooftops (terrain tag 7), cliff tops (region 11) and
+    // bridges (region 12) included, which no other vehicle can reach.
+    static BROOM = {
+      type: 'boat',
+      name: 'Broom',  // i18n-ignore  vehicle id
+      maxFuel: 0,
+      fuelRate: 0,
+      interior: {
+        mapId: 0,
+        x: 0,
+        y: 0
+      },
+      sprites: {
+        normal: { name: 'Vehicles/!$Broom', index: 0 },  // i18n-ignore  sprite asset path
+        riding: { name: 'Vehicles/!$Broom', index: 0 }  // i18n-ignore  sprite asset path
+      },
+      refuelEvent: 0,
+      storageEvent: 0,
+      repairEvent: 0,
+      maxSpeed: 6.5,
+      // Witchcraft is its own engine: the broom never needs fuel.
+      usesFuel: false,
+      canRefuelAtPump: false,
+      // A road is no shortcut to something that never touches one.
+      roadBoost: false,
+      boatSubType: 'broom',
+      // Carried in the hand and ridden down a corridor, exactly like the Bike.
+      indoorsAllowed: true,
+      // Ignores terrain, walls, water and events, and lands where it likes.
+      flying: true,
+      summonItemId: 168
+    };
+
     // The Boat (inflatable dinghy) shares the engine 'boat' vehicle slot with the
     // Car and Bike (discriminated by $gameSystem._boatType === 'boat'). It needs no
     // fuel, has no interior/storage/repair, and can only travel on open water:
@@ -499,6 +553,7 @@
       case 'Car': return 'car';  // i18n-ignore  vehicle id
       case 'Bike': return 'bike';  // i18n-ignore  vehicle id
       case 'Boat': return 'boat';  // i18n-ignore  vehicle id
+      case 'Broom': return 'broom';  // i18n-ignore  vehicle id
       case 'Starship': return 'airship';  // i18n-ignore  vehicle id
       default: return null;
     }
@@ -535,6 +590,7 @@
       case 'car':     return VehicleConfig.CAR;
       case 'bike':    return VehicleConfig.BIKE;
       case 'boat':    return VehicleConfig.BOAT;
+      case 'broom':   return VehicleConfig.BROOM;
       case 'airship': return VehicleConfig.AIRSHIP;
       default:        return null;
     }
@@ -619,9 +675,12 @@
   //   worldX/worldY  the world-map (315) tile that map corresponds to. This is
   //                  where the vehicle is shown on the world map, and for a
   //                  procedural park it also says WHICH biome it was left in
-  //   alien          parked on an alien landing grid, which reuses map 636 and the
+  //   alien/planet   parked on an alien landing grid, which reuses map 636 and the
   //                  world-coordinate variables as grid cells: such a park has no
-  //                  world-map tile and is never shown on map 315
+  //                  world-map tile and is never shown on map 315. `planet` names
+  //                  the world it was left on, so flying back to the same grid
+  //                  square of the same planet finds it and every other planet
+  //                  (which reuses the same small grid coordinates) does not
   //   layer          depth in the procedural layer stack, since one world square
   //                  generates a different map per cave floor / ocean depth
   //   interior       the procedural interior the park was made in ("" in the open
@@ -633,7 +692,18 @@
   //   order          park sequence, so when several vehicles share one tile the
   //                  last one parked there is the one drawn
 
-  const VEHICLE_KEYS = ['camper', 'car', 'bike', 'boat', 'airship'];
+  const VEHICLE_KEYS = ['camper', 'car', 'bike', 'boat', 'broom', 'airship'];
+
+  // Every vehicle key that shares the engine's single 'boat' slot, so only one
+  // of them can be physically on a map at a time.
+  const BOAT_SLOT_KEYS = ['car', 'bike', 'boat', 'broom'];
+
+  // Where a thing is, in world terms, is not this plugin's question to answer:
+  // window.WorldMapTransfer (WorldMapReturn.js) owns the one rule for the world
+  // map, the reused procedural map, its underground layers, its interiors, the
+  // authored maps and an alien planet's landing grid alike. It loads after this
+  // plugin, so it is always reached through this getter rather than captured.
+  function transfer() { return window.WorldMapTransfer || null; }
 
   // The reused procedural map's id (owned by WorldMapReturn; 636 by default).
   function proceduralMapId() {
@@ -642,6 +712,8 @@
 
   // True while the loaded procedural map is an alien planet's landing grid.
   function isAlienSurfaceNow() {
+    const wmt = transfer();
+    if (wmt) return wmt.isAlienSurface();
     return !!(window.GalaxySim && window.GalaxySim.isAlienSurface &&
       window.GalaxySim.isAlienSurface());
   }
@@ -662,6 +734,8 @@
   // left in the cellar and a camper left on the field above it can be told
   // apart: both are map 636, the same world square and the same layer depth.
   function currentProcInterior() {
+    const wmt = transfer();
+    if (wmt) return wmt.currentInterior();
     const api = window.ProceduralInteriors;
     return (api && typeof api.currentBiome === 'function' && api.currentBiome()) || '';
   }
@@ -690,6 +764,8 @@
   // map is. One world square generates a different map per depth, so a vehicle
   // left on the surface must not turn up in the cave under it.
   function currentProcLayer() {
+    const wmt = transfer();
+    if (wmt) return wmt.currentLayer();
     const pg = $gameSystem._procGenData;
     return (pg && pg.biomeLayerStack && pg.biomeLayerStack.length) || 0;
   }
@@ -703,22 +779,11 @@
   //   - Any other map: its <Coords x y> notetag if present, else the last known
   //               player world coords (Vars 43/44), else the map315 default spawn.
   function currentWorldCoords() {
-    const mapId = $gameMap.mapId();
+    const wmt = transfer();
+    if (wmt) return wmt.currentWorldCoords();
     const xVar = VehicleConfig.GENERAL.map315.xVar;
     const yVar = VehicleConfig.GENERAL.map315.yVar;
-    if (mapId === 315) {
-      return { x: $gamePlayer.x, y: $gamePlayer.y };
-    }
-    if (mapId === proceduralMapId()) {
-      const pg = $gameSystem._procGenData;
-      if (pg && typeof pg.originX === 'number' && typeof pg.originY === 'number') {
-        return { x: pg.originX, y: pg.originY };
-      }
-      return { x: $gameVariables.value(xVar) || 0, y: $gameVariables.value(yVar) || 0 };
-    }
-    if ($gameMap._coordsDest) {
-      return { x: $gameMap._coordsDest.x, y: $gameMap._coordsDest.y };
-    }
+    if ($gameMap.mapId() === 315) return { x: $gamePlayer.x, y: $gamePlayer.y };
     return {
       x: $gameVariables.value(xVar) || VehicleConfig.GENERAL.map315.defaultX,
       y: $gameVariables.value(yVar) || VehicleConfig.GENERAL.map315.defaultY
@@ -733,13 +798,28 @@
    * <Coords 62 117> always puts the vehicle at 62,117 on the world map.
    */
   function worldCoordsForMap(mapId, x, y) {
+    const wmt = transfer();
+    if (wmt) return wmt.worldCoordsForMap(mapId, x, y);
     if (mapId === 315) return { x: Number(x) || 0, y: Number(y) || 0 };
-    if (mapId === $gameMap.mapId()) return currentWorldCoords();
-    const data = mapCache.getMapData(mapId);
-    const note = (data && data.note) || '';
-    const match = note.match(/<\s*coords\b\s*[:=]?\s*(\d+)\D+(\d+)\s*>/i);
-    if (match) return { x: parseInt(match[1], 10), y: parseInt(match[2], 10) };
     return currentWorldCoords();
+  }
+
+  /**
+   * The full address a park record is made of: the tile, the world square it
+   * stands on, and everything that tells one map-636 square from another (cave
+   * depth, procedural interior, alien planet). Resolved through WorldMapTransfer
+   * so a vehicle and the party answer the same question the same way.
+   */
+  function parkAddress(mapId, x, y, worldX, worldY) {
+    const wmt = transfer();
+    const loc = wmt
+      ? wmt.locateOnMap(mapId, x, y)
+      : { mapId, x, y, worldX: 0, worldY: 0, layer: 0, interior: '', alien: false, planet: '' };
+    if (worldX !== undefined && worldY !== undefined) {
+      loc.worldX = Number(worldX) || 0;
+      loc.worldY = Number(worldY) || 0;
+    }
+    return loc;
   }
 
   // Park sequence counter, kept in the save so the "last one parked here" answer
@@ -768,23 +848,33 @@
     // legacy callers that only pass a tile still get correct world coords.
     set(key, mapId, x, y, worldX, worldY) {
       if (!key) return;
-      mapId = Number(mapId) || 0;
-      x = Number(x) || 0;
-      y = Number(y) || 0;
-      let wx, wy;
-      if (worldX !== undefined && worldY !== undefined) {
-        wx = Number(worldX) || 0;
-        wy = Number(worldY) || 0;
-      } else {
-        const wc = worldCoordsForMap(mapId, x, y);
-        wx = wc.x; wy = wc.y;
+      // There is no world map to park on once Earth has been struck out
+      // (WorldMapTransfer.earthLost): the vehicle is left at the Omega Tower,
+      // the only ground the party can reach it on.
+      const WMT = window.WorldMapTransfer;
+      if (Number(mapId) === 315 && WMT && WMT.earthLost && WMT.earthLost()) {
+        const t = WMT.towerLanding();
+        mapId = t.mapId; x = t.x; y = t.y; worldX = undefined; worldY = undefined;
       }
-      const onProcMap = mapId === proceduralMapId() && mapId === $gameMap.mapId();
-      const alien = onProcMap && isAlienSurfaceNow();
-      const layer = onProcMap ? currentProcLayer() : 0;
-      const interior = onProcMap ? currentProcInterior() : '';
+      const loc = parkAddress(Number(mapId) || 0, Number(x) || 0, Number(y) || 0, worldX, worldY);
       this._store()[key] = {
-        mapId, x, y, worldX: wx, worldY: wy, alien, layer, interior, order: nextParkOrder()
+        mapId: loc.mapId, x: loc.x, y: loc.y,
+        worldX: loc.worldX, worldY: loc.worldY,
+        alien: loc.alien, planet: loc.planet, layer: loc.layer, interior: loc.interior,
+        order: nextParkOrder()
+      };
+    },
+
+    // The park record as a WorldMapTransfer address, so it can be named and
+    // compared with the party's own position by the one service that knows how.
+    location(key) {
+      const p = this.get(key);
+      if (!p) return null;
+      return {
+        mapId: p.mapId, x: p.x, y: p.y,
+        worldX: this.worldX(key), worldY: this.worldY(key),
+        layer: p.layer || 0, interior: p.interior || '',
+        alien: !!p.alien, planet: p.planet || ''
       };
     },
 
@@ -845,6 +935,16 @@
   function resolveReturnDestination(key) {
     const pos = VehiclePosition.get(key);
     if (!pos) return { mapId: 315, x: 0, y: 0 };
+    // Left on a planet: its world coordinates are a cell of that planet's landing
+    // grid, not an Earth square, so map 315 is not where it is and sending the
+    // party there would drop them in the sea. The tile only exists while that
+    // planet's surface is the one loaded; anywhere else the party stays put and
+    // has to fly back.
+    if (pos.alien) {
+      const tile = parkedTileOnCurrentMap(key);
+      if (tile) return { mapId: $gameMap.mapId(), x: tile.x, y: tile.y };
+      return { mapId: $gameMap.mapId(), x: $gamePlayer.x, y: $gamePlayer.y };
+    }
     if (pos.mapId === proceduralMapId() || !pos.mapId) {
       return { mapId: 315, x: VehiclePosition.worldX(key), y: VehiclePosition.worldY(key) };
     }
@@ -876,14 +976,20 @@
       ty = VehiclePosition.worldY(key);
     } else if (currentMap === procMap) {
       if (pos.mapId !== procMap) return null;
-      if (!!pos.alien !== isAlienSurfaceNow()) return null;
-      if ((pos.layer || 0) !== currentProcLayer()) return null;
-      // Which side of the hatch the park is on. The dungeon, the cellar and the
-      // field they were entered from all answer to map 636, the same world
-      // square and the same layer, so without this the camper left on the
+      // Which realm the park is in: the same planet, the same depth in the layer
+      // stack, and the same side of the hatch. The dungeon, the cellar and the
+      // field they were entered from all answer to map 636, the same world square
+      // and the same layer, so without the interior the camper left on the
       // surface would be re-placed in the middle of the dungeon. A record made
-      // before this field existed reads as "" and so belongs to the open air.
-      if ((pos.interior || '') !== currentProcInterior()) return null;
+      // before these fields existed reads as the open surface of Earth.
+      const wmt = transfer();
+      if (wmt) {
+        if (!wmt.sameRealm(VehiclePosition.location(key), wmt.locate())) return null;
+      } else {
+        if (!!pos.alien !== isAlienSurfaceNow()) return null;
+        if ((pos.layer || 0) !== currentProcLayer()) return null;
+        if ((pos.interior || '') !== currentProcInterior()) return null;
+      }
       const wc = currentWorldCoords();
       if (VehiclePosition.worldX(key) !== wc.x || VehiclePosition.worldY(key) !== wc.y) return null;
       tx = pos.x; ty = pos.y;
@@ -971,6 +1077,46 @@
    */
   function isBoatSubType(vehicle) {
     return !!(vehicle && vehicle.isBoat() && $gameSystem._boatType === 'boat');
+  }
+
+  /**
+   * True for a vehicle config that flies over the map instead of across it (the
+   * Flying Broom). A flying vehicle ignores terrain, walls, water and events.
+   */
+  function isFlyingConfig(config) {
+    return !!(config && config.flying);
+  }
+
+  /**
+   * True when the given Game_Vehicle is currently a flying one. The Broom shares
+   * the engine 'boat' slot, so what the slot stands for right now is the answer.
+   */
+  function isFlyingVehicle(vehicle) {
+    return !!vehicle && isFlyingConfig(vehicleManager.getConfig(vehicle));
+  }
+
+  /** True while the player is riding a flying vehicle (the Broom). */
+  function isPlayerRidingFlying() {
+    return $gamePlayer.isInVehicle() && isFlyingVehicle($gamePlayer.vehicle());
+  }
+
+  /**
+   * Where a flying vehicle may set down. It flies over everything, so the only
+   * question is what the rider can stand on once it stops, and the answer is
+   * deliberately generous: anything the party could walk on, PLUS the three
+   * layered surfaces nothing else in the game can reach, rooftops (terrain tag
+   * 7, the "no furniture" marker the project puts on roofs), cliff tops
+   * (region 11) and bridges (region 12). Region 10 stays a hard no-go, and an
+   * off-map tile is never valid.
+   */
+  function isFlyingLandingTile(x, y) {
+    if (!$gameMap.isValid(x, y)) return false;
+    if ($gameMap.regionId(x, y) === 10) return false;
+    const region = $gameMap.regionId(x, y);
+    if (region === 11 || region === 12) return true;
+    if ($gameMap.terrainTag(x, y) === 7) return true;
+    // Any tile that can be walked off in at least one direction is standable.
+    return [2, 4, 6, 8].some(d => $gameMap.isPassable(x, y, d));
   }
 
   // Ground vehicles burn less game-time per tile while over a world-map (315)
@@ -1179,6 +1325,7 @@
       this._initializeVehicle(VehicleConfig.CAR);
       this._initializeVehicle(VehicleConfig.BIKE);
       this._initializeVehicle(VehicleConfig.BOAT);
+      this._initializeVehicle(VehicleConfig.BROOM);
       this._initializeVehicle(VehicleConfig.AIRSHIP);
 
       this._initialized = true;
@@ -1212,11 +1359,12 @@
     }
 
     // The vehicle key the engine's single 'boat' slot currently stands for. The
-    // Car, the Bike and the Boat all share that one Game_Vehicle, so only one of
-    // them can be physically present at a time.
+    // Car, the Bike, the Boat and the Broom all share that one Game_Vehicle, so
+    // only one of them can be physically present at a time.
     boatKey() {
       if ($gameSystem._boatType === 'bike') return 'bike';
       if ($gameSystem._boatType === 'boat') return 'boat';
+      if ($gameSystem._boatType === 'broom') return 'broom';
       return 'car';
     }
 
@@ -1264,12 +1412,12 @@
       const ridden = $gamePlayer.isInVehicle() ? $gamePlayer.vehicle() : null;
       const boatVehicle = this.getVehicle('boat');
 
-      // Decide which of the three shared-slot vehicles the 'boat' slot should be:
+      // Decide which of the shared-slot vehicles the 'boat' slot should be:
       // the one parked here, most recently parked first. With none parked here the
       // slot keeps its current sub-type and is simply taken off the map below.
       if (boatVehicle && ridden !== boatVehicle) {
-        const parkedHere = ['car', 'bike', 'boat']
-          .filter(key => !!parkedTileOnCurrentMap(key))
+        const parkedHere = BOAT_SLOT_KEYS
+          .filter(key => ownsVehicleKey(key) && !!parkedTileOnCurrentMap(key))
           .sort((a, b) => VehiclePosition.order(b) - VehiclePosition.order(a));
         if (parkedHere.length > 0) this.setBoatKey(parkedHere[0]);
       }
@@ -1280,7 +1428,11 @@
         // Never move the vehicle the player is currently riding.
         if (vehicle === ridden) return;
 
-        const tile = parkedTileOnCurrentMap(key);
+        // A vehicle the party does not own is not theirs to find standing about:
+        // only what the Vehicles menu lists is ever placed on a map. The engine
+        // starts the Camper and the Starship on map 315 out of System.json, which
+        // used to put both of them on the world map for a party that owns neither.
+        const tile = ownsVehicleKey(key) ? parkedTileOnCurrentMap(key) : null;
         if (!tile) {
           // Parked elsewhere: map id 0 makes Game_Vehicle.pos() stop matching, so
           // the vehicle is neither drawn nor solid nor boardable here. The store
@@ -1335,6 +1487,7 @@
       if (vehicle.isBoat()) {
         if ($gameSystem._boatType === 'bike') return VehicleConfig.BIKE;
         if ($gameSystem._boatType === 'boat') return VehicleConfig.BOAT;
+        if ($gameSystem._boatType === 'broom') return VehicleConfig.BROOM;
         return VehicleConfig.CAR;
       }
       if (vehicle.isAirship()) return VehicleConfig.AIRSHIP;
@@ -1495,6 +1648,10 @@
       if (character.isAirship && character.isAirship()) {
         if (!$gameMap.isValid(x, y)) return false;
         return $gameMap.regionId(x, y) !== 10;
+      }
+      // The Broom flies, so it is summoned and parked wherever it could land.
+      if (isFlyingVehicle(character)) {
+        return isFlyingLandingTile(x, y);
       }
       // The Boat can only ever park/spawn on navigable water (see isBoatPassableTile).
       if (isBoatSubType(character)) {
@@ -1720,6 +1877,12 @@
       const x2 = $gameMap.roundXWithDirection(x, d);
       const y2 = $gameMap.roundYWithDirection(y, d);
 
+      // The Broom flies, and it flies indoors too: nothing on the map stops it,
+      // so the only question left is whether the tile exists at all. This sits
+      // above the interior rule below because a corridor wall is exactly the
+      // sort of thing it is meant to go straight over.
+      if (isFlyingVehicle(this)) return $gameMap.isValid(x2, y2);
+
       // Indoors (a house, a dungeon, a cave) the Bike is the only vehicle that
       // may move at all, and there it simply goes wherever the player could
       // walk: the outdoor terrain-tag whitelist below describes open country
@@ -1756,6 +1919,59 @@
       return $gameMap.isPassable(x2, y2, this.reverseDir(d));
     }
     return _Game_Vehicle_isMapPassable.call(this, x, y, d);
+  };
+
+  // ============================================================================
+  // Flight (the Broom)
+  // ============================================================================
+  //
+  // The engine knows exactly one flying vehicle, the airship, and it is welded to
+  // the 'airship' slot: isInAirship() is what makes the player pass through the
+  // map, land in place rather than a step forward, and board from the tile they
+  // are standing on. The Broom is a 'boat'-slot vehicle, so each of those three
+  // behaviours is granted to it here instead of being inherited.
+
+  // Passing through the world is what "flying" means. The engine hands the
+  // airship its through-flag in updateVehicleGetOn; the Broom takes it the same
+  // way, and getOffVehicle clears it again on landing (core behaviour).
+  const _Game_Player_updateVehicleGetOn = Game_Player.prototype.updateVehicleGetOn;
+  Game_Player.prototype.updateVehicleGetOn = function () {
+    const wasGettingOn = this._vehicleGettingOn;
+    _Game_Player_updateVehicleGetOn.call(this);
+    if (wasGettingOn && !this._vehicleGettingOn && isPlayerRidingFlying()) {
+      this.setThrough(true);
+    }
+  };
+
+  // A flying vehicle sets down where it hovers, on any tile the rider could
+  // stand on: rooftops, cliff tops and bridges included (isFlyingLandingTile).
+  const _Game_Vehicle_isLandOk = Game_Vehicle.prototype.isLandOk;
+  Game_Vehicle.prototype.isLandOk = function (x, y, d) {
+    if (isFlyingVehicle(this)) return isFlyingLandingTile(x, y);
+    return _Game_Vehicle_isLandOk.call(this, x, y, d);
+  };
+
+  // Landing is the airship's dismount, not the boat's: the party steps off onto
+  // the tile the broom is hovering over instead of being pushed one tile forward
+  // (which is the whole point of being able to set down on a roof).
+  const _Game_Player_getOffVehicle = Game_Player.prototype.getOffVehicle;
+  Game_Player.prototype.getOffVehicle = function () {
+    if (!isPlayerRidingFlying()) return _Game_Player_getOffVehicle.call(this);
+
+    const vehicle = this.vehicle();
+    if (!vehicle.isLandOk(this.x, this.y, this.direction())) {
+      showLocalizedMessage(T('VehicleSystem.cannotLandHere'));
+      return false;
+    }
+    this._followers.synchronize(this.x, this.y, this.direction());
+    vehicle.getOff();
+    this.setTransparent(false);
+    this._vehicleGettingOff = true;
+    this.setMoveSpeed(4);
+    this.setThrough(false);
+    this.makeEncounterCount();
+    this.gatherFollowers();
+    return true;
   };
 
   // Aquatic camper sprite: crop to the top half so it looks half-submerged while
@@ -2276,6 +2492,7 @@
    * or null when the vehicle is not parked on this map (or the slot is in use).
    */
   function materializeVehicle(key) {
+    if (!ownsVehicleKey(key)) return null;
     const tile = parkedTileOnCurrentMap(key);
     if (!tile) return null;
     vehicleManager.setBoatKey(key);
@@ -2301,17 +2518,20 @@
     const y2 = $gameMap.roundYWithDirection(y1, d);
 
     return VEHICLE_KEYS.filter(key => {
+      if (!ownsVehicleKey(key)) return false;
       const tile = parkedTileOnCurrentMap(key);
       if (!tile) return false;
-      // The airship is boarded from underneath as well as from in front.
-      const isAirship = key === 'airship';
+      // The airship is boarded from underneath as well as from in front, and so
+      // is the Broom: it lands on the tile its rider is standing on, so without
+      // this a broom set down on a rooftop could never be picked up again.
+      const fromBelow = key === 'airship' || key === 'broom';
       if (tile.x === x2 && tile.y === y2) return true;
-      if (isAirship && tile.x === x1 && tile.y === y1) return true;
+      if (fromBelow && tile.x === x1 && tile.y === y1) return true;
       // An oversized parked sprite is boarded by walking up to its bodywork.
       const vehicle = materializedVehicleFor(key);
       if (!vehicle || vehicle._driving || vehicle._mapId !== $gameMap.mapId()) return false;
       return window.VehicleFootprint.covers(vehicle, x2, y2) ||
-        (isAirship && window.VehicleFootprint.covers(vehicle, x1, y1));
+        (fromBelow && window.VehicleFootprint.covers(vehicle, x1, y1));
     }).sort((a, b) => VehiclePosition.order(b) - VehiclePosition.order(a));
   }
 
@@ -2412,17 +2632,25 @@
     }
   }
 
-  // Item id the bike is stowed back into / deployed from (CharacterCreation ITEM_BIKE).
-  const BIKE_ITEM_ID = 131;
+  // Vehicles small enough to be carried: the Bike is folded up and the Broom is
+  // shouldered, and each goes back into the pack as the item it was summoned
+  // from. Their configs already name that item (summonItemId).
+  const PORTABLE_VEHICLE_KEYS = ['bike', 'broom'];
+
+  function isPortableConfig(config) {
+    return !!config && PORTABLE_VEHICLE_KEYS.includes(upgradeTypeForConfig(config));
+  }
 
   /**
-   * Picks up a parked bike: removes it from the map and returns item 131 to the
-   * inventory. The bike is the shared 'boat' vehicle, so we move it off-map
-   * (mapId 0) which makes Game_Vehicle.pos() stop matching the current map and
-   * the sprite turn transparent, effectively despawning it.
+   * Picks up a parked portable vehicle: removes it from the map and returns its
+   * summoning item to the inventory. Both share the 'boat' Game_Vehicle, so we
+   * move it off-map (mapId 0) which makes Game_Vehicle.pos() stop matching the
+   * current map and the sprite turn transparent, effectively despawning it.
    */
-  function pickUpBike(vehicle) {
+  function pickUpVehicle(vehicle) {
     if (!vehicle) return;
+    const config = vehicleManager.getConfig(vehicle);
+    if (!isPortableConfig(config)) return;
 
     // If the player is somehow still mounted, dismount first.
     if ($gamePlayer.isInVehicle() && $gamePlayer.vehicle() === vehicle) {
@@ -2430,14 +2658,15 @@
     }
 
     vehicle.setLocation(0, vehicle.x, vehicle.y);
-    VehiclePosition.set('bike', 0, vehicle.x, vehicle.y);
+    VehiclePosition.set(VehiclePosition.keyForConfig(config), 0, vehicle.x, vehicle.y);
 
-    if ($dataItems[BIKE_ITEM_ID]) {
-      $gameParty.gainItem($dataItems[BIKE_ITEM_ID], 1);
+    const item = $dataItems[config.summonItemId];
+    if (item) {
+      $gameParty.gainItem(item, 1);
     }
 
     AudioManager.playSe({ name: 'Equip1', pan: 0, pitch: 100, volume: 90 });
-    showLocalizedMessage(T('VehicleSystem.pickedUpBike'));
+    showLocalizedMessage(T('VehicleSystem.pickedUpVehicle', { vehicle: vehicleNounName(config) }));
   }
 
   /**
@@ -2523,9 +2752,12 @@
         if (!$gamePlayer.isInVehicle()) return;
         // Try the normal dismount (steps the player onto adjacent land and parks
         // the vehicle behind them). If no land tile is free (over water / air),
-        // dismount in place so the player is never left stranded aboard.
+        // dismount in place so the player is never left stranded aboard. A
+        // flying vehicle is the exception: it already lands in place wherever it
+        // possibly can, so a refusal means the tile really will not hold the
+        // party and the rider stays aboard (and has been told why).
         $gamePlayer.getOffVehicle();
-        if ($gamePlayer.isInVehicle()) {
+        if ($gamePlayer.isInVehicle() && !isFlyingConfig(config)) {
           disembarkLeavingParked(vehicle);
         }
         // Persist the parked spot to the internal position store.
@@ -2622,10 +2854,10 @@
       handlers.push(() => engageLiminalDrive());
     }
 
-    // Bike only: stow the parked bike back into the inventory as an item.
-    if (!isRiding && config.name === 'Bike') {  // i18n-ignore  vehicle id
+    // Bike and Broom only: stow the parked vehicle back into the pack as an item.
+    if (!isRiding && isPortableConfig(config)) {
       choices.push(T('VehicleSystem.pickUp'));
-      handlers.push(() => pickUpBike(vehicle));
+      handlers.push(() => pickUpVehicle(vehicle));
     }
 
     // Starship only: pressing OK while riding opens the galaxy travel menu
@@ -3226,6 +3458,10 @@
         vehicleManager.summon('boat', 'boat');
       });
 
+      this._registerCommand('summonBroom', () => {
+        vehicleManager.summon('boat', 'broom');
+      });
+
       this._registerCommand('summonAirship', () => {
         vehicleManager.summon('airship');
       });
@@ -3466,6 +3702,7 @@
     VehicleConfig.CAR,
     VehicleConfig.BOAT,
     VehicleConfig.BIKE,
+    VehicleConfig.BROOM,
     VehicleConfig.AIRSHIP
   ];
 
@@ -3495,6 +3732,13 @@
       if (!category || String(category).trim().toLowerCase() !== 'vehicles') continue;
       if (!$gameParty.hasItem(item)) $gameParty.gainItem(item, 1);
     }
+  }
+
+  // True when the party holds the summoning item of the vehicle a key names, i.e.
+  // when that vehicle appears in the Vehicles menu. Nothing is placed on a map,
+  // drawn or offered for boarding unless this says so.
+  function ownsVehicleKey(key) {
+    return ownsVehicleConfig(configForVehicleKey(key));
   }
 
   function ownsVehicleConfig(config) {
@@ -3533,13 +3777,34 @@
     return !!config.repairEvent;
   }
 
+  // Where a vehicle was left, in one line: the name of the place (a named world
+  // square or biome override first, then the map's own display name, then the
+  // biome) and the exact tile, with the world square it answers to on map 315.
+  // WorldMapTransfer writes it, so a camper left in Ghent station reads the same
+  // here as it does anywhere else that has to say where a thing is.
+  function vehicleParkedLabel(key) {
+    const wmt = transfer();
+    const loc = VehiclePosition.location(key);
+    if (!wmt || !loc || !loc.mapId) return '';
+    return wmt.describeLocation(loc);
+  }
+
   function vehicleMenuInfo(config) {
     const key = upgradeTypeForConfig(config);
     const usesFuel = !!config.usesFuel;
     const item = (typeof $dataItems !== 'undefined') ? $dataItems[config.summonItemId] : null;
     const sprite = (config.sprites && config.sprites.normal) ? config.sprites.normal : null;
+    const loc = VehiclePosition.location(key);
     return {
       key,
+      // Where it is parked, for the Vehicles menu and anything else that lists it.
+      parkedAt: vehicleParkedLabel(key),
+      parkedMapId: loc ? loc.mapId : 0,
+      parkedX: loc ? loc.x : 0,
+      parkedY: loc ? loc.y : 0,
+      parkedWorldX: loc ? loc.worldX : 0,
+      parkedWorldY: loc ? loc.worldY : 0,
+      parkedOnPlanet: loc ? (loc.planet || '') : '',
       name: vehicleDisplayName(config),
       type: config.type,
       usesFuel,
@@ -3555,7 +3820,7 @@
   }
 
   window.MergedVehicleSystem = {
-    version: '3.3.0',
+    version: '3.4.0',
     cache: mapCache,
     manager: vehicleManager,
 
@@ -3578,6 +3843,22 @@
       const max = configMaxFuel(config) || 1;
       const fuel = FuelSystem.getFuel(vehicle);
       return { name: vehicleDisplayName(config), fuel, max, pct: Math.round(Math.max(0, Math.min(1, fuel / max)) * 100) };
+    },
+
+    // Puts the party out of whatever they are riding on the spot, without the
+    // land-ok tile Game_Player#getOffVehicle insists on, leaving the vehicle
+    // parked where it stands. Answers whether anybody actually got out.
+    //
+    // MapBattleMode fights are fought on the map itself, so a fight that opens
+    // while the party is at the wheel has to put them on their feet first:
+    // a rider is one transparent character with its followers stowed, and the
+    // battlefield needs the party standing on it.
+    disembark() {
+      if (!$gamePlayer || !$gamePlayer.isInVehicle()) return false;
+      const vehicle = $gamePlayer.vehicle();
+      if (!vehicle) return false;
+      disembarkLeavingParked(vehicle);
+      return true;
     },
 
     // Every vehicle the party owns (holds the summoning item for), in menu order.
@@ -3710,7 +3991,9 @@
     const config = vehicleManager.getConfig(this);
     if (config) {
       if (this._driving) {
-        if (config.name === 'Bike') {  // i18n-ignore  vehicle id
+        // A vehicle that is ridden rather than sat in (the Bike, the Broom) has
+        // a second sheet showing it with its rider aboard.
+        if (config.sprites.riding) {
           return config.sprites.riding.name;
         }
         const spriteInfo = selectVehicleSprite(config);
@@ -3727,7 +4010,7 @@
     const config = vehicleManager.getConfig(this);
     if (config) {
       if (this._driving) {
-        if (config.name === 'Bike') {  // i18n-ignore  vehicle id
+        if (config.sprites.riding) {
           return config.sprites.riding.index || 0;
         }
         const spriteInfo = selectVehicleSprite(config);
@@ -3740,32 +4023,34 @@
   };
 
   // ============================================================================
-  // Followers ride bikes too
+  // Followers ride along too
   // ============================================================================
 
   /**
-   * True when the player is currently riding the Bike. The Bike is the shared
-   * 'boat' vehicle distinguished by $gameSystem._boatType. While riding, party
-   * followers should show the bike-riding sprite so they appear to follow along
-   * on their own bikes.
+   * The riding sprite the party's followers should wear, or null. The Bike and
+   * the Broom are ridden one to a body rather than sat in, so while the player
+   * is on one every follower shows the same sheet and the party appears to
+   * travel on their own bikes / brooms. Both are the shared 'boat' vehicle,
+   * distinguished by $gameSystem._boatType.
    */
-  function isPlayerRidingBike() {
-    return $gamePlayer.isInBoat() && $gameSystem._boatType === 'bike';
+  function followerRidingSprite() {
+    if (!$gamePlayer.isInBoat()) return null;
+    const config = configForVehicleKey(vehicleManager.boatKey());
+    if (!config || !isPortableConfig(config)) return null;
+    return config.sprites.riding || null;
   }
 
   const _Game_Follower_characterName = Game_Follower.prototype.characterName;
   Game_Follower.prototype.characterName = function () {
-    if (this.isVisible() && isPlayerRidingBike()) {
-      return VehicleConfig.BIKE.sprites.riding.name;
-    }
+    const sprite = this.isVisible() ? followerRidingSprite() : null;
+    if (sprite) return sprite.name;
     return _Game_Follower_characterName.call(this);
   };
 
   const _Game_Follower_characterIndex = Game_Follower.prototype.characterIndex;
   Game_Follower.prototype.characterIndex = function () {
-    if (this.isVisible() && isPlayerRidingBike()) {
-      return VehicleConfig.BIKE.sprites.riding.index || 0;
-    }
+    const sprite = this.isVisible() ? followerRidingSprite() : null;
+    if (sprite) return sprite.index || 0;
     return _Game_Follower_characterIndex.call(this);
   };
 

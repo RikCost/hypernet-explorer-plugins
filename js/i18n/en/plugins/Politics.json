@@ -58,6 +58,20 @@
       "legislature": "Da Moot",
       "partyKind": "clan"
     },
+    "thetourists": {
+      "govType": "caste hierarchy",
+      "headTitle": "Tour Director",
+      "legislature": "The Itinerary",
+      "partyKind": "caste",
+      "electorTitle": "Overseer",
+      "electorTitlePlural": "Overseers"
+    },
+    "thedargos": {
+      "govType": "practical joke",
+      "headTitle": "First Dargos",
+      "legislature": "The Bit",
+      "partyKind": "routine"
+    },
     "default": {
       "govType": "republic",
       "headTitle": "President",

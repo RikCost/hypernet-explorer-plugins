@@ -1,0 +1,24 @@
+{
+  "name": {
+    "hysteria": "DA {disease} OF {place}, {year}",
+    "medical": "{disease} OUTBREAK, {place} {year}"
+  },
+  "log": {
+    "firstCases": "FIRST CASES FILED IN {place}.",
+    "reaches": "REACHES {place} (FROM {from}).",
+    "declaredOver": "DECLARED OVER. {cases} CASES, {dead} DEAD!"
+  },
+  "news": {
+    "hysteria": "{disease} SPREADS THROUGH {place}; OFFICIALS APPEAL FOR CALM!",
+    "medical": "OUTBREAK OF {disease} CONFIRMED IN {place}. EURODEMICS RAISES DA ALERT!"
+  },
+  "caught": "{actor} CAUGHT {disease}.",
+  "caughtFrom": "{actor} CAUGHT {disease} FROM {source}.",
+  "undated": "UNDATED",
+  "begins": "{name} BEGINS.",
+  "bulletin": {
+    "header": "EURODEMICS BULLETIN, {date}",
+    "totals": "{active} ACTIVE OUTBREAK(S) ACROSS {towns} TOWN(S); {infected} CURRENTLY ILL, {dead} DEAD!",
+    "line": "  {name} ({kind}), {infected} ILL IN {towns} TOWN(S)."
+  }
+}

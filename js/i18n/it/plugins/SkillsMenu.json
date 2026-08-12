@@ -1,9 +1,9 @@
 {
   "title": "Abilità",
-  
   "back": "Indietro",
   "unit": {
-    "ap": "AP"
+    "ap": "AP",
+    "mp": "MP"
   },
   "cost": {
     "mp": "{n} MP",
@@ -38,13 +38,15 @@
     "use": "Usa",
     "allSkills": "Tutte le abilità",
     "cancel": "Annulla",
-    "carry": "Equipaggia",
-    "bench": "Ritira"
+    "carry": "Sincronizza",
+    "bench": "Desincronizza",
+    "basic": "Base",
+    "esoteric": "Esoterico"
   },
   "action": {
     "useSkill": "[ Usa abilità ]",
-    "carry": "[ Equipaggia ]",
-    "bench": "[ Ritira ]",
+    "carry": "[ Sincronizza ]",
+    "bench": "[ Desincronizza ]",
     "back": "[ Indietro ]"
   },
   "info": {
@@ -82,10 +84,26 @@
     "skills": "Abilità",
     "magic": "Magia",
     "count": "{group} {n}/{max}",
-    "carried": "In uso",
-    "benched": "A riposo",
+    "carried": "Sincronizzata",
+    "benched": "Desincronizzata",
     "always": "Sempre",
-    "hint": "Shift equipaggia o ritira l’abilità selezionata",
-    "full": "Le {group} equipaggiate sono al completo ({max}). Ritirane una prima."
+    "hint": "Shift sincronizza o desincronizza l’abilità selezionata",
+    "full": "Le {group} sincronizzate sono al completo ({max}). Desincronizzane una prima."
+  },
+  "tag": {
+    "field": "Campo"
+  },
+  "magicSystem": {
+    "label": "Sistema Magico",
+    "Arcane": "Arcano",
+    "Sacred": "Sacro",
+    "Sympathetic": "Simpatetico",
+    "Dimensional": "Dimensionale",
+    "Psionics": "Psionica",
+    "Technomagic": "Tecnomagia",
+    "Pataphysic": "Patafisica",
+    "Natural": "Naturale",
+    "Thermodynamics": "Termodinamico",
+    "Ritual": "Rituale"
   }
 }

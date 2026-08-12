@@ -63,6 +63,21 @@
         "...",
         "Oh. Ancora tu."
       ]
-    }
+    },
+    "yield": [
+      "Scusa, mi tolgo di mezzo.",
+      "Permesso, permesso...",
+      "Oh! Devi passare, vero.",
+      "Qui è troppo stretto. Mi sposto.",
+      "Permesso, mi faccio da parte."
+    ]
+  },
+  "visitor": {
+    "talk": "Parla",
+    "empathize": "Empatizza",
+    "cancel": "Annulla",
+    "silent": "Ti guarda attraverso, con la mente altrove.",
+    "otherParty": "In viaggio con il gruppo di {leader}",
+    "readOnly": "Appartiene a un altro viaggio. Puoi parlare, e nulla piu'."
   }
 }

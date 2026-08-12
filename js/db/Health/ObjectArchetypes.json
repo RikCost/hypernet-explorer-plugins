@@ -1,0 +1,4549 @@
+{
+  "Chair": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "furniture",
+    "material": "wood",
+    "parts": {
+      "SEAT": {
+        "hpPercent": 30,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.chair.seat.name",
+        "msg": "objectArchetypes.chair.seat.msg"
+      },
+      "BACKREST": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.chair.backrest.name",
+        "msg": "objectArchetypes.chair.backrest.msg"
+      },
+      "FRONT_LEGS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.chair.front_legs.name",
+        "msg": "objectArchetypes.chair.front_legs.msg"
+      },
+      "REAR_LEGS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.chair.rear_legs.name",
+        "msg": "objectArchetypes.chair.rear_legs.msg"
+      },
+      "JOINTS": {
+        "hpPercent": 10,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.chair.joints.name",
+        "msg": "objectArchetypes.chair.joints.msg"
+      }
+    },
+    "hitLocations": {
+      "SEAT": {
+        "weight": 30
+      },
+      "BACKREST": {
+        "weight": 25
+      },
+      "FRONT_LEGS": {
+        "weight": 20
+      },
+      "REAR_LEGS": {
+        "weight": 15
+      },
+      "JOINTS": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Chairs",
+      "CamperChair"
+    ]
+  },
+  "Table": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "furniture",
+    "material": "wood",
+    "parts": {
+      "TABLETOP": {
+        "hpPercent": 35,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.table.tabletop.name",
+        "msg": "objectArchetypes.table.tabletop.msg"
+      },
+      "LEGS": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.table.legs.name",
+        "msg": "objectArchetypes.table.legs.msg"
+      },
+      "APRON": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.table.apron.name",
+        "msg": "objectArchetypes.table.apron.msg"
+      },
+      "DRAWER": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.table.drawer.name",
+        "msg": "objectArchetypes.table.drawer.msg"
+      },
+      "JOINTS": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.table.joints.name",
+        "msg": "objectArchetypes.table.joints.msg"
+      }
+    },
+    "hitLocations": {
+      "TABLETOP": {
+        "weight": 35
+      },
+      "LEGS": {
+        "weight": 30
+      },
+      "APRON": {
+        "weight": 15
+      },
+      "DRAWER": {
+        "weight": 10
+      },
+      "JOINTS": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Kitchen",
+      "Fishcutting_table_sink"
+    ]
+  },
+  "Shelf": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "furniture",
+    "material": "wood",
+    "parts": {
+      "UPRIGHTS": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.shelf.uprights.name",
+        "msg": "objectArchetypes.shelf.uprights.msg"
+      },
+      "SHELF_BOARDS": {
+        "hpPercent": 30,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.shelf.shelf_boards.name",
+        "msg": "objectArchetypes.shelf.shelf_boards.msg"
+      },
+      "BACK_PANEL": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.shelf.back_panel.name",
+        "msg": "objectArchetypes.shelf.back_panel.msg"
+      },
+      "BRACKETS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.shelf.brackets.name",
+        "msg": "objectArchetypes.shelf.brackets.msg"
+      },
+      "WALL_ANCHOR": {
+        "hpPercent": 10,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.shelf.wall_anchor.name",
+        "msg": "objectArchetypes.shelf.wall_anchor.msg"
+      }
+    },
+    "hitLocations": {
+      "UPRIGHTS": {
+        "weight": 30
+      },
+      "SHELF_BOARDS": {
+        "weight": 30
+      },
+      "BACK_PANEL": {
+        "weight": 15
+      },
+      "BRACKETS": {
+        "weight": 15
+      },
+      "WALL_ANCHOR": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Shelves"
+    ]
+  },
+  "Cabinet": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "furniture",
+    "material": "wood",
+    "parts": {
+      "CARCASS": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.cabinet.carcass.name",
+        "msg": "objectArchetypes.cabinet.carcass.msg"
+      },
+      "DOORS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cabinet.doors.name",
+        "msg": "objectArchetypes.cabinet.doors.msg"
+      },
+      "DRAWERS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cabinet.drawers.name",
+        "msg": "objectArchetypes.cabinet.drawers.msg"
+      },
+      "INNER_SHELVING": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cabinet.inner_shelving.name",
+        "msg": "objectArchetypes.cabinet.inner_shelving.msg"
+      },
+      "HINGES": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cabinet.hinges.name",
+        "msg": "objectArchetypes.cabinet.hinges.msg"
+      },
+      "HANDLES": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cabinet.handles.name",
+        "msg": "objectArchetypes.cabinet.handles.msg"
+      }
+    },
+    "hitLocations": {
+      "CARCASS": {
+        "weight": 30
+      },
+      "DOORS": {
+        "weight": 20
+      },
+      "DRAWERS": {
+        "weight": 20
+      },
+      "INNER_SHELVING": {
+        "weight": 10
+      },
+      "HINGES": {
+        "weight": 10
+      },
+      "HANDLES": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Kitchen_drawers",
+      "Kitchen"
+    ]
+  },
+  "Bed": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "furniture",
+    "material": "wood",
+    "parts": {
+      "MATTRESS": {
+        "hpPercent": 30,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.bed.mattress.name",
+        "msg": "objectArchetypes.bed.mattress.msg"
+      },
+      "FRAME": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.bed.frame.name",
+        "msg": "objectArchetypes.bed.frame.msg"
+      },
+      "SLATS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.bed.slats.name",
+        "msg": "objectArchetypes.bed.slats.msg"
+      },
+      "HEADBOARD": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.bed.headboard.name",
+        "msg": "objectArchetypes.bed.headboard.msg"
+      },
+      "LEGS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.bed.legs.name",
+        "msg": "objectArchetypes.bed.legs.msg"
+      }
+    },
+    "hitLocations": {
+      "MATTRESS": {
+        "weight": 30
+      },
+      "FRAME": {
+        "weight": 25
+      },
+      "SLATS": {
+        "weight": 15
+      },
+      "HEADBOARD": {
+        "weight": 15
+      },
+      "LEGS": {
+        "weight": 15
+      }
+    },
+    "sprites": []
+  },
+  "Curtain": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "furniture",
+    "material": "fabric",
+    "parts": {
+      "FABRIC": {
+        "hpPercent": 45,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.curtain.fabric.name",
+        "msg": "objectArchetypes.curtain.fabric.msg"
+      },
+      "RAIL": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.curtain.rail.name",
+        "msg": "objectArchetypes.curtain.rail.msg"
+      },
+      "RINGS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.curtain.rings.name",
+        "msg": "objectArchetypes.curtain.rings.msg"
+      },
+      "HEM": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.curtain.hem.name",
+        "msg": "objectArchetypes.curtain.hem.msg"
+      }
+    },
+    "hitLocations": {
+      "FABRIC": {
+        "weight": 45
+      },
+      "RAIL": {
+        "weight": 25
+      },
+      "RINGS": {
+        "weight": 15
+      },
+      "HEM": {
+        "weight": 15
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Curtain"
+    ]
+  },
+  "Mirror": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "furniture",
+    "material": "glass",
+    "parts": {
+      "GLASS": {
+        "hpPercent": 40,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.mirror.glass.name",
+        "msg": "objectArchetypes.mirror.glass.msg"
+      },
+      "FRAME": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.mirror.frame.name",
+        "msg": "objectArchetypes.mirror.frame.msg"
+      },
+      "SILVERING": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.mirror.silvering.name",
+        "msg": "objectArchetypes.mirror.silvering.msg"
+      },
+      "BACKING": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.mirror.backing.name",
+        "msg": "objectArchetypes.mirror.backing.msg"
+      }
+    },
+    "hitLocations": {
+      "GLASS": {
+        "weight": 40
+      },
+      "FRAME": {
+        "weight": 25
+      },
+      "SILVERING": {
+        "weight": 20
+      },
+      "BACKING": {
+        "weight": 15
+      }
+    },
+    "sprites": []
+  },
+  "Lamp": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "furniture",
+    "material": "metal",
+    "parts": {
+      "BULB": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.lamp.bulb.name",
+        "msg": "objectArchetypes.lamp.bulb.msg"
+      },
+      "STEM": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.lamp.stem.name",
+        "msg": "objectArchetypes.lamp.stem.msg"
+      },
+      "BASE": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.lamp.base.name",
+        "msg": "objectArchetypes.lamp.base.msg"
+      },
+      "WIRING": {
+        "hpPercent": 15,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.lamp.wiring.name",
+        "msg": "objectArchetypes.lamp.wiring.msg"
+      },
+      "SHADE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.lamp.shade.name",
+        "msg": "objectArchetypes.lamp.shade.msg"
+      },
+      "SWITCH": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.lamp.switch.name",
+        "msg": "objectArchetypes.lamp.switch.msg"
+      }
+    },
+    "hitLocations": {
+      "BULB": {
+        "weight": 20
+      },
+      "STEM": {
+        "weight": 20
+      },
+      "BASE": {
+        "weight": 20
+      },
+      "WIRING": {
+        "weight": 15
+      },
+      "SHADE": {
+        "weight": 15
+      },
+      "SWITCH": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Kitchen"
+    ]
+  },
+  "Clock": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "furniture",
+    "material": "metal",
+    "parts": {
+      "MOVEMENT": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.clock.movement.name",
+        "msg": "objectArchetypes.clock.movement.msg"
+      },
+      "MAINSPRING": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.clock.mainspring.name",
+        "msg": "objectArchetypes.clock.mainspring.msg"
+      },
+      "FACE": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.clock.face.name",
+        "msg": "objectArchetypes.clock.face.msg"
+      },
+      "HANDS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.clock.hands.name",
+        "msg": "objectArchetypes.clock.hands.msg"
+      },
+      "CASE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.clock.case.name",
+        "msg": "objectArchetypes.clock.case.msg"
+      }
+    },
+    "hitLocations": {
+      "MOVEMENT": {
+        "weight": 30
+      },
+      "MAINSPRING": {
+        "weight": 20
+      },
+      "FACE": {
+        "weight": 20
+      },
+      "HANDS": {
+        "weight": 15
+      },
+      "CASE": {
+        "weight": 15
+      }
+    },
+    "sprites": []
+  },
+  "Barrel": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "container",
+    "material": "wood",
+    "parts": {
+      "STAVES": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.barrel.staves.name",
+        "msg": "objectArchetypes.barrel.staves.msg"
+      },
+      "HOOPS": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.barrel.hoops.name",
+        "msg": "objectArchetypes.barrel.hoops.msg"
+      },
+      "LID": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.barrel.lid.name",
+        "msg": "objectArchetypes.barrel.lid.msg"
+      },
+      "BASE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.barrel.base.name",
+        "msg": "objectArchetypes.barrel.base.msg"
+      },
+      "BUNG": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.barrel.bung.name",
+        "msg": "objectArchetypes.barrel.bung.msg"
+      }
+    },
+    "hitLocations": {
+      "STAVES": {
+        "weight": 35
+      },
+      "HOOPS": {
+        "weight": 25
+      },
+      "LID": {
+        "weight": 15
+      },
+      "BASE": {
+        "weight": 15
+      },
+      "BUNG": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Barrels"
+    ]
+  },
+  "Crate": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "container",
+    "material": "wood",
+    "parts": {
+      "PLANKS": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.crate.planks.name",
+        "msg": "objectArchetypes.crate.planks.msg"
+      },
+      "LID": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.crate.lid.name",
+        "msg": "objectArchetypes.crate.lid.msg"
+      },
+      "CORNER_BRACES": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.crate.corner_braces.name",
+        "msg": "objectArchetypes.crate.corner_braces.msg"
+      },
+      "CONTENTS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.crate.contents.name",
+        "msg": "objectArchetypes.crate.contents.msg"
+      },
+      "NAILS": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.crate.nails.name",
+        "msg": "objectArchetypes.crate.nails.msg"
+      }
+    },
+    "hitLocations": {
+      "PLANKS": {
+        "weight": 35
+      },
+      "LID": {
+        "weight": 20
+      },
+      "CORNER_BRACES": {
+        "weight": 20
+      },
+      "CONTENTS": {
+        "weight": 15
+      },
+      "NAILS": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Common_large",
+      "Common_medium"
+    ]
+  },
+  "Dumpster": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "container",
+    "material": "metal",
+    "parts": {
+      "BODY": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.dumpster.body.name",
+        "msg": "objectArchetypes.dumpster.body.msg"
+      },
+      "REFUSE": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.dumpster.refuse.name",
+        "msg": "objectArchetypes.dumpster.refuse.msg"
+      },
+      "LID": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.dumpster.lid.name",
+        "msg": "objectArchetypes.dumpster.lid.msg"
+      },
+      "WHEELS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.dumpster.wheels.name",
+        "msg": "objectArchetypes.dumpster.wheels.msg"
+      },
+      "HINGES": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.dumpster.hinges.name",
+        "msg": "objectArchetypes.dumpster.hinges.msg"
+      }
+    },
+    "hitLocations": {
+      "BODY": {
+        "weight": 30
+      },
+      "REFUSE": {
+        "weight": 25
+      },
+      "LID": {
+        "weight": 20
+      },
+      "WHEELS": {
+        "weight": 15
+      },
+      "HINGES": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Dumpster_1",
+      "Dumpster_2",
+      "Dumpster_3",
+      "Dumpster_4"
+    ]
+  },
+  "Cage": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "container",
+    "material": "metal",
+    "parts": {
+      "BARS": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.cage.bars.name",
+        "msg": "objectArchetypes.cage.bars.msg"
+      },
+      "DOOR": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cage.door.name",
+        "msg": "objectArchetypes.cage.door.msg"
+      },
+      "LOCK": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cage.lock.name",
+        "msg": "objectArchetypes.cage.lock.msg"
+      },
+      "FLOOR_PLATE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.cage.floor_plate.name",
+        "msg": "objectArchetypes.cage.floor_plate.msg"
+      },
+      "WELDS": {
+        "hpPercent": 15,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.cage.welds.name",
+        "msg": "objectArchetypes.cage.welds.msg"
+      }
+    },
+    "hitLocations": {
+      "BARS": {
+        "weight": 35
+      },
+      "DOOR": {
+        "weight": 20
+      },
+      "LOCK": {
+        "weight": 15
+      },
+      "FLOOR_PLATE": {
+        "weight": 15
+      },
+      "WELDS": {
+        "weight": 15
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Iron_Cage"
+    ]
+  },
+  "Chest": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "container",
+    "material": "wood",
+    "parts": {
+      "BODY": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.chest.body.name",
+        "msg": "objectArchetypes.chest.body.msg"
+      },
+      "LID": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.chest.lid.name",
+        "msg": "objectArchetypes.chest.lid.msg"
+      },
+      "LOCK": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.chest.lock.name",
+        "msg": "objectArchetypes.chest.lock.msg"
+      },
+      "BANDING": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.chest.banding.name",
+        "msg": "objectArchetypes.chest.banding.msg"
+      },
+      "HINGES": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.chest.hinges.name",
+        "msg": "objectArchetypes.chest.hinges.msg"
+      }
+    },
+    "hitLocations": {
+      "BODY": {
+        "weight": 30
+      },
+      "LID": {
+        "weight": 25
+      },
+      "LOCK": {
+        "weight": 20
+      },
+      "BANDING": {
+        "weight": 15
+      },
+      "HINGES": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Locker": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "container",
+    "material": "metal",
+    "parts": {
+      "SHELL": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.locker.shell.name",
+        "msg": "objectArchetypes.locker.shell.msg"
+      },
+      "DOOR": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.locker.door.name",
+        "msg": "objectArchetypes.locker.door.msg"
+      },
+      "LATCH": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.locker.latch.name",
+        "msg": "objectArchetypes.locker.latch.msg"
+      },
+      "VENTS": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.locker.vents.name",
+        "msg": "objectArchetypes.locker.vents.msg"
+      },
+      "HOOKS": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.locker.hooks.name",
+        "msg": "objectArchetypes.locker.hooks.msg"
+      },
+      "FEET": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.locker.feet.name",
+        "msg": "objectArchetypes.locker.feet.msg"
+      }
+    },
+    "hitLocations": {
+      "SHELL": {
+        "weight": 30
+      },
+      "DOOR": {
+        "weight": 25
+      },
+      "LATCH": {
+        "weight": 15
+      },
+      "VENTS": {
+        "weight": 10
+      },
+      "HOOKS": {
+        "weight": 10
+      },
+      "FEET": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Gym"
+    ]
+  },
+  "Safe": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "container",
+    "material": "metal",
+    "parts": {
+      "DOOR": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.safe.door.name",
+        "msg": "objectArchetypes.safe.door.msg"
+      },
+      "BOLT_WORK": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.safe.bolt_work.name",
+        "msg": "objectArchetypes.safe.bolt_work.msg"
+      },
+      "HARDPLATE": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.safe.hardplate.name",
+        "msg": "objectArchetypes.safe.hardplate.msg"
+      },
+      "SHELL": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.safe.shell.name",
+        "msg": "objectArchetypes.safe.shell.msg"
+      },
+      "DIAL": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.safe.dial.name",
+        "msg": "objectArchetypes.safe.dial.msg"
+      }
+    },
+    "hitLocations": {
+      "DOOR": {
+        "weight": 25
+      },
+      "BOLT_WORK": {
+        "weight": 20
+      },
+      "HARDPLATE": {
+        "weight": 20
+      },
+      "SHELL": {
+        "weight": 20
+      },
+      "DIAL": {
+        "weight": 15
+      }
+    },
+    "sprites": []
+  },
+  "Refrigerator": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "appliance",
+    "material": "metal",
+    "parts": {
+      "COMPRESSOR": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.refrigerator.compressor.name",
+        "msg": "objectArchetypes.refrigerator.compressor.msg"
+      },
+      "DOOR": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.refrigerator.door.name",
+        "msg": "objectArchetypes.refrigerator.door.msg"
+      },
+      "COOLANT_LINE": {
+        "hpPercent": 15,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.refrigerator.coolant_line.name",
+        "msg": "objectArchetypes.refrigerator.coolant_line.msg"
+      },
+      "CONDENSER_COILS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.refrigerator.condenser_coils.name",
+        "msg": "objectArchetypes.refrigerator.condenser_coils.msg"
+      },
+      "SHELVES": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.refrigerator.shelves.name",
+        "msg": "objectArchetypes.refrigerator.shelves.msg"
+      },
+      "DOOR_SEAL": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.refrigerator.door_seal.name",
+        "msg": "objectArchetypes.refrigerator.door_seal.msg"
+      },
+      "INTERIOR_LIGHT": {
+        "hpPercent": 5,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.refrigerator.interior_light.name",
+        "msg": "objectArchetypes.refrigerator.interior_light.msg"
+      }
+    },
+    "hitLocations": {
+      "COMPRESSOR": {
+        "weight": 25
+      },
+      "DOOR": {
+        "weight": 20
+      },
+      "COOLANT_LINE": {
+        "weight": 15
+      },
+      "CONDENSER_COILS": {
+        "weight": 15
+      },
+      "SHELVES": {
+        "weight": 10
+      },
+      "DOOR_SEAL": {
+        "weight": 10
+      },
+      "INTERIOR_LIGHT": {
+        "weight": 5
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Kitchen_fridge",
+      "Industrial_Oven_Fridge"
+    ]
+  },
+  "Oven": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "appliance",
+    "material": "metal",
+    "parts": {
+      "CAVITY": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.oven.cavity.name",
+        "msg": "objectArchetypes.oven.cavity.msg"
+      },
+      "GAS_LINE": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.oven.gas_line.name",
+        "msg": "objectArchetypes.oven.gas_line.msg"
+      },
+      "BURNERS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.oven.burners.name",
+        "msg": "objectArchetypes.oven.burners.msg"
+      },
+      "DOOR_GLASS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.oven.door_glass.name",
+        "msg": "objectArchetypes.oven.door_glass.msg"
+      },
+      "THERMOSTAT": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.oven.thermostat.name",
+        "msg": "objectArchetypes.oven.thermostat.msg"
+      },
+      "RACKS": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.oven.racks.name",
+        "msg": "objectArchetypes.oven.racks.msg"
+      }
+    },
+    "hitLocations": {
+      "CAVITY": {
+        "weight": 25
+      },
+      "GAS_LINE": {
+        "weight": 20
+      },
+      "BURNERS": {
+        "weight": 20
+      },
+      "DOOR_GLASS": {
+        "weight": 15
+      },
+      "THERMOSTAT": {
+        "weight": 10
+      },
+      "RACKS": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Kitchen_oven",
+      "Industrial_Oven_Fridge"
+    ]
+  },
+  "Grill": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "appliance",
+    "material": "metal",
+    "parts": {
+      "FIREBOX": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.grill.firebox.name",
+        "msg": "objectArchetypes.grill.firebox.msg"
+      },
+      "GRATE": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.grill.grate.name",
+        "msg": "objectArchetypes.grill.grate.msg"
+      },
+      "GAS_BOTTLE": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.grill.gas_bottle.name",
+        "msg": "objectArchetypes.grill.gas_bottle.msg"
+      },
+      "LID": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.grill.lid.name",
+        "msg": "objectArchetypes.grill.lid.msg"
+      },
+      "LEGS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.grill.legs.name",
+        "msg": "objectArchetypes.grill.legs.msg"
+      }
+    },
+    "hitLocations": {
+      "FIREBOX": {
+        "weight": 25
+      },
+      "GRATE": {
+        "weight": 25
+      },
+      "GAS_BOTTLE": {
+        "weight": 20
+      },
+      "LID": {
+        "weight": 15
+      },
+      "LEGS": {
+        "weight": 15
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Kitchen_BBQ"
+    ]
+  },
+  "WashingMachine": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "appliance",
+    "material": "metal",
+    "parts": {
+      "DRUM": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.washingmachine.drum.name",
+        "msg": "objectArchetypes.washingmachine.drum.msg"
+      },
+      "MOTOR": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.washingmachine.motor.name",
+        "msg": "objectArchetypes.washingmachine.motor.msg"
+      },
+      "HOSES": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.washingmachine.hoses.name",
+        "msg": "objectArchetypes.washingmachine.hoses.msg"
+      },
+      "DOOR_GLASS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.washingmachine.door_glass.name",
+        "msg": "objectArchetypes.washingmachine.door_glass.msg"
+      },
+      "DRIVE_BELT": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.washingmachine.drive_belt.name",
+        "msg": "objectArchetypes.washingmachine.drive_belt.msg"
+      },
+      "PROGRAMMER": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.washingmachine.programmer.name",
+        "msg": "objectArchetypes.washingmachine.programmer.msg"
+      }
+    },
+    "hitLocations": {
+      "DRUM": {
+        "weight": 25
+      },
+      "MOTOR": {
+        "weight": 20
+      },
+      "HOSES": {
+        "weight": 15
+      },
+      "DOOR_GLASS": {
+        "weight": 15
+      },
+      "DRIVE_BELT": {
+        "weight": 15
+      },
+      "PROGRAMMER": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "KitchenMixer": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "appliance",
+    "material": "metal",
+    "parts": {
+      "GEARBOX": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.kitchenmixer.gearbox.name",
+        "msg": "objectArchetypes.kitchenmixer.gearbox.msg"
+      },
+      "MOTOR": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.kitchenmixer.motor.name",
+        "msg": "objectArchetypes.kitchenmixer.motor.msg"
+      },
+      "BOWL": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.kitchenmixer.bowl.name",
+        "msg": "objectArchetypes.kitchenmixer.bowl.msg"
+      },
+      "DOUGH_HOOK": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.kitchenmixer.dough_hook.name",
+        "msg": "objectArchetypes.kitchenmixer.dough_hook.msg"
+      },
+      "GUARD": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.kitchenmixer.guard.name",
+        "msg": "objectArchetypes.kitchenmixer.guard.msg"
+      }
+    },
+    "hitLocations": {
+      "GEARBOX": {
+        "weight": 25
+      },
+      "MOTOR": {
+        "weight": 25
+      },
+      "BOWL": {
+        "weight": 20
+      },
+      "DOUGH_HOOK": {
+        "weight": 20
+      },
+      "GUARD": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Kitchen_kneader"
+    ]
+  },
+  "VendingMachine": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "appliance",
+    "material": "metal",
+    "parts": {
+      "CABINET": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.vendingmachine.cabinet.name",
+        "msg": "objectArchetypes.vendingmachine.cabinet.msg"
+      },
+      "FRONT_GLASS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.vendingmachine.front_glass.name",
+        "msg": "objectArchetypes.vendingmachine.front_glass.msg"
+      },
+      "COIL_RACKS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.vendingmachine.coil_racks.name",
+        "msg": "objectArchetypes.vendingmachine.coil_racks.msg"
+      },
+      "COIN_MECHANISM": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.vendingmachine.coin_mechanism.name",
+        "msg": "objectArchetypes.vendingmachine.coin_mechanism.msg"
+      },
+      "CHILLER": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.vendingmachine.chiller.name",
+        "msg": "objectArchetypes.vendingmachine.chiller.msg"
+      },
+      "STOCK": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.vendingmachine.stock.name",
+        "msg": "objectArchetypes.vendingmachine.stock.msg"
+      }
+    },
+    "hitLocations": {
+      "CABINET": {
+        "weight": 20
+      },
+      "FRONT_GLASS": {
+        "weight": 20
+      },
+      "COIL_RACKS": {
+        "weight": 20
+      },
+      "COIN_MECHANISM": {
+        "weight": 15
+      },
+      "CHILLER": {
+        "weight": 15
+      },
+      "STOCK": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "VendingMachine"
+    ]
+  },
+  "Television": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "electronics",
+    "material": "plastic",
+    "parts": {
+      "PICTURE_TUBE": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.television.picture_tube.name",
+        "msg": "objectArchetypes.television.picture_tube.msg"
+      },
+      "SCREEN": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.television.screen.name",
+        "msg": "objectArchetypes.television.screen.msg"
+      },
+      "CHASSIS": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.television.chassis.name",
+        "msg": "objectArchetypes.television.chassis.msg"
+      },
+      "SPEAKER": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.television.speaker.name",
+        "msg": "objectArchetypes.television.speaker.msg"
+      },
+      "AERIAL": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.television.aerial.name",
+        "msg": "objectArchetypes.television.aerial.msg"
+      },
+      "CASING": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.television.casing.name",
+        "msg": "objectArchetypes.television.casing.msg"
+      }
+    },
+    "hitLocations": {
+      "PICTURE_TUBE": {
+        "weight": 25
+      },
+      "SCREEN": {
+        "weight": 25
+      },
+      "CHASSIS": {
+        "weight": 20
+      },
+      "SPEAKER": {
+        "weight": 10
+      },
+      "AERIAL": {
+        "weight": 10
+      },
+      "CASING": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Tv"
+    ]
+  },
+  "Computer": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "electronics",
+    "material": "plastic",
+    "parts": {
+      "MOTHERBOARD": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.computer.motherboard.name",
+        "msg": "objectArchetypes.computer.motherboard.msg"
+      },
+      "TOWER": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.computer.tower.name",
+        "msg": "objectArchetypes.computer.tower.msg"
+      },
+      "MONITOR": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.computer.monitor.name",
+        "msg": "objectArchetypes.computer.monitor.msg"
+      },
+      "HARD_DISK": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.computer.hard_disk.name",
+        "msg": "objectArchetypes.computer.hard_disk.msg"
+      },
+      "POWER_SUPPLY": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.computer.power_supply.name",
+        "msg": "objectArchetypes.computer.power_supply.msg"
+      },
+      "KEYBOARD": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.computer.keyboard.name",
+        "msg": "objectArchetypes.computer.keyboard.msg"
+      }
+    },
+    "hitLocations": {
+      "MOTHERBOARD": {
+        "weight": 20
+      },
+      "TOWER": {
+        "weight": 20
+      },
+      "MONITOR": {
+        "weight": 20
+      },
+      "HARD_DISK": {
+        "weight": 15
+      },
+      "POWER_SUPPLY": {
+        "weight": 15
+      },
+      "KEYBOARD": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Telephone": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "electronics",
+    "material": "plastic",
+    "parts": {
+      "LINE_CARD": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.telephone.line_card.name",
+        "msg": "objectArchetypes.telephone.line_card.msg"
+      },
+      "HANDSET": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.telephone.handset.name",
+        "msg": "objectArchetypes.telephone.handset.msg"
+      },
+      "KEYPAD": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.telephone.keypad.name",
+        "msg": "objectArchetypes.telephone.keypad.msg"
+      },
+      "CORD": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.telephone.cord.name",
+        "msg": "objectArchetypes.telephone.cord.msg"
+      },
+      "COIN_BOX": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.telephone.coin_box.name",
+        "msg": "objectArchetypes.telephone.coin_box.msg"
+      },
+      "BELL": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.telephone.bell.name",
+        "msg": "objectArchetypes.telephone.bell.msg"
+      }
+    },
+    "hitLocations": {
+      "LINE_CARD": {
+        "weight": 25
+      },
+      "HANDSET": {
+        "weight": 20
+      },
+      "KEYPAD": {
+        "weight": 15
+      },
+      "CORD": {
+        "weight": 15
+      },
+      "COIN_BOX": {
+        "weight": 15
+      },
+      "BELL": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Stereo": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "electronics",
+    "material": "plastic",
+    "parts": {
+      "AMPLIFIER": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.stereo.amplifier.name",
+        "msg": "objectArchetypes.stereo.amplifier.msg"
+      },
+      "SPEAKERS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.stereo.speakers.name",
+        "msg": "objectArchetypes.stereo.speakers.msg"
+      },
+      "CASSETTE_DECK": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.stereo.cassette_deck.name",
+        "msg": "objectArchetypes.stereo.cassette_deck.msg"
+      },
+      "CD_TRAY": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.stereo.cd_tray.name",
+        "msg": "objectArchetypes.stereo.cd_tray.msg"
+      },
+      "TUNER": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.stereo.tuner.name",
+        "msg": "objectArchetypes.stereo.tuner.msg"
+      },
+      "TRANSFORMER": {
+        "hpPercent": 10,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.stereo.transformer.name",
+        "msg": "objectArchetypes.stereo.transformer.msg"
+      }
+    },
+    "hitLocations": {
+      "AMPLIFIER": {
+        "weight": 25
+      },
+      "SPEAKERS": {
+        "weight": 20
+      },
+      "CASSETTE_DECK": {
+        "weight": 15
+      },
+      "CD_TRAY": {
+        "weight": 15
+      },
+      "TUNER": {
+        "weight": 15
+      },
+      "TRANSFORMER": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Music"
+    ]
+  },
+  "SecurityCamera": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "electronics",
+    "material": "plastic",
+    "parts": {
+      "SENSOR": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.securitycamera.sensor.name",
+        "msg": "objectArchetypes.securitycamera.sensor.msg"
+      },
+      "LENS": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.securitycamera.lens.name",
+        "msg": "objectArchetypes.securitycamera.lens.msg"
+      },
+      "HOUSING": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.securitycamera.housing.name",
+        "msg": "objectArchetypes.securitycamera.housing.msg"
+      },
+      "MOUNT": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.securitycamera.mount.name",
+        "msg": "objectArchetypes.securitycamera.mount.msg"
+      },
+      "CABLE": {
+        "hpPercent": 15,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.securitycamera.cable.name",
+        "msg": "objectArchetypes.securitycamera.cable.msg"
+      }
+    },
+    "hitLocations": {
+      "SENSOR": {
+        "weight": 25
+      },
+      "LENS": {
+        "weight": 25
+      },
+      "HOUSING": {
+        "weight": 20
+      },
+      "MOUNT": {
+        "weight": 15
+      },
+      "CABLE": {
+        "weight": 15
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Security_camera"
+    ]
+  },
+  "GymMachine": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "appliance",
+    "material": "metal",
+    "parts": {
+      "FRAME": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.gymmachine.frame.name",
+        "msg": "objectArchetypes.gymmachine.frame.msg"
+      },
+      "MOTOR": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.gymmachine.motor.name",
+        "msg": "objectArchetypes.gymmachine.motor.msg"
+      },
+      "RUNNING_BELT": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.gymmachine.running_belt.name",
+        "msg": "objectArchetypes.gymmachine.running_belt.msg"
+      },
+      "WEIGHT_STACK": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.gymmachine.weight_stack.name",
+        "msg": "objectArchetypes.gymmachine.weight_stack.msg"
+      },
+      "CONSOLE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.gymmachine.console.name",
+        "msg": "objectArchetypes.gymmachine.console.msg"
+      },
+      "CABLES": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.gymmachine.cables.name",
+        "msg": "objectArchetypes.gymmachine.cables.msg"
+      }
+    },
+    "hitLocations": {
+      "FRAME": {
+        "weight": 20
+      },
+      "MOTOR": {
+        "weight": 20
+      },
+      "RUNNING_BELT": {
+        "weight": 20
+      },
+      "WEIGHT_STACK": {
+        "weight": 15
+      },
+      "CONSOLE": {
+        "weight": 15
+      },
+      "CABLES": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Gym",
+      "Treadmill"
+    ]
+  },
+  "ArcadeCabinet": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "electronics",
+    "material": "wood",
+    "parts": {
+      "BOARD": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.arcadecabinet.board.name",
+        "msg": "objectArchetypes.arcadecabinet.board.msg"
+      },
+      "MONITOR": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.arcadecabinet.monitor.name",
+        "msg": "objectArchetypes.arcadecabinet.monitor.msg"
+      },
+      "CONTROL_PANEL": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.arcadecabinet.control_panel.name",
+        "msg": "objectArchetypes.arcadecabinet.control_panel.msg"
+      },
+      "CABINET": {
+        "hpPercent": 15,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.arcadecabinet.cabinet.name",
+        "msg": "objectArchetypes.arcadecabinet.cabinet.msg"
+      },
+      "COIN_DOOR": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.arcadecabinet.coin_door.name",
+        "msg": "objectArchetypes.arcadecabinet.coin_door.msg"
+      },
+      "MARQUEE": {
+        "hpPercent": 5,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.arcadecabinet.marquee.name",
+        "msg": "objectArchetypes.arcadecabinet.marquee.msg"
+      }
+    },
+    "hitLocations": {
+      "BOARD": {
+        "weight": 25
+      },
+      "MONITOR": {
+        "weight": 20
+      },
+      "CONTROL_PANEL": {
+        "weight": 20
+      },
+      "CABINET": {
+        "weight": 15
+      },
+      "COIN_DOOR": {
+        "weight": 15
+      },
+      "MARQUEE": {
+        "weight": 5
+      }
+    },
+    "sprites": []
+  },
+  "FuelPump": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "appliance",
+    "material": "metal",
+    "parts": {
+      "PUMP_MOTOR": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.fuelpump.pump_motor.name",
+        "msg": "objectArchetypes.fuelpump.pump_motor.msg"
+      },
+      "NOZZLE": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.fuelpump.nozzle.name",
+        "msg": "objectArchetypes.fuelpump.nozzle.msg"
+      },
+      "HOSE": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.fuelpump.hose.name",
+        "msg": "objectArchetypes.fuelpump.hose.msg"
+      },
+      "METER": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.fuelpump.meter.name",
+        "msg": "objectArchetypes.fuelpump.meter.msg"
+      },
+      "BREAKAWAY_VALVE": {
+        "hpPercent": 10,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.fuelpump.breakaway_valve.name",
+        "msg": "objectArchetypes.fuelpump.breakaway_valve.msg"
+      },
+      "HOUSING": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.fuelpump.housing.name",
+        "msg": "objectArchetypes.fuelpump.housing.msg"
+      }
+    },
+    "hitLocations": {
+      "PUMP_MOTOR": {
+        "weight": 25
+      },
+      "NOZZLE": {
+        "weight": 20
+      },
+      "HOSE": {
+        "weight": 20
+      },
+      "METER": {
+        "weight": 15
+      },
+      "BREAKAWAY_VALVE": {
+        "weight": 10
+      },
+      "HOUSING": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "FuelPump"
+    ]
+  },
+  "CashMachine": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "appliance",
+    "material": "metal",
+    "parts": {
+      "VAULT": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.cashmachine.vault.name",
+        "msg": "objectArchetypes.cashmachine.vault.msg"
+      },
+      "CASH_CASSETTE": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cashmachine.cash_cassette.name",
+        "msg": "objectArchetypes.cashmachine.cash_cassette.msg"
+      },
+      "SCREEN": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cashmachine.screen.name",
+        "msg": "objectArchetypes.cashmachine.screen.msg"
+      },
+      "KEYPAD": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cashmachine.keypad.name",
+        "msg": "objectArchetypes.cashmachine.keypad.msg"
+      },
+      "CARD_READER": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.cashmachine.card_reader.name",
+        "msg": "objectArchetypes.cashmachine.card_reader.msg"
+      },
+      "DISPENSER": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.cashmachine.dispenser.name",
+        "msg": "objectArchetypes.cashmachine.dispenser.msg"
+      }
+    },
+    "hitLocations": {
+      "VAULT": {
+        "weight": 25
+      },
+      "CASH_CASSETTE": {
+        "weight": 20
+      },
+      "SCREEN": {
+        "weight": 15
+      },
+      "KEYPAD": {
+        "weight": 15
+      },
+      "CARD_READER": {
+        "weight": 15
+      },
+      "DISPENSER": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Generator": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "appliance",
+    "material": "metal",
+    "parts": {
+      "ENGINE": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.generator.engine.name",
+        "msg": "objectArchetypes.generator.engine.msg"
+      },
+      "ALTERNATOR": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.generator.alternator.name",
+        "msg": "objectArchetypes.generator.alternator.msg"
+      },
+      "FUEL_TANK": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.generator.fuel_tank.name",
+        "msg": "objectArchetypes.generator.fuel_tank.msg"
+      },
+      "CONTROL_BOX": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.generator.control_box.name",
+        "msg": "objectArchetypes.generator.control_box.msg"
+      },
+      "EXHAUST": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.generator.exhaust.name",
+        "msg": "objectArchetypes.generator.exhaust.msg"
+      },
+      "FRAME": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.generator.frame.name",
+        "msg": "objectArchetypes.generator.frame.msg"
+      }
+    },
+    "hitLocations": {
+      "ENGINE": {
+        "weight": 25
+      },
+      "ALTERNATOR": {
+        "weight": 20
+      },
+      "FUEL_TANK": {
+        "weight": 20
+      },
+      "CONTROL_BOX": {
+        "weight": 15
+      },
+      "EXHAUST": {
+        "weight": 10
+      },
+      "FRAME": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Sink": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "plumbing",
+    "material": "ceramic",
+    "parts": {
+      "BASIN": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.sink.basin.name",
+        "msg": "objectArchetypes.sink.basin.msg"
+      },
+      "SUPPLY_PIPES": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.sink.supply_pipes.name",
+        "msg": "objectArchetypes.sink.supply_pipes.msg"
+      },
+      "TAP": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.sink.tap.name",
+        "msg": "objectArchetypes.sink.tap.msg"
+      },
+      "TRAP": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.sink.trap.name",
+        "msg": "objectArchetypes.sink.trap.msg"
+      },
+      "DRAIN": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.sink.drain.name",
+        "msg": "objectArchetypes.sink.drain.msg"
+      }
+    },
+    "hitLocations": {
+      "BASIN": {
+        "weight": 30
+      },
+      "SUPPLY_PIPES": {
+        "weight": 20
+      },
+      "TAP": {
+        "weight": 20
+      },
+      "TRAP": {
+        "weight": 15
+      },
+      "DRAIN": {
+        "weight": 15
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Sink",
+      "Fishcutting_table_sink"
+    ]
+  },
+  "Bathtub": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "plumbing",
+    "material": "ceramic",
+    "parts": {
+      "TUB_SHELL": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.bathtub.tub_shell.name",
+        "msg": "objectArchetypes.bathtub.tub_shell.msg"
+      },
+      "TAPS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.bathtub.taps.name",
+        "msg": "objectArchetypes.bathtub.taps.msg"
+      },
+      "DRAIN": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.bathtub.drain.name",
+        "msg": "objectArchetypes.bathtub.drain.msg"
+      },
+      "FEET": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.bathtub.feet.name",
+        "msg": "objectArchetypes.bathtub.feet.msg"
+      },
+      "OVERFLOW": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.bathtub.overflow.name",
+        "msg": "objectArchetypes.bathtub.overflow.msg"
+      },
+      "ENAMEL": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.bathtub.enamel.name",
+        "msg": "objectArchetypes.bathtub.enamel.msg"
+      }
+    },
+    "hitLocations": {
+      "TUB_SHELL": {
+        "weight": 35
+      },
+      "TAPS": {
+        "weight": 15
+      },
+      "DRAIN": {
+        "weight": 15
+      },
+      "FEET": {
+        "weight": 15
+      },
+      "OVERFLOW": {
+        "weight": 10
+      },
+      "ENAMEL": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Bathtub",
+      "Bathtub2"
+    ]
+  },
+  "Shower": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "plumbing",
+    "material": "ceramic",
+    "parts": {
+      "MIXER_VALVE": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.shower.mixer_valve.name",
+        "msg": "objectArchetypes.shower.mixer_valve.msg"
+      },
+      "TRAY": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.shower.tray.name",
+        "msg": "objectArchetypes.shower.tray.msg"
+      },
+      "SHOWER_HEAD": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.shower.shower_head.name",
+        "msg": "objectArchetypes.shower.shower_head.msg"
+      },
+      "HOSE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.shower.hose.name",
+        "msg": "objectArchetypes.shower.hose.msg"
+      },
+      "SCREEN": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.shower.screen.name",
+        "msg": "objectArchetypes.shower.screen.msg"
+      },
+      "DRAIN": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.shower.drain.name",
+        "msg": "objectArchetypes.shower.drain.msg"
+      }
+    },
+    "hitLocations": {
+      "MIXER_VALVE": {
+        "weight": 25
+      },
+      "TRAY": {
+        "weight": 20
+      },
+      "SHOWER_HEAD": {
+        "weight": 20
+      },
+      "HOSE": {
+        "weight": 15
+      },
+      "SCREEN": {
+        "weight": 10
+      },
+      "DRAIN": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Shower"
+    ]
+  },
+  "Toilet": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "plumbing",
+    "material": "ceramic",
+    "parts": {
+      "BOWL": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.toilet.bowl.name",
+        "msg": "objectArchetypes.toilet.bowl.msg"
+      },
+      "WASTE_TANK": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.toilet.waste_tank.name",
+        "msg": "objectArchetypes.toilet.waste_tank.msg"
+      },
+      "CISTERN": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.toilet.cistern.name",
+        "msg": "objectArchetypes.toilet.cistern.msg"
+      },
+      "FLUSH_VALVE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.toilet.flush_valve.name",
+        "msg": "objectArchetypes.toilet.flush_valve.msg"
+      },
+      "SEAT": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.toilet.seat.name",
+        "msg": "objectArchetypes.toilet.seat.msg"
+      }
+    },
+    "hitLocations": {
+      "BOWL": {
+        "weight": 30
+      },
+      "WASTE_TANK": {
+        "weight": 25
+      },
+      "CISTERN": {
+        "weight": 20
+      },
+      "FLUSH_VALVE": {
+        "weight": 15
+      },
+      "SEAT": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Portable_Toilet_1",
+      "Portable_Toilet_2"
+    ]
+  },
+  "Fountain": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "plumbing",
+    "material": "stone",
+    "parts": {
+      "BASIN": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.fountain.basin.name",
+        "msg": "objectArchetypes.fountain.basin.msg"
+      },
+      "PUMP": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.fountain.pump.name",
+        "msg": "objectArchetypes.fountain.pump.msg"
+      },
+      "JETS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.fountain.jets.name",
+        "msg": "objectArchetypes.fountain.jets.msg"
+      },
+      "STATUE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.fountain.statue.name",
+        "msg": "objectArchetypes.fountain.statue.msg"
+      },
+      "PLUMBING": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.fountain.plumbing.name",
+        "msg": "objectArchetypes.fountain.plumbing.msg"
+      }
+    },
+    "hitLocations": {
+      "BASIN": {
+        "weight": 30
+      },
+      "PUMP": {
+        "weight": 25
+      },
+      "JETS": {
+        "weight": 15
+      },
+      "STATUE": {
+        "weight": 15
+      },
+      "PLUMBING": {
+        "weight": 15
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Fountains"
+    ]
+  },
+  "Aquarium": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "plumbing",
+    "material": "glass",
+    "parts": {
+      "GLASS": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.aquarium.glass.name",
+        "msg": "objectArchetypes.aquarium.glass.msg"
+      },
+      "PUMP": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.aquarium.pump.name",
+        "msg": "objectArchetypes.aquarium.pump.msg"
+      },
+      "FILTER": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.aquarium.filter.name",
+        "msg": "objectArchetypes.aquarium.filter.msg"
+      },
+      "FRAME": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.aquarium.frame.name",
+        "msg": "objectArchetypes.aquarium.frame.msg"
+      },
+      "HEATER": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.aquarium.heater.name",
+        "msg": "objectArchetypes.aquarium.heater.msg"
+      },
+      "HOOD_LIGHT": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.aquarium.hood_light.name",
+        "msg": "objectArchetypes.aquarium.hood_light.msg"
+      }
+    },
+    "hitLocations": {
+      "GLASS": {
+        "weight": 30
+      },
+      "PUMP": {
+        "weight": 20
+      },
+      "FILTER": {
+        "weight": 15
+      },
+      "FRAME": {
+        "weight": 15
+      },
+      "HEATER": {
+        "weight": 10
+      },
+      "HOOD_LIGHT": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Lobster_Tank"
+    ]
+  },
+  "Door": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "structure",
+    "material": "wood",
+    "parts": {
+      "LEAF": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.door.leaf.name",
+        "msg": "objectArchetypes.door.leaf.msg"
+      },
+      "LOCK": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.door.lock.name",
+        "msg": "objectArchetypes.door.lock.msg"
+      },
+      "FRAME": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.door.frame.name",
+        "msg": "objectArchetypes.door.frame.msg"
+      },
+      "HINGES": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.door.hinges.name",
+        "msg": "objectArchetypes.door.hinges.msg"
+      },
+      "HANDLE": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.door.handle.name",
+        "msg": "objectArchetypes.door.handle.msg"
+      }
+    },
+    "hitLocations": {
+      "LEAF": {
+        "weight": 35
+      },
+      "LOCK": {
+        "weight": 20
+      },
+      "FRAME": {
+        "weight": 20
+      },
+      "HINGES": {
+        "weight": 15
+      },
+      "HANDLE": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Window": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "structure",
+    "material": "glass",
+    "parts": {
+      "PANE": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.window.pane.name",
+        "msg": "objectArchetypes.window.pane.msg"
+      },
+      "SASH": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.window.sash.name",
+        "msg": "objectArchetypes.window.sash.msg"
+      },
+      "FRAME": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.window.frame.name",
+        "msg": "objectArchetypes.window.frame.msg"
+      },
+      "SHUTTERS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.window.shutters.name",
+        "msg": "objectArchetypes.window.shutters.msg"
+      },
+      "LATCH": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.window.latch.name",
+        "msg": "objectArchetypes.window.latch.msg"
+      }
+    },
+    "hitLocations": {
+      "PANE": {
+        "weight": 35
+      },
+      "SASH": {
+        "weight": 20
+      },
+      "FRAME": {
+        "weight": 20
+      },
+      "SHUTTERS": {
+        "weight": 15
+      },
+      "LATCH": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Wall": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "structure",
+    "material": "stone",
+    "parts": {
+      "COURSES": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.wall.courses.name",
+        "msg": "objectArchetypes.wall.courses.msg"
+      },
+      "FOOTING": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.wall.footing.name",
+        "msg": "objectArchetypes.wall.footing.msg"
+      },
+      "FACING": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.wall.facing.name",
+        "msg": "objectArchetypes.wall.facing.msg"
+      },
+      "MORTAR": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.wall.mortar.name",
+        "msg": "objectArchetypes.wall.mortar.msg"
+      },
+      "COPING": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.wall.coping.name",
+        "msg": "objectArchetypes.wall.coping.msg"
+      }
+    },
+    "hitLocations": {
+      "COURSES": {
+        "weight": 30
+      },
+      "FOOTING": {
+        "weight": 20
+      },
+      "FACING": {
+        "weight": 20
+      },
+      "MORTAR": {
+        "weight": 20
+      },
+      "COPING": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Block"
+    ]
+  },
+  "Fence": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "structure",
+    "material": "wood",
+    "parts": {
+      "POSTS": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.fence.posts.name",
+        "msg": "objectArchetypes.fence.posts.msg"
+      },
+      "RAILS": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.fence.rails.name",
+        "msg": "objectArchetypes.fence.rails.msg"
+      },
+      "PANELS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.fence.panels.name",
+        "msg": "objectArchetypes.fence.panels.msg"
+      },
+      "GATE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.fence.gate.name",
+        "msg": "objectArchetypes.fence.gate.msg"
+      },
+      "WIRE": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.fence.wire.name",
+        "msg": "objectArchetypes.fence.wire.msg"
+      }
+    },
+    "hitLocations": {
+      "POSTS": {
+        "weight": 30
+      },
+      "RAILS": {
+        "weight": 25
+      },
+      "PANELS": {
+        "weight": 20
+      },
+      "GATE": {
+        "weight": 15
+      },
+      "WIRE": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Farm+"
+    ]
+  },
+  "Chimney": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "structure",
+    "material": "stone",
+    "parts": {
+      "STACK": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.chimney.stack.name",
+        "msg": "objectArchetypes.chimney.stack.msg"
+      },
+      "FLUE": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.chimney.flue.name",
+        "msg": "objectArchetypes.chimney.flue.msg"
+      },
+      "HEARTH": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.chimney.hearth.name",
+        "msg": "objectArchetypes.chimney.hearth.msg"
+      },
+      "CROWN": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.chimney.crown.name",
+        "msg": "objectArchetypes.chimney.crown.msg"
+      },
+      "DAMPER": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.chimney.damper.name",
+        "msg": "objectArchetypes.chimney.damper.msg"
+      }
+    },
+    "hitLocations": {
+      "STACK": {
+        "weight": 30
+      },
+      "FLUE": {
+        "weight": 25
+      },
+      "HEARTH": {
+        "weight": 20
+      },
+      "CROWN": {
+        "weight": 15
+      },
+      "DAMPER": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Christmas_chimney"
+    ]
+  },
+  "Sign": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "structure",
+    "material": "metal",
+    "parts": {
+      "SIGN_FACE": {
+        "hpPercent": 35,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.sign.sign_face.name",
+        "msg": "objectArchetypes.sign.sign_face.msg"
+      },
+      "POST": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.sign.post.name",
+        "msg": "objectArchetypes.sign.post.msg"
+      },
+      "BRACKETS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.sign.brackets.name",
+        "msg": "objectArchetypes.sign.brackets.msg"
+      },
+      "LETTERING": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.sign.lettering.name",
+        "msg": "objectArchetypes.sign.lettering.msg"
+      },
+      "LIGHTING": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.sign.lighting.name",
+        "msg": "objectArchetypes.sign.lighting.msg"
+      }
+    },
+    "hitLocations": {
+      "SIGN_FACE": {
+        "weight": 35
+      },
+      "POST": {
+        "weight": 30
+      },
+      "BRACKETS": {
+        "weight": 15
+      },
+      "LETTERING": {
+        "weight": 10
+      },
+      "LIGHTING": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Signs",
+      "info"
+    ]
+  },
+  "StreetLight": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "structure",
+    "material": "metal",
+    "parts": {
+      "COLUMN": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.streetlight.column.name",
+        "msg": "objectArchetypes.streetlight.column.msg"
+      },
+      "BASE_PLATE": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.streetlight.base_plate.name",
+        "msg": "objectArchetypes.streetlight.base_plate.msg"
+      },
+      "LAMP_HEAD": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.streetlight.lamp_head.name",
+        "msg": "objectArchetypes.streetlight.lamp_head.msg"
+      },
+      "BALLAST": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.streetlight.ballast.name",
+        "msg": "objectArchetypes.streetlight.ballast.msg"
+      },
+      "FEEDER_CABLE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.streetlight.feeder_cable.name",
+        "msg": "objectArchetypes.streetlight.feeder_cable.msg"
+      }
+    },
+    "hitLocations": {
+      "COLUMN": {
+        "weight": 30
+      },
+      "BASE_PLATE": {
+        "weight": 20
+      },
+      "LAMP_HEAD": {
+        "weight": 20
+      },
+      "BALLAST": {
+        "weight": 15
+      },
+      "FEEDER_CABLE": {
+        "weight": 15
+      }
+    },
+    "sprites": []
+  },
+  "Statue": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "structure",
+    "material": "stone",
+    "parts": {
+      "TORSO": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.statue.torso.name",
+        "msg": "objectArchetypes.statue.torso.msg"
+      },
+      "PLINTH": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.statue.plinth.name",
+        "msg": "objectArchetypes.statue.plinth.msg"
+      },
+      "HEAD": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.statue.head.name",
+        "msg": "objectArchetypes.statue.head.msg"
+      },
+      "LIMBS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.statue.limbs.name",
+        "msg": "objectArchetypes.statue.limbs.msg"
+      },
+      "PATINA": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.statue.patina.name",
+        "msg": "objectArchetypes.statue.patina.msg"
+      }
+    },
+    "hitLocations": {
+      "TORSO": {
+        "weight": 25
+      },
+      "PLINTH": {
+        "weight": 25
+      },
+      "HEAD": {
+        "weight": 20
+      },
+      "LIMBS": {
+        "weight": 20
+      },
+      "PATINA": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Art"
+    ]
+  },
+  "Building": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "structure",
+    "material": "stone",
+    "parts": {
+      "LOAD_BEARING_WALLS": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.building.load_bearing_walls.name",
+        "msg": "objectArchetypes.building.load_bearing_walls.msg"
+      },
+      "FOUNDATION": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.building.foundation.name",
+        "msg": "objectArchetypes.building.foundation.msg"
+      },
+      "FACADE": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.building.facade.name",
+        "msg": "objectArchetypes.building.facade.msg"
+      },
+      "ROOF": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.building.roof.name",
+        "msg": "objectArchetypes.building.roof.msg"
+      },
+      "FLOORS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.building.floors.name",
+        "msg": "objectArchetypes.building.floors.msg"
+      },
+      "UTILITIES": {
+        "hpPercent": 5,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.building.utilities.name",
+        "msg": "objectArchetypes.building.utilities.msg"
+      }
+    },
+    "hitLocations": {
+      "LOAD_BEARING_WALLS": {
+        "weight": 25
+      },
+      "FOUNDATION": {
+        "weight": 20
+      },
+      "FACADE": {
+        "weight": 20
+      },
+      "ROOF": {
+        "weight": 15
+      },
+      "FLOORS": {
+        "weight": 15
+      },
+      "UTILITIES": {
+        "weight": 5
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "WorldBuildings"
+    ]
+  },
+  "Car": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "vehicle",
+    "material": "metal",
+    "parts": {
+      "ENGINE": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.car.engine.name",
+        "msg": "objectArchetypes.car.engine.msg"
+      },
+      "CHASSIS": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.car.chassis.name",
+        "msg": "objectArchetypes.car.chassis.msg"
+      },
+      "WHEELS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.car.wheels.name",
+        "msg": "objectArchetypes.car.wheels.msg"
+      },
+      "FUEL_TANK": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.car.fuel_tank.name",
+        "msg": "objectArchetypes.car.fuel_tank.msg"
+      },
+      "WINDSCREEN": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.car.windscreen.name",
+        "msg": "objectArchetypes.car.windscreen.msg"
+      },
+      "BATTERY": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.car.battery.name",
+        "msg": "objectArchetypes.car.battery.msg"
+      },
+      "STEERING": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.car.steering.name",
+        "msg": "objectArchetypes.car.steering.msg"
+      }
+    },
+    "hitLocations": {
+      "ENGINE": {
+        "weight": 20
+      },
+      "CHASSIS": {
+        "weight": 20
+      },
+      "WHEELS": {
+        "weight": 15
+      },
+      "FUEL_TANK": {
+        "weight": 15
+      },
+      "WINDSCREEN": {
+        "weight": 10
+      },
+      "BATTERY": {
+        "weight": 10
+      },
+      "STEERING": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Bicycle": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "vehicle",
+    "material": "metal",
+    "parts": {
+      "FRAME": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.bicycle.frame.name",
+        "msg": "objectArchetypes.bicycle.frame.msg"
+      },
+      "WHEELS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.bicycle.wheels.name",
+        "msg": "objectArchetypes.bicycle.wheels.msg"
+      },
+      "CHAIN": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.bicycle.chain.name",
+        "msg": "objectArchetypes.bicycle.chain.msg"
+      },
+      "HANDLEBARS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.bicycle.handlebars.name",
+        "msg": "objectArchetypes.bicycle.handlebars.msg"
+      },
+      "BRAKES": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.bicycle.brakes.name",
+        "msg": "objectArchetypes.bicycle.brakes.msg"
+      },
+      "SADDLE": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.bicycle.saddle.name",
+        "msg": "objectArchetypes.bicycle.saddle.msg"
+      }
+    },
+    "hitLocations": {
+      "FRAME": {
+        "weight": 25
+      },
+      "WHEELS": {
+        "weight": 20
+      },
+      "CHAIN": {
+        "weight": 15
+      },
+      "HANDLEBARS": {
+        "weight": 15
+      },
+      "BRAKES": {
+        "weight": 15
+      },
+      "SADDLE": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "ShoppingCart": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "vehicle",
+    "material": "metal",
+    "parts": {
+      "BASKET": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.shoppingcart.basket.name",
+        "msg": "objectArchetypes.shoppingcart.basket.msg"
+      },
+      "CASTORS": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.shoppingcart.castors.name",
+        "msg": "objectArchetypes.shoppingcart.castors.msg"
+      },
+      "CHASSIS": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.shoppingcart.chassis.name",
+        "msg": "objectArchetypes.shoppingcart.chassis.msg"
+      },
+      "HANDLE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.shoppingcart.handle.name",
+        "msg": "objectArchetypes.shoppingcart.handle.msg"
+      },
+      "CHILD_SEAT": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.shoppingcart.child_seat.name",
+        "msg": "objectArchetypes.shoppingcart.child_seat.msg"
+      }
+    },
+    "hitLocations": {
+      "BASKET": {
+        "weight": 30
+      },
+      "CASTORS": {
+        "weight": 25
+      },
+      "CHASSIS": {
+        "weight": 20
+      },
+      "HANDLE": {
+        "weight": 15
+      },
+      "CHILD_SEAT": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Potion": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "portable",
+    "material": "glass",
+    "parts": {
+      "PHIAL": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.potion.phial.name",
+        "msg": "objectArchetypes.potion.phial.msg"
+      },
+      "DRAUGHT": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.potion.draught.name",
+        "msg": "objectArchetypes.potion.draught.msg"
+      },
+      "STOPPER": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.potion.stopper.name",
+        "msg": "objectArchetypes.potion.stopper.msg"
+      },
+      "WAX_SEAL": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.potion.wax_seal.name",
+        "msg": "objectArchetypes.potion.wax_seal.msg"
+      },
+      "LABEL": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.potion.label.name",
+        "msg": "objectArchetypes.potion.label.msg"
+      }
+    },
+    "hitLocations": {
+      "PHIAL": {
+        "weight": 35
+      },
+      "DRAUGHT": {
+        "weight": 30
+      },
+      "STOPPER": {
+        "weight": 15
+      },
+      "WAX_SEAL": {
+        "weight": 10
+      },
+      "LABEL": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Book": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "portable",
+    "material": "paper",
+    "parts": {
+      "PAGES": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.book.pages.name",
+        "msg": "objectArchetypes.book.pages.msg"
+      },
+      "SPINE": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.book.spine.name",
+        "msg": "objectArchetypes.book.spine.msg"
+      },
+      "COVER": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.book.cover.name",
+        "msg": "objectArchetypes.book.cover.msg"
+      },
+      "BINDING": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.book.binding.name",
+        "msg": "objectArchetypes.book.binding.msg"
+      },
+      "CLASP": {
+        "hpPercent": 5,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.book.clasp.name",
+        "msg": "objectArchetypes.book.clasp.msg"
+      }
+    },
+    "hitLocations": {
+      "PAGES": {
+        "weight": 35
+      },
+      "SPINE": {
+        "weight": 25
+      },
+      "COVER": {
+        "weight": 20
+      },
+      "BINDING": {
+        "weight": 15
+      },
+      "CLASP": {
+        "weight": 5
+      }
+    },
+    "sprites": []
+  },
+  "Backpack": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "portable",
+    "material": "fabric",
+    "parts": {
+      "MAIN_BODY": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.backpack.main_body.name",
+        "msg": "objectArchetypes.backpack.main_body.msg"
+      },
+      "STRAPS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.backpack.straps.name",
+        "msg": "objectArchetypes.backpack.straps.msg"
+      },
+      "ZIP": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.backpack.zip.name",
+        "msg": "objectArchetypes.backpack.zip.msg"
+      },
+      "POCKETS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.backpack.pockets.name",
+        "msg": "objectArchetypes.backpack.pockets.msg"
+      },
+      "FRAME": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.backpack.frame.name",
+        "msg": "objectArchetypes.backpack.frame.msg"
+      }
+    },
+    "hitLocations": {
+      "MAIN_BODY": {
+        "weight": 35
+      },
+      "STRAPS": {
+        "weight": 20
+      },
+      "ZIP": {
+        "weight": 15
+      },
+      "POCKETS": {
+        "weight": 15
+      },
+      "FRAME": {
+        "weight": 15
+      }
+    },
+    "sprites": []
+  },
+  "Torch": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "portable",
+    "material": "wood",
+    "parts": {
+      "HEAD": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.torch.head.name",
+        "msg": "objectArchetypes.torch.head.msg"
+      },
+      "FUEL": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.torch.fuel.name",
+        "msg": "objectArchetypes.torch.fuel.msg"
+      },
+      "HANDLE": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.torch.handle.name",
+        "msg": "objectArchetypes.torch.handle.msg"
+      },
+      "WICK": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.torch.wick.name",
+        "msg": "objectArchetypes.torch.wick.msg"
+      }
+    },
+    "hitLocations": {
+      "HEAD": {
+        "weight": 30
+      },
+      "FUEL": {
+        "weight": 25
+      },
+      "HANDLE": {
+        "weight": 25
+      },
+      "WICK": {
+        "weight": 20
+      }
+    },
+    "sprites": []
+  },
+  "Painting": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "portable",
+    "material": "fabric",
+    "parts": {
+      "CANVAS": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.painting.canvas.name",
+        "msg": "objectArchetypes.painting.canvas.msg"
+      },
+      "STRETCHER": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.painting.stretcher.name",
+        "msg": "objectArchetypes.painting.stretcher.msg"
+      },
+      "FRAME": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.painting.frame.name",
+        "msg": "objectArchetypes.painting.frame.msg"
+      },
+      "VARNISH": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.painting.varnish.name",
+        "msg": "objectArchetypes.painting.varnish.msg"
+      },
+      "PIGMENT": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.painting.pigment.name",
+        "msg": "objectArchetypes.painting.pigment.msg"
+      }
+    },
+    "hitLocations": {
+      "CANVAS": {
+        "weight": 35
+      },
+      "STRETCHER": {
+        "weight": 20
+      },
+      "FRAME": {
+        "weight": 25
+      },
+      "VARNISH": {
+        "weight": 10
+      },
+      "PIGMENT": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Art"
+    ]
+  },
+  "Instrument": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "portable",
+    "material": "wood",
+    "parts": {
+      "BODY": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.instrument.body.name",
+        "msg": "objectArchetypes.instrument.body.msg"
+      },
+      "NECK": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.instrument.neck.name",
+        "msg": "objectArchetypes.instrument.neck.msg"
+      },
+      "STRINGS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.instrument.strings.name",
+        "msg": "objectArchetypes.instrument.strings.msg"
+      },
+      "BRIDGE": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.instrument.bridge.name",
+        "msg": "objectArchetypes.instrument.bridge.msg"
+      },
+      "TUNERS": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.instrument.tuners.name",
+        "msg": "objectArchetypes.instrument.tuners.msg"
+      }
+    },
+    "hitLocations": {
+      "BODY": {
+        "weight": 30
+      },
+      "NECK": {
+        "weight": 20
+      },
+      "STRINGS": {
+        "weight": 20
+      },
+      "BRIDGE": {
+        "weight": 15
+      },
+      "TUNERS": {
+        "weight": 15
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Music"
+    ]
+  },
+  "Doll": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "portable",
+    "material": "fabric",
+    "parts": {
+      "BODY": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.doll.body.name",
+        "msg": "objectArchetypes.doll.body.msg"
+      },
+      "HEAD": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.doll.head.name",
+        "msg": "objectArchetypes.doll.head.msg"
+      },
+      "LIMBS": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.doll.limbs.name",
+        "msg": "objectArchetypes.doll.limbs.msg"
+      },
+      "STUFFING": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.doll.stuffing.name",
+        "msg": "objectArchetypes.doll.stuffing.msg"
+      },
+      "EYES": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.doll.eyes.name",
+        "msg": "objectArchetypes.doll.eyes.msg"
+      }
+    },
+    "hitLocations": {
+      "BODY": {
+        "weight": 30
+      },
+      "HEAD": {
+        "weight": 25
+      },
+      "LIMBS": {
+        "weight": 20
+      },
+      "STUFFING": {
+        "weight": 15
+      },
+      "EYES": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Boulder": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "natural",
+    "material": "stone",
+    "parts": {
+      "CORE": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.boulder.core.name",
+        "msg": "objectArchetypes.boulder.core.msg"
+      },
+      "CRUST": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.boulder.crust.name",
+        "msg": "objectArchetypes.boulder.crust.msg"
+      },
+      "FRACTURE_LINES": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.boulder.fracture_lines.name",
+        "msg": "objectArchetypes.boulder.fracture_lines.msg"
+      },
+      "BASE": {
+        "hpPercent": 10,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.boulder.base.name",
+        "msg": "objectArchetypes.boulder.base.msg"
+      },
+      "MOSS": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.boulder.moss.name",
+        "msg": "objectArchetypes.boulder.moss.msg"
+      }
+    },
+    "hitLocations": {
+      "CORE": {
+        "weight": 35
+      },
+      "CRUST": {
+        "weight": 25
+      },
+      "FRACTURE_LINES": {
+        "weight": 20
+      },
+      "BASE": {
+        "weight": 10
+      },
+      "MOSS": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Log": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "natural",
+    "material": "wood",
+    "parts": {
+      "HEARTWOOD": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.log.heartwood.name",
+        "msg": "objectArchetypes.log.heartwood.msg"
+      },
+      "SAPWOOD": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.log.sapwood.name",
+        "msg": "objectArchetypes.log.sapwood.msg"
+      },
+      "BARK": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.log.bark.name",
+        "msg": "objectArchetypes.log.bark.msg"
+      },
+      "KNOTS": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.log.knots.name",
+        "msg": "objectArchetypes.log.knots.msg"
+      },
+      "ROT_POCKET": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.log.rot_pocket.name",
+        "msg": "objectArchetypes.log.rot_pocket.msg"
+      }
+    },
+    "hitLocations": {
+      "HEARTWOOD": {
+        "weight": 35
+      },
+      "SAPWOOD": {
+        "weight": 25
+      },
+      "BARK": {
+        "weight": 20
+      },
+      "KNOTS": {
+        "weight": 10
+      },
+      "ROT_POCKET": {
+        "weight": 10
+      }
+    },
+    "sprites": []
+  },
+  "Campfire": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "natural",
+    "material": "fire",
+    "parts": {
+      "FLAME": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.campfire.flame.name",
+        "msg": "objectArchetypes.campfire.flame.msg"
+      },
+      "EMBERS": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.campfire.embers.name",
+        "msg": "objectArchetypes.campfire.embers.msg"
+      },
+      "FUEL_STACK": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.campfire.fuel_stack.name",
+        "msg": "objectArchetypes.campfire.fuel_stack.msg"
+      },
+      "STONE_RING": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.campfire.stone_ring.name",
+        "msg": "objectArchetypes.campfire.stone_ring.msg"
+      }
+    },
+    "hitLocations": {
+      "FLAME": {
+        "weight": 30
+      },
+      "EMBERS": {
+        "weight": 25
+      },
+      "FUEL_STACK": {
+        "weight": 25
+      },
+      "STONE_RING": {
+        "weight": 20
+      }
+    },
+    "sprites": []
+  },
+  "Puddle": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "natural",
+    "material": "liquid",
+    "parts": {
+      "BODY": {
+        "hpPercent": 40,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.puddle.body.name",
+        "msg": "objectArchetypes.puddle.body.msg"
+      },
+      "SURFACE": {
+        "hpPercent": 30,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.puddle.surface.name",
+        "msg": "objectArchetypes.puddle.surface.msg"
+      },
+      "SILT": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.puddle.silt.name",
+        "msg": "objectArchetypes.puddle.silt.msg"
+      },
+      "RIM": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.puddle.rim.name",
+        "msg": "objectArchetypes.puddle.rim.msg"
+      }
+    },
+    "hitLocations": {
+      "BODY": {
+        "weight": 40
+      },
+      "SURFACE": {
+        "weight": 30
+      },
+      "SILT": {
+        "weight": 15
+      },
+      "RIM": {
+        "weight": 15
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Puddle"
+    ]
+  },
+  "Waterfall": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "natural",
+    "material": "liquid",
+    "parts": {
+      "FALL": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.waterfall.fall.name",
+        "msg": "objectArchetypes.waterfall.fall.msg"
+      },
+      "PLUNGE_POOL": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.waterfall.plunge_pool.name",
+        "msg": "objectArchetypes.waterfall.plunge_pool.msg"
+      },
+      "CREST": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.waterfall.crest.name",
+        "msg": "objectArchetypes.waterfall.crest.msg"
+      },
+      "ROCK_FACE": {
+        "hpPercent": 10,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.waterfall.rock_face.name",
+        "msg": "objectArchetypes.waterfall.rock_face.msg"
+      },
+      "SPRAY": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.waterfall.spray.name",
+        "msg": "objectArchetypes.waterfall.spray.msg"
+      }
+    },
+    "hitLocations": {
+      "FALL": {
+        "weight": 35
+      },
+      "PLUNGE_POOL": {
+        "weight": 25
+      },
+      "CREST": {
+        "weight": 20
+      },
+      "ROCK_FACE": {
+        "weight": 10
+      },
+      "SPRAY": {
+        "weight": 10
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Waterfall"
+    ]
+  },
+  "Haystack": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 0,
+    "category": "natural",
+    "material": "organic",
+    "parts": {
+      "BODY": {
+        "hpPercent": 35,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.haystack.body.name",
+        "msg": "objectArchetypes.haystack.body.msg"
+      },
+      "CROWN": {
+        "hpPercent": 25,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.haystack.crown.name",
+        "msg": "objectArchetypes.haystack.crown.msg"
+      },
+      "BINDING": {
+        "hpPercent": 20,
+        "vital": false,
+        "skillId": [],
+        "canCutoff": true,
+        "name": "objectArchetypes.haystack.binding.name",
+        "msg": "objectArchetypes.haystack.binding.msg"
+      },
+      "CORE": {
+        "hpPercent": 20,
+        "vital": true,
+        "skillId": [],
+        "canCutoff": false,
+        "name": "objectArchetypes.haystack.core.name",
+        "msg": "objectArchetypes.haystack.core.msg"
+      }
+    },
+    "hitLocations": {
+      "BODY": {
+        "weight": 35
+      },
+      "CROWN": {
+        "weight": 25
+      },
+      "BINDING": {
+        "weight": 20
+      },
+      "CORE": {
+        "weight": 20
+      }
+    },
+    "spriteFolder": "Objects",
+    "sprites": [
+      "Farm+"
+    ]
+  }
+}

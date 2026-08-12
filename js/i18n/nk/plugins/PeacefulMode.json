@@ -1,0 +1,324 @@
+{
+  "idle": {
+    "aquaticfish": [
+      "{name} IZ SWIMMIN' HAPPILY.",
+      "{name} BLOWS A STRIN' OF BUBBLES!"
+    ],
+    "abyssalleviathan": [
+      "{name} DRIFTS IN DA DARK, PAYIN' YOU NO MIND!",
+      "{name} LETS OUT A LOW, DISTANT RUMBLE!"
+    ],
+    "amphibian": [
+      "{name} SITS IN A DAMP PATCH, BLINKIN' SLOWLY!",
+      "{name} CROAKS SOFTLY TA ITSELF."
+    ],
+    "frog": [
+      "{name} RIBBITS CONTENTEDLY.",
+      "{name} HOPS IN A LITTLE CIRCLE."
+    ],
+    "octopus": [
+      "{name} CURLS ITS TENTACLES AN' WATCHES YOU!",
+      "{name} CHANGES COLOUR, UNBOTHERED!"
+    ],
+    "crustacean": [
+      "{name} CLACKS ITS CLAWS IDLY.",
+      "{name} SKITTERS SIDEWAYS AN' WAITS!"
+    ],
+    "snail": [
+      "{name} INCHES ALONG, LEAVIN' A GLISTENIN' TRAIL!",
+      "{name} RETREATS HALFWAY INTO ITS SHELL!"
+    ],
+    "turtle": [
+      "{name} TUCKS IN AN' BASKS LAZILY!",
+      "{name} YAWNS AN' SETTLES DOWN."
+    ],
+    "serpent": [
+      "{name} COILS UP AN' FLICKS ITS TONGUE!",
+      "{name} SWAYS GENTLY, WATCHIN'."
+    ],
+    "reptilian": [
+      "{name} SUNS ITSELF, PERFECTLY STILL!",
+      "{name} BLINKS ONE SLOW EYE AT YOU!"
+    ],
+    "insectoid": [
+      "{name} IZ BUZZIN' AROUND.",
+      "{name} RUBS ITS FORELIMBS TOGETHER!"
+    ],
+    "insectswarm": [
+      "{name} DRONES IN A LAZY CLOUD.",
+      "{name} SWIRLS ABOUT WITHOUT PURPOSE!"
+    ],
+    "spider": [
+      "{name} FUSSES WIT A STRAND OF SILK!",
+      "{name} TAPS A LEG AN' WAITS."
+    ],
+    "spiderhumanhybrid": [
+      "{name} SPINS THREAD BETWEEN ITS FINGERS, DISTRACTED!",
+      "{name} CLICKS ITS FANGS SOFTLY."
+    ],
+    "scorpion": [
+      "{name} LOWERS ITS TAIL AN' RESTS!",
+      "{name} CLICKS ITS PINCERS AN' STAYS PUT!"
+    ],
+    "segmentworm": [
+      "{name} RIPPLES SLOWLY THROUGH DA DIRT!",
+      "{name} BURROWS A LITTLE AN' WAITS!"
+    ],
+    "bird": [
+      "{name} PREENS ITS FEATHERS.",
+      "{name} CHIRPS A FEW IDLE NOTES."
+    ],
+    "bat": [
+      "{name} HANGS UPSIDE DOWN, HALF ASLEEP!",
+      "{name} FLUTTERS LAZILY IN PLACE!"
+    ],
+    "bacterial": [
+      "{name} DIVIDES QUIETLY, IGNORIN' YOU!",
+      "{name} PULSES WIT A FAINT GLOW."
+    ],
+    "beast": [
+      "{name} SNIFFS DA AIR AN' YAWNS.",
+      "{name} SCRATCHES ITSELF AN' LIES DOWN!"
+    ],
+    "rabbit": [
+      "{name} TWITCHES ITS NOSE AN' NIBBLES!",
+      "{name} GROOMS ITS LONG EARS."
+    ],
+    "horse": [
+      "{name} SWISHES ITS TAIL AN' GRAZES!",
+      "{name} SNORTS SOFTLY."
+    ],
+    "elephant": [
+      "{name} FLAPS ITS EARS AN' STANDS CALMLY!",
+      "{name} TRUMPETS A LOW, GENTLE NOTE!"
+    ],
+    "hellhound": [
+      "{name} PANTS, EMBERS DRIFTIN' FROM ITS JAWS, BUT STAYS PUT!",
+      "{name} CIRCLES ONCE AN' LIES DOWN!"
+    ],
+    "bird_of_prey": [
+      "{name} WATCHES FROM ABOVE, UNMOVIN'!",
+      "{name} RUFFLES ITS FEATHERS."
+    ],
+    "plant": [
+      "{name} SWAYS IN AN UNFELT BREEZE!",
+      "{name} TURNS ITS LEAVES TOWARD DA LIGHT!"
+    ],
+    "tree": [
+      "{name} CREAKS SOFTLY AN' STAYS ROOTED!",
+      "{name} RUSTLES ITS BRANCHES."
+    ],
+    "mushroom": [
+      "{name} RELEASES A PUFF OF HARMLESS SPORES!",
+      "{name} SITS QUIETLY IN DA DAMP."
+    ],
+    "scarecrow": [
+      "{name} SAGS ON ITS POST, LIFELESS!",
+      "{name} FLAPS IN DA WIND."
+    ],
+    "slime": [
+      "{name} JIGGLES AN' GURGLES.",
+      "{name} WOBBLES IN PLACE."
+    ],
+    "spherical": [
+      "{name} ROLLS BACK AN' FORTH GENTLY!",
+      "{name} HUMS TA ITSELF."
+    ],
+    "ghost": [
+      "{name} DRIFTS AN' MOANS FAINTLY!",
+      "{name} FLICKERS, PAYIN' YOU NO HEED!"
+    ],
+    "undead": [
+      "{name} SHUFFLES AIMLESSLY.",
+      "{name} GROANS AN' STANDS STILL."
+    ],
+    "skeleton": [
+      "{name} RATTLES ITS BONES AN' WAITS!",
+      "{name} IDLY TAPS ITS RIBS."
+    ],
+    "constructedundead": [
+      "{name} TWITCHES WIT BORROWED LIFE, BUT DOES NOTHIN'!",
+      "{name} CREAKS AN' SETTLES."
+    ],
+    "vampire": [
+      "{name} EXAMINES ITS NAILS, BORED!",
+      "{name} WATCHES YOU WIT MILD CURIOSITY!"
+    ],
+    "voidspawn": [
+      "{name} RIPPLES WIT QUIET STATIC!",
+      "{name} STARES INTO NOTHIN'."
+    ],
+    "demon": [
+      "{name} SMIRKS BUT MAKES NO MOVE!",
+      "{name} FLICKS ITS TAIL, UNINTERESTED!"
+    ],
+    "wingeddemon": [
+      "{name} FOLDS ITS WINGS AN' WAITS!",
+      "{name} HOVERS LAZILY."
+    ],
+    "angel": [
+      "{name} HUMS A SOFT, DISTANT HYMN!",
+      "{name} WATCHES OVER YOU, SERENE!"
+    ],
+    "ophanim": [
+      "{name} TURNS SLOWLY, RINGS OF LIGHT SPINNIN'!",
+      "{name} GLOWS WIT CALM RADIANCE."
+    ],
+    "fairy": [
+      "{name} FLITS ABOUT, GIGGLIN'.",
+      "{name} SPRINKLES HARMLESS SPARKLES!"
+    ],
+    "elemental": [
+      "{name} SHIMMERS IN PLACE.",
+      "{name} PULSES GENTLY."
+    ],
+    "fireelemental": [
+      "{name} CRACKLES AN' FLICKERS WARMLY!",
+      "{name} DANCES LIKE A CAMPFIRE."
+    ],
+    "waterelemental": [
+      "{name} RIPPLES AN' LAPS QUIETLY!",
+      "{name} SWIRLS IN A CALM EDDY."
+    ],
+    "thunderelemental": [
+      "{name} SPARKS SOFTLY, HARMLESSLY!",
+      "{name} CRACKLES WIT IDLE STATIC!"
+    ],
+    "stormelemental": [
+      "{name} SWIRLS A GENTLE GUST AROUND ITSELF!",
+      "{name} RUMBLES FAINTLY."
+    ],
+    "darkelemental": [
+      "{name} SMOULDERS WIT SHADOW, BUT STAYS PUT!",
+      "{name} DRIFTS IN A QUIET GLOOM."
+    ],
+    "sacredelemental": [
+      "{name} GLOWS WIT A SOFT, PEACEFUL LIGHT!",
+      "{name} HUMS SERENELY."
+    ],
+    "metalelemental": [
+      "{name} CLINKS AN' SETTLES.",
+      "{name} REFLECTS DA LIGHT, UNMOVIN'!"
+    ],
+    "crystalentity": [
+      "{name} CHIMES FAINTLY.",
+      "{name} REFRACTS DA LIGHT, STILL!"
+    ],
+    "golem": [
+      "{name} STANDS LIKE A STATUE.",
+      "{name} GRINDS SOFTLY AN' WAITS."
+    ],
+    "robot": [
+      "{name} IDLES WIT A LOW ELECTRONIC HUM!",
+      "{name} BLINKS A STATUS LIGHT, STANDIN' BY!"
+    ],
+    "drone": [
+      "{name} HOVERS IN PLACE, SCANNIN' LAZILY!",
+      "{name} BEEPS ONCE AN' WAITS."
+    ],
+    "roboticdefender": [
+      "{name} HOLDS POSITION, WEAPONS LOWERED!",
+      "{name} CYCLES A QUIET DIAGNOSTIC!"
+    ],
+    "turret": [
+      "{name} SWIVELS IDLY, TARGETIN' NOTHIN'!",
+      "{name} POWERS DOWN ITS BARREL."
+    ],
+    "mineral": [
+      "{name} SITS INERT.",
+      "{name} GLITTERS QUIETLY."
+    ],
+    "chestmimic": [
+      "{name} SITS DERE LOOKIN' EXACTLY LIKE A HARMLESS CHEST!",
+      "{name} CREAKS ITS LID AN' STAYS PUT!"
+    ],
+    "trashcreature": [
+      "{name} RUMMAGES THROUGH ITSELF, MUTTERIN'!",
+      "{name} RATTLES AN' SETTLES INTO A HEAP!"
+    ],
+    "dragon": [
+      "{name} FOLDS ITS WINGS AN' WATCHES YOU, UNIMPRESSED!",
+      "{name} EXHALES A LAZY WISP OF SMOKE!"
+    ],
+    "hydra": [
+      "{name}'S HEADS BICKER QUIETLY AMONG THEMSELVES!",
+      "{name} COILS UP AN' RESTS."
+    ],
+    "phoenix": [
+      "{name} PREENS ITS GLOWIN' FEATHERS!",
+      "{name} SMOULDERS WARMLY, AT PEACE!"
+    ],
+    "unicorn": [
+      "{name} GRAZES CALMLY, HORN LOWERED!",
+      "{name} TOSSES ITS MANE AN' WATCHES!"
+    ],
+    "manticore": [
+      "{name} LICKS A PAW AN' LIES DOWN!",
+      "{name} FLICKS ITS TAIL, UNINTERESTED!"
+    ],
+    "minotaur": [
+      "{name} PAWS DA GROUND BUT DOES NOT CHARGE!",
+      "{name} SNORTS AN' STAYS PUT."
+    ],
+    "centaur": [
+      "{name} STAMPS A HOOF AN' WAITS.",
+      "{name} LOWERS ITS BOW, AT EASE."
+    ],
+    "gorgon": [
+      "{name}'S SNAKES HISS SOFTLY, DEN SETTLE!",
+      "{name} AVERTS ITS GAZE, HARMLESS!"
+    ],
+    "goblin": [
+      "{name} FIDGETS AN' MUTTERS TA ITSELF!",
+      "{name} POKES AT DA GROUND, BORED!"
+    ],
+    "gnome": [
+      "{name} TINKERS WIT A LITTLE GADGET!",
+      "{name} HUMS A WORKIN' TUNE."
+    ],
+    "elven": [
+      "{name} STANDS GRACEFULLY, UNCONCERNED!",
+      "{name} REGARDS YOU WIT CALM EYES!"
+    ],
+    "ogre": [
+      "{name} SCRATCHES ITS BELLY AN' YAWNS!",
+      "{name} GRUNTS AN' SITS DOWN."
+    ],
+    "armoredknight": [
+      "{name} RESTS ON ITS BLADE, VISOR DOWN!",
+      "{name} STANDS AT QUIET ATTENTION!"
+    ],
+    "humanoid": [
+      "{name} SHIFTS ITS WEIGHT AN' WAITS!",
+      "{name} LOOKS AROUND, UNBOTHERED!"
+    ],
+    "doubleheadedhumanoid": [
+      "{name}'S TWO HEADS CHAT QUIETLY WIT EACH OTHER!",
+      "{name} SHRUGS ALL OF ITS SHOULDERS!"
+    ],
+    "mutant": [
+      "{name} TWITCHES ODDLY, BUT STAYS PUT!",
+      "{name} MUMBLES TA ITSELF."
+    ],
+    "totem": [
+      "{name} STANDS SILENT AN' WATCHFUL!",
+      "{name} HUMS A LOW, ANCIENT NOTE!"
+    ],
+    "tentacledcreature": [
+      "{name} WAVES ITS TENDRILS LAZILY!",
+      "{name} CURLS IN ON ITSELF AN' WAITS!"
+    ],
+    "spikymonster": [
+      "{name} BRISTLES, DEN RELAXES ITS SPINES!",
+      "{name} ROLLS INTO A BALL AN' RESTS!"
+    ],
+    "default": [
+      "{name} WATCHES YOU CALMLY, MAKIN' NO MOVE!",
+      "{name} STAYS WHERE IT IZ, AT PEACE!",
+      "{name} SEEMS CONTENT TA BE LEFT ALONE!"
+    ]
+  },
+  "cmd": {
+    "talk": "TALK"
+  }
+}

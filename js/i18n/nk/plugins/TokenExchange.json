@@ -1,0 +1,43 @@
+{
+  "title": "TOKEN EXCHANGE",
+  "banner": "TOKEN EXCHANGE",
+  "tagline": "ARCADE CURRENCY TERMINAL, NO COMMISSION",
+  "rate": "1 TOKEN = €{price}",
+  "atPar": "BUY AN' SELL AT PAR.",
+  "wallet": "WALLET",
+  "tokensHeld": "TOKENS HELD",
+  "buyTokens": "BUY TOKENS",
+  "sellTokens": "SELL TOKENS",
+  "tokensToBuy": "TOKENS TA BUY",
+  "tokensToSell": "TOKENS TA SELL",
+  "max": "MAX",
+  "youPay": "YOU PAY",
+  "youGive": "YOU GIVE",
+  "youReceive": "YOU RECEIVE",
+  "confirm": "CONFIRM EXCHANGE",
+  "hint": "PICK A DIRECTION, SET AN AMOUNT, DEN CONFIRM!",
+  "affordable": {
+    "one": "AFFORDABLE: {count} TOKEN AT €{price} EACH",
+    "other": "AFFORDABLE: {count} TOKENS AT €{price} EACH"
+  },
+  "held": {
+    "one": "HELD: {count} TOKEN WORTH €{worth}",
+    "other": "HELD: {count} TOKENS WORTH €{worth}"
+  },
+  "tokenCount": {
+    "one": "{count} TOKEN",
+    "other": "{count} TOKENS"
+  },
+  "statusBuying": "BUYIN': EUROS LEAVE DA WALLET, TOKENS ARRIVE IN DA BAG!",
+  "statusSelling": "SELLIN': TOKENS LEAVE DA BAG, EUROS RETURN TA DA WALLET!",
+  "notEnoughEuros": "NOT ENOUGH EUROS FOR DAT.",
+  "notEnoughTokens": "YOU DO NOT HOLD DAT MANY TOKENS!",
+  "bought": {
+    "one": "BOUGHT {count} TOKEN FOR €{total}.",
+    "other": "BOUGHT {count} TOKENS FOR €{total}."
+  },
+  "sold": {
+    "one": "SOLD {count} TOKEN FOR €{total}.",
+    "other": "SOLD {count} TOKENS FOR €{total}."
+  }
+}

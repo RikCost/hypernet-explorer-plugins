@@ -1572,7 +1572,6 @@
             widgetText(this, result, 0, 7, this._vw, 'center', color || D.goldHi, 16);
             H.decoRule(bmp, 10, 30, this._vw - 20, D.goldLo);
             widgetText(this, score, 0, 33, this._vw, 'center', D.ink, 8);
-            widgetText(this, 'PRESS OK TO LEAVE THE ALLEY', 0, 45, this._vw, 'center', D.dim, 8);
             widgetTextEnd(this);
         }
     }

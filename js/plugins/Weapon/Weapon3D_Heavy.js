@@ -103,6 +103,15 @@
       183: 'createVarleniaWarFanModel',             // Varlenia War Fan
       184: 'createCompressionMaulModel',            // EHI Compression Maul
       185: 'createMjolnirModel',                    // Mjolnir
+      186: 'createBuskerAcousticModel',             // Busker's Acoustic
+      187: 'createPresidentialSaxophoneModel',      // Presidential Saxophone
+      188: 'createPawnshopStratocasterModel',       // Pawnshop Stratocaster
+      189: 'createChitarraInfernaleModel',          // La chitarra infernale
+      190: 'createFlyingVModel',                    // Flying V
+      191: 'createBassGuitarModel',                 // Bass Guitar
+      192: 'createDoubleNeckWarhorseModel',         // Double-Neck Warhorse
+      193: 'createFeedbackCannonModel',             // Feedback Cannon
+      194: 'createHellfireSuperstratModel',         // Hellfire Superstrat
       211: 'createSteelChairModel',                 // Steel Chair
     },
     models: {
@@ -3060,6 +3069,577 @@
         const butt = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.022, 0.02, this.seg(9, 6)), bronze);
         butt.position.y = -0.056;
         group.add(butt);
+        return group;
+      },
+
+      // ========================================================================
+      // Guitars
+      // ========================================================================
+      // A guitar is a club with a very specific silhouette, so the shape is the
+      // whole model: everything below builds the same instrument out of a body
+      // outline, a neck and a handful of fittings, and each weapon differs in
+      // which outline it asks for and what it is made of.
+      //
+      // It is held by the NECK, which is what puts the body up at +Y where a
+      // hammer head would be and the headstock down past the hand. The body
+      // outline is written in its own X/Y plane with local -y at the neck
+      // pocket, and _plate extrudes it along Z, so the instrument reads
+      // face-on the way it is swung.
+
+      /** Outline of a body shape, at `scale`, ready for _plate. */
+      _guitarOutline(shape, scale) {
+        const s = scale === undefined ? 1 : scale;
+        let pts;
+        if (shape === 'v') {
+          // Two wings and a notch. Nothing else needed: everyone knows it.
+          pts = [
+            [0.042, -0.150], [0.150, 0.155], [0.086, 0.190], [0.000, 0.010],
+            [-0.086, 0.190], [-0.150, 0.155], [-0.042, -0.150]
+          ];
+        } else if (shape === 'dread') {
+          // A figure of eight: two bouts with a waist between them, the lower
+          // bout the wider of the two. Sampled rather than listed, since the
+          // whole shape is one curve.
+          pts = [];
+          const back = [];
+          const n = this.seg(13, 8);
+          for (let i = 0; i <= n; i++) {
+            const t = 0.05 + (i / n) * 0.90;
+            const half = 0.118 * Math.pow(Math.sin(Math.PI * t), 0.42)
+              * (1 - 0.40 * Math.exp(-Math.pow((t - 0.52) / 0.14, 2)))
+              * (0.88 + 0.26 * t);
+            const y = -0.185 + t * 0.37;
+            pts.push([half, y]);
+            back.push([-half, y]);
+          }
+          back.reverse();
+          pts = pts.concat(back);
+        } else {
+          // Superstrat: offset waist, a short treble horn and a long bass one.
+          pts = [
+            [0.048, -0.140], [0.112, -0.162], [0.145, -0.108], [0.136, -0.038],
+            [0.146, 0.040], [0.116, 0.118], [0.052, 0.166], [-0.026, 0.172],
+            [-0.098, 0.140], [-0.140, 0.066], [-0.136, -0.016], [-0.156, -0.096],
+            [-0.132, -0.178], [-0.074, -0.160], [-0.048, -0.140]
+          ];
+        }
+        return s === 1 ? pts : pts.map(p => [p[0] * s, p[1] * s]);
+      },
+
+      /** Where the neck meets the body, in body-local y. */
+      _guitarPocket(shape) {
+        return shape === 'dread' ? -0.185 : (shape === 'v' ? -0.150 : -0.140);
+      },
+
+      /**
+       * The whole instrument. Everything is optional except a shape and a
+       * body material, so an acoustic and a superstrat are the same call.
+       */
+      _guitar(group, rand, o) {
+        const shape = o.shape || 'strat';
+        const s = o.bodyScale === undefined ? 1 : o.bodyScale;
+        const bodyY = o.bodyY === undefined ? 0.16 : o.bodyY;
+        const thick = (o.thickness === undefined ? 0.05 : o.thickness) * (shape === 'dread' ? 1.7 : 1);
+        const metal = o.metal || this._steel(0x8E939A, 0.3);
+        const neckMat = o.neckMat || this._wood(0x8B5A2B);
+        const boardMat = o.boardMat || this._wood(0x3A2318);
+        const wire = o.stringMat || this._mat(0xC9CDD2, { roughness: 0.3, metalness: 0.9 });
+
+        // ---- Body --------------------------------------------------------
+        // A burst finish is two plates rather than a gradient: the rim colour
+        // at full size with the centre colour laid a little smaller on top of
+        // it, which reads as a burst from the front for the price of one more
+        // outline.
+        if (o.rimMat) {
+          const rim = this._plate(this._guitarOutline(shape, s), thick, o.rimMat);
+          rim.position.y = bodyY;
+          group.add(rim);
+        }
+        const body = this._plate(this._guitarOutline(shape, s * (o.rimMat ? 0.80 : 1)), thick * 1.04, o.bodyMat);
+        body.position.y = bodyY;
+        group.add(body);
+
+        // ---- Neck, fretboard, headstock ----------------------------------
+        const pocket = bodyY + this._guitarPocket(shape) * s;
+        const neckLen = o.neckLen === undefined ? 0.28 : o.neckLen;
+        const neckTop = pocket + 0.03;
+        const neckBot = neckTop - neckLen;
+        const neck = new THREE.Mesh(new THREE.BoxGeometry(0.05, neckLen, 0.024), neckMat);
+        neck.position.set(0, neckTop - neckLen / 2, -0.008);
+        group.add(neck);
+        const board = new THREE.Mesh(new THREE.BoxGeometry(0.048, neckLen * 0.94, 0.008), boardMat);
+        board.position.set(0, neck.position.y + neckLen * 0.02, thick * 0.5 + 0.002);
+        group.add(board);
+        const nut = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.006, 0.012), metal);
+        nut.position.set(0, neckBot + 0.012, thick * 0.5);
+        group.add(nut);
+
+        if (this.wantsTrim()) {
+          const frets = this.isLowDetail() ? 6 : 12;
+          for (let i = 1; i <= frets; i++) {
+            // Frets crowd toward the body, as they do on a real board.
+            const t = 1 - Math.pow(1 - i / (frets + 1), 1.6);
+            const f = new THREE.Mesh(new THREE.BoxGeometry(0.047, 0.003, 0.004), metal);
+            f.position.set(0, neckBot + 0.02 + t * (neckLen * 0.88), thick * 0.5 + 0.006);
+            group.add(f);
+            if (o.inlay && i % 2 === 0 && i <= frets - 2) {
+              const dot = o.inlay === 'sharkfin'
+                // The Jackson shark fin: a wedge biting in from the bass side.
+                ? this._plate([[-0.020, 0], [0.004, 0.010], [0.004, -0.004]], 0.002, o.inlayMat || metal)
+                : new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.002, this.seg(8, 5)), o.inlayMat || metal);
+              if (o.inlay !== 'sharkfin') dot.rotation.x = Math.PI / 2;
+              dot.position.set(0, f.position.y - neckLen * 0.035, thick * 0.5 + 0.007);
+              group.add(dot);
+            }
+          }
+        }
+
+        // The headstock, which is where a make is recognised from.
+        const headLen = o.headLen === undefined ? 0.10 : o.headLen;
+        const headY = neckBot - headLen / 2;
+        let head;
+        if (o.head === 'pointed') {
+          // Swept to a single point, in the finish of the body.
+          head = this._plate([
+            [0.026, 0.05], [0.030, -0.012], [0.004, -0.05], [-0.030, -0.03], [-0.026, 0.05]
+          ], 0.016, o.headMat || o.bodyMat);
+        } else if (o.head === 'split') {
+          head = this._plate([
+            [0.030, 0.05], [0.034, -0.02], [0.010, -0.05], [0.000, -0.016],
+            [-0.010, -0.05], [-0.034, -0.02], [-0.030, 0.05]
+          ], 0.016, o.headMat || neckMat);
+        } else {
+          head = this._plate([
+            [0.028, 0.05], [0.034, -0.028], [0.014, -0.05], [-0.026, -0.05], [-0.030, 0.05]
+          ], 0.016, o.headMat || neckMat);
+        }
+        head.position.set(0, headY, -0.006);
+        head.rotation.x = o.headTilt === undefined ? -0.18 : o.headTilt;
+        group.add(head);
+        if (this.wantsTrim()) {
+          const pegs = o.strings === undefined ? 6 : o.strings;
+          for (let i = 0; i < pegs; i++) {
+            // Three a side, or all down one side on a rock headstock.
+            const side = o.head === 'pointed' ? -1 : (i < pegs / 2 ? 1 : -1);
+            const k = o.head === 'pointed' ? i / pegs : (i % Math.ceil(pegs / 2)) / Math.ceil(pegs / 2);
+            const peg = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.016, this.seg(6, 4)), metal);
+            peg.rotation.z = Math.PI / 2;
+            peg.position.set(side * 0.030, headY + 0.032 - k * 0.072, -0.006);
+            group.add(peg);
+          }
+        }
+
+        // ---- Fittings ----------------------------------------------------
+        const bridgeY = o.bridgeY === undefined ? bodyY + 0.075 * s : o.bridgeY;
+        if (o.bridge === 'floyd') {
+          // A locking tremolo: a solid block with a bar swung out of it.
+          const block = new THREE.Mesh(new THREE.BoxGeometry(0.072, 0.020, 0.020), metal);
+          block.position.set(0, bridgeY, thick * 0.5 + 0.004);
+          group.add(block);
+          const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, 0.075, this.seg(6, 4)), metal);
+          bar.position.set(-0.040, bridgeY - 0.028, thick * 0.5 + 0.014);
+          bar.rotation.z = 1.05;
+          group.add(bar);
+        } else if (o.bridge === 'acoustic') {
+          const saddle = new THREE.Mesh(new THREE.BoxGeometry(0.086, 0.014, 0.010), boardMat);
+          saddle.position.set(0, bridgeY, thick * 0.5 + 0.004);
+          group.add(saddle);
+        } else {
+          const plate = new THREE.Mesh(new THREE.BoxGeometry(0.066, 0.016, 0.014), metal);
+          plate.position.set(0, bridgeY, thick * 0.5 + 0.003);
+          group.add(plate);
+        }
+
+        if (o.soundhole) {
+          const hole = new THREE.Mesh(new THREE.CylinderGeometry(0.034, 0.034, 0.004, this.seg(14, 8)), this._mat(0x0E0C0A, { roughness: 1 }));
+          hole.rotation.x = Math.PI / 2;
+          hole.position.set(0, bodyY - 0.04 * s, thick * 0.5);
+          group.add(hole);
+          if (this.wantsTrim()) {
+            const rosette = new THREE.Mesh(new THREE.TorusGeometry(0.040, 0.004, this.seg(4, 3), this.seg(16, 9)), o.rosetteMat || boardMat);
+            rosette.position.copy(hole.position);
+            group.add(rosette);
+          }
+        }
+
+        for (const p of (o.pickups || [])) {
+          const wide = p.wide !== false;
+          const pu = new THREE.Mesh(
+            new THREE.BoxGeometry(wide ? 0.070 : 0.020, wide ? 0.026 : 0.070, 0.012),
+            p.mat || o.pickupMat || this._mat(0x141416, { roughness: 0.6, metalness: 0.3 }));
+          pu.position.set(0, bodyY + p.y * s, thick * 0.5 + 0.004);
+          if (p.pulse) pu.userData.pulse = p.pulse;
+          group.add(pu);
+          if (this.wantsTrim() && wide) {
+            for (const side of [-1, 1]) {
+              const pole = new THREE.Mesh(new THREE.BoxGeometry(0.030, 0.004, 0.004), metal);
+              pole.position.set(0, pu.position.y + side * 0.007, thick * 0.5 + 0.010);
+              group.add(pole);
+            }
+          }
+        }
+
+        if (this.wantsTrim()) {
+          const knobs = o.knobs === undefined ? 2 : o.knobs;
+          for (let i = 0; i < knobs; i++) {
+            const knob = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.009, 0.010, this.seg(9, 6)), o.knobMat || metal);
+            knob.rotation.x = Math.PI / 2;
+            knob.position.set(0.052 * s - i * 0.024, bodyY + 0.100 * s, thick * 0.5 + 0.005);
+            group.add(knob);
+          }
+          const jack = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.012, this.seg(8, 5)), metal);
+          jack.rotation.z = Math.PI / 2;
+          jack.position.set(0.130 * s, bodyY + 0.030 * s, 0);
+          group.add(jack);
+        }
+
+        // ---- Strings -----------------------------------------------------
+        // Nut to bridge in one run, which is also what ties the neck and the
+        // body together visually however far apart the shape puts them.
+        const count = Math.max(2, this.isLowDetail() ? 3 : (o.strings === undefined ? 6 : o.strings));
+        const len = Math.max(0.02, bridgeY - (neckBot + 0.012));
+        for (let i = 0; i < count; i++) {
+          const x = (i / (count - 1) - 0.5) * 0.042;
+          const str = new THREE.Mesh(new THREE.CylinderGeometry(0.0014, 0.0014, len, this.seg(4, 3)), wire);
+          str.position.set(x, neckBot + 0.012 + len / 2, thick * 0.5 + 0.010);
+          group.add(str);
+        }
+      },
+
+      // ---- 186: Busker's Acoustic ---------------------------------------------
+      createBuskerAcousticModel(weapon, rand) {
+        const group = new THREE.Group();
+        const top = this._wood(this.getRandomColor(rand, [0xC9A063, 0xB08A50, 0xD8B478]));
+        const dark = this._wood(0x4A3220);
+        // Cheap spruce, a soundhole worn through at the pick guard, and only
+        // half the strings it was sold with.
+        this._guitar(group, rand, {
+          shape: 'dread', bodyMat: top, neckMat: dark, boardMat: this._wood(0x2E1E14),
+          bodyY: 0.15, thickness: 0.05, soundhole: true, rosetteMat: dark,
+          bridge: 'acoustic', head: 'split', headMat: dark, knobs: 0, strings: 3,
+          neckLen: 0.30
+        });
+        const guard = this._plate([
+          [0.030, -0.010], [0.086, -0.030], [0.098, 0.020], [0.048, 0.040]
+        ], 0.002, dark);
+        guard.position.set(0, 0.13, 0.044);
+        group.add(guard);
+        // The strap it has been carried by, knotted at the headstock.
+        const knot = new THREE.Mesh(new THREE.TorusGeometry(0.010, 0.004, this.seg(4, 3), this.seg(10, 6)), dark);
+        knot.position.set(0, -0.24, -0.01);
+        group.add(knot);
+        return group;
+      },
+
+      // ---- 187: Presidential Saxophone ----------------------------------------
+      createPresidentialSaxophoneModel(weapon, rand) {
+        const group = new THREE.Group();
+        const brass = this._mat(this.getRandomColor(rand, [0xC9962E, 0xD8A63C, 0xB8862A]), { roughness: 0.22, metalness: 0.95 });
+        const lacquer = this._mat(0x8A6620, { roughness: 0.35, metalness: 0.8 });
+        const pad = this._mat(0xD8D2C4, { roughness: 0.85, metalness: 0.05 });
+        const cork = this._wood(0x2A2420);
+
+        // The body: a cone standing on its narrow end, held about the middle.
+        const bodyLen = 0.34;
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.024, bodyLen, this.seg(14, 8)), brass);
+        body.position.y = 0.10;
+        group.add(body);
+        // The bell, turned to face the player the way a tenor's does.
+        const bell = new THREE.Mesh(new THREE.CylinderGeometry(0.062, 0.036, 0.12, this.seg(16, 9), 1, true), brass);
+        bell.position.set(0.014, 0.32, 0.014);
+        bell.rotation.z = -0.22;
+        bell.rotation.x = 0.20;
+        group.add(bell);
+        const rim = new THREE.Mesh(new THREE.TorusGeometry(0.062, 0.005, this.seg(5, 3), this.seg(18, 10)), lacquer);
+        rim.position.set(0.028, 0.375, 0.026);
+        rim.rotation.set(Math.PI / 2 + 0.20, 0, -0.22);
+        group.add(rim);
+        // The U-bow at the bottom, and the crook and mouthpiece at the top.
+        const bow = new THREE.Mesh(new THREE.TorusGeometry(0.030, 0.014, this.seg(6, 4), this.seg(14, 8), Math.PI), brass);
+        bow.position.set(0.030, -0.07, 0);
+        bow.rotation.set(0, 0, Math.PI);
+        group.add(bow);
+        const crook = new THREE.Mesh(new THREE.TorusGeometry(0.038, 0.010, this.seg(6, 4), this.seg(12, 7), Math.PI * 0.75), brass);
+        crook.position.set(-0.026, 0.29, 0);
+        crook.rotation.set(0, 0, -0.6);
+        group.add(crook);
+        const mouth = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.011, 0.05, this.seg(10, 6)), this._mat(0x18181A, { roughness: 0.6, metalness: 0.1 }));
+        mouth.position.set(-0.062, 0.31, 0);
+        mouth.rotation.z = 1.15;
+        group.add(mouth);
+        const lig = new THREE.Mesh(new THREE.TorusGeometry(0.013, 0.003, this.seg(4, 3), this.seg(10, 6)), lacquer);
+        lig.position.set(-0.052, 0.316, 0);
+        lig.rotation.set(0, Math.PI / 2, 1.15);
+        group.add(lig);
+        const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.023, 0.021, 0.05, this.seg(10, 6)), cork);
+        grip.position.y = -0.03;
+        group.add(grip);
+
+        // Keywork: pads down the front, and the rods they hang off.
+        if (this.wantsTrim()) {
+          const keys = this.isLowDetail() ? 5 : 11;
+          for (let i = 0; i < keys; i++) {
+            const y = -0.02 + i * 0.030;
+            const r = 0.030 - i * 0.0006;
+            const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.010, 0.010, 0.004, this.seg(9, 6)), lacquer);
+            cup.rotation.x = Math.PI / 2;
+            cup.position.set((i % 2 ? 0.010 : -0.010), y, r);
+            group.add(cup);
+            const skin = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.002, this.seg(9, 6)), pad);
+            skin.rotation.x = Math.PI / 2;
+            skin.position.set(cup.position.x, y, r + 0.003);
+            group.add(skin);
+          }
+          for (const side of [-1, 1]) {
+            const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.0025, 0.0025, 0.30, this.seg(6, 4)), lacquer);
+            rod.position.set(side * 0.022, 0.10, 0.026);
+            group.add(rod);
+          }
+        }
+        return group;
+      },
+
+      // ---- 188: Pawnshop Stratocaster -----------------------------------------
+      createPawnshopStratocasterModel(weapon, rand) {
+        const group = new THREE.Group();
+        const finish = this._mat(this.getRandomColor(rand, [0x2E5FA8, 0xC0342C, 0xE4DCC4]), { roughness: 0.45, metalness: 0.1 });
+        const maple = this._wood(0xC9A063);
+        const scratched = this._mat(0xE8E4D8, { roughness: 0.6, metalness: 0.05 });
+        this._guitar(group, rand, {
+          shape: 'strat', bodyMat: finish, neckMat: maple, boardMat: maple,
+          bodyY: 0.16, bridge: 'hardtail', head: 'inline', headMat: finish,
+          knobs: 3, inlay: 'dot', inlayMat: this._mat(0x1A1A1C, { roughness: 0.8 }),
+          pickups: [{ y: 0.030, wide: false }, { y: 0.000, wide: false }, { y: -0.032, wide: false }]
+        });
+        // The scratchplate, which on this one is the newest part of it.
+        const plate = this._plate([
+          [0.088, -0.100], [0.108, 0.020], [0.060, 0.086], [-0.048, 0.096],
+          [-0.096, 0.030], [-0.070, -0.096]
+        ], 0.003, scratched);
+        plate.position.set(0, 0.16, 0.026);
+        group.add(plate);
+        return group;
+      },
+
+      // ---- 189: La chitarra infernale -----------------------------------------
+      createChitarraInfernaleModel(weapon, rand) {
+        const group = new THREE.Group();
+        // Cherry burst on quilted maple: amber through the middle, red at the
+        // rim. Black hardware throughout, because it always is.
+        const amber = this._mat(0xF0821E, { roughness: 0.22, metalness: 0.28 });
+        const cherry = this._mat(0xB01818, { roughness: 0.24, metalness: 0.30 });
+        const ebony = this._wood(0x1C1410);
+        const maple = this._wood(0xD8B478);
+        const black = this._mat(0x141416, { roughness: 0.35, metalness: 0.6 });
+        const pearl = this._mat(0xEDE6D6, { roughness: 0.2, metalness: 0.35 });
+        const ember = this._glow(0xFF6A18, 0.85);
+
+        this._guitar(group, rand, {
+          shape: 'strat', bodyMat: amber, rimMat: cherry, neckMat: maple,
+          boardMat: ebony, metal: black, bodyY: 0.16, bodyScale: 1.04,
+          bridge: 'floyd', head: 'pointed', headMat: cherry, headTilt: -0.24,
+          knobs: 2, knobMat: black, inlay: 'sharkfin', inlayMat: pearl,
+          neckLen: 0.30,
+          pickups: [
+            { y: 0.046, wide: true, mat: black },
+            { y: 0.008, wide: false, mat: black },
+            { y: -0.034, wide: true, mat: black }
+          ]
+        });
+
+        // What makes it infernale: the quilt is a real seam pattern cut into
+        // the top, and it is lit from underneath.
+        const seams = this.isLowDetail() ? 4 : 9;
+        for (let i = 0; i < seams; i++) {
+          const t = i / (seams - 1);
+          const seam = new THREE.Mesh(new THREE.TorusGeometry(0.030 + t * 0.070, 0.0022, this.seg(4, 3), this.seg(16, 9), Math.PI * 1.2), ember);
+          seam.position.set(0, 0.16 - 0.02 + t * 0.01, 0.027);
+          seam.rotation.z = -0.6 + t * 1.4;
+          seam.userData.pulse = { min: 0.12, max: 0.7, freq: 0.5 + t * 0.35, phase: i * 0.9 };
+          group.add(seam);
+        }
+        // The tremolo bar, swung out where a hand would find it.
+        const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.0032, 0.0028, 0.085, this.seg(7, 4)), black);
+        bar.position.set(-0.046, 0.208, 0.036);
+        bar.rotation.z = 0.95;
+        group.add(bar);
+        // Truss rod cover on the headstock, in the same black.
+        const cover = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.024, 0.004), black);
+        cover.position.set(0, -0.302, 0.010);
+        group.add(cover);
+        return group;
+      },
+
+      // ---- 190: Flying V ------------------------------------------------------
+      createFlyingVModel(weapon, rand) {
+        const group = new THREE.Group();
+        const finish = this._mat(this.getRandomColor(rand, [0x14100E, 0xC01A16, 0xE8E2D2]), { roughness: 0.3, metalness: 0.25 });
+        const rosewood = this._wood(0x3A2318);
+        const gold = this._cast(0xC9A03A);
+        this._guitar(group, rand, {
+          shape: 'v', bodyMat: finish, neckMat: this._wood(0x6E4A2A), boardMat: rosewood,
+          metal: gold, bodyY: 0.17, bridge: 'hardtail', head: 'split', headMat: finish,
+          knobs: 3, knobMat: gold, inlay: 'dot', inlayMat: this._mat(0xEDE6D6, { roughness: 0.25 }),
+          bridgeY: 0.245,
+          pickups: [{ y: 0.100, wide: true }, { y: 0.030, wide: true }]
+        });
+        // Binding down both wings: the one line the shape needs.
+        for (const side of [-1, 1]) {
+          const edge = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.34, 0.052), this._mat(0xE8E2D2, { roughness: 0.5 }));
+          edge.position.set(side * 0.098, 0.175, 0);
+          edge.rotation.z = side * 0.34;
+          group.add(edge);
+        }
+        return group;
+      },
+
+      // ---- 191: Bass Guitar ---------------------------------------------------
+      createBassGuitarModel(weapon, rand) {
+        const group = new THREE.Group();
+        const finish = this._mat(this.getRandomColor(rand, [0x1E2A3E, 0x3A2A20, 0x8A1E22]), { roughness: 0.4, metalness: 0.2 });
+        const maple = this._wood(0xC9A063);
+        const chrome = this._steel(0xB8BEC4, 0.24);
+        // Longer scale, fewer and thicker strings, and a great deal more wood.
+        this._guitar(group, rand, {
+          shape: 'strat', bodyMat: finish, neckMat: maple, boardMat: this._wood(0x2E1E14),
+          metal: chrome, bodyY: 0.18, bodyScale: 1.10, thickness: 0.058,
+          neckLen: 0.36, headLen: 0.12, bridge: 'hardtail', head: 'split',
+          knobs: 3, strings: 4, inlay: 'dot',
+          pickups: [{ y: 0.020, wide: true }, { y: -0.030, wide: true }]
+        });
+        // A thumb rest, and the strap button that takes all the weight.
+        const rest = new THREE.Mesh(new THREE.BoxGeometry(0.048, 0.007, 0.006), this._wood(0x2E1E14));
+        rest.position.set(0.010, 0.135, 0.033);
+        group.add(rest);
+        const button = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.006, 0.008, this.seg(8, 5)), chrome);
+        button.rotation.x = Math.PI / 2;
+        button.position.set(-0.152, 0.020, 0);
+        group.add(button);
+        return group;
+      },
+
+      // ---- 192: Double-Neck Warhorse ------------------------------------------
+      createDoubleNeckWarhorseModel(weapon, rand) {
+        const group = new THREE.Group();
+        const finish = this._mat(this.getRandomColor(rand, [0x8A1E22, 0x2A1C14, 0x1A1A1E]), { roughness: 0.32, metalness: 0.28 });
+        const rosewood = this._wood(0x3A2318);
+        const gold = this._cast(0xC9A03A);
+        const maple = this._wood(0xB08A50);
+        // The lower neck is the one it is held by; the twelve-string above it
+        // is the reason the thing weighs what it does.
+        this._guitar(group, rand, {
+          shape: 'strat', bodyMat: finish, neckMat: maple, boardMat: rosewood,
+          metal: gold, bodyY: 0.19, bodyScale: 1.16, thickness: 0.056,
+          neckLen: 0.32, bridge: 'hardtail', head: 'split', headMat: finish,
+          knobs: 4, knobMat: gold, inlay: 'dot', inlayMat: this._mat(0xEDE6D6, { roughness: 0.25 }),
+          bridgeY: 0.255,
+          pickups: [{ y: 0.020, wide: true }, { y: -0.040, wide: true }]
+        });
+        // The upper neck, running out of the top of the body.
+        const upperLen = 0.26;
+        const upperY = 0.19 + 0.172 * 1.16 + upperLen / 2 - 0.02;
+        const upper = new THREE.Mesh(new THREE.BoxGeometry(0.054, upperLen, 0.024), maple);
+        upper.position.set(0, upperY, -0.008);
+        group.add(upper);
+        const upperBoard = new THREE.Mesh(new THREE.BoxGeometry(0.052, upperLen * 0.94, 0.008), rosewood);
+        upperBoard.position.set(0, upperY, 0.032);
+        group.add(upperBoard);
+        const upperHead = this._plate([
+          [0.032, 0.05], [0.036, -0.02], [0.012, -0.05], [0.000, -0.016],
+          [-0.012, -0.05], [-0.036, -0.02], [-0.032, 0.05]
+        ], 0.016, finish);
+        upperHead.position.set(0, upperY + upperLen / 2 + 0.05, -0.006);
+        upperHead.rotation.x = 0.18;
+        group.add(upperHead);
+        const twelve = this.isLowDetail() ? 4 : 12;
+        for (let i = 0; i < twelve; i++) {
+          const x = (i / (twelve - 1) - 0.5) * 0.044;
+          const str = new THREE.Mesh(new THREE.CylinderGeometry(0.0011, 0.0011, upperLen, this.seg(4, 3)),
+            this._mat(0xC9CDD2, { roughness: 0.3, metalness: 0.9 }));
+          str.position.set(x, upperY, 0.038);
+          group.add(str);
+        }
+        const upperPickup = new THREE.Mesh(new THREE.BoxGeometry(0.074, 0.026, 0.012), gold);
+        upperPickup.position.set(0, upperY - upperLen / 2 - 0.012, 0.034);
+        group.add(upperPickup);
+        return group;
+      },
+
+      // ---- 193: Feedback Cannon -----------------------------------------------
+      createFeedbackCannonModel(weapon, rand) {
+        const group = new THREE.Group();
+        const finish = this._mat(0x14161C, { roughness: 0.3, metalness: 0.45 });
+        const ebony = this._wood(0x1C1410);
+        const chrome = this._steel(0xC2C8CE, 0.18);
+        const arcColor = this.getRandomColor(rand, [0x7FD8FF, 0xB58AFF, 0x9CFFEA]);
+        const arc = this._glow(arcColor, 1.0);
+
+        this._guitar(group, rand, {
+          shape: 'strat', bodyMat: finish, neckMat: this._wood(0x2A2420), boardMat: ebony,
+          metal: chrome, bodyY: 0.17, bridge: 'hardtail', head: 'pointed', headMat: finish,
+          knobs: 2, inlay: 'dot', inlayMat: arc, neckLen: 0.30,
+          pickups: [
+            { y: 0.040, wide: true, pulse: { min: 0.2, max: 1.0, freq: 2.2 } },
+            { y: -0.030, wide: true, pulse: { min: 0.2, max: 1.0, freq: 2.6, phase: 1.4 } }
+          ],
+          pickupMat: arc
+        });
+        // The lead, cut off somewhere behind it, still carrying something.
+        const coils = this.isLowDetail() ? 3 : 6;
+        for (let i = 0; i < coils; i++) {
+          const loop = new THREE.Mesh(new THREE.TorusGeometry(0.028 + i * 0.004, 0.004, this.seg(4, 3), this.seg(12, 7)), this._mat(0x1A1A1E, { roughness: 0.9 }));
+          loop.position.set(0.150, 0.10 - i * 0.012, 0.004 * i);
+          loop.rotation.set(0.5, 0.4, 0.2 * i);
+          group.add(loop);
+        }
+        // The howl standing off the pickups.
+        const rings = this.isLowDetail() ? 2 : 4;
+        for (let i = 0; i < rings; i++) {
+          const ring = new THREE.Mesh(new THREE.TorusGeometry(0.05 + i * 0.026, 0.0026, this.seg(4, 3), this.seg(16, 9)), arc);
+          ring.position.set(0, 0.17, 0.048 + i * 0.014);
+          ring.userData.pulse = { min: 0.05, max: 1.2, freq: 1.8 + i * 0.5, phase: i * 1.1 };
+          ring.userData.spin = { axis: 'z', speed: (i % 2 ? -1 : 1) * (0.8 + i * 0.4) };
+          group.add(ring);
+        }
+        return group;
+      },
+
+      // ---- 194: Hellfire Superstrat -------------------------------------------
+      createHellfireSuperstratModel(weapon, rand) {
+        const group = new THREE.Group();
+        const char = this._mat(0x1A0E0A, { roughness: 0.85, metalness: 0.15 });
+        const heat = this._glow(0xFF4A0A, 1.1);
+        const ash = this._wood(0x2E1A12);
+        const iron = this._mat(0x2A2A2E, { roughness: 0.4, metalness: 0.75 });
+
+        this._guitar(group, rand, {
+          shape: 'strat', bodyMat: char, rimMat: heat, neckMat: ash, boardMat: char,
+          metal: iron, bodyY: 0.17, bodyScale: 1.06, bridge: 'floyd',
+          head: 'pointed', headMat: char, headTilt: -0.26, knobs: 2, knobMat: iron,
+          inlay: 'sharkfin', inlayMat: heat, neckLen: 0.31,
+          pickups: [{ y: 0.044, wide: true, mat: iron }, { y: -0.036, wide: true, mat: iron }]
+        });
+        // The body is not painted, it is burning: the grain has opened and
+        // what is underneath shows through it.
+        const cracks = this.isLowDetail() ? 5 : 12;
+        for (let i = 0; i < cracks; i++) {
+          const a = (i / cracks) * Math.PI * 2 + rand() * 0.4;
+          const len = 0.06 + rand() * 0.09;
+          const crack = new THREE.Mesh(new THREE.BoxGeometry(0.0035, len, 0.004), heat);
+          crack.position.set(Math.cos(a) * (0.03 + rand() * 0.06), 0.17 + Math.sin(a) * (0.03 + rand() * 0.07), 0.028);
+          crack.rotation.z = a + 0.6;
+          crack.userData.pulse = { min: 0.25, max: 1.4, freq: 0.7 + rand() * 0.9, phase: i };
+          group.add(crack);
+        }
+        // Embers coming off the bridge, which is where the hand would be.
+        const embers = this.isLowDetail() ? 2 : 5;
+        for (let i = 0; i < embers; i++) {
+          const e = new THREE.Mesh(new THREE.SphereGeometry(0.005 - i * 0.0004, this.seg(6, 4), this.seg(5, 3)), heat);
+          e.position.set(0.02 - i * 0.012, 0.24 + i * 0.02, 0.03);
+          e.userData.orbit = { radius: 0.02 + i * 0.008, speed: 0.9 + i * 0.4, phase: i * 1.6, plane: 'xy' };
+          e.userData.pulse = { min: 0.3, max: 1.5, freq: 1.6, phase: i * 0.8 };
+          group.add(e);
+        }
         return group;
       },
     }

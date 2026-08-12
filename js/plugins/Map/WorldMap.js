@@ -480,25 +480,52 @@
         ctx.restore();
     }
 
-    // Active quest objectives reduced to world tiles, one entry per tile.
-    // ProceduralQuestSystem owns the coordinates; the world map only paints them.
+    // One diamond per distinct quest colour sharing this tile, so two different
+    // contracts pinned at the same spot don't merge into a single colour. Fans
+    // out horizontally around the tile centre when there's more than one.
+    function drawQuestTileDiamonds(ctx, x, y, tile, size) {
+        const colors = (tile.colors && tile.colors.length) ? tile.colors : [questMarkerColor];
+        const n = colors.length;
+        const step = size * 0.85;
+        const startX = x - ((n - 1) * step) / 2;
+        for (let i = 0; i < n; i++) {
+            drawDiamond(ctx, startX + i * step, y, colors[i], size);
+        }
+    }
+
+    // Active quest objectives reduced to world tiles, one entry per tile. Every
+    // marker's colour/icon comes from window.KanbanQuest (the single source for
+    // "which quest is which colour" everywhere it's pinned - the board card, the
+    // in-world compass in WorldMapReturn.js, and this sheet); falling back to
+    // ProceduralQuests.questMarkers() directly keeps this sheet working even if
+    // the kanban board plugin is ever missing.
     const WORLD_TILES = 256;
-    function getQuestMarkerTiles() {
+    function activeQuestMarkerList() {
+        const kb = window.KanbanQuest;
+        if (kb && typeof kb.activeMarkers === 'function') {
+            try { return kb.activeMarkers(); } catch (e) { }
+        }
         const api = window.ProceduralQuests;
         if (!api || typeof api.questMarkers !== 'function') return [];
+        try { return api.questMarkers(); } catch (e) { return []; }
+    }
+
+    function getQuestMarkerTiles() {
         const byTile = new Map();
-        try {
-            for (const m of api.questMarkers()) {
-                if (m.wx == null || m.wy == null) continue;
-                const key = m.wx + ',' + m.wy;
-                let entry = byTile.get(key);
-                if (!entry) { entry = { x: m.wx, y: m.wy, labels: [], qids: [] }; byTile.set(key, entry); }
-                const step = m.multi ? ` ${m.step}/${m.stepCount}` : '';
-                const label = m.label + step;
-                if (!entry.labels.includes(label)) entry.labels.push(label);
-                if (m.qid && !entry.qids.includes(m.qid)) entry.qids.push(m.qid);
+        for (const m of activeQuestMarkerList()) {
+            if (m.wx == null || m.wy == null) continue;
+            const key = m.wx + ',' + m.wy;
+            let entry = byTile.get(key);
+            if (!entry) { entry = { x: m.wx, y: m.wy, labels: [], colors: [], icons: [], qids: [] }; byTile.set(key, entry); }
+            const step = m.multi ? ` ${m.step}/${m.stepCount}` : '';
+            const label = m.label + step;
+            if (!entry.labels.includes(label)) {
+                entry.labels.push(label);
+                entry.colors.push(m.color || questMarkerColor);
+                entry.icons.push(m.icon || null);
             }
-        } catch (e) { }
+            if (m.qid && !entry.qids.includes(m.qid)) entry.qids.push(m.qid);
+        }
         return Array.from(byTile.values());
     }
 
@@ -600,11 +627,14 @@
     const EDGE_MARKER_ARROW = 26;   // arrow sprite size
     let questEdgeContainer = null;
     let questEdgeKey = null;        // signature of the marker set the sprites show
-    let questEdgeArrowBitmap = null;
+    const questEdgeArrowBitmaps = new Map(); // colour -> cached triangle bitmap
 
     // A triangle pointing up (-Y); each marker rotates it toward its objective.
-    function edgeArrowBitmap() {
-        if (questEdgeArrowBitmap) return questEdgeArrowBitmap;
+    // Cached per colour so every quest keeps its own tinted arrow.
+    function edgeArrowBitmap(color) {
+        const key = color || questMarkerColor;
+        const cached = questEdgeArrowBitmaps.get(key);
+        if (cached) return cached;
         const s = EDGE_MARKER_ARROW;
         const bmp = new Bitmap(s, s);
         const ctx = bmp.context;
@@ -614,19 +644,20 @@
         ctx.lineTo(s / 2, s - 9);
         ctx.lineTo(3, s - 4);
         ctx.closePath();
-        ctx.fillStyle = questMarkerColor;
+        ctx.fillStyle = key;
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 2;
         ctx.fill();
         ctx.stroke();
         bmp.baseTexture.update();
-        questEdgeArrowBitmap = bmp;
+        questEdgeArrowBitmaps.set(key, bmp);
         return bmp;
     }
 
     // Quest names next to the arrow, in a bitmap only as wide as the text so it
-    // can be clamped against the screen edge without leaving a gap.
-    function edgeLabelSprite(labels) {
+    // can be clamped against the screen edge without leaving a gap. Each line is
+    // tinted with its own quest's colour.
+    function edgeLabelSprite(labels, colors) {
         const lineH = labelFontSize + 4;
         const probe = new Bitmap(8, 8);
         probe.fontFace = 'GameFont, sans-serif';
@@ -644,8 +675,8 @@
         bmp.fontBold = true;
         bmp.outlineWidth = 4;
         bmp.outlineColor = 'black';
-        bmp.textColor = questMarkerColor;
         for (let i = 0; i < labels.length; i++) {
+            bmp.textColor = (colors && colors[i]) || questMarkerColor;
             bmp.drawText(labels[i], 0, i * lineH, w, lineH, 'center');
         }
         const sprite = new Sprite(bmp);
@@ -701,10 +732,10 @@
         container._groups = [];
         for (const tile of tiles) {
             const group = new Sprite();
-            const arrow = new Sprite(edgeArrowBitmap());
+            const arrow = new Sprite(edgeArrowBitmap(tile.colors && tile.colors[0]));
             arrow.anchor.x = 0.5;
             arrow.anchor.y = 0.5;
-            const label = edgeLabelSprite(tile.labels);
+            const label = edgeLabelSprite(tile.labels, tile.colors);
             group.addChild(arrow);
             group.addChild(label);
             group._arrow = arrow;
@@ -1135,7 +1166,7 @@
                         qt.y < srcYInTiles || qt.y >= srcYInTiles + zoomTiles) continue;
                     const qx = Math.floor(((qt.x - srcXInTiles) / zoomTiles) * targetW) + gridCellWidth / 2;
                     const qy = Math.floor(((qt.y - srcYInTiles) / zoomTiles) * targetH) + gridCellHeight / 2;
-                    drawDiamond(context, qx, qy, questMarkerColor, 9);
+                    drawQuestTileDiamonds(context, qx, qy, qt, 9);
                 }
 
                 // Draw coordinates
@@ -1484,37 +1515,33 @@
         for (const qt of questTiles) {
             const qx = Math.floor((qt.x / WORLD_TILES) * targetW);
             const qy = Math.floor((qt.y / WORLD_TILES) * targetH);
-            drawDiamond(context, qx, qy, questMarkerColor, showLabels ? markerPx : 8);
+            drawQuestTileDiamonds(context, qx, qy, qt, showLabels ? markerPx : 8);
             if (showLabels) {
                 for (let i = 0; i < qt.labels.length; i++) {
-                    drawLabel(context, qx, qy + i * (namePx + 4), qt.labels[i], questMarkerColor, namePx);
+                    drawLabel(context, qx, qy + i * (namePx + 4), qt.labels[i], qt.colors[i] || questMarkerColor, namePx);
                 }
             }
         }
 
-        // 2. Vehicles (Global Global coords)
-        // If vehicles are not on the current map, their x/y might be irrelevant or stored elsewhere.
-        // Standard MV/MZ keeps vehicle coords on $gameMap.boat()._x regardless of map, 
-        // but we check _mapId to ensure they are on the world map.
+        // 2. Vehicles, drawn from the position store rather than off the engine's
+        // Game_Vehicle objects. A parked vehicle is only physically placed on the
+        // map the party is standing on, so reading _mapId showed nothing at all
+        // whenever this sheet was opened from anywhere but the world map. The
+        // store knows the world square of every park, wherever it really is (a
+        // procedural biome, an authored map, a cave), which is the same square the
+        // vehicle is drawn on when the party does reach map 315. A vehicle left on
+        // another planet has no Earth square and is not drawn.
         const dotSize = showLabels ? 6 : 3;
-        const worldMapId = 315; // Assuming 315 is the Overworld ID for vehicle checks
-
-        if ($gameMap.boat()._mapId === worldMapId) {
-            // We assume standard 256 coordinate logic for vehicle globals or use variables if custom
-            // Standard:
-            const bx = Math.floor(($gameMap.boat()._x / 256) * targetW);
-            const by = Math.floor(($gameMap.boat()._y / 256) * targetH);
-            drawDot(context, bx, by, boatColor, dotSize);
-        }
-        if ($gameMap.ship()._mapId === worldMapId) {
-            const sx = Math.floor(($gameMap.ship()._x / 256) * targetW);
-            const sy = Math.floor(($gameMap.ship()._y / 256) * targetH);
-            drawDot(context, sx, sy, shipColor, dotSize);
-        }
-        if ($gameMap.airship()._mapId === worldMapId) {
-            const ax = Math.floor(($gameMap.airship()._x / 256) * targetW);
-            const ay = Math.floor(($gameMap.airship()._y / 256) * targetH);
-            drawDot(context, ax, ay, airshipColor, dotSize);
+        const VEHICLE_DOT_COLOR = { camper: shipColor, airship: airshipColor };
+        const owned = (window.MergedVehicleSystem && window.MergedVehicleSystem.getOwnedVehicles)
+            ? window.MergedVehicleSystem.getOwnedVehicles() : [];
+        for (const v of owned) {
+            if (!v.parkedMapId || v.parkedOnPlanet) continue;
+            if (!(v.parkedWorldX > 0 || v.parkedWorldY > 0)) continue;
+            const vx = Math.floor((v.parkedWorldX / WORLD_TILES) * targetW);
+            const vy = Math.floor((v.parkedWorldY / WORLD_TILES) * targetH);
+            drawDot(context, vx, vy, VEHICLE_DOT_COLOR[v.key] || boatColor, dotSize);
+            if (showLabels) drawLabel(context, vx, vy, v.name);
         }
 
         // 3. Player Global Position
@@ -1651,7 +1678,47 @@
                 }
             }
         }
+
+        // Labels another plugin has hung on this map (Bologna's shop signs).
+        // They are tiles rather than events, so they cannot be discovered from
+        // the event list, but they are drawn and scrolled by exactly the same
+        // sprite and the same shared per-frame pass.
+        if (extraLabelMapId === $gameMap.mapId()) {
+            for (const label of extraLabels) {
+                if (!label || !label.text) continue;
+                const labelSprite = new Sprite_CityLabel(label.x, label.y, label.text);
+                tilemap.addChild(labelSprite);
+                cityLabelsContainer.push(labelSprite);
+            }
+        }
     }
+
+    // ------------------------------------------------------------------------
+    // Extra map labels (window.MapLabels)
+    // ------------------------------------------------------------------------
+    // The city-label sprite is the game's one way of writing a place name over
+    // a map tile, so it is lent out rather than copied. Labels are stamped with
+    // the map they belong to: map 353 is every Bologna cell and map 636 every
+    // world square, so a stale list must never be drawn over the next place.
+    let extraLabels = [];
+    let extraLabelMapId = 0;
+
+    window.MapLabels = {
+        // list: [{ x, y, text }], all on `mapId`. Replaces whatever was set.
+        set(mapId, list) {
+            extraLabelMapId = Number(mapId) || 0;
+            extraLabels = Array.isArray(list) ? list.slice() : [];
+            if (SceneManager._scene instanceof Scene_Map && $gameMap &&
+                $gameMap.mapId() === extraLabelMapId) {
+                createCityLabelsContainer();
+                refreshCityLabelSprites();
+            }
+        },
+        clear() {
+            extraLabelMapId = 0;
+            extraLabels = [];
+        },
+    };
 
     // Kept for call-site compatibility. Previously this rebuilt the entire
     // container a second time right after createCityLabelsContainer() (a full

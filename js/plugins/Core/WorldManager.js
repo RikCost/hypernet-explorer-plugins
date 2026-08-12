@@ -44,8 +44,43 @@
  *     variables.json  - world-shared game variables (manifest + values)
  *     market.json     - world-shared market prices (stock history, ...)
  *     terrain.json    - procedural-map terrain the players changed (dismantled
- *                       features, lit torches)
- *     plants.json     - procedural-map crop plots (PlantGrowthSystem)
+ *                       features, lit torches, doors bashed or picked open)
+ *     plants.json     - crops: the procedural-map plots and the authored maps'
+ *                       own Plant events (PlantGrowthSystem)
+ *     rentals.json    - which room in which inn is booked for the night, and by
+ *                       whose party (RentSystem). One bed cannot be let to two
+ *                       savegames of the same world at once.
+ *     bestiary.json   - what this world has been seen to hold: the creatures
+ *                       met, the petrodemons felled and the alien species
+ *                       identified (Bestiary.js). Merged, never replaced, so a
+ *                       new game in the world adds to the book instead of
+ *                       starting it again.
+ *     containers.json - what every chest, cupboard, crate and sack in the world
+ *                       holds, and which of them have been stocked
+ *                       (ContainerSystem). The party's own bags (the
+ *                       extradimensional container, the camper and car holds)
+ *                       stay in the binary savegame.
+ *     shops.json      - what is left on the shelves today, and the abilities
+ *                       already bought from a teaching shop (ItemSystemShop,
+ *                       RandomDailyShop). Both reroll at midnight on their own.
+ *     animals.json    - the livestock standing in the world, ageing on the
+ *                       world clock (AnimalGrowthSystem).
+ *     furniture.json  - what the party has BUILT, per world coordinate: the
+ *                       pieces placed and the raw tiles written into the map
+ *                       (FurnitureSystem). What is still in the pack, and the
+ *                       recipes unlocked, stay the party's own.
+ *     production.json - the brewing barrels standing on the maps
+ *                       (BrewingSystem).
+ *     apiary.json     - the apiary and its hives (ApiarySystem). Its own file
+ *                       because it is the one world record held as a class
+ *                       instance, which JsonEx rebuilds by name.
+ *     galaxy.json     - how much has been dug out of each body, and the star
+ *                       map anomalies already answered (GalaxySim).
+ *     party.json      - the other playthroughs of this world: where each one
+ *                       was last saved and who was in it, so a savegame that
+ *                       walks into that place finds them there as NPCs; plus
+ *                       how every party member stands with the NPCs and with
+ *                       the other playthroughs' members (NPCSystem.js).
  *     saves/          - binary savegames (file0..N, global, fog_*, ...)
  *
  * - $gameSystem world-scoped fields (_historical*, _npc*, _dungeon*, etc.)
@@ -97,6 +132,62 @@
     // of the world clock (the TimeDateSystem epoch).
     const DEFAULT_START_YEAR = 2001;
     const DEFAULT_START_MONTH = 1;
+    // The level a world creates its characters at (see createWorld.startLevel).
+    const DEFAULT_START_LEVEL = 1;
+    const MAX_START_LEVEL = 99;
+    function clampStartLevel(level) {
+        const n = Math.floor(Number(level));
+        if (!Number.isFinite(n)) return DEFAULT_START_LEVEL;
+        return Math.max(DEFAULT_START_LEVEL, Math.min(MAX_START_LEVEL, n));
+    }
+
+    // Who this world is populated with. Asked once at creation and never
+    // again (no setter is exposed for it, on purpose): "normal" is every
+    // existing world's answer, "goblin"/"monster" narrow the sprite, bust and
+    // archetype pool NPCs and creature creation draw from, and "empty" turns
+    // off NPC spawning, history, news, epidemics and crime outright. "death"
+    // is an empty world with the fauna gone too: it answers isEmptyWorld()
+    // exactly as "empty" does (so it is every empty-world consumer's problem
+    // for free) AND, on top of that, no "Enemy" map event is ever placed by
+    // the encounter system (BattleSystemEnhancedEncounters), on a procedural
+    // map or an authored one alike. Read through WorldManager.populationMode()
+    // / isEmptyWorld() / isDeathWorld().
+    const DEFAULT_POPULATION_MODE = "normal";
+    const POPULATION_MODES = ["normal", "goblin", "monster", "empty", "zombie", "death"];
+    function clampPopulationMode(mode) {
+        return POPULATION_MODES.includes(mode) ? mode : DEFAULT_POPULATION_MODE;
+    }
+
+    // How much magic there is in this world, asked once at creation beside the
+    // alternate timeline and stored the same way. It is a SEPARATE axis: every
+    // combination is legal and the two are resolved independently, so a
+    // severed-magic zombie apocalypse and an unbound-magic goblin world are
+    // both worlds you can make.
+    //
+    //   normal   , everything, which is every world made before this existed
+    //   severed  , nothing that works by magic exists (<Nature: Magical>)
+    //   unbound  , nothing ordinary is left  (<Nature: Mundane>)
+    //
+    // Read through WorldManager.magicalLevel().
+    const DEFAULT_MAGICAL_LEVEL = "normal";
+    const MAGICAL_LEVELS = ["normal", "severed", "unbound"];
+    function clampMagicalLevel(level) {
+        return MAGICAL_LEVELS.includes(level) ? level : DEFAULT_MAGICAL_LEVEL;
+    }
+
+    // 21 December 2012, 00:00, in world-clock minutes (the TimeDateSystem epoch
+    // is 1 January 2001, 10:00). A world whose clock starts at or after this
+    // begins with the impact already behind it, so switch 199 is raised before
+    // the first map ever loads. GalaxySim owns the timeline and is asked first;
+    // the constant is the answer for a build with that plugin turned off.
+    const IMPACT_MINUTE_FALLBACK =
+        Math.round((new Date(2012, 11, 21, 0, 0, 0) - new Date(2001, 0, 1, 10, 0, 0)) / 60000);
+    const SW_EARTH_LOST = 199;
+    function impactMinute() {
+        const N = window.GalaxySim && window.GalaxySim.Nibiru;
+        const m = N && N.IMPACT_MINUTE;
+        return (typeof m === "number" && isFinite(m)) ? m : IMPACT_MINUTE_FALLBACK;
+    }
 
     // Parses a "1, 2 ,3" CSV of ids into an array of positive integers.
     function parseIdList(csv) {
@@ -119,6 +210,13 @@
         const ids = parseIdList(params.sharedVariables);
         return ids.length ? ids : [2, 53, 61, 113, 114];
     })();
+
+    // Variables that are never world-shared whatever a manifest says, because
+    // they belong to one playthrough's criminal record:
+    //   66  PlayerBounty (CrimeSystem)
+    //   85  the legacy officer-chase variable
+    //   131 PoliceHeat (how badly the police want this party)
+    const NEVER_SHARED_VARS = [66, 85, 131];
 
     // Switches that stay per-savegame. Switches are world-shared by default;
     // list exceptions in the "privateSwitches" plugin parameter.
@@ -147,6 +245,79 @@
     //=========================================================================
     // World data file layout: which $gameSystem fields live in which file
     //=========================================================================
+
+    // A field is declared either as a plain property name, or as
+    // { prop, merge }, where merge folds an incoming value into whatever the
+    // world already holds instead of replacing it. The bestiary is what it was
+    // written for. A catalogue is only ever added to, and three things assign
+    // to it wholesale: a new game (Game_System's own initialize), a savegame
+    // written before the field was world-shared (JsonEx restores it by
+    // assignment, i.e. through the setter below), and any plugin resetting its
+    // own store. Replacing on all three would let the emptiest savegame of a
+    // world erase every creature the others ever cataloged.
+    function fieldSpec(entry) {
+        return (entry && typeof entry === "object" && entry.prop)
+            ? entry
+            : { prop: entry, merge: null };
+    }
+
+    // Union of two id lists, what the world already holds first.
+    function mergeIdList(existing, incoming) {
+        const base = Array.isArray(existing) ? existing.slice() : [];
+        if (!Array.isArray(incoming)) return base;
+        const seen = new Set(base);
+        for (const id of incoming) {
+            if (!seen.has(id)) { seen.add(id); base.push(id); }
+        }
+        return base;
+    }
+
+    // Union of two lists of records identified by one field of their own.
+    function mergeRecordList(idKey) {
+        return function (existing, incoming) {
+            const base = Array.isArray(existing) ? existing.slice() : [];
+            if (!Array.isArray(incoming)) return base;
+            const seen = new Set(base.map(rec => rec && rec[idKey]));
+            for (const rec of incoming) {
+                if (!rec || seen.has(rec[idKey])) continue;
+                seen.add(rec[idKey]);
+                base.push(rec);
+            }
+            return base;
+        };
+    }
+
+    // Union of two plain objects, entry by entry, folding a collision with the
+    // given function. Without one the world's own entry wins, which is the
+    // answer for a record nobody merges further down (a shop's stock for the
+    // day, a species dossier).
+    function mergeMapOf(valueMerge) {
+        return function (existing, incoming) {
+            const base = (existing && typeof existing === "object") ? existing : {};
+            if (!incoming || typeof incoming !== "object") return base;
+            for (const key of Object.keys(incoming)) {
+                if (base[key] === undefined) base[key] = incoming[key];
+                else if (valueMerge) base[key] = valueMerge(base[key], incoming[key]);
+            }
+            return base;
+        };
+    }
+    const mergeByKey = mergeMapOf(null);
+
+    // What the world already holds stands; an incoming value is only taken
+    // where the world has nothing. For a single object that is built once and
+    // then only ever mutated in place, such as the apiary.
+    function keepHeld(existing, incoming) {
+        return existing === undefined || existing === null ? incoming : existing;
+    }
+
+    // The furthest either side has counted. Used for the id counters behind
+    // things placed in the world, so two savegames never hand out one number.
+    function mergeMax(existing, incoming) {
+        const a = Number(existing) || 0;
+        const b = Number(incoming) || 0;
+        return Math.max(a, b);
+    }
 
     const SYSTEM_FIELD_MAP = {
         world: {
@@ -211,6 +382,29 @@
             // burning through it in every savegame of that world.
             _epidemics: "epidemics",
             _npcRecruitedProcCitizens: "recruitedProcCitizens",
+            // Citizens of the authored maps the world has lost: recruited into
+            // somebody's party, or killed where they stood. Both take the
+            // person off the map by flipping their event's self switch A, and
+            // self switches live in the binary savegame, so the same person
+            // could be recruited again in the next savegame of the world and a
+            // new game found everyone standing where they always had. Keyed by
+            // event slot, decided by name (NPCSystem.js, GoneRegistry). The
+            // procedural map keeps its own record next door, per world tile.
+            _npcGoneCitizens: { prop: "goneCitizens", merge: mergeByKey },
+            // Rooms an NPC has turned in for the night (RentSystem.js). The
+            // player's own bookings of the same beds were already world-shared
+            // (rentals.json), so without this two savegames disagreed about how
+            // many beds the town had left. Expired entries are dropped on read,
+            // so the table cleans itself.
+            _npcRentals: { prop: "npcRooms", merge: mergeByKey },
+            // The assembly's own ledger: sessions held, and the week each was
+            // last paid for (ONUAssembly.js). Built once and settled forward in
+            // place, so the world's copy stands.
+            _onuAssembly: { prop: "onuAssembly", merge: keepHeld },
+            // Where the factions' armies are standing. A snapshot rewritten
+            // whole every time they move, so the latest writer wins, exactly as
+            // it does within one savegame (ArmyEventsManager.js).
+            _savedFactionArmies: "factionArmies",
             // The five advocates practising before Eris's bench. Seeded from the
             // world seed, but the strike-off list (a lawyer recruited into some
             // party, and so replaced) has to outlive the savegame that recruited
@@ -239,10 +433,134 @@
         },
         conversations: {
             _npcConversations: "log"
+        },
+        // The other playthroughs of this world, and where they were left. A
+        // manual save writes down where that party is standing and who is in
+        // it; every other savegame that walks into the same place finds them
+        // there, wandering as ordinary NPCs (NPCSystem.js, VisitingParties).
+        // Both halves are keyed by a stable member key (p<slot>a<actorId>)
+        // rather than by actor id, which means a different person in every
+        // savegame, and both are merged so no playthrough erases another's.
+        party: {
+            _partyPresence: { prop: "parties", merge: mergeByKey },
+            // How every party member, active or benched, stands with everybody
+            // else: with the NPCs they have met, and with the members of other
+            // playthroughs' parties. Never in the binary savegame, or half the
+            // record would belong to one playthrough and be invisible to the
+            // rest (NPCEmpathize.js).
+            _partyDispositions: { prop: "dispositions", merge: mergeMapOf(mergeByKey) }
+        },
+        // The market's own side of the ledger. Share prices already lived here
+        // (StockMarketSystem); this is the register of which properties are off
+        // the market, so a house one party bought is not still for sale to the
+        // next savegame of the world. WHOSE it is stays private, in the binary
+        // savegame: the world is only told that it is taken (RealEstateMarket).
+        market: {
+            _realEstateTaken: { prop: "realEstateTaken", merge: mergeByKey }
+        },
+        // The vessels standing in the world and what is working inside them.
+        // The same class of thing as a chest (containers.json): a barrel is a
+        // fixture of the map it stands on, and what is fermenting in it runs on
+        // the world clock, so two savegames of a world must not each hold their
+        // own brew in the same barrel.
+        production: {
+            // Keyed mapId_eventId (BrewingSystem.js).
+            _brewingBarrels: { prop: "barrels", merge: mergeByKey }
+        },
+        // The apiary keeps a file to itself because it is the one world record
+        // that is a class instance rather than plain data: JsonEx rebuilds it
+        // by looking window.ApiaryComplex up by name, and a build with that
+        // plugin switched off would take everything sharing the file down with
+        // it. Built once by ApiarySystem and simulated forward in place, so the
+        // world's own hives stand.
+        apiary: {
+            apiaryComplex: { prop: "complex", merge: keepHeld }
+        },
+        // What has been taken out of the sky. How much an asteroid or a comet
+        // holds is seeded, so every savegame of the world agrees on it; how
+        // much has already been dug out of it was not, so one savegame could
+        // mine a body dry and the next still find it full. The deeper hole
+        // wins a collision, since nothing ever puts ore back.
+        galaxy: {
+            _gxMinedBodies: { prop: "mined", merge: mergeMapOf(mergeMax) },
+            // The "?" encounters already answered, keyed system|body. An
+            // anomaly is a thing that happened out there, not a thing that
+            // happened to one party (GalaxySim_Core.js).
+            _gsAnomalies: { prop: "anomalies", merge: mergeByKey }
+        },
+        // What the party has built. Keyed by world coordinate exactly as the
+        // crops and the livestock are (FurnitureSystem.furnitureMapKey), and
+        // world-shared for the same reason the terrain they pulled DOWN
+        // already was (terrain.json): a house raised on a world square stands
+        // there in every playthrough of the world, rather than only for the
+        // savegame that raised it. What is still in the pack (inventory,
+        // unlocked recipes) stays the party's own, in the binary savegame.
+        furniture: {
+            _furnitureBuilt: { prop: "placed", merge: mergeMapOf(mergeRecordList("id")) },
+            _furnitureBuiltTiles: { prop: "tiles", merge: mergeMapOf(mergeRecordList("id")) },
+            _furnitureBuiltId: { prop: "placedId", merge: mergeMax },
+            _furnitureBuiltTileId: { prop: "placedTileId", merge: mergeMax }
+        },
+        // Crops on the hand-made maps, keyed mapId_eventId. The procedural
+        // fields next to them were already world-shared (plants.json -> plots),
+        // written by PlantGrowthSystem itself, so a farm on a world square was
+        // the same farm in every savegame while the identical farm on an
+        // authored map was not. The event's self switch is re-derived from this
+        // record on every map load (refreshMapPlants), so the sown/harvested
+        // page follows the world rather than the binary savegame.
+        plants: {
+            _plantData: { prop: "events", merge: mergeByKey }
+        },
+        // The livestock standing in the world. A bought animal is placed on a
+        // tile and keyed by world coordinate, exactly as a crop plot is, so it
+        // belongs to the world the same way: an ox settled on a field in one
+        // savegame is grazing there in every other one, ageing on the same
+        // world clock (AnimalGrowthSystem.js).
+        animals: {
+            // The legacy authored "Animal" event slots, keyed mapId_eventId.
+            _animalData: { prop: "penned", merge: mergeByKey },
+            // Animals bought from the Build menu, keyed by world coordinate,
+            // each list unioned by the animal's own id.
+            _animalPlacements: { prop: "placements", merge: mergeMapOf(mergeRecordList("uid")) },
+            // The id counter behind them, so no two savegames of the world
+            // ever hand the same number to two different animals.
+            _animalPlacementUid: { prop: "placementUid", merge: mergeMax }
+        },
+        // What the world's counters have left. The catalogue on a shelf is
+        // seeded (RandomDailyShop rolls it from the world seed, the shop's own
+        // coordinates and the date, so every savegame walks into the same
+        // shop), but how much of it is still there was not: one savegame could
+        // buy the last of something and the next still found it in stock. Both
+        // records already carry the day they were rolled for and reroll when it
+        // turns over, so sharing them costs nothing at midnight.
+        shops: {
+            // Per shop event, per day: the stock left and the day's price
+            // factors (ItemSystemShop.js).
+            _shopStocks: { prop: "stocks", merge: mergeMapOf(mergeMapOf(null)) },
+            // The abilities already bought from a teaching shop today
+            // (RandomDailyShop.js). Two savegames buying different ones both
+            // count, so the lists are unioned.
+            _dailyTeachShopSold: { prop: "teachSold", merge: mergeMapOf(mergeIdList) }
+        },
+        // What this world has been seen to hold. A bestiary is a record of the
+        // world's fauna rather than of one party's travels, so it is shared by
+        // every savegame of the world and, being merged rather than replaced,
+        // is never wiped by a new game started in it. Three catalogues, one per
+        // page of the book (Bestiary.js):
+        bestiary: {
+            // Earth: the ids of the creatures met (Bestiary.js).
+            _encounteredMonsters: { prop: "encountered", merge: mergeIdList },
+            // Petrodemons: a copy of each one felled, since the scratch enemy
+            // slot it was raised in belongs to the next one
+            // (BattleSystemEnhancedEncounters.js).
+            _petrodemonCodex: { prop: "petrodemons", merge: mergeRecordList("seed") },
+            // Aliens: the procedural species identified out in the galaxy,
+            // keyed by species key (GalaxySim_Core.js).
+            _discoveredAlienSpecies: { prop: "alienSpecies", merge: mergeByKey }
         }
     };
 
-    const DATA_FILE_KEYS = ["world", "history", "artifacts", "npcs", "dungeon", "state", "variables", "market", "conversations", "terrain", "plants"];
+    const DATA_FILE_KEYS = ["world", "history", "artifacts", "npcs", "dungeon", "state", "variables", "market", "conversations", "terrain", "plants", "containers", "mail", "rentals", "techtree", "bestiary", "shops", "animals", "furniture", "galaxy", "production", "apiary", "party"];
 
     //=========================================================================
     // Storage backend (NW.js filesystem, localStorage fallback for browser)
@@ -456,12 +774,21 @@
                 worldTimeMinutes: options.worldTimeMinutes || 0,
                 startYear: options.startYear !== undefined ? options.startYear : DEFAULT_START_YEAR,
                 startMonth: options.startMonth !== undefined ? options.startMonth : DEFAULT_START_MONTH,
+                // The level every character built in this world is created at.
+                // A world begun in a later year opens on monsters a level 1
+                // party cannot stand in front of, so the party is not obliged
+                // to start at 1. Read through WorldManager.startingLevel().
+                startLevel: clampStartLevel(options.startLevel),
                 // Whether this world draws its people from the beta character
                 // sheets too (the ones outside the original folder, NPCs.json →
                 // beta). Answered once, here: the world is populated from the
                 // pool this decides, so it is written at creation and never
                 // again. Read through window.SpriteCatalog.betaEnabled().
-                betaSprites: options.betaSprites === true
+                betaSprites: options.betaSprites === true,
+                // See clampPopulationMode above. Written once, at creation.
+                populationMode: clampPopulationMode(options.populationMode),
+                // See clampMagicalLevel above. Its own axis, also permanent.
+                magicalLevel: clampMagicalLevel(options.magicalLevel)
             };
             Backend.writeFile(name, "world", JSON.stringify(info, null, 2));
             return info;
@@ -532,6 +859,25 @@
             }
         },
 
+        // Writes a data file belonging to ANY world, at once rather than at the
+        // next save. The mailbox is the reason it exists: a letter addressed to
+        // a party in another world has to land in THAT world's folder, and that
+        // world is not the one being played, so it will never be flushed from
+        // here. Writing the active world's own file also refreshes the cache, so
+        // a later flush cannot put the pre-write copy back over it.
+        writeWorldFile(name, fileKey, data) {
+            if (!name || !fileKey) return false;
+            try {
+                const encoded = JsonEx.stringify(data);
+                Backend.writeFile(name, fileKey, JSON.stringify(JSON.parse(encoded), null, 2));
+                if (name === this.activeWorldName) this._cache[fileKey] = data;
+                return true;
+            } catch (e) {
+                console.error(`[WorldManager] Failed to write '${fileKey}' for world '${name}'`, e);
+                return false;
+            }
+        },
+
         // Counts binary savegame files for the given world. Returns null when
         // the count cannot be determined (browser/localStorage backend).
         countSaves(name) {
@@ -583,6 +929,48 @@
             const events = this.getField("history", "events");
             return Array.isArray(events) && events.length > 0;
         },
+
+        // The level this world builds its characters at. Read by character
+        // creation for every member it finishes; a world made before the
+        // option existed answers 1, exactly as it always did.
+        startingLevel() {
+            return clampStartLevel(this.worldInfo().startLevel);
+        },
+
+        // Who this world is populated with (see clampPopulationMode). Asked
+        // once on the creation form and never again: there is deliberately no
+        // setter, since the world is populated, historied and priced from the
+        // answer. A world made before the option existed answers "normal".
+        populationMode() {
+            if (!this.hasActiveWorld()) return DEFAULT_POPULATION_MODE;
+            return clampPopulationMode(this.worldInfo().populationMode);
+        },
+
+        // Convenience readers, so no caller has to spell the mode strings.
+        isGoblinWorld() { return this.populationMode() === "goblin"; },
+        isMonsterWorld() { return this.populationMode() === "monster"; },
+        // "death" is an empty world too (see POPULATION_MODES above), so every
+        // existing isEmptyWorld() consumer treats it identically without
+        // change; isDeathWorld() is only for the one thing that differs, the
+        // encounter system's fauna placement.
+        isEmptyWorld()   { const m = this.populationMode(); return m === "empty" || m === "death"; },
+        isZombieWorld()  { return this.populationMode() === "zombie"; },
+        isDeathWorld()   { return this.populationMode() === "death"; },
+
+        POPULATION_MODES: POPULATION_MODES,
+
+        // How much magic this world has (see clampMagicalLevel). Its own axis,
+        // independent of the timeline: both are asked once and neither is ever
+        // written again.
+        magicalLevel() {
+            if (!this.hasActiveWorld()) return DEFAULT_MAGICAL_LEVEL;
+            return clampMagicalLevel(this.worldInfo().magicalLevel);
+        },
+
+        isSeveredMagic() { return this.magicalLevel() === "severed"; },
+        isUnboundMagic() { return this.magicalLevel() === "unbound"; },
+
+        MAGICAL_LEVELS: MAGICAL_LEVELS,
 
         // Latest date reached anywhere in this world (max of the stored world
         // clock and the in-session time variable).
@@ -761,6 +1149,15 @@
             if (!Array.isArray(vfile.sharedVarIds)) {
                 vfile.sharedVarIds = DEFAULT_SHARED_VARS.slice();
             }
+            // What one playthrough is wanted for is that playthrough's own
+            // business: a bounty, or the manhunt it earned, must never be
+            // handed to every other savegame of the world. Enforced here
+            // rather than trusted to the manifest, since a world carries its
+            // own persisted copy of that list.
+            for (const id of NEVER_SHARED_VARS) {
+                const at = vfile.sharedVarIds.indexOf(id);
+                if (at !== -1) vfile.sharedVarIds.splice(at, 1);
+            }
             // One-time migration: variable 2 (max dungeon floor reached) became
             // world-shared after some worlds already had a persisted manifest,
             // so force it in rather than relying on the "seeded once" default.
@@ -885,10 +1282,18 @@
                 const fields = SYSTEM_FIELD_MAP[fileKey];
                 for (const key of Object.keys(fields)) {
                     if (Object.prototype.hasOwnProperty.call($gameSystem, key)) {
+                        const spec = fieldSpec(fields[key]);
                         const legacy = $gameSystem[key];
                         delete $gameSystem[key];
-                        if (this.getField(fileKey, fields[key]) === undefined && legacy !== undefined) {
-                            this.setField(fileKey, fields[key], legacy);
+                        if (legacy === undefined) continue;
+                        const held = this.getField(fileKey, spec.prop);
+                        // A merged field takes the legacy copy in whatever the
+                        // world already holds, so an older savegame adds its
+                        // findings rather than standing in for them.
+                        if (spec.merge) {
+                            this.setField(fileKey, spec.prop, spec.merge(held, legacy));
+                        } else if (held === undefined) {
+                            this.setField(fileKey, spec.prop, legacy);
                         }
                     }
                 }
@@ -905,10 +1310,15 @@
     for (const fileKey of Object.keys(SYSTEM_FIELD_MAP)) {
         const fields = SYSTEM_FIELD_MAP[fileKey];
         for (const key of Object.keys(fields)) {
-            const prop = fields[key];
+            const spec = fieldSpec(fields[key]);
+            const prop = spec.prop;
+            const merge = spec.merge;
             Object.defineProperty(Game_System.prototype, key, {
                 get() { return WorldManager.getField(fileKey, prop); },
-                set(value) { WorldManager.setField(fileKey, prop, value); },
+                set(value) {
+                    const held = WorldManager.getField(fileKey, prop);
+                    WorldManager.setField(fileKey, prop, merge ? merge(held, value) : value);
+                },
                 configurable: true
             });
         }
@@ -990,6 +1400,14 @@
         // and continues at the world clock.
         if (WorldManager.activeWorldName) {
             WorldManager.applyPublicState();
+            // A world begun after 21 December 2012 begins after the impact:
+            // there is no Earth to walk out onto, and everything that would
+            // have sent the party there sends them to the Omega Tower instead
+            // (WorldMapTransfer.earthLost). Raised here rather than waiting on
+            // the star map, so the very first transfer already knows.
+            if (($gameVariables.value(TIME_VARIABLE_ID) || 0) >= impactMinute()) {
+                $gameSwitches.setValue(SW_EARTH_LOST, true);
+            }
             // Generate whatever this world still owes (see
             // registerWorldInitializer). This is where the world created for
             // an empty world folder at boot gets populated: it is made before

@@ -1,0 +1,177 @@
+{
+  "unknownObject": "UNKNOWN OBJECT",
+  "unknown": "UNKNOWN",
+  "targetLine": "TARGET: {target} TYPE: {type} LASER: 532NM CW",
+  "axisX": "RAMAN SHIFT (CM⁻¹)",
+  "axisY": "INTENSITY",
+  "statusAnalyzing": "ANALYZIN' SPECTRAL SIGNATURE...",
+  "statusComplete": "█ SCAN COMPLETE - 532NM CW LASER | RES: 2 CM⁻¹ | SNR: 84 DB",
+  "statusScanning": "LASER SCANNIN'{dots} [Ν = {shift} CM⁻¹]",
+  "statusRendering": "RENDERIN' SPECTRUM{dots}",
+  "msgHeader": "\\C[8][ RAMAN SCANNER ]\\C[0]",
+  "msgNoMaterial": "NO SPECTRALLY ACTIVE MATERIAL DETECTED IN SCAN AREA!",
+  "msgHint": "TARGET MUST BE A STATUE, PAINTIN', OR LIBRARY OBJECT WITHIN 1M!",
+  "objectType": {
+    "tagged": "TAGGED",
+    "fossil": "FOSSIL",
+    "statue": "STATUE",
+    "painting": "PAINTIN'",
+    "library": "LIBRARY",
+    "mask": "MASK",
+    "surface": "SURFACE"
+  },
+  "material": {
+    "marble": {
+      "name": "CALCITE CACO₃",
+      "subname": "MARBLE"
+    },
+    "granite": {
+      "name": "SIO₂ + FELDSPARS",
+      "subname": "GRANITE"
+    },
+    "bronze": {
+      "name": "CU₂O / SNO₂ ALLOY",
+      "subname": "BRONZE + PATINA"
+    },
+    "limestone": {
+      "name": "CACO₃ / MGCO₃",
+      "subname": "LIMESTONE"
+    },
+    "lapis": {
+      "name": "LAZURITE NA₈[AL₆SI₆O₂₄]Sₙ",
+      "subname": "LAPIS LAZULI + OIL BINDER"
+    },
+    "vermillion": {
+      "name": "Α-HGS CINNABAR",
+      "subname": "VERMILLION PIGMENT"
+    },
+    "malachite": {
+      "name": "CU₂(CO₃)(OH)₂",
+      "subname": "MALACHITE PIGMENT"
+    },
+    "lead_white": {
+      "name": "2PBCO₃·PB(OH)₂",
+      "subname": "LEAD WHITE PIGMENT"
+    },
+    "wood": {
+      "name": "CELLULOSE + LIGNIN",
+      "subname": "HARDWOOD"
+    },
+    "paper": {
+      "name": "CELLULOSE",
+      "subname": "AGED PARCHMENT"
+    },
+    "onyx": {
+      "name": "SIO₂ CHALCEDONY",
+      "subname": "BLACK ONYX"
+    },
+    "obsidian": {
+      "name": "SIO₂ VOLCANIC GLASS",
+      "subname": "OBSIDIAN"
+    },
+    "jade": {
+      "name": "NAALSI₂O₆ JADEITE",
+      "subname": "JADE"
+    },
+    "quartz": {
+      "name": "SIO₂ Α-QUARTZ",
+      "subname": "ROCK CRYSTAL / QUARTZ"
+    },
+    "sandstone": {
+      "name": "SIO₂ + CALCITE CEMENT",
+      "subname": "SANDSTONE"
+    },
+    "basalt": {
+      "name": "PYROXENE + PLAGIOCLASE",
+      "subname": "BASALT"
+    },
+    "alabaster": {
+      "name": "CASO₄·2H₂O GYPSUM",
+      "subname": "ALABASTER"
+    },
+    "clay": {
+      "name": "AL₂SI₂O₅(OH)₄ KAOLINITE",
+      "subname": "FIRED CLAY / TERRACOTTA"
+    },
+    "gold": {
+      "name": "AU SURFACE OXIDE LAYER",
+      "subname": "GOLD (GILDED)"
+    },
+    "silver": {
+      "name": "AG₂S + AGCL TARNISH",
+      "subname": "SILVER (TARNISHED)"
+    },
+    "copper": {
+      "name": "CU₂O / CUO PATINA",
+      "subname": "COPPER"
+    },
+    "iron": {
+      "name": "Α-FE₂O₃ HEMATITE",
+      "subname": "IRON (OXIDIZED / RUSTED)"
+    },
+    "steel": {
+      "name": "FE/C + FE₂O₃ ALLOY",
+      "subname": "STEEL (PATINATED)"
+    },
+    "ivory": {
+      "name": "CA₅(PO₄)₃OH HYDROXYAPATITE",
+      "subname": "IVORY / BONE"
+    },
+    "ebony": {
+      "name": "CELLULOSE + LIGNIN (DENSE)",
+      "subname": "EBONY WOOD"
+    },
+    "bamboo": {
+      "name": "CELLULOSE + SILICA PHYTOLITHS",
+      "subname": "BAMBOO"
+    },
+    "ultramarine": {
+      "name": "NA₈[ALSIO₄]₆S₃ SYNTHETIC",
+      "subname": "ULTRAMARINE BLUE"
+    },
+    "prussian_blue": {
+      "name": "FE₇[FE(CN)₆]₃",
+      "subname": "PRUSSIAN BLUE"
+    },
+    "cobalt_blue": {
+      "name": "COAL₂O₄ SPINEL",
+      "subname": "COBALT BLUE"
+    },
+    "burnt_sienna": {
+      "name": "Α-FE₂O₃ CALCINED EARTH",
+      "subname": "BURNT SIENNA"
+    },
+    "azurite": {
+      "name": "CU₃(CO₃)₂(OH)₂",
+      "subname": "AZURITE"
+    },
+    "viridian": {
+      "name": "CR₂O₃·H₂O HYDRATED CHROMIA",
+      "subname": "VIRIDIAN GREEN"
+    },
+    "charcoal": {
+      "name": "AMORPHOUS CARBON",
+      "subname": "CHARCOAL / CARBON BLACK"
+    },
+    "amber": {
+      "name": "POLYMERIZED TERPENOID RESIN",
+      "subname": "FOSSILIZED AMBER"
+    },
+    "fossil_bone": {
+      "name": "BIOAPATITE + DIAGENETIC CALCITE",
+      "subname": "PERMINERALIZED BONE"
+    },
+    "fossil_silicified": {
+      "name": "SIO₂ CHALCEDONY / CHERT",
+      "subname": "SILICIFIED FOSSIL"
+    },
+    "fossil_pyrite": {
+      "name": "FES₂ IRON DISULFIDE",
+      "subname": "PYRITIZED FOSSIL"
+    },
+    "fossil_calcite": {
+      "name": "CACO₃ DIAGENETIC CALCITE",
+      "subname": "CALCIFIED SHELL / CORAL"
+    }
+  }
+}

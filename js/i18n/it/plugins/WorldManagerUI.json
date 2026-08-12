@@ -16,10 +16,8 @@
   "nextYear": "Anno successivo",
   "seed": "Seme",
   "randomizeSeed": "Seme casuale",
-  "worldHistory19002000Is": "La storia del mondo (1900-2000) viene sempre simulata. Le vite degli NPC e l'orologio del mondo vengono avanzati fino alla data di inizio scelta. Il seme rende riproducibili storia, mappe e NPC.",
   "betaSprites": "Sprite beta",
   "betaSpritesEnable": "Usa gli sprite beta dei personaggi",
-  "betaSpritesHelp": "Gli sprite beta sono i fogli dei personaggi fuori dal set originale. Si possono sempre scegliere a mano nella griglia dei personaggi; abilitandoli qui questo mondo potrà assegnarli anche alla propria gente. La scelta si fa ora e non è più modificabile.",
   "betaSpritesOn": "Abilitati",
   "betaSpritesOff": "Disabilitati",
   "createActivate": "CREA E ATTIVA",
@@ -60,5 +58,46 @@
     "Novembre",
     "Dicembre"
   ],
-  "confirmDelete": "Eliminare il mondo \"{name}\" con tutta la sua storia, NPC e salvataggi? Non può essere annullato."
+  "confirmDelete": "Eliminare il mondo \"{name}\" con tutta la sua storia, NPC e salvataggi? Non può essere annullato.",
+  "enemyFloor": "Lo Schiacciamento va avanti da un po': qui i nemici vaganti partono dal livello {level}, in qualsiasi modalità di generazione.",
+  "enemyFloorOpen": "La fauna è fuori controllo: nel mondo vaga qualunque cosa dal livello 1 al {level}.",
+  "enemyFloorCollapse": "Il paradosso si è compiuto: non resta nulla sotto il livello {level}, e non c'è più alcun limite superiore.",
+  "earthLost": "Non c'è più la Terra. Nibiru l'ha colpita il 21 dicembre 2012 e la mappa del mondo se n'è andata con lei: nella sua orbita resta la Torre Omega, e tutto ciò che ti avrebbe portato in superficie ti porta lì.",
+  "startingLevel": "Livello iniziale",
+  "lowerLevel": "Abbassa il livello",
+  "raiseLevel": "Alza il livello",
+  "populationMode": "Linea temporale alternativa",
+  "previousPopulation": "Popolazione precedente",
+  "nextPopulation": "Popolazione successiva",
+  "populationModes": {
+    "normal": "Normale",
+    "goblin": "Modalita goblin",
+    "monster": "Mondo di mostri",
+    "empty": "Mondo vuoto",
+    "zombie": "Apocalisse zombie",
+    "death": "Mondo morto"
+  },
+  "populationNotes": {
+    "normal": "La storia come e andata. Ognuno e chi e e il mondo e popolato come e stato scritto.",
+    "goblin": "Sono tutti goblin. Esistono solo volti, busti e archetipi goblin, ogni personaggio che crei lo e, e i goblin sono di gran lunga la cosa piu comune che si aggira sulla mappa.",
+    "monster": "Qui non cammina nulla di umano. Persone, elfi e goblin sono spariti dalla folla, dal guardaroba e dalla fauna; il mondo e popolato da ogni altro archetipo esistente.",
+    "empty": "Non e rimasto nessuno. Niente persone, niente negozianti, niente notizie, niente epidemie, niente legge e niente lavoro; la storia si ferma al 1 gennaio 2000, gli immobili non valgono nulla e le citta stanno tornando verdi.",
+    "zombie": "I morti si sono alzati. Nove persone su dieci non sono piu persone: dove ci sarebbe stato qualcuno c'e invece un non morto, ancora fermo dove stava lui.",
+    "death": "Non e rimasto nessuno, e non e rimasto niente. Tutto cio che gia manca in un mondo vuoto manca anche qui, e in piu e sparita ogni creatura vagante: nessun mostro, nessuna bestia, nulla ad attendere in un dungeon, su una mappa procedurale o su una costruita a mano. Qualunque fauna ci fosse una volta, ora c'e solo silenzio."
+  },
+  "populationLocked": "Scelta una sola volta, alla creazione: un mondo non puo essere ripopolato in seguito.",
+  "magicalLevel": "Magia",
+  "previousMagic": "Livello di magia precedente",
+  "nextMagic": "Livello di magia successivo",
+  "magicalLevels": {
+    "normal": "Normale",
+    "severed": "Magia recisa",
+    "unbound": "Magia dilagante"
+  },
+  "magicalNotes": {
+    "normal": "",
+    "severed": "La notte del 31 dicembre 2000 i tre pilastri della Gilda dei Maghi hanno compiuto il Rituale di Salomone, e i tradizionalisti della Thatcher hanno avuto la meglio: il codice sorgente della magia e stato riscritto per tenerla tutta dentro la Gilda, e fuori da quelle poche sale non e mai esistita. Non esiste nulla di magico: nessun incantesimo, nessun amuleto, nessuna lama incantata, nessuna creatura che ne viva, nessun volto che solo un incantesimo potrebbe portare. I negozi non la vendono, le casse non la contengono, e non c'e barra MP perche non c'e nulla su cui spenderla. Cio che il gruppo riceve alla creazione resta suo comunque.",
+    "unbound": "La notte del 31 dicembre 2000 i tre pilastri della Gilda dei Maghi hanno compiuto il Rituale di Salomone, e ha avuto la meglio la parte di Crowley: invece di restringere il flusso lo hanno aperto fino in fondo, stappando tutte le linee di ley insieme finche non e rimasto piu nulla di ordinario. Ogni arma e incantata, ogni malattia e una maledizione e ogni creatura che cammina e qualcosa che non dovrebbe. I negozi non vendono nulla di mondano e non si trova mai acciaio semplice. Cio che il gruppo riceve alla creazione resta suo comunque."
+  },
+  "magicalLocked": "Scelta una sola volta, alla creazione, e indipendente dalla linea temporale: qualsiasi combinazione delle due e un mondo che puoi creare."
 }

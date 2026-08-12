@@ -45,11 +45,22 @@
  * them. A passable entrance (a grate set into the floor) opens when the party
  * steps onto it; an impassable one (a cave mouth, stairs against a wall) opens
  * when the party walks into it and is stopped by it.
- *   - StairsDown -> LootCellar   (a small treasure cellar: gold, wine, chests)
- *   - StairsUp   -> TempleInside (long connected halls, much stronger enemies)
- *   - Cave       -> CaveDen      (a single cave chamber packed with one enemy
- *                                 species, bones and skulls)
- *   - Grate      -> Sewer
+ * Which structure an entrance opens onto is ROLLED, per entrance tile, out of
+ * the catalogue in ProceduralMapStructureGenerator: an entry declares which
+ * features may reach it and which surface country favours it, so ice fields
+ * keep frozen caves under them and a graveyard catacombs. The roll is seeded
+ * on (world seed, world square, tile), so one stairway always leads to the
+ * same place and two stairways on a square rarely to the same kind of place.
+ *   - StairsDown -> any structure at all (cellar, dungeon, crypt, catacombs,
+ *                  mine, cistern, warren, oubliette, library, forge, bunker,
+ *                  lab, shrine, tunnel, grotto, lava tube, barrow, station,
+ *                  salt works, cave den, temple...)
+ *   - StairsUp   -> the ones built above ground and buried since (temple,
+ *                  shrine, library, barrow)
+ *   - Cave       -> the cave family (den, frozen, crystal, fungal, lava
+ *                  tube, sea grotto)
+ *   - Grate      -> Sewer, and only a Sewer: they belong to the towns and
+ *                  burgs that declare them as their own lower layer
  *   - Hatch      -> PatronVault  (a patron's own vault, PatreonRewards: the
  *                                 cellar generator writ large, buried in gold
  *                                 and rare weapons)
@@ -130,23 +141,31 @@
   }
 
   // --- Trees: need an axe, drop wood + plant matter ---
-  assign(["Tree", "TreeIce", "TreeSwamp", "Palm", "Bamboo", "Mangrove"], {
+  // ("TreIce" is the AlienBase tileset's own spelling of a frozen tree.)
+  assign([
+    "Tree", "TreeIce", "TreIce", "TreeSwamp", "TreeDead", "TreeTrunk", "TreeStump",
+    "TreeStreet", "Palm", "Bamboo", "Mangrove"
+  ], {
     verb: VERB.FELL, req: REQ.AXE, spec: "Lumberjacking",
     rewards: [[MAT.WOOD, 1, 3], [MAT.PLANT, 1, 2]]
   });
 
   // --- Loose/worked wood: just pick it up ---
-  assign(["Log", "LogIce", "Wood", "WoodIce", "Wooden", "WoodPillar", "Driftwood"], {
+  assign([
+    "Log", "LogIce", "Wood", "WoodIce", "Wooden", "WoodPillar", "Driftwood",
+    "Branches", "Stick"
+  ], {
     verb: VERB.PICK, spec: "Foraging", rewards: [[MAT.WOOD, 1, 2]]
   });
 
   // --- Plants / foliage: pick up, drop plant matter ---
+  // ("Lylipad" is the AlienBase tileset's own spelling of a lilypad.)
   assign([
-    "Plant", "PlantIce", "Leaves", "LeavesIce", "Lilypad", "Lily", "Weed", "WeedIce",
-    "WeedSwamp", "Bush", "Cactus", "Cattail", "Clover", "Coral", "Corn", "Crop",
+    "Plant", "PlantIce", "Leaves", "LeavesIce", "Lilypad", "Lylipad", "Lily", "Weed", "WeedIce",
+    "WeedSwamp", "Bush", "JungleBush", "Cactus", "Cattail", "Clover", "Coral", "Corn", "Crop",
     "Fern", "Flower", "FlowerIce", "Ivy", "Kelp", "Lichen", "Moss", "Moor", "MoorIce",
-    "Rose", "Sedge", "SeaPlant", "Seaweed", "Shrub", "Sprout", "Sunflower", "Thistle",
-    "Thorn", "Vine", "Wheat", "Hay", "HayIce", "Soil"
+    "Reed", "Rose", "Sedge", "SeaPlant", "Seaweed", "Shrub", "Sprout", "Sunflower", "Thistle",
+    "Thorn", "Vine", "Wheat", "Hay", "HayIce", "Soil", "Fruit", "PottedPlant"
   ], {
     verb: VERB.PICK, spec: "Foraging", rewards: [[MAT.PLANT, 1, 2]]
   });
@@ -154,21 +173,50 @@
   // --- Herbs: plant matter + a herb extract ---
   assign(["Herb"], { verb: VERB.PICK, spec: "Herbalism", rewards: [[MAT.PLANT, 1, 2], [MAT.HERB, 1, 1]] });
 
+  // --- Shells: picked off the sand, and they are shell rather than leaf ---
+  assign(["Seashell"], { verb: VERB.PICK, spec: "Beach Combing", rewards: [[MAT.BONE, 1, 2]] });
+
+  // --- Tentacles: what an alien world puts up where a scan reads nothing but a
+  // weak life sign (GalaxySim.planetLifeSigns). It is not a plant and it is not
+  // a rock, so it is butchered rather than picked or mined: every kind pays
+  // MEAT, and the two that have grown into something harder pay that on top.
+  // None of them asks for a tool - underneath the shell it is all flesh. ---
+  assign(["Tentacle"], {
+    verb: VERB.DISMANTLE, spec: "Butchery",
+    rewards: [[MAT.MEAT, 1, 3], [MAT.LEATHER, 0, 1]]
+  });
+  assign(["RockTentacle"], {
+    verb: VERB.DISMANTLE, spec: "Butchery",
+    rewards: [[MAT.MEAT, 1, 2], [MAT.STEEL, 1, 2]], ingot: "low"
+  });
+  assign(["CrystalTentacle"], {
+    verb: VERB.DISMANTLE, spec: "Butchery",
+    rewards: [[MAT.MEAT, 1, 2], [MAT.CRYSTAL, 1, 2]]
+  });
+
   // --- Mushrooms: pick up, plant matter ---
-  assign(["Mushroom"], { verb: VERB.PICK, spec: "Foraging", rewards: [[MAT.PLANT, 1, 2]] });
+  assign(["Mushroom", "MushroomIce"], { verb: VERB.PICK, spec: "Foraging", rewards: [[MAT.PLANT, 1, 2]] });
 
   // --- Rocks & rock-built things: need a pickaxe/heavy tool, drop steel + ingots ---
   // (Statue removed: it now shows a read-only inscription, see CUSTOM_HANDLERS.)
+  // ("Rockj" is a typo the AlienBase tileset carries; it is a rock like the rest.)
   assign([
-    "Rock", "RockDesert", "RockIce", "Pebble", "PebbleIce", "Stalagmite", "Stalactite",
+    "Rock", "RockDesert", "RockIce", "RockGrass", "RockJungle", "JungleRock", "RockPath", "Rockj",
+    "WaterRock", "Pebble", "PebbleIce", "Stalagmite", "Stalactite",
     "Stalattite", "Rubble", "Wall", "WoodPillar", "Arch", "Aqueduct", "Column", "Pillar",
-    "MysticStone", "Marble", "Monument", "Podium", "Boulder"
+    "ColumnBroken", "StoneBlock", "Pyramid", "MysticStone", "Marble", "Monument",
+    "Podium", "Boulder"
   ], {
     verb: VERB.MINE, req: REQ.ROCK, spec: "Masonry", rewards: [[MAT.STEEL, 1, 2]], ingot: "low"
   });
 
+  // --- A hole somebody else already dug: shovelled out, not quarried ---
+  assign(["DirtExcavation"], {
+    verb: VERB.MINE, req: REQ.ROCK, spec: "Masonry", rewards: [[MAT.STEEL, 0, 1], [MAT.PLASTIC, 0, 1]]
+  });
+
   // --- Ore veins / deposits / mine shafts: better ingot odds ---
-  assign(["Ore", "Deposit", "MineShaft"], {
+  assign(["Ore", "Deposit", "MineShaft", "Mineral"], {
     verb: VERB.MINE, req: REQ.ROCK, spec: "Mining", rewards: [[MAT.STEEL, 1, 2]], ingot: "high"
   });
 
@@ -177,11 +225,22 @@
     verb: VERB.MINE, req: REQ.ROCK, spec: "Mining", rewards: [[MAT.CRYSTAL, 1, 2]], ingot: "low"
   });
 
-  // --- Graves / bones: need a tool, drop bone (+ crystal) ---
+  // --- Burials: need a tool, drop bone (+ crystal) - and opening one is a
+  // CRIME. A grave belongs to whoever is in it, and breaking into it is grave
+  // robbing, charged the moment the work is done (`crime`, filed by
+  // performDismantle through CrimeSystem). It covers what is actually a burial:
+  // a grave, a tomb, a coffin, a sarcophagus. ---
   // (Skull removed: it now grants a random Skull-named item, see CUSTOM_HANDLERS.)
   assign([
-    "Grave", "GraveIce", "Tomb", "Coffin", "Sarcophagus", "Bones", "SkeletonBonus"
+    "Grave", "GraveIce", "Tomb", "Coffin", "Sarcophagus"
   ], {
+    verb: VERB.MINE, req: REQ.ROCK, spec: "Mining", crime: "graverobbing",
+    rewards: [[MAT.BONE, 1, 2], [MAT.CRYSTAL, 0, 1]]
+  });
+
+  // --- Loose remains: the same salvage, but bones lying on the ground are
+  // nobody's grave and taking them is nobody's business. ---
+  assign(["Bones", "SkeletonBonus"], {
     verb: VERB.MINE, req: REQ.ROCK, spec: "Mining", rewards: [[MAT.BONE, 1, 2], [MAT.CRYSTAL, 0, 1]]
   });
 
@@ -193,10 +252,12 @@
     "Temple", "Church", "Inn", "Tavern", "Warehouse", "Factory", "Prison", "Windmill",
     "Chimney", "ChimneyIce", "Roof", "Blacksmith", "Ruin", "DragonsLair", "BeastDen",
     "Lair", "MonsterNest", "Nest", "Hive", "Bridge", "Fence", "Gate", "Door", "Ladder",
-    "LadderDown", "Mannequin", "Scarecrow", "ScarecrowIce",
-    "Table", "TableBroken", "Sign", "SignArmor",
-    "SignMagic", "SignTravel", "SignWeapon", "SignTravel",
-    "Barrel", "BarrelIce", "Cart", "Bench", "Rope", "Trash"
+    "LadderDown", "Mannequin", "Scarecrow", "ScarecrowIce", "Coop", "MiniHouse",
+    "Table", "TableBroken", "Shelf", "Sign", "SignArmor",
+    "SignMagic", "SignTravel", "SignWeapon", "SignWeaponShop",
+    "Barrel", "BarrelIce", "Cart", "Rope", "Bucket", "SnowRoof",
+    // The city street's own woodwork: a stall, a hoarding, a run of washing.
+    "FoodCart", "Clothes"
   ], {
     verb: VERB.DISMANTLE, spec: "Carpentry", rewards: [[MAT.WOOD, 1, 3], [MAT.STEEL, 0, 1]]
   });
@@ -206,7 +267,11 @@
   // up as item 138, see CUSTOM_HANDLERS.)
   assign([
     "Anvil", "Cauldron", "Furnace", "Lamp", "Lantern", "Chain", "BucketIce",
-    "Well", "WellIce", "Workbench", "CraftStation", "Tech", "Gear"
+    "Well", "WellIce", "Workbench", "CraftStation", "Tech", "Gear", "MetalScrap",
+    "Rail", "RailLeft", "RailRight", "Pole", "Streetlight", "Mailbox", "Brazier",
+    "Bell",
+    // City street ironmongery: the poles, barriers and railings of a road.
+    "RoadPole", "RoadBarrier"
   ], {
     verb: VERB.DISMANTLE, spec: "Metalworking", rewards: [[MAT.STEEL, 1, 2]]
   });
@@ -214,12 +279,15 @@
   // --- Glass / vases / windows ---
   // (Vase/VaseIce/VasePlant removed: they're "Break"-able for random food now.
   // Mirror removed: it calls Common Event 169. See CUSTOM_HANDLERS.)
-  assign(["Window", "WindowIce", "WindowBroken", "VaseBroken"], {
+  // ("Glass" is a pane on some fifty tilesets and a floor autotile on the city
+  // sheet; the autotile is laid on layer 0, which featureAt never reads, so only
+  // the pane ever reaches this table.)
+  assign(["Window", "WindowIce", "WindowBroken", "VaseBroken", "Glass"], {
     verb: VERB.DISMANTLE, spec: "Glassblowing", rewards: [[MAT.GLASS, 1, 2]]
   });
 
   // --- Cloth / banners ---
-  assign(["Banner", "Flag", "Decoration", "SpiderWeb"], {
+  assign(["Banner", "Flag", "Decoration", "SpiderWeb", "Cobweb", "Carpet"], {
     verb: VERB.DISMANTLE, spec: "Sewing", rewards: [[MAT.CLOTH, 1, 2]]
   });
 
@@ -229,11 +297,22 @@
     verb: VERB.DISMANTLE, spec: "Chemistry", rewards: [[MAT.OIL, 1, 1]]
   });
 
+  // --- Sealed drums of somebody else's chemistry: acid, and the drum ---
+  assign(["ToxicBarrel"], {
+    verb: VERB.DISMANTLE, spec: "Chemistry", rewards: [[MAT.ACID, 1, 2], [MAT.PLASTIC, 0, 1]]
+  });
+
+  // --- Moulded plastic roadside furniture ---
+  assign(["TrafficCone"], {
+    verb: VERB.DISMANTLE, spec: "Metalworking", rewards: [[MAT.PLASTIC, 1, 2]]
+  });
+
   // --- Tech / sci-fi: dismantle for steel + plastic + electronics ---
   assign([
     "Antenna", "Circuit", "CodePattern", "Elevator", "Holo", "Hologram", "MetalPanel",
     "Neon", "Pipe", "PowerNode", "QuantumField", "Reactor", "Robot", "SpaceDebris",
-    "Spacecraft", "Transmitter", "AlienStructure"
+    "Spacecraft", "Transmitter", "AlienStructure",
+    "Capsule", "Generator", "ColumnTech", "Debris"
   ], {
     verb: VERB.DISMANTLE, spec: "Electronics",
     rewards: [[MAT.STEEL, 1, 2], [MAT.PLASTIC, 1, 2], [MAT.MICROCHIP, 0, 1]]
@@ -255,10 +334,35 @@
     "Island", "Badland", "Magma", "Ember", "Lagoon", "Whirlpool", "Oasis", "Geyser",
     "Geothermal", "Sulfur", "SpringIce", "Spring", "Ice", "Snow", "Sand", "Stone",
     "Grass", "GrassDark", "Road", "Sidewalk", "Water", "Ocean", "Mountain", "Cliff",
+    // Ground the map is made of, and marks left on it: a crack, a crater, a
+    // stain, a splash of blood and a drift of snow are the terrain itself.
+    "Crack", "Crater", "Stain", "Blood", "SnowPile", "IcePool", "GrassWater",
+    "Salt", "Beach", "Mud", "Dirt",
     // Building/dungeon entrances + interactive signposts: used via
     // ProceduralHouseSystem (enter / refuel / fast-travel), never harvested.
     "DoorHouse", "DoorInn", "DoorShop", "DoorSkyscraper", "DoorDungeon",
     "SignPark", "SignBus",
+    // The city tileset's trade doors and its way down into the sewer: walked
+    // into like every other entrance, never taken apart for their timber.
+    "DoorClinic", "DoorPoliceStation", "DoorWeaponStore", "DoorGym",
+    "DoorHardwareStore", "DoorIceCream", "DoorMusicStore", "DoorSewers",
+    "GarageDoor", "Manhole",
+    // Paint on and in the road: bays, crossings, lane markings, a gully
+    // grating. There is nothing there to pick up, and clearing it would leave a
+    // hole in the road with no tile under it. Writing on a wall is read, never
+    // taken away. The city sheet paints its bays with ParkingDrawing and the
+    // Road sheet with Parking, so both are named.
+    "Parking", "ZebraHorizontal", "ZebraVertical",
+    "DashedLine", "DashedLineHorizontal", "DashedLineVertical",
+    "Path", "PathDesert", "PathIce",
+    //
+    // The floor names that used to be listed here (Pavement, Parquet,
+    // WoodenFloor, Metal, Techno, TechnoFloor, Glass) are NOT skipped: they are
+    // A5 ground autotiles on the city sheet, laid on layer 0 where featureAt
+    // never looks, so listing them bought nothing there - and on some fifty
+    // other tilesets the same names are real B-E props (a pane of glass, a
+    // paving slab), which skipping them would have quietly made inert.
+    "ParkingDrawing", "Drain", "Graffiti", "Poster",
     // Purely a step-on trigger (wets the party, see the moveStraight hook below),
     // never an action-button interaction.
     "Puddle"
@@ -589,6 +693,13 @@
     grantRewards(gained);
     playActionSe(cfg.verb);
     showRewardPopup(gained);
+    // Some things are not yours to take apart. A feature whose entry names a
+    // crime files it the moment the work is done, on the same charge sheet
+    // everything else in the game writes to (CrimeSystem), so the bounty, the
+    // wanted heat and the trial all see it.
+    if (cfg.crime && window.CrimeSystem && typeof window.CrimeSystem.addPresetCrime === "function") {
+      window.CrimeSystem.addPresetCrime(cfg.crime);
+    }
     // The work itself is the lesson, and which lesson depends on what was
     // taken apart: an axe in a trunk teaches Lumberjacking, a prybar in a
     // reactor housing teaches Electronics. Capped per day like all the rest.
@@ -913,6 +1024,65 @@
     });
   }
 
+  // Every tile carrying feature `name` on the current map, collapsed to its
+  // grid origin so a wall-mounted multi-tile Torch (upper half + lower half,
+  // see WALL_MOUNTED below) is counted once, at the same coordinate
+  // computeFootprint() hands CUSTOM_HANDLERS as `tiles[0]`.
+  function collectFeatureOrigins(name) {
+    const U = window.ProcGenUtils;
+    const tilesetId = currentTilesetId();
+    if (!U || !tilesetId || !$dataMap || !$dataMap.data) return [];
+    const { tileToFeature, tileToGrid } = getLookup(tilesetId);
+    const w = $dataMap.width;
+    const h = $dataMap.height;
+    const seen = new Set();
+    const origins = [];
+    for (const z of [3, 2]) {
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const tileId = $dataMap.data[z * w * h + y * w + x];
+          if (!tileId) continue;
+          if (U.getFeatureNameFromTileId(tileId, tileToFeature) !== name) continue;
+          const grid = tileToGrid[tileId];
+          const ox = grid ? x - grid.gc : x;
+          const oy = grid ? y - grid.gr : y;
+          const key = `${ox},${oy}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          origins.push({ x: ox, y: oy });
+        }
+      }
+    }
+    return origins;
+  }
+
+  // A dungeon isn't dug cold: some of its torches and candles are rolled
+  // already burning, once per proc-map coordinate (seeded per tile, so the
+  // same structure instance always lights the same ones). Runs on first
+  // entry only (store.litRolled guards it) so a torch the party blew out
+  // never re-lights itself on a later visit or a plain map reload.
+  const TORCH_INITIAL_LIT_CHANCE = 0.35;
+  function rollInitialLitFeatures() {
+    const store = litStore();
+    if (!store) return;
+    if (!store.litRolled) store.litRolled = {};
+    const key = currentMapKey();
+    if (store.litRolled[key]) return;
+    store.litRolled[key] = true;
+    if (!store.litFeatures[key]) store.litFeatures[key] = {};
+    for (const name of ["Torch", "Candle"]) {  // i18n-ignore  feature ids
+      for (const t of collectFeatureOrigins(name)) {
+        const rng = seededRngForTile(t.x, t.y, 0x707C4);
+        if (rng() < TORCH_INITIAL_LIT_CHANCE) {
+          store.litFeatures[key][`${t.x},${t.y}`] = true;
+        }
+      }
+    }
+    if (window.WorldManager && typeof window.WorldManager.flush === "function") {
+      try { window.WorldManager.flush(); } catch (e) { /* non-fatal */ }
+    }
+  }
+
   // ==========================================================================
   // CUSTOM_HANDLERS: one bespoke interaction per feature name. Each handler
   // receives (name, tiles, info, character); `tiles[0]` is the faced tile.
@@ -928,21 +1098,22 @@
     const between = (lo, hi) => lo + Math.floor(rng() * (hi - lo + 1));
     if (inPatronVault()) {
       // A patron's vault is not a hoard somebody forgot in a cellar: every pile
-      // is real coin, and a good half of them are stacked on bullion or gems.
+      // is real coin, most of them are stacked on bullion, and the gems and
+      // trinkets are lying about on top rather than buried in it.
       const objs = [];
-      if (rng() < 0.5) {
+      if (rng() < 0.75) {
         const ingot = $dataItems[INGOTS[Math.floor(rng() * INGOTS.length)]];
-        if (ingot) objs.push({ obj: ingot, qty: between(2, 5) });
+        if (ingot) objs.push({ obj: ingot, qty: between(4, 10) });
       }
-      if (rng() < 0.35) {
+      if (rng() < 0.6) {
         const crystal = $dataItems[MAT.CRYSTAL];
-        if (crystal) objs.push({ obj: crystal, qty: between(1, 3) });
+        if (crystal) objs.push({ obj: crystal, qty: between(2, 6) });
       }
-      if (rng() < 0.25) {
+      if (rng() < 0.45) {
         const trinket = randomTrinket(TRINKET_MAX_PRICE, rng);
         if (trinket) objs.push({ obj: trinket, qty: 1 });
       }
-      return { gold: between(1500, 6000), objs };
+      return { gold: between(4000, 15000), objs };
     }
     const roll = rng();
     if (roll < 0.32) return { gold: between(120, 400), objs: [] };   // loose change
@@ -1063,8 +1234,8 @@
     showLoreMessage(T('Terrain.mpRefilled'));
   };
 
-  // --- Bed / Campfire / Tent: open the sleep menu, never removed ---
-  for (const n of ["Bed", "Campfire", "Tent"]) {  // i18n-ignore  feature ids
+  // --- Bed / Campfire / Tent / Bedroll: open the sleep menu, never removed ---
+  for (const n of ["Bed", "Campfire", "Tent", "Bedroll"]) {  // i18n-ignore  feature ids
     CUSTOM_HANDLERS[n] = () => {
       const scene = SceneManager._scene;
       if (scene && typeof scene.openSleepMenu === "function") scene.openSleepMenu("main");
@@ -1095,6 +1266,22 @@
       AudioManager.playSe({ name: "Open1", volume: 90, pitch: 100, pan: 0 });
       openLootContainer(containerId);
     });
+  };
+
+  // --- Backpack: Open -> whatever whoever dropped it was carrying ---
+  CUSTOM_HANDLERS.Backpack = (name, tiles) => {
+    const t = tiles[0];
+    showChoiceMenu([T('Terrain.open')], () => {
+      const containerId = proceduralContainerId(name, t.x, t.y);
+      generateSeededLoot(containerId, "Tools", "Food", null, 5, seededRngForTile(t.x, t.y, 0xBAC4));  // i18n-ignore  item categories
+      AudioManager.playSe({ name: "Open1", volume: 90, pitch: 100, pan: 0 });
+      openLootContainer(containerId);
+    });
+  };
+
+  // --- Globe: a globe is a map on a stand, and opens the same one ---
+  CUSTOM_HANDLERS.Globe = () => {
+    PluginManager.callCommand($gameMap._interpreter || {}, "WorldMap", "openWorldMap", {});
   };
 
   // --- Crate (+ ice variant): Open -> random cheap goods (ContainerSystemUI) ---
@@ -1186,7 +1373,8 @@
   };
 
   // --- Structure entrances: descend/climb into a coordinate-seeded generated
-  // structure biome (Sewer, LootCellar, TempleInside, CaveDen). The seed is
+  // structure biome (Sewer, LootCellar, Dungeon, Crypt, TempleInside,
+  // CaveDen). The seed is
   // perturbed per entrance tile so two entrances on the same map open onto
   // different, but deterministic, structures. The border of the generated map
   // returns the player here (WorldMapReturn's _dungeonSession).
@@ -1196,14 +1384,19 @@
   // moveStraight hook at the bottom of this file. Each entry returns true only
   // when the party actually went in, so a refused entrance does not lock out
   // the next step.
-  function enterStructureBiome(t, biomeName, seSound) {
+  function enterStructureBiome(t, biomeName, seSound, saltOverride) {
     const pg = $gameSystem._procGenData;
     if (!pg) return false;
     // The entrance tile is passed as the seed salt. It used to be poked into
     // pg.seed instead, which did nothing at all: procMapSeed builds the seed from
     // the WORLD seed and coordinates and never reads pg.seed, so every grate on a
     // square opened onto one and the same sewer.
-    const salt = ((t.x * 131) + (t.y * 977)) | 0;
+    //
+    // saltOverride lets a caller pin the salt instead (the Bunker hatch does,
+    // see WALK_ENTRANCES.StairsDown): that hatch is the one entrance that must
+    // always reopen onto a cellar generated earlier with a KNOWN salt, rather
+    // than a fresh one keyed to the hatch's own tile position.
+    const salt = (saltOverride != null) ? (saltOverride | 0) : (((t.x * 131) + (t.y * 977)) | 0);
     PluginManager.callCommand($gameMap._interpreter || {}, "WorldMapReturn", "startForcedBiome",
       { Biome: biomeName, Salt: salt });
     AudioManager.playSe({ name: seSound || "Door1", volume: 90, pitch: 100, pan: 0 });
@@ -1217,13 +1410,108 @@
   // --- Grate: descends into a fresh Sewer biome, seeded from the grate tile ---
   WALK_ENTRANCES.Grate = (tiles) => enterStructureBiome(tiles[0], "Sewer");  // i18n-ignore  biome id
 
-  // --- StairsDown: descends into a loot cellar (gold, wine, chests, and
-  // maybe one lurking enemy around the party's level) ---
+  // --- Where an entrance leads ---
   //
-  // The hatch of a Bunker-origin start is one of these. It gets the 'bunker'
-  // session instead of the plain 'sandbox' one, so climbing back out rebuilds
-  // the bunker's own surface square (see WorldMapReturn.exitDungeonSession)
-  // rather than leaving the surface to be re-resolved off the cellar's map.
+  // An entrance is not a door onto one fixed place. Every structure in the
+  // catalogue (ProceduralMapStructureGenerator) declares which terrain
+  // features may open onto it, and the roll picks from those: a flight of
+  // stairs can reach a cellar, a dungeon, a crypt, catacombs, a mine, a
+  // flooded cistern, a buried library, a bunker, a barrow, an underground
+  // station... A cave mouth only ever reaches the cave-family structures and
+  // a flight of steps upward only the things built above ground and buried
+  // since. The Sewer and a patron's Vault declare no entrance at all: they
+  // belong to the Grate and the Hatch, which name them outright.
+  //
+  // The destination is rolled once per entrance tile (world seed, world
+  // square, tile), so a given stairway always leads to the same place, and two
+  // stairways on one square rarely to the same kind of place.
+  //
+  // The roll is TILTED BY THE COUNTRY the entrance is cut into: ice fields
+  // keep frozen caves under them, a graveyard catacombs, a city its bunkers
+  // and its dead metro. `affinity` on a catalogue entry names the surface
+  // families that favour it; the tilt is a weight and never a rule, so every
+  // structure stays reachable anywhere. Alien surfaces belong to no family
+  // and simply take the base weights.
+  const SURFACE_FAMILIES = [
+    // Matched against the surface biome's own name first, then against the
+    // `lowerLayer` it declares, which is what a square already says is
+    // underneath it.
+    { key: "ice", test: /^(ice|snow|permafrost|tundra|glacier|taiga|caveice|mountainice|forestice|villageice|cityice|burgice)/i },
+    { key: "volcanic", test: /^(volcano|hell|ember|lava)/i },
+    { key: "desert", test: /^(desert|saltflats|badlands|canyon|steppe|savannah|mountaindesert|citydesert|villagedesert|burgdesert)/i },
+    { key: "wet", test: /^(swamp|mangrove|lake|river|riverbank|beach|ocean|docks|seabed|caveflooded|floodedcave|bridge|villageriver|villagesea)/i },
+    { key: "wood", test: /^(forest|jungle|bamboo|spiritwoods|mushroom|fairy)/i },
+    { key: "dead", test: /^(graveyard|ruins|abandoned|villa|temple|church|crypt|castle|eldritchtomb)/i },
+    { key: "urban", test: /^(city|burg|metro|highway|office|factory|laboratory|spacecenter|omegatower|houses|docks|landfill|park|train|arena|prison)/i },
+    { key: "rural", test: /^(farm|fields|meadows|village|highlands|park|orchard)/i },
+    // No volcano here: it has its own family, and letting it be mountain as
+    // well handed the generic mountain structures a bonus on the one country
+    // whose whole point is the forge and the lava tube.
+    { key: "mountain", test: /^(mountain|highlands|mines|underdark|crystals|cave|lair)/i },
+    { key: "weird", test: /^(eldritch|limbo|dreamscape|abstract|digital|heaven|space|spiritwoods)/i },
+  ];
+  const AFFINITY_BONUS = 30;
+
+  // The country is read from the surface biome's own name and from NOTHING
+  // else. Folding in the `lowerLayer` it declares looked like more signal and
+  // was the opposite: 69 of the 111 biomes declare "Cave" down there, so
+  // almost every square in the world came out favouring the cave-family
+  // structures, and a taiga ended up preferring an ordinary den to the frozen
+  // cave that is the whole point of standing in a taiga.
+  function surfaceFamilies() {
+    const pg = $gameSystem._procGenData;
+    const out = new Set();
+    if (!pg || !pg.currentBiome) return out;
+    const name = String(pg.currentBiome);
+    // A landing on another world is nobody's country: the alien biomes are
+    // out of scope here and leave every structure on its base weight.
+    if (/^alien/i.test(name)) return out;
+    for (const fam of SURFACE_FAMILIES) if (fam.test.test(name)) out.add(fam.key);
+    return out;
+  }
+
+  // `entrance` is the catalogue's name for the feature: stairsDown, cave,
+  // stairsUp. Returns a biome name, or null when the catalogue is not loaded,
+  // in which case the caller falls back to what it always used to open.
+  function pickStructure(entrance, t) {
+    const D = window.ProcGenDungeon;
+    if (!D || typeof D.structures !== "function") return null;
+    const pool = D.structures().filter((s) =>
+      s.entrances && s.entrances.indexOf(entrance) >= 0 && (s.weight || 0) > 0);
+    if (!pool.length) return null;
+
+    const families = surfaceFamilies();
+    const weights = pool.map((s) => {
+      const favoured = (s.affinity || []).some((a) => families.has(a));
+      return (s.weight || 1) + (favoured ? AFFINITY_BONUS : 0);
+    });
+    const total = weights.reduce((a, b) => a + b, 0);
+
+    // The world square is mixed into the salt: seededRngForTile hashes the tile
+    // against the world seed alone, so without it the same tile of two
+    // different squares would open onto the same kind of structure. The
+    // entrance kind is in there too, so a stairway and a cave mouth on the
+    // same tile could never resolve alike.
+    const pg = $gameSystem._procGenData;
+    let salt = 0x57A125;
+    for (let i = 0; i < entrance.length; i++) salt = (Math.imul(salt, 31) + entrance.charCodeAt(i)) | 0;
+    if (pg) salt = (salt ^ Math.imul(pg.originX | 0, 73856093) ^ Math.imul(pg.originY | 0, 19349663)) | 0;
+    const rng = seededRngForTile(t.x, t.y, salt);
+    let roll = rng() * total;
+    for (let i = 0; i < pool.length; i++) {
+      roll -= weights[i];
+      if (roll <= 0) return pool[i].key;
+    }
+    return pool[0].key;
+  }
+
+  // The hatch of a Bunker-origin start is one of these stairways, and it is
+  // always the cellar the party woke up in: its layout is fixed by (world
+  // seed, world coords), so descending rebuilds that very cellar. It gets the
+  // 'bunker' session instead of the plain 'sandbox' one, so climbing back out
+  // rebuilds the bunker's own surface square (see
+  // WorldMapReturn.exitDungeonSession) rather than leaving the surface to be
+  // re-resolved off the cellar's map.
   function isBunkerHatch(t) {
     const rec = $gameSystem._bunkerOrigin;
     const pg = $gameSystem._procGenData;
@@ -1234,13 +1522,18 @@
 
   WALK_ENTRANCES.StairsDown = (tiles) => {
     const bunker = isBunkerHatch(tiles[0]);
-    if (!enterStructureBiome(tiles[0], "LootCellar")) return false;
+    const target = bunker ? "LootCellar"                                   // i18n-ignore  biome id
+      : (pickStructure("stairsDown", tiles[0]) || "LootCellar");           // i18n-ignore  biome id
+    // The Bunker hatch is pinned to salt 0, the same salt CharacterCreation
+    // used the one time it built this cellar from scratch (see
+    // CharacterCreation.startBunkerOrigin). Letting it fall through to the
+    // tile-based salt every other entrance gets would key this descent to the
+    // hatch's own tile position instead, generating a SECOND, different
+    // cellar every time the party climbed back down.
+    if (!enterStructureBiome(tiles[0], target, null, bunker ? 0 : null)) return false;
     if (bunker && $gameSystem._procGenData) {
       const pg = $gameSystem._procGenData;
-      // Keep the entrance salt the forced-biome command just set, so the
-      // cellar's terrain records stay keyed the way every other cellar's are.
-      const sess = pg._dungeonSession;
-      pg._dungeonSession = { type: "bunker", salt: sess ? sess.salt : 0 };
+      pg._dungeonSession = { type: "bunker" };
     }
     return true;
   };
@@ -1258,28 +1551,51 @@
     return true;
   };
 
-  // --- StairsUp: ascends into a temple of long connected halls guarded by
-  // enemies far above the party's level ---
-  WALK_ENTRANCES.StairsUp = (tiles) => enterStructureBiome(tiles[0], "TempleInside");
+  // --- StairsUp: climbs into something that was built above ground and has
+  // been buried since - a temple of long halls guarded by enemies far above
+  // the party's level, a shrine, a reading room, the chambers of a barrow ---
+  WALK_ENTRANCES.StairsUp = (tiles) =>
+    enterStructureBiome(tiles[0], pickStructure("stairsUp", tiles[0]) || "TempleInside");  // i18n-ignore  biome id
 
-  // --- Cave: enters a single-chamber cave den (from a cramped hollow to a
-  // full-map cavern) packed with one seeded enemy species and old bones ---
-  WALK_ENTRANCES.Cave = (tiles) => enterStructureBiome(tiles[0], "CaveDen");
+  // --- Cave: enters the cave family - a den packed with one species, a
+  // frozen hollow, a crystal cavern, a fungal warren, a lava tube, a sea
+  // grotto - whichever the country above it keeps ---
+  WALK_ENTRANCES.Cave = (tiles) =>
+    enterStructureBiome(tiles[0], pickStructure("cave", tiles[0]) || "CaveDen");  // i18n-ignore  biome id
+  // The AlienBase tileset (305), and so every alien-biome tileset that shares
+  // its note, spells the same cave mouth "CaveEntrance". Same hole in the ground.
+  WALK_ENTRANCES.CaveEntrance = WALK_ENTRANCES.Cave;  // i18n-ignore  feature id
 
   // --- Building and dungeon doors: walked into like every other entrance, and
   // handed to ProceduralHouseSystem, which owns the interiors (the seeded house
-  // / inn / shop / tower-block pools, the lock and lockpick rules, the door
-  // swing, and the return point). The tile is passed explicitly: the party is
-  // stopped in front of an impassable door but stands ON a passable doorway,
-  // so only the entrance tile itself identifies which building this is. ---
+  // / inn / shop / tower-block pools, the trade doors' own premises, the lock
+  // and lockpick rules, the door swing, and the return point). The tile is
+  // passed explicitly: the party is stopped in front of an impassable door but
+  // stands ON a passable doorway, so only the entrance tile itself identifies
+  // which building this is. ---
   function enterBuildingDoor(name, x, y) {
     const PHS = window.ProceduralHouseSystem;
     if (!PHS || typeof PHS.enterDoorFeatureAt !== "function") return false;
     return PHS.enterDoorFeatureAt(name, x, y) === true;
   }
-  for (const doorName of ["DoorHouse", "DoorInn", "DoorShop", "DoorSkyscraper", "DoorDungeon"]) {  // i18n-ignore  Features.json ids
+  // The generic doors, plus every door on the city tileset that names its own
+  // trade (DoorClinic, DoorPoliceStation, DoorWeaponStore, ...). The trade list
+  // is read from the house system rather than repeated here, so adding a trade
+  // there is enough to make its door walkable.
+  const BUILDING_DOOR_NAMES = ["DoorHouse", "DoorInn", "DoorShop", "DoorSkyscraper", "DoorDungeon"];  // i18n-ignore  Features.json ids
+  const TRADE_DOOR_NAMES = [
+    "DoorClinic", "DoorPoliceStation", "DoorWeaponStore", "DoorGym",
+    "DoorHardwareStore", "DoorIceCream", "DoorMusicStore", "GarageDoor",
+  ];  // i18n-ignore  Features.json ids
+  for (const doorName of BUILDING_DOOR_NAMES.concat(TRADE_DOOR_NAMES)) {
     WALK_ENTRANCES[doorName] = (tiles, x, y) => enterBuildingDoor(doorName, x, y);
   }
+
+  // --- DoorSewers / Manhole: the way down into the sewer, which is what a
+  // Grate already is. A city keeps its own lower layer (Biomes.json declares
+  // Sewer under City and Burg) and these are its other three doors onto it. ---
+  WALK_ENTRANCES.DoorSewers = (tiles) => enterStructureBiome(tiles[0], "Sewer");  // i18n-ignore  biome id
+  WALK_ENTRANCES.Manhole = WALK_ENTRANCES.DoorSewers;  // i18n-ignore  feature id
 
   // The map keeps taking input while the transfer fades, and an impassable
   // entrance is bumped into on every frame the direction is held, so an opened
@@ -1388,19 +1704,146 @@
   CUSTOM_HANDLERS.SignItems = () => showLoreMessage(T('Terrain.signShop'));
   CUSTOM_HANDLERS.SignInn   = () => showLoreMessage(T('Terrain.signInn'));
 
-  // Public entry: attempt a terrain interaction with the tile the character
-  // faces. Returns true if a menu was opened (interaction handled).
-  function tryInteract(character) {
-    if (!character || !$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return false;
-    if ($gameMessage && $gameMessage.isBusy && $gameMessage.isBusy()) return false;
-    const U = window.ProcGenUtils;
-    if (!U) return false;
+  // ==========================================================================
+  // The street (tileset 303)
+  // ==========================================================================
 
-    const d = character.direction();
-    const x = $gameMap.roundXWithDirection(character.x, d);
-    const y = $gameMap.roundYWithDirection(character.y, d);
+  // --- Trashcan: a bin is a container, and what is in a city bin is a bin's
+  // worth of rubbish, the odd thing somebody threw out by mistake, and food
+  // nobody should eat. Stocked once per bin from its own tile seed, so emptying
+  // one does not refill it and the bin two streets away holds something else. ---
+  CUSTOM_HANDLERS.Trashcan = (name, tiles) => {
+    const t = tiles[0];
+    showChoiceMenu([T('Terrain.rummage')], () => {
+      const containerId = proceduralContainerId(name, t.x, t.y);
+      generateSeededLoot(containerId, "Trash", "Misc", "Food", 4,  // i18n-ignore  item categories
+        seededRngForTile(t.x, t.y, 0x7245A5));
+      AudioManager.playSe({ name: "Open1", volume: 80, pitch: 85, pan: 0 });
+      openLootContainer(containerId);
+    });
+  };
 
-    // Never override real events sitting on the faced tile.
+  // --- Trash: a heap of litter on the pavement. Picking it up hands over a
+  // random piece of rubbish; taking it apart pays the usual salvage. The removal
+  // is recorded like every other, or walking out of a city and back in would
+  // re-deal the same bag on the same tile and make a street corner an endless
+  // supply of loot. What the daily re-deal gives instead is NEW litter, on new
+  // tiles, every morning (the city generator's own daily stream). ---
+  CUSTOM_HANDLERS.Trash = (name, tiles) => {
+    showChoiceMenu([T('Terrain.pickUp'), T('Terrain.verb.dismantle')], (index) => {
+      for (const t of tiles) clearFeatureTileData(t.x, t.y);
+      if ($gameMap) $gameMap.requestRefresh();
+      recordDismantled(tiles, name);
+      if (index === 0) {
+        const junk = randomFrom(itemsWithCategory("Trash"));  // i18n-ignore  item category
+        if (junk) {
+          grantObjects([{ obj: junk, qty: 1 }]);
+          showRewardPopupObjects([{ obj: junk, qty: 1 }]);
+        }
+        playActionSe(VERB.PICK);
+      } else {
+        const gained = rollRewards({ rewards: [[MAT.PLASTIC, 1, 2], [MAT.CLOTH, 0, 1]] });
+        grantRewards(gained);
+        playActionSe(VERB.DISMANTLE);
+        showRewardPopup(gained);
+        if (window.SpecializationXP) window.SpecializationXP.awardCapped("Carpentry", 1);
+      }
+    });
+  };
+
+  // --- PublicPhone: a working box. The phone system owns the call. ---
+  CUSTOM_HANDLERS.PublicPhone = () => {
+    PluginManager.callCommand($gameMap._interpreter || {}, "PublicPhoneSystem", "openPublicPhone", {});
+  };
+
+  // --- BusStop: a shelter is boarded, exactly like the sign beside it, so the
+  // party never has to hunt for the pole when the shelter is what they see. ---
+  CUSTOM_HANDLERS.BusStop = () => {
+    const scene = SceneManager._scene;
+    if (scene && typeof scene.startFastTravel === "function") scene.startFastTravel("bus");
+  };
+
+  // --- BasketballPole / BasketBall: a hoop in the park, and a game on it ---
+  for (const n of ["BasketballPole", "BasketBall"]) {  // i18n-ignore  feature ids
+    CUSTOM_HANDLERS[n] = () => {
+      PluginManager.callCommand($gameMap._interpreter || {}, "BasketballMinigame", "startBasketballGame", {});
+    };
+  }
+
+  // --- Benches, picnic tables and folding chairs: sat on, like every other
+  // seat in the game. A folding chair belongs to whoever pitched it, so it can
+  // also be taken, which is what the second entry is for. ---
+  for (const n of ["Bench", "PicnicTable"]) {  // i18n-ignore  feature ids
+    CUSTOM_HANDLERS[n] = (name, tiles, info, character) => {
+      const scene = SceneManager._scene;
+      if (scene && typeof scene.showSitOptions === "function") scene.showSitOptions(character);
+    };
+  }
+  CUSTOM_HANDLERS.FoldableChair = (name, tiles, info, character) => {
+    showChoiceMenu([T('Terrain.sit'), verbLabel(VERB.PICK)], (index) => {
+      if (index === 0) {
+        const scene = SceneManager._scene;
+        if (scene && typeof scene.showSitOptions === "function") scene.showSitOptions(character);
+        return;
+      }
+      for (const t of tiles) clearFeatureTileData(t.x, t.y);
+      if ($gameMap) $gameMap.requestRefresh();
+      recordDismantled(tiles, name);
+      const gained = rollRewards({ rewards: [[MAT.STEEL, 1, 1], [MAT.CLOTH, 1, 1]] });
+      grantRewards(gained);
+      playActionSe(VERB.PICK);
+      showRewardPopup(gained);
+    });
+  };
+
+  // --- SleepingBag: somebody's bed, and it works as one ---
+  CUSTOM_HANDLERS.SleepingBag = () => {
+    const scene = SceneManager._scene;
+    if (scene && typeof scene.openSleepMenu === "function") scene.openSleepMenu("main");
+  };
+
+  // --- Graffiti / Poster: read what is on the wall. Both are generated rather
+  // than written: a wall carries whatever the city is saying this week. ---
+  for (const n of ["Graffiti", "Poster"]) {  // i18n-ignore  feature ids
+    CUSTOM_HANDLERS[n] = (name, tiles) => {
+      const t = tiles[0];
+      const rng = seededRngForTile(t.x, t.y, name === "Graffiti" ? 0x64AFF1 : 0x905732);
+      let text = "";
+      if (typeof window.generateMarkovString === "function") {
+        try { text = String(window.generateMarkovString("all") || ""); } catch (e) { text = ""; }
+      }
+      if (!text) {
+        const RBG = window.RandomBookGenerator;
+        if (RBG && typeof RBG.generateTitle === "function") text = RBG.generateTitle(rng);
+      }
+      showLoreMessage(T(name === "Graffiti" ? 'Terrain.graffiti' : 'Terrain.poster', { text: text }));
+    };
+  }
+
+  // --- The rest of the street signs: read-only, one line apiece ---
+  CUSTOM_HANDLERS.SignShop       = () => showLoreMessage(T('Terrain.signShop'));
+  CUSTOM_HANDLERS.SignStop       = () => showLoreMessage(T('Terrain.signStop'));
+  CUSTOM_HANDLERS.SignDanger     = () => showLoreMessage(T('Terrain.signDanger'));
+  CUSTOM_HANDLERS.SignHelicopter = () => showLoreMessage(T('Terrain.signHelipad'));
+
+  // --- Hydrant: opened rather than broken. A hydrant in the street is where a
+  // city washes, which is what half of it is used for on a hot day. ---
+  CUSTOM_HANDLERS.Hydrant = () => {
+    showChoiceMenu([T('Terrain.bathe'), T('Terrain.drink')], (index) => {
+      AudioManager.playSe({ name: "Water2", volume: 90, pitch: 100, pan: 0 });
+      if (index === 0) {
+        for (const a of $gameParty.members()) a.addHygiene(1000);
+      } else {
+        const leader = $gameParty.leader();
+        if (leader) leader.addHunger(10);
+      }
+    });
+  };
+
+  // Attempt a terrain interaction with a single tile. Returns true if a menu
+  // was opened (interaction handled).
+  function tryInteractAt(character, x, y) {
+    // Never override real events sitting on the tile.
     if ($gameMap.events().some(e => e && e.x === x && e.y === y)) return false;
 
     const info = featureAt(x, y);
@@ -1441,6 +1884,29 @@
     return true;
   }
 
+  // Public entry: attempt a terrain interaction with the tile the character
+  // faces, falling back to the tile the character is actually standing on.
+  // The fallback is what makes a WALKABLE feature (tilled soil, and anything
+  // else passable enough to stand on top of) usable from directly overhead:
+  // a field that fills the whole plot has no bare edge to face, and standing
+  // in the middle of one facing off the plot altogether would otherwise never
+  // reach the very tile the party is standing on. Returns true if a menu was
+  // opened (interaction handled).
+  function tryInteract(character) {
+    if (!character || !$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return false;
+    if ($gameMessage && $gameMessage.isBusy && $gameMessage.isBusy()) return false;
+    const U = window.ProcGenUtils;
+    if (!U) return false;
+
+    const d = character.direction();
+    const fx = $gameMap.roundXWithDirection(character.x, d);
+    const fy = $gameMap.roundYWithDirection(character.y, d);
+
+    if (tryInteractAt(character, fx, fy)) return true;
+    if (fx === character.x && fy === character.y) return false;
+    return tryInteractAt(character, character.x, character.y);
+  }
+
   // ==========================================================================
   // Hooks
   // ==========================================================================
@@ -1450,6 +1916,7 @@
     _Game_Map_setup.call(this, mapId);
     if (mapId === PROC_MAP_ID) {
       applyDismantledToMap();
+      rollInitialLitFeatures();
       // Surfacing puts the party back on the very tile they went in by, so give
       // the entrance a moment before it can swallow a still-held direction key.
       _walkEntranceLockUntil = Graphics.frameCount + 60;

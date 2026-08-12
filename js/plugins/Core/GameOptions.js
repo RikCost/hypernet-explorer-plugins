@@ -78,6 +78,30 @@
  * @default 80
  */
 
+/**
+ * How an enemy is drawn in battle. There are two modes and the numbers are
+ * historical: 1 is the 3D battler (procedural or GLB, the default) and 2 is
+ * the enemy's own <Char:> sprite sheet. The third mode, 0, was the flat
+ * battler image out of img/enemies, and it retired with that art; the values
+ * are left where they are so an existing config keeps its meaning, and a
+ * config still carrying 0 is read as 3D.
+ */
+window.EnemyBattlerModes = {
+    MODEL_3D: 1,
+    SPRITES: 2,
+    VALUES: [1, 2],
+    // The one place a stored or passed-in value is turned into a real mode.
+    normalize(v) {
+        return v === 2 ? 2 : 1;
+    },
+    // Cycle to the next/previous mode, wrapping.
+    step(v, dir) {
+        const i = this.VALUES.indexOf(this.normalize(v));
+        const n = this.VALUES.length;
+        return this.VALUES[(i + dir + n) % n];
+    }
+};
+
 const GameOptions = {
     _options: {},
     _themesCache: null,
@@ -260,7 +284,7 @@ const GameOptions = {
             id: 'audio',
             nameKey: 'audio',
             categories: ['audio'],
-            symbols: ['battleMusicName', 'bgmMute', 'bgmVolume', 'bgsVolume', 'weatherVolume', 'meVolume', 'seVolume', 'footstepsVolume', 'uisVolume', 'vscVolume', 'masterVolume']
+            symbols: ['musicArtistDisplay', 'battleMusicName', 'bgmMute', 'bgmVolume', 'bgsVolume', 'weatherVolume', 'meVolume', 'seVolume', 'footstepsVolume', 'uisVolume', 'vscVolume', 'masterVolume']
         },
         {
             id: 'shader',
@@ -275,7 +299,7 @@ const GameOptions = {
             nameKey: 'experimental',
             categories: ['experimental'],
             symbols: [
-                'cardCombat', 'asciiModeEnabled', 'asciiHudEnabled'
+                'cardCombat', 'cardBoard3D', 'asciiModeEnabled', 'asciiHudEnabled'
             ]
         }
     ]
@@ -352,17 +376,76 @@ window.GameOptions = GameOptions;
     GameOptions.uiScale = () => clampScale(ConfigManager.uiScale) / 100;
     GameOptions.fontScale = () => clampScale(ConfigManager.fontScale) / 100;
 
+    // --- Viewport fit -------------------------------------------------------
+    // The DOM menus are authored against one design box: the parchment book
+    // spread, `width: min(1560px, 100%); height: min(960px, 100%)` in theme.css,
+    // sitting inside a 24px-padded full-screen backdrop. Every card, gap and
+    // font inside it is an absolute px/rem value picked to fill that box, so the
+    // spread only holds its contents on a viewport at least 1608x1008. A desktop
+    // at 1080p clears that; a Steam Deck at 1280x800 is 200px short of it and the
+    // bottom of a page (the Back/Confirm bar above all) falls off the spread.
+    //
+    // Rather than re-author two hundred menus for a second breakpoint, the whole
+    // spread is zoomed down by however much the viewport is short. Layout still
+    // happens at the design size, so a menu renders exactly as it does on the
+    // author's monitor, only smaller. `fit` is 1 on any viewport that already
+    // fits, so nothing changes on desktop.
+    const DESIGN_W = 1560, DESIGN_H = 960;   // book spread design box
+    const DESIGN_PAD = 48;                   // backdrop padding, 24px a side
+    const FIT_MIN = 0.5;                     // past this, panes scroll instead
+
+    // How many design boxes' worth of room the viewport actually has. Over 1 on
+    // anything roomier than the design size, under 1 on a handheld.
+    function headroom() {
+        const w = window.innerWidth || DESIGN_W + DESIGN_PAD;
+        const h = window.innerHeight || DESIGN_H + DESIGN_PAD;
+        return Math.min((w - DESIGN_PAD) / DESIGN_W, (h - DESIGN_PAD) / DESIGN_H);
+    }
+
+    // What a default install sees: 1 wherever the design box already fits.
+    GameOptions.uiFit = function () {
+        return Math.max(FIT_MIN, Math.min(1, headroom()));
+    };
+
+    // The player's UI Scale is a ceiling rather than a multiplier on top of the
+    // fit, and the headroom is the other ceiling. Asking for 150% on a screen
+    // with room for 107% gets 107% instead of a menu whose Confirm button hangs
+    // off the bottom; asking for 70% always gets 70%, since shrinking is never
+    // the thing that pushes a control off the display.
+    GameOptions.uiZoom = function () {
+        return Math.min(GameOptions.uiScale(), Math.max(FIT_MIN, headroom()));
+    };
+
     // Applied to the document root so it survives scene changes; every DOM menu
     // built afterwards picks it up with no extra wiring.
     function applyInterfaceScale() {
         const root = document.documentElement;
         if (!root) return;
         root.style.setProperty('--ui-scale', String(GameOptions.uiScale()));
+        root.style.setProperty('--ui-fit', String(GameOptions.uiFit()));
+        root.style.setProperty('--ui-zoom', String(GameOptions.uiZoom()));
         const fs = GameOptions.fontScale();
         root.style.setProperty('--ui-font-scale', String(fs));
         root.style.fontSize = (16 * fs) + 'px';
     }
     GameOptions.applyInterfaceScale = applyInterfaceScale;
+
+    // The fit half of the scale depends on the window, so it has to be redone
+    // whenever the window changes: entering or leaving fullscreen, a resolution
+    // switch, or the handheld/desktop-mode swap on a Steam Deck. Open menus pick
+    // the new value up on the next frame with no rebuild, since it is only a
+    // custom property the CSS reads.
+    let _fitRaf = 0;
+    function scheduleFitRefresh() {
+        if (_fitRaf) return;
+        _fitRaf = requestAnimationFrame(() => {
+            _fitRaf = 0;
+            applyInterfaceScale();
+        });
+    }
+    window.addEventListener('resize', scheduleFitRefresh);
+    document.addEventListener('fullscreenchange', scheduleFitRefresh);
+    document.addEventListener('webkitfullscreenchange', scheduleFitRefresh);
 
     // Canvas windows read their size from here, so the same slider scales the
     // in-game message/menu windows. Open windows pick it up on their next refresh.
@@ -443,11 +526,13 @@ window.GameOptions = GameOptions;
         if (this.vscVolume === undefined) this.vscVolume = 100;
         if (this.masterVolume === undefined) this.masterVolume = 100;
 
-        // Enemy battler display mode: 0 = 2D (default battler image), 1 = 3D
-        // (procedural/GLB models), 2 = Sprites (<Char:> sprite from enemy info).
-        // Migrates the old standalone charBasedSprites toggle into this 3-way.
+        // Enemy battler display mode: 1 = 3D (procedural/GLB models, the
+        // default), 2 = Sprites (<Char:> sprite from enemy info). The old
+        // 0 = flat battler image went with img/enemies' 2D art, so a config
+        // still carrying it reads as 3D. Migrates the old standalone
+        // charBasedSprites toggle into the pair.
         this.enemyBattlers = config.enemyBattlers !== undefined
-            ? config.enemyBattlers
+            ? (config.enemyBattlers === 2 ? 2 : 1)
             : (config.charBasedSprites ? 2 : 1);
         // Back-compat mirror for any code still reading charBasedSprites.
         this.charBasedSprites = (this.enemyBattlers === 2);
@@ -470,6 +555,10 @@ window.GameOptions = GameOptions;
         // somehow carries both on is resolved in favour of card combat here so
         // the menu never shows two "on" rows that fight over the next battle.
         if (this.cardCombat && this.mapBattleMode) this.mapBattleMode = false;
+        // Live 3D battlers standing on the card game's board (Cards/
+        // CardGameDuel.js) instead of the walking sprites. Off by default: it
+        // is a whole three.js scene behind a menu.
+        this.cardBoard3D = config.cardBoard3D !== undefined ? config.cardBoard3D : false;
         // Enemy spawn mode (BattleSystemEnhancedEncounters.js): 0 = Balanced
         // (default; roaming enemies at/below party level + one much-higher boss
         // per proc map), 1 = Realistic (current biome/nation spawn formula).
@@ -532,6 +621,7 @@ window.GameOptions = GameOptions;
         config.titleBackground = this.titleBackground;
         config.cpuPartyMembers = this.cpuPartyMembers;
         config.cardCombat = this.cardCombat;
+        config.cardBoard3D = this.cardBoard3D;
         config.mapBattleMode = this.mapBattleMode;
         config.enemySpawnMode = this.enemySpawnMode;
         config.enemyDifficulty = this.enemyDifficulty;
@@ -921,13 +1011,20 @@ window.GameOptions = GameOptions;
         // Tactical map battle (BattleSystem/MapBattleMode.js).
         mapBattleMode:   { on: 'MapBattleON',       off: 'MapBattleOFF' },
         cpuPartyMembers: { on: 'CpuPartyON',        off: 'CpuPartyOFF' },
+        // Party formation (Core/AutoIdleExplorer.js): 0 Close, 1 Loose. Both
+        // plates are diagrams rather than screenshots, so they read the same in
+        // every language.
+        partyFormation:  { states: ['PartyFormationClose', 'PartyFormationLoose'] },
         // Video
-        enemyBattlers:   { states: ['EnemyBattlers2D', 'EnemyBattlers3D', 'EnemyBattlersSprites'] },
+        // Indexed by the mode value itself, and mode 0 (the retired flat
+        // battler image) no longer exists, so index 0 is deliberately empty.
+        enemyBattlers:   { states: [null, 'EnemyBattlers3D', 'EnemyBattlersSprites'] },
         fullscreen:      { on: 'FullscreenON',      off: 'FullscreenOFF' },
         globalLighting:  { on: 'GlobalLightingON',  off: 'GlobalLightingOFF' },
         nightLight:      { on: 'NightLightON',      off: 'NightLightOFF' },
         charBasedSprites: { on: 'CharSpritesON',    off: 'CharSpritesOFF' },
         showFps:         { on: 'ShowFpsON',         off: 'ShowFpsOFF' },
+        partyHud:        { on: 'PartyHudON',        off: 'PartyHudOFF' },
         activeTheme:     { img: 'ActiveTheme' },
         battleMusicName: { img: 'BattleMusic' },
         titleBackground: { img: 'TitleBackground' },
@@ -1574,30 +1671,34 @@ window.GameOptions = GameOptions;
         },
         'audio', 'number');
 
-    // Enemy battler display mode: cycle 2D -> 3D -> Sprites. Replaces the old
+    // Enemy battler display mode: cycle 3D -> Sprites. Replaces the old
     // standalone Char-based Sprites toggle (Sprites == that behaviour).
-    // 3D (the procedural models) is the default.
+    // 3D (the procedural models) is the default. The retired third mode, the
+    // flat battler image, is gone along with the 2D art it drew.
+    const ENEMY_BATTLER_MODES = window.EnemyBattlerModes.VALUES;
+    // The name list is one entry per mode in ENEMY_BATTLER_MODES order, so it
+    // is looked up by position rather than by the mode number.
     const enemyBattlerNames = () => T.list('GameOptions.enemyBattler');
+    const enemyBattlerName = (v) => {
+        const names = enemyBattlerNames();
+        return names[Math.max(0, ENEMY_BATTLER_MODES.indexOf(v))] || names[0];
+    };
     const setEnemyBattlers = (v) => {
-        ConfigManager.enemyBattlers = v;
-        ConfigManager.charBasedSprites = (v === 2); // keep the legacy mirror in sync
+        ConfigManager.enemyBattlers = window.EnemyBattlerModes.normalize(v);
+        ConfigManager.charBasedSprites = (ConfigManager.enemyBattlers === 2); // legacy mirror
     };
     GameOptions.registerOption('enemyBattlers', T('GameOptions.label.enemyBattlers'),
-        () => ConfigManager.enemyBattlers !== undefined ? ConfigManager.enemyBattlers : 1,
+        () => window.EnemyBattlerModes.normalize(ConfigManager.enemyBattlers),
         (value) => setEnemyBattlers(value),
         'video', 'boolean',
-        (value) => enemyBattlerNames()[value] || enemyBattlerNames()[1],
+        (value) => enemyBattlerName(window.EnemyBattlerModes.normalize(value)),
         function () {
-            let v = this.getConfigValue('enemyBattlers');
-            if (v === undefined) v = 1;
-            v = (v + 1) % 3;
-            this.setConfigValue('enemyBattlers', v);
+            this.setConfigValue('enemyBattlers',
+                window.EnemyBattlerModes.step(this.getConfigValue('enemyBattlers'), 1));
         },
         function () {
-            let v = this.getConfigValue('enemyBattlers');
-            if (v === undefined) v = 1;
-            v = (v - 1 + 3) % 3;
-            this.setConfigValue('enemyBattlers', v);
+            this.setConfigValue('enemyBattlers',
+                window.EnemyBattlerModes.step(this.getConfigValue('enemyBattlers'), -1));
         }
     );
 
@@ -1658,6 +1759,16 @@ window.GameOptions = GameOptions;
             ConfigManager.cardCombat = !!value;
             if (value) ConfigManager.mapBattleMode = false;
         },
+        'experimental', 'boolean');
+
+    // The card game draws the creatures themselves instead of their walking
+    // sprites: one three.js scene behind the 3x3 grid, and the creature turning
+    // inside its own card, each grown from the same seed as the card that was
+    // played. Off by default; the duel's own footer button flips it at the
+    // table and writes the answer back here.
+    GameOptions.registerOption('cardBoard3D', T('GameOptions.label.cardBoard3D'),
+        () => ConfigManager.cardBoard3D === true,
+        (value) => { ConfigManager.cardBoard3D = !!value; },
         'experimental', 'boolean');
 
     // Map Battle replaces the standard battle scene, so it belongs with the rest
@@ -1780,8 +1891,10 @@ window.GameOptions = GameOptions;
         }
     );
 
-    // Enemy Spawn Mode select (0 Balanced default, 1 Realistic). Consumed by
-    // BattleSystemEnhancedEncounters.js via BSE.Helpers.getSpawnMode().
+    // Enemy Spawn Mode select (0 Balanced default, 1 Realistic, 2 Tower
+    // Distance, 3 Chaos). Consumed by BattleSystemEnhancedEncounters.js via
+    // BSE.Helpers.getSpawnMode().
+    const ENEMY_SPAWN_MODE_COUNT = 4;
     const enemySpawnNames = () => T.list('GameOptions.enemySpawn');
     GameOptions.registerOption('enemySpawnMode', T('GameOptions.label.enemySpawn'),
         () => ConfigManager.enemySpawnMode !== undefined ? ConfigManager.enemySpawnMode : 0,
@@ -1791,13 +1904,13 @@ window.GameOptions = GameOptions;
         function () {
             let v = this.getConfigValue('enemySpawnMode');
             if (v === undefined) v = 0;
-            v = (v + 1) % 2;
+            v = (v + 1) % ENEMY_SPAWN_MODE_COUNT;
             this.setConfigValue('enemySpawnMode', v);
         },
         function () {
             let v = this.getConfigValue('enemySpawnMode');
             if (v === undefined) v = 0;
-            v = (v - 1 + 2) % 2;
+            v = (v - 1 + ENEMY_SPAWN_MODE_COUNT) % ENEMY_SPAWN_MODE_COUNT;
             this.setConfigValue('enemySpawnMode', v);
         }
     );

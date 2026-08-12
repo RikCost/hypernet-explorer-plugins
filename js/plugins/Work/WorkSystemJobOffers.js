@@ -438,8 +438,7 @@
             <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px;">
               ${listHTML}
             </div>
-            <div style="margin-top:auto; border-top:1px solid #7f9db9; padding-top:8px; display:flex; justify-content:space-between; align-items:center; font-size:11px; color:#555; width:100%;">
-              <span>${T('WorkSystem.ui.navSelectOffer')}</span>
+            <div style="margin-top:auto; border-top:1px solid #7f9db9; padding-top:8px; display:flex; justify-content:flex-end; align-items:center; font-size:11px; color:#555; width:100%;">
               <div class="back-button focusable" onclick="${sref}.popScene()" style="padding:4px 12px; cursor:pointer;">
                 ${T('WorkSystem.dismiss')}
               </div>
@@ -501,8 +500,7 @@
           <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px;">
             ${listHTML}
           </div>
-          <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%;">
-            <span>${T('WorkSystem.ui.navSelectOffer')}</span>
+          <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-end; align-items:center; font-size:0.82rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%;">
             <div class="back-button focusable" onclick="${sref}.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; cursor:pointer; transition:all 0.2s ease; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:0.9rem;">
               ${T('WorkSystem.dismiss')}
             </div>
@@ -851,10 +849,6 @@
                 ${T('WorkSystem.retractCandidate')}
               </div>
             </div>
-
-            <div style="margin-top:4px; display:flex; justify-content:space-between; align-items:center; font-size:10px; color:#555; box-sizing:border-box; width:100%;">
-              <span>${T('WorkSystem.ui.navAcceptContract')}</span>
-            </div>
           `;
       }
 
@@ -925,10 +919,6 @@
             <div class="action-button focusable" onclick="${sref}.retractActorSelection()" style="background:#8b5a2b; color:#ecdcb9; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:0.9rem; transition: all 0.2s ease;">
               ${T('WorkSystem.retractCandidate')}
             </div>
-          </div>
-
-          <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%;">
-            <span>${T('WorkSystem.ui.navAcceptContract')}</span>
           </div>
         `;
     }
@@ -1081,6 +1071,11 @@
     }
 
     makeItemList() {
+      // A job offer is somebody hiring. There is nobody left to hire anyone in
+      // an empty world, so the board is bare rather than re-shuffled every
+      // time it is opened. See WorldManager.populationMode.
+      const WM = window.WorldManager;
+      if (WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld()) return [];
       if (!window.WorkSystem || !window.WorkSystem.Jobs) {
         console.error("WorkSystem.Jobs not loaded!");
         return [];

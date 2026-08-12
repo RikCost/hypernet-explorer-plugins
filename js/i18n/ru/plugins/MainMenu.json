@@ -161,7 +161,8 @@
     "spawn": "",
     "spawnIndoors": "",
     "noFuelNeeded": "",
-    "none": ""
+    "none": "",
+    "parkedAt": ""
   },
   "tools": {
     "hexphone": "",

@@ -1,10 +1,12 @@
 {
   "Antwerpen": {
     "name": "Antwerpen",
-    "type": "village",
-"fastTravelMap": {
-      "x": 407,
-      "y": 484
+    "type": "city",
+    "procedural": false,
+    "tag": "port",
+    "mapOffset": {
+      "x": 387,
+      "y": 504
     },
     "base": {
       "x": 88,
@@ -21,7 +23,9 @@
   "Frozen Station": {
     "name": "Frozen Station",
     "type": "village",
-"fastTravelMap": {
+    "procedural": false,
+    "tag": "rural",
+    "mapOffset": {
       "x": 270,
       "y": 391
     },
@@ -39,8 +43,10 @@
   },
   "GreenWitch": {
     "name": "Green Witch",
-    "type": "village",
-"fastTravelMap": {
+    "type": "city",
+    "procedural": false,
+    "tag": "rural",
+    "mapOffset": {
       "x": 300,
       "y": 485
     },
@@ -56,10 +62,12 @@
     "picture": "GreenWitch",
     "minLevel": 10
   },
-    "GreenWitchSpaceCenter": {
+  "GreenWitchSpaceCenter": {
     "name": "Green Witch Space Center",
     "type": "village",
-    "fastTravelMap": {
+    "procedural": false,
+    "tag": "industrial",
+    "mapOffset": {
       "x": 300,
       "y": 485
     },
@@ -77,10 +85,12 @@
   },
   "Ghent": {
     "name": "Ghent",
-    "type": "village",
-"fastTravelMap": {
-      "x": 402,
-      "y": 504
+    "type": "city",
+    "procedural": false,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 376,
+      "y": 507
     },
     "base": {
       "x": 84,
@@ -106,8 +116,10 @@
   },
   "Kola Superdeep Borehole": {
     "name": "Kola Superdeep Borehole",
-    "type": "village",
-"fastTravelMap": {
+    "type": "dungeon",
+    "procedural": false,
+    "tag": "industrial",
+    "mapOffset": {
       "x": 777,
       "y": 505
     },
@@ -119,7 +131,9 @@
   "Omega Tower": {
     "name": "Omega Tower",
     "type": "village",
-"fastTravelMap": {
+    "procedural": false,
+    "tag": "business",
+    "mapOffset": {
       "x": 377,
       "y": 505
     },
@@ -148,9 +162,11 @@
   "Luxembourg": {
     "name": "Luxembourg",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": false,
+    "tag": "business",
+    "mapOffset": {
+      "x": 414,
+      "y": 537
     },
     "base": {
       "x": 101,
@@ -165,10 +181,12 @@
   },
   "Amsterdam": {
     "name": "Amsterdam",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 395,
+      "y": 480
     },
     "base": {
       "x": 91,
@@ -178,10 +196,12 @@
   },
   "The Hague": {
     "name": "The Hague",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 387,
+      "y": 486
     },
     "base": {
       "x": 87,
@@ -191,10 +211,12 @@
   },
   "Rotterdam": {
     "name": "Rotterdam",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 388,
+      "y": 489
     },
     "base": {
       "x": 92,
@@ -205,9 +227,11 @@
   "Ouddorp": {
     "name": "Ouddorp",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 381,
+      "y": 494
     },
     "base": {
       "x": 87,
@@ -218,9 +242,11 @@
   "Middelburg": {
     "name": "Middelburg",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 375,
+      "y": 498
     },
     "base": {
       "x": 85,
@@ -231,9 +257,11 @@
   "Harlem": {
     "name": "Harlem",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 391,
+      "y": 480
     },
     "base": {
       "x": 88,
@@ -244,9 +272,11 @@
   "Alkmaar": {
     "name": "Alkmaar",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 392,
+      "y": 474
     },
     "base": {
       "x": 89,
@@ -257,9 +287,11 @@
   "Leeuwarden": {
     "name": "Leeuwarden",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 410,
+      "y": 463
     },
     "base": {
       "x": 96,
@@ -270,9 +302,11 @@
   "Groningen": {
     "name": "Groningen",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 421,
+      "y": 462
     },
     "base": {
       "x": 103,
@@ -283,9 +317,11 @@
   "Limburg": {
     "name": "Limburg",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 410,
+      "y": 508
     },
     "base": {
       "x": 100,
@@ -296,9 +332,11 @@
   "Eindhoven": {
     "name": "Eindhoven",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 404,
+      "y": 499
     },
     "base": {
       "x": 97,
@@ -309,9 +347,11 @@
   "Zwolle": {
     "name": "Zwolle",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 413,
+      "y": 477
     },
     "base": {
       "x": 102,
@@ -321,8 +361,10 @@
   },
   "Tritunnel Ovest": {
     "name": "Tritunnel Ovest",
-    "type": "village",
-"fastTravelMap": {
+    "type": "dungeon",
+    "procedural": false,
+    "tag": "industrial",
+    "mapOffset": {
       "x": 335,
       "y": 486
     },
@@ -335,9 +377,11 @@
   "Charleroi": {
     "name": "Charleroi",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 387,
+      "y": 521
     },
     "base": {
       "x": 94,
@@ -348,9 +392,11 @@
   "Luik": {
     "name": "Luik",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "ijs/db/WorkSystem/Destinations.jsonndustrial",
+    "mapOffset": {
+      "x": 405,
+      "y": 516
     },
     "base": {
       "x": 94,
@@ -360,21 +406,30 @@
   },
   "Bologna": {
     "name": "Bologna",
-    "type": "village",
-"fastTravelMap": {
-      "x": 497,
-      "y": 645
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 496,
+      "y": 639
+    },
+    "train": {
+      "mapId": 352,
+      "x": 33,
+      "y": 18
     },
     "base": {
       "x": 124,
-      "y": 168
+      "y": 167
     },
     "picture": "Bologna"
   },
   "Super sacred shrine": {
     "name": "Super Sacred Shrine",
-    "type": "village",
-"fastTravelMap": {
+    "type": "dungeon",
+    "procedural": false,
+    "tag": "rural",
+    "mapOffset": {
       "x": 0,
       "y": 0
     },
@@ -385,10 +440,12 @@
   },
   "London": {
     "name": "London",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 316,
+      "y": 498
     },
     "base": {
       "x": 66,
@@ -397,8 +454,10 @@
   },
   "MAXGauntlet": {
     "name": "MAX Gauntlet",
-    "type": "village",
-"fastTravelMap": {
+    "type": "dungeon",
+    "procedural": false,
+    "tag": "industrial",
+    "mapOffset": {
       "x": 482,
       "y": 633
     },
@@ -410,9 +469,11 @@
   "Vatican Citadel": {
     "name": "Vatican Citadel",
     "type": "village",
-"fastTravelMap": {
-      "x": 502,
-      "y": 705
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 514,
+      "y": 689
     },
     "base": {
       "x": 126,
@@ -422,7 +483,9 @@
   "MAXTavern": {
     "name": "MAX Tavern",
     "type": "village",
-"fastTravelMap": {
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
       "x": 499,
       "y": 634
     },
@@ -433,10 +496,12 @@
   },
   "Cardiff": {
     "name": "Cardiff",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 268,
+      "y": 498
     },
     "base": {
       "x": 52,
@@ -445,10 +510,12 @@
   },
   "Milano": {
     "name": "Milano",
-    "type": "village",
-"fastTravelMap": {
-      "x": 497,
-      "y": 601
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 462,
+      "y": 620
     },
     "base": {
       "x": 121,
@@ -458,9 +525,11 @@
   "Canicattini Bagni": {
     "name": "Canicattini Bagni",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 555,
+      "y": 779
     },
     "base": {
       "x": 130,
@@ -470,9 +539,11 @@
   "Casalpusterlengo": {
     "name": "Casalpusterlengo",
     "type": "village",
-"fastTravelMap": {
-      "x": 489,
-      "y": 618
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 470,
+      "y": 626
     },
     "base": {
       "x": 117,
@@ -482,9 +553,11 @@
   "Plymouth": {
     "name": "Plymouth",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 252,
+      "y": 521
     },
     "base": {
       "x": 48,
@@ -494,9 +567,11 @@
   "Canterbury": {
     "name": "Canterbury",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 335,
+      "y": 503
     },
     "base": {
       "x": 73,
@@ -506,9 +581,11 @@
   "Brighton": {
     "name": "Brighton",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 315,
+      "y": 512
     },
     "base": {
       "x": 66,
@@ -518,9 +595,11 @@
   "Boston": {
     "name": "Boston",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 317,
+      "y": 467
     },
     "base": {
       "x": 68,
@@ -530,9 +609,11 @@
   "Manchester": {
     "name": "Manchester",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 282,
+      "y": 456
     },
     "base": {
       "x": 62,
@@ -542,9 +623,11 @@
   "Birmingham": {
     "name": "Birmingham",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 288,
+      "y": 477
     },
     "base": {
       "x": 57,
@@ -554,9 +637,11 @@
   "Edinburgh": {
     "name": "Edinburgh",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 267,
+      "y": 404
     },
     "base": {
       "x": 62,
@@ -566,9 +651,11 @@
   "Glasgow": {
     "name": "Glasgow",
     "type": "village",
-"fastTravelMap": {
-      "x": 237,
-      "y": 394
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 251,
+      "y": 406
     },
     "base": {
       "x": 58,
@@ -578,9 +665,11 @@
   "Perth": {
     "name": "Perth",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 263,
+      "y": 394
     },
     "base": {
       "x": 61,
@@ -590,9 +679,11 @@
   "Oban": {
     "name": "Oban",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 231,
+      "y": 394
     },
     "base": {
       "x": 53,
@@ -602,9 +693,11 @@
   "Aberdeen": {
     "name": "Aberdeen",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 285,
+      "y": 378
     },
     "base": {
       "x": 64,
@@ -613,8 +706,10 @@
   },
   "Petrocave": {
     "name": "Petrocave",
-    "type": "village",
-"fastTravelMap": {
+    "type": "dungeon",
+    "procedural": false,
+    "tag": "industrial",
+    "mapOffset": {
       "x": 0,
       "y": 0
     },
@@ -625,10 +720,12 @@
   },
   "Belfast": {
     "name": "Belfast",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 224,
+      "y": 433
     },
     "base": {
       "x": 42,
@@ -638,9 +735,11 @@
   "Roma": {
     "name": "Roma",
     "type": "village",
-"fastTravelMap": {
-      "x": 518,
-      "y": 692
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 514,
+      "y": 689
     },
     "base": {
       "x": 126,
@@ -650,9 +749,11 @@
   "Messina": {
     "name": "Messina",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 564,
+      "y": 758
     },
     "base": {
       "x": 134,
@@ -662,9 +763,11 @@
   "Londonderry": {
     "name": "Londonderry",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 203,
+      "y": 424
     },
     "base": {
       "x": 37,
@@ -674,9 +777,11 @@
   "Sligo": {
     "name": "Sligo",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 185,
+      "y": 440
     },
     "base": {
       "x": 36,
@@ -686,9 +791,11 @@
   "Reggio Calabria": {
     "name": "Reggio Calabria",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 564,
+      "y": 760
     },
     "base": {
       "x": 136,
@@ -698,9 +805,11 @@
   "Alba Adriatica": {
     "name": "Alba Adriatica",
     "type": "village",
-"fastTravelMap": {
-      "x": 553,
-      "y": 680
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 537,
+      "y": 671
     },
     "base": {
       "x": 137,
@@ -709,10 +818,12 @@
   },
   "Dublin": {
     "name": "Dublin",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 219,
+      "y": 459
     },
     "base": {
       "x": 43,
@@ -722,9 +833,11 @@
   "Wexford": {
     "name": "Wexford",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 216,
+      "y": 481
     },
     "base": {
       "x": 43,
@@ -734,9 +847,11 @@
   "Cork": {
     "name": "Cork",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 184,
+      "y": 490
     },
     "base": {
       "x": 37,
@@ -745,8 +860,10 @@
   },
   "Tritunnel East": {
     "name": "Tritunnel East",
-    "type": "village",
-"fastTravelMap": {
+    "type": "dungeon",
+    "procedural": false,
+    "tag": "industrial",
+    "mapOffset": {
       "x": 0,
       "y": 0
     },
@@ -758,9 +875,11 @@
   "Killarney": {
     "name": "Killarney",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 168,
+      "y": 486
     },
     "base": {
       "x": 33,
@@ -769,10 +888,12 @@
   },
   "Brusselles": {
     "name": "Bruxelles",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 386,
+      "y": 512
     },
     "base": {
       "x": 89,
@@ -781,10 +902,12 @@
   },
   "Reykyavik": {
     "name": "Reykjavik",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 4,
+      "y": 171
     },
     "base": {
       "x": 49,
@@ -793,8 +916,10 @@
   },
   "Dark tower": {
     "name": "Dark Tower",
-    "type": "village",
-"fastTravelMap": {
+    "type": "dungeon",
+    "procedural": false,
+    "tag": "industrial",
+    "mapOffset": {
       "x": 362,
       "y": 535
     },
@@ -806,9 +931,11 @@
   "Kalfafell": {
     "name": "Kalfafell",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 38,
+      "y": 177
     },
     "base": {
       "x": 56,
@@ -818,9 +945,11 @@
   "Laugar": {
     "name": "Laugar",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 48,
+      "y": 130
     },
     "base": {
       "x": 60,
@@ -830,9 +959,11 @@
   "Hvammstangi": {
     "name": "Hvammstangi",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 4,
+      "y": 138
     },
     "base": {
       "x": 50,
@@ -842,9 +973,11 @@
   "Klasvik": {
     "name": "Klaksvik",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 214,
+      "y": 264
     },
     "base": {
       "x": 76,
@@ -854,9 +987,11 @@
   "Gasadalur": {
     "name": "Gasadalur",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 204,
+      "y": 263
     },
     "base": {
       "x": 71,
@@ -866,9 +1001,11 @@
   "Torshavn": {
     "name": "Torshavn",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 211,
+      "y": 269
     },
     "base": {
       "x": 73,
@@ -878,9 +1015,11 @@
   "Sandvik": {
     "name": "Sandvik",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 205,
+      "y": 262
     },
     "base": {
       "x": 71,
@@ -890,7 +1029,9 @@
   "Crabby Beach": {
     "name": "Crabby Beach",
     "type": "village",
-"fastTravelMap": {
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
       "x": 388,
       "y": 479
     },
@@ -901,10 +1042,12 @@
   },
   "Madrid": {
     "name": "Madrid",
-    "type": "village",
-"fastTravelMap": {
-      "x": 252,
-      "y": 708
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 259,
+      "y": 717
     },
     "base": {
       "x": 49,
@@ -914,9 +1057,11 @@
   "Granada": {
     "name": "Granada",
     "type": "village",
-"fastTravelMap": {
-      "x": 283,
-      "y": 767
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 261,
+      "y": 777
     },
     "base": {
       "x": 54,
@@ -925,10 +1070,12 @@
   },
   "Valencia": {
     "name": "Valencia",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 312,
+      "y": 735
     },
     "base": {
       "x": 70,
@@ -937,10 +1084,12 @@
   },
   "Genova": {
     "name": "Genova",
-    "type": "village",
-"fastTravelMap": {
-      "x": 447,
-      "y": 636
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 458,
+      "y": 641
     },
     "base": {
       "x": 110,
@@ -950,9 +1099,11 @@
   "La Spezia": {
     "name": "La Spezia",
     "type": "village",
-"fastTravelMap": {
-      "x": 461,
-      "y": 641
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 472,
+      "y": 647
     },
     "base": {
       "x": 118,
@@ -961,10 +1112,12 @@
   },
   "Pisa": {
     "name": "Pisa",
-    "type": "village",
-"fastTravelMap": {
-      "x": 496,
-      "y": 670
+    "type": "city",
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 481,
+      "y": 654
     },
     "base": {
       "x": 119,
@@ -974,9 +1127,11 @@
   "Livorno": {
     "name": "Livorno",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 480,
+      "y": 657
     },
     "base": {
       "x": 118,
@@ -986,9 +1141,11 @@
   "Frosinone": {
     "name": "Frosinone",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 528,
+      "y": 694
     },
     "base": {
       "x": 133,
@@ -997,10 +1154,12 @@
   },
   "Napoli": {
     "name": "Napoli",
-    "type": "village",
-"fastTravelMap": {
-      "x": 550,
-      "y": 711
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 542,
+      "y": 709
     },
     "base": {
       "x": 135,
@@ -1010,9 +1169,11 @@
   "Capri": {
     "name": "Capri",
     "type": "village",
-"fastTravelMap": {
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
       "x": 545,
-      "y": 725
+      "y": 712
     },
     "base": {
       "x": 134,
@@ -1021,10 +1182,12 @@
   },
   "Taranto": {
     "name": "Taranto",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 589,
+      "y": 716
     },
     "base": {
       "x": 151,
@@ -1034,9 +1197,11 @@
   "Catanzaro": {
     "name": "Catanzaro",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 579,
+      "y": 745
     },
     "base": {
       "x": 144,
@@ -1046,9 +1211,11 @@
   "Cosenza": {
     "name": "Cosenza",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 573,
+      "y": 738
     },
     "base": {
       "x": 144,
@@ -1057,10 +1224,12 @@
   },
   "Lecce": {
     "name": "Lecce",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 604,
+      "y": 718
     },
     "base": {
       "x": 154,
@@ -1069,10 +1238,12 @@
   },
   "Ancona": {
     "name": "Ancona",
-    "type": "village",
-"fastTravelMap": {
-      "x": 534,
-      "y": 666
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 530,
+      "y": 656
     },
     "base": {
       "x": 134,
@@ -1082,9 +1253,11 @@
   "San Marino": {
     "name": "San Marino",
     "type": "village",
-"fastTravelMap": {
-      "x": 535,
-      "y": 683
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 513,
+      "y": 650
     },
     "base": {
       "x": 129,
@@ -1094,9 +1267,11 @@
   "Verona": {
     "name": "Verona",
     "type": "village",
-"fastTravelMap": {
-      "x": 474,
-      "y": 624
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 491,
+      "y": 621
     },
     "base": {
       "x": 125,
@@ -1105,10 +1280,12 @@
   },
   "Venezia": {
     "name": "Venezia",
-    "type": "village",
-"fastTravelMap": {
-      "x": 529,
-      "y": 614
+    "type": "city",
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 511,
+      "y": 621
     },
     "base": {
       "x": 136,
@@ -1117,10 +1294,12 @@
   },
   "Torino": {
     "name": "Torino",
-    "type": "village",
-"fastTravelMap": {
-      "x": 468,
-      "y": 608
+    "type": "city",
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 439,
+      "y": 628
     },
     "base": {
       "x": 113,
@@ -1130,9 +1309,11 @@
   "Lucca": {
     "name": "Lucca",
     "type": "village",
-"fastTravelMap": {
-      "x": 500,
-      "y": 657
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 483,
+      "y": 652
     },
     "base": {
       "x": 121,
@@ -1142,9 +1323,11 @@
   "Firenze": {
     "name": "Firenze",
     "type": "village",
-"fastTravelMap": {
-      "x": 481,
-      "y": 659
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 495,
+      "y": 653
     },
     "base": {
       "x": 123,
@@ -1154,9 +1337,11 @@
   "L'Aquila": {
     "name": "L'Aquila",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 528,
+      "y": 680
     },
     "base": {
       "x": 135,
@@ -1166,9 +1351,11 @@
   "Latina": {
     "name": "Latina",
     "type": "village",
-"fastTravelMap": {
-      "x": 532,
-      "y": 701
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 521,
+      "y": 697
     },
     "base": {
       "x": 127,
@@ -1178,9 +1365,11 @@
   "Amalfi": {
     "name": "Amalfi",
     "type": "village",
-"fastTravelMap": {
-      "x": 568,
-      "y": 721
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 547,
+      "y": 713
     },
     "base": {
       "x": 137,
@@ -1190,9 +1379,11 @@
   "Sorrento": {
     "name": "Sorrento",
     "type": "village",
-"fastTravelMap": {
-      "x": 565,
-      "y": 733
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 545,
+      "y": 712
     },
     "base": {
       "x": 139,
@@ -1202,9 +1393,11 @@
   "Crotone": {
     "name": "Crotone",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 587,
+      "y": 742
     },
     "base": {
       "x": 148,
@@ -1214,9 +1407,11 @@
   "Catania": {
     "name": "Catania",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 555,
+      "y": 771
     },
     "base": {
       "x": 133,
@@ -1226,9 +1421,11 @@
   "Siracusa": {
     "name": "Siracusa",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 558,
+      "y": 778
     },
     "base": {
       "x": 132,
@@ -1238,9 +1435,11 @@
   "Palermo": {
     "name": "Palermo",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 528,
+      "y": 759
     },
     "base": {
       "x": 125,
@@ -1250,9 +1449,11 @@
   "Marsala": {
     "name": "Marsala",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 513,
+      "y": 765
     },
     "base": {
       "x": 123,
@@ -1262,9 +1463,11 @@
   "Lampedusa": {
     "name": "Lampedusa",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 516,
+      "y": 807
     },
     "base": {
       "x": 120,
@@ -1274,9 +1477,11 @@
   "Agrigento": {
     "name": "Agrigento",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 531,
+      "y": 774
     },
     "base": {
       "x": 127,
@@ -1285,10 +1490,12 @@
   },
   "Cagliari": {
     "name": "Cagliari",
-    "type": "village",
-"fastTravelMap": {
-      "x": 458,
-      "y": 719
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 461,
+      "y": 739
     },
     "base": {
       "x": 105,
@@ -1298,9 +1505,11 @@
   "Sassari": {
     "name": "Sassari",
     "type": "village",
-"fastTravelMap": {
-      "x": 469,
-      "y": 737
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 452,
+      "y": 711
     },
     "base": {
       "x": 106,
@@ -1309,10 +1518,12 @@
   },
   "Tunisi": {
     "name": "Tunisi",
-    "type": "village",
-"fastTravelMap": {
-      "x": 471,
-      "y": 788
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 478,
+      "y": 783
     },
     "base": {
       "x": 105,
@@ -1322,9 +1533,11 @@
   "Biserta": {
     "name": "Biserta",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 473,
+      "y": 775
     },
     "base": {
       "x": 102,
@@ -1334,9 +1547,11 @@
   "Tripoli": {
     "name": "Tripoli",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 526,
+      "y": 854
     },
     "base": {
       "x": 125,
@@ -1345,10 +1560,12 @@
   },
   "Algeri": {
     "name": "Algeri",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 366,
+      "y": 784
     },
     "base": {
       "x": 59,
@@ -1357,10 +1574,12 @@
   },
   "Atene": {
     "name": "Atene",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 691,
+      "y": 762
     },
     "base": {
       "x": 204,
@@ -1369,10 +1588,12 @@
   },
   "Instanbul": {
     "name": "Istanbul",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 774,
+      "y": 706
     },
     "base": {
       "x": 237,
@@ -1382,9 +1603,11 @@
   "Corfù": {
     "name": "Corfù",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 633,
+      "y": 732
     },
     "base": {
       "x": 151,
@@ -1393,10 +1616,12 @@
   },
   "Odessa": {
     "name": "Odessa",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 801,
+      "y": 601
     },
     "base": {
       "x": 232,
@@ -1405,10 +1630,12 @@
   },
   "Berlin": {
     "name": "Berlin",
-    "type": "village",
-"fastTravelMap": {
-      "x": 461,
-      "y": 527
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 528,
+      "y": 477
     },
     "base": {
       "x": 135,
@@ -1417,10 +1644,12 @@
   },
   "Copenaghen": {
     "name": "Copenaghen",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 515,
+      "y": 410
     },
     "base": {
       "x": 144,
@@ -1429,10 +1658,12 @@
   },
   "Malmo": {
     "name": "Malmo",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 523,
+      "y": 411
     },
     "base": {
       "x": 148,
@@ -1441,10 +1672,12 @@
   },
   "Oslo": {
     "name": "Oslo",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 488,
+      "y": 316
     },
     "base": {
       "x": 131,
@@ -1453,10 +1686,12 @@
   },
   "Paris": {
     "name": "Paris",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 355,
+      "y": 552
     },
     "base": {
       "x": 79,
@@ -1466,9 +1701,11 @@
   "Marsiglia": {
     "name": "Marsiglia",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 402,
+      "y": 662
     },
     "base": {
       "x": 88,
@@ -1478,9 +1715,11 @@
   "Bordeaux": {
     "name": "Bordeaux",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 308,
+      "y": 632
     },
     "base": {
       "x": 67,
@@ -1490,9 +1729,11 @@
   "Brest": {
     "name": "Brest",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 248,
+      "y": 562
     },
     "base": {
       "x": 53,
@@ -1501,10 +1742,12 @@
   },
   "Berna": {
     "name": "Berna",
-    "type": "village",
-"fastTravelMap": {
-      "x": 117,
-      "y": 151
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 435,
+      "y": 591
     },
     "base": {
       "x": 117,
@@ -1513,10 +1756,12 @@
   },
   "Ginevra": {
     "name": "Ginevra",
-    "type": "village",
-"fastTravelMap": {
-      "x": 485,
-      "y": 563
+    "type": "city",
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 414,
+      "y": 606
     },
     "base": {
       "x": 105,
@@ -1526,9 +1771,11 @@
   "Zermatt": {
     "name": "Zermatt",
     "type": "village",
-"fastTravelMap": {
-      "x": 485,
-      "y": 584
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 440,
+      "y": 609
     },
     "base": {
       "x": 112,
@@ -1538,9 +1785,11 @@
   "Lugano": {
     "name": "Lugano",
     "type": "village",
-"fastTravelMap": {
-      "x": 464,
-      "y": 583
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 458,
+      "y": 609
     },
     "base": {
       "x": 115,
@@ -1549,10 +1798,12 @@
   },
   "Liechtenstein": {
     "name": "Liechtenstein",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 467,
+      "y": 587
     },
     "base": {
       "x": 128,
@@ -1561,10 +1812,12 @@
   },
   "Zurigo": {
     "name": "Zurigo",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 452,
+      "y": 582
     },
     "base": {
       "x": 118,
@@ -1573,10 +1826,12 @@
   },
   "Basilea": {
     "name": "Basilea",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 437,
+      "y": 579
     },
     "base": {
       "x": 112,
@@ -1586,9 +1841,11 @@
   "Le Havre": {
     "name": "Le Havre",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 321,
+      "y": 539
     },
     "base": {
       "x": 75,
@@ -1598,9 +1855,11 @@
   "Lille": {
     "name": "Lille",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 366,
+      "y": 516
     },
     "base": {
       "x": 83,
@@ -1610,9 +1869,11 @@
   "Orleans": {
     "name": "Orleans",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 348,
+      "y": 572
     },
     "base": {
       "x": 80,
@@ -1621,10 +1882,12 @@
   },
   "Le Mans": {
     "name": "Le Mans",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 321,
+      "y": 570
     },
     "base": {
       "x": 73,
@@ -1634,9 +1897,11 @@
   "Saint Helier": {
     "name": "Saint Helier",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 284,
+      "y": 546
     },
     "base": {
       "x": 58,
@@ -1646,9 +1911,11 @@
   "Jersey": {
     "name": "Jersey",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 284,
+      "y": 545
     },
     "base": {
       "x": 56,
@@ -1658,9 +1925,11 @@
   "Guernsey": {
     "name": "Guernsey",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 278,
+      "y": 541
     },
     "base": {
       "x": 52,
@@ -1670,9 +1939,11 @@
   "Palma di Maiorca": {
     "name": "Palma di Maiorca",
     "type": "village",
-"fastTravelMap": {
-      "x": 358,
-      "y": 730
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 359,
+      "y": 733
     },
     "base": {
       "x": 82,
@@ -1682,9 +1953,11 @@
   "Ivissa": {
     "name": "Ivissa",
     "type": "village",
-"fastTravelMap": {
-      "x": 342,
-      "y": 749
+    "procedural": true,
+    "tag": "luxury",
+    "mapOffset": {
+      "x": 340,
+      "y": 745
     },
     "base": {
       "x": 80,
@@ -1694,9 +1967,11 @@
   "Minorca": {
     "name": "Minorca",
     "type": "village",
-"fastTravelMap": {
-      "x": 385,
-      "y": 724
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 382,
+      "y": 726
     },
     "base": {
       "x": 88,
@@ -1705,10 +1980,12 @@
   },
   "Barcellona": {
     "name": "Barcellona",
-    "type": "village",
-"fastTravelMap": {
-      "x": 304,
-      "y": 674
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 352,
+      "y": 699
     },
     "base": {
       "x": 77,
@@ -1717,10 +1994,12 @@
   },
   "Saragozza": {
     "name": "Saragozza",
-    "type": "village",
-"fastTravelMap": {
-      "x": 318,
-      "y": 706
+    "type": "city",
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 304,
+      "y": 694
     },
     "base": {
       "x": 63,
@@ -1729,10 +2008,12 @@
   },
   "Siviglia": {
     "name": "Siviglia",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 223,
+      "y": 773
     },
     "base": {
       "x": 39,
@@ -1741,8 +2022,10 @@
   },
   "Moonlit Station": {
     "name": "Moonlit Station",
-    "type": "village",
-"fastTravelMap": {
+    "type": "gasStation",
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
       "x": 0,
       "y": 0
     },
@@ -1753,8 +2036,10 @@
   },
   "Abandoned Shack": {
     "name": "Abandoned Shack",
-    "type": "village",
-"fastTravelMap": {
+    "type": "dungeon",
+    "procedural": false,
+    "tag": "rural",
+    "mapOffset": {
       "x": 0,
       "y": 0
     },
@@ -1765,10 +2050,12 @@
   },
   "Lisbona": {
     "name": "Lisbona",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 174,
+      "y": 748
     },
     "base": {
       "x": 22,
@@ -1777,10 +2064,12 @@
   },
   "Porto": {
     "name": "Porto",
-    "type": "village",
-"fastTravelMap": {
-      "x": 183,
-      "y": 706
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 184,
+      "y": 703
     },
     "base": {
       "x": 25,
@@ -1789,10 +2078,12 @@
   },
   "Santiago di Compostela": {
     "name": "Santiago di Compostela",
-    "type": "village",
-"fastTravelMap": {
-      "x": 213,
-      "y": 675
+    "type": "city",
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
+      "x": 183,
+      "y": 670
     },
     "base": {
       "x": 34,
@@ -1801,10 +2092,12 @@
   },
   "Pola": {
     "name": "Pola",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 536,
+      "y": 632
     },
     "base": {
       "x": 146,
@@ -1814,9 +2107,11 @@
   "Zara": {
     "name": "Zara",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 557,
+      "y": 646
     },
     "base": {
       "x": 152,
@@ -1825,10 +2120,12 @@
   },
   "Sarajevo": {
     "name": "Sarajevo",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 607,
+      "y": 652
     },
     "base": {
       "x": 168,
@@ -1837,10 +2134,12 @@
   },
   "Belgrado": {
     "name": "Belgrado",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 639,
+      "y": 633
     },
     "base": {
       "x": 178,
@@ -1850,9 +2149,11 @@
   "Novi Sad": {
     "name": "Novi Sad",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "industrial",
+    "mapOffset": {
+      "x": 630,
+      "y": 624
     },
     "base": {
       "x": 170,
@@ -1862,9 +2163,11 @@
   "Tirana": {
     "name": "Tirana",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "residential",
+    "mapOffset": {
+      "x": 629,
+      "y": 700
     },
     "base": {
       "x": 175,
@@ -1873,10 +2176,12 @@
   },
   "Sofia": {
     "name": "Sofia",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 685,
+      "y": 674
     },
     "base": {
       "x": 209,
@@ -1885,10 +2190,12 @@
   },
   "Bucarest": {
     "name": "Bucarest",
-    "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "type": "city",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 728,
+      "y": 640
     },
     "base": {
       "x": 207,
@@ -1898,9 +2205,11 @@
   "Costanza": {
     "name": "Costanza",
     "type": "village",
-"fastTravelMap": {
-      "x": 0,
-      "y": 0
+    "procedural": true,
+    "tag": "port",
+    "mapOffset": {
+      "x": 768,
+      "y": 646
     },
     "base": {
       "x": 226,
@@ -1910,7 +2219,9 @@
   "Roccalonga": {
     "name": "Roccalonga",
     "type": "village",
-"fastTravelMap": {
+    "procedural": true,
+    "tag": "rural",
+    "mapOffset": {
       "x": 567,
       "y": 685
     },

@@ -1,52 +1,110 @@
 //=============================================================================
 // RoadCarAI.js
-// Version: 3.1.0 - Road-Tile Following AI (border-to-border, no circling)
+// Version: 4.0.0 - Fully plugin-driven traffic (no event code, sprite-sized cars)
 //=============================================================================
 
 /*:
  * @target MZ
- * @plugindesc Road Car AI - Cars follow procedural road tiles, avoid actors, park in villages
+ * @plugindesc Road Car AI - Cars are driven entirely by this plugin: sprite-sized collision, roadkill, theft
  * @author Omni-Lex
- * @version 3.0.0
+ * @version 4.0.0
  *
  * @command StealParkedCar
  * @text Steal parked car
- * @desc Offers to break into the parked Car event that called this command.
+ * @desc Offers to break into the parked Car event the player is standing at.
  *
  * @help
- * Road Car AI System v3.0.0
+ * Road Car AI System v4.0.0
  * =========================
- * Complete rework. Cars are no longer locked to hardcoded lanes.
  *
- * FEATURES:
- * - Reads the procedurally generated map and detects ROAD tiles at runtime
- *   (via the tileset "road"/"dashed" features used by the road generator).
- * - Driving cars FOLLOW the road tiles: they drive in a heading, continue
- *   straight, and turn only where the road bends (corners) or forks
- *   (intersections). They NEVER reverse, so they no longer drive in circles.
- * - Cars drive BORDER TO BORDER: when a car reaches a map edge that carries the
- *   road it "exits" and respawns at another border road/dashed-line tile.
- * - In CITY / VILLAGE biomes cars wander (they take turns at intersections more
- *   often); in ROAD biomes they go straight from one end of the map to the other.
- * - Dead ends recycle the car to a fresh border spawn instead of U-turning.
- * - Cars AVOID the player, enemies, NPCs and each other (they wait or reroute
- *   instead of driving onto them). If the player walks into a moving car an
- *   accident common event still triggers.
- * - VILLAGES have very few cars and they are mostly PARKED. Cars park on any
- *   open ground tile that is NOT a road tile.
- * - Far fewer vehicles overall, scaled by time of day.
+ * A CAR EVENT CARRIES NO LOGIC.
+ * -----------------------------
+ * An event named "Car" is a sprite and a starting tile, nothing else. Its pages
+ * are never run: Game_Event#start is refused for a road car, so whatever
+ * triggers, common event calls or plugin commands the event still holds are
+ * dead. Everything a car does is decided here:
  *
- * COLLISION COMMON EVENTS (moving cars only, parked cars never run their page):
- * - Riding Ship (Camper): CE 168
- * - Riding Boat (Car):    CE 167
- * - On Foot:              CE 163
+ *   - which cars drive, which park and which are not there at all
+ *   - where a car may go (roads, walls, other cars, pedestrians)
+ *   - what happens when a car reaches somebody
+ *   - the theft prompt on a parked car (the action button is read by this
+ *     plugin, not by an event page)
  *
- * PARKED CARS ARE REAL EVENT PAGES:
- * - Every Car event on map 636 has two pages. Page 1 is the moving car (player
- *   touch -> accident common event). Page 2 is conditioned on self switch A and
- *   is the PARKED car: action-button trigger, solid, running the StealParkedCar
- *   plugin command. This plugin turns self switch A ON for the cars it parks and
- *   OFF for the ones it drives or hides, so only a parked car is interactable.
+ * Self switch A is forced OFF for every car on every load, so a car event that
+ * still carries the old two-page layout always shows its first page.
+ *
+ * A CAR IS AS BIG AS ITS SPRITE.
+ * ------------------------------
+ * A car event stands on one tile but is drawn several tiles long, so every
+ * question about where a car is asks window.VehicleFootprint (VehicleSystem.js)
+ * for the tiles its CURRENT frame actually covers. The measurement is per sheet,
+ * per character index and per DIRECTION, so a car that turns is re-measured and
+ * a longer or shorter sprite needs no code change here.
+ *
+ * The footprint is what drives:
+ *   - map collision: no tile of the bodywork may land on region 10 or on
+ *     terrain tag 4 (walls / cliffs), so a car never clips a wall it drives past
+ *   - car-to-car collision: bodywork against bodywork, not tile against tile
+ *   - who is run over: anybody standing under the bodywork
+ *
+ * WHO GETS HIT.
+ * -------------
+ * Only a car that is MOVING and in its driving mode hits anything. A parked car
+ * is solid and completely harmless; a hidden car is not there at all.
+ *
+ *   - the player   -> knocked clear + accident common event
+ *                     (on foot CE 163, riding the Car CE 167, the Camper CE 168)
+ *   - an NPC event -> knocked clear and really injured: injury conditions from
+ *                     Diseases.json are written onto their society profile, so
+ *                     the wounds show up in the Empathize panel's Health tab
+ *   - an Enemy event -> knocked clear and wounded on both its HP tracks, and
+ *                     enough of it kills the creature outright, leaving the same
+ *                     harvestable corpse a map kill always leaves
+ *
+ * Town traffic brakes for people; highway traffic does not.
+ *
+ * THE PLAYER AT THE WHEEL.
+ * ------------------------
+ * Driving the Car or the Camper (VehicleSystem) over somebody runs them down the
+ * same way, on any map.
+ *
+ *   - an NPC   -> the injuries, plus the victim's opinion of every party member
+ *                 and a Hit and Run filed with CrimeSystem
+ *   - a creature -> the first two rams it is simply flung off the bonnet; from
+ *                 the third the odds it turns and fights climb every time (40%,
+ *                 then 65%), and about five rams kill it outright, so roughly
+ *                 four times in five a persistent rammer gets a fight instead of
+ *                 a corpse. A car the world is driving never starts a fight - an
+ *                 NPC running a monster down is an accident the party is not
+ *                 part of - though it kills just as readily.
+ *                 Under MapBattleMode the party is put out of the vehicle first,
+ *                 since that fight is fought where everybody is standing.
+ *
+ * And the car itself is felt: something soft under the bumper marks the FRONT
+ * parts only, another vehicle at road speed is a real crash and is felt all
+ * through it. Both go through VehicleSystemRepair (so the Reinforced Chassis
+ * upgrade and the critical-part check apply) and name the parts in a toast.
+ *
+ * SOMEBODY IS DRIVING THESE CARS.
+ * -------------------------------
+ * Now and then a car pulls over and its driver gets out, walks around, talks to
+ * people, and eventually gets back in and carries on in the direction and on the
+ * lane it was going.
+ *
+ *   - on the open ROAD it stops at a lay-by, within a few tiles of a SignPark
+ *     the biome generator puts on the verge, and it stops fairly readily there
+ *   - in a VILLAGE / CITY / BURG it can stop anywhere there is room to open a
+ *     door, but far more rarely: a town car is usually going somewhere
+ *
+ * The driver is a real person, minted through NPCSystem.spawnRoadsideNPC on one
+ * of the map's own spare NPC slots: a citizen of this square, or (more often out
+ * on the road) an authored face from the world-wide pool, passing through. They
+ * get the ordinary wandering brain, so they behave like anybody else in town.
+ *
+ * The car sits there as an ordinary PARKED car the whole time: solid, harmless,
+ * and stealable, which is rather the point of the driver being away from it. A
+ * driver who never comes back (recruited, killed, or simply lost) is waited on
+ * for a while and then left behind.
  *
  * CAR THEFT:
  * - Pressing the action button while facing a PARKED car offers "Steal car" /
@@ -76,6 +134,83 @@
   const STUCK_LIMIT = 100;        // frames a driving car waits before respawning
   const TOTAL_CAR_CAP = 10;       // hard cap on active cars regardless of plan
   const HIT_GRACE_FRAMES = 90;    // frames of immunity after being run over
+  // City/village streets are wide (multi-lane) bands, so the tile beside a car
+  // is very often still "road" without the car having reached a real side
+  // street - a free-roaming car re-rolling turnChanceForBiome() on every tile
+  // of a wide junction would flip heading back and forth inside the same
+  // intersection for ever, which reads as driving in circles. A car that has
+  // just turned (or just entered a new lane after a forced bend) holds that
+  // heading for a random run of tiles before it is allowed to volunteer for
+  // another turn; a straight blocked by traffic can still force one sooner.
+  const TURN_COOLDOWN_MIN = 5;
+  const TURN_COOLDOWN_MAX = 12;
+
+  // Tiles no bodywork may ever cover, whatever the road data says. Region 10 is
+  // the game's "keep out" marker and terrain tag 4 is a wall / climbable face.
+  const BLOCK_REGION_ID = 10;
+  const BLOCK_TERRAIN_TAG = 4;
+
+  // Injuries a car hands out, all `category: "injury"` entries of
+  // js/db/Health/Diseases.json. What lands is rolled per victim.
+  const CRASH_INJURIES = [
+    'broken-leg', 'broken-arm', 'broken-rib', 'concussion', 'whiplash',
+    'sprained-ankle', 'dislocated-shoulder', 'deep-laceration',
+  ];
+  const CRASH_INJURIES_SEVERE = ['spinal-injury', 'broken-rib', 'concussion'];
+  // What a victim thinks of the party after being knocked down by them.
+  const OPINION_PER_HIT = 28;
+
+  // What one ram takes off a creature's HP bar. A car is a car whoever is at the
+  // wheel, so this is the same for the party and for the world's traffic: about
+  // FIVE rams and the creature is dead under the wheels.
+  const ENEMY_RAM_SHARE = 0.22;
+
+  // A creature the PARTY rams eventually stops taking it. The first two rams it
+  // is simply flung off the bonnet; from the third the odds it turns and fights
+  // climb every time. The curve is deliberately steep enough to resolve inside
+  // the four rams the creature survives: 40% on the third and 65% on the fourth,
+  // so about four times in five it is a fight rather than a roadkill. A car the
+  // world is driving never starts a fight - an NPC running a monster down is an
+  // accident the party is not part of - though it kills just as readily.
+  const RAM_FREE_HITS = 2;
+  const RAM_BATTLE_BASE = 0.4;   // the third ram
+  const RAM_BATTLE_STEP = 0.25;  // and every ram after it
+  const RAM_BATTLE_MAX = 0.95;
+
+  // What the party's own vehicle takes out of a collision. Something soft goes
+  // under the bumper and marks the front of the car; another vehicle at road
+  // speed is a real crash and is felt all through it.
+  // The front of a car, out of VehicleSystemRepair's part table.
+  const FRONT_PARTS = ["Body", "Radiator", "Engine", "Battery", "Air Filter", "Alternator"];  // i18n-ignore  part ids
+  const RAM_VEHICLE_DAMAGE = 4;    // per cent, over one or two front parts
+  const CRASH_VEHICLE_DAMAGE = 24; // per cent, over the 3-7 parts a crash reaches
+
+  // ── Pulling over ────────────────────────────────────────────────────────
+  // Somebody is driving these cars, and now and then they stop and get out. On
+  // the open road that happens at a lay-by (a SignPark on the verge, placed by
+  // the biome generator); in a town it can happen anywhere there is room, but
+  // far more rarely, because a town car is usually going somewhere.
+  //
+  // A town has somewhere to put a car: the city generator paints real bays in
+  // its car parks and stands a SignPark over them, so a driver in a settlement
+  // heads for one of those rather than abandoning the car in the middle of a
+  // street. Anywhere there is a bay is a place a driver will stop far more
+  // readily than the open kerb. The two sheets name their bays differently -
+  // the City tileset paints ParkingDrawing, the Road tileset Parking - and a
+  // lay-by on the open road is a SignPark, so all three are read.
+  const PARKING_FEATURES = ["SignPark", "ParkingDrawing", "Parking"];  // i18n-ignore  tileset feature ids
+  const PARK_SIGN_RANGE = 4;      // tiles from the sign a car will pull over in
+  const PARK_CHANCE_ROAD = 0.22;  // per step taken within reach of a lay-by
+  const PARK_CHANCE_BAY = 0.30;   // per step taken within reach of a real bay
+  const PARK_CHANCE_TOWN = 0.004; // per step taken anywhere else in a settlement
+  const PARK_MINUTES_MIN = 25;    // how long the driver stays out, in game time
+  const PARK_MINUTES_MAX = 180;
+  // Whoever gets out. On the open road they are usually from somewhere else
+  // (that is what a road is for); in a town they are usually a local.
+  const PARK_VISITOR_CHANCE_ROAD = 0.7;
+  const PARK_VISITOR_CHANCE_TOWN = 0.35;
+  const PARK_BOARD_RANGE = 2;     // how close the driver has to be to get back in
+  const PARK_PATIENCE = 40;       // game minutes a car waits for a lost driver
 
   let lastHitFrame = -HIT_GRACE_FRAMES - 1;
 
@@ -137,6 +272,28 @@
     return "none";
   }
 
+  // Nobody is left to be driving anywhere (WorldManager.populationMode
+  // "empty"): there is no traffic at all, only the cars people left where they
+  // stood. Half of those were locked on the way out and half were not, decided
+  // per car and never re-decided (see isEmptyWorldCarUnlocked).
+  function isEmptyWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+  }
+
+  // Was this one left unlocked? A pure function of (map, tile, world seed), so
+  // one car gives the same answer for ever and in every savegame of the world.
+  const EMPTY_WORLD_UNLOCKED_SHARE = 0.5;
+  function isEmptyWorldCarUnlocked(car) {
+    if (!car) return false;
+    const seed = (window.HistoryManager && window.HistoryManager.getSeed)
+      ? window.HistoryManager.getSeed() : 19002001;
+    let h = (($gameMap ? $gameMap.mapId() : 0) * 73856093) ^
+            (car.x * 19349663) ^ (car.y * 83492791) ^ seed;
+    h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) >>> 0;
+    return (h % 1000) / 1000 < EMPTY_WORLD_UNLOCKED_SHARE;
+  }
+
   // Returns how many driving / parked cars this biome should have right now
   function getCarPlan() {
     const mult = getTrafficDensityMultiplier();
@@ -152,6 +309,12 @@
       driving = Math.max(1, Math.round(6 * mult));
       parked = 0;
     }
+    // An empty world has no traffic: every car this cell would have had is
+    // standing still instead, and none of them is being driven anywhere.
+    if (isEmptyWorld()) {
+      parked = Math.max(parked, driving + parked);
+      driving = 0;
+    }
     // Cars stolen here are gone for good: this world cell parks that many fewer.
     parked = Math.max(0, parked - stolenCarCount());
     // Respect the global cap
@@ -166,7 +329,9 @@
   //  ROAD DETECTION (runtime)
   // ==========================================================================
 
-  function getRoadTileIdSet(tilesetId) {
+  // Every tile id the tileset's features declare, for the feature names the
+  // test accepts. One reader for the carriageway and for the parking signs.
+  function featureTileIdSet(tilesetId, matches) {
     const set = new Set();
     try {
       const Cache = window.ProcGenUtils && window.ProcGenUtils.Cache;
@@ -174,23 +339,28 @@
       const features = Cache.getTilesetFeatures(tilesetId);
       if (!features) return set;
       for (const [name, list] of Object.entries(features)) {
-        const ln = name.toLowerCase();
-        if (ln.includes("road") || ln.includes("dashed")) {
-          if (Array.isArray(list)) {
-            list.forEach((v) => {
-              if (v.type === "single") {
-                set.add(v.tileId);
-              } else if (v.type === "multi" && v.tiles) {
-                v.tiles.forEach((row) => row.forEach((id) => set.add(id)));
-              }
-            });
+        if (!matches(name) || !Array.isArray(list)) continue;
+        list.forEach((v) => {
+          if (v.type === "single") {
+            set.add(v.tileId);
+          } else if (v.type === "multi" && v.tiles) {
+            v.tiles.forEach((row) => row.forEach((id) => set.add(id)));
+          } else if (v.type === "grid" && v.grid) {
+            v.grid.forEach((row) => row.forEach((id) => { if (id) set.add(id); }));
           }
-        }
+        });
       }
     } catch (e) {
-      /* ignore */
+      /* a tileset we cannot read simply declares nothing */
     }
     return set;
+  }
+
+  function getRoadTileIdSet(tilesetId) {
+    return featureTileIdSet(tilesetId, (name) => {
+      const ln = name.toLowerCase();
+      return ln.includes("road") || ln.includes("dashed");
+    });
   }
 
   function buildRoadGrid() {
@@ -478,7 +648,8 @@
     for (let tries = 0; tries < 20; tries++) {
       const li = Math.floor(Math.random() * laneDefs.length);
       const start = laneDefs[li][0];
-      if (actorAt(start.x, start.y, ev)) continue;
+      const dir = dirToward(start.x, start.y, laneDefs[li][1].x, laneDefs[li][1].y);
+      if (!carCanBePlaced(ev, start.x, start.y, dir)) continue;
       placeOnLane(ev, li, 0);
       return;
     }
@@ -511,8 +682,9 @@
 
     const nx = ev.x + dxOf(dir);
     const ny = ev.y + dyOf(dir);
-    if (actorAt(nx, ny, ev)) {
-      // Queue in lane rather than swerving; bail out if gridlocked.
+    // The whole bodywork has to fit: a lane laid over a wall, a car queueing in
+    // front and (in town) somebody in the road all hold this one where it is.
+    if (!carCanEnter(ev, nx, ny, dir)) {
       ev._carStuck = (ev._carStuck || 0) + 1;
       if (ev._carStuck > STUCK_LIMIT) respawnLaneCar(ev);
       return;
@@ -538,13 +710,20 @@
   //  SPRITE-SIZED COLLISION
   // ==========================================================================
   //
-  // A car sprite is several tiles long but the event stands on one tile, so the
-  // player and every NPC used to walk straight through the bodywork. VehicleSystem's
-  // window.VehicleFootprint measures the sprite and holds the player and events to
-  // the tiles it actually covers; the cars themselves keep steering tile by tile on
-  // their single road tile, and their own avoidance below is unchanged.
+  // A car sprite is several tiles long but the event stands on one tile. Every
+  // question this plugin asks about where a car IS goes through VehicleSystem's
+  // window.VehicleFootprint, which measures the opaque pixels of the frame the
+  // car is showing right now and answers with the tiles it covers. The
+  // measurement is per sheet, per character index and per direction, so a car
+  // that turns is re-measured and a bigger sprite needs no change here.
+  //
+  // The whole bodywork is what steers: a car only enters a tile when none of the
+  // tiles its body would then stand on is a wall, another car, or (in town) a
+  // person. The one thing still read on the single anchor tile is the ROAD, so a
+  // car is allowed to overhang the verge while its wheels keep to the lane.
 
   let carEvents = []; // the Car events of the map currently loaded
+  const SINGLE_TILE = { minDx: 0, maxDx: 0, minDy: 0, maxDy: 0 };
 
   // Rebuilt on every load of the procedural map; the fallback covers a collision
   // check that lands before initializeRoadCars has run.
@@ -559,7 +738,7 @@
     if ($gameMap.mapId() !== PROC_MAP_ID) return;
     for (const ev of roadCarEvents()) {
       if (!ev || ev._erased) continue;
-      if (ev._carMode !== "driving" && ev._carMode !== "parked") continue;
+      if (ev._carMode !== "driving" && !isStandingCar(ev)) continue;
       list.push(ev);
     }
   }
@@ -575,6 +754,107 @@
     return ev.x === x && ev.y === y;
   }
 
+  // The tile offsets the car's bodywork reaches, for the direction it is facing
+  // or for one it is only considering. A turn changes the sprite and therefore
+  // the box, so the box has to be asked for the direction being tested.
+  function carRect(ev, dir) {
+    const FP = window.VehicleFootprint;
+    if (!FP || !FP.rect) return SINGLE_TILE;
+    if (dir == null || dir === ev.direction()) return FP.rect(ev) || SINGLE_TILE;
+    const previous = ev._direction;
+    ev._direction = dir;
+    try {
+      return FP.rect(ev) || SINGLE_TILE;
+    } finally {
+      ev._direction = previous;
+    }
+  }
+
+  // True when any tile the bodywork would cover, standing at (x, y) facing dir,
+  // satisfies the test.
+  function anyBodyTile(ev, x, y, dir, test) {
+    const r = carRect(ev, dir);
+    for (let dx = r.minDx; dx <= r.maxDx; dx++) {
+      for (let dy = r.minDy; dy <= r.maxDy; dy++) {
+        if (test(x + dx, y + dy)) return true;
+      }
+    }
+    return false;
+  }
+
+  // A wall the bodywork must never touch. Off-map tiles are not walls: a car
+  // that reaches the border is leaving, which is handled where it is decided.
+  function tileBlocksCar(x, y) {
+    if (!inBounds(x, y)) return false;
+    return (
+      $gameMap.regionId(x, y) === BLOCK_REGION_ID ||
+      $gameMap.terrainTag(x, y) === BLOCK_TERRAIN_TAG
+    );
+  }
+
+  function carBodyAt(x, y, self) {
+    for (const other of roadCarEvents()) {
+      if (!other || other === self || other._erased) continue;
+      if (other._carActive === false) continue; // hidden cars are not there
+      if (carCovers(other, x, y)) return true;
+    }
+    return false;
+  }
+
+  // Everybody a car can run over on the map currently loaded, cached for the
+  // frame: this is read by every car, several times, every frame.
+  let pedestrianCache = [];
+  let pedestrianFrame = -1;
+  let pedestrianMapId = -1;
+
+  function pedestrianEvents() {
+    if (pedestrianFrame === Graphics.frameCount && pedestrianMapId === $gameMap.mapId()) {
+      return pedestrianCache;
+    }
+    pedestrianFrame = Graphics.frameCount;
+    pedestrianMapId = $gameMap.mapId();
+    pedestrianCache = $gameMap.events().filter((e) => {
+      if (!e || e._erased) return false;
+      const name = e.event() && e.event().name;
+      return name === "NPC" || name === "Enemy";  // i18n-ignore  event names
+    });
+    return pedestrianCache;
+  }
+
+  function pedestrianAt(x, y) {
+    if ($gamePlayer.x === x && $gamePlayer.y === y) return true;
+    return pedestrianEvents().some((e) => e.x === x && e.y === y);
+  }
+
+  // Where a car may put its body down: no wall under any part of it, and no
+  // other car's bodywork. `yieldToPeople` adds the pedestrians a town car brakes
+  // for; somebody already under this car's own body is not one of them, or a car
+  // that has just run someone over could never drive off again.
+  function carBodyFits(ev, x, y, dir, yieldToPeople) {
+    if (anyBodyTile(ev, x, y, dir, tileBlocksCar)) return false;
+    if (anyBodyTile(ev, x, y, dir, (tx, ty) => carBodyAt(tx, ty, ev))) return false;
+    if (yieldToPeople) {
+      const blocked = anyBodyTile(
+        ev, x, y, dir,
+        (tx, ty) => pedestrianAt(tx, ty) && !carCovers(ev, tx, ty)
+      );
+      if (blocked) return false;
+    }
+    return true;
+  }
+
+  // Can this car drive into (x, y) facing dir? Highway traffic never yields.
+  function carCanEnter(ev, x, y, dir) {
+    return carBodyFits(ev, x, y, dir, carsAvoidActors());
+  }
+
+  // Can this car be dropped here at all (spawn, respawn, parking)? A placement
+  // always yields: a car is never materialised on top of somebody.
+  function carCanBePlaced(ev, x, y, dir) {
+    if (!inBounds(x, y)) return false;
+    return carBodyFits(ev, x, y, dir, true);
+  }
+
   // The parked car whose bodywork the player is facing, so a car is stolen by
   // walking up to its flank instead of hunting for the one tile it is pinned to.
   function parkedCarFacing() {
@@ -583,39 +863,24 @@
     const x = $gameMap.roundXWithDirection($gamePlayer.x, d);
     const y = $gameMap.roundYWithDirection($gamePlayer.y, d);
     for (const ev of roadCarEvents()) {
-      if (!ev || ev._erased || ev._carMode !== "parked") continue;
+      if (!ev || ev._erased || !isStandingCar(ev)) continue;
       if (carCovers(ev, x, y)) return ev;
     }
     return null;
   }
 
+  // The action button on a parked car. The event runs no page of its own, so the
+  // press is read here and the theft prompt is opened directly.
   const _Game_Player_checkEventTriggerThere = Game_Player.prototype.checkEventTriggerThere;
   Game_Player.prototype.checkEventTriggerThere = function (triggers) {
     _Game_Player_checkEventTriggerThere.call(this, triggers);
     if ($gameMap.mapId() !== PROC_MAP_ID) return;
     if (!this.canStartLocalEvents()) return;
     if ($gameMap.isEventRunning() || $gameMap.isAnyEventStarting()) return;
+    if (!triggers.includes(0)) return; // action button only
     const car = parkedCarFacing();
-    if (car && car.isTriggerIn(triggers) && car.isNormalPriority()) car.start();
+    if (car) openCarTheftPrompt(car);
   };
-
-  // ==========================================================================
-  //  ACTOR AVOIDANCE
-  // ==========================================================================
-
-  function actorAt(nx, ny, self) {
-    if ($gamePlayer.x === nx && $gamePlayer.y === ny) return true;
-    const events = $gameMap.eventsXy(nx, ny);
-    for (const ev of events) {
-      if (ev === self || ev._erased) continue;
-      if (ev._carActive === false) continue; // hidden cars don't block
-      const data = ev.event();
-      if (!data) continue;
-      const nm = data.name;
-      if (nm === "NPC" || nm === "Enemy" || nm === "Car") return true;  // i18n-ignore  event names
-    }
-    return false;
-  }
 
   // ==========================================================================
   //  DRIVING LOGIC
@@ -652,36 +917,47 @@
   // Returns a direction (2/4/6/8), null (wait this frame), or RESPAWN.
   function chooseCarDirection(ev) {
     const cur = ev._carDir || ev.direction();
-    // Road/highway cars ignore actors (stay in lane, plow straight); town cars
-    // treat occupied tiles as blocked so they swerve/wait to avoid a collision.
-    const avoidActors = carsAvoidActors();
 
     const nx = (d) => ev.x + dxOf(d);
     const ny = (d) => ev.y + dyOf(d);
     // A road tile ahead, OR stepping off the map edge (= driving out -> exit).
     const roadDir = (d) => !inBounds(nx(d), ny(d)) || isRoad(nx(d), ny(d));
-    const free = (d) =>
-      !avoidActors || !inBounds(nx(d), ny(d)) || !actorAt(nx(d), ny(d), ev);
+    // Room for the whole bodywork: walls (region 10 / terrain tag 4) and other
+    // cars stop everyone, people stop town traffic only.
+    const free = (d) => carCanEnter(ev, nx(d), ny(d), d);
 
     const straightRoad = roadDir(cur);
     // Turn options never include reversing — cars only ever go forward or bend.
     const turns = perpDirs(cur).filter(roadDir);
     const freeTurns = turns.filter(free);
 
+    // Commit to a heading after taking it: only a car past its cooldown may
+    // volunteer for another turn on a plain straightaway (see TURN_COOLDOWN_*).
+    const takeTurn = () => {
+      const dir = freeTurns[Math.floor(Math.random() * freeTurns.length)];
+      ev._carTurnCooldown =
+        TURN_COOLDOWN_MIN + Math.floor(Math.random() * (TURN_COOLDOWN_MAX - TURN_COOLDOWN_MIN));
+      return dir;
+    };
+
     if (straightRoad) {
+      const cooldown = ev._carTurnCooldown || 0;
       // At an intersection, occasionally pick a turn (cities wander, roads don't)
-      if (freeTurns.length && Math.random() < turnChanceForBiome()) {
-        return freeTurns[Math.floor(Math.random() * freeTurns.length)];
+      if (cooldown <= 0 && freeTurns.length && Math.random() < turnChanceForBiome()) {
+        return takeTurn();
       }
-      if (free(cur)) return cur;                 // keep going straight
+      if (free(cur)) {
+        if (cooldown > 0) ev._carTurnCooldown = cooldown - 1;
+        return cur;                               // keep going straight
+      }
       // Straight blocked by another actor: slip onto a free turn if one exists,
       // otherwise just wait for the tile ahead to clear (no reversing).
-      if (freeTurns.length) return freeTurns[Math.floor(Math.random() * freeTurns.length)];
+      if (freeTurns.length) return takeTurn();
       return null;
     }
 
     // Straight is no longer road: the road bends (corner) or forks here.
-    if (freeTurns.length) return freeTurns[Math.floor(Math.random() * freeTurns.length)];
+    if (freeTurns.length) return takeTurn();
     if (turns.length) return null;               // a turn exists but is blocked -> wait
 
     // Nothing ahead and no turn — genuine dead end. Recycle to a border spawn
@@ -713,40 +989,200 @@
     if (pool.length === 0) return;
     for (let tries = 0; tries < 30; tries++) {
       const t = pool[Math.floor(Math.random() * pool.length)];
-      if (actorAt(t.x, t.y, ev)) continue;
+      const dir = pickStartDirection(t.x, t.y);
+      if (!carCanBePlaced(ev, t.x, t.y, dir)) continue;
       ev.setPosition(t.x, t.y);
-      ev._carDir = pickStartDirection(t.x, t.y);
-      ev.setDirection(ev._carDir);
+      ev._carDir = dir;
+      ev.setDirection(dir);
       ev._carStuck = 0;
+      ev._carTurnCooldown = 0;
       return;
     }
+  }
+
+  // ==========================================================================
+  //  PULLING OVER
+  // ==========================================================================
+  //
+  // A car is not only traffic: somebody is driving it, and now and then they
+  // stop, get out and do whatever they were going that way for. The car sits
+  // there as an ordinary parked car the whole time - solid, interactable, and
+  // stealable, which is the point of the driver being away from it - and when
+  // their business is done they get back in and carry on in the direction they
+  // were going, on the lane they were on.
+  //
+  // Where a car may stop:
+  //   road biome  -> beside a lay-by, i.e. within a few tiles of a SignPark
+  //                  the biome generator put on the verge
+  //   settlement  -> anywhere there is room, but far more rarely
+
+  // [{x,y}] SignPark / ParkingDrawing tiles on the map currently loaded. The
+  // bays are on the marking layer and the signs on the prop layer, so both come
+  // out of the same scan of layers 1-3.
+  let parkingSpots = [];
+
+  function buildParkingSpots() {
+    parkingSpots = [];
+    const ids = featureTileIdSet($gameMap.tilesetId(), (n) => PARKING_FEATURES.indexOf(n) >= 0);
+    if (!ids.size) return;
+    const data = $dataMap.data;
+    const layerSize = gridW * gridH;
+    for (let i = 0; i < layerSize; i++) {
+      for (let layer = 1; layer <= 3; layer++) {
+        if (!ids.has(data[i + layerSize * layer])) continue;
+        parkingSpots.push({ x: i % gridW, y: Math.floor(i / gridW) });
+        break;
+      }
+    }
+  }
+
+  function nearParkingSign(x, y) {
+    return parkingSpots.some(
+      (s) => Math.abs(s.x - x) + Math.abs(s.y - y) <= PARK_SIGN_RANGE
+    );
+  }
+
+  const parkedModes = new Set(["parked", "stopped"]);  // i18n-ignore  mode ids
+  const isStandingCar = (ev) => parkedModes.has(ev._carMode);
+
+  // Where the driver gets out: a walkable tile beside the car that its own
+  // bodywork is not sitting on.
+  function doorstepTile(ev) {
+    for (const d of [2, 4, 6, 8]) {
+      for (let step = 1; step <= 3; step++) {
+        const x = ev.x + dxOf(d) * step;
+        const y = ev.y + dyOf(d) * step;
+        if (!inBounds(x, y)) break;
+        if (carCovers(ev, x, y)) continue;
+        if (!isOpenGround(x, y) && !$gameMap.checkPassage(x, y, 0x0f)) continue;
+        if (pedestrianAt(x, y)) continue;
+        return { x, y };
+      }
+    }
+    return null;
+  }
+
+  // The odds this car pulls over on the step it is about to take.
+  function stopChanceFor(ev) {
+    if (biomeCategory === "road") {
+      return nearParkingSign(ev.x, ev.y) ? PARK_CHANCE_ROAD : 0;
+    }
+    if (biomeCategory === "city" || biomeCategory === "village") {
+      // A marked bay is where a driver actually wants to leave the car, so a
+      // town car pulls over there far more readily than at a random kerb.
+      return nearParkingSign(ev.x, ev.y) ? PARK_CHANCE_BAY : PARK_CHANCE_TOWN;
+    }
+    return 0;
+  }
+
+  function maybeStopCar(ev) {
+    if (Math.random() >= stopChanceFor(ev)) return false;
+    const doorstep = doorstepTile(ev);
+    if (!doorstep) return false;
+
+    // Everything needed to pick the journey up again exactly where it left off.
+    ev._carStop = {
+      dir: ev._carDir || ev.direction(),
+      lane: ev._carLane,
+      waypoint: ev._carWaypoint,
+      untilMin: nowMinutes() + PARK_MINUTES_MIN
+        + Math.floor(Math.random() * (PARK_MINUTES_MAX - PARK_MINUTES_MIN)),
+      driverId: null,
+      waitedFrom: null,
+    };
+    ev._carMode = "stopped";
+    ev._carLane = null;
+    applyCarModeSettings(ev);
+
+    const visitor = Math.random() < (biomeCategory === "road"
+      ? PARK_VISITOR_CHANCE_ROAD
+      : PARK_VISITOR_CHANCE_TOWN);
+    const driver = window.NPCSystem?.spawnRoadsideNPC?.(doorstep.x, doorstep.y, { visitor });
+    if (driver) {
+      ev._carStop.driverId = driver.eventId();
+      driver._carDriverOf = ev.eventId();
+    }
+    return true;
+  }
+
+  // A car standing at the kerb with its driver away. Nothing to steer; it only
+  // has to notice when its driver is due back.
+  function updateStoppedCar(ev) {
+    const stop = ev._carStop;
+    if (!stop) { resumeStoppedCar(ev); return; }
+    if (nowMinutes() < stop.untilMin) return;
+
+    const driver = stop.driverId ? $gameMap.event(stop.driverId) : null;
+    const gone = !driver || driver._erased || driver._carDriverOf !== ev.eventId();
+
+    // The driver's time is up: they walk back and get in. A driver who has been
+    // recruited, killed or otherwise taken out of the world is simply not coming,
+    // and one who cannot find their way back is waited on only so long.
+    if (!gone) {
+      const distance = Math.abs(driver.x - ev.x) + Math.abs(driver.y - ev.y);
+      if (distance > PARK_BOARD_RANGE) {
+        if (stop.waitedFrom == null) stop.waitedFrom = nowMinutes();
+        if (nowMinutes() - stop.waitedFrom < PARK_PATIENCE) {
+          // Point them at the car; their own wandering brain does the walking.
+          driver.setDirection(dirToward(driver.x, driver.y, ev.x, ev.y));
+          if (!driver.isMoving()) driver.moveStraight(driver.direction());
+          return;
+        }
+      }
+      // Aboard: the slot goes back to the map's own population.
+      driver._carDriverOf = null;
+      driver._roadsideNPC = false;
+      $gameMap.eraseEvent(driver.eventId());
+    }
+    resumeStoppedCar(ev);
+  }
+
+  function resumeStoppedCar(ev) {
+    const stop = ev._carStop || {};
+    ev._carStop = null;
+    ev._carMode = "driving";
+    ev._carStuck = 0;
+    ev._carTurnCooldown = 0;
+    ev._carLane = stop.lane != null ? stop.lane : null;
+    ev._carWaypoint = stop.waypoint;
+    if (stop.dir) {
+      ev._carDir = stop.dir;
+      ev.setDirection(stop.dir);
+    }
+    applyCarModeSettings(ev);
   }
 
   // ==========================================================================
   //  CAR SETUP
   // ==========================================================================
 
-  // Self switch A selects the event's parked page (action button + solid). It is
-  // set explicitly for every car on every load, because map 636 is reused for
-  // every world cell and self switches persist across those visits.
-  function setParkedSelfSwitch(ev, on) {
+  // A car event holds no logic and no second page any more: what it does is
+  // decided here and self switch A is only ever cleared, so a car that still
+  // carries the old parked page always shows its first one. Map 636 is reused
+  // for every world cell and self switches persist across those visits, which is
+  // why this runs on every load rather than once.
+  function clearParkedSelfSwitch(ev) {
     const key = [$gameMap.mapId(), ev.eventId(), PARKED_SELF_SWITCH];
-    if (!!$gameSelfSwitches.value(key) === !!on) return;
-    $gameSelfSwitches.setValue(key, !!on);
+    if (!$gameSelfSwitches.value(key)) return;
+    $gameSelfSwitches.setValue(key, false);
   }
 
-  // The page refresh that follows a self-switch change resets through / speed /
-  // animation from the page data, so re-apply whatever the car's mode needs.
+  // A page refresh resets through / speed / animation from the page data, so
+  // re-apply whatever the car's mode needs.
   function applyCarModeSettings(ev) {
     if (ev._carMode === "driving") {
-      ev.setThrough(true);        // needed for player-overlap accidents
+      // Through, because every collision question a car asks is answered by this
+      // plugin against its bodywork, not by the engine against its one tile.
+      ev.setThrough(true);
       ev.setPriorityType(1);
       ev.setMoveSpeed(drivingSpeedForBiome());
       ev.setMoveFrequency(5);
       ev.setStepAnime(true);
       ev.setOpacity(255);
-    } else if (ev._carMode === "parked") {
-      ev.setThrough(false);       // parked cars are solid obstacles
+    } else if (ev._carMode === "parked" || ev._carMode === "stopped") {
+      // A car whose driver has stepped out is a parked car in every way that
+      // matters: solid, harmless, interactable and stealable.
+      ev.setThrough(false);
       ev.setPriorityType(1);
       ev.setStepAnime(false);
       ev.setOpacity(255);
@@ -761,7 +1197,8 @@
     ev._carActive = true;
     ev._carMode = "driving";
     ev._carStuck = 0;
-    setParkedSelfSwitch(ev, false);
+    ev._carTurnCooldown = 0;
+    clearParkedSelfSwitch(ev);
     applyCarModeSettings(ev);
     ev._carLane = null;
 
@@ -774,7 +1211,9 @@
         const dist = Math.floor(Math.random() * len * 0.9);
         const pt = pointAlongPath(laneDefs[li], dist);
         const key = pt.x + "," + pt.y;
-        if (occupied.has(key) || actorAt(pt.x, pt.y, ev)) continue;
+        const target = laneDefs[li][pt.wp];
+        const dir = dirToward(pt.x, pt.y, target.x, target.y);
+        if (occupied.has(key) || !carCanBePlaced(ev, pt.x, pt.y, dir)) continue;
         occupied.add(key);
         placeOnLane(ev, li, dist);
         return true;
@@ -786,33 +1225,37 @@
     for (let tries = 0; tries < 60; tries++) {
       const t = pool[Math.floor(Math.random() * pool.length)];
       const key = t.x + "," + t.y;
-      if (occupied.has(key) || actorAt(t.x, t.y, ev)) continue;
+      const dir = pickStartDirection(t.x, t.y);
+      if (occupied.has(key) || !carCanBePlaced(ev, t.x, t.y, dir)) continue;
       occupied.add(key);
       ev.setPosition(t.x, t.y);
-      ev._carDir = pickStartDirection(t.x, t.y);
-      ev.setDirection(ev._carDir);
+      ev._carDir = dir;
+      ev.setDirection(dir);
       return true;
     }
     return false;
   }
 
   function makeParkedCar(ev, occupied) {
-    // Park on open ground (never on a road tile)
+    // Park on open ground (never on a road tile), with the WHOLE bodywork clear
+    // of walls and other cars: a parked car is solid, and one left half inside a
+    // cliff face would wall off the tiles around it.
     for (let tries = 0; tries < 200; tries++) {
       const x = Math.floor(Math.random() * gridW);
       const y = Math.floor(Math.random() * gridH);
       const key = x + "," + y;
+      const dir = [2, 4, 6, 8][Math.floor(Math.random() * 4)];
       if (occupied.has(key)) continue;
-      if (!isOpenGround(x, y)) continue;
-      if (actorAt(x, y, ev)) continue;
+      if (anyBodyTile(ev, x, y, dir, (tx, ty) => !isOpenGround(tx, ty))) continue;
+      if (!carCanBePlaced(ev, x, y, dir)) continue;
       occupied.add(key);
       ev._carActive = true;
       ev._carMode = "parked";
       ev._carLane = null;
-      setParkedSelfSwitch(ev, true);
+      clearParkedSelfSwitch(ev);
       applyCarModeSettings(ev);
       ev.setPosition(x, y);
-      ev.setDirection([2, 4, 6, 8][Math.floor(Math.random() * 4)]);
+      ev.setDirection(dir);
       return true;
     }
     return false;
@@ -822,11 +1265,11 @@
     ev._carActive = false;
     ev._carMode = "hidden";
     ev._carLane = null;
-    setParkedSelfSwitch(ev, false);
+    clearParkedSelfSwitch(ev);
     applyCarModeSettings(ev);
   }
 
-  // Keep the mode's settings after the page swap a self-switch change triggers.
+  // Keep the mode's settings after any page refresh.
   const _Game_Event_refresh = Game_Event.prototype.refresh;
   Game_Event.prototype.refresh = function () {
     _Game_Event_refresh.call(this);
@@ -839,24 +1282,50 @@
   //  PLAYER COLLISION (moving cars only)
   // ==========================================================================
 
-  // Being run over by a stationary vehicle makes no sense: only a MOVING car
-  // causes an accident, and only the moving page carries the Player-Touch
-  // trigger. A parked car runs its own action-button page (the theft prompt);
-  // a hidden car is not there at all and must never run anything.
+  // A car event carries no logic: its pages are never run, whatever the editor
+  // still holds on them. Every trigger a car has (the player walking into it,
+  // the action button on a parked one) is read by this plugin instead.
   const _Game_Event_start = Game_Event.prototype.start;
   Game_Event.prototype.start = function () {
-    if (
-      this._isRoadCar &&
-      $gameMap.mapId() === PROC_MAP_ID &&
-      this._carMode !== "driving" &&
-      this._carMode !== "parked"
-    ) {
-      return;
-    }
+    if (this._isRoadCar) return;
     _Game_Event_start.call(this);
   };
 
+  // Game_CharacterBase#jump checks nothing, so a long throw drops the victim
+  // inside whatever it happens to land on. This shortens the throw until it ends
+  // somewhere they could stand, and gives up rather than burying them.
+  function safeThrow(character, dx, dy) {
+    const steps = Math.max(Math.abs(dx), Math.abs(dy));
+    for (let s = steps; s > 0; s--) {
+      const ox = Math.round((dx * s) / steps);
+      const oy = Math.round((dy * s) / steps);
+      const tx = character.x + ox;
+      const ty = character.y + oy;
+      if (!$gameMap.isValid(tx, ty)) continue;
+      if (!$gameMap.checkPassage(tx, ty, 0x0f)) continue;
+      character.jump(ox, oy);
+      return;
+    }
+    character.jump(0, 0); // shaken where they stand
+  }
+
+  // Knock somebody clear of the vehicle that just hit them, along its heading
+  // and a little to one side.
+  function knockClear(source, victim, power) {
+    const sway = Math.random() < 0.5 ? 1 : -1;
+    let jx = 0;
+    let jy = 0;
+    switch (source.direction()) {
+      case 2: jy = power;  jx = sway; break; // car going down -> flung on ahead
+      case 4: jx = -power; jy = sway; break;
+      case 6: jx = power;  jy = sway; break;
+      case 8: jy = -power; jx = sway; break;
+    }
+    safeThrow(victim, jx, jy);
+  }
+
   Game_Event.prototype.performPlayerHit = function () {
+    // The player is thrown back off the bonnet, against the car's heading.
     const carDir = this.direction();
     const jumpPower = 3;
     const sway = Math.random() < 0.5 ? 1 : -1;
@@ -868,7 +1337,7 @@
       case 6: jx = -jumpPower; jy = sway; break; // car going right -> bounce left
       case 8: jy = jumpPower; jx = sway; break;  // car going up -> bounce down
     }
-    $gamePlayer.jump(jx, jy);
+    safeThrow($gamePlayer, jx, jy);
 
     if ($gamePlayer.isInShip()) {
       $gameTemp.reserveCommonEvent(168);
@@ -878,6 +1347,368 @@
       $gameTemp.reserveCommonEvent(163);
     }
   };
+
+  // ==========================================================================
+  //  RUNNING SOMEBODY OVER
+  // ==========================================================================
+  //
+  // One model for all of it: an AI car reaching a pedestrian, and the player
+  // driving the Car or the Camper over one. The wound is written where the rest
+  // of the game already reads it from, so it is not a popup and nothing more:
+  //
+  //   an NPC   -> injury conditions on their society profile, which is what the
+  //               Empathize panel's Health tab lists under lasting conditions
+  //   an enemy -> its persistent HP record, so the encounter is met already hurt
+
+  function nowMinutes() {
+    return $gameVariables.value(GAME_TIME_VARIABLE) || 0;
+  }
+
+  function isEnemyEvent(ev) {
+    return !!ev && !!ev.event() && ev.event().name === "Enemy";  // i18n-ignore  event name
+  }
+
+  function npcNameForEvent(ev) {
+    const helpers = window.NPCEmpathize && window.NPCEmpathize._helpers;
+    if (helpers && helpers._getNPCName) {
+      const name = helpers._getNPCName(ev.eventId());
+      if (name) return name;
+    }
+    return (window.NPCSim && window.NPCSim.npcNameForEvent && window.NPCSim.npcNameForEvent(ev)) || "";
+  }
+
+  function societyProfile(name) {
+    return (name && window.NPCSocietyRegistry && window.NPCSocietyRegistry.getProfile(name)) || null;
+  }
+
+  // Injuries written onto the profile Empathize reads. The medical history is
+  // built first because _buildBaseHistory REPLACES profile.conditions the first
+  // time it runs, which would wipe a wound written before it.
+  function injureNpcProfile(name, profile, severe) {
+    const DS = window.DiseaseSystem;
+    if (!DS || !profile) return [];
+    try {
+      DS.ensureNpcMedicalHistory(name, profile);
+    } catch (e) {
+      /* an unbuilt history must never stop the wound being recorded */
+    }
+    const held = profile.conditions || (profile.conditions = []);
+    const pool = severe ? CRASH_INJURIES_SEVERE.concat(CRASH_INJURIES) : CRASH_INJURIES;
+    const wanted = severe ? 2 : 1 + (Math.random() < 0.3 ? 1 : 0);
+    const added = [];
+    for (let i = 0; i < wanted; i++) {
+      const candidates = pool.filter(
+        (id) => DS.getCondition(id) && !held.some((c) => (c.id != null ? c.id : c) === id)
+      );
+      if (!candidates.length) break;
+      const id = candidates[Math.floor(Math.random() * candidates.length)];
+      held.push({ id, sinceMin: nowMinutes(), cause: "vehicle" });  // i18n-ignore  record field
+      added.push(DS.getCondition(id));
+    }
+    return added;
+  }
+
+  // What every party member now thinks of the person they just knocked down.
+  function loseNpcRegard(profile, amount) {
+    const helpers = window.NPCEmpathize && window.NPCEmpathize._helpers;
+    if (!profile || !helpers || !helpers._setNpcBaseOpinion) return;
+    for (const member of $gameParty.members()) {
+      const id = member.actorId();
+      const current = helpers._npcBaseOpinion(profile, id);
+      helpers._setNpcBaseOpinion(profile, id, current - amount);
+    }
+    if (profile.playerOpinion != null) {
+      profile.playerOpinion = Math.max(-100, Math.min(100, profile.playerOpinion - amount));
+    }
+  }
+
+  // A creature standing on the map keeps TWO HP tracks and a ram has to move
+  // both: `ev.enemyHp` is what it is worth out here (the ecology's own fights
+  // read it, and it is what kills it), and the persistent record is what its
+  // next battle restores from, so a survivor is met carrying the dent.
+  // Returns "dead", "hurt" or "" (nothing to hit).
+  function ramMapEnemy(ev, share) {
+    const troopId = ev._fixedTroopId;
+    if (!troopId || !$dataTroops[troopId]) return "";
+    const max = (ev.getMaxHpForEvent && ev.getMaxHpForEvent()) || 100;
+    if (ev.enemyHp === undefined) ev.enemyHp = max;
+    const damage = Math.max(1, Math.round(max * share));
+    ev.enemyHp -= damage;
+
+    const pData = window.BSE && window.BSE.State && window.BSE.State.persistentEnemyData;
+    const key = `${$gameMap.mapId()}_${ev.eventId()}`;
+    if (pData) {
+      const record = pData[key] || (pData[key] = { troopId, enemyHp: {} });
+      if (!record.enemyHp) record.enemyHp = {};
+      $dataTroops[troopId].members.forEach((member, index) => {
+        const data = $dataEnemies[member.enemyId];
+        if (!data) return;
+        const memberMax = data.params[0] || 1;
+        const current = record.enemyHp[index] != null ? record.enemyHp[index] : memberMax;
+        record.enemyHp[index] = Math.max(1, Math.round(current - memberMax * share));
+      });
+    }
+
+    if (ev.enemyHp > 0) return "hurt";
+
+    // Killed under the wheels: the body is left where the game already leaves
+    // one when a map creature is killed out here, harvestable like any other.
+    const F = window.BSE && window.BSE.Functions;
+    if (!F || !F.killEnemyEventLeaveCorpse) {
+      ev.enemyHp = 1; // no corpse system to hand it to: leave it standing, hurt
+      return "hurt";
+    }
+    F.killEnemyEventLeaveCorpse(ev, rammingLevel());
+    if (pData) delete pData[key]; // nothing left for a battle to restore
+    return "dead";
+  }
+
+  // How brutally a ram tears a creature apart (killEnemyEventLeaveCorpse reads
+  // it against the victim's own level to decide what is left of the body). A car
+  // is a car whoever is driving it, so this is the party's standing, not a stat.
+  function rammingLevel() {
+    const members = $gameParty.members();
+    if (!members.length) return 1;
+    return Math.round(members.reduce((sum, m) => sum + m.level, 0) / members.length);
+  }
+
+  // The odds a creature the party has just rammed turns round and fights.
+  function ramBattleChance(rams) {
+    if (rams <= RAM_FREE_HITS) return 0;
+    const steps = rams - RAM_FREE_HITS - 1;
+    return Math.min(RAM_BATTLE_MAX, RAM_BATTLE_BASE + steps * RAM_BATTLE_STEP);
+  }
+
+  // How many times the party has rammed this particular creature. Kept on its
+  // persistent record rather than on the event, because every scene rebuild
+  // reloads $dataMap and hands out fresh Game_Event objects.
+  function ramCount(ev, bump) {
+    const pData = window.BSE && window.BSE.State && window.BSE.State.persistentEnemyData;
+    const key = `${$gameMap.mapId()}_${ev.eventId()}`;
+    const record = pData && pData[key];
+    if (!record) {
+      ev._carRams = (ev._carRams || 0) + (bump ? 1 : 0);
+      return ev._carRams;
+    }
+    if (bump) record.carRams = (record.carRams || 0) + 1;
+    return record.carRams || 0;
+  }
+
+  function startRamBattle(ev) {
+    const F = window.BSE && window.BSE.Functions;
+    if (!F || !F.startPersistentBattle || !ev._fixedTroopId) return false;
+    if ($gameSystem.getBattleCooldown && $gameSystem.getBattleCooldown() > 0) return false;
+    if ($gameMap.isEventRunning() || $gameMessage.isBusy()) return false;
+    // A tactical fight (MapBattleMode) is fought where everybody is standing, so
+    // the party gets out of the car first: MapBattleMode lays the field out
+    // around $gamePlayer and the followers, and a party still in the driving
+    // seat has nobody on the battlefield to fight with. A front-view battle
+    // needs none of this and the party keeps their seats.
+    if (window.isMapBattleMode?.() && window.MapBattleMode) {
+      window.MergedVehicleSystem?.disembark?.();
+    }
+    F.startPersistentBattle(
+      ev._fixedTroopId,
+      `${$gameMap.mapId()}_${ev.eventId()}`,
+      ev.eventId(),
+      $gameMap.mapId()
+    );
+    return true;
+  }
+
+  function enemyDisplayName(ev) {
+    const troop = ev._fixedTroopId ? $dataTroops[ev._fixedTroopId] : null;
+    const data = troop && troop.members.length ? $dataEnemies[troop.members[0].enemyId] : null;
+    return (data && data.name) || "";
+  }
+
+  function toast(text) {
+    try {
+      window.ParchmentToast?.show(text, { severity: "danger" });
+    } catch (e) {
+      /* a popup never breaks a drive */
+    }
+  }
+
+  // ── What the party's own vehicle takes out of it ─────────────────────────
+  // Damage is applied through VehicleSystemRepair so the Reinforced Chassis
+  // upgrade, the critical-part check and the maintenance panel all see it, and
+  // the parts that actually took it are named in the popup.
+
+  function ridingRepairType() {
+    const type = window.VehicleUpgrades?.currentRiddenType?.() ?? null;
+    return type === "camper" || type === "car" ? type : null;  // i18n-ignore  vehicle ids
+  }
+
+  function damageOwnVehicle(percent, options, messageKey) {
+    const type = ridingRepairType();
+    const repair = window.VehicleSystemRepair;
+    if (!type || !repair || !repair.applyDamage) return;
+    const parts = repair.applyDamage(type, percent, options) || [];
+    if (!parts.length) return;
+    const label = (id) => (window.VehicleParts ? window.VehicleParts.label(id) : id);
+    toast(T(messageKey, { parts: parts.map(label).join(", ") }));
+  }
+
+  // Ramming a creature. Whoever is driving can kill it; only the party can make
+  // it angry enough to fight. Returns true when a battle was started, so nothing
+  // else is run over in the same breath.
+  function ramEnemy(ev, byPlayer) {
+    const outcome = ramMapEnemy(ev, ENEMY_RAM_SHARE);
+    if (!outcome) return false;
+    const name = enemyDisplayName(ev);
+
+    // Something soft under the bumper only ever marks the front of the car.
+    if (byPlayer) {
+      damageOwnVehicle(
+        RAM_VEHICLE_DAMAGE,
+        { parts: FRONT_PARTS, count: 1 + (Math.random() < 0.4 ? 1 : 0) },
+        "RoadCar.vehicleScuffed"
+      );
+    }
+
+    if (outcome === "dead") {
+      if (byPlayer && name) toast(T("RoadCar.ramKilled", { name }));
+      return false;
+    }
+    if (!byPlayer) return false;
+
+    // The first rams it is simply flung off the bonnet; after that it stops
+    // taking it, with worse odds every time.
+    if (Math.random() >= ramBattleChance(ramCount(ev, true))) return false;
+    if (!startRamBattle(ev)) return false;
+    if (name) toast(T("RoadCar.ramAngered", { name }));
+    return true;
+  }
+
+  // The one impact handler. `byPlayer` is the party at the wheel rather than a
+  // car the world is driving, which is the only case that costs regard, files a
+  // charge, starts a fight or says anything. Returns true when a battle was
+  // started and nothing else should happen this frame.
+  function runOverPedestrian(source, victim, byPlayer) {
+    const now = Graphics.frameCount;
+    if (now - (victim._carHitFrame || -Infinity) <= HIT_GRACE_FRAMES) return false;
+    victim._carHitFrame = now;
+
+    AudioManager.playSe({ name: "Blow2", volume: 80, pitch: 90, pan: 0 });  // i18n-ignore  SE file
+
+    if (isEnemyEvent(victim)) {
+      // Thrown clear first: a creature that dies under the wheels leaves its
+      // body where it lands, not where it was standing.
+      knockClear(source, victim, byPlayer ? 3 : 2);
+      return ramEnemy(victim, byPlayer);
+    }
+
+    knockClear(source, victim, byPlayer ? 3 : 2);
+    const name = npcNameForEvent(victim);
+    const profile = societyProfile(name);
+    if (!profile) return false;
+    const severe = byPlayer && Math.random() < 0.4;
+    const injuries = injureNpcProfile(name, profile, severe);
+    if (!byPlayer) return false;
+
+    loseNpcRegard(profile, OPINION_PER_HIT);
+    try {
+      if (window.CrimeSystem) window.CrimeSystem.addPresetCrime("hitAndRun");
+    } catch (e) {
+      /* no charge filed is never worth breaking the drive over */
+    }
+    try {
+      const wound = injuries.length ? injuries[0].name : "";
+      window.ParchmentToast?.show(
+        wound
+          ? T("RoadCar.ranOverInjured", { name, injury: wound })
+          : T("RoadCar.ranOver", { name }),
+        { severity: "danger" }
+      );
+    } catch (e) {
+      /* a popup never breaks a drive */
+    }
+  }
+
+  // Whether (x, y) is under the bodywork, against a box read once. This runs for
+  // every vehicle against every pedestrian on every frame, so the box is not
+  // looked up again per person.
+  function boxContains(character, box, x, y) {
+    const dx = x - character.x;
+    const dy = y - character.y;
+    return dx >= box.minDx && dx <= box.maxDx && dy >= box.minDy && dy <= box.maxDy;
+  }
+
+  // Everybody a moving vehicle has under its bodywork right now.
+  function runDownEverybodyUnder(source, byPlayer) {
+    const box = carRect(source, null);
+    for (const victim of pedestrianEvents()) {
+      if (victim.isJumping()) continue;
+      if (boxContains(source, box, victim.x, victim.y)) runOverPedestrian(source, victim, byPlayer);
+    }
+  }
+
+  function updateCarImpacts(car) {
+    if (car._carMode !== "driving" || !car.isMoving()) return;
+
+    if (
+      !$gamePlayer.isJumping() &&
+      Graphics.frameCount - lastHitFrame > HIT_GRACE_FRAMES &&
+      carCovers(car, $gamePlayer.x, $gamePlayer.y)
+    ) {
+      lastHitFrame = Graphics.frameCount;
+      car.performPlayerHit();
+      return;
+    }
+
+    runDownEverybodyUnder(car, false);
+  }
+
+  // ==========================================================================
+  //  THE PARTY AT THE WHEEL
+  // ==========================================================================
+  //
+  // The same impact, on any map, when the vehicle doing the driving is the
+  // party's own Car or Camper. A bike, a broom and a boat are not lethal to
+  // anybody and are left out.
+
+  function playerRoadVehicle() {
+    const vehicle = $gamePlayer.vehicle && $gamePlayer.vehicle();
+    if (!vehicle || !$gamePlayer.isInVehicle()) return null;
+    if (vehicle.isShip && vehicle.isShip()) return vehicle._isAquatic ? null : vehicle;
+    if (vehicle.isBoat && vehicle.isBoat()) {
+      return $gameSystem._boatType === "car" ? vehicle : null;  // i18n-ignore  vehicle sub-type
+    }
+    return null;
+  }
+
+  // Two vehicles in the same space is a crash, not a knock: it is felt through
+  // the whole car and it is the one impact that does not care who was at fault.
+  // The bodywork is what touches, so this is body against body rather than the
+  // single tiles the two are pinned to.
+  function updatePlayerVehicleCrash(vehicle) {
+    if ($gameMap.mapId() !== PROC_MAP_ID) return;
+    const now = Graphics.frameCount;
+    const box = carRect(vehicle, null);
+    for (const car of roadCarEvents()) {
+      if (!car || car._erased || car._carActive === false) continue;
+      if (now - (car._carCrashFrame || -Infinity) <= HIT_GRACE_FRAMES) continue;
+      const hit = anyBodyTile(car, car.x, car.y, null, (tx, ty) =>
+        boxContains(vehicle, box, tx, ty)
+      );
+      if (!hit) continue;
+      car._carCrashFrame = now;
+      AudioManager.playSe({ name: "Crash", volume: 90, pitch: 80, pan: 0 });  // i18n-ignore  SE file
+      damageOwnVehicle(CRASH_VEHICLE_DAMAGE, null, "RoadCar.vehicleCrashed");
+      // A driving car that has been hit stops steering into the wreck and takes
+      // itself off to another entry road.
+      if (car._carMode === "driving") car._carStuck = STUCK_LIMIT + 1;
+      return; // one crash a frame, however many cars are in the pile
+    }
+  }
+
+  function updatePlayerVehicleImpacts() {
+    const vehicle = playerRoadVehicle();
+    if (!vehicle || !$gamePlayer.isMoving()) return;
+    updatePlayerVehicleCrash(vehicle);
+    runDownEverybodyUnder(vehicle, true);
+  }
 
   // ==========================================================================
   //  CAR THEFT (parked cars only)
@@ -911,6 +1742,16 @@
   // Car chosen from the "Steal car" prompt, run one frame later (see below).
   let _pendingTheftTarget = null;
 
+  // The prompt, opened by the plugin's own reading of the action button rather
+  // than by an event page. Refused while a theft is already under way and while
+  // anything else is talking.
+  function openCarTheftPrompt(car) {
+    if (!car || !isStandingCar(car)) return;
+    if (_pendingTheftTarget || _pendingCarTheft) return;
+    if ($gameMessage.isBusy()) return;
+    showCarTheftChoices(car);
+  }
+
   function showCarTheftChoices(car) {
     window.skipLocalization = true;
     $gameMessage.add(T('RoadCar.unattendedCar'));
@@ -926,9 +1767,12 @@
     });
   }
 
-  const _Scene_Map_update_carTheft = Scene_Map.prototype.update;
+  const _Scene_Map_update_roadCars = Scene_Map.prototype.update;
   Scene_Map.prototype.update = function () {
-    _Scene_Map_update_carTheft.call(this);
+    _Scene_Map_update_roadCars.call(this);
+    // The party's own Car / Camper runs people down on every map, so this is
+    // deliberately outside the map-636 gate the AI cars live behind.
+    updatePlayerVehicleImpacts();
     if (_pendingTheftTarget && !$gameMessage.isBusy()) {
       const car = _pendingTheftTarget;
       _pendingTheftTarget = null;
@@ -937,6 +1781,16 @@
   };
 
   function attemptCarTheft(car) {
+    // Half the cars in an empty world were left open, and there is nobody to
+    // take one from: it opens on the spot, with no lockpick, no minigame and
+    // no crime. The other half were locked and are picked as usual (though
+    // CrimeSystem files nothing in an empty world either).
+    if (isEmptyWorld() && isEmptyWorldCarUnlocked(car)) {
+      say(T('RoadCar.emptyWorldUnlocked'));
+      completeCarTheft({ mapId: $gameMap.mapId(), eventId: car.eventId() });
+      return;
+    }
+
     // A skeleton key opens any lock without the minigame (same rule as doors).
     const skeleton = $dataItems[SKELETON_KEY_ITEM_ID];
     if (skeleton && $gameParty.hasItem(skeleton)) {
@@ -993,7 +1847,7 @@
     if (car) {
       car._carActive = false;
       car._carMode = "hidden";
-      setParkedSelfSwitch(car, false);
+      clearParkedSelfSwitch(car);
       car.setThrough(true);
       car.erase();
     }
@@ -1007,14 +1861,14 @@
     }
   }
 
-  // The parked page of a Car event calls this; the moving and hidden pages never
-  // run, so the prompt only ever appears for a car that is actually parked.
+  // Kept registered so an existing event or an outside caller still reaches the
+  // prompt, but no car event needs it any more: the action button is read by
+  // this plugin and opens the prompt itself.
   const stealParkedCar = function () {
-    if (_pendingTheftTarget || _pendingCarTheft) return;
     const self = this && this.character ? this.character(0) : null;
     const car =
-      self && self._isRoadCar && self._carMode === "parked" ? self : parkedCarFacing();
-    if (car) showCarTheftChoices(car);
+      self && self._isRoadCar && isStandingCar(self) ? self : parkedCarFacing();
+    if (car) openCarTheftPrompt(car);
   };
   PluginManager.registerCommand(PLUGIN_NAME, "StealParkedCar", stealParkedCar);
   PluginManager.registerCommand("Vehicle/" + PLUGIN_NAME, "StealParkedCar", stealParkedCar);
@@ -1035,25 +1889,26 @@
 
     if (!this._isRoadCar || $gameMap.mapId() !== PROC_MAP_ID) return;
     if (this._carActive === false) return;
-    if (this._carMode === "parked") return;
-    if (this._carMode !== "driving") return;
 
-    // Accident: the moving car's bodywork is over the player. The player cannot
-    // walk into it (the footprint blocks them), so this only fires when a car has
-    // driven over someone standing still. The bodywork is several tiles wide and
-    // the bounce can land inside it again, so a hit is followed by a short grace
-    // period rather than a pile-up of accidents.
-    if (
-      !$gamePlayer.isJumping() &&
-      Graphics.frameCount - lastHitFrame > HIT_GRACE_FRAMES &&
-      carCovers(this, $gamePlayer.x, $gamePlayer.y)
-    ) {
-      lastHitFrame = Graphics.frameCount;
-      this.performPlayerHit();
+    // Standing at the kerb with the driver away: nothing to steer, it only has
+    // to notice when they are due back.
+    if (this._carMode === "stopped") {
+      updateStoppedCar(this);
       return;
     }
+    if (this._carMode !== "driving") return; // a parked car is inert and harmless
+
+    // Whoever the bodywork is over while the car is in motion is run over: the
+    // player, an NPC or a roaming enemy. A stopped car (traffic, a red light of
+    // its own making) hurts nobody, and every victim keeps a short grace period
+    // afterwards, because the car is several tiles long and the bounce can land
+    // them back inside it.
+    updateCarImpacts(this);
 
     if (this.isMoving()) return; // wait for the current tile step to finish
+
+    // Between one tile and the next is where a driver decides they have arrived.
+    if (maybeStopCar(this)) return;
 
     // ROAD BIOME: strictly follow the assigned hardcoded lane.
     if (this._carLane != null) {
@@ -1099,6 +1954,11 @@
   const _Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
   Scene_Map.prototype.onMapLoaded = function () {
     _Scene_Map_onMapLoaded.call(this);
+    // Every cache below holds objects or tiles of the map that is being left.
+    carEvents = [];
+    pedestrianCache = [];
+    pedestrianFrame = -1;
+    parkingSpots = [];
     if ($gameMap.mapId() === PROC_MAP_ID) {
       this.initializeRoadCars();
     }
@@ -1106,7 +1966,14 @@
 
   Scene_Map.prototype.initializeRoadCars = function () {
     const biomeName = $gameSystem._procGenData?.currentBiome || "";
-    biomeCategory = classifyBiome(biomeName);
+    // Nothing that belongs on a street is placed inside a procedural interior
+    // (every cave, dungeon, crypt, sewer, cellar, vault, and any layer below
+    // the surface): they share map id 636 with the open-air square they were
+    // entered from, so the biome name alone cannot always tell them apart and
+    // window.ProceduralInteriors has to be asked. Falling through to "none"
+    // erases the template's cars the same way a traffic-free biome does.
+    const underground = !!window.ProceduralInteriors?.isCurrent?.();
+    biomeCategory = underground ? "none" : classifyBiome(biomeName);
 
     const cars = $gameMap.events().filter((e) => e && e.event() && e.event().name === "Car");  // i18n-ignore  event name
     carEvents = cars;
@@ -1118,7 +1985,7 @@
       cars.forEach((e) => {
         e._carActive = false;
         e._carMode = "hidden";
-        setParkedSelfSwitch(e, false);
+        clearParkedSelfSwitch(e);
         e.erase();
       });
       dlog("[RoadCarAI] No traffic for biome:", biomeName);
@@ -1126,6 +1993,7 @@
     }
 
     buildRoadGrid();
+    buildParkingSpots();
 
     // If a road biome somehow produced no road tiles, bail out gracefully
     if (biomeCategory !== "village" && roadTiles.length === 0) {

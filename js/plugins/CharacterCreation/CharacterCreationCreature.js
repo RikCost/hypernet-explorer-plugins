@@ -67,11 +67,33 @@
     return this._data && this.index() >= 0 ? this._data[this.index()] : null;
   };
 
+  // Who this world is populated with (WorldManager.populationMode). A goblin
+  // world keeps the whole board , the primary is pinned to Goblin below and the
+  // secondary is picked under the ordinary rules , while a monster world has
+  // nothing that reads as a person in it, so the three people archetypes leave
+  // the board entirely.
+  function populationMode() {
+    const WM = window.WorldManager;
+    return (WM && typeof WM.populationMode === "function")
+      ? WM.populationMode() : "normal";
+  }
+
+  // The archetype a goblin world builds everybody on. Named once, here.
+  const GOBLIN_ARCHETYPE = "Goblin";
+
+  function archetypeOfferedInPopulation(key) {
+    if (populationMode() !== "monster") return true;
+    const people = (window.SpriteCatalog && window.SpriteCatalog.PEOPLE_ARCHETYPES) ||
+                   ["Humanoid", "DoubleHeadedHumanoid", "Elven", "Goblin"];
+    return !people.includes(key);
+  }
+
   Window_ArchetypeSelect.prototype.makeItemList = function () {
     this._data = [];
     const { EnemyArchetypes } = window.Health || {};
     if (EnemyArchetypes) {
       for (const key in EnemyArchetypes) {
+        if (!archetypeOfferedInPopulation(key)) continue;
         this._data.push({
           key: key,
           name: window.getArchetypeText(`enemyArchetypes.${key.toLowerCase()}.name`) /* i18n-ignore: enemyArchetypes.json key */ || key
@@ -262,27 +284,27 @@
   // isAnimal: true → drawn without forced fixed direction
   // ============================================================================
   const ANIMAL_SPRITE_ENTRIES = [
-    { displayName: 'Animals01Color_0', path: 'Animals01Color', index: 0 },
-    { displayName: 'Animals01Color_1', path: 'Animals01Color', index: 1 },
-    { displayName: 'Animals01Color_2', path: 'Animals01Color', index: 2 },
-    { displayName: 'Animals01Color_3', path: 'Animals01Color', index: 3 },
-    { displayName: 'Animals01Color_4', path: 'Animals01Color', index: 4 },
-    { displayName: 'FarmAnimals01RM_0', path: 'FarmAnimals01RM', index: 0 },
-    { displayName: 'FarmAnimals01RM_1', path: 'FarmAnimals01RM', index: 1 },
-    { displayName: 'FarmAnimals01RM_2', path: 'FarmAnimals01RM', index: 2 },
-    { displayName: 'FarmAnimals01RM_3', path: 'FarmAnimals01RM', index: 3 },
-    { displayName: 'FarmAnimals01RM_4', path: 'FarmAnimals01RM', index: 4 },
-    { displayName: 'FarmAnimals01RM_5', path: 'FarmAnimals01RM', index: 5 },
-    { displayName: 'FarmAnimals01RM_6', path: 'FarmAnimals01RM', index: 6 },
-    { displayName: 'FarmAnimals01RM_7', path: 'FarmAnimals01RM', index: 7 },
-    { displayName: 'FarmAnimals02RM_0', path: 'FarmAnimals02RM', index: 0 },
-    { displayName: 'FarmAnimals02RM_1', path: 'FarmAnimals02RM', index: 1 },
-    { displayName: 'FarmAnimals02RM_2', path: 'FarmAnimals02RM', index: 2 },
-    { displayName: 'FarmAnimals02RM_3', path: 'FarmAnimals02RM', index: 3 },
-    { displayName: 'FarmAnimals02RM_4', path: 'FarmAnimals02RM', index: 4 },
-    { displayName: 'FarmAnimals02RM_5', path: 'FarmAnimals02RM', index: 5 },
-    { displayName: 'FarmAnimals02RM_6', path: 'FarmAnimals02RM', index: 6 },
-    { displayName: 'FarmAnimals02RM_7', path: 'FarmAnimals02RM', index: 7 },
+    { displayName: 'Animals01Color_0', path: 'NPCs/!$CatButton1', index: 0 },
+    { displayName: 'Animals01Color_1', path: 'NPCs/!$DogTail1', index: 0 },
+    { displayName: 'Animals01Color_2', path: 'NPCs/!$AvianNoble1', index: 0 },
+    { displayName: 'Animals01Color_3', path: 'NPCs/!$Animals01Color4', index: 0 },
+    { displayName: 'Animals01Color_4', path: 'NPCs/!$InsectoidBee1', index: 0 },
+    { displayName: 'FarmAnimals01RM_0', path: 'NPCs/!$FarmAnimals01RM1', index: 0 },
+    { displayName: 'FarmAnimals01RM_1', path: 'NPCs/!$FarmAnimals01RM2', index: 0 },
+    { displayName: 'FarmAnimals01RM_2', path: 'NPCs/!$FarmAnimals01RM3', index: 0 },
+    { displayName: 'FarmAnimals01RM_3', path: 'NPCs/!$FarmAnimals01RM4', index: 0 },
+    { displayName: 'FarmAnimals01RM_4', path: 'NPCs/!$FarmAnimals01RM5', index: 0 },
+    { displayName: 'FarmAnimals01RM_5', path: 'NPCs/!$FarmAnimals01RM6', index: 0 },
+    { displayName: 'FarmAnimals01RM_6', path: 'NPCs/!$FarmAnimals01RM7', index: 0 },
+    { displayName: 'FarmAnimals01RM_7', path: 'NPCs/!$FarmAnimals01RM8', index: 0 },
+    { displayName: 'FarmAnimals02RM_0', path: 'NPCs/!$Horse1', index: 0 },
+    { displayName: 'FarmAnimals02RM_1', path: 'NPCs/!$Horse2', index: 0 },
+    { displayName: 'FarmAnimals02RM_2', path: 'NPCs/!$Horse3', index: 0 },
+    { displayName: 'FarmAnimals02RM_3', path: 'NPCs/!$Horse4', index: 0 },
+    { displayName: 'FarmAnimals02RM_4', path: 'NPCs/!$Horse5', index: 0 },
+    { displayName: 'FarmAnimals02RM_5', path: 'NPCs/!$Horse6', index: 0 },
+    { displayName: 'FarmAnimals02RM_6', path: 'NPCs/!$Horse7', index: 0 },
+    { displayName: 'FarmAnimals02RM_7', path: 'NPCs/!$Horse8', index: 0 },
     { displayName: 'MV_Chick', path: 'Animals/!$MV_Chick', index: 0 },
     { displayName: 'MV_Chicken_1', path: 'Animals/!$MV_Chicken_1', index: 0 },
     { displayName: 'MV_Chicken_2', path: 'Animals/!$MV_Chicken_2', index: 0 },
@@ -330,7 +352,7 @@
   Window_CharacterSelect.prototype.processTouch = function () {};
 
   Window_CharacterSelect.prototype.maxCols = function () {
-    return 4; // Matches the 4-column visual grid
+    return 6; // Matches the 6-column sprite board (.cc-sprite-board)
   };
 
   Window_CharacterSelect.prototype.maxItems = function () {
@@ -876,21 +898,21 @@
             // Base skills section
             let skillsHtml = "";
             if (arch.skills && arch.skills.length > 0) {
-              skillsHtml = `<div class="cc-dossier-section-title" style="color: #b87333; font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.baseSkills')}</div>` +
+              skillsHtml = `<div class="cc-dossier-section-title" style="color: var(--text-muted-hover); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.baseSkills')}</div>` +
                 arch.skills.map(sid => {
                   const sname = getSkillDisplayName(sid) || sid;
-                  return `<div class="cc-dossier-row" style="margin-bottom: 0;"><span class="cc-dossier-label" style="color: #b87333;">${sname}</span><span class="cc-dossier-value" style="font-size: 0.75rem; color: #888;">#${sid}</span></div>`;
+                  return `<div class="cc-dossier-row" style="margin-bottom: 0;"><span class="cc-dossier-label" style="color: var(--text-muted-hover);">${sname}</span><span class="cc-dossier-value" style="font-size: 0.75rem; color: var(--text-card-medium);">#${sid}</span></div>`;
                 }).join("");
             }
             // Parts section
             let bodyHtml = "";
             if (arch.parts) {
-              bodyHtml = `<div class="cc-dossier-section-title" style="color: #4a7c59; font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.anatomy')}</div>` +
+              bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.anatomy')}</div>` +
                 Object.keys(arch.parts).map(k => {
                   const p = arch.parts[k];
                   const name = window.getArchetypeText(p.name) || p.name;
                   const skillName = getSkillDisplayName(p.skillId);
-                  const skillInfo = skillName ? `<span style="font-size: 0.75rem; color: #888; font-style: italic;">, ${skillName}</span>` : "";
+                  const skillInfo = skillName ? `<span style="font-size: 0.75rem; color: var(--text-card-medium); font-style: italic;">, ${skillName}</span>` : "";
                   return `
                     <div class="cc-dossier-row" style="margin-bottom: 0;">
                       <span class="cc-dossier-label">${name}:</span>
@@ -917,21 +939,21 @@
               // Base skills section
               let skillsHtml = "";
               if (arch.skills && arch.skills.length > 0) {
-                skillsHtml = `<div class="cc-dossier-section-title" style="color: #b87333; font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.baseSkills')}</div>` +
+                skillsHtml = `<div class="cc-dossier-section-title" style="color: var(--text-muted-hover); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.baseSkills')}</div>` +
                   arch.skills.map(sid => {
                     const sname = getSkillDisplayName(sid) || sid;
-                    return `<div class="cc-dossier-row" style="margin-bottom: 0;"><span class="cc-dossier-label" style="color: #b87333;">${sname}</span><span class="cc-dossier-value" style="font-size: 0.75rem; color: #888;">#${sid}</span></div>`;
+                    return `<div class="cc-dossier-row" style="margin-bottom: 0;"><span class="cc-dossier-label" style="color: var(--text-muted-hover);">${sname}</span><span class="cc-dossier-value" style="font-size: 0.75rem; color: var(--text-card-medium);">#${sid}</span></div>`;
                   }).join("");
               }
               // Parts section
               let bodyHtml = "";
               if (arch.parts) {
-                bodyHtml = `<div class="cc-dossier-section-title" style="color: #4a7c59; font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.anatomy')}</div>` +
+                bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.anatomy')}</div>` +
                   Object.keys(arch.parts).map(k => {
                     const p = arch.parts[k];
                     const name = window.getArchetypeText(p.name) || p.name;
                     const skillName = getSkillDisplayName(p.skillId);
-                    const skillInfo = skillName ? `<span style="font-size: 0.75rem; color: #888; font-style: italic;">, ${skillName}</span>` : "";
+                    const skillInfo = skillName ? `<span style="font-size: 0.75rem; color: var(--text-card-medium); font-style: italic;">, ${skillName}</span>` : "";
                     return `
                       <div class="cc-dossier-row" style="margin-bottom: 0;">
                         <span class="cc-dossier-label">${name}:</span>
@@ -975,32 +997,32 @@
           if (arch2 && arch2.skills) arch2.skills.forEach(sid => mergedSkillIds.add(sid));
           let skillsHtml = "";
           if (mergedSkillIds.size > 0) {
-            skillsHtml = `<div class="cc-dossier-section-title" style="color: #b87333; font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.baseSkills')}</div>` +
+            skillsHtml = `<div class="cc-dossier-section-title" style="color: var(--text-muted-hover); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.baseSkills')}</div>` +
               Array.from(mergedSkillIds).map(sid => {
                 const sname = getSkillDisplayName(sid) || sid;
                 const fromArch1 = arch1 && arch1.skills && arch1.skills.includes(sid);
                 const fromArch2 = arch2 && arch2.skills && arch2.skills.includes(sid);
                 let badges = "";
                 if (fromArch1 && fromArch2) {
-                  badges = `<span style="font-size: 0.62rem; padding: 1px 3px; background: rgba(130, 45, 45, 0.15); color: #822d2d; border-radius: 4px; margin-left: 4px; font-weight: bold; font-family: monospace;">${T('Creature.ui.primaryBadge')}</span><span style="font-size: 0.62rem; padding: 1px 3px; background: rgba(90, 61, 117, 0.15); color: #5a3d75; border-radius: 4px; margin-left: 2px; font-weight: bold; font-family: monospace;">${T('Creature.ui.secondaryBadge')}</span>`;
+                  badges = `<span class="cc-role-badge primary">${T('Creature.ui.primaryBadge')}</span><span class="cc-role-badge secondary">${T('Creature.ui.secondaryBadge')}</span>`;
                 } else if (fromArch1) {
-                  badges = `<span style="font-size: 0.62rem; padding: 1px 3px; background: rgba(130, 45, 45, 0.15); color: #822d2d; border-radius: 4px; margin-left: 4px; font-weight: bold; font-family: monospace;">${T('Creature.ui.primaryBadge')}</span>`;
+                  badges = `<span class="cc-role-badge primary">${T('Creature.ui.primaryBadge')}</span>`;
                 } else {
-                  badges = `<span style="font-size: 0.62rem; padding: 1px 3px; background: rgba(90, 61, 117, 0.15); color: #5a3d75; border-radius: 4px; margin-left: 4px; font-weight: bold; font-family: monospace;">${T('Creature.ui.secondaryBadge')}</span>`;
+                  badges = `<span class="cc-role-badge secondary">${T('Creature.ui.secondaryBadge')}</span>`;
                 }
-                return `<div class="cc-dossier-row" style="margin-bottom: 0;"><span class="cc-dossier-label" style="color: #b87333;">${sname}</span><span class="cc-dossier-value" style="font-size: 0.75rem; color: #888;">#${sid}${badges}</span></div>`;
+                return `<div class="cc-dossier-row" style="margin-bottom: 0;"><span class="cc-dossier-label" style="color: var(--text-muted-hover);">${sname}</span><span class="cc-dossier-value" style="font-size: 0.75rem; color: var(--text-card-medium);">#${sid}${badges}</span></div>`;
               }).join("");
           }
 
-          let bodyHtml = `<div class="cc-dossier-section-title" style="color: #4a7c59; font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.anatomy')}</div>` +
+          let bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.anatomy')}</div>` +
             Object.keys(mergedParts).map(partKey => {
               const { part, from } = mergedParts[partKey];
               const name = window.getArchetypeText(part.name) || part.name;
               const originLabel = from === 2 
-                ? `<span style="font-size: 0.68rem; padding: 1px 4px; background: rgba(90, 61, 117, 0.15); color: #5a3d75; border-radius: 4px; margin-left: 6px; font-weight: bold; font-family: monospace;">${T('Creature.ui.secondaryBadge')}</span>`
-                : `<span style="font-size: 0.68rem; padding: 1px 4px; background: rgba(130, 45, 45, 0.15); color: #822d2d; border-radius: 4px; margin-left: 6px; font-weight: bold; font-family: monospace;">${T('Creature.ui.primaryBadge')}</span>`;
+                ? `<span class="cc-role-badge secondary">${T('Creature.ui.secondaryBadge')}</span>`
+                : `<span class="cc-role-badge primary">${T('Creature.ui.primaryBadge')}</span>`;
               const skillName = getSkillDisplayName(part.skillId);
-              const skillInfo = skillName ? `<span style="font-size: 0.75rem; color: #888; font-style: italic;">, ${skillName}</span>` : "";
+              const skillInfo = skillName ? `<span style="font-size: 0.75rem; color: var(--text-card-medium); font-style: italic;">, ${skillName}</span>` : "";
               
               return `
                 <div class="cc-dossier-row" style="margin-bottom: 0; display: flex; align-items: center;">
@@ -1024,22 +1046,29 @@
         // lighter .highlighted state.
         let isSelected = false;
         let selectionBadge = "";
+        // In a goblin world the primary is the world's, not the player's: it is
+        // drawn committed and greyed, since pressing it does nothing.
+        const isLockedPrimary = this.isArchetypePrimaryLocked() &&
+                                item.key === GOBLIN_ARCHETYPE;
 
         if (this._mode === 'baseline') {
           isSelected = idx === activeIdx;
         } else {
           if (this._selectedArchetype1 === item.key) {
             isSelected = true;
-            selectionBadge = `<div class="cc-archetype-role" style="color: #822d2d; font-weight: bold; font-size: 0.72rem; margin-top: 2px;">${T('CharCreate.primary')}</div>`;
+            selectionBadge = `<div class="cc-archetype-role primary">${
+              isLockedPrimary ? T('CharCreate.primaryLocked') : T('CharCreate.primary')}</div>`;
           } else if (this._selectedArchetype2 === item.key) {
             isSelected = true;
-            selectionBadge = `<div class="cc-archetype-role" style="color: #5a3d75; font-weight: bold; font-size: 0.72rem; margin-top: 2px;">${T('CharCreate.secondary')}</div>`;
+            selectionBadge = `<div class="cc-archetype-role secondary">${T('CharCreate.secondary')}</div>`;
           }
         }
 
         const isCursor = !isSelected && idx === activeIndex;
         return `
-          <div class="cc-card-option ${isSelected ? 'selected' : isCursor ? 'highlighted' : ''}" onclick="SceneManager._scene.onArchetypeCardClick(${idx})">
+          <div class="cc-card-option ${isSelected ? 'selected' : isCursor ? 'highlighted' : ''}"${
+            isLockedPrimary ? ' style="opacity: 0.75; cursor: default;"' : ''
+          } onclick="SceneManager._scene.onArchetypeCardClick(${idx})">
             <div class="cc-option-title">${item.name}</div>
             ${selectionBadge}
           </div>
@@ -1102,7 +1131,7 @@
           <div style="text-align: center; padding: 24px;">
             <div style="font-size: 2.4rem; margin-bottom: 12px;">&#128736;</div>
             <div style="font-size: 1.1rem; font-weight: bold; color: var(--text-primary-hover); margin-bottom: 8px;">${T('CharCreate.custom3dModel')}</div>
-            <div style="font-size: 0.9rem; color: #5c4b3d; max-width: 320px; margin: 0 auto; line-height: 1.4;">${T('CharCreate.sculptAUniqueCreatureFromMixedPartsSeededFro')}</div>
+            <div style="font-size: 0.9rem; color: var(--text-card-medium); max-width: 320px; margin: 0 auto; line-height: 1.4;">${T('CharCreate.sculptAUniqueCreatureFromMixedPartsSeededFro')}</div>
           </div>
         `;
       } else if (canShow3D) {
@@ -1116,15 +1145,16 @@
           <img src="img/enemies/${activeItem.battlerName}.png" style="max-width: 100%; max-height: 560px; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));" />
         `;
       } else {
-        previewImgHtml = `<span style="font-size: 0.95rem; color: #5c4b3d; font-style: italic;">${T('CharCreate.loadingBattlerAsset')}</span>`;
+        previewImgHtml = `<span style="font-size: 0.95rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.loadingBattlerAsset')}</span>`;
       }
 
-      // Name-only cards, so they render as compact rows rather than the
-      // poster-sized cards the archetype steps use.
+      // Name-only entries, so they render as flat roster rows rather than the
+      // poster-sized cards the archetype steps use: there is nothing to fill a
+      // card's face with, and its plate paints a slab behind every name.
       const battlerCards = this._battlerListWindow._data.map((item, idx) => {
         const isSelected = idx === activeIdx;
         return `
-          <div class="cc-wanted-card cc-card-compact ${isSelected ? 'selected' : ''}" onclick="SceneManager._scene.onBattlerCardClick(${idx})">
+          <div class="cc-wanted-card cc-card-flat ${isSelected ? 'selected' : ''}" onclick="SceneManager._scene.onBattlerCardClick(${idx})">
             <div class="cc-wanted-name">${item.name}</div>
           </div>
         `;
@@ -1144,7 +1174,7 @@
           <h2 class="cc-header-gothic">${T('CharCreate.profileImageSelection')}</h2>
           <p class="cc-text-desc">${T('CharCreate.chooseAProfileImage')}</p>
 
-          <div class="cc-presets-board" style="grid-template-columns: repeat(2, 1fr); gap: 8px; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; margin-top: 16px; align-content: start;">
+          <div class="cc-presets-board" style="grid-template-columns: repeat(2, 1fr); gap: 0 20px; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; margin-top: 10px; align-content: start;">
             ${battlerCards}
           </div>
 
@@ -1159,14 +1189,18 @@
       const activeItem = this._characterWindow.item();
       const activeIdx = this._characterWindow.index();
 
-      const largeSpriteStyle = activeItem ? this.getSpriteStyle(activeItem.path, activeItem.index, 4) : '';
+      const largeSpriteStyle = activeItem ? this.getSpriteStyle(activeItem.path, activeItem.index) : '';
 
+      // The same board the character sprite grid draws (Scene_SpriteGridSelector):
+      // the cell is the art and nothing else, so no plate, no caption and no
+      // stamp is painted over a 48px sprite. A creature has no bust, so the
+      // right page shows the walking sprite alone on the incubator plate, which
+      // is what that scene shows for a sheet with no bust of its own.
       const spriteCards = this._characterWindow._images.map((item, idx) => {
         const isSelected = idx === activeIdx;
         return `
-          <div class="cc-wanted-card ${isSelected ? 'selected' : ''}" style="padding: 10px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center;" onclick="SceneManager._scene.onCharacterCardClick(${idx})">
-            <div class="cc-wanted-sprite" style="${this.getSpriteStyle(item.path, item.index)}; margin-bottom: 4px;"></div>
-            <div style="font-family: 'Lora', serif; font-size: 0.72rem; color: #4a3b2c; text-align: center; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 100%;">${item.displayName}</div>
+          <div class="cc-wanted-card cc-sprite-card ${isSelected ? 'selected' : ''}" title="${item.displayName}" onclick="SceneManager._scene.onCharacterCardClick(${idx})">
+            <div class="cc-wanted-sprite" style="${this.getSpriteStyle(item.path, item.index)}"></div>
           </div>
         `;
       }).join("");
@@ -1175,7 +1209,7 @@
         <div class="cc-page cc-page-left" style="display: flex; flex-direction: column;">
           <h2 class="cc-header-gothic">${T('CharCreate.sprites')}</h2>
 
-          <div class="cc-presets-board" style="grid-template-columns: repeat(4, 1fr); flex: 1; overflow-y: auto; overflow-x: hidden; gap: 8px; margin-top: 16px; align-content: start;">
+          <div class="cc-presets-board cc-sprite-board" style="flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; margin-top: 14px;">
             ${spriteCards}
           </div>
         </div>
@@ -1183,16 +1217,16 @@
 
       rightHtml = `
         <div class="cc-page cc-page-right" style="align-items: center; justify-content: center;">
-          <h2 class="cc-header-gothic" style="margin-bottom: 24px;">${T('CharCreate.selectedSprite')}</h2>
-          <p class="cc-text-desc" style="text-align: center;">
+          <h2 class="cc-header-gothic" style="margin-bottom: 12px;">${T('CharCreate.selectedSprite')}</h2>
+          <p class="cc-text-desc" style="text-align: center; margin-bottom: 8px;">
             ${T('CharCreate.creatureSynthesisComplete')}
           </p>
 
-          <div style="margin: 24px 0; display: flex; flex-direction: column; align-items: center;">
-            <div class="cc-wanted-sprite" style="${largeSpriteStyle}; margin-bottom: 16px;"></div>
-            <div style="font-family: 'Lora', serif; font-size: 1.1rem; color: #2b1c11; font-weight: bold;">
-              ${activeItem ? activeItem.displayName : "..."}
-            </div>
+          <div class="cc-sprite-portrait no-bust">
+            <div class="cc-sprite-portrait-sprite" style="${largeSpriteStyle}"></div>
+          </div>
+          <div class="cc-option-title" style="text-align: center;">
+            ${activeItem ? activeItem.displayName : "..."}
           </div>
 
           <div class="cc-button-panel" style="margin-top: auto; width: 100%;">
@@ -1258,18 +1292,17 @@
             if (oldBadge) oldBadge.remove();
             if (this._mode !== 'baseline' && item) {
               let badgeText = "";
-              let badgeColor = "";
+              let badgeRole = "";
               if (this._selectedArchetype1 === item.key) {
                 badgeText = T('CharCreate.primary');
-                badgeColor = "#822d2d";
+                badgeRole = "primary";
               } else if (this._selectedArchetype2 === item.key) {
                 badgeText = T('CharCreate.secondary');
-                badgeColor = "#5a3d75";
+                badgeRole = "secondary";
               }
               if (badgeText) {
                 const badge = document.createElement("div");
-                badge.className = "cc-archetype-role";
-                badge.style.cssText = `color: ${badgeColor}; font-weight: bold; font-size: 0.72rem; margin-top: 2px;`;
+                badge.className = `cc-archetype-role ${badgeRole}`;
                 badge.textContent = badgeText;
                 card.appendChild(badge);
               }
@@ -1577,10 +1610,27 @@
     this.refreshUIOverlayDOM();
   };
 
+  // Whether the primary pick is fixed by the world rather than chosen. In a
+  // goblin world everybody is a goblin: the primary is Goblin and stays Goblin,
+  // and the only thing left to pick is what else they are.
+  Scene_CreateCreature.prototype.isArchetypePrimaryLocked = function () {
+    return populationMode() === "goblin";
+  };
+
   // Toggle an archetype in/out of the (max two) selection. The first pick is the
   // primary; a second distinct pick is the secondary (making a hybrid). Selecting
   // an already-chosen archetype removes it; picking a third replaces the secondary.
   Scene_CreateCreature.prototype._toggleArchetype = function (key) {
+    if (this.isArchetypePrimaryLocked()) {
+      // The primary is the world's answer, not the player's: Goblin can be
+      // neither cleared nor demoted, and everything else is a secondary. A
+      // second press on the secondary still takes it back off, so a plain
+      // goblin remains reachable.
+      this._selectedArchetype1 = GOBLIN_ARCHETYPE;
+      if (key === GOBLIN_ARCHETYPE) return;
+      this._selectedArchetype2 = (this._selectedArchetype2 === key) ? null : key;
+      return;
+    }
     if (this._selectedArchetype1 === key) {
       this._selectedArchetype1 = this._selectedArchetype2;
       this._selectedArchetype2 = null;
@@ -1903,8 +1953,13 @@
         break;
       case 1: // Archetype(s) - single screen: pick one (baseline) or two (hybrid)
         this._mode = 'hybrid'; // multi-select while on this screen; resolved at confirm
-        this._helpWindow.setText(T('Creature.selectOneOrTwoArchetypes'));
-        this._selectedArchetype1 = null;
+        this._helpWindow.setText(this.isArchetypePrimaryLocked()
+          ? T('Creature.selectSecondaryArchetypeGoblin')
+          : T('Creature.selectOneOrTwoArchetypes'));
+        // A goblin world opens with Goblin already committed as the primary,
+        // so the screen is only ever asking what else this creature is.
+        this._selectedArchetype1 = this.isArchetypePrimaryLocked()
+          ? GOBLIN_ARCHETYPE : null;
         this._selectedArchetype2 = null;
         this._archetypeWindow.show();
         this._archetypeWindow.activate();
@@ -2177,11 +2232,13 @@
     if (!wizard || wizard._interruptedStep < 0) return false;
     if (!window.Scene_ClassSelection || !window.CreatureClasses) return false;
 
-    const classIds = window.CreatureClasses.forArchetypes(
+    // Two rosters, not one list: the browser heads them "Non Sentient" (the
+    // archetypes' own creature classes) and "Sentient" (the classes they can
+    // still be played as).
+    window.$ccArchetypeClassFilter = window.CreatureClasses.groupsForArchetypes(
       this._selectedArchetype1,
       this._selectedArchetype2
     );
-    window.$ccArchetypeClassFilter = classIds;
     window.$ccCreatureClassFlow = {
       actorId: this._targetActorId,
       arch1: this._selectedArchetype1,

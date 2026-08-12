@@ -1330,6 +1330,8 @@
             ? GS.planetBreathable(pick.data) : null,
           hasLife: (pick.kind === "planet" && GS.planetHasLife)
             ? GS.planetHasLife(pick.data) : false,
+          weakLife: (pick.kind === "planet" && GS.planetLifeSigns)
+            ? GS.planetLifeSigns(pick.data) === (GS.LifeSigns || {}).WEAK : false,
           isBookmarked: this._isBookmarked(pick),
         });
       }
@@ -1850,21 +1852,25 @@
         });
       });
 
-      // Logged biosignatures: every life-bearing world a scan has turned up.
+      // Logged biosignatures: every life-bearing world a scan has turned up,
+      // and under it every world that only read as weak.
       const life = [];
-      this._lifeWorlds().forEach((w) => {
-        const id = "l" + entries.length;
+      const weakLife = [];
+      const addLifeRow = (list, prefix) => (w) => {
+        const id = prefix + entries.length;
         entries.push({
           id, scale: SCALE_SYSTEM, kind: "planet", name: w.planet.name,
           data: w.planet, system: w.system,
         });
-        life.push({
+        list.push({
           id, name: w.planet.name,
           sub: w.system.name + " · " + String(w.planet.type || "?").replace(/_/g, " ") +
             (isFinite(w.dist) ? " · " + w.dist.toFixed(1) + " ly" : ""),
           course: true,
         });
-      });
+      };
+      this._lifeWorlds().forEach(addLifeRow(life, "l"));
+      this._weakLifeWorlds().forEach(addLifeRow(weakLife, "w"));
 
       // Every hand-authored landing site, planet- or moon-level, across every
       // hardcoded system. Zoom flies to the PLANET the site sits on/around (a
@@ -1874,7 +1880,7 @@
       // to the surface is flown from there.
       const spaceports = [];
       this.dataManager.getAllSystems()
-        .filter((s) => s && s.hardcoded)
+        .filter((s) => s && (s.hardcoded || s.farHardcoded))
         .forEach((sys) => {
           (sys.planets || []).forEach((planet) => {
             (planet.landingLocations || []).forEach((loc) => {
@@ -1885,8 +1891,8 @@
               });
               spaceports.push({
                 id, name: loc.name,
-                sub: planet.name + " · " + sys.name,
-                course: true,
+                sub: planet.name + " · " + (sys.label || sys.name),
+                course: !sys.farHardcoded,
               });
             });
             (planet.moons || []).forEach((moon) => {
@@ -1898,8 +1904,8 @@
                 });
                 spaceports.push({
                   id, name: loc.name,
-                  sub: moon.name + " (" + planet.name + ") · " + sys.name,
-                  course: true,
+                  sub: moon.name + " (" + planet.name + ") · " + (sys.label || sys.name),
+                  course: !sys.farHardcoded,
                 });
               });
             });
@@ -1954,7 +1960,9 @@
             classSub(localSys.feeding.donor.type, 'donor'), "star", localSys);
         }
         (localSys.planets || []).forEach((planet) => {
-          const life = (GS.planetHasLife && GS.planetHasLife(planet)) ? T('Galaxy.catalog.life') : "";
+          const signs = GS.planetLifeSigns ? GS.planetLifeSigns(planet) : null;
+          const life = signs === (GS.LifeSigns || {}).STRONG ? T('Galaxy.catalog.life')
+            : (signs === (GS.LifeSigns || {}).WEAK ? T('Galaxy.catalog.weakLife') : "");
           addLocal(planet.name,
             String(planet.type || "?").replace(/_/g, " ") +
             (planet.orbitRadius != null ? " · " + planet.orbitRadius.toFixed(2) + " AU" : "") + life,
@@ -1974,6 +1982,26 @@
       // in whichever galaxy holds their star (PatreonRewards). Registering the
       // systems here is cheap - it builds the eight systems themselves, not the
       // 220-system galaxies they sit in - so Zoom can drop straight into one.
+      // Hand-authored systems that sit inside another galaxy (Titania, out in
+      // Andromeda). Same treatment as a patron world: the entry is registered
+      // at system scale so Zoom drops straight into it, and no course is
+      // offered, since a course is a Milky Way flight plan.
+      const farSystems = [];
+      (this.dataManager.farSystems ? this.dataManager.farSystems() : []).forEach((sys) => {
+        const id = "fs" + entries.length;
+        entries.push({
+          id, scale: SCALE_SYSTEM, kind: "star", name: sys.name, data: sys, system: sys,
+        });
+        farSystems.push({
+          id, name: sys.label || sys.name,
+          sub: T('Galaxy.catalog.starSub', {
+            type: String(sys.type || "?").replace(/_/g, " "),
+            planets: sys.planets ? sys.planets.length : 0,
+          }) + " · " + sys.galaxy,
+          course: false,
+        });
+      });
+
       const patrons = [];
       if (window.PatreonRewards && typeof window.PatreonRewards.catalogEntries === "function") {
         window.PatreonRewards.catalogEntries(this.dataManager).forEach((rec) => {
@@ -2008,6 +2036,7 @@
             { title: T('Galaxy.tab.clusters'), items: byKind.cluster },
             { title: T('Galaxy.tab.anomalies'), items: byKind.anomaly },
             { title: T('Galaxy.tab.nebulae'), items: byKind.nebula },
+            { title: T('Galaxy.tab.farSystems'), items: farSystems },
             { title: T('Galaxy.tab.starSystems'), items: stars },
           ],
         },
@@ -2019,7 +2048,10 @@
         {
           id: "life", title: T('Galaxy.tab.biosignatures'),
           empty: T('Galaxy.tab.biosignaturesEmpty'),
-          groups: [{ title: T('Galaxy.tab.lifeBearing'), items: life, life: true }],
+          groups: [
+            { title: T('Galaxy.tab.lifeBearing'), items: life, life: true },
+            { title: T('Galaxy.tab.weakSignatures'), items: weakLife, life: true },
+          ],
         },
         {
           id: "spaceports", title: T('Galaxy.tab.spaceports'),
@@ -2055,7 +2087,20 @@
      * just "System|Planet" keys on $gameSystem, so it survives saving.
      */
     _lifeWorlds() {
-      const log = ($gameSystem && $gameSystem._gxLifeLog) || [];
+      return this._loggedWorlds(($gameSystem && $gameSystem._gxLifeLog) || []);
+    }
+
+    /**
+     * The same, for worlds whose scan came back WEAK: no biosphere, but the
+     * spectra carry something the instruments cannot call geology either (see
+     * GalaxySim.planetLifeSigns). Kept in its own log so the Biosignatures tab
+     * can say which reading is which.
+     */
+    _weakLifeWorlds() {
+      return this._loggedWorlds(($gameSystem && $gameSystem._gxWeakLifeLog) || []);
+    }
+
+    _loggedWorlds(log) {
       const origin = this._shipOrigin();
       const out = [];
       log.forEach((key) => {
@@ -2087,17 +2132,35 @@
     _scanBiosignatures() {
       const origin = this._shipOrigin();
       const log = ($gameSystem._gxLifeLog = $gameSystem._gxLifeLog || []);
+      const weakLog = ($gameSystem._gxWeakLifeLog = $gameSystem._gxWeakLifeLog || []);
       let fresh = 0;
       let found = 0;
+      let weak = 0;
       const radius = this._bioscanRadius();
+      const SIGNS = (GS.LifeSigns || { WEAK: "weak", STRONG: "strong" });
       this.dataManager.getAllSystems().forEach((sys) => {
         if (!sys || !sys.position) return;
         if (distanceBetween(sys.position, origin) > radius) return;
         (sys.planets || []).forEach((p) => {
-          if (!GS.planetHasLife || !GS.planetHasLife(p)) return;
-          found++;
+          const signs = GS.planetLifeSigns ? GS.planetLifeSigns(p)
+            : ((GS.planetHasLife && GS.planetHasLife(p)) ? SIGNS.STRONG : "none");
+          if (signs !== SIGNS.STRONG && signs !== SIGNS.WEAK) return;
           const key = sys.name + "|" + p.name;
-          if (log.indexOf(key) === -1) { log.push(key); fresh++; }
+          // A world that reads strong is never also filed as weak, and a world
+          // whose reading firms up moves out of the weak log rather than
+          // sitting in both.
+          if (signs === SIGNS.STRONG) {
+            found++;
+            const stale = weakLog.indexOf(key);
+            if (stale !== -1) weakLog.splice(stale, 1);
+            if (log.indexOf(key) === -1) { log.push(key); fresh++; }
+          } else {
+            weak++;
+            if (log.indexOf(key) === -1 && weakLog.indexOf(key) === -1) {
+              weakLog.push(key);
+              fresh++;
+            }
+          }
         });
       });
 
@@ -2108,12 +2171,12 @@
         this._catalogSystemName = local ? local.name : null;
         ov.setCatalogOpen(true);
       }
-      this._setScanHint(found, fresh);
+      this._setScanHint(found, fresh, weak);
       // Reading a sky full of spectra, and knowing a biosignature when one turns up.
       this._awardSpec("Radio Astronomy", 1);   // i18n-ignore: specialization id
       if (fresh) this._awardSpec("Astrobiology", 1);   // i18n-ignore: specialization id
       if (window.SoundManager) {
-        if (found) SoundManager.playOk(); else SoundManager.playBuzzer();
+        if (found || weak) SoundManager.playOk(); else SoundManager.playBuzzer();
       }
     }
 
@@ -2125,11 +2188,12 @@
     }
 
     // Report the sweep in the mode hint line, until the next hint refresh.
-    _setScanHint(found, fresh) {
+    _setScanHint(found, fresh, weak) {
       if (!this._overlayUI) return;
       const radius = this._bioscanRadius();
       this._overlayUI.setModeHint(
         T.n('Galaxy.scan.worldsFound', found, { radius: radius }) +
+        (weak ? T.n('Galaxy.scan.weakCount', weak, { count: weak }) : "") +
         (radius > BIOSCAN_RADIUS ? T('Galaxy.scan.hubbleOnline') : "") +
         (fresh ? T('Galaxy.scan.newCount', { count: fresh }) : "") +
         T('Galaxy.scan.loggedInCatalog'));
@@ -2767,8 +2831,13 @@
           }
           // Setting down is piloting; setting down somewhere alive is fieldwork.
           this._awardSpec("Spacecraft Piloting", 2);   // i18n-ignore: specialization id
-          if (GS.planetHasLife && GS.planetHasLife(planet)) {
+          const signs = GS.planetLifeSigns ? GS.planetLifeSigns(planet) : null;
+          if (signs === (GS.LifeSigns || {}).STRONG) {
             this._awardSpec("Astrobiology", 2);   // i18n-ignore: specialization id
+          } else if (signs === (GS.LifeSigns || {}).WEAK) {
+            // Whatever grows down there is not a biosphere, but walking it is
+            // still fieldwork.
+            this._awardSpec("Astrobiology", 1);   // i18n-ignore: specialization id
           }
           if (window.SoundManager) SoundManager.playOk();
           SceneManager.pop(); // leave the star map

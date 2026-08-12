@@ -1,0 +1,18 @@
+{
+  "credits": "CREDITS",
+  "exit": "EXIT",
+  "title": "GAME CREDITS",
+  "by": "BY",
+  "hint": "UP/DOWN OR WHEEL: SCROLL OK: PAUSE CANCEL: BACK",
+  "sections": {
+    "team": "TEAM",
+    "localization": "LOCALIZATION",
+    "sprites": "SPRITES AN' CHARACTERS",
+    "tilesets": "TILESETS",
+    "plugins": "PLUGINS AN' SCRIPTS",
+    "ui": "UI AN' ANIMATIONS",
+    "maps": "MAPS",
+    "music": "MUSIC",
+    "sound": "SOUND EFFECTS"
+  }
+}

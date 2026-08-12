@@ -1,0 +1,91 @@
+{
+  "ui": {
+    "assembly": "DA ASSEMBLY",
+    "lobby": "CREDENTIALS DESK",
+    "credentials": "ACCREDITATION",
+    "agenda": "AGENDA",
+    "chamber": "CHAMBER",
+    "motions": "MOTIONS",
+    "division": "DA DIVISION",
+    "ballotKind": "BALLOT",
+    "publicBallot": "PUBLIC",
+    "secretBallot": "SECRET",
+    "publicBallotNote": "EVERY SEAT IZ NAMED AS IT IZ READ OUT!",
+    "secretBallotNote": "DA SEATS IZ SHUFFLED AN' UNNAMED. ONLY DA TALLY IZ CERTAIN!",
+    "sealedSeat": "SEALED",
+    "votesFor": "FOR",
+    "votesAgainst": "AGAINST",
+    "votesAbstain": "ABSTAININ'",
+    "carried": "CARRIED",
+    "failed": "FAILED",
+    "onTheFloor": "ON DA FLOOR",
+    "toCome": "TA COME",
+    "representing": "REPRESENTIN'",
+    "permanentMember": "PERMANENT MEMBER",
+    "observer": "OBSERVER",
+    "observerNote": "HOLDS A CHAIR, CASTS NO VOTE!",
+    "sessionHeadline": "WEEK {week} OF DA STANDIN' SESSION",
+    "lobbyHeadline": "{DA REGISTER IZ OPEN|DA CHAMBER IZ NOT YET SITTIN'|TWENTY ONE SEATS, AN' A LEDGER}",
+    "credentialsHeadline": "ACCREDITATION OF {name}",
+    "ledBy": "LED BY {leader}",
+    "yourStanding": "YA STANDIN'",
+    "projectedStipend": "PROJECTED WEEKLY STIPEND",
+    "weeklyStipend": "WEEKLY STIPEND",
+    "weeksServed": "WEEKS SERVED",
+    "sessionsHeld": "SESSIONS HELD",
+    "enterSession": "ENTER DIS WEEK'S SESSION",
+    "sessionClosedFor": "DA CHAMBER IZ NOT SITTIN' FOR ANOTHER {weeks} WEEK(S)",
+    "takeTheChair": "TAKE DA CHAIR AS SECRETARY GENERAL",
+    "resignSeat": "RESIGN DA SEAT",
+    "standDown": "STAND DOWN FROM DA CHAIR",
+    "resignConfirm": "RESIGN FROM {faction}. DIS NO CAN BE UNDONE!",
+    "resignCancel": "KEEP DA SEAT",
+    "leaveLobby": "LEAVE DA DESK",
+    "someoneElse": "ACCREDIT SOMEBODY ELSE",
+    "memberSeat": "{name}, FOR {faction}",
+    "declineSeat": "TAKE NO SEAT DIS WEEK",
+    "unaccredited": "UNACCREDITED",
+    "unaccreditedHint": "DIS TRAVELLER HOLDS NO SEAT. DA CREDENTIALS DESK DECIDES WHO WILL HAB DEM!",
+    "noSeatsTitle": "NO POWER WILL VOUCH FOR YOU",
+    "noSeatsHint": "ACCREDITATION NEEDS A POWER DAT THINKS NEUTRALLY OR WELL OF YOU. MEND A REPUTATION AN' COME BACK!",
+    "sgBlurb": "DA SECRETARY GENERAL REPRESENTS NOBODY, VOTES ON NOTHIN', AN' IZ DA ONLY PERSON IN DA BUILDIN' WHO CAN BREAK A TIE ON DA SECURITY COUNCIL!",
+    "holdsSeat": "{name} HOLDS DIS DELEGATION'S SEAT AT DA ASSEMBLY!",
+    "holdsSeatParent": "{name} SITS FOR {faction}, WHICH DIS ANSWERS TA!",
+    "you": "YOU",
+    "pressToContinue": "PRESS ENTER TA CONTINUE",
+    "cancelToAutoPlay": "ESC TA AUTO PLAY",
+    "autoPlaying": "AUTO PLAYIN'"
+  },
+  "role": {
+    "secretaryGeneral": "SECRETARY GENERAL"
+  },
+  "stat": {
+    "military": "MILITARY",
+    "economy": "ECONOMY",
+    "population": "POPULATION",
+    "information": "INFORMATION",
+    "arcane": "ARCANE"
+  },
+  "toast": {
+    "stipendTitle": "DIPLOMATIC STIPEND",
+    "stipendLine": "{name}, FOR {faction}: {amount}",
+    "dismissed": "{name} HAB BEEN RECALLED BY {faction}.",
+    "joined": "{name} IZ ACCREDITED TA {faction}.",
+    "resigned": "{name} HAB RESIGNED DA SEAT OF {faction}!",
+    "sessionClosed": "SESSION CLOSED. {carried} OF {total} MOTIONS CARRIED!",
+    "notThisWeek": "DA CHAMBER IZ NOT SITTIN' FOR ANOTHER {weeks} WEEK(S)!"
+  },
+  "stance": {
+    "for": "IN FAVOUR",
+    "against": "AGAINST",
+    "abstained": "WITHOUT TAKIN' A SIDE"
+  },
+  "ballotWord": {
+    "public": "OPEN",
+    "secret": "SECRET"
+  },
+  "seatPhrase": {
+    "for": "FOR {faction}",
+    "chair": "FROM DA CHAIR"
+  }
+}

@@ -185,7 +185,6 @@
             <div class="sl-list" id="sl-list">${this._buildRows()}</div>
             <div class="sl-footer">
               <span>${T('Battle.states.countLabel', { n: this._states.length })}</span>
-              <span>${T('Battle.states.navHint')}</span>
             </div>
           </div>
           <div class="right-page" id="sl-detail">${this._buildDetail()}</div>

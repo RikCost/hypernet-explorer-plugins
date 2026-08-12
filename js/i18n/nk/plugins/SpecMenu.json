@@ -1,0 +1,17 @@
+{
+  "ui": {
+    "back": "BACK",
+    "specializations": "SPECIALIZATIONS",
+    "trained": "TRAINED",
+    "all": "ALL",
+    "noneTrained": "NO SPECIALIZATIONS TRAINED YET!",
+    "untrained": "UNTRAINED",
+    "noneSelected": "NO SPECIALIZATION SELECTED!",
+    "classes": "CLASSES",
+    "traits": "TRAITS",
+    "towards": "TOWARDS {level}",
+    "pointsToNext": "{points} MORE POINTS TA {level}",
+    "mastered": "FULLY MASTERED. NOTHIN' LEFT TA LEARN!",
+    "governingStat": "GOVERNIN' STAT: {stat}"
+  }
+}

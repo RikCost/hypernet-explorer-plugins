@@ -1,0 +1,47 @@
+{
+  "no3d": "3D SYSTEM UNAVAILABLE",
+  "badCast": "BAD CAST",
+  "lineSnapped": "LINE SNAPPED",
+  "nothingBiting": "NOTHIN' BITIN'",
+  "tooSlow": "TOO SLOW",
+  "something": "SOMETHIN'",
+  "hint": {
+    "loading": "LOADIN' DA LAKE...",
+    "no3d": "3D SYSTEM UNAVAILABLE",
+    "aim": "TAKIN' AIM",
+    "power": "WINDIN' UP DA CAST",
+    "casting": "CAST AWAY...",
+    "waiting": "WAITIN' FOR A BITE",
+    "bite": "A BITE!",
+    "reeling": "REELIN' IT IN",
+    "caught": "LANDED IT",
+    "miss": "IT GOT AWAY"
+  },
+  "meter": {
+    "power": "POWER",
+    "line": "LINE - KEEP IT OUT OF DA RED",
+    "dist": "DIST"
+  },
+  "fish": {
+    "1": "CARP",
+    "2": "BASS",
+    "3": "TROUT",
+    "4": "SALMON",
+    "5": "CATFISH",
+    "6": "PIKE",
+    "7": "PERCH",
+    "8": "EEL",
+    "9": "GOLDFISH",
+    "10": "TUNA",
+    "11": "SWORDFISH",
+    "12": "BLOWFISH",
+    "13": "CLOWNFISH",
+    "14": "ANGLERFISH",
+    "15": "PIRANHA",
+    "16": "STURGEON",
+    "17": "KOI",
+    "18": "PUFFERFISH",
+    "19": "JELLYFISH",
+    "20": "KRAKEN"
+  }
+}

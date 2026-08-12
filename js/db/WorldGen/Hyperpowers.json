@@ -505,6 +505,42 @@
         "secretary_adams",
         "unionist_chair_jefferson"
       ]
+    },
+    "The Tourists": {
+      "id": 13,
+      "region": "Zeta Reticuli",
+      "military": 180,
+      "economy": 90,
+      "population": 40,
+      "information": 130,
+      "arcane": 60,
+      "leaders": [
+        "ambassador_zyx_7",
+        "overseer_qel_9",
+        "tourist_director_vrax_3",
+        "observer_prime_klix_5",
+        "shutter_warden_hlee_2",
+        "itinerary_grey_omm_4",
+        "chief_analyzer_vess_1",
+        "scalpel_primarch_thruun",
+        "warp_choir_mother_iisha",
+        "pale_archon_nuu_6"
+      ]
+    },
+    "The Dargos": {
+      "id": 14,
+      "region": "Titania",
+      "military": 70,
+      "economy": 40,
+      "population": 10,
+      "information": 160,
+      "arcane": 120,
+      "leaders": [
+        "dargos_the_first",
+        "punchline_regent_obb",
+        "embassy_clerk_wodwod",
+        "prank_marshal_ssein"
+      ]
     }
   }
 }

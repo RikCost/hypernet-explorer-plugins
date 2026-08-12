@@ -25,6 +25,7 @@
   "minigame": {
     "arena": "투기장",
     "camperDriving": "캠퍼 주행",
+    "dream": "Dream",
     "surfing": "서핑",
     "pool": "당구",
     "chess": "체스",
@@ -110,7 +111,12 @@
     "checkingTip": "업데이트 서버에 최신 빌드가 무엇인지 묻고 있습니다.",
     "ready": "✦ 빌드 {build} 준비됨",
     "readyPlain": "✦ 새 빌드 준비됨",
-    "tip": "더 새로운 빌드가 기다리고 있습니다. 업데이터를 열어 설치하세요."
+    "tip": "더 새로운 빌드가 기다리고 있습니다. 업데이터를 열어 설치하세요.",
+    "majorLine": "",
+    "majorTip": "",
+    "majorInstalled": "",
+    "majorInstalledLine": "",
+    "majorInstalledTip": ""
   },
   "hyperverse": {
     "lead": "하이퍼버스 // ",

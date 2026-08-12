@@ -1,0 +1,31 @@
+{
+  "noWinTryAgain": "NO WIN. TRY AGAIN!",
+  "title": {
+    "esoteric": "SCRATCH & CURSE",
+    "corporate": "SCRATCH & PROFIT",
+    "vacation": "SCRATCH & RELAX",
+    "hypercapitalist": "SCRATCH & DOMINATE"
+  },
+  "cellsRemaining": "PANELS LEFT: {remaining}",
+  "needMoney": "YOU NEED €{cost} TA PLAY.",
+  "youWon": "YOU WON €{amount}!",
+  "matchThree": "MATCH THREE SYMBOLS TA WIN",
+  "stake": "STAKE €{cost}",
+  "topPrize": "TOP PRIZE €{amount}",
+  "serial": "SERIAL {serial}",
+  "select": {
+    "title": "CHOOSE YA CARD",
+    "wallet": "WALLET: €{amount}",
+    "terms": "STAKE €{cost} · TOP PRIZE €{amount}",
+    "back": "BACK",
+    "backDesc": "LEAVE DA COUNTER WIT YA MONEY IN YA POCKET!",
+    "needMoney": "NOT ENOUGH MONEY FOR DIS TICKET!",
+    "desc": {
+      "esoteric": "PURPLE FOIL AN' BORROWED SIGILS. A MODEST CEILIN'!",
+      "corporate": "BLUE INK, QUARTERLY OPTIMISM, HALF A MILLION ON DA TABLE!",
+      "vacation": "SUN-BLEACHED STOCK, SOLD AT DA COUNTER OF EVERY COASTAL BAR!",
+      "hypercapitalist": "BLACK CARD, GOLD FOIL, PRINTED FOR PEOPLE WHO ALREADY WON!"
+    }
+  },
+  "noRenderer": "3D RENDERER UNAVAILABLE"
+}

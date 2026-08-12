@@ -12,6 +12,9 @@
     "burglary": {
       "name": "Furto con Scasso"
     },
+    "graverobbing": {
+      "name": "Profanazione di Sepolcro"
+    },
     "robbery": {
       "name": "Rapina"
     },
@@ -245,6 +248,9 @@
     },
     "terrorism": {
       "name": "Terrorismo"
+    },
+    "bioterrorism": {
+      "name": "Bioterrorismo"
     },
     "treason": {
       "name": "Tradimento"

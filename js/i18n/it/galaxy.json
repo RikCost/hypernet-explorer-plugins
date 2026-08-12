@@ -1,13 +1,13 @@
 {
   "galaxy": {
     "milky_way": {
-      "name": "Milky Way"
+      "name": "Via Lattea"
     },
     "andromeda_m31": {
       "name": "Andromeda (M31)"
     },
     "triangulum_m33": {
-      "name": "Triangulum (M33)"
+      "name": "Triangolo (M33)"
     },
     "large_magellanic_cloud": {
       "name": "Grande Nube di Magellano"
@@ -28,31 +28,31 @@
       "name": "IC 10"
     },
     "sagittarius_dwarf": {
-      "name": "Sagittarius Dwarf"
+      "name": "Nana del Sagittario"
     },
     "fornax_dwarf": {
-      "name": "Fornax Dwarf"
+      "name": "Nana della Fornace"
     },
     "sculptor_dwarf": {
-      "name": "Sculptor Dwarf"
+      "name": "Nana dello Scultore"
     },
     "leo_i": {
-      "name": "Leo I"
+      "name": "Leone I"
     },
     "leo_ii": {
-      "name": "Leo II"
+      "name": "Leone II"
     },
     "ursa_minor_dwarf": {
-      "name": "Ursa Minor Dwarf"
+      "name": "Nana dell'Orsa Minore"
     },
     "draco_dwarf": {
-      "name": "Draco Dwarf"
+      "name": "Nana del Dragone"
     },
     "carina_dwarf": {
-      "name": "Carina Dwarf"
+      "name": "Nana della Carena"
     },
     "sextans_dwarf": {
-      "name": "Sextans Dwarf"
+      "name": "Nana del Sestante"
     },
     "ic_1613": {
       "name": "IC 1613"
@@ -61,25 +61,25 @@
       "name": "WLM"
     },
     "phoenix_dwarf": {
-      "name": "Phoenix Dwarf"
+      "name": "Nana della Fenice"
     },
     "ngc_3109": {
       "name": "NGC 3109"
     },
     "antlia_dwarf": {
-      "name": "Antlia Dwarf"
+      "name": "Nana della Macchina Pneumatica"
     },
     "leo_a": {
-      "name": "Leo A"
+      "name": "Leone A"
     },
     "aquarius_dwarf": {
-      "name": "Aquarius Dwarf"
+      "name": "Nana dell'Acquario"
     },
     "tucana_dwarf": {
-      "name": "Tucana Dwarf"
+      "name": "Nana del Tucano"
     },
     "pegasus_dwarf": {
-      "name": "Pegasus Dwarf"
+      "name": "Nana di Pegaso"
     }
   }
 }

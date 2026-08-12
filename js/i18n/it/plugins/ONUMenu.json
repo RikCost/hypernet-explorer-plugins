@@ -1,0 +1,91 @@
+{
+ "ui": {
+  "assembly": "L'Assemblea",
+  "lobby": "Banco delle Credenziali",
+  "credentials": "Accreditamento",
+  "agenda": "Ordine del giorno",
+  "chamber": "Aula",
+  "motions": "Mozioni",
+  "division": "La Votazione",
+  "ballotKind": "Scrutinio",
+  "publicBallot": "Palese",
+  "secretBallot": "Segreto",
+  "publicBallotNote": "Ogni seggio viene nominato mentre lo si legge.",
+  "secretBallotNote": "I seggi sono mescolati e senza nome. Solo il conteggio è certo.",
+  "sealedSeat": "sigillato",
+  "votesFor": "A favore",
+  "votesAgainst": "Contro",
+  "votesAbstain": "Astenuti",
+  "carried": "Approvata",
+  "failed": "Respinta",
+  "onTheFloor": "In discussione",
+  "toCome": "Da trattare",
+  "representing": "In rappresentanza di",
+  "permanentMember": "Membro Permanente",
+  "observer": "Osservatore",
+  "observerNote": "Occupa un seggio, non vota.",
+  "sessionHeadline": "Settimana {week} della sessione permanente",
+  "lobbyHeadline": "{Il registro è aperto|L'aula non è ancora in seduta|Ventuno seggi, e un registro}",
+  "credentialsHeadline": "Accreditamento di {name}",
+  "ledBy": "guidata da {leader}",
+  "yourStanding": "La tua considerazione",
+  "projectedStipend": "Stipendio settimanale previsto",
+  "weeklyStipend": "Stipendio settimanale",
+  "weeksServed": "Settimane di servizio",
+  "sessionsHeld": "Sedute tenute",
+  "enterSession": "Entra nella seduta di questa settimana",
+  "sessionClosedFor": "L'aula non tornerà in seduta per altre {weeks} settimana/e",
+  "takeTheChair": "Assumi la presidenza come Segretario Generale",
+  "resignSeat": "Dimettiti dal seggio",
+  "standDown": "Lascia la presidenza",
+  "resignConfirm": "Dimettiti da {faction}. Non si torna indietro.",
+  "resignCancel": "Mantieni il seggio",
+  "leaveLobby": "Lascia il banco",
+  "someoneElse": "Accredita qualcun altro",
+  "memberSeat": "{name}, per {faction}",
+  "declineSeat": "Nessun seggio questa settimana",
+  "unaccredited": "Non accreditato",
+  "unaccreditedHint": "Questo viaggiatore non ha seggio. È il banco delle credenziali a decidere chi lo avrà.",
+  "noSeatsTitle": "Nessuna potenza garantisce per te",
+  "noSeatsHint": "L'accreditamento richiede una potenza che ti consideri con neutralità o favore. Ripara una reputazione e torna.",
+  "sgBlurb": "Il Segretario Generale non rappresenta nessuno, non vota su nulla, ed è l'unica persona nell'edificio che possa sciogliere una parità nel Consiglio di Sicurezza.",
+  "holdsSeat": "{name} occupa il seggio di questa delegazione all'assemblea.",
+  "holdsSeatParent": "{name} siede per {faction}, a cui questa risponde.",
+  "you": "Tu",
+  "pressToContinue": "Premi Invio per continuare",
+  "cancelToAutoPlay": "Esc per riproduzione automatica",
+  "autoPlaying": "Riproduzione automatica"
+ },
+ "role": {
+  "secretaryGeneral": "Segretario Generale"
+ },
+ "stat": {
+  "military": "Militare",
+  "economy": "Economia",
+  "population": "Popolazione",
+  "information": "Informazione",
+  "arcane": "Arcano"
+ },
+ "toast": {
+  "stipendTitle": "Stipendio diplomatico",
+  "stipendLine": "{name}, per {faction}: {amount}",
+  "dismissed": "{name} è stato richiamato da {faction}.",
+  "joined": "{name} è accreditato presso {faction}.",
+  "resigned": "{name} si è dimesso dal seggio di {faction}.",
+  "sessionClosed": "Seduta chiusa. {carried} mozioni approvate su {total}.",
+  "notThisWeek": "L'aula non tornerà in seduta per altre {weeks} settimana/e."
+ },
+ "stance": {
+  "for": "a favore",
+  "against": "contro",
+  "abstained": "senza schierarsi"
+ },
+ "ballotWord": {
+  "public": "palese",
+  "secret": "segreto"
+ },
+ "seatPhrase": {
+  "for": "per {faction}",
+  "chair": "dalla presidenza"
+ }
+}

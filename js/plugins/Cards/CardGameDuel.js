@@ -1,0 +1,1874 @@
+/*:
+ * @target MZ
+ * @plugindesc The card duel: a 3x3 board, one card a turn, and a single simultaneous clash when the last tile is taken.
+ * @author Esoteric Heavy Industries
+ *
+ * @command StartRandomCardDuel
+ * @text Start Random Card Duel
+ * @desc Opens a card duel with a random deck against a random opponent deck. Nothing is staked.
+ *
+ * @arg deckSize
+ * @text Deck size
+ * @desc How many cards each side is dealt (9-20).
+ * @type number
+ * @min 9
+ * @max 20
+ * @default 16
+ *
+ * @help CardGameDuel.js
+ *
+ * Two players, nine tiles. On your turn you either DRAW a handful of three
+ * cards or PLACE one: a monster goes on a free tile, a weapon or a piece of
+ * armour is bolted onto a monster of yours already standing (one of each per
+ * monster, its values added and clamped back to 13).
+ *
+ * The table is dressed either in the monsters' walking sprites or in the real
+ * 3D creatures, which turn on the spot inside the cards themselves. The button
+ * in the footer says which, and remembers the answer for the next duel.
+ *
+ * The moment the last tile is taken every monster looks at its four orthogonal
+ * neighbours, picks the weakest enemy among them and fights it. Every pairing
+ * is scored against ONE frozen snapshot of the board and every death lands
+ * together, so the match is over in a single clash rather than a long cascade.
+ * Most stats won takes the fight; an equal count destroys both.
+ *
+ * Whoever has more monsters left standing wins, ties broken on the summed stats
+ * of the survivors.
+ *
+ * Requires Cards/CardGameCore.js.
+ */
+
+(() => {
+  "use strict";
+
+  const PLUGIN = "Cards/CardGameDuel";
+  const SPEC = "Card Counting"; // i18n-ignore: Specialization.json name
+  const GAMBLING_TRAIT = 103;
+
+  const CG = () => window.CardGame;
+
+  //===========================================================================
+  // Small helpers
+  //===========================================================================
+
+  function escapeHtml(str) {
+    return String(str ?? "").replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[c]);
+  }
+
+  // Money is euros everywhere in the game: the raw figure carries two implied
+  // decimals, the same split MoneyFormatter draws.
+  function euros(gold) {
+    const value = Math.round(Number(gold) || 0);
+    const unit = ($dataSystem && $dataSystem.currencyUnit) || "";
+    const str = String(Math.abs(value));
+    let main = str.length <= 2 ? "0." + str.padStart(2, "0") : str.slice(0, -2) + "." + str.slice(-2);
+    if (main.endsWith(".00")) main = main.slice(0, -3);
+    return `${main}${unit ? " " + unit : ""}`;
+  }
+
+  function playSe(name, volume, pitch) {
+    try {
+      AudioManager.playSe({ name, volume: volume == null ? 80 : volume, pitch: pitch == null ? 100 : pitch, pan: 0 });
+    } catch (e) { /* a missing sound never stops a match */ }
+  }
+
+  const CARD_SLIDE = () => "Casino/card_slide_" + (1 + Math.floor(Math.random() * 8));
+  const CARD_PLACE = () => "Casino/card_place_" + (1 + Math.floor(Math.random() * 4));
+
+  //===========================================================================
+  // Style
+  //===========================================================================
+  // Injected once. Everything is a CSS transform so the juice costs nothing:
+  // no new renderer, no per-frame JavaScript layout.
+
+  const STYLE_ID = "cardduel-style";
+
+  function injectStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = `
+#cardduel-container{position:fixed;left:0;top:0;width:100%;height:100%;z-index:60;
+  font-family:'Lora',serif;color:#f2e6cf;overflow:hidden;user-select:none;
+  --cd-cell:120px;--cd-cardw:150px;--cd-cardh:220px;
+  background:radial-gradient(ellipse at 50% 42%, #0d0d0d 0%, #050505 58%, #000 100%),#000;}
+#cardduel-container *{box-sizing:border-box;}
+#cardduel-container.cd-shake{animation:cd-shake .32s cubic-bezier(.36,.07,.19,.97) both;}
+@keyframes cd-shake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(4px,-2px)}
+  30%,50%,70%{transform:translate(-7px,3px)}40%,60%{transform:translate(7px,-3px)}100%{transform:none}}
+
+.cd-head{position:absolute;left:0;top:0;width:100%;padding:10px 18px;display:flex;
+  align-items:center;justify-content:space-between;gap:14px;
+  background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0));}
+.cd-side{display:flex;align-items:center;gap:10px;min-width:230px;}
+.cd-side.cd-right{justify-content:flex-end;}
+.cd-who{font-size:1.05rem;font-weight:bold;letter-spacing:.04em;text-shadow:0 2px 0 rgba(0,0,0,.6);}
+.cd-tally{font-size:2rem;font-weight:bold;line-height:1;min-width:44px;text-align:center;
+  padding:2px 10px;border-radius:8px;background:rgba(0,0,0,.42);border:2px solid rgba(255,255,255,.16);
+  transition:transform .12s ease-out;}
+.cd-tally.cd-pop{transform:scale(1.45);}
+.cd-p0 .cd-tally{color:#8fe3ff;border-color:#3b8fb5;}
+.cd-p1 .cd-tally{color:#ffb08f;border-color:#b5613b;}
+.cd-stakebar{text-align:center;font-size:.92rem;opacity:.92;}
+.cd-turnline{font-size:1rem;font-weight:bold;letter-spacing:.06em;}
+
+.cd-boardwrap{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);}
+/* The live board renders BEHIND the grid, and the tiles go transparent for it,
+   so the models show through while the borders and labels stay readable. */
+#cd-3d{position:absolute;left:0;top:0;pointer-events:none;z-index:0;}
+.cd-grid{position:relative;display:grid;gap:12px;z-index:1;}
+.cd-grid.cd-3dmode .cd-tile{background:transparent;}
+.cd-grid.cd-3dmode .cd-tile.cd-own{background:rgba(38,96,132,.16);}
+.cd-grid.cd-3dmode .cd-tile.cd-foe{background:rgba(132,58,38,.16);}
+.cd-tile{position:relative;border-radius:10px;border:2px solid rgba(238,216,170,.22);
+  background:rgba(0,0,0,.30);display:flex;align-items:center;justify-content:center;
+  transition:border-color .12s,box-shadow .12s,transform .12s;overflow:visible;}
+.cd-tile.cd-legal{border-color:rgba(255,232,150,.75);box-shadow:0 0 14px rgba(255,220,120,.28) inset;}
+.cd-tile.cd-cursor{border-color:#ffe486;box-shadow:0 0 0 3px rgba(255,228,134,.55),0 0 24px rgba(255,228,134,.45);}
+.cd-tile.cd-own{background:rgba(38,96,132,.34);}
+.cd-tile.cd-foe{background:rgba(132,58,38,.34);}
+.cd-tile canvas.cd-sprite{image-rendering:pixelated;filter:drop-shadow(0 3px 3px rgba(0,0,0,.6));}
+.cd-tilename{position:absolute;left:3px;right:3px;bottom:3px;text-align:center;
+  font-size:calc(var(--cd-cell) * .092);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px #000;opacity:.9;}
+.cd-tilegear{position:absolute;left:3px;top:3px;display:flex;gap:3px;}
+.cd-tilepower{position:absolute;right:5px;top:2px;font-weight:bold;
+  font-size:calc(var(--cd-cell) * .13);
+  text-shadow:0 1px 2px #000,0 0 6px #000;}
+.cd-tile.cd-land{animation:cd-land .34s cubic-bezier(.18,1.6,.4,1) both;}
+@keyframes cd-land{0%{transform:scale(.4) translateY(-42px);opacity:0}
+  60%{transform:scale(1.14) translateY(0);opacity:1}100%{transform:scale(1)}}
+.cd-tile.cd-lunge{animation:cd-lunge .42s cubic-bezier(.4,0,.2,1) both;z-index:5;}
+@keyframes cd-lunge{0%{transform:none}45%{transform:translate(var(--lx),var(--ly)) scale(1.08)}100%{transform:none}}
+.cd-tile.cd-bounce{animation:cd-bounce .5s cubic-bezier(.2,1.5,.4,1) both;}
+@keyframes cd-bounce{0%{transform:scale(1)}40%{transform:scale(1.2)}100%{transform:scale(1)}}
+.cd-tile.cd-dying{animation:cd-die .5s ease-in forwards;}
+@keyframes cd-die{0%{transform:scale(1);filter:brightness(3)}
+  100%{transform:scale(.25) rotate(22deg);opacity:0;filter:brightness(.2)}}
+.cd-shard{position:absolute;left:50%;top:50%;width:12px;height:12px;border-radius:2px;
+  background:#ffd98a;pointer-events:none;animation:cd-shard .55s ease-out forwards;}
+@keyframes cd-shard{0%{transform:translate(-50%,-50%) scale(1);opacity:1}
+  100%{transform:translate(calc(-50% + var(--sx)),calc(-50% + var(--sy))) scale(.2) rotate(200deg);opacity:0}}
+
+/* Effect cards: what one leaves on a tile, and the moment it lands. */
+.cd-tile.cd-swappick{border-color:#7fe2ff;box-shadow:0 0 0 3px rgba(127,226,255,.6),0 0 22px rgba(127,226,255,.5);}
+.cd-tilemark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  font-size:1.5rem;pointer-events:none;opacity:.72;text-shadow:0 2px 4px #000;}
+.cd-tilemark.cd-mk-halve{color:#ff8f8f;}
+.cd-tilemark.cd-mk-double{color:#9dffa4;}
+.cd-tilemark.cd-mk-trap{color:#ffd06a;animation:cd-trap 1.4s ease-in-out infinite;}
+.cd-tilemark.cd-mk-block{color:#9fd8ff;}
+@keyframes cd-trap{0%,100%{opacity:.35}50%{opacity:.9}}
+.cd-tile.cd-warded{border-color:#9fd8ff;box-shadow:0 0 0 2px rgba(159,216,255,.5) inset;}
+.cd-wardring{position:absolute;left:-3px;top:-3px;right:-3px;bottom:-3px;border-radius:12px;
+  border:2px solid rgba(159,216,255,.75);pointer-events:none;animation:cd-ward 2s ease-in-out infinite;}
+@keyframes cd-ward{0%,100%{opacity:.35}50%{opacity:.95}}
+.cd-tile.cd-fx-good{animation:cd-fxgood .7s ease-out;}
+@keyframes cd-fxgood{0%{box-shadow:0 0 0 0 rgba(120,255,140,.9);filter:brightness(2.4)}
+  100%{box-shadow:0 0 0 26px rgba(120,255,140,0);filter:none}}
+.cd-tile.cd-fx-bad{animation:cd-fxbad .7s ease-out;}
+@keyframes cd-fxbad{0%{box-shadow:0 0 0 0 rgba(255,90,90,.9);filter:brightness(.25) saturate(.2)}
+  100%{box-shadow:0 0 0 26px rgba(255,90,90,0);filter:none}}
+.cd-tile.cd-fx-ward{animation:cd-fxward .7s ease-out;}
+@keyframes cd-fxward{0%{box-shadow:0 0 0 0 rgba(140,215,255,.95)}
+  100%{box-shadow:0 0 0 26px rgba(140,215,255,0)}}
+.cd-card.cd-effect{background:linear-gradient(165deg,#2c1c46,#150c22);border-color:#c79dff;
+  box-shadow:0 8px 16px rgba(0,0,0,.65),0 0 16px rgba(170,110,255,.5);}
+.cd-card.cd-effect .cd-cart{background:rgba(50,20,80,.5);}
+.cd-fxrule{line-height:1.15;text-align:center;color:#e6d4ff;
+  font-size:calc(var(--cd-cardh) * .042);max-height:4.4em;overflow:hidden;}
+
+.cd-chip{position:absolute;left:50%;top:8%;transform:translateX(-50%);font-weight:bold;
+  font-size:1.15rem;padding:1px 7px;border-radius:7px;pointer-events:none;z-index:8;
+  animation:cd-chip .62s ease-out forwards;text-shadow:0 2px 3px #000;}
+.cd-chip.cd-win{background:rgba(60,180,90,.92);color:#eaffe9;}
+.cd-chip.cd-loss{background:rgba(190,60,55,.92);color:#ffecea;}
+.cd-chip.cd-tie{background:rgba(120,120,120,.85);color:#f0f0f0;}
+@keyframes cd-chip{0%{transform:translate(-50%,14px) scale(.4);opacity:0}
+  25%{transform:translate(-50%,-6px) scale(1.25);opacity:1}
+  100%{transform:translate(-50%,-46px) scale(.95);opacity:0}}
+
+.cd-hand{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
+  display:flex;align-items:flex-end;justify-content:center;
+  height:calc(var(--cd-cardh) + 30px);z-index:12;}
+.cd-card{position:relative;width:var(--cd-cardw);height:var(--cd-cardh);
+  margin:0 calc(var(--cd-cardw) * -.13);border-radius:13px;
+  border:2px solid #d8c08a;background:linear-gradient(170deg,#2a2118,#171009);
+  box-shadow:0 8px 16px rgba(0,0,0,.65);cursor:pointer;
+  transform-origin:50% 130%;transition:transform .16s cubic-bezier(.2,1.3,.4,1),box-shadow .16s;
+  display:flex;flex-direction:column;padding:7px 7px 5px;}
+.cd-card:hover{z-index:3;}
+.cd-card.cd-sel{transform:translateY(-42px) rotate(0deg) scale(1.12)!important;z-index:5;
+  box-shadow:0 14px 30px rgba(0,0,0,.8),0 0 22px rgba(255,226,140,.5);border-color:#ffe486;}
+.cd-card.cd-dealt{animation:cd-deal .34s cubic-bezier(.2,1.3,.4,1) both;}
+@keyframes cd-deal{0%{transform:translate(-260px,-160px) rotate(-40deg) scale(.6);opacity:0}
+  100%{opacity:1}}
+.cd-card.cd-played{animation:cd-play .3s ease-in forwards;}
+@keyframes cd-play{100%{transform:translateY(-220px) scale(.5);opacity:0}}
+.cd-card .cd-shine{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:9px;
+  pointer-events:none;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.20) 50%,transparent 62%);
+  background-size:260% 100%;background-position:120% 0;}
+.cd-card.cd-sel .cd-shine{animation:cd-shine 1.5s linear infinite;}
+@keyframes cd-shine{to{background-position:-120% 0}}
+.cd-cname{font-weight:bold;text-align:center;line-height:1.05;height:2.1em;
+  font-size:calc(var(--cd-cardh) * .053);overflow:hidden;color:#ffeec4;}
+.cd-cart{flex:1;margin:4px 0;border-radius:7px;background:rgba(0,0,0,.45);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.cd-cart img{max-width:100%;max-height:100%;object-fit:contain;image-rendering:auto;}
+/* The live model is blitted here every frame; it sits over the still picture
+   the card was dealt with and takes its place the moment the model is up. */
+.cd-cart canvas.cd-live{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  max-width:100%;max-height:100%;}
+.cd-cstats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;text-align:center;
+  font-size:calc(var(--cd-cardh) * .042);}
+.cd-cstats b{display:block;color:#ffe486;font-size:calc(var(--cd-cardh) * .056);}
+.cd-card.cd-r1{border-color:#7fb4ff;box-shadow:0 8px 16px rgba(0,0,0,.65),0 0 10px rgba(90,150,255,.35);}
+.cd-card.cd-r2{border-color:#cd8dff;box-shadow:0 8px 16px rgba(0,0,0,.65),0 0 12px rgba(180,90,255,.4);}
+.cd-card.cd-r3{border-color:#ffb443;box-shadow:0 8px 16px rgba(0,0,0,.65),0 0 18px rgba(255,160,50,.55);}
+.cd-ctype{position:absolute;right:6px;top:5px;opacity:.75;
+  font-size:calc(var(--cd-cardh) * .042);}
+
+.cd-foot{position:absolute;left:0;bottom:0;width:100%;padding:6px 16px;display:flex;
+  align-items:center;justify-content:space-between;font-size:.82rem;opacity:.88;
+  pointer-events:none;text-shadow:0 1px 2px #000;z-index:13;}
+.cd-btn{pointer-events:auto;cursor:pointer;padding:4px 12px;border-radius:6px;
+  border:1.5px solid #d8c08a;background:rgba(0,0,0,.5);font-family:inherit;color:#f2e6cf;
+  font-size:.82rem;font-weight:bold;}
+.cd-btn:hover{background:rgba(255,228,134,.22);}
+.cd-btn.cd-btnsel{border-color:#ffe486;box-shadow:0 0 0 2px rgba(255,228,134,.45);}
+
+.cd-oppdeck{font-size:.8rem;opacity:.7;margin-top:2px;}
+
+.cd-banner{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(.2);
+  padding:18px 46px;border-radius:14px;border:3px solid #ffe486;background:rgba(12,20,14,.92);
+  text-align:center;z-index:30;opacity:0;box-shadow:0 0 60px rgba(255,220,120,.4);}
+.cd-banner.cd-in{animation:cd-stamp .5s cubic-bezier(.2,1.6,.4,1) forwards;}
+@keyframes cd-stamp{0%{transform:translate(-50%,-50%) scale(2.2) rotate(-8deg);opacity:0}
+  70%{transform:translate(-50%,-50%) scale(.94) rotate(1deg);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.cd-banner h1{margin:0 0 6px;font-size:2.1rem;letter-spacing:.06em;}
+.cd-banner p{margin:2px 0;font-size:.95rem;opacity:.92;}
+
+.cd-detail{position:absolute;right:14px;top:70px;width:236px;padding:10px 12px;border-radius:10px;
+  border:2px solid rgba(216,192,138,.6);background:rgba(10,16,12,.92);font-size:.8rem;z-index:20;}
+.cd-detail h3{margin:0 0 4px;font-size:.95rem;color:#ffe486;}
+.cd-detail .cd-lore{font-style:italic;opacity:.85;font-size:.74rem;line-height:1.3;
+  max-height:9em;overflow:hidden;}
+.cd-detail table{width:100%;font-size:.76rem;margin:5px 0;}
+.cd-detail td:last-child{text-align:right;font-weight:bold;color:#ffe486;}
+`;
+    document.head.appendChild(style);
+  }
+
+  //===========================================================================
+  // The live 3D board (experimental option)
+  //===========================================================================
+  // ONE scene, ONE renderer, one model per occupied tile, built under that
+  // card's own instance seed so the creature standing on the tile is the
+  // creature pictured on the card. Falls silently back to the sprite when the
+  // monster has no registered archetype.
+
+  class Board3D {
+    constructor(canvas, cellPx, gapPx) {
+      this.canvas = canvas;
+      this.cell = cellPx;
+      this.gap = gapPx;
+      this.models = new Map(); // tile index -> { battler, holder, offset }
+      this.ok = false;
+      this.side = CG().BOARD_SIZE;
+      const size = cellPx * this.side + gapPx * (this.side - 1);
+      canvas.width = size;
+      canvas.height = size;
+      canvas.style.width = size + "px";
+      canvas.style.height = size + "px";
+      try {
+        this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        this.renderer.setSize(size, size, false);
+        this.renderer.setPixelRatio(1);
+      } catch (e) {
+        return;
+      }
+      // The frustum is the board itself: one world unit is one tile, so a model
+      // scaled to 0.8 units stands 80% of a tile tall wherever it is put.
+      const half = this.side / 2 + (gapPx / cellPx) * ((this.side - 1) / 2);
+      this.scene = new THREE.Scene();
+      this.scene.add(new THREE.AmbientLight(0xffffff, 1.1));
+      const key = new THREE.DirectionalLight(0xfff2d0, 1.3); key.position.set(2, 4, 5); this.scene.add(key);
+      const fill = new THREE.DirectionalLight(0xbcd4ff, 0.6); fill.position.set(-3, -1, 3); this.scene.add(fill);
+      this.camera = new THREE.OrthographicCamera(-half, half, half, -half, 0.1, 200);
+      this.camera.position.set(0, 0, 40);
+      this.camera.lookAt(0, 0, 0);
+      this.clock = new THREE.Clock();
+      this.ok = true;
+    }
+
+    // Tile centre in board units, origin at the middle of the grid.
+    tilePos(index) {
+      const step = 1 + this.gap / this.cell;
+      const mid = (this.side - 1) / 2;
+      return { x: ((index % this.side) - mid) * step, y: (mid - ((index / this.side) | 0)) * step };
+    }
+
+    add(index, cardKey, seed) {
+      if (!this.ok || this.models.has(index)) return;
+      const CGx = CG();
+      const archKey = CGx.Art.archetypeOf(cardKey);
+      if (!archKey) return;
+      const data = CGx.dataOf(cardKey);
+      const fake = { enemyId: () => data.id, index: () => 0 };
+      const previous = window.Battler3D.getGenSeed ? window.Battler3D.getGenSeed() : null;
+      let battler = null;
+      try {
+        if (window.Battler3D.setGenSeed) window.Battler3D.setGenSeed(String(seed >>> 0));
+        battler = window.Battler3D.create(archKey, 0, 0, fake);
+      } catch (e) {
+        battler = null;
+      } finally {
+        if (window.Battler3D.setGenSeed && previous != null) window.Battler3D.setGenSeed(previous);
+      }
+      if (!battler) return;
+
+      const holder = new THREE.Group();
+      const entry = { battler, holder, offset: { x: 0, y: 0 }, dying: false, fade: 1 };
+      this.models.set(index, entry);
+      this.scene.add(holder);
+
+      Promise.resolve(battler.load(null, 0, 0, 0)).then(() => {
+        if (!battler.model || !this.models.has(index)) return;
+        try { battler.update(1 / 60); } catch (e) { /* first frame */ }
+        // Measured, not guessed: a coyote is three units across where a bat is
+        // half of one, so each model is fitted to its own tile by its own box.
+        const box = new THREE.Box3().setFromObject(battler.model);
+        const size = new THREE.Vector3(); box.getSize(size);
+        const biggest = Math.max(size.x, size.y, size.z) || 1;
+        const scale = 0.82 / biggest;
+        const inner = new THREE.Group();
+        inner.scale.setScalar(scale);
+        inner.position.y = -((box.min.y + box.max.y) / 2) * scale;
+        inner.add(battler.model);
+        holder.add(inner);
+        const at = this.tilePos(index);
+        holder.position.set(at.x, at.y, 0);
+      }).catch(() => { });
+    }
+
+    remove(index) {
+      const entry = this.models.get(index);
+      if (!entry) return;
+      this.scene.remove(entry.holder);
+      try { if (entry.battler.dispose) entry.battler.dispose(); } catch (e) { /* nothing held */ }
+      this.models.delete(index);
+    }
+
+    // The clash: shove a model a fraction of the way toward its target.
+    lunge(index, targetIndex) {
+      const entry = this.models.get(index);
+      if (!entry) return;
+      const from = this.tilePos(index), to = this.tilePos(targetIndex);
+      entry.lunge = { x: (to.x - from.x) * 0.42, y: (to.y - from.y) * 0.42, t: 0 };
+    }
+
+    kill(index) {
+      const entry = this.models.get(index);
+      if (entry) entry.dying = true;
+    }
+
+    update() {
+      if (!this.ok) return;
+      const dt = Math.min(0.05, this.clock.getDelta());
+      for (const [index, entry] of this.models) {
+        try { entry.battler.update(dt); } catch (e) { /* a stuck model never stops the board */ }
+        const at = this.tilePos(index);
+        let dx = 0, dy = 0;
+        if (entry.lunge) {
+          entry.lunge.t = Math.min(1, entry.lunge.t + dt * 2.6);
+          const wave = Math.sin(entry.lunge.t * Math.PI);
+          dx = entry.lunge.x * wave; dy = entry.lunge.y * wave;
+          if (entry.lunge.t >= 1) entry.lunge = null;
+        }
+        entry.holder.position.set(at.x + dx, at.y + dy, 0);
+        if (entry.dying) {
+          entry.fade = Math.max(0, entry.fade - dt * 2.2);
+          entry.holder.scale.setScalar(Math.max(0.02, entry.fade));
+          entry.holder.visible = entry.fade > 0.02;
+        }
+      }
+      try { this.renderer.render(this.scene, this.camera); } catch (e) { /* context lost */ }
+    }
+
+    dispose() {
+      for (const index of Array.from(this.models.keys())) this.remove(index);
+      if (!this.renderer) return;
+      // dispose() alone leaves the context alive, and the browser force-loses
+      // the OLDEST context past its cap, which would be the game's own canvas.
+      try { this.renderer.dispose(); } catch (e) { /* already gone */ }
+      try { if (this.renderer.forceContextLoss) this.renderer.forceContextLoss(); } catch (e) { /* already gone */ }
+      this.renderer = null;
+      this.ok = false;
+    }
+  }
+
+  //===========================================================================
+  // Scene_CardDuel
+  //===========================================================================
+
+  class Scene_CardDuel extends Scene_MenuBase {
+    prepare(config) {
+      this._config = config || {};
+    }
+
+    create() {
+      super.create();
+      if (this._helpWindow) { this._helpWindow.deactivate(); this._helpWindow.hide(); }
+      injectStyle();
+
+      const CGx = CG();
+      const cfg = this._config || {};
+      const size = CGx.BOARD_CELLS;
+
+      this._board = new Array(size).fill(null);
+      // What effect cards have left lying on bare ground: a curse, a blessing
+      // or a trap waiting for whoever steps on it.
+      this._tileMods = new Array(size).fill(null);
+      // A Warded tile, barred to one player for their next turn only.
+      this._blocked = new Array(size).fill(null);
+      this._pendingSwap = null;
+      // A duel reached any other way than the Empathize panel is not gated on
+      // owning a deck, so a party with nothing to play is lent one rather than
+      // dealt an empty hand.
+      let playerDeck = cfg.playerDeck && cfg.playerDeck.length ? cfg.playerDeck : CGx.playableDeck();
+      if (playerDeck.length < CGx.DECK_MIN) playerDeck = CGx.randomDeck(16, 0.4);
+      this._decks = [
+        this.shuffled(playerDeck),
+        this.shuffled(cfg.opponentDeck && cfg.opponentDeck.length ? cfg.opponentDeck : CGx.randomDeck(16, 0.5))
+      ];
+      this._hands = [[], []];
+      this._names = [
+        cfg.playerName || ($gameParty.leader() ? $gameParty.leader().name() : T("CardGame.duel.you")),
+        cfg.opponentName || T("CardGame.duel.opponent")
+      ];
+      this._stake = cfg.stake || { type: "none" };
+      this._npcName = cfg.npcName || null;
+      this._profile = cfg.profile || null;
+      this._actorId = cfg.actorId || null;
+      this._practice = !!cfg.practice;
+
+      this._matchSeed = CGx.rollSeed();
+      this._turn = 0;
+      this._phase = "play";     // play | clash | over
+      this._area = "hand";      // hand | board
+      this._handIndex = 0;
+      this._cursor = 0;
+      this._settled = false;
+      this._aiTimer = 0;
+      this._spriteFrame = 1;
+      this._spriteTimer = 0;
+      this._board3D = null;
+      // Which art the table is dressed in. The option is only the opening
+      // answer: the button in the footer changes it mid-match.
+      this._art3D = CGx.Art.use3DBoard();
+      this._liveFaces = new Map(); // card object -> LiveFace
+
+      for (let i = 0; i < CGx.HAND_START; i++) { this.drawCard(0, true); this.drawCard(1, true); }
+      // An opening hand always holds one of the five tricks, so the first turn
+      // is never four monsters and no way to answer anything.
+      this.guaranteeEffect(0);
+      this.guaranteeEffect(1);
+
+      this.buildDOM();
+      this.renderAll();
+
+      // Every minigame announces the skill it trains as its session opens.
+      try { window.MinigameFun && window.MinigameFun.played({ spec: SPEC }); } catch (e) { /* cosmetic */ }
+      playSe("Casino/card_shuffle", 70, 100);
+    }
+
+    update() {
+      super.update();
+      this.updateSpriteFrames();
+      this.updateLiveFaces();
+      if (this._board3D) this._board3D.update();
+      if (this._phase === "play") {
+        if (this._turn === 1) this.updateAI();
+        else this.updateInput();
+      } else if (this._phase === "over") {
+        if (Input.isTriggered("ok") || Input.isTriggered("cancel") || TouchInput.isTriggered()) this.leave();
+      }
+    }
+
+    terminate() {
+      if (this._board3D) { this._board3D.dispose(); this._board3D = null; }
+      this.clearLiveFaces();
+      const container = document.getElementById("cardduel-container");
+      if (container) container.remove();
+      CG().Art.releaseRenderer();
+      CG().Art.releaseLiveRenderer();
+      try { window.SpecBadge && window.SpecBadge.hide && window.SpecBadge.hide(); } catch (e) { /* cosmetic */ }
+      super.terminate();
+    }
+
+    leave() {
+      if (this._leaving) return;
+      this._leaving = true;
+      SoundManager.playCancel();
+      this.popScene();
+    }
+
+    //-------------------------------------------------------------------------
+    // Deck / hand
+    //-------------------------------------------------------------------------
+
+    shuffled(keys) {
+      const CGx = CG();
+      const rng = CGx.makeRng(CGx.rollSeed());
+      const out = (keys || []).filter((key) => CGx.dataOf(key))
+        .map((key) => ({ key, seed: CGx.rollSeed() }));
+      for (let i = out.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [out[i], out[j]] = [out[j], out[i]];
+      }
+      return out;
+    }
+
+    drawCard(player, silent) {
+      const CGx = CG();
+      if (this._hands[player].length >= CGx.HAND_MAX) return false;
+      const card = this._decks[player].shift();
+      if (!card) return false;
+      card.fresh = true;
+      this._hands[player].push(card);
+      if (!silent) playSe(CARD_SLIDE(), 55, 120 + Math.floor(Math.random() * 30));
+      return true;
+    }
+
+    // The turn's own deal. Nobody asks for it: a turn opens with DRAW_COUNT
+    // cards, stopping early on an empty deck or a full hand. Answers how many
+    // actually came over.
+    drawHandful(player) {
+      let taken = 0;
+      for (let i = 0; i < CG().DRAW_COUNT; i++) {
+        if (!this.drawCard(player, i > 0)) break;
+        taken++;
+      }
+      return taken;
+    }
+
+    // Trade the least interesting card in an opening hand for the first effect
+    // card still in the deck, so both sides start with a trick to play.
+    guaranteeEffect(player) {
+      const CGx = CG();
+      const hand = this._hands[player];
+      if (hand.some((card) => CGx.isEffect(card.key))) return;
+      const at = this._decks[player].findIndex((card) => CGx.isEffect(card.key));
+      if (at < 0) return;
+      const [effect] = this._decks[player].splice(at, 1);
+      // Gear is the least use on an empty board, so it is what goes back.
+      let swapAt = hand.findIndex((card) => CGx.isEquip(card.key));
+      if (swapAt < 0) swapAt = hand.length - 1;
+      if (swapAt < 0) { hand.push(effect); return; }
+      this._decks[player].push(hand[swapAt]);
+      effect.fresh = true;
+      hand[swapAt] = effect;
+    }
+
+    //-------------------------------------------------------------------------
+    // Legality
+    //-------------------------------------------------------------------------
+
+    freeTiles() {
+      return this._board.reduce((n, cell) => n + (cell ? 0 : 1), 0);
+    }
+
+    // A tile Warded against this player is off limits to them entirely until
+    // the ward lapses at the end of their turn.
+    isBarred(player, index) {
+      const block = this._blocked[index];
+      return !!block && block.barred === player;
+    }
+
+    canPlace(player, card, index) {
+      if (!card) return false;
+      const CGx = CG();
+      const cell = this._board[index];
+      if (this.isBarred(player, index)) return false;
+
+      // An effect card goes anywhere: what it does is decided by what is (or
+      // is not) standing there. Displace is the exception, it wants two tiles
+      // and the first of them has to be a creature.
+      if (CGx.isEffect(card.key)) {
+        if (CGx.effectId(card.key) === "swap") {
+          if (this._pendingSwap == null) return !!cell;
+          return index !== this._pendingSwap;
+        }
+        return true;
+      }
+
+      if (CGx.isMonster(card.key)) return !cell;
+      if (!cell || cell.owner !== player) return false;
+      if (CGx.isWeapon(card.key)) return !cell.weapon;
+      return !cell.armor;
+    }
+
+    legalTilesFor(player, card) {
+      const out = [];
+      for (let i = 0; i < this._board.length; i++) if (this.canPlace(player, card, i)) out.push(i);
+      return out;
+    }
+
+    // A side can act only if it has something to put down: the deck is dealt at
+    // the top of the turn, so holding cards back is no longer a move.
+    canAct(player) {
+      return this._hands[player].some((card) => this.legalTilesFor(player, card).length > 0);
+    }
+
+    //-------------------------------------------------------------------------
+    // Turns
+    //-------------------------------------------------------------------------
+
+    place(player, handIndex, index) {
+      const CGx = CG();
+      const card = this._hands[player][handIndex];
+      if (!this.canPlace(player, card, index)) return false;
+
+      // Displace takes two tiles, so the first press only marks the creature
+      // being moved; the card is not spent until the second one lands.
+      if (CGx.isEffect(card.key) && CGx.effectId(card.key) === "swap" && this._pendingSwap == null) {
+        this._pendingSwap = index;
+        playSe("Casino/card_shove_1", 60, 120);
+        return "pending";
+      }
+
+      this._hands[player].splice(handIndex, 1);
+
+      if (CGx.isEffect(card.key)) {
+        this.applyEffect(player, card.key, index);
+        return true;
+      }
+
+      if (CGx.isMonster(card.key)) {
+        const cell = {
+          key: card.key, owner: player, seed: card.seed, weapon: null, armor: null, fresh: true
+        };
+        // Ground an effect card has already touched marks whoever steps on it.
+        const mod = this._tileMods[index];
+        if (mod === "halve") cell.mult = 0.5;
+        else if (mod === "double") cell.mult = 2;
+        this._tileMods[index] = null;
+        this._board[index] = cell;
+        if (this._board3D) this._board3D.add(index, card.key, card.seed);
+        playSe(CARD_PLACE(), 75, 100);
+        if (mod === "trap") this.springTrap(index);
+        return true;
+      }
+
+      const cell = this._board[index];
+      if (CGx.isWeapon(card.key)) cell.weapon = card.key; else cell.armor = card.key;
+      cell.geared = true;
+      playSe("Equip1", 70, 110);
+      return true;
+    }
+
+    //-------------------------------------------------------------------------
+    // Effect cards
+    //-------------------------------------------------------------------------
+
+    // The five tricks. Each reads the tile it lands on: a creature is changed
+    // where it stands, whoever it belongs to, and bare ground is left marked
+    // for whoever puts something there next.
+    applyEffect(player, key, index) {
+      const CGx = CG();
+      const effect = CGx.effectId(key);
+      const cell = this._board[index];
+      const tile = this.tileEl(index);
+
+      switch (effect) {
+        case "halve":
+          if (cell) { cell.mult = (cell.mult == null ? 1 : cell.mult) * 0.5; this.flashTile(tile, "cd-fx-bad"); }
+          else this._tileMods[index] = "halve";
+          playSe("Down2", 80, 100);
+          break;
+        case "double":
+          if (cell) { cell.mult = (cell.mult == null ? 1 : cell.mult) * 2; this.flashTile(tile, "cd-fx-good"); }
+          else this._tileMods[index] = "double";
+          playSe("Up2", 80, 100);
+          break;
+        case "cull":
+          if (cell) {
+            this.shatter(tile);
+            if (this._board3D) { this._board3D.kill(index); setTimeout(() => this._board3D && this._board3D.remove(index), 600); }
+            this._board[index] = null;
+            playSe("Collapse1", 85, 110);
+            const container = document.getElementById("cardduel-container");
+            if (container) { container.classList.add("cd-shake"); setTimeout(() => container.classList.remove("cd-shake"), 340); }
+          } else {
+            this._tileMods[index] = "trap";
+            playSe("Absorb1", 70, 90);
+          }
+          break;
+        case "swap":
+          this.doSwap(this._pendingSwap, index);
+          this._pendingSwap = null;
+          playSe("Casino/card_fan_1", 75, 110);
+          break;
+        case "ward":
+          if (cell) { cell.warded = true; this.flashTile(tile, "cd-fx-ward"); }
+          // A tile nobody is standing on is simply shut to the other side for
+          // their next turn, and the ward lapses when that turn ends.
+          else this._blocked[index] = { barred: 1 - player };
+          playSe("Barrier", 80, 100);
+          break;
+      }
+      // The tiles both effects touched are redrawn from scratch.
+      this.invalidateTile(index);
+      if (this._pendingSwap != null) this.invalidateTile(this._pendingSwap);
+      return true;
+    }
+
+    // Displace: two creatures trade places, or one walks onto empty ground.
+    // Everything the tile carries travels with it, gear and curses included.
+    doSwap(a, b) {
+      if (a == null || b == null || a === b) return;
+      const first = this._board[a], second = this._board[b];
+      this._board[a] = second;
+      this._board[b] = first;
+      const modA = this._tileMods[a];
+      this._tileMods[a] = this._tileMods[b];
+      this._tileMods[b] = modA;
+      if (this._board3D) {
+        this._board3D.remove(a);
+        this._board3D.remove(b);
+        if (this._board[a]) this._board3D.add(a, this._board[a].key, this._board[a].seed);
+        if (this._board[b]) this._board3D.add(b, this._board[b].key, this._board[b].seed);
+      }
+      this.invalidateTile(a);
+      this.invalidateTile(b);
+      const ta = this.tileEl(a), tb = this.tileEl(b);
+      if (ta) { ta.classList.remove("cd-land"); void ta.offsetWidth; ta.classList.add("cd-land"); }
+      if (tb) { tb.classList.remove("cd-land"); void tb.offsetWidth; tb.classList.add("cd-land"); }
+    }
+
+    // A creature walking onto ground a Cull was left on dies where it stands.
+    springTrap(index) {
+      setTimeout(() => {
+        if (!this._board[index]) return;
+        this.shatter(this.tileEl(index));
+        if (this._board3D) { this._board3D.kill(index); setTimeout(() => this._board3D && this._board3D.remove(index), 600); }
+        this._board[index] = null;
+        this.invalidateTile(index);
+        playSe("Collapse2", 85, 105);
+        this.renderBoard();
+      }, 320);
+    }
+
+    tileEl(index) {
+      const container = document.getElementById("cardduel-container");
+      return container ? container.querySelector(`.cd-tile[data-i="${index}"]`) : null;
+    }
+
+    // Forces the next renderBoard to rebuild this tile's contents.
+    invalidateTile(index) {
+      const tile = this.tileEl(index);
+      if (tile) tile.dataset.stamp = "!";
+    }
+
+    flashTile(tile, cls) {
+      if (!tile) return;
+      tile.classList.remove(cls); void tile.offsetWidth; tile.classList.add(cls);
+      setTimeout(() => tile.classList.remove(cls), 700);
+    }
+
+    endTurn() {
+      if (this._phase !== "play") return;
+      // A half-picked Displace never survives the turn it was started on.
+      this._pendingSwap = null;
+      // A ward shuts a tile for exactly one of the barred player's turns, so it
+      // lapses as that turn ends.
+      for (let i = 0; i < this._blocked.length; i++) {
+        if (this._blocked[i] && this._blocked[i].barred === this._turn) {
+          this._blocked[i] = null;
+          this.invalidateTile(i);
+        }
+      }
+      if (this.freeTiles() === 0) { this.startClash(); return; }
+      const next = 1 - this._turn;
+      // Every turn opens with its own deal, so the hand a side is judged on is
+      // the one it has just been given.
+      this.drawHandful(next);
+      // A side with nothing legal left to do passes rather than blocking; if
+      // neither can move the board is finished as it stands.
+      if (!this.canAct(next)) {
+        this.drawHandful(this._turn);
+        if (!this.canAct(this._turn)) { this.startClash(); return; }
+      } else {
+        this._turn = next;
+      }
+      this._handIndex = 0;
+      this._area = this._turn === 0 ? "hand" : this._area;
+      this._aiTimer = this._turn === 1 ? 34 : 0;
+      this.renderAll();
+    }
+
+    //-------------------------------------------------------------------------
+    // Input
+    //-------------------------------------------------------------------------
+
+    updateInput() {
+      if (Input.isTriggered("cancel")) {
+        // Cancel takes back a half-picked Displace before it takes the player
+        // away from the table.
+        if (this._pendingSwap != null) {
+          this._pendingSwap = null;
+          SoundManager.playCancel();
+          this.renderAll();
+          return;
+        }
+        this.confirmQuit();
+        return;
+      }
+
+      if (this._area === "hand") {
+        const hand = this._hands[0];
+        if (!hand.length) return;
+        if (Input.isRepeated("right")) { this._handIndex = (this._handIndex + 1) % hand.length; SoundManager.playCursor(); this.renderAll(); }
+        else if (Input.isRepeated("left")) { this._handIndex = (this._handIndex - 1 + hand.length) % hand.length; SoundManager.playCursor(); this.renderAll(); }
+        else if (Input.isRepeated("up")) {
+          const legal = this.legalTilesFor(0, hand[this._handIndex]);
+          if (legal.length) { this._area = "board"; this._cursor = legal[0]; SoundManager.playOk(); this.renderAll(); }
+          else SoundManager.playBuzzer();
+        } else if (Input.isTriggered("ok")) {
+          const legal = this.legalTilesFor(0, hand[this._handIndex]);
+          if (legal.length) { this._area = "board"; this._cursor = legal[0]; SoundManager.playOk(); this.renderAll(); }
+          else SoundManager.playBuzzer();
+        }
+        return;
+      }
+
+      if (this._area === "board") {
+        const side = CG().BOARD_SIZE;
+        const step = (dx, dy) => {
+          const x = this._cursor % side, y = (this._cursor / side) | 0;
+          const nx = (x + dx + side) % side, ny = (y + dy + side) % side;
+          this._cursor = ny * side + nx;
+          SoundManager.playCursor();
+          this.renderAll();
+        };
+        if (Input.isRepeated("right")) step(1, 0);
+        else if (Input.isRepeated("left")) step(-1, 0);
+        else if (Input.isRepeated("up")) step(0, -1);
+        else if (Input.isRepeated("down")) {
+          if (((this._cursor / side) | 0) === side - 1) { this._area = "hand"; SoundManager.playCursor(); this.renderAll(); }
+          else step(0, 1);
+        } else if (Input.isTriggered("ok")) {
+          this.playerPlace();
+        }
+      }
+    }
+
+    playerPlace() {
+      const card = this._hands[0][this._handIndex];
+      if (!this.canPlace(0, card, this._cursor)) { SoundManager.playBuzzer(); return; }
+      const result = this.place(0, this._handIndex, this._cursor);
+      // Displace has only marked its first tile: stay on the board and wait for
+      // the second, rather than passing the turn on half an action.
+      if (result === "pending") { this.renderAll(); return; }
+      this._handIndex = Math.max(0, Math.min(this._handIndex, this._hands[0].length - 1));
+      this._area = "hand";
+      this.renderAll();
+      this.endTurn();
+    }
+
+    confirmQuit() {
+      // Walking out of a staked duel forfeits it, which is the honest reading of
+      // leaving the table; a practice game just ends.
+      if (this._stake.type === "none") { this.leave(); return; }
+      this._phase = "over";
+      this.settle(1);
+      this.showBanner(1);
+    }
+
+    //-------------------------------------------------------------------------
+    // The opponent
+    //-------------------------------------------------------------------------
+
+    updateAI() {
+      if (this._aiTimer > 0) { this._aiTimer--; return; }
+      this.aiTakeTurn();
+    }
+
+    // How a pairing would go, from A's point of view: +2 for a kill, -2 for a
+    // death, -1 for mutual destruction (a trade is not a win when the match is
+    // decided on survivors).
+    matchupScore(statsA, statsB) {
+      const score = CG().scorePair(statsA, statsB);
+      return score.outcome === "a" ? 2 : score.outcome === "b" ? -2 : -1;
+    }
+
+    tileScore(player, cardKey, index, equip) {
+      const CGx = CG();
+      const stats = CGx.combinedStats(cardKey, equip || []);
+      let score = 0;
+      for (const n of CGx.neighboursOf(index)) {
+        const other = this._board[n];
+        if (!other || other.owner === player) continue;
+        score += this.matchupScore(stats, CGx.cellStats(other));
+      }
+      // A corner is worth something on its own: fewer sides, fewer fights.
+      const side = CGx.BOARD_SIZE;
+      const x = index % side, y = (index / side) | 0;
+      const exposure = (x === 0 || x === side - 1 ? 1 : 2) + (y === 0 || y === side - 1 ? 1 : 2);
+      score += (4 - exposure) * 0.35;
+      score += CGx.statTotal(stats) * 0.03;
+      return score;
+    }
+
+    aiTakeTurn() {
+      const CGx = CG();
+      const hand = this._hands[1];
+
+      let best = null;
+      for (let h = 0; h < hand.length; h++) {
+        const card = hand[h];
+        if (CGx.isEffect(card.key)) {
+          const play = this.aiEffectPlay(card.key);
+          if (play && (!best || play.score > best.score)) best = { h, index: play.index, score: play.score, swapWith: play.swapWith };
+          continue;
+        }
+        for (const index of this.legalTilesFor(1, card)) {
+          let score;
+          if (CGx.isMonster(card.key)) {
+            score = this.tileScore(1, card.key, index, []);
+          } else {
+            // Gear is only worth a turn when it flips a fight the monster
+            // underneath is currently losing.
+            const cell = this._board[index];
+            const before = this.tileScore(1, cell.key, index, [cell.weapon, cell.armor]);
+            const after = this.tileScore(1, cell.key, index, [
+              CGx.isWeapon(card.key) ? card.key : cell.weapon,
+              CGx.isArmor(card.key) ? card.key : cell.armor
+            ]);
+            score = (after - before) - 0.6;
+          }
+          if (!best || score > best.score) best = { h, index, score };
+        }
+      }
+
+      if (!best) {
+        // Nothing worth playing: the turn is passed and the next deal decides.
+        this.renderAll();
+        this.endTurn();
+        return;
+      }
+      // Displace takes two presses; the opponent makes both of them at once.
+      if (best.swapWith != null) this._pendingSwap = best.swapWith;
+      this.place(1, best.h, best.index);
+      this.renderAll();
+      this.endTurn();
+    }
+
+    // Where the opponent would rather spend a trick. Each one is scored in the
+    // same currency as a placement, so it competes with putting a creature
+    // down instead of always being dumped the moment it is drawn.
+    aiEffectPlay(key) {
+      const CGx = CG();
+      const effect = CGx.effectId(key);
+      const own = [], foe = [], free = [];
+      for (let i = 0; i < this._board.length; i++) {
+        if (this.isBarred(1, i)) continue;
+        const cell = this._board[i];
+        if (!cell) free.push(i);
+        else if (cell.owner === 1) own.push(i); else foe.push(i);
+      }
+      const strongest = (list) => list.reduce(
+        (bestIdx, i) => (bestIdx < 0 || CGx.statTotal(CGx.cellStats(this._board[i])) > CGx.statTotal(CGx.cellStats(this._board[bestIdx])) ? i : bestIdx), -1);
+      const weakest = (list) => list.reduce(
+        (bestIdx, i) => (bestIdx < 0 || CGx.statTotal(CGx.cellStats(this._board[i])) < CGx.statTotal(CGx.cellStats(this._board[bestIdx])) ? i : bestIdx), -1);
+      const power = (i) => CGx.statTotal(CGx.cellStats(this._board[i]));
+
+      switch (effect) {
+        case "cull": {
+          // Worth spending on somebody dangerous, worth nothing on a beginner.
+          const target = strongest(foe);
+          if (target >= 0) return { index: target, score: 1.2 + power(target) * 0.12 };
+          return free.length ? { index: free[0], score: 0.4 } : null;
+        }
+        case "halve": {
+          const target = strongest(foe);
+          if (target >= 0) return { index: target, score: 0.8 + power(target) * 0.07 };
+          return free.length ? { index: free[0], score: 0.35 } : null;
+        }
+        case "double": {
+          const target = strongest(own);
+          if (target >= 0) return { index: target, score: 0.7 + power(target) * 0.06 };
+          return free.length ? { index: free[0], score: 0.5 } : null;
+        }
+        case "ward": {
+          const target = strongest(own);
+          if (target >= 0 && !this._board[target].warded) return { index: target, score: 0.6 + power(target) * 0.04 };
+          // Otherwise shut the free tile the player would most want.
+          if (free.length) {
+            let bestTile = free[0], bestScore = -Infinity;
+            for (const i of free) {
+              const s = CGx.neighboursOf(i).filter((n) => this._board[n] && this._board[n].owner === 1).length;
+              if (s > bestScore) { bestScore = s; bestTile = i; }
+            }
+            return { index: bestTile, score: 0.45 + bestScore * 0.2 };
+          }
+          return null;
+        }
+        case "swap": {
+          // Pull its weakest creature out of a crowd and onto quiet ground.
+          const mover = weakest(own);
+          if (mover < 0 || !free.length) return null;
+          let bestTile = -1, bestGain = 0;
+          const cell = this._board[mover];
+          const here = this.tileScore(1, cell.key, mover, [cell.weapon, cell.armor]);
+          for (const i of free) {
+            const there = this.tileScore(1, cell.key, i, [cell.weapon, cell.armor]);
+            if (there - here > bestGain) { bestGain = there - here; bestTile = i; }
+          }
+          if (bestTile < 0) return null;
+          return { index: bestTile, swapWith: mover, score: bestGain * 0.8 };
+        }
+      }
+      return null;
+    }
+
+    //-------------------------------------------------------------------------
+    // The clash
+    //-------------------------------------------------------------------------
+
+    startClash() {
+      this._phase = "clash";
+      this.renderAll();
+      const CGx = CG();
+      const result = CGx.resolveClash(this._board, this._matchSeed);
+      this._result = result;
+
+      const container = document.getElementById("cardduel-container");
+      const tileEl = (i) => container && container.querySelector(`.cd-tile[data-i="${i}"]`);
+
+      // 1. Everything lunges at once. That is the whole point of the rule: one
+      //    round, not a queue of duels the player watches out one by one.
+      for (const pair of result.pairs) {
+        this.animateLunge(tileEl(pair.a), pair.a, pair.b);
+        this.animateLunge(tileEl(pair.b), pair.b, pair.a);
+      }
+      playSe("Blow3", 80, 90);
+
+      // 2. The five stats light up in sequence across every pairing at once,
+      //    each step a semitone higher than the last.
+      const STEP = 130;
+      CGx.STATS.forEach((statId, row) => {
+        setTimeout(() => {
+          if (this._phase !== "clash") return;
+          for (const pair of result.pairs) {
+            const line = pair.rows[row];
+            this.popChip(tileEl(pair.a), line.a, line.winner === "a" ? "cd-win" : line.winner === "b" ? "cd-loss" : "cd-tie");
+            this.popChip(tileEl(pair.b), line.b, line.winner === "b" ? "cd-win" : line.winner === "a" ? "cd-loss" : "cd-tie");
+          }
+          playSe("Cursor2", 60, 100 + row * 14);
+        }, 340 + row * STEP);
+      });
+
+      // 3. The verdict lands on every tile together.
+      setTimeout(() => {
+        if (this._phase !== "clash") return;
+        for (const index of result.deaths) {
+          const el = tileEl(index);
+          this.shatter(el);
+          if (this._board3D) this._board3D.kill(index);
+        }
+        for (let i = 0; i < this._board.length; i++) {
+          if (!this._board[i] || result.deaths.includes(i)) continue;
+          const el = tileEl(i);
+          if (el) { el.classList.remove("cd-bounce"); void el.offsetWidth; el.classList.add("cd-bounce"); }
+        }
+        if (result.deaths.length) {
+          playSe("Collapse1", 85, 100);
+          if (container) { container.classList.add("cd-shake"); setTimeout(() => container.classList.remove("cd-shake"), 340); }
+        }
+        this.tickTallies(result.survivors);
+      }, 340 + 5 * STEP + 120);
+
+      // 4. Verdict.
+      setTimeout(() => {
+        if (this._phase !== "clash") return;
+        for (const index of result.deaths) this._board[index] = null;
+        if (this._board3D) for (const index of result.deaths) this._board3D.remove(index);
+        this._phase = "over";
+        this.settle(result.winner);
+        this.showBanner(result.winner);
+      }, 340 + 5 * STEP + 800);
+    }
+
+    animateLunge(el, from, to) {
+      if (!el) return;
+      const side = CG().BOARD_SIZE;
+      const dx = (to % side) - (from % side), dy = ((to / side) | 0) - ((from / side) | 0);
+      el.style.setProperty("--lx", (dx * 30) + "px");
+      el.style.setProperty("--ly", (dy * 30) + "px");
+      el.classList.remove("cd-lunge"); void el.offsetWidth; el.classList.add("cd-lunge");
+      if (this._board3D) this._board3D.lunge(from, to);
+    }
+
+    popChip(el, value, cls) {
+      if (!el) return;
+      const chip = document.createElement("div");
+      chip.className = "cd-chip " + cls;
+      chip.textContent = value;
+      el.appendChild(chip);
+      setTimeout(() => chip.remove(), 700);
+    }
+
+    shatter(el) {
+      if (!el) return;
+      el.classList.add("cd-dying");
+      for (let i = 0; i < 7; i++) {
+        const shard = document.createElement("div");
+        shard.className = "cd-shard";
+        const angle = (Math.PI * 2 * i) / 7 + Math.random();
+        const dist = 40 + Math.random() * 46;
+        shard.style.setProperty("--sx", Math.cos(angle) * dist + "px");
+        shard.style.setProperty("--sy", Math.sin(angle) * dist + "px");
+        el.appendChild(shard);
+        setTimeout(() => shard.remove(), 620);
+      }
+    }
+
+    tickTallies(survivors) {
+      const container = document.getElementById("cardduel-container");
+      if (!container) return;
+      [0, 1].forEach((player) => {
+        const el = container.querySelector(`.cd-side.cd-p${player} .cd-tally`);
+        if (!el) return;
+        let shown = 0;
+        const target = survivors[player];
+        const tick = () => {
+          if (shown >= target) return;
+          shown++;
+          el.textContent = shown;
+          el.classList.add("cd-pop");
+          setTimeout(() => el.classList.remove("cd-pop"), 120);
+          playSe("Casino/chip_lay_" + (1 + (shown % 3)), 55, 110 + shown * 6);
+          if (shown < target) setTimeout(tick, 110);
+        };
+        el.textContent = "0";
+        tick();
+      });
+    }
+
+    //-------------------------------------------------------------------------
+    // Settling up
+    //-------------------------------------------------------------------------
+
+    settle(winner) {
+      if (this._settled) return;
+      this._settled = true;
+      const CGx = CG();
+      const won = winner === 0, lost = winner === 1;
+      const kind = won ? "won" : lost ? "lost" : "draw";
+
+      this._payout = { kind, lines: [] };
+      this.settleStake(kind);
+      this.payFun(kind);
+      this.payNpc(kind);
+
+      if (this._npcName) CGx.markDuelled(this._npcName);
+      if (!this._practice) {
+        CGx.bumpStreak(won);
+        if (won) this.awardPack();
+      }
+    }
+
+    settleStake(kind) {
+      const stake = this._stake;
+      if (!stake || stake.type === "none" || kind === "draw") return;
+      const won = kind === "won";
+      const profile = this._profile;
+
+      if (stake.type === "money") {
+        const amount = Math.max(0, Math.round(stake.amount || 0));
+        if (!amount) return;
+        if (won) {
+          $gameParty.gainGold(amount);
+          if (profile) profile.money = Math.max(0, (profile.money || 0) - amount);
+        } else {
+          $gameParty.loseGold(amount);
+          if (profile) profile.money = (profile.money || 0) + amount;
+        }
+        this._payout.lines.push(
+          T(won ? "CardGame.duel.wonMoney" : "CardGame.duel.lostMoney", { amount: euros(amount) })
+        );
+        try { window.ParchmentToast && window.ParchmentToast.gold(won ? amount : -amount); } catch (e) { /* cosmetic */ }
+        return;
+      }
+
+      if (stake.type === "item") {
+        const mine = this.stakeObject(stake.playerItem);
+        const theirs = this.stakeObject(stake.npcItem);
+        if (won) {
+          if (theirs) {
+            $gameParty.gainItem(theirs, 1);
+            if (profile && Array.isArray(profile.itemIds) && stake.npcItem.kind === 0) {
+              const at = profile.itemIds.indexOf(stake.npcItem.id);
+              if (at >= 0) profile.itemIds.splice(at, 1);
+            }
+            this._payout.lines.push(T("CardGame.duel.wonItem", { item: theirs.name }));
+          }
+        } else if (mine) {
+          $gameParty.loseItem(mine, 1);
+          if (profile && stake.playerItem.kind === 0) (profile.itemIds ??= []).push(stake.playerItem.id);
+          this._payout.lines.push(T("CardGame.duel.lostItem", { item: mine.name }));
+        }
+      }
+    }
+
+    stakeObject(ref) {
+      if (!ref) return null;
+      if (ref.kind === 1) return $dataWeapons[ref.id] || null;
+      if (ref.kind === 2) return $dataArmors[ref.id] || null;
+      return $dataItems[ref.id] || null;
+    }
+
+    // Fun for the party, and for a gambler the craving as well. Everything the
+    // duel moved is reported in ONE grouped popup so nothing overwrites
+    // anything else.
+    payFun(kind) {
+      const toasts = [];
+      const MF = window.MinigameFun;
+      // A duel played out of the main menu is still worth what it is worth; it
+      // just does not announce itself over a menu the player opened to read.
+      const quiet = !!(MF && MF.fromMainMenu && MF.fromMainMenu());
+      const delta = (MF && MF.DELTA[kind]) || 0;
+      const points = (MF && MF.SPEC_POINTS[kind]) || 1;
+
+      if (delta && window.PartyNeeds && window.PartyNeeds.addLeisureToAll) {
+        window.PartyNeeds.addLeisureToAll(delta);
+        toasts.push(() => window.ParchmentToast.need("leisure", delta));
+      }
+
+      // A gambler gets more out of the table than anyone else at it, and the
+      // craving they carry is the thing the game actually feeds. A real stake
+      // feeds it harder than a friendly game.
+      const AS = window.AddictionSystem;
+      if (AS && AS.has) {
+        const staked = this._stake && this._stake.type !== "none";
+        const bonus = Math.round(delta * (staked ? 0.7 : 0.4));
+        const relief = staked ? 65 : 35;
+        for (const actor of $gameParty.members()) {
+          if (!AS.has(actor, "gambling")) continue;
+          const before = AS.craving(actor, "gambling") || 0;
+          if (bonus > 0 && actor.addLeisure) actor.addLeisure(bonus);
+          AS.relieve(actor, "gambling", relief);
+          const after = AS.craving(actor, "gambling") || 0;
+          const dropped = Math.round(before - after);
+          const name = actor.name();
+          if (bonus > 0) {
+            toasts.push(() => window.ParchmentToast.need("leisure", bonus, {
+              label: T("CardGame.duel.gamblerFun", { name })
+            }));
+          }
+          if (dropped > 0) {
+            const substance = AS.label ? AS.label("gambling") : "gambling"; // i18n-ignore: label() is localised
+            toasts.push(() => window.ParchmentToast.show(
+              T("CardGame.duel.cravingEased", { name, substance, amount: dropped }),
+              { severity: "good", duration: 150 }
+            ));
+          }
+        }
+      }
+
+      if (window.SpecializationXP) {
+        try {
+          const gained = window.SpecializationXP.award(SPEC, points, {
+            actor: $gameParty.leader(), silent: true
+          }) || [];
+          gained.forEach((g) => toasts.push(() => window.SpecializationXP.announce(g)));
+        } catch (e) { /* the payout never breaks on a specialization */ }
+      }
+
+      if (quiet) return;
+      try { window.ParchmentToast && window.ParchmentToast.group(toasts); } catch (e) { /* cosmetic */ }
+    }
+
+    // The person across the table had an evening too.
+    payNpc(kind) {
+      const profile = this._profile;
+      if (!profile) return;
+      const gain = kind === "lost" ? 16 : kind === "won" ? 9 : 12;
+      profile.leisure = CG().clamp((profile.leisure ?? 100) + gain, 0, 100);
+      // Playing somebody at cards is time spent with them however it went, and
+      // beating them is worth a little more of their goodwill than losing.
+      // The panel's own per-actor ledger, written the same way it writes it.
+      if (this._actorId != null) {
+        const map = (profile.opinions ??= {});
+        const at = map[this._actorId] ?? profile.playerOpinion ?? 0;
+        map[this._actorId] = CG().clamp(at + (kind === "lost" ? 4 : 2), -100, 100);
+      }
+    }
+
+    // Winning pays a pack, and a streak reaches further up the rarity ladder,
+    // which is the reason to sit down for one more.
+    awardPack() {
+      const CGx = CG();
+      const keys = CGx.rollBooster(CGx.PACK_SIZE, { luck: CGx.streakLuck() });
+      this._pendingPack = keys;
+    }
+
+    showBanner(winner) {
+      const container = document.getElementById("cardduel-container");
+      if (!container) return;
+      const CGx = CG();
+      const title = winner === 0 ? T("CardGame.duel.victory")
+        : winner === 1 ? T("CardGame.duel.defeat") : T("CardGame.duel.draw");
+      const lines = (this._payout && this._payout.lines) || [];
+      if (winner === 0 && !this._practice) {
+        const streak = CGx.streak();
+        if (streak > 1) lines.push(T("CardGame.duel.streak", { count: streak }));
+        if (this._pendingPack && this._pendingPack.length) lines.push(T("CardGame.duel.packWon"));
+      }
+      const banner = document.createElement("div");
+      banner.className = "cd-banner";
+      banner.innerHTML = `<h1>${escapeHtml(title)}</h1>`
+        + lines.map((line) => `<p>${escapeHtml(line)}</p>`).join("");
+      container.appendChild(banner);
+      requestAnimationFrame(() => banner.classList.add("cd-in"));
+      playSe(winner === 0 ? "Applause1" : winner === 1 ? "Buzzer2" : "Bell2", 80, 100);
+    }
+
+    // Opening the won pack once the banner is dismissed, so the reward is the
+    // last thing that happens rather than something buried under a banner.
+    popScene() {
+      if (this._pendingPack && this._pendingPack.length && window.CardBooster) {
+        const keys = this._pendingPack;
+        this._pendingPack = null;
+        super.popScene();
+        setTimeout(() => { try { window.CardBooster.open(keys); } catch (e) { /* optional */ } }, 260);
+        return;
+      }
+      super.popScene();
+    }
+
+    //-------------------------------------------------------------------------
+    // Rendering
+    //-------------------------------------------------------------------------
+
+    buildDOM() {
+      let container = document.getElementById("cardduel-container");
+      if (!container) {
+        container = document.createElement("div");
+        container.id = "cardduel-container";
+        document.body.appendChild(container);
+      }
+      const metrics = this.layoutMetrics();
+      const { cell, gap } = metrics;
+      const side = CG().BOARD_SIZE;
+      container.style.setProperty("--cd-cell", cell + "px");
+      container.style.setProperty("--cd-cardw", metrics.cardW + "px");
+      container.style.setProperty("--cd-cardh", metrics.cardH + "px");
+      container.innerHTML = `
+        <div class="cd-head">
+          <div class="cd-side cd-p0">
+            <span class="cd-tally">0</span>
+            <span class="cd-who" id="cd-name0"></span>
+          </div>
+          <div class="cd-stakebar">
+            <div class="cd-turnline" id="cd-turn"></div>
+            <div id="cd-stake"></div>
+            <div class="cd-oppdeck" id="cd-oppinfo"></div>
+          </div>
+          <div class="cd-side cd-p1 cd-right">
+            <span class="cd-who" id="cd-name1"></span>
+            <span class="cd-tally">0</span>
+          </div>
+        </div>
+        <div class="cd-boardwrap">
+          <canvas id="cd-3d" style="display:none;"></canvas>
+          <div class="cd-grid" id="cd-grid"></div>
+        </div>
+        <div class="cd-hand" id="cd-hand"></div>
+        <div class="cd-foot">
+          <span></span>
+          <span>
+            <button class="cd-btn" id="cd-art"></button>
+            <button class="cd-btn" id="cd-quit">${escapeHtml(T("CardGame.duel.quitBtn"))}</button>
+          </span>
+        </div>
+        <div class="cd-detail" id="cd-detail"></div>
+      `;
+
+      const grid = container.querySelector("#cd-grid");
+      grid.style.gridTemplateColumns = `repeat(${side},1fr)`;
+      for (let i = 0; i < CG().BOARD_CELLS; i++) {
+        const tile = document.createElement("div");
+        tile.className = "cd-tile";
+        tile.dataset.i = String(i);
+        tile.style.width = cell + "px";
+        tile.style.height = cell + "px";
+        tile.addEventListener("click", () => this.onTileClick(i));
+        grid.appendChild(tile);
+      }
+      grid.style.gap = gap + "px";
+
+      // The board sits between the header and the hand rather than at a fixed
+      // fraction of the screen, so a taller board never grows into the cards.
+      const wrap = container.querySelector(".cd-boardwrap");
+      wrap.style.top = Math.round(metrics.boardTop + metrics.boardSize / 2) + "px";
+      container.querySelector("#cd-detail").style.top = Math.round(metrics.boardTop) + "px";
+
+      container.querySelector("#cd-quit").addEventListener("click", () => {
+        if (this._phase === "play") this.confirmQuit(); else this.leave();
+      });
+      container.querySelector("#cd-art").addEventListener("click", () => this.toggleArt());
+
+      this.applyArtMode();
+    }
+
+    // How big the table is drawn. Everything is measured off the window rather
+    // than written down: the overlay covers the whole window, which the
+    // resolution switcher and a resized frame both move.
+    layoutMetrics() {
+      const side = CG().BOARD_SIZE;
+      const vw = Math.max(640, window.innerWidth || 1280);
+      const vh = Math.max(480, window.innerHeight || 720);
+      const gap = 12;
+      const headH = Math.round(vh * 0.09) + 24;
+      const cardH = Math.round(CG().clamp(vh * 0.27, 170, 320));
+      const cardW = Math.round(cardH * 0.68);
+      const handH = cardH + 30;
+      // What is left between the header and the hand, and never wider than
+      // half the screen so the card dossier on the right keeps its room.
+      const roomH = vh - headH - handH - 20;
+      const roomW = vw * 0.52;
+      const byHeight = (roomH - gap * (side - 1)) / side;
+      const byWidth = (roomW - gap * (side - 1)) / side;
+      const cell = Math.round(CG().clamp(Math.min(byHeight, byWidth), 80, 210));
+      const boardSize = cell * side + gap * (side - 1);
+      const boardTop = headH + Math.max(0, (roomH - boardSize) / 2);
+      return { cell, gap, cardW, cardH, boardSize, boardTop };
+    }
+
+    //-------------------------------------------------------------------------
+    // 2D sprites or live 3D models
+    //-------------------------------------------------------------------------
+
+    // Whether the table CAN be dressed in 3D at all: no three.js, no registered
+    // battlers or the game's own 3D switch off and the button is not offered.
+    canUse3D() {
+      return CG().Art.use3DFaces();
+    }
+
+    toggleArt() {
+      if (!this.canUse3D()) { SoundManager.playBuzzer(); return; }
+      this._art3D = !this._art3D;
+      // The button is the setting: what the player picks at the table is what
+      // the next duel opens with.
+      try { ConfigManager.cardBoard3D = this._art3D; ConfigManager.save(); } catch (e) { /* cosmetic */ }
+      SoundManager.playOk();
+      this.applyArtMode();
+      // Every tile and every card is drawn from a different source now.
+      for (let i = 0; i < this._board.length; i++) this.invalidateTile(i);
+      this.renderAll();
+    }
+
+    // Build or tear down the live board to match the mode, and put the button
+    // in the state that says what pressing it would do.
+    applyArtMode() {
+      const container = document.getElementById("cardduel-container");
+      if (!container) return;
+      if (!this.canUse3D()) this._art3D = false;
+      const grid = container.querySelector("#cd-grid");
+
+      if (this._art3D && !this._board3D) {
+        const metrics = this.layoutMetrics();
+        const canvas = container.querySelector("#cd-3d");
+        canvas.style.display = "block";
+        const board = new Board3D(canvas, metrics.cell, metrics.gap);
+        if (board.ok) {
+          this._board3D = board;
+          grid.classList.add("cd-3dmode");
+          // A mode flipped mid-match has a board to catch up with.
+          for (let i = 0; i < this._board.length; i++) {
+            const cell = this._board[i];
+            if (cell) board.add(i, cell.key, cell.seed);
+          }
+        } else {
+          board.dispose();
+          this.replaceBoardCanvas();
+          this._art3D = false;
+        }
+      } else if (!this._art3D && this._board3D) {
+        this._board3D.dispose();
+        this._board3D = null;
+        // A canvas whose context has been force-lost never gives out another
+        // one, so turning 3D back on needs a canvas that has never held one.
+        this.replaceBoardCanvas();
+        grid.classList.remove("cd-3dmode");
+      }
+
+      if (!this._art3D) this.clearLiveFaces();
+
+      const button = container.querySelector("#cd-art");
+      if (button) {
+        button.textContent = T(this._art3D ? "CardGame.duel.art3D" : "CardGame.duel.art2D");
+        button.style.display = this.canUse3D() ? "" : "none";
+      }
+    }
+
+    replaceBoardCanvas() {
+      const container = document.getElementById("cardduel-container");
+      const old = container && container.querySelector("#cd-3d");
+      if (!old) return;
+      const fresh = document.createElement("canvas");
+      fresh.id = "cd-3d";
+      fresh.style.display = "none";
+      old.parentNode.replaceChild(fresh, old);
+    }
+
+    // The live model on one card, kept alive across every redraw of the hand:
+    // rebuilding it per frame would rebuild the creature per frame.
+    liveFaceFor(card) {
+      if (this._liveFaces.has(card)) return this._liveFaces.get(card);
+      const face = CG().Art.liveFace(card.key, card.seed);
+      this._liveFaces.set(card, face); // null is an answer too: never ask twice
+      return face;
+    }
+
+    updateLiveFaces() {
+      if (!this._liveFaces.size) return;
+      const dt = 1 / 60;
+      for (const face of this._liveFaces.values()) {
+        if (!face || !face.canvas.isConnected) continue;
+        face.update(dt);
+        // The still picture the card was dealt with steps aside once the
+        // creature is up and moving.
+        if (face.ready) {
+          const still = face.canvas.parentNode && face.canvas.parentNode.querySelector("img");
+          if (still) still.remove();
+        }
+      }
+    }
+
+    // Drop every model whose card has left the hand, so a long match does not
+    // end up holding a creature per card it has ever played.
+    pruneLiveFaces() {
+      if (!this._liveFaces.size) return;
+      const held = new Set(this._hands[0]);
+      for (const [card, face] of Array.from(this._liveFaces)) {
+        if (held.has(card)) continue;
+        if (face) face.dispose();
+        this._liveFaces.delete(card);
+      }
+    }
+
+    clearLiveFaces() {
+      for (const face of this._liveFaces.values()) if (face) face.dispose();
+      this._liveFaces.clear();
+    }
+
+    onTileClick(index) {
+      if (this._phase !== "play" || this._turn !== 0) return;
+      const card = this._hands[0][this._handIndex];
+      if (this.canPlace(0, card, index)) {
+        this._cursor = index;
+        this._area = "board";
+        this.playerPlace();
+      } else {
+        this._cursor = index;
+        this._area = "board";
+        SoundManager.playBuzzer();
+        this.renderAll();
+      }
+    }
+
+    onCardClick(handIndex) {
+      if (this._phase !== "play" || this._turn !== 0) return;
+      if (this._handIndex === handIndex && this._area === "board") return;
+      this._handIndex = handIndex;
+      this._area = "hand";
+      SoundManager.playCursor();
+      this.renderAll();
+    }
+
+    renderAll() {
+      this.renderHeader();
+      this.renderBoard();
+      this.renderHand();
+      this.renderDetail();
+    }
+
+    renderHeader() {
+      const container = document.getElementById("cardduel-container");
+      if (!container) return;
+      container.querySelector("#cd-name0").textContent = this._names[0];
+      container.querySelector("#cd-name1").textContent = this._names[1];
+      const turnEl = container.querySelector("#cd-turn");
+      turnEl.textContent = this._phase === "play"
+        ? (this._turn === 0 ? T("CardGame.duel.yourTurn") : T("CardGame.duel.theirTurn", { name: this._names[1] }))
+        : T("CardGame.duel.clash");
+      container.querySelector("#cd-stake").textContent = this.stakeLabel();
+      container.querySelector("#cd-oppinfo").textContent = T("CardGame.duel.deckCounts", {
+        you: this._decks[0].length, them: this._decks[1].length
+      });
+    }
+
+    stakeLabel() {
+      const stake = this._stake;
+      if (!stake || stake.type === "none") return T("CardGame.duel.stakeNone");
+      if (stake.type === "money") return T("CardGame.duel.stakeMoney", { amount: euros(stake.amount) });
+      const mine = this.stakeObject(stake.playerItem);
+      const theirs = this.stakeObject(stake.npcItem);
+      return T("CardGame.duel.stakeItem", {
+        mine: mine ? mine.name : "?", theirs: theirs ? theirs.name : "?"
+      });
+    }
+
+    renderBoard() {
+      const container = document.getElementById("cardduel-container");
+      if (!container) return;
+      const CGx = CG();
+      const card = this._phase === "play" && this._turn === 0 ? this._hands[0][this._handIndex] : null;
+      const legal = card ? new Set(this.legalTilesFor(0, card)) : new Set();
+      const use3D = !!this._board3D;
+
+      const MARKS = { halve: "▼", double: "▲", trap: "☠", block: "✖" };
+
+      for (let i = 0; i < this._board.length; i++) {
+        const tile = container.querySelector(`.cd-tile[data-i="${i}"]`);
+        if (!tile) continue;
+        const cell = this._board[i];
+        tile.classList.toggle("cd-legal", legal.has(i));
+        tile.classList.toggle("cd-cursor", this._area === "board" && this._cursor === i && this._phase === "play" && this._turn === 0);
+        tile.classList.toggle("cd-own", !!cell && cell.owner === 0);
+        tile.classList.toggle("cd-foe", !!cell && cell.owner === 1);
+        tile.classList.toggle("cd-swappick", this._pendingSwap === i);
+        tile.classList.toggle("cd-warded", !!(cell && cell.warded));
+
+        const mark = this._blocked[i] ? "block" : this._tileMods[i];
+        const stamp = cell
+          ? `${cell.key}|${cell.weapon || ""}|${cell.armor || ""}|${cell.mult || 1}|${cell.warded ? "w" : ""}`
+          : `-|${mark || ""}`;
+        if (tile.dataset.stamp === stamp) continue;
+        tile.dataset.stamp = stamp;
+        tile.innerHTML = "";
+
+        if (!cell) {
+          // Bare ground an effect card has already touched wears its mark.
+          if (mark) {
+            const glyph = document.createElement("div");
+            glyph.className = "cd-tilemark cd-mk-" + mark;
+            glyph.textContent = MARKS[mark] || "";
+            tile.appendChild(glyph);
+          }
+          continue;
+        }
+        if (cell.warded) {
+          const ring = document.createElement("div");
+          ring.className = "cd-wardring";
+          tile.appendChild(ring);
+        }
+
+        // The 3D board draws the creature itself on its own canvas, so the tile
+        // keeps only its labels and lets the model show through.
+        if (!use3D || !CGx.Art.archetypeOf(cell.key)) {
+          const canvas = document.createElement("canvas");
+          canvas.className = "cd-sprite";
+          canvas.width = 48; canvas.height = 48;
+          const px = Math.round(tile.clientWidth * 0.62) || 56;
+          canvas.style.width = px + "px"; canvas.style.height = px + "px";
+          tile.appendChild(canvas);
+          CGx.Art.drawTileSprite(canvas, cell.key, this._spriteFrame);
+        }
+
+        const stats = CGx.cellStats(cell);
+        const power = document.createElement("div");
+        power.className = "cd-tilepower";
+        power.textContent = CGx.statTotal(stats);
+        tile.appendChild(power);
+
+        const label = document.createElement("div");
+        label.className = "cd-tilename";
+        label.textContent = CGx.nameOf(cell.key);
+        tile.appendChild(label);
+
+        if (cell.weapon || cell.armor) {
+          const gear = document.createElement("div");
+          gear.className = "cd-tilegear";
+          [cell.weapon, cell.armor].filter(Boolean).forEach((key) => {
+            const chip = document.createElement("span");
+            chip.setAttribute("style", CGx.Art.iconStyle(key, 16));
+            gear.appendChild(chip);
+          });
+          tile.appendChild(gear);
+        }
+
+        if (cell.fresh) {
+          cell.fresh = false;
+          tile.classList.remove("cd-land"); void tile.offsetWidth; tile.classList.add("cd-land");
+        }
+      }
+    }
+
+    renderHand() {
+      const container = document.getElementById("cardduel-container");
+      if (!container) return;
+      const wrap = container.querySelector("#cd-hand");
+      const CGx = CG();
+      const hand = this._hands[0];
+      this.pruneLiveFaces();
+      wrap.innerHTML = "";
+
+      hand.forEach((card, index) => {
+        const el = document.createElement("div");
+        const rarity = CGx.rarityOf(card.key);
+        const effect = CGx.isEffect(card.key);
+        el.className = "cd-card cd-r" + rarity + (effect ? " cd-effect" : "")
+          + (index === this._handIndex && this._phase === "play" ? " cd-sel" : "");
+        // A fan: each card leans a little further out from the middle.
+        const spread = (index - (hand.length - 1) / 2);
+        el.style.transform = `rotate(${spread * 4}deg) translateY(${Math.abs(spread) * 5}px)`;
+        el.style.zIndex = String(10 + index);
+
+        const stats = CGx.statsFor(card.key);
+        const type = effect ? T("CardGame.type.effect")
+          : CGx.isMonster(card.key) ? ""
+            : CGx.isWeapon(card.key) ? T("CardGame.type.weapon") : T("CardGame.type.armor");
+        // An effect card prints its rule where a creature prints its numbers.
+        const footer = effect
+          ? `<div class="cd-fxrule">${escapeHtml(CGx.cardText(card.key))}</div>`
+          : `<div class="cd-cstats">${CGx.STATS.map((id) =>
+            `<div>${escapeHtml(CGx.statLabel(id))}<b>${stats[id]}</b></div>`).join("")}</div>`;
+        el.innerHTML = `
+          <div class="cd-shine"></div>
+          <div class="cd-ctype">${escapeHtml(type)}</div>
+          <div class="cd-cname">${escapeHtml(CGx.nameOf(card.key))}</div>
+          <div class="cd-cart"></div>
+          ${footer}`;
+        this.fillArt(el.querySelector(".cd-cart"), card);
+        el.addEventListener("click", () => this.onCardClick(index));
+        if (card.fresh) { card.fresh = false; el.classList.add("cd-dealt"); }
+        wrap.appendChild(el);
+      });
+    }
+
+    // A monster's art is the creature itself, grown from this instance's own
+    // seed and MOVING inside the card, so two copies of one card never look the
+    // same; without a model it is the walking sprite, and gear shows its glyph.
+    fillArt(host, card) {
+      if (!host) return;
+      const CGx = CG();
+      if (CGx.isEquip(card.key) || CGx.isEffect(card.key)) {
+        const glyph = document.createElement("span");
+        glyph.setAttribute("style", CGx.Art.iconStyle(card.key, 48));
+        host.appendChild(glyph);
+        return;
+      }
+      const face = this._art3D ? this.liveFaceFor(card) : null;
+      // The sprite stands in until the model is built, and is taken away by
+      // updateLiveFaces the moment it is.
+      if (!face || !face.ready) {
+        const fallback = CGx.Art.spriteArt(card.key, 96);
+        if (fallback) host.appendChild(fallback);
+      }
+      if (face) {
+        face.canvas.className = "cd-live";
+        host.appendChild(face.canvas);
+      }
+    }
+
+    renderDetail() {
+      const container = document.getElementById("cardduel-container");
+      if (!container) return;
+      const panel = container.querySelector("#cd-detail");
+      const CGx = CG();
+      const card = this._hands[0][this._handIndex];
+      if (!card || this._phase !== "play") { panel.style.display = "none"; return; }
+      panel.style.display = "block";
+      const stats = CGx.statsFor(card.key);
+      const effect = CGx.isEffect(card.key);
+      if (card.lore === undefined) card.lore = CGx.cardText(card.key, card.seed);
+      // An effect card has a rule to read, not a stat block, and while one is
+      // half played the panel says what it is waiting for.
+      const body = effect
+        ? (this._pendingSwap != null
+          ? `<div class="cd-lore" style="color:#9fe8ff;">${escapeHtml(T("CardGame.duel.pickSecondTile"))}</div>` : "")
+        : `<table>${CGx.STATS.map((id) =>
+          `<tr><td>${escapeHtml(CGx.statLabel(id))}</td><td>${stats[id]}</td></tr>`).join("")}</table>`;
+      panel.innerHTML = `
+        <h3>${escapeHtml(CGx.nameOf(card.key))}</h3>
+        <div style="font-size:.72rem;opacity:.8;margin-bottom:3px;">${escapeHtml(
+          effect ? T("CardGame.type.effect") : CGx.rarityName(CGx.rarityOf(card.key)))}</div>
+        ${body}
+        <div class="cd-lore">${escapeHtml(card.lore || "")}</div>`;
+    }
+
+    updateSpriteFrames() {
+      if (this._board3D) return;
+      this._spriteTimer++;
+      if (this._spriteTimer < 16) return;
+      this._spriteTimer = 0;
+      this._spriteFrame = (this._spriteFrame + 1) % 3;
+      const container = document.getElementById("cardduel-container");
+      if (!container) return;
+      for (let i = 0; i < this._board.length; i++) {
+        const cell = this._board[i];
+        if (!cell) continue;
+        const canvas = container.querySelector(`.cd-tile[data-i="${i}"] canvas.cd-sprite`);
+        if (canvas) CG().Art.drawTileSprite(canvas, cell.key, this._spriteFrame);
+      }
+    }
+  }
+
+  window.Scene_CardDuel = Scene_CardDuel;
+
+  //===========================================================================
+  // Entry points
+  //===========================================================================
+
+  // The one way a duel is started, from the menu, from an NPC and from the
+  // plugin command alike.
+  window.CardDuel = {
+    start(config) {
+      if (!window.CardGame) return false;
+      SceneManager.push(Scene_CardDuel);
+      SceneManager.prepareNextScene(config || {});
+      return true;
+    },
+
+    // A duel against a person: their deck is derived from their name, so the
+    // same neighbour always brings the same cards.
+    startVsNpc(npcName, profile, stake, actorId) {
+      return this.start({
+        opponentDeck: window.CardGame.npcDeck(npcName, profile),
+        opponentName: npcName,
+        npcName, profile, stake, actorId
+      });
+    },
+
+    // No stakes and nothing on the line: the Cards menu's practice game.
+    startPractice() {
+      return this.start({
+        opponentName: T("CardGame.duel.houseDeck"),
+        opponentDeck: window.CardGame.randomDeck(16, 0.5),
+        practice: true
+      });
+    }
+  };
+
+  const startRandom = (args) => {
+    const CGx = window.CardGame;
+    if (!CGx) return;
+    const size = CGx.clamp(Number(args && args.deckSize) || 16, CGx.DECK_MIN, CGx.DECK_MAX);
+    window.CardDuel.start({
+      playerDeck: CGx.randomDeck(size, 0.5),
+      opponentDeck: CGx.randomDeck(size, 0.5),
+      opponentName: T("CardGame.duel.houseDeck"),
+      practice: true
+    });
+  };
+
+  PluginManager.registerCommand(PLUGIN, "StartRandomCardDuel", startRandom);
+  PluginManager.registerCommand("CardGameDuel", "StartRandomCardDuel", startRandom);
+})();

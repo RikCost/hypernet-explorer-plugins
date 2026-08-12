@@ -65,7 +65,26 @@
     // --- Core HypernetOS API & Registry ---
     window.HypernetOS = {
         _apps: {},
-        
+
+        // The whole network went quiet on 1 January 2000 in an empty world:
+        // nothing has been reported, filed, priced or measured since, so every
+        // app that prints how fresh its data is prints that date. Apps ask
+        // through staleDate(): it answers null in an ordinary world, which
+        // means "use your own answer".
+        EMPTY_WORLD_DATE: '01/01/2000',
+
+        isEmptyWorld: function () {
+            const WM = window.WorldManager;
+            return !!(WM && typeof WM.isEmptyWorld === 'function' && WM.isEmptyWorld());
+        },
+
+        // The date an app should report as its last update, or null to use its
+        // own. One reader, so a new app carrying a timestamp needs no rule of
+        // its own to agree with the rest of the desktop.
+        staleDate: function () {
+            return this.isEmptyWorld() ? this.EMPTY_WORLD_DATE : null;
+        },
+
         registerApp: function(options) {
             const { id, name, icon, launchFn, desktopShortcut = true, desktopAnchor = 'left' } = options;
             this._apps[id] = { id, name, icon, launchFn, desktopShortcut, desktopAnchor };
@@ -629,6 +648,9 @@
         return found;
     };
 
+    // Height of #hypernet-taskbar (see hypernet.css); windows are kept clear of it.
+    const TASKBAR_H = 40;
+
     window.HypernetOS.WindowManager = {
         windows: [],
         zIndexCounter: 100,
@@ -663,9 +685,18 @@
             const iconHTML = window.HypernetOS.getIconHTML(icon, 16);
             win.dataset.iconHTML = iconHTML;
             
-            // Initial positioning (center/cascade offset)
-            const startX = Math.max(10, (window.innerWidth - width) / 2 + (this.windows.length * 25));
-            const startY = Math.max(10, (window.innerHeight - height - 40) / 2 + (this.windows.length * 25));
+            // Initial positioning (center/cascade offset). The cascade is capped
+            // at whatever room is left over the taskbar: on a short screen (a
+            // 1280x800 handheld) a window clamped to the full viewport height has
+            // no slack at all, and an uncapped cascade walked the fourth or fifth
+            // window's titlebar off the bottom, taking the only way to drag it
+            // back with it.
+            const maxX = Math.max(10, window.innerWidth - width - 10);
+            const maxY = Math.max(10, window.innerHeight - height - TASKBAR_H - 10);
+            const startX = Math.min(maxX,
+                Math.max(10, (window.innerWidth - width) / 2 + (this.windows.length * 25)));
+            const startY = Math.min(maxY,
+                Math.max(10, (window.innerHeight - height - 40) / 2 + (this.windows.length * 25)));
             
             win.style.width = width + 'px';
             win.style.height = height + 'px';
@@ -875,6 +906,27 @@
             window.HypernetOS._activeWindowCache = win;
 
             window.HypernetOS.refreshTaskbarTabs();
+        },
+
+        // Pull every open window back inside the desktop. Window geometry is
+        // stored in absolute pixels, so a viewport that gets shorter or narrower
+        // (a resolution switch, leaving fullscreen, a Steam Deck moving between
+        // its own 1280x800 panel and a docked display) would otherwise leave
+        // windows hanging off the edge with their titlebars out of reach.
+        reflowWindows: function() {
+            const vw = window.innerWidth, vh = window.innerHeight;
+            for (const win of this.windows) {
+                if (!win || !win.isConnected) continue;
+                if (win.classList.contains('maximized')) continue;
+                const w = Math.min(win.offsetWidth, vw - 20);
+                const h = Math.min(win.offsetHeight, vh - TASKBAR_H - 20);
+                if (w !== win.offsetWidth) win.style.width = w + 'px';
+                if (h !== win.offsetHeight) win.style.height = h + 'px';
+                const x = Math.min(Math.max(0, vw - w - 10), Math.max(10, parseInt(win.style.left, 10) || 10));
+                const y = Math.min(Math.max(0, vh - h - TASKBAR_H - 10), Math.max(10, parseInt(win.style.top, 10) || 10));
+                win.style.left = x + 'px';
+                win.style.top = y + 'px';
+            }
         },
 
         toggleMaximize: function(win) {
@@ -1209,8 +1261,12 @@
             this.onTurnOffClick();
         });
 
-        // Re-flow the icon grid when the game window / resolution changes.
-        this._desktopResizeHandler = () => window.HypernetOS.refreshDesktopIcons();
+        // Re-flow the icon grid and the open windows when the game window /
+        // resolution changes.
+        this._desktopResizeHandler = () => {
+            window.HypernetOS.refreshDesktopIcons();
+            window.HypernetOS.WindowManager.reflowWindows();
+        };
         window.addEventListener('resize', this._desktopResizeHandler);
 
         // Initial populates of registered apps on desktop and start menu

@@ -63,6 +63,21 @@
         "...",
         "Oh. You again."
       ]
-    }
+    },
+    "yield": [
+      "Sorry, let me get out of the way.",
+      "Coming through, coming through...",
+      "Oh! You need to pass, don't you.",
+      "Too narrow in here. I'll move.",
+      "Excuse me, I'll step aside."
+    ]
+  },
+  "visitor": {
+    "talk": "Talk",
+    "empathize": "Empathize",
+    "cancel": "Cancel",
+    "silent": "They look through you, somewhere else entirely.",
+    "otherParty": "Travelling with {leader}'s party",
+    "readOnly": "They belong to another journey. You can talk, and nothing more."
   }
 }

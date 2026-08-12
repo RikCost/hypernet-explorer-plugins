@@ -354,6 +354,45 @@
     },
 
     /**
+     * What an item is medicine FOR, ready to print. Reads the notes
+     * tools/health/gen_medicines.py writes (<Medicine:>, <Cures: id:days>,
+     * <Treats: id>) and names every disease through the disease library, so a
+     * buyer can tell an antibiotic from a healing potion before paying for it.
+     * Returns null for anything that is not medicine, which a healing potion
+     * is not: restoring HP has never cured an illness.
+     */
+    getMedicineInfo: function (item) {
+      if (!item || !item.note) return null;
+      const cls = /<Medicine:\s*([\w-]+)\s*>/i.exec(item.note);
+      if (!cls) return null;
+      const api = window.DiseaseSystem;
+      const nameOf = (id) => (api && api.displayName ? api.displayName(id) : id);
+      const info = {
+        cls: cls[1].toLowerCase(),
+        label: window.Medicines ? window.Medicines.className(cls[1].toLowerCase()) : cls[1],
+        cures: [],
+        treats: [],
+      };
+      const cures = /<Cures:\s*([^>]*)>/i.exec(item.note);
+      if (cures) {
+        for (const pair of cures[1].split(",")) {
+          const bits = pair.split(":");
+          const id = String(bits[0] || "").trim();
+          if (!id) continue;
+          info.cures.push({ id, name: nameOf(id), days: Math.max(1, Number(bits[1]) || 1) });
+        }
+        info.cures.sort((a, b) => a.days - b.days || a.name.localeCompare(b.name));
+      }
+      const treats = /<Treats:\s*([^>]*)>/i.exec(item.note);
+      if (treats) {
+        info.treats = treats[1].split(",").map((s) => s.trim()).filter(Boolean)
+          .map((id) => ({ id, name: nameOf(id) }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+      }
+      return info;
+    },
+
+    /**
      * Silently feed whatever this item feeds on a single actor. An actor who
      * does not carry the matching trait has no meter, so nothing happens.
      * Returns the relief that actually landed.
@@ -693,18 +732,82 @@
   // Game_Player Movement Speed Override
   //=============================================================================
 
+  // Sandbox/test parties are exempt from encumbrance entirely: no speed
+  // penalty and no standing notice.
+  function isSandboxParty() {
+    return !!(($gameSystem && $gameSystem._isSandboxMode) ||
+      ($gameParty && $gameParty.leader && $gameParty.leader() &&
+        $gameParty.leader().name() === "Test"));  // i18n-ignore  debug account name
+  }
+
   const _Game_Player_realMoveSpeed = Game_Player.prototype.realMoveSpeed;
   Game_Player.prototype.realMoveSpeed = function () {
     let speed = _Game_Player_realMoveSpeed.call(this);
 
-    // Apply encumbrance penalty (skip in sandbox/test mode)
-    const isSandbox = ($gameSystem && $gameSystem._isSandboxMode) ||
-      ($gameParty && $gameParty.leader && $gameParty.leader() && $gameParty.leader().name() === "Test");  // i18n-ignore  debug account name
-    if (!isSandbox && window.ItemSystemUtils && window.ItemSystemUtils.isOverencumbered()) {
+    if (!isSandboxParty() && window.ItemSystemUtils && window.ItemSystemUtils.isOverencumbered()) {
       speed = Math.max(1, speed * OVERENCUMBERED_SPEED_PENALTY);
     }
 
     return speed;
+  };
+
+  //=============================================================================
+  // Overencumbered notice
+  //=============================================================================
+  // Carrying too much is a condition, not an event, so it is reported as a
+  // standing notification (ParchmentToast.sticky) that stays up for as long as
+  // the party is over its limit and comes down the moment it is not. The
+  // reading is redrawn only when the load actually changes, so a permanent
+  // toast costs nothing per frame.
+  //
+  // A fight is the one place it is never shown: the load cannot change there
+  // and the notice would sit over the battle HUD for the whole encounter. It
+  // is taken down on the way in and comes back on the way out.
+
+  const ENCUMBRANCE_KEY = "encumbrance";  // i18n-ignore  dedupe key
+  const ENCUMBRANCE_CHECK_FRAMES = 20;
+  let _encumbranceFrames = 0;
+  let _encumbranceShown = "";
+
+  function refreshEncumbranceNotice() {
+    const toast = window.ParchmentToast;
+    const utils = window.ItemSystemUtils;
+    if (!toast || typeof toast.sticky !== "function" || !utils) return;
+
+    const inBattle = (typeof Scene_Battle !== "undefined" &&
+      SceneManager._scene instanceof Scene_Battle) ||
+      (typeof $gameParty !== "undefined" && $gameParty && $gameParty.inBattle());
+
+    const hasParty = typeof $gameParty !== "undefined" && $gameParty &&
+      $gameParty.members().length > 0;
+    const over = !inBattle && hasParty && !isSandboxParty() && utils.isOverencumbered();
+
+    if (!over) {
+      if (_encumbranceShown) {
+        toast.dismiss(ENCUMBRANCE_KEY);
+        _encumbranceShown = "";
+      }
+      return;
+    }
+
+    const load = utils.formatWeight(utils.calculateTotalWeight()) + " / " +
+      utils.formatWeight(utils.calculateMaxCarryWeight());
+    if (load === _encumbranceShown && toast.isLive(ENCUMBRANCE_KEY)) return;
+    _encumbranceShown = load;
+    toast.sticky(T('ItemUtils.encumbrance.load', { load: load }), {
+      key: ENCUMBRANCE_KEY,
+      severity: "danger",
+      title: T('ItemUtils.encumbrance.title')
+    });
+  }
+
+  const _Scene_Base_update = Scene_Base.prototype.update;
+  Scene_Base.prototype.update = function () {
+    _Scene_Base_update.call(this);
+    if (--_encumbranceFrames <= 0) {
+      _encumbranceFrames = ENCUMBRANCE_CHECK_FRAMES;
+      refreshEncumbranceNotice();
+    }
   };
 
 })();
@@ -824,8 +927,41 @@
   // live world seed XOR the skill id, so every world tells its own history.
   // The assembled text still carries {faction}/{city}/... tokens, which the
   // normal token pass below fills. See gen_skill_lore.py.
+  // The grammar is structure plus vocabulary: js/db/Skills/Lore.json owns the
+  // shape (which family an archetype belongs to, which token bank it draws on)
+  // and carries the English words; js/i18n/<lang>/lore/LoreGrammar.json carries
+  // that language's words and is laid over it. Only string leaves are replaced,
+  // so a bank the translation has not reached keeps the English one and the
+  // sentence still assembles. `family` and `tokens` are ids and are never taken
+  // from the overlay.
+  var _grammarCache = null, _grammarLang = null;
+  function grammarOverlay(base, over) {
+    if (!over || !base) return;
+    Object.keys(over).forEach(function (k) {
+      if (k === 'family' || k === 'tokens' || k === '_comment' || k === 'version') return;
+      var o = over[k];
+      if (Array.isArray(o)) {
+        if (o.length) base[k] = o.slice();
+      } else if (o && typeof o === 'object') {
+        if (base[k] && typeof base[k] === 'object') grammarOverlay(base[k], o);
+      } else if (typeof o === 'string' && o) {
+        base[k] = o;
+      }
+    });
+  }
   function grammar() {
-    return (window.Skills && window.Skills.Lore) ? window.Skills.Lore : null;
+    var db = (window.Skills && window.Skills.Lore) ? window.Skills.Lore : null;
+    if (!db) return null;
+    var lang = (window.ConfigManager && ConfigManager.language) || 'en';
+    if (_grammarCache && _grammarLang === lang) return _grammarCache;
+    _grammarLang = lang;
+    if (lang === 'en' || !window.T || !T.obj) { _grammarCache = db; return db; }
+    var over = T.has('LoreGrammar') ? T.obj('LoreGrammar') : null;
+    if (!over) { _grammarCache = db; return db; }
+    var merged = JSON.parse(JSON.stringify(db));
+    grammarOverlay(merged, over);
+    _grammarCache = merged;
+    return merged;
   }
 
   // Deterministic xorshift stream seeded by worldSeed ^ refId. Distinct from

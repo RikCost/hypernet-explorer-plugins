@@ -1,0 +1,14 @@
+[
+  { "id": "O_POS", "type": "O+", "abo": "O", "rh": "+", "percent": 37.4, "rarityKey": "common" },
+  { "id": "A_POS", "type": "A+", "abo": "A", "rh": "+", "percent": 35.7, "rarityKey": "common" },
+  { "id": "B_POS", "type": "B+", "abo": "B", "rh": "+", "percent": 8.5, "rarityKey": "common" },
+  { "id": "AB_POS", "type": "AB+", "abo": "AB", "rh": "+", "percent": 3.4, "rarityKey": "uncommon" },
+  { "id": "O_NEG", "type": "O-", "abo": "O", "rh": "-", "percent": 6.6, "rarityKey": "uncommon" },
+  { "id": "A_NEG", "type": "A-", "abo": "A", "rh": "-", "percent": 6.3, "rarityKey": "uncommon" },
+  { "id": "B_NEG", "type": "B-", "abo": "B", "rh": "-", "percent": 1.5, "rarityKey": "rare" },
+  { "id": "AB_NEG", "type": "AB-", "abo": "AB", "rh": "-", "percent": 0.6, "rarityKey": "rare" },
+  { "id": "RH_NULL", "type": "Rh-null", "abo": null, "rh": null, "percent": 0.0001, "rarityKey": "ultraRare", "rareAntigen": "rhNull" },
+  { "id": "DUFFY_NEG", "type": "Duffy-", "abo": "O", "rh": "+", "percent": 0.01, "rarityKey": "veryRare", "rareAntigen": "duffyNull" },
+  { "id": "DIEGO_B_NEG", "type": "Diego(b-)", "abo": "AB", "rh": "-", "percent": 0.001, "rarityKey": "veryRare", "rareAntigen": "diegoNull" },
+  { "id": "KIDD_B_NEG", "type": "Kidd(b-)", "abo": "O", "rh": "-", "percent": 0.001, "rarityKey": "veryRare", "rareAntigen": "kiddNull" }
+]

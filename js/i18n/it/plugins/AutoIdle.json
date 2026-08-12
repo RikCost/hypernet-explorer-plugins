@@ -1,4 +1,126 @@
 {
   "optionName": "Esploratore automatico",
-  "badge": "AUTO P2"
+  "badge": "AUTO P2",
+  "formation": {
+    "label": "Formazione del gruppo",
+    "states": [
+      "Stretta",
+      "Libera"
+    ]
+  },
+  "loose": {
+    "thought": [
+      "Un buon posto per riprendere fiato.",
+      "I miei piedi hanno delle opinioni su questa strada.",
+      "Chissà cosa c'è oltre quel crinale.",
+      "Avremmo dovuto portare più cibo.",
+      "Ancora non ho idea di dove stiamo andando.",
+      "Silenzio. Quasi troppo silenzio.",
+      "Riuscirei a dormire in piedi.",
+      "Quella nuvola sembra un cattivo presagio.",
+      "Riconto le monete. Stessa risposta.",
+      "Qualcuno deve fare la guardia. Tanto vale io.",
+      "Questo posto odora di più antico di quanto sembri.",
+      "Un giorno mi pagheranno per tutto questo."
+    ],
+    "greet": [
+      "Buonasera. Visto niente di strano da queste parti?",
+      "Siamo solo di passaggio.",
+      "C'è un posto caldo dove mangiare qui vicino?",
+      "Vivi qui? Com'è?",
+      "Qualche notizia che valga la pena sentire?",
+      "Attento là fuori. Morde.",
+      "Da che parte è la strada più vicina?"
+    ],
+    "reply": [
+      "Dipende da chi lo chiede.",
+      "Niente che valga la pena raccontare.",
+      "Strano è tutto quello che abbiamo qui.",
+      "Resta sulla strada e non ti succederà niente.",
+      "Non sei di queste parti.",
+      "Sta' attento dopo il tramonto.",
+      "Ho già detto troppo."
+    ],
+    "partyGreet": [
+      "Ci pensi mai a tornare a casa?",
+      "Sei stato in silenzio tutto il giorno.",
+      "Ripetimi perché abbiamo preso questa strada.",
+      "Da solo non sarei mai arrivato fin qui.",
+      "Come va quella tua ferita?",
+      "Se ci pagano, il primo giro lo offro io.",
+      "Ti fidi della gente che abbiamo incontrato là dietro?",
+      "Ho sognato questo posto. Non chiedere.",
+      "Porti troppa roba. Dammene metà.",
+      "Uno di questi giorni dovremmo fermarci per una settimana intera."
+    ],
+    "partyReply": [
+      "Casa è dove sono gli zaini.",
+      "Stavo pensando. Capita.",
+      "Perché me l'hai chiesto e ho detto di sì. Che sciocco.",
+      "Nemmeno io. Non montarti la testa.",
+      "Ha smesso di sanguinare, che è già qualcosa.",
+      "L'hai detto anche negli ultimi tre paesi.",
+      "Non mi fido di nessuno che non riesca a seminare.",
+      "Sogni sempre le cose sbagliate.",
+      "Ce la faccio. Richiedimelo sulla salita.",
+      "Una settimana. Senti come parliamo."
+    ],
+    "look": [
+      "Uhm. Sta qui da un bel po'.",
+      "Qualcuno l'ha fatto a mano.",
+      "Meglio non toccarlo.",
+      "Forse vale qualcosa.",
+      "Ecco, questo è strano.",
+      "Ne ho già visto uno così."
+    ],
+    "recall": [
+      "Aspettami!",
+      "Dove andiamo adesso?",
+      "Sono dietro di te.",
+      "Rallenta!",
+      "Arrivo!"
+    ],
+    "rest": [
+      "Cinque minuti. Non chiedo altro.",
+      "I miei piedi se lo sono guadagnato.",
+      "Non dite agli altri che mi sono seduto.",
+      "Sto solo riposando gli occhi.",
+      "Questo è il posto a sedere migliore del paese."
+    ],
+    "need": {
+      "hunger": [
+        "Stavo per mettermi a masticare la cinghia.",
+        "Mi terrà in piedi fino a sera.",
+        "Freddo, ma è cibo.",
+        "Non guardarmi così. Avevo fame."
+      ],
+      "sleep": [
+        "Un letto. Un letto vero.",
+        "Svegliatemi se finisce il mondo.",
+        "Dormirei per una settimana.",
+        "Un posto piano andrà benissimo."
+      ],
+      "hygiene": [
+        "Avevo dimenticato che aspetto avessero le mie mani.",
+        "Tre giorni di strada, finalmente via.",
+        "Adesso sono presentabile.",
+        "Quell'acqua era più fredda della tomba."
+      ],
+      "social": [
+        "Fa bene sentire un'altra voce.",
+        "Gente. Mi mancava la gente.",
+        "È il massimo che abbia detto in tutta la settimana."
+      ],
+      "leisure": [
+        "Ancora una partita. Una sola.",
+        "Ne avevo bisogno più di quanto credessi.",
+        "Non dite al gruppo quanto ho perso.",
+        "Per un momento mi sono scordato la strada."
+      ]
+    },
+    "toastRent": "{name} ha affittato una stanza per {price}",
+    "toastEat": "{name} ha mangiato: {item}",
+    "toastOpinion": "{npc} pensa di {name}: {delta}",
+    "toastPartyTalk": "{name} e {other} hanno parlato ({other}: {delta}, {name}: {back})"
+  }
 }

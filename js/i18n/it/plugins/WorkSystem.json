@@ -70,10 +70,5 @@
     "27": "Vaticano",
     "30": "Suore Combattenti"
   },
-  "ui": {
-    "navSelectOffer": "W/S: Naviga | Ok: Scegli l'offerta",
-    "navAcceptContract": "W/S: Naviga | Ok: Accetta il contratto",
-    "navChooseJob": "W/S: Naviga | Ok: Scegli il lavoro",
-    "navSignContract": "W/S: Naviga | Ok: Firma il contratto"
-  }
+  "ui": {}
 }

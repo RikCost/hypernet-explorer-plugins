@@ -1617,10 +1617,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Animals01Color",
+            "characterName": "NPCs/!$DogTail1",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 1
+            "characterIndex": 0
           },
           "list": [
             {
@@ -2452,10 +2452,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Heroes01Color",
+            "characterName": "NPCs/!$Revolutionary2",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 3
+            "characterIndex": 0
           },
           "list": [
             {

@@ -1,0 +1,46 @@
+{
+  "stopLiminal": "STOP LIMINAL DRIVE",
+  "stopDriving": "STOP DRIVIN'",
+  "climbBackIn": "CLIMB BACK IN",
+  "stepOutside": "STEP OUTSIDE (ON FOOT)",
+  "refuelAtStation": "REFUEL AT STATION",
+  "continue": "CONTINUE",
+  "splashdown": "DA CAMPER SPLASHES DOWN AN' WASHES ASHORE!",
+  "wedged": "CAMPER WEDGED",
+  "flipped": "CAMPER FLIPPED",
+  "destination": "DESTINATION",
+  "freeDrive": "FREE DRIVE",
+  "openRoad": "OPEN ROAD",
+  "autopilot": "AUTOPILOT",
+  "hud": {
+    "fuel": "FUEL",
+    "map": "MAP",
+    "destination": "DESTINATION",
+    "time": "TIME",
+    "distance": "DISTANCE",
+    "view": "VIEW:",
+    "mode": "MODE:",
+    "controls": "TAB: FP DRIVE &harr; CHASE CAM<br/>W THROTTLE &middot; S BRAKE / REVERSE &middot; SHIFT TURBO &middot; A/D STEER<br/>SPACE HANDBRAKE &middot; WHEN STOPPED SPACE OPENS VEHICLE OPTIONS<br/>F FLY &middot; C DIVE &middot; M MAP VIEW &middot; MOUSE/WHEEL/RIGHT-STICK LOOK &amp; ZOOM<br/>E DOOR: STEP OUT / CLIMB IN &middot; R RESPAWN IF STUCK<br/>ON FOOT: SHIFT SPRINT, SPACE/A JUMP &middot; ESC/BACK EXIT DRIVE",
+    "controllerHint": "CONTROLLER: L2/R2 ZOOM OUT/IN &middot; Y SWITCH VIEW",
+    "fly": "FLY",
+    "float": "FLOAT",
+    "dive": "DIVE",
+    "cond": "COND",
+    "trip": "TRIP",
+    "camperStuck": "CAMPER STUCK",
+    "pressRToRespawn": "PRESS {key} TA RESPAWN"
+  },
+  "viewMode": {
+    "fpdrive": "FP DRIVIN'",
+    "fp": "FIRST PERSON",
+    "car": "CAR",
+    "free": "FREE CAM",
+    "foot": "ON FOOT"
+  },
+  "envMode": {
+    "road": "ROAD",
+    "air": "FLYIN'",
+    "water": "AFLOAT",
+    "underwater": "SUBMERGED"
+  }
+}

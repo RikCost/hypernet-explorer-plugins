@@ -44,7 +44,7 @@
     "L'orologio ha tre lancette e nessuna e d'accordo con le altre.",
     "La bilancia della giustizia è stata sostituita da un paio di dadi.",
     "Una mela d'oro appassita sta dove dovrebbero esserci i codici.",
-    "La stanza sa vagamente di olio motore e caffe da tavola calda.",
+    "La stanza sa vagamente di olio motore e caffè da tavola calda.",
     "Ogni tanto l'intera stanza torna indietro di un secondo e si ripete.",
     "La bandiera di nessuna nazione pende dietro il banco, capovolta.",
     "Qualcuno ha disegnato una faccina nella polvere del banco dei testimoni.",
@@ -215,7 +215,7 @@
   ],
   "bubbaTrialSlips": [
     "*sottovoce* Non me ne sono andata per causa tua.",
-    "*fuori verbale* Il caffe qui e orribile. Lo odieresti.",
+    "*fuori verbale* Il caffè qui è orribile. Lo odieresti.",
     "*alla galleria vuota* Si è tenuto la bussola. Ovvio che si è tenuto la bussola.",
     "*quasi impercettibile* Novantadue dimensioni e continui a finire nelle mie scartoffie.",
     "*guarda la porta ancora per un po' dopo che lui e uscito*"
@@ -254,7 +254,7 @@
     "Non fraintendermi. Non prova niente per te. Ho controllato. {Due volte|Ripetutamente|Ogni notte}.",
     "Ultimamente sei stata {fortunata|sfortunata} un numero improbabile di volte. L'improbabile e il mio reparto.",
     "Ogni porta che si è bloccata. Ogni moneta caduta storta. Ogni treno perso per un soffio. Ciao.",
-    "Ti ho piegato le probabilita addosso {martedi scorso|il mese scorso|l'inverno scorso}. Te ne sei accorta? Spero di si.",
+    "Ti ho piegato le probabilità addosso {martedì scorso|il mese scorso|l'inverno scorso}. Te ne sei accorta? Spero di sì.",
     "Non è gelosia. E {giurisdizione|prassi|ordinaria amministrazione}. ...E gelosia.",
     "Dormi a tre metri dall'unica cosa che abbia mai voluto. E russi.",
     "Potrei renderti {colpevole|innocente|un rospo} senza toccare le prove. Voglio che tu lo sappia.",
@@ -418,7 +418,7 @@
     ],
     "bored": [
       "Difesa. Va bene. Almeno qualcuno in questa stanza si è preparato.",
-      "Parli. Sul serio, la prego, parli. Qualsiasi cosa e meglio del silenzio.",
+      "Parli. Sul serio, la prego, parli. Qualsiasi cosa è meglio del silenzio.",
       "Un avvocato. L'unica cosa che rende tutto più lungo E più interessante."
     ],
     "dramatic": [
@@ -463,7 +463,7 @@
       "\\C[2]Allontanato.\\C[0] La giurisprudenza l'ho scritta io. Male, apposta."
     ],
     [
-      "Mi dicono che lei e molto bravo.",
+      "Mi dicono che lei è molto bravo.",
       "Ed e esattamente il problema.",
       "Accompagnate fuori il difensore. Con garbo. Più o meno."
     ],
@@ -483,7 +483,7 @@
     "\"La taglia è stata calcolata da un sistema che la corte stessa ha definito folle.\"",
     "\"Il mio assistito invoca il contesto, Vostro Onore. Enormi quantita di contesto.\"",
     "\"Ogni elemento di questo reato richiede il dolo. Il mio assistito raramente ne ha.\"",
-    "\"Ho preparato undici precedenti. Ne leggero {uno|due|nessuno}, per pieta.\""
+    "\"Ho preparato undici precedenti. Ne leggerò {uno|due|nessuno}, per pietà.\""
   ],
   "lawyerErisReplies": [
     "...E fastidiosamente ragionevole.",
@@ -623,7 +623,7 @@
     "La mia pazienza ha un fondo, e ci siamo arrivati.",
     "Niente di tutto questo contera tra cent'anni.",
     "Ti giudico come vorrei essere giudicata. Spaventoso, vero?",
-    "La verita e una cosa così piccola. Vediamo se me ne importa.",
+    "La verità è una cosa così piccola. Vediamo se me ne importa.",
     "Silenzio ora. Il prossimo a parlare e il martelletto."
   ],
   "reverseFinalPleas": [
@@ -638,7 +638,7 @@
     "L'udienza e chiusa. Qualcuno pulisca il pavimento.",
     "Prossimo caso. E portatemi quel vino.",
     "Spero capiate che non era niente di personale.",
-    "Era personale, in realta. Molto personale.",
+    "Era personale, in realtà. Molto personale.",
     "La giustizia e sfiancante. Come fa qualcuno a farlo ogni giorno?",
     "Scrivetelo nel registro. Alla voce 'inevitabile'.",
     "Ripensero a questo caso stasera. Brevemente.",
@@ -1980,8 +1980,8 @@
         "Aspettate. Aspettate. Se confesso, la lingua resta?"
       ],
       "innocent": [
-        "Prendetela. Ha sempre detto solo la verita.",
-        "*tremando* Sto dicendo la verita, lo giuro!",
+        "Prendetela. Ha sempre detto solo la verità.",
+        "*tremando* Sto dicendo la verità, lo giuro!",
         "Le minacce non cambiano i fatti, Vostro Onore."
       ]
     },

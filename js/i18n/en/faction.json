@@ -1328,6 +1328,75 @@
           "name": "Lead Scientist"
         }
       }
+    },
+    "greywanderers": {
+      "name": "Grey Wanderers",
+      "description": "The idle caste of Zeta Reticuli: they came to look, and they are still looking. They photograph everything, understand almost none of it, and adore the people they photograph.",
+      "troops": {
+        "snapshottourist": {
+          "name": "Snapshot Tourist"
+        },
+        "itineraryguide": {
+          "name": "Itinerary Guide"
+        },
+        "souvenirhunter": {
+          "name": "Souvenir Hunter"
+        },
+        "shutterwarden": {
+          "name": "Shutter Warden"
+        }
+      }
+    },
+    "crimsonanalyzers": {
+      "name": "Crimson Analyzers",
+      "description": "The scientific caste, who hold that nothing is understood until it has been opened. They carry katanas because a scalpel is slow and the universe is large.",
+      "troops": {
+        "fieldsampler": {
+          "name": "Field Sampler"
+        },
+        "katanasurgeon": {
+          "name": "Katana Surgeon"
+        },
+        "specimenwarden": {
+          "name": "Specimen Warden"
+        },
+        "chiefvivisector": {
+          "name": "Chief Vivisector"
+        }
+      }
+    },
+    "palewarpers": {
+      "name": "Pale Warpers",
+      "description": "The psionic caste, who fold minds and distances rather than cross them. They speak rarely, and never with the mouth.",
+      "troops": {
+        "psinovice": {
+          "name": "PSI Novice"
+        },
+        "mindfolder": {
+          "name": "Mind Folder"
+        },
+        "spacefolder": {
+          "name": "Space Folder"
+        },
+        "warpchoir": {
+          "name": "Warp Choir"
+        }
+      }
+    },
+    "dargosembassy": {
+      "name": "Dargos Embassy",
+      "description": "The whole diplomatic apparatus of Titania, run as one long practical joke at humanity's expense. It attends no assembly and answers no summons, which is itself part of the bit.",
+      "troops": {
+        "embassyclerk": {
+          "name": "Embassy Clerk"
+        },
+        "pranksman": {
+          "name": "Pranksman"
+        },
+        "punchlineregent": {
+          "name": "Punchline Regent"
+        }
+      }
     }
   }
 }

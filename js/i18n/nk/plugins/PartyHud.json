@@ -1,0 +1,21 @@
+{
+  "optionName": "PARTY HUD",
+  "alert": {
+    "dead": "DOWN",
+    "hp": "WOUNDED",
+    "hpCritical": "DYING",
+    "hunger": "HUNGRY",
+    "hungerCritical": "STARVIN'",
+    "sleep": "TIRED",
+    "sleepCritical": "EXHAUSTED",
+    "hygiene": "UNWASHED",
+    "hygieneCritical": "FILTHY",
+    "social": "LONELY",
+    "socialCritical": "ISOLATED",
+    "leisure": "BORED",
+    "leisureCritical": "MISERABLE",
+    "craving": "CRAVIN' {substance}",
+    "ill": "{disease}",
+    "illUntreated": "{disease} (UNTREATED)"
+  }
+}

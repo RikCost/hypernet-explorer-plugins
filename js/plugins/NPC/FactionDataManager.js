@@ -165,6 +165,7 @@ function FactionDataManager() {
 FactionDataManager.prototype.initialize = function () {
   this._factions = [];
   this._i18nData = null;
+  this._i18nDataEN = null;
   this._leadersData = {};
   this._ready = false;
   this._readyPromise = Promise.all([
@@ -172,10 +173,6 @@ FactionDataManager.prototype.initialize = function () {
     this._loadCountriesData(),
     this._loadGeopoliticsData(),
     this._loadFactionsData(),
-    this._loadIdeologyI18nData(),
-    this._loadPersonalitiesI18nData(),
-    this._loadRolesI18nData(),
-    this._loadFormationsI18nData(),
     this._loadLeadersData()
   ]).then(() => {
     this._resolveLeaders();
@@ -184,58 +181,38 @@ FactionDataManager.prototype.initialize = function () {
   this._setupGeopoliticalData();
 };
 
+// The keys stored on faction/troop data ("factions.magesguild.troops.x.name",
+// "roles.support", "formations.circle", ...) are dotted paths into these five
+// files merged into one lookup table. Loaded twice: once for the active
+// language and once for English, so .t() always has an English answer to
+// fall back on when a translation is missing or a language pack is thin.
+FactionDataManager.I18N_SOURCES = [
+  { file: "faction.json", key: null },
+  { file: "ideology.json", key: null },
+  { file: "personalities.json", key: "personalities" },
+  { file: "roles.json", key: "roles" },
+  { file: "formations.json", key: "formations" }
+];
+
+FactionDataManager.prototype._loadI18nSet = async function (lang) {
+  const out = {};
+  await Promise.all(FactionDataManager.I18N_SOURCES.map(async (src) => {
+    try {
+      const response = await fetch(`js/i18n/${lang}/${src.file}`);
+      const data = await response.json();
+      if (src.key) out[src.key] = data;
+      else Object.assign(out, data);
+    } catch (e) {
+      console.error(`Failed to load ${src.file} i18n data (${lang})`, e);
+    }
+  }));
+  return out;
+};
+
 FactionDataManager.prototype._loadI18nData = async function () {
   const lang = ConfigManager.language || "en";
-  try {
-    const response = await fetch(`js/i18n/${lang}/faction.json`);
-    this._i18nData = await response.json();
-  } catch (e) {
-    console.error("Failed to load faction i18n data", e);
-  }
-};
-
-FactionDataManager.prototype._loadIdeologyI18nData = async function () {
-  const lang = ConfigManager.language || "en";
-  try {
-    const response = await fetch(`js/i18n/${lang}/ideology.json`);
-    const data = await response.json();
-    this._i18nData = { ...this._i18nData, ...data };
-  } catch (e) {
-    console.error("Failed to load ideology i18n data", e);
-  }
-};
-
-FactionDataManager.prototype._loadPersonalitiesI18nData = async function () {
-  const lang = ConfigManager.language || "en";
-  try {
-    const response = await fetch(`js/i18n/${lang}/personalities.json`);
-    const data = await response.json();
-    this._i18nData = { ...this._i18nData, personalities: data };
-  } catch (e) {
-    console.error("Failed to load personalities i18n data", e);
-  }
-};
-
-FactionDataManager.prototype._loadRolesI18nData = async function () {
-  const lang = ConfigManager.language || "en";
-  try {
-    const response = await fetch(`js/i18n/${lang}/roles.json`);
-    const data = await response.json();
-    this._i18nData = { ...this._i18nData, roles: data };
-  } catch (e) {
-    console.error("Failed to load roles i18n data", e);
-  }
-};
-
-FactionDataManager.prototype._loadFormationsI18nData = async function () {
-  const lang = ConfigManager.language || "en";
-  try {
-    const response = await fetch(`js/i18n/${lang}/formations.json`);
-    const data = await response.json();
-    this._i18nData = { ...this._i18nData, formations: data };
-  } catch (e) {
-    console.error("Failed to load formations i18n data", e);
-  }
+  this._i18nDataEN = await this._loadI18nSet("en");
+  this._i18nData = (lang === "en") ? this._i18nDataEN : await this._loadI18nSet(lang);
 };
 
 FactionDataManager.prototype._loadLeadersData = async function () {
@@ -363,16 +340,29 @@ FactionDataManager.prototype._buildRelationshipMatrix = function () {
   }
 };
 
-FactionDataManager.prototype.t = function (path) {
-  if (!this._i18nData) return path;
-  if (this._i18nData[path] !== undefined) return this._i18nData[path];
+FactionDataManager.prototype._digI18n = function (root, path) {
+  if (!root) return undefined;
+  if (root[path] !== undefined) return root[path];
   const keys = path.split(".");
-  let current = this._i18nData;
+  let current = root;
   for (const key of keys) {
-    if (current[key] === undefined) return path;
+    if (current == null || current[key] === undefined) return undefined;
     current = current[key];
   }
-  return typeof current === "string" ? current : (current.name || path);
+  return current;
+};
+
+// Resolves a dotted i18n path stored on faction/troop/role/formation data
+// (e.g. "factions.magesguild.troops.apprenticemage.name"). Falls back to the
+// English data set when the active language is missing the key, and to the
+// raw key itself (never blank) when neither has it.
+FactionDataManager.prototype.t = function (path) {
+  let value = this._digI18n(this._i18nData, path);
+  if (value === undefined) value = this._digI18n(this._i18nDataEN, path);
+  if (value === undefined) return path;
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object" && typeof value.name === "string") return value.name;
+  return path;
 };
 
 FactionDataManager.prototype._setupGeopoliticalData = function () {
@@ -656,6 +646,177 @@ Game_Factions.prototype.getReputationPerks = function (factionId) {
   return perks;
 };
 
+//=============================================================================
+// Per-character standing
+//=============================================================================
+//
+// The number above is the world's: it is shared by every savegame of the world
+// (npcs.json) and it is what every existing caller moves. It is not, however,
+// what a hall thinks of the person standing in it. Each actor carries their own
+// DELTA on top of it, so two travellers can be welcome in different places, and
+// a delegate's seat is theirs and not the party's.
+//
+// The delta is a plain own property on Game_Actor, which is what puts it in the
+// binary savegame (the same convention as actor._diseases and actor._cravings).
+// Keys are faction ids written as strings, plus "hp:<id>" for the five
+// hyperpowers that have no faction entry of their own and therefore no slot in
+// the world array (Goblin Horde, Free States of Midwest, Cascadia Protectorate,
+// Eastern Seaboard, Continental Union).
+const FACTION_REP_MIN = -100;
+const FACTION_REP_MAX = 100;
+
+const _factionRepClamp = (v) =>
+  Math.max(FACTION_REP_MIN, Math.min(FACTION_REP_MAX, Math.round(Number(v) || 0)));
+
+// A standing key is either a faction id (number, or a numeric string) or one of
+// the synthetic "hp:<id>" keys. Returns null for anything else.
+Game_Factions.prototype.standingKey = function (factionId) {
+  if (typeof factionId === "number" && Number.isFinite(factionId)) return String(factionId);
+  const s = String(factionId == null ? "" : factionId);
+  if (/^-?\d+$/.test(s)) return s;
+  if (/^hp:\d+$/.test(s)) return s;
+  return null;
+};
+
+// The actor's own ledger, created on first write. Read paths tolerate its
+// absence so a savegame made before this existed reads as "no opinions yet".
+Game_Factions.prototype.actorDeltas = function (actor) {
+  if (!actor) return null;
+  if (!actor._factionRep) actor._factionRep = {};
+  return actor._factionRep;
+};
+
+// The world's number for a key. Synthetic "hp:" keys have no world slot, so
+// they answer 0 and live entirely in the per-character ledger.
+Game_Factions.prototype.baseStanding = function (factionId) {
+  const key = this.standingKey(factionId);
+  if (key === null || key.charAt(0) === "h") return 0;
+  return this.getReputation(Number(key));
+};
+
+// What this character is worth to that faction: the world's opinion plus their
+// own. Falls back to the world number when no actor is given, so a call site
+// that has not been taught about characters yet keeps working.
+Game_Factions.prototype.getReputationFor = function (actor, factionId) {
+  const key = this.standingKey(factionId);
+  if (key === null) return 0;
+  const base = this.baseStanding(key);
+  if (!actor) return _factionRepClamp(base);
+  const deltas = actor._factionRep;
+  const delta = deltas ? Number(deltas[key]) || 0 : 0;
+  return _factionRepClamp(base + delta);
+};
+
+// Moves one character's opinion only. The world number is left alone: a caller
+// that wants both moves both.
+Game_Factions.prototype.changeReputationFor = function (actor, factionId, change) {
+  const key = this.standingKey(factionId);
+  if (key === null || !actor || !change) return;
+  const deltas = this.actorDeltas(actor);
+  // The delta is clamped against the band the total can occupy, so a character
+  // cannot bank goodwill past the ceiling and spend it later.
+  const base = this.baseStanding(key);
+  const current = Number(deltas[key]) || 0;
+  const wanted = current + Number(change);
+  deltas[key] = Math.max(FACTION_REP_MIN - base, Math.min(FACTION_REP_MAX - base, Math.round(wanted)));
+};
+
+Game_Factions.prototype.setReputationFor = function (actor, factionId, value) {
+  const key = this.standingKey(factionId);
+  if (key === null || !actor) return;
+  const deltas = this.actorDeltas(actor);
+  deltas[key] = _factionRepClamp(value) - this.baseStanding(key);
+};
+
+// The same bands and colours the world number uses, read for one character.
+Game_Factions.prototype.reputationLevelOf = function (reputation) {
+  if (reputation >= 80) return T("Factions.repLevel.exalted");
+  if (reputation >= 60) return T("Factions.repLevel.revered");
+  if (reputation >= 40) return T("Factions.repLevel.honored");
+  if (reputation >= 20) return T("Factions.repLevel.friendly");
+  if (reputation >= -20) return T("Factions.repLevel.neutral");
+  if (reputation >= -40) return T("Factions.repLevel.unfriendly");
+  if (reputation >= -60) return T("Factions.repLevel.hostile");
+  if (reputation >= -80) return T("Factions.repLevel.hated");
+  return T("Factions.repLevel.nemesis");
+};
+
+Game_Factions.prototype.reputationColorOf = function (reputation) {
+  if (reputation >= 80) return "#00FF00";
+  if (reputation >= 60) return "#32CD32";
+  if (reputation >= 40) return "#90EE90";
+  if (reputation >= 20) return "#98FB98";
+  if (reputation >= -20) return "#FFFFFF";
+  if (reputation >= -40) return "#FFA07A";
+  if (reputation >= -60) return "#FF6347";
+  if (reputation >= -80) return "#FF4500";
+  return "#FF0000";
+};
+
+Game_Factions.prototype.getReputationLevelFor = function (actor, factionId) {
+  return this.reputationLevelOf(this.getReputationFor(actor, factionId));
+};
+
+Game_Factions.prototype.getReputationColorFor = function (actor, factionId) {
+  return this.reputationColorOf(this.getReputationFor(actor, factionId));
+};
+
+//=============================================================================
+// Hyperpower parentage
+//=============================================================================
+//
+// `parentFaction` in Factions.json holds the id of a HYPERPOWER (the keys of
+// js/db/WorldGen/Hyperpowers.json), NOT of another faction. The two id spaces
+// overlap, which is why grouping the list by matching parentFaction against
+// faction ids put the whole Mages Guild branch (parent 8 = the Mages Guild
+// hyperpower) underneath faction id 8, the Naguka. The lore's tree is
+// hyperpower -> the factions that answer to it, so that is what these resolve.
+
+// Ordered [name, data] pairs from Hyperpowers.json, sorted by id.
+Game_Factions.prototype.getHyperpowers = function () {
+  const src = (window.WorldGen && window.WorldGen.Hyperpowers &&
+    window.WorldGen.Hyperpowers.hyperpowers) ||
+    (FactionDataManager.instance && FactionDataManager.instance._hyperpowers) || {};
+  return Object.keys(src)
+    .map((name) => ({ name: name, id: Number(src[name].id), data: src[name] }))
+    .filter((h) => Number.isFinite(h.id))
+    .sort((a, b) => a.id - b.id);
+};
+
+Game_Factions.prototype.getHyperpower = function (hyperpowerId) {
+  return this.getHyperpowers().find((h) => h.id === hyperpowerId) || null;
+};
+
+// Every faction that answers to a hyperpower, head first.
+Game_Factions.prototype.getHyperpowerFactions = function (hyperpowerId) {
+  return this.getAllFactions()
+    .filter((f) => f && f.parentFaction === hyperpowerId)
+    .sort((a, b) => (b.hyperpowerHead ? 1 : 0) - (a.hyperpowerHead ? 1 : 0) || a.id - b.id);
+};
+
+// The faction that speaks for a hyperpower, if it has one. Five do not
+// (Goblin Horde, Free States of Midwest, Cascadia Protectorate, Eastern
+// Seaboard, Continental Union), so this is allowed to answer null.
+Game_Factions.prototype.getHyperpowerHead = function (hyperpowerId) {
+  return this.getAllFactions().find(
+    (f) => f && f.parentFaction === hyperpowerId && f.hyperpowerHead
+  ) || null;
+};
+
+// Factions that answer to nobody: the independents that stand on their own.
+Game_Factions.prototype.getIndependentFactions = function () {
+  return this.getAllFactions()
+    .filter((f) => f && f.parentFaction === undefined)
+    .sort((a, b) => a.id - b.id);
+};
+
+// The standing key a hyperpower is read and written through: its head faction
+// when it has one, its synthetic "hp:<id>" key when it does not.
+Game_Factions.prototype.hyperpowerStandingKey = function (hyperpowerId) {
+  const head = this.getHyperpowerHead(hyperpowerId);
+  return head ? String(head.id) : "hp:" + hyperpowerId;
+};
+
 Game_Factions.prototype.getRelationship = function (factionId1, factionId2) {
   // Return 0 if relationships aren't initialized
   if (!FactionDataManager.instance || !FactionDataManager.instance._relationships) {
@@ -872,7 +1033,14 @@ Scene_FactionStatus.prototype.create = function () {
   }
 
   this._dndSelectedIndex = 0;
+  // Whose standings the page shows. Opens on whoever the menu was last on.
+  const members = this.switchableMembers();
+  const menuActor = (window.$gameParty && $gameParty.menuActor) ? $gameParty.menuActor() : null;
+  this._repActorIndex = Math.max(0, members.indexOf(menuActor));
   this.createUIFactionsOverlay();
+  if (window.CharSwitcher) {
+    window.CharSwitcher.installTabKey(this, (dir) => this.cycleRepActor(dir));
+  }
 };
 
 Scene_FactionStatus.prototype.createFactionStatusWindow = function () {
@@ -923,23 +1091,96 @@ Scene_FactionStatus.prototype.createUIFactionsOverlay = function () {
   }, 16);
 };
 
+// The name a hyperpower is shown under. Its key in Hyperpowers.json is English
+// prose, so a translation is looked for first, then the localized name of the
+// faction that speaks for it, and only then the raw key.
+Scene_FactionStatus.prototype.hyperpowerLabel = function (hp, head) {
+  const slug = String(hp.name).toLowerCase().replace(/[^a-z0-9]/g, "");
+  const key = "Factions.power." + slug;
+  if (T.has(key)) return T(key);
+  if (head) return FactionDataManager.instance.t(head.name);
+  return hp.name;
+};
+
+// The tree the lore describes: a hyperpower, then the factions that answer to
+// it, then the independents that answer to nobody.
+//
+// `parentFaction` in Factions.json is a HYPERPOWER id, not a faction id, and
+// the two id spaces overlap. Grouping by matching it against faction ids used
+// to file the whole Mages Guild branch (parent 8 = the Mages Guild hyperpower)
+// under faction id 8, the Naguka.
+//
+// A hyperpower's own row carries its head faction, so the head is never listed
+// a second time as one of its own branches; a hyperpower with no head faction
+// (Goblin Horde, Free States of Midwest, Cascadia Protectorate, Eastern
+// Seaboard, Continental Union) is read through its synthetic "hp:<id>" key.
 Scene_FactionStatus.prototype.getFactionList = function () {
-  const allFactions = $gameFactions.getAllFactions();
-  const mainFactions = allFactions.filter((f) => f.parentFaction === undefined);
-  const subFactions = allFactions.filter((f) => f.parentFaction !== undefined);
-
-  mainFactions.sort((a, b) => a.id - b.id);
-
   const list = [];
-  mainFactions.forEach((mainFaction) => {
-    list.push({ faction: mainFaction, isSub: false });
-    const children = subFactions.filter((sub) => sub.parentFaction === mainFaction.id);
-    children.sort((a, b) => a.id - b.id);
-    children.forEach((child) => {
-      list.push({ faction: child, isSub: true });
+
+  $gameFactions.getHyperpowers().forEach((hp) => {
+    const head = $gameFactions.getHyperpowerHead(hp.id);
+    list.push({
+      kind: "hyperpower",
+      isSub: false,
+      hyperpower: hp,
+      faction: head,
+      standingKey: head ? String(head.id) : "hp:" + hp.id,
+      name: this.hyperpowerLabel(hp, head),
+      iconIndex: head ? head.iconIndex : 0,
+    });
+    $gameFactions.getHyperpowerFactions(hp.id).forEach((child) => {
+      if (child.hyperpowerHead) return;
+      list.push({
+        kind: "faction",
+        isSub: true,
+        faction: child,
+        standingKey: String(child.id),
+        name: FactionDataManager.instance.t(child.name),
+        iconIndex: child.iconIndex,
+      });
     });
   });
+
+  $gameFactions.getIndependentFactions().forEach((faction) => {
+    list.push({
+      kind: "faction",
+      isSub: false,
+      faction: faction,
+      standingKey: String(faction.id),
+      name: FactionDataManager.instance.t(faction.name),
+      iconIndex: faction.iconIndex,
+    });
+  });
+
   return list;
+};
+
+// Whose standings the page is showing. The switcher lives on the right page,
+// as it does in every other book spread.
+Scene_FactionStatus.prototype.switchableMembers = function () {
+  return (window.$gameParty && $gameParty.members) ? $gameParty.members().filter((m) => !!m) : [];
+};
+
+Scene_FactionStatus.prototype.viewedActor = function () {
+  const members = this.switchableMembers();
+  if (!members.length) return null;
+  const idx = Math.max(0, Math.min(members.length - 1, this._repActorIndex || 0));
+  return members[idx];
+};
+
+Scene_FactionStatus.prototype.switchRepActor = function (index) {
+  const members = this.switchableMembers();
+  if (index < 0 || index >= members.length || index === this._repActorIndex) return;
+  SoundManager.playCursor();
+  this._repActorIndex = index;
+  this.refreshUIFactions();
+};
+
+Scene_FactionStatus.prototype.cycleRepActor = function (dir) {
+  const members = this.switchableMembers();
+  if (members.length <= 1) return;
+  const next = ((this._repActorIndex || 0) + dir + members.length) % members.length;
+  this.switchRepActor(next);
 };
 
 Scene_FactionStatus.prototype.refreshUIFactions = function () {
@@ -952,31 +1193,32 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
   }
 
   const selectedRecord = factionList[this._dndSelectedIndex] || null;
+  // Standings are read for one character at a time: the world's opinion plus
+  // that traveller's own. See Game_Factions.getReputationFor.
+  const viewed = this.viewedActor();
 
   // Generate Left Page: Faction Politics Spread
   let listHTML = "";
   factionList.forEach((item, idx) => {
-    const faction = item.faction;
     const isFocused = this._dndSelectedIndex === idx ? "selected" : "";
     const isSub = item.isSub ? "faction-sub" : "";
     const subMarker = item.isSub ? `<span class="faction-sub-marker">⤍</span>` : "";
 
-    const factionName = FactionDataManager.instance.t(faction.name);
-    const reputation = $gameFactions.getReputation(faction.id);
-    const reputationLevel = $gameFactions.getReputationLevel(faction.id);
-    const reputationColor = $gameFactions.getReputationColor(faction.id);
+    const reputation = $gameFactions.getReputationFor(viewed, item.standingKey);
+    const reputationLevel = $gameFactions.reputationLevelOf(reputation);
+    const reputationColor = $gameFactions.reputationColorOf(reputation);
     const canvasId = `fac-canvas-${idx}`;
 
     listHTML += `
       <div class="faction-row ${isFocused} ${isSub}" onclick="SceneManager._scene.selectUIFaction(${idx})">
         ${subMarker}
-        ${!item.isSub && faction.iconIndex ? `
+        ${!item.isSub && item.iconIndex ? `
           <div class="faction-icon-frame">
             <canvas id="${canvasId}" width="32" height="32" style="width:24px; height:24px;"></canvas>
           </div>
         ` : ""}
         <div class="faction-info">
-          <span class="faction-name">${factionName}</span>
+          <span class="faction-name">${item.name}</span>
         </div>
         <span class="faction-rep-badge" style="color: ${reputationColor};">${reputationLevel} (${reputation})</span>
       </div>
@@ -1000,9 +1242,24 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     </div>
   `;
 
-  // Determine left page key to see if left page needs full render
-  const leftPageKey = `${factionList.length}`;
+  // Determine left page key to see if left page needs full render.
+  // The badges are per character, so a change of character is a full redraw.
+  const leftPageKey = `${factionList.length}:${viewed ? viewed.actorId() : 0}`;
   const leftPageContainer = this._dndContainer.querySelector(".left-page");
+
+  // The character switcher belongs at the top of the RIGHT page, right
+  // aligned, as it does in every other book spread in the game.
+  const members = this.switchableMembers();
+  let switcherHTML = "";
+  if (members.length > 1 && window.CharSwitcher) {
+    const tabs = members.map((m, i) => {
+      const sel = (this._repActorIndex || 0) === i ? "selected" : "";
+      return `<div class="companion-tab ${sel}" onclick="SceneManager._scene.switchRepActor(${i})">${m.name()}</div>`;
+    }).join("");
+    switcherHTML = `<div class="companion-switcher" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:8px;">` +
+      window.CharSwitcher.inner(`<div class="companion-tabs-row">${tabs}</div>`, members.length) +
+      `</div>`;
+  }
 
   // Generate Right Page: Political Heraldry Codicil
   let rightPageHTML = "";
@@ -1010,6 +1267,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
   if (!selectedRecord) {
     rightPageHTML = `
       <div class="right-page">
+        ${switcherHTML}
         <div class="faction-heraldry-card" style="justify-content: center; text-align: center; padding: 40px 10px;">
           <div style="font-size: 4em; margin-bottom: 20px;"></div>
           <h3 class="title" style="border:none; margin-bottom: 10px;">${T("Factions.selectTitle")}</h3>
@@ -1020,16 +1278,25 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
       </div>
     `;
   } else {
+    // A hyperpower's dossier is read off its head faction where it has one, so
+    // an entry with no faction of its own still has a description to show.
     const faction = selectedRecord.faction;
-    const factionName = FactionDataManager.instance.t(faction.name);
-    const description = FactionDataManager.instance.t(faction.description);
+    const isPower = selectedRecord.kind === "hyperpower";
+    const hp = selectedRecord.hyperpower;
+    const factionName = selectedRecord.name;
+    const description = faction
+      ? FactionDataManager.instance.t(faction.description)
+      : T("Factions.noDossier");
 
+    // Who speaks for it. A hyperpower answers with its own roster, including
+    // the second track (holy_leaders) where the power keeps one.
+    const leaderSource = isPower
+      ? [].concat(hp.data.leaders || [], hp.data.holy_leaders || [])
+      : (faction && faction.leaders) || [];
     let leadersHTML = "";
-    if (faction.leaders && faction.leaders.length > 0) {
-      const leaderNames = faction.leaders.map(l => {
-        if (l && l.name) {
-          return FactionDataManager.instance.t(l.name);
-        }
+    if (leaderSource.length > 0) {
+      const leaderNames = leaderSource.slice(0, 8).map(l => {
+        if (l && l.name) return FactionDataManager.instance.t(l.name);
         return FactionDataManager.instance.t(l);
       }).join(", ");
       leadersHTML = `
@@ -1039,32 +1306,89 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
       `;
     }
 
+    // The present day, where the roster above is the past: whichever real
+    // political party (or, since not everyone answers to one, independent
+    // politician) NPCPolitics currently has sitting in this hyperpower's own
+    // seat of power. Only hyperpowers NPCPolitics actually simulates have
+    // this (Mages Guild, Free States of Midwest and a few others are lore
+    // only, so `live` is null for them and nothing is shown).
+    let currentGovHTML = "";
+    if (isPower && window.NPCPolitics) {
+      const live = window.NPCPolitics.getPower(hp.name);
+      if (live) {
+        const head = live.politicians?.[live.headId];
+        const rulingParty = live.parties?.find(p => p.id === live.rulingPartyId);
+        const partyLine = rulingParty ? FactionDataManager.instance.t(rulingParty.name) : T("Factions.independentParty");
+        currentGovHTML = `
+          <div style="margin-top: 15px; font-family: 'Lora', serif; font-size: 0.9em; border-top: 1px solid #c9b4a1; padding-top: 10px;">
+            <strong>${T("Factions.currentGovernment")}</strong>
+            ${head ? `<span style="font-style: italic;">${FactionDataManager.instance.t(head.name)}</span> (${window.NPCPolitics.powerLabel(live, "headTitle")}), ` : ""}${T("Factions.rulingPartyLine", { party: partyLine })}
+          </div>
+        `;
+      }
+    }
+
+    // The branches that answer to this power, so the tree is readable from the
+    // dossier as well as from the list.
+    let branchesHTML = "";
+    if (isPower) {
+      const branches = $gameFactions.getHyperpowerFactions(hp.id).filter(f => !f.hyperpowerHead);
+      if (branches.length) {
+        branchesHTML = `
+          <div style="margin-top: 12px; font-family: 'Lora', serif; font-size: 0.9em;">
+            <strong>${T("Factions.branches")}</strong> <span style="font-style: italic;">${branches.map(b => FactionDataManager.instance.t(b.name)).join(", ")}</span>
+          </div>
+        `;
+      }
+    }
+
+    // This character's standing, named as well as numbered.
+    const rep = $gameFactions.getReputationFor(viewed, selectedRecord.standingKey);
+    const standingHTML = viewed ? `
+      <div style="display:flex; justify-content:space-between; margin-top:12px; font-family:'Lora', serif; font-size:0.9em; border-top:1px solid #c9b4a1; padding-top:10px;">
+        <span>${T("Factions.standingOf", { name: viewed.name() })}</span>
+        <span style="color:${$gameFactions.reputationColorOf(rep)}; font-weight:bold;">${$gameFactions.reputationLevelOf(rep)} (${rep})</span>
+      </div>
+    ` : "";
+
+    // A seat at the assembly, when the plugin that hands them out is loaded.
+    let postHTML = "";
+    if (viewed && window.ONUAssembly && typeof window.ONUAssembly.postLabelFor === "function") {
+      const label = window.ONUAssembly.postLabelFor(viewed, selectedRecord.standingKey);
+      if (label) {
+        postHTML = `<div style="margin-top:8px; font-family:'Lora', serif; font-size:0.9em; font-style:italic; color:#2e7d32;">${label}</div>`;
+      }
+    }
+
     let relationsHTML = "";
-    const allFactionsList = $gameFactions.getAllFactions();
-    const otherParentFactions = allFactionsList.filter(f => f.parentFaction === undefined && f.id !== faction.id).slice(0, 3);
+    if (faction) {
+      const otherParentFactions = $gameFactions.getIndependentFactions()
+        .filter(f => f.id !== faction.id).slice(0, 3);
 
-    otherParentFactions.forEach(other => {
-      const relValue = $gameFactions.getRelationship(faction.id, other.id);
-      const relName = $gameFactions.getRelationshipName(faction.id, other.id);
-      let relColor = "#6b5242"; // Neutral
-      if (relValue > 0) relColor = "#2e7d32"; // Allied/Friendly
-      if (relValue < 0) relColor = "#c62828"; // Hostile
+      otherParentFactions.forEach(other => {
+        const relValue = $gameFactions.getRelationship(faction.id, other.id);
+        const relName = $gameFactions.getRelationshipName(faction.id, other.id);
+        let relColor = "#6b5242"; // Neutral
+        if (relValue > 0) relColor = "#2e7d32"; // Allied/Friendly
+        if (relValue < 0) relColor = "#c62828"; // Hostile
 
-      relationsHTML += `
-        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-family: 'Lora', serif; font-size: 0.9em; border-bottom: 1px dashed #d1c2b4; padding-bottom: 2px;">
-          <span>vs. ${FactionDataManager.instance.t(other.name)}</span>
-          <span style="color: ${relColor}; font-weight: bold;">${relName}</span>
-        </div>
-      `;
-    });
+        relationsHTML += `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-family: 'Lora', serif; font-size: 0.9em; border-bottom: 1px dashed #d1c2b4; padding-bottom: 2px;">
+            <span>vs. ${FactionDataManager.instance.t(other.name)}</span>
+            <span style="color: ${relColor}; font-weight: bold;">${relName}</span>
+          </div>
+        `;
+      });
+    }
 
     rightPageHTML = `
       <div class="right-page">
+        ${switcherHTML}
         <div class="faction-heraldry-card">
           <div class="heraldry-emblem-box">
             <canvas id="heraldry-canvas" width="32" height="32" style="width:36px; height:36px; image-rendering: pixelated;"></canvas>
           </div>
-          
+
           <div class="heraldry-header">
             <h3 class="heraldry-title">${factionName}</h3>
           </div>
@@ -1073,7 +1397,11 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
             ${description}
           </div>
 
+          ${currentGovHTML}
           ${leadersHTML}
+          ${branchesHTML}
+          ${standingHTML}
+          ${postHTML}
 
           <div class="politics-grid">
             <h4 style="font-family: 'Lora', serif; font-size: 1.1em; color: #58180D; margin: 0 0 8px 0; border-bottom: 1px solid #d1c2b4; padding-bottom: 4px;">${T("Factions.diplomaticAgreements")}</h4>
@@ -1097,9 +1425,8 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
 
     // Draw emblems on canvases
     factionList.forEach((item, idx) => {
-      const faction = item.faction;
-      if (!item.isSub && faction.iconIndex) {
-        this.drawUIFactionEmblem(faction.iconIndex, `fac-canvas-${idx}`);
+      if (!item.isSub && item.iconIndex) {
+        this.drawUIFactionEmblem(item.iconIndex, `fac-canvas-${idx}`);
       }
     });
   } else {
@@ -1121,8 +1448,8 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     }
   }
 
-  if (selectedRecord && selectedRecord.faction.iconIndex) {
-    this.drawUIFactionEmblem(selectedRecord.faction.iconIndex, "heraldry-canvas");
+  if (selectedRecord && selectedRecord.iconIndex) {
+    this.drawUIFactionEmblem(selectedRecord.iconIndex, "heraldry-canvas");
   }
 
   // Scroll active item into view
@@ -1175,6 +1502,7 @@ const _Scene_FactionStatus_terminate = Scene_FactionStatus.prototype.terminate;
 Scene_FactionStatus.prototype.terminate = function () {
   _Scene_FactionStatus_terminate.call(this);
   UIFactionsInputManager.deactivate();
+  if (window.CharSwitcher) window.CharSwitcher.removeTabKey(this);
   if (this._dndContainer) {
     const container = this._dndContainer;
     container.style.transition = "opacity 0.2s ease-out";
@@ -1207,7 +1535,11 @@ const UIFactionsInputManager = {
   update: function () {
     if (!this._active || !this._scene) return;
 
-    if (Input.isTriggered('down')) {
+    if (Input.isTriggered('pagedown')) {
+      this._scene.cycleRepActor(1);
+    } else if (Input.isTriggered('pageup')) {
+      this._scene.cycleRepActor(-1);
+    } else if (Input.isTriggered('down')) {
       this.handleMove("down");
     } else if (Input.isTriggered('up')) {
       this.handleMove("up");
@@ -1243,8 +1575,14 @@ const UIFactionsInputManager = {
     if (scene && scene._selectMode) {
       const list = scene.getFactionList();
       const entry = list[scene._dndSelectedIndex];
+      // Five hyperpowers have no faction of their own, so there is no id to
+      // hand back: a caller asking for a faction cannot be given one of those.
+      if (!entry || !entry.faction) {
+        SoundManager.playBuzzer();
+        return;
+      }
       SoundManager.playOk();
-      if (entry && scene._onConfirm) {
+      if (scene._onConfirm) {
         const callback = scene._onConfirm;
         scene._onConfirm = null;
         callback(entry.faction.id);
@@ -1299,39 +1637,32 @@ Window_FactionStatus.prototype.initialize = function (rect) {
 
 
 
+// The canvas fallback list groups the same way the DOM spread does: by
+// hyperpower, since `parentFaction` names one of those and not another faction.
+// The head faction stands in for its power, so it is not repeated underneath.
 Window_FactionStatus.prototype.makeItemList = function () {
 
   this._data = [];
 
-  const allFactions = $gameFactions.getAllFactions();
+  $gameFactions.getHyperpowers().forEach((hp) => {
 
-  const mainFactions = allFactions.filter((f) => f.parentFaction === undefined);
+    const head = $gameFactions.getHyperpowerHead(hp.id);
 
-  const subFactions = allFactions.filter((f) => f.parentFaction !== undefined);
+    if (head) this._data.push({ faction: head, isSub: false });
 
+    $gameFactions.getHyperpowerFactions(hp.id).forEach((child) => {
 
-
-  mainFactions.sort((a, b) => a.id - b.id);
-
-
-
-  mainFactions.forEach((mainFaction) => {
-
-    this._data.push({ faction: mainFaction, isSub: false });
-
-    const children = subFactions.filter(
-
-      (sub) => sub.parentFaction === mainFaction.id
-
-    );
-
-    children.sort((a, b) => a.id - b.id);
-
-    children.forEach((child) => {
+      if (child.hyperpowerHead) return;
 
       this._data.push({ faction: child, isSub: true });
 
     });
+
+  });
+
+  $gameFactions.getIndependentFactions().forEach((faction) => {
+
+    this._data.push({ faction: faction, isSub: false });
 
   });
 

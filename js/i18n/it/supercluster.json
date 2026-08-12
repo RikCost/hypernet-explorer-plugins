@@ -1,52 +1,52 @@
 {
   "supercluster": {
     "virgo_supercluster": {
-      "name": "Virgo Supercluster"
+      "name": "Superammasso della Vergine"
     },
     "hydra-centaurus_supercluster": {
-      "name": "Hydra-Centaurus Supercluster"
+      "name": "Superammasso Idra-Centauro"
     },
     "pavo-indus_supercluster": {
-      "name": "Pavo-Indus Supercluster"
+      "name": "Superammasso Pavone-Indiano"
     },
     "southern_supercluster": {
-      "name": "Southern Supercluster"
+      "name": "Superammasso Meridionale"
     },
     "antlia_supercluster": {
-      "name": "Antlia Supercluster"
+      "name": "Superammasso della Macchina Pneumatica"
     },
     "centaurus_supercluster": {
-      "name": "Centaurus Supercluster"
+      "name": "Superammasso del Centauro"
     },
     "hydra_supercluster": {
-      "name": "Hydra Supercluster"
+      "name": "Superammasso dell'Idra"
     },
     "fornax_supercluster": {
-      "name": "Fornax Supercluster"
+      "name": "Superammasso della Fornace"
     },
     "norma_supercluster": {
-      "name": "Norma Supercluster"
+      "name": "Superammasso del Regolo"
     },
     "great_attractor": {
-      "name": "Great Attractor"
+      "name": "Grande Attrattore"
     },
     "perseus-pisces_supercluster": {
-      "name": "Perseus-Pisces Supercluster"
+      "name": "Superammasso Perseo-Pesci"
     },
     "coma_supercluster": {
-      "name": "Coma Supercluster"
+      "name": "Superammasso della Chioma"
     },
     "hercules_superclusters": {
-      "name": "Hercules Superclusters"
+      "name": "Superammassi di Ercole"
     },
     "shapley_supercluster": {
-      "name": "Shapley Supercluster"
+      "name": "Superammasso di Shapley"
     },
     "sculptor_supercluster": {
-      "name": "Sculptor Supercluster"
+      "name": "Superammasso dello Scultore"
     },
     "bootes_supercluster": {
-      "name": "Bootes Supercluster"
+      "name": "Superammasso di Boote"
     }
   }
 }

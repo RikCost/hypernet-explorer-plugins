@@ -111,9 +111,26 @@
     const worldMapId = 315;
     const procMapId  = 636;
 
+    // Item 141 is the "Diving suit"; 142 is the UV sunglasses filed beside it,
+    // which the Ocean descent used to ask for, so the suit never opened the way
+    // down. Kept in step with MovementInteractionSystem.js.
+    const DIVING_SUIT_ITEM_ID = 141;
+
     const VAR_WORLD_X  = 43;
     const VAR_WORLD_Y  = 44;
     const VAR_DEST_MAP = 45;
+
+    // The <Coords x y> pair the editor's map template was saved with. 1269 of the
+    // 1319 maps that carry the tag at all still hold this exact pair, which is a
+    // copy of the Omega Tower's square rather than a statement about where the map
+    // is: honouring it would file every junk shop, cellar and bedroom in the game
+    // as standing on the Omega Tower, park every vehicle left in one there, and
+    // send every "return to the world map" to the same square (the long-standing
+    // "everything comes out at the Omega Tower" bug). It is therefore read as
+    // "nobody set this" and the party's own last world square is used instead.
+    // A map that really does belong to that square is reached from it, so its
+    // last-known coordinate already says so.
+    const TEMPLATE_COORDS = { x: 79, y: 125 };
 
     const BORDER_DETECTION_RANGE = 3;
     const PROC_MAP_WIDTH  = 64;
@@ -362,10 +379,33 @@
         return tracks[Math.min(tracks.length - 1, Math.floor(rng() * tracks.length))];
     }
 
+    // An empty world (WorldManager.populationMode) is not supposed to sound
+    // like the world it was, so every biome carries a second, much narrower
+    // pool of dark and atmospheric tracks in `emptyWorldBGM`
+    // (tools/worldgen/gen_empty_world_bgm.js). It is ONE pool, deliberately:
+    // nothing about an empty world changes when the sun comes up, so day and
+    // night are the same. A zombie apocalypse is just as depopulated, so it
+    // shares the same override rather than getting a pool of its own.
+    function isEmptyWorld() {
+        const WM = window.WorldManager;
+        if (!WM) return false;
+        if (typeof WM.isEmptyWorld === 'function' && WM.isEmptyWorld()) return true;
+        return !!(typeof WM.isZombieWorld === 'function' && WM.isZombieWorld());
+    }
+
+    function emptyWorldPool(biome) {
+        return ((biome && biome.emptyWorldBGM) || []).filter(n => n && n.trim());
+    }
+
     // The night pool is optional: a biome with no `bgmNight` keeps its day pool
     // after dark rather than falling silent.
     function biomeTrackPool(biome, isNight) {
         const clean = arr => (arr || []).filter(n => n && n.trim());
+        const empty = emptyWorldPool(biome);
+        // In an empty world the biome's own two pools are not consulted at all.
+        // A biome the generator has not reached yet still falls through to
+        // them, so a missing key is quieter data rather than silence.
+        if (isEmptyWorld() && empty.length) return empty;
         const day   = clean(biome.bgm);
         const night = clean(biome.bgmNight);
         return (isNight && night.length > 0) ? night : day;
@@ -388,7 +428,12 @@
     function watchNationMusicChange() {
         if (Graphics.frameCount % 30 !== 0) return;
         if (!$gameMap || $gameMap.mapId() === WORLD_MAP_ID) return;
-        const sig = currentNationId() + '|' + (isNightTimeNow() ? 1 : 0);
+        // An empty world's music does not answer to the clock (one pool for
+        // both halves of the day), so only a border crossing is worth a
+        // re-pick there; watching the daylight would restart the ambience at
+        // 20:00 and 06:00 for a track that is not going to change.
+        const half = isEmptyWorld() ? 0 : (isNightTimeNow() ? 1 : 0);
+        const sig = currentNationId() + '|' + half;
         if (_lastMusicSig === null) { _lastMusicSig = sig; return; }
         if (sig === _lastMusicSig) return;
         _lastMusicSig = sig;
@@ -435,13 +480,28 @@
         if (!biome) { AudioManager.stopBgs(); return; }
 
         const isNightTime = isNightTimeNow();
-        _lastMusicSig     = currentNationId() + '|' + (isNightTime ? 1 : 0);
+        // Must be built exactly as watchNationMusicChange builds it, or the
+        // two disagree and the watcher re-picks on every throttled tick.
+        _lastMusicSig     = currentNationId() + '|' +
+                            (isEmptyWorld() ? 0 : (isNightTime ? 1 : 0));
 
-        if (!isProcGenMap && $dataMap && $dataMap.autoplayBgm) {
+        // A hand-made map normally keeps whatever music it was authored with.
+        // An empty world overrules that: having got this far the map HAS a
+        // biome (no biome returns above), and the biome's empty-world pool is
+        // what an emptied world sounds like, whoever authored the map. The
+        // map's own track survives as the fallback for a map that declares no
+        // biome at all, which never reaches this line.
+        const emptyOverride = isEmptyWorld() && emptyWorldPool(biome).length > 0;
+
+        if (!isProcGenMap && $dataMap && $dataMap.autoplayBgm && !emptyOverride) {
             // Keep map's own BGM; only handle BGS below
         } else {
+            // The empty-world pool is one list for both halves of the day, so
+            // the pick is seeded as day whatever the clock says: otherwise the
+            // track would change at 20:00 for no reason the player can see.
+            const seedNight = emptyOverride ? false : isNightTime;
             const tracks = biomeTrackPool(biome, isNightTime);
-            const target = pickBiomeTrack(biomeName, tracks, isNightTime);
+            const target = pickBiomeTrack(biomeName, tracks, seedNight);
             const playing = AudioManager._currentBgm && AudioManager._currentBgm.name;
             if (!target) {
                 // A biome with no track list (house interiors, generic homes, ...)
@@ -801,41 +861,77 @@
     let questMarkerSprites = [];
     let questMarkerKey     = null;   // signature of the marker set on screen
 
-    // One plate per tile: several objectives can share a coordinate.
-    function collectQuestMarkers() {
+    // Every quest the player is actively chasing, as pinned by KanbanQuest
+    // (the single feed for colour/icon identity - see its activeMarkers()),
+    // falling back to ProceduralQuests directly if the board plugin is absent.
+    function activeQuestMarkerList() {
+        const kb = window.KanbanQuest;
+        if (kb && typeof kb.activeMarkers === 'function') {
+            try { return kb.activeMarkers(); } catch (e) { }
+        }
         const api = window.ProceduralQuests;
         if (!api || typeof api.questMarkers !== 'function') return [];
+        try { return api.questMarkers(); } catch (e) { return []; }
+    }
+
+    function iconSetBitmap() {
+        return ImageManager.loadSystem('IconSet');
+    }
+
+    // Crops one 32px IconSet cell into `bmp` at (dx,dy), scaled to `size`.
+    // Silently does nothing if the sheet or the icon index isn't available.
+    function bltIcon(bmp, icon, dx, dy, size) {
+        if (icon == null) return;
+        const sheet = iconSetBitmap();
+        if (!sheet.isReady()) return;
+        const cols = 16, cell = 32;
+        const col = icon % cols, row = Math.floor(icon / cols);
+        bmp.blt(sheet, col * cell, row * cell, cell, cell, dx, dy, size, size);
+    }
+
+    // One plate per tile: several objectives can share a coordinate, each
+    // keeping its own colour/icon so two contracts pinned at the same spot are
+    // still told apart.
+    function collectQuestMarkers() {
         const byTile = new Map();
-        for (const m of api.questMarkers()) {
+        for (const m of activeQuestMarkerList()) {
             if (m.wx == null || m.wy == null) continue;
             const key = m.wx + ',' + m.wy;
             let entry = byTile.get(key);
             if (!entry) {
-                entry = { x: m.wx, y: m.wy, lines: [] };
+                entry = { x: m.wx, y: m.wy, lines: [], colors: [], icons: [] };
                 byTile.set(key, entry);
             }
             const step = m.multi ? ` ${m.step}/${m.stepCount}` : '';
             const line = m.label + step;
-            if (!entry.lines.includes(line)) entry.lines.push(line);
+            if (!entry.lines.includes(line)) {
+                entry.lines.push(line);
+                entry.colors.push(m.color || '#ffd76a');
+                entry.icons.push(m.icon != null ? m.icon : null);
+            }
         }
         return Array.from(byTile.values());
     }
 
     class Sprite_QuestMarker extends Sprite {
-        initialize(tileX, tileY, lines) {
+        initialize(tileX, tileY, lines, colors, icons) {
             super.initialize();
             this._tileX = tileX;
             this._tileY = tileY;
             this._lines = lines;
+            this._colors = colors || [];
+            this._icons = icons || [];
             this._bitmapCreated = false;
             this.z = 8; // above the "???" plates
             this.visible = false;
         }
         createBitmap() {
             if (this._bitmapCreated) return;
-            const lineH = QUEST_MARKER_FONT + 6;
+            const iconSize = QUEST_MARKER_FONT + 3;
+            const lineH = Math.max(QUEST_MARKER_FONT + 6, iconSize + 4);
+            const textIndent = iconSize + 6;
             const w = 320;
-            const pointer = 12; // room for the marker pip under the text
+            const pointer = 12; // room for the marker pip(s) under the text
             const h = lineH * this._lines.length + pointer + 4;
             this.bitmap = new Bitmap(w, h);
             this.bitmap.fontSize = QUEST_MARKER_FONT;
@@ -843,30 +939,42 @@
             this.bitmap.fontBold = true;
             this.bitmap.outlineWidth = 4;
             this.bitmap.outlineColor = 'black';
-            this.bitmap.textColor = '#ffd76a';
-            for (let i = 0; i < this._lines.length; i++) {
-                this.bitmap.drawText(this._lines[i], 0, i * lineH, w, lineH, 'center');
+            const iconsReady = iconSetBitmap().isReady();
+            if (!iconsReady) {
+                // Icons weren't loaded yet: draw text-only now, rebuild once they are.
+                iconSetBitmap().addLoadListener(() => { this._bitmapCreated = false; });
             }
-            // A gold diamond pip pointing down at the tile, matching the quest
-            // markers the world map (M) paints. Drawn rather than typed so it does
-            // not depend on the font carrying a symbol glyph.
+            for (let i = 0; i < this._lines.length; i++) {
+                this.bitmap.textColor = this._colors[i] || '#ffd76a';
+                this.bitmap.drawText(this._lines[i], textIndent, i * lineH, w - textIndent, lineH, 'center');
+                if (iconsReady) {
+                    bltIcon(this.bitmap, this._icons[i], 4, i * lineH + (lineH - iconSize) / 2, iconSize);
+                }
+            }
+            // One coloured diamond pip per quest sharing this tile, pointing down
+            // at it, fanned out so they never merge into a single blob.
             const ctx = this.bitmap.context;
-            const cx = w / 2;
             const cy = h - pointer / 2 - 2;
             const r = 5;
-            ctx.save();
-            ctx.fillStyle = '#ffd76a';
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(cx, cy - r);
-            ctx.lineTo(cx + r, cy);
-            ctx.lineTo(cx, cy + r);
-            ctx.lineTo(cx - r, cy);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-            ctx.restore();
+            const step = (r + 3) * 1.6;
+            const n = this._colors.length || 1;
+            const startX = w / 2 - ((n - 1) * step) / 2;
+            for (let i = 0; i < n; i++) {
+                const px = startX + i * step;
+                ctx.save();
+                ctx.fillStyle = this._colors[i] || '#ffd76a';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(px, cy - r);
+                ctx.lineTo(px + r, cy);
+                ctx.lineTo(px, cy + r);
+                ctx.lineTo(px - r, cy);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+            }
             this.bitmap._baseTexture.update();
             this.anchor.x = 0.5;
             this.anchor.y = 1;
@@ -888,7 +996,7 @@
         const scene = SceneManager._scene;
         if (!scene || !scene._spriteset || !scene._spriteset._tilemap) return;
         for (const m of markers) {
-            const sprite = new Sprite_QuestMarker(m.x, m.y, m.lines);
+            const sprite = new Sprite_QuestMarker(m.x, m.y, m.lines, m.colors, m.icons);
             scene._spriteset._tilemap.addChild(sprite);
             questMarkerSprites.push(sprite);
         }
@@ -933,6 +1041,241 @@
             questMarkerKey = key;
         }
         refreshQuestMarkers();
+    }
+
+    // ============================================================================
+    // QUEST COMPASS (screen-edge direction arrows, every map)
+    // ----------------------------------------------------------------------------
+    // The plates above are pinned to a real tile and only mean anything within
+    // sight of it. While an objective is off-screen on map 315, an arrow at the
+    // border points toward it (the same GTA trick WorldMap.js's fullscreen "M"
+    // sheet already uses) and steps aside once the plate can do the job exactly.
+    // On any OTHER map - procedural or authored - there is no tile-precise
+    // position for an objective pinned on a different world square, so the
+    // arrow there carries direction only: the delta between this map's own
+    // world square (currentWorldCoords()) and the objective's. Standing on the
+    // very square it's pinned to collapses that delta to (0,0); rather than
+    // invent a direction, the marker docks at a fixed "it's here somewhere"
+    // post instead of pointing.
+    // ============================================================================
+    const COMPASS_MARGIN = 40;   // px kept clear of the real screen edge
+    const COMPASS_ARROW = 24;    // arrow sprite size
+    const COMPASS_ICON = 20;     // IconSet crop size on the label plate
+    let compassContainer = null;
+    let compassKey = null;
+    const compassArrowBitmaps = new Map(); // colour -> cached triangle bitmap
+
+    function compassArrowBitmap(color) {
+        const key = color || '#ffd76a';
+        const cached = compassArrowBitmaps.get(key);
+        if (cached) return cached;
+        const s = COMPASS_ARROW;
+        const bmp = new Bitmap(s, s);
+        const ctx = bmp.context;
+        ctx.beginPath();
+        ctx.moveTo(s / 2, 1);
+        ctx.lineTo(s - 2, s - 3);
+        ctx.lineTo(s / 2, s - 8);
+        ctx.lineTo(2, s - 3);
+        ctx.closePath();
+        ctx.fillStyle = key;
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.fill();
+        ctx.stroke();
+        bmp.baseTexture.update();
+        compassArrowBitmaps.set(key, bmp);
+        return bmp;
+    }
+
+    // Quest icon + name, tinted to the quest's own colour, sized to its text.
+    function compassLabelSprite(marker) {
+        const text = marker.label || marker.title || '?';
+        const probe = new Bitmap(8, 8);
+        probe.fontFace = 'GameFont, sans-serif';
+        probe.fontSize = QUEST_MARKER_FONT;
+        probe.fontBold = true;
+        const textW = Math.ceil(probe.measureTextWidth(text));
+        if (probe.destroy) probe.destroy();
+        const iconsReady = iconSetBitmap().isReady();
+        const pad = 5;
+        const iconW = (iconsReady && marker.icon != null) ? COMPASS_ICON + pad : 0;
+        const w = Math.max(24, iconW + textW + pad * 2);
+        const h = Math.max(COMPASS_ICON, QUEST_MARKER_FONT + 6);
+        const bmp = new Bitmap(w, h);
+        if (iconW) {
+            bltIcon(bmp, marker.icon, 0, (h - COMPASS_ICON) / 2, COMPASS_ICON);
+        } else if (!iconsReady) {
+            iconSetBitmap().addLoadListener(() => { compassKey = null; }); // rebuild once loaded
+        }
+        bmp.fontFace = 'GameFont, sans-serif';
+        bmp.fontSize = QUEST_MARKER_FONT;
+        bmp.fontBold = true;
+        bmp.outlineWidth = 4;
+        bmp.outlineColor = 'black';
+        bmp.textColor = marker.color || '#ffd76a';
+        bmp.drawText(text, iconW, 0, textW + 4, h, 'left');
+        const sprite = new Sprite(bmp);
+        sprite.anchor.x = 0.5;
+        return sprite;
+    }
+
+    function ensureCompassContainer() {
+        const scene = SceneManager._scene;
+        if (!scene || !(scene instanceof Scene_Map)) return null;
+        if (compassContainer && (compassContainer.transform === null || compassContainer.parent !== scene)) {
+            compassContainer = null;
+            compassKey = null;
+        }
+        if (!compassContainer) {
+            compassContainer = new Sprite();
+            compassContainer._groups = [];
+            // Added after every window Scene_Map.createAllWindows already built
+            // (this runs from the update loop, later), so it draws above them -
+            // a small HUD overlay, like the party HUD or the minimap.
+            scene.addChild(compassContainer);
+        }
+        return compassContainer;
+    }
+
+    function removeCompassMarkers() {
+        if (compassContainer) {
+            for (const group of compassContainer._groups || []) {
+                if (group._label && group._label.bitmap) group._label.bitmap.destroy();
+            }
+            if (compassContainer.transform && compassContainer.parent) {
+                compassContainer.parent.removeChild(compassContainer);
+            }
+        }
+        compassContainer = null;
+        compassKey = null;
+    }
+
+    function hideCompassMarkers() {
+        if (!compassContainer) return;
+        for (const group of compassContainer._groups) group.visible = false;
+    }
+
+    function compassSignature(markers) {
+        return markers.map(m => m.qid + ':' + m.wx + ',' + m.wy + ':' + (m.label || m.title)).join(';');
+    }
+
+    function buildCompassMarkers(markers) {
+        const container = ensureCompassContainer();
+        if (!container) return null;
+        // The arrow bitmap is shared/cached by colour and must survive; only the
+        // per-marker label bitmap (freshly drawn text+icon) is this build's own.
+        for (const group of container._groups) {
+            if (group._label && group._label.bitmap) group._label.bitmap.destroy();
+        }
+        container.removeChildren();
+        container._groups = [];
+        for (const m of markers) {
+            const group = new Sprite();
+            const arrow = new Sprite(compassArrowBitmap(m.color));
+            arrow.anchor.x = 0.5;
+            arrow.anchor.y = 0.5;
+            const label = compassLabelSprite(m);
+            group.addChild(arrow);
+            group.addChild(label);
+            group._arrow = arrow;
+            group._label = label;
+            group._marker = m;
+            group.visible = false;
+            container.addChild(group);
+            container._groups.push(group);
+        }
+        return container;
+    }
+
+    // Screen position of a tile on the map currently loaded, after the camera
+    // zoom MousePan.js applies on map 315 (pivoted on the screen centre there).
+    function localTileScreenPos(tx, ty) {
+        const tw = $gameMap.tileWidth(), th = $gameMap.tileHeight();
+        const baseX = ($gameMap.adjustX(tx) + 0.5) * tw;
+        const baseY = ($gameMap.adjustY(ty) + 0.5) * th;
+        const zoom = $gameScreen ? $gameScreen.zoomScale() : 1;
+        if (!zoom || zoom === 1) return { x: baseX, y: baseY };
+        const zx = $gameScreen.zoomX(), zy = $gameScreen.zoomY();
+        return { x: zx + (baseX - zx) * zoom, y: zy + (baseY - zy) * zoom };
+    }
+
+    function updateQuestCompass() {
+        if (!$gameMap) return;
+        // Never over a message/choice window: those run inside Scene_Map itself
+        // rather than a pushed scene, so the compass would otherwise draw over them.
+        if ($gameMessage && $gameMessage.isBusy()) { hideCompassMarkers(); return; }
+        const markers = activeQuestMarkerList();
+        if (!markers.length) { removeCompassMarkers(); return; }
+
+        const key = compassSignature(markers);
+        if (key !== compassKey) {
+            if (!buildCompassMarkers(markers)) return;
+            compassKey = key;
+        }
+        const container = ensureCompassContainer();
+        if (!container) return;
+
+        const cx = Graphics.width / 2;
+        const cy = Graphics.height / 2;
+        const halfW = Math.max(1, cx - COMPASS_MARGIN);
+        const halfH = Math.max(1, cy - COMPASS_MARGIN);
+        const onWorldMap = $gameMap.mapId() === worldMapId;
+        // Off map 315 there's no tile-precise target: resolve where THIS map
+        // sits in world-tile space once a frame, not once per marker.
+        const here = onWorldMap ? null : currentWorldCoords();
+
+        for (const group of container._groups) {
+            const m = group._marker;
+            let dx, dy, arrived = false;
+
+            if (onWorldMap) {
+                const pos = localTileScreenPos(m.wx, m.wy);
+                // Inside the viewport (minus the band the arrow occupies): the
+                // real plate above is doing the job, so the compass steps aside.
+                if (pos.x >= COMPASS_MARGIN && pos.x <= Graphics.width - COMPASS_MARGIN &&
+                    pos.y >= COMPASS_MARGIN && pos.y <= Graphics.height - COMPASS_MARGIN) {
+                    group.visible = false;
+                    continue;
+                }
+                dx = pos.x - cx;
+                dy = pos.y - cy;
+            } else {
+                dx = m.wx - here.x;
+                dy = m.wy - here.y;
+                arrived = (dx === 0 && dy === 0);
+            }
+
+            const label = group._label;
+            const lw = label.bitmap.width / 2;
+
+            if (arrived) {
+                group.visible = true;
+                group._arrow.visible = false;
+                label.x = Math.min(Graphics.width - lw - 4, Math.max(lw + 4, cx));
+                label.y = COMPASS_MARGIN;
+                continue;
+            }
+            if (!dx && !dy) { group.visible = false; continue; }
+
+            group.visible = true;
+            group._arrow.visible = true;
+
+            const ratio = Math.min(
+                Math.abs(dx) > 0.001 ? halfW / Math.abs(dx) : Infinity,
+                Math.abs(dy) > 0.001 ? halfH / Math.abs(dy) : Infinity);
+            const ex = cx + dx * ratio;
+            const ey = cy + dy * ratio;
+
+            group._arrow.x = ex;
+            group._arrow.y = ey;
+            group._arrow.rotation = Math.atan2(dy, dx) + Math.PI / 2;
+
+            label.x = Math.min(Graphics.width - lw - 4, Math.max(lw + 4, ex));
+            label.y = ey < cy
+                ? ey + COMPASS_ARROW / 2 + 2
+                : ey - COMPASS_ARROW / 2 - 2 - label.bitmap.height;
+        }
     }
 
     // Per-frame driver (called from Scene_Map.update). Rebuilds tiles on each fresh
@@ -1059,6 +1402,35 @@
         y = Math.max(1, Math.min(y, PROC_MAP_HEIGHT - 2));
         return { x, y };
     };
+
+    // ============================================================================
+    // WHAT THE MAP NAME BANNER SAYS
+    // ============================================================================
+    // An ordinary square is announced by its biome. A generated STRUCTURE is
+    // announced by its own name instead: nothing underground used to have one,
+    // so the banner over every stairway in the world read "Loot Cellar". The
+    // name is composed by ProcGenDungeon from the structure's word banks and is
+    // derived, not stored - (world seed, world square, entrance tile) always
+    // gives the same one - so a place read a hundred hours later is still
+    // called what it was. It is cached on the dungeon session so the two places
+    // that set the banner cannot disagree.
+    function procMapDisplayName() {
+        const pg = $gameSystem._procGenData;
+        if (!pg) return '';
+        const D = window.ProcGenDungeon;
+        const S = (D && typeof D.structure === 'function') ? D.structure(pg.currentBiome) : null;
+        if (S && window.StructureNames) {
+            const sess = pg._dungeonSession;
+            if (sess && sess.name) return sess.name;
+            const name = window.StructureNames.nameFor(pg.currentBiome, (sess && sess.salt) || 0);
+            if (sess) sess.name = name;
+            return name;
+        }
+        let displayName = pg.currentBiome;
+        if (pg.displayAsIsland)     displayName = 'Island';
+        else if (pg.displayAsBeach) displayName = 'Beach';
+        return window.BiomeNames.display(displayName);
+    }
 
     Game_System.prototype.clearProcGenData = function() {
         if (!this._procGenData) return;
@@ -1307,7 +1679,17 @@
             // boots with $dataMap null, and the coordinates it recorded are of
             // course its own -- there is nothing to keep, and skipping the load
             // leaves the scene waiting on a map that never arrives.
+            //
+            // Coordinates alone are not enough to say "nothing changed": goDown,
+            // enterDungeonDoor, switchLayer (descending) and startForcedBiome all
+            // generate a new structure's tiles on the SAME world square, so the
+            // coordinates the short-circuit compares never move even though the
+            // biome under the party did. Without also checking that $dataMap
+            // still holds the array the game actually wants to show, a descent
+            // left the previous floor's tiles on screen while every other system
+            // had already moved on to the new one.
             if (!$dataMap || !$dataMap.data ||
+                $dataMap.data !== $gameSystem._procGenData.generatedMapData ||
                 $gameSystem._procGenData.lastLoadedProcMapX !== currentWorldX ||
                 $gameSystem._procGenData.lastLoadedProcMapY !== currentWorldY) {
                 _DataManager_loadMapData.call(this, mapId);
@@ -1316,12 +1698,10 @@
                     $dataMap.width     = PROC_MAP_WIDTH;
                     $dataMap.height    = PROC_MAP_HEIGHT;
                     $dataMap.tilesetId = $gameSystem._procGenData.currentBiomeTileset;
-                    let displayName    = $gameSystem._procGenData.currentBiome;
-                    if ($gameSystem._procGenData.displayAsIsland)     displayName = 'Island';
-                    else if ($gameSystem._procGenData.displayAsBeach) displayName = 'Beach';
                     // The map name window reads the biome's declared name, not
-                    // its id ("ForestTropical" -> "Tropical Forest").
-                    $dataMap.displayName = window.BiomeNames.display(displayName);
+                    // its id ("ForestTropical" -> "Tropical Forest"), and a
+                    // generated structure is named outright.
+                    $dataMap.displayName = procMapDisplayName();
                 }
                 $gameSystem._procGenData.lastLoadedProcMapX = currentWorldX;
                 $gameSystem._procGenData.lastLoadedProcMapY = currentWorldY;
@@ -1640,8 +2020,10 @@
     let teleportEventArrows = []; // transfer event arrows (yellow)
 
     Game_Player.prototype.clearBorderArrows = function() {
-        borderArrowSprites.forEach(s => { if (s.parent) s.parent.removeChild(s); });
-        borderArrowSprites = [];
+        // Each chevron owns the Bitmap its constructor drew, and the set is
+        // rebuilt on every step: dropping the sprite without freeing the bitmap
+        // leaked one canvas (and one GPU texture) per tile walked along an edge.
+        clearArrowList(borderArrowSprites);
     };
 
     Game_Player.prototype.displayBorderArrows = function(borderTiles) {
@@ -1957,10 +2339,7 @@
                 $dataMap.width     = PROC_MAP_WIDTH;
                 $dataMap.height    = PROC_MAP_HEIGHT;
                 $dataMap.tilesetId = $gameSystem._procGenData.currentBiomeTileset;
-                let displayName    = $gameSystem._procGenData.currentBiome;
-                if ($gameSystem._procGenData.displayAsIsland)     displayName = 'Island';
-                else if ($gameSystem._procGenData.displayAsBeach) displayName = 'Beach';
-                $dataMap.displayName = window.BiomeNames.display(displayName);
+                $dataMap.displayName = procMapDisplayName();
             }
         }
 
@@ -1982,6 +2361,12 @@
         }
 
         _orig_Player_performTransfer.call(this);
+
+        // The party has arrived: re-derive their world square straight away rather
+        // than waiting for the end of Scene_Map.onMapLoaded. Every other map-load
+        // hook (the vehicle store's reconcile, for one) runs between the two, and
+        // asks where the party is.
+        syncPlayerWorldCoords($gameMap.mapId());
     };
 
     // OK button on world map: open travel decision window (or interact with teleport/vehicle)
@@ -2201,6 +2586,14 @@
         const pg = $gameSystem._procGenData;
         const sess = pg && pg._dungeonSession;
         if (!sess) return;
+
+        // A floor of the lower tower (DungeonFloorSystem) is generated with the
+        // same south entrance every structure is, but nothing was ever entered
+        // through it: the party arrived by a staircase or by the lift, and those
+        // are the only ways out again. The doorway is walled up, so the border
+        // is not a way out and the session stays standing.
+        if (sess.type === 'tower') return;
+
         pg._dungeonSession = null;
         $gamePlayer.clearProcGenBorderArrows();
         if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
@@ -2608,11 +3001,10 @@
     // ============================================================================
 
     PluginManager.registerCommand(PLUGIN_NAME, 'ReturnToWorldMap', () => {
-        const savedX = $gameVariables.value(VAR_WORLD_X) || 0;
-        const savedY = $gameVariables.value(VAR_WORLD_Y) || 0;
-        if (savedX === 0 && savedY === 0) return;
+        const saved = playerWorldCoords();
+        if (saved.x === 0 && saved.y === 0) return;
         $gameVariables.setValue(VAR_DEST_MAP, worldMapId);
-        $gamePlayer.reserveTransfer(worldMapId, savedX, savedY, 0, 0);
+        $gamePlayer.reserveTransfer(worldMapId, saved.x, saved.y, 0, 0);
     });
 
     PluginManager.registerCommand(PLUGIN_NAME, 'SaveWorldMapPosition', function() {
@@ -2666,7 +3058,7 @@
         if (!procGenData) { logWarn('GoDown: no procedural map active.'); return; }
 
         if (procGenData && procGenData.currentBiome === 'Ocean') {  // i18n-ignore  biome id
-            const item = $dataItems[142];
+            const item = $dataItems[DIVING_SUIT_ITEM_ID];
             if (!$gameParty.hasItem(item)) { $gameMessage.add(T('WorldMapReturn.needDivingSuit')); return; }
         }
         if (procGenData.biomeLayerStack && procGenData.biomeLayerStack.length > 0) {
@@ -2876,6 +3268,13 @@
         const seed = procMapSeed(pg.originX, pg.originY, 0, biomeSalt);
         const adjacentBiomes = { north: biomeName, south: biomeName, east: biomeName, west: biomeName };
         const worldCoords = { x: pg.originX, y: pg.originY };
+        // DungeonFloorSystem's lower tower has no way off a floor but its own
+        // staircase events: read once and cleared here so the flag never
+        // survives into an unrelated forced biome.
+        if (pg._sealEntrance) {
+            worldCoords.sealEntrance = true;
+            pg._sealEntrance = false;
+        }
         pg.generatedMapData = generateProceduralTerrain(biome, seed, null, adjacentBiomes, null, worldCoords, pg.biomeCoordinateCache);
 
         // For a dungeon-family biome (incl. the LootCellar/TempleInside/CaveDen/
@@ -2883,7 +3282,14 @@
         // the border entrance and make the map border return the player to where
         // the structure was entered from.
         const gen = pg.generatedMapData;
-        const isDungeonType = /dungeon|crypt|sewer|lootcellar|templeinside|caveden|patronvault/i.test(biomeName);
+        // Is this one of the enclosed structures? The catalogue in
+        // ProceduralMapStructureGenerator is the only list, so a structure
+        // added there needs no edit here; the regex this replaced was one of
+        // six such lists scattered over the codebase and they had drifted.
+        const D = window.ProcGenDungeon;
+        const isDungeonType = (D && typeof D.isStructure === 'function')
+            ? D.isStructure(biomeName)
+            : /dungeon|crypt|sewer|lootcellar|templeinside|caveden|patronvault/i.test(biomeName);
         const sx = (isDungeonType && gen && gen.spawnX != null) ? gen.spawnX : Math.floor(PROC_MAP_WIDTH / 2);
         const sy = (isDungeonType && gen && gen.spawnY != null) ? gen.spawnY : Math.floor(PROC_MAP_HEIGHT / 2);
         const sdir = (isDungeonType && gen && gen.spawnDir) ? gen.spawnDir : $gamePlayer.direction();
@@ -2989,7 +3395,7 @@
                 logWarn(`switchLayer: Biome "${procGenData.currentBiome}" has no lower layer`); return;
             }
             if (procGenData.currentBiome === 'Ocean') {  // i18n-ignore  biome id
-                const item = $dataItems[142];
+                const item = $dataItems[DIVING_SUIT_ITEM_ID];
                 if (!$gameParty.hasItem(item)) { $gameMessage.add(T('WorldMapReturn.needDivingSuit')); return; }
             }
 
@@ -3209,7 +3615,12 @@
     };
 
     Window_WorldMapChoice.prototype.makeCommandList = function() {
-        this.addCommand(T('WorldMapReturn.returnToWorldMap'), 'return');
+        // The same row does two jobs: on Earth it goes back to the world map, on
+        // another planet it opens the landing-site picker (see commandWorldMap).
+        this.addCommand(
+            isAlienSurfaceNow() ? T('WorldMapReturn.chooseLandingSite')
+                                : T('WorldMapReturn.returnToWorldMap'),
+            'return');
         if ($gameMap.mapId() === procMapId) {
             const procGenData   = $gameSystem._procGenData;
             const isUnderground = procGenData && procGenData.biomeLayerStack && procGenData.biomeLayerStack.length > 0;
@@ -3237,6 +3648,13 @@
     const _Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
     Scene_Map.prototype.onMapLoaded = function() {
         _Scene_Map_onMapLoaded.call(this);
+
+        // The party's world square, re-derived from the map they are now on. The
+        // engine's own transfer has already run inside the call above, so the
+        // player stands on their arrival tile by this point. Every route in goes
+        // through here: a border crossing, an event transfer, fast travel, a
+        // vehicle put down, a house or a cellar left behind.
+        syncPlayerWorldCoords($gameMap.mapId());
 
         // Clear stale border arrows
         if ($gamePlayer) $gamePlayer.clearBorderArrows();
@@ -3394,6 +3812,14 @@
         const named = window.WorldGen && window.WorldGen.HardcodedBiomeNames;
         const hardcoded = named ? named[`${wx},${wy}`] : null;
         if (hardcoded) return hardcoded;
+        // A square whose biome is overridden generates as the override, not as the
+        // world map's own tile, so the name has to follow it: the biome cache is
+        // built from the tiles and knows nothing about it.
+        const override = window.getHardcodedBiomeOverride
+            ? window.getHardcodedBiomeOverride(wx, wy) : null;
+        if (override && override.biome) {
+            return window.BiomeNames.display(String(override.biome).replace(/^(Road|River)\s+.*$/, '$1'));  // i18n-ignore  biome ids
+        }
         let biome = '';
         if ($gameSystem && $gameSystem.getBiomeFromCache) {
             // Reads the world map's tiles when the square is not cached, which
@@ -3428,6 +3854,266 @@
         return raw ? localizeName(raw) : T('WorldMapReturn.mapNumbered', { id: id });
     }
 
+    // ========================================================================
+    // WORLD MAP TRANSFER: the one answer to "where, in world terms, is this?"
+    // ------------------------------------------------------------------------
+    // Everything that has to remember a spot -- the party's own world square, a
+    // parked vehicle, an asset, a delivery -- used to work it out for itself out
+    // of Variables 43/44, a map's <Coords> tag and $gameSystem._procGenData, and
+    // each of them arrived at a different answer. They all go through this now.
+    //
+    // A LOCATION is the full address of a tile:
+    //   { mapId, x, y, worldX, worldY, layer, interior, alien, planet }
+    //   mapId/x/y      the tile on whatever map it is, exactly as stored
+    //   worldX/worldY  the map-315 square that map stands on. This is where a
+    //                  thing is drawn and reached on the world map, whatever map
+    //                  it is really on
+    //   layer          depth in the procedural layer stack: one world square
+    //                  generates a different map per cave floor / ocean depth, so
+    //                  a bike left underground belongs to the underground
+    //   interior       the procedural interior it is inside ("" in the open air).
+    //                  A dungeon, cellar or sewer is generated onto the same map
+    //                  id, world square and layer as the field it was entered
+    //                  from, so only this tells the two apart
+    //   alien/planet   a GalaxySim landing reuses map 636 AND the world
+    //                  coordinates as its own planet grid, so worldX/worldY there
+    //                  is a grid cell on `planet` and means nothing on Earth
+    // ========================================================================
+
+    // <Coords x y> of any map, loaded and parsed once. Only the parsed pair is
+    // kept, so the (large) map file is free to be collected again.
+    const mapCoordsCache = new Map();
+
+    function coordsFromNote(note) {
+        const m = String(note || '').match(/<\s*coords\b\s*[:=]?\s*(\d+)\D+(\d+)\s*>/i);
+        return m ? { x: parseInt(m[1], 10), y: parseInt(m[2], 10) } : null;
+    }
+
+    function readMapCoordsTag(mapId) {
+        const id = Number(mapId) || 0;
+        if (!id) return null;
+        // The loaded map already has its note in memory; only a map that is NOT
+        // loaded is worth a file read (fast travel parks a vehicle on its
+        // destination before the transfer happens).
+        if (id === $gameMap.mapId()) {
+            if ($gameMap._coordsDest) return { x: $gameMap._coordsDest.x, y: $gameMap._coordsDest.y };
+            return ($dataMap && $dataMap.note) ? coordsFromNote($dataMap.note) : null;
+        }
+        if (typeof $dataMapInfos === 'undefined' || !$dataMapInfos || !$dataMapInfos[id]) return null;
+        try {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'data/Map%1.json'.format(id.padZero(3)), false);
+            xhr.overrideMimeType('application/json');
+            xhr.send();
+            if (xhr.status >= 400) return null;
+            return coordsFromNote((JSON.parse(xhr.responseText) || {}).note);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // The world square a map DECLARES it stands on, or null when it declares
+    // nothing usable (no tag, or the editor template's default pair).
+    function mapCoordsTag(mapId) {
+        const id = Number(mapId) || 0;
+        if (!id || id === worldMapId || id === procMapId) return null;
+        if (!mapCoordsCache.has(id)) {
+            const raw = readMapCoordsTag(id);
+            const usable = raw && !(raw.x === TEMPLATE_COORDS.x && raw.y === TEMPLATE_COORDS.y);
+            mapCoordsCache.set(id, usable ? raw : null);
+        }
+        return mapCoordsCache.get(id);
+    }
+
+    // The party's last known world square. Written by every path that moves them
+    // (see syncPlayerWorldCoords) and read by everything that puts them back.
+    function playerWorldCoords() {
+        return {
+            x: $gameVariables.value(VAR_WORLD_X) | 0,
+            y: $gameVariables.value(VAR_WORLD_Y) | 0
+        };
+    }
+
+    // Only write when the value really moved: Game_Variables.onChange refreshes
+    // every event page on the map, which is far too dear to pay per frame.
+    function setPlayerWorldCoords(x, y) {
+        const nx = Number(x), ny = Number(y);
+        if (!isFinite(nx) || !isFinite(ny)) return false;
+        if (nx < 0 || ny < 0) return false;
+        if ($gameVariables.value(VAR_WORLD_X) !== nx) $gameVariables.setValue(VAR_WORLD_X, nx);
+        if ($gameVariables.value(VAR_WORLD_Y) !== ny) $gameVariables.setValue(VAR_WORLD_Y, ny);
+        return true;
+    }
+
+    function isAlienSurfaceNow() {
+        return !!(window.GalaxySim && window.GalaxySim.isAlienSurface &&
+                  window.GalaxySim.isAlienSurface());
+    }
+
+    // Standing on another planet there is no world map to go back to: map 315 is
+    // Earth, and the saved square is the planet's own landing-grid cell, so the
+    // return would drop the party onto whatever Earth tile happens to share those
+    // two small numbers. Every route that offers the return asks this first, and
+    // a true answer means the landing-site picker took the press instead
+    // (GalaxySim_Core's Scene_AlienLandingGrid). False means Earth as usual.
+    function divertedToLandingPicker() {
+        if (!isAlienSurfaceNow()) return false;
+        return !!(window.GalaxySim.openLandingGridPicker &&
+                  window.GalaxySim.openLandingGridPicker());
+    }
+
+    // The planet whose landing grid map 636 currently stands for, or '' on Earth.
+    function currentPlanetName() {
+        if (!isAlienSurfaceNow()) return '';
+        const landed = window.GalaxySim.getSurfacePlanet && window.GalaxySim.getSurfacePlanet();
+        return (landed && landed.name) || '';
+    }
+
+    function currentLayerDepth() {
+        const pg = $gameSystem && $gameSystem._procGenData;
+        return (pg && pg.biomeLayerStack && pg.biomeLayerStack.length) || 0;
+    }
+
+    function currentInteriorName() {
+        const api = window.ProceduralInteriors;
+        return (api && typeof api.currentBiome === 'function' && api.currentBiome()) || '';
+    }
+
+    // World-map square the CURRENTLY LOADED map stands on.
+    //   map 315   the party's own tile IS the square
+    //   proc map  the square the biome was generated from (an alien landing grid
+    //             answers with its grid cell, which is what it is addressed by)
+    //   anything  its own <Coords> tag, else the last square the party stood on
+    function currentWorldCoords() {
+        const mapId = $gameMap.mapId();
+        if (mapId === worldMapId) return { x: $gamePlayer.x, y: $gamePlayer.y };
+        if (mapId === procMapId) {
+            const pg = $gameSystem._procGenData;
+            if (pg && typeof pg.originX === 'number' && typeof pg.originY === 'number') {
+                return { x: pg.originX, y: pg.originY };
+            }
+            return playerWorldCoords();
+        }
+        return mapCoordsTag(mapId) || playerWorldCoords();
+    }
+
+    // The same answer for a map that is not the one loaded (fast travel parks a
+    // vehicle on its destination before the transfer happens).
+    function worldCoordsForMap(mapId, x, y) {
+        const id = Number(mapId) || 0;
+        if (id === worldMapId) return { x: Number(x) || 0, y: Number(y) || 0 };
+        if (id === $gameMap.mapId()) return currentWorldCoords();
+        return mapCoordsTag(id) || playerWorldCoords();
+    }
+
+    // The full address of a tile on the map that is loaded right now. Pass no
+    // tile for the party's own.
+    function locate(x, y) {
+        const mapId = $gameMap.mapId();
+        const wc = currentWorldCoords();
+        const onProc = mapId === procMapId;
+        const alien = onProc && isAlienSurfaceNow();
+        return {
+            mapId,
+            x: (x === undefined) ? $gamePlayer.x : (Number(x) || 0),
+            y: (y === undefined) ? $gamePlayer.y : (Number(y) || 0),
+            worldX: wc.x,
+            worldY: wc.y,
+            layer: onProc ? currentLayerDepth() : 0,
+            interior: onProc ? currentInteriorName() : '',
+            alien,
+            planet: alien ? currentPlanetName() : ''
+        };
+    }
+
+    // The address a spot on a map that is NOT loaded resolves to. Everything the
+    // loaded map alone can answer (which cave floor, which dungeon, which planet)
+    // is unknowable from here and reads as the open surface of Earth.
+    function locateOnMap(mapId, x, y) {
+        const id = Number(mapId) || 0;
+        if (id === $gameMap.mapId()) return locate(x, y);
+        const wc = worldCoordsForMap(id, x, y);
+        return {
+            mapId: id, x: Number(x) || 0, y: Number(y) || 0,
+            worldX: wc.x, worldY: wc.y,
+            layer: 0, interior: '', alien: false, planet: ''
+        };
+    }
+
+    // Do two addresses name the same place? Used to decide whether a thing parked
+    // somewhere belongs on the map the party is looking at.
+    function sameRealm(a, b) {
+        if (!a || !b) return false;
+        if (!!a.alien !== !!b.alien) return false;
+        // An unnamed planet is a record written before planets were told apart:
+        // it is taken to be whichever one is being asked about, so a vehicle left
+        // on a surface by an older save is still found rather than stranded.
+        if (a.alien && a.planet && b.planet && a.planet !== b.planet) return false;
+        if ((a.layer || 0) !== (b.layer || 0)) return false;
+        return (a.interior || '') === (b.interior || '');
+    }
+
+    // What a location is CALLED. A named world square wins (the hardcoded names
+    // and biome overrides), then the map's own display name, then the biome, and
+    // an alien landing is named after its planet.
+    function locationName(loc) {
+        if (!loc) return T('WorldMapReturn.wilderness');
+        if (loc.alien) {
+            return loc.planet ? localizeName(loc.planet) : T('WorldMapReturn.wilderness');
+        }
+        if (loc.mapId === procMapId || loc.mapId === worldMapId || !loc.mapId) {
+            const square = localizeName(worldSquareName(loc.worldX, loc.worldY));
+            const inside = loc.interior
+                ? (window.BiomeNames ? window.BiomeNames.display(loc.interior) : loc.interior)
+                : '';
+            if (square && inside) return `${inside}, ${square}`;  // i18n-ignore  name pair
+            return inside || square || T('WorldMapReturn.wilderness');
+        }
+        return placeName(loc.mapId, { x: loc.worldX, y: loc.worldY });
+    }
+
+    // One line naming a location and the exact tile it is on, for any list that
+    // has to say where a thing was left.
+    function describeLocation(loc) {
+        if (!loc || !loc.mapId) return T('WorldMapReturn.wilderness');
+        const name = locationName(loc);
+        const depth = (loc.layer > 0 && !loc.alien)
+            ? ' ' + T('WorldMapReturn.underground', { depth: loc.layer })
+            : '';
+        // On the world map the tile IS the square, so it is printed once.
+        if (loc.mapId === worldMapId) return `${name} (${loc.x},${loc.y})`;  // i18n-ignore  coordinate pair
+        if (loc.mapId === procMapId) {
+            return `${name} (${loc.worldX},${loc.worldY})${depth} ${T('WorldMapReturn.atTile', { x: loc.x, y: loc.y })}`;
+        }
+        return `${name} ${T('WorldMapReturn.atTile', { x: loc.x, y: loc.y })}`;
+    }
+
+    // Keep the party's world square in step with the map they are standing on.
+    // Called from Scene_Map.onMapLoaded, once the engine's own transfer has put
+    // them on their arrival tile, so every route in -- a border crossing, an
+    // event transfer, fast travel, stepping out of a vehicle, leaving a house or
+    // a cellar -- lands on the same rule:
+    //   map 315   the tile they arrived on
+    //   proc map  the square the biome was generated from (never an alien grid
+    //             cell: those are not Earth squares and would send a later
+    //             "return to the world map" into the sea)
+    //   anything  its <Coords> tag when it declares one, otherwise nothing at
+    //             all, so the square they came in from stands
+    function syncPlayerWorldCoords(mapId) {
+        const id = Number(mapId) || 0;
+        if (id === worldMapId) return setPlayerWorldCoords($gamePlayer.x, $gamePlayer.y);
+        if (id === procMapId) {
+            if (isAlienSurfaceNow()) return false;
+            const pg = $gameSystem && $gameSystem._procGenData;
+            if (pg && typeof pg.originX === 'number' && typeof pg.originY === 'number') {
+                return setPlayerWorldCoords(pg.originX, pg.originY);
+            }
+            return false;
+        }
+        const tag = mapCoordsTag(id);
+        return tag ? setPlayerWorldCoords(tag.x, tag.y) : false;
+    }
+
     // Shared gate for the travel-decision menu. Named hardcoded locations
     // usually sit on City/Burg tiles, so isSettlementBiomeHere() is true for
     // them. They still get a "Visit <name>" travel choice, so only suppress the
@@ -3460,6 +4146,7 @@
         _Scene_Map_update_wmr.call(this);
         updateMysteryMarkers();
         updateQuestMarkers();
+        updateQuestCompass();
         watchNationMusicChange();
         if ($gameTemp._icebushBlockedMessage && !this.isBusy()) {
             $gameTemp._icebushBlockedMessage = false;
@@ -3572,10 +4259,11 @@
         if ($gameMap.mapId() === 1414 && $gameSwitches.value(100)) {
             this.playBuzzerSound(); return;
         }
-        const savedX = $gameVariables.value(VAR_WORLD_X) || 0;
-        const savedY = $gameVariables.value(VAR_WORLD_Y) || 0;
-        if (savedX !== 0 || savedY !== 0) {
-            $gamePlayer.reserveTransfer(worldMapId, savedX, savedY, 0, 0);
+        // Planetside this entry is the landing-site picker, not a way home.
+        if (divertedToLandingPicker()) return;
+        const saved = playerWorldCoords();
+        if (saved.x !== 0 || saved.y !== 0) {
+            $gamePlayer.reserveTransfer(worldMapId, saved.x, saved.y, 0, 0);
         }
         SceneManager.pop();
     };
@@ -3645,10 +4333,10 @@
     window.WorldMapReturn = {
         performVisitMap: performStopTravel,
         returnToWorldMap() {
-            const savedX = $gameVariables.value(VAR_WORLD_X) || 0;
-            const savedY = $gameVariables.value(VAR_WORLD_Y) || 0;
-            if (savedX !== 0 || savedY !== 0) {
-                $gamePlayer.reserveTransfer(worldMapId, savedX, savedY, 0, 0);
+            if (divertedToLandingPicker()) return;
+            const saved = playerWorldCoords();
+            if (saved.x !== 0 || saved.y !== 0) {
+                $gamePlayer.reserveTransfer(worldMapId, saved.x, saved.y, 0, 0);
             }
         },
         worldMapId,
@@ -3676,6 +4364,129 @@
         // forced-biome structures for cellars, sewers, temples, dens and vaults.
         snapshotProcSurface,
         restoreProcSurface
+    };
+
+    // ========================================================================
+    // EARTH IS GONE
+    // ------------------------------------------------------------------------
+    // On 21 December 2012 Nibiru struck the Earth (GalaxySim.Nibiru), switch 199
+    // went up, and the world map stopped existing. Map 315 is still in the data
+    // and half the game still asks for it: every "return to the world map", the
+    // border of every procedural square, every parked vehicle, every fast-travel
+    // arrival, every origin the wizard hands out. Rather than teach all of them
+    // that the planet is gone, the answer is given once, here, at the one door
+    // they all go through: a transfer to 315 arrives at the Omega Tower instead,
+    // which is the only ground left.
+    //
+    // The tower is a real authored map (635, "Stairs Hall", <MapGroup:
+    // OmegaTower>), so this is a redirect and not a special case: everything
+    // downstream carries on with an ordinary map id.
+    // ========================================================================
+    const SW_EARTH_LOST = 199;
+    const TOWER_LANDING = { mapId: 635, x: 13, y: 38, dir: 8 };
+
+    function earthLost() {
+        return !!(typeof $gameSwitches !== 'undefined' && $gameSwitches &&
+                  $gameSwitches.value(SW_EARTH_LOST));
+    }
+    // A fresh copy every time: callers write their own direction/fade onto it.
+    function towerLanding() { return Object.assign({}, TOWER_LANDING); }
+    // Is this transfer one the tower has to answer for?
+    function redirectsToTower(mapId) {
+        return Number(mapId) === worldMapId && earthLost();
+    }
+
+    // The one door. Every transfer in the engine is reserved here - the editor's
+    // Transfer Player command, every plugin, every menu - so this is the only
+    // place the redirect has to live.
+    const _WMR_Game_Player_reserveTransfer = Game_Player.prototype.reserveTransfer;
+    Game_Player.prototype.reserveTransfer = function (mapId, x, y, d, fadeType) {
+        if (redirectsToTower(mapId)) {
+            const t = TOWER_LANDING;
+            return _WMR_Game_Player_reserveTransfer.call(this, t.mapId, t.x, t.y, t.dir, fadeType);
+        }
+        return _WMR_Game_Player_reserveTransfer.call(this, mapId, x, y, d, fadeType);
+    };
+
+    // A vehicle parked on a planet that is not there any more is parked at the
+    // tower, so it is still reachable and still boardable.
+    const _WMR_Game_Vehicle_setLocation = Game_Vehicle.prototype.setLocation;
+    Game_Vehicle.prototype.setLocation = function (mapId, x, y) {
+        if (redirectsToTower(mapId)) {
+            const t = TOWER_LANDING;
+            return _WMR_Game_Vehicle_setLocation.call(this, t.mapId, t.x, t.y);
+        }
+        return _WMR_Game_Vehicle_setLocation.call(this, mapId, x, y);
+    };
+
+    // The backstop. Anything that puts the party on 315 without reserving a
+    // transfer (a savegame written there before the impact, a plugin setting the
+    // position outright) is caught the moment the map is up and moved on. The
+    // reserve above cannot loop through this: it names 635, never 315.
+    const _WMR_Scene_Map_onMapLoaded_earthLost = Scene_Map.prototype.onMapLoaded;
+    Scene_Map.prototype.onMapLoaded = function () {
+        _WMR_Scene_Map_onMapLoaded_earthLost.call(this);
+        if ($gameMap && $gameMap.mapId() === worldMapId && earthLost() &&
+            !$gamePlayer.isTransferring()) {
+            const t = TOWER_LANDING;
+            $gamePlayer.reserveTransfer(t.mapId, t.x, t.y, t.dir, 0);
+        }
+    };
+
+    // ============================================================================
+    // WINDOW.WORLDMAPTRANSFER
+    // ----------------------------------------------------------------------------
+    // The unified coordinate service. Nothing outside this file should read
+    // Variables 43/44, parse a <Coords> tag or reach into _procGenData to work out
+    // where something is: ask here instead, so one rule answers for the world map,
+    // the reused procedural map, its underground layers, its interiors, the
+    // authored maps and an alien planet's landing grid alike.
+    // ============================================================================
+    window.WorldMapTransfer = {
+        worldMapId,
+        procMapId,
+        // The editor template's <Coords> pair, read as "unset" everywhere.
+        TEMPLATE_COORDS,
+
+        // --- the party ---
+        playerWorld: playerWorldCoords,
+        setPlayerWorld: setPlayerWorldCoords,
+        // Re-derive the party's world square from a map. Called on every map load;
+        // exposed so a plugin that moves them without one can do the same.
+        syncPlayerWorld: syncPlayerWorldCoords,
+
+        // --- addressing ---
+        // The full address of a tile on the map loaded now (the party's own tile
+        // when none is given), and of a tile on any other map.
+        locate,
+        locateOnMap,
+        // Do two addresses sit in the same realm (same planet, cave floor and
+        // interior)? A world square alone does not decide it: a dungeon, the cave
+        // under it and the field above all share one map id and one square.
+        sameRealm,
+        // The world-map square a map stands on, with and without a loaded map.
+        currentWorldCoords,
+        worldCoordsForMap,
+        // A map's declared <Coords>, or null when it declares nothing usable.
+        mapCoordsTag,
+        currentLayer: currentLayerDepth,
+        currentInterior: currentInteriorName,
+        isAlienSurface: isAlienSurfaceNow,
+        currentPlanet: currentPlanetName,
+
+        // --- naming ---
+        // What a location is called, and one line naming it with its exact tile.
+        locationName,
+        describeLocation,
+        placeName,
+
+        // --- after the impact ---
+        // Has Earth been struck out (switch 199)? Anything that would send the
+        // party, a vehicle or a menu to map 315 must ask this rather than test
+        // the switch itself, and `towerLanding()` is the one address that
+        // replaces it: { mapId, x, y, dir }.
+        earthLost,
+        towerLanding
     };
 
 })();

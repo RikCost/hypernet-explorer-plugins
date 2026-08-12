@@ -29,8 +29,12 @@
  * weapon and armor in the game is on the board from the first visit, and what
  * changes as the party trains is which of them their hands can actually make.
  *
- *   Smithable    - everything the selected member can make right now
- *   Too complex  - everything they cannot, with the tier it is waiting for
+ *   Smithable       - everything the selected member can make right now,
+ *                     trade trained far enough and the whole bill in the sack
+ *   Need materials  - everything their hands can make but the sack cannot
+ *                     supply, with how many lines of the bill are short
+ *   Too complex     - everything the trade has not been trained far enough
+ *                     for, with the tier it is waiting for
  *
  * WHAT AN ENTRY NEEDS
  * -------------------
@@ -77,6 +81,11 @@
 
     // What a finished piece teaches its maker, by the tier it demanded.
     const TIER_POINTS = [0, 1, 2, 4, 6, 9];
+
+    // The three sides of the board, in the order they are drawn: what can be
+    // made this minute, what the hands can make but the sack cannot supply,
+    // and what the trade has not been trained far enough for.
+    const TABS = ['ready', 'materials', 'locked'];
 
     // ------------------------------------------------------------------------
     // Reading the entries
@@ -147,6 +156,17 @@
         return true;
     }
 
+    // How many lines of the bill the party cannot cover.
+    function missingCount(recipe) {
+        if (!recipe || isSandbox()) return 0;
+        let short = 0;
+        for (const [id, need] of Object.entries(recipe)) {
+            const mat = $dataItems[parseInt(id)];
+            if (!mat || $gameParty.numItems(mat) < need) short++;
+        }
+        return short;
+    }
+
     function levelName(level) {
         const db = window.Specializations;
         return (db && db.levelName) ? db.levelName(level) : String(level);
@@ -181,7 +201,7 @@
             super.create();
             if (this._helpWindow) { this._helpWindow.deactivate(); this._helpWindow.hide(); }
 
-            this._tab = 'ready';          // 'ready' | 'locked'
+            this._tab = 'ready';          // 'ready' | 'materials' | 'locked'
             this._activeArea = 'tabs';    // 'tabs' | 'trades' | 'items' | 'forge'
             this._tabIndex = 0;
             this._tradeIndex = 0;
@@ -261,9 +281,15 @@
         }
 
         // -------------------------------------------------------------- listing
+        // Which side of the board a piece falls on: the trade decides first
+        // (untrained hands cannot start it at all), the sack decides second.
+        bucketOf(item) {
+            if (!this.canMake(item)) return 'locked';
+            return hasMaterials(parseRecipe(item)) ? 'ready' : 'materials';
+        }
+
         entriesForTab() {
-            const wantReady = this._tab === 'ready';
-            return forgeEntries().filter(e => this.canMake(e) === wantReady);
+            return forgeEntries().filter(e => this.bucketOf(e) === this._tab);
         }
 
         trades() {
@@ -273,10 +299,8 @@
             const map = new Map();
             for (const entry of this.entriesForTab()) {
                 const name = craftSpecName(entry);
-                if (!map.has(name)) map.set(name, { name, total: 0, ready: 0 });
-                const row = map.get(name);
-                row.total++;
-                if (hasMaterials(parseRecipe(entry))) row.ready++;
+                if (!map.has(name)) map.set(name, { name, total: 0 });
+                map.get(name).total++;
             }
             this._tradesCache = Array.from(map.values()).sort((a, b) => tr(a.name).localeCompare(tr(b.name)));
             this._tradesKey = this._tab;
@@ -369,16 +393,15 @@
             const el = document.getElementById('forge-tabs');
             if (!el) return;
             const t = bsText();
-            const counts = { ready: 0, locked: 0 };
-            for (const entry of forgeEntries()) {
-                if (this.canMake(entry)) counts.ready++; else counts.locked++;
-            }
-            const tab = (key, label, idx) => {
+            const counts = { ready: 0, materials: 0, locked: 0 };
+            for (const entry of forgeEntries()) counts[this.bucketOf(entry)]++;
+            const labels = { ready: t.smithable, materials: t.needMaterials, locked: t.tooComplex };
+            const tab = (key, idx) => {
                 const active = this._tab === key ? 'active' : '';
                 const focused = (this._activeArea === 'tabs' && this._tabIndex === idx) ? 'focused' : '';
-                return `<div class="tab-btn ${active} ${focused}" data-tab="${key}">${escapeHtml(label)} (${counts[key]})</div>`;
+                return `<div class="tab-btn ${active} ${focused}" data-tab="${key}">${escapeHtml(labels[key])} (${counts[key]})</div>`;
             };
-            el.innerHTML = `<div class="mode-tabs">${tab('ready', t.smithable, 0)}${tab('locked', t.tooComplex, 1)}</div>`;
+            el.innerHTML = `<div class="mode-tabs">${TABS.map(tab).join('')}</div>`;
         }
 
         renderList() {
@@ -401,7 +424,7 @@
                                 <div class="category-meta-left">
                                     <span class="category-name">${escapeHtml(tr(row.name))}</span>
                                 </div>
-                                <span class="category-count">${row.ready} / ${row.total}</span>
+                                <span class="category-count">${row.total}</span>
                             </div>`;
                     });
                 }
@@ -419,11 +442,18 @@
                     items.forEach((item, idx) => {
                         const focused = (this._activeArea === 'items' && idx === this._itemIndex) ? 'focused' : '';
                         const rarity = rarityOf(item);
-                        const ready = hasMaterials(parseRecipe(item));
-                        const tier = craftTier(item);
-                        const mark = this._tab === 'locked'
-                            ? `<span class="forge-tier-need">${escapeHtml(levelName(tier))}</span>`
-                            : `<span class="forge-mat-state ${ready ? 'ok' : 'short'}">${ready ? '&#10004;' : '&#10006;'}</span>`;
+                        // Each tab already says why a piece is on it, so the
+                        // mark answers the question the tab leaves open: the
+                        // tier a locked piece waits for, how much of the bill a
+                        // short one is missing, a plain tick for the rest.
+                        let mark;
+                        if (this._tab === 'locked') {
+                            mark = `<span class="forge-tier-need">${escapeHtml(levelName(craftTier(item)))}</span>`;
+                        } else if (this._tab === 'materials') {
+                            mark = `<span class="forge-mat-state short">&#10006; ${missingCount(parseRecipe(item))}</span>`;
+                        } else {
+                            mark = `<span class="forge-mat-state ok">&#10004;</span>`;
+                        }
                         html += `
                             <div class="category-row forge-row ${focused}" data-item="${item.id}" data-kind="${DataManager.isWeapon(item) ? 'w' : 'a'}" data-idx="${idx}">
                                 <div class="category-meta-left">
@@ -475,7 +505,7 @@
             const skillHTML = `
                 <div class="forge-skill ${makeable ? '' : 'locked'}">
                     <span>${escapeHtml(T('Blacksmith.needs', {
-                        trade: spec ? tr(spec.name) : craftSpecName(item),
+                        trade: spec ? window.Specializations.displayName(spec) : craftSpecName(item),
                         level: levelName(tier)
                     }))}</span>
                     <span class="forge-skill-have">${escapeHtml(T('Blacksmith.have', {
@@ -704,7 +734,25 @@
                 window.removeEventListener('mousemove', s.listeners.move);
                 window.removeEventListener('mouseup', s.listeners.up);
             }
-            if (s.renderer) s.renderer.dispose();
+            if (s.renderer) {
+                s.renderer.dispose();
+                // dispose() frees this preview's geometries and textures but
+                // leaves the WebGL context itself alive, and renderDetail()
+                // hands mount3D a brand new canvas for every recipe the cursor
+                // lands on. The browser caps how many contexts may live at once
+                // and force-loses the OLDEST past the cap, which is the game's
+                // own canvas: a couple of dozen recipes into the forge, PIXI is
+                // handed a restored context it cannot rebuild the tilemap and
+                // the uploaded textures on, and the picture stays corrupted
+                // with stale fragments for the rest of the session. Release it
+                // here, and retire the canvas, since a lost context never comes
+                // back on the element it was taken from.
+                try { if (s.renderer.forceContextLoss) s.renderer.forceContextLoss(); } catch (e) {}
+                const canvas = s.renderer.domElement;
+                if (canvas && canvas.parentNode) {
+                    canvas.parentNode.replaceChild(canvas.cloneNode(false), canvas);
+                }
+            }
             this._preview = null;
         }
 
@@ -744,6 +792,8 @@
                 }
             }
             $gameParty.gainItem(item, 1);
+            // What came off the anvil, in the party's diary (Diary.js).
+            if (window.Diary) window.Diary.onCrafted('forge', item.name, 1);
 
             const spec = craftSpec(item);
             if (spec && window.SpecializationXP) {
@@ -753,6 +803,20 @@
             this._overlayData = { item };
             this._overlayTimer = 110;
             this._listDirty = true;
+            // Spending the last of the bill moves the piece off the smithable
+            // tab and onto the one that needs materials, so the cursor is put
+            // back on whatever now holds its place rather than left pointing
+            // at a row that has gone.
+            const items = this.itemsForTrade();
+            const idx = items.indexOf(item);
+            if (idx >= 0) {
+                this._itemIndex = idx;
+            } else {
+                this._itemIndex = Math.max(0, Math.min(this._itemIndex, items.length - 1));
+                this._selectedItem = items[this._itemIndex] || null;
+                this._activeArea = this._selectedItem ? 'items' : 'trades';
+                if (!this._selectedItem) this._selectedTrade = null;
+            }
             SoundManager.playUseItem();
             this.refreshForge();
         }
@@ -803,9 +867,9 @@
         }
 
         setTab(key) {
-            if (this._tab === key) return;
+            if (this._tab === key || TABS.indexOf(key) < 0) return;
             this._tab = key;
-            this._tabIndex = key === 'ready' ? 0 : 1;
+            this._tabIndex = TABS.indexOf(key);
             this._selectedTrade = null;
             this._selectedItem = null;
             this._tradeIndex = 0;
@@ -838,9 +902,12 @@
             const cancel = Input.isTriggered('cancel') || TouchInput.isCancelled();
 
             if (this._activeArea === 'tabs') {
-                if (Input.isTriggered('right') && this._tabIndex === 0) { this.setTab('locked'); this._activeArea = 'tabs'; this._tabIndex = 1; this.refreshForge(); }
-                else if (Input.isTriggered('left') && this._tabIndex === 1) { this.setTab('ready'); this._activeArea = 'tabs'; this._tabIndex = 0; this.refreshForge(); }
-                else if (Input.isTriggered('ok') || Input.isTriggered('down')) {
+                const step = Input.isTriggered('right') ? 1 : (Input.isTriggered('left') ? -1 : 0);
+                if (step && this._tabIndex + step >= 0 && this._tabIndex + step < TABS.length) {
+                    this.setTab(TABS[this._tabIndex + step]);
+                    this._activeArea = 'tabs';
+                    this.refreshForge();
+                } else if (Input.isTriggered('ok') || Input.isTriggered('down')) {
                     this._activeArea = 'trades';
                     SoundManager.playOk();
                     this.refreshForge();

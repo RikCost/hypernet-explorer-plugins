@@ -620,8 +620,18 @@
 
   let _catchUpRunning = false;
 
+
+  // True in a world created with populationMode "empty" (WorldManager).
+  function isEmptyWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+  }
+
   function catchUp(nowMinute) {
     if (_catchUpRunning) return;
+    // Nothing pulses through a world with nobody in it: no settlement news,
+    // no trade, no rumour. See WorldManager.populationMode.
+    if (isEmptyWorld()) return;
     if (!$gameSystem || !$gameVariables) return;
     const state = getState();
     if (!state) return;
@@ -777,6 +787,13 @@
       headline: state.log.find(e => e.group === pulse.group)?.desc ?? state.log[0]?.desc ?? null,
       marketMood: state.marketSentiment > 0.25 ? "bullish" : state.marketSentiment < -0.25 ? "bearish" : null,
       playerNotorious: playerNotoriety() > 0.3,
+      // Switch 199 ("EarthDestroyed"): Nibiru struck Earth, the tower is all
+      // that is left. $gameSystem._gxNibiruOutcome === "saturn" (GalaxySim_Core)
+      // is only ever set once the impact date has actually passed with switch
+      // 200 ("TowerClimbed") on and switch 199 off, so it doubles as the date
+      // gate the earthSaved reaction needs.
+      earthDestroyed: !!(typeof $gameSwitches !== "undefined" && $gameSwitches && $gameSwitches.value(199)),
+      earthSaved: $gameSystem._gxNibiruOutcome === "saturn",
     };
   }
 

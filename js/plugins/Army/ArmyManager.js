@@ -52,9 +52,32 @@ ArmyManager.Params.showInMenu = String(ArmyManager.Params.showInMenu || "true").
 ArmyManager.Params.menuText = T.param(ArmyManager.Params.menuText, 'ArmyManager.menu');
 ArmyManager.Params.maxArmySize = Number(ArmyManager.Params.maxArmySize || 100);
 
-// Troop role markers: real IconSet glyphs (indices per js/db/Sprites/Icons.json)
-// instead of emoji. Melee is the default when a troop has no special role.
-const ARMY_ROLE_ICONS = { support: 176, ranged: 370, melee: 322 };
+// Troop data stores role as a dotted i18n key ("roles.support"), matching
+// the "roles.<key>" bank in js/i18n/<lang>/roles.json. Icon markers: real
+// IconSet glyphs (indices per js/db/Sprites/Icons.json) instead of emoji.
+// Close quarters is the default when a troop has no special role.
+const ARMY_ROLE_ICONS = { support: 176, ranged: 370, closequarters: 322, scientist: 186 };
+
+// The last path segment of a "roles.xxx" / "factions.xxx" key, used to key
+// into ARMY_ROLE_ICONS without needing the full dotted path.
+function armyKeyTail(key) {
+  const s = String(key || "");
+  const i = s.lastIndexOf(".");
+  return i >= 0 ? s.slice(i + 1) : s;
+}
+
+// Resolves any dotted i18n path stored on troop/faction data (name, role,
+// description, ...) through the Faction data set's own translator, which
+// already loads faction.json/roles.json/formations.json for the active
+// language and falls back to English when a translation is missing. Not a
+// key path (no dot, or FactionDataManager isn't ready yet) simply passes
+// the value through unchanged.
+function armyT(key) {
+  if (!key) return "";
+  if (String(key).indexOf(".") < 0) return key;
+  if (!window.FactionDataManager || !FactionDataManager.instance) return key;
+  return FactionDataManager.instance.t(key);
+}
 
 function armyIconHTML(iconIndex, size = 18) {
   const x = (iconIndex % 16) * size;
@@ -65,7 +88,12 @@ function armyIconHTML(iconIndex, size = 18) {
 }
 
 function armyRoleIconHTML(role) {
-  return armyIconHTML(ARMY_ROLE_ICONS[role] || ARMY_ROLE_ICONS.melee);
+  const tail = armyKeyTail(role);
+  return armyIconHTML(ARMY_ROLE_ICONS[tail] || ARMY_ROLE_ICONS.closequarters);
+}
+
+function armyRoleLabel(role) {
+  return armyT(role) || armyKeyTail(role);
 }
 
 let _statsI18n = null;
@@ -142,7 +170,6 @@ Game_Army.prototype.addTroop = function (factionId, troopData) {
     id: this._nextTroopId++,
     factionId: factionId,
     name: troopData.name,
-    name_it: troopData.name_it,
     hp: troopData.hp,
     mp: troopData.mp,
     atk: troopData.atk,
@@ -201,11 +228,10 @@ Game_Army.prototype.getFactionBreakdown = function () {
   for (const troop of this._troops) {
     if (!breakdown[troop.factionId]) {
       const faction = $gameFactions ? $gameFactions.getFaction(troop.factionId) : null;
-      const useItalian = ConfigManager.language === 'it';
 
       let factionName = T('ArmyManager.unknownFaction');
       if (faction) {
-        factionName = useItalian && faction.name_it ? faction.name_it : faction.name;
+        factionName = armyT(faction.name);
       }
 
       breakdown[troop.factionId] = {
@@ -563,12 +589,10 @@ class UIBuyTroopsInputManager {
 
     if (Input.isTriggered('down')) {
       SoundManager.playCursor();
-      this.scene._selectedIndex = (this.scene._selectedIndex + 1) % maxItems;
-      this.scene.refreshUIDOM();
+      this.scene.updateSelection(this.scene._selectedIndex + 1);
     } else if (Input.isTriggered('up')) {
       SoundManager.playCursor();
-      this.scene._selectedIndex = (this.scene._selectedIndex - 1 + maxItems) % maxItems;
-      this.scene.refreshUIDOM();
+      this.scene.updateSelection(this.scene._selectedIndex - 1);
     } else if (Input.isTriggered('ok')) {
       this.scene.buyTroopAtIndex(this.scene._selectedIndex);
     } else if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
@@ -845,7 +869,6 @@ Scene_Army.prototype.refreshUIDOM = function () {
   const breakdown = $gameArmy.getFactionBreakdown();
 
   const weeklyEuros = (weeklyCost / 100).toFixed(2);
-  const useItalian = ConfigManager.language === 'it';
 
   // Coherence color scale
   let coherenceColor = "var(--text-cost-bad)"; // low red
@@ -885,7 +908,7 @@ Scene_Army.prototype.refreshUIDOM = function () {
   if (troops.length > 0) {
     troops.forEach((troop, idx) => {
       const isSelected = this._activeTab === 'troops' && idx === this._troopIndex;
-      const name = useItalian && troop.name_it ? troop.name_it : troop.name;
+      const name = armyT(troop.name);
       const euros = (troop.weeklyCost / 100).toFixed(2);
 
       const roleIcon = armyRoleIconHTML(troop.role);
@@ -910,9 +933,10 @@ Scene_Army.prototype.refreshUIDOM = function () {
   if (this._activeTab === 'troops' && troops[this._troopIndex]) {
     const baseTroop = troops[this._troopIndex];
     const troop = $gameArmy.getTroopWithBonuses(baseTroop.id);
-    const name = useItalian && troop.name_it ? troop.name_it : troop.name;
+    const name = armyT(troop.name);
+    const roleLabel = armyRoleLabel(troop.role);
     const faction = $gameFactions ? $gameFactions.getFaction(troop.factionId) : null;
-    const factionName = faction ? (useItalian && faction.name_it ? faction.name_it : faction.name) : T('ArmyManager.independent');
+    const factionName = faction ? armyT(faction.name) : T('ArmyManager.independent');
 
     const leaderText = troop.hasLeader ? `
         <div style="margin-bottom: 6px; font-family:'Lora', serif; font-size:0.85em; color:var(--text-text-alt-17); font-weight:bold; text-align:center;">
@@ -949,9 +973,9 @@ Scene_Army.prototype.refreshUIDOM = function () {
                 ${name}
             </h3>
             <div style="font-style:italic; font-size:0.82em; color:var(--text-card-medium); text-align:center; margin-bottom:8px;">
-                Regiment: ${factionName}
+                ${T('ArmyManager.regimentLabel')} ${factionName} &middot; ${roleLabel}
             </div>
-            
+
             ${leaderText}
 
             <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px 16px;">
@@ -978,7 +1002,7 @@ Scene_Army.prototype.refreshUIDOM = function () {
   // Cursive parchment confirmation box overlay
   let confirmDialogHTML = "";
   if (this._confirmOpen && this._troopToRelease) {
-    const name = useItalian && this._troopToRelease.name_it ? this._troopToRelease.name_it : this._troopToRelease.name;
+    const name = armyT(this._troopToRelease.name);
     confirmDialogHTML = `
         <div class="army-dialog-overlay">
             <div class="army-dialog">
@@ -999,7 +1023,7 @@ Scene_Army.prototype.refreshUIDOM = function () {
         <div class="left-page" style="display:flex; flex-direction:column; justify-content:space-between;">
             <div>
                 <div class="page-header-bar">
-                    <div class="back-button focusable" onclick="SceneManager._scene.leaveCamp()">${useItalian ? 'Indietro' : 'Back'}</div>
+                    <div class="back-button focusable" onclick="SceneManager._scene.leaveCamp()">${T('ArmyManager.back')}</div>
                     <h2 class="title">${T('ArmyManager.armyOverview')}</h2>
                 </div>
 
@@ -1044,7 +1068,7 @@ Scene_Army.prototype.refreshUIDOM = function () {
             </div>
 
             <div style="font-family:'Lora', serif; font-size:0.8em; color:var(--text-card-medium); font-style:italic; text-align:center; border-top:1px dashed var(--border-primary-hover-translucent-15); padding-top:6px; margin-top:auto; margin-bottom:0;">
-                Mount & Blade Army Manual ✦ Esoteric Industries
+                ${T('ArmyManager.manualFooter')}
             </div>
         </div>
 
@@ -1220,110 +1244,25 @@ Scene_BuyTroops.prototype.createUIDOM = function () {
 
   UIBuyTroopsInputManager.init(this._dndContainer, this);
   UIBuyTroopsInputManager.activate();
-  this.refreshUIDOM();
+
+  // The page is built ONCE here. Everything that changes afterwards (gold,
+  // the roster list, the dossier, the feedback note, which row is selected)
+  // is patched into its own element instead of tearing the whole book-spread
+  // down and rebuilding it, so browsing the shop never flickers or restarts
+  // the page's entrance animation.
+  this.buildShellHTML();
+  this.renderList();
+  this.renderDossier();
 };
 
-Scene_BuyTroops.prototype.refreshUIDOM = function () {
-  if (!this._dndContainer) return;
-
+Scene_BuyTroops.prototype.shopList = function () {
   const shop = this._troopShopWindow;
-  const list = shop._data || [];
-  const useItalian = ConfigManager.language === 'it';
-  const playerGold = $gameParty.gold();
-  const playerEuros = (playerGold / 100).toFixed(2);
+  return (shop && shop._data) || [];
+};
+
+Scene_BuyTroops.prototype.buildShellHTML = function () {
   const troopCount = $gameArmy.getTroopCount();
   const maxTroops = ArmyManager.Params.maxArmySize;
-
-  // Build shop items list
-  let itemsHTML = "";
-  if (list.length > 0) {
-    list.forEach((item, index) => {
-      const troop = item.troop;
-      const isSelected = index === this._selectedIndex;
-      const name = useItalian && troop.name_it ? troop.name_it : troop.name;
-      const hiringPrice = (troop.hiringCost / 100).toFixed(2);
-      const canAfford = playerGold >= troop.hiringCost;
-
-      const roleIcon = armyRoleIconHTML(troop.role);
-
-      itemsHTML += `
-            <div class="choice-card ${isSelected ? 'selected' : ''}" style="display:flex; justify-content:space-between; align-items:center; opacity: ${canAfford ? 1 : 0.6};" onclick="SceneManager._scene.clickShopItem(${index})">
-                <span class="role-badge">${roleIcon} ${name}</span>
-                <span style="font-size:0.88em; font-family:'Lora', serif; font-weight:bold; color: ${canAfford ? 'var(--text-primary-hover)' : 'var(--text-disabled)'};">€${hiringPrice}</span>
-            </div>
-        `;
-    });
-  } else {
-    itemsHTML = `
-        <div style="text-align:center; font-style:italic; color:var(--text-card-medium); padding-top:40px;">
-            ${T('ArmyManager.noLocalTroops')}
-        </div>
-    `;
-  }
-
-  // Selected troop detailed dossier (Left Page)
-  let selectedDossierHTML = "";
-  if (list[this._selectedIndex]) {
-    const item = list[this._selectedIndex];
-    const troop = item.troop;
-    const name = useItalian && troop.name_it ? troop.name_it : troop.name;
-    const faction = $gameFactions ? $gameFactions.getFaction(item.factionId) : null;
-    const factionName = faction ? (useItalian && faction.name_it ? faction.name_it : faction.name) : T('ArmyManager.independent');
-
-    const stats = [
-      { label: getStatLabel("HP"), val: troop.hp },
-      { label: getStatLabel("MP"), val: troop.mp },
-      { label: getStatLabel("ATK"), val: troop.atk },
-      { label: getStatLabel("DEF"), val: troop.def },
-      { label: getStatLabel("MAT"), val: troop.mat },
-      { label: getStatLabel("MDF"), val: troop.mdf },
-      { label: getStatLabel("AGI"), val: troop.agi },
-      { label: getStatLabel("LUK"), val: troop.luk }
-    ];
-
-    let statsGrid = "";
-    stats.forEach(st => {
-      statsGrid += `
-            <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-primary-hover-translucent-15); padding:4px 0;">
-                <span style="font-weight:bold; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:0.95em;">${st.label}:</span>
-                <span style="font-family:'Lora', serif; font-size:0.9em; font-weight:bold; color:var(--text-muted-hover);">${st.val}</span>
-            </div>
-        `;
-    });
-
-    selectedDossierHTML = `
-        <div class="army-card" style="margin-top: 15px; animation: fadeIn 0.25s ease;">
-            <h3 style="margin:0 0 3px 0; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:1.15em; text-align:center; font-weight:bold;">
-                ${name}
-            </h3>
-            <div style="font-style:italic; font-size:0.82em; color:var(--text-card-medium); text-align:center; margin-bottom:8px;">
-                Faction: ${factionName}
-            </div>
-
-            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px 16px;">
-                ${statsGrid}
-            </div>
-            
-            <div style="display:flex; justify-content:space-between; margin-top:10px; padding-top:6px; border-top:1px solid var(--border-primary-hover-translucent-15); font-family:'Lora', serif; font-size:0.85em;">
-                <span>${T('ArmyManager.hiringCost')} <strong style="color:var(--text-primary-hover);">€${(troop.hiringCost / 100).toFixed(2)}</strong></span>
-                <span>${T('ArmyManager.upkeep')} <strong style="color:var(--text-text-alt-17);">€${(troop.weeklyCost / 100).toFixed(2)}${T('ArmyManager.perWeekShort')}</strong></span>
-            </div>
-        </div>
-    `;
-  } else {
-    selectedDossierHTML = `
-        <div class="prophecy-pane" style="text-align:center; color:var(--text-card-medium); font-style:italic; font-size:0.9em; margin-top:15px; min-height:140px;">
-            ${T('ArmyManager.recruitHint')}
-        </div>
-    `;
-  }
-
-  // Interactive micro-feedback calligraphy notes
-  const feedbackHTML = this._feedbackText ? `
-    <div style="text-align:center; font-family:'Lora', serif; font-style:italic; font-size:0.85em; padding:8px; border:1px dashed var(--accent-gold-2); background:var(--bg-primary-hover-translucent-35); border-radius:4px; margin-top:10px; color:var(--text-primary-hover); animation:fadeIn 0.2s ease;">
-         ${this._feedbackText}
-    </div>
-  ` : "";
 
   this._dndContainer.innerHTML = `
     <div class="book-spread">
@@ -1340,18 +1279,18 @@ Scene_BuyTroops.prototype.refreshUIDOM = function () {
                 </div>
 
                 <div class="vitals-box" style="padding:10px 14px; background:var(--bg-primary-hover-translucent-35); border:1px solid var(--border-primary-hover-translucent-15); margin-bottom:12px;">
-                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.85em; color:var(--text-muted-hover); margin-bottom:4px;">
+                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.9em; color:var(--text-muted-hover); margin-bottom:4px;">
                         <span>${T('ArmyManager.companyChest')}</span>
-                        <span style="font-weight:bold; color:var(--text-cost-ok);">€${playerEuros}</span>
+                        <span id="bt-gold" style="font-weight:bold; color:var(--text-cost-ok);">€${($gameParty.gold() / 100).toFixed(2)}</span>
                     </div>
-                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.85em; color:var(--text-muted-hover); margin-bottom:4px;">
+                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.9em; color:var(--text-muted-hover);">
                         <span>${T('ArmyManager.regimentLimit')}</span>
-                        <span style="font-weight:bold;">${T('ArmyManager.troopsOf', { count: troopCount, max: maxTroops })}</span>
+                        <span id="bt-troopcount" style="font-weight:bold;">${T('ArmyManager.troopsOf', { count: troopCount, max: maxTroops })}</span>
                     </div>
                 </div>
 
-                ${selectedDossierHTML}
-                ${feedbackHTML}
+                <div id="bt-dossier"></div>
+                <div id="bt-feedback"></div>
             </div>
 
             <div style="font-family:'Lora', serif; font-size:0.8em; color:var(--text-card-medium); font-style:italic; text-align:center; border-top:1px dashed var(--border-primary-hover-translucent-15); padding-top:6px; margin-top:auto; margin-bottom:0;">
@@ -1361,13 +1300,169 @@ Scene_BuyTroops.prototype.refreshUIDOM = function () {
 
         <!-- Right Page: Available Troops -->
         <div class="right-page" style="display:flex; flex-direction:column; height:100%;">
-            
-            <div class="choices-scroll" style="max-height: 480px; overflow-y:auto; padding-right:4px; margin-top:10px;">
-                ${itemsHTML}
+            <div class="page-header-bar" style="margin-bottom:6px;">
+                <h2 class="title">${T('ArmyManager.availableTroops')}</h2>
             </div>
+            <div id="bt-list-count" style="font-family:'Lora', serif; font-size:0.78em; color:var(--text-card-medium); font-style:italic; text-align:center; margin-bottom:8px;"></div>
+            <div class="choices-scroll" id="bt-list" style="flex:1; min-height:0; overflow-y:auto; padding-right:4px; margin-top:0;"></div>
         </div>
     </div>
   `;
+};
+
+// Rebuilds the recruit list (row prices/afford-state depend on gold, so this
+// runs after every purchase too), preserving scroll position.
+Scene_BuyTroops.prototype.renderList = function () {
+  if (!this._dndContainer) return;
+  const listEl = this._dndContainer.querySelector('#bt-list');
+  const countEl = this._dndContainer.querySelector('#bt-list-count');
+  if (!listEl) return;
+
+  const list = this.shopList();
+  const playerGold = $gameParty.gold();
+  const scrollTop = listEl.scrollTop;
+
+  if (countEl) {
+    countEl.textContent = list.length > 0
+      ? T.n('ArmyManager.recruitsAvailable', list.length, { n: list.length })
+      : "";
+  }
+
+  if (list.length === 0) {
+    listEl.innerHTML = `
+        <div style="text-align:center; font-style:italic; color:var(--text-card-medium); padding-top:40px;">
+            ${T('ArmyManager.noLocalTroops')}
+        </div>
+    `;
+    return;
+  }
+
+  let itemsHTML = "";
+  list.forEach((item, index) => {
+    const troop = item.troop;
+    const isSelected = index === this._selectedIndex;
+    const name = armyT(troop.name);
+    const roleLabel = armyRoleLabel(troop.role);
+    const roleIcon = armyRoleIconHTML(troop.role);
+    const hiringPrice = (troop.hiringCost / 100).toFixed(2);
+    const canAfford = playerGold >= troop.hiringCost;
+    const hint = canAfford ? T('ArmyManager.clickToRecruit') : T('ArmyManager.cannotAfford');
+
+    itemsHTML += `
+        <div class="choice-card ${isSelected ? 'selected' : ''}" data-index="${index}" title="${hint}"
+             style="display:flex; justify-content:space-between; align-items:center; opacity: ${canAfford ? 1 : 0.65};"
+             onclick="SceneManager._scene.clickShopItem(${index})">
+            <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+                ${roleIcon}
+                <div style="min-width:0;">
+                    <div style="font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:${canAfford ? 'var(--text-primary-hover)' : 'var(--text-muted-hover)'};">${name}</div>
+                    <div style="font-size:0.75em; font-style:italic; color:var(--text-card-medium);">${roleLabel}</div>
+                </div>
+            </div>
+            <span style="font-size:1em; font-family:'Lora', serif; font-weight:bold; flex-shrink:0; margin-left:10px; color: ${canAfford ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'};">€${hiringPrice}</span>
+        </div>
+    `;
+  });
+
+  listEl.innerHTML = itemsHTML;
+  listEl.scrollTop = scrollTop;
+};
+
+// Rebuilds only the selected-troop dossier panel on the left page.
+Scene_BuyTroops.prototype.renderDossier = function () {
+  if (!this._dndContainer) return;
+  const dossierEl = this._dndContainer.querySelector('#bt-dossier');
+  if (!dossierEl) return;
+
+  const item = this.shopList()[this._selectedIndex];
+  if (!item) {
+    dossierEl.innerHTML = `
+        <div class="prophecy-pane" style="text-align:center; color:var(--text-card-medium); font-style:italic; font-size:0.9em; margin-top:15px; min-height:140px;">
+            ${T('ArmyManager.recruitHint')}
+        </div>
+    `;
+    return;
+  }
+
+  const troop = item.troop;
+  const name = armyT(troop.name);
+  const roleLabel = armyRoleLabel(troop.role);
+  const faction = $gameFactions ? $gameFactions.getFaction(item.factionId) : null;
+  const factionName = faction ? armyT(faction.name) : T('ArmyManager.independent');
+
+  const stats = [
+    { label: getStatLabel("HP"), val: troop.hp },
+    { label: getStatLabel("MP"), val: troop.mp },
+    { label: getStatLabel("ATK"), val: troop.atk },
+    { label: getStatLabel("DEF"), val: troop.def },
+    { label: getStatLabel("MAT"), val: troop.mat },
+    { label: getStatLabel("MDF"), val: troop.mdf },
+    { label: getStatLabel("AGI"), val: troop.agi },
+    { label: getStatLabel("LUK"), val: troop.luk }
+  ];
+
+  let statsGrid = "";
+  stats.forEach(st => {
+    statsGrid += `
+        <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-primary-hover-translucent-15); padding:4px 0;">
+            <span style="font-weight:bold; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:0.95em;">${st.label}:</span>
+            <span style="font-family:'Lora', serif; font-size:0.9em; font-weight:bold; color:var(--text-muted-hover);">${st.val}</span>
+        </div>
+    `;
+  });
+
+  dossierEl.innerHTML = `
+      <div class="army-card" style="margin-top: 15px; animation: fadeIn 0.25s ease;">
+          <h3 style="margin:0 0 2px 0; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:1.15em; text-align:center; font-weight:bold;">
+              ${name}
+          </h3>
+          <div style="font-style:italic; font-size:0.82em; color:var(--text-card-medium); text-align:center; margin-bottom:8px;">
+              ${T('ArmyManager.factionLabel')} ${factionName} &middot; ${roleLabel}
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px 16px;">
+              ${statsGrid}
+          </div>
+
+          <div style="display:flex; justify-content:space-between; margin-top:10px; padding-top:6px; border-top:1px solid var(--border-primary-hover-translucent-15); font-family:'Lora', serif; font-size:0.85em;">
+              <span>${T('ArmyManager.hiringCost')} <strong style="color:var(--text-primary-hover);">€${(troop.hiringCost / 100).toFixed(2)}</strong></span>
+              <span>${T('ArmyManager.upkeep')} <strong style="color:var(--text-text-alt-17);">€${(troop.weeklyCost / 100).toFixed(2)}${T('ArmyManager.perWeekShort')}</strong></span>
+          </div>
+      </div>
+  `;
+};
+
+Scene_BuyTroops.prototype.renderHeader = function () {
+  if (!this._dndContainer) return;
+  const goldEl = this._dndContainer.querySelector('#bt-gold');
+  if (goldEl) goldEl.textContent = `€${($gameParty.gold() / 100).toFixed(2)}`;
+  const countEl = this._dndContainer.querySelector('#bt-troopcount');
+  if (countEl) {
+    countEl.textContent = T('ArmyManager.troopsOf', {
+      count: $gameArmy.getTroopCount(),
+      max: ArmyManager.Params.maxArmySize
+    });
+  }
+};
+
+// Cheap keyboard/click selection change: toggles the 'selected' class on the
+// two affected rows directly instead of rebuilding the list, then refreshes
+// only the dossier panel.
+Scene_BuyTroops.prototype.updateSelection = function (index) {
+  if (!this._dndContainer) return;
+  const list = this.shopList();
+  if (list.length === 0) return;
+  const clamped = ((index % list.length) + list.length) % list.length;
+
+  const prevEl = this._dndContainer.querySelector(`#bt-list [data-index="${this._selectedIndex}"]`);
+  if (prevEl) prevEl.classList.remove('selected');
+
+  this._selectedIndex = clamped;
+
+  const nextEl = this._dndContainer.querySelector(`#bt-list [data-index="${clamped}"]`);
+  if (nextEl) nextEl.classList.add('selected');
+
+  this.renderDossier();
 };
 
 Scene_BuyTroops.prototype.leaveCamp = function () {
@@ -1376,14 +1471,12 @@ Scene_BuyTroops.prototype.leaveCamp = function () {
 };
 
 Scene_BuyTroops.prototype.clickShopItem = function (index) {
-  this._selectedIndex = index;
-  this.refreshUIDOM();
+  this.updateSelection(index);
   this.buyTroopAtIndex(index);
 };
 
 Scene_BuyTroops.prototype.buyTroopAtIndex = function (index) {
-  const shop = this._troopShopWindow;
-  const list = shop._data || [];
+  const list = this.shopList();
   const item = list[index];
   if (!item) return;
 
@@ -1410,20 +1503,32 @@ Scene_BuyTroops.prototype.buyTroopAtIndex = function (index) {
 
   SoundManager.playShop();
 
-  const useItalian = ConfigManager.language === 'it';
-  const troopName = useItalian && item.troop.name_it ? item.troop.name_it : item.troop.name;
+  const troopName = armyT(item.troop.name);
+  this.renderHeader();
+  this.renderList();
   this.showFeedback(T('ArmyManager.contracted', { name: troopName }));
 };
 
 Scene_BuyTroops.prototype.showFeedback = function (text) {
   this._feedbackText = text;
-  this.refreshUIDOM();
+  this.renderFeedback();
 
   if (this._feedbackTimer) clearTimeout(this._feedbackTimer);
   this._feedbackTimer = setTimeout(() => {
     this._feedbackText = "";
-    this.refreshUIDOM();
+    this.renderFeedback();
   }, 3000);
+};
+
+Scene_BuyTroops.prototype.renderFeedback = function () {
+  if (!this._dndContainer) return;
+  const el = this._dndContainer.querySelector('#bt-feedback');
+  if (!el) return;
+  el.innerHTML = this._feedbackText ? `
+    <div style="text-align:center; font-family:'Lora', serif; font-style:italic; font-size:0.85em; padding:8px; border:1px dashed var(--accent-gold-2); background:var(--bg-primary-hover-translucent-35); border-radius:4px; margin-top:10px; color:var(--text-primary-hover); animation:fadeIn 0.2s ease;">
+         ${this._feedbackText}
+    </div>
+  ` : "";
 };
 
 Scene_BuyTroops.prototype.terminate = function () {
@@ -1517,7 +1622,6 @@ Scene_Squads.prototype.refreshUIDOM = function () {
   if (!this._dndContainer) return;
 
   const squads = $gameArmy.getSquads();
-  const useItalian = ConfigManager.language === 'it';
 
   // Left Page: Squad list
   let squadsHTML = "";
@@ -1532,7 +1636,7 @@ Scene_Squads.prototype.refreshUIDOM = function () {
 
       squadsHTML += `
             <div class="choice-card ${isSelected ? 'selected' : ''}" style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px;" onclick="SceneManager._scene.clickSquad(${idx})">
-                <span class="role-badge">${sq.name} ${T.n('ArmyManager.troopCount', sq.troopIds.length, { n: sq.troopIds.length })}</span>
+                <span class="role-badge">${armyT(sq.name)} ${T.n('ArmyManager.troopCount', sq.troopIds.length, { n: sq.troopIds.length })}</span>
                 <span style="font-size:0.82em; font-family:'Lora', serif; font-weight:bold; color:var(--text-text-alt-17);">${leaderName}</span>
             </div>
         `;
@@ -1756,8 +1860,7 @@ PluginManager.registerCommand("ArmyManager", "debugAddTroops", args => {
   }
 
   const randomFaction = factionsWithTroops[Math.floor(Math.random() * factionsWithTroops.length)];
-  const useItalian = ConfigManager.language === 'it';
-  const factionName = useItalian && randomFaction.name_it ? randomFaction.name_it : randomFaction.name;
+  const factionName = armyT(randomFaction.name);
 
   let totalAdded = 0;
   const troopCounts = {};
@@ -1777,7 +1880,7 @@ PluginManager.registerCommand("ArmyManager", "debugAddTroops", args => {
     }
 
     if (addedCount > 0) {
-      const troopName = useItalian && troop.name_it ? troop.name_it : troop.name;
+      const troopName = armyT(troop.name);
       troopCounts[troopName] = addedCount;
     }
 

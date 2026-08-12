@@ -969,20 +969,16 @@
                     <div class="mt-statgrid"></div>
                     <div class="mt-stats-foot">
                         <span class="mt-power"></span>
-                        <span class="mt-hint">${T('MonsterTournament.ui.hintCycle')}</span>
                     </div>
                 </div>
                 <div id="mt-bet" class="mt-panel" style="display:none">
                     <div class="mt-bet-amount">${T('MonsterTournament.ui.bet')} <b>1</b></div>
                     <div class="mt-bet-avail"></div>
-                    <div class="mt-hint">${T('MonsterTournament.ui.hintBet')}</div>
-                    <div class="mt-hint">${T('MonsterTournament.ui.hintConfirm')}</div>
                 </div>
                 <div id="mt-addbet" class="mt-panel" style="display:none">
                     <div class="mt-addbet-title"></div>
                     <div class="mt-opt" data-i="0"></div>
                     <div class="mt-opt" data-i="1">${T('MonsterTournament.ui.keepCurrentBet')}</div>
-                    <div class="mt-hint">${T('MonsterTournament.ui.hintChoose')}</div>
                 </div>
                 <div id="mt-banner" style="display:none"></div>
             `;
@@ -1031,7 +1027,7 @@
             this._statsEl.querySelector('.mt-name').textContent = m.name;
             this._statsEl.querySelector('.mt-sub').textContent =
                 T('MonsterTournament.fighterOf', { index: this.currentMonsterIndex + 1, total: this.selectedMonsters.length });
-            const names = ['ATK', 'DEF', 'MAT', 'MDF', 'AGI', 'LUK'];
+            const names = [2, 3, 4, 5, 6, 7].map(paramName);
             const grid = this._statsEl.querySelector('.mt-statgrid');
             grid.innerHTML = names.map((n, i) =>
                 `<div class="mt-stat"><div class="lbl">${n}</div><div class="val">${m.params[i + 2]}</div></div>`
@@ -1475,7 +1471,6 @@
             display: flex; justify-content: space-between; align-items: center; margin-top: 6px;
         }
         #mt-stats .mt-power { font-weight: bold; color: var(--text-primary-hover, #ffcc66); }
-        #mt-hud .mt-hint { font-size: 13px; color: var(--text-info, #b89060); }
         #mt-bet, #mt-addbet {
             top: 50%; left: 50%; transform: translate(-50%, -50%);
             text-align: center; min-width: 300px;

@@ -358,7 +358,7 @@
     // see the auto block, which reports a sane km/h so it never trips the liminal
     // overdrive.)
     const CRUISE_KMH        = 80;     // efficiency sweet spot for the fuel model
-    const MAX_KMH           = 666;    // absolute cap (turbo overdrive)
+    const MAX_KMH           = 1666;   // absolute cap (turbo overdrive)
     const KMH_TO_UNITS      = 1;      // world units/sec per km/h (base, unscaled)
     // Liminal drive (auto fast-travel): cruise speed and the ramp-up time to
     // reach it, so the camper eases into warp speed instead of snapping to it.
@@ -381,38 +381,45 @@
     const WHEELBASE         = 18;     // world units between axles
     const MAX_STEER_LOCK    = 0.52;   // rad of steering lock at standstill
     const STEER_FALLOFF     = 0.011;  // lock shrinks with speed: lock/(1+v*k)
-    const ENGINE_ACCEL      = 26;     // peak engine force (units/s^2) in top gear
-    const GEARS             = [26, 46, 70, 96, 126];        // shift-up speeds (km/h)
+    // The camper pulls far harder than a real van and keeps pulling: the engine
+    // force is high, the gearbox is spaced wide and air drag is light, so it
+    // reaches its natural top (see NATURAL_TOP) in a handful of seconds rather
+    // than a slow minute-long climb.
+    const ENGINE_ACCEL      = 62;     // peak engine force (units/s^2) in top gear
+    const GEARS             = [40, 82, 138, 208, 292];      // shift-up speeds (km/h)
     const GEAR_FORCE        = [1.9, 1.5, 1.25, 1.0, 0.85];  // per-gear torque mult
-    const SHIFT_TIME        = 0.28;   // torque-cut pause on a gear change
-    const BRAKE_DECEL       = 95;     // units/s^2 on the brakes
-    const HANDBRAKE_DECEL   = 55;     // units/s^2 handbrake drag (rear lock)
+    const SHIFT_TIME        = 0.16;   // torque-cut pause on a gear change
+    const BRAKE_DECEL       = 240;    // units/s^2 on the brakes
+    const HANDBRAKE_DECEL   = 130;    // units/s^2 handbrake drag (rear lock)
     const HANDBRAKE_GRIP    = 0.25;   // lateral grip multiplier w/ handbrake on
     const REVERSE_MAX_KMH   = 28;
     const REVERSE_ACCEL     = 14;
-    const DRAG_K            = 0.00185;// air drag: decel = k * v^2
+    const DRAG_K            = 0.00056;// air drag: decel = k * v^2
     const SLOPE_ACCEL       = 30;     // gravity component along the grade
-    const OVERDRIVE_KMHPS   = 45;     // turbo: km/h gained per second held (Shift)
-    const OVERDRIVE_DECAY   = 42;     // decel above the natural top w/o turbo
+    const OVERDRIVE_KMHPS   = 180;    // turbo: km/h gained per second held (Shift)
+    const OVERDRIVE_DECAY   = 90;     // decel above the natural top w/o turbo
     // Holding Shift (turbo) also multiplies the in-gear engine force, so the
     // camper launches / accelerates far harder while boosting, not just past the
     // natural top speed.
-    const BOOST_ACCEL_MULT  = 4.0;
+    const BOOST_ACCEL_MULT  = 5.0;
     // Liminal boost (holding Shift): the moment it is released, any speed carried
     // above the natural top collapses very fast, so the boost feels like a burst
-    // rather than a coast. It also drinks fuel and warps space (below).
-    const BOOST_RELEASE_DECAY = 340;  // km/h per second bled off when Shift released
+    // rather than a coast. It also drinks fuel and bends the light around the
+    // camper (below).
+    const BOOST_RELEASE_DECAY = 900;  // km/h per second bled off when Shift released
     const BOOST_FUEL_MULT     = 16;   // fuel burn multiplier while boosting
     // Ramp physics: at speed, a steep uphill crest launches the camper off the
     // ground into a ballistic arc (it is NOT glued to the terrain anymore).
-    const LAUNCH_KMH        = 85;     // min speed to ramp off an incline
+    const LAUNCH_KMH        = 150;    // min speed to ramp off an incline
     const LAUNCH_GRADE      = 0.24;   // min uphill grade (nose-up) to launch
     const AIR_GRAVITY       = 130;    // downward accel (world units/s^2) while airborne
-    // Space distortion: the world folds/swirls around the camper above this speed,
-    // growing more violent the faster it goes (and harder still under boost).
-    const WARP_START_KMH    = 70;
+    // Speed distortion: above this speed light starts to bend AROUND the camper.
+    // It is a screen-space lens (see SpeedWarpFx), a bubble the size of the
+    // vehicle rather than the whole world folding over; the scenery itself is
+    // never moved.
+    const WARP_START_KMH    = 180;
     const LAT_SCRUB         = 0.35;   // forward speed lost to lateral tyre scrub
-    const NATURAL_TOP       = Math.sqrt(ENGINE_ACCEL / DRAG_K); // ~118 km/h on asphalt
+    const NATURAL_TOP       = Math.sqrt(ENGINE_ACCEL / DRAG_K); // ~333 km/h on asphalt
 
     // Per-surface handling. grip = lateral slip decay per second; roll =
     // rolling resistance (units/s^2); dragMul scales drag off the asphalt;
@@ -2062,97 +2069,10 @@
             grp.add(lamps);
         }
 
-        // Space distortion (acceleration / liminal overdrive). Rather than heaving
-        // the terrain up and down, this bends SPACE around the camper: every loaded
-        // chunk is swirled around the camper in the horizontal plane (a vortex whose
-        // winding grows with distance) and pulled in / pushed out on a breathing
-        // radial lens. The ground never changes height, so nothing bobs vertically;
-        // instead the world appears to fold and rotate around the vehicle.
-        //
-        // Physics is unaffected: the height field and tile lookups are computed from
-        // world coordinates, not from these visual chunk offsets, so the camper keeps
-        // driving on the real (unwarped) ground while the visible world warps around
-        // it. amount 0 restores every chunk to its true tile position.
-        //   amount : 0..1 distortion strength   time : scene clock (s)
-        //   cx, cz : camper world position (vortex centre)
-        setWarp(amount, time, cx, cz) {
-            const ts = this._ts;
-            const centerX = (cx == null) ? 0 : cx;
-            const centerZ = (cz == null) ? 0 : cz;
-
-            // Reset path: restore every warped vertex to its cached base and clear
-            // the flag. Runs once, when the warp switches off.
-            if (amount <= 0) {
-                if (this._warpOn) {
-                    for (const [, g] of this._chunks) this._unwarpGroup(g);
-                    this._warpOn = false;
-                }
-                return;
-            }
-            this._warpOn = true;
-
-            // Continuous space-warp, evaluated PER VERTEX in absolute world
-            // coordinates. Because the offset is a pure function of world position,
-            // a vertex shared by two neighbouring chunks (identical world position)
-            // gets the identical offset in both: chunk edges stay welded, so the
-            // ground folds and ripples but never tears open into gaps. The chunk
-            // groups themselves are NOT moved (that rigid translation was what tore
-            // the world apart before). Physics is untouched: the height field is
-            // sampled from true tile coords, not from these display offsets.
-            const swirlPhase = 0.6 + 0.4 * Math.sin(time * 1.3);
-            const twistMax   = 1.1 * amount * swirlPhase;   // max swirl angle (rad)
-            const pinchAmt   = 0.22 * amount;               // radial breathing depth
-            const rippleAmp  = ts * 0.14 * amount;          // vertical roll height
-
-            for (const [, g] of this._chunks) {
-                const gx0 = g.position.x, gz0 = g.position.z;
-                g.traverse(o => {
-                    if (o.isInstancedMesh || !o.geometry) return;
-                    const pos = o.geometry.attributes.position;
-                    if (!pos) return;
-                    let base = o.geometry.userData.__warpBase;
-                    if (!base) base = o.geometry.userData.__warpBase = Float32Array.from(pos.array);
-                    const arr = pos.array;
-                    for (let i = 0; i < pos.count; i++) {
-                        const bi = i * 3;
-                        const lx = base[bi], ly = base[bi + 1], lz = base[bi + 2];
-                        const wx = gx0 + lx, wz = gz0 + lz;     // vertex world pos
-                        const dx = wx - centerX, dz = wz - centerZ;
-                        const rt = Math.hypot(dx, dz) / ts;     // distance in tiles
-                        // Swirl: rotate about the camper by an angle that climbs with
-                        // distance, so the near ground barely turns while the far
-                        // world wraps hardest around the vehicle.
-                        const twist = twistMax * Math.min(2.2, rt * 0.45);
-                        const ca = Math.cos(twist), sa = Math.sin(twist);
-                        // Radial lens: space breathes in and out in rings.
-                        const pinch = 1 + pinchAmt * Math.sin(rt * 0.8 - time * 2.0);
-                        const nwx = centerX + (dx * ca - dz * sa) * pinch;
-                        const nwz = centerZ + (dx * sa + dz * ca) * pinch;
-                        // Vertical ripple: two travelling waves for an organic roll.
-                        const dy = rippleAmp * (
-                            Math.sin(rt * 1.1 - time * 2.2) * 0.6 +
-                            Math.sin(wx * 0.02 + wz * 0.017 + time * 1.3) * 0.4
-                        );
-                        arr[bi]     = nwx - gx0;   // back to chunk-local space
-                        arr[bi + 1] = ly + dy;
-                        arr[bi + 2] = nwz - gz0;
-                    }
-                    pos.needsUpdate = true;
-                });
-            }
-        }
-
-        // Restore one chunk group's meshes to their cached, un-warped vertices.
-        _unwarpGroup(g) {
-            g.traverse(o => {
-                if (o.isInstancedMesh || !o.geometry) return;
-                const base = o.geometry.userData.__warpBase;
-                const pos  = o.geometry.attributes.position;
-                if (!base || !pos) return;
-                pos.array.set(base);
-                pos.needsUpdate = true;
-            });
-        }
+        // NOTE: the terrain is never displaced any more. Speed used to swirl every
+        // loaded chunk's vertices around the camper, which folded the WHOLE visible
+        // world (and cost a full vertex rewrite of every chunk, every frame). The
+        // effect is now a screen-space lens confined to the camper, see SpeedWarpFx.
 
         dispose() {
             for (const [, grp] of this._chunks) {
@@ -4165,6 +4085,174 @@
     }
 
     // =========================================================================
+    // SpeedWarpFx, the speed lens.
+    //
+    // At speed the world does NOT fold: nothing in the scene is moved, scaled or
+    // displaced. The finished frame is rendered into an offscreen target and then
+    // blitted back through a fragment shader that bends the LIGHT in a bubble
+    // around the camper, the same read as the gravitational lens the black holes
+    // wear in GalaxySim: a swirl plus a radial pull, strongest in a ring hugging
+    // the vehicle and gone a short way out, with the RGB channels pulled by
+    // slightly different amounts so the rim fringes.
+    //
+    // Because it is screen space it costs one full-screen pass whatever is on
+    // screen, it cannot tear chunk seams open, and physics never sees it.
+    // =========================================================================
+    class SpeedWarpFx {
+        constructor() {
+            this._target = null;
+            this._mat = null;
+            this._scene = null;
+            this._cam = null;
+            this._ndc = new THREE.Vector3();
+        }
+
+        _build() {
+            if (this._mat) return;
+            this._mat = new THREE.ShaderMaterial({
+                depthTest: false,
+                depthWrite: false,
+                transparent: false,
+                blending: THREE.NoBlending,
+                uniforms: {
+                    tDiffuse: { value: null },
+                    uCenter:  { value: new THREE.Vector2(0.5, 0.5) },
+                    uAspect:  { value: 1 },
+                    uAmount:  { value: 0 },
+                    uTime:    { value: 0 },
+                    uInner:   { value: 0.10 },
+                    uOuter:   { value: 0.42 }
+                },
+                vertexShader: [
+                    'varying vec2 vUv;',
+                    'void main() {',
+                    '  vUv = uv;',
+                    '  gl_Position = vec4(position.xy, 0.0, 1.0);',
+                    '}'
+                ].join('\n'),
+                fragmentShader: [
+                    'uniform sampler2D tDiffuse;',
+                    'uniform vec2  uCenter;',
+                    'uniform float uAspect;',
+                    'uniform float uAmount;',
+                    'uniform float uTime;',
+                    'uniform float uInner;',
+                    'uniform float uOuter;',
+                    'varying vec2 vUv;',
+                    // Sample the frame with the lens applied at strength s. Called
+                    // three times, once per channel, so the rim splits into colour.
+                    'vec2 bend(vec2 uv, float s) {',
+                    '  vec2 d = (uv - uCenter) * vec2(uAspect, 1.0);',
+                    '  float r = length(d);',
+                    // Ring falloff: nothing at the very centre (the camper itself
+                    // stays crisp), peak just off its flanks, nothing past uOuter.
+                    '  float k = smoothstep(uInner * 0.25, uInner, r) *',
+                    '            (1.0 - smoothstep(uInner, uOuter, r));',
+                    '  if (k <= 0.0) return uv;',
+                    '  k *= s;',
+                    // Swirl about the camper.
+                    '  float a = 0.85 * k;',
+                    '  float ca = cos(a), sa = sin(a);',
+                    '  vec2 rd = vec2(d.x * ca - d.y * sa, d.x * sa + d.y * ca);',
+                    // Radial pull, breathing outward so the bubble never sits still.
+                    '  float pull = 1.0 - k * (0.30 + 0.16 * sin(r * 26.0 - uTime * 7.0));',
+                    '  rd *= pull;',
+                    '  return uCenter + rd / vec2(uAspect, 1.0);',
+                    '}',
+                    'void main() {',
+                    '  float s = uAmount;',
+                    '  vec2 ur = clamp(bend(vUv, s * 1.06), 0.0, 1.0);',
+                    '  vec2 ug = clamp(bend(vUv, s),        0.0, 1.0);',
+                    '  vec2 ub = clamp(bend(vUv, s * 0.94), 0.0, 1.0);',
+                    '  gl_FragColor = vec4(',
+                    '    texture2D(tDiffuse, ur).r,',
+                    '    texture2D(tDiffuse, ug).g,',
+                    '    texture2D(tDiffuse, ub).b,',
+                    '    1.0);',
+                    '}'
+                ].join('\n')
+            });
+            this._scene = new THREE.Scene();
+            this._scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this._mat));
+            this._cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 2);
+            this._cam.position.z = 1;
+        }
+
+        // Draw one frame through the lens. drawInto(target) must render the scene
+        // into the target it is handed (that is where the PSX downscale pass, if
+        // any, is chained in). center is the camper's world position; camera is
+        // the live scene camera, used to project it to a screen point.
+        // Returns false when the effect declined to run, so the caller falls back
+        // to drawing straight to the canvas.
+        render(renderer, drawInto, { amount, time, center, camera, centered }) {
+            if (!renderer || !(amount > 0)) return false;
+            let cu = 0.5, cv = 0.5;
+            if (!centered) {
+                // Behind the camera (or far off screen): nothing to bend around.
+                this._ndc.copy(center).project(camera);
+                if (this._ndc.z > 1) return false;
+                cu = this._ndc.x * 0.5 + 0.5;
+                cv = this._ndc.y * 0.5 + 0.5;
+                if (cu < -0.5 || cu > 1.5 || cv < -0.5 || cv > 1.5) return false;
+            }
+
+            this._build();
+            const w = Math.max(1, renderer.domElement.width);
+            const h = Math.max(1, renderer.domElement.height);
+            let rt = this._target;
+            if (!rt || rt.width !== w || rt.height !== h) {
+                if (rt) rt.dispose();
+                rt = new THREE.WebGLRenderTarget(w, h, {
+                    minFilter: THREE.LinearFilter,
+                    magFilter: THREE.LinearFilter,
+                    format: THREE.RGBAFormat,
+                    depthBuffer: true,
+                    stencilBuffer: false
+                });
+                // The offscreen frame must hold exactly what the canvas would have
+                // held. three picks the colour conversion from the TARGET's texture,
+                // so an ordinary (linear) target would store un-converted colour and
+                // the raw lens shader - which has no encoding pass of its own - would
+                // then paint a washed-out picture. Declaring the target sRGB moves
+                // the conversion one pass earlier and the lens simply passes bytes
+                // through, so the image is identical to a direct render.
+                if (THREE.SRGBColorSpace !== undefined && 'colorSpace' in rt.texture) {
+                    rt.texture.colorSpace = THREE.SRGBColorSpace;
+                } else if (THREE.sRGBEncoding !== undefined) {
+                    rt.texture.encoding = THREE.sRGBEncoding;
+                }
+                this._target = rt;
+            }
+
+            drawInto(rt);
+
+            const u = this._mat.uniforms;
+            u.tDiffuse.value = rt.texture;
+            u.uCenter.value.set(cu, cv);
+            u.uAspect.value = w / h;
+            u.uAmount.value = amount;
+            u.uTime.value = time;
+            // The bubble grows with speed but stays a bubble: at full strength it
+            // reaches roughly a third of the screen, never the whole view.
+            u.uInner.value = 0.08 + 0.05 * amount;
+            u.uOuter.value = 0.26 + 0.20 * amount;
+
+            renderer.setRenderTarget(null);
+            renderer.render(this._scene, this._cam);
+            return true;
+        }
+
+        dispose() {
+            if (this._target) { this._target.dispose(); this._target = null; }
+            if (this._scene) {
+                this._scene.traverse(o => { if (o.geometry) o.geometry.dispose(); });
+                this._scene = null;
+            }
+            if (this._mat) { this._mat.dispose(); this._mat = null; }
+        }
+    }
+
+    // =========================================================================
     // LiminalFx, the cosmic-horror overdrive. Inert at cruising speed; as the
     // camper accelerates past ~130 km/h reality starts to peel: the road heaves,
     // the camper writhes, the palette bleeds violet then blood-red, the camera
@@ -4183,7 +4271,8 @@
             const d = document.createElement('div');
             d.id = 'camper-liminal-overlay';
             d.style.cssText = [
-                'position:absolute', 'inset:0', 'pointer-events:none', 'z-index:2',
+                'position:absolute', 'top:0', 'right:0', 'bottom:0', 'left:0',
+                'pointer-events:none', 'z-index:2',
                 'opacity:0', 'mix-blend-mode:hard-light'
             ].join(';');
             overlay.appendChild(d);
@@ -4215,7 +4304,7 @@
         }
 
         update(o) {
-            const { camera, van, terrain, renderer, intensity: i, time, delta, baseExposure, scene, viewMode } = o;
+            const { camera, van, renderer, intensity: i, time, delta, baseExposure, scene, viewMode } = o;
 
             // --- DOM tint / vignette: violet at mid, blood red at the limit ---
             this._dom.style.opacity = i <= 0 ? '0' : String(Math.min(0.92, 0.22 + i * i * 0.88));
@@ -4273,13 +4362,6 @@
                     camera.position.x += (Math.random() - 0.5) * shake;
                     camera.position.y += (Math.random() - 0.5) * shake;
                 }
-            }
-
-            // --- space distortion: the world folds/swirls around the camper ---
-            if (terrain && terrain.setWarp) {
-                const wx = van && van.group ? van.group.position.x : 0;
-                const wz = van && van.group ? van.group.position.z : 0;
-                terrain.setWarp(i, time, wx, wz);
             }
 
             // --- the camper itself writhes ---
@@ -4540,6 +4622,160 @@
     // =========================================================================
     // CamperDrivingScene
     // =========================================================================
+    // =========================================================================
+    // The weapon in the driver's hands.
+    //
+    // Whatever the party leader has equipped, drawn by the layer a battle draws
+    // a first-person weapon with: Sprite_3DWeapon over the shared
+    // WeaponThreeScene overlay (Weapon3DOverlay.js), built, posed and swung by
+    // WeaponSystemProcedural. It is their real equipment, so it changes when
+    // they change it, and both hands show when they are dual wielding or
+    // holding claws, exactly as in a fight.
+    //
+    // It is only in frame while the driver is WALKING ('foot'). In the cabin,
+    // at the wheel and in every camera mode it is put away: hands are on the
+    // wheel, and a weapon hanging in front of a driving view reads as a bug.
+    // =========================================================================
+    const CamperWeapon = {
+        _right: null,
+        _left: null,
+        _held: false,
+        _visible: false,
+
+        available() {
+            return !!(window.THREE && window.Sprite_3DWeapon && window.WeaponThreeScene &&
+                      window.WeaponSystemProcedural);
+        },
+
+        /** Raise the overlay for the whole drive. */
+        begin() {
+            if (this._held || !this.available()) return;
+            // One reference for the drive: swapping a weapon must never take the
+            // count to zero, since each of those destroys and rebuilds a WebGL
+            // context and the browser force-loses the oldest one it has.
+            window.WeaponThreeScene.ref();
+            this._held = true;
+            this._onMouseDown = this._onMouseDown || ((e) => {
+                if (!CamperDrivingSystem.isActive() || e.button !== 0) return;
+                if (document.pointerLockElement !== document.body) return;   // the first click only grabs the mouse
+                CamperWeapon.swing();
+            });
+            document.addEventListener('mousedown', this._onMouseDown);
+            const canvas = window.WeaponThreeScene.canvas;
+            if (canvas) {
+                canvas.style.zIndex = '10000';   // over the drive overlay's 9999
+                // Put away until the driver is out of the van. The canvas keeps
+                // whatever was last drawn into it, so starting hidden is also
+                // what stops a battle's last frame hanging over the road.
+                canvas.style.display = 'none';
+            }
+        },
+
+        /** Only on foot: the one mode where the driver is walking about. */
+        showsIn(viewMode) { return viewMode === 'foot'; },
+
+        /**
+         * Puts the leader's own weapons in frame, rebuilding only what changed.
+         * An empty right hand is not empty: it holds the fist of the character's
+         * archetype, the same as in battle.
+         */
+        refresh() {
+            if (!this._held) return;
+            let right = null, left = null;
+            const actor = (typeof $gameParty !== 'undefined' && $gameParty) ? $gameParty.leader() : null;
+            if (actor) {
+                const weapons = actor.weapons();
+                right = weapons[0] || null;
+                const claws = right && right.wtypeId === 10;
+                if (weapons.length >= 2 || claws) left = weapons[1] || null;
+                if (!right) right = WeaponSystemProcedural.unarmedWeaponFor(actor);
+            }
+            this._right = this._set('_right', right, false);
+            this._left = this._set('_left', left, true);
+        },
+
+        _set(slot, weapon, isLeft) {
+            const held = this[slot];
+            if (!weapon) {
+                if (held) held.terminate();
+                return null;
+            }
+            if (held && held._weapon === weapon) return held;
+            if (held) held.terminate();
+            WeaponSystemProcedural.patchSprite3DWeapon();
+            return new Sprite_3DWeapon(weapon, weaponScreenX(isLeft), weaponScreenY());
+        },
+
+        /** One blow at a time, out of whichever hand is holding something. */
+        swing() {
+            if (!this._visible) return;
+            const s = this._right || this._left;
+            if (!s || !s._weapon) return;
+            if (s._animData || s._clipPlaying) return;
+            s.playAnimation(null);
+            if (this._left && this._left !== s && !this._left._animData) {
+                this._left.playAnimation(null);
+            }
+            if (window.WeaponSounds) window.WeaponSounds.play(s._weapon);
+        },
+
+        /** Called once a frame by the drive's own loop. */
+        update(viewMode, menuOpen) {
+            if (!this._held) return;
+            const show = !menuOpen && this.showsIn(viewMode);
+            if (show !== this._visible) {
+                this._visible = show;
+                const canvas = window.WeaponThreeScene.canvas;
+                if (canvas) canvas.style.display = show ? 'block' : 'none';
+                if (show) this.refresh();
+            }
+            if (!show) return;
+            // Cheap enough to re-read every frame, and it is the only way a
+            // weapon changed in the menu turns up in the driver's hand.
+            this.refresh();
+            if (typeof Input !== 'undefined' && Input.isTriggered('pagedown')) this.swing();
+            for (const s of [this._right, this._left]) {
+                if (!s) continue;
+                s._aimPoint = null;
+                s.update();
+            }
+            window.WeaponThreeScene.render();
+        },
+
+        end() {
+            if (!this._held) return;
+            if (this._onMouseDown) document.removeEventListener('mousedown', this._onMouseDown);
+            const canvas = window.WeaponThreeScene.canvas;
+            if (canvas) { canvas.style.display = 'block'; canvas.style.zIndex = '10'; }
+            for (const slot of ['_right', '_left']) {
+                if (this[slot]) this[slot].terminate();
+                this[slot] = null;
+            }
+            this._held = false;
+            this._visible = false;
+            // Last, so the count only reaches zero once the sprites have let go.
+            window.WeaponThreeScene.deref();
+        }
+    };
+
+    // Where a held weapon sits on screen, in game pixels. The same numbers the
+    // battle overlay uses (Weapon3DOverlay), read off the plugin's own
+    // parameters so the two never drift apart.
+    function weaponScreenX(isLeft) {
+        const p = PluginManager.parameters('WeaponSystem') || {};
+        const wide = ($gameSystem && $gameSystem.getCurrentResolution &&
+            $gameSystem.getCurrentResolution() === '16:9');
+        const sx = wide ? 1.568 : 1;
+        if (isLeft) return Math.round(200 * sx);
+        return Math.round(Number(p.weaponSpriteX || 650) * sx) - 120;
+    }
+    function weaponScreenY() {
+        const p = PluginManager.parameters('WeaponSystem') || {};
+        const wide = ($gameSystem && $gameSystem.getCurrentResolution &&
+            $gameSystem.getCurrentResolution() === '16:9');
+        return Math.round(Number(p.weaponSpriteY || 450) * (wide ? 1.154 : 1));
+    }
+
     class CamperDrivingScene {
         constructor(duration, destinationName, totalKm, fuelCost, opts) {
             const options = opts || {};
@@ -4746,6 +4982,8 @@
             this._engine       = this._titleMode ? null : new EngineAudio();
             this._liminal      = new LiminalFx(this._scene, this._overlay);
             this._liminalI     = 0;   // smoothed cosmic-horror intensity 0..1
+            this._speedFx      = new SpeedWarpFx();
+            this._warpCentre   = new THREE.Vector3();
 
             this._viewMode = 'fp'; // 'fpdrive' | 'fp' | 'car' | 'free' | 'foot'
 
@@ -4794,6 +5032,9 @@
                 };
                 document.addEventListener('keydown', this._onActionKey);
             }
+
+            // What the leader has in their hands, drawn over the drive.
+            if (!this._titleMode) CamperWeapon.begin();
 
             if (this._titleMode) {
                 // A different hour every time the title is opened: mostly
@@ -5105,9 +5346,9 @@
             this._camera.position.z += (tz - this._camera.position.z) * 6 * delta;
 
             // Sense of speed: widen FOV and shake the camera as you go faster.
-            const targetFov = this._baseFov + Math.min(28, this._speedKmh * 0.03);
+            const targetFov = this._baseFov + Math.min(28, this._speedKmh * 0.012);
             this._camera.fov += (targetFov - this._camera.fov) * Math.min(1, delta * 4);
-            let shake = Math.max(0, this._speedKmh - 220) * 0.0016;
+            let shake = Math.max(0, this._speedKmh - 480) * 0.0007;
             if (this._crashTimer > 0) shake += this._crashTimer * 0.5;   // collision rattle
             if (shake > 0) {
                 this._camera.position.x += (Math.random() - 0.5) * shake * 10;
@@ -5562,6 +5803,15 @@
             const delta = Math.min((now - this._lastTime) / 1000, 0.1);
             this._lastTime = now;
 
+            // The weapon in the driver's hands: in frame while they are walking,
+            // put away at the wheel and whenever the drive itself is out of
+            // frame. Ticked before every early return below, since its canvas is
+            // a sibling of the drive overlay and would otherwise stay painted
+            // over a menu. R1 or a click swings or fires it; OK is spoken for out
+            // here (it jumps, handbrakes and opens the vehicle menu).
+            CamperWeapon.update(this._viewMode,
+                this._menuOpen || this._suspended || this._stationRefuelWatch);
+
             // A station refuel window (VehicleSystemRefuel) is up over the frozen
             // scene: keep it hidden until the window closes, then restore the drive.
             if (this._stationRefuelWatch) {
@@ -5598,11 +5848,16 @@
             // carries) stays ahead of the camper instead of leaving gaps behind
             // it. Free cam manages _terrain._radius itself (see _updateFreeCam),
             // so leave it alone there.
+            // Driving under power now crosses ground several times faster than it
+            // used to, so the same widening is applied (in a smaller dose) once the
+            // camper is past its natural top and the ordinary radius 5 / 6 builds
+            // stop keeping up.
             if (this._viewMode !== 'free') {
                 const ftBoost   = this._isFastTravelActive();
-                const wantRadius = ftBoost ? LIMINAL_TERRAIN_RADIUS : 5;
+                const fastDrive = !ftBoost && this._speedKmh > NATURAL_TOP;
+                const wantRadius = ftBoost ? LIMINAL_TERRAIN_RADIUS : (fastDrive ? 8 : 5);
                 if (this._terrain._radius !== wantRadius) this._terrain._radius = wantRadius;
-                this._terrain._buildBudget = ftBoost ? LIMINAL_BUILD_BUDGET : 6;
+                this._terrain._buildBudget = ftBoost ? LIMINAL_BUILD_BUDGET : (fastDrive ? 18 : 6);
             }
 
             if (this._viewMode === 'free') {
@@ -5692,37 +5947,63 @@
                 intensity: 0, time: tsec, delta, baseExposure: this._baseExposure
             });
 
-            // Space distortion tied to speed: above WARP_START_KMH the world begins
-            // to fold and swirl around the camper, growing more violent the faster
-            // it goes and harder still under the liminal boost. LiminalFx.update
-            // (above, intensity 0) has just reset the warp, so this call wins. The
-            // camper still drives on the real, unwarped ground (physics unaffected).
+            // Speed lens tied to speed: above WARP_START_KMH light starts to bend
+            // in a bubble around the camper, harder the faster it goes and harder
+            // still under the liminal boost. Nothing in the scene is displaced -
+            // it is a screen-space pass over the finished frame (SpeedWarpFx), so
+            // the scenery, the chunk seams and the physics are all untouched.
             let warpTarget = Math.max(0, this._speedKmh - WARP_START_KMH) /
                 Math.max(1, MAX_KMH - WARP_START_KMH);
-            warpTarget = Math.min(1, warpTarget) * 0.75;
+            // Eased rather than linear: the turbo's ceiling is several times the
+            // natural top, so a straight ramp would leave ordinary fast driving
+            // showing nothing at all.
+            warpTarget = Math.pow(Math.min(1, warpTarget), 0.6) * 0.75;
             if (this._boostActive) warpTarget = Math.min(1, warpTarget + 0.25);
-            // Never warp during the liminal (auto fast-travel) drive: its cruise
-            // speed sits above WARP_START_KMH, which used to keep the chunk warp
-            // permanently active and made every world tile look shifted out of
-            // place for the whole trip. Tiles stay at their true positions.
+            // Never bend during the liminal (auto fast-travel) drive: its cruise
+            // speed sits far above WARP_START_KMH, which would leave the lens on
+            // for the whole trip.
             if (this._isFastTravelActive()) warpTarget = 0;
             this._warpAmount += (warpTarget - this._warpAmount) * Math.min(1, delta * 3);
             if (this._warpAmount < 0.002) this._warpAmount = 0;
-            if (this._terrain && this._terrain.setWarp) {
-                this._terrain.setWarp(this._warpAmount, tsec, this._vanX, this._vanZ);
-            }
 
-            if (window.PSXShader) {
-                window.PSXShader.render(this._renderer, this._scene, this._camera);
-            } else {
-                this._renderer.render(this._scene, this._camera);
-            }
+            this._renderFrame(tsec);
 
             // Title background: reveal the drive once the first frame is on
             // screen, so the title never flashes a half-built world.
             if (this._titleMode && this._overlay && this._overlay.style.opacity !== '1') {
                 this._overlay.style.opacity = '1';
             }
+        }
+
+        // Draw the scene, through the speed lens when one is running. The PSX
+        // downscale pass, where it is enabled, is chained INSIDE the lens: it
+        // renders into whatever target it is handed, so the retro blit lands in
+        // the lens's offscreen frame and the lens then bends that onto the canvas.
+        _renderFrame(tsec) {
+            const drawInto = (target) => {
+                this._renderer.setRenderTarget(target || null);
+                if (window.PSXShader) {
+                    window.PSXShader.render(this._renderer, this._scene, this._camera);
+                } else {
+                    this._renderer.render(this._scene, this._camera);
+                }
+                this._renderer.setRenderTarget(null);
+            };
+
+            if (this._speedFx && this._warpAmount > 0) {
+                // In the first-person views the camper IS the camera, so the lens
+                // sits at the centre of the screen; otherwise it is bent around
+                // wherever the vehicle happens to be drawn.
+                const fp = this._viewMode === 'fp' || this._viewMode === 'fpdrive' ||
+                    this._viewMode === 'foot';
+                this._warpCentre.set(this._vanX, this._vanY + 6, this._vanZ);
+                const done = this._speedFx.render(this._renderer, drawInto, {
+                    amount: this._warpAmount, time: tsec, center: this._warpCentre,
+                    camera: this._camera, centered: fp
+                });
+                if (done) return;
+            }
+            drawInto(null);
         }
 
         _updateLightingAndSky(delta) {
@@ -5793,6 +6074,7 @@
         _handleInput() {
             if (this._titleMode) return;   // the title screen owns the controls
             if (typeof Input === 'undefined') return;
+
 
             // OK / Space is context-sensitive: on foot it jumps; while rolling in
             // a driving view it is the HANDBRAKE (hold to lock the rears and
@@ -6612,7 +6894,7 @@
             if (grounded && !this._airborne &&
                 this._speedKmh > LAUNCH_KMH && this._grade > LAUNCH_GRADE) {
                 this._airborne = true;
-                const over   = (this._speedKmh - LAUNCH_KMH) / 60;      // 0..~10
+                const over   = (this._speedKmh - LAUNCH_KMH) / 160;     // 0..~10
                 const boostK = this._boostActive ? 2.4 : 1;            // boost = big air
                 this._vy = Math.min(220, (34 + over * 80) * this._grade * 2.2 * boostK);
             }
@@ -6698,6 +6980,7 @@
         dispose() {
             if (this._animId) cancelAnimationFrame(this._animId);
             if (this._fadeTimer) { clearTimeout(this._fadeTimer); this._fadeTimer = null; }
+            CamperWeapon.end();
             document.removeEventListener('wheel',     this._onWheel);
             document.removeEventListener('keydown',   this._onFreeCamKeyDown);
             document.removeEventListener('keyup',     this._onFreeCamKeyUp);
@@ -6725,6 +7008,7 @@
             if (this._bioEnemies)   this._bioEnemies.dispose();
             if (this._engine)       this._engine.dispose();
             if (this._liminal)      this._liminal.dispose();
+            if (this._speedFx)      this._speedFx.dispose();
 
             // Free the externally-created headlight beam materials + shared
             // texture (parented to _van.group, not tracked by CamperModel).

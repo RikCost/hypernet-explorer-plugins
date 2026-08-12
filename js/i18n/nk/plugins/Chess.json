@@ -1,0 +1,145 @@
+{
+  "menuCommand": "CHESS GAME",
+  "mode": "MODE: {mode}",
+  "modeNormal": "NORMAL CHESS",
+  "modeChaos": "CHAOS CHESS",
+  "cheatMeterTitle": "CHEAT METER",
+  "cheatMeterGain": "CHEAT METER +{gain}! ({meter}/{max})",
+  "cheatModeOn": "CHEAT MODE ACTIVATED! YOU CAN MAKE 3 ILLEGAL MOVES!",
+  "cheatModeOff": "CHEAT MODE EXHAUSTED. BACK TA LEGAL MOVES ONLY!",
+  "cheatModeLeft": "CHEAT MODE: {moves} MOVES LEFT",
+  "chargeHint": "CAPTURE PIECES TA CHARGE!",
+  "blackStuck": "BLACK HAB NOTHIN' LEFT TA PLAY!",
+  "blackPlays": "BLACK PLAYS: {move}",
+  "blackPlaysNormally": "BLACK PLAYS NORMALLY: {move}",
+  "whitePlays": "WHITE PLAYS: {move}",
+  "whiteCheats": "WHITE CHEATS: {move}",
+  "multiMoveStep": "\"{index} OF {total}!\" {move}",
+  "ui": {
+    "record": "RECORD",
+    "chatter": "BLACK SAYS",
+    "cheat": "CHEAT",
+    "ready": "READY",
+    "white": "YA MOVE",
+    "black": "BLACK TA MOVE",
+    "check": "CHECK",
+    "finished": "GAME OVER",
+    "level": "LEVEL",
+    "material": "MATERIAL {value}",
+    "yourMove": "PICK UP A PIECE. SHIFT SPENDS A FULL CHEAT METER!",
+    "opponentThinking": "BLACK IZ THINKIN'...",
+    "chooseMode": "CHESS",
+    "chooseModeHint": "WHICH GAME IZ WE PLAYIN'?",
+    "promote": "PROMOTION",
+    "promoteHint": "DA PAWN HAB CROSSED DA BOARD. WHAT DOES IT BECOME?",
+    "victory": "VICTORY",
+    "defeat": "DEFEAT",
+    "drawn": "DRAWN",
+    "pressToLeave": "PRESS TA LEAVE DA BOARD",
+    "noThree": "DA 3D BOARD COULD NOT BE SET UP ON DIS MACHINE!"
+  },
+  "san": {
+    "1": "P",
+    "2": "R",
+    "3": "N",
+    "4": "B",
+    "5": "Q",
+    "6": "K",
+    "chaos": "?",
+    "castleShort": "O-O",
+    "castleLong": "O-O-O"
+  },
+  "pieceName": {
+    "1": "PAWN",
+    "2": "ROOK",
+    "3": "KNIGHT",
+    "4": "BISHOP",
+    "5": "QUEEN",
+    "6": "KING",
+    "7": "CHAOS PIECE"
+  },
+  "end": {
+    "checkmate": "CHECKMATE.",
+    "stalemate": "STALEMATE: DA SIDE TA MOVE HAB NO LEGAL MOVE AN' IZ NOT IN CHECK!",
+    "fiftyMove": "DRAWN BY DA FIFTY-MOVE RULE!",
+    "repetition": "DRAWN BY THREEFOLD REPETITION!",
+    "material": "DRAWN: NEITHER SIDE HAB ENOUGH LEFT TA MATE!",
+    "whiteWiped": "EVERY WHITE PIECE IZ GONE. BLACK WINS!",
+    "blackWiped": "EVERY BLACK PIECE IZ GONE. WHITE WINS!"
+  },
+  "chaosPiece": {
+    "mimic": "A MIMIC",
+    "cone": "A TRAFFIC CONE",
+    "door": "A WALKIN' DOOR",
+    "snail": "A SUSHI SNAIL",
+    "burger": "A GUN BURGER",
+    "turnip": "A SQUEAKY TURNIP",
+    "hairball": "A HAIRBALL",
+    "dumpster": "A DUMPSTER HEAD",
+    "paperwork": "SOME PAPERWORK",
+    "meme": "A SENTIENT MEME",
+    "kazoo": "A KAZOO IMP",
+    "taxi": "A TAXI DOG",
+    "badger": "AN ADVERTISEMENT BADGER",
+    "trash": "A TRASH CREATURE",
+    "pillow": "A PILLOW GUARDIAN",
+    "crane": "AN ORIGAMI CRANE",
+    "beetle": "A DISCO BEETLE",
+    "marionette": "A MARIONETTE",
+    "scarecrow": "A SCARECROW",
+    "candle": "A CURSED CANDLE",
+    "tourist": "AN INTERDIMENSIONAL TOURIST",
+    "villager": "AN OVERWORKED VILLAGER"
+  },
+  "taunt": {
+    "colorChange": [
+      "\"DAT IZ ME NOW!\" BLACK STEALS YA {piece} AT {square}!",
+      "\"COLOR CORRECTION!\" BLACK CORRUPTS YA {piece} TA JOIN DA DARK SIDE! MWAHAHAHA!",
+      "\"WHOOPS, DID ME DO DAT?\" BLACK 'ACCIDENTALLY' CONVERTS YA {piece} TA BLACK!",
+      "\"RULES IZ FOR LOSERS!\" BLACK BRAZENLY STEALS YA {piece} WIT DARK MAGIC!",
+      "\"THANKS FOR DA DONATION!\" BLACK LAUGHS AS YA {piece} SWITCHES SIDES!"
+    ],
+    "relocate": [
+      "\"ME WILL JUST MOVE DIS FOR YOU!\" BLACK RUDELY RELOCATES YA {piece} TA {square}!",
+      "\"OOPS, BUTTERFINGERS!\" BLACK 'HELPFULLY' MOVES YA {piece} TA A TERRIBLE SQUARE!",
+      "\"LET ME FIX DAT STRATEGY!\" BLACK TELEPORTS YA {piece} SOMEWHERE USELESS!",
+      "\"TRUST ME, DIS IZ BETTER!\" BLACK ARROGANTLY REPOSITIONS YA {piece}! WHAT A JERK!",
+      "\"PLAYIN' BOTH SIDES NOW!\" BLACK CHEEKILY MOVES YA {piece} LIKE IT IZ HIS OWN!"
+    ],
+    "transform": [
+      "\"ABRACADABRA!\" BLACK TRANSFORMS DA {from} INTO A {to}! \"MAGIC IZ SO CONVENIENT!\"",
+      "\"UPGRADE TIME!\" BLACK MOCKINGLY 'IMPROVES' DA {from} TA A {to}! DA AUDACITY!",
+      "\"SHAPE-SHIFTIN' IZ LEGAL, RIGHT?\" BLACK GRINS AS DA {from} BECOMES A {to}!",
+      "\"ME NO LIKE DAT PIECE!\" BLACK PETULANTLY CHANGES DA {from} TA A {to}!",
+      "\"PLOT TWIST!\" BLACK DRAMATICALLY TRANSFORMS DA {from} INTO A {to}! SO THEATRICAL!"
+    ],
+    "spawnPiece": [
+      "\"RISE, ME MINION!\" BLACK NECROMANCES A {piece} AT {square}! \"DEATH IZ OPTIONAL!\"",
+      "\"SURPRISE REINFORCEMENTS!\" BLACK SMUGGLES IN A {piece}! \"ME ORDERED EXTRA PIECES!\"",
+      "\"DID ME MENTION ME ARMY?\" BLACK CASUALLY SPAWNS A {piece} FROM THIN AIR! CHEATER!",
+      "\"BACKUP PLAN ACTIVATED!\" BLACK MATERIALIZES A {piece}! \"ALWAYS HAB A PLAN B!\"",
+      "\"FREE PIECE FRIDAY!\" BLACK GRINS AS A {piece} APPEARS! \"BUY ONE, GET ONE FREE!\""
+    ],
+    "spawnChaos": [
+      "\"MEET ME FRIEND!\" BLACK SUMMONS {piece} AT {square}! \"HE'S HOUSE-TRAINED!\"",
+      "\"ME COLLECT DEZE!\" BLACK PROUDLY PLACES {piece} ON DA BOARD! \"LIMITED EDITION!\"",
+      "\"EMOTIONAL SUPPORT PIECE!\" BLACK INTRODUCES {piece}! \"FOR WHEN REGULAR PIECES NO IZ ENOUGH!\"",
+      "\"WHY BE BORIN'?\" BLACK SPAWNS {piece} WIT A FLOURISH! \"CHESS NEEDS MORE PERSONALITY!\"",
+      "\"SECRET WEAPON DEPLOYED!\" BLACK UNLEASHES {piece}! \"YOU NO SEE DIS COMIN'!\""
+    ],
+    "drain": [
+      "\"YOINK! DAT IZ ME NOW!\" BLACK DRAINS {amount} CHEAT ENERGY! \"FINDERS KEEPERS!\"",
+      "\"ENERGY VAMPIRE MODE!\" BLACK SUCKS AWAY {amount} CHEAT POINTS! \"DELICIOUS!\"",
+      "\"SHARIN' IZ CARIN'!\" BLACK STEALS {amount} CHEAT METER! \"THANKS FOR DA DONATION!\"",
+      "\"POWER DRAIN ENGAGED!\" BLACK ZAPS {amount} ENERGY! \"ME NEEDED DAT MORE DEN YOU!\"",
+      "\"OOPS, DID ME DO DAT?\" BLACK 'ACCIDENTALLY' ABSORBS {amount} CHEAT POINTS! SO SMUG!"
+    ],
+    "multiMove": [
+      "\"TIME IZ A SOCIAL CONSTRUCT!\" BLACK TAKES {moves} MOVES AT ONCE!",
+      "\"DOUBLE-DIPPIN'!\" BLACK GREEDILY MAKES {moves} MOVES! \"ME TURN, ME RULES!\"",
+      "\"SPEEDRUN MODE!\" BLACK BLITZES {moves} MOVES IN A ROW! \"EFFICIENCY!\"",
+      "\"COMBO ATTACK!\" BLACK CHAINS {moves} MOVES TOGETHER! \"IZ DIS LEGAL? WHO CARES!\"",
+      "\"WHY WAIT?\" BLACK IMPATIENTLY MAKES {moves} MOVES! \"PATIENCE IZ OVERRATED!\""
+    ]
+  }
+}

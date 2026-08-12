@@ -17,7 +17,6 @@
   "insufficientFunds": "\\C[18]Fondi insufficienti!\\C[0]",
   "ui": {
     "fuelStation": "STAZIONE DI RIFORNIMENTO",
-    "hint": "↑↓ naviga · OK conferma · Esc indietro",
     "noVehicles": "Nessun veicolo da rifornire",
     "fuelOverview": "Panoramica carburante",
     "vehicleFuel": "Carburante di {name}",

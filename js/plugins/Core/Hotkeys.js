@@ -383,9 +383,14 @@
                     case 'TAB': // Also open inventory with Tab key
                         SceneManager.push(Scene_Item);
                         break;
-                    case 'W': // Open Hypernet Browser
-                        SoundManager.playOk();
-                        SceneManager.push(Scene_HypernetBrowser);
+                    case 'W': // Open the Hypernet Explorer browser
+                        // The browser is an app of HypernetOS, not a scene of
+                        // its own: the desktop is pushed and told to open it.
+                        if (typeof Scene_HypernetOS !== 'undefined') {
+                            SoundManager.playOk();
+                            SceneManager.push(Scene_HypernetOS);
+                            SceneManager.prepareNextScene({ autoLaunch: 'app-hypernet-browser' });
+                        }
                         break;
                     /*
                     case 'J': // Skills

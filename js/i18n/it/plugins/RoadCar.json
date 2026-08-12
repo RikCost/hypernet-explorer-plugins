@@ -5,5 +5,12 @@
   "usedSkeletonKey": "Hai usato il Passepartout!",
   "needLockpick": "Ti serve un grimaldello per far partire un'auto a caldo.",
   "lockStuck": "La serratura non si muove.",
-  "hotwired": "Fai partire l'auto a caldo e ti metti in tasca \\I[{icon}]{item}."
+  "hotwired": "Fai partire l'auto a caldo e ti metti in tasca \\I[{icon}]{item}.",
+  "ranOver": "Investi {name}.",
+  "ranOverInjured": "Investi {name}. {injury}.",
+  "ramKilled": "{name} finisce sotto le ruote e non si rialza.",
+  "ramAngered": "{name} si rialza e ti viene addosso.",
+  "vehicleScuffed": "Qualcosa cede contro il muso. Danni: {parts}.",
+  "vehicleCrashed": "Ti schianti contro un altro veicolo. Danni: {parts}.",
+  "emptyWorldUnlocked": "La portiera e aperta. Chi l’ha lasciata qui non sarebbe tornato a riprenderla."
 }

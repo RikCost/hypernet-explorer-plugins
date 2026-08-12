@@ -276,16 +276,24 @@ Imported.Hendrix_Localization = true;
     // not declared in the plugin's Languages parameter, so every selectable
     // language still shows a readable label instead of a blank one.
     const LANGUAGE_DISPLAY_NAMES = {
-        en: 'English', it: 'Italiano', fr: 'Français', de: 'Deutsch',
+        en: 'English', it: 'Italiano', nk: 'Naguka', fr: 'Français', de: 'Deutsch',
         es: 'Español', pt: 'Português', ru: 'Русский', ko: '한국어',
         ja: '日本語', zh: '中文', pl: 'Polski', nl: 'Nederlands',
         tr: 'Türkçe', vi: 'Tiếng Việt',
     };
 
     // Order the language selector offers: the languages that are actually
-    // translated come first (English, then Italian), everything else keeps the
-    // order the i18n folder was read in.
-    const LANGUAGE_MENU_ORDER = ['en', 'it'];
+    // translated come first (English, then Italian, then Naguka), everything
+    // else keeps the order the i18n folder was read in.
+    //
+    // Naguka ("nk") is the Goblin patois: only the UI chrome (terms/system/
+    // commands/misc plus every plugins/*.json screen) is rendered into it, in
+    // ALL CAPS, by tools/i18n/gen_naguka.js. The narrative banks (conversations/,
+    // lore/, news/help, database content like items/skills/enemies) are left
+    // untranslated on purpose and fall back to English, the same way the
+    // in-fiction Naguka "express themselves like children" (docs/Lore.md) while
+    // everything around them stays in the surface-dwellers' tongue.
+    const LANGUAGE_MENU_ORDER = ['en', 'it', 'nk'];
 
     // Languages carried far enough to be offered without a caveat. Every other
     // folder is shown with its completion share so nobody picks one blind.

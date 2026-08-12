@@ -1,0 +1,13 @@
+{
+  "ui": {
+    "cropPlot": "CROP PLOT",
+    "growingSeasons": "GROWIN' SEASONS:",
+    "growthDuration": "GROWTH DURATION:",
+    "days": "{count} DAYS",
+    "yieldRange": "YIELD RANGE:",
+    "goBackToMap": "GO BACK TA DA MAP.",
+    "emptyPlot": "EMPTY PLOT",
+    "close": "CLOSE",
+    "selectASeed": "- SELECT A SEED -"
+  }
+}

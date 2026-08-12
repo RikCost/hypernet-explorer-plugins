@@ -11,6 +11,7 @@
   "primary": "Primarie:",
   "secondary": "Secondarie:",
   "elementHeading": "Elemento:",
+  "magicSystemHeading": "Sistema Magico:",
   "element": {
     "1": "Fisico",
     "2": "Fuoco",
@@ -25,7 +26,9 @@
   "noSkillsAtLevel1": "Nessuna abilità al livello 1",
   "selectYourClass": "Seleziona la tua classe",
   "ui": {
-    "covenantStamp": "PATTO"
+    "covenantStamp": "PATTO",
+    "nonSentient": "Non Senziente",
+    "sentient": "Senziente"
   },
   "vocation": "Professione"
 }

@@ -79,7 +79,12 @@
   "asset": "Asset",
   "equipSlot": "Equip",
   "ownedStock": "Owned: {owned} Stock: {stock}",
+  "ownedCount": "Owned: {owned}",
   "wornCount": "(worn: {count})",
+  "sellHint": "Click items to put them on the counter, then sell the lot in one go.",
+  "selectionCount": "{lines} lines, {units} items",
+  "sellSelected": "SELL ALL ({lines})",
+  "clearSelection": "CLEAR",
   "elementN": "Element {id}",
   "stateN": "State {id}",
   "paramN": "Param {id}",
@@ -153,5 +158,13 @@
     "type": "Type",
     "weight": "Weight"
   },
-  "cravingsFed": "CRAVINGS FED"
+  "cravingsFed": "CRAVINGS FED",
+  "medicineClass": "Medicine",
+  "medicineCures": "Cures",
+  "medicineTreats": "Holds in check",
+  "medicineCureLine": "{disease} ({days}d)",
+  "medicineMore": "and {count} more",
+  "nature": "Nature",
+  "natureMagical": "Magical",
+  "natureMundane": "Mundane"
 }

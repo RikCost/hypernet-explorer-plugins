@@ -13,5 +13,6 @@
   "ui": {
     "primaryBadge": "Pri",
     "secondaryBadge": "Sec"
-  }
+  },
+  "selectSecondaryArchetypeGoblin": "Scegli un archetipo secondario (qui sono tutti goblin)"
 }

@@ -131,10 +131,10 @@
   // How far the loot tables are pushed toward the expensive tiers inside a
   // patron's vault (RandomLootSystem rarityInfluence points; the whole scale is
   // 0-100, and an ordinary mid-game party sits around 30).
-  const LOOT_RARITY_BONUS = 45;
+  const LOOT_RARITY_BONUS = 65;
   // Per-tier multiplier applied to ContainerSystem's spawn weights in there,
   // indexed by rarity tier (Common -> Legendary).
-  const CONTAINER_TIER_WEIGHTS = [0.25, 0.8, 3, 8, 16];
+  const CONTAINER_TIER_WEIGHTS = [0.1, 0.4, 2, 10, 26];
 
   // Tiles cleared of scatter around a stamped hatch, in each direction. The
   // hatch tile itself is never negotiable, so this is kept small: it is enough
@@ -311,6 +311,8 @@
     const pg = (typeof $gameSystem !== "undefined" && $gameSystem) ? $gameSystem._procGenData : null;
     const name = String((biome && biome.name) || (pg && pg.currentBiome) || "");
     if (!name) return false;
+    // The structure catalogue is the list; the regex below is only the answer
+    // for a load order where that plugin is missing.
     const D = window.ProcGenDungeon;
     if (D && typeof D.isDungeonBiome === "function") return D.isDungeonBiome(name);
     return /^(patronvault|lootcellar|templeinside|caveden|dungeon|crypt|sewer)/i.test(name);

@@ -1,0 +1,20 @@
+{
+  "back": "BACK",
+  "forbiddenDraw": "{percent}% FORBIDDEN DRAW",
+  "forbiddenTitle": "FORBIDDEN GRIMOIRE",
+  "skillBookTitle": "{school} SKILL BOOK",
+  "forgottenTitle": "FORGOTTEN GRIMOIRE",
+  "schoolTitle": "{school} GRIMOIRE",
+  "noSpells": "NOBODY HERE CAN GRASP A SPELL FROM DEZE PAGES.<br>(NONE WITHIN DA PARTY'S MP REACH, OR ALL ALREADY KNOWN)",
+  "ui": {
+    "blurb": "DA PAGES REVEAL DA SAME FIVE SPELLS TA EVERYONE. CHOOSE A READER WHO CAN BEAR ONE, DEN CLAIM IT!",
+    "alreadyKnown": "✧ ALREADY KNOWN",
+    "beyondReach": "✧ BEYOND DIS READER'S MP",
+    "partyReader": "PARTY READER",
+    "psychicDiagnostics": "PSYCHIC DIAGNOSTICS",
+    "medianPsi": "MEDIAN PSI (LUCK)",
+    "forbiddenSurfacing": "FORBIDDEN SURFACIN'",
+    "forbidden": "✦ FORBIDDEN",
+    "whisperedSpells": "WHISPERED SPELLS"
+  }
+}

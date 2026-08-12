@@ -5,6 +5,80 @@
     "reproduction": 1,
     "lifeSpan": 70,
     "pregnancyDuration": 270,
+    "classes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -372,7 +446,8 @@
         },
         "name": "enemyArchetypes.humanoid.left_hand.name",
         "msg": "enemyArchetypes.humanoid.left_hand.msg",
-        "itemId": 1021
+        "itemId": 1021,
+        "canHoldWeapon": true
       },
       "LEFT_FINGERS": {
         "hpPercent": 5,
@@ -408,7 +483,8 @@
         },
         "name": "enemyArchetypes.humanoid.right_hand.name",
         "msg": "enemyArchetypes.humanoid.right_hand.msg",
-        "itemId": 1023
+        "itemId": 1023,
+        "canHoldWeapon": true
       },
       "RIGHT_FINGERS": {
         "hpPercent": 5,
@@ -680,6 +756,80 @@
     "reproduction": 1,
     "lifeSpan": 70,
     "pregnancyDuration": 270,
+    "classes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -1047,7 +1197,8 @@
         },
         "name": "enemyArchetypes.humanoid.left_hand.name",
         "msg": "enemyArchetypes.humanoid.left_hand.msg",
-        "itemId": 1021
+        "itemId": 1021,
+        "canHoldWeapon": true
       },
       "LEFT_FINGERS": {
         "hpPercent": 5,
@@ -1083,7 +1234,8 @@
         },
         "name": "enemyArchetypes.humanoid.right_hand.name",
         "msg": "enemyArchetypes.humanoid.right_hand.msg",
-        "itemId": 1023
+        "itemId": 1023,
+        "canHoldWeapon": true
       },
       "RIGHT_FINGERS": {
         "hpPercent": 5,
@@ -1355,6 +1507,25 @@
     "reproduction": 1,
     "lifeSpan": 20,
     "pregnancyDuration": 63,
+    "classes": [
+      52,
+      24,
+      28,
+      13,
+      40,
+      16,
+      30,
+      14,
+      11,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -1473,6 +1644,24 @@
         "name": "enemyArchetypes.beast.tail.name",
         "msg": "enemyArchetypes.beast.tail.msg",
         "itemId": 1035
+      },
+      "MOUTH": {
+        "hpPercent": 8,
+        "vital": false,
+        "skillId": [
+          1799,
+          325,
+          328
+        ],
+        "canCutoff": false,
+        "statEffect": {
+          "param": 2,
+          "amount": -10
+        },
+        "name": "enemyArchetypes.beast.mouth.name",
+        "msg": "enemyArchetypes.beast.mouth.msg",
+        "itemId": 1011,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -1496,6 +1685,9 @@
       },
       "TAIL": {
         "weight": 15
+      },
+      "MOUTH": {
+        "weight": 3
       }
     },
     "sprites": [
@@ -1585,6 +1777,24 @@
     "reproduction": 2,
     "lifeSpan": 2,
     "pregnancyDuration": 21,
+    "classes": [
+      52,
+      28,
+      21,
+      42,
+      47,
+      56,
+      38,
+      13,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69,
+      70
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -1754,7 +1964,8 @@
         },
         "name": "enemyArchetypes.insectoid.mandibles.name",
         "msg": "enemyArchetypes.insectoid.mandibles.msg",
-        "itemId": 1041
+        "itemId": 1041,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -1824,6 +2035,20 @@
     "reproduction": 2,
     "lifeSpan": 8,
     "pregnancyDuration": 21,
+    "classes": [
+      52,
+      24,
+      28,
+      14,
+      21,
+      58
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -1875,7 +2100,8 @@
         "specialEffect": "disableTongueGrab",
         "name": "enemyArchetypes.frog.tongue.name",
         "msg": "enemyArchetypes.frog.tongue.msg",
-        "itemId": 1044
+        "itemId": 1044,
+        "canHoldWeapon": true
       },
       "VOCAL_SAC": {
         "hpPercent": 10,
@@ -2004,6 +2230,25 @@
     "reproduction": 2,
     "lifeSpan": 800,
     "pregnancyDuration": 540,
+    "classes": [
+      27,
+      39,
+      19,
+      20,
+      10,
+      23,
+      33,
+      32,
+      61,
+      6
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -2020,7 +2265,8 @@
         },
         "name": "enemyArchetypes.dragon.head.name",
         "msg": "enemyArchetypes.dragon.head.msg",
-        "itemId": 1048
+        "itemId": 1048,
+        "canHoldWeapon": true
       },
       "FIRE_BREATH_ORGAN": {
         "hpPercent": 10,
@@ -2245,6 +2491,25 @@
     "reproduction": 0,
     "lifeSpan": 100,
     "pregnancyDuration": 180,
+    "classes": [
+      4,
+      5,
+      8,
+      13,
+      23,
+      30,
+      31,
+      33,
+      38,
+      40,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      67,
+      68
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 25,
@@ -2295,7 +2560,8 @@
         },
         "name": "enemyArchetypes.skeleton.left_arm.name",
         "msg": "enemyArchetypes.skeleton.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 12,
@@ -2312,7 +2578,8 @@
         },
         "name": "enemyArchetypes.skeleton.right_arm.name",
         "msg": "enemyArchetypes.skeleton.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 8,
@@ -2386,6 +2653,25 @@
     "reproduction": 1,
     "lifeSpan": 200,
     "pregnancyDuration": 90,
+    "classes": [
+      2,
+      12,
+      36,
+      35,
+      29,
+      39,
+      10,
+      14,
+      28,
+      60
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      67,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -2436,7 +2722,8 @@
         },
         "name": "enemyArchetypes.fairy.left_arm.name",
         "msg": "enemyArchetypes.fairy.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 8,
@@ -2453,7 +2740,8 @@
         },
         "name": "enemyArchetypes.fairy.right_arm.name",
         "msg": "enemyArchetypes.fairy.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_WING": {
         "hpPercent": 20,
@@ -2555,6 +2843,80 @@
     "reproduction": 4,
     "lifeSpan": 8,
     "pregnancyDuration": 1,
+    "classes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 20,
@@ -2625,7 +2987,8 @@
         "regenerates": true,
         "name": "enemyArchetypes.slime.pseudopod_1.name",
         "msg": "enemyArchetypes.slime.pseudopod_1.msg",
-        "itemId": 1062
+        "itemId": 1062,
+        "canHoldWeapon": true
       },
       "PSEUDOPOD_2": {
         "hpPercent": 10,
@@ -2643,7 +3006,8 @@
         "regenerates": true,
         "name": "enemyArchetypes.slime.pseudopod_2.name",
         "msg": "enemyArchetypes.slime.pseudopod_2.msg",
-        "itemId": 1062
+        "itemId": 1062,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -2685,6 +3049,24 @@
     "reproduction": 0,
     "lifeSpan": 50,
     "pregnancyDuration": 200,
+    "classes": [
+      5,
+      8,
+      13,
+      23,
+      30,
+      31,
+      38,
+      40,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "SKULL": {
         "hpPercent": 15,
@@ -2735,7 +3117,8 @@
         },
         "name": "enemyArchetypes.undead.left_arm.name",
         "msg": "enemyArchetypes.undead.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 15,
@@ -2752,7 +3135,8 @@
         },
         "name": "enemyArchetypes.undead.right_arm.name",
         "msg": "enemyArchetypes.undead.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 15,
@@ -2839,6 +3223,21 @@
     "reproduction": 2,
     "lifeSpan": 5,
     "pregnancyDuration": 35,
+    "classes": [
+      52,
+      21,
+      38,
+      13,
+      30,
+      28,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 10,
@@ -2940,7 +3339,8 @@
         },
         "name": "enemyArchetypes.scorpion.pincer_left.name",
         "msg": "enemyArchetypes.scorpion.pincer_left.msg",
-        "itemId": 1068
+        "itemId": 1068,
+        "canHoldWeapon": true
       },
       "PINCER_RIGHT": {
         "hpPercent": 5,
@@ -2957,7 +3357,8 @@
         },
         "name": "enemyArchetypes.scorpion.pincer_right.name",
         "msg": "enemyArchetypes.scorpion.pincer_right.msg",
-        "itemId": 1069
+        "itemId": 1069,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 4,
@@ -3156,6 +3557,23 @@
     "reproduction": 1,
     "lifeSpan": 2,
     "pregnancyDuration": 30,
+    "classes": [
+      21,
+      52,
+      28,
+      24,
+      38,
+      2,
+      12,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 12,
@@ -3224,7 +3642,8 @@
         "specialEffect": "disableVenomBite",
         "name": "enemyArchetypes.spider.fangs.name",
         "msg": "enemyArchetypes.spider.fangs.msg",
-        "itemId": 1075
+        "itemId": 1075,
+        "canHoldWeapon": true
       },
       "SPINNERETS": {
         "hpPercent": 9,
@@ -3438,6 +3857,23 @@
     "reproduction": 3,
     "lifeSpan": 30,
     "pregnancyDuration": 7,
+    "classes": [
+      56,
+      39,
+      29,
+      10,
+      12,
+      45,
+      58,
+      52
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "FLOWER": {
         "hpPercent": 20,
@@ -3505,7 +3941,8 @@
         },
         "name": "enemyArchetypes.plant.vine_1.name",
         "msg": "enemyArchetypes.plant.vine_1.msg",
-        "itemId": 1080
+        "itemId": 1080,
+        "canHoldWeapon": true
       },
       "VINE_2": {
         "hpPercent": 10,
@@ -3522,7 +3959,8 @@
         },
         "name": "enemyArchetypes.plant.vine_2.name",
         "msg": "enemyArchetypes.plant.vine_2.msg",
-        "itemId": 1080
+        "itemId": 1080,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -3564,6 +4002,21 @@
     "reproduction": 4,
     "lifeSpan": 1000,
     "pregnancyDuration": 1,
+    "classes": [
+      10,
+      27,
+      19,
+      20,
+      12,
+      37,
+      39,
+      29
+    ],
+    "creatureClasses": [
+      65,
+      66,
+      67
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -3634,7 +4087,8 @@
         "regenerates": true,
         "name": "enemyArchetypes.elemental.left_appendage.name",
         "msg": "enemyArchetypes.elemental.left_appendage.msg",
-        "itemId": 1084
+        "itemId": 1084,
+        "canHoldWeapon": true
       },
       "RIGHT_APPENDAGE": {
         "hpPercent": 10,
@@ -3652,7 +4106,8 @@
         "regenerates": true,
         "name": "enemyArchetypes.elemental.right_appendage.name",
         "msg": "enemyArchetypes.elemental.right_appendage.msg",
-        "itemId": 1085
+        "itemId": 1085,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -3693,6 +4148,21 @@
     "reproduction": 2,
     "lifeSpan": 10,
     "pregnancyDuration": 14,
+    "classes": [
+      52,
+      24,
+      28,
+      10,
+      20,
+      58,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -3709,7 +4179,8 @@
         },
         "name": "enemyArchetypes.aquaticfish.head.name",
         "msg": "enemyArchetypes.aquaticfish.head.msg",
-        "itemId": 1086
+        "itemId": 1086,
+        "canHoldWeapon": true
       },
       "BODY": {
         "hpPercent": 40,
@@ -3852,6 +4323,22 @@
     "reproduction": 2,
     "lifeSpan": 2,
     "pregnancyDuration": 40,
+    "classes": [
+      21,
+      28,
+      42,
+      36,
+      12,
+      52,
+      39
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -3902,7 +4389,8 @@
         },
         "name": "enemyArchetypes.octopus.tentacle_1.name",
         "msg": "enemyArchetypes.octopus.tentacle_1.msg",
-        "itemId": 1094
+        "itemId": 1094,
+        "canHoldWeapon": true
       },
       "TENTACLE_2": {
         "hpPercent": 10,
@@ -3919,7 +4407,8 @@
         },
         "name": "enemyArchetypes.octopus.tentacle_2.name",
         "msg": "enemyArchetypes.octopus.tentacle_2.msg",
-        "itemId": 1094
+        "itemId": 1094,
+        "canHoldWeapon": true
       },
       "TENTACLE_3": {
         "hpPercent": 10,
@@ -3936,7 +4425,8 @@
         },
         "name": "enemyArchetypes.octopus.tentacle_3.name",
         "msg": "enemyArchetypes.octopus.tentacle_3.msg",
-        "itemId": 1094
+        "itemId": 1094,
+        "canHoldWeapon": true
       },
       "TENTACLE_4": {
         "hpPercent": 10,
@@ -3953,7 +4443,8 @@
         },
         "name": "enemyArchetypes.octopus.tentacle_4.name",
         "msg": "enemyArchetypes.octopus.tentacle_4.msg",
-        "itemId": 1094
+        "itemId": 1094,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -3990,6 +4481,23 @@
     "reproduction": 0,
     "lifeSpan": 75,
     "pregnancyDuration": 30,
+    "classes": [
+      42,
+      54,
+      53,
+      48,
+      41,
+      33,
+      32,
+      44,
+      47
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66,
+      70
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -4040,7 +4548,8 @@
         },
         "name": "enemyArchetypes.robot.left_arm.name",
         "msg": "enemyArchetypes.robot.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 15,
@@ -4057,7 +4566,8 @@
         },
         "name": "enemyArchetypes.robot.right_arm.name",
         "msg": "enemyArchetypes.robot.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 15,
@@ -4143,6 +4653,22 @@
     "reproduction": 2,
     "lifeSpan": 12,
     "pregnancyDuration": 21,
+    "classes": [
+      28,
+      24,
+      52,
+      46,
+      58,
+      35,
+      14,
+      29
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -4244,7 +4770,8 @@
         },
         "name": "enemyArchetypes.bird.talons.name",
         "msg": "enemyArchetypes.bird.talons.msg",
-        "itemId": 1100
+        "itemId": 1100,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -4301,6 +4828,25 @@
     "reproduction": 2,
     "lifeSpan": 35,
     "pregnancyDuration": 70,
+    "classes": [
+      40,
+      52,
+      24,
+      28,
+      30,
+      13,
+      38,
+      21,
+      33,
+      29,
+      23
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -4351,7 +4897,8 @@
         },
         "name": "enemyArchetypes.reptilian.left_arm.name",
         "msg": "enemyArchetypes.reptilian.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 15,
@@ -4368,7 +4915,8 @@
         },
         "name": "enemyArchetypes.reptilian.right_arm.name",
         "msg": "enemyArchetypes.reptilian.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 10,
@@ -4471,6 +5019,22 @@
     "reproduction": 3,
     "lifeSpan": 10,
     "pregnancyDuration": 5,
+    "classes": [
+      5,
+      8,
+      29,
+      39,
+      41,
+      45,
+      56
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69,
+      70
+    ],
     "parts": {
       "CAP": {
         "hpPercent": 30,
@@ -4504,7 +5068,8 @@
         },
         "name": "enemyArchetypes.mushroom.stalk.name",
         "msg": "enemyArchetypes.mushroom.stalk.msg",
-        "itemId": 1104
+        "itemId": 1104,
+        "canHoldWeapon": true
       },
       "ROOTS": {
         "hpPercent": 20,
@@ -4570,6 +5135,23 @@
     "reproduction": 3,
     "lifeSpan": 200,
     "pregnancyDuration": 120,
+    "classes": [
+      39,
+      29,
+      33,
+      59,
+      10,
+      12,
+      56,
+      58
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "CROWN": {
         "hpPercent": 25,
@@ -4637,7 +5219,8 @@
         },
         "name": "enemyArchetypes.tree.branch_1.name",
         "msg": "enemyArchetypes.tree.branch_1.msg",
-        "itemId": 1108
+        "itemId": 1108,
+        "canHoldWeapon": true
       },
       "BRANCH_2": {
         "hpPercent": 7.5,
@@ -4654,7 +5237,8 @@
         },
         "name": "enemyArchetypes.tree.branch_2.name",
         "msg": "enemyArchetypes.tree.branch_2.msg",
-        "itemId": 1108
+        "itemId": 1108,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -4690,6 +5274,23 @@
     "reproduction": 4,
     "lifeSpan": 1,
     "pregnancyDuration": 1,
+    "classes": [
+      5,
+      8,
+      41,
+      42,
+      48,
+      51,
+      53,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69,
+      70
+    ],
     "parts": {
       "NUCLEUS": {
         "hpPercent": 30,
@@ -4740,7 +5341,8 @@
         },
         "name": "enemyArchetypes.bacterial.flagellum.name",
         "msg": "enemyArchetypes.bacterial.flagellum.msg",
-        "itemId": 1111
+        "itemId": 1111,
+        "canHoldWeapon": true
       },
       "TOXIN_SACS": {
         "hpPercent": 25,
@@ -4787,6 +5389,32 @@
     "reproduction": 1,
     "lifeSpan": 60,
     "pregnancyDuration": 300,
+    "classes": [
+      40,
+      13,
+      30,
+      16,
+      5,
+      18,
+      17,
+      33,
+      38,
+      32,
+      60,
+      35,
+      8,
+      23,
+      49,
+      1
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      66,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "HEAD_LEFT": {
         "hpPercent": 10,
@@ -4854,7 +5482,8 @@
         },
         "name": "enemyArchetypes.doubleheadedhumanoid.left_arm.name",
         "msg": "enemyArchetypes.doubleheadedhumanoid.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 15,
@@ -4871,7 +5500,8 @@
         },
         "name": "enemyArchetypes.doubleheadedhumanoid.right_arm.name",
         "msg": "enemyArchetypes.doubleheadedhumanoid.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 10,
@@ -4948,6 +5578,23 @@
     "reproduction": 2,
     "lifeSpan": 20,
     "pregnancyDuration": 60,
+    "classes": [
+      2,
+      5,
+      8,
+      21,
+      23,
+      28,
+      29,
+      52,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -4981,7 +5628,8 @@
         },
         "name": "enemyArchetypes.serpent.fangs.name",
         "msg": "enemyArchetypes.serpent.fangs.msg",
-        "itemId": 1075
+        "itemId": 1075,
+        "canHoldWeapon": true
       },
       "BODY_SEGMENT_1": {
         "hpPercent": 20,
@@ -5068,6 +5716,20 @@
     "reproduction": 0,
     "lifeSpan": 1000,
     "pregnancyDuration": 90,
+    "classes": [
+      33,
+      47,
+      4,
+      12,
+      37,
+      54,
+      43
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -5101,7 +5763,8 @@
         },
         "name": "enemyArchetypes.golem.left_arm.name",
         "msg": "enemyArchetypes.golem.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 15,
@@ -5118,7 +5781,8 @@
         },
         "name": "enemyArchetypes.golem.right_arm.name",
         "msg": "enemyArchetypes.golem.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 20,
@@ -5208,6 +5872,29 @@
     "reproduction": 1,
     "lifeSpan": 700,
     "pregnancyDuration": 333,
+    "classes": [
+      5,
+      6,
+      8,
+      13,
+      23,
+      30,
+      31,
+      32,
+      34,
+      36,
+      37,
+      38,
+      60
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -5224,7 +5911,8 @@
         },
         "name": "enemyArchetypes.demon.head.name",
         "msg": "enemyArchetypes.demon.head.msg",
-        "itemId": 1119
+        "itemId": 1119,
+        "canHoldWeapon": true
       },
       "HORNS": {
         "hpPercent": 10,
@@ -5308,7 +5996,8 @@
         },
         "name": "enemyArchetypes.demon.tail.name",
         "msg": "enemyArchetypes.demon.tail.msg",
-        "itemId": 1035
+        "itemId": 1035,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -5370,6 +6059,22 @@
     "reproduction": 0,
     "lifeSpan": 1000,
     "pregnancyDuration": 100,
+    "classes": [
+      5,
+      8,
+      23,
+      29,
+      31,
+      36,
+      46,
+      49,
+      62
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      67
+    ],
     "parts": {
       "FACE": {
         "hpPercent": 25,
@@ -5420,7 +6125,8 @@
         },
         "name": "enemyArchetypes.ghost.left_wisp.name",
         "msg": "enemyArchetypes.ghost.left_wisp.msg",
-        "itemId": 1124
+        "itemId": 1124,
+        "canHoldWeapon": true
       },
       "RIGHT_WISP": {
         "hpPercent": 20,
@@ -5437,7 +6143,8 @@
         },
         "name": "enemyArchetypes.ghost.right_wisp.name",
         "msg": "enemyArchetypes.ghost.right_wisp.msg",
-        "itemId": 1125
+        "itemId": 1125,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -5487,6 +6194,19 @@
     "reproduction": 0,
     "lifeSpan": 15,
     "pregnancyDuration": 30,
+    "classes": [
+      54,
+      42,
+      28,
+      46,
+      58,
+      44
+    ],
+    "creatureClasses": [
+      65,
+      66,
+      70
+    ],
     "parts": {
       "SENSOR_ARRAY": {
         "hpPercent": 25,
@@ -5520,7 +6240,8 @@
         },
         "name": "enemyArchetypes.drone.chassis.name",
         "msg": "enemyArchetypes.drone.chassis.msg",
-        "itemId": 1127
+        "itemId": 1127,
+        "canHoldWeapon": true
       },
       "LEFT_PROP": {
         "hpPercent": 20,
@@ -5584,6 +6305,24 @@
     "reproduction": 4,
     "lifeSpan": 1000,
     "pregnancyDuration": 1,
+    "classes": [
+      5,
+      8,
+      23,
+      27,
+      29,
+      31,
+      36,
+      39,
+      61
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      67,
+      69
+    ],
     "parts": {
       "ABYSSAL_EYE": {
         "hpPercent": 20,
@@ -5634,7 +6373,8 @@
         },
         "name": "enemyArchetypes.voidspawn.void_tendril_1.name",
         "msg": "enemyArchetypes.voidspawn.void_tendril_1.msg",
-        "itemId": 1132
+        "itemId": 1132,
+        "canHoldWeapon": true
       },
       "VOID_TENDRIL_2": {
         "hpPercent": 15,
@@ -5651,7 +6391,8 @@
         },
         "name": "enemyArchetypes.voidspawn.void_tendril_2.name",
         "msg": "enemyArchetypes.voidspawn.void_tendril_2.msg",
-        "itemId": 1132
+        "itemId": 1132,
+        "canHoldWeapon": true
       },
       "CORE": {
         "hpPercent": 30,
@@ -5696,6 +6437,22 @@
     "reproduction": 4,
     "lifeSpan": 20,
     "pregnancyDuration": 1,
+    "classes": [
+      62,
+      13,
+      40,
+      42,
+      41,
+      21,
+      38,
+      49
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -5746,7 +6503,8 @@
         },
         "name": "enemyArchetypes.mutant.extra_limb_1.name",
         "msg": "enemyArchetypes.mutant.extra_limb_1.msg",
-        "itemId": 1136
+        "itemId": 1136,
+        "canHoldWeapon": true
       },
       "EXTRA_LIMB_2": {
         "hpPercent": 10,
@@ -5763,7 +6521,8 @@
         },
         "name": "enemyArchetypes.mutant.extra_limb_2.name",
         "msg": "enemyArchetypes.mutant.extra_limb_2.msg",
-        "itemId": 1136
+        "itemId": 1136,
+        "canHoldWeapon": true
       },
       "EYE_CLUSTER": {
         "hpPercent": 15,
@@ -5835,6 +6594,22 @@
     "reproduction": 4,
     "lifeSpan": 1000,
     "pregnancyDuration": 1,
+    "classes": [
+      12,
+      27,
+      10,
+      39,
+      53,
+      42,
+      29,
+      33
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66,
+      67
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -5868,7 +6643,8 @@
         },
         "name": "enemyArchetypes.crystalentity.left_spire.name",
         "msg": "enemyArchetypes.crystalentity.left_spire.msg",
-        "itemId": 1140
+        "itemId": 1140,
+        "canHoldWeapon": true
       },
       "RIGHT_SPIRE": {
         "hpPercent": 15,
@@ -5885,7 +6661,8 @@
         },
         "name": "enemyArchetypes.crystalentity.right_spire.name",
         "msg": "enemyArchetypes.crystalentity.right_spire.msg",
-        "itemId": 1141
+        "itemId": 1141,
+        "canHoldWeapon": true
       },
       "FOCUS_GEM": {
         "hpPercent": 20,
@@ -5962,6 +6739,20 @@
     "reproduction": 2,
     "lifeSpan": 10,
     "pregnancyDuration": 21,
+    "classes": [
+      52,
+      24,
+      28,
+      14,
+      21,
+      10
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -6012,7 +6803,8 @@
         },
         "name": "enemyArchetypes.amphibian.tongue.name",
         "msg": "enemyArchetypes.amphibian.tongue.msg",
-        "itemId": 1044
+        "itemId": 1044,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 20,
@@ -6077,6 +6869,24 @@
     "reproduction": 0,
     "lifeSpan": 75,
     "pregnancyDuration": 60,
+    "classes": [
+      31,
+      42,
+      41,
+      51,
+      9,
+      54,
+      33,
+      13,
+      62
+    ],
+    "creatureClasses": [
+      65,
+      66,
+      67,
+      68,
+      70
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 10,
@@ -6127,7 +6937,8 @@
         },
         "name": "enemyArchetypes.constructedundead.left_arm.name",
         "msg": "enemyArchetypes.constructedundead.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 15,
@@ -6144,7 +6955,8 @@
         },
         "name": "enemyArchetypes.constructedundead.right_arm.name",
         "msg": "enemyArchetypes.constructedundead.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "POWER_STITCH": {
         "hpPercent": 20,
@@ -6198,6 +7010,27 @@
     "reproduction": 1,
     "lifeSpan": 50,
     "pregnancyDuration": 300,
+    "classes": [
+      40,
+      13,
+      30,
+      18,
+      16,
+      17,
+      33,
+      38,
+      4,
+      32,
+      56,
+      47,
+      50
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -6265,7 +7098,8 @@
         },
         "name": "enemyArchetypes.minotaur.left_arm.name",
         "msg": "enemyArchetypes.minotaur.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 15,
@@ -6282,7 +7116,8 @@
         },
         "name": "enemyArchetypes.minotaur.right_arm.name",
         "msg": "enemyArchetypes.minotaur.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 10,
@@ -6356,6 +7191,29 @@
     "reproduction": 2,
     "lifeSpan": 40,
     "pregnancyDuration": 60,
+    "classes": [
+      5,
+      6,
+      8,
+      13,
+      21,
+      23,
+      28,
+      38,
+      40,
+      45,
+      46,
+      54,
+      55,
+      60
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      66,
+      68,
+      69
+    ],
     "parts": {
       "BRAIN": {
         "hpPercent": 5,
@@ -6762,7 +7620,8 @@
         },
         "name": "enemyArchetypes.goblin.left_hand.name",
         "msg": "enemyArchetypes.goblin.left_hand.msg",
-        "itemId": 1021
+        "itemId": 1021,
+        "canHoldWeapon": true
       },
       "RIGHT_UPPER_ARM": {
         "hpPercent": 6,
@@ -6813,7 +7672,8 @@
         },
         "name": "enemyArchetypes.goblin.right_hand.name",
         "msg": "enemyArchetypes.goblin.right_hand.msg",
-        "itemId": 1023
+        "itemId": 1023,
+        "canHoldWeapon": true
       },
       "LEFT_THIGH": {
         "hpPercent": 7,
@@ -7042,6 +7902,22 @@
     "reproduction": 2,
     "lifeSpan": 6,
     "pregnancyDuration": 30,
+    "classes": [
+      33,
+      52,
+      21,
+      28,
+      45,
+      47,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "CLAW_LEFT": {
         "hpPercent": 10,
@@ -7058,7 +7934,8 @@
         },
         "name": "enemyArchetypes.crustacean.claw_left.name",
         "msg": "enemyArchetypes.crustacean.claw_left.msg",
-        "itemId": 1171
+        "itemId": 1171,
+        "canHoldWeapon": true
       },
       "CLAW_RIGHT": {
         "hpPercent": 10,
@@ -7075,7 +7952,8 @@
         },
         "name": "enemyArchetypes.crustacean.claw_right.name",
         "msg": "enemyArchetypes.crustacean.claw_right.msg",
-        "itemId": 1172
+        "itemId": 1172,
+        "canHoldWeapon": true
       },
       "CARAPACE": {
         "hpPercent": 30,
@@ -7199,6 +8077,20 @@
     "reproduction": 0,
     "lifeSpan": 50,
     "pregnancyDuration": 45,
+    "classes": [
+      42,
+      53,
+      54,
+      28,
+      33,
+      58
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66,
+      70
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -7215,7 +8107,8 @@
         },
         "name": "enemyArchetypes.spherical.core.name",
         "msg": "enemyArchetypes.spherical.core.msg",
-        "itemId": 1177
+        "itemId": 1177,
+        "canHoldWeapon": true
       },
       "SHELL": {
         "hpPercent": 30,
@@ -7321,6 +8214,21 @@
     "reproduction": 2,
     "lifeSpan": 100,
     "pregnancyDuration": 90,
+    "classes": [
+      33,
+      39,
+      48,
+      15,
+      52,
+      29
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "SHELL": {
         "hpPercent": 40,
@@ -7354,7 +8262,8 @@
         },
         "name": "enemyArchetypes.turtle.head.name",
         "msg": "enemyArchetypes.turtle.head.msg",
-        "itemId": 1182
+        "itemId": 1182,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 10,
@@ -7478,6 +8387,22 @@
     "reproduction": 1,
     "lifeSpan": 75,
     "pregnancyDuration": 240,
+    "classes": [
+      30,
+      13,
+      38,
+      40,
+      33,
+      32,
+      24,
+      52
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "BRAIN": {
         "hpPercent": 5,
@@ -7562,7 +8487,8 @@
         },
         "name": "enemyArchetypes.manticore.front_left_paw.name",
         "msg": "enemyArchetypes.manticore.front_left_paw.msg",
-        "itemId": 1184
+        "itemId": 1184,
+        "canHoldWeapon": true
       },
       "FRONT_RIGHT_PAW": {
         "hpPercent": 8,
@@ -7579,7 +8505,8 @@
         },
         "name": "enemyArchetypes.manticore.front_right_paw.name",
         "msg": "enemyArchetypes.manticore.front_right_paw.msg",
-        "itemId": 1185
+        "itemId": 1185,
+        "canHoldWeapon": true
       },
       "REAR_LEFT_LEG": {
         "hpPercent": 8,
@@ -7778,6 +8705,78 @@
     "reproduction": 4,
     "lifeSpan": 75,
     "pregnancyDuration": 1,
+    "classes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      66,
+      68,
+      69
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 15,
@@ -7845,7 +8844,8 @@
         },
         "name": "enemyArchetypes.chestmimic.tongue.name",
         "msg": "enemyArchetypes.chestmimic.tongue.msg",
-        "itemId": 1189
+        "itemId": 1189,
+        "canHoldWeapon": true
       },
       "FEET": {
         "hpPercent": 20,
@@ -7898,6 +8898,24 @@
     "reproduction": 2,
     "lifeSpan": 1000,
     "pregnancyDuration": 100,
+    "classes": [
+      19,
+      29,
+      59,
+      25,
+      3,
+      61,
+      39,
+      10,
+      27
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 20,
@@ -7965,7 +8983,8 @@
         },
         "name": "enemyArchetypes.phoenix.talons.name",
         "msg": "enemyArchetypes.phoenix.talons.msg",
-        "itemId": 1100
+        "itemId": 1100,
+        "canHoldWeapon": true
       },
       "LEFT_WING": {
         "hpPercent": 10,
@@ -8072,6 +9091,24 @@
     "reproduction": 1,
     "lifeSpan": 70,
     "pregnancyDuration": 330,
+    "classes": [
+      40,
+      13,
+      16,
+      18,
+      30,
+      38,
+      33,
+      45,
+      47,
+      57
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -8122,7 +9159,8 @@
         },
         "name": "enemyArchetypes.ogre.left_arm.name",
         "msg": "enemyArchetypes.ogre.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 15,
@@ -8139,7 +9177,8 @@
         },
         "name": "enemyArchetypes.ogre.right_arm.name",
         "msg": "enemyArchetypes.ogre.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 10,
@@ -8212,6 +9251,21 @@
     "reproduction": 0,
     "lifeSpan": 10,
     "pregnancyDuration": 30,
+    "classes": [
+      5,
+      8,
+      31,
+      33,
+      36,
+      56,
+      62
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      67,
+      68
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -8262,7 +9316,8 @@
         },
         "name": "enemyArchetypes.scarecrow.left_arm.name",
         "msg": "enemyArchetypes.scarecrow.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 15,
@@ -8279,7 +9334,8 @@
         },
         "name": "enemyArchetypes.scarecrow.right_arm.name",
         "msg": "enemyArchetypes.scarecrow.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 10,
@@ -8346,6 +9402,20 @@
     "defaultBattler": "",
     "reproduction": 2,
     "pregnancyDuration": 20,
+    "classes": [
+      52,
+      62,
+      56,
+      50,
+      21,
+      13
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 10,
@@ -8362,7 +9432,8 @@
         },
         "name": "enemyArchetypes.segmentworm.head.name",
         "msg": "enemyArchetypes.segmentworm.head.msg",
-        "itemId": 1199
+        "itemId": 1199,
+        "canHoldWeapon": true
       },
       "HEART_SEGMENT": {
         "hpPercent": 20,
@@ -8448,6 +9519,20 @@
     "defaultBattler": "",
     "reproduction": 0,
     "pregnancyDuration": 365,
+    "classes": [
+      33,
+      53,
+      42,
+      50,
+      47,
+      39,
+      12
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 20,
@@ -8464,7 +9549,8 @@
         },
         "name": "enemyArchetypes.mineral.core.name",
         "msg": "enemyArchetypes.mineral.core.msg",
-        "itemId": 1201
+        "itemId": 1201,
+        "canHoldWeapon": true
       },
       "SHELL": {
         "hpPercent": 40,
@@ -8539,6 +9625,21 @@
     "defaultBattler": "",
     "reproduction": 2,
     "pregnancyDuration": 120,
+    "classes": [
+      13,
+      40,
+      30,
+      33,
+      23,
+      10,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD_ONE": {
         "hpPercent": 15,
@@ -8555,7 +9656,8 @@
         },
         "name": "enemyArchetypes.hydra.head_one.name",
         "msg": "enemyArchetypes.hydra.head_one.msg",
-        "itemId": 1204
+        "itemId": 1204,
+        "canHoldWeapon": true
       },
       "HEAD_TWO": {
         "hpPercent": 15,
@@ -8572,7 +9674,8 @@
         },
         "name": "enemyArchetypes.hydra.head_two.name",
         "msg": "enemyArchetypes.hydra.head_two.msg",
-        "itemId": 1204
+        "itemId": 1204,
+        "canHoldWeapon": true
       },
       "HEAD_THREE": {
         "hpPercent": 15,
@@ -8589,7 +9692,8 @@
         },
         "name": "enemyArchetypes.hydra.head_three.name",
         "msg": "enemyArchetypes.hydra.head_three.msg",
-        "itemId": 1204
+        "itemId": 1204,
+        "canHoldWeapon": true
       },
       "BODY": {
         "hpPercent": 30,
@@ -8655,6 +9759,31 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 300,
+    "classes": [
+      5,
+      6,
+      7,
+      8,
+      12,
+      21,
+      23,
+      31,
+      35,
+      36,
+      39,
+      41,
+      46,
+      49,
+      60
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -8722,7 +9851,8 @@
         },
         "name": "enemyArchetypes.vampire.left_arm.name",
         "msg": "enemyArchetypes.vampire.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 20,
@@ -8739,7 +9869,8 @@
         },
         "name": "enemyArchetypes.vampire.right_arm.name",
         "msg": "enemyArchetypes.vampire.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 2.5,
@@ -8822,6 +9953,21 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 50,
+    "classes": [
+      28,
+      21,
+      24,
+      52,
+      7,
+      31,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -8906,7 +10052,8 @@
         },
         "name": "enemyArchetypes.bat.fangs.name",
         "msg": "enemyArchetypes.bat.fangs.msg",
-        "itemId": 1075
+        "itemId": 1075,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -8940,6 +10087,21 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 31,
+    "classes": [
+      14,
+      28,
+      52,
+      21,
+      56,
+      35,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -8956,7 +10118,8 @@
         },
         "name": "enemyArchetypes.rabbit.head.name",
         "msg": "enemyArchetypes.rabbit.head.msg",
-        "itemId": 1211
+        "itemId": 1211,
+        "canHoldWeapon": true
       },
       "BODY": {
         "hpPercent": 35,
@@ -9112,6 +10275,25 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 270,
+    "classes": [
+      4,
+      22,
+      33,
+      32,
+      38,
+      30,
+      26,
+      34,
+      37,
+      44
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66,
+      67,
+      68
+    ],
     "parts": {
       "HELMET": {
         "hpPercent": 15,
@@ -9162,7 +10344,8 @@
         },
         "name": "enemyArchetypes.armoredknight.pauldron_left.name",
         "msg": "enemyArchetypes.armoredknight.pauldron_left.msg",
-        "itemId": 1216
+        "itemId": 1216,
+        "canHoldWeapon": true
       },
       "PAULDRON_RIGHT": {
         "hpPercent": 15,
@@ -9179,7 +10362,8 @@
         },
         "name": "enemyArchetypes.armoredknight.pauldron_right.name",
         "msg": "enemyArchetypes.armoredknight.pauldron_right.msg",
-        "itemId": 1217
+        "itemId": 1217,
+        "canHoldWeapon": true
       },
       "GREAVES_LEFT": {
         "hpPercent": 10,
@@ -9260,6 +10444,29 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 340,
+    "classes": [
+      24,
+      28,
+      52,
+      29,
+      39,
+      35,
+      33,
+      32,
+      50,
+      48,
+      58,
+      41,
+      40,
+      30,
+      14
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 12,
@@ -9310,7 +10517,8 @@
         },
         "name": "enemyArchetypes.centaur.left_arm.name",
         "msg": "enemyArchetypes.centaur.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 8,
@@ -9327,7 +10535,8 @@
         },
         "name": "enemyArchetypes.centaur.right_arm.name",
         "msg": "enemyArchetypes.centaur.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "BODY": {
         "hpPercent": 24,
@@ -9454,6 +10663,22 @@
     "defaultBattler": "",
     "reproduction": 2,
     "pregnancyDuration": 14,
+    "classes": [
+      5,
+      8,
+      13,
+      21,
+      28,
+      52,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69,
+      70
+    ],
     "parts": {
       "MANDIBLES": {
         "hpPercent": 20,
@@ -9470,7 +10695,8 @@
         },
         "name": "enemyArchetypes.insectswarm.mandibles.name",
         "msg": "enemyArchetypes.insectswarm.mandibles.msg",
-        "itemId": 1223
+        "itemId": 1223,
+        "canHoldWeapon": true
       },
       "WINGS": {
         "hpPercent": 20,
@@ -9569,6 +10795,20 @@
     "defaultBattler": "",
     "reproduction": 0,
     "pregnancyDuration": 45,
+    "classes": [
+      33,
+      44,
+      32,
+      54,
+      4,
+      43,
+      47
+    ],
+    "creatureClasses": [
+      65,
+      66,
+      70
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -9602,7 +10842,8 @@
         },
         "name": "enemyArchetypes.roboticdefender.arm_cannon.name",
         "msg": "enemyArchetypes.roboticdefender.arm_cannon.msg",
-        "itemId": 1229
+        "itemId": 1229,
+        "canHoldWeapon": true
       },
       "TORSO": {
         "hpPercent": 30,
@@ -9684,6 +10925,21 @@
     "defaultBattler": "",
     "reproduction": 0,
     "pregnancyDuration": 60,
+    "classes": [
+      33,
+      44,
+      32,
+      54,
+      47,
+      43,
+      38
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66,
+      70
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 25,
@@ -9717,7 +10973,8 @@
         },
         "name": "enemyArchetypes.turret.gun_barrel.name",
         "msg": "enemyArchetypes.turret.gun_barrel.msg",
-        "itemId": 1234
+        "itemId": 1234,
+        "canHoldWeapon": true
       },
       "SENSOR_ARRAY": {
         "hpPercent": 15,
@@ -9798,6 +11055,26 @@
     "defaultBattler": "",
     "reproduction": 2,
     "pregnancyDuration": 65,
+    "classes": [
+      2,
+      3,
+      5,
+      8,
+      12,
+      21,
+      23,
+      24,
+      29,
+      31,
+      36,
+      59
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "EYES": {
         "hpPercent": 20,
@@ -9848,7 +11125,8 @@
         },
         "name": "enemyArchetypes.gorgon.upper_body.name",
         "msg": "enemyArchetypes.gorgon.upper_body.msg",
-        "itemId": 1060
+        "itemId": 1060,
+        "canHoldWeapon": true
       },
       "LOWER_BODY": {
         "hpPercent": 25,
@@ -9895,6 +11173,24 @@
     "defaultBattler": "",
     "reproduction": 2,
     "pregnancyDuration": 600,
+    "classes": [
+      5,
+      8,
+      10,
+      13,
+      23,
+      30,
+      31,
+      40,
+      61
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "EYE": {
         "hpPercent": 15,
@@ -9962,7 +11258,8 @@
         },
         "name": "enemyArchetypes.abyssalleviathan.tentacles.name",
         "msg": "enemyArchetypes.abyssalleviathan.tentacles.msg",
-        "itemId": 1241
+        "itemId": 1241,
+        "canHoldWeapon": true
       },
       "HEART_CHAMBER": {
         "hpPercent": 10,
@@ -10015,6 +11312,21 @@
     "defaultBattler": "",
     "reproduction": 2,
     "pregnancyDuration": 28,
+    "classes": [
+      39,
+      48,
+      56,
+      33,
+      29,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "SHELL": {
         "hpPercent": 40,
@@ -10065,7 +11377,8 @@
         },
         "name": "enemyArchetypes.snail.tentacle_1.name",
         "msg": "enemyArchetypes.snail.tentacle_1.msg",
-        "itemId": 1094
+        "itemId": 1094,
+        "canHoldWeapon": true
       },
       "TENTACLE_2": {
         "hpPercent": 15,
@@ -10082,7 +11395,8 @@
         },
         "name": "enemyArchetypes.snail.tentacle_2.name",
         "msg": "enemyArchetypes.snail.tentacle_2.msg",
-        "itemId": 1094
+        "itemId": 1094,
+        "canHoldWeapon": true
       },
       "EYE": {
         "hpPercent": 10,
@@ -10151,6 +11465,21 @@
     "defaultBattler": "",
     "reproduction": 4,
     "pregnancyDuration": 1,
+    "classes": [
+      10,
+      20,
+      27,
+      12,
+      39,
+      29,
+      58
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66,
+      67
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -10201,7 +11530,8 @@
         },
         "name": "enemyArchetypes.waterelemental.water_arms.name",
         "msg": "enemyArchetypes.waterelemental.water_arms.msg",
-        "itemId": 1247
+        "itemId": 1247,
+        "canHoldWeapon": true
       },
       "LEFT_WATER_LEG": {
         "hpPercent": 10,
@@ -10267,6 +11597,20 @@
     "defaultBattler": "",
     "reproduction": 4,
     "pregnancyDuration": 1,
+    "classes": [
+      10,
+      27,
+      37,
+      12,
+      39,
+      53,
+      58
+    ],
+    "creatureClasses": [
+      65,
+      66,
+      67
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 25,
@@ -10317,7 +11661,8 @@
         },
         "name": "enemyArchetypes.thunderelemental.left_electric_arm.name",
         "msg": "enemyArchetypes.thunderelemental.left_electric_arm.msg",
-        "itemId": 1252
+        "itemId": 1252,
+        "canHoldWeapon": true
       },
       "RIGHT_ELECTRIC_ARM": {
         "hpPercent": 12.5,
@@ -10334,7 +11679,8 @@
         },
         "name": "enemyArchetypes.thunderelemental.right_electric_arm.name",
         "msg": "enemyArchetypes.thunderelemental.right_electric_arm.msg",
-        "itemId": 1253
+        "itemId": 1253,
+        "canHoldWeapon": true
       },
       "LEFT_ELECTRIC_LEG": {
         "hpPercent": 12.5,
@@ -10398,6 +11744,20 @@
     "defaultBattler": "",
     "reproduction": 4,
     "pregnancyDuration": 1,
+    "classes": [
+      10,
+      27,
+      37,
+      12,
+      39,
+      29,
+      58
+    ],
+    "creatureClasses": [
+      65,
+      66,
+      67
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 20,
@@ -10448,7 +11808,8 @@
         },
         "name": "enemyArchetypes.stormelemental.left_rain_arm.name",
         "msg": "enemyArchetypes.stormelemental.left_rain_arm.msg",
-        "itemId": 1258
+        "itemId": 1258,
+        "canHoldWeapon": true
       },
       "RIGHT_RAIN_ARM": {
         "hpPercent": 12.5,
@@ -10465,7 +11826,8 @@
         },
         "name": "enemyArchetypes.stormelemental.right_rain_arm.name",
         "msg": "enemyArchetypes.stormelemental.right_rain_arm.msg",
-        "itemId": 1259
+        "itemId": 1259,
+        "canHoldWeapon": true
       },
       "LEFT_THUNDER_LEG": {
         "hpPercent": 15,
@@ -10537,6 +11899,20 @@
     "defaultBattler": "",
     "reproduction": 4,
     "pregnancyDuration": 1,
+    "classes": [
+      10,
+      19,
+      27,
+      37,
+      39,
+      43,
+      45
+    ],
+    "creatureClasses": [
+      65,
+      66,
+      67
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 25,
@@ -10587,7 +11963,8 @@
         },
         "name": "enemyArchetypes.fireelemental.ember_arms.name",
         "msg": "enemyArchetypes.fireelemental.ember_arms.msg",
-        "itemId": 1264
+        "itemId": 1264,
+        "canHoldWeapon": true
       },
       "ASH_LEGS": {
         "hpPercent": 25,
@@ -10633,6 +12010,23 @@
     "defaultBattler": "",
     "reproduction": 4,
     "pregnancyDuration": 1,
+    "classes": [
+      10,
+      12,
+      37,
+      33,
+      4,
+      54,
+      47,
+      53
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66,
+      67,
+      70
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -10683,7 +12077,8 @@
         },
         "name": "enemyArchetypes.metalelemental.spike_arms.name",
         "msg": "enemyArchetypes.metalelemental.spike_arms.msg",
-        "itemId": 1268
+        "itemId": 1268,
+        "canHoldWeapon": true
       },
       "GEAR_LEGS": {
         "hpPercent": 20,
@@ -10724,6 +12119,22 @@
     "defaultBattler": "",
     "reproduction": 4,
     "pregnancyDuration": 1,
+    "classes": [
+      5,
+      8,
+      10,
+      23,
+      27,
+      31,
+      36,
+      39
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66,
+      67
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 25,
@@ -10774,7 +12185,8 @@
         },
         "name": "enemyArchetypes.darkelemental.left_arm.name",
         "msg": "enemyArchetypes.darkelemental.left_arm.msg",
-        "itemId": 1272
+        "itemId": 1272,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 12.5,
@@ -10791,7 +12203,8 @@
         },
         "name": "enemyArchetypes.darkelemental.right_arm.name",
         "msg": "enemyArchetypes.darkelemental.right_arm.msg",
-        "itemId": 1273
+        "itemId": 1273,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 12.5,
@@ -10857,6 +12270,22 @@
     "defaultBattler": "",
     "reproduction": 4,
     "pregnancyDuration": 1,
+    "classes": [
+      10,
+      27,
+      25,
+      59,
+      22,
+      3,
+      29,
+      61,
+      39
+    ],
+    "creatureClasses": [
+      65,
+      66,
+      67
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -10907,7 +12336,8 @@
         },
         "name": "enemyArchetypes.sacredelemental.left_arm.name",
         "msg": "enemyArchetypes.sacredelemental.left_arm.msg",
-        "itemId": 1278
+        "itemId": 1278,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 10,
@@ -10924,7 +12354,8 @@
         },
         "name": "enemyArchetypes.sacredelemental.right_arm.name",
         "msg": "enemyArchetypes.sacredelemental.right_arm.msg",
-        "itemId": 1279
+        "itemId": 1279,
+        "canHoldWeapon": true
       },
       "LEFT_LEG": {
         "hpPercent": 12.5,
@@ -10991,6 +12422,23 @@
     "defaultBattler": "",
     "reproduction": 3,
     "pregnancyDuration": 60,
+    "classes": [
+      5,
+      8,
+      12,
+      25,
+      29,
+      33,
+      39,
+      50,
+      59
+    ],
+    "creatureClasses": [
+      64,
+      65,
+      66,
+      67
+    ],
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -11024,7 +12472,8 @@
         },
         "name": "enemyArchetypes.totem.left_arm.name",
         "msg": "enemyArchetypes.totem.left_arm.msg",
-        "itemId": 1001
+        "itemId": 1001,
+        "canHoldWeapon": true
       },
       "RIGHT_ARM": {
         "hpPercent": 20,
@@ -11041,7 +12490,8 @@
         },
         "name": "enemyArchetypes.totem.right_arm.name",
         "msg": "enemyArchetypes.totem.right_arm.msg",
-        "itemId": 1002
+        "itemId": 1002,
+        "canHoldWeapon": true
       },
       "EYES": {
         "hpPercent": 10,
@@ -11113,6 +12563,22 @@
     "defaultBattler": "",
     "reproduction": 0,
     "pregnancyDuration": 365,
+    "classes": [
+      29,
+      59,
+      25,
+      22,
+      3,
+      61,
+      27,
+      39,
+      53
+    ],
+    "creatureClasses": [
+      65,
+      66,
+      67
+    ],
     "parts": {
       "WHEEL_ONE": {
         "hpPercent": 20,
@@ -11129,7 +12595,8 @@
         },
         "name": "enemyArchetypes.ophanim.wheel_one.name",
         "msg": "enemyArchetypes.ophanim.wheel_one.msg",
-        "itemId": 1285
+        "itemId": 1285,
+        "canHoldWeapon": true
       },
       "WHEEL_TWO": {
         "hpPercent": 20,
@@ -11232,6 +12699,25 @@
     "defaultBattler": "",
     "reproduction": 0,
     "pregnancyDuration": 365,
+    "classes": [
+      22,
+      25,
+      59,
+      3,
+      29,
+      61,
+      33,
+      9,
+      39,
+      27,
+      32
+    ],
+    "creatureClasses": [
+      65,
+      66,
+      67,
+      68
+    ],
     "parts": {
       "LEFT_WING": {
         "hpPercent": 12.5,
@@ -11299,7 +12785,8 @@
         },
         "name": "enemyArchetypes.angel.core.name",
         "msg": "enemyArchetypes.angel.core.msg",
-        "itemId": 1288
+        "itemId": 1288,
+        "canHoldWeapon": true
       },
       "ROBE": {
         "hpPercent": 20,
@@ -11392,6 +12879,33 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 720,
+    "classes": [
+      24,
+      28,
+      27,
+      12,
+      39,
+      35,
+      29,
+      36,
+      34,
+      2,
+      14,
+      48,
+      52,
+      10,
+      20,
+      59
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -11442,7 +12956,8 @@
         },
         "name": "enemyArchetypes.elven.bow.name",
         "msg": "enemyArchetypes.elven.bow.msg",
-        "itemId": 1291
+        "itemId": 1291,
+        "canHoldWeapon": true
       },
       "ROBE": {
         "hpPercent": 20,
@@ -11531,6 +13046,28 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 300,
+    "classes": [
+      54,
+      42,
+      53,
+      48,
+      50,
+      12,
+      36,
+      55,
+      45,
+      56,
+      39,
+      58
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      66,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -11547,7 +13084,8 @@
         },
         "name": "enemyArchetypes.gnome.head.name",
         "msg": "enemyArchetypes.gnome.head.msg",
-        "itemId": 1292
+        "itemId": 1292,
+        "canHoldWeapon": true
       },
       "BEARD": {
         "hpPercent": 10,
@@ -11674,6 +13212,22 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 645,
+    "classes": [
+      33,
+      32,
+      39,
+      40,
+      13,
+      52,
+      47,
+      29
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -11707,7 +13261,8 @@
         },
         "name": "enemyArchetypes.elephant.trunk.name",
         "msg": "enemyArchetypes.elephant.trunk.msg",
-        "itemId": 1296
+        "itemId": 1296,
+        "canHoldWeapon": true
       },
       "TUSKS": {
         "hpPercent": 15,
@@ -11849,6 +13404,23 @@
     "defaultBattler": "",
     "reproduction": 2,
     "pregnancyDuration": 60,
+    "classes": [
+      5,
+      8,
+      12,
+      21,
+      23,
+      31,
+      36,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "EYE": {
         "hpPercent": 15,
@@ -11882,7 +13454,8 @@
         },
         "name": "enemyArchetypes.tentacledcreature.tentacle_one.name",
         "msg": "enemyArchetypes.tentacledcreature.tentacle_one.msg",
-        "itemId": 1094
+        "itemId": 1094,
+        "canHoldWeapon": true
       },
       "TENTACLE_TWO": {
         "hpPercent": 20,
@@ -11899,7 +13472,8 @@
         },
         "name": "enemyArchetypes.tentacledcreature.tentacle_two.name",
         "msg": "enemyArchetypes.tentacledcreature.tentacle_two.msg",
-        "itemId": 1094
+        "itemId": 1094,
+        "canHoldWeapon": true
       },
       "BODY": {
         "hpPercent": 25,
@@ -11950,6 +13524,28 @@
     "defaultBattler": "",
     "reproduction": 2,
     "pregnancyDuration": 90,
+    "classes": [
+      2,
+      5,
+      8,
+      12,
+      21,
+      23,
+      24,
+      28,
+      30,
+      31,
+      36,
+      38,
+      39
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "BODY": {
         "hpPercent": 40,
@@ -11983,7 +13579,8 @@
         },
         "name": "enemyArchetypes.spiderhumanhybrid.torso.name",
         "msg": "enemyArchetypes.spiderhumanhybrid.torso.msg",
-        "itemId": 1302
+        "itemId": 1302,
+        "canHoldWeapon": true
       },
       "HEAD": {
         "hpPercent": 15,
@@ -12144,6 +13741,21 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 120,
+    "classes": [
+      13,
+      40,
+      30,
+      16,
+      33,
+      38,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "SPIKES": {
         "hpPercent": 25,
@@ -12177,7 +13789,8 @@
         },
         "name": "enemyArchetypes.spikymonster.body.name",
         "msg": "enemyArchetypes.spikymonster.body.msg",
-        "itemId": 1305
+        "itemId": 1305,
+        "canHoldWeapon": true
       },
       "EYES": {
         "hpPercent": 10,
@@ -12260,6 +13873,22 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 340,
+    "classes": [
+      24,
+      28,
+      52,
+      32,
+      30,
+      14,
+      38,
+      56
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -12276,7 +13905,8 @@
         },
         "name": "enemyArchetypes.horse.head.name",
         "msg": "enemyArchetypes.horse.head.msg",
-        "itemId": 1306
+        "itemId": 1306,
+        "canHoldWeapon": true
       },
       "BODY": {
         "hpPercent": 50,
@@ -12416,6 +14046,24 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 400,
+    "classes": [
+      25,
+      29,
+      22,
+      59,
+      3,
+      39,
+      61,
+      12,
+      9
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "HORN": {
         "hpPercent": 20,
@@ -12432,7 +14080,8 @@
         },
         "name": "enemyArchetypes.unicorn.horn.name",
         "msg": "enemyArchetypes.unicorn.horn.msg",
-        "itemId": 1308
+        "itemId": 1308,
+        "canHoldWeapon": true
       },
       "BODY": {
         "hpPercent": 40,
@@ -12568,6 +14217,25 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 66,
+    "classes": [
+      5,
+      8,
+      13,
+      19,
+      23,
+      30,
+      38,
+      44,
+      52,
+      62
+    ],
+    "creatureClasses": [
+      63,
+      65,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -12584,7 +14252,8 @@
         },
         "name": "enemyArchetypes.hellhound.head.name",
         "msg": "enemyArchetypes.hellhound.head.msg",
-        "itemId": 1310
+        "itemId": 1310,
+        "canHoldWeapon": true
       },
       "COLLAR": {
         "hpPercent": 15,
@@ -12725,6 +14394,28 @@
     "defaultBattler": "",
     "reproduction": 1,
     "pregnancyDuration": 333,
+    "classes": [
+      5,
+      6,
+      8,
+      13,
+      23,
+      30,
+      31,
+      32,
+      34,
+      36,
+      37,
+      38
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      67,
+      68,
+      69
+    ],
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -12825,7 +14516,8 @@
         },
         "name": "enemyArchetypes.wingeddemon.claws.name",
         "msg": "enemyArchetypes.wingeddemon.claws.msg",
-        "itemId": 1315
+        "itemId": 1315,
+        "canHoldWeapon": true
       }
     },
     "hitLocations": {
@@ -12855,6 +14547,20 @@
     "defaultBattler": "",
     "reproduction": 0,
     "pregnancyDuration": 30,
+    "classes": [
+      62,
+      1,
+      55
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      66,
+      68,
+      69,
+      70
+    ],
     "parts": {
       "TRASH_PILE": {
         "hpPercent": 50,
@@ -12888,7 +14594,8 @@
         },
         "name": "enemyArchetypes.trashcreature.limbs.name",
         "msg": "enemyArchetypes.trashcreature.limbs.msg",
-        "itemId": 1317
+        "itemId": 1317,
+        "canHoldWeapon": true
       },
       "EYES": {
         "hpPercent": 15,

@@ -76,6 +76,16 @@
     const params = PluginManager.parameters(pluginName);
     const START_YEAR = Number(params.startYear || 1900);
     const END_YEAR = Number(params.endYear || 2001);
+
+    // Where the century stops in an empty world: nothing happens after this
+    // date, because after it there was nobody left for anything to happen to.
+    // The same date is the one every wiki entry, app and ledger reports (see
+    // WorldManager.isEmptyWorld).
+    const EMPTY_WORLD_CUTOFF = new Date(2000, 0, 1);
+    function isEmptyWorld() {
+        const WM = window.WorldManager;
+        return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+    }
     const AUTO_RUN = params.autoRunOnNewGame === "true";
     const CANON_END_YEAR = 2001; // The true end year of the canon timeline
 
@@ -320,7 +330,8 @@
         conquest: 97,
         war: 223,
         peace: 237,
-        internal: 212
+        internal: 212,
+        diplomatic: 190
     };
 
     // Form of government a nation adopts while under a given hyperpower's
@@ -776,7 +787,14 @@
             let date = new Date(startYear, 0, 1);
             const endDate = new Date(endYear, 0, 1);
 
+            const emptyWorld = isEmptyWorld();
+
             while (date <= endDate) {
+                // An empty world's history simply stops: the run is cut on
+                // 1 January 2000 and every month after it is left blank rather
+                // than generated and hidden, so nothing downstream (the
+                // Archive, the wiki, the news ticker) has to filter it out.
+                if (emptyWorld && date > EMPTY_WORLD_CUTOFF) break;
                 const year = date.getFullYear();
                 this.updateActiveLeaders(date);
 
@@ -975,10 +993,15 @@
             }
             const dest = (window.WorkSystem && window.WorkSystem.Destinations)
                 || loadJsonFile('js/db/WorkSystem/Destinations.json') || {};
-            // Same exclusions the engine applies: a shrine, a gauntlet, a tavern
-            // and a borehole are places on the map, not places with a population.
-            const notTowns = /^(super sacred shrine|maxgauntlet|maxtavern|dark tower|petrocave|kola superdeep borehole|tritunnel (east|ovest)|abandoned shack|moonlit station)$/i;
-            this._epidemicTownList = Object.keys(dest).filter(k => !notTowns.test(k));
+            // Same exclusions the engine applies, and from the same data: an
+            // entry says what it is through its "type", and only a "city" or a
+            // "village" holds a population. A shrine, a gauntlet, a borehole or
+            // a filling station is a place on the map, not a place with people
+            // in it. A tavern is a "village" by type, so it is named outright.
+            const populated = { city: true, village: true };   // i18n-ignore: Destinations.json ids
+            const notTowns = /^maxtavern$/i;
+            this._epidemicTownList = Object.keys(dest).filter(k =>
+                populated[(dest[k] && dest[k].type) || 'village'] && !notTowns.test(k));
             return this._epidemicTownList;
         }
 
@@ -1061,6 +1084,10 @@
         handleArtifactTransfers(date) {
             for (const rec of Object.values(this._artifactRecords)) {
                 if (this._rand() > 0.002) continue;
+                // An artifact in the party's own hands is out of the world's
+                // reach: nobody steals, buys or exhumes a thing off the people
+                // who are carrying it.
+                if (this.artifactHeldByParty && this.artifactHeldByParty(rec)) continue;
                 const isFaction = this._rand() < 0.5;
                 const pool = isFaction ? this._currentFactionLeaders : this._currentLeaders;
                 const actors = Object.keys(pool).filter(a => pool[a]);
@@ -1682,6 +1709,50 @@
         }
     }
 
+    // The world's event log, wherever it currently lives. Anything appending to
+    // history goes through this rather than reaching for `_events` directly:
+    // once a world folder exists the binary save is not the store any more.
+    HistoryManager.prototype._eventStore = function () {
+        if (window.WorldManager) {
+            let events = window.WorldManager.getField("history", "events");
+            if (!events) {
+                events = [];
+                window.WorldManager.setField("history", "events", events);
+            }
+            return events;
+        }
+        return this._events || null;
+    };
+
+    // Records a real historical event from outside the simulator. Unlike
+    // addMinorEvent below (which files NPC gossip and is deliberately excluded
+    // from historical facts), this writes a first-class record: keyed, so the
+    // sentence is rebuilt in whatever language the world is later read in, and
+    // categorised, so it shows in the Archive alongside the century's wars.
+    // Used by the ONU assembly to enter every motion it votes on.
+    //
+    // `descKey` / `descParams` are the same contract descOf() uses internally.
+    HistoryManager.prototype.recordEvent = function (rec) {
+        const events = this._eventStore();
+        if (!events || !rec) return null;
+        const now = rec.date ? String(rec.date) : (() => {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        })();
+        const entry = {
+            date: now,
+            category: rec.category || 'political',
+            type: rec.type || 'event',
+            results: rec.results || [],
+            iconIndex: rec.iconIndex != null ? rec.iconIndex : ICONS.political,
+            icon: "",
+            ...descOf(rec.descKey, rec.descParams),
+        };
+        events.push(entry);
+        if (events.length > 5000) events.shift();
+        return entry;
+    };
+
     // NPCSimulationCore hook, appends NPC world events into the history log
     HistoryManager.prototype.addMinorEvent = function ({ date, actor, desc }) {
       let events = this._events;
@@ -1767,9 +1838,372 @@
         return true;
     };
 
+    //=========================================================================
+    // The living chronicle: the world after the century
+    //=========================================================================
+    //
+    // runSimulation() writes 1900 to 2001 month by month and stops, so a world
+    // that was then PLAYED had nothing happen in it: the Archive ended on the
+    // day the world was made. The same generators keep running against the
+    // game clock, one entry a day, with the monthly passes (leaders, internal
+    // politics, nations changing hands, plagues, artifacts changing owner) on
+    // the first of each month exactly as the century was written.
+    //
+    // Two rules make it one story rather than one per savegame:
+    //   , every entry is written into the world folder's own history.json,
+    //     which every savegame of the world shares;
+    //   , every day is rolled from a stream seeded on (world seed, day), so
+    //     whichever savegame reaches a day first writes the same day the
+    //     others would have.
+    // Whatever the party does that is worth recording (a boss felled, an
+    // artifact changing hands, a party wiped out for good) is written into the
+    // same file through recordEvent, so the Archive is one timeline.
+
+    const LIVE_MAX_DAYS = 4400;    // ~12 years, the whole reachable calendar
+    const LIVE_EVENT_CAP = 3000;   // live entries kept; the century is never trimmed
+
+    // A day is a calendar day, not a 1440-minute block off the clock's epoch:
+    // the world clock starts at 10:00, so counting minutes/1440 would put the
+    // chronicle's midnight at ten in the morning and stamp a morning's entry
+    // with yesterday's date. The index is the calendar date itself, which is
+    // also what makes it agree with the date the player is looking at.
+    function liveDayOf(minute) {
+        const date = new Date(2001, 0, 1, 10, 0, 0);
+        date.setMinutes(date.getMinutes() + (Number(minute) || 0));
+        return Math.round(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+    }
+
+    // The calendar date a day index falls on. Built at midday so no daylight
+    // saving edge can push it onto a neighbouring date; only y/m/d is read.
+    function liveDateOf(day) {
+        const utc = new Date(day * 86400000);
+        return new Date(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(), 12, 0, 0);
+    }
+
+    function liveDateStr(date) {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    HistoryManager.prototype._liveGet = function (prop) {
+        if (window.WorldManager) return window.WorldManager.getField("history", prop);
+        return this["_live_" + prop];
+    };
+
+    HistoryManager.prototype._liveSet = function (prop, value) {
+        if (window.WorldManager) window.WorldManager.setField("history", prop, value);
+        else this["_live_" + prop] = value;
+    };
+
+    // The cast the daily generators need, rehydrated from the world folder so
+    // an ordinary session can continue the century without re-running it.
+    HistoryManager.prototype._ensureLiveCast = function () {
+        if (this._liveCastReady) return true;
+        if (!this._currentHyperpowers) this.reset();
+        const held = {
+            hyperpowers: this._liveGet("hyperpowers"),
+            factions: this._liveGet("factions"),
+            countries: this._liveGet("countries"),
+            nationHistory: this._liveGet("nationHistory"),
+            artifactRecords: this._liveGet("artifactRecords"),
+            leaderDeaths: this._liveGet("leaderDeaths"),
+            deadLeaders: this._liveGet("deadLeaders"),
+            holyLeaders: this._liveGet("holyLeaders"),
+            epidemics: this._liveGet("epidemics"),
+        };
+        if (held.hyperpowers) this._currentHyperpowers = held.hyperpowers;
+        if (held.factions) this._currentFactions = held.factions;
+        if (held.countries) this._currentCountries = held.countries;
+        if (held.nationHistory) this._nationHistory = held.nationHistory;
+        if (held.artifactRecords) this._artifactRecords = held.artifactRecords;
+        if (held.leaderDeaths) this._leaderDeaths = held.leaderDeaths;
+        if (held.holyLeaders) this._currentHolyLeaders = held.holyLeaders;
+        if (Array.isArray(held.epidemics)) this._epidemics = held.epidemics;
+        if (Array.isArray(held.deadLeaders)) this._deadLeaders = new Set(held.deadLeaders);
+        this._liveCastReady = true;
+        return true;
+    };
+
+    // Writing the world folder out is the expensive half of all this, and the
+    // cryogenic pod runs a catch-up on every one of its 960 frames, so the
+    // flush is throttled: the fields are always up to date in memory (which is
+    // what every reader consults) and reach the disk a few times a second at
+    // most. A catch-up that changed nothing never flushes at all.
+    const LIVE_FLUSH_INTERVAL = 3000;
+
+    HistoryManager.prototype._liveFlush = function (force) {
+        if (!window.WorldManager) return;
+        const now = Date.now();
+        if (!force && this._liveFlushAt && now - this._liveFlushAt < LIVE_FLUSH_INTERVAL) return;
+        this._liveFlushAt = now;
+        window.WorldManager.flush();
+    };
+
+    // What the day changed about the world, back into the world folder. The
+    // event log is written by the day pass itself (it pushes into the store),
+    // so only the state the generators mutate is put back here.
+    HistoryManager.prototype._persistLiveCast = function () {
+        this._liveSet("hyperpowers", this._currentHyperpowers);
+        this._liveSet("factions", this._currentFactions);
+        this._liveSet("countries", this._currentCountries);
+        this._liveSet("nationHistory", this._nationHistory);
+        this._liveSet("artifactRecords", this._artifactRecords);
+        this._liveSet("leaderDeaths", this._leaderDeaths);
+        this._liveSet("holyLeaders", this._currentHolyLeaders);
+        this._liveSet("deadLeaders", Array.from(this._deadLeaders || []));
+        this._liveSet("epidemics", this._epidemics);
+        this._liveFlush();
+    };
+
+    // Live entries are trimmed on their own, so a long game can never push the
+    // century that was generated before it out of the log.
+    HistoryManager.prototype._trimLiveEvents = function (events) {
+        let live = 0;
+        for (const e of events) if (e && e.live) live++;
+        if (live <= LIVE_EVENT_CAP) return;
+        let drop = live - LIVE_EVENT_CAP;
+        for (let i = 0; i < events.length && drop > 0; i++) {
+            if (events[i] && events[i].live) { events.splice(i, 1); i--; drop--; }
+        }
+    };
+
+    // One day of the world. The daily entry is guaranteed; the monthly passes
+    // run on the 1st, which is the same cadence the century was written at.
+    HistoryManager.prototype._runLiveDay = function (day, store) {
+        const date = liveDateOf(day);
+        const seed = normalizeHistorySeed(this.getSeed());
+        // A day is its own stream, so the same day reads the same in every
+        // savegame of the world however they got there.
+        this._rng = makeRng((seed ^ Math.imul(day + 1, 2654435761)) >>> 0);
+
+        this.updateActiveLeaders(date);
+
+        // The monthly generators push into `this._events`; for the live pass
+        // that array IS the world log, so what they write lands in the world
+        // folder rather than in a scratch array nobody reads.
+        const held = this._events;
+        const before = store.length;
+        this._events = store;
+        try {
+            if (date.getDate() === 1) {
+                this.handleEpidemics(date);
+                this.handleInternalPolitics(date, false);
+                this.handleInternalPolitics(date, true);
+                this.handleNationPolitics(date);
+                this.handleArtifactTransfers(date);
+            }
+            const event = this.generateRandomEvent(date);
+            if (event) this._events.push(event);
+        } catch (e) {
+            console.warn("[HistorySimulator] live day", liveDateStr(date), e);
+        } finally {
+            this._events = held;
+        }
+
+        // Everything the day wrote is stamped as live and dated to the day
+        // itself rather than to its month, so the Archive can order it, and
+        // handed to the news ticker, which is where the world talks about
+        // itself while the party is walking around in it.
+        for (let i = before; i < store.length; i++) {
+            if (!store[i]) continue;
+            store[i].live = true;
+            store[i].date = liveDateStr(date);
+            if (window.$newsManager && typeof window.$newsManager.addWorldEvent === "function") {
+                try { window.$newsManager.addWorldEvent(renderRecord(store[i]), store[i].date); } catch (_) {}
+            }
+        }
+        return store.length - before;
+    };
+
+    // Resolve every day the world has lived through since it was last read.
+    // Safe to call as often as anything likes: it is a delta engine, and a
+    // clock that has not crossed midnight costs one comparison.
+    HistoryManager.prototype.catchUpLiveHistory = function (nowMinute) {
+        if (this._liveRunning) return 0;
+        const store = this._eventStore();
+        if (!store) return 0;
+        const minute = Number(
+            nowMinute != null ? nowMinute
+                : (typeof $gameVariables !== "undefined" && $gameVariables ? $gameVariables.value(114) : 0)
+        ) || 0;
+        const today = liveDayOf(minute);
+        let last = this._liveGet("liveLastDay");
+        if (last == null) { this._liveSet("liveLastDay", today); return 0; }
+        if (today <= last) {
+            if (today < last) this._liveSet("liveLastDay", today);  // the clock was rewound
+            return 0;
+        }
+        if (today - last > LIVE_MAX_DAYS) last = today - LIVE_MAX_DAYS;
+
+        this._liveRunning = true;
+        let written = 0;
+        try {
+            this._ensureLiveCast();
+            for (let day = last + 1; day <= today; day++) {
+                written += this._runLiveDay(day, store);
+            }
+            this.reconcileArtifactCustody(liveDateStr(liveDateOf(today)));
+            this._trimLiveEvents(store);
+            this._liveSet("liveLastDay", today);
+            this._persistLiveCast();
+        } finally {
+            this._liveRunning = false;
+        }
+        return written;
+    };
+
+    //=========================================================================
+    // Artifact custody
+    //=========================================================================
+    //
+    // An artifact record carries the chain of everybody who has held it, and
+    // the last link is where it was last known to be. The world keeps moving
+    // them around (handleArtifactTransfers steals, buys and exhumes them), but
+    // one held by the party is out of the world's reach: nobody steals it off
+    // the people carrying it, so it is skipped by every transfer roll.
+
+    const ARTIFACT_DB = { item: () => $dataItems, weapon: () => $dataWeapons, armor: () => $dataArmors };
+
+    function artifactDatum(kind, id) {
+        const key = String(kind || "item").replace(/s$/, "");
+        const db = ARTIFACT_DB[key] ? ARTIFACT_DB[key]() : null;
+        return db ? db[Number(id)] : null;
+    }
+
+    // The party holds it if it is in the pack or worn by anybody in it.
+    function partyHoldsArtifact(kind, id) {
+        if (typeof $gameParty === "undefined" || !$gameParty) return false;
+        const datum = artifactDatum(kind, id);
+        if (!datum) return false;
+        return $gameParty.numItems(datum) > 0 ||
+            $gameParty.members().some((actor) => actor.equips().some((eq) => eq === datum));
+    }
+
+    HistoryManager.prototype.artifactHeldByParty = function (rec) {
+        return !!rec && partyHoldsArtifact(rec.kind, rec.id);
+    };
+
+    // The name the chronicle knows the party by: whoever is leading it.
+    function partyChronicleName() {
+        if (typeof $gameParty === "undefined" || !$gameParty) return null;
+        const leader = $gameParty.leader();
+        return leader ? leader.name() : null;
+    }
+
+    // Writes a new link onto an artifact's chain and files the event. `how` is
+    // one of History.artifact.action.*; the holder is a plain name.
+    HistoryManager.prototype.recordArtifactCustody = function (kind, id, holderName, how, dateStr) {
+        this._ensureLiveCast();
+        const key = String(kind || "item").replace(/s$/, "") + ":" + Number(id);
+        const rec = (this._artifactRecords || {})[key];
+        if (!rec || !holderName) return null;
+        const holders = rec.holders || (rec.holders = []);
+        const last = holders[holders.length - 1];
+        if (last && last.holder === holderName) return null;
+        const action = how || "inherited";
+        const howKey = "History.artifact.action." + action;
+        const date = dateStr || liveDateStr(liveDateOf(liveDayOf(
+            typeof $gameVariables !== "undefined" && $gameVariables ? $gameVariables.value(114) : 0
+        )));
+        holders.push({ holder: holderName, power: null, since: date, how: T(howKey), howKey, howParams: null });
+        const entry = this.recordEvent({
+            date: date,
+            category: "paranormal",
+            type: "artifact",
+            descKey: "History.artifact.transfer",
+            descParams: {
+                holder: holderName,
+                action: LK(howKey),
+                artifact: AR(rec.kind, rec.id, rec.name),
+                from: last ? LK("History.artifact.from", { holder: last.holder }) : "",
+            },
+            iconIndex: 245,
+        });
+        if (entry) entry.live = true;
+        this._persistLiveCast();
+        this._liveFlush(true);
+        return entry;
+    };
+
+    // Anything the party is carrying that the ledger still has somebody else
+    // holding has changed hands, and the world is told so. This is what writes
+    // the Artifact Heir's inheritance, a dig, a theft or a purchase alike, on
+    // the day it happened.
+    HistoryManager.prototype.reconcileArtifactCustody = function (dateStr) {
+        this._ensureLiveCast();
+        const name = partyChronicleName();
+        if (!name || !this._artifactRecords) return 0;
+        let moved = 0;
+        for (const rec of Object.values(this._artifactRecords)) {
+            if (!this.artifactHeldByParty(rec)) continue;
+            const holders = rec.holders || [];
+            const last = holders[holders.length - 1];
+            if (last && last.holder === name) continue;
+            if (this.recordArtifactCustody(rec.kind, rec.id, name, "inherited", dateStr)) moved++;
+        }
+        return moved;
+    };
+
+    //=========================================================================
+    // What the party itself puts in the record
+    //=========================================================================
+
+    // A party wiped out under permadeath is gone: the savegame goes with it, so
+    // the only place they can still be read is the world's own history, which
+    // outlives every savegame in it.
+    HistoryManager.prototype.recordPartyWipe = function (names, place) {
+        const roster = (Array.isArray(names) ? names : [names]).filter(Boolean).join(", ");
+        if (!roster) return null;
+        const minute = typeof $gameVariables !== "undefined" && $gameVariables ? $gameVariables.value(114) : 0;
+        const entry = this.recordEvent({
+            date: liveDateStr(liveDateOf(liveDayOf(minute))),
+            category: "military",
+            type: "party_wipe",
+            descKey: place ? "History.party.wipeAt" : "History.party.wipe",
+            descParams: { party: roster, place: place || "" },
+            iconIndex: 1,
+        });
+        if (entry) {
+            entry.live = true;
+            this._liveFlush(true);
+        }
+        return entry;
+    };
+
     // Initialize global manager
     const manager = new HistoryManager();
     window.HistoryManager = manager;
+
+    //=========================================================================
+    // What drives the living chronicle
+    //=========================================================================
+    //
+    // Every way time passes in this game ends up on one of these two: walking
+    // and waiting cross an hour, and everything that jumps the clock (sleep,
+    // a shift at work, fast travel, the cryogenic pod) ends on a map load or
+    // is caught up by its own sequence. The engine is a delta pass, so being
+    // called twice for the same day costs nothing.
+    (function driveLiveHistory() {
+        if (typeof Scene_Map === "undefined") return;
+
+        const _Scene_Map_onMapLoaded_history = Scene_Map.prototype.onMapLoaded;
+        Scene_Map.prototype.onMapLoaded = function () {
+            _Scene_Map_onMapLoaded_history.call(this);
+            try {
+                if ($gameVariables) manager.catchUpLiveHistory($gameVariables.value(114) || 0);
+            } catch (e) { console.warn("[HistorySimulator]", e); }
+        };
+
+        const _Scene_Map_update_history = Scene_Map.prototype.update;
+        Scene_Map.prototype.update = function () {
+            _Scene_Map_update_history.call(this);
+            if (!$gameVariables) return;
+            const minute = $gameVariables.value(114) || 0;
+            const day = liveDayOf(minute);
+            if (this._historyLastDay === day) return;
+            this._historyLastDay = day;
+            try { manager.catchUpLiveHistory(minute); } catch (e) { console.warn("[HistorySimulator]", e); }
+        };
+    })();
     window.HistorySimulator_COUNTRIES = COUNTRIES;
     window.HistorySimulator_ICONS     = ICONS;
 

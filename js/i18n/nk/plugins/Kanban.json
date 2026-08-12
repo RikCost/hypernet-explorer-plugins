@@ -1,0 +1,40 @@
+{
+  "resolved": "RESOLVED",
+  "failed": "FAILED",
+  "urgent": "URGENT",
+  "reward": "REWARD: ",
+  "readyToCollect": "READY TA COLLECT",
+  "objectives": "OBJECTIVES",
+  "anyOrder": "(ANY ORDER)",
+  "inOrder": "(IN ORDER)",
+  "progress": "PROGRESS",
+  "postedBy": "POSTED BY ",
+  "objectives2": "OBJECTIVES",
+  "terms": "TERMS",
+  "log": "LOG",
+  "close": "CLOSE",
+  "toDo": "TA DO",
+  "inProgress": "IN PROGRESS",
+  "done": "DONE",
+  "noQuests": "NO QUESTS",
+  "colShiftMoveCardOk": "↑↓ · ←→ COL · SHIFT+←→ MOVE CARD · OK DETAILS · ESC CLOSE",
+  "back": "BACK",
+  "questLog": "QUEST LOG",
+  "appName": "TASK MASTER",
+  "questCompleted": "QUEST COMPLETED!",
+  "questFailed": "QUEST FAILED.",
+  "columnTitles": [
+    "TA DO",
+    "IN PROGRESS",
+    "DONE",
+    "FAILED"
+  ],
+  "showOnMapAt": "SHOW ON MAP ({x}, {y}) · SHIFT",
+  "notify": {
+    "newQuest": "NEW QUEST: {title}",
+    "newQuestUnknown": "NEW QUEST:???",
+    "questUpdated": "QUEST UPDATED: {title}",
+    "questComplete": "QUEST COMPLETE: {title}",
+    "questFailed": "QUEST FAILED: {title}"
+  }
+}

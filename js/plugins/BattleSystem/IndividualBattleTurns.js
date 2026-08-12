@@ -51,14 +51,15 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
 (() => {
 
   // ---------------------------------------------------------------------
-  // Manual party turn order
+  // Party turn order
   // ---------------------------------------------------------------------
-  // Left alone, a round is built from the DEX-derived formula above, so the
-  // fastest member opens every fight. A party that would rather decide for
-  // itself pins an order from the menu (Dynamics -> Turn Order): a list of
-  // actor ids on $gameSystem that replaces the speed sort for the party half
-  // of the round. Anyone missing from the list (a member who joined after it
-  // was pinned) keeps their speed slot, behind everyone pinned.
+  // Speed never decides who among the party acts first: the party acts in its
+  // own marching order, member 1 then 2 then 3, and the menu (Dynamics -> Turn
+  // Order) rearranges that order into a list of actor ids on $gameSystem.
+  // Anyone missing from the list (a member who joined after it was arranged)
+  // falls in behind, in party order. The DEX formula above still ranks the
+  // whole field, so it is what decides where the party's slots fall against
+  // the monsters, i.e. when the enemies get to swing.
   window.BattleTurnOrder = {
     // Read back sanitised against the party as it stands, so an id that has
     // since left never holds a slot and a list of ghosts reads as "no order".
@@ -77,22 +78,21 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
     },
 
     // The value a battler is ranked by out of battle: _battleAgi only exists
-    // once a fight has started, and the menu has to rank the party before one
+    // once a fight has started, and the menu has to read the party before one
     // ever does.
     speedOf(battler) {
       if (!battler) return 0;
       return battler._battleAgi !== undefined ? battler._battleAgi : battler.agi;
     },
 
-    // The party in the order it will act.
+    // The party in the order it will act: the marching order, rearranged by
+    // whatever the menu pinned. Speed is not consulted.
     members() {
       const list = (typeof $gameParty !== "undefined" && $gameParty)
         ? $gameParty.members().slice() : [];
-      const speedOf = window.BattleTurnOrder.speedOf;
-      list.sort((a, b) => speedOf(b) - speedOf(a));
       const order = window.BattleTurnOrder.pinned();
       if (order) {
-        // Stable sort, so the unpinned tail keeps the speed ranking it just got.
+        // Stable sort, so anyone left off the list keeps their party slot.
         const rank = actor => {
           const at = order.indexOf(actor.actorId());
           return at < 0 ? Number.MAX_SAFE_INTEGER : at;
@@ -107,15 +107,15 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
       $gameSystem._partyTurnOrder = Array.isArray(actorIds) ? actorIds.slice() : null;
     },
 
-    // Back to the speed formula.
+    // Back to the marching order.
     clear() {
       if (typeof $gameSystem === "undefined" || !$gameSystem) return;
       $gameSystem._partyTurnOrder = null;
     },
 
     // Nudge a member one place up or down the acting order. The first nudge
-    // pins the whole current order, so what is captured is the speed ranking
-    // the player was just looking at rather than a half-empty list.
+    // pins the whole current order, so what is captured is the order the player
+    // was just looking at rather than a half-empty list.
     move(actorId, delta) {
       const ids = window.BattleTurnOrder.members().map(mem => mem.actorId());
       const from = ids.indexOf(actorId);
@@ -138,13 +138,14 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
   };
 
   // Build a fresh round: every living battler, party and troop alike, acts
-  // exactly once, ordered by the speed formula alone. A round used to be
-  // interleaved so that an enemy answered each party member in turn, which
-  // meant a lone monster facing three travellers took three turns to their
-  // three and its own AGI never entered into it. Speed is the only thing that
-  // decides now, so a fast monster opens the round and a slow one closes it,
-  // whatever the head count on either side. Rebuilding this each round keeps
-  // the ordering stable even if the queue was disturbed during the previous one.
+  // exactly once. The speed formula ranks the whole field, which is what
+  // decides where the party's slots fall against the monsters, so a fast
+  // monster still opens the round and a slow one closes it whatever the head
+  // count on either side. Among themselves the party ignores speed entirely:
+  // the slots the party won are held and the members are dealt into them in
+  // their marching order, or in the order pinned from Dynamics -> Turn Order.
+  // Rebuilding this each round keeps the ordering stable even if the queue was
+  // disturbed during the previous one.
   BattleManager.makeITBSRound = function() {
     const all = $gameParty.aliveMembers().concat($gameTroop.aliveMembers());
     // Mid-fight reinforcements never ran onBattleStart, so ensure every battler
@@ -153,21 +154,17 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
     all.forEach(b => { if (b._battleAgi === undefined) b.updateBattleAgi(); });
     all.sort((a, b) => (b._battleAgi || 0) - (a._battleAgi || 0));
 
-    // A pinned order (Dynamics -> Turn Order) overrules speed for the party
-    // alone: the slots the party won in the speed ranking stay exactly where
-    // they are and the members are dealt into them in the pinned order, so the
-    // troop keeps every position its own speed earned. Members left off the
-    // list fall in behind the pinned ones, in speed order.
-    const pinned = window.BattleTurnOrder && window.BattleTurnOrder.pinned();
-    if (pinned) {
-      const rank = battler => {
-        const at = pinned.indexOf(battler.actorId());
-        return at < 0 ? Number.MAX_SAFE_INTEGER : at;
-      };
-      const actors = all.filter(b => b.isActor()).sort((a, b) => rank(a) - rank(b));
+    // The party's own order overrules speed: the slots the party won in the
+    // speed ranking stay exactly where they are and the members are dealt into
+    // them in the order the menu reads, so the troop keeps every position its
+    // own speed earned.
+    const order = window.BattleTurnOrder
+      ? window.BattleTurnOrder.members().filter(mem => all.includes(mem))
+      : null;
+    if (order && order.length) {
       let next = 0;
       for (let i = 0; i < all.length; i++) {
-        if (all[i].isActor()) all[i] = actors[next++];
+        if (all[i].isActor() && next < order.length) all[i] = order[next++];
       }
     }
     return all;
@@ -294,7 +291,9 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
 
   Fomar.ITBS.Game_Battler_onBattleStart = Game_Battler.prototype.onBattleStart;
   Game_Battler.prototype.onBattleStart = function(advantageous) {
-    Fomar.ITBS.Game_Battler_onBattleStart.call(this);
+    // The engine's own onBattleStart spends `advantageous` on the opening TPB
+    // charge, so a preemptive strike loses its advantage if it is dropped here.
+    Fomar.ITBS.Game_Battler_onBattleStart.call(this, advantageous);
     this.updateBattleAgi(advantageous);
   };
 

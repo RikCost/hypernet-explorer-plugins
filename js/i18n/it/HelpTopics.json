@@ -2,35 +2,43 @@
   "HelpTopics": {
     "squishing": {
       "title": "Lore: Lo Squishing",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "description": "Il 21 dicembre 2012 la dea della discordia Eris ucciderà la dea della giustizia Maat scagliandole contro la Torre Omega. È già accaduto, nel futuro. Ciò che ha raggiunto questa dimensione è l'eco del colpo, rispedita vent'anni indietro e attraverso le 92 dimensioni, atterrata il 21 dicembre 1992 nel cielo della dimensione 3, la nostra.\n\nDa allora il paradosso sta sfaldando la linea temporale e la stabilità delle 92 dimensioni. A partire dal 1992 lo spaziotempo ha iniziato ad annodarsi in bolle di loop temporale locali (vedi: la Regola degli 80), e frammenti di altre dimensioni hanno iniziato a collassare nella nostra, primo fra tutti il continente vuoto di Varlenia. Il danno si accumula: per il 2012, quando il colpo atterrerà per davvero, si stima che la distorsione renderà questa dimensione del tutto inabitabile.\n\nLo Squishing non colpisce ogni dimensione allo stesso modo: più alto è il numero di una dimensione, più in fretta si disfa; i Green Fields, dimensione numero 77, sono già in gran parte inabitabili. La Torre Omega, conficcata nella terra dallo stesso colpo che ha scatenato tutto questo, è l'unica cosa che impedisce ancora alle 92 dimensioni di collassare l'una sull'altra; senza di essa, secondo molti, sarebbe già successo.",
+      "type": "lore"
     },
     "ruleOf80": {
       "title": "Lore: La Regola degli 80",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      "description": "Da quando è iniziato lo Squishing, qualsiasi cosa si muova a più di 80 km/h viene attratta dalla bolla di loop temporale più vicina: una porzione di spaziotempo, da pochi metri a centinaia di chilometri di diametro, in cui la giornata si azzera alla fine come se non fosse mai successa. Una volta dentro, la regola si inverte: l'unico modo per uscirne è tornare a muoversi verso l'esterno oltre gli 80 km/h, e restare sotto quella soglia significa restare intrappolati nel loop.\n\nDall'esterno le bolle sono quasi invisibili, poco più di una distorsione nell'aria vista da vicino, per questo sono segnate su ogni mappa stradale, per evitare che un viaggiatore ci finisca dentro per sbaglio. Il loro numero e le loro dimensioni crescono dal 1992 e continuano a farlo con l'avvicinarsi del 2012.\n\nVivere in un loop ha un suo cupo vantaggio: l'unico modo per morire per sempre dentro una bolla è morire muovendosi a più di 80 km/h, o essere colpiti da qualcosa che lo fa. Tutto il resto semplicemente si azzera. Il prezzo è la stagnazione: la mente si abitua alla ripetizione più in fretta di quanto si creda, e chi vive nel loop conserva i ricordi di ogni giorno precedente anche mentre il mondo attorno si resetta. Nessun segnale, elettronico, mentale o magico, attraversa il confine di una bolla, motivo per cui i piccioni viaggiatori con una penna USB legata alla zampa (possono superare i 90-100 km/h col vento in coda) restano la posta più affidabile fra un loop e l'altro, e motivo per cui esiste la Società dei Camionisti: qualcuno deve pur portare persone, merci e notizie fra comunità che vivono in bolle diverse. Il motore liminale di Bubba è l'unico modo noto per attraversare una bolla in auto senza mai scendere sotto la soglia.",
+      "type": "lore"
     },
     "encompassingRoad": {
       "title": "Lore: La Strada Avvolgente",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      "description": "Ogni strada di ogni mondo del multiverso è, in fondo, la stessa strada. Il motore liminale di Bubba comprime il tratto di strada davanti al veicolo e, se calibrato correttamente, apre l'accesso alla Strada Omnicomprensiva stessa: una modalità di viaggio in cui una normale uscita autostradale può portare altrove, in un altro luogo, un'altra dimensione, un altro tempo, perfino fino agli Scarti della Creazione.\n\nLa strada precede chiunque la percorra. Si narra che trilioni di anni fa il concetto stesso di strada sia nato dal Dio dell'Asfalto, che tracciò la prima, e ne fu anche la prima vittima, investito da un dio superiore che non si fermò.",
+      "type": "lore"
     },
     "magesGuild": {
       "title": "Lore: La Gilda dei Maghi",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "Fondata nel 950 a.C. da Re Salomone, la Gilda dei Maghi ha governato in segreto gli equilibri del mondo per millenni, finché Margaret Thatcher non ha rivelato in mondovisione l'esistenza della magia e i suoi usi militari durante la guerra delle Falkland. All'inizio del '900 la Gilda è stata rifondata da Sir Aleister Crowley con l'appoggio della casa reale di Britannia come pseudo-ordine cavalleresco, da cui l'uso ancora oggi dei titoli Sir e Lady per i suoi vertici.\n\nOltre a ricostruire con la magia le tecnologie perdute per conto dei vari governi, il compito dichiarato della Gilda è proteggere il mondo dalle minacce extradimensionali e dagli orrori che lo Squishing continua a far entrare. Al suo interno convivono tante correnti quante sono le scuole di magia, ma ogni decisione importante passa dai Tre Pilastri, che rappresentano passato, presente e futuro. Nel 2001 i seggi sono occupati da Sir Aleister Crowley (il passato), Lady Margaret Thatcher (il presente) e 'il Padre' Shoko Asahara (il futuro).\n\nOccupare il seggio di un Pilastro ne ferma l'invecchiamento per tutta la durata dell'incarico; un mandato dura di norma cinquant'anni. Crowley non ha mai accettato di lasciare il suo, e nessuno rimasto nella Gilda è davvero in grado di opporglisi: conosce incantesimi che nemmeno gli dèi conoscono.",
+      "type": "lore"
     },
     "hypercapitalistCollective": {
       "title": "Lore: Collettivo Ipercapitalista",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "Il Collettivo Ipercapitalista è uno schema piramidale grande quanto un continente che gestisce il commercio fra le dimensioni. I suoi membri hanno preso la Regola degli 80 e ne hanno fatto dottrina: a furia di restare sopra la soglia, i loro corpi hanno smesso di azzerarsi anche da fermi, così mentre il resto del mondo va in loop e dimentica, il Collettivo ricorda tutto, indefinitamente.\n\nQuella memoria è l'intero modello di business. Vendono fughe dai loop a chi ci resta intrappolato dentro, e commerciano letteralmente qualsiasi altra cosa, ricordi ed emozioni comprese. Detengono anche il monopolio sull'unica risorsa da cui non si può fuggire in loop: controllano ogni fonte d'acqua pulita rimasta, mentre tutto il resto è tagliato con l'LSD.\n\nIl Collettivo è in guerra aperta con la Archive Foundation, la cui dottrina di trasparenza radicale si oppone direttamente a un impero commerciale costruito su segreti e leva; è invece alleato con gli Dei.",
+      "type": "lore"
     },
     "emTheMemoryWitch": {
       "title": "Lore: Em, la Strega della Memoria",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "description": "Em è nata nel 1984 a Wimbledon, in Britannia, e voleva fare la strega in un'epoca che aveva archiviato la magia tra le favole. Le cose sono cambiate quando Margaret Thatcher, che dietro le quinte era un pezzo grosso della Gilda dei Maghi, ha avuto bisogno di un fulcro per il Rituale di Salomone e ha scelto lei.\n\nIl prezzo del rituale è stato il 92% dei suoi ricordi. Non sono spariti nel nulla: sono stati forgiati nella Lancia della Memoria, la stessa arma con cui più tardi Eris ha ucciso l'aspetto Padre di YHWH. Em si è svegliata da sola sull'Isola Rituale il primo gennaio del 2001, senza un passato da ricordare e con un potere che sta ancora imparando a maneggiare.\n\nDa allora è in viaggio, a bordo del camper che divide con Bubba, diretta a un appuntamento a Beagle di cui riesce a malapena a ricordare di aver accettato.",
+      "type": "lore"
     },
     "camelcaseMagic": {
       "title": "Lore: Magia CamelCase",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "description": "Ogni incantesimo lanciato dopo lo Squishing va scritto e pronunciato in CamelCase: parole attaccate, maiuscola a ogni inizio di parola. Non è una questione di stile, e non è facoltativo. FireBall funziona. 'Palla di fuoco' no, e pronunciarlo costa caro a chi ci prova.\n\nLe formule a più parole appartengono a un'altra categoria: i trascendentali, incantesimi abbastanza potenti da rimodellare la realtà a piacimento, riserva esclusiva degli dèi. Se un mortale stacca le parole di un incantesimo, l'universo lo legge come un tentativo di trascendentale e gli presenta il conto: dalla perdita delle corde vocali a guai ben peggiori.\n\nI grimori rendono visibile la regola: un incantesimo scritto male sulla pagina inizia a contagiare le parole vicine con copie di sé stesso, e un libro non bruciato finisce per divorare qualsiasi cosa gli venga lasciata accanto. Gli incantesimi attivi si scelgono mentre si dorme, ciascuno con un proprio tetto di usi giornalieri. Infilarne due nello stesso slot li fonde in un incantesimo temporaneo finché regge; le versioni permanenti delle combinazioni che funzionano si comprano ai distributori automatici, o si conquistano con un rituale.",
+      "type": "lore"
     },
     "alagaddaCityOfMasks": {
       "title": "Lore: Alagadda, Città delle Maschere",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "[Dossier della Archive Foundation, incompleto]\n\nAlagadda non compare su nessuna mappa che la Gilda o la Foundation siano mai riuscite a fissare, e ogni squadra sul campo mandata a cercarla è tornata con un racconto diverso su come ci sia entrata, quando è tornata. Ciò che sopravvive a ogni versione, e che ogni testimone insiste a ripetere per primo, è l'unica regola che la città impone senza eccezioni: ogni visitatore indossa una maschera, e non se la toglie.\n\nToglierla, per qualsiasi motivo, anche solo per un istante, e la città smette di contarti come persona. La condizione ha un nome negli archivi, Non-Persona, e una descrizione coerente in ogni testimonianza: invisibile, intoccabile, incapace di andarsene, alla deriva per strade che non registrano più la tua esistenza.\n\nNonostante la Divulgazione Totale, questo è tutto ciò che la Foundation è disposta a mettere per iscritto. Alle squadre sul campo si raccomanda: maschera indossata, maschera assicurata, maschera mai rimossa.",
+      "type": "lore"
     },
     "bladeSeeds": {
       "title": "Semi delle Lame",
@@ -134,71 +142,287 @@
     },
     "arcaneSurge": {
       "title": "Stato: Impeto Arcano",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "Aumenta il potere magico ma consuma MP a ogni turno. Aumenta INT del 50%, aumenta SAG del 50% e consuma il 10% degli MP massimi ogni turno. Dura 3-5 azioni.",
+      "type": "state"
     },
     "berserk": {
       "title": "Stato: Berserk",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "Aumenta la potenza d'attacco ma abbassa la difesa e fa attaccare a caso. Aumenta FRZ del 50% e riduce COS del 30%. Chi ne soffre attacca chiunque a caso, alleato o nemico. Dura 2-4 azioni.",
+      "type": "state"
     },
     "bleeding": {
       "title": "Stato: Sanguinante",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "Consuma il 10% degli HP massimi ogni turno. Non svanisce da solo. E ti segue fuori dalla battaglia.",
+      "type": "state"
     },
     "blind": {
       "title": "Stato: Cecità",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      "description": "Riduce precisione del 50%. Dura 3-5 azioni.",
+      "type": "state"
     },
     "burned": {
       "title": "Stato: Bruciato",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "Consuma il 10% degli HP massimi ogni turno. Non svanisce da solo. E ti segue fuori dalla battaglia.",
+      "type": "state"
     },
     "charm": {
       "title": "Stato: Affascinato",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "description": "Non porta con sé alcun cambiamento di statistiche. Chi ne soffre si rivolta contro i suoi. Dura 2-4 azioni. Un colpo pieno può interromperlo.",
+      "type": "state"
     },
     "cold": {
       "title": "Stato: Freddo",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "Riduce il danno ghiaccio subito del 50%, aumenta FRZ del 10% e aumenta il danno fuoco subito del 200%. Dura 5 turni.",
+      "type": "state"
     },
     "confusion": {
       "title": "Stato: Confusione",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "Non porta con sé alcun cambiamento di statistiche. Chi ne soffre attacca chiunque a caso, alleato o nemico. Dura 2-4 azioni. Un colpo pieno può interromperlo.",
+      "type": "state"
     },
     "shadow": {
-      "title": "Stato: Ombra",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "title": "Stato: Velo d'Ombra",
+      "description": "Rende il bersaglio più difficile da colpire, ma abbassa anche la sua precisione. Riduce precisione del 40% e riduce quanto spesso viene bersagliato del 50%. Dura 2-4 azioni.",
+      "type": "state"
     },
     "silence": {
       "title": "Stato: Silenzio",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "description": "Sigilla una scuola di abilità. Dura 3-5 azioni.",
+      "type": "state"
     },
     "sleep": {
       "title": "Stato: Dormiente",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      "description": "Riduce evasione del 100%. Chi ne soffre non può agire affatto. Dura 3-5 turni. Un colpo pieno può interromperlo.",
+      "type": "state"
     },
     "static": {
       "title": "Stato: Statico",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "Riduce il danno fulmine subito del 50% e aumenta FRZ del 10%. Dura 5 turni.",
+      "type": "state"
     },
     "stun": {
       "title": "Stato: Stordito",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "Riduce evasione del 100%. Chi ne soffre non può agire affatto. Dura 1-2 turni.",
+      "type": "state"
     },
     "unbalanced": {
       "title": "Stato: Sbilanciato",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      "description": "Il bersaglio rischia di fallire la sua azione alla fine di ogni turno. Riduce precisione del 30%. Dura 1-3 azioni. Un colpo pieno può interromperlo.",
+      "type": "state"
     },
     "vulnerability": {
       "title": "Stato: Vulnerabilità",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "Riduce la difesa fisica del bersaglio. Riduce COS del 50%. Non svanisce da solo. E ti segue fuori dalla battaglia.",
+      "type": "state"
     },
     "wet": {
       "title": "Stato: Bagnato",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "Riduce il danno fuoco subito del 50% e aumenta il danno fulmine subito del 100%. Dura 5 turni.",
+      "type": "state"
     },
     "petro": {
       "title": "Petro",
       "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+    },
+    "immortal": {
+      "title": "Stato: Immortale",
+      "description": "Protegge da KO. Dura 1-2 turni.",
+      "type": "state"
+    },
+    "poison": {
+      "title": "Stato: Avvelenato",
+      "description": "Consuma il 5% degli HP massimi ogni turno. Non svanisce da solo. Camminare aiuta a smaltirlo, e ti segue fuori dalla battaglia.",
+      "type": "state"
+    },
+    "rage": {
+      "title": "Stato: Rabbia",
+      "description": "Aumenta FRZ del 50%. Chi ne soffre attacca un nemico a caso e non accetta ordini. Dura 2-4 azioni. Un colpo pieno può interromperlo.",
+      "type": "state"
+    },
+    "freeze": {
+      "title": "Stato: Congelato",
+      "description": "Riduce evasione del 100%, sigilla una scuola di abilità e sigilla una scuola di abilità. Chi ne soffre non può agire affatto. Dura 3 turni.",
+      "type": "state"
+    },
+    "paralysis": {
+      "title": "Stato: Paralisi",
+      "description": "Riduce evasione del 100%. Chi ne soffre non può agire affatto. Dura 3 turni.",
+      "type": "state"
+    },
+    "lockedOn": {
+      "title": "Stato: Presa di Mira",
+      "description": "Aumenta il tasso di critico. Aumenta tasso di critico del 300%. Dura 2-4 azioni.",
+      "type": "state"
+    },
+    "hpRegeneration": {
+      "title": "Stato: Rigenerazione HP",
+      "description": "Recupera il 10% degli HP massimi ogni turno. Dura 4 turni.",
+      "type": "state"
+    },
+    "mpRegeneration": {
+      "title": "Stato: Rigenerazione MP",
+      "description": "Recupera il 10% degli MP massimi ogni turno. Dura 4 turni.",
+      "type": "state"
+    },
+    "apRegeneration": {
+      "title": "Stato: Rigenerazione AP",
+      "description": "Recupera il 10% degli AP massimi ogni turno. Dura 4 turni.",
+      "type": "state"
+    },
+    "magicReflection": {
+      "title": "Stato: Riflesso Magico",
+      "description": "Aumenta riflessione magica del 100%. Dura 5 turni.",
+      "type": "state"
+    },
+    "protect": {
+      "title": "Stato: Protezione",
+      "description": "Cambia il comportamento in battaglia. Dura 1 turno.",
+      "type": "state"
+    },
+    "provoke": {
+      "title": "Stato: Provocazione",
+      "description": "Aumenta quanto spesso viene bersagliato del 800%. Dura 5 turni.",
+      "type": "state"
+    },
+    "hide": {
+      "title": "Stato: Nascosto",
+      "description": "Annulla quanto spesso viene bersagliato. Dura 5 turni.",
+      "type": "state"
+    },
+    "counterAttack": {
+      "title": "Stato: Contrattacco",
+      "description": "Aumenta tasso di contrattacco del 100%. Dura 3 azioni.",
+      "type": "state"
+    },
+    "statusAilmentBlock": {
+      "title": "Stato: Blocco Status Alterati",
+      "description": "Protegge da 9 condizioni diverse. Dura 5 turni.",
+      "type": "state"
+    },
+    "inspired": {
+      "title": "Stato: Ispirato",
+      "description": "Riduce il costo in MP. Riduce il costo in MP del 75%. Dura 5 turni.",
+      "type": "state"
+    },
+    "hot": {
+      "title": "Stato: Caldo",
+      "description": "Aumenta il danno acqua subito del 100%, aumenta FRZ del 10% e riduce il danno petrolio subito del 50%. Dura 5 turni.",
+      "type": "state"
+    },
+    "divineShield": {
+      "title": "Stato: Scudo Divino",
+      "description": "Riduce ogni danno in entrata e impedisce i colpi critici. Riduce il danno fisico subito del 30%, riduce il danno fuoco subito del 30%, riduce il danno ghiaccio subito del 30%, riduce il danno fulmine subito del 30%, riduce il danno acqua subito del 30%, riduce il danno petrolio subito del 30%, riduce il danno vento subito del 30%, riduce il danno sacro subito del 30%, riduce il danno maledetto subito del 30% e aumenta evasione dei critici del 100%. Dura 3-5 turni.",
+      "type": "state"
+    },
+    "deathMark": {
+      "title": "Stato: Marchio di Morte",
+      "description": "Il bersaglio subisce più danno da ogni fonte ed è più facile da colpire. Aumenta il danno fisico subito del 30%, aumenta il danno fuoco subito del 30%, aumenta il danno ghiaccio subito del 30%, aumenta il danno fulmine subito del 30%, aumenta il danno acqua subito del 30%, aumenta il danno petrolio subito del 30%, aumenta il danno vento subito del 30%, aumenta il danno sacro subito del 30%, aumenta il danno maledetto subito del 30% e aumenta quanto spesso viene bersagliato del 900%. Dura 2-3 azioni.",
+      "type": "state"
+    },
+    "perfectFocus": {
+      "title": "Stato: Focus Perfetto",
+      "description": "Garantisce i colpi critici ma riduce la difesa. Aumenta tasso di critico del 100% e riduce COS del 20%. Dura 2-3 turni.",
+      "type": "state"
+    },
+    "ethereal": {
+      "title": "Stato: Etereo",
+      "description": "Il bersaglio non subisce danno fisico ma il doppio di quello magico. Rende innocuo il danno fisico, aumenta il danno fuoco subito del 100%, aumenta il danno ghiaccio subito del 100%, aumenta il danno fulmine subito del 100%, aumenta il danno acqua subito del 100%, aumenta il danno petrolio subito del 100%, aumenta il danno vento subito del 100%, aumenta il danno sacro subito del 100% e aumenta il danno maledetto subito del 100%. Dura 3-5 turni.",
+      "type": "state"
+    },
+    "lifeLink": {
+      "title": "Stato: Legame Vitale",
+      "description": "Il danno subito viene diviso fra tutti i membri del gruppo. Non porta con sé alcun cambiamento di statistiche. Dura 3-5 turni.",
+      "type": "state"
+    },
+    "nausea": {
+      "title": "Stato: Nausea",
+      "description": "Consuma il 10% degli MP massimi ogni turno. Non svanisce da solo. E ti segue fuori dalla battaglia.",
+      "type": "state"
+    },
+    "drunk": {
+      "title": "Stato: Ubriaco",
+      "description": "Consuma il 40% degli AP massimi ogni turno. Non svanisce da solo. Un colpo pieno può interromperlo, camminare aiuta a smaltirlo, e ti segue fuori dalla battaglia.",
+      "type": "state"
+    },
+    "infected": {
+      "title": "Stato: Infetto",
+      "description": "Consuma il 10% degli HP massimi ogni turno. Non svanisce da solo. E ti segue fuori dalla battaglia.",
+      "type": "state"
+    },
+    "floating": {
+      "title": "Stato: Levitazione",
+      "description": "Aumenta il danno fulmine subito del 100%, aumenta FRZ del 10%, rende innocuo il danno petrolio e riduce il danno fisico subito del 50%. Dura 5 turni.",
+      "type": "state"
+    },
+    "invisible": {
+      "title": "Stato: Invisibile",
+      "description": "Aumenta evasione del 999%, aumenta evasione magica del 999%, aumenta evasione dei critici del 999% e riduce quanto spesso viene bersagliato del 70%. Dura 3 turni. Un colpo pieno può interromperlo.",
+      "type": "state"
+    },
+    "oily": {
+      "title": "Stato: Oleoso",
+      "description": "Aumenta il danno fuoco subito del 899%. Dura 5 turni.",
+      "type": "state"
+    },
+    "dodge": {
+      "title": "Stato: Schivata",
+      "description": "Aumenta evasione del 200% e aumenta evasione magica del 200%. Dura 1 turno.",
+      "type": "state"
+    },
+    "withdrawal": {
+      "title": "Stato: Astinenza",
+      "description": "Riduce FRZ del 15%, riduce INT del 15%, riduce DES del 10%, riduce precisione del 15% e riduce evasione del 5%. Non svanisce da solo. E ti segue fuori dalla battaglia.",
+      "type": "state"
+    },
+    "grappled": {
+      "title": "Stato: In Presa",
+      "description": "Bloccato in una presa. Agilità ed evasione crollano e i colpi fisici arrivano più duri. Riduce DES del 60%, riduce evasione del 60% e aumenta il danno fisico subito del 25%. Dura 2-3 turni.",
+      "type": "state"
+    },
+    "pinned": {
+      "title": "Stato: Immobilizzato",
+      "description": "Inchiodato a terra e incapace di agire. Un colpo pieno lo libera. Riduce evasione del 90%. Chi ne soffre non può agire affatto. Dura 1-2 turni. Un colpo pieno può interromperlo.",
+      "type": "state"
+    },
+    "guardBroken": {
+      "title": "Stato: Guardia Rotta",
+      "description": "La difesa è stata scardinata: difesa dimezzata e parata inutile. Riduce COS del 50%, riduce SAG del 20% e annulla la parata. Dura 2 turni.",
+      "type": "state"
+    },
+    "winded": {
+      "title": "Stato: Senza Fiato",
+      "description": "Il fiato è finito: più lento, e non accumula più stamina. Riduce DES del 20%, riduce la carica di AP del 65% e consuma il 5% degli MP massimi ogni turno. Dura 3 turni.",
+      "type": "state"
+    },
+    "comboReady": {
+      "title": "Stato: Combo Pronta",
+      "description": "L'apertura è stata letta e il colpo successivo è carico. Alcune tecniche colpiscono molto più forte. Aumenta precisione del 20% e aumenta tasso di critico del 15%. Dura 2 turni.",
+      "type": "state"
+    },
+    "vitalExposed": {
+      "title": "Stato: Punto Vitale Esposto",
+      "description": "Un punto vitale è scoperto. Ogni colpo fisico che segue fa metà in più. Aumenta il danno fisico subito del 50% e riduce evasione dei critici del 30%. Dura 2-3 turni.",
+      "type": "state"
+    },
+    "rootedStance": {
+      "title": "Stato: Posizione Radicata",
+      "description": "Piantato e inamovibile: molto più difficile da ferire o rovesciare, e più lento per questo. Aumenta COS del 40%, riduce DES del 30% e protegge da 3 condizioni diverse. Dura 4 turni.",
+      "type": "state"
+    },
+    "flowState": {
+      "title": "Stato: Stato di Flusso",
+      "description": "Legge il colpo prima che parta: devia gli attacchi e a qualcuno risponde. Aumenta tasso di contrattacco del 25%, aumenta evasione del 20% e riduce il danno fisico subito del 15%. Dura 3 turni.",
+      "type": "state"
+    },
+    "chiBurn": {
+      "title": "Stato: Chi Bruciato",
+      "description": "Il prezzo di spendere tutto in una volta. Il corpo continua a pagarlo per un po'. Consuma il 4% degli HP massimi ogni turno, riduce INT del 15% e riduce la carica di AP del 50%. Dura 3 turni.",
+      "type": "state"
+    },
+    "concussed": {
+      "title": "Stato: Commozione Cerebrale",
+      "description": "Un colpo alla testa. Niente mira giusto e niente ragiona lucido. Riduce INT del 30%, riduce SAG del 30% e riduce precisione del 20%. Dura 2-3 turni.",
+      "type": "state"
     }
   }
 }

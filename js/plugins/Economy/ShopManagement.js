@@ -1043,14 +1043,18 @@
       "Robert",
     ];
     // i18n-ignore-end
+    // Single-character sheets (img/characters/NPCs), so the index is always 0.
     const npcSprites = [
-      "Actor1",
-      "Actor2",
-      "Actor3",
-      "People1",
-      "People2",
-      "People3",
-      "People4",
+      "NPCs/!$WarSniper1",
+      "NPCs/!$UniversityStudent1",
+      "NPCs/!$ElvenBarbarian1",
+      "NPCs/!$Stylist1",
+      "NPCs/!$Botanist1",
+      "NPCs/!$Jogger1",
+      "NPCs/!$OrcStudent2",
+      "NPCs/!$OrcBartender3",
+      "NPCs/!$OrcMercenary2",
+      "NPCs/!$OrcAdventurer2",
     ];
 
     shopData.globalData.currentDelivery = {
@@ -1061,7 +1065,7 @@
     shopData.globalData.deliveryNPC = {
       name: npcNames[Math.floor(Math.random() * npcNames.length)],
       spriteName: npcSprites[Math.floor(Math.random() * npcSprites.length)],
-      spriteIndex: Math.floor(Math.random() * 8),
+      spriteIndex: 0,
     };
 
     // Start the 2-minute timer

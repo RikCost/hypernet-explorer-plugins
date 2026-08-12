@@ -79,6 +79,15 @@
     const LEVEL_NAMES_FALLBACK = ["Untrained", "Beginner", "Intermediate", "Advanced", "Master"];
     // i18n-ignore-end
 
+    // The filter row is ['Trained', 'All', ...categories]; the first two are the
+    // menu's own tabs and the rest are category ids, which stay English because
+    // the list is filtered on them. Only the label is localised.
+    function categoryTabLabel(cat) {
+        if (cat === 'Trained') return T('SpecMenu.ui.trained');
+        if (cat === 'All') return T('SpecMenu.ui.all');
+        return window.Specializations.categoryLabel(cat);
+    }
+
     // Experience needed to climb out of each level, indexed by current level.
     //
     // Weapons train through combat and stay deliberately slow: roughly one point
@@ -117,14 +126,53 @@
                     this.byName.set(spec.name, spec);
                     if (spec.wtypeId) this.byWtype.set(spec.wtypeId, spec);
                 });
+                await this.loadI18n();
                 this.ready = true;
             } catch (e) {
                 console.error('SpecializationMenu: failed to load Specialization.json', e);
             }
         },
 
+        // What the player reads, from js/i18n/<lang>/Specializations.json. The
+        // English `spec.name` in the db is a LOOKUP KEY (byName, and
+        // xp.discount('Haggling') in ItemSystemShop), so it is never translated:
+        // the display text lives here, keyed by id, and the level bank is
+        // overlaid outright because level names are shown and never matched on.
+        // Categories are NOT overlaid, they are the tab ids; use categoryLabel().
+        i18n: null,
+
+        async loadI18n() {
+            this.i18n = null;
+            const lang = (window.ConfigManager && ConfigManager.language) || 'en';
+            try {
+                const res = await fetch(`js/i18n/${lang}/Specializations.json`);
+                if (!res.ok) return;
+                const data = await res.json();
+                this.i18n = data;
+                if (Array.isArray(this.levels) && data.level) {
+                    this.levels = this.levels.map(n => data.level[n] || n);
+                }
+            } catch (e) { /* no bank for this language, English stands */ }
+        },
+
         levelName(level) {
             return this.levels[Math.max(0, Math.min(this.levels.length - 1, level - 1))] || this.levels[0];
+        },
+
+        // The category tab label. `categories` itself stays English, it is the id.
+        categoryLabel(category) {
+            const t = this.i18n && this.i18n.category && this.i18n.category[category];
+            return t || category;
+        },
+
+        // The specialization's name as the player reads it. Takes a spec object,
+        // an id or an English name, the same three things describe() takes.
+        displayName(spec) {
+            const def = typeof spec === 'object' && spec ? spec
+                : (this.byId.get(spec) || this.byName.get(spec));
+            if (!def) return typeof spec === 'string' ? spec : '';
+            const t = this.i18n && this.i18n.spec && this.i18n.spec[def.id];
+            return (t && t.name) || def.name;
         },
 
         // Weapon-type proficiency for a weapon type id, or null when the data
@@ -143,11 +191,13 @@
             return table[level] || 0;
         },
 
-        // Neutral one-line definition, straight from the data file.
+        // Neutral one-line definition, in the language being played.
         describe(spec) {
             const def = typeof spec === 'object' && spec ? spec
                 : (this.byId.get(spec) || this.byName.get(spec));
-            return (def && def.description) || '';
+            if (!def) return '';
+            const t = this.i18n && this.i18n.spec && this.i18n.spec[def.id];
+            return (t && t.description) || def.description || '';
         }
     };
     window.Specializations.load();
@@ -672,8 +722,7 @@
                 const level = doer
                     ? SpecializationXP.levelOf(doer, def)
                     : SpecializationXP.partyLevel(def);
-                const name = (typeof window.translateText === 'function')
-                    ? window.translateText(def.name) : def.name;
+                const name = window.Specializations.displayName(def);
                 const holder = doer || (level > 1 ? SpecializationXP.bestMember(def) : null);
                 const who = (holder && holder.name) ? holder.name() : '';
                 return `<div class="spec-badge spec-badge--t${level}">` +
@@ -1067,7 +1116,7 @@
                             background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'};
                             border:1.5px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'};
                             color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'};
-                        ">${escapeHtml(cat)}</div>`;
+                        ">${escapeHtml(categoryTabLabel(cat))}</div>`;
                 });
                 categoryRow.innerHTML = tabsHTML;
                 categoryRow.querySelectorAll('.spec-category-tab').forEach(tab => {
@@ -1126,7 +1175,7 @@
                 const isFocused = isSel && this._activeArea === 'list';
                 return `
                     <div class="spec-row ${isFocused ? 'focused' : ''}" data-idx="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'transparent'};">
-                        <span style="font-family:'Lora',serif; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'};">${escapeHtml(spec.name)}</span>
+                        <span style="font-family:'Lora',serif; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'};">${escapeHtml(window.Specializations.displayName(spec))}</span>
                         <span style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
                             <span style="font-size:0.7rem; opacity:0.7;">${spec.stat}</span>
                             ${this.levelPipsHTML(level)}
@@ -1183,16 +1232,24 @@
                 // so the counter is rounded for reading.
                 const have = Math.floor(actor.specializationExp(spec.id) * 10) / 10;
                 const pct = Math.max(0, Math.min(100, Math.round((have / needed) * 100)));
+                // The bar counts what has been earned inside this tier; the line
+                // under it says what the next one still wants, rounded up so a
+                // fractional onlooker share never reads as "0 more".
+                const remaining = Math.max(0, Math.ceil((needed - have) * 10) / 10);
+                const nextName = window.Specializations.levelName(level + 1);
                 progressHTML = `
                     <div style="margin-top:10px;">
                         <div style="display:flex; justify-content:space-between; font-size:0.75rem; opacity:0.8;">
-                            <span>${T('SpecMenu.ui.towards', { level: escapeHtml(window.Specializations.levelName(level + 1)) })}</span>
+                            <span>${T('SpecMenu.ui.towards', { level: escapeHtml(nextName) })}</span>
                             <span>${have} / ${needed}</span>
                         </div>
                         <div style="height:6px; border-radius:3px; background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15); overflow:hidden;">
                             <div style="height:100%; width:${pct}%; background:var(--text-secondary-active);"></div>
                         </div>
+                        <div style="font-size:0.72rem; opacity:0.7; margin-top:3px;">${T('SpecMenu.ui.pointsToNext', { points: remaining, level: escapeHtml(nextName) })}</div>
                     </div>`;
+            } else {
+                progressHTML = `<div style="margin-top:10px; font-size:0.75rem; opacity:0.7;">${T('SpecMenu.ui.mastered')}</div>`;
             }
 
             // Weapon proficiencies drive the equip-screen stat scaling, so spell
@@ -1203,10 +1260,10 @@
                 const mult = prof ? prof.multiplierForLevel(level) : 1;
                 const pct = Math.round(mult * 100);
                 const note = level < 3
-                    ? T('SpecializationMenu.weapon.cut', { weapon: escapeHtml(spec.name), pct: pct })
+                    ? T('SpecializationMenu.weapon.cut', { weapon: escapeHtml(window.Specializations.displayName(spec)), pct: pct })
                     : (level > 3
-                        ? T('SpecializationMenu.weapon.raised', { weapon: escapeHtml(spec.name), pct: pct })
-                        : T('SpecializationMenu.weapon.full', { weapon: escapeHtml(spec.name) }));
+                        ? T('SpecializationMenu.weapon.raised', { weapon: escapeHtml(window.Specializations.displayName(spec)), pct: pct })
+                        : T('SpecializationMenu.weapon.full', { weapon: escapeHtml(window.Specializations.displayName(spec)) }));
                 weaponHTML = `
                     <div style="margin-top:14px; padding:8px 10px; border-radius:5px; background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15);">
                         <div style="font-weight:bold; margin-bottom:2px;">${T('SpecializationMenu.weapon.title')}</div>
@@ -1248,7 +1305,7 @@
 
             return `
                 <div style="padding:24px; font-family:'Lora',serif;">
-                    <h2 style="color:var(--text-secondary-active); margin:0 0 4px;">${escapeHtml(spec.name)}</h2>
+                    <h2 style="color:var(--text-secondary-active); margin:0 0 4px;">${escapeHtml(window.Specializations.displayName(spec))}</h2>
                     <div style="opacity:0.7; margin-bottom:2px;">${T('SpecMenu.ui.governingStat', { stat: spec.stat })}${spec.category ? ` &middot; ${escapeHtml(spec.category)}` : ''}</div>
                     ${spec.description ? `<div style="margin:8px 0 0; line-height:1.5; opacity:0.9;">${escapeHtml(spec.description)}</div>` : ''}
                     <div style="display:flex; align-items:center; gap:10px; margin:16px 0 0;">

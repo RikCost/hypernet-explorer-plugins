@@ -322,6 +322,20 @@
         return starter;
     };
 
+    // Called by Scene_ArenaStage's watchdog when the player has been left
+    // stranded on the "next bout" screen: the mode flags survive between bouts
+    // (cleared only on completion/defeat), so whichever run is still active is
+    // resumed directly. Skipped if a handoff is already pending so it can never
+    // race the ordinary setTimeout-driven continuation.
+    ArenaBattleHandler.resumeStrandedSession = function () {
+        if (!_arenaFromTitle) return;
+        if (BattleManager.isGauntletMode() && !this._nextBoutTimer) {
+            this.startGauntletBattle();
+        } else if (BattleManager.isBiomeTrialMode() && !this._nextTrialTimer) {
+            this.startBiomeTrialBattle();
+        }
+    };
+
     // Legacy entry kept for compatibility (older callers). Chooses party source
     // then hands straight to the gauntlet picker.
     ArenaBattleHandler.beginTitleArena = function (forceRandom) {

@@ -1,0 +1,135 @@
+{
+  "unknownParty": "AN UNNAMED PARTY",
+  "noSubject": "(NO SUBJECT)",
+  "partyAlone": "{leader}, TRAVELLIN' ALONE",
+  "partyWith": "{leader} AN' {count} OTHERS",
+  "span": {
+    "days": {
+      "one": "1 DAY",
+      "other": "{count} DAYS"
+    },
+    "months": {
+      "one": "1 MONTH",
+      "other": "{count} MONTHS"
+    },
+    "years": {
+      "one": "1 YEAR",
+      "other": "{count} YEARS"
+    },
+    "none": "AT ONCE"
+  },
+  "ui": {
+    "title": "DA POST",
+    "back": "BACK",
+    "tab": {
+      "inbox": "MAILBOX ({count})",
+      "compose": "WRITE"
+    },
+    "inTransit": {
+      "one": "1 LETTER STILL IN TRANSIT",
+      "other": "{count} LETTERS STILL IN TRANSIT"
+    },
+    "noWorld": "DERE IZ NO WORLD TA POST FROM. MAKE ONE FIRST, AN' DA POST WILL FOLLOW!"
+  },
+  "inbox": {
+    "empty": "NOTHIN' HAB BEEN ADDRESSED TA DIS PARTY YET!",
+    "pickOne": "PICK A LETTER TA READ IT.",
+    "fromLine": "FROM {who}, OF {world}",
+    "fromSelf": "FROM YA OWN HAND",
+    "crossed": "· CROSSED OVER",
+    "crossedFrom": "CARRIED OUT OF {world}, AT A POSTAGE OF {fee}!",
+    "heldBack": "HELD BACK {span} BEFORE IT WAZ DELIVERED!",
+    "written": "WRITTEN {date}",
+    "arrived": "DELIVERED {date}",
+    "mark": {
+      "unread": "UNREAD",
+      "parcel": "PARCEL"
+    },
+    "enclosed": "ENCLOSED",
+    "moneyLine": "MONEY",
+    "nothingEnclosed": "NOTHIN' WAZ ENCLOSED; IT IZ ONLY A LETTER!",
+    "collect": "EMPTY DA ENVELOPE",
+    "collectedAlready": "DA ENVELOPE HAB ALREADY BEEN EMPTIED!",
+    "discard": "BURN DA LETTER"
+  },
+  "compose": {
+    "recipient": "ADDRESSED TA",
+    "noRecipient": "NOBODY YET",
+    "addressLine": "{who} — {world}",
+    "yourself": "{leader}, DAT IZ TA SAY YOURSELF",
+    "subject": "SUBJECT",
+    "body": "LETTER",
+    "blankField": "—",
+    "wordCount": {
+      "one": "1 WORD",
+      "other": "{count} WORDS"
+    },
+    "money": "MONEY ENCLOSED",
+    "items": "GOODS ENCLOSED",
+    "pieces": {
+      "one": "1 PIECE",
+      "other": "{count} PIECES"
+    },
+    "delayDays": "HELD BACK, DAYS",
+    "delayMonths": "HELD BACK, MONTHS",
+    "delayYears": "HELD BACK, YEARS",
+    "send": "SEAL IT AN' SEND IT",
+    "confirm": "PRESS AGAIN TA SEND IT",
+    "thisWorld": "{world} — DIS WORLD",
+    "otherWorld": "{world} — ANOTHER WORLD",
+    "noAddresses": "NO PARTY HAB LEFT AN ADDRESS ANYWHERE YET!",
+    "nothingToSend": "DERE IZ NOTHIN' IN DA BAGS DAT CAN BE POSTED!",
+    "noGoods": "NO GOODS",
+    "held": {
+      "one": "1 IN DA BAGS",
+      "other": "{count} IN DA BAGS"
+    },
+    "memberCount": {
+      "one": "1 MEMBER",
+      "other": "{count} MEMBERS"
+    },
+    "seenOn": "LAST SEEN {date}",
+    "feeShort": "POSTAGE {fee}",
+    "toLine": "TA {who}",
+    "toNobody": "TA NOBODY YET",
+    "routeHome": "CARRIED ACROSS {world} BY AN ORDINARY COURIER!",
+    "routeAcross": "CROSSIN' INTO {world}, {steps} DIMENSIONS AWAY!",
+    "arrives": "ARRIVES {date} ({span})",
+    "enclosedLine": "IN DA ENVELOPE: {money} AN' {goods}.",
+    "enclosedNothing": "NOTHIN' IZ IN DA ENVELOPE BUT DA LETTER!",
+    "postageFree": "POSTAGE: NOTHIN'. A LETTER INSIDE ONE WORLD TRAVELS FREE!",
+    "postageLine": "POSTAGE: {fee}. WIT WHAT IZ ENCLOSED, {total} LEAVES DA PURSE!",
+    "cannotAfford": "DA PURSE IZ {short} SHORT OF WHAT DIS WOULD COST!",
+    "subjectPlaceholder": "WHAT IZ IT ABOUT?",
+    "bodyPlaceholder": "WRITE FREELY. WHOEVER OPENS DIS WILL READ IT EXACTLY AS YOU LEAVE IT!"
+  },
+  "toast": {
+    "sent": "SEALED AN' SENT.",
+    "sentAcross": "SEALED AN' SENT ACROSS; {fee} OF POSTAGE PAID!",
+    "collected": "OUT OF DA ENVELOPE: {money} AN' {goods}!",
+    "goods": {
+      "one": "1 LOT OF GOODS",
+      "other": "{count} LOTS OF GOODS"
+    },
+    "arrivedOne": "A LETTER HAB ARRIVED: {subject}",
+    "arrivedMany": {
+      "one": "1 LETTER HAB ARRIVED.",
+      "other": "{count} LETTERS HAB ARRIVED."
+    }
+  },
+  "error": {
+    "noWorld": "DERE IZ NO WORLD TA POST FROM!",
+    "noParty": "DERE IZ NO PARTY HERE TA SIGN DA LETTER!",
+    "noRecipient": "NOBODY HAB BEEN ADDRESSED!",
+    "goneAway": "DAT PARTY HAB LEFT NO ADDRESS ANY MORE!",
+    "shortStock": "DA BAGS NO LONGER HOLD ENOUGH {item}!",
+    "tooPoor": "DAT WOULD COST {total}, AN' DA PURSE NO CAN COVER IT!",
+    "blank": "AN EMPTY LETTER WIT NOTHIN' IN IT IZ NOT WORTH A STAMP!",
+    "notPosted": "DA LETTER COULD NOT BE PUT INTO DAT WORLD'S MAILBOX!",
+    "gone": "DAT LETTER IZ NO LONGER IN DA MAILBOX!",
+    "alreadyTaken": "DA ENVELOPE HAB ALREADY BEEN EMPTIED!",
+    "notYet": "DAT LETTER HAB NOT BEEN DELIVERED YET!",
+    "emptyEnvelope": "DERE IZ NOTHIN' IN DA ENVELOPE TA TAKE OUT!",
+    "stillFull": "EMPTY DA ENVELOPE BEFORE BURNIN' DA LETTER!"
+  }
+}

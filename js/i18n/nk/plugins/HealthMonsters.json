@@ -1,0 +1,38 @@
+{
+  "targetedMiss": "DA TARGETED ATTACK MISSED ITS MARK!",
+  "elementVerb": {
+    "2": "BURNED",
+    "3": "FROZEN",
+    "4": "ELECTROCUTED",
+    "5": "DRENCHED",
+    "6": "CRUSHED",
+    "7": "BLOWN AWAY",
+    "8": "MELTED",
+    "9": "CORRUPTED",
+    "10": "CURSED"
+  },
+  "elementVerbDefault": "DESTROYED",
+  "partElementalHit": "{enemy}'S {part} HAB BEEN {effect}!",
+  "partSevered": "{enemy}'S {part} HAB BEEN SEVERED!",
+  "partDestroyed": "{enemy}'S {part} HAB BEEN DESTROYED!",
+  "customPartMessage": "{enemy}'S {message}",
+  "partSeverelyDamaged": "{part} SEVERELY DAMAGED, BUT DA MONSTER IZ STILL TOO STRONG!",
+  "preciseStrike": "A PRECISE STRIKE TA DA {part}!",
+  "partWasHit": "{enemy}'S {part} WAZ HIT!",
+  "paramNames": [
+    "MAX HP",
+    "MAX MP",
+    "ATTACK",
+    "MAGIC",
+    "DEFENSE",
+    "M.DEFENSE",
+    "AGILITY",
+    "LUCK"
+  ],
+  "statFallback": "STAT",
+  "elementLabel": "ELEMENT:",
+  "weakToLabel": "WEAK TA:",
+  "statesLabel": "STATES:",
+  "bodyParts": "BODY PARTS",
+  "none": "NONE"
+}

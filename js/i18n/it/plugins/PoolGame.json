@@ -1,11 +1,26 @@
 {
   "player1": "Giocatore 1",
   "player2": "Giocatore 2",
-  "player2Cpu": "Giocatore 2 (CPU)",
-  "controlsP1": "Frecce: Mira | Tieni Spazio: Carica potenza | Rilascia: Tira",
-  "controlsP2": "A/D o Tastierino 4/6: Mira | Tieni E o Tastierino 5/0: Carica potenza",
-  "cpuThinking": "La CPU sta pensando...",
-  "power": "Potenza: {pct}%",
-  "youWin": "Hai vinto!",
-  "cpuWins": "Vince la CPU!"
+  "player2Cpu": "CPU",
+  "noThree": "THREE.JS NON E' CARICATO - BILIARDO NON DISPONIBILE",
+  "aimPrompt": "{player}: PRENDI LA MIRA",
+  "powerPrompt": "{player}: REGOLA LA POTENZA",
+  "englishPrompt": "{player}: REGOLA L'EFFETTO",
+  "liningUp": "{player} STA PRENDENDO LA MIRA...",
+  "potted": "IN BUCA: {count}",
+  "nothingDown": "NESSUNA BILIA IN BUCA",
+  "scratch": "FALLO - LA BILIA BIANCA TORNA SUL PUNTO",
+  "eightGood": "L'OTTO CADE - LA PARTITA E' FINITA",
+  "eightEarly": "L'OTTO E' CADUTO TROPPO PRESTO",
+  "victory": "VITTORIA!",
+  "defeat": "SCONFITTA",
+  "draw": "PAREGGIO",
+  "finalScore": "{player} {playerScore}   {opponent} {opponentScore}",
+  "pressAnyKey": "PREMI OK PER LASCIARE IL TAVOLO",
+  "hud": {
+    "title": "BILIARDO",
+    "power": "POTENZA",
+    "english": "EFFETTO",
+    "onTable": "IN GIOCO {count}"
+  }
 }

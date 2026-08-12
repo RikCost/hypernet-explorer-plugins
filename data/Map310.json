@@ -1392,18 +1392,6 @@
           },
           "list": [
             {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
-            {
               "code": 201,
               "indent": 0,
               "parameters": [
@@ -2034,18 +2022,6 @@
           },
           "list": [
             {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
-            {
               "code": 201,
               "indent": 0,
               "parameters": [
@@ -2372,13 +2348,71 @@
             "switch2Id": 1,
             "switch2Valid": false,
             "variableId": 85,
-            "variableValid": true,
+            "variableValid": false,
             "variableValue": 6
           },
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
+            "direction": 8,
+            "pattern": 1,
+            "characterIndex": 0
+          },
+          "list": [
+            {
+              "code": 117,
+              "indent": 0,
+              "parameters": [
+                130
+              ]
+            },
+            {
+              "code": 0,
+              "indent": 0,
+              "parameters": []
+            }
+          ],
+          "moveFrequency": 5,
+          "moveRoute": {
+            "list": [
+              {
+                "code": 0,
+                "parameters": []
+              }
+            ],
+            "repeat": true,
+            "skippable": false,
+            "wait": false
+          },
+          "moveSpeed": 3,
+          "moveType": 1,
+          "priorityType": 1,
+          "stepAnime": false,
+          "through": false,
+          "trigger": 0,
+          "walkAnime": true
+        },
+        {
+          "conditions": {
+            "actorId": 1,
+            "actorValid": false,
+            "itemId": 1,
+            "itemValid": false,
+            "selfSwitchCh": "A",
+            "selfSwitchValid": false,
+            "switch1Id": 1,
+            "switch1Valid": false,
+            "switch2Id": 1,
+            "switch2Valid": false,
+            "variableId": 131,
+            "variableValid": true,
+            "variableValue": 50
+          },
+          "directionFix": false,
+          "image": {
+            "tileId": 0,
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 8,
             "pattern": 1,
             "characterIndex": 0

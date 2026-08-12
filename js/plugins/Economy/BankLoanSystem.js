@@ -203,6 +203,11 @@
     // never knew about: the maturity term moves along with it.
     // Returns true when an overdue penalty was charged on the way.
     Game_System.prototype.syncBankDays = function () {
+        // No bank, no interest and no penalties in an empty world: the ledger
+        // is frozen wherever it stood rather than quietly compounding against
+        // a party who cannot reach a branch to settle it.
+        const WM = window.WorldManager;
+        if (WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld()) return false;
         const today = this.bankToday();
         if (!this._bankDaySynced) {
             this._bankDaySynced = true;
@@ -261,6 +266,15 @@
     // Inside the OS the bank is a desktop window; anywhere else it is a scene of
     // its own. Either way the ledger is brought up to date before it is read.
     function openBank() {
+        // A bank is other people: clerks, a board, somebody to owe. In an empty
+        // world there is nobody on the other side of the counter, so the branch
+        // never opens and no interest accrues on the way in.
+        // See WorldManager.populationMode.
+        const WM = window.WorldManager;
+        if (WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld()) {
+            if (window.ParchmentToast) window.ParchmentToast.show(T('BankLoan.ui.noOneLeft'));
+            return;
+        }
         notifyOverdue($gameSystem.syncBankDays());
         const inOS = window.HypernetOS && window.Scene_HypernetOS &&
             SceneManager._scene instanceof window.Scene_HypernetOS;
@@ -1032,8 +1046,7 @@
                     </div>
 
                     <!-- Footer Bar -->
-                    <div style="margin-top:4px; border-top:1px solid #7f9db9; padding-top:6px; display:flex; justify-content:space-between; align-items:center; color:#555; width:100%;">
-                        <span>${T('BankLoan.ui.navHint')}</span>
+                    <div style="margin-top:4px; border-top:1px solid #7f9db9; padding-top:6px; display:flex; justify-content:flex-end; align-items:center; color:#555; width:100%;">
                         <div class="back-button btn-stamp focusable" tabindex="0" id="bank-dismiss" data-bank-action="close" style="padding:2px 12px; cursor:pointer;">
                             ${T('BankLoan.ui.dismiss')}
                         </div>

@@ -36,14 +36,14 @@
     "stolenFrom": "Rubato a {target}"
   },
   "statNames": [
-    "PV max",
-    "PM max",
-    "Attacco",
-    "Difesa",
-    "Magia",
-    "Dif. magica",
-    "Agilità",
-    "Fortuna"
+    "HP",
+    "MP",
+    "FRZ",
+    "COS",
+    "INT",
+    "SAG",
+    "DES",
+    "PSI"
   ],
   "statFallback": "Statistica",
   "inInventory": "In inventario ({count})",

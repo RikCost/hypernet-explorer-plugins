@@ -27,6 +27,8 @@
  * - Rain: +30% growth speed.  Storm: +10%.  Snow: -50%.
  * - Greenhouse multiplier: x1.5.
  * - Out-of-season plants are dormant (no effective time accumulates).
+ * - A plant standing at 100% is harvested on the spot when the player
+ *   interacts with it: the growth menu only opens on a plot still growing.
  *
  * --- Procedural Map Fields (map 636) ---
  * Tilled soil generated on the procedural map is farmable. The first visit to a
@@ -48,11 +50,11 @@
  *
  * @command PlantMenu
  * @text Plant Menu
- * @desc Opens the plant interaction menu: Check / Harvest / Plant or Remove / Cancel.
+ * @desc Harvests a plant already at 100%, otherwise opens the plant interaction menu.
  *
  * @command CheckGrowth
  * @text Check Growth
- * @desc Opens the full plant management scene (Info panel + commands) for the calling event.
+ * @desc Harvests a plant already at 100%, otherwise opens the full plant management scene.
  *
  * @command PlantSeed
  * @text Plant Seed
@@ -662,6 +664,10 @@
     const eventId = ev ? ev.eventId() : 0;
     if (eventId) updateGrowth(PROC_MAP_ID, eventId);
     const rec = procGetTile(tileKey);
+    if (isRipe(rec)) {
+      harvestPlot(PROC_MAP_ID, eventId, tileKey, rec);
+      return;
+    }
     const args = { mapId: PROC_MAP_ID, eventId, tile: tileKey, rec };
     if (rec && !rec.removed && rec.plantId) {
       Scene_PlantMenu._openArgs = args;
@@ -703,6 +709,43 @@
     rec.lastUpdateMinutes = now;
     rec.stage = calcStage(rec.effectiveGrowthMinutes, def.growthDays);
     saveRecord(mapId, eventId, rec);
+  }
+
+  // A plot standing at 100% is simply picked: interacting with a ripe plant
+  // harvests it where it stands rather than opening the growth menu, which has
+  // nothing left to tell the player about it.
+  function isRipe(rec) {
+    if (!rec || rec.removed || !rec.plantId) return false;
+    const def = PLANT_DB[rec.plantId];
+    if (!def) return false;
+    return calcProgress(rec.effectiveGrowthMinutes, def.growthDays) >= 1.0;
+  }
+
+  // The same harvest Scene_PlantMenu performs, with no scene to pop: the plot
+  // pays out, is emptied and (procedurally) goes back to bare tilled soil.
+  function harvestPlot(mapId, eventId, tile, rec) {
+    const def = PLANT_DB[rec.plantId];
+    const item = def ? $dataItems[def.itemId] : null;
+    if (item) {
+      const qty = calcYield(def, rec.effectiveGrowthMinutes);
+      $gameParty.gainItem(item, qty);
+      trainFarming(2);
+      SoundManager.playShop();
+      window.skipLocalization = true;
+      $gameMessage.add(T('PlantGrowth.harvested', { icon: item.iconIndex, item: item.name, qty: qty }));
+      window.skipLocalization = false;
+      // The party's own record of what it did (Diary.js).
+      if (window.Diary) window.Diary.onHarvested(item.name);
+    }
+
+    rec.removed = true;
+    rec.plantId = null;
+    rec.stage = 0;
+    if (tile) procSaveTile(tile, rec);
+    else saveRecord(mapId, eventId, rec);
+    const ev = eventId ? $gameMap.event(eventId) : null;
+    if (ev) applySprite(ev, rec);
+    if (tile) procClearTile(tile, eventId);
   }
 
   function applySprite(event, rec) {
@@ -859,6 +902,10 @@
     updateGrowth(mapId, eventId);
     const rec = getRecord(mapId, eventId);
     const tile = procTileForEvent(mapId, eventId);
+    if (isRipe(rec)) {
+      harvestPlot(mapId, eventId, tile, rec);
+      return;
+    }
     if (rec && !rec.removed && rec.plantId) {
       Scene_PlantMenu._openArgs = { mapId, eventId, tile, rec };
       SceneManager.push(Scene_PlantMenu);
@@ -873,7 +920,12 @@
     const mapId = $gameMap.mapId();
     updateGrowth(mapId, eventId);
     const rec = getRecord(mapId, eventId);
-    Scene_PlantMenu._openArgs = { mapId, eventId, tile: procTileForEvent(mapId, eventId), rec };
+    const tile = procTileForEvent(mapId, eventId);
+    if (isRipe(rec)) {
+      harvestPlot(mapId, eventId, tile, rec);
+      return;
+    }
+    Scene_PlantMenu._openArgs = { mapId, eventId, tile, rec };
     SceneManager.push(Scene_PlantMenu);
   });
 
@@ -887,6 +939,7 @@
     if (procTileForEvent(mapId, eventId)) procFlush();
     const ev = $gameMap.event(eventId);
     if (ev) applySprite(ev, getRecord(mapId, eventId));
+    if (window.Diary) window.Diary.onSown(PLANT_DB[plantId].name || plantId);
   });
 
   PluginManager.registerCommand(pluginName, "HarvestPlant", function () {
@@ -904,6 +957,8 @@
       window.skipLocalization = true;
       $gameMessage.add(T('PlantGrowth.harvested', { icon: item.iconIndex, item: item.name, qty: qty }));
       window.skipLocalization = false;
+      // The party's own record of what it did (Diary.js).
+      if (window.Diary) window.Diary.onHarvested(item.name);
     }
     rec.removed = true;
     rec.plantId = null;
@@ -1124,6 +1179,8 @@
         window.skipLocalization = true;
         $gameMessage.add(T('PlantGrowth.harvested', { icon: item.iconIndex, item: item.name, qty: qty }));
         window.skipLocalization = false;
+        // The party's own record of what it did (Diary.js).
+        if (window.Diary) window.Diary.onHarvested(item.name);
       }
 
       rec.removed = true;
@@ -1526,6 +1583,7 @@
       window.skipLocalization = true;
       $gameMessage.add(T('PlantGrowth.planted', { plant: plantId }));
       window.skipLocalization = false;
+      if (window.Diary) window.Diary.onSown((PLANT_DB[plantId] || {}).name || plantId);
       this.popScene();
     }
 

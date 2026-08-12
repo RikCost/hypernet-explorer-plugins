@@ -7,7 +7,7 @@
   "draw": "PAREGGIO",
   "finalScore": "Giocatore 1: {player}   {opponent}: {opponentScore}",
   "frame": "FRAME {frame}/10  {bowler}",
-  "aimPrompt": "{bowler}: SX/DX MUOVI  SU/GIÙ ANGOLO  OK",
-  "powerPrompt": "{bowler}: OK PER FISSARE LA POTENZA",
-  "hookPrompt": "{bowler}: OK PER DARE L'EFFETTO"
+  "aimPrompt": "{bowler}: PRENDE LA MIRA",
+  "powerPrompt": "{bowler}: POTENZA",
+  "hookPrompt": "{bowler}: EFFETTO"
 }

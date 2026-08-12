@@ -1203,7 +1203,12 @@
           // Drawn debris belts ({ innerAu, outerAu, count, thickness, gapsAu }):
           // the asteroid and Kuiper belts (see Scene3DBodies.buildSystem).
           belts: systemData.belts || null,
-          hardcoded: true,
+          // A system authored inside ANOTHER galaxy names it here (a key of
+          // LocalGroupGalaxies.json). Its `position` is then read as a position
+          // in that galaxy's own disk, not in the Milky Way, and it is
+          // registered under that galaxy's naming convention below.
+          galaxy: systemData.galaxy || null,
+          hardcoded: !systemData.galaxy,
           planets: [],
         };
 
@@ -1228,6 +1233,9 @@
               // Hand-authored landing spots ({ name, mapId, x, y }): a planet with
               // any gets a star marker and a location list in its orbit panel.
               landingLocations: planet.landingLocations || null,
+              // Authored life, read by GalaxySim.planetHasLife instead of the
+              // seeded 10% roll: some worlds are inhabited because they are.
+              life: planet.life === true ? true : undefined,
               // Flavour + special-body flags carried straight from the data:
               //   note        one paragraph shown on the selection panel
               //   artificial  built, not formed: "probe" | "teapot" |
@@ -1270,11 +1278,19 @@
           });
         }
 
-        this.systems.set(systemData.name, system);
-        this.hardcodedSystems.add(systemData.name);
+        if (system.galaxy) {
+          this._registerFarSystem(system);
+        } else {
+          this.systems.set(systemData.name, system);
+          this.hardcodedSystems.add(systemData.name);
+        }
       });
 
       this.generateFamousNebulaSystems();
+
+      // The table has just been rebuilt from the file, so whatever the
+      // calendar had written over it is gone with it (see _syncTimeline).
+      this._nibiruKey = null;
 
       console.log(`Loaded ${this.systems.size} hardcoded star systems from GalaxyData`);
     }
@@ -1865,6 +1881,59 @@
     }
 
     // ------------------------------------------------------------------------
+    // Hand-authored systems that belong to ANOTHER galaxy (Titania, out in
+    // Andromeda). A procedural galaxy names its systems "GX.<seed>.<i>", so one
+    // of these takes a name of the same shape ("GX.<seed>.H<key>") and is
+    // appended to that galaxy's own system list by generateGalaxySystems: from
+    // there the whole star map (picking, travel, save-restore, zooming out to
+    // the right galaxy) treats it as a native of that galaxy with no special
+    // cases, which is exactly what PatreonRewards does for a patron world.
+    //
+    // The seed a galaxy is drawn from is FNV-1a of its name, the same hash the
+    // 3D cosmos module uses; it is mirrored here rather than called, because
+    // the systems are registered while the data loads and that module may not
+    // have loaded yet.
+    // ------------------------------------------------------------------------
+    _galaxySeedFromName(name) {
+      const cosmos = window.GalaxySim && window.GalaxySim.Scene3DCosmos;
+      if (cosmos && typeof cosmos.galaxySeedFromName === "function") {
+        return cosmos.galaxySeedFromName(name);
+      }
+      let h = 2166136261 >>> 0;
+      const s = String(name || "galaxy");
+      for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619) >>> 0;
+      }
+      return h >>> 0;
+    }
+
+    _registerFarSystem(system) {
+      if (!this._farSystems) this._farSystems = [];
+      const seed = this._galaxySeedFromName(system.galaxy);
+      // The name the rest of the sim knows it by. The readable one is kept as
+      // `label`, which every panel already prefers over `name`.
+      system.label = system.label || system.name;
+      system.galaxySeed = seed;
+      system.farHardcoded = true;
+      system.name = "GX." + seed + ".H" + system.label.replace(/[^A-Za-z0-9]/g, "");
+      this.systems.set(system.name, system);
+      // loadSystems runs again on demand, so the registry is replaced by name
+      // rather than appended to: the catalog must not list Titania twice.
+      const at = this._farSystems.findIndex((s) => s.name === system.name);
+      if (at >= 0) this._farSystems[at] = system;
+      else this._farSystems.push(system);
+      return system;
+    }
+
+    // Every authored far system, for the catalog. Cheap: they are built once
+    // with the rest of the hardcoded table and never regenerated.
+    farSystems() {
+      if (this.systems.size === 0) this.loadSystems();
+      return (this._farSystems || []).slice();
+    }
+
+    // ------------------------------------------------------------------------
     // Procedural (non-Milky-Way) galaxy interiors: a real, travelable set of
     // star systems for whatever named galaxy the player flies into, so the
     // same target/travel/SB-Bridge machinery that drives the Milky Way works
@@ -1898,6 +1967,10 @@
         list.push(sys);
         this.systems.set(name, sys);
       }
+      for (const far of (this._farSystems || [])) {
+        if (far.galaxySeed !== seed) continue;
+        if (!list.some((s) => s && s.name === far.name)) list.push(far);
+      }
       this._galaxySystemsCache.set(key, list);
       return list;
     }
@@ -1909,6 +1982,9 @@
       if (parts.length < 3 || parts[0] !== "GX") return null;
       const seed = parseInt(parts[1], 10);
       if (!Number.isFinite(seed)) return null;
+      // An authored far system is registered by loadSystems, not generated, so
+      // it is already there and its galaxy need not be built to find it.
+      if (this.systems.has(name)) return this.systems.get(name);
       this.generateGalaxySystems(seed);
       return this.systems.get(name) || null;
     }
@@ -1981,8 +2057,19 @@
       return Math.pow(M, 3.5) * Math.pow(R, 2) * 0.001;
     }
 
+    // The registry is not static: the calendar rewrites part of it (Nibiru's
+    // approach, and what it leaves behind in 2012). Reconciling here means
+    // every reader - the star map, the catalog, travel, the ship - sees the
+    // same table without any of them knowing about it. Cheap: the module
+    // compares a state key and returns at once when nothing has moved.
+    _syncTimeline() {
+      const N = window.GalaxySim && window.GalaxySim.Nibiru;
+      if (N && N.sync) N.sync(this);
+    }
+
     getSystem(name) {
       if (this.systems.size === 0) this.loadSystems();
+      this._syncTimeline();
       const s = this.systems.get(name);
       if (s) return s;
       // Lazy systems aren't in the map until visited; regenerate on demand so
@@ -2004,6 +2091,7 @@
 
     getAllSystems() {
       if (this.systems.size === 0) this.loadSystems();
+      this._syncTimeline();
       return Array.from(this.systems.values());
     }
 

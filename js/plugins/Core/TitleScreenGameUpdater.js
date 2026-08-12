@@ -89,6 +89,16 @@
  * left alone, and so is everything under save/. Going back to an older build
  * therefore leaves behind any file that build never had.
  *
+ * Major updates
+ *   A build whose commit message says "major update" anywhere, in its name or
+ *   in the notes under it, is one this patching cannot fully carry. It is still
+ *   installed the ordinary way, but the build list marks it, the build dossier
+ *   says so and the title screen says so, all of them asking for the whole game
+ *   to be downloaded again for full compatibility. The warning covers every
+ *   build a switch crosses, not only the one being installed, and once a copy
+ *   has taken one it keeps saying so (save/updater/state.json) until the player
+ *   confirms on the updater screen that they have downloaded the game again.
+ *
  * The build number and the build name
  *   Whichever build is installed is also a number: how many commits on the
  *   branch came after the origin commit (the baseCommit parameter). It is read
@@ -180,6 +190,23 @@
     function messageBody(message) {
         return String(message || '').split('\n').slice(1).join('\n').trim();
     }
+
+    // A build that says "major update" anywhere in its commit message is one
+    // the file patch cannot fully carry: assets outside the repository, a
+    // renamed or deleted file (nothing is ever deleted here) or an engine
+    // change can leave a patched copy half on the old build. It is still
+    // installed the ordinary way, but every screen that offers it says the
+    // whole game should be downloaded again for full compatibility.
+    const MAJOR_PATTERN = /major\s*[-_]?\s*update/i;
+    function isMajorMessage(text) {
+        return MAJOR_PATTERN.test(String(text || ''));
+    }
+    // Read over the whole message, title and changelog alike, so a build that
+    // only mentions it in the notes under its name still counts.
+    function isMajorCommit(commit) {
+        return !!commit && (isMajorMessage(commit.message) || isMajorMessage(commit.body));
+    }
+
     function formatBytes(bytes) {
         const b = Number(bytes) || 0;
         if (b < 1024) return b + ' B';
@@ -432,6 +459,8 @@
         downloadsEnabled: () => DOWNLOADS_ENABLED,
         branch: BRANCH,
         baseCommit: BASE_COMMIT,
+        isMajorMessage,
+        isMajorCommit,
 
         state() {
             if (!this._state) {
@@ -461,6 +490,72 @@
         },
         installedInfo() {
             return this.state().installed;
+        },
+
+        // ---------------------------------------------------------------------
+        // Major updates, the builds a file patch cannot fully carry
+        // ---------------------------------------------------------------------
+
+        // Whether a build declares itself a major update. One listed in the
+        // history is read there; one only ever compared carries the same text
+        // on its plan.
+        isMajorBuild(sha) {
+            if (!sha) return false;
+            return isMajorCommit(this.commitInfo(sha) || this._plans[sha]);
+        },
+
+        // The newest build declaring a major update among the ones switching to
+        // `sha` would cross: everything between the build this copy runs and the
+        // one being offered, that one included. Going backwards counts the same,
+        // since leaving a major build behind puts the copy just as far out of
+        // step as arriving on one.
+        //
+        // A copy that has never updated cannot say which build it is on, only
+        // that it is somewhere at or below the one being offered, so it is read
+        // against the offered build and every build older than it that is
+        // listed. That errs toward warning, which is the right way round: a copy
+        // whose files already match has nothing to install and is never asked
+        // this question, so the only copies it can over-warn are ones that are
+        // genuinely behind.
+        majorAhead(sha) {
+            if (!sha) return null;
+            const list = this._commits;
+            const target = list.findIndex(c => c.sha === sha);
+            if (target < 0) {
+                const lone = this.commitInfo(sha) || this._plans[sha];
+                return isMajorCommit(lone) ? lone : null;
+            }
+            const info = this.installedInfo();
+            const from = info ? list.findIndex(c => c.sha === info.sha) : -1;
+            const lo = from < 0 ? target : Math.min(target, from);
+            const hi = from < 0 ? list.length - 1 : Math.max(target, from);
+            for (let i = lo; i <= hi; i++) {
+                if (i === from) continue;   // the build already running is not crossed
+                if (isMajorCommit(list[i])) return list[i];
+            }
+            return null;
+        },
+
+        // Whether this copy reached the build it runs through a major update and
+        // has not been downloaded whole since. Sticky on purpose: patching more
+        // files on top does not make the copy whole, so the notice stands until
+        // the player says they have downloaded the game again.
+        majorInstalled() {
+            const info = this.installedInfo();
+            return !!(info && info.major);
+        },
+        majorInstalledName() {
+            const info = this.installedInfo();
+            return (info && info.majorName) ? String(info.majorName) : null;
+        },
+        clearMajorNotice() {
+            const info = this.installedInfo();
+            if (!info || !info.major) return false;
+            info.major = false;
+            info.majorName = null;
+            this.saveState();
+            if (this._auto) this._auto.majorInstalled = false;
+            return true;
         },
 
         // ---------------------------------------------------------------------
@@ -576,17 +671,25 @@
         },
 
         // The one place the installed build is recorded, so its number is always
-        // filled in from whatever the cache already knows.
-        _markInstalled(sha, date, name) {
+        // filled in from whatever the cache already knows. `major` is the build
+        // whose major update this install crossed, when it crossed one.
+        _markInstalled(sha, date, name, major) {
             const st = this.state();
             const known = this.commitInfo(sha);
+            const prev = st.installed;
+            // A copy that has already crossed a major update stays flagged until
+            // it is downloaded whole, so later patches never clear it.
+            const carried = !!(prev && prev.major);
             st.installed = {
                 sha: sha,
                 date: date || null,
                 at: Date.now(),
                 build: this.knownBuildNumber(sha),
                 // The commit message names the build on the version badge.
-                name: name || (known ? known.message : null) || null
+                name: name || (known ? known.message : null) || null,
+                major: !!major || carried,
+                majorName: major ? (major.message || null)
+                    : (carried && prev.majorName ? prev.majorName : null)
             };
             this.saveState();
         },
@@ -632,7 +735,9 @@
                 this._auto = {
                     ran: true, available: false, latest: null, latestDate: null,
                     latestBuild: null, latestName: null, build: this.buildNumber(),
-                    files: 0, bytes: 0, error: null
+                    files: 0, bytes: 0, error: null,
+                    major: false, majorName: null,
+                    majorInstalled: this.majorInstalled()
                 };
                 return this._auto;
             }
@@ -658,6 +763,11 @@
                 console.warn(PLUGIN_NAME + ': could not resolve the build number', e);
             }
 
+            // A major update anywhere between here and the newest build is the
+            // one thing the notice has to say beyond its size, since taking it
+            // means downloading the whole game again afterwards.
+            const major = (plan && plan.changed.length) ? this.majorAhead(latest.sha) : null;
+
             this._auto = {
                 ran: true,
                 available: !!(plan && plan.changed.length),
@@ -670,7 +780,12 @@
                 build: this.buildNumber(),
                 files: plan ? plan.changed.length : 0,
                 bytes: plan ? plan.bytes : 0,
-                error: null
+                error: null,
+                // The update waiting is (or crosses) a major one.
+                major: !!major,
+                majorName: major ? (major.message || null) : null,
+                // This copy already took one and has not been downloaded whole.
+                majorInstalled: this.majorInstalled()
             };
             return this._auto;
         },
@@ -911,6 +1026,10 @@
             }
             if (!plan || !plan.changed.length) return null;
 
+            // What this switch crosses has to be read while the installed record
+            // still names the build being left behind.
+            const majorCrossed = this.majorAhead(plan.sha);
+
             this._busy = true;
             this._cancelled = false;
             try {
@@ -994,7 +1113,7 @@
                 rmrf(TMP_DIR);
                 this.pruneBackups();
 
-                this._markInstalled(plan.sha, plan.date, plan.message);
+                this._markInstalled(plan.sha, plan.date, plan.message, majorCrossed);
                 // The badge is numbered from the state file, so the build just
                 // installed is numbered now rather than on the next launch.
                 try {
@@ -1002,10 +1121,13 @@
                 } catch (e) {
                     console.warn(PLUGIN_NAME + ': could not resolve the build number', e);
                 }
-                // A build that is now the one running is no longer an update.
+                // A build that is now the one running is no longer an update,
+                // but a major one it crossed is still owed a full download.
                 if (this._auto) {
                     this._auto.available = false;
                     this._auto.build = this.buildNumber();
+                    this._auto.major = false;
+                    this._auto.majorInstalled = this.majorInstalled();
                 }
 
                 // Every other plan was measured against the files we just
@@ -1020,6 +1142,7 @@
                     report({ phase: 'apply', text: fmt(T.logBackup, 'save/updater/backup/' + stamp) });
                 }
                 report({ phase: 'done', text: T.logDone, ratio: 1 });
+                if (majorCrossed) report({ phase: 'done', text: T.logMajor, ratio: 1 });
                 return plan;
             } finally {
                 this._busy = false;
@@ -1288,6 +1411,11 @@
                 return list;
             }
             if (!isAvailable()) return list;
+            // Offered before the build list is even read, since it is the answer
+            // to a notice that stands whatever the branch holds.
+            if (GameUpdater.majorInstalled()) {
+                list.push({ key: 'majorDone', label: T.actMajorDone });
+            }
             if (!GameUpdater.commits().length) {
                 list.push({ key: 'history', label: T.actHistory });
                 return list;
@@ -1401,6 +1529,17 @@
             if (key === 'restart') {
                 SoundManager.playOk();
                 GameUpdater.restart();
+                return;
+            }
+            // The player says they have downloaded the game again, which is the
+            // only thing that answers a major update.
+            if (key === 'majorDone') {
+                SoundManager.playOk();
+                GameUpdater.clearMajorNotice();
+                this._pushLog(T.logMajorCleared);
+                // The button it was pressed on has just left the list.
+                this._actionIndex = 0;
+                this._refreshDOM();
                 return;
             }
             if (!commit) {
@@ -1585,11 +1724,15 @@
             return commits.map((commit, i) => {
                 const tag = GameUpdater.isInstalled(commit.sha) ? T.tagInstalled
                     : (i === 0 ? T.tagLatest : '');
+                // A major build wears its own mark, beside whichever of the two
+                // above it already carries.
+                const major = isMajorCommit(commit);
                 return `
                     <div class="gu-build" data-idx="${i}">
                         <div class="gu-build-head">
                             <span class="gu-build-sha">${esc(shortSha(commit.sha))}</span>
                             <span class="gu-build-date">${esc(formatDate(commit.date) || T.unknown)}</span>
+                            ${major ? `<span class="gu-build-tag gu-build-tag--major">${esc(T.tagMajor)}</span>` : ''}
                             ${tag ? `<span class="gu-build-tag">${esc(tag)}</span>` : ''}
                         </div>
                         <div class="gu-build-message">${esc(commit.message || T.unknown)}</div>
@@ -1685,16 +1828,47 @@
                 ${rest > 0 ? `<div class="gu-file-more">${fmt(T.andMore, rest)}</div>` : ''}`;
         }
 
+        // Why the whole game has to be downloaded again: either the selected
+        // build is a major update (or switching to it crosses one), or this copy
+        // already took one and has not been downloaded whole since.
+        _majorNote(T) {
+            const commit = this._selectedBuild();
+            const crossed = commit ? GameUpdater.majorAhead(commit.sha) : null;
+            if (crossed) {
+                return fmt(T.majorNote, crossed.message || shortSha(crossed.sha));
+            }
+            if (GameUpdater.majorInstalled()) {
+                const info = GameUpdater.installedInfo();
+                return fmt(T.majorInstalledNote,
+                    GameUpdater.majorInstalledName() || shortSha(info && info.sha) || T.unknown);
+            }
+            return '';
+        }
+
+        // Up to two lines: the major-update warning, which outranks everything
+        // else because it is the one the player has to act on outside the game,
+        // and whatever the state of the screen itself has to say.
         _noteState(T) {
             const commit = this._selectedBuild();
             const plan = commit ? GameUpdater.plan(commit.sha) : null;
             const position = commit ? GameUpdater.indexOf(commit.sha) : -1;
-            if (!isAvailable())            return { text: T.noNode, bad: true };
-            if (!DOWNLOADS_ENABLED)        return { text: T.downloadsOff, bad: false };
-            if (GameUpdater.needsRestart()) return { text: T.restartNote, bad: false };
+            const line = (text, cls) => `<div class="${cls}">${esc(text)}</div>`;
+            const major = this._majorNote(T);
+
+            let text = '';
+            let bad = false;
+            if (!isAvailable())                  { text = T.noNode; bad = true; }
+            else if (!DOWNLOADS_ENABLED)         { text = T.downloadsOff; }
+            else if (GameUpdater.needsRestart()) { text = T.restartNote; }
             // Installing an older build walks the game backwards; say so plainly.
-            if (position > 0 && plan && plan.changed.length) return { text: esc(T.olderNote), bad: false };
-            return { text: '', bad: false };
+            else if (position > 0 && plan && plan.changed.length) { text = T.olderNote; }
+
+            return {
+                text: (major ? line(major, 'gu-note-line gu-note-line--major') : '') +
+                      (text ? line(text, 'gu-note-line') : ''),
+                bad: bad,
+                major: !!major
+            };
         }
 
         _renderInspect(T) {
@@ -1711,6 +1885,7 @@
             if (this._dom.note) {
                 this._dom.note.style.display = note.text ? '' : 'none';
                 this._dom.note.classList.toggle('gu-note--bad', !!note.bad);
+                this._dom.note.classList.toggle('gu-note--major', !!note.major);
             }
 
             const changelog = this._changelogHTML(T);
@@ -1853,7 +2028,14 @@
     // =========================================================================
     // Title screen entry, inserted just above EXIT
     // =========================================================================
-    if (isAvailable()) {
+    // The whole block is optional: with no local file system there is nothing to
+    // update, and this plugin then adds no command, no handler and no scene to
+    // the title screen at all. Disabling it in plugins.js has the same effect,
+    // since everything the title screen borrows from here is read through
+    // window.GameUpdater and guarded on the other side.
+    if (isAvailable() && typeof Window_TitleCommand !== 'undefined' &&
+        typeof Scene_Title !== 'undefined') {
+
         const _makeCommandList = Window_TitleCommand.prototype.makeCommandList;
         Window_TitleCommand.prototype.makeCommandList = function () {
             _makeCommandList.call(this);
@@ -1863,22 +2045,21 @@
             else this._list.push(entry);
         };
 
-        const _createCommandWindow = Scene_Title.prototype.createCommandWindow;
-        Scene_Title.prototype.createCommandWindow = function () {
-            _createCommandWindow.call(this);
-            this._commandWindow.setHandler('gameUpdater', this.commandGameUpdater.bind(this));
-        };
-
-        Scene_Title.prototype.commandGameUpdater = function () {
-            SceneManager.push(Scene_GameUpdater);
-        };
-
-        // The title screen draws its own DOM list from getTitleCommandText and
-        // maps the clicked index straight onto the command window, so the entry
-        // has to be spliced into that list at the very same place.
-        if (Scene_Title.prototype.getTitleCommandText) {
-            const _getTitleCommandText = Scene_Title.prototype.getTitleCommandText;
-            Scene_Title.prototype.getTitleCommandText = function () {
+        // Titlescreen.js draws its own DOM list from getTitleCommandText and maps
+        // the clicked index straight onto the command window, so the entry has to
+        // be spliced into BOTH lists at the very same place or a click fires the
+        // wrong handler. Whether that method exists yet depends on the order the
+        // two plugins are listed in, so the patch is installed when the title
+        // screen is built rather than when this file is read. A build with no
+        // such overlay (Titlescreen turned off) simply has one list to patch.
+        let overlayPatched = false;
+        const patchOverlayList = function () {
+            if (overlayPatched) return;
+            const proto = Scene_Title.prototype;
+            if (typeof proto.getTitleCommandText !== 'function') return;
+            overlayPatched = true;
+            const _getTitleCommandText = proto.getTitleCommandText;
+            proto.getTitleCommandText = function () {
                 const commands = _getTitleCommandText.call(this);
                 const at = commands.findIndex(c => c.symbol === 'exitGame');
                 const entry = { text: getT().menu, symbol: 'gameUpdater' };
@@ -1886,6 +2067,17 @@
                 else commands.push(entry);
                 return commands;
             };
-        }
+        };
+
+        const _createCommandWindow = Scene_Title.prototype.createCommandWindow;
+        Scene_Title.prototype.createCommandWindow = function () {
+            patchOverlayList();
+            _createCommandWindow.call(this);
+            this._commandWindow.setHandler('gameUpdater', this.commandGameUpdater.bind(this));
+        };
+
+        Scene_Title.prototype.commandGameUpdater = function () {
+            SceneManager.push(Scene_GameUpdater);
+        };
     }
 })();

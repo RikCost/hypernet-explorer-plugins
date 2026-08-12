@@ -2,7 +2,10 @@
   "_comment": "Conversational social interactions for NPCEmpathize. Each interaction: tone (positive|neutral|negative), baseDelta (opinion change before sincerity decay), player[] lines said by the player, responseGood[] when sincere/accepted, responseBad[] when insincere (positives repeated too often) or hostile (negatives). {name} = NPC name. Jokes are generated from the grammar in `jokes`.",
   "interactions": [
     {
-      "id": "praise", "label": "Praise", "label_it": "Elogia", "tone": "positive", "baseDelta": 8,
+      "id": "praise",
+      "label": "Praise",
+      "tone": "positive",
+      "baseDelta": 8,
       "player": [
         "You handled that better than anyone I know, {name}.",
         "Honestly, {name}, you're one of the sharpest people here.",
@@ -27,7 +30,10 @@
       ]
     },
     {
-      "id": "compliment", "label": "Compliment", "label_it": "Complimenta", "tone": "positive", "baseDelta": 7,
+      "id": "compliment",
+      "label": "Compliment",
+      "tone": "positive",
+      "baseDelta": 7,
       "player": [
         "That's a good look on you, {name}.",
         "You've got great taste, {name}.",
@@ -52,7 +58,10 @@
       ]
     },
     {
-      "id": "encourage", "label": "Encourage", "label_it": "Incoraggia", "tone": "positive", "baseDelta": 6,
+      "id": "encourage",
+      "label": "Encourage",
+      "tone": "positive",
+      "baseDelta": 6,
       "player": [
         "Don't give up, {name}. You've got this.",
         "Whatever you're facing, {name}, you can handle it.",
@@ -77,7 +86,10 @@
       ]
     },
     {
-      "id": "flatter", "label": "Flatter", "label_it": "Aduala", "tone": "positive", "baseDelta": 5,
+      "id": "flatter",
+      "label": "Flatter",
+      "tone": "positive",
+      "baseDelta": 5,
       "player": [
         "Surely someone as clever as you already knows this, {name}.",
         "A person of your standing deserves the best, {name}.",
@@ -102,7 +114,10 @@
       ]
     },
     {
-      "id": "thank", "label": "Thank", "label_it": "Ringrazia", "tone": "positive", "baseDelta": 5,
+      "id": "thank",
+      "label": "Thank",
+      "tone": "positive",
+      "baseDelta": 5,
       "player": [
         "Thank you for everything, {name}.",
         "I owe you one, {name}. Really.",
@@ -127,7 +142,10 @@
       ]
     },
     {
-      "id": "smalltalk", "label": "Small Talk", "label_it": "Chiacchiere", "tone": "neutral", "baseDelta": 2,
+      "id": "smalltalk",
+      "label": "Small Talk",
+      "tone": "neutral",
+      "baseDelta": 2,
       "player": [
         "Busy day, {name}?",
         "How are things around here, {name}?",
@@ -152,7 +170,10 @@
       ]
     },
     {
-      "id": "gossip", "label": "Gossip", "label_it": "Pettegolezzo", "tone": "neutral", "baseDelta": 2,
+      "id": "gossip",
+      "label": "Gossip",
+      "tone": "neutral",
+      "baseDelta": 2,
       "player": [
         "Heard anything interesting lately, {name}?",
         "People have been talking, {name}. Have you heard?",
@@ -177,7 +198,10 @@
       ]
     },
     {
-      "id": "weather", "label": "Comment on Weather", "label_it": "Commenta il Tempo", "tone": "neutral", "baseDelta": 1,
+      "id": "weather",
+      "label": "Comment on Weather",
+      "tone": "neutral",
+      "baseDelta": 1,
       "player": [
         "Strange weather we're having, {name}.",
         "Bit of a chill in the air today, {name}.",
@@ -202,7 +226,10 @@
       ]
     },
     {
-      "id": "insult", "label": "Insult", "label_it": "Insulta", "tone": "negative", "baseDelta": -10,
+      "id": "insult",
+      "label": "Insult",
+      "tone": "negative",
+      "baseDelta": -10,
       "player": [
         "You're a waste of space, {name}.",
         "Honestly, {name}, you're pathetic.",
@@ -227,7 +254,10 @@
       ]
     },
     {
-      "id": "mock", "label": "Mock", "label_it": "Deride", "tone": "negative", "baseDelta": -8,
+      "id": "mock",
+      "label": "Mock",
+      "tone": "negative",
+      "baseDelta": -8,
       "player": [
         "Nice work, {name}. Did you practice failing?",
         "Oh, brilliant plan, {name}. Truly inspired.",
@@ -252,7 +282,10 @@
       ]
     },
     {
-      "id": "criticize", "label": "Criticize", "label_it": "Critica", "tone": "negative", "baseDelta": -6,
+      "id": "criticize",
+      "label": "Criticize",
+      "tone": "negative",
+      "baseDelta": -6,
       "player": [
         "You could have done that far better, {name}.",
         "That was sloppy work, {name}.",
@@ -277,7 +310,10 @@
       ]
     },
     {
-      "id": "threaten", "label": "Threaten", "label_it": "Minaccia", "tone": "negative", "baseDelta": -12,
+      "id": "threaten",
+      "label": "Threaten",
+      "tone": "negative",
+      "baseDelta": -12,
       "player": [
         "Cross me and you'll regret it, {name}.",
         "You don't want me as an enemy, {name}.",
@@ -304,7 +340,8 @@
   ],
   "performances": {
     "story": {
-      "label": "Tell a Story", "label_it": "Racconta una Storia", "base": 6,
+      "label": "Tell a Story",
+      "base": 6,
       "player": [
         "You settle in and spin a long tale about {subject}.",
         "You tell {name} a winding story about {subject}.",
@@ -328,7 +365,8 @@
       ]
     },
     "poem": {
-      "label": "Recite a Poem", "label_it": "Recita una Poesia", "base": 5,
+      "label": "Recite a Poem",
+      "base": 5,
       "player": [
         "You clear your throat and recite a verse about {subject}.",
         "You offer {name} a short poem on {subject}.",
@@ -384,19 +422,92 @@
       "I told my {noun} a secret, and now the whole {place} knows. Very {adj} of it.",
       "They say the {place} is haunted by a {adj} {noun}. I say it just needs a {profession}."
     ],
-    "noun": ["goblin", "turnip", "wizard", "goat", "toaster", "ghost", "banker", "cabbage", "dragon", "sock", "kettle", "gargoyle", "pigeon", "barrel", "mushroom", "skeleton"],
-    "noun2": ["disaster", "legend", "swindle", "miracle", "catastrophe", "bargain", "riddle", "menace", "masterpiece"],
-    "verb": ["cross the road", "join the army", "quit its job", "go to therapy", "run for mayor", "learn the lute", "start a cult", "buy a boat"],
-    "adj": ["haunted", "overcooked", "suspicious", "bankrupt", "enchanted", "damp", "unhinged", "sentient", "flammable", "aristocratic", "cursed", "lukewarm", "radioactive"],
-    "profession": ["tax collector", "alchemist", "undertaker", "bard", "plumber", "necromancer", "fishmonger", "philosopher", "blacksmith"],
-    "place": ["tavern", "cathedral", "sewer", "council chamber", "morgue", "market", "swamp", "opera house"]
+    "noun": [
+      "goblin",
+      "turnip",
+      "wizard",
+      "goat",
+      "toaster",
+      "ghost",
+      "banker",
+      "cabbage",
+      "dragon",
+      "sock",
+      "kettle",
+      "gargoyle",
+      "pigeon",
+      "barrel",
+      "mushroom",
+      "skeleton"
+    ],
+    "noun2": [
+      "disaster",
+      "legend",
+      "swindle",
+      "miracle",
+      "catastrophe",
+      "bargain",
+      "riddle",
+      "menace",
+      "masterpiece"
+    ],
+    "verb": [
+      "cross the road",
+      "join the army",
+      "quit its job",
+      "go to therapy",
+      "run for mayor",
+      "learn the lute",
+      "start a cult",
+      "buy a boat"
+    ],
+    "adj": [
+      "haunted",
+      "overcooked",
+      "suspicious",
+      "bankrupt",
+      "enchanted",
+      "damp",
+      "unhinged",
+      "sentient",
+      "flammable",
+      "aristocratic",
+      "cursed",
+      "lukewarm",
+      "radioactive"
+    ],
+    "profession": [
+      "tax collector",
+      "alchemist",
+      "undertaker",
+      "bard",
+      "plumber",
+      "necromancer",
+      "fishmonger",
+      "philosopher",
+      "blacksmith"
+    ],
+    "place": [
+      "tavern",
+      "cathedral",
+      "sewer",
+      "council chamber",
+      "morgue",
+      "market",
+      "swamp",
+      "opera house"
+    ]
   },
   "romance": {
     "_comment": "Romance moves for the NPCEmpathize chat panel: higher risk and higher reward than the plain social interactions. `tier` (1-5) is how bold the move is and lowers the shown success chance; `physical` moves are refused by asexual NPCs; successDelta / failDelta are the reputation swings applied to the focused party member. Odds and compatibility are computed in NPCEmpathizeUI.js. Courting never starts an actual relationship, it only moves reputation. {name} = NPC name.",
     "actions": [
       {
-        "id": "flirt", "label": "Flirt", "label_it": "Flirta", "tier": 1, "physical": false,
-        "successDelta": 12, "failDelta": -9,
+        "id": "flirt",
+        "label": "Flirt",
+        "tier": 1,
+        "physical": false,
+        "successDelta": 12,
+        "failDelta": -9,
         "player": [
           "So, {name}, does anyone around here ever manage to keep up with you?",
           "You lean in a little. \"I was hoping you'd be here, {name}.\"",
@@ -417,8 +528,12 @@
         ]
       },
       {
-        "id": "admire", "label": "Admire Them", "label_it": "Ammira", "tier": 1, "physical": false,
-        "successDelta": 14, "failDelta": -10,
+        "id": "admire",
+        "label": "Admire Them",
+        "tier": 1,
+        "physical": false,
+        "successDelta": 14,
+        "failDelta": -10,
         "player": [
           "\"Whoever told you that suits you was right, {name}.\"",
           "You catch yourself staring. \"Sorry. You're just, hard to look away from.\"",
@@ -439,8 +554,12 @@
         ]
       },
       {
-        "id": "loveLetter", "label": "Slip a Love Letter", "label_it": "Consegna una Lettera d'Amore", "tier": 2, "physical": false,
-        "successDelta": 18, "failDelta": -14,
+        "id": "loveLetter",
+        "label": "Slip a Love Letter",
+        "tier": 2,
+        "physical": false,
+        "successDelta": 18,
+        "failDelta": -14,
         "player": [
           "You press a folded letter into {name}'s hand and step back before you can regret it.",
           "\"Don't read it here,\" you say, handing {name} a sealed note.",
@@ -461,8 +580,12 @@
         ]
       },
       {
-        "id": "serenade", "label": "Serenade Them", "label_it": "Fai una Serenata", "tier": 2, "physical": false,
-        "successDelta": 20, "failDelta": -16,
+        "id": "serenade",
+        "label": "Serenade Them",
+        "tier": 2,
+        "physical": false,
+        "successDelta": 20,
+        "failDelta": -16,
         "player": [
           "You take a breath and sing to {name}, badly, and entirely on purpose.",
           "You start a song under {name}'s window, and commit to the whole verse.",
@@ -483,8 +606,12 @@
         ]
       },
       {
-        "id": "askDance", "label": "Ask for a Dance", "label_it": "Invita a Ballare", "tier": 3, "physical": true,
-        "successDelta": 22, "failDelta": -18,
+        "id": "askDance",
+        "label": "Ask for a Dance",
+        "tier": 3,
+        "physical": true,
+        "successDelta": 22,
+        "failDelta": -18,
         "player": [
           "You offer {name} your hand. \"One dance. Nobody has to know why.\"",
           "\"Dance with me, {name}. I'll lead badly, but I'll lead.\"",
@@ -505,8 +632,12 @@
         ]
       },
       {
-        "id": "holdHands", "label": "Take Their Hand", "label_it": "Prendi la Mano", "tier": 3, "physical": true,
-        "successDelta": 24, "failDelta": -20,
+        "id": "holdHands",
+        "label": "Take Their Hand",
+        "tier": 3,
+        "physical": true,
+        "successDelta": 24,
+        "failDelta": -20,
         "player": [
           "You reach out and take {name}'s hand, slowly enough that they could pull away.",
           "Your fingers find {name}'s, and you leave them there.",
@@ -527,8 +658,12 @@
         ]
       },
       {
-        "id": "askOut", "label": "Ask Them Out", "label_it": "Chiedi un Appuntamento", "tier": 4, "physical": false,
-        "successDelta": 28, "failDelta": -24,
+        "id": "askOut",
+        "label": "Ask Them Out",
+        "tier": 4,
+        "physical": false,
+        "successDelta": 28,
+        "failDelta": -24,
         "player": [
           "\"Come out with me, {name}. Somewhere loud, or somewhere quiet, your call.\"",
           "\"One evening,\" you say. \"You and me, {name}, and nothing else on the schedule.\"",
@@ -549,8 +684,12 @@
         ]
       },
       {
-        "id": "confess", "label": "Confess Your Feelings", "label_it": "Dichiarati", "tier": 5, "physical": false,
-        "successDelta": 32, "failDelta": -30,
+        "id": "confess",
+        "label": "Confess Your Feelings",
+        "tier": 5,
+        "physical": false,
+        "successDelta": 32,
+        "failDelta": -30,
         "player": [
           "\"I'm in love with you, {name}. I've been carrying it around for a while.\"",
           "\"I need to say this once, out loud, and then you can do what you like with it. I love you, {name}.\"",
@@ -571,8 +710,12 @@
         ]
       },
       {
-        "id": "kiss", "label": "Kiss Them", "label_it": "Bacia", "tier": 5, "physical": true,
-        "successDelta": 36, "failDelta": -34,
+        "id": "kiss",
+        "label": "Kiss Them",
+        "tier": 5,
+        "physical": true,
+        "successDelta": 36,
+        "failDelta": -34,
         "player": [
           "You close the distance and kiss {name}.",
           "You tilt {name}'s chin up and kiss them before the nerve runs out.",
@@ -595,7 +738,8 @@
     ],
     "rejection": {
       "taken": {
-        "reasonLabel": "committed", "reasonLabel_it": "impegnato/a", "delta": -6,
+        "reasonLabel": "committed",
+        "delta": -6,
         "lines": [
           "{name} lifts a hand. \"I'm spoken for, and I intend to stay that way.\"",
           "\"I'm with someone,\" {name} says. \"Only someone. That's the whole arrangement.\"",
@@ -604,7 +748,8 @@
         ]
       },
       "orientation": {
-        "reasonLabel": "not their type", "reasonLabel_it": "non il suo tipo", "delta": -3,
+        "reasonLabel": "not their type",
+        "delta": -3,
         "lines": [
           "{name} smiles, kindly enough. \"You're lovely. You're also not what I'm drawn to.\"",
           "\"I don't think you've understood who I look at,\" {name} says.",
@@ -613,7 +758,8 @@
         ]
       },
       "aromantic": {
-        "reasonLabel": "aromantic", "reasonLabel_it": "aromantico/a", "delta": -3,
+        "reasonLabel": "aromantic",
+        "delta": -3,
         "lines": [
           "\"I don't fall in love,\" {name} says plainly. \"Not with anyone. It isn't a wound, it's just true.\"",
           "{name} shrugs. \"Romance is a language I've never spoken.\"",
@@ -622,7 +768,8 @@
         ]
       },
       "asexual": {
-        "reasonLabel": "asexual", "reasonLabel_it": "asessuale", "delta": -3,
+        "reasonLabel": "asexual",
+        "delta": -3,
         "lines": [
           "{name} steps back. \"Not that. Not with anyone, before you ask.\"",
           "\"I don't want that kind of touch,\" {name} says. \"From you or from anybody.\"",
@@ -631,7 +778,8 @@
         ]
       },
       "synthetic": {
-        "reasonLabel": "wants a machine", "reasonLabel_it": "cerca una macchina", "delta": -2,
+        "reasonLabel": "wants a machine",
+        "delta": -2,
         "lines": [
           "{name} sighs. \"You're all warm and wet and unpredictable. I prefer a clean logic board.\"",
           "\"No offence,\" {name} says, \"but I only fall for things that hum.\"",
@@ -640,7 +788,8 @@
         ]
       },
       "botanic": {
-        "reasonLabel": "wants a plant", "reasonLabel_it": "cerca una pianta", "delta": -2,
+        "reasonLabel": "wants a plant",
+        "delta": -2,
         "lines": [
           "{name} looks past you at a potted fern. \"...Sorry. What were you saying?\"",
           "\"You don't photosynthesise,\" {name} says sadly. \"It would never work.\"",
@@ -649,7 +798,8 @@
         ]
       },
       "dwarf": {
-        "reasonLabel": "dwarves only", "reasonLabel_it": "solo nani", "delta": -2,
+        "reasonLabel": "dwarves only",
+        "delta": -2,
         "lines": [
           "{name} measures you with a flat look. \"Too tall. Far too tall.\"",
           "\"I have a type,\" {name} says, \"and it comes with a beard and a mining claim.\"",
@@ -658,7 +808,8 @@
         ]
       },
       "bubba": {
-        "reasonLabel": "loves Bubba Wilson", "reasonLabel_it": "ama Bubba Wilson", "delta": -2,
+        "reasonLabel": "loves Bubba Wilson",
+        "delta": -2,
         "lines": [
           "{name} touches a locket. \"There's only ever been one man for me, and he built the Liminal Engine.\"",
           "\"You're not Bubba Wilson,\" {name} says, as though that settles everything. It does.",
@@ -667,7 +818,8 @@
         ]
       },
       "bubbaHimself": {
-        "reasonLabel": "is spoken for, by a goddess", "reasonLabel_it": "è impegnato, con una dea", "delta": 0,
+        "reasonLabel": "is spoken for, by a goddess",
+        "delta": 0,
         "lines": [
           "\"Whoa now, chiano chiano,\" {name} says, hands up and greasy. \"You're the best friend I got in ninety-two dimensions. That's where it stops, darlin'.\"",
           "\"There's one woman in my heart and she throws mountains,\" says {name}. \"Ain't fair on you and it sure ain't safe.\"",
@@ -681,7 +833,8 @@
         ]
       },
       "emZealot": {
-        "reasonLabel": "will not be courted by the god-killer", "reasonLabel_it": "non si fa corteggiare dall'uccisora di dei", "delta": -6,
+        "reasonLabel": "will not be courted by the god-killer",
+        "delta": -6,
         "lines": [
           "{name} steps back as though the offer were a lit fuse. \"You fed a god to a spear. You do not get to be charming.\"",
           "\"I would sooner court the hole in the sky,\" says {name}.",
@@ -695,7 +848,8 @@
         ]
       },
       "emAnnoyed": {
-        "reasonLabel": "wants the famous witch to move along", "reasonLabel_it": "vuole che la strega famosa se ne vada", "delta": -3,
+        "reasonLabel": "wants the famous witch to move along",
+        "delta": -3,
         "lines": [
           "{name} laughs once, without any joy in it. \"No. I've got enough weather in my life.\"",
           "\"You'll be gone by Thursday and something will be on fire,\" says {name}. \"That's the pattern.\"",
@@ -715,9 +869,12 @@
     "stances": {
       "zealot": {
         "label": "blames Em for the death of the Father",
-        "label_it": "incolpa Em per la morte del Padre",
         "opinion": -45,
-        "toneMult": { "positive": 0.3, "neutral": 0.5, "negative": 1.5 },
+        "toneMult": {
+          "positive": 0.3,
+          "neutral": 0.5,
+          "negative": 1.5
+        },
         "greeting": [
           "{name} makes the sign of the cross backwards, the way it is taught for cursed things. \"The witch. Naturally.\"",
           "\"Every sacred word I owned died on New Year's Eve,\" {name} says. \"And here you are, still breathing.\"",
@@ -771,9 +928,12 @@
       },
       "annoyed": {
         "label": "wishes Em would be famous elsewhere",
-        "label_it": "vorrebbe che Em fosse famosa altrove",
         "opinion": -15,
-        "toneMult": { "positive": 0.6, "neutral": 0.8, "negative": 1.2 },
+        "toneMult": {
+          "positive": 0.6,
+          "neutral": 0.8,
+          "negative": 1.2
+        },
         "greeting": [
           "{name} exhales through the nose. \"You're the one out of the papers. Wonderful.\"",
           "\"Whatever it is,\" {name} says, \"could you go and be it somewhere down the road?\"",
@@ -827,9 +987,12 @@
       },
       "fan": {
         "label": "an invasive admirer",
-        "label_it": "un ammiratore invadente",
         "opinion": 25,
-        "toneMult": { "positive": 1.4, "neutral": 1.3, "negative": 0.5 },
+        "toneMult": {
+          "positive": 1.4,
+          "neutral": 1.3,
+          "negative": 0.5
+        },
         "greeting": [
           "{name} takes hold of your sleeve. \"It IS you. Say the word. Say the one from the tabloid.\"",
           "\"My cousin was on Ritual Island the week after,\" {name} says, much too close. \"So we're practically family.\"",
@@ -883,9 +1046,12 @@
       },
       "clout": {
         "label": "friendly because Em is famous",
-        "label_it": "cordiale solo perché Em è famosa",
         "opinion": 12,
-        "toneMult": { "positive": 1.1, "neutral": 1.1, "negative": 0.9 },
+        "toneMult": {
+          "positive": 1.1,
+          "neutral": 1.1,
+          "negative": 0.9
+        },
         "greeting": [
           "{name}'s manner changes the instant your name lands. \"Em! Sit down, sit down. What are you drinking? On me.\"",
           "\"I tell people I know you,\" {name} admits cheerfully. \"Now it's technically true.\"",
@@ -939,9 +1105,12 @@
       },
       "gawker": {
         "label": "treats Em as an exhibit",
-        "label_it": "tratta Em come un reperto",
         "opinion": 0,
-        "toneMult": { "positive": 0.9, "neutral": 1.2, "negative": 1.0 },
+        "toneMult": {
+          "positive": 0.9,
+          "neutral": 1.2,
+          "negative": 1.0
+        },
         "greeting": [
           "{name} studies you the way one studies a cracked bell. \"Ninety-two percent. Is it like a room with the furniture taken out?\"",
           "\"Do you remember your mother's face,\" {name} asks, before hello.",
@@ -995,9 +1164,12 @@
       },
       "genuine": {
         "label": "sees the person, not the story",
-        "label_it": "vede la persona, non la storia",
         "opinion": 8,
-        "toneMult": { "positive": 1.2, "neutral": 1.2, "negative": 1.0 },
+        "toneMult": {
+          "positive": 1.2,
+          "neutral": 1.2,
+          "negative": 1.0
+        },
         "greeting": [
           "{name} looks at you, not at the story about you. \"Long road? Sit down before you fall down.\"",
           "\"I don't care what the papers made of you,\" says {name}. \"Have you eaten today?\"",
@@ -1052,9 +1224,12 @@
     },
     "bubba": {
       "label": "the only friend she has",
-      "label_it": "l'unico amico che ha",
       "opinion": 90,
-      "toneMult": { "positive": 1.2, "neutral": 1.1, "negative": 1.0 },
+      "toneMult": {
+        "positive": 1.2,
+        "neutral": 1.1,
+        "negative": 1.0
+      },
       "greeting": [
         "\"Uè, Em!\" {name} wipes his hands on a rag that has never once been clean. \"Set yourself down, guagliò, the Beast ain't goin' nowhere till that manifold cools.\"",
         "\"Mannaggia, darlin', you look like eighty kilometres of bad road,\" says {name}. \"Coffee's on the stove, 'a tazzulella is yours.\"",
@@ -1121,7 +1296,6 @@
   "bubba": {
     "_comment": "How the world treats Bubba Wilson when HE is the party member doing the talking (Switch 49, or an actor named Bubba in the party). He built the Liminal Engine, took the Nobel for it and made public transport possible again, so nobody meets him as a stranger: greetings are admiration, every tone lands warm, and he answers all of it modestly (player[] replaces the interaction's own line). Hostile moves are hidden entirely and courting is off the table, except for a bubbaromantic NPC, who is offered exactly one thing: being turned down (romantic).",
     "label": "knows who built the Liminal Engine",
-    "label_it": "sa chi ha costruito il Motore Liminale",
     "opinionBonus": 35,
     "toneMult": {
       "positive": 1.4,
@@ -1196,7 +1370,6 @@
     "romantic": {
       "_comment": "A bubbaromantic NPC (js/db/NPC/Orientations.json) is the one case where the Court option is shown to Bubba at all, and the only move on it is turning them down. He is gentle about it and it ruins him with them anyway: this is the one wound he can hand out.",
       "label": "Decline advances",
-      "label_it": "Rifiuta le avances",
       "delta": -70,
       "confession": [
         "{name} has gone very still. \"I have loved you since the coaches started running. I need you to know that before you say anything.\"",

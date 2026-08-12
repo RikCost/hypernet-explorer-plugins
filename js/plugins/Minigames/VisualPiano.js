@@ -349,11 +349,7 @@
                 <h3 style="margin: 0 0 5px 0;">${T('Piano.title')}</h3>
                 <div style="font-size: 12px;">
                     ${T('Piano.waveform')}: <span id="waveform-display">${this.waveform}</span> |
-                    ${T('Piano.octave')}: <span id="octave-display">${this.baseOctave}</span> |
-                    ${T('Piano.keyboardHints')}
-                </div>
-                <div style="font-size: 11px; color: #9fb0c8; margin-top: 3px;">
-                    ${T('Piano.padHints')}
+                    ${T('Piano.octave')}: <span id="octave-display">${this.baseOctave}</span>
                 </div>
             `;
             this.container.appendChild(header);

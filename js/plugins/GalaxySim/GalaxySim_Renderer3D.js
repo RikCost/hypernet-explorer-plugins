@@ -1122,12 +1122,126 @@
     return group;
   }
 
+  // --- The Omega Tower: what stands where Earth stood ----------------------
+  // A lance: a tapering octagonal shaft carried on a plinth and drawn out into
+  // a spike, black to the point of reading as a cut-out with gold at every
+  // edge the light can catch (bands, ribs, the tip, the glow of its floors).
+  // Built along +Y at unit scale like every other artificial body.
+  function buildOmegaTower(planet, mats, geos) {
+    const group = new THREE.Group();
+    const black = new THREE.MeshPhongMaterial({
+      color: 0x07070a, specular: 0x2a2a34, shininess: 26, emissive: 0x010102,
+    });
+    const gold = new THREE.MeshPhongMaterial({
+      color: 0xc9a03c, specular: 0xffe9a8, shininess: 110, emissive: 0x3a2a06,
+    });
+    const litGold = new THREE.MeshBasicMaterial({ color: 0xffd76a });
+    mats.push(black, gold, litGold);
+
+    // Shaft: eight faces, drawn in from a broad foot to a needle. Everything
+    // that wraps it is sized off shaftR() rather than off its own guesswork, or
+    // the gold sits proud at the foot and is swallowed by the shaft up top.
+    const SH_BOT = -0.355, SH_TOP = 1.195, SH_R0 = 0.19, SH_R1 = 0.05;
+    const shaftR = (y) => SH_R0 + (SH_R1 - SH_R0) *
+      Math.max(0, Math.min(1, (y - SH_BOT) / (SH_TOP - SH_BOT)));
+    const shaftGeo = new THREE.CylinderGeometry(SH_R1, SH_R0, SH_TOP - SH_BOT, 8);
+    geos.push(shaftGeo);
+    const shaft = new THREE.Mesh(shaftGeo, black);
+    shaft.position.y = (SH_TOP + SH_BOT) / 2;
+    group.add(shaft);
+
+    // Plinth: the block the lance is planted in.
+    const plinthGeo = new THREE.CylinderGeometry(0.24, 0.34, 0.2, 8);
+    geos.push(plinthGeo);
+    const plinth = new THREE.Mesh(plinthGeo, black);
+    plinth.position.y = -0.45;
+    group.add(plinth);
+
+    const collarGeo = new THREE.CylinderGeometry(0.26, 0.26, 0.035, 8);
+    geos.push(collarGeo);
+    const collar = new THREE.Mesh(collarGeo, gold);
+    collar.position.y = -0.34;
+    group.add(collar);
+
+    // The point. Long enough that the whole building reads as a weapon.
+    const tipGeo = new THREE.ConeGeometry(0.05, 0.62, 8);
+    geos.push(tipGeo);
+    const tip = new THREE.Mesh(tipGeo, gold);
+    tip.position.y = 1.5;
+    group.add(tip);
+
+    // Gold banding, thinning with the shaft as it climbs.
+    const bandGeo = new THREE.CylinderGeometry(1, 1, 0.022, 8);
+    geos.push(bandGeo);
+    for (let i = 0; i < 6; i++) {
+      const y = -0.3 + (i / 5) * 1.42;
+      const r = shaftR(y) * 1.07;
+      const band = new THREE.Mesh(bandGeo, gold);
+      band.scale.set(r, 1, r);
+      band.position.y = y;
+      group.add(band);
+    }
+
+    // Four ribs running the height of the lower shaft, and the flare where the
+    // shaft meets its foot.
+    const ribGeo = new THREE.BoxGeometry(0.02, 1.0, 0.05);
+    geos.push(ribGeo);
+    const flareGeo = new THREE.BoxGeometry(0.055, 0.02, 0.3);
+    geos.push(flareGeo);
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2 + Math.PI / 8;
+      const rib = new THREE.Mesh(ribGeo, gold);
+      rib.position.set(Math.cos(a) * 0.145, 0.12, Math.sin(a) * 0.145);
+      rib.rotation.y = -a;
+      group.add(rib);
+      const flare = new THREE.Mesh(flareGeo, gold);
+      flare.position.set(Math.cos(a) * 0.28, -0.28, Math.sin(a) * 0.28);
+      flare.rotation.y = -a;
+      group.add(flare);
+    }
+
+    // Lit floors: a stack of unshaded gold slivers, so the silhouette carries
+    // its own light instead of going out whenever it turns away from the star.
+    const floorGeo = new THREE.CylinderGeometry(1, 1, 0.008, 8);
+    geos.push(floorGeo);
+    for (let i = 0; i < 22; i++) {
+      const y = -0.3 + (i / 21) * 1.4;
+      const floor = new THREE.Mesh(floorGeo, litGold);
+      const r = shaftR(y) * 1.03;
+      floor.scale.set(r, 1, r);
+      floor.position.y = y;
+      group.add(floor);
+    }
+
+    // A breath of gold around the whole thing, or the tower is a hole in the
+    // star field (the same trick the monolith uses).
+    const haloGeo = new THREE.CylinderGeometry(0.09, 0.3, 2.3, 8, 1, true);
+    geos.push(haloGeo);
+    const haloMat = new THREE.MeshBasicMaterial({
+      color: 0x6a4f16, transparent: true, opacity: 0.2,
+      side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false,
+    });
+    mats.push(haloMat);
+    const halo = new THREE.Mesh(haloGeo, haloMat);
+    halo.position.y = 0.35;
+    group.add(halo);
+
+    // Built from the plinth up, so it now sits well off its own origin: drop it
+    // onto its middle, or it frames badly in a portrait and turns about a point
+    // near its foot rather than about itself.
+    group.children.forEach((c) => { c.position.y -= 0.5; });
+    return group;
+  }
+
   const ARTIFICIAL_BUILDERS = {
     probe: buildProbe,
     teapot: buildTeapot,
     monolith: buildMonolith,
     telescope: buildTelescope,
+    omegatower: buildOmegaTower,
   };
+  // Portrait framing per style: the half-extent the body needs on screen.
+  const ARTIFICIAL_HALF = { monolith: 0.72, omegatower: 1.45 };
 
   // ==========================================================================
   // Renderer singleton
@@ -1260,6 +1374,9 @@
     // are never tracked for per-group disposal. Returns a THREE.Texture or null.
     _realPlanetTexture(planet) {
       const name = planet && planet.name;
+      // A world that has been set alight (Saturn, after Nibiru) is no longer
+      // the world the photograph was taken of: it falls back to paint.
+      if (planet && planet.ignited) return null;
       if (!name || !SOL_PLANET_TEXTURES[name]) return null;
       const base = SOL_PLANET_TEXTURES[name];
       if (!this._solTexCache) this._solTexCache = {};
@@ -1405,7 +1522,7 @@
       group._body = body;
       group._clouds = null;
       group._phase = (String(planet.name || "a").charCodeAt(0) || 1) % 7;
-      group._half = planet.artificial === "monolith" ? 0.72 : 1.15;
+      group._half = ARTIFICIAL_HALF[planet.artificial] || 1.15;
       group._type = planet.type;
       group._artificial = planet.artificial;
       group._mats = mats;

@@ -5,14 +5,14 @@
       "description": "Carica e scarica merci nel distretto dei magazzini."
     },
     "category": {
-      "labor": "Labor",
-      "social": "Social",
-      "technical": "Technical",
-      "magical": "Magical",
-      "combat": "Combat",
-      "criminal": "Criminal",
-      "general": "General",
-      "faction": "Faction"
+      "labor": "Manovalanza",
+      "social": "Sociale",
+      "technical": "Tecnico",
+      "magical": "Magico",
+      "combat": "Combattimento",
+      "criminal": "Criminale",
+      "general": "Generale",
+      "faction": "Fazione"
     },
     "2": {
       "name": "Bracciante Agricolo",

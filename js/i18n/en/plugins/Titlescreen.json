@@ -26,6 +26,7 @@
   "minigame": {
     "arena": "Arena",
     "camperDriving": "Camper Driving",
+    "dream": "Dream",
     "surfing": "Surfing",
     "pool": "Pool",
     "chess": "Chess",
@@ -37,6 +38,9 @@
     "tarotReading": "Tarot Reading",
     "scratchCard": "Scratch Card",
     "monsterTournament": "Monster Tournament",
+    "cardBattle": "Card Battle",
+    "cardBattleYou": "Challenger",
+    "cardBattleFoe": "Stranger",
     "hyperTamer": "Hyper Tamer",
     "periodicTable": "Periodic Table",
     "boosterPack": "Booster Pack",
@@ -132,7 +136,12 @@
     "restartTip": "The new build is installed. Click to restart the game onto it.",
     "upToDate": "✦ ALREADY UP TO DATE",
     "failed": "✦ UPDATE FAILED, RETRY",
-    "tip": "A newer build is waiting. Click to install it and restart."
+    "tip": "A newer build is waiting. Click to install it and restart.",
+    "majorLine": "MAJOR UPDATE, DOWNLOAD THE FULL GAME AFTERWARDS",
+    "majorTip": "This build is a major update. It installs from here, but the whole game must be downloaded again for full compatibility.",
+    "majorInstalled": "MAJOR UPDATE INSTALLED",
+    "majorInstalledLine": "DOWNLOAD THE FULL GAME AGAIN FOR FULL COMPATIBILITY",
+    "majorInstalledTip": "This copy was patched across a major update. Download the whole game again for full compatibility."
   },
   "hyperverse": {
     "lead": "HYPERVERSE // ",

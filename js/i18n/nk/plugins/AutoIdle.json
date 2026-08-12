@@ -1,0 +1,126 @@
+{
+  "optionName": "AUTO IDLE EXPLORER",
+  "badge": "AUTO P2",
+  "formation": {
+    "label": "PARTY FORMATION",
+    "states": [
+      "CLOSE",
+      "LOOSE"
+    ]
+  },
+  "loose": {
+    "thought": [
+      "A GOOD SPOT TA CATCH ME BREATH!",
+      "ME FEET HAB OPINIONS ABOUT DIS ROAD!",
+      "ME WONDER WHAT IZ OVER DAT RIDGE!",
+      "WE SHOULD HAB PACKED MORE FOOD!",
+      "STILL NO IDEA WHERE WE IZ GOING!",
+      "QUIET. ALMOST TOO QUIET.",
+      "ME COULD SLEEP STANDIN' UP!",
+      "DAT CLOUD LOOKS LIKE A BAD OMEN!",
+      "COUNTIN' ME COINS AGAIN. SAME ANSWER!",
+      "SOMEONE HAB TA KEEP WATCH. MIGHT AS WELL BE ME!",
+      "DIS PLACE SMELLS OLDER DEN IT LOOKS!",
+      "ONE DAY ME WILL BE PAID FOR DIS!"
+    ],
+    "greet": [
+      "EVENIN'. SEEN ANYTHIN' STRANGE AROUND HERE?",
+      "WE IZ ONLY PASSIN' THROUGH!",
+      "IZ DERE ANYWHERE WARM TA EAT NEARBY?",
+      "YOU LIVE HERE? WHAT IZ DAT LIKE?",
+      "ANY NEWS WORTH HEARIN'?",
+      "CAREFUL OUT DERE. IT BITES!",
+      "WHICH WAY IZ DA NEAREST ROAD?"
+    ],
+    "reply": [
+      "DEPENDS WHO IZ ASKIN'.",
+      "NOTHIN' WORTH TELLIN'.",
+      "STRANGE IZ ALL WE GET HERE!",
+      "KEEP TA DA ROAD AN' YOU WILL BE FINE!",
+      "YOU IZ NOT FROM AROUND HERE!",
+      "MIND YOURSELF AFTER DARK.",
+      "ME HAB SAID TOO MUCH ALREADY!"
+    ],
+    "partyGreet": [
+      "DO YOU EVER THINK ABOUT GOING HOME?",
+      "YOU HAB BEEN QUIET ALL DAY!",
+      "TELL ME AGAIN WHY WE TOOK DIS ROAD!",
+      "ME WOULD NOT HAB MADE IT DIS FAR ALONE!",
+      "HOW IZ DAT WOUND OF YA HOLDIN' UP?",
+      "IF WE GET PAID, ME IZ BUYIN' DA FIRST ROUND!",
+      "DO YOU TRUST DA PEOPLE WE MET BACK DERE?",
+      "ME HAB A DREAM ABOUT DIS PLACE. DO NOT ASK!",
+      "YOU CARRY TOO MUCH. GIVE ME HALF!",
+      "ONE OF DEZE DAYS WE SHOULD STOP FOR A WHOLE WEEK!"
+    ],
+    "partyReply": [
+      "HOME IZ WHEREVER DA PACKS IZ!",
+      "ME WAZ THINKIN'. IT HAPPENS!",
+      "BECAUSE YOU ASKED, AN' ME SAID YES. FOOL DAT ME IZ!",
+      "NOR ME. DO NOT LET IT GO TA YA HEAD!",
+      "IT HAB STOPPED BLEEDIN', WHICH IZ SOMETHIN'!",
+      "YOU SAID DAT IN DA LAST THREE TOWNS!",
+      "ME TRUST NOBODY ME NO CAN OUTRUN!",
+      "YOU ALWAYS DREAM ABOUT DA WRONG THINGS!",
+      "ME CAN MANAGE. ASK ME AGAIN ON DA HILL!",
+      "A WEEK. LISTEN TA US."
+    ],
+    "look": [
+      "HUH. DAT HAB BEEN HERE A WHILE!",
+      "SOMEONE MADE DIS BY HAND.",
+      "BEST NOT TA TOUCH IT.",
+      "WORTH SOMETHIN', MAYBE.",
+      "NOW DAT IZ ODD.",
+      "ME HAB SEEN ONE OF DEZE BEFORE!"
+    ],
+    "recall": [
+      "WAIT FOR ME!",
+      "WHERE IZ WE GOING NOW?",
+      "RIGHT BEHIND YOU.",
+      "SLOW DOWN!",
+      "COMIN'!"
+    ],
+    "rest": [
+      "FIVE MINUTES. DAT IZ ALL ME ASK!",
+      "ME FEET HAB EARNED DIS.",
+      "DO NOT TELL DA OTHERS ME SAT DOWN!",
+      "JUST RESTIN' ME EYES.",
+      "DIS IZ DA BEST SEAT IN DA COUNTRY!"
+    ],
+    "need": {
+      "hunger": [
+        "ME WAZ STARTIN' TA CHEW ME OWN STRAP!",
+        "DAT WILL HOLD ME UNTIL EVENIN'!",
+        "COLD, BUT IT IZ FOOD.",
+        "DO NOT LOOK AT ME LIKE DAT. ME WAZ HUNGRY!"
+      ],
+      "sleep": [
+        "A BED. AN ACTUAL BED.",
+        "WAKE ME IF DA WORLD ENDS.",
+        "ME COULD SLEEP FOR A WEEK!",
+        "SOMEWHERE FLAT WILL DO."
+      ],
+      "hygiene": [
+        "ME HAB FORGOTTEN WHAT ME OWN HANDS LOOKED LIKE!",
+        "THREE DAYS OF ROAD, OFF AT LAST!",
+        "NOW ME IZ FIT TA STAND NEAR PEOPLE!",
+        "DAT WATER WAZ COLDER DEN DA GRAVE!"
+      ],
+      "social": [
+        "GOOD TA HEAR ANOTHER VOICE!",
+        "PEOPLE. ME HAB MISSED PEOPLE!",
+        "DAT IZ DA MOST ME HAB SAID ALL WEEK!"
+      ],
+      "leisure": [
+        "ONE MORE GO. JUST ONE.",
+        "ME NEEDED DAT MORE DEN ME KNEW!",
+        "NOBODY TELL DA PARTY HOW MUCH ME LOST!",
+        "FOR A MOMENT DERE ME FORGOT DA ROAD!"
+      ]
+    },
+    "toastRent": "{name} RENTED A ROOM FOR {price}",
+    "toastEat": "{name} ATE {item}",
+    "toastOpinion": "{npc} THINKS OF {name}: {delta}",
+    "toastPartyTalk": "{name} AN' {other} TALKED ({other}: {delta}, {name}: {back})"
+  }
+}

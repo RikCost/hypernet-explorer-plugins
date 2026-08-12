@@ -51,6 +51,33 @@
     Game_Map.prototype.setup = function (mapId) {
         _Game_Map_setup.call(this, mapId);
         this.calculateMedianEncounterLevel();
+
+        // Consume a one-shot door-name override, if the transfer that brought
+        // the party here was through a Door/Transfer event carrying a Note.
+        // See command201 alias below for where this is set.
+        this._doorNameOverride = null;
+        if ($gameSystem && $gameSystem._doorMapNameOverride) {
+            this._doorNameOverride = $gameSystem._doorMapNameOverride;
+            $gameSystem._doorMapNameOverride = null;
+        }
+    };
+
+    // A Door/Transfer event's own Note names the room it leads to better than
+    // the destination map's own display name ("Dirty Inn" vs "Interiors"), so
+    // when such an event fires a Transfer Player command, its Note is carried
+    // over as a one-shot override for the map the party is about to land on.
+    const _Game_Interpreter_command201 = Game_Interpreter.prototype.command201;
+    Game_Interpreter.prototype.command201 = function (params) {
+        const sourceEvent = this._eventId ? $gameMap.event(this._eventId) : null;
+        if (sourceEvent) {
+            const data = sourceEvent.event();
+            const name = (data && data.name) || '';
+            const note = ((data && data.note) || '').trim();
+            if (note && /door|transfer/i.test(name)) {
+                $gameSystem._doorMapNameOverride = note;
+            }
+        }
+        return _Game_Interpreter_command201.call(this, params);
     };
 
     // Add a new method to Game_Map to perform the calculation.
@@ -104,6 +131,23 @@
         return mapInfo.name.replace(/^\d+\s*-\s*/, '');
     };
 
+    const PROC_MAP_ID = 636;
+
+    // True only while the party is standing on the open procedural surface of the
+    // world square they are addressed by, which is the one place a world square's
+    // own name belongs in the map banner. WorldMapTransfer is the authority on
+    // where a tile is; without it (load order, a stripped build) the map id alone
+    // is checked, which still keeps the name off every hand-made map.
+    function isOnNamedWorldSquare(map) {
+        const pg = $gameSystem && $gameSystem._procGenData;
+        if (!pg || pg.originX === undefined || pg.originY === undefined) return false;
+        if (map.mapId() !== PROC_MAP_ID) return false;
+        const wmt = window.WorldMapTransfer;
+        if (!wmt || typeof wmt.locate !== 'function') return true;
+        const loc = wmt.locate();
+        return !!loc && loc.layer === 0 && !loc.interior && !loc.alien;
+    }
+
     // Alias Game_Map.displayName to append the calculated level.
     const _Game_Map_displayName = Game_Map.prototype.displayName;
     Game_Map.prototype.displayName = function () {
@@ -114,14 +158,28 @@
             mapName = this.getCleanMapName();
         }
 
-        // Check for hardcoded biome name overrides for procedural maps
-        if (window.WorldGen && window.WorldGen.HardcodedBiomeNames) {
+        // A Door/Transfer event's Note beats everything else: it is the one
+        // name written for this specific arrival, more specific than the map's
+        // own display name or a named world square.
+        if (this._doorNameOverride) {
+            mapName = this._doorNameOverride;
+        }
+
+        // A named world square (Paris, Milano, ...) names the OPEN SURFACE of that
+        // square and nothing else. This used to read _procGenData.originX/originY
+        // alone, and those outlive the excursion: walking from Paris into a fire
+        // station, a house, a cellar or a dungeon left the banner reading "Paris"
+        // over a map with a display name of its own, and since the square is saved
+        // with the game no reload cleared it. It is now scoped to the square
+        // itself: the procedural map, on its top layer, out in the open (a
+        // generated structure and every roofed interior carry their own name), and
+        // never on an alien landing, whose grid cells collide with Earth squares by
+        // coincidence.
+        if (!this._doorNameOverride && window.WorldGen && window.WorldGen.HardcodedBiomeNames && isOnNamedWorldSquare(this)) {
             const procGenData = $gameSystem._procGenData;
-            if (procGenData && procGenData.originX !== undefined && procGenData.originY !== undefined) {
-                const coordKey = `${procGenData.originX},${procGenData.originY}`;
-                if (window.WorldGen.HardcodedBiomeNames[coordKey]) {
-                    mapName = window.WorldGen.HardcodedBiomeNames[coordKey];
-                }
+            const coordKey = `${procGenData.originX},${procGenData.originY}`;
+            if (window.WorldGen.HardcodedBiomeNames[coordKey]) {
+                mapName = window.WorldGen.HardcodedBiomeNames[coordKey];
             }
         }
 

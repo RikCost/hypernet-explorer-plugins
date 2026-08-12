@@ -32,9 +32,9 @@
     "dimensional": "Varco dimensionale"
   },
   "defaultDestination": "Antwerpen",
-  "trainStationTitle": "Stazione ferroviaria",
-  "stationBadge": "Stazione",
-  "stationLabel": "{place}, stazione ferroviaria",
+  "hubTitle": "Servita dalla rete di trasporti",
+  "hubBadge": "Nodo",
+  "hubLabel": "{place}, nodo di trasporto",
   "fuelRate": "Consumo: {rate} L/tassello",
   "rateMultiplier": "Moltiplicatore: {multiplier}x",
   "editing": "In modifica",

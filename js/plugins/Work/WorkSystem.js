@@ -351,6 +351,12 @@
         $gameParty.loseGold(Math.abs(result.pay));
       }
 
+      // A shift is a day of the party's life, so it goes in the diary
+      // (Diary.js); the shift is over by the time this runs.
+      if (window.Diary) {
+        window.Diary.onWorkShift(job.name, result.pay, job.duration || job.hours || 0, actor);
+      }
+
       // A shift worked is a shift learned from, and it is the worker who
       // learns it rather than whoever happens to be leading the party.
       if (job.spec && window.SpecializationXP) {
@@ -1056,8 +1062,7 @@
         <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px;">
           ${listHTML}
         </div>
-        <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%;">
-          <span>${T('WorkSystem.ui.navChooseJob')}</span>
+        <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-end; align-items:center; font-size:0.82rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%;">
           <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; cursor:pointer; transition:all 0.2s ease; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:0.9rem;">
             ${T('WorkSystem.dismiss')}
           </div>
@@ -1306,10 +1311,6 @@
           </div>
           ` : ''}
         </div>
-
-        <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%;">
-          <span>${T('WorkSystem.ui.navSignContract')}</span>
-        </div>
       `;
     }
 
@@ -1474,6 +1475,10 @@
   };
 
   Scene_Map.prototype.startWorkSequence = function (actor, job) {
+    // Flagged for the travel window (TimeDateSystem's MapInfoHUD): the clock
+    // is about to run fast behind the darkened screen, so the card shows.
+    this._workSequenceActive = true;
+
     // Disable player movement
     $gamePlayer.setMoveSpeed(0);
 
@@ -1505,6 +1510,9 @@
 
     // Apply effects
     WorkManager.applyWorkEffects(actor, job, result);
+
+    // The shift itself is over; the travel window drops with the fade-in.
+    this._workSequenceActive = false;
 
     // Fade back in
     $gameScreen.startFadeIn(settings.workFadeDuration);

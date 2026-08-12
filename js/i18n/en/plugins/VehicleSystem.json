@@ -4,17 +4,17 @@
     "Car": "Car",
     "Bike": "Bike",
     "Boat": "Boat",
-    "Starship": "Starship"
+    "Starship": "Starship",
+    "Broom": "Flying broom"
   },
   "genericVehicle": "vehicle",
   "noGasPump": "No gas pump near",
   "travelTo": "Travel to {place}",
   "examine": "Examine",
-  "pickedUpBike": "You picked up the bike.",
   "liminalUnavailable": "The liminal drive is unavailable",
   "liminalDrive": "Liminal Drive",
   "noSpaceToSummon": "There is no space to summon the vehicle",
-  "noSummonIndoors": "Only the bike can be summoned indoors",
+  "noSummonIndoors": "Only the bike and the flying broom can be summoned indoors",
   "noValidPosition": "No valid position found to summon the vehicle",
   "stopDriving": "Stop driving",
   "startDriving": "Start driving",
@@ -38,5 +38,7 @@
   "noVehicleHere": "There is no vehicle here",
   "cannotFindVehicle": "Cannot find that vehicle",
   "vehicleNotHere": "The {vehicle} is not here",
-  "cannotFindLocation": "Cannot find {vehicle} location"
+  "cannotFindLocation": "Cannot find {vehicle} location",
+  "pickedUpVehicle": "You picked up the {vehicle}.",
+  "cannotLandHere": "There is nowhere to set down here"
 }

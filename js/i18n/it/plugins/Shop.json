@@ -79,7 +79,12 @@
   "asset": "Bene",
   "equipSlot": "Equipaggia",
   "ownedStock": "Posseduti: {owned} Scorta: {stock}",
+  "ownedCount": "Posseduti: {owned}",
   "wornCount": "(indossati: {count})",
+  "sellHint": "Clicca gli oggetti per metterli sul banco, poi vendi tutto in una volta.",
+  "selectionCount": "{lines} voci, {units} oggetti",
+  "sellSelected": "VENDI TUTTE ({lines})",
+  "clearSelection": "AZZERA",
   "elementN": "Elemento {id}",
   "stateN": "Stato {id}",
   "paramN": "Parametro {id}",
@@ -153,5 +158,13 @@
     "type": "Tipo",
     "weight": "Peso"
   },
-  "cravingsFed": "VOGLIE SODDISFATTE"
+  "cravingsFed": "VOGLIE SODDISFATTE",
+  "medicineClass": "Farmaco",
+  "medicineCures": "Cura",
+  "medicineTreats": "Tiene a bada",
+  "medicineCureLine": "{disease} ({days}g)",
+  "medicineMore": "e altre {count}",
+  "nature": "Natura",
+  "natureMagical": "Magica",
+  "natureMundane": "Mondana"
 }

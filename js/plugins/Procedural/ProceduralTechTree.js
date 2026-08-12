@@ -84,6 +84,24 @@
     ];
     // i18n-ignore-end
 
+    // Which curriculum survives which magic level (window.MagicNature).
+    // A severed world never discovered that magic works, so the three trees
+    // built on it were never begun; an unbound one went the other way and its
+    // ordinary sciences were never needed. ALCHEMISTRY stands in both: it is
+    // the one discipline that is a real historical science AND a working
+    // tradition, so a world at either extreme still has it.
+    // i18n-ignore-start  tree ids, matched against js/db/TechTree file names
+    const MAGICAL_TREES = ['Arcane', 'Technomagica', 'Theotecnical'];
+    const MUNDANE_TREES = ['SocialSciences', 'Physics', 'Mathematics', 'Astronomy'];
+    // i18n-ignore-end
+
+    function treeAllowedInMagic(key) {
+        const MN = window.MagicNature;
+        if (!MN || !MN.isFiltering()) return true;
+        if (MN.level() === 'severed') return !MAGICAL_TREES.includes(key);
+        return !MUNDANE_TREES.includes(key);
+    }
+
     // Correct material item ids (verified against data/Items.json). Same base
     // reagents ThinkerMenu crafts with.
     const MAT_POOL = {
@@ -351,11 +369,20 @@
     }
 
     function buildAllTrees() {
+        const MN = window.MagicNature;
         const seed = worldSeed();
-        if (_builtTrees && _builtSeed === seed) return _builtTrees;
-        _builtSeed = seed;
+        // The CACHE key carries the magic level too (two worlds of one seed
+        // hold different curricula, and the cache outlives a world switch
+        // inside one session), but `seed` itself stays the number buildTree
+        // seeds its RNG from.
+        const cacheKey = seed + '|' + ((MN && MN.level && MN.level()) || 'normal');
+        if (_builtTrees && _builtSeed === cacheKey) return _builtTrees;
+        _builtSeed = cacheKey;
         _builtTrees = [];
         for (const key of TREE_ORDER) {
+            // A tree the world's magic level never had is not built at all,
+            // so it is absent from the tabs, the research and the save.
+            if (!treeAllowedInMagic(key)) continue;
             const t = buildTree(key, seed);
             if (t) _builtTrees.push(t);
         }
@@ -443,13 +470,46 @@
         return isAvailable(tree, node) && materialsSatisfied(node);
     }
 
+    // What a node's materials are worth on the open market. Nine of the base
+    // reagents (the tech, arcane and synthetic pools) carry price 0 in
+    // Items.json because they are never sold over a counter, so they get a
+    // notional bench value here rather than counting for nothing.
+    const MAT_NOTIONAL_VALUE = {
+        849: 1200, 850: 1200,                     // arcane essence, ethereal shard
+        851: 900, 852: 600, 853: 900, 854: 400,   // tech
+        855: 400, 856: 500, 857: 900              // synthetic
+    };
+    function materialValue(node) {
+        if (typeof $dataItems === 'undefined' || !$dataItems) return 0;
+        return (node.materials || []).reduce((sum, m) => {
+            const item = $dataItems[m.id];
+            const unit = (item && item.price) || MAT_NOTIONAL_VALUE[m.id] || 300;
+            return sum + unit * m.qty;
+        }, 0);
+    }
+
+    // The payout used to be a flat 15 EXP and 35 gold (€0.35) per depth step,
+    // which read as an insult beside what a node actually swallows: the
+    // cheapest research on the board eats a few hundred units of material
+    // (~€500 of stock) and the deepest over €18,000 of it, against a median
+    // enemy that drops 89 EXP and €54. It is priced off the investment
+    // instead, so what a discovery is worth tracks what it cost to run, with
+    // a depth term on top so late work in a tree pays better per unit spent.
     function nodeRewards(node) {
         const depth = (node._depth || 0) + 1;
         let scale = node.fringe ? 0.5 : 1;
         if (node.nobelWorthy) scale *= 1.4; // Nobel-worthy work pays out a bit more.
+        const invest = materialValue(node);
+        // Floors keep a materialless or dirt-cheap node from paying nothing.
         return {
-            exp: Math.floor(15 * depth * scale),
-            gold: Math.floor(35 * depth * scale)
+            exp: Math.max(
+                Math.round(25 * depth * scale),
+                Math.round((invest / 1000) * (0.8 + 0.12 * depth) * scale)
+            ),
+            gold: Math.max(
+                Math.round(750 * depth * scale),
+                Math.round(invest * 0.10 * (0.85 + 0.05 * depth) * scale)
+            )
         };
     }
 
@@ -642,8 +702,20 @@
         // One-off rewards go only to the discovering save/party.
         const rw = nodeRewards(node);
         $gameParty.gainGold(rw.gold);
-        const a1 = $gameActors && $gameActors.actor(1);
-        if (a1) a1.gainExp(rw.exp);
+        // The whole party is at the bench, so everyone learns from the result
+        // on the same weighting the specialization award below uses: the
+        // leader ran the experiment, everyone else watched it.
+        const members = ($gameParty && $gameParty.allMembers) ? $gameParty.allMembers() : [];
+        if (members.length) {
+            const leader = $gameParty.leader && $gameParty.leader();
+            members.forEach(a => {
+                if (!a) return;
+                a.gainExp(a === leader ? rw.exp : Math.max(1, Math.round(rw.exp * 0.35)));
+            });
+        } else {
+            const a1 = $gameActors && $gameActors.actor(1);
+            if (a1) a1.gainExp(rw.exp);
+        }
 
         // Byproduct materials flow back into the crafting economy.
         const materialsGranted = [];

@@ -110,15 +110,23 @@
     // the installed build sits past the numbering origin, and the name after it
     // is that build's commit message, so the badge says which build is running
     // and what it was. The updater owns both and rewrites the string; a copy
-    // that has never updated (or a web build, where there is no updater at all)
-    // keeps the label exactly as written.
+    // that has never updated, one running with the updater plugin turned off,
+    // or a web build where there is no updater at all, keeps the label exactly
+    // as written. A badge is not worth an exception thrown out of a plugin that
+    // may not even be loaded, so the pass is guarded end to end.
     const VERSION_TEXT = () => {
         const raw = pathParams.VersionText;
         if (raw !== undefined && String(raw).trim() === '') return '';
         const text = T.param(raw, 'Titlescreen.version.text');
-        const updater = window.GameUpdater;
-        if (updater && updater.versionLabel) return updater.versionLabel(text);
-        return (updater && updater.applyBuildNumber) ? updater.applyBuildNumber(text) : text;
+        try {
+            const updater = window.GameUpdater;
+            if (!updater) return text;
+            if (typeof updater.versionLabel === 'function') return updater.versionLabel(text);
+            if (typeof updater.applyBuildNumber === 'function') return updater.applyBuildNumber(text);
+        } catch (e) {
+            console.warn('Titlescreen: the updater could not label the version', e);
+        }
+        return text;
     };
 
     // The astronomy catalogues below keep their English classification strings
@@ -268,6 +276,100 @@
         },
 
         px(v, s) { return Math.round(v * (s == null ? this.scale() : s)) + 'px'; }
+    };
+
+    // The engine fades the whole PIXI stage in (Scene_Title.start), but every
+    // panel on this screen is HTML sitting above the canvas, so none of it was
+    // covered by that fade and the buttons and readouts simply appeared. They are
+    // faded in here instead, staggered in the order they are docked.
+    //
+    // The fade rides on `filter: opacity()` and not on `opacity` itself: several
+    // of these panels own their opacity already (the update notice pulses, the
+    // background readouts fade themselves in and out), and the two multiply
+    // instead of fighting over the one property. It is run through the Web
+    // Animations API rather than an inline transition or `style.animation` for
+    // the same reason, so nothing a panel writes to its own style is clobbered.
+    const OVERLAY_FADE_MS = 420;
+    const OVERLAY_FADE_STEP = 55;   // stagger between one panel and the next
+
+    const fadeInOverlay = (el, delay) => {
+        if (!el || typeof el.animate !== 'function') return;
+        try {
+            el.animate(
+                [{ filter: 'opacity(0)' }, { filter: 'opacity(1)' }],
+                {
+                    duration: OVERLAY_FADE_MS,
+                    delay: Math.max(0, delay || 0),
+                    easing: 'ease-out',
+                    // backwards, never forwards: the panel is held transparent
+                    // through its stagger and left with no filter of its own once
+                    // the fade is over, so nothing lingers on the compositor.
+                    fill: 'backwards'
+                }
+            );
+        } catch (e) {
+            /* No WAAPI: the panel simply appears, as it did before. */
+        }
+    };
+
+    // The title is not finished the moment it first appears: Scene_Boot maximizes
+    // the window (or asks for fullscreen) and the OS applies that over the next
+    // frames, the canvas is resized under the scene, a 3D background builds its
+    // own DOM canvas and every HTML panel is then re-placed against the settled
+    // rect. All of that used to be watched happening, which is the stutter and
+    // the redraw the game opens on. An opaque veil is laid over the whole window
+    // before anything is built and lifted once the layout has stopped moving, so
+    // the title is only ever seen finished, fading in.
+    const VEIL_ID = 'title-fade-veil';
+    const VEIL_FADE_MS = 620;
+
+    const TitleVeil = {
+        raise() {
+            let el = document.getElementById(VEIL_ID);
+            if (!el) {
+                el = document.createElement('div');
+                el.id = VEIL_ID;
+                document.body.appendChild(el);
+            }
+            delete el.dataset.lifting;
+            // Longhands and an explicit size, never the `inset` shorthand: it is
+            // not honoured in this runtime and collapses the box to nothing.
+            Object.assign(el.style, {
+                position: 'fixed', top: '0', right: '0', bottom: '0', left: '0',
+                width: '100vw', height: '100vh',
+                background: '#000',
+                zIndex: '99999',
+                // Never in the way of a press: the panels underneath are held
+                // hidden until they are placed, so nothing can be clicked by
+                // mistake and nothing has to be blocked here either.
+                pointerEvents: 'none',
+                transition: 'none',
+                opacity: '1'
+            });
+            return el;
+        },
+
+        // animated: fade it out and take the node away afterwards. Otherwise it
+        // goes at once, which is what leaving the title before it ever settled
+        // (or a second title being built) has to do.
+        lift(animated) {
+            const el = document.getElementById(VEIL_ID);
+            if (!el) return;
+            if (!animated) {
+                if (el.parentNode) el.parentNode.removeChild(el);
+                return;
+            }
+            if (el.dataset.lifting === '1') return;
+            el.dataset.lifting = '1';
+            el.style.transition = `opacity ${VEIL_FADE_MS}ms ease-out`;
+            // Read a layout property so the browser starts the transition from
+            // opacity 1 instead of folding both values into one recalculation.
+            void el.offsetWidth;
+            el.style.opacity = '0';
+            setTimeout(() => {
+                if (el.parentNode) el.parentNode.removeChild(el);
+            }, VEIL_FADE_MS + 80);
+        }
     };
 
     // Base font of the background readout panels (Hyperverse / Auto Drive). Their
@@ -587,6 +689,23 @@
         SceneManager.push(window.Scene_LockpickTetris);
     }
 
+    // A card duel with no collection behind it: both sides are dealt a deck
+    // rolled out of the catalogue at the same strength, so it is an even game
+    // between two strangers. Flagged as practice, which is what keeps the win
+    // off the streak and stops it paying out a booster pack into a throwaway
+    // title context.
+    function launchCardBattle() {
+        const CG = window.CardGame;
+        if (!CG || !window.CardDuel) return;
+        window.CardDuel.start({
+            playerName: T('Titlescreen.minigame.cardBattleYou'),
+            playerDeck: CG.randomDeck(16, 0.5),
+            opponentName: T('Titlescreen.minigame.cardBattleFoe'),
+            opponentDeck: CG.randomDeck(16, 0.5),
+            practice: true
+        });
+    }
+
     function launchPiano(scene) {
         if (!window.VisualPiano || !window.VisualPiano.open) return;
         // The piano is a DOM overlay, not a scene: park the list window while it
@@ -626,6 +745,9 @@
         const all = [
             { name: T('Titlescreen.minigame.arena'),                   avail: () => hasScene('Scene_ArenaPartySelect'),  run: s => SceneManager.push(window.Scene_ArenaPartySelect) },
             { name: T('Titlescreen.minigame.camperDriving'),          avail: () => !!(window.CamperDrivingSystem && window.CamperDrivingSystem.startStandalone), run: s => SceneManager.push(Scene_CamperFreeplay) },
+            // No venue step: a dream rolls its own world and has no interest in
+            // where the sleeper was standing when it started.
+            { name: T('Titlescreen.minigame.dream'),                   avail: () => hasScene('Scene_DreamFreeplay'),     run: s => SceneManager.push(window.Scene_DreamFreeplay) },
             { name: T('Titlescreen.minigame.surfing'),                 avail: () => hasScene('Scene_SurfingGame'),       run: s => SceneManager.push(window.Scene_SurfingGame), setup: true },
             { name: T('Titlescreen.minigame.pool'),                    avail: () => hasScene('Scene_Pool'),              run: s => SceneManager.push(window.Scene_Pool) },
             { name: T('Titlescreen.minigame.chess'),                   avail: () => hasCmd('ChessGame', 'startNormalChess'), run: s => PluginManager.callCommand(s, 'ChessGame', 'startNormalChess', {}) },
@@ -639,6 +761,10 @@
             // the free-play bankroll and lets the player pick which card to buy.
             { name: T('Titlescreen.minigame.scratchCard'),            avail: () => hasScene('Scene_ScratchCard'),       run: s => (window.openScratchCardArcade ? window.openScratchCardArcade() : SceneManager.push(window.Scene_ScratchCard)) },
             { name: T('Titlescreen.minigame.monsterTournament'),      avail: () => hasScene('Scene_MonsterTournament'), run: s => SceneManager.push(window.Scene_MonsterTournament) },
+            // Free play deals BOTH sides a fresh random deck, so the title
+            // screen never reads the party's own collection and nothing that
+            // happens at the table is staked, banked or streaked.
+            { name: T('Titlescreen.minigame.cardBattle'),             avail: () => !!(window.CardDuel && window.CardGame), run: s => launchCardBattle() },
             { name: T('Titlescreen.minigame.hyperTamer'),             avail: () => hasScene('Scene_HyperTamer'),        run: s => SceneManager.push(window.Scene_HyperTamer) },
             { name: T('Titlescreen.minigame.periodicTable'),          avail: () => hasScene('Scene_PeriodicTable'),     run: s => SceneManager.push(window.Scene_PeriodicTable) },
             { name: T('Titlescreen.minigame.boosterPack'),            avail: () => hasCmd('BoosterPackSystem', 'openBoosterPack'), run: s => PluginManager.callCommand(s, 'BoosterPackSystem', 'openBoosterPack', {}) },
@@ -655,6 +781,13 @@
         ];
         return all.filter(e => { try { return e.avail(); } catch (_) { return false; } });
     }
+
+    // Grid metrics of the picker, matching the `gap` .mg-menu-list declares in
+    // css/theme.css. MG_MAX_COLS keeps a long catalogue from being spread so
+    // wide that the columns stop reading as one list.
+    const MG_GAP = 3;
+    const MG_COL_GAP = 8;
+    const MG_MAX_COLS = 4;
 
     // The minigame picker mirrors the titlescreen menu: a DOM overlay reusing the
     // same .ts-menu-* item styling (see css/theme.css) inside centered, scrollable
@@ -676,6 +809,8 @@
             const last = Scene_MinigameList._lastIndex || 0;
             this._selectedIndex = Math.min(last, this._entries.length);
             this._lastRenderKey = '';
+            this._rows = 1;
+            this._cols = 1;
             this.createUIOverlay();
         }
 
@@ -715,25 +850,68 @@
             this.refreshOverlay();
         }
 
+        // The catalogue is long enough to run off the bottom of the screen as a
+        // single column, so it is dealt DOWN columns instead: as many rows as
+        // the panel has room for, then a new column beside it. The figures are
+        // measured off the rendered rows rather than estimated, so it comes out
+        // right at every resolution and UI scale; this runs in the same frame as
+        // the build, so the single-column state it measures is never painted.
+        applyGridLayout(total) {
+            const list = this._menuContainer.querySelector('.mg-menu-list');
+            const first = list && list.firstElementChild;
+            if (!list || !first) { this._rows = total; this._cols = 1; return; }
+
+            const rowH = first.offsetHeight + MG_GAP;
+            // Every column comes out as wide as the longest title (1fr tracks
+            // under a max-content constraint), so that is what a column costs.
+            let widest = 0;
+            for (const node of list.children) widest = Math.max(widest, node.offsetWidth);
+            const colW = widest + MG_COL_GAP;
+            // The list has already shrunk into the room the panel left it, so its
+            // own box is the answer; clientHeight carries the padding, which the
+            // rows do not get to stand in.
+            const cs = window.getComputedStyle(list);
+            const pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+            const fitRows = Math.max(1, Math.floor((list.clientHeight - (pad || 0)) / rowH));
+            // Width is read off the container (the overlay wrapper is only as
+            // wide as its own content, so it cannot answer for the screen).
+            const room = (this._menuContainer.clientWidth || colW) * 0.94;
+            const fitCols = Math.max(1, Math.floor(room / colW));
+
+            let cols = Math.max(1, Math.ceil(total / fitRows));
+            cols = Math.min(cols, MG_MAX_COLS, fitCols);
+            this._rows = Math.ceil(total / cols);
+            this._cols = Math.ceil(total / this._rows);
+
+            if (this._cols > 1) {
+                list.classList.add('mg-grid');
+                list.style.gridTemplateRows = 'repeat(' + this._rows + ', auto)';
+            }
+        }
+
+        // Rebuilding the whole list on every cursor step made the panel flicker,
+        // so the rows are written once per page and a move only carries the
+        // `selected` class from one of them to the next (syncSelection).
         refreshOverlay() {
             if (!this._menuContainer) return;
             const page = this.currentPage();
-            const key = this._mode + ':' + this._selectedIndex;
-            if (this._lastRenderKey === key) return;
+            const total = page.rows.length + 1; // rows + Back
+            const key = this._mode + ':' + total + ':' + ConfigManager.language;
+            if (this._lastRenderKey === key) {
+                this.syncSelection();
+                return;
+            }
             this._lastRenderKey = key;
 
             const rows = page.rows.map((text, i) => ({ text: String(text).toUpperCase(), index: i }));
             rows.push({ text: T('Titlescreen.minigameSetup.back').toUpperCase(), index: rows.length });
 
-            const items = rows.map(r => {
-                const sel = r.index === this._selectedIndex ? ' selected' : '';
-                return `
-                    <div class="ts-menu-item${sel}" data-index="${r.index}"
+            const items = rows.map(r => `
+                    <div class="ts-menu-item" data-index="${r.index}"
                          onmouseenter="SceneManager._scene && SceneManager._scene.onMinigameHover && SceneManager._scene.onMinigameHover(${r.index})"
                          onclick="SceneManager._scene && SceneManager._scene.onMinigameClick && SceneManager._scene.onMinigameClick(${r.index})">
                         <span class="ts-menu-text">${r.text}</span>
-                    </div>`;
-            }).join('');
+                    </div>`).join('');
 
             this._menuContainer.innerHTML = `
                 <div class="mg-menu-overlay">
@@ -741,23 +919,72 @@
                     <div class="mg-menu-list">${items}</div>
                 </div>`;
 
-            // Keep the highlighted row inside the scrollable list.
-            const sel = this._menuContainer.querySelector('.ts-menu-item.selected');
-            if (sel && sel.scrollIntoView) sel.scrollIntoView({ block: 'nearest' });
+            // The setup pages are two to four answers and stay a single column.
+            this._rows = total;
+            this._cols = 1;
+            if (this._mode === 'list') this.applyGridLayout(total);
+
+            this._itemNodes = Array.from(this._menuContainer.querySelectorAll('.ts-menu-item'));
+            this._selectedNode = null;
+            this._layoutSig = this._menuContainer.clientWidth + 'x' + this._menuContainer.clientHeight;
+            this.syncSelection();
+        }
+
+        syncSelection() {
+            const nodes = this._itemNodes;
+            if (!nodes || !nodes.length) return;
+            const node = nodes[Math.max(0, Math.min(nodes.length - 1, this._selectedIndex))];
+            if (node === this._selectedNode) return;
+            if (this._selectedNode) this._selectedNode.classList.remove('selected');
+            this._selectedNode = node;
+            if (!node) return;
+            node.classList.add('selected');
+            // Only a column taller than the panel scrolls; a grid that fits does
+            // not move, so this never yanks the page about under the cursor.
+            if (node.scrollIntoView) node.scrollIntoView({ block: 'nearest' });
+        }
+
+        // The grid is filled down its columns (grid-auto-flow: column over a
+        // fixed row count), so an index is (column, row) and up/down stay inside
+        // one column while left/right step between them, keeping the row and
+        // clamping onto the last entry of a short final column.
+        moveCursor(dx, dy, max) {
+            const rows = Math.max(1, this._rows || max);
+            let col = Math.floor(this._selectedIndex / rows);
+            let row = this._selectedIndex % rows;
+            const cols = Math.max(1, Math.ceil(max / rows));
+
+            if (dy) {
+                const tall = Math.min(rows, max - col * rows); // rows in this column
+                row = (row + dy + tall) % tall;
+            }
+            if (dx) {
+                for (let i = 0; i < cols; i++) {
+                    col = (col + dx + cols) % cols;
+                    const tall = max - col * rows;
+                    if (tall > 0) { row = Math.min(row, tall - 1); break; }
+                }
+            }
+            const next = Math.min(max - 1, col * rows + row);
+            if (next === this._selectedIndex) return;
+            this._selectedIndex = next;
+            SoundManager.playCursor();
+            this.syncSelection();
         }
 
         onMinigameHover(index) {
             if (this._overlayWatch || index === this._selectedIndex) return;
             SoundManager.playCursor();
             this._selectedIndex = index;
-            this.refreshOverlay();
+            this.syncSelection();
         }
 
+        // Picking a game is silent: the title and its arcade play no confirm
+        // sound, only the cursor, the buzzer and the cancel.
         onMinigameClick(index) {
             if (this._overlayWatch) return;
-            SoundManager.playOk();
             this._selectedIndex = index;
-            this.refreshOverlay();
+            this.syncSelection();
             this.confirmSelection();
         }
 
@@ -849,17 +1076,28 @@
                 return; // an overlay minigame owns input while it is up
             }
 
+            // The grid is measured, so a window resize or fullscreen toggle has
+            // to deal the columns again; the signature only differs on the
+            // frames where the overlay actually changed size.
+            const sig = this._menuContainer
+                ? this._menuContainer.clientWidth + 'x' + this._menuContainer.clientHeight
+                : '';
+            if (sig !== this._layoutSig) {
+                this._layoutSig = sig;
+                this._lastRenderKey = '';
+                this.refreshOverlay();
+            }
+
             const max = this.currentPage().rows.length + 1; // rows + Back
             if (Input.isRepeated('down')) {
-                this._selectedIndex = (this._selectedIndex + 1) % max;
-                SoundManager.playCursor();
-                this.refreshOverlay();
+                this.moveCursor(0, 1, max);
             } else if (Input.isRepeated('up')) {
-                this._selectedIndex = (this._selectedIndex - 1 + max) % max;
-                SoundManager.playCursor();
-                this.refreshOverlay();
+                this.moveCursor(0, -1, max);
+            } else if (Input.isRepeated('right')) {
+                this.moveCursor(1, 0, max);
+            } else if (Input.isRepeated('left')) {
+                this.moveCursor(-1, 0, max);
             } else if (Input.isTriggered('ok')) {
-                SoundManager.playOk();
                 this.confirmSelection();
             } else if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
                 SoundManager.playCancel();
@@ -2650,8 +2888,10 @@ Window_TitleCommand.prototype.makeCommandList = function () {
                 ? T('Titlescreen.card.weapon')
                 : T('Titlescreen.card.artifact');
 
-            // Non-zero base parameters (params: HP, MP, ATK, DEF, MAT, MDF, AGI, LUK).
-            const PARAM_LABELS = ['HP', 'MP', 'ATK', 'DEF', 'MAT', 'MDF', 'AGI', 'LUK'];
+            // Non-zero base parameters, named the way the rest of the game names
+            // them: $dataSystem.terms.params, which Hendrix_Localization has
+            // already translated in place by the time the title screen draws.
+            const PARAM_LABELS = [0, 1, 2, 3, 4, 5, 6, 7].map(i => TextManager.param(i));
             const params = weapon.params || [];
             const statBits = [];
             for (let i = 0; i < PARAM_LABELS.length; i++) {
@@ -5078,6 +5318,10 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     // -------------------------------------------------------------------------
     const _Scene_Title_create = Scene_Title.prototype.create;
     Scene_Title.prototype.create = function () {
+        // Up before a single piece of the screen is built, so not one frame of
+        // the assembly (or of the window still settling) is ever seen.
+        TitleVeil.raise();
+        this._veilLifted = false;
         _Scene_Title_create.call(this);
         this._connections = {};
         this._cardIdCounter = 0; // Counter for unique card IDs
@@ -5453,6 +5697,20 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             '<path d="M30,0 v40 M0,20 h60" stroke="#C8102E" stroke-width="8"/>'
         ),
         it: svgBandsV('#008C45', '#F4F5F0', '#CD212A'),
+        // Naguka: no real-world nation to draw, so a tribal banner instead.
+        // Swamp green field, bone-white crossbones (docs/Lore.md: Kola-borehole
+        // goblins gone corpse-paint metalhead).
+        nk: svgFlag(
+            '<path d="M0,0 h60 v40 h-60 z" fill="#2E4620"/>' +
+            '<g transform="rotate(35 30 20)" fill="#E8DFC0">' +
+            '<rect x="14" y="17.5" width="32" height="5" rx="2.5"/>' +
+            '<circle cx="14" cy="20" r="3"/><circle cx="46" cy="20" r="3"/>' +
+            '</g>' +
+            '<g transform="rotate(-35 30 20)" fill="#E8DFC0">' +
+            '<rect x="14" y="17.5" width="32" height="5" rx="2.5"/>' +
+            '<circle cx="14" cy="20" r="3"/><circle cx="46" cy="20" r="3"/>' +
+            '</g>'
+        ),
         fr: svgBandsV('#002395', '#FFFFFF', '#ED2939'),
         ru: svgBandsH('#FFFFFF', '#0039A6', '#D52B1E'),
         ko: svgFlag(
@@ -5646,10 +5904,38 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     // panel is only its face. It stays out of the way until there is something
     // to say, so an up-to-date copy sees the corner exactly as before, and the
     // menu column keeps its own UPDATES entry either way.
+    //
+    // The updater is an optional plugin: turned off in plugins.js, or on a web
+    // build where there is no local file system, window.GameUpdater is simply
+    // not there. Nothing below may assume it is, and nothing below may assume
+    // that a GameUpdater which IS there is the version this file was written
+    // against, so every call goes through updaterCall, which answers undefined
+    // for a method that is missing or that throws. The title screen then behaves
+    // exactly as it did before the updater existed: no notice, no check, and a
+    // version badge as written.
     // -------------------------------------------------------------------------
 
-    const updaterApi = () => (window.GameUpdater && window.GameUpdater.isAvailable &&
-        window.GameUpdater.isAvailable()) ? window.GameUpdater : null;
+    const updaterApi = () => {
+        try {
+            const api = window.GameUpdater;
+            return (api && typeof api.isAvailable === 'function' && api.isAvailable()) ? api : null;
+        } catch (e) {
+            return null;
+        }
+    };
+
+    // One guarded call into the updater. A missing method is not a failure, it
+    // is an older (or newer) updater that does not offer it.
+    const updaterCall = function (method) {
+        const api = updaterApi();
+        if (!api || typeof api[method] !== 'function') return undefined;
+        try {
+            return api[method].apply(api, Array.prototype.slice.call(arguments, 1));
+        } catch (e) {
+            console.warn('Titlescreen: the updater failed on ' + method, e);
+            return undefined;
+        }
+    };
 
     // Docked under the language flags, the way they are docked under the badge.
     Scene_Title.prototype.createUpdateButton = function () {
@@ -5683,6 +5969,16 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             e.preventDefault();
             if (SceneManager._scene !== this) return;
             if (btn.style.cursor !== 'pointer') return;
+            // Nothing here can be downloaded: a major update is answered off
+            // the title screen, so the press opens the updater, which explains
+            // it and takes the confirmation that it has been done.
+            if (this._updateAction === 'major') {
+                if (window.Scene_GameUpdater) {
+                    SoundManager.playOk();
+                    SceneManager.push(window.Scene_GameUpdater);
+                }
+                return;
+            }
             this.startUpdateDownload();
         });
 
@@ -5707,41 +6003,109 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             : T('Titlescreen.update.readyPlain');
     };
 
-    // Three states, and two of them are silence: checking says so quietly, a
-    // build waiting is a real button, everything else (up to date, offline, a
-    // failed check) shows nothing at all. While the build is being fetched the
-    // button becomes its own progress readout, so nothing else has to open.
+    // The button is one line of text, except when it also has to say the whole
+    // game must be downloaded again: then it carries a second line under the
+    // first, since that is not a thing the game can do for the player.
+    const setUpdateLabel = (btn, main, second) => {
+        if (!btn) return;
+        if (!second) {
+            btn.style.flexDirection = '';
+            btn.style.alignItems = 'center';
+            btn.textContent = main;
+            return;
+        }
+        btn.style.flexDirection = 'column';
+        btn.style.alignItems = 'flex-start';
+        btn.textContent = '';
+        const head = document.createElement('div');
+        head.textContent = main;
+        const note = document.createElement('div');
+        note.textContent = second;
+        note.style.fontSize = '0.82em';
+        note.style.marginTop = '2px';
+        note.style.color = '#FF9A6E';
+        btn.appendChild(head);
+        btn.appendChild(note);
+    };
+
+    // A major update is one the file patch cannot fully carry, so the notice
+    // says the whole game has to be downloaded again: while the update is being
+    // offered, and afterwards for as long as the copy has taken one without
+    // being downloaded whole.
+    const majorPendingLine = () => T('Titlescreen.update.majorLine');
+    const majorTakenLine   = () => T('Titlescreen.update.majorInstalledLine');
+    const majorTaken = (result) => {
+        if (result && typeof result.majorInstalled === 'boolean') return result.majorInstalled;
+        return !!updaterCall('majorInstalled');
+    };
+
+    // Four states, and one of them is silence: checking says so quietly, a build
+    // waiting is a real button, a copy that has taken a major update says so
+    // until it is downloaded whole, and an up-to-date copy (or one that could
+    // not reach the branch) shows nothing at all. While the build is being
+    // fetched the button becomes its own progress readout, so nothing else has
+    // to open.
     Scene_Title.prototype.refreshUpdateButton = function () {
         const btn = this._updateButton;
         if (!btn) return;
         if (this._updateBusy) return;
         const api = updaterApi();
-        const result = api ? api.autoResult() : null;
+        const result = api ? updaterCall('autoResult') : null;
+        // The launch check answers long after the panels have been faded in, so a
+        // notice that turns up now fades itself in rather than snapping into the
+        // corner. While the settle is still running the sweep covers it instead.
+        const wasHidden = btn.style.display === 'none';
+        const fadeIn = () => {
+            if (!wasHidden || !this._overlaysSettled) return;
+            if (btn.style.display === 'none') return;
+            fadeInOverlay(btn, 0);
+        };
 
         // A build fetched and swapped in by an earlier visit to this screen (or
-        // by the updater itself) only wants the game restarted onto it.
-        if (api && api.needsRestart && api.needsRestart()) {
-            btn.textContent = T('Titlescreen.update.restartReady');
-            btn.title = T('Titlescreen.update.restartTip');
+        // by the updater itself) only wants the game restarted onto it. If it
+        // was a major update, the restart is not the end of it.
+        if (updaterCall('needsRestart')) {
+            this._updateAction = 'restart';
+            setUpdateLabel(btn, T('Titlescreen.update.restartReady'),
+                majorTaken(result) ? majorTakenLine() : '');
+            btn.title = majorTaken(result)
+                ? T('Titlescreen.update.majorInstalledTip')
+                : T('Titlescreen.update.restartTip');
             btn.style.display = 'flex';
             btn.style.cursor = 'pointer';
             btn.style.pointerEvents = 'auto';
             btn.style.color = '#FFD700';
             btn.style.animation = 'title-update-pulse 2.4s ease-in-out infinite';
             this.layoutUpdateButton();
+            fadeIn();
             return;
         }
 
         if (result && result.available && !this._updateDone) {
-            btn.textContent = updateBuildLabel(result);
-            btn.title = T('Titlescreen.update.tip');
+            this._updateAction = 'install';
+            setUpdateLabel(btn, updateBuildLabel(result), result.major ? majorPendingLine() : '');
+            btn.title = result.major ? T('Titlescreen.update.majorTip') : T('Titlescreen.update.tip');
             btn.style.display = 'flex';
             btn.style.cursor = 'pointer';
             btn.style.pointerEvents = 'auto';
             btn.style.color = '#FFD700';
             btn.style.animation = 'title-update-pulse 2.4s ease-in-out infinite';
+        } else if (result && majorTaken(result)) {
+            // Nothing left to fetch, but this copy was patched across a major
+            // update and is not whole: the one thing left is a full download.
+            // The button opens the updater screen, which explains it and is
+            // where the player says they have done it.
+            this._updateAction = 'major';
+            setUpdateLabel(btn, T('Titlescreen.update.majorInstalled'), majorTakenLine());
+            btn.title = T('Titlescreen.update.majorInstalledTip');
+            btn.style.display = 'flex';
+            btn.style.cursor = 'pointer';
+            btn.style.pointerEvents = 'auto';
+            btn.style.color = '#FFB347';
+            btn.style.animation = '';
         } else if (!result) {
-            btn.textContent = T('Titlescreen.update.checking');
+            this._updateAction = null;
+            setUpdateLabel(btn, T('Titlescreen.update.checking'), '');
             btn.title = T('Titlescreen.update.checkingTip');
             btn.style.display = 'flex';
             btn.style.cursor = 'default';
@@ -5749,10 +6113,12 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             btn.style.color = 'rgba(255, 215, 0, 0.55)';
             btn.style.animation = '';
         } else {
+            this._updateAction = null;
             btn.style.display = 'none';
             btn.style.animation = '';
         }
         this.layoutUpdateButton();
+        fadeIn();
     };
 
     // Hung off the measured bottom of the language panel, so it follows however
@@ -5780,19 +6146,23 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     Scene_Title.prototype.startUpdateDownload = function () {
         if (this._updateBusy) return;
         const api = updaterApi();
+        if (!api) return;
         // Already fetched, waiting only on the restart.
-        if (api && api.needsRestart && api.needsRestart()) {
+        if (updaterCall('needsRestart')) {
             SoundManager.playOk();
             this._updateBusy = true;
             if (this._updateButton) this._updateButton.textContent = T('Titlescreen.update.restarting');
-            setTimeout(() => api.restart(), 400);
+            setTimeout(() => updaterCall('restart'), 400);
             return;
         }
         // The updater is working for somebody else (a check left running, or an
         // install started before the screen was rebuilt): let it finish.
-        if (api && api.isBusy && api.isBusy()) return;
-        const result = api ? api.autoResult() : null;
-        if (!api || !result || !result.available || !result.latest) return;
+        if (updaterCall('isBusy')) return;
+        const result = updaterCall('autoResult');
+        if (!result || !result.available || !result.latest) return;
+        // An updater that cannot fetch (an older one, or one loaded without its
+        // download half) has nothing this button can drive.
+        if (typeof api.check !== 'function' || typeof api.install !== 'function') return;
 
         // Downloads switched off in the plugin parameters: only the updater
         // screen can explain that, so hand over to it.
@@ -5842,7 +6212,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
         // The launch check already measured this build, so the plan is usually
         // in hand; anything else is measured now.
-        const planned = api.plan(sha);
+        const planned = updaterCall('plan', sha);
         const ready = (planned && planned.changed.length)
             ? Promise.resolve(planned)
             : api.check(sha, onProgress);
@@ -5859,8 +6229,23 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             return api.install(sha, onProgress);
         }).then((done) => {
             if (!done) return;
-            say(T('Titlescreen.update.restarting'));
-            setTimeout(() => api.restart(), 700);
+            // A major update is not finished by the restart: the copy is patched
+            // but not whole, so say it here and hold the notice long enough to
+            // be read. It stands under the flags after the reload as well.
+            const major = !!updaterCall('majorInstalled');
+            if (major) {
+                setUpdateLabel(btn, T('Titlescreen.update.restarting'), majorTakenLine());
+                if (btn) {
+                    btn.style.cursor = 'default';
+                    btn.style.pointerEvents = 'none';
+                    btn.style.animation = '';
+                    btn.style.display = 'flex';
+                }
+                this.layoutUpdateButton();
+            } else {
+                say(T('Titlescreen.update.restarting'));
+            }
+            setTimeout(() => updaterCall('restart'), major ? 2600 : 700);
         }).catch((err) => {
             console.warn('Titlescreen: the update could not be installed', err);
             release(T('Titlescreen.update.failed'), false);
@@ -5889,11 +6274,13 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     // this build.
     Scene_Title.prototype.beginUpdateCheck = function () {
         const api = updaterApi();
-        if (!api || !api.autoCheck) return;
+        if (!api || typeof api.autoCheck !== 'function') return;
 
         const run = () => {
             if (this._isDestroyed) return;
-            api.autoCheck().then(() => {
+            const check = updaterCall('autoCheck');
+            if (!check || typeof check.then !== 'function') return;
+            check.then(() => {
                 if (this._isDestroyed || SceneManager._scene !== this) return;
                 this.createVersionBadge();
                 this.refreshUpdateButton();
@@ -5903,7 +6290,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
         // Already answered this session: no reason to make the player wait for
         // the notice a second time.
-        if (api.autoResult()) run();
+        if (updaterCall('autoResult')) run();
         else setTimeout(run, UPDATE_CHECK_DELAY);
     };
 
@@ -6234,8 +6621,13 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         img.style.width = Math.round(w * sx) + 'px';
         img.style.height = Math.round(h * sy) + 'px';
         // Now that it has a box, it can be shown. Every early return above leaves
-        // it transparent, so it is never painted at its natural size.
-        if (img.style.opacity !== '1') img.style.opacity = '1';
+        // it transparent, so it is never painted at its natural size. The PIXI
+        // logo it stands in for is covered by the scene's own fade-in; this one
+        // is not, so it is faded up by hand the first time it is placed.
+        if (img.style.opacity !== '1') {
+            img.style.opacity = '1';
+            fadeInOverlay(img, 0);
+        }
     };
 
     // The window is still settling while the title is being built: Scene_Boot
@@ -6257,12 +6649,17 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     // The logo overlay is deliberately absent: it is re-pinned to the PIXI logo
     // every frame (and gates itself on being placed, see syncLogoOverlay), so it
     // never shows at the wrong size and hiding it here would only blink it.
+    //
+    // The order matters, if only a little: it is also the order the panels are
+    // faded up in once the hold is over (fadeInOverlays), so it reads menu first,
+    // then the top-left stack (badge, flags, update notice), then the background
+    // switcher and the disclaimer, then whatever the background itself puts up.
     const SCALED_OVERLAY_IDS = [
         'title-menu-container',
-        'title-bg-switch',
         'title-version',
         'title-language',
         'title-update',
+        'title-bg-switch',
         'title-disclaimer',
         'title-hyperverse-info',
         'title-hyperverse-catalog',
@@ -6310,6 +6707,27 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         this._overlaysSettled = true;
         this.layoutOverlays();
         this.setScaledOverlaysVisible(true);
+        this.fadeInOverlays();
+        this.liftFadeVeil();
+    };
+
+    // Take the veil away once the panels are placed and shown. It is held for
+    // two more frames first, so what comes out from under it is the finished
+    // screen and not the frame the panels were shown on.
+    Scene_Title.prototype.liftFadeVeil = function () {
+        if (this._veilLifted) return;
+        this._veilLifted = true;
+        const raf = window.requestAnimationFrame;
+        if (typeof raf !== 'function') { TitleVeil.lift(true); return; }
+        raf(() => raf(() => TitleVeil.lift(true)));
+    };
+
+    // Fade the panels up in the order SCALED_OVERLAY_IDS lists them. A panel that
+    // is not on screen (the update notice with no build waiting) still takes its
+    // slot in the stagger, so the rhythm does not change with what the build
+    // happens to be showing.
+    Scene_Title.prototype.fadeInOverlays = function () {
+        this.scaledOverlayNodes().forEach((el, i) => fadeInOverlay(el, i * OVERLAY_FADE_STEP));
     };
 
     // Re-place every HTML panel against the current canvas rect. Run once the
@@ -6583,7 +7001,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
         if (cmd.enabled === false) return;
 
-        SoundManager.playOk();
+        // No confirm sound on the title: choosing an entry is silent.
         this._selectedCommandIndex = index;
         this._lastCommandIndex = -1; // Force refresh so the click highlight matches
         this.refreshUIOverlayDOM();
@@ -6594,6 +7012,9 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
     Scene_Title.prototype.terminate = function () {
         this._isDestroyed = true;
+        // Leaving before the title ever settled would otherwise leave a black
+        // sheet over the scene that follows.
+        TitleVeil.lift(false);
         if (this._weaponBg) {
             this._weaponBg.dispose();
             this._weaponBg = null;
@@ -6700,7 +7121,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             if (!chosen || chosen.enabled === false) {
                 SoundManager.playBuzzer();
             } else {
-                SoundManager.playOk();
+                // Silent confirm, as on the mouse path.
                 this._commandWindow.select(this._selectedCommandIndex);
                 this._commandWindow.callOkHandler();
             }

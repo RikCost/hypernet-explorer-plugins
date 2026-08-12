@@ -616,7 +616,6 @@
     "женский",
     "небинарный"
   ],
-  "genderChanged": "Ваши гормоны изменили пол на: {gender}!",
   "unit": {
     "breathsPerMinute": "{n} вд/мин",
     "millionPerDay": "{n} млн/сут"

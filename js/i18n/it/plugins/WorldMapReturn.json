@@ -1,6 +1,7 @@
 {
   "needDivingSuit": "Ti serve una muta da sub",
   "returnToWorldMap": "Torna alla mappa del mondo",
+  "chooseLandingSite": "Scegli il sito di atterraggio",
   "goToSurface": "Sali in superficie",
   "goUnderground": "Scendi sottoterra",
   "toggleWorldMap": "Mostra o nascondi la mappa",
@@ -12,5 +13,7 @@
   "stop": "Fermati",
   "worldMapMenu": "Mappa del mondo",
   "wilderness": "Terre selvagge",
-  "mapNumbered": "Mappa {id}"
+  "mapNumbered": "Mappa {id}",
+  "underground": "livello sotterraneo {depth}",
+  "atTile": "a {x},{y}"
 }

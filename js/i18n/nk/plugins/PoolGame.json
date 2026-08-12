@@ -1,0 +1,26 @@
+{
+  "player1": "PLAYER 1",
+  "player2": "PLAYER 2",
+  "player2Cpu": "CPU",
+  "noThree": "THREE.JS IZ NOT LOADED - POOL UNAVAILABLE",
+  "aimPrompt": "{player}: LINE UP DA SHOT",
+  "powerPrompt": "{player}: SET DA POWER",
+  "englishPrompt": "{player}: SET DA ENGLISH",
+  "liningUp": "{player} IZ LININ' UP...",
+  "potted": "DOWN: {count}",
+  "nothingDown": "NOTHIN' DOWN",
+  "scratch": "SCRATCH - DA CUE BALL GOES BACK ON DA SPOT",
+  "eightGood": "DA EIGHT DROPS - DA FRAME IZ OVER",
+  "eightEarly": "DA EIGHT WENT DOWN EARLY",
+  "victory": "VICTORY!",
+  "defeat": "DEFEAT",
+  "draw": "DRAW",
+  "finalScore": "{player} {playerScore} {opponent} {opponentScore}",
+  "pressAnyKey": "PRESS OK TA LEAVE DA TABLE",
+  "hud": {
+    "title": "POOL",
+    "power": "POWER",
+    "english": "ENGLISH",
+    "onTable": "ON TABLE {count}"
+  }
+}

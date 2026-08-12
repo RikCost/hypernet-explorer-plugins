@@ -511,7 +511,6 @@
 
             // Add final instructions
             this.addTerminalLine('> SYSTEM BOOT COMPLETE');
-            this.addTerminalLine('> PRESS ACTION TO EXIT');
             
             // Create the playable character
             const font = ArcadeManager.getArcadeFont();

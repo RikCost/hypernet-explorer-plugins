@@ -500,14 +500,14 @@
     ]
   },
   "stat": {
-    "0": "Max HP",
-    "1": "Max MP",
-    "2": "Attack",
-    "3": "Defense",
-    "4": "Magic",
-    "5": "Magic Def",
-    "6": "Agility",
-    "7": "Luck"
+    "0": "HP",
+    "1": "MP",
+    "2": "STR",
+    "3": "CON",
+    "4": "INT",
+    "5": "WIS",
+    "6": "DEX",
+    "7": "PSI"
   },
   "element": {
     "3": "Fire",
@@ -555,7 +555,7 @@
     "critRate": "+{bonus}% critical hit rate",
     "hitsTwice": "Hits twice per attack",
     "resistance": "{value}% {what} resistance",
-    "tpGain": "+{bonus}% TP gained from actions",
+    "tpGain": "+{bonus}% AP gained from actions",
     "autoState": "Auto-{state} at battle start"
   },
   "flavor": {
@@ -568,5 +568,15 @@
     "armor2": "An extraordinary protective item of legendary renown.",
     "armor3": "A divine armor that grants unparalleled protection."
   },
-  "articleDefault": "The "
+  "articleDefault": "The ",
+  "sacrifice": {
+    "blockedInBattle": "The ritual cannot be performed in the heat of battle.",
+    "noEligible": "There is no one who can be spared for the ritual.",
+    "prompt": "Choose who will be sacrificed to forge the weapon. This cannot be undone.",
+    "cancel": "Cancel",
+    "noSlots": "The ritual fails: no vessel remains for the weapon.",
+    "namePattern": "{name}'s {weapon}",
+    "descLine": "Forged from the sacrificed body of {name}, once level {level}.",
+    "result": "{name} is consumed in the ritual. {weapon} is forged from their remains."
+  }
 }

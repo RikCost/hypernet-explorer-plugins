@@ -151,7 +151,12 @@
                 { name: 'SFX', by: 'freesound_community', urls: ['pixabay.com/'] },
                 { name: 'SFX', by: 'David Dumais', urls: ['pixabay.com/sound-effects/'] },
                 { name: 'SFX', by: 'u_xjrmmgxfru', urls: ['pixabay.com/sound-effects/'] },
-                { name: 'Tyler J Warren SFX', urls: ['tylerjwarren.itch.io/'] }
+                { name: 'Tyler J Warren SFX', urls: ['tylerjwarren.itch.io/'] },
+                { name: "Fantozzi's Footsteps (Grass/Sand & Stone)", by: 'Fantozzi', urls: ['opengameart.org/content/fantozzis-footsteps-grasssand-stone'] },
+                { name: '42 Snow and Gravel Footsteps', by: 'Corsica_S, extracted by qubodup', urls: ['opengameart.org/content/42-snow-and-gravel-footsteps'] },
+                { name: 'concrete footsteps 1.wav', by: 'patchytherat', urls: ['freesound.org/people/patchytherat/sounds/535052/'] },
+                { name: 'footsteps concrete', by: 'Yuval', urls: ['freesound.org/people/Yuval/sounds/205748/'] },
+                { name: 'Footsteps - Stone, Rock, Concrete, Cement', by: 'SecureSubset', urls: ['freesound.org/people/SecureSubset/sounds/813622/'] }
             ]
         }
     ];

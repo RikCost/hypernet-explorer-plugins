@@ -2158,5 +2158,45 @@
   "540": {
     "name": "Lancia Seed",
     "description": "Una spada a lama corta, leggera e facile da maneggiare."
+  },
+  "541": {
+    "name": "Acustica da Strada",
+    "description": "Una dreadnought malconcia con tre corde rimaste,\nbrandita per il manico."
+  },
+  "542": {
+    "name": "Sassofono Presidenziale",
+    "description": "Un sax tenore in ottone, suonato in seconda serata\ne brandito quando le domande si fanno difficili."
+  },
+  "543": {
+    "name": "Stratocaster del Banco dei Pegni",
+    "description": "Una copia di una copia, comprata di seconda mano e\nmai del tutto accordata."
+  },
+  "544": {
+    "name": "La chitarra infernale",
+    "description": "Una superstrat cherry burst, matelassé e con pinne\nda squalo. Suona più forte della sala e scotta più\ndell'amplificatore."
+  },
+  "545": {
+    "name": "Flying V",
+    "description": "Una chitarra a forma di ciò per cui viene usata.\nNon serve spiegarlo due volte."
+  },
+  "546": {
+    "name": "Basso Elettrico",
+    "description": "Quattro corde, un manico lungo e parecchia massa.\nLe frequenze basse si sentono più che udirle."
+  },
+  "547": {
+    "name": "Doppio Manico da Battaglia",
+    "description": "Dodici corde sopra, sei sotto, e una tracolla che ha\nretto più peso di quanto una tracolla dovrebbe."
+  },
+  "548": {
+    "name": "Cannone a Feedback",
+    "description": "Una chitarra collegata dritta a un impianto che non\nc'è più. Ulula lo stesso."
+  },
+  "549": {
+    "name": "Superstrat Infernale",
+    "description": "Il manico attraversa tutto il corpo e il corpo brucia\ndal giorno in cui è stato incordato."
+  },
+  "550": {
+    "name": "Il bastone infernale",
+    "description": "Un bastone da passeggio con impugnatura a teschio.\nL'asta è un fodero, e ciò che custodisce non è\naffatto educato."
   }
 }

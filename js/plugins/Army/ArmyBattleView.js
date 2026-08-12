@@ -772,8 +772,7 @@ ArmyBattleField.prototype._createUnit = function (troop, x, y, color, isPlayer) 
   sprite.y = y;
 
   // Create name label
-  const useItalian = ConfigManager.language === 'it';
-  const troopName = useItalian && troop.name_it ? troop.name_it : troop.name;
+  const troopName = (typeof armyT === "function") ? armyT(troop.name) : troop.name;
 
   const nameLabel = new PIXI.Text(troopName, {
     fontFamily: "Arial",
@@ -1727,7 +1726,8 @@ ArmyBattleField.prototype._buildInfoSquadTexts = function (playerSquads, enemySq
 
   let yOffset = 25;
   for (const [squadName, units] of Object.entries(playerSquads)) {
-    const displayName = squadName.length > 15 ? squadName.substring(0, 12) + "..." : squadName;
+    const squadLabel = (typeof armyT === "function") ? armyT(squadName) : squadName;
+    const displayName = squadLabel.length > 15 ? squadLabel.substring(0, 12) + "..." : squadLabel;
 
     const squadText = new PIXI.Text("", {
       fontFamily: "Arial",
@@ -1758,7 +1758,8 @@ ArmyBattleField.prototype._buildInfoSquadTexts = function (playerSquads, enemySq
 
   yOffset = 25;
   for (const [squadName, units] of Object.entries(enemySquads)) {
-    const displayName = squadName.length > 15 ? squadName.substring(0, 12) + "..." : squadName;
+    const squadLabel = (typeof armyT === "function") ? armyT(squadName) : squadName;
+    const displayName = squadLabel.length > 15 ? squadLabel.substring(0, 12) + "..." : squadLabel;
 
     const squadText = new PIXI.Text("", {
       fontFamily: "Arial",

@@ -545,6 +545,32 @@
             <span class="inspect-spec-value" style="color:${r.color};font-weight:bold;">+${r.amount}%</span>
           </div>`).join('');
       }
+      // What this item is medicine for. A course is only worth anything taken
+      // daily, so the number of doses each illness asks for is printed beside
+      // it; anything it merely holds at bay is listed separately.
+      const medicine = window.ItemSystemUtils && window.ItemSystemUtils.getMedicineInfo
+        ? window.ItemSystemUtils.getMedicineInfo(selectedItem) : null;
+      if (medicine) {
+        detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.medicine')}</div>`;
+        detailedInfoHTML += `
+          <div class="inspect-spec-row">
+            <span class="inspect-spec-label">${T('Shop.medicineClass')}:</span>
+            <span class="inspect-spec-value">${medicine.label}</span>
+          </div>`;
+        if (medicine.cures.length) {
+          detailedInfoHTML += medicine.cures.slice(0, 24).map(c => `
+            <div class="inspect-spec-row">
+              <span class="inspect-spec-label">${c.name}:</span>
+              <span class="inspect-spec-value">${T('Inventory.medicineDoses', { days: c.days })}</span>
+            </div>`).join('');
+          if (medicine.cures.length > 24) {
+            detailedInfoHTML += `<div class="inspect-bullet-item">${T('Shop.medicineMore', { count: medicine.cures.length - 24 })}</div>`;
+          }
+        }
+        if (medicine.treats.length) {
+          detailedInfoHTML += `<div class="inspect-bullet-item"><span class="inspect-effect-label">${T('Shop.medicineTreats')}:</span> ${medicine.treats.map(t => t.name).join(', ')}</div>`;
+        }
+      }
       const cravingsFed = window.ItemSystemUtils && window.ItemSystemUtils.getAddictionRelief ? window.ItemSystemUtils.getAddictionRelief(selectedItem) : [];
       if (cravingsFed.length) {
         detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.cravingsFed')}</div>` + cravingsFed.map(r => `

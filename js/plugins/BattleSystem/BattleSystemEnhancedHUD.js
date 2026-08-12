@@ -1,4 +1,14 @@
 (() => {
+
+  // A severed-magic world has no magic in it, so a magic meter is a bar that
+  // can only ever be full and can never be spent: it is not drawn at all.
+  // Read live rather than cached , the answer belongs to the world, and one
+  // session can open a different one. See window.MagicNature.
+  function hideMpBar() {
+    const MN = window.MagicNature;
+    return !!(MN && typeof MN.level === "function" && MN.level() === "severed");
+  }
+
   "use strict";
   const pluginName = "BattleSystemEnhancedHUD";
   const parameters = PluginManager.parameters(pluginName);
@@ -36,15 +46,17 @@
 
   // Compact enemy bars. A lone monster keeps the large top-right bar with its
   // weaknesses and severed parts; the moment a second one joins the fight every
-  // enemy drops to a small party-styled bar drawn under its own feet, so the
-  // troop is read on the field instead of in a tall stack of lists.
+  // enemy drops to a small party-styled bar, and those are stacked in a column
+  // in the SAME top-right corner the single bar occupies. They used to be drawn
+  // under each monster's own feet, which put text over the creatures, moved with
+  // every lunge and stagger, and left the troop unreadable the moment two of
+  // them stood close together.
   const miniBarWidth = 200;
   const miniBarBitmapHeight = 78;
-  const miniBarFootGap = 6; // px between the monster's feet and the top of its bar
-  // A compact bar is placed once and then stays put: the models load, get laid
-  // out and then breathe, lunge and stagger for the rest of the fight, and a bar
-  // that followed all of that would never stand still to be read.
-  const miniBarSettleFrames = 45;
+  const miniBarRightMargin = 40; // matches the large single-enemy bar's margin
+  const miniBarColumnTop = 35; // top edge of the highest compact bar
+  const miniBarStackStep = 70; // vertical distance between stacked bars
+  const miniBarColumnBottom = 24; // air kept under the lowest bar
   const MINI = {
     padX: 8,
     ang: 8, // skew of the angled bar, matching the party cards
@@ -54,7 +66,6 @@
   };
   MINI.mpY = MINI.hpY + MINI.thickness + 3;
   MINI.chipY = MINI.mpY + MINI.thickness + 5;
-  MINI.stackStep = MINI.mpY + MINI.thickness + 8; // vertical step used to un-stack bars
 
   function miniBarGeometry(width) {
     const x = MINI.padX + MINI.ang;
@@ -120,6 +131,9 @@
   // battler answers with the top of its own bitmap.
   let _headBoxScratch = null;
   let _headPosScratch = null;
+  let _headBoxOwner = null;    // whose box _headBoxScratch currently holds
+  let _headBoxFrame = -999;
+  const HEAD_BOX_TTL = 10;     // frames a measured head box is trusted for
   const HEAD_FALLBACK_H = 120; // when nothing can be measured
 
   function battlerHeadPosition(battler) {
@@ -139,7 +153,17 @@
       const root = model && model.model;
       if (root && root.visible) {
         const box = _headBoxScratch || (_headBoxScratch = new THREE.Box3());
-        box.setFromObject(root);
+        // Measuring the box walks every mesh of the model and updates the whole
+        // subtree's world matrices, and the chevron asks for it on every frame the
+        // target picker is open. A breathing idle does not change how tall a
+        // creature is from one frame to the next, so the reading is held for a few
+        // frames per model; the chevron's own bob is what the eye reads anyway.
+        const now = Graphics.frameCount;
+        if (_headBoxOwner !== root || now - _headBoxFrame >= HEAD_BOX_TTL) {
+          box.setFromObject(root);
+          _headBoxOwner = root;
+          _headBoxFrame = now;
+        }
         if (!box.isEmpty()) {
           const v = _headPosScratch || (_headPosScratch = new THREE.Vector3());
           v.set(
@@ -1229,7 +1253,6 @@
 
       // CHANGED: Add stat display for ALL characters (not just actor 1)
       if (!this._minimalEnemy) this.createStatDisplay();
-      if (this._minimalEnemy) this.updateMinimalEnemyPosition();
     }
   };
 
@@ -1714,9 +1737,6 @@
     }
 
     const b = this._battler;
-    if (this._minimalEnemy) {
-      this.updateMinimalEnemyPosition();
-    }
     if (b.hp < this._lastHp) {
       this._damageChunkHp = this._displayHp;
       this._displayHp = b.hp;
@@ -2052,18 +2072,22 @@
       if (this._htmlOverlay) this._htmlOverlay.addText(`HP ${hpStr} ${Math.floor(this._displayHp)}/${b.mhp}`, 0, y, w, "left", 12, "#ff4444", false, null, 0, "monospace", lineHeight);
       y += lineHeight;
 
-      // Draw MP
-      const mpRate = b.mp / Math.max(1, b.mmp);
-      const mpBars = Math.floor(mpRate * gaugeCells);
-      const mpStr = `[${'*'.repeat(Math.max(0, mpBars))}${' '.repeat(Math.max(0, gaugeCells - mpBars))}]`;
-      this.bitmap.textColor = "#00ffff"; // Cyan for MP
-      if (this._htmlOverlay) this._htmlOverlay.addText(`MP ${mpStr} ${b.mp}/${b.mmp}`, 0, y, w, "left", 12, "#00ffff", false, null, 0, "monospace", lineHeight);
-      y += lineHeight;
+      // Draw MP , unless there is no magic in this world at all, in which
+      // case there is nothing to spend it on and the row is not drawn (the
+      // line below it closes up, rather than leaving a gap).
+      if (!hideMpBar()) {
+        const mpRate = b.mp / Math.max(1, b.mmp);
+        const mpBars = Math.floor(mpRate * gaugeCells);
+        const mpStr = `[${'*'.repeat(Math.max(0, mpBars))}${' '.repeat(Math.max(0, gaugeCells - mpBars))}]`;
+        this.bitmap.textColor = "#00ffff"; // Cyan for MP
+        if (this._htmlOverlay) this._htmlOverlay.addText(`MP ${mpStr} ${b.mp}/${b.mmp}`, 0, y, w, "left", 12, "#00ffff", false, null, 0, "monospace", lineHeight);
+        y += lineHeight;
+      }
 
       // Draw TP
       const tpRate = b.tp / 100;
       const tpBars = Math.floor(tpRate * gaugeCells);
-      const tpStr = `TP [${'^'.repeat(Math.max(0, tpBars))}${' '.repeat(Math.max(0, gaugeCells - tpBars))}] ${Math.floor(b.tp)}/100`;
+      const tpStr = `${_si18n("TP")} [${'^'.repeat(Math.max(0, tpBars))}${' '.repeat(Math.max(0, gaugeCells - tpBars))}] ${Math.floor(b.tp)}/100`;
       this.bitmap.textColor = "#00ff00"; // Green for TP
       if (!this._minimalEnemy && this._htmlOverlay) this._htmlOverlay.addText(tpStr, 0, y, w, "left", 12, "#00ff00", false, null, 0, "monospace", lineHeight);
       if (!this._minimalEnemy) y += lineHeight;
@@ -2188,8 +2212,8 @@
         ctx.restore();
       }
 
-      // Draw MP bar
-      {
+      // Draw MP bar (skipped outright where the world has no magic in it)
+      if (!hideMpBar()) {
         const mpY = barHeight + 5;
         const mpHeight = barHeight / 2;
         const mpRate = b.mp / Math.max(1, b.mmp);
@@ -2307,7 +2331,8 @@
         ctx.restore();
       }
 
-      // Enemy MP Bar
+      // Enemy MP Bar (same rule as the party's)
+      if (!hideMpBar()) {
       const mpY = barHeight + 5;
       const mpHeight = barHeight / 2;
       const mpRate = b.mp / Math.max(1, b.mmp);
@@ -2351,6 +2376,7 @@
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(2, mpY + 2, mpWidth, mpHiH);
         ctx.restore();
+      }
       }
     }
     this.bitmap._baseTexture.update();
@@ -2750,36 +2776,24 @@
     }
   };
 
-  // A compact bar is set under its monster while the field is still settling
-  // (3D models load and are spread apart a moment after the battle opens), then
-  // locked: from there it holds its spot however much the monster moves.
-  Sprite_BattleBar.prototype.updateMinimalEnemyPosition = function () {
-    if (this._minimalPosLocked) return;
-    const anchor = battlerFootPosition(this._battler);
-    if (!anchor) return;
-    const w = this.bitmap ? this.bitmap.width : miniBarWidth;
-    const h = this.bitmap ? this.bitmap.height : miniBarBitmapHeight;
-    const x = Math.round(
-      Math.max(4, Math.min(Graphics.width - w - 4, anchor.x - w / 2))
-    );
-    const y = Math.round(
-      Math.max(4, Math.min(Graphics.height - h - 4, anchor.y + miniBarFootGap))
-    );
-    this.x = x;
-    this.y = y;
-    this._anchorBarY = y;
-
-    // Lock as soon as the field reports its monsters laid out, or after the
-    // settling window when nothing ever reports (a plain 2D battle).
-    this._minimalPosFrames = (this._minimalPosFrames || 0) + 1;
-    const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
-    if (
-      (spriteset && spriteset._3dEnemyLayoutSettled) ||
-      this._minimalPosFrames >= miniBarSettleFrames
-    ) {
-      this._minimalPosLocked = true;
+  // Where the compact bars stand: one column in the top-right corner, the same
+  // corner the large single-enemy bar occupies, in troop order. The step is
+  // squeezed when a big troop would otherwise run off the bottom of the screen.
+  function layoutMinimalEnemyBars(sprites) {
+    if (!sprites || sprites.length === 0) return;
+    const w = sprites[0].bitmap ? sprites[0].bitmap.width : miniBarWidth;
+    const x = Math.round(Math.max(4, Graphics.width - w - miniBarRightMargin));
+    const room =
+      Graphics.height - miniBarColumnTop - miniBarColumnBottom - miniBarBitmapHeight;
+    const step =
+      sprites.length > 1
+        ? Math.min(miniBarStackStep, Math.max(28, room / (sprites.length - 1)))
+        : miniBarStackStep;
+    for (let i = 0; i < sprites.length; i++) {
+      sprites[i].x = x;
+      sprites[i].y = Math.round(miniBarColumnTop + i * step);
     }
-  };
+  }
 
   // ==========================================================================
   // Target chevron
@@ -2858,6 +2872,187 @@
     this.opacity = 0;
     this.contentsOpacity = 0;
     this.cursorVisible = false;
+  };
+
+  // ==========================================================================
+  // Enemy target buttons: with 2+ living candidates the chevron says who is
+  // aimed at, but a plain Attack leaves the actor's own command list standing
+  // (the engine's default startEnemySelection never hides it, unlike Skill
+  // and Item) - a frozen Attack/Defense/... list nothing can be done with
+  // while a target is being chosen. That footprint is put to use instead: one
+  // named row per candidate, replacing whatever command list sat there,
+  // clickable to confirm the target. Hooked on Window_BattleEnemy itself, so
+  // every caller that opens it (the ordinary attack/skill/item target,
+  // Check/Aim in Health_Monsters, the card system) gets it for free, the same
+  // way they already get the chevron (section 15b/7).
+  // ==========================================================================
+  const ENEMY_TARGET_ROW_H = 40;
+
+  function _enemyTargetRoot() {
+    let root = document.getElementById('html-enemytarget-overlay');
+    if (!root) {
+      root = document.createElement('div');
+      root.id = 'html-enemytarget-overlay';
+      root.style.cssText =
+        'position:fixed;display:none;z-index:351;pointer-events:auto;' +
+        'flex-direction:column;transform-origin:top left;';
+      document.body.appendChild(root);
+    }
+    return root;
+  }
+
+  // The rect the actor's own command list occupies, in game pixels: the
+  // footprint the name rows take over while a target is being chosen.
+  function _enemyTargetSlot() {
+    const scene = SceneManager._scene;
+    const cmdWin = scene && scene._actorCommandWindow;
+    if (!cmdWin) return null;
+    let pt;
+    if (typeof cmdWin.getGlobalPosition === 'function') {
+      pt = cmdWin.getGlobalPosition();
+    } else {
+      pt = { x: cmdWin.x, y: cmdWin.y };
+      let node = cmdWin.parent;
+      while (node) { pt.x += node.x || 0; pt.y += node.y || 0; node = node.parent; }
+    }
+    const pad = cmdWin.padding || 0;
+    return {
+      x: pt.x + pad,
+      bottom: pt.y + pad + (cmdWin.innerHeight != null ? cmdWin.innerHeight : (cmdWin.height - pad * 2)),
+      w: cmdWin.innerWidth != null ? cmdWin.innerWidth : (cmdWin.width - pad * 2)
+    };
+  }
+
+  function _buildEnemyTargetRows(win, slot) {
+    const root = _enemyTargetRoot();
+    root.innerHTML = '';
+    const enemies = win._enemies || [];
+    const sel = win.index();
+
+    enemies.forEach((enemy, i) => {
+      const isSel = i === sel;
+      const item = document.createElement('div');
+      item.className = 'actorcmd-item';
+      item.style.width = slot.w + 'px';
+      item.style.height = ENEMY_TARGET_ROW_H + 'px';
+      item.style.cursor = 'pointer';
+
+      const darkBase = document.createElement('div');
+      darkBase.className = 'actorcmd-darkbase';
+      item.appendChild(darkBase);
+
+      const grad = document.createElement('div');
+      grad.className = 'actorcmd-gradient';
+      const a0 = isSel ? 0.88 : 0.60;
+      const a1 = isSel ? 0.32 : 0.18;
+      grad.style.background =
+        `linear-gradient(to right, rgba(180,25,25,${a0}) 0%, rgba(180,25,25,${a1}) 55%, transparent 100%)`;
+      item.appendChild(grad);
+
+      const stripe = document.createElement('div');
+      stripe.className = 'actorcmd-stripe' + (isSel ? ' sel' : '');
+      stripe.style.background = CHEVRON_COLOR;
+      stripe.style.color = CHEVRON_COLOR;
+      item.appendChild(stripe);
+
+      if (isSel) {
+        const hl = document.createElement('div');
+        hl.className = 'actorcmd-top-hl';
+        item.appendChild(hl);
+      }
+
+      const sep = document.createElement('div');
+      sep.className = 'actorcmd-sep';
+      sep.style.background = isSel ? CHEVRON_COLOR : 'rgba(255,255,255,0.09)';
+      item.appendChild(sep);
+
+      const label = document.createElement('div');
+      label.className = 'actorcmd-label';
+      label.style.fontSize = '16px';
+      label.style.marginLeft = '14px';
+      const rawName = enemy.name();
+      label.textContent = window.translateText ? window.translateText(rawName) : rawName;
+      item.appendChild(label);
+
+      // Hover moves the pick (and the chevron with it); the click confirms it,
+      // the same two-step the party card touch-target already offers actors.
+      item.addEventListener('mouseenter', () => {
+        if (win.active && win.index() !== i) win.select(i);
+      });
+      item.addEventListener('pointerup', (e) => {
+        if (e.button !== undefined && e.button !== 0) return;
+        if (!win.active) return;
+        win.select(i);
+        win.processOk();
+      });
+
+      root.appendChild(item);
+    });
+  }
+
+  // Hide/restore the actor command list around the picker's own lifetime,
+  // remembering whatever visibility it already had (Attack leaves it
+  // visible-but-frozen, Skill/Item already hid it before the picker opened)
+  // so leaving the picker never shows a command list that was not there to
+  // begin with.
+  const _Window_BattleEnemy_show = Window_BattleEnemy.prototype.show;
+  Window_BattleEnemy.prototype.show = function () {
+    _Window_BattleEnemy_show.call(this);
+    const scene = SceneManager._scene;
+    const cmdWin = scene && scene._actorCommandWindow;
+    if (cmdWin) {
+      this._enemyTargetSavedCmdVisible = cmdWin.visible;
+      cmdWin.hide();
+    }
+    this._enemyTargetLastIdx = null;
+    this._enemyTargetLastCount = null;
+  };
+
+  const _Window_BattleEnemy_hide = Window_BattleEnemy.prototype.hide;
+  Window_BattleEnemy.prototype.hide = function () {
+    _Window_BattleEnemy_hide.call(this);
+    const scene = SceneManager._scene;
+    const cmdWin = scene && scene._actorCommandWindow;
+    if (cmdWin && this._enemyTargetSavedCmdVisible) {
+      cmdWin.show();
+    }
+    this._enemyTargetSavedCmdVisible = null;
+    const root = document.getElementById('html-enemytarget-overlay');
+    if (root) root.style.display = 'none';
+  };
+
+  Scene_Battle.prototype.updateEnemyTargetButtons = function () {
+    const win = this._enemyWindow;
+    const root = document.getElementById('html-enemytarget-overlay');
+    const active = win && win.visible && win.isOpen && win.isOpen();
+    if (!active) {
+      if (root) root.style.display = 'none';
+      return;
+    }
+    const enemies = win._enemies || [];
+    const idx = win.index();
+    if (
+      root && root.style.display !== 'none' &&
+      win._enemyTargetLastIdx === idx && win._enemyTargetLastCount === enemies.length
+    ) {
+      return; // nothing changed since the last frame
+    }
+    const slot = _enemyTargetSlot();
+    if (!slot || enemies.length === 0) {
+      if (root) root.style.display = 'none';
+      return;
+    }
+    win._enemyTargetLastIdx = idx;
+    win._enemyTargetLastCount = enemies.length;
+
+    _buildEnemyTargetRows(win, slot);
+    const listRoot = _enemyTargetRoot();
+    const sc = _hudGetScale();
+    const top = slot.bottom - enemies.length * ENEMY_TARGET_ROW_H;
+    listRoot.style.display = 'flex';
+    listRoot.style.left = (sc.ox + slot.x * sc.sx) + 'px';
+    listRoot.style.top = (sc.oy + top * sc.sy) + 'px';
+    listRoot.style.transform = `scale(${sc.sx}, ${sc.sy})`;
   };
 
   const _Window_SkillList_drawSkillCost =
@@ -3042,21 +3237,21 @@
       this._battleHealthBarSprites.push(sprite);
     }
 
-    // Enemy bars. A single monster keeps the large bar anchored to the top-right
-    // of the screen; a troop gets one compact bar under each monster instead, so
-    // several enemies never bury the field under stacked lists.
+    // Enemy bars, all in the top-right corner. A single monster keeps the large
+    // bar with its weaknesses and severed parts; a troop gets one compact bar
+    // each, stacked in the same corner rather than scattered over the field.
     const troop = $gameTroop.members();
     const minimalEnemyBars = troop.length > 1;
     const enemyBarW = minimalEnemyBars ? miniBarWidth : enemyLargeBarWidth || 400;
     const enemyRightMargin = 40;
     const enemyBarLeftX = Graphics.width - enemyBarW - enemyRightMargin;
+    const miniBars = [];
     for (let i = 0; i < troop.length; i += 1) {
       const enemy = troop[i];
       if (enemy.isAlive()) {
         const sprite = new Sprite_BattleBar(enemy, false, enemyBarW);
         if (sprite._minimalEnemy) {
-          // Placed by initialize(); update() keeps it on the monster's feet.
-          sprite.updateMinimalEnemyPosition();
+          miniBars.push(sprite);
         } else {
           sprite.x = enemyBarLeftX;
           sprite.y = positions.barsY + i * barSpacing;
@@ -3065,6 +3260,7 @@
         this._battleHealthBarSprites.push(sprite);
       }
     }
+    layoutMinimalEnemyBars(miniBars);
   };
 
 
@@ -3132,6 +3328,7 @@
     _Scene_Battle_update.call(this);
     this.updateBattleHealthBars();
     this.updateTargetChevron();
+    this.updateEnemyTargetButtons();
   };
   Scene_Battle.prototype.updateBattleHealthBars = function () {
     // Determine whose turn it is (inputting or executing)
@@ -3152,23 +3349,15 @@
       }
     }
 
-    // Compact enemy bars sit on their monster's feet, so two monsters standing
-    // close together would print one bar over the other: walk them top to bottom
-    // and push each one clear of the bars already placed above it.
+    // The compact bars are a column, so a monster that falls leaves a gap in it:
+    // re-stack them whenever the standing troop changes, and not otherwise (the
+    // column is static, and re-laying it out every frame is pure churn).
     const miniBars = this._battleHealthBarSprites.filter(
       (s) => s && s.visible && s._minimalEnemy
     );
-    if (miniBars.length > 1) {
-      miniBars.sort((a, b) => a.y - b.y || a.x - b.x);
-      for (let i = 1; i < miniBars.length; i++) {
-        const s = miniBars[i];
-        for (let j = 0; j < i; j++) {
-          const other = miniBars[j];
-          const overlapsX = Math.abs(s.x - other.x) < s.bitmap.width - 12;
-          const overlapsY = Math.abs(s.y - other.y) < MINI.stackStep;
-          if (overlapsX && overlapsY) s.y = other.y + MINI.stackStep;
-        }
-      }
+    if (miniBars.length !== this._miniBarColumnCount) {
+      this._miniBarColumnCount = miniBars.length;
+      layoutMinimalEnemyBars(miniBars);
     }
   };
   const _Window_ActorCommand_initialize =

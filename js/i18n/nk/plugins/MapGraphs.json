@@ -1,0 +1,19 @@
+{
+  "jsonGenerated": "MAP CONNECTIONS JSON GENERATED IN CONSOLE!",
+  "checkConsole": "CHECK DA DEVELOPER CONSOLE (F12) FOR DA COMPLETE JSON!",
+  "cacheCleared": "CONNECTION CACHE CLEARED!",
+  "mostConnected": "MOST CONNECTED: MAP {map} ({links} LINKS)",
+  "mode": "MODE: {mode} ANALYSIS",
+  "modeHardcoded": "HARDCODED",
+  "modeRuntime": "RUNTIME",
+  "noMapLoaded": "NO CAN DISPLAY MAP. NO MAP IZ CURRENTLY LOADED!",
+  "controls": "MOUSE: PAN | WHEEL: ZOOM | CLICK: SELECT/DESELECT | ESC: EXIT",
+  "noConnections": "NO CONNECTIONS FOUND.",
+  "cluster": "CLUSTER",
+  "mapInfo": "MAP INFO",
+  "name": "NAME",
+  "status": "STATUS",
+  "visited": "VISITED",
+  "notVisited": "NOT VISITED",
+  "connections": "CONNECTIONS"
+}

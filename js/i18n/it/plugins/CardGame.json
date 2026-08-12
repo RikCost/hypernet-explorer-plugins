@@ -1,0 +1,114 @@
+{
+  "stat": {
+    "str": "FRZ",
+    "wis": "SAG",
+    "dex": "DES",
+    "psi": "PSI",
+    "con": "COS"
+  },
+  "rarity": {
+    "common": "Comune",
+    "rare": "Rara",
+    "epic": "Epica",
+    "legendary": "Leggendaria"
+  },
+  "type": {
+    "monster": "Mostro",
+    "weapon": "Arma",
+    "armor": "Armatura",
+    "effect": "Effetto"
+  },
+  "duel": {
+    "you": "Tu",
+    "opponent": "Avversario",
+    "houseDeck": "Il Banco",
+    "yourTurn": "Tocca a te",
+    "theirTurn": "{name} sta pensando",
+    "clash": "Lo scontro",
+    "deckCounts": "Mazzo {you}  |  Suo {them}",
+    "quitBtn": "Lascia",
+    "stakeNone": "Nessuna posta",
+    "stakeMoney": "In palio: {amount}",
+    "stakeItem": "In palio: {mine} contro {theirs}",
+    "wonMoney": "Incassi {amount}.",
+    "lostMoney": "Consegni {amount}.",
+    "wonItem": "Ti prendi {item}.",
+    "lostItem": "Consegni {item}.",
+    "gamblerFun": "Svago (una giocata)",
+    "cravingEased": "{name}: la voglia di {substance} cala di {amount}.",
+    "victory": "Hai vinto",
+    "defeat": "Hai perso",
+    "draw": "Pareggio",
+    "streak": "{count} di fila.",
+    "packWon": "Un pacchetto di carte per la vittoria.",
+    "pickSecondTile": "Ora scegli la casella di destinazione.",
+    "art3D": "Grafica: 3D",
+    "art2D": "Grafica: 2D"
+  },
+  "col": {
+    "title": "Collezione di carte",
+    "owned": "{cards} carte, {distinct} tipi diversi ({pct}%)",
+    "tab": {
+      "all": "Tutte",
+      "monsters": "Mostri",
+      "weapons": "Armi",
+      "armor": "Armature",
+      "effects": "Effetti"
+    },
+    "tabDeck": "Mazzo ({n})",
+    "empty": "Ancora niente sullo scaffale. Apri un pacchetto.",
+    "pickACard": "Scegli una carta per leggerla.",
+    "power": "Potenza {n}",
+    "saveDeck": "Salva mazzo",
+    "newDeck": "Nuovo mazzo",
+    "prevDeck": "Mazzo precedente",
+    "nextDeck": "Mazzo successivo",
+    "autoDeck": "Mazzo migliore",
+    "shuffleDeck": "Mazzo a sorte",
+    "reroll": "Ritira l'aspetto",
+    "practice": "Duello di prova",
+    "close": "Chiudi",
+    "deckName": "Mazzo {n}",
+    "unsavedDeck": "Mazzo non salvato",
+    "deckLegal": "Mazzo valido.",
+    "deckTooFew": "Un mazzo vuole almeno {min} carte.",
+    "deckTooMany": "Un mazzo tiene al massimo {max} carte.",
+    "deckNotOwned": "Questo mazzo elenca carte che il gruppo non possiede più.",
+    "deckEmpty": "Nessuna carta in questo mazzo."
+  },
+  "pack": {
+    "title": "Pacchetto di carte",
+    "sealed": "SIGILLATO",
+    "newCard": "NUOVA",
+    "summary": "Pezzo migliore: {best}. Nuove in collezione: {fresh}."
+  },
+  "effect": {
+    "halve": {
+      "name": "Marciume",
+      "desc": "Su una creatura: ogni statistica dimezzata, di chiunque sia. Su terreno nudo: la casella e maledetta e la prossima creatura che vi sale arriva dimezzata."
+    },
+    "double": {
+      "name": "Doratura",
+      "desc": "Su una creatura: ogni statistica raddoppiata, di chiunque sia. Su terreno nudo: la casella e benedetta e la prossima creatura che vi sale arriva raddoppiata."
+    },
+    "cull": {
+      "name": "Falcidia",
+      "desc": "Su una creatura: viene distrutta dov'è, di chiunque sia. Su terreno nudo: una trappola, e la prossima creatura che vi sale muore all'istante."
+    },
+    "swap": {
+      "name": "Traslazione",
+      "desc": "Scegli una creatura, poi una seconda casella: le due si scambiano di posto, con equipaggiamento e maledizioni. La seconda casella può essere vuota, e la creatura semplicemente vi si sposta."
+    },
+    "ward": {
+      "name": "Egida",
+      "desc": "Su una creatura: nello scontro vince ogni statistica pari. Su terreno nudo: la casella e chiusa all'avversario per il suo prossimo turno."
+    }
+  },
+  "capture": {
+    "bound": "{name} viene vincolato in una carta e cade.",
+    "boundNew": "{name} viene vincolato in una carta, la prima del suo genere, e cade.",
+    "failed": "{name} si sottrae al vincolo. (serviva {chance}%)",
+    "tooStrong": "{name} e di livello {level} e non si lascia vincolare da un gruppo di {median}.",
+    "noCard": "Non esiste carta che {name} possa mai essere."
+  }
+}

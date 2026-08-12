@@ -1207,7 +1207,7 @@
 
             this._resultWindow.show();
             this._resultWindow.setText(result, T('Basketball.finalScore', { player: playerTotal, cpu: cpuTotal }));
-            this._statusWindow.setText(T('Basketball.pressOkExit'));
+            this._statusWindow.setText('');
         }
 
         //--- teardown --------------------------------------------------------
@@ -1478,7 +1478,6 @@
             this.hudText(result, 0, 7, this._vw, 'center', col, 16);
             H.decoRule(bmp, 10, 28, this._vw - 20, D.goldLo);
             this.hudText(score, 0, 31, this._vw, 'center', D.ink, 8);
-            this.hudText('PRESS OK', 0, 43, this._vw, 'center', D.dim, 8);
             this.endText();
         }
     }

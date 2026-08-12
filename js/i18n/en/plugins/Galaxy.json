@@ -91,7 +91,22 @@
     "moons": "Moons",
     "oreBody": "Ore Body",
     "units": "{remaining} / {capacity} units",
-    "condition": "Condition"
+    "condition": "Condition",
+    "weakSigns": "Weak signs"
+  },
+  "nibiru": {
+    "impactRow": "Earth Impact",
+    "countdownYears": "{years} y {days} d {hh}:{mm}",
+    "countdownDays": "{days} d {hh}:{mm}",
+    "countdownNow": "any moment now",
+    "noteFar": "A world with no sun, falling in out of the dark on a course nobody plotted and nobody can bend. The ephemerides put it over Earth on the twenty-first of December, 2012.",
+    "noteNear": "Inside the system now, and no longer slowing. It holds Earth's own angle exactly, which is another way of saying it is not going to miss.",
+    "saturnNote": "Nibiru went into the giant instead, and the giant caught. Saturn burns now: not enough to be a star, far too much to still be a planet. The rings went first.",
+    "towerNote": "Where Earth stood there is a black lance twelve kilometres tall, gold at every edge, turning in the orbit its world left behind. Nothing on it answers, and one door is open.",
+    "towerLanding": "Omega Tower Spire",
+    "entered": "Nibiru has crossed into the Solar System.",
+    "hitSaturn": "Nibiru has struck Saturn. The giant is burning.",
+    "hitEarth": "Nibiru has struck the Earth. Both are gone."
   },
   "unnamedGalaxy": "Unnamed Galaxy",
   "unit": {
@@ -145,7 +160,6 @@
     "serviced": "Serviced",
     "repair": "Repair",
     "close": "Close",
-    "landingGridHelp": "Click a square, or move with arrow keys and confirm with Enter/OK. Esc cancels.",
     "refuelTooltip": "Refuel here, or plot a course to the nearest star that can refuel the ship",
     "orbitHint": "drag rotate · wheel zoom · click select · Esc exit",
     "nothingCatalogued": "Nothing catalogued.",
@@ -160,7 +174,11 @@
     "stopRefuel": "Stop Refuel",
     "harvestSchrDingerite": "Harvest Schrödingerite",
     "serviceEverythingAffordable": "Service Everything Affordable",
-    "critical": "CRITICAL"
+    "critical": "CRITICAL",
+    "bookmarkAdd": "Bookmark this",
+    "bookmarkRemove": "Remove bookmark",
+    "bookmarked": "Bookmarked",
+    "bookmark": "Bookmark"
   },
   "hubblePart": {
     "DF-224 Computer": {
@@ -313,7 +331,8 @@
     "companion": "{type} class · companion",
     "donor": "{type} class · donor",
     "life": " · life",
-    "moonOf": "{type} · moon of {planet}"
+    "moonOf": "{type} · moon of {planet}",
+    "weakLife": " · weak signs"
   },
   "tab": {
     "current": "Current System",
@@ -326,6 +345,7 @@
     "anomalies": "Higher-Dimensional Anomalies",
     "nebulae": "Nebulae",
     "starSystems": "Star Systems",
+    "farSystems": "Systems in Other Galaxies",
     "bookmarks": "Bookmarks",
     "bookmarksEmpty": "Nothing bookmarked yet - use the Bookmark button on any selection.",
     "bookmarkedBodies": "Bookmarked Bodies",
@@ -337,7 +357,8 @@
     "landingSites": "Landing Sites",
     "patrons": "Patrons",
     "patronsEmpty": "No patron worlds on file.",
-    "patronWorlds": "Patron Worlds"
+    "patronWorlds": "Patron Worlds",
+    "weakSignatures": "Weak Signatures"
   },
   "scan": {
     "worldsFound": {
@@ -346,7 +367,11 @@
     },
     "hubbleOnline": " (Hubble online)",
     "newCount": " · {count} new",
-    "loggedInCatalog": " · logged in the Catalog"
+    "loggedInCatalog": " · logged in the Catalog",
+    "weakCount": {
+      "one": " · {count} weak reading",
+      "other": " · {count} weak readings"
+    }
   },
   "refuel": {
     "refuel": "Refuel",

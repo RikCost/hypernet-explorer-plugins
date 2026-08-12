@@ -53,5 +53,15 @@
     "other": "({n} Troops)"
   },
   "noSquads": "No organized squads found in your camp. Squads require at least 2 identical recruited troops.",
-  "squadHint": "Select an organized squad on the left page to assign a dedicated party officer and confer combat stat bonuses!"
+  "squadHint": "Select an organized squad on the left page to assign a dedicated party officer and confer combat stat bonuses!",
+  "availableTroops": "Available Troops",
+  "recruitsAvailable": {
+    "one": "{n} recruit available",
+    "other": "{n} recruits available"
+  },
+  "factionLabel": "Faction:",
+  "regimentLabel": "Regiment:",
+  "manualFooter": "Mount & Blade Army Manual ✦ Esoteric Industries",
+  "clickToRecruit": "Click to recruit",
+  "cannotAfford": "Cannot afford"
 }

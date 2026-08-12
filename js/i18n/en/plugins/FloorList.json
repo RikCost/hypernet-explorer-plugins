@@ -2,8 +2,9 @@
   "title": "Floor Select",
   "noFloors": "No other floors discovered",
   "unknown": "???",
-  "omegaCity": "F-22 Hypermetro",
-  "hypermetro": "F-1 Hypermetro",
+  "omegaCity": "F-22 - Omega City",
+  "tipOfTheSpear": "F-92 - Tip of the Spear",
+  "lowerFloor": "F{num} - {name}",
   "hypernetPoint": "F0 - Hypernet point",
   "unknownMap": "Unknown",
   "floorHud": "Floor: {num}"

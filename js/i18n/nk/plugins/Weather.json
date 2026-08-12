@@ -1,0 +1,9 @@
+{
+  "name": {
+    "Clear": "CLEAR",
+    "Rain": "RAIN",
+    "Storm": "STORM",
+    "Snow": "SNOW",
+    "Unknown": "UNKNOWN"
+  }
+}

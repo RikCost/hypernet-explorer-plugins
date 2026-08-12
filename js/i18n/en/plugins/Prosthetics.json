@@ -117,5 +117,38 @@
     "psi": "PSI"
   },
   "surgeryFee": "SURGERY FEE:",
-  "availableFunds": "AVAILABLE FUNDS:"
+  "availableFunds": "AVAILABLE FUNDS:",
+  "grantsSkill": "Grants {skill}",
+  "chooseSurgeon": "Who holds the knife",
+  "chooseSurgeonDesc": "Pick who operates on {p1}. Their Surgery training, the roof over you and the weather all decide whether this works.",
+  "surgerySpec": "Surgery: {level}",
+  "surgerySpecShort": "Surgery",
+  "operatingOnSelf": "operating on themselves",
+  "venueLabel": "Where",
+  "weatherLabel": "Weather",
+  "venue": {
+    "interior": "Under a roof",
+    "cavern": "Underground",
+    "exterior": "In the open"
+  },
+  "weather": {
+    "none": "Clear",
+    "rain": "Rain",
+    "storm": "Storm",
+    "snow": "Snow"
+  },
+  "successChance": "Chance of success",
+  "failureWarning": "A failed operation changes nothing and wounds the patient somewhere else.",
+  "fieldTheatre": "Field theatre",
+  "fieldTheatreDesc": "{p2} operating on {p1}, at {p3}% . Only what is already in the pack can be fitted, and an augment can be taken out but not seated.",
+  "installFromInventory": "Install from the pack",
+  "removeAugment": "Remove an augment",
+  "fieldAugmentRemovalDesc": "Out here an augment can be cut out, but nothing new can be seated in its place.",
+  "oddsSurgery": "Surgery {level} {value}%",
+  "oddsVenue": "{venue} {value}",
+  "oddsWeather": "{weather} {value}",
+  "oddsSelf": "own hands {value}",
+  "surgeryFailed": "The operation failed.",
+  "surgeryFailedWound": "The knife slipped: the {part} took {damage} damage.",
+  "surgeryFailedPartLost": "The knife slipped, and the {part} was lost."
 }

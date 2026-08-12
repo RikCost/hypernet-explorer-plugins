@@ -3,6 +3,7 @@
   "anvil": "Anvil",
   "trades": "Trades",
   "smithable": "Smithable",
+  "needMaterials": "Need materials",
   "tooComplex": "Too complex",
   "tooComplexShort": "Beyond these hands",
   "materials": "Materials",

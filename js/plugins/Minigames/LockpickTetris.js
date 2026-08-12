@@ -487,16 +487,6 @@ Scene_LockpickTetris.prototype.createUI = function() {
     this._timerSprite.y = 20;
     this.addChild(this._timerSprite);
     
-    // Help text
-    this._helpTextSprite = new Sprite();
-    this._helpTextSprite.bitmap = new Bitmap(Graphics.width - 40, 72);
-    this._helpTextSprite.x = 20;
-    this._helpTextSprite.y = Graphics.height - 60;
-    this._helpTextSprite.bitmap.fontSize = 16;
-    this._helpTextSprite.bitmap.textColor = '#FFFFFF';
-    this._helpTextSprite.bitmap.drawText(T('LockpickTetris.controls'), 0, 0, Graphics.width - 40, 24, 'center');
-        this.addChild(this._helpTextSprite);
-    
     // Difficulty display
     this._difficultySprite = new Sprite();
     this._difficultySprite.bitmap = new Bitmap(200, 36);

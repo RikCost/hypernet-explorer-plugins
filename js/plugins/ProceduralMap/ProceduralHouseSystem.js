@@ -143,6 +143,23 @@
       enterDoorFeatureAt(name, x, y) { return enterDoorFeatureAt(name, x, y); },
       isInteractFeature(name) { return INTERACT_FEATURES.has(name); },
       tryProcMapInteract(character) { return tryProcMapInteract(character); },
+      // ── Door tiles on maps that are not the procedural one ────────────────
+      // Bologna's OSM cells draw their own doors and share one map id (353)
+      // between every cell, so they enter through enterTileDoorAt and tell the
+      // seed which cell it is through setSeedSaltProvider. interiorMapIdFor
+      // answers "what is behind this door" without opening it.
+      enterTileDoorAt(poolName, x, y) { return enterTileDoorAt(poolName, x, y); },
+      interiorMapIdFor(poolName, x, y, mapId) { return interiorMapIdFor(poolName, x, y, mapId); },
+      // ── Doors that name their own trade (tileset 303) ──────────────────────
+      // Which interiors a trade door may open onto, and which one THIS door
+      // does. Read them here rather than keeping a second copy of the table:
+      // the shop-sign pass and the NPC spawner both need to know what is behind
+      // a door without opening it.
+      isTradeDoor(name) { return !!TRADE_DOORS[name]; },
+      tradeDoorNames() { return Object.keys(TRADE_DOORS); },
+      tradeDoorMapId(name, x, y, mapId) { return tradeDoorMapId(name, x, y, mapId); },
+      genericShopMapId(x, y, mapId) { return genericShopMapId(x, y, mapId); },
+      setSeedSaltProvider(fn) { _seedSaltProvider = (typeof fn === "function") ? fn : null; },
   };
   const parameters = PluginManager.parameters(pluginName);
   
@@ -324,8 +341,20 @@
     return historySeed >>> 0;
   }
 
+  // A map id is not always a place. Map 636 is every world square and map 353
+  // is every Bologna cell, so a door tile at the same coordinates on two
+  // different places would otherwise seed the same interior. A plugin that
+  // reuses one map id for many places registers a salt here and its doors stop
+  // sharing buildings with the next place's. Absent (or 0) leaves every seed
+  // exactly as it has always been.
+  let _seedSaltProvider = null;
+  function mapSeedSalt() {
+    if (!_seedSaltProvider) return 0;
+    try { return (_seedSaltProvider() | 0) >>> 0; } catch (e) { return 0; }
+  }
+
   function createSeed(mapId, x, y) {
-    return ((mapId * 1000000 + x * 1000 + y) ^ getWorldSeed()) >>> 0;
+    return ((mapId * 1000000 + x * 1000 + y) ^ getWorldSeed() ^ mapSeedSalt()) >>> 0;
   }
 
   function getSeededRandomFromArray(array, seed) {
@@ -752,18 +781,13 @@
   }
 
   function getSeededStairPositions(seed) {
+    // Fixed, not randomized: the first region-14 tile found is always Upstairs
+    // and the second is always Downstairs, so a floor's stair layout never
+    // shifts between visits.
     const positions = findAllPositionsWithRegionId(14);
     if (positions.length === 0) return { upstairs: null, downstairs: null };
-    const idx1 = Math.floor(seededRandom(seed) * positions.length);
-    const upstairs = positions[idx1];
-    let downstairs;
-    if (positions.length >= 2) {
-      let idx2 = Math.floor(seededRandom(seed + 1337) * (positions.length - 1));
-      if (idx2 >= idx1) idx2++;
-      downstairs = positions[idx2];
-    } else {
-      downstairs = positions[idx1];
-    }
+    const upstairs = positions[0];
+    const downstairs = positions.length >= 2 ? positions[1] : positions[0];
     return { upstairs, downstairs };
   }
 
@@ -808,51 +832,154 @@
   // Pending house-entry context while the night lockpick minigame is running.
   let _pendingNightHouse = null;
 
-  // ── Bashed-door memory ──────────────────────────────────────────────────────
-  // Once a door is bashed open it stays openable (no locked-door prompt) for one
-  // in-game day. Keyed by the door tile so each entrance is tracked separately,
-  // and stored on $gameSystem so it persists with saves.
-  const BASH_OPEN_MINUTES = 1440; // a bashed door stays open for 24h game-time
+  // ── Forced-door memory (world-shared) ───────────────────────────────────────
+  // However a locked door was got through (bashed in, lockpicked or opened with
+  // a skeleton key), it STAYS open for one in-game day: no locked-door prompt,
+  // and the event goes back to below-character priority on Event Touch, so the
+  // party walks in and out of it freely until it relocks.
+  //
+  // A broken door is a change to the world, not to one party's story, so the
+  // record lives in the WORLD FOLDER (save/worlds/<name>/terrain.json, beside
+  // the dismantled features) rather than in the savegame: a door bashed in by
+  // one savegame stands open for every savegame of that world until it relocks.
+  // Time is read from variable 114, which is world-shared and monotonic, so the
+  // day is counted the same in all of them.
+  //
+  //   terrain.json -> { forcedDoors: { "<placeKey>": { "x,y": minute } } }
+  //
+  // The place key is the composite proc-map key every world-persistent system
+  // uses (FurnitureSystem.furnitureMapKey: `proc:<biome>:<wx>,<wy>:<depth>` on
+  // map 636, the map id elsewhere), plus the seed salt where a plugin reuses one
+  // map id for many places (Bologna's cells all share map 353), so two doors at
+  // the same coordinates in two different places are two different doors.
+  const BASH_OPEN_MINUTES = 1440; // a forced door stays open for 24h game-time
+
+  // ── Empty-world doors ───────────────────────────────────────────────────────
+  // Nobody locked up on the way out and nobody is coming back to lock up again,
+  // so an empty world's doors do not answer to the clock the way an inhabited
+  // one's do. Instead each door was simply left as it was left: a seeded coin
+  // flip decides, once and for all, whether this particular door happens to be
+  // open or happens to be stuck. And a door that is forced is forced for good,
+  // since there is nobody to repair it and no one to answer to for breaking it.
+  const EMPTY_WORLD_UNLOCKED_SHARE = 0.5; // half the doors were left open
+
+  function isEmptyWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isEmptyWorld === 'function' && WM.isEmptyWorld());
+  }
+
+  // Was this door left open? A pure function of (place, tile, world seed), so
+  // one door gives the same answer forever and in every savegame of the world.
+  function isEmptyWorldDoorOpen(x, y) {
+    const mapId = $gameMap ? $gameMap.mapId() : 0;
+    // Offset off the interior seed so a door's lock state is independent of
+    // the building that is behind it.
+    const seed = (createSeed(mapId, x, y) ^ 0x5eed10c) >>> 0;
+    return seededRandom(seed) < EMPTY_WORLD_UNLOCKED_SHARE;
+  }
+
+  function doorPlaceKey() {
+    let key = String($gameMap ? $gameMap.mapId() : 0);
+    const fs = window.FurnitureSystem;
+    if (fs && typeof fs.furnitureMapKey === 'function') {
+      try {
+        const k = fs.furnitureMapKey();
+        if (k != null) key = String(k);
+      } catch (e) { /* fall back to the plain map id */ }
+    }
+    const salt = mapSeedSalt();
+    return salt ? `${key}#${salt}` : key;
+  }
 
   function getDoorKey(useFacing) {
     const c = getEventCoordinates(useFacing);
-    return `${$gameMap.mapId()}_${c.x}_${c.y}`;
+    return `${c.x},${c.y}`;
   }
 
-  function getBashedDoors() {
-    if (typeof $gameSystem === 'undefined' || !$gameSystem) return {};
-    if (!$gameSystem._bashedDoors) $gameSystem._bashedDoors = {};
-    return $gameSystem._bashedDoors;
+  // The world folder's forced-door table for the place the party is standing in.
+  // Null when WorldManager is not there (a browser build with no world folder),
+  // which the callers read as "nothing is forced open".
+  function getForcedDoors(create) {
+    if (!window.WorldManager || typeof window.WorldManager.getFile !== 'function') return null;
+    let store = null;
+    try { store = window.WorldManager.getFile('terrain'); } catch (e) { return null; }
+    if (!store) return null;
+    if (!store.forcedDoors) {
+      if (!create) return null;
+      store.forcedDoors = {};
+    }
+    const place = doorPlaceKey();
+    if (!store.forcedDoors[place]) {
+      if (!create) return null;
+      store.forcedDoors[place] = {};
+    }
+    return store.forcedDoors[place];
   }
 
-  function isTileBashedOpen(mapId, x, y) {
-    const key = `${mapId}_${x}_${y}`;
-    const bashedAt = getBashedDoors()[key];
-    if (bashedAt === undefined) return false;
+  // Doors forced before the record moved into the world folder are still in the
+  // savegame under the old `mapId_x_y` key. Read (never written) so a save made
+  // then keeps the doors it had standing open until they expire.
+  function legacyForcedAt(x, y) {
+    if (typeof $gameSystem === 'undefined' || !$gameSystem || !$gameSystem._bashedDoors) return undefined;
+    return $gameSystem._bashedDoors[`${$gameMap.mapId()}_${x}_${y}`];
+  }
+
+  function isTileForcedOpen(x, y) {
+    const doors = getForcedDoors(false);
+    const key = `${x},${y}`;
+    let forcedAt = doors ? doors[key] : undefined;
+    if (forcedAt === undefined) forcedAt = legacyForcedAt(x, y);
+    if (forcedAt === undefined) return false;
+    // In an empty world a forced door never relocks: there is nobody left to
+    // fix it. The record is kept (so it survives into every savegame of the
+    // world) and simply never expires.
+    if (isEmptyWorld()) return true;
     const now = (typeof $gameVariables !== 'undefined') ? $gameVariables.value(114) : 0;
-    if (now >= bashedAt && now - bashedAt <= BASH_OPEN_MINUTES) return true;
-    delete getBashedDoors()[key]; // expired (or time rolled back) - relock
+    if (now >= forcedAt && now - forcedAt <= BASH_OPEN_MINUTES) return true;
+    // Expired (or time rolled back): the door is locked again everywhere.
+    if (doors) delete doors[key];
+    if (typeof $gameSystem !== 'undefined' && $gameSystem && $gameSystem._bashedDoors) {
+      delete $gameSystem._bashedDoors[`${$gameMap.mapId()}_${x}_${y}`];
+    }
     return false;
   }
 
-  function isDoorBashedOpen(useFacing) {
+  function isDoorForcedOpen(useFacing) {
     const c = getEventCoordinates(useFacing);
-    return isTileBashedOpen($gameMap.mapId(), c.x, c.y);
+    return isTileForcedOpen(c.x, c.y);
   }
 
-  function markDoorBashed(useFacing) {
+  // Records the door as open for the day and puts the event back on walk-in
+  // terms straight away (below-character priority, Event Touch), instead of
+  // waiting for the next map load or nightfall to re-derive its trigger. The
+  // world file is flushed on the spot so another savegame of the world sees the
+  // broken door without waiting for this one to be saved.
+  function markDoorForcedOpen(useFacing) {
     const now = (typeof $gameVariables !== 'undefined') ? $gameVariables.value(114) : 0;
-    getBashedDoors()[getDoorKey(useFacing)] = now;
+    const doors = getForcedDoors(true);
+    if (doors) {
+      doors[getDoorKey(useFacing)] = now;
+      if (typeof window.WorldManager.flush === 'function') {
+        try { window.WorldManager.flush(); } catch (e) { /* non-fatal */ }
+      }
+    }
+    refreshAllDoorTriggers();
   }
 
   // ── Door interaction trigger ─────────────────────────────────────────────────
-  // A door's RMMZ trigger is chosen at runtime from its lock state:
-  //   closed (locked) -> 0 Action Button  (deliberate press to get the menu, so
-  //                       just bumping a locked door does nothing)
-  //   open            -> 2 Event Touch    (walk into it and you go in)
-  // The data trigger on these events is left as-is and simply overridden here.
+  // A door's RMMZ trigger AND priority are both chosen at runtime from its lock
+  // state:
+  //   closed (locked) -> 0 Action Button, priority 1 (same as characters), so
+  //                       the party is stopped by the door and has to press the
+  //                       button facing it to get the lockpick/bash menu
+  //   open            -> 2 Event Touch, priority 0 (below characters), so the
+  //                       party simply walks into it and goes in
+  // The data trigger and priority on these events are left as-is and simply
+  // overridden here.
   const TRIGGER_ACTION = 0;
   const TRIGGER_EVENT_TOUCH = 2;
+  const PRIORITY_BELOW = 0;
+  const PRIORITY_SAME = 1;
 
   // A door event is any event whose active page runs a visitHouse /
   // enterMultiBuilding plugin command. Returns its facing flag and the pool it
@@ -881,19 +1008,28 @@
     return null;
   }
 
+  // Must agree with attemptDoorEntry, or a door the prompt would lock reads as
+  // walk-through (or the other way about).
   function isDoorClosedForEvent(event, poolName, alwaysOpen) {
     if (alwaysOpen) return false;
     if (!isLockablePool(poolName)) return false;
     if (parameters["lockDoors"] === "true") return true;
+    if (isEmptyWorld()) {
+      // Not the clock: how this one was left, plus anything since forced.
+      return !isEmptyWorldDoorOpen(event.x, event.y) &&
+             !isTileForcedOpen(event.x, event.y);
+    }
     if (!isNightTime()) return false;
-    if (isTileBashedOpen($gameMap.mapId(), event.x, event.y)) return false;
+    if (isTileForcedOpen(event.x, event.y)) return false;
     return true;
   }
 
   function applyDoorTrigger(event) {
     const info = eventDoorInfo(event);
     if (!info) return;
-    event._trigger = isDoorClosedForEvent(event, info.poolName, info.alwaysOpen) ? TRIGGER_ACTION : TRIGGER_EVENT_TOUCH;
+    const closed = isDoorClosedForEvent(event, info.poolName, info.alwaysOpen);
+    event._trigger = closed ? TRIGGER_ACTION : TRIGGER_EVENT_TOUCH;
+    event._priorityType = closed ? PRIORITY_SAME : PRIORITY_BELOW;
   }
 
   function refreshAllDoorTriggers() {
@@ -943,12 +1079,89 @@
   //   SignPark       -> recalls (summons) the camper to the player
   //   SignBus        -> the fast-travel map, boarding as a Bus
   const PROC_MAP_ID = 636;
+
+  // ── Doors that name their own trade ─────────────────────────────────────────
+  // Tileset 303 grew a door per business, and a door with a clinic's sign over
+  // it has to open onto a clinic rather than onto whatever the shop pool happens
+  // to roll. Each entry names real interiors under the Shops parent map (1157);
+  // where a trade keeps several premises the door picks one off its own tile, so
+  // the same door is always the same shop and two doors on a street rarely the
+  // same one. An id that is not in the database is dropped, so a door whose
+  // interiors were never authored quietly falls back to the ordinary shop pool.
+  // i18n-ignore-start  Features.json ids and data/MapInfos.json map ids
+  const TRADE_DOORS = {
+    DoorClinic:        [1765, 1751],                    // Fertility, Augmentation
+    DoorPoliceStation: [1429],                          // Police Station
+    DoorWeaponStore:   [1425, 1426, 1427, 1428, 658],   // Weapon Shops, Surplus Armory
+    DoorGym:           [1716],                          // Gym Supplies
+    DoorHardwareStore: [1723, 1767],                    // Hardware Store, Household
+    DoorIceCream:      [1393],                          // Ice Cream
+    DoorMusicStore:    [1758],                          // Music Store
+    GarageDoor:        [1745],                          // Garage
+  };
+  // i18n-ignore-end
+
   const DOOR_FEATURES = new Set([
-    "DoorHouse", "DoorInn", "DoorShop", "DoorSkyscraper", "DoorDungeon"
+    "DoorHouse", "DoorInn", "DoorShop", "DoorSkyscraper", "DoorDungeon",
+    ...Object.keys(TRADE_DOORS)
   ]);
   const INTERACT_FEATURES = new Set([
     ...DOOR_FEATURES, "SignPark", "SignBus"
   ]);
+
+  // Every interior some trade door already claims. A town that draws the special
+  // doors must not ALSO offer their shops behind its plain ones, or the clinic
+  // the party just walked past turns up again behind an unmarked door two
+  // streets away. Only towns do this: a lone shop on a country lane draws no
+  // special doors at all, so cutting its pool down would only take shops away.
+  function tradeClaimedShopIds() {
+    const out = new Set();
+    for (const ids of Object.values(TRADE_DOORS)) for (const id of ids) out.add(id);
+    return out;
+  }
+
+  // The proper towns: City and Burg (and their Desert/Ice variants), the two
+  // biomes generated on tileset 303 and the only ones that carry trade doors.
+  function isTradeDoorBiome() {
+    const name = (($gameSystem && $gameSystem._procGenData && $gameSystem._procGenData.currentBiome) || "")
+      .toLowerCase();
+    return name.includes("city") || name.includes("burg");
+  }
+
+  function existingMapIds(ids) {
+    if (!$dataMapInfos) return ids.slice();
+    return ids.filter((id) => !!$dataMapInfos[id]);
+  }
+
+  // A stable per-door hash, so DoorClinic and DoorWeaponStore standing on the
+  // same tile of two different squares never resolve to the same premises.
+  function doorNameSalt(name) {
+    let h = 0x5D00;
+    for (let i = 0; i < name.length; i++) h = (Math.imul(h, 31) + name.charCodeAt(i)) | 0;
+    return h >>> 0;
+  }
+
+  // Which interior a trade door opens onto, seeded from the door tile itself.
+  // Returns null when the trade has no authored interior, which sends the door
+  // back to the ordinary shop pool rather than nowhere.
+  function tradeDoorMapId(name, x, y, mapId) {
+    const ids = existingMapIds(TRADE_DOORS[name] || []);
+    if (!ids.length) return null;
+    const id = (mapId == null) ? ($gameMap ? $gameMap.mapId() : 0) : mapId;
+    return getSeededRandomFromArray(ids, (createSeed(id, x, y) ^ doorNameSalt(name)) >>> 0);
+  }
+
+  // Which shop a PLAIN DoorShop opens onto. In a town that is every shop except
+  // the ones a trade door already speaks for; anywhere else it is the whole
+  // pool, exactly as before, and null means "let visitHouse roll it".
+  function genericShopMapId(x, y, mapId) {
+    if (!isTradeDoorBiome()) return null;
+    const claimed = tradeClaimedShopIds();
+    const open = getHouseList("shops", true).filter((id) => !claimed.has(id));
+    if (!open.length) return null;
+    const id = (mapId == null) ? ($gameMap ? $gameMap.mapId() : 0) : mapId;
+    return getSeededRandomFromArray(open, createSeed(id, x, y));
+  }
 
   // tilesetId -> { tileId: featureName }, built lazily via ProcGenUtils.
   const _featureLookupCache = {};
@@ -1054,9 +1267,11 @@
       case "DoorInn":
         visitHouse("inns", true);
         return true;
-      case "DoorShop":
-        visitHouse("shops", true);
+      case "DoorShop": {
+        const c = getEventCoordinates(true);
+        visitHouse("shops", true, genericShopMapId(c.x, c.y));
         return true;
+      }
       case "DoorSkyscraper": {
         const totalFloors = seededFloorCount(true, 4, 10, 0x534B);
         enterMultiBuilding("skyscrapers", "skyfloors", totalFloors - 1, true);
@@ -1071,17 +1286,58 @@
       case "SignBus":
         openBusFastTravel();
         return true;
-      default:
-        return false;
+      default: {
+        // A door that names its trade opens onto that trade, and onto the
+        // ordinary shop pool only where the trade has no interior authored yet.
+        if (!TRADE_DOORS[name]) return false;
+        const c = getEventCoordinates(true);
+        visitHouse("shops", true, tradeDoorMapId(name, c.x, c.y));
+        return true;
+      }
     }
   }
 
   // Shared gate for both ways into a feature entrance (walked into, or pressed).
-  function interactFeatureReady() {
-    if (!$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return false;
+  // `anyMap` is for a map that draws its own door TILES without going through
+  // the procedural feature table (Bologna's OSM cells, map 353): the tile is
+  // still a door and everything below it is identical, only the map it stands
+  // on is not 636.
+  function interactFeatureReady(anyMap = false) {
+    if (!$gameMap) return false;
+    if (!anyMap && $gameMap.mapId() !== PROC_MAP_ID) return false;
     if (doorEntryBusy()) return false;
     if ($gameMessage && $gameMessage.isBusy && $gameMessage.isBusy()) return false;
     return true;
+  }
+
+  // Public: a door that is a TILE on a map other than the procedural one. Same
+  // entry as the DoorHouse / DoorShop / DoorInn features beside it, so the
+  // seed, the return point, the lock and the lockpick prompt all read the door
+  // tile rather than wherever the party happens to be standing. Returns true
+  // only when the entry was actually taken.
+  function enterTileDoorAt(poolName, x, y) {
+    if (!interactFeatureReady(true)) return false;
+    const pool = normalizePoolName(poolName) || "houses";
+    _callerEventId = 0;
+    return withDoorTile({ x, y }, () => {
+      // Huts, shops and inns are always one floor; a house or a villa rolls a
+      // second one off its own tile, exactly like a DoorHouse feature does.
+      if ((pool === "houses" || pool === "villas") && seededFloorCount(true, 1, 2, 0x484F) >= 2) {
+        enterMultiBuilding(pool, "floors", 1, true);
+      } else {
+        visitHouse(pool, true);
+      }
+      return true;
+    });
+  }
+
+  // Public: which interior a tile door leads to, WITHOUT entering it (the sign
+  // Bologna hangs over its shop doors). Same seed and the same pool the entry
+  // would use, so the name on the sign is the shop behind the door.
+  function interiorMapIdFor(poolName, x, y, mapId) {
+    if (!$gameMap) return null;
+    const id = (mapId == null) ? $gameMap.mapId() : mapId;
+    return selectHouse(createSeed(id, x, y), normalizePoolName(poolName));
   }
 
   // Public: the party walked into (or onto) a door FEATURE at x,y on the proc
@@ -1126,11 +1382,12 @@
   //   - non-lockable pool   -> always open (only houses/villas/huts can lock).
   //   - "unlocked" in the door event's Note -> always open.
   //   - lockDoors param ON  -> fully blocked ("Get out of my house!").
-  //   - daytime / bashed    -> open animation, then doEntry.
-  //   - night (locked)      -> lockpick / bash / cancel menu. Only lockpick
-  //                            success, skeleton key, or bash open the door;
-  //                            cancel and lockpick failure leave it shut with
-  //                            no animation.
+  //   - daytime / forced    -> open animation, then doEntry.
+  //   - night (locked)      -> lockpick / bash / cancel menu, cancel selected.
+  //                            Only lockpick success, skeleton key, or bash open
+  //                            the door; cancel and lockpick failure leave it
+  //                            shut with no animation. Any of the three that
+  //                            works marks the door open for a day, world-wide.
   function attemptDoorEntry(useFacing, doEntry, poolName, forceOpen) {
     // Everything below this point is deferred (the door swing, and the lockpick
     // choice on top of it), so a tile-feature entrance has to carry its pinned
@@ -1150,8 +1407,19 @@
       window.skipLocalization = false;
       return;
     }
-    // A door already bashed open within the last day skips the prompt.
-    if (isNightTime() && !isDoorBashedOpen(useFacing)) {
+    // A door already forced open within the last day skips the prompt.
+    // An empty world's doors do not answer to the clock: whether one is shut
+    // was decided when it was left, and forcing it opens it for good.
+    if (isEmptyWorld()) {
+      const c = getEventCoordinates(useFacing);
+      if (!isEmptyWorldDoorOpen(c.x, c.y) && !isDoorForcedOpen(useFacing)) {
+        showLockedDoorChoices(useFacing, entry, tile);
+        return;
+      }
+      openDoorAndEnter(entry);
+      return;
+    }
+    if (isNightTime() && !isDoorForcedOpen(useFacing)) {
       showLockedDoorChoices(useFacing, entry, tile);
       return;
     }
@@ -1168,25 +1436,27 @@
 
     window.skipLocalization = true;
     $gameMessage.add(T('ProceduralHouse.doorLocked'));
-    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    // Cancel is the default AND the cancel choice: an interact press that only
+    // meant to walk through must never bash a door in by itself.
+    $gameMessage.setChoices(choices, choices.length - 1, choices.length - 1);
     $gameMessage.setChoiceBackground(0);
     $gameMessage.setChoicePositionType(2);
     window.skipLocalization = false;
     $gameMessage.setChoiceCallback((index) => {
       const action = actions[index];
       if (action === 'lockpick') {
-        startNightLockpick(useFacing, doEntry);
+        startNightLockpick(useFacing, doEntry, tile);
       } else if (action === 'bash') {
-        // The bash record is keyed by the door's own tile, so a tile-feature
-        // door has to be pinned again here: the choice callback runs long after
-        // attemptDoorEntry returned and the pin was let go.
+        // The forced-open record is keyed by the door's own tile, so a
+        // tile-feature door has to be pinned again here: the choice callback
+        // runs long after attemptDoorEntry returned and the pin was let go.
         withDoorTile(tile || _procDoorTile, () => bashDoor(useFacing, doEntry));
       }
       // 'cancel' (or window dismissed): stay outside, no door animation.
     });
   }
 
-  function startNightLockpick(useFacing, doEntry) {
+  function startNightLockpick(useFacing, doEntry, tile) {
     // A skeleton key (item 740) opens any lock without the minigame. We handle
     // it here so the no-scene auto-success path never strands the entry.
     if ($dataItems[740] && $gameParty.hasItem($dataItems[740])) {
@@ -1194,11 +1464,12 @@
       window.skipLocalization = true;
       $gameMessage.add(T('ProceduralHouse.usedSkeletonKey'));
       window.skipLocalization = false;
+      withDoorTile(tile || _procDoorTile, () => markDoorForcedOpen(useFacing));
       openDoorAndEnter(doEntry);
       return;
     }
     if (typeof LockpickTetris === 'undefined') return;
-    _pendingNightHouse = { useFacing: useFacing, doEntry: doEntry };
+    _pendingNightHouse = { useFacing: useFacing, doEntry: doEntry, tile: tile || _procDoorTile };
     hookLockpickForHouse();
     // Randomized lock complexity, clamped to the minigame's 1-10 range.
     const difficulty = 3 + Math.floor(Math.random() * 6); // 3..8
@@ -1219,6 +1490,10 @@
         _pendingNightHouse = null;
         if (this.success) {
           AudioManager.playSe({ name: "lock_01", volume: 100, pitch: 100, pan: 0 });
+          // A picked lock stays picked for the day, exactly as a bashed door
+          // does: the tile is pinned again because the minigame scene ran long
+          // after the pin was let go.
+          withDoorTile(pending.tile || _procDoorTile, () => markDoorForcedOpen(pending.useFacing));
           openDoorAndEnter(pending.doEntry);
         }
         // failure: no animation, no entry, no crime.
@@ -1227,13 +1502,16 @@
     };
   }
 
-  // Bashing the door always counts as breaking and entering.
+  // Bashing the door always counts as breaking and entering, except in an
+  // empty world: there is no owner to break in on and nobody to file it.
+  // (CrimeSystem.addCrime refuses it there anyway; this keeps the "Nobody left
+  // to judge you" toast from firing every time a door is shouldered open.)
   function bashDoor(useFacing, doEntry) {
-    if (typeof CrimeSystem !== 'undefined') {
+    if (typeof CrimeSystem !== 'undefined' && !isEmptyWorld()) {
       CrimeSystem.addPresetCrime("breakingAndEntering");
     }
     AudioManager.playSe({ name: "Crash", volume: 100, pitch: 100, pan: 0 });
-    markDoorBashed(useFacing);
+    markDoorForcedOpen(useFacing);
     openDoorAndEnter(doEntry);
   }
 

@@ -5,5 +5,12 @@
   "usedSkeletonKey": "Used Skeleton Key!",
   "needLockpick": "You need a lockpick to hotwire a car.",
   "lockStuck": "The lock will not budge.",
-  "hotwired": "You hotwire the car and pocket the \\I[{icon}]{item}."
+  "hotwired": "You hotwire the car and pocket the \\I[{icon}]{item}.",
+  "ranOver": "You run {name} down.",
+  "ranOverInjured": "You run {name} down. {injury}.",
+  "ramKilled": "{name} goes under the wheels and does not get up.",
+  "ramAngered": "{name} picks itself up and comes for you.",
+  "vehicleScuffed": "Something gives way against the front. Damaged: {parts}.",
+  "vehicleCrashed": "You crash into another vehicle. Damaged: {parts}.",
+  "emptyWorldUnlocked": "The door is unlocked. Whoever left it here was not coming back for it."
 }

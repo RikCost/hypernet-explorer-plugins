@@ -39,7 +39,10 @@
 .vm-wrapper::before {
     content: '';
     position: absolute;
-    inset: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     background-image:
         radial-gradient(circle, #ddd 0%, #777 60%, transparent 61%),
         radial-gradient(circle, #ddd 0%, #777 60%, transparent 61%),

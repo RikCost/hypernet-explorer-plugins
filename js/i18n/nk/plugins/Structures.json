@@ -1,0 +1,1128 @@
+{
+  "name": {
+    "dungeon": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "DUNGEON",
+        "KEEP",
+        "UNDERCROFT",
+        "HOLD",
+        "WARRENS",
+        "DEEPS",
+        "GALLERIES",
+        "SUBLEVEL",
+        "REDOUBT",
+        "LABYRINTH"
+      ],
+      "adj": [
+        "SUNKEN",
+        "FORGOTTEN",
+        "IRON",
+        "SILENT",
+        "CROOKED",
+        "WEEPIN'",
+        "LOWER",
+        "BLIND",
+        "HOLLOW",
+        "NAMELESS"
+      ],
+      "of": [
+        "DA NINE LOCKS",
+        "DA MAGISTRATE",
+        "SAINT ULRIC",
+        "DA DROWNED BELL",
+        "DA LONG WINTER",
+        "DA HANGED CLERK",
+        "COLD ASH",
+        "DA BROKEN OATH",
+        "DA SLEEPLESS GUARD",
+        "DA LAST WARDEN"
+      ]
+    },
+    "crypt": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "CRYPT",
+        "SEPULCHRE",
+        "OSSUARY",
+        "CHARNEL",
+        "MAUSOLEUM",
+        "TOMB",
+        "RELIQUARY",
+        "BONE VAULT",
+        "GRAVE HOUSE",
+        "UNDERCROFT"
+      ],
+      "adj": [
+        "COLD",
+        "WHISPERIN'",
+        "SEALED",
+        "PALE",
+        "QUIET",
+        "SECOND",
+        "DEEPER",
+        "MARBLE",
+        "HUSHED",
+        "UNLIT"
+      ],
+      "of": [
+        "DA FIFTH FAMILY",
+        "MOTHER AGNES",
+        "DA DROWNED CHOIR",
+        "DA UNNAMED",
+        "DA GREY ABBOT",
+        "NINE SISTERS",
+        "DA WINTER DEAD",
+        "DA KEPT VOW",
+        "DA PLAGUE YEAR",
+        "DA OLD BLOOD"
+      ]
+    },
+    "cellar": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{of}'S {noun}",
+        "{noun} OF {of}",
+        "DA {adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "CELLAR",
+        "STORE",
+        "CACHE",
+        "LARDER",
+        "UNDERCROFT",
+        "STRONGROOM",
+        "PANTRY",
+        "STASH",
+        "COLD ROOM",
+        "BOLTHOLE"
+      ],
+      "adj": [
+        "BRICKED",
+        "SOUR",
+        "DUSTY",
+        "DAMP",
+        "PADLOCKED",
+        "FORGOTTEN",
+        "LITTLE",
+        "LOW",
+        "MOULDERED",
+        "SNUG"
+      ],
+      "of": [
+        "DA INNKEEPER",
+        "A DEAD UNCLE",
+        "DA WIDOW",
+        "DA COIN COUNTER",
+        "OLD MAREK",
+        "DA BAKER",
+        "A MISSIN' NOTARY",
+        "A CHEERFUL THIEF",
+        "A BAD HARVEST",
+        "DA ABSENT LANDLORD"
+      ]
+    },
+    "den": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun}"
+      ],
+      "noun": [
+        "DEN",
+        "LAIR",
+        "HOLLOW",
+        "BURROW",
+        "WARREN",
+        "ROOST",
+        "NEST",
+        "EARTH",
+        "SETT",
+        "PIT"
+      ],
+      "adj": [
+        "REEKIN'",
+        "WARM",
+        "BONE-STREWN",
+        "LOW",
+        "DEEP",
+        "CHEWED",
+        "RANK",
+        "TORN",
+        "MATTED",
+        "CLOSE"
+      ],
+      "of": [
+        "SOMETHIN' LARGE",
+        "DA THING DAT DIGS",
+        "DA MOTHER",
+        "DA NINE WHELPS",
+        "DA CHEWER",
+        "DA OLD MALE",
+        "WHAT FEEDS",
+        "DA PACK",
+        "DA WINTER SLEEPER",
+        "DA MARKED BEAST"
+      ]
+    },
+    "temple": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "TEMPLE",
+        "SANCTUM",
+        "BASILICA",
+        "HYPOGEUM",
+        "NAVE",
+        "CHAPEL",
+        "CLOISTER",
+        "RELIQUARY",
+        "SANCTUARY",
+        "HALL"
+      ],
+      "adj": [
+        "BURIED",
+        "NINE-DOORED",
+        "GILDED",
+        "HUSHED",
+        "SUNKEN",
+        "MARBLE",
+        "ELDER",
+        "UNFINISHED",
+        "WINDOWLESS",
+        "SEALED"
+      ],
+      "of": [
+        "A GOD WIT NO MOUTH",
+        "DA NINEFOLD NAME",
+        "SAINT PERPETUA",
+        "DA UNMADE HOUR",
+        "DA TURNIN' WHEEL",
+        "DA MUTE CHOIR",
+        "DA ELEVENTH ANGEL",
+        "DA LONG FAST",
+        "DA KEPT FLAME",
+        "DA FIRST WORD"
+      ]
+    },
+    "sewer": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {adj} {noun} OF {of}",
+        "{of} {noun}"
+      ],
+      "noun": [
+        "SEWER",
+        "DRAIN",
+        "OUTFALL",
+        "TRUNK MAIN",
+        "INTERCEPTOR",
+        "CULVERT",
+        "CHANNELS",
+        "SLUICE",
+        "OVERFLOW",
+        "STORM DRAIN"
+      ],
+      "adj": [
+        "MUNICIPAL",
+        "OVERFLOWIN'",
+        "BLOCKED",
+        "GREY",
+        "STINKIN'",
+        "DISUSED",
+        "NORTHERN",
+        "LOWER",
+        "CONDEMNED",
+        "BRICK"
+      ],
+      "of": [
+        "DA OLD TOWN",
+        "DA CATTLE MARKET",
+        "DA FISH QUARTER",
+        "DA WATERWORKS",
+        "DA CORN EXCHANGE",
+        "WARD SIX",
+        "DA CATHEDRAL CLOSE",
+        "DA TANNERY",
+        "DA POOR QUARTER",
+        "DA NEW CUT"
+      ]
+    },
+    "vault": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "VAULT",
+        "HOARD",
+        "TREASURY",
+        "STRONGROOM",
+        "DEPOSIT",
+        "RESERVE",
+        "COFFER",
+        "TROVE",
+        "REPOSITORY",
+        "HOLD"
+      ],
+      "adj": [
+        "SEALED",
+        "PRIVATE",
+        "NUMBERED",
+        "DEEP",
+        "ANONYMOUS",
+        "GILDED",
+        "QUIET",
+        "UNLISTED",
+        "BONDED",
+        "IRON"
+      ],
+      "of": [
+        "A CAREFUL MAN",
+        "DA NINTH ACCOUNT",
+        "DA SILENT PARTNER",
+        "A LONG ABSENCE",
+        "DA UNDECLARED",
+        "DA LATE OWNER",
+        "DA STANDIN' ORDER",
+        "DA GREY LEDGER",
+        "NO ONE",
+        "DA SLEEPIN' FUND"
+      ]
+    },
+    "catacombs": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "CATACOMBS",
+        "OSSUARY",
+        "BONE GALLERIES",
+        "NICHES",
+        "LOCULI",
+        "NECROPOLIS",
+        "BONEFIELDS",
+        "DEADWAYS",
+        "CORRIDORS",
+        "HALLS"
+      ],
+      "adj": [
+        "ENDLESS",
+        "POWDERED",
+        "STACKED",
+        "LAMPLIT",
+        "NAMELESS",
+        "MUNICIPAL",
+        "OVERFULL",
+        "OLDER",
+        "NUMBERED",
+        "CHALKED"
+      ],
+      "of": [
+        "THIRTY THOUSAND",
+        "DA CHOLERA YEAR",
+        "SAINT BLAISE",
+        "DA PARISH POOR",
+        "DA SECOND PLAGUE",
+        "DA UNCLAIMED",
+        "DA CHARNEL GUILD",
+        "BROTHER ANSELM",
+        "DA LEVELLED GRAVEYARD",
+        "DA MOVED DEAD"
+      ]
+    },
+    "mine": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "{of} {noun}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "ME",
+        "SHAFT",
+        "WORKINGS",
+        "DRIFT",
+        "ADIT",
+        "SEAM",
+        "PIT",
+        "GALLERY",
+        "COLLIERY",
+        "DIGGINGS"
+      ],
+      "adj": [
+        "FLOODED",
+        "ABANDONED",
+        "DEEP",
+        "SOUR",
+        "COLLAPSED",
+        "COMPANY",
+        "SILENT",
+        "WORKED-OUT",
+        "LOWER",
+        "OLD"
+      ],
+      "of": [
+        "DA WIDOW-MAKER",
+        "DA CONSORTIUM",
+        "SAINT BARBARA",
+        "DA EIGHTY-ONE",
+        "DA LONG STRIKE",
+        "COLD IRON",
+        "DA BAD AIR",
+        "DA DEEP SEAM",
+        "DA LAST SHIFT",
+        "DA BURIED CREW"
+      ]
+    },
+    "frozenCave": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun}"
+      ],
+      "noun": [
+        "CAVE",
+        "GROTTO",
+        "HOLLOW",
+        "ICEHOUSE",
+        "GLACIER CAVE",
+        "COLD CHAMBER",
+        "RIME HOLLOW",
+        "DEEP",
+        "CAVERN",
+        "CHIMNEY"
+      ],
+      "adj": [
+        "FROZEN",
+        "RIMED",
+        "BLUE",
+        "SILENT",
+        "WHITENED",
+        "GLASS",
+        "EVERFROST",
+        "BREATHLESS",
+        "CRYSTALLINE",
+        "STILL"
+      ],
+      "of": [
+        "DA LONG WINTER",
+        "DA FROST LINE",
+        "DA STANDIN' WATER",
+        "DA WHITE YEAR",
+        "DA COLD SAINT",
+        "NINE DEGREES",
+        "DA SLOW THAW",
+        "DA BURIED HERD",
+        "DA ICE FAIR",
+        "DA BLUE HOUR"
+      ]
+    },
+    "cistern": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "CISTERN",
+        "RESERVOIR",
+        "TANKS",
+        "WATERWORKS",
+        "SUMP",
+        "CATCHMENT",
+        "DROWNED HALL",
+        "BATHS",
+        "WELL HOUSE",
+        "AQUEDUCT"
+      ],
+      "adj": [
+        "FLOODED",
+        "MUNICIPAL",
+        "DROWNED",
+        "VAULTED",
+        "STILL",
+        "GREEN",
+        "OVERFLOWIN'",
+        "SILENT",
+        "LOWER",
+        "BRACKISH"
+      ],
+      "of": [
+        "FOUR HUNDRED COLUMNS",
+        "DA DRY YEAR",
+        "DA FEVER",
+        "DA WATER BOARD",
+        "DA OLD AQUEDUCT",
+        "DA STANDIN' WATER",
+        "DA DROWNED ENGINEER",
+        "DA CLEAN SUPPLY",
+        "DA SUNKEN BELL",
+        "DA BLIND FISH"
+      ]
+    },
+    "fungal": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun}"
+      ],
+      "noun": [
+        "WARREN",
+        "BEDS",
+        "BLOOM",
+        "UNDERSTORY",
+        "MYCELIUM",
+        "CAPS",
+        "HOLLOWS",
+        "GARDEN",
+        "FLUSH",
+        "SPORE HALLS"
+      ],
+      "adj": [
+        "FUNGAL",
+        "SPORIN'",
+        "DAMP",
+        "GLOWIN'",
+        "BREATHIN'",
+        "SOFT",
+        "PALE",
+        "FRUITIN'",
+        "OVERGROWN",
+        "CREEPIN'"
+      ],
+      "of": [
+        "DA SLOW BLOOM",
+        "ONE ORGANISM",
+        "DA BURIED ORCHARD",
+        "DA GREY CAP",
+        "DA DAMP YEAR",
+        "DA THING DAT SPREADS",
+        "DA SWEET ROT",
+        "DA FIFTH FLUSH",
+        "DA ROOT NETWORK",
+        "DA SOFT MOTHER"
+      ]
+    },
+    "crystal": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun}"
+      ],
+      "noun": [
+        "CAVERN",
+        "GEODE",
+        "CRYSTAL HALLS",
+        "VUG",
+        "LATTICE",
+        "CHAMBER",
+        "CATHEDRAL",
+        "POCKET",
+        "PRISMS",
+        "DEEP"
+      ],
+      "adj": [
+        "SINGIN'",
+        "GLASS",
+        "FACETED",
+        "COLD",
+        "BRIGHT",
+        "BLUE",
+        "UNMAPPED",
+        "HUMMIN'",
+        "GROWIN'",
+        "SHARP"
+      ],
+      "of": [
+        "DA LONG PRESSURE",
+        "A SOUND LIKE BELLS",
+        "DA BROKEN COMPASS",
+        "DA NINTH FACET",
+        "DA SLOW MINERAL",
+        "DA BLIND PROSPECTOR",
+        "DA CUT STONE",
+        "DA WHITE VEIN",
+        "DA PATIENT WATER",
+        "DA LOCKED LIGHT"
+      ]
+    },
+    "oubliette": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "OUBLIETTE",
+        "CELLS",
+        "GAOL",
+        "HOLDIN'",
+        "CAGES",
+        "BOTTLE DUNGEON",
+        "LOCKUP",
+        "PEN",
+        "CELLARS",
+        "PIT"
+      ],
+      "adj": [
+        "FORGOTTEN",
+        "DEBTORS'",
+        "LOWER",
+        "MILITARY",
+        "POLITICAL",
+        "DAMP",
+        "UNREGISTERED",
+        "QUIET",
+        "NUMBERED",
+        "PROVISIONAL"
+      ],
+      "of": [
+        "DA EMERGENCY",
+        "NO CHARGE",
+        "DA MISSIN' FILE",
+        "DA THIRD REGIME",
+        "DA QUIET ARREST",
+        "WARD NINE",
+        "DA UNSENTENCED",
+        "DA LONG REMAND",
+        "DA GREY LIST",
+        "DA ABSENT JUDGE"
+      ]
+    },
+    "library": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "LIBRARY",
+        "STACKS",
+        "ARCHIVE",
+        "READIN' ROOMS",
+        "COLLECTION",
+        "REPOSITORY",
+        "BIBLIOTHECA",
+        "DEPOSITORY",
+        "SCRIPTORIUM",
+        "INDEX"
+      ],
+      "adj": [
+        "SUNKEN",
+        "SEALED",
+        "UNCATALOGUED",
+        "SILENT",
+        "BURNED",
+        "PRIVATE",
+        "FORBIDDEN",
+        "DROWNED",
+        "CLOSED",
+        "UNLIT"
+      ],
+      "of": [
+        "BOOKS NOBODY WROTE",
+        "DA WITHDRAWN",
+        "DA NINTH SHELF",
+        "A DEAD SOCIETY",
+        "DA UNREAD",
+        "DA LONG LOAN",
+        "DA COPYIST",
+        "DA MISSIN' VOLUME",
+        "DA MARGINALIA",
+        "DA LAST READER"
+      ]
+    },
+    "forge": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "FORGE",
+        "FOUNDRY",
+        "WORKS",
+        "FURNACE",
+        "SMITHY",
+        "IRONWORKS",
+        "CASTIN' HALL",
+        "BLOOMERY",
+        "CRUCIBLE",
+        "HEAT"
+      ],
+      "adj": [
+        "UNDER",
+        "BANKED",
+        "ROARIN'",
+        "COLD",
+        "COMPANY",
+        "DEEP",
+        "MOLTEN",
+        "BLACKED",
+        "IDLE",
+        "LOWER"
+      ],
+      "of": [
+        "A PATIENT FIRE",
+        "DA IRON GUILD",
+        "SAINT ELIGIUS",
+        "DA LAST POUR",
+        "DA BROKEN MOULD",
+        "DA NIGHT SHIFT",
+        "DA STANDIN' HEAT",
+        "DA UNQUENCHED",
+        "DA BURIED HAMMER",
+        "DA RED HOUR"
+      ]
+    },
+    "bunker": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "{adj} {noun} OF {of}",
+        "{noun} {num}"
+      ],
+      "noun": [
+        "BUNKER",
+        "SHELTER",
+        "INSTALLATION",
+        "FACILITY",
+        "COMPLEX",
+        "POST",
+        "REDOUBT",
+        "STATION",
+        "DEPOT",
+        "SITE"
+      ],
+      "adj": [
+        "HARDENED",
+        "DECOMMISSIONED",
+        "FORGOTTEN",
+        "GREY",
+        "SEALED",
+        "GOVERNMENT",
+        "REGIONAL",
+        "UNLISTED",
+        "STANDBY",
+        "DEEP"
+      ],
+      "of": [
+        "A WAR DAT WAITED",
+        "CONTINGENCY NINE",
+        "DA GREY ENVELOPE",
+        "DA STANDIN' ORDER",
+        "CIVIL DEFENCE",
+        "DA BLUE FILE",
+        "DA LAST EXERCISE",
+        "DA QUIET MINISTRY",
+        "DA UNLISTED WING",
+        "DA LONG ALERT"
+      ],
+      "num": [
+        "FOURTEEN",
+        "NINE",
+        "TWENTY-TWO",
+        "SIX",
+        "THIRTY-ONE",
+        "FOUR",
+        "SEVENTEEN",
+        "EIGHT",
+        "TWELVE",
+        "FORTY"
+      ]
+    },
+    "lab": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "{adj} {noun} OF {of}",
+        "{noun} {num}"
+      ],
+      "noun": [
+        "LABORATORY",
+        "FACILITY",
+        "WING",
+        "INSTITUTE",
+        "STATION",
+        "ANNEXE",
+        "WORKS",
+        "SECTION",
+        "SUITE",
+        "PROGRAMME"
+      ],
+      "adj": [
+        "BURIED",
+        "DECOMMISSIONED",
+        "STERILE",
+        "SEALED",
+        "PRIVATE",
+        "GREY",
+        "UNLISTED",
+        "CLOSED",
+        "DEEP",
+        "PROVISIONAL"
+      ],
+      "of": [
+        "A CANCELLED PROGRAMME",
+        "DA NINTH TRIAL",
+        "DA GREY INSTITUTE",
+        "NO ETHICS BOARD",
+        "DA QUIET GRANT",
+        "SUBJECT FOURTEEN",
+        "DA BURIED FINDINGS",
+        "DA SECOND PROTOCOL",
+        "DA MISSIN' COHORT",
+        "DA UNPUBLISHED"
+      ],
+      "num": [
+        "FOURTEEN",
+        "NINE",
+        "TWENTY-TWO",
+        "SIX",
+        "THIRTY-ONE",
+        "FOUR",
+        "SEVENTEEN",
+        "EIGHT",
+        "TWELVE",
+        "FORTY"
+      ]
+    },
+    "shrine": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "SHRINE",
+        "SANCTUM",
+        "CIRCLE",
+        "ALTAR",
+        "CHAPEL",
+        "SANCTUARY",
+        "ROTUNDA",
+        "RING",
+        "SEAT",
+        "NAVE"
+      ],
+      "adj": [
+        "PROFANE",
+        "UNCONSECRATED",
+        "NINE-SIDED",
+        "BLEEDIN'",
+        "SILENT",
+        "REVERSED",
+        "CANDLELIT",
+        "SEALED",
+        "INVERTED",
+        "WAITIN'"
+      ],
+      "of": [
+        "A NAME BEST UNSAID",
+        "DA NINEFOLD MOUTH",
+        "DA TURNED CROSS",
+        "DA LONG PATIENCE",
+        "DA GOAT-FOOTED",
+        "DA HOLLOW CHOIR",
+        "DA SECOND COVENANT",
+        "WHAT ANSWERS",
+        "DA SOLD HOUR",
+        "DA THING BENEATH"
+      ]
+    },
+    "smuggler": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "{adj} {noun} OF {of}",
+        "{of} {noun}"
+      ],
+      "noun": [
+        "RUN",
+        "TUNNEL",
+        "PASSAGE",
+        "CUT",
+        "ROUTE",
+        "BOLTHOLE",
+        "WAY",
+        "CRAWL",
+        "LINE",
+        "DROP"
+      ],
+      "adj": [
+        "SMUGGLERS'",
+        "QUIET",
+        "UNLICENSED",
+        "DUTY-FREE",
+        "NIGHT",
+        "CROOKED",
+        "UNTAXED",
+        "HIDDEN",
+        "BACKDOOR",
+        "DISCREET"
+      ],
+      "of": [
+        "DA SALT TRADE",
+        "UNTAXED BRANDY",
+        "DA NIGHT CARGO",
+        "A QUIET ARRANGEMENT",
+        "DA CUSTOMS MAN",
+        "DA BORDER YEAR",
+        "A FAVOUR OWED",
+        "DA BLIND WATCH",
+        "DA SECOND LEDGER",
+        "DA SLEEPIN' GUARD"
+      ]
+    },
+    "grotto": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun}"
+      ],
+      "noun": [
+        "GROTTO",
+        "SEA CAVE",
+        "HOLLOW",
+        "TIDAL CAVE",
+        "POOL",
+        "CHAMBER",
+        "SOUND",
+        "COVE",
+        "UNDERCAVE",
+        "BLOWHOLE"
+      ],
+      "adj": [
+        "TIDAL",
+        "DROWNED",
+        "SALT",
+        "ECHOIN'",
+        "GREEN",
+        "SUNKEN",
+        "BLUE",
+        "WEED-HUNG",
+        "HALF-FLOODED",
+        "SINGIN'"
+      ],
+      "of": [
+        "DA TURNIN' TIDE",
+        "DA DROWNED CREW",
+        "DA SALT LINE",
+        "DA NEAP",
+        "DA LOST BOAT",
+        "DA GREY SEALS",
+        "DA LONG SWELL",
+        "DA SUNKEN CHAIN",
+        "A FISHER'S VOW",
+        "DA MOON'S PULL"
+      ]
+    },
+    "lavaTube": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun}"
+      ],
+      "noun": [
+        "TUBE",
+        "FLOW",
+        "VENT",
+        "CONDUIT",
+        "PIPE",
+        "THROAT",
+        "CHANNEL",
+        "CHIMNEY",
+        "GALLERY",
+        "COURSE"
+      ],
+      "adj": [
+        "VOLCANIC",
+        "MOLTEN",
+        "GLOWIN'",
+        "BASALT",
+        "BREATHIN'",
+        "RED",
+        "COOLIN'",
+        "DEEP",
+        "SULPHUROUS",
+        "UNSTABLE"
+      ],
+      "of": [
+        "DA LAST ERUPTION",
+        "DA MOUNTAIN'S THROAT",
+        "DA RED YEAR",
+        "DA STANDIN' FIRE",
+        "DA BURIED VILLAGE",
+        "DA SLOW COOLIN'",
+        "DA FIRE BENEATH",
+        "DA SULPHUR SAINT",
+        "DA BROKEN CRUST",
+        "DA ASH FALL"
+      ]
+    },
+    "barrow": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun} OF {of}"
+      ],
+      "noun": [
+        "BARROW",
+        "MOUND",
+        "HOWE",
+        "TUMULUS",
+        "LONG BARROW",
+        "CAIRN",
+        "GRAVE MOUND",
+        "PASSAGE GRAVE",
+        "RING",
+        "HILL"
+      ],
+      "adj": [
+        "LONG",
+        "KINGLY",
+        "GRASSED",
+        "OLDER",
+        "OPENED",
+        "UNOPENED",
+        "NINE-CHAMBERED",
+        "SILENT",
+        "ANCESTRAL",
+        "RINGED"
+      ],
+      "of": [
+        "A KING NOBODY NAMES",
+        "DA HORSE AN' RIDER",
+        "DA BRONZE YEARS",
+        "DA NINTH CHIEF",
+        "DA GOLD UNDER GRASS",
+        "DA ANTLER CROWN",
+        "DA FIRST PEOPLE",
+        "DA BURNT OFFERIN'",
+        "DA STANDIN' STONES",
+        "DA UNQUIET CHIEF"
+      ]
+    },
+    "metro": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "{adj} {noun} OF {of}",
+        "{of} {noun}"
+      ],
+      "noun": [
+        "STATION",
+        "PLATFORM",
+        "HALT",
+        "TERMINUS",
+        "INTERCHANGE",
+        "JUNCTION",
+        "SIDINGS",
+        "CONCOURSE",
+        "DEPOT",
+        "TUNNELS"
+      ],
+      "adj": [
+        "DISUSED",
+        "GHOST",
+        "CLOSED",
+        "LOWER",
+        "UNOPENED",
+        "WARTIME",
+        "ABANDONED",
+        "DEEP-LEVEL",
+        "BOARDED",
+        "NORTHERN"
+      ],
+      "of": [
+        "DA CANCELLED LINE",
+        "DA SHELTER YEARS",
+        "DA MISSIN' STOP",
+        "DA LAST TRAIN",
+        "DA GREY TIMETABLE",
+        "DA SECOND EXTENSION",
+        "DA BRICKED PLATFORM",
+        "DA NIGHT SERVICE",
+        "DA CLOSED BRANCH",
+        "DA UNSOLD TICKET"
+      ]
+    },
+    "salt": {
+      "pattern": [
+        "DA {adj} {noun}",
+        "{noun} OF {of}",
+        "DA {noun} OF {of}",
+        "{adj} {noun}"
+      ],
+      "noun": [
+        "SALT WORKS",
+        "SALT ME",
+        "GALLERIES",
+        "PANS",
+        "WORKINGS",
+        "CHAMBERS",
+        "SALT HALLS",
+        "DIGGINGS",
+        "LEVELS",
+        "DEPOSIT"
+      ],
+      "adj": [
+        "WHITE",
+        "ROYAL",
+        "BLINDIN'",
+        "DRY",
+        "DEEP",
+        "PRESERVED",
+        "COMPANY",
+        "BITTER",
+        "CRYSTALLINE",
+        "WORKED"
+      ],
+      "of": [
+        "DA SALT ROAD",
+        "DA PRESERVED",
+        "DA BITTER TAX",
+        "DA WHITE YEAR",
+        "SAINT KINGA",
+        "DA LONG DROUGHT",
+        "DA SEALED LEVEL",
+        "DA SALT CATHEDRAL",
+        "DA DRY SEA",
+        "DA OLD MONOPOLY"
+      ]
+    }
+  }
+}

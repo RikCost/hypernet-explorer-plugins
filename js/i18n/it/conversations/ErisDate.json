@@ -71,7 +71,7 @@
     "Tutti pensano che discordia voglia dire urlare. Vuol dire soprattutto {tempismo|scartoffie|due persone che non si sentono bene}.",
     "Ero una divinita {minore|di terza fascia|quasi senza fedeli}. La gente lo dimentica. Io no.",
     "C'è una versione di questa sera in cui hai detto un'altra cosa proprio adesso. È andata {peggio|meglio|esattamente uguale}.",
-    "Mi piacciono {i mortali|questo secolo|il caffe scadente}. Nessuno mi crede quando lo dico.",
+    "Mi piacciono {i mortali|questo secolo|il caffè scadente}. Nessuno mi crede quando lo dico.",
     "La torre è {la bandierina|lo stuzzicadenti|l'ultimo chiodo} che tiene insieme l'hamburger. Non è una mia metafora, ma è accurata.",
     "Chiedimi una cosa che non mi chiede nessuno. Avanti."
   ],
@@ -638,7 +638,7 @@
     "anAdventureSeekerThenWe": "Appetito per i guai! {Allora questa è cortesia professionale oltre che un appuntamento.|Siamo praticamente colleghi.|Ecco perché l'universo ci ha fatti sedere insieme.}",
     "blushesFlattererButDoGo": "{*si ispeziona gli anelli, fallendo nel sembrare indifferente*|*una pausa, malamente travestita da noia*} Adulatore. ...{Continua.|Stavi dicendo. Nei dettagli.|No no, finisci il pensiero. Lentamente.}",
     "suddenlySomethingUnexpectedHappens": "{La serata, che si stava comportando bene, smette.|Qualcosa cambia nell'aria, come una pagina che si gira da sola.|Puntuale, la notte deposita un emendamento.}",
-    "aGroupOfSmallChaotic": "Una delegazione di piccoli cosi caotici {ribolle fuori da un tombino|piove dal nulla in fila indiana|arriva già litigando}, tutti a reclamare la sua attenzione con vocine sovrapposte.",
+    "aGroupOfSmallChaotic": "Una delegazione di piccoli così caotici {ribolle fuori da un tombino|piove dal nulla in fila indiana|arriva già litigando}, tutti a reclamare la sua attenzione con vocine sovrapposte.",
     "ohNoMyGremlinsExcuse": "{Oh no. I gremlin.|Non ADESSO, voi.|Avevo detto giovedì.} Un momento. {Sono sindacalizzati, capisci.|Sentono l'odore di quando sono felice.|È per la faccenda dei biscotti, ignora qualunque cosa dichiarino.}",
     "anotherDeityPassesByAnd": "Un'altra divinità passa a distanza, {registra la situazione|vede lei, vede te, fa i conti|si blocca a metà passo}, e produce il saluto più imbarazzato della storia della teologia.",
     "thatWasUmLetS": "Quello era {nessuno|un ex collega|una storia lunga con la barba}. {Non si risponde al saluto.|Fa' finta di non aver visto.|Se qualcuno chiede, questa serata non sta avvenendo.}",
@@ -783,7 +783,7 @@
       "chaotic": "Tutti gli angoli in vista diventano acuti insieme. I colori si scambiano di posto e si rifiutano di tornare indietro.",
       "activity": [
         "Da un nome a tre di queste forme. Come le chiami, quelle diventano.",
-        "Gliene dai di pessimi, apposta, e le forme lo incassano con dignita."
+        "Gliene dai di pessimi, apposta, e le forme lo incassano con dignità."
       ],
       "incidents": [
         "Una linea retta perfettamente valida passa di li.",
@@ -893,7 +893,7 @@
       "chaotic": "La marea sale e scende undici volte in un minuto, e lascia una fila perfetta di conchiglie ordinate per dimensione.",
       "activity": [
         "Castello di sabbia. Io faccio le mura, tu fai quella cosa che ci mettete dentro voi.",
-        "Insieme costruite qualcosa che nessuna spiaggia ha mai avuto. La marea se lo porta via, che secondo lei e il punto."
+        "Insieme costruite qualcosa che nessuna spiaggia ha mai avuto. La marea se lo porta via, che secondo lei è il punto."
       ],
       "incidents": [
         "Un'onda arriva più su di tutte le altre e nessuno dei due si sposta in tempo.",
@@ -975,7 +975,7 @@
       ],
       "romantic": [
         "Si mette in mezzo alla strada vuota dove la neve non è ancora stata calpestata.",
-        "Qui non è passato nessuno da quando e caduta. Per circa un minuto questo e il posto più nuovo del mondo.",
+        "Qui non è passato nessuno da quando è caduta. Per circa un minuto questo è il posto più nuovo del mondo.",
         "Vieni a rovinarlo con me."
       ],
       "chaotic": "Ogni camino del paese sbuffa un anello di fumo perfetto, uno dopo l'altro, per tutta la strada.",
@@ -1034,7 +1034,7 @@
     },
     "CastleInside": {
       "label": "Sale del Castello",
-      "intro": "Dentro il castello: sale lunghe, pietra fredda e ritratti di gente molto sicura di se.\nI tuoi passi arrivano prima di te.",
+      "intro": "Dentro il castello: sale lunghe, pietra fredda e ritratti di gente molto sicura di sé.\nI tuoi passi arrivano prima di te.",
       "question": [
         "Guardali tutti. Dipinti dal lato migliore e morti da quello peggiore.",
         "Se ti appendessero a un muro, cosa sbaglierebbero di te?"
@@ -1042,7 +1042,7 @@
       "romantic": [
         "Si ferma sotto un ritratto, guarda lui, poi te, e resta più vicina a te che a lui.",
         "Tutti in questo corridoio volevano essere ricordati. Ha funzionato, e non è servito a niente.",
-        "Preferisco stare qui male che lassu bene."
+        "Preferisco stare qui male che lassù bene."
       ],
       "chaotic": "Tutti i ritratti della sala si girano a guardarvi insieme, e parecchi sembrano contrariati.",
       "activity": [
@@ -1176,7 +1176,7 @@
         "Nemmeno uno di loro sa cosa sono. E l'unico posto in cui mi tocca essere una persona.",
         "Tu lo sai, e sei ancora qui. Spiegamela tu."
       ],
-      "chaotic": "Tutti i semafori della strada scattano verdi insieme, e l'incrocio scopre qualcosa su di se.",
+      "chaotic": "Tutti i semafori della strada scattano verdi insieme, e l'incrocio scopre qualcosa su di sé.",
       "activity": [
         "Scegli uno sconosciuto. Gli inventiamo tutta la settimana.",
         "Seguite con lo sguardo quattro sconosciuti e gli date una vita. A uno lei da un divorzio senza motivo."
@@ -1235,7 +1235,7 @@
       "intro": "Una cripta: scaffali di persone, impilate per famiglia e dimenticate da tutti.\nE più fredda di quanto il terreno sopra abbia il diritto di essere.",
       "question": [
         "Ognuno di questi era l'intero argomento di qualcuno. Adesso e uno scaffale.",
-        "Ti da fastidio stare quaggiu con l'archivio?"
+        "Ti dà fastidio stare quaggiù con l'archivio?"
       ],
       "romantic": [
         "Legge un nome da una targa, ad alta voce, male, e per un attimo la cripta e meno vuota di prima.",
@@ -1459,7 +1459,7 @@
       ],
       "romantic": [
         "Le luci tra i rami si allontanano e vi lasciano una radura, cosa che non è una gentilezza.",
-        "Questi qui trattano in obblighi. Tutto quello che si da qui e un amo.",
+        "Questi qui trattano in obblighi. Tutto quello che si dà qui è un amo.",
         "Percio stasera non ti daro niente, e lo sentiro più di quanto l'abbiano mai sentito loro."
       ],
       "chaotic": "Tutte le luci del bosco si spengono, tornano nei colori sbagliati, e qualcosa nel buio ride per primo.",
@@ -1476,7 +1476,7 @@
       "label": "Fattoria",
       "intro": "Campi coltivati con gli attrezzi del giorno lasciati dove sono caduti.\nQui tutto segue il calendario di qualcuno, meteo compreso.",
       "question": [
-        "Tutto questo e una scommessa piazzata sei mesi fa. Ogni anno. Da tutti.",
+        "Tutto questo è una scommessa piazzata sei mesi fa. Ogni anno. Da tutti.",
         "Tu sapresti aspettare così tanto per qualcosa?"
       ],
       "romantic": [
@@ -1578,7 +1578,7 @@
         "Contate. Sono trentuno, e lei paga in una valuta che non esiste."
       ],
       "incidents": [
-        "L'acqua cade dalle chiome tutta insieme, come se qualcosa lassu avesse spostato il peso.",
+        "L'acqua cade dalle chiome tutta insieme, come se qualcosa lassù avesse spostato il peso.",
         "Qualcosa di sgargiante vi passa davanti a tutta velocità e nessuno dei due lo identifica."
       ]
     },
@@ -1635,12 +1635,12 @@
       ],
       "romantic": [
         "Trova una sporgenza con vista su tutto l'impianto e si siede dandogli le spalle, rivolta verso di te.",
-        "Tutti laggiu vengono puniti per esattamente una cosa. Coerenza. E quasi gentile.",
+        "Tutti laggiù vengono puniti per esattamente una cosa. Coerenza. È quasi gentile.",
         "Nessuno e mai riuscito a dirmi quale delle mie cose conti come quella giusta."
       ],
       "chaotic": "Tutte le fornaci in vista cambiano colore, e l'intera amministrazione ci mette quattordici secondi a protocollare l'incidente.",
       "activity": [
-        "Leggiamo gli avvisi. La burocrazia quaggiu e la scrittura più divertente del creato.",
+        "Leggiamo gli avvisi. La burocrazia quaggiù è la scrittura più divertente del creato.",
         "Leggete insieme le bacheche. Una riguarda lei, e non ti lascia finire."
       ],
       "incidents": [
@@ -1804,7 +1804,7 @@
     },
     "Lair": {
       "label": "Covo",
-      "intro": "Un covo: un posto che qualcosa di grosso ha reso comodo per se.\nLa scala di ogni cosa e sbagliata per delle persone.",
+      "intro": "Un covo: un posto che qualcosa di grosso ha reso comodo per sé.\nLa scala di ogni cosa è sbagliata per delle persone.",
       "question": [
         "Chi vive qui non è piccolo e non è fuori.",
         "Lo aspettiamo, o sono solo io?"
@@ -1877,7 +1877,7 @@
       ],
       "romantic": [
         "Non c'è niente su cui sedersi, quindi semplicemente si ferma, e voi due siete l'unico avvenimento del posto.",
-        "Qui tutto e ancora in sospeso. Nessuno ha deciso niente.",
+        "Qui tutto è ancora in sospeso. Nessuno ha deciso niente.",
         "Adesso decidere e il mio mestiere. Qui dentro sono fuori servizio ed e terrificante."
       ],
       "chaotic": "Sta quasi per succedere qualcosa. Ci arriva vicinissimo, quattro volte, e poi no.",
@@ -2031,7 +2031,7 @@
       ],
       "romantic": [
         "Si siede sul bordo con le gambe oltre il vuoto e non si tiene a niente.",
-        "Tutto quello che sta laggiu sta passando una serata completamente diversa.",
+        "Tutto quello che sta laggiù sta passando una serata completamente diversa.",
         "Siediti. Ti prendo io. Probabilmente. Sarebbe una bella storia comunque."
       ],
       "chaotic": "Una frana parte sulla parete di fronte e si ferma a metà, tenendo la posizione, in attesa.",
@@ -2149,7 +2149,7 @@
         "E quando una dea cade, i suoi strumenti rimangono.",
         "Quella lancia si è conficcata nella terra, crescendo, trasformandosi.",
         "Ora e diventata il perno del multiverso stesso.",
-        "Ironico, no? Uno strumento di giustizia che mantiene la realta stabile.",
+        "Ironico, no? Uno strumento di giustizia che mantiene la realtà stabile.",
         "A volte penso a cosa succederebbe se lo rimuovessi...",
         "Ma poi, senza un universo, chi rimarrebbe a credere in me?",
         "E senza credenti... anche noi dei svaniamo.",
@@ -2163,7 +2163,7 @@
       ],
       "romantic": [
         "Appoggia il palmo alla base della torre, come si tocca una cosa che si è posata.",
-        "Tutto quello che tiene, lassu, tiene perché ho vinto una discussione.",
+        "Tutto quello che tiene, lassù, tiene perché ho vinto una discussione.",
         "Non ho mai potuto dirlo di niente di più piccolo."
       ],
       "chaotic": "Tutta la torre risuona una volta, dal terreno fino a dove finisce, e diverse cose lontane vanno brevemente storte.",
@@ -2222,7 +2222,7 @@
     },
     "Permafrost": {
       "label": "Permafrost",
-      "intro": "Terreno gelato che è gelato da prima che qualcuno tenesse il conto.\nTutto quello che è mai caduto qui e ancora qui, alla profondita a cui si è fermato.",
+      "intro": "Terreno gelato che è gelato da prima che qualcuno tenesse il conto.\nTutto quello che è mai caduto qui è ancora qui, alla profondità a cui si è fermato.",
       "question": [
         "Qui non marcisce niente. Tutto quello che è morto e ancora esattamente arrabbiato come allora.",
         "Vorresti essere conservato, o preferiresti andartene?"
@@ -2232,7 +2232,7 @@
         "Qui sotto ci sono fiori di un'era che nessuno ha messo per iscritto. Ancora del colore giusto.",
         "Le cose si conservano, se non le raggiunge niente di caldo. E un po' che collaudo questa teoria."
       ],
-      "chaotic": "Quattromila anni di terreno gelato si scongelano per un metro di profondita e si rigelano, e la sotto qualcosa e brevemente sveglio.",
+      "chaotic": "Quattromila anni di terreno gelato si scongelano per un metro di profondità e si rigelano, e là sotto qualcosa è brevemente sveglio.",
       "activity": [
         "Scava. Non tanto. Qualunque cosa troviamo aspetta compagnia da moltissimo tempo.",
         "Scendete di una trentina di centimetri e trovate una foglia, perfettamente verde, di un'estate che nessuno ricorda."
@@ -2376,14 +2376,14 @@
     },
     "SeaBed": {
       "label": "Fondale",
-      "intro": "Il fondo del mare, con tutto il suo peso sopra la testa.\nLa luce che arriva quaggiu si è fatta togliere quasi tutta.",
+      "intro": "Il fondo del mare, con tutto il suo peso sopra la testa.\nLa luce che arriva quaggiù si è fatta togliere quasi tutta.",
       "question": [
         "Sopra di noi c'è solo acqua e sotto di noi c'è qualcosa più vecchio dell'acqua.",
         "Quaggiu niente ha mai avuto bisogno di essere bello. E molto riposante."
       ],
       "romantic": [
         "Cammina sul fondo piano perché non c'è altra velocità disponibile, e tutto quello che solleva ci mette un'era a posarsi.",
-        "Quaggiu non è mai arrivata una voce. A questa profondita non ci sono pettegolezzi.",
+        "Quaggiù non è mai arrivata una voce. A questa profondità non ci sono pettegolezzi.",
         "Sai da quanto non sto in un posto dove nessuno ha un'opinione su di me?"
       ],
       "chaotic": "Tutto cio che fa luce sul fondo si accende insieme, e per qualche secondo il fondale e una città.",
@@ -2471,7 +2471,7 @@
       ],
       "romantic": [
         "Si mette sotto la torre guardando dritto in alto come si guarda una cosa di cui si è gelosi.",
-        "Nessuno ha pregato per arrivare lassu. Hanno fatto dei conti. Quantita enormi di conti.",
+        "Nessuno ha pregato per arrivare lassù. Hanno fatto dei conti. Quantità enormi di conti.",
         "L'avete fatto senza di noi. Non sono mai stata più orgogliosa di una cosa in cui non c'entravo niente."
       ],
       "chaotic": "Tutti gli orologi del complesso si azzerano a nove secondi e ci restano, e da qualche parte un allarme e estremamente educato al riguardo.",
@@ -2609,7 +2609,7 @@
       "chaotic": "Tutte le offerte del tempio tornano fresche insieme, e l'odore e travolgente e sbagliato.",
       "activity": [
         "Lascia qualcosa. Qualsiasi cosa. Voglio vedere sotto quale nome finisce.",
-        "Lasci una cosetta senza valore sull'altare. Non succede niente, che secondo lei e la risposta giusta."
+        "Lasci una cosetta senza valore sull'altare. Non succede niente, che secondo lei è la risposta giusta."
       ],
       "incidents": [
         "Una ciotola sull'altare si rovescia da sola e si rimette dritta.",
@@ -2674,7 +2674,7 @@
       ],
       "chaotic": "Tutta la tundra fiorisce insieme, tutto a livello del suolo, fuori stagione, in un secondo silenzioso.",
       "activity": [
-        "Sdraiati. Da quaggiu e una foresta e noi siamo della taglia sbagliata.",
+        "Sdraiati. Da quaggiù è una foresta e noi siamo della taglia sbagliata.",
         "Vi sdraiate in una foresta centenaria alta otto centimetri e nessuno dei due si alza per un po'."
       ],
       "incidents": [
@@ -2977,7 +2977,8 @@
         "\"Ho fatto domande peggiori {agli dèi|ai filosofi|ai doganieri}. {Ti tengo.|Dieci punti.|Scrivimelo da qualche parte.}\"",
         "Risponde con serietà totale, a lungo, {citando le fonti|con diagrammi nell'aria|col tono che gli avvocati riservano ai trattati}. Le hai fatto la settimana.",
         "\"{Esatto.|Ovvio.|Finalmente.}\" Annuisce come se avessi passato un esame {di cui nessuno ti aveva parlato|che ha scritto lei secoli fa|con lode}.",
-        "Le si accendono gli occhi come una città durante un'ottima emergenza. \"Ancora. {Di' altro.|Più piano.|Questo me lo voglio ricordare.}\""
+        "Le si accendono gli occhi come una città durante un'ottima emergenza. \"Ancora. {Di' altro.|Più piano.|Questo me lo voglio ricordare.}\"",
+        "\"Stasera avevo intenzione di fingermi normale,\" dice, {sollevata|sciogliendosi visibilmente|con un sorriso}, \"e adesso non devo più.\""
       ],
       "bad": [
         "Sbatte le palpebre {due volte|lentamente|in un modo che abbassa la temperatura}. \"La strana qui sono io. {Era nei patti.|C'è scritto sull'invito.|Ognuno al suo posto.}\"",

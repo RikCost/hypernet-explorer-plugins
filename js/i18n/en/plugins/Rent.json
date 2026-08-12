@@ -1,7 +1,8 @@
 {
   "noRooms": "No rooms available to rent.",
+  "bookedBy": "Already booked by {name}'s party",
+  "someoneElse": "another party",
   "ui": {
-    "rooms": "Rooms",
-    "hint": "↑↓ navigate · OK to rent · Esc to close"
+    "rooms": "Rooms"
   }
 }

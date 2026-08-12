@@ -1,0 +1,29 @@
+{
+  "vehicleRefuel": "{vehicle} REFUEL",
+  "exitStation": "EXIT STATION",
+  "liters": "{liters} LITERS",
+  "fillTank": "FILL TANK ({liters}L)",
+  "back": "BACK",
+  "selectVehicle": "SELECT VEHICLE",
+  "vehicleTitle": "{vehicle} · REFUEL",
+  "genericVehicle": "VEHICLE",
+  "genericVehicleLower": "VEHICLE",
+  "confirmHeader": "\\C[17]REFUEL CONFIRMATION\\C[0]",
+  "confirmBody": "PURCHASE {liters}L FOR DA {vehicle} FOR €{cost}?",
+  "confirm": "CONFIRM",
+  "cancel": "CANCEL",
+  "completeHeader": "\\C[17]REFUELIN' COMPLETE!\\C[0]",
+  "added": "ADDED {liters}L TA DA {vehicle}.",
+  "insufficientFunds": "\\C[18]INSUFFICIENT FUNDS!\\C[0]",
+  "ui": {
+    "fuelStation": "FUEL STATION",
+    "hint": "↑↓ NAVIGATE · OK CONFIRM · ESC BACK",
+    "noVehicles": "NO REFUELABLE VEHICLES OWNED",
+    "fuelOverview": "FUEL OVERVIEW",
+    "vehicleFuel": "{name} FUEL",
+    "cost": "COST",
+    "level": "LEVEL",
+    "pricePerLitre": "PRICE/L",
+    "wallet": "WALLET"
+  }
+}

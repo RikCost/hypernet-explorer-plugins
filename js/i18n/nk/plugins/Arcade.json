@@ -1,0 +1,13 @@
+{
+  "boot": {
+    "stage": "STAGE {stage}/{total}\n{pct}%"
+  },
+  "hud": {
+    "score": "SCORE: {score}",
+    "noScores": "NO SCORES YET",
+    "lives": "LIVES: {lives}",
+    "level": "LEVEL: {level}",
+    "hiScore": "HI-SCORE: {score}",
+    "time": "TIME: {time}"
+  }
+}

@@ -45,6 +45,21 @@
  *   ParchmentToast.icon(176)       one IconSet cell as inline HTML
  *
  * -----------------------------------------------------------------------
+ * Standing notifications
+ * -----------------------------------------------------------------------
+ * A condition that lasts (overencumbered, poisoned, hunted) is not an event
+ * to be announced once: it stays up for as long as it is true.
+ *
+ *   ParchmentToast.sticky("Overencumbered", { key: 'encumbrance',
+ *                                             severity: 'danger' });
+ *   ParchmentToast.dismiss('encumbrance');   // the moment it stops being true
+ *
+ * A sticky toast never expires and is never evicted to make room for a
+ * transient one. Calling sticky() again with the same key redraws it in
+ * place, so a live readout (a weight, a countdown) simply keeps its slot.
+ * ParchmentToast.isLive(key) answers whether one is up.
+ *
+ * -----------------------------------------------------------------------
  * Several notifications at once
  * -----------------------------------------------------------------------
  * Toasts stack and never replace one another, so a single action can report
@@ -93,8 +108,17 @@
     const sy = r.height / Graphics.height;
     const s = _stackEl.style;
     s.left = r.left + 20 * sx + "px";
-    s.top = r.top + 20 * sy + "px";
     s.fontSize = Math.round(18 * sy) + "px";
+
+    // The party HUD (PartyHud.js) occupies the same top-left corner when it is
+    // on, so toasts drop below its last member row instead of covering it.
+    const hud = document.getElementById("party-hud");
+    if (hud && hud.classList.contains("phud-visible")) {
+      const hr = hud.getBoundingClientRect();
+      s.top = hr.bottom + 12 * sy + "px";
+    } else {
+      s.top = r.top + 20 * sy + "px";
+    }
   }
 
   function tick() {
@@ -168,33 +192,10 @@
   // ==========================================================================
   // show, the one code path every notification ends up in
   // ==========================================================================
-  function show(text, opts = {}) {
-    if (text === null || text === undefined || text === "") return;
-    const severity = opts.severity || "info";
-    const durationMs = (opts.duration || 180) * FRAME_MS;
-    const key = String(opts.key != null ? opts.key : text);
-
-    const existing = _live.get(key);
-    if (existing && !existing.fading) {
-      existing.hideAt = Date.now() + durationMs; // refresh, don't stack dupes
-      return;
-    }
-
-    const stack = ensureStack();
-
-    // Cap the stack: drop the oldest non-fading toast
-    if (_live.size >= MAX_TOASTS) {
-      const oldestKey = _live.keys().next().value;
-      const oldest = _live.get(oldestKey);
-      if (oldest && oldest.el.parentNode) oldest.el.parentNode.removeChild(oldest.el);
-      _live.delete(oldestKey);
-    }
-
-    const el = document.createElement("div");
-    el.className = `html-parchment-overlay html-toast html-toast--${severity}`;
-
-    // A title or a leading icon promotes the toast to HTML; the caller's own
-    // text is escaped unless it explicitly asked for HTML.
+  // Draws the caller's content into an element. A title or a leading icon
+  // promotes the toast to HTML; the caller's own text is escaped unless it
+  // explicitly asked for HTML.
+  function renderInto(el, text, opts) {
     const body = opts.html ? String(text) : escapeHtml(String(text));
     if (opts.title || opts.icon != null) {
       let inner = "";
@@ -208,6 +209,48 @@
     } else {
       el.textContent = String(text);
     }
+  }
+
+  function classNameFor(severity, persist) {
+    return `html-parchment-overlay html-toast html-toast--${severity}` +
+      (persist ? " html-toast--sticky" : "");
+  }
+
+  function show(text, opts = {}) {
+    if (text === null || text === undefined || text === "") return;
+    const severity = opts.severity || "info";
+    const persist = !!opts.persist;
+    const durationMs = (opts.duration || 180) * FRAME_MS;
+    const key = String(opts.key != null ? opts.key : text);
+    const hideAt = persist ? Infinity : Date.now() + durationMs;
+
+    const existing = _live.get(key);
+    if (existing && !existing.fading) {
+      // Refresh, don't stack dupes. A standing notification is redrawn where it
+      // already is, so its readout can move without it losing its slot.
+      existing.hideAt = hideAt;
+      existing.persist = persist;
+      existing.el.className = classNameFor(severity, persist);
+      renderInto(existing.el, text, opts);
+      return;
+    }
+
+    const stack = ensureStack();
+
+    // Cap the stack: drop the oldest transient toast. A standing notification
+    // is never evicted, since the condition it reports is still true.
+    if (_live.size >= MAX_TOASTS) {
+      for (const [k, toast] of _live) {
+        if (toast.persist) continue;
+        if (toast.el.parentNode) toast.el.parentNode.removeChild(toast.el);
+        _live.delete(k);
+        break;
+      }
+    }
+
+    const el = document.createElement("div");
+    el.className = classNameFor(severity, persist);
+    renderInto(el, text, opts);
 
     el.style.opacity = "0";
     stack.appendChild(el);
@@ -217,8 +260,44 @@
       el.style.opacity = "1";
     });
 
-    _live.set(key, { el, hideAt: Date.now() + durationMs, fading: false });
+    _live.set(key, { el, hideAt, fading: false, persist });
     if (_rafId === null) _rafId = requestAnimationFrame(tick);
+  }
+
+  /**
+   * A notification that stays up until the condition it reports goes away.
+   * Always give it a key: that key is how it is redrawn and how it is taken
+   * down again with dismiss().
+   */
+  function sticky(text, opts = {}) {
+    show(text, Object.assign({}, opts, { persist: true, key: opts.key != null ? opts.key : text }));
+  }
+
+  // Takes a notification down early, sticky or not. Silent if nothing is up.
+  function dismiss(key) {
+    const k = String(key);
+    const toast = _live.get(k);
+    if (!toast || toast.fading) return;
+    toast.fading = true;
+    toast.el.style.opacity = "0";
+    setTimeout(() => {
+      if (toast.el.parentNode) toast.el.parentNode.removeChild(toast.el);
+      _live.delete(k);
+    }, FADE_MS);
+  }
+
+  // Also the self-healing check a standing notification leans on: a toast whose
+  // element has left the page (the stack was rebuilt under it) is forgotten
+  // here, so the next show() puts it back rather than believing it is still up.
+  function isLive(key) {
+    const k = String(key);
+    const toast = _live.get(k);
+    if (!toast || toast.fading) return false;
+    if (!toast.el.parentNode || !document.body.contains(toast.el)) {
+      _live.delete(k);
+      return false;
+    }
+    return true;
   }
 
   function clear() {
@@ -415,7 +494,10 @@
   function specUp(actor, spec, newLevel, opts = {}) {
     if (!newLevel) return;
     const resolved = resolveSpec(spec);
-    const name = opts.name || (resolved ? localized(resolved.name) : null);
+    const db = window.Specializations;
+    const name = opts.name || (resolved
+      ? (db && db.displayName ? db.displayName(resolved) : localized(resolved.name))
+      : null);
     if (!name) return;
     const who = actor && actor.name ? actor.name() : "";
     const levelName = specLevelName(newLevel);
@@ -430,6 +512,9 @@
 
   window.ParchmentToast = {
     show,
+    sticky,
+    dismiss,
+    isLive,
     clear,
     group,
     reward,

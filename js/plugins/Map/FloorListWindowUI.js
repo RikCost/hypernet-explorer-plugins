@@ -116,7 +116,9 @@
         window.addEventListener("keyup", this._wasdUpListener);
 
         this._floorItems = FloorListData.buildItemList();
-        this._selectedIndex = this._firstEnabledIndex();
+        this._selectedIndex = FloorListData.initialIndex
+            ? FloorListData.initialIndex(this._floorItems)
+            : this._firstEnabledIndex();
 
         const el = document.createElement("div");
         el.id = "floorlist-container";

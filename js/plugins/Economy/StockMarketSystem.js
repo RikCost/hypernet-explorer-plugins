@@ -250,6 +250,12 @@
     }
 
     updatePrices() {
+      // An empty world's market never moves: OIL and SOUL are left exactly
+      // where they opened, since there is nobody left to trade either. The
+      // guard is here rather than at the tick so every caller (the frame
+      // update, the Quantum Projector app) is covered by the one rule.
+      const WM = window.WorldManager;
+      if (WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld()) return;
       this._oilPrice = this.generateNewPrice(this._oilPrice, "oil");
       this._soulsPrice = this.generateNewPrice(this._soulsPrice, "souls");
       this._oilHistory.push(this._oilPrice);

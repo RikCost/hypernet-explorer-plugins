@@ -102,6 +102,25 @@
  * @text Restore Inventory
  * @desc Restores the player's gold and inventory from their last death point and removes the gravestone data.
  *
+ * @command startPetrodemonBattle
+ * @text Start Petrodemon Battle
+ * @desc Raises a unique procedural petrodemon boss and fights it here and now.
+ *
+ * @arg difficulty
+ * @text Difficulty
+ * @desc easy is below the party's level, normal slightly above it, then progressively harder.
+ * @type select
+ * @option easy
+ * @option normal
+ * @option difficult
+ * @option brutal
+ * @option hellish
+ * @default normal
+ *
+ * @command fightRandomPetrodemon
+ * @text Fight Random Petrodemon
+ * @desc Raises a petrodemon at a difficulty rolled at random, from easy to hellish.
+ *
  * @help
  * ============================================================================
  * BattleSystemEnhanced, Core Module
@@ -158,7 +177,10 @@
     BSE.Data._currentBattleEventId = null;
     BSE.Data._currentEventId       = null;
     BSE.Data._currentMapId         = null;
-    BSE.Data._battleRewards        = { exp: 0, gold: 0, items: [], knowledge: 0 };
+    // `title` / `lines` are the spoils popup's extra copy (a felled petrodemon
+    // names itself and reports the OIL options it paid out); both are cleared
+    // at the start of every victory.
+    BSE.Data._battleRewards        = { exp: 0, gold: 0, items: [], knowledge: 0, title: null, lines: [] };
     BSE.Data._needsRespawn         = false;
     BSE.Data._enemyCharSprites     = {};
     BSE.Data._mapCorpses           = [];
@@ -545,6 +567,19 @@
         if (BSE.Functions.executeResetHealthProtection) {
             BSE.Functions.executeResetHealthProtection();
         }
+    });
+
+    // A petrodemon is generated per fight rather than picked out of the
+    // database (see section 17 of the encounters module).
+    PluginManager.registerCommand(pluginName, "startPetrodemonBattle", function(args) {
+        if (!BSE.Functions.startPetrodemonBattle) return;
+        BSE.Functions.startPetrodemonBattle(args && args.difficulty);
+    });
+
+    PluginManager.registerCommand(pluginName, "fightRandomPetrodemon", function(args) {
+        if (!BSE.Functions.startPetrodemonBattle) return;
+        const tiers = BSE.Data.PETRO_DIFFICULTIES || ['normal'];
+        BSE.Functions.startPetrodemonBattle(tiers[Math.floor(Math.random() * tiers.length)]);
     });
 
     PluginManager.registerCommand(pluginName, "checkHealthProtection", function(args) {

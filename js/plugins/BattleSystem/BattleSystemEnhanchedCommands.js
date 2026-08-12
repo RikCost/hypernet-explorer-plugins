@@ -134,14 +134,14 @@
       // The live projectile count rides on the Attack command itself.
       attackExt = { current: this._actor.getCurrentBullets(), max: bulletConfig.max };
     }
-    // Map Battle Mode also gates Attack on tactical position: some living enemy
-    // must sit within the equipped weapon's <Range:N> with a clear line of sight.
-    const inAttackRange = !(window.MapBattleMode && window.MapBattleMode.isActive()) ||
-      window.MapBattleMode.canUseAttackCommand(this._actor);
-    const canAttackNow = this._actor.canAttack() &&
-      (!this._actor.canAttackWithBullets || this._actor.canAttackWithBullets()) &&
-      inAttackRange;
-    this.addCommandWithIcon("", "attack", canAttackNow, attackExt, attackIcon);
+    // Attack is ALWAYS enabled. It is the one action a battler can never be
+    // left without, and every gate that used to grey it out read as a bug at
+    // the counter: the attack skill's own cost (it is paid out of TP, so an
+    // actor opening a fight below it could not swing), an empty magazine, or
+    // Map Battle Mode's range check. None of those are legible from the button,
+    // so the swing is offered and whatever refuses it does so where the reason
+    // can be shown (the ammo counter on the command, the miss in the log).
+    this.addCommandWithIcon("", "attack", true, attackExt, attackIcon);
 
     if (hasRanged) {
       // Reload doubles as Defense for ranged actors: commandReload both recharges

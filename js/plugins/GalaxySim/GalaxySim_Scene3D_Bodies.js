@@ -392,6 +392,7 @@
     const planetHolders = {}; // planet name -> orbit holder (so the ship can dock)
     const scalables = [];   // { group, pick, baseR, minPx, maxBoost } apparent-size entries
     const anomalyMarkers = []; // { mark, pick, planet } "?" tags over signalling worlds
+    const ignitedGlows = []; // halos over worlds burning like stars (see planet.ignited)
     let focusMoonGeo = null;  // shared geometry for cheap focus moonlets (lazy)
     const focusMats = [];     // cheap moonlet materials, disposed at teardown
     let basePickCount = 0;    // pickables length before any planet focus
@@ -569,6 +570,16 @@
           group: pg, pick, baseR: pVisR,
           minPx: MIN_APPARENT_PX.planet, maxBoost: MAX_APPARENT_BOOST.planet,
         });
+
+        // A world that has been set alight is nearly a star: it carries its own
+        // halo and lights its own moons, instead of only catching the Sun.
+        if (planet.ignited) {
+          const base = pVisR * 7;
+          const flare = makeGlowSprite("rgba(255,150,60,0.85)", base);
+          holder.add(flare.sprite);
+          ignitedGlows.push({ glow: flare, base });
+          holder.add(new THREE.PointLight(0xff8a3c, 1.1, 0, 0));
+        }
 
         // The world that is signalling wears a "?" until it has been answered.
         const A = GS.Anomaly;
@@ -886,6 +897,13 @@
         }
       }
       for (const b of beltMeshes) b.mesh.rotation.y = t * b.speed;
+      // A burning world does not shine steadily: the halo breathes on two
+      // beats that never quite line up.
+      for (const g of ignitedGlows) {
+        const k = g.base * (1 + 0.06 * Math.sin(t * 1.7) + 0.04 * Math.sin(t * 2.9));
+        g.glow.mat.opacity = 0.78 + 0.18 * Math.sin(t * 2.3);
+        g.glow.sprite.scale.set(k, k, 1);
+      }
       // A slow breath on the marker, and it goes out the moment the encounter
       // it stands for has been answered.
       if (anomalyMarkers.length) {
@@ -1002,6 +1020,7 @@
       }));
       if (focusMoonGeo) focusMoonGeo.dispose();
       anomalyMarkers.forEach((m) => { m.mark.tex.dispose(); m.mark.mat.dispose(); });
+      ignitedGlows.forEach((g) => { g.glow.tex.dispose(); g.glow.mat.dispose(); });
       ship.dispose();
       if (blackHole) blackHole.dispose();
       if (exoticStar) exoticStar.dispose();

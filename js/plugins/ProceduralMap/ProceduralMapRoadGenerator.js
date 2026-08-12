@@ -231,6 +231,82 @@
     };
   }
 
+  /**
+   * Get orientation-specific pedestrian-crossing ("zebra") tile grids.
+   * ZebraHorizontal crosses a horizontal-running road (its stripe unit is
+   * wide along X and tiles down the road's Y-thickness); ZebraVertical
+   * crosses a vertical-running road (its stripe unit is tall along Y and
+   * tiles across the road's X-width) - the same Horizontal/Vertical
+   * convention getDashedLineTileIds uses. Returns the raw multi-tile "grid"
+   * variant (see ProceduralMapUtils.parseTerrainFeatures), not a bare tile
+   * id, since a crossing is stamped, not dashed one tile at a time.
+   * @returns {{horizontal: object|null, vertical: object|null}}
+   */
+  function getZebraTileIds(allFeatures) {
+    const gridVariant = (name) => {
+      const list = allFeatures[name];
+      if (!list) return null;
+      for (const variant of list) {
+        if (variant.type === "grid" && variant.grid && variant.grid.length) return variant;
+      }
+      return null;
+    };
+    return {
+      horizontal: gridVariant("ZebraHorizontal"),
+      vertical: gridVariant("ZebraVertical"),
+    };
+  }
+
+  /**
+   * Stamp a pedestrian crossing across the full width of a straight,
+   * axis-aligned road: the tileset's zebra-marking grid is tiled across the
+   * road's width, and its own extent (the grid's other dimension) is left as
+   * the crossing's thickness along the road. Drawn on layer 1, the same
+   * layer a dashed center line uses, so a crossing placed over one always
+   * overrides it.
+   *
+   * @param {object} variant - a "grid" feature variant from getZebraTileIds.
+   * @param {"horizontal"|"vertical"} orientation - "horizontal" for a road
+   *   running east-west (the crossing spans its Y-thickness); "vertical" for
+   *   a road running north-south (the crossing spans its X-width).
+   * @param {number} roadStart - the road's start coordinate along its width
+   *   axis (topY for a horizontal road, leftX for a vertical one).
+   * @param {number} roadSpan - the road's width in tiles along that axis.
+   * @param {number} alongPos - the fixed coordinate along the road's own
+   *   direction of travel (the X column for horizontal, the Y row for
+   *   vertical) where the crossing sits.
+   */
+  function stampZebraCrossing(mapData, variant, orientation, roadStart, roadSpan, alongPos, width, height) {
+    if (!variant || !variant.grid || !variant.grid.length) return;
+    const grid = variant.grid;
+    const LAYER = 1;
+    const stampAt = (mx, my, tileId) => {
+      if (!tileId || mx < 0 || mx >= width || my < 0 || my >= height) return;
+      mapData[calculateIndex(mx, my, LAYER, width, height)] = tileId;
+    };
+    if (orientation === "vertical") {
+      const step = Math.max(1, variant.width || 1);
+      for (let off = 0; off < roadSpan; off += step) {
+        for (let gy = 0; gy < grid.length; gy++) {
+          const row = grid[gy];
+          for (let gx = 0; gx < row.length; gx++) {
+            stampAt(roadStart + off + gx, alongPos + gy, row[gx]);
+          }
+        }
+      }
+    } else {
+      const step = Math.max(1, variant.height || grid.length || 1);
+      for (let off = 0; off < roadSpan; off += step) {
+        for (let gy = 0; gy < grid.length; gy++) {
+          const row = grid[gy];
+          for (let gx = 0; gx < row.length; gx++) {
+            stampAt(alongPos + gx, roadStart + off + gy, row[gx]);
+          }
+        }
+      }
+    }
+  }
+
   // Dashed center lines: 1-tile dash followed by a 1-tile gap.
   const DASH_GAP_STEP = 2;
 
@@ -1310,6 +1386,8 @@ function drawDashedCornerLines(
     parseRoadConfig,
     getDashedLineTileId,
     getDashedLineTileIds,
+    getZebraTileIds,
+    stampZebraCrossing,
     getSingleFeatureTileId,
     isPositionOnRoadTile,
     isRoadFeatureTileAt,

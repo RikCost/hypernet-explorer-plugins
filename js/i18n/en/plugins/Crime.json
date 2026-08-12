@@ -10,5 +10,6 @@
     "errorUnknown": "Error: Unknown crime type:",
     "total": "Total",
     "selfPardon": "You self pardon this crime"
-  }
+  },
+  "nobodyLeftToJudgeYou": "Nobody left to judge you"
 }

@@ -71,22 +71,29 @@
   ],
   "enemySpawn": [
     "Équilibré",
-    "Réaliste"
+    "Réaliste",
+    "Distance à la Tour",
+    "Chaos"
   ],
   "enemyBattler": [
-    "2D",
     "3D",
     "Sprites"
   ],
+  "enemyBattlerToast": {
+    "model3d": "",
+    "sprites": ""
+  },
   "languageProgress": "{name} traduit à 1%",
   "settingsInSection": "{count} réglages dans cette section.",
   "desc": {
-    "enemySpawnMode": "Détermine la force des ennemis qui parcourent le monde."
+    "enemySpawnMode": "Détermine la force des ennemis qui parcourent le monde. Quel que soit le mode, l'année relève tous les niveaux : +10 par an jusqu'en 2010, toute la table libre jusqu'au niveau 110 en 2010-2011, et plus rien sous le niveau 80 à partir de 2012."
   },
   "descState": {
     "enemySpawnMode": [
       "Équilibré : les ennemis s'adaptent à votre groupe. Les rôdeurs restent à votre niveau ou en dessous, et chaque case du monde cache un boss bien plus puissant.",
-      "Réaliste : votre niveau est ignoré. Le danger vient du lieu lui-même, des biomes plus sauvages et de la distance à la Tour Oméga, si bien que les terres lointaines peuvent être mortelles dès le début."
+      "Réaliste : toute la faune du biome est présente, à n'importe quel niveau. Vous croisez surtout ce qui approche votre niveau, le reste demeure possible mais rare. Chaque nation et chaque biome ont leur propre roster, et une case cache toujours un boss.",
+      "Distance à la Tour : votre niveau est ignoré. Le danger vient du lieu lui-même, de la distance à la Tour Oméga, si bien que les terres lointaines peuvent être mortelles tôt.",
+      "Chaos : plus aucune retenue. N'importe quoi du niveau 1 au 110 rôde partout, et chaque entrée sur une carte procédurale redistribue ses monstres."
     ]
   }
 }

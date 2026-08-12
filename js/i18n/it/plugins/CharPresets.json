@@ -5,7 +5,10 @@
     "10": "Il suo nome è scritto su decine di miliardi di banconote e log di transazioni finanziarie, più volte del nome di Dio in tutte le Bibbie stampate al mondo. La striscia di sicurezza delle banconote in euro contiene frammenti di Fantablack raschiati dai muri esterni della Torre Omega: sfruttando questo residuo arcano e la legge per cui i nomi sono potere, Draghi è asceso a divinità del mercato, un concetto astratto che governa dietro le quinte l'economia del multiverso.",
     "6": "Attuale presidente degli Stati Indipendenti del Midwest, uno dei tre frammenti in cui sono divise le Americhe dopo che l'indipendenza non fu mai davvero raggiunta: la Repubblica di Cascadia sulla costa est, gli Stati Indipendenti del Midwest al centro e il Protettorato Atlantico sulla costa ovest, sotto il controllo di Britannia.",
     "5": "Alla guida dell'Agenzia Spaziale Europea, sta testando nuovi razzi costruiti quasi interamente di strati di armatura, pensati per essere distrutti dal bombardamento di detriti pur di tenere in vita gli astronauti fino a superare l'orbita bassa. Dopo la Sindrome di Kessler scatenata durante l'evento Y2K, un lancio ordinario ha oltre il 90% di probabilità di finire in un incidente mortale.",
-    "1": "Meccanico di Westford, Texas, ed autentica leggenda vivente. Ha costruito da sé il Motore Liminale, un aggeggio che mastica energia dimensionale e gli permette di guidare attraverso le realtà a bordo di un camper scassato che chiama La Bestia. Per anni ha percorso la Route 666 insieme ad Eris, dea della discordia, svaligiando banche grazie alla sua capacità di manipolare le probabilità."
+    "1": "Meccanico di Westford, Texas, ed autentica leggenda vivente. Ha costruito da sé il Motore Liminale, un aggeggio che mastica energia dimensionale e gli permette di guidare attraverso le realtà a bordo di un camper scassato che chiama La Bestia. Per anni ha percorso la Route 666 insieme ad Eris, dea della discordia, svaligiando banche grazie alla sua capacità di manipolare le probabilità.",
+    "9001": "Metà di quella che era una persona, collegata a un nucleo di mana che non smette mai del tutto di sussurrare. Chiunque sia così agli inizi della propria storia sta ancora decidendo quale metà comandi.",
+    "9002": "Una pozzanghera con delle opinioni. Su cosa fosse prima di iniziare a imitare altre cose, è sinceramente un po' vaga anche lei.",
+    "9003": "Ha lasciato la tana per un camice da laboratorio e, a quanto dicono le carte, non si è più voltata indietro. Ogni ipotesi finora è finita a fuoco."
   },
   "emBank": {
     "0": [
@@ -69,6 +72,7 @@
       "Per ora lavora per chi paga, e fa ai locali domande prudenti sui loro dei."
     ]
   },
+  "emOriginalLore": "Nata a Wimbledon, Britannia, nel 1984, sul ramo dove il Rituale è davvero avvenuto: questa è la dimensione tre, quella originale. Ha ceduto il novantadue percento dei suoi ricordi per forgiare la lancia che ha ucciso l'aspetto Padre di YHWH, e si è svegliata sull'Isola Rituale senza passato e con un potenziale magico che da allora continua a crescere oltre quanto riesca a reggere. Ogni altra Em è arrivata qui da qualche altrove; lei non ha mai avuto da dove cadere.",
   "emBackstory": [
     "Em è nata a {town}, Britannia, e voleva fare la strega in un'epoca che aveva archiviato la magia tra le favole.",
     "Quando Margaret Thatcher, dietro le quinte uno dei tre pilastri della Gilda dei Maghi, ha avuto bisogno di un fulcro per il Rituale di Salomone, ha scelto lei. Em si è offerta volontaria come sacrificio. Il prezzo è stato il novantadue percento dei suoi ricordi.",
@@ -99,6 +103,7 @@
   },
   "camper": "Camper",
   "theBeast": "La Bestia",
+  "tutorialFallbackName": "Viandante",
   "noCharacterToSave": "Nessun personaggio da salvare!",
   "presetUpdated": "Scheda personaggio aggiornata: {name}",
   "presetSaved": "Nuova scheda personaggio salvata: {name} (ID: {id})",
@@ -112,7 +117,7 @@
   "theParty": "il gruppo",
   "companion": "compagno",
   "skins": "Aspetto",
-  "skinHint": "Pag Su / Pag Giu o Shift per sfogliare gli aspetti.",
+  "skinHint": "Pag Su / Pag Giù o Shift per sfogliare gli aspetti.",
   "skin": {
     "statesman": "Statista",
     "arcane": "Arcano",

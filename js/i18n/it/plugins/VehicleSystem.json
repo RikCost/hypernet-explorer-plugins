@@ -4,17 +4,17 @@
     "Car": "Auto",
     "Bike": "Moto",
     "Boat": "Gommone",
-    "Starship": "Astronave"
+    "Starship": "Astronave",
+    "Broom": "Scopa volante"
   },
   "genericVehicle": "veicolo",
   "noGasPump": "Non c'è nessuna pompa di benzina qui vicino",
   "travelTo": "Vai a {place}",
   "examine": "Esamina",
-  "pickedUpBike": "Hai raccolto la moto.",
   "liminalUnavailable": "La guida liminale non è disponibile",
   "liminalDrive": "Guida liminale",
   "noSpaceToSummon": "Non c'è spazio per far comparire il veicolo",
-  "noSummonIndoors": "Solo la bici può essere evocata al chiuso",
+  "noSummonIndoors": "Solo la bici e la scopa volante possono essere evocate al chiuso",
   "noValidPosition": "Nessuna posizione valida per far comparire il veicolo",
   "stopDriving": "Smetti di guidare",
   "startDriving": "Mettiti alla guida",
@@ -38,5 +38,7 @@
   "noVehicleHere": "Qui non c'è nessun veicolo",
   "cannotFindVehicle": "Non riesco a trovare quel veicolo",
   "vehicleNotHere": "{vehicle} non è qui",
-  "cannotFindLocation": "Non riesco a trovare dove si trova {vehicle}"
+  "cannotFindLocation": "Non riesco a trovare dove si trova {vehicle}",
+  "pickedUpVehicle": "Hai raccolto {vehicle}.",
+  "cannotLandHere": "Non c’è posto per atterrare qui"
 }

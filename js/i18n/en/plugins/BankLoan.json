@@ -85,7 +85,7 @@
     "actionWithdrew": "withdrew",
     "actionBorrowed": "borrowed",
     "actionRepaid": "repaid",
-    "navHint": "Arrows/WASD: Navigate | Enter: Select | Esc: Close Bank",
-    "ratePerDays": "{rate}% / {days} days"
+    "ratePerDays": "{rate}% / {days} days",
+    "noOneLeft": "The branch is dark and the doors are locked. There is nobody left to bank with."
   }
 }

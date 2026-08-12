@@ -81,8 +81,11 @@
             const muzzle = new THREE.Mesh(new THREE.SphereGeometry(R * 0.55, 12, 10), fur); muzzle.scale.set(1, 0.7, 0.7); muzzle.position.set(0, -R * 0.28, R * 0.62); g.add(muzzle);
             const nose = new THREE.Mesh(new THREE.SphereGeometry(R * 0.13, 8, 8), this._mat(0xe0607a, 1.0, 0.4)); nose.position.set(0, -R * 0.16, R * 0.95); g.add(nose);
             const catEye = (x) => {
-                const e = new THREE.Mesh(new THREE.SphereGeometry(R * 0.24, 10, 10), this._mat(this.profile.accent, 1.0, 0.2, this.profile.accent)); e.position.set(x, R * 0.12, R * 0.7);
-                const pup = new THREE.Mesh(new THREE.BoxGeometry(R * 0.07, R * 0.34, R * 0.06), this._mat(0x111111, 1.0, 0.2)); pup.position.z = R * 0.2; e.add(pup); g.add(e); return e;
+                const e = new THREE.Mesh(new THREE.SphereGeometry(R * 0.3, 12, 12), this._mat(this.profile.accent, 1.0, 0.2, this.profile.accent)); e.position.set(x, R * 0.12, R * 0.68);
+                const pup = new THREE.Mesh(new THREE.SphereGeometry(R * 0.17, 10, 10), this._mat(0x141018, 1.0, 0.2)); pup.scale.set(0.6, 1.0, 0.6); pup.position.z = R * 0.2; e.add(pup);
+                // The catchlight is what turns a bead into an eye.
+                const glint = new THREE.Mesh(new THREE.SphereGeometry(R * 0.07, 8, 8), this._mat(0xffffff, 0.95, 0.05, 0xffffff)); glint.position.set(-R * 0.1, R * 0.11, R * 0.24); e.add(glint);
+                g.add(e); return e;
             };
             this.catEyeL = catEye(-R * 0.4); this.catEyeR = catEye(R * 0.4);
             const wMat = this._mat(0xf2f2f2, 0.85, 0.3);

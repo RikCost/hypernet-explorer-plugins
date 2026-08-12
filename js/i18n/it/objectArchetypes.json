@@ -1,0 +1,1525 @@
+{
+  "objectArchetypes": {
+    "chair": {
+      "name": "Sedia",
+      "seat": {
+        "name": "Sedile",
+        "msg": "Sedile scheggiato!"
+      },
+      "backrest": {
+        "name": "Schienale",
+        "msg": "Schienale spezzato!"
+      },
+      "front_legs": {
+        "name": "Gambe Anteriori",
+        "msg": "Gambe anteriori piegate!"
+      },
+      "rear_legs": {
+        "name": "Gambe Posteriori",
+        "msg": "Gambe posteriori cedute!"
+      },
+      "joints": {
+        "name": "Giunti",
+        "msg": "Giunti smontati!"
+      }
+    },
+    "table": {
+      "name": "Tavolo",
+      "tabletop": {
+        "name": "Piano",
+        "msg": "Piano spaccato!"
+      },
+      "legs": {
+        "name": "Gambe",
+        "msg": "Gambe cedute!"
+      },
+      "apron": {
+        "name": "Fascia",
+        "msg": "Fascia crepata!"
+      },
+      "drawer": {
+        "name": "Cassetto",
+        "msg": "Cassetto sfondato!"
+      },
+      "joints": {
+        "name": "Incastri",
+        "msg": "Incastri allentati!"
+      }
+    },
+    "shelf": {
+      "name": "Scaffale",
+      "uprights": {
+        "name": "Montanti",
+        "msg": "Montanti piegati!"
+      },
+      "shelf_boards": {
+        "name": "Ripiani",
+        "msg": "Ripiani spezzati!"
+      },
+      "back_panel": {
+        "name": "Pannello Posteriore",
+        "msg": "Pannello posteriore sfondato!"
+      },
+      "brackets": {
+        "name": "Staffe",
+        "msg": "Staffe strappate!"
+      },
+      "wall_anchor": {
+        "name": "Tassello",
+        "msg": "Tassello sfilato!"
+      }
+    },
+    "cabinet": {
+      "name": "Credenza",
+      "carcass": {
+        "name": "Struttura",
+        "msg": "Struttura spaccata!"
+      },
+      "doors": {
+        "name": "Ante",
+        "msg": "Ante strappate!"
+      },
+      "drawers": {
+        "name": "Cassetti",
+        "msg": "Cassetti frantumati!"
+      },
+      "inner_shelving": {
+        "name": "Ripiani Interni",
+        "msg": "Ripiani interni crollati!"
+      },
+      "hinges": {
+        "name": "Cerniere",
+        "msg": "Cerniere tranciate!"
+      },
+      "handles": {
+        "name": "Maniglie",
+        "msg": "Maniglie spezzate!"
+      }
+    },
+    "bed": {
+      "name": "Letto",
+      "mattress": {
+        "name": "Materasso",
+        "msg": "Materasso squarciato!"
+      },
+      "frame": {
+        "name": "Telaio",
+        "msg": "Telaio piegato!"
+      },
+      "slats": {
+        "name": "Doghe",
+        "msg": "Doghe spezzate!"
+      },
+      "headboard": {
+        "name": "Testiera",
+        "msg": "Testiera spaccata!"
+      },
+      "legs": {
+        "name": "Piedi",
+        "msg": "Piedi ceduti!"
+      }
+    },
+    "curtain": {
+      "name": "Tenda",
+      "fabric": {
+        "name": "Tessuto",
+        "msg": "Tessuto ridotto a brandelli!"
+      },
+      "rail": {
+        "name": "Bastone",
+        "msg": "Bastone strappato giù!"
+      },
+      "rings": {
+        "name": "Anelli",
+        "msg": "Anelli sparpagliati!"
+      },
+      "hem": {
+        "name": "Orlo",
+        "msg": "Orlo disfatto!"
+      }
+    },
+    "mirror": {
+      "name": "Specchio",
+      "glass": {
+        "name": "Vetro",
+        "msg": "Vetro frantumato!"
+      },
+      "frame": {
+        "name": "Cornice",
+        "msg": "Cornice crepata!"
+      },
+      "silvering": {
+        "name": "Argentatura",
+        "msg": "Argentatura sfaldata!"
+      },
+      "backing": {
+        "name": "Fondo",
+        "msg": "Fondo spaccato!"
+      }
+    },
+    "lamp": {
+      "name": "Lampada",
+      "bulb": {
+        "name": "Lampadina",
+        "msg": "Lampadina esplosa!"
+      },
+      "stem": {
+        "name": "Stelo",
+        "msg": "Stelo piegato in due!"
+      },
+      "base": {
+        "name": "Base",
+        "msg": "Base crepata!"
+      },
+      "wiring": {
+        "name": "Cablaggio",
+        "msg": "Cablaggio in corto!"
+      },
+      "shade": {
+        "name": "Paralume",
+        "msg": "Paralume accartocciato!"
+      },
+      "switch": {
+        "name": "Interruttore",
+        "msg": "Interruttore bloccato!"
+      }
+    },
+    "clock": {
+      "name": "Orologio",
+      "movement": {
+        "name": "Meccanismo",
+        "msg": "Meccanismo bloccato!"
+      },
+      "mainspring": {
+        "name": "Molla",
+        "msg": "Molla spezzata!"
+      },
+      "face": {
+        "name": "Quadrante",
+        "msg": "Quadrante crepato!"
+      },
+      "hands": {
+        "name": "Lancette",
+        "msg": "Lancette piegate!"
+      },
+      "case": {
+        "name": "Cassa",
+        "msg": "Cassa spaccata!"
+      }
+    },
+    "barrel": {
+      "name": "Barile",
+      "staves": {
+        "name": "Doghe",
+        "msg": "Doghe esplose!"
+      },
+      "hoops": {
+        "name": "Cerchi",
+        "msg": "Cerchi saltati!"
+      },
+      "lid": {
+        "name": "Coperchio",
+        "msg": "Coperchio saltato via!"
+      },
+      "base": {
+        "name": "Fondo",
+        "msg": "Fondo sfondato!"
+      },
+      "bung": {
+        "name": "Tappo",
+        "msg": "Tappo saltato!"
+      }
+    },
+    "crate": {
+      "name": "Cassa",
+      "planks": {
+        "name": "Assi",
+        "msg": "Assi scheggiate!"
+      },
+      "lid": {
+        "name": "Coperchio",
+        "msg": "Coperchio divelto!"
+      },
+      "corner_braces": {
+        "name": "Angolari",
+        "msg": "Angolari strappati!"
+      },
+      "contents": {
+        "name": "Contenuto",
+        "msg": "Contenuto schiacciato!"
+      },
+      "nails": {
+        "name": "Chiodi",
+        "msg": "Chiodi allentati!"
+      }
+    },
+    "dumpster": {
+      "name": "Cassonetto",
+      "body": {
+        "name": "Cassone",
+        "msg": "Cassone sfondato!"
+      },
+      "refuse": {
+        "name": "Rifiuti",
+        "msg": "Rifiuti sparsi ovunque!"
+      },
+      "lid": {
+        "name": "Coperchio",
+        "msg": "Coperchio strappato!"
+      },
+      "wheels": {
+        "name": "Ruote",
+        "msg": "Ruote tranciate!"
+      },
+      "hinges": {
+        "name": "Cerniere",
+        "msg": "Cerniere piegate!"
+      }
+    },
+    "cage": {
+      "name": "Gabbia",
+      "bars": {
+        "name": "Sbarre",
+        "msg": "Sbarre piegate!"
+      },
+      "door": {
+        "name": "Portello",
+        "msg": "Portello divelto!"
+      },
+      "lock": {
+        "name": "Serratura",
+        "msg": "Serratura scoppiata!"
+      },
+      "floor_plate": {
+        "name": "Piastra di Fondo",
+        "msg": "Piastra di fondo piegata!"
+      },
+      "welds": {
+        "name": "Saldature",
+        "msg": "Saldature crepate!"
+      }
+    },
+    "chest": {
+      "name": "Baule",
+      "body": {
+        "name": "Cassa",
+        "msg": "Cassa spaccata!"
+      },
+      "lid": {
+        "name": "Coperchio",
+        "msg": "Coperchio strappato!"
+      },
+      "lock": {
+        "name": "Serratura",
+        "msg": "Serratura sfondata!"
+      },
+      "banding": {
+        "name": "Fasce",
+        "msg": "Fasce di ferro divelte!"
+      },
+      "hinges": {
+        "name": "Cardini",
+        "msg": "Cardini spezzati!"
+      }
+    },
+    "locker": {
+      "name": "Armadietto",
+      "shell": {
+        "name": "Scocca",
+        "msg": "Scocca sfondata!"
+      },
+      "door": {
+        "name": "Anta",
+        "msg": "Anta piegata via dal telaio!"
+      },
+      "latch": {
+        "name": "Chiusura",
+        "msg": "Chiusura saltata!"
+      },
+      "vents": {
+        "name": "Feritoie",
+        "msg": "Feritoie sfondate!"
+      },
+      "hooks": {
+        "name": "Ganci",
+        "msg": "Ganci strappati!"
+      },
+      "feet": {
+        "name": "Piedini",
+        "msg": "Piedini accartocciati!"
+      }
+    },
+    "safe": {
+      "name": "Cassaforte",
+      "door": {
+        "name": "Portello",
+        "msg": "Portello saltato!"
+      },
+      "bolt_work": {
+        "name": "Catenacci",
+        "msg": "Catenacci tranciati!"
+      },
+      "hardplate": {
+        "name": "Piastra Antitrapano",
+        "msg": "Piastra antitrapano perforata!"
+      },
+      "shell": {
+        "name": "Scocca",
+        "msg": "Scocca aperta!"
+      },
+      "dial": {
+        "name": "Combinatore",
+        "msg": "Combinatore saltato via!"
+      }
+    },
+    "refrigerator": {
+      "name": "Frigorifero",
+      "compressor": {
+        "name": "Compressore",
+        "msg": "Compressore grippato!"
+      },
+      "door": {
+        "name": "Sportello",
+        "msg": "Sportello divelto!"
+      },
+      "coolant_line": {
+        "name": "Circuito Refrigerante",
+        "msg": "Circuito refrigerante scoppiato!"
+      },
+      "condenser_coils": {
+        "name": "Serpentina",
+        "msg": "Serpentina schiacciata!"
+      },
+      "shelves": {
+        "name": "Ripiani",
+        "msg": "Ripiani frantumati!"
+      },
+      "door_seal": {
+        "name": "Guarnizione",
+        "msg": "Guarnizione strappata!"
+      },
+      "interior_light": {
+        "name": "Luce Interna",
+        "msg": "Luce interna saltata!"
+      }
+    },
+    "oven": {
+      "name": "Forno",
+      "cavity": {
+        "name": "Camera di Cottura",
+        "msg": "Camera di cottura sfondata!"
+      },
+      "gas_line": {
+        "name": "Tubo del Gas",
+        "msg": "Tubo del gas squarciato!"
+      },
+      "burners": {
+        "name": "Bruciatori",
+        "msg": "Bruciatori schiacciati!"
+      },
+      "door_glass": {
+        "name": "Vetro dello Sportello",
+        "msg": "Vetro dello sportello esploso!"
+      },
+      "thermostat": {
+        "name": "Termostato",
+        "msg": "Termostato andato!"
+      },
+      "racks": {
+        "name": "Griglie",
+        "msg": "Griglie deformate!"
+      }
+    },
+    "grill": {
+      "name": "Griglia",
+      "firebox": {
+        "name": "Braciere",
+        "msg": "Braciere spaccato!"
+      },
+      "grate": {
+        "name": "Griglia",
+        "msg": "Griglia piegata!"
+      },
+      "gas_bottle": {
+        "name": "Bombola",
+        "msg": "Bombola sfiatata!"
+      },
+      "lid": {
+        "name": "Coperchio",
+        "msg": "Coperchio strappato!"
+      },
+      "legs": {
+        "name": "Gambe",
+        "msg": "Gambe piegate!"
+      }
+    },
+    "washingmachine": {
+      "name": "Lavatrice",
+      "drum": {
+        "name": "Cestello",
+        "msg": "Cestello bloccato!"
+      },
+      "motor": {
+        "name": "Motore",
+        "msg": "Motore bruciato!"
+      },
+      "hoses": {
+        "name": "Tubi",
+        "msg": "Tubi scoppiati!"
+      },
+      "door_glass": {
+        "name": "Oblò",
+        "msg": "Oblò frantumato!"
+      },
+      "drive_belt": {
+        "name": "Cinghia",
+        "msg": "Cinghia spezzata!"
+      },
+      "programmer": {
+        "name": "Programmatore",
+        "msg": "Programmatore inceppato!"
+      }
+    },
+    "kitchenmixer": {
+      "name": "Impastatrice",
+      "gearbox": {
+        "name": "Riduttore",
+        "msg": "Riduttore spanato!"
+      },
+      "motor": {
+        "name": "Motore",
+        "msg": "Motore grippato!"
+      },
+      "bowl": {
+        "name": "Vasca",
+        "msg": "Vasca sfondata!"
+      },
+      "dough_hook": {
+        "name": "Gancio Impastatore",
+        "msg": "Gancio impastatore piegato!"
+      },
+      "guard": {
+        "name": "Carter",
+        "msg": "Carter strappato!"
+      }
+    },
+    "vendingmachine": {
+      "name": "Distributore Automatico",
+      "cabinet": {
+        "name": "Mobile",
+        "msg": "Mobile piegato!"
+      },
+      "front_glass": {
+        "name": "Vetrina",
+        "msg": "Vetrina sfondata!"
+      },
+      "coil_racks": {
+        "name": "Spirali",
+        "msg": "Spirali inceppate!"
+      },
+      "coin_mechanism": {
+        "name": "Gettoniera",
+        "msg": "Gettoniera inceppata!"
+      },
+      "chiller": {
+        "name": "Refrigeratore",
+        "msg": "Refrigeratore fuori uso!"
+      },
+      "stock": {
+        "name": "Merce",
+        "msg": "Merce rovesciata!"
+      }
+    },
+    "television": {
+      "name": "Televisore",
+      "picture_tube": {
+        "name": "Cinescopio",
+        "msg": "Cinescopio esploso!"
+      },
+      "screen": {
+        "name": "Schermo",
+        "msg": "Schermo implosso!"
+      },
+      "chassis": {
+        "name": "Telaio Elettronico",
+        "msg": "Telaio elettronico in corto!"
+      },
+      "speaker": {
+        "name": "Altoparlante",
+        "msg": "Altoparlante bruciato!"
+      },
+      "aerial": {
+        "name": "Antenna",
+        "msg": "Antenna spezzata!"
+      },
+      "casing": {
+        "name": "Involucro",
+        "msg": "Involucro spaccato!"
+      }
+    },
+    "computer": {
+      "name": "Computer",
+      "motherboard": {
+        "name": "Scheda Madre",
+        "msg": "Scheda madre fritta!"
+      },
+      "tower": {
+        "name": "Case",
+        "msg": "Case sfondato!"
+      },
+      "monitor": {
+        "name": "Monitor",
+        "msg": "Monitor spento!"
+      },
+      "hard_disk": {
+        "name": "Disco Rigido",
+        "msg": "Disco rigido andato!"
+      },
+      "power_supply": {
+        "name": "Alimentatore",
+        "msg": "Alimentatore saltato!"
+      },
+      "keyboard": {
+        "name": "Tastiera",
+        "msg": "Tastiera sfondata!"
+      }
+    },
+    "telephone": {
+      "name": "Telefono",
+      "line_card": {
+        "name": "Scheda di Linea",
+        "msg": "Scheda di linea morta!"
+      },
+      "handset": {
+        "name": "Cornetta",
+        "msg": "Cornetta sfondata!"
+      },
+      "keypad": {
+        "name": "Tastierino",
+        "msg": "Tastierino sfondato!"
+      },
+      "cord": {
+        "name": "Cavo",
+        "msg": "Cavo strappato!"
+      },
+      "coin_box": {
+        "name": "Cassetta Monete",
+        "msg": "Cassetta monete scassinata!"
+      },
+      "bell": {
+        "name": "Suoneria",
+        "msg": "Suoneria crepata!"
+      }
+    },
+    "stereo": {
+      "name": "Stereo",
+      "amplifier": {
+        "name": "Amplificatore",
+        "msg": "Amplificatore fritto!"
+      },
+      "speakers": {
+        "name": "Casse",
+        "msg": "Casse bruciate!"
+      },
+      "cassette_deck": {
+        "name": "Piastra a Cassette",
+        "msg": "La piastra ha mangiato il nastro!"
+      },
+      "cd_tray": {
+        "name": "Cassetto CD",
+        "msg": "Cassetto CD bloccato!"
+      },
+      "tuner": {
+        "name": "Sintonizzatore",
+        "msg": "Sintonizzatore fuori frequenza!"
+      },
+      "transformer": {
+        "name": "Trasformatore",
+        "msg": "Trasformatore bruciato!"
+      }
+    },
+    "securitycamera": {
+      "name": "Telecamera di Sicurezza",
+      "sensor": {
+        "name": "Sensore",
+        "msg": "Sensore accecato!"
+      },
+      "lens": {
+        "name": "Obiettivo",
+        "msg": "Obiettivo frantumato!"
+      },
+      "housing": {
+        "name": "Custodia",
+        "msg": "Custodia schiacciata!"
+      },
+      "mount": {
+        "name": "Staffa",
+        "msg": "Staffa strappata dal muro!"
+      },
+      "cable": {
+        "name": "Cavo",
+        "msg": "Cavo tranciato!"
+      }
+    },
+    "gymmachine": {
+      "name": "Attrezzo da Palestra",
+      "frame": {
+        "name": "Telaio",
+        "msg": "Telaio piegato!"
+      },
+      "motor": {
+        "name": "Motore",
+        "msg": "Motore bruciato!"
+      },
+      "running_belt": {
+        "name": "Nastro",
+        "msg": "Nastro sbrindellato!"
+      },
+      "weight_stack": {
+        "name": "Pacco Pesi",
+        "msg": "Pacco pesi crollato!"
+      },
+      "console": {
+        "name": "Console",
+        "msg": "Console spenta!"
+      },
+      "cables": {
+        "name": "Cavi",
+        "msg": "Cavi spezzati!"
+      }
+    },
+    "arcadecabinet": {
+      "name": "Cabinato Arcade",
+      "board": {
+        "name": "Scheda",
+        "msg": "Scheda fritta!"
+      },
+      "monitor": {
+        "name": "Monitor",
+        "msg": "Monitor morto!"
+      },
+      "control_panel": {
+        "name": "Pannello Comandi",
+        "msg": "Pannello comandi divelto!"
+      },
+      "cabinet": {
+        "name": "Mobile",
+        "msg": "Mobile sfondato!"
+      },
+      "coin_door": {
+        "name": "Sportello Gettoni",
+        "msg": "Sportello gettoni forzato!"
+      },
+      "marquee": {
+        "name": "Insegna",
+        "msg": "Insegna crepata!"
+      }
+    },
+    "fuelpump": {
+      "name": "Distributore di Carburante",
+      "pump_motor": {
+        "name": "Pompa",
+        "msg": "Pompa grippata!"
+      },
+      "nozzle": {
+        "name": "Pistola",
+        "msg": "Pistola tranciata!"
+      },
+      "hose": {
+        "name": "Manichetta",
+        "msg": "Manichetta squarciata!"
+      },
+      "meter": {
+        "name": "Contatore",
+        "msg": "Contatore bloccato!"
+      },
+      "breakaway_valve": {
+        "name": "Valvola di Sicurezza",
+        "msg": "Valvola di sicurezza saltata!"
+      },
+      "housing": {
+        "name": "Colonnina",
+        "msg": "Colonnina sfondata!"
+      }
+    },
+    "cashmachine": {
+      "name": "Bancomat",
+      "vault": {
+        "name": "Cassaforte",
+        "msg": "Cassaforte aperta!"
+      },
+      "cash_cassette": {
+        "name": "Cassetta Contanti",
+        "msg": "Cassetta contanti scoppiata!"
+      },
+      "screen": {
+        "name": "Schermo",
+        "msg": "Schermo spento!"
+      },
+      "keypad": {
+        "name": "Tastierino",
+        "msg": "Tastierino strappato!"
+      },
+      "card_reader": {
+        "name": "Lettore di Carte",
+        "msg": "Lettore di carte inceppato!"
+      },
+      "dispenser": {
+        "name": "Erogatore",
+        "msg": "Erogatore inceppato!"
+      }
+    },
+    "generator": {
+      "name": "Generatore",
+      "engine": {
+        "name": "Motore",
+        "msg": "Motore grippato!"
+      },
+      "alternator": {
+        "name": "Alternatore",
+        "msg": "Alternatore bruciato!"
+      },
+      "fuel_tank": {
+        "name": "Serbatoio",
+        "msg": "Serbatoio bucato!"
+      },
+      "control_box": {
+        "name": "Quadro",
+        "msg": "Quadro in corto!"
+      },
+      "exhaust": {
+        "name": "Scarico",
+        "msg": "Scarico esploso!"
+      },
+      "frame": {
+        "name": "Telaio",
+        "msg": "Telaio piegato!"
+      }
+    },
+    "sink": {
+      "name": "Lavandino",
+      "basin": {
+        "name": "Lavello",
+        "msg": "Lavello crepato da parte a parte!"
+      },
+      "supply_pipes": {
+        "name": "Tubi di Carico",
+        "msg": "Tubi di carico squarciati!"
+      },
+      "tap": {
+        "name": "Rubinetto",
+        "msg": "Rubinetto tranciato!"
+      },
+      "trap": {
+        "name": "Sifone",
+        "msg": "Sifone scoppiato!"
+      },
+      "drain": {
+        "name": "Scarico",
+        "msg": "Scarico otturato!"
+      }
+    },
+    "bathtub": {
+      "name": "Vasca da Bagno",
+      "tub_shell": {
+        "name": "Vasca",
+        "msg": "Vasca crepata!"
+      },
+      "taps": {
+        "name": "Rubinetti",
+        "msg": "Rubinetti spezzati!"
+      },
+      "drain": {
+        "name": "Scarico",
+        "msg": "Scarico sfondato!"
+      },
+      "feet": {
+        "name": "Piedini",
+        "msg": "Piedini ceduti!"
+      },
+      "overflow": {
+        "name": "Troppopieno",
+        "msg": "Troppopieno otturato!"
+      },
+      "enamel": {
+        "name": "Smalto",
+        "msg": "Smalto scheggiato!"
+      }
+    },
+    "shower": {
+      "name": "Doccia",
+      "mixer_valve": {
+        "name": "Miscelatore",
+        "msg": "Miscelatore saltato!"
+      },
+      "tray": {
+        "name": "Piatto Doccia",
+        "msg": "Piatto doccia crepato!"
+      },
+      "shower_head": {
+        "name": "Soffione",
+        "msg": "Soffione tranciato!"
+      },
+      "hose": {
+        "name": "Flessibile",
+        "msg": "Flessibile scoppiato!"
+      },
+      "screen": {
+        "name": "Box",
+        "msg": "Box in frantumi!"
+      },
+      "drain": {
+        "name": "Scarico",
+        "msg": "Scarico intasato!"
+      }
+    },
+    "toilet": {
+      "name": "Water",
+      "bowl": {
+        "name": "Tazza",
+        "msg": "Tazza spaccata!"
+      },
+      "waste_tank": {
+        "name": "Serbatoio Reflui",
+        "msg": "Serbatoio reflui spaccato!"
+      },
+      "cistern": {
+        "name": "Cassetta",
+        "msg": "Cassetta scoppiata!"
+      },
+      "flush_valve": {
+        "name": "Valvola di Scarico",
+        "msg": "Valvola di scarico bloccata!"
+      },
+      "seat": {
+        "name": "Sedile",
+        "msg": "Sedile spezzato!"
+      }
+    },
+    "fountain": {
+      "name": "Fontana",
+      "basin": {
+        "name": "Vasca",
+        "msg": "Vasca crepata!"
+      },
+      "pump": {
+        "name": "Pompa",
+        "msg": "Pompa bruciata!"
+      },
+      "jets": {
+        "name": "Ugelli",
+        "msg": "Ugelli schiacciati!"
+      },
+      "statue": {
+        "name": "Statua",
+        "msg": "Statua abbattuta!"
+      },
+      "plumbing": {
+        "name": "Tubature",
+        "msg": "Tubature squarciate!"
+      }
+    },
+    "aquarium": {
+      "name": "Acquario",
+      "glass": {
+        "name": "Vetro",
+        "msg": "Vetro esploso, acqua ovunque!"
+      },
+      "pump": {
+        "name": "Pompa",
+        "msg": "Pompa fuori uso!"
+      },
+      "filter": {
+        "name": "Filtro",
+        "msg": "Filtro intasato!"
+      },
+      "frame": {
+        "name": "Telaio",
+        "msg": "Telaio saltato!"
+      },
+      "heater": {
+        "name": "Riscaldatore",
+        "msg": "Riscaldatore crepato!"
+      },
+      "hood_light": {
+        "name": "Plafoniera",
+        "msg": "Plafoniera saltata!"
+      }
+    },
+    "door": {
+      "name": "Porta",
+      "leaf": {
+        "name": "Anta",
+        "msg": "Anta spaccata!"
+      },
+      "lock": {
+        "name": "Serratura",
+        "msg": "Serratura scoppiata!"
+      },
+      "frame": {
+        "name": "Telaio",
+        "msg": "Telaio spaccato!"
+      },
+      "hinges": {
+        "name": "Cardini",
+        "msg": "Cardini strappati!"
+      },
+      "handle": {
+        "name": "Maniglia",
+        "msg": "Maniglia spezzata!"
+      }
+    },
+    "window": {
+      "name": "Finestra",
+      "pane": {
+        "name": "Vetro",
+        "msg": "Vetro in frantumi!"
+      },
+      "sash": {
+        "name": "Telaio Mobile",
+        "msg": "Telaio mobile crepato!"
+      },
+      "frame": {
+        "name": "Telaio",
+        "msg": "Telaio spaccato!"
+      },
+      "shutters": {
+        "name": "Persiane",
+        "msg": "Persiane divelte!"
+      },
+      "latch": {
+        "name": "Chiusura",
+        "msg": "Chiusura saltata!"
+      }
+    },
+    "wall": {
+      "name": "Muro",
+      "courses": {
+        "name": "Filari",
+        "msg": "Filari crollati!"
+      },
+      "footing": {
+        "name": "Fondazione",
+        "msg": "Fondazione ceduta!"
+      },
+      "facing": {
+        "name": "Rivestimento",
+        "msg": "Rivestimento saltato via!"
+      },
+      "mortar": {
+        "name": "Malta",
+        "msg": "Malta sbriciolata!"
+      },
+      "coping": {
+        "name": "Coronamento",
+        "msg": "Coronamento crollato!"
+      }
+    },
+    "fence": {
+      "name": "Recinzione",
+      "posts": {
+        "name": "Pali",
+        "msg": "Pali spezzati a terra!"
+      },
+      "rails": {
+        "name": "Traverse",
+        "msg": "Traverse divelte!"
+      },
+      "panels": {
+        "name": "Pannelli",
+        "msg": "Pannelli sfondati!"
+      },
+      "gate": {
+        "name": "Cancello",
+        "msg": "Cancello divelto!"
+      },
+      "wire": {
+        "name": "Rete",
+        "msg": "Rete strappata!"
+      }
+    },
+    "chimney": {
+      "name": "Camino",
+      "stack": {
+        "name": "Canna Fumaria",
+        "msg": "Canna fumaria crollata!"
+      },
+      "flue": {
+        "name": "Condotto",
+        "msg": "Condotto crollato!"
+      },
+      "hearth": {
+        "name": "Focolare",
+        "msg": "Focolare crepato!"
+      },
+      "crown": {
+        "name": "Comignolo",
+        "msg": "Comignolo staccato!"
+      },
+      "damper": {
+        "name": "Serranda",
+        "msg": "Serranda bloccata!"
+      }
+    },
+    "sign": {
+      "name": "Cartello",
+      "sign_face": {
+        "name": "Pannello",
+        "msg": "Pannello spaccato!"
+      },
+      "post": {
+        "name": "Palo",
+        "msg": "Palo spezzato!"
+      },
+      "brackets": {
+        "name": "Staffe",
+        "msg": "Staffe strappate!"
+      },
+      "lettering": {
+        "name": "Scritte",
+        "msg": "Scritte staccate!"
+      },
+      "lighting": {
+        "name": "Illuminazione",
+        "msg": "Illuminazione spenta!"
+      }
+    },
+    "streetlight": {
+      "name": "Lampione",
+      "column": {
+        "name": "Palo",
+        "msg": "Palo piegato in due!"
+      },
+      "base_plate": {
+        "name": "Piastra di Base",
+        "msg": "Piastra di base strappata dai tirafondi!"
+      },
+      "lamp_head": {
+        "name": "Testa Lampada",
+        "msg": "Testa lampada esplosa!"
+      },
+      "ballast": {
+        "name": "Reattore",
+        "msg": "Reattore bruciato!"
+      },
+      "feeder_cable": {
+        "name": "Cavo di Alimentazione",
+        "msg": "Cavo di alimentazione tranciato!"
+      }
+    },
+    "statue": {
+      "name": "Statua",
+      "torso": {
+        "name": "Torso",
+        "msg": "Torso spaccato!"
+      },
+      "plinth": {
+        "name": "Basamento",
+        "msg": "Basamento crepato!"
+      },
+      "head": {
+        "name": "Testa",
+        "msg": "Testa staccata di netto!"
+      },
+      "limbs": {
+        "name": "Arti",
+        "msg": "Arti staccati!"
+      },
+      "patina": {
+        "name": "Patina",
+        "msg": "Patina raschiata via!"
+      }
+    },
+    "building": {
+      "name": "Edificio",
+      "load_bearing_walls": {
+        "name": "Muri Portanti",
+        "msg": "Muri portanti ceduti!"
+      },
+      "foundation": {
+        "name": "Fondamenta",
+        "msg": "Fondamenta spaccate!"
+      },
+      "facade": {
+        "name": "Facciata",
+        "msg": "Facciata crollata!"
+      },
+      "roof": {
+        "name": "Tetto",
+        "msg": "Tetto sfondato!"
+      },
+      "floors": {
+        "name": "Solai",
+        "msg": "Solai collassati!"
+      },
+      "utilities": {
+        "name": "Impianti",
+        "msg": "Impianti tranciati!"
+      }
+    },
+    "car": {
+      "name": "Automobile",
+      "engine": {
+        "name": "Motore",
+        "msg": "Motore grippato!"
+      },
+      "chassis": {
+        "name": "Telaio",
+        "msg": "Telaio piegato!"
+      },
+      "wheels": {
+        "name": "Ruote",
+        "msg": "Ruote scoppiate!"
+      },
+      "fuel_tank": {
+        "name": "Serbatoio",
+        "msg": "Serbatoio bucato!"
+      },
+      "windscreen": {
+        "name": "Parabrezza",
+        "msg": "Parabrezza sfondato!"
+      },
+      "battery": {
+        "name": "Batteria",
+        "msg": "Batteria crepata!"
+      },
+      "steering": {
+        "name": "Sterzo",
+        "msg": "Sterzo distrutto!"
+      }
+    },
+    "bicycle": {
+      "name": "Bicicletta",
+      "frame": {
+        "name": "Telaio",
+        "msg": "Telaio piegato!"
+      },
+      "wheels": {
+        "name": "Ruote",
+        "msg": "Ruote piegate!"
+      },
+      "chain": {
+        "name": "Catena",
+        "msg": "Catena spezzata!"
+      },
+      "handlebars": {
+        "name": "Manubrio",
+        "msg": "Manubrio storto!"
+      },
+      "brakes": {
+        "name": "Freni",
+        "msg": "Freni saltati!"
+      },
+      "saddle": {
+        "name": "Sella",
+        "msg": "Sella strappata!"
+      }
+    },
+    "shoppingcart": {
+      "name": "Carrello della Spesa",
+      "basket": {
+        "name": "Cesto",
+        "msg": "Cesto schiacciato!"
+      },
+      "castors": {
+        "name": "Ruote",
+        "msg": "Ruote tranciate!"
+      },
+      "chassis": {
+        "name": "Telaio",
+        "msg": "Telaio piegato!"
+      },
+      "handle": {
+        "name": "Maniglione",
+        "msg": "Maniglione piegato!"
+      },
+      "child_seat": {
+        "name": "Seggiolino",
+        "msg": "Seggiolino divelto!"
+      }
+    },
+    "potion": {
+      "name": "Pozione",
+      "phial": {
+        "name": "Fiala",
+        "msg": "Fiala frantumata!"
+      },
+      "draught": {
+        "name": "Liquido",
+        "msg": "Il liquido si è rovesciato ed è evaporato!"
+      },
+      "stopper": {
+        "name": "Tappo",
+        "msg": "Tappo saltato!"
+      },
+      "wax_seal": {
+        "name": "Sigillo di Cera",
+        "msg": "Sigillo di cera rotto!"
+      },
+      "label": {
+        "name": "Etichetta",
+        "msg": "Etichetta staccata!"
+      }
+    },
+    "book": {
+      "name": "Libro",
+      "pages": {
+        "name": "Pagine",
+        "msg": "Pagine sparpagliate!"
+      },
+      "spine": {
+        "name": "Dorso",
+        "msg": "Dorso spezzato!"
+      },
+      "cover": {
+        "name": "Copertina",
+        "msg": "Copertina strappata!"
+      },
+      "binding": {
+        "name": "Legatura",
+        "msg": "Legatura sfasciata!"
+      },
+      "clasp": {
+        "name": "Fermaglio",
+        "msg": "Fermaglio spezzato!"
+      }
+    },
+    "backpack": {
+      "name": "Zaino",
+      "main_body": {
+        "name": "Corpo",
+        "msg": "Corpo squarciato!"
+      },
+      "straps": {
+        "name": "Spallacci",
+        "msg": "Spallacci strappati!"
+      },
+      "zip": {
+        "name": "Cerniera",
+        "msg": "Cerniera saltata!"
+      },
+      "pockets": {
+        "name": "Tasche",
+        "msg": "Tasche strappate!"
+      },
+      "frame": {
+        "name": "Struttura",
+        "msg": "Struttura spezzata!"
+      }
+    },
+    "torch": {
+      "name": "Torcia",
+      "head": {
+        "name": "Testa",
+        "msg": "Testa spenta!"
+      },
+      "fuel": {
+        "name": "Combustibile",
+        "msg": "Combustibile esaurito!"
+      },
+      "handle": {
+        "name": "Impugnatura",
+        "msg": "Impugnatura spezzata!"
+      },
+      "wick": {
+        "name": "Stoppino",
+        "msg": "Stoppino consumato!"
+      }
+    },
+    "painting": {
+      "name": "Dipinto",
+      "canvas": {
+        "name": "Tela",
+        "msg": "Tela squarciata!"
+      },
+      "stretcher": {
+        "name": "Telaio Interno",
+        "msg": "Telaio interno spezzato!"
+      },
+      "frame": {
+        "name": "Cornice",
+        "msg": "Cornice sfasciata!"
+      },
+      "varnish": {
+        "name": "Vernice",
+        "msg": "Vernice imbolsita!"
+      },
+      "pigment": {
+        "name": "Pigmento",
+        "msg": "Pigmento sfaldato!"
+      }
+    },
+    "instrument": {
+      "name": "Strumento Musicale",
+      "body": {
+        "name": "Cassa",
+        "msg": "Cassa sfondata!"
+      },
+      "neck": {
+        "name": "Manico",
+        "msg": "Manico spezzato!"
+      },
+      "strings": {
+        "name": "Corde",
+        "msg": "Corde spezzate!"
+      },
+      "bridge": {
+        "name": "Ponte",
+        "msg": "Ponte strappato!"
+      },
+      "tuners": {
+        "name": "Meccaniche",
+        "msg": "Meccaniche spanate!"
+      }
+    },
+    "doll": {
+      "name": "Bambola",
+      "body": {
+        "name": "Corpo",
+        "msg": "Corpo aperto alle cuciture!"
+      },
+      "head": {
+        "name": "Testa",
+        "msg": "Testa staccata!"
+      },
+      "limbs": {
+        "name": "Arti",
+        "msg": "Arti strappati!"
+      },
+      "stuffing": {
+        "name": "Imbottitura",
+        "msg": "Imbottitura fuoriuscita!"
+      },
+      "eyes": {
+        "name": "Occhi",
+        "msg": "Occhi saltati via!"
+      }
+    },
+    "boulder": {
+      "name": "Masso",
+      "core": {
+        "name": "Nucleo",
+        "msg": "Nucleo spaccato!"
+      },
+      "crust": {
+        "name": "Crosta",
+        "msg": "Crosta sfaldata!"
+      },
+      "fracture_lines": {
+        "name": "Fratture",
+        "msg": "Fratture aperte!"
+      },
+      "base": {
+        "name": "Base",
+        "msg": "Base crepata!"
+      },
+      "moss": {
+        "name": "Muschio",
+        "msg": "Muschio raschiato via!"
+      }
+    },
+    "log": {
+      "name": "Tronco",
+      "heartwood": {
+        "name": "Durame",
+        "msg": "Durame spaccato!"
+      },
+      "sapwood": {
+        "name": "Alburno",
+        "msg": "Alburno frantumato!"
+      },
+      "bark": {
+        "name": "Corteccia",
+        "msg": "Corteccia scortecciata!"
+      },
+      "knots": {
+        "name": "Nodi",
+        "msg": "Nodi saltati!"
+      },
+      "rot_pocket": {
+        "name": "Cavità Marcia",
+        "msg": "Cavità marcia collassata!"
+      }
+    },
+    "campfire": {
+      "name": "Falò",
+      "flame": {
+        "name": "Fiamma",
+        "msg": "Fiamma spenta!"
+      },
+      "embers": {
+        "name": "Braci",
+        "msg": "Braci sparse e spente!"
+      },
+      "fuel_stack": {
+        "name": "Catasta",
+        "msg": "Catasta crollata!"
+      },
+      "stone_ring": {
+        "name": "Cerchio di Pietre",
+        "msg": "Cerchio di pietre disfatto!"
+      }
+    },
+    "puddle": {
+      "name": "Pozzanghera",
+      "body": {
+        "name": "Massa d’Acqua",
+        "msg": "Massa d’acqua dispersa!"
+      },
+      "surface": {
+        "name": "Superficie",
+        "msg": "Superficie infranta!"
+      },
+      "silt": {
+        "name": "Limo",
+        "msg": "Limo smosso!"
+      },
+      "rim": {
+        "name": "Bordo",
+        "msg": "Bordo rotto, defluita!"
+      }
+    },
+    "waterfall": {
+      "name": "Cascata",
+      "fall": {
+        "name": "Salto",
+        "msg": "Il salto si è spezzato!"
+      },
+      "plunge_pool": {
+        "name": "Marmitta",
+        "msg": "Marmitta prosciugata!"
+      },
+      "crest": {
+        "name": "Ciglio",
+        "msg": "Ciglio crollato!"
+      },
+      "rock_face": {
+        "name": "Parete Rocciosa",
+        "msg": "Parete rocciosa franata!"
+      },
+      "spray": {
+        "name": "Spruzzi",
+        "msg": "Spruzzi dispersi!"
+      }
+    },
+    "haystack": {
+      "name": "Pagliaio",
+      "body": {
+        "name": "Corpo",
+        "msg": "Corpo esploso!"
+      },
+      "crown": {
+        "name": "Cima",
+        "msg": "Cima sparpagliata!"
+      },
+      "binding": {
+        "name": "Legature",
+        "msg": "Legature spezzate!"
+      },
+      "core": {
+        "name": "Nucleo",
+        "msg": "Nucleo collassato!"
+      }
+    }
+  }
+}

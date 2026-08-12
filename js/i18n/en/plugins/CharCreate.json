@@ -193,6 +193,7 @@
   "creatureSynthesisComplete": "Creature synthesis complete",
   "selectSprite": "SELECT SPRITE",
   "spriteIndex": "INDEX",
+  "betaSprites": "BETA SPRITES",
   "continue2": "Continue",
   "presets": "PRESETS",
   "presets2": "presets",
@@ -202,6 +203,10 @@
     "originDeserter": {
       "name": "Deserter",
       "desc": "Choose a faction you deserted from: begin with 40 of its troops, but hated by it (and its parent faction)."
+    },
+    "originAugmented": {
+      "name": "Augmented",
+      "desc": "You all walked out of the same clinic with the hardware still settling: everyone starts with two or three augments, fitted to whatever anatomy they have."
     },
     "originFactionLeader": {
       "name": "Faction Leader",
@@ -373,7 +378,7 @@
     },
     "combatCards": {
       "name": "Cards",
-      "desc": "Roguelike deck combat. \\C[1]This cannot be changed later.\\C[0] Each party member draws from their own deck built from their skills and plays cards on their turn using Energy instead of MP/TP."
+      "desc": "Roguelike deck combat. \\C[1]This cannot be changed later.\\C[0] Each party member draws from their own deck built from their skills and plays cards on their turn using Energy instead of MP/AP."
     },
     "combatMap": {
       "name": "Map Battle",
@@ -381,7 +386,7 @@
     },
     "combatRpg": {
       "name": "Classic RPG",
-      "desc": "Standard turn-based combat. Skills cost MP/TP and are picked from your command menu."
+      "desc": "Standard turn-based combat. Skills cost MP/AP and are picked from your command menu."
     },
     "peaceful": {
       "name": "Peaceful",
@@ -402,6 +407,34 @@
     "modeDetailed": {
       "name": "Detailed",
       "desc": "Build the character on their own dossier page: every field, from class and traits to hometown, orientation and history, edited by hand."
+    },
+    "originCardCollector": {
+      "name": "Card Collector",
+      "desc": "You came off the circuit with a shelf of monster cards and a deck already sleeved. Everyone you meet is somebody who might sit down for a game."
+    },
+    "originArcanist": {
+      "name": "Arcanist",
+      "desc": "You left the college with four esoteric spells apiece, a shelf of school primers, a beginner's grimoire and robes that still smell of chalk. Pick where the coach sets you down."
+    },
+    "originMercenary": {
+      "name": "Mercenary",
+      "desc": "The last contract paid in kit rather than coin: a ranged weapon each, a field vest, a medic's bag and whatever survival gear was left in the truck. Pick where the work takes you."
+    },
+    "originLostConvoker": {
+      "name": "Lost Convoker",
+      "desc": "The rite worked. It just did not say where. You come to in a field, a forest or a mountainside nobody chose, with eight summoning rites apiece, a staff, a robe and no idea which country this is."
+    },
+    "originSkeletonKey": {
+      "name": "Skeleton Key Holder",
+      "desc": "You own one thing, and it opens any mundane lock ever cut. No rations, no bedroll, no lamp: whatever you need is already behind somebody's door. Pick the place on the map where you start trying them."
+    },
+    "originPlague": {
+      "name": "Plague Spreader",
+      "desc": "You escaped a biolab with a case full of sealed vials holding the worst pathogens that ever existed."
+    },
+    "originDiplomat": {
+      "name": "Diplomat",
+      "desc": "Begin in Brussels with an ONU Terminal, remote access into the assembly. No rations, no rope: a seat at the table is the only thing you brought."
     }
   },
   "hairStyle": {
@@ -483,9 +516,12 @@
   "aRandomOverlandBiome": "A random overland biome",
   "aRandomWorldMapTile": "A random world-map tile",
   "theTowerGate": "The tower gate",
+  "theOnuAssemblyInBrussels": "The ONU assembly, Brussels",
   "aCityOfYourChoice": "A city of your choice",
   "bounty": "Bounty",
   "10000OnYourHead": "10,000€ on your head",
+  "stock": "Stock",
+  "sealedVials": "{count} sealed culture vials, one illness each",
   "aRandomRemoteWorldMapSpot": "A random remote world-map spot",
   "aLootCellarUnderARandomBiome": "A loot cellar under a random biome",
   "hoards": "Hoards",
@@ -515,9 +551,12 @@
   "everyPartyMemberExceptTheLeaderActsAutomatic": "Every party member except the leader acts automatically in battle, choosing their own actions.",
   "youManuallyControlEveryPartyMemberSActions": "You manually control every party member's actions.",
   "onlyTheLeaderIsControlledByYouTheRestFightOn": "Only the leader is controlled by you, the rest fight on their own.",
+  "partyHud": "Party HUD",
+  "aCardForEveryPartyMemberInTheTopLeftCornerOf": "A card for every party member in the top-left corner of the map, with their HP, MP, active states and anything urgent they need seen to.",
+  "theMapIsLeftClearNoPartyCardsOverIt": "The map is left clear, no party cards over it.",
+  "healthMagicStatesAndUrgentNeedsAtAGlance": "Health, magic, states and urgent needs at a glance.",
   "enemyBattlers": "Enemy Battlers",
-  "howEnemiesAreShownInBattle2dTheClassicBattle": "How enemies are shown in battle. 2D: the classic battler image. 3D: procedural 3D models (goblins, slimes, elementals...). Sprites: the enemy's character sprite from its info.",
-  "classic2dBattlerImages": "Classic 2D battler images.",
+  "howEnemiesAreShownInBattle2dTheClassicBattle": "How enemies are shown in battle. 3D: procedural 3D models (goblins, slimes, elementals...). Sprites: the enemy's character sprite from its info.",
   "3dRendersProceduralModelsSpritesUsesTheEnemy": "3D renders procedural models, Sprites uses the enemy's character sprite.",
   "globalLighting": "Global Lighting",
   "masterSwitchForTheDynamicLightingSystemStree": "Master switch for the dynamic lighting system: streetlights, event lights and the night-light overlay. Turn off for maximum performance.",
@@ -527,10 +566,7 @@
   "musicTrackPlayedDuringCombatPressToPreviewTr": "Music track played during combat. Press ←→ to preview tracks.",
   "uiTheme": "UI Theme",
   "visualThemeAppliedToMenusAndHudPressToSwitch": "Visual theme applied to menus and HUD. Press ←→ to switch. Requires restart to apply.",
-  "toCycleTracksPreviewPlaysAutomatically": "← → to cycle tracks · preview plays automatically",
-  "toCycleThemesRequiresRestartToApply": "← → to cycle themes · ⟳ requires restart to apply",
   "settingsPreview": "SETTINGS PREVIEW",
-  "navigateChangeValueEnterConfirm": "↑↓ navigate · ←→ change value · Enter confirm",
   "musicTrack": {
     "Battle": "Drums (Default)",
     "shortcuts": "Shortcuts",
@@ -564,9 +600,11 @@
     "noOptions": "Nothing to choose from here yet.",
     "pickCategory": "Choose a field of study",
     "section": {
+      "ideology": "Ideology",
       "identity": "Identity",
       "origins": "Origins",
       "talents": "Traits and talents",
+      "biology": "Biology",
       "society": "Standing",
       "romance": "Romance",
       "history": "History",
@@ -574,7 +612,7 @@
     },
     "row": {
       "name": "Name",
-      "nameRandom": "Roll a new name",
+      "nameRandom": "Randomize name",
       "kind": "Kind",
       "archetype": "Archetype",
       "class": "Class",
@@ -584,7 +622,7 @@
       "model3d": "3D model",
       "age": "Age",
       "birthNation": "Nation of birth",
-      "traitsRandom": "Roll new traits",
+      "traitsRandom": "Randomize traits",
       "personality": "Personality",
       "ideology": "Ideology",
       "faction": "Faction",
@@ -593,11 +631,14 @@
       "romantic": "Romantic orientation",
       "sexual": "Sexual orientation",
       "reproduction": "Reproduction",
+      "bloodType": "Blood type",
+      "bloodTypeRandom": "Randomize blood type",
       "rerollBackstory": "Rewrite the backstory",
       "rerollLife": "Deal a different life",
+      "randomizeKeepBuild": "Randomize (keep kind & class)",
       "randomizeAll": "Randomize everything",
       "done": "Done, this character is ready",
-      "specsRandom": "Roll new specializations"
+      "specsRandom": "Randomize specializations"
     },
     "kind": {
       "humanoid": "Humanoid",
@@ -614,5 +655,39 @@
     "specRefund": "click to give the points back",
     "specGranted": "(free to {level})",
     "specsRandomHint": "Spend the whole budget at random, on top of what the class and traits already grant."
+  },
+  "augments": "Augments",
+  "augmentsPerMember": "{min}-{max} per member, fitted to their own sockets",
+  "collection": "Collection",
+  "deck": "Deck",
+  "cardsInCollection": "{count} cards, rolled across every rarity",
+  "cardsSleevedDeck": "A legal deck built from them, ready to play",
+  "cardCollectorDeckName": "Circuit deck",
+  "esotericSpells": "Esoteric spells",
+  "esotericSpellsPerMember": "{count} each, learned at the college",
+  "armament": "Armament",
+  "oneRangedWeaponEach": "One ranged weapon each, already carried",
+  "aRandomSquareOfTheWorld": "A random square of the world",
+  "summoningRites": "Summoning rites",
+  "summoningRitesPerMember": "{count} each, and no map to go with them",
+  "supplies": "Supplies",
+  "nothingButTheKey": "None. The key is everything you carry.",
+  "partyFormation": "Party Formation",
+  "howTheRestOfThePartyWalksBehindTheLeader": "Choose the party's formation",
+  "theyMarchInTheLeaderSFootstepsOneTileApart": "The party marches in the leader's footsteps and never stops",
+  "theyLiveTheirOwnLivesAroundTheLeader": "The party lives its own life independently and follows you when you run.",
+  "primaryLocked": "Primary (fixed)",
+  "controls": {
+    "up": "Move Up",
+    "down": "Move Down",
+    "left": "Move Left",
+    "right": "Move Right",
+    "action": "Action",
+    "back": "Back",
+    "run": "Run",
+    "menu": "Menu",
+    "leftClick": "Left Click",
+    "rightClick": "Right Click",
+    "holdShift": "Hold Shift"
   }
 }

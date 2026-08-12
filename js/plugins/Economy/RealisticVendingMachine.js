@@ -537,6 +537,14 @@
     }
 
     function getTodayString() {
+        // The per-day purchase limit is really a restocking round: somebody
+        // refills the machine overnight. Nobody does in an empty world, so the
+        // day never turns over and what has been taken out of a machine stays
+        // taken. See WorldManager.populationMode.
+        const WM = window.WorldManager;
+        if (WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld()) {
+            return "EMPTYWORLD";
+        }
         const gameDate = getGameDateFromVariable();
         return `${gameDate.year}-${gameDate.month}-${gameDate.day}`;
     }

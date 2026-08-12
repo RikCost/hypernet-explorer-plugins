@@ -249,8 +249,7 @@
         return `
             <div class="inspect-section-title">${T('Refuel.ui.fuelStation')}</div>
             <div class="inspect-name rf-subtitle">${title}</div>
-            <div class="rf-option-list">${rows}</div>
-            <p class="rf-hint">${T('Refuel.ui.hint')}</p>`;
+            <div class="rf-option-list">${rows}</div>`;
     };
 
     Scene_Map.prototype._rfBuildRight = function () {
@@ -403,6 +402,19 @@
         if (this._refuelEl && !this._rfWaiting) this._rfUpdateInput();
     };
 
+    // Scene_Map's own updateCallMenu() reads Input 'menu' (Escape) and
+    // TouchInput.isCancelled() (right click) in the SAME frame as the code
+    // above, both of which the refuel window also reads to close itself, so
+    // closing the window with Esc/right-click used to call the main menu too.
+    // Suppressing isMenuEnabled while the window is open matches how every
+    // other modal overlay (FastTravelSystem, ErisTrial, DreamSystem, ...)
+    // keeps the menu from opening underneath it.
+    const _Scene_Map_isMenuEnabled_refuel = Scene_Map.prototype.isMenuEnabled;
+    Scene_Map.prototype.isMenuEnabled = function () {
+        if (this._refuelEl) return false;
+        return _Scene_Map_isMenuEnabled_refuel.call(this);
+    };
+
     Scene_Map.prototype._rfUpdateInput = function () {
         const len = this._rfOptions.length;
         if (Input.isRepeated('down') || Input.isRepeated('s')) {
@@ -425,7 +437,7 @@
             }
         } else if (Input.isTriggered('ok')) {
             this._rfOnOk();
-        } else if (Input.isTriggered('cancel')) {
+        } else if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
             SoundManager.playCancel();
             if (this._rfView !== 'main') {
                 this._rfView = 'main';

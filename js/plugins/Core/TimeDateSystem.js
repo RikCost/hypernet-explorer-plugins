@@ -326,7 +326,7 @@
  *
  * @command CryogenicSleep
  * @text Cryogenic Sleep
- * @desc Opens the cryogenic pod year selection. The party wakes unaged and fully restored in the chosen year (up to 2012).
+ * @desc Opens the cryogenic pod date picker. The party is frozen exactly as it went in while the world runs on (up to 1 Jan 2012).
  *
  * @command SimulateTime
  * @text Simulate Time
@@ -421,6 +421,26 @@
     return Math.min(mult, 2.5);
   }
 
+  // What the body's hardware does to a need's drain. Health_Core reads the
+  // `needs` block of every installed augment; without that plugin, or with a
+  // bare body, the rate is simply 1.
+  // Being ill is expensive in the same currency. Every carried disease
+  // declares its own multiplier per need in Diseases.json, and one that is
+  // progressing multiplies again the further along it has got, so an untreated
+  // fever really does cost more food, more sleep and more washing.
+  function needAugmentRate(actor, needKey) {
+    let rate = 1;
+    if (window.HealthCore && window.HealthCore.needDrainMultiplier) {
+      const augments = window.HealthCore.needDrainMultiplier(actor, needKey);
+      if (typeof augments === "number" && isFinite(augments)) rate *= augments;
+    }
+    if (window.DiseaseSystem && window.DiseaseSystem.needDrainMultiplier) {
+      const illness = window.DiseaseSystem.needDrainMultiplier(actor, needKey);
+      if (typeof illness === "number" && isFinite(illness)) rate *= illness;
+    }
+    return rate;
+  }
+
   // Realistic Hunger Recovery Parameters
   const calorieVariableId = Number(parameters.calorieVariableId || 88);
   const fatVariableId = Number(parameters.fatVariableId || 89);
@@ -437,6 +457,11 @@
 
   // Maps where hunger/sleep should not deplete (prison, transport maps, etc.).
   const NO_DEPLETION_MAPS = [718, 719, 720, 327, 1094, 317, 1102];
+
+  // The interior maps of a vehicle (train, bus, taxi, camper, car). The travel
+  // window (MapInfoHUD) only counts one of these as "inside a vehicle" - the
+  // prison (1102) shares the no-depletion list but is not a vehicle.
+  const VEHICLE_INTERIOR_MAPS = [718, 719, 720, 327, 1094, 317];
 
 
   // Debug logging helper. Gated on the test flag only: previously this also
@@ -536,9 +561,15 @@
   // Cryogenic sleep helpers
   //=============================================================================
 
-  // The cryo pod can only carry the player up to this year; selecting it always
-  // opens the pod at 00:00 on the 1st of January (no same-day matching).
-  const CRYO_END_YEAR = 2012;
+  // The pod's last stop: 00:00 on 1 January 2012. A date at or past it always
+  // resolves to that exact moment, and a clock already standing there or later
+  // can no longer use the pod at all, which is what keeps the whole of 2012 out
+  // of cryogenic reach.
+  const CRYO_END = { year: 2012, month: 0, day: 1 };
+  // What a night in the pod costs. Money is shown in euros everywhere in this
+  // game (euros = gold / 100), so 3000 gold a day is 30 euros a day.
+  const CRYO_GOLD_PER_DAY = 3000;
+  const MINUTES_PER_DAY = 1440;
 
   // Live Date object for the current in-game moment (base epoch + elapsed mins).
   function getCurrentDateObj() {
@@ -547,30 +578,100 @@
     return date;
   }
 
-  // Selectable cryo wake years: every year after the current one, up to and
-  // including CRYO_END_YEAR. Empty once the clock is already in/after that year.
-  function getCryoYears() {
-    const currentYear = getCurrentDateObj().getFullYear();
-    const years = [];
-    for (let y = currentYear + 1; y <= CRYO_END_YEAR; y++) years.push(y);
-    return years;
+  function cryoEndDate() {
+    return new Date(CRYO_END.year, CRYO_END.month, CRYO_END.day, 0, 0, 0);
   }
 
-  // Minutes the clock must advance to reach the cryo wake date for `year`.
-  // Pre-2012 years wake on the same month/day/time as today; 2012 always opens
-  // at midnight on 1 Jan. JS Date arithmetic counts the true number of days in
-  // between, so leap years (and a 29 Feb start rolling to 1 Mar) are handled.
-  function getCryoAdvanceMinutes(year) {
-    const base = new Date(2001, 0, 1, 10, 0, 0);
+  // Whole days a calendar date stands at, counted from a fixed origin so the
+  // time of day never enters the arithmetic. Date.UTC counts the real length of
+  // every month and every year it crosses, so 29 February and the 366-day years
+  // (2004, 2008) are counted rather than assumed away.
+  function cryoDayStamp(year, month, day) {
+    return Math.round(Date.UTC(year, month, day) / 86400000);
+  }
+
+  function cryoDayStampOf(date) {
+    return cryoDayStamp(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  // Days in a month, leap years included (day 0 of the next month is the last
+  // day of this one).
+  function cryoDaysInMonth(year, month) {
+    return new Date(year, month + 1, 0).getDate();
+  }
+
+  function cryoDateParts(date) {
+    return { year: date.getFullYear(), month: date.getMonth(), day: date.getDate() };
+  }
+
+  // Nights spent in the pod to wake on the given date: the number of calendar
+  // days between today and it, which is what the fare is charged on.
+  function getCryoDays(year, month, day) {
+    return Math.max(0, cryoDayStamp(year, month, day) - cryoDayStampOf(getCurrentDateObj()));
+  }
+
+  function getCryoCost(year, month, day) {
+    return getCryoDays(year, month, day) * CRYO_GOLD_PER_DAY;
+  }
+
+  // How many nights the purse covers. Gold is the only limit on the pod besides
+  // the calendar, so this is what decides how far ahead a date may be picked.
+  function getCryoAffordableDays() {
+    if (!window.$gameParty) return 0;
+    return Math.floor($gameParty.gold() / CRYO_GOLD_PER_DAY);
+  }
+
+  // The window of dates the pod will accept: from tomorrow to whichever comes
+  // first, 1 January 2012 or the last night the party can pay for. Null when
+  // the pod cannot be used at all, with `reason` saying which wall was hit
+  // ("era" past the calendar cap, "funds" short of a single night's fare).
+  function getCryoDateRange() {
     const now = getCurrentDateObj();
-    let target;
-    if (year >= CRYO_END_YEAR) {
-      target = new Date(CRYO_END_YEAR, 0, 1, 0, 0, 0);
-    } else {
-      target = new Date(year, now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), 0);
-    }
-    const targetMinutes = Math.round((target.getTime() - base.getTime()) / 60000);
-    return Math.max(0, targetMinutes - getGameTimeMinutes());
+    const end = cryoEndDate();
+    if (now.getTime() >= end.getTime()) return null;
+    const min = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const affordable = getCryoAffordableDays();
+    let max = new Date(now.getFullYear(), now.getMonth(), now.getDate() + affordable);
+    if (cryoDayStampOf(max) > cryoDayStampOf(end)) max = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    if (cryoDayStampOf(max) < cryoDayStampOf(min)) return null;
+    return {
+      min: cryoDateParts(min),
+      max: cryoDateParts(max),
+      goldPerDay: CRYO_GOLD_PER_DAY,
+    };
+  }
+
+  // Why the pod is closed, for the message shown in its place.
+  function getCryoUnavailableReason() {
+    if (getCurrentDateObj().getTime() >= cryoEndDate().getTime()) return "era";
+    return "funds";
+  }
+
+  // Minutes the clock must advance to reach the chosen wake date. The pod opens
+  // at the same time of day it was closed at, except on the 2012 cap, which is
+  // always midnight sharp. Date arithmetic counts the true number of days in
+  // between, so leap years (and a 29 February start rolling to 1 March) are
+  // handled by the calendar rather than by a fixed 365.
+  function getCryoAdvanceMinutesForDate(year, month, day) {
+    const now = getCurrentDateObj();
+    const end = cryoEndDate();
+    let target = new Date(year, month, day, now.getHours(), now.getMinutes(), 0);
+    if (target.getTime() >= end.getTime()) target = end;
+    return Math.max(0, minutesForDate(target) - getGameTimeMinutes());
+  }
+
+  // The clock counts minutes as an offset in calendar FIELDS from the epoch:
+  // that is how getDateTimeFromMinutes reads them back (it adds them to the
+  // epoch's local fields) and how a world's starting date is written into the
+  // variable. So the arithmetic is done in UTC, where an hour is always an
+  // hour. An absolute getTime() difference is an hour out for every date
+  // inside daylight saving, which would open the pod on the wrong hour of the
+  // right day, and on the wrong day for a midnight wake.
+  function minutesForDate(date) {
+    return Math.round(
+      (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes())
+        - Date.UTC(2001, 0, 1, 10, 0)) / 60000
+    );
   }
 
   // Update date variable when time changes (on hour/minute boundary)
@@ -1279,14 +1380,18 @@
       // heat raises metabolism too. Both ends speed up hunger drain.
       hungerMultiplier *= temperatureHungerMultiplier($gameVariables.value(temperatureVariable));
 
-      leader.reduceHunger(hungerRate * hungerMultiplier);
-      leader.reduceSleep(sleepRate * baseMultiplier);
+      // An installed augment can slow a need, stop it dead or turn it around:
+      // a ruminant stomach burns less, a somnologic regulator never gets tired,
+      // a self-cleaning dermis actually gains hygiene as it walks. The figure
+      // is a multiplier on the drain, so 1 is a body with nothing fitted.
+      leader.reduceHunger(hungerRate * hungerMultiplier * needAugmentRate(leader, "hunger"));
+      leader.reduceSleep(sleepRate * baseMultiplier * needAugmentRate(leader, "sleep"));
 
       // Extended needs drain alongside sleep, at the NPC-meter ratios
       // (hygiene 0.05, social 0.03, leisure 0.03 per minute vs sleep 0.06).
-      leader.reduceHygiene(sleepRate * 0.83 * baseMultiplier);
-      leader.reduceSocial(sleepRate * 0.5 * baseMultiplier);
-      leader.reduceLeisure(sleepRate * 0.5 * baseMultiplier);
+      leader.reduceHygiene(sleepRate * 0.83 * baseMultiplier * needAugmentRate(leader, "hygiene"));
+      leader.reduceSocial(sleepRate * 0.5 * baseMultiplier * needAugmentRate(leader, "social"));
+      leader.reduceLeisure(sleepRate * 0.5 * baseMultiplier * needAugmentRate(leader, "leisure"));
     }
 
     // Apply legacy mechanics (debuffs, HP/MP drain, etc.) to all party members
@@ -1302,6 +1407,9 @@
 
       // Low warnings for Hygiene / Social / Fun, every member incl. leader
       checkExtendedNeeds(actor);
+
+      // A mind kept awake too long starts letting go of things.
+      if (actor === leader && window.Insomnia) window.Insomnia.tick();
 
       // Cravings are personal: they answer to the traits of the member who
       // carries them, so they climb per member rather than on the leader.
@@ -2066,6 +2174,152 @@
   };
 
   //=============================================================================
+  // Insomnia - how long the party has gone without lying down
+  //=============================================================================
+  // The sleep METER answers how tired somebody is; it says nothing about how
+  // long they have been awake, because a coffee and a seat both refill it. What
+  // the travel card reports, what turns a dream hellish and what starts pulling
+  // the party's mind apart is the time since the last real night's rest, which
+  // is one stamp on the world clock: `$gameSystem._lastSleptMinute`, written by
+  // the sleep sequence, by cryogenic sleep and by nothing else.
+  //
+  // `dread` is that time read as a 0..1 figure and is the one number every
+  // consumer works off: 0 up to a day awake, rising through two days, and 1 at
+  // a week, which is where the dream stops being a dream.
+  //=============================================================================
+  const INSOMNIA_STAGES = [
+    { hours: 24,       dread: 0.00 },   // a long day: nothing yet
+    { hours: 48,       dread: 0.40 },   // two days
+    { hours: 24 * 7,   dread: 0.80 },   // a week
+    { hours: 24 * 14,  dread: 1.00 }    // and past that it is only itself
+  ];
+
+  window.Insomnia = {
+    // The moment the party last really slept. A save that has never slept is
+    // read as having gone to bed the night the world started, not as having
+    // been awake since 2001.
+    lastSleptMinute() {
+      if (typeof $gameSystem === 'undefined' || !$gameSystem) return 0;
+      if ($gameSystem._lastSleptMinute == null) $gameSystem._lastSleptMinute = getGameTimeMinutes();
+      return Number($gameSystem._lastSleptMinute) || 0;
+    },
+
+    // Called by every path that counts as a night's rest.
+    markSlept() {
+      if (typeof $gameSystem === 'undefined' || !$gameSystem) return;
+      $gameSystem._lastSleptMinute = getGameTimeMinutes();
+      $gameSystem._insomniaNextRoll = null;
+      this.clearStates();
+    },
+
+    minutesAwake() {
+      return Math.max(0, getGameTimeMinutes() - this.lastSleptMinute());
+    },
+
+    hoursAwake() { return this.minutesAwake() / 60; },
+
+    /** 0 rested, 1 the far side of a week without sleep. */
+    dread() {
+      const h = this.hoursAwake();
+      const first = INSOMNIA_STAGES[0];
+      if (h <= first.hours) return 0;
+      for (let i = 1; i < INSOMNIA_STAGES.length; i++) {
+        const a = INSOMNIA_STAGES[i - 1], b = INSOMNIA_STAGES[i];
+        if (h <= b.hours) {
+          const t = (h - a.hours) / (b.hours - a.hours);
+          return a.dread + (b.dread - a.dread) * t;
+        }
+      }
+      return 1;
+    },
+
+    /** Which rung of the ladder they are on: 0 rested .. 4 past a fortnight. */
+    stage() {
+      const h = this.hoursAwake();
+      let n = 0;
+      for (const s of INSOMNIA_STAGES) { if (h > s.hours) n++; }
+      return n;
+    },
+
+    // "18 hours without sleep", "3 days without sleep", "2 months without
+    // sleep": the largest unit that reads as a whole number, so the card says
+    // days once days is what it is and never counts to two hundred hours.
+    describe() {
+      const mins = this.minutesAwake();
+      const units = [
+        ['years',  60 * 24 * 365],
+        ['months', 60 * 24 * 30],
+        ['weeks',  60 * 24 * 7],
+        ['days',   60 * 24],
+        ['hours',  60],
+        ['minutes', 1]
+      ];
+      for (const [key, size] of units) {
+        const v = Math.floor(mins / size);
+        if (v >= 1) return T('TimeDate.insomnia.' + key + (v === 1 ? 'One' : ''), { n: v });
+      }
+      return T('TimeDate.insomnia.minutes', { n: 0 });
+    },
+
+    // The mind goes before the body does. Every stage past the first deals the
+    // party one of the MENTAL ailments (and only those: an insomniac is not
+    // poisoned, they are seeing things), and the chance climbs with the dread.
+    // Nothing here is permanent, because sleeping takes all of it away.
+    MENTAL_STATES: [8 /* Confusion */, 7 /* Rage */, 10 /* Sleep */, 31 /* Berserk */],
+
+    clearStates() {
+      if (typeof $gameParty === 'undefined' || !$gameParty) return;
+      for (const actor of $gameParty.members()) {
+        if (!actor) continue;
+        for (const id of this.MENTAL_STATES) {
+          if (actor.isStateAffected(id)) actor.removeState(id);
+        }
+      }
+    },
+
+    // Rolled from the depletion loop, so it only ever happens while the party
+    // is on its feet, but paced by the CLOCK rather than by walked steps: a
+    // step is ten minutes on the world map and six seconds anywhere else, and
+    // a per-step roll would leave a corridor more maddening than a continent.
+    tick() {
+      if (typeof $gameParty === 'undefined' || !$gameParty) return;
+      if ($gameParty.inBattle && $gameParty.inBattle()) return;
+      const stage = this.stage();
+      if (stage < 1) return;
+      const dread = this.dread();
+      const now = getGameTimeMinutes();
+      // Four hours between rolls at a day awake, closing to under an hour past
+      // a week, and each roll is a coin weighted by the same figure.
+      const interval = 240 - dread * 190;
+      if ($gameSystem._insomniaNextRoll == null) $gameSystem._insomniaNextRoll = now + interval;
+      if (now < $gameSystem._insomniaNextRoll) return;
+      $gameSystem._insomniaNextRoll = now + interval;
+      if (Math.random() > 0.35 + dread * 0.55) return;
+      const members = $gameParty.members().filter(a => a && a.isAlive());
+      if (!members.length) return;
+      const actor = members[Math.floor(Math.random() * members.length)];
+      // Falling asleep on your feet is the last rung: below it the mind only
+      // wanders and snaps.
+      const pool = stage >= 2 ? this.MENTAL_STATES : this.MENTAL_STATES.slice(0, 2);
+      const id = pool[Math.floor(Math.random() * pool.length)];
+      if (!$dataStates[id] || actor.isStateAffected(id)) return;
+      actor.addState(id);
+      if (window.ParchmentToast) {
+        const stateName = window.translateText
+          ? window.translateText($dataStates[id].name) : $dataStates[id].name;
+        window.ParchmentToast.show(
+          T('TimeDate.insomnia.seized', {
+            name: actor.name(),
+            state: stateName,
+            time: this.describe()
+          }),
+          { severity: 'danger', key: 'insomnia-seized' }
+        );
+      }
+    }
+  };
+
+  //=============================================================================
   // PartyNeeds - shared needs vocabulary for the whole party
   //=============================================================================
   // Single source of truth for "what needs exist" and "what is the party's
@@ -2142,12 +2396,82 @@
   };
 
   //=============================================================================
+  // StateNeeds - a status effect that is also a need being met
+  //=============================================================================
+  // Two of the ailments a battle hands out are not only ailments. Somebody put
+  // to Sleep in the middle of a fight is asleep, and somebody drenched by a
+  // water spell is getting washed, whether or not either was the point. Each
+  // turn spent under one of those states pays RECOVER_SHARE (10%) of the whole
+  // meter back.
+  //
+  // What is announced is the RECOVERY, not the meter: the party is told each
+  // time another quarter of a full bar has been paid back, which is why the
+  // running total is kept rather than watched for the bar crossing a line. The
+  // toast is the ordinary one, so it reads the same in a fight and on the map.
+  //=============================================================================
+  const STATE_SLEEP = 10;   // Sleep, States.json
+  const STATE_WET   = 28;   // Wet
+  const RECOVER_SHARE = 0.10;
+  const ANNOUNCE_STEP = 0.25;
+
+  window.StateNeeds = {
+    /**
+     * Pays one turn's worth into a meter and says so on every quarter of a
+     * whole bar that goes in. The running total lives on the actor, so a
+     * quarter part-earned in one fight is finished in the next, and it is wound
+     * back once a whole bar has been paid: the announcement counts 25, 50, 75,
+     * 100 and then starts again rather than reporting 100% for ever.
+     */
+    _credit(actor, key, gain, max) {
+      if (!actor._stateNeedRecovery) actor._stateNeedRecovery = {};
+      const before = Number(actor._stateNeedRecovery[key]) || 0;
+      let after = before + gain;
+      const step = max * ANNOUNCE_STEP;
+      const quarters = Math.floor(after / step);
+      if (quarters > Math.floor(before / step) && window.ParchmentToast) {
+        window.ParchmentToast.show(
+          T('TimeDate.stateNeed.' + key, {
+            name: actor.name(),
+            percent: Math.min(100, quarters * 25)
+          }),
+          { severity: 'good', key: 'stateneed-' + key + '-' + actor.actorId() }
+        );
+      }
+      if (after >= max) after -= max;
+      actor._stateNeedRecovery[key] = after;
+    },
+
+    /** One turn spent under a state that is quietly doing the party some good. */
+    turn(actor) {
+      if (!actor || !actor.isActor || !actor.isActor()) return;
+      if (actor.isStateAffected(STATE_SLEEP) && actor.addSleep) {
+        actor.addSleep(maxSleep * RECOVER_SHARE);
+        this._credit(actor, 'sleep', maxSleep * RECOVER_SHARE, maxSleep);
+      }
+      if (actor.isStateAffected(STATE_WET) && actor.addHygiene) {
+        actor.addHygiene(maxNeed * RECOVER_SHARE);
+        this._credit(actor, 'hygiene', maxNeed * RECOVER_SHARE, maxNeed);
+      }
+    }
+  };
+
+  // One turn of the round is one call of onTurnEnd on that battler, under the
+  // engine's own turn order and under IndividualBattleTurns alike.
+  const _Game_Battler_onTurnEnd_TDS = Game_Battler.prototype.onTurnEnd;
+  // Read BEFORE the original, which is where a state's turns are counted down
+  // and an expired one is taken off: the turn just spent was spent under it.
+  Game_Battler.prototype.onTurnEnd = function () {
+    try { window.StateNeeds.turn(this); } catch (e) { /* the turn still ended */ }
+    _Game_Battler_onTurnEnd_TDS.call(this);
+  };
+
+  //=============================================================================
   // MinigameFun - shared hook for minigames to nudge the party Fun stat.
   // Playing any minigame is leisure; winning is a bigger boost, losing costs
   // Fun. Defensive so games can call it without worrying about load order.
   //=============================================================================
   window.MinigameFun = {
-    DELTA: { played: 3, won: 12, lost: -6, draw: 3 },
+    DELTA: { played: 30, won: 120, lost: -60, draw: 30 },
 
     // Points towards the game's own specialization. Winning teaches more than
     // losing, but losing still teaches: the party is practising either way.
@@ -2173,6 +2497,16 @@
     // regardless of skin.
     use() { return this; },
 
+    // A game opened from the main menu is the player looking at their own
+    // sheet, not the party spending an evening somewhere: the Fun popup, the
+    // skill badge and the level-up toasts all stay down for it. The points are
+    // still banked; it is the announcement that has no business covering a menu
+    // the player opened to read something else.
+    fromMainMenu() {
+      const stack = (typeof SceneManager !== 'undefined' && SceneManager._stack) || [];
+      return stack.some(scene => scene && (scene === Scene_Menu || scene.prototype instanceof Scene_Menu));
+    },
+
     // A call carries a bare string or { spec, points, actor }. A bare string is
     // a legacy skin id when it is one of the themes above and the name of a
     // specialization otherwise, which is how most minigames call this
@@ -2191,6 +2525,7 @@
 
     _apply(kind, arg) {
       const opts = this._opts(arg);
+      const quiet = this.fromMainMenu();
       const delta = this.DELTA[kind] || 0;
       if (delta && window.PartyNeeds && window.PartyNeeds.addLeisureToAll) {
         window.PartyNeeds.addLeisureToAll(delta);
@@ -2199,7 +2534,7 @@
       // Every minigame names the skill it is training on screen. played() is
       // called as a session opens, so this is where the badge goes up; it takes
       // itself down when the minigame's scene ends.
-      if (opts.spec && window.SpecBadge) {
+      if (opts.spec && window.SpecBadge && !quiet) {
         try { window.SpecBadge.show(opts.spec); } catch (e) { /* cosmetic only */ }
       }
 
@@ -2217,7 +2552,7 @@
       }
 
       try {
-        if (!window.ParchmentToast) return;
+        if (!window.ParchmentToast || quiet) return;
         window.ParchmentToast.group([
           () => window.ParchmentToast.need('leisure', delta),
           ...gained.map(g => () => window.SpecializationXP.announce(g))
@@ -2263,22 +2598,47 @@
     this._el = null;
   };
 
+  // Which content the card should show right now, or null while it has
+  // nothing worth showing (time is not passing fast, and the party is not
+  // standing on the world map). Three modes:
+  //  - 'world':  the world map (315). Shown permanently, full detail.
+  //  - 'travel': inside a vehicle's interior map while a fast-travel timer
+  //              is counting down. Full detail plus the arrival countdown.
+  //  - 'clock':  waiting, sleeping, in cryo, or working a job shift - the
+  //              clock is running fast but there is no "location" to show.
+  MapInfoHUD.prototype._activeMode = function () {
+    const scene = SceneManager._scene;
+    if (!(scene instanceof Scene_Map)) return null;
+    const mapId = $gameMap ? $gameMap.mapId() : 0;
+    if (mapId === 315) return 'world';
+    if (VEHICLE_INTERIOR_MAPS.includes(mapId)) {
+      const data = ($gameSystem && $gameSystem.getFastTravelData) ? $gameSystem.getFastTravelData() : null;
+      if (data && data.timerActive) return 'travel';
+    }
+    if (scene._sleepSequenceState || scene._cryoSequenceState || scene._workSequenceActive) return 'clock';
+    return null;
+  };
+
   // The card is built during createAllWindows, while the scene is still black
   // and fading in, so it would otherwise pop in fully-formed over the loading
   // map. Hold it at opacity 0 until the map scene has finished its own fade,
-  // then let the CSS transition ease it in.
-  MapInfoHUD.prototype._updateReveal = function () {
-    if (this._shown) return;
+  // then let the CSS transition show or hide it as the active mode changes -
+  // in both directions, every frame, so it disappears the moment none of the
+  // "time is passing fast" conditions hold any more.
+  MapInfoHUD.prototype._updateVisibility = function () {
     const scene = SceneManager._scene;
-    if (scene instanceof Scene_Map && !scene.isBusy()) {
-      this._shown = true;
-      this._el.classList.add('mih-visible');
-    }
+    const ready = scene instanceof Scene_Map && !scene.isBusy();
+    const active = ready && !!this._activeMode();
+    if (active === this._shown) return;
+    this._shown = active;
+    this._el.classList.toggle('mih-visible', active);
+    if (active) this._refresh();
   };
 
   MapInfoHUD.prototype.update = function () {
     if (!this._el) return;
-    this._updateReveal();
+    this._updateVisibility();
+    if (!this._shown) return;
     const mapId = $gameMap ? $gameMap.mapId() : 0;
     if (mapId === 315 && $gamePlayer) {
       const px = $gamePlayer.x;
@@ -2289,6 +2649,13 @@
         this._refresh();
         return;
       }
+    }
+    if (this._activeMode() === 'travel') {
+      // The fast-travel countdown ticks in real time (Game_System's own
+      // 1-second interval), so refresh every frame instead of the usual
+      // half-second cadence to keep it visibly counting down.
+      this._refresh();
+      return;
     }
     this._refreshTimer++;
     if (this._refreshTimer >= 30) {
@@ -2394,6 +2761,22 @@
     `</div>`;
   };
 
+  // Sleep-deprivation row: the twin of the food row, and shown on the same
+  // terms. Food answers how long the stock will last; once the sleep meter is
+  // empty there is no stock left to count, so what is reported instead is how
+  // long the party has gone without lying down ("3 days without sleep"). Above
+  // zero the meter says everything there is to say and the row is not drawn.
+  MapInfoHUD.prototype._insomnia = function (needs) {
+    if (!window.Insomnia) return '';
+    const sleep = needs ? needs.sleep : null;
+    if (sleep === null || sleep === undefined || sleep > 0) return '';
+    const cls = window.Insomnia.stage() >= 2 ? 'mih-insomnia-bad' : 'mih-insomnia-warn';
+    return `<div class="mih-region mih-insomnia">` +
+      `<span class="mih-region-lbl">${T('TimeDate.hud.awake')}</span>` +
+      `<span class="mih-region-val ${cls}">${window.Insomnia.describe()}</span>` +
+    `</div>`;
+  };
+
   // Temperature row: current ambient temp plus how much it is speeding up
   // hunger drain, so the cost of the climate is visible on the road.
   MapInfoHUD.prototype._temperature = function () {
@@ -2454,12 +2837,25 @@
     `</div>`;
   };
 
+  // Arrival countdown, mm:ss, read straight off the fast-travel data - only
+  // meaningful (and only ever drawn) while MapInfoHUD is in 'travel' mode.
+  MapInfoHUD.prototype._travelTimer = function () {
+    const data = ($gameSystem && $gameSystem.getFastTravelData) ? $gameSystem.getFastTravelData() : null;
+    if (!data || !data.timerActive) return '';
+    const t = Math.max(0, Math.floor(data.timerRemainingTime));
+    const mm = String(Math.floor(t / 60)).padStart(2, '0');
+    const ss = String(t % 60).padStart(2, '0');
+    return `<div class="mih-region mih-eta">` +
+      `<span class="mih-region-lbl">${T("TimeDate.hud.eta")}</span>` +
+      `<span class="mih-region-val">${mm}:${ss}</span>` +
+    `</div>`;
+  };
+
   MapInfoHUD.prototype._refresh = function () {
     if (!this._el) return;
-    const mapId = $gameMap ? $gameMap.mapId() : 0;
-    const isWorldMap   = mapId === 315;
-    const isRestZone   = NO_DEPLETION_MAPS.includes(mapId);
-    const actor        = $gameActors.actor(1);
+    const mode = this._activeMode();
+    if (!mode) return;
+    const actor = $gameActors.actor(1);
 
     // Median of every tracked need across the whole party.
     let needs;
@@ -2473,11 +2869,13 @@
     const dt = getDateTimeFromMinutes(getGameTimeMinutes());
     let html = '';
 
-    if (isRestZone) {
+    if (mode === 'clock') {
+      // Waiting, sleeping, in cryo, or working a shift: the clock is the
+      // only thing worth showing, there is no location to report.
       html =
         `<div class="mih-datetime"><span class="mih-star">&#9733;</span>${dt.dateShort}</div>` +
         `<div class="mih-datetime"><span class="mih-star">&#9733;</span>${dt.time24}</div>`;
-    } else if (isWorldMap) {
+    } else if (mode === 'world') {
       const loc = this._getBiomeName();
       const ci = this._getCountryInfo();
       let countryHtml = '';
@@ -2494,10 +2892,21 @@
         countryHtml +
         this._temperature() +
         this._food() +
+        this._insomnia(needs) +
         this._vitals(needs) +
         this._fuel();
     } else {
-      html = this._vitals(needs) + this._fuel();
+      // 'travel': inside a vehicle's interior, racing a fast-travel timer.
+      // There is no world tile to read a biome/country off, so the card
+      // leads with the countdown instead of a location.
+      html =
+        `<div class="mih-datetime"><span class="mih-star">&#9733;</span>${dt.dateShort} ${dt.time24}</div>` +
+        this._travelTimer() +
+        this._temperature() +
+        this._food() +
+        this._insomnia(needs) +
+        this._vitals(needs) +
+        this._fuel();
     }
 
     // Only touch the DOM when the built HTML actually differs from what's shown.
@@ -2516,7 +2925,10 @@
     _foodReserveCache = null;
   };
 
-  // Hook: create HUD on supported maps
+  // Hook: create the HUD on every map. What it actually shows (or whether it
+  // shows at all) is decided live, frame to frame, by MapInfoHUD._activeMode -
+  // it has to exist everywhere so waiting/sleeping/cryo/work, which can start
+  // on any ordinary map, can still reach it and tick it in real time.
   const _Scene_Map_createAllWindows_TDS = Scene_Map.prototype.createAllWindows;
   Scene_Map.prototype.createAllWindows = function () {
     _Scene_Map_createAllWindows_TDS.call(this);
@@ -2524,10 +2936,7 @@
   };
 
   Scene_Map.prototype.createHungerSleepOverlay = function () {
-    const mapId = $gameMap.mapId();
-    if (mapId === 315 || NO_DEPLETION_MAPS.includes(mapId)) {
-      this._mapInfoHUD = new MapInfoHUD();
-    }
+    this._mapInfoHUD = new MapInfoHUD();
   };
 
   // Hook: update HUD each frame (also drives the sleep/cryo sequences below)
@@ -2726,6 +3135,10 @@
     // recoverAll() only touches HP/MP/states, so it leaves it intact.
     $gameParty.members().forEach(actor => actor.recoverAll());
 
+    // The one thing that stops the insomnia clock, and takes the mind back off
+    // whatever it had started doing without one.
+    if (window.Insomnia) window.Insomnia.markSlept();
+
     for (let j = 0; j < 2; j++) {
       PluginManager.callCommand(this, "Health_Core", "HealBodyParts", { amount: "100" });
     }
@@ -2753,56 +3166,256 @@
   };
 
   //=============================================================================
-  // Cryogenic sleep sequence. Fades out, jumps the clock to the chosen wake
-  // year (running the NPC sim across the whole gap), then wakes the party fully
-  // preserved. Driven by the SleepMenu UI (cryo_<year> command).
+  // Cryogenic sleep sequence. Twenty real seconds, start to finish, whether the
+  // pod is skipping four days or eleven years: the lid closes, the travel
+  // screen runs the calendar forward while the world outside is simulated in
+  // slices, and the party is put back exactly as it went in. Driven by the
+  // SleepMenu UI (cryo_confirm).
   //=============================================================================
 
-  Scene_Map.prototype.startCryoSequence = function (minutes) {
-    $gameScreen.startFadeOut(60);
+  // 1200 frames at 60fps. The three stretches add up to the whole window, so
+  // the wait is the same length however far the pod travels.
+  const CRYO_INTRO_FRAMES = 66;    // the lid closes and the map fades out
+  const CRYO_WAKE_FRAMES = 174;    // thawing, with the wake panel up
+  const CRYO_TRAVEL_FRAMES = 960;  // the years running
+  // The three ways a body answers being brought back up to temperature.
+  const CRYO_WAKE_STATES = [41 /* Nausea */, 8 /* Confusion */, 26 /* Cold */];
+
+  // Everything the pod holds still. The world outside is simulated in full, so
+  // the only way the party can come out of the gap untouched is to be put back
+  // exactly as it went in: HP, MP, TP, states and their turn counts, every need
+  // and craving, illnesses, body parts, biology, the lot.
+  function snapshotPartyState() {
+    if (!window.$gameParty) return null;
+    return $gameParty.members().map((actor) => ({
+      id: actor.actorId(),
+      data: JsonEx.stringify(actor),
+    }));
+  }
+
+  function restorePartyState(snapshot, deltaMinutes) {
+    if (!snapshot) return;
+    for (const entry of snapshot) {
+      const actor = $gameActors.actor(entry.id);
+      if (!actor) continue;
+      let frozen;
+      try { frozen = JsonEx.parse(entry.data); } catch (_) { continue; }
+      // Written back onto the living actor rather than swapped in for it, so
+      // every reference the scene, the HUD and the party already hold stays
+      // pointed at the same object.
+      for (const key of Object.keys(actor)) {
+        if (!(key in frozen)) delete actor[key];
+      }
+      for (const key of Object.keys(frozen)) actor[key] = frozen[key];
+      shiftFrozenTimestamps(actor, deltaMinutes);
+      actor.refresh();
+    }
+  }
+
+  // A frozen body still has to come out of the pod into the year it woke in.
+  // Anything the biology measures as "how long since" is carried forward with
+  // the clock, or a pregnancy conceived the week before going under would read
+  // as eleven years overdue the moment the lid opens.
+  function shiftFrozenTimestamps(actor, deltaMinutes) {
+    const deltaDays = deltaMinutes / MINUTES_PER_DAY;
+    const uterus = actor._uterusData;
+    if (uterus) {
+      for (const key of ["conceptionDate", "dueDate", "lastStatusCheck", "lastCycleUpdate"]) {
+        if (typeof uterus[key] === "number") uterus[key] += deltaDays;
+      }
+    }
+    // Guarded on magnitude: the same field is written as a game-day stamp in
+    // one place and as a real-clock Date.now() in another, and only the first
+    // means anything to the game calendar.
+    const testes = actor.testesData;
+    if (testes && typeof testes.lastUpdate === "number" && testes.lastUpdate < 1e6) {
+      testes.lastUpdate += deltaDays;
+    }
+    for (const list of [actor._diseases, actor._conditions]) {
+      if (!Array.isArray(list)) continue;
+      for (const entry of list) {
+        if (entry && typeof entry.sinceMin === "number" && entry.sinceMin > 0) {
+          entry.sinceMin += deltaMinutes;
+        }
+      }
+    }
+  }
+
+  // Nobody walks out of a pod clean. Each member rolls for each of the three,
+  // more likely the longer they were under, and anyone who dodges all three
+  // still takes one: the thaw is always felt.
+  function applyCryoWakeStates(days) {
+    const chance = Math.min(0.75, 0.35 + (days / 365) * 0.35);
+    for (const actor of $gameParty.members()) {
+      let taken = 0;
+      for (const stateId of CRYO_WAKE_STATES) {
+        if (Math.random() < chance) { actor.addState(stateId); taken++; }
+      }
+      if (!taken) {
+        actor.addState(CRYO_WAKE_STATES[Math.floor(Math.random() * CRYO_WAKE_STATES.length)]);
+      }
+    }
+  }
+
+  // opts: { cost, days, wakeDate } , the fare to charge, the nights being paid
+  // for and the {year, month, day} the pod is set to open on.
+  Scene_Map.prototype.startCryoSequence = function (minutes, opts) {
+    const o = opts || {};
+    const cost = Math.max(0, Math.round(Number(o.cost) || 0));
+    if (cost > 0 && window.$gameParty) $gameParty.loseGold(cost);
+
+    const startTime = getGameTimeMinutes();
+    const total = Math.max(0, Math.round(Number(minutes) || 0));
+    this._cryo = {
+      frame: 0,
+      startTime: startTime,
+      totalMinutes: total,
+      doneMinutes: 0,
+      minutesPerFrame: total / CRYO_TRAVEL_FRAMES,
+      // NPC schedules tick per simulated hour on a short freeze and once a
+      // frame on a long one, so a four-day sleep is as detailed as it was and
+      // an eleven-year one still costs a bounded number of passes.
+      npcTickStep: Math.max(60, total / CRYO_TRAVEL_FRAMES),
+      nextNpcTick: startTime + 60,
+      days: Math.max(0, Math.round(Number(o.days) || 0)),
+      cost: cost,
+      snapshot: snapshotPartyState(),
+    };
+    this._cryo.nextNpcTick = startTime + this._cryo.npcTickStep;
+
+    $gameScreen.startFadeOut(CRYO_INTRO_FRAMES);
     this._cryoSequenceState = 1;
-    this._cryoSequenceTimer = 60;
-    this._cryoMinutes = minutes;
+    if (this.openCryoTravelScreen) {
+      this.openCryoTravelScreen({
+        startTime: startTime,
+        totalMinutes: total,
+        days: this._cryo.days,
+        cost: cost,
+      });
+    }
   };
 
   Scene_Map.prototype.updateCryoSequence = function () {
     if (!this._cryoSequenceState) return;
-    if (this._cryoSequenceTimer > 0) {
-      this._cryoSequenceTimer--;
-      return;
-    }
+    const a = this._cryo;
+    if (!a) { this._cryoSequenceState = 0; return; }
+    a.frame++;
 
     switch (this._cryoSequenceState) {
       case 1:
-        AudioManager.playMe({ name: "Inn1", volume: 90, pitch: 100, pan: 0 });
-        // Advance the clock to the wake date, ticking the world the whole way.
-        advanceGameTimeSimulated(this._cryoMinutes);
-        // Cryogenic preservation: the party emerges unaged and fully restored.
-        $gameParty.members().forEach(actor => {
-          actor._hunger = maxHunger;
-          actor._sleep = maxSleep;
-          if (actor.updateOvereatState) actor.updateOvereatState();
-          actor.recoverAll();
-          actor.gainMp(9999);
-          actor.gainTp(100);
-        });
-        for (let j = 0; j < 2; j++) {
-          PluginManager.callCommand(this, "Health_Core", "HealBodyParts", { amount: "100" });
+        if (a.frame >= CRYO_INTRO_FRAMES) {
+          AudioManager.playMe({ name: "Inn1", volume: 90, pitch: 100, pan: 0 });
+          this._cryoSequenceState = 2;
+          a.frame = 0;
         }
-        if (this._mapInfoHUD && this._mapInfoHUD._refresh) {
-          this._mapInfoHUD._refresh();
-        }
-        this._cryoSequenceState = 2;
-        this._cryoSequenceTimer = 30;
         break;
 
       case 2:
-        $gameScreen.startFadeIn(60);
-        $gameTemp._sleepMenuOpen = false;
-        this._cryoSequenceState = 0;
-        this._cryoMinutes = 0;
+        this._stepCryoTravel();
+        break;
+
+      case 3:
+        if (a.frame >= CRYO_WAKE_FRAMES) this._finishCryoSequence();
         break;
     }
+  };
+
+  // One frame of the gap: the clock moves its slice, and every delta engine in
+  // the world is asked to catch up to it. They each resolve what happened since
+  // they last ran, so spreading the calls over the travel window spreads the
+  // work with them instead of locking the game up on one enormous pass.
+  Scene_Map.prototype._stepCryoTravel = function () {
+    const a = this._cryo;
+    a.doneMinutes = Math.min(a.totalMinutes, a.doneMinutes + a.minutesPerFrame);
+    const currentTime = a.startTime + a.doneMinutes;
+
+    setGameTimeMinutes(Math.floor(currentTime));
+    updateGameDateVariable();
+
+    // One NPC schedule pass a frame at most, so a long freeze costs a bounded
+    // number of them however many simulated hours a single frame covers.
+    if (a.nextNpcTick <= currentTime) {
+      if (window.NPCSim?.tick) {
+        try { window.NPCSim.tick(a.nextNpcTick); } catch (_) {}
+      }
+      a.nextNpcTick = Math.max(a.nextNpcTick + a.npcTickStep, currentTime + 1);
+    }
+
+    // The background simulations: lives, politics, the settlement pulse and the
+    // continental epidemics. Each is a delta engine that no-ops on a sub-day
+    // step, so a short freeze reaches them a handful of times and a long one
+    // every frame.
+    const worldNow = Math.floor(currentTime);
+    if (window.NPCLifeSim?.catchUp) { try { window.NPCLifeSim.catchUp(worldNow); } catch (_) {} }
+    if (window.NPCPolitics?.catchUp) { try { window.NPCPolitics.catchUp(worldNow); } catch (_) {} }
+    if (window.NPCWorldWeb?.catchUp) { try { window.NPCWorldWeb.catchUp(worldNow); } catch (_) {} }
+    if (window.EpidemicSystem?.catchUp) { try { window.EpidemicSystem.catchUp(worldNow); } catch (_) {} }
+    // The world's own chronicle: a day the party slept through is still a day
+    // that happened, and the assembly still sat on the Monday inside it.
+    if (window.HistoryManager?.catchUpLiveHistory) {
+      try { window.HistoryManager.catchUpLiveHistory(worldNow); } catch (_) {}
+    }
+    if (window.ONUAssembly?.catchUpSessions) {
+      try { window.ONUAssembly.catchUpSessions(worldNow); } catch (_) {}
+    }
+
+    if (this.updateCryoTravelScreen) {
+      this.updateCryoTravelScreen({
+        minute: worldNow,
+        elapsed: a.doneMinutes,
+        total: a.totalMinutes,
+      });
+    }
+
+    if (a.frame >= CRYO_TRAVEL_FRAMES || a.doneMinutes >= a.totalMinutes) {
+      this._thawCryoParty();
+    }
+  };
+
+  // The lid opens. The clock is snapped to the exact wake moment, the world
+  // gets its last catch-up pass, and the party is put back the way it went in.
+  Scene_Map.prototype._thawCryoParty = function () {
+    const a = this._cryo;
+    const endTime = a.startTime + a.totalMinutes;
+    setGameTimeMinutes(endTime);
+    updateGameDateVariable();
+
+    if (window.NPCSim?.tick) { try { window.NPCSim.tick(endTime); } catch (_) {} }
+    if (window.NPCLifeSim?.catchUp) { try { window.NPCLifeSim.catchUp(endTime); } catch (_) {} }
+    if (window.NPCPolitics?.catchUp) { try { window.NPCPolitics.catchUp(endTime); } catch (_) {} }
+    if (window.NPCWorldWeb?.catchUp) { try { window.NPCWorldWeb.catchUp(endTime); } catch (_) {} }
+    if (window.EpidemicSystem?.catchUp) { try { window.EpidemicSystem.catchUp(endTime); } catch (_) {} }
+    if (window.HistoryManager?.catchUpLiveHistory) {
+      try { window.HistoryManager.catchUpLiveHistory(endTime); } catch (_) {}
+    }
+    if (window.ONUAssembly?.catchUpSessions) {
+      try { window.ONUAssembly.catchUpSessions(endTime); } catch (_) {}
+    }
+
+    // Preservation, not treatment: nothing is healed, nothing is fed, nothing
+    // wears down. Whatever the party was carrying is still on it.
+    restorePartyState(a.snapshot, a.totalMinutes);
+    a.snapshot = null;
+    // The body did not lie awake through the gap, so the insomnia clock is not
+    // owed the years either.
+    if (window.Insomnia) window.Insomnia.markSlept();
+    applyCryoWakeStates(a.days);
+
+    if (this._mapInfoHUD && this._mapInfoHUD._refresh) {
+      this._mapInfoHUD._refresh();
+    }
+    if (this.showCryoWakeScreen) this.showCryoWakeScreen({ minute: endTime });
+
+    this._cryoSequenceState = 3;
+    a.frame = 0;
+  };
+
+  Scene_Map.prototype._finishCryoSequence = function () {
+    if (this.closeCryoTravelScreen) this.closeCryoTravelScreen();
+    $gameScreen.startFadeIn(60);
+    $gameTemp._sleepMenuOpen = false;
+    this._cryoSequenceState = 0;
+    this._cryo = null;
   };
 
   const _Game_Temp_initialize_sleep = Game_Temp.prototype.initialize;
@@ -2823,8 +3436,15 @@
   window.TimeDateSystem.maxSleep = maxSleep;
   window.TimeDateSystem.getDateTimeFromMinutes = getDateTimeFromMinutes;
   window.TimeDateSystem.getGameTimeMinutes = getGameTimeMinutes;
-  window.TimeDateSystem.getCryoYears = getCryoYears;
-  window.TimeDateSystem.getCryoAdvanceMinutes = getCryoAdvanceMinutes;
+  // The cryogenic pod, read by the date picker in TimeDateSystemUI.
+  window.TimeDateSystem.getCryoDateRange = getCryoDateRange;
+  window.TimeDateSystem.getCryoUnavailableReason = getCryoUnavailableReason;
+  window.TimeDateSystem.getCryoAdvanceMinutesForDate = getCryoAdvanceMinutesForDate;
+  window.TimeDateSystem.getCryoDays = getCryoDays;
+  window.TimeDateSystem.getCryoCost = getCryoCost;
+  window.TimeDateSystem.getCryoDaysInMonth = cryoDaysInMonth;
+  window.TimeDateSystem.getCryoDayStamp = cryoDayStamp;
+  window.TimeDateSystem.getCurrentDateObj = getCurrentDateObj;
   // Resolved on every read, so a language switch reaches the rest menu without
   // either plugin holding on to a stale table.
   Object.defineProperty(window.TimeDateSystem, "sleepMenuI18n", {

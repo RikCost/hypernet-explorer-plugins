@@ -3,13 +3,12 @@
   "player": "Giocatore",
   "cpu": "CPU",
   "cpuLiningUp": "La CPU prende la mira...",
-  "aimPrompt": "Giocatore: Sinistra/Destra per mirare, OK",
-  "powerPrompt": "Imposta la potenza e premi OK",
-  "setTouch": "Imposta il tocco e premi OK",
+  "aimPrompt": "Il giocatore prende la mira",
+  "powerPrompt": "Imposta la potenza",
+  "setTouch": "Imposta il tocco",
   "itsGood": "CANESTRO!",
   "swish": "TUTTA RETE!",
   "score": "SEGNATO!",
   "miss": "SBAGLIATO",
-  "finalScore": "Giocatore: {player}  CPU: {cpu}",
-  "pressOkExit": "Premi OK per uscire"
+  "finalScore": "Giocatore: {player}  CPU: {cpu}"
 }

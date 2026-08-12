@@ -1,6 +1,7 @@
 {
   "msg": {
     "noUnderstand": "Il nemico non ti capisce.",
+    "unrecruitable": "{name} non risponde.\nLi dentro non c'è nulla con cui trattare.",
     "cantTalkNow": "Il nemico non può parlare ora.",
     "silenced": "Il nemico è silenziato!\n Non può parlare ora.",
     "enraged": "Il nemico è infuriato!\n Non vuole parlarti.",
@@ -30,7 +31,6 @@
     "Annulla"
   ],
   "opinion": "Opinione",
-  "navHint": "↑↓ naviga · OK conferma · Esc annulla",
   "recruit": {
     "askToFollow": "Chiedi di Seguirti",
     "adoptAsPet": "Adotta come Animale"

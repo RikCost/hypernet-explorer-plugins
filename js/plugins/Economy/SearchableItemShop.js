@@ -1865,6 +1865,10 @@
             }
         }
 
+        // An order placed, in the party's own diary (Diary.js). A bazaar hands
+        // the goods over at once; everything else is a courier on the way.
+        if (window.Diary) window.Diary.onOrderPlaced(item.name, price, !this._isLimited);
+
         this._confirmOpen = false;
         this._buyWindow.close();
         this._itemListWindow.refresh();

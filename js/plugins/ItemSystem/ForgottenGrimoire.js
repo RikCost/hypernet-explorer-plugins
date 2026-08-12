@@ -40,8 +40,20 @@
  * @default Random
  * @option Random (Forgotten Grimoire)
  * @value Random
- * @option Elemental
- * @value Elemental
+ * @option Pyromancy
+ * @value Pyromancy
+ * @option Cryomancy
+ * @value Cryomancy
+ * @option Electromancy
+ * @value Electromancy
+ * @option Idromancy
+ * @value Idromancy
+ * @option Aeromancy
+ * @value Aeromancy
+ * @option Geomancy
+ * @value Geomancy
+ * @option ChaosMagic
+ * @value ChaosMagic
  * @option HolyMagic
  * @value HolyMagic
  * @option VoidMagic
@@ -66,16 +78,12 @@
  * @value Augury
  * @option Chronomancy
  * @value Chronomancy
- * @option Geomancy
- * @value Geomancy
  * @option Illusion
  * @value Illusion
  * @option Mutation
  * @value Mutation
  * @option Oneiromancy
  * @value Oneiromancy
- * @option Tempest
- * @value Tempest
  * @option Healing
  * @value Healing
  * @option Technomagical
@@ -95,8 +103,8 @@
  * @value Swordsmanship
  * @option Bestial
  * @value Bestial
- * @option ChemicalArts
- * @value ChemicalArts
+ * @option Alchemistry
+ * @value Alchemistry
  * @option Firearms
  * @value Firearms
  * @option Cooking
@@ -111,22 +119,12 @@
  * @value Roguery
  * @option Pastoral
  * @value Pastoral
- * @option Buffoonery
- * @value Buffoonery
  * @option Dominion
  * @value Dominion
  * @option Economy
  * @value Economy
- * @option Gluttony
- * @value Gluttony
- * @option Vainglory
- * @value Vainglory
  * @option Vocation
  * @value Vocation
- * @option Wayfaring
- * @value Wayfaring
- * @option Whimsy
- * @value Whimsy
  */
 
 (() => {

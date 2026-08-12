@@ -80,6 +80,7 @@
   "forgeBlurb": "Scegli un incantesimo dominante e un componente recessivo (incantesimo o abilità) di {actor} per fonderli in una nuova abilità. Il costo in MP e AP è la somma dei componenti; la fusione stessa si paga in Conoscenza, in base a quanto varrebbe insegnare i componenti. Se il recessivo è un'abilità, il risultato sarà un'abilità. I componenti vengono dimenticati. Hai {knowledge} KP.",
   "kpMultiplier3x": "3.0X KC",
   "kpMultiplier15x": "1.5X KC",
+  "foreignSchool": "DA AUTODIDATTA (costo 3x)",
   "graph": {
     "legendLearned": "Appresa",
     "legendOpen": "Disponibile",
@@ -87,6 +88,34 @@
     "locked": "BLOCCATA",
     "lockedBy": "Si sblocca da: {skills}",
     "lockedHint": "Nulla di ciò che conosci confina con questa abilità.",
+    "lockedBySchool": "Sigillata nel cuore del cerchio. Occorre conoscere tutta la scuola; mancano ancora: {skills}",
     "lockedToast": "{skill} non confina con nulla che questo allievo conosca."
+  },
+  "atlas": {
+    "progress": "{learned} di {total} apprese",
+    "hint": "Trascina per spostarti · Rotella per lo zoom · Shift per il cerchio intero",
+    "schoolOf": "{index} / {total}",
+    "held": "Hai {knowledge} KC"
+  },
+  "tag": {
+    "esoteric": "Esoterica",
+    "forbidden": "Proibita"
+  },
+  "carry": {
+    "take": "Porta in battaglia",
+    "drop": "Lascia in panchina",
+    "locked": "Sempre equipaggiata",
+    "full": "Assetto al completo",
+    "takenToast": "{skill} viene portata in battaglia.",
+    "droppedToast": "{skill} resta in panchina.",
+    "fullToast": "L'assetto porta già {max} abilità. Mettine una in panchina.",
+    "lockedToast": "{skill} è sempre equipaggiata e non occupa uno slot."
+  },
+  "fusion": {
+    "rename": "Rinomina",
+    "delete": "Disfa",
+    "confirm": "Salva",
+    "confirmDelete": "Disfare {skill}? I suoi componenti sono già stati consumati. Premi di nuovo per confermare.",
+    "deleted": "{skill} è stata disfatta."
   }
 }

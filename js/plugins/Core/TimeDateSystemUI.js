@@ -116,13 +116,12 @@
         { key: "wakeup", label: t.cancel },
       ];
     }
+    // The pod picks a date rather than a year, so its buttons are only the two
+    // that close the dialog; the calendar itself is a spinner row above them
+    // (see _cryoPickerHTML).
     if (mode === "cryo") {
-      const years = (window.TimeDateSystem.getCryoYears &&
-        window.TimeDateSystem.getCryoYears()) || [];
-      const cmds = years.map((y) => ({
-        key: "cryo_" + y,
-        label: (y >= 2012 ? t.cryoFinalYear : t.cryoYear).format(y),
-      }));
+      const cmds = [];
+      if (cryoRange()) cmds.push({ key: "cryo_confirm", label: t.cryoConfirm });
       cmds.push({ key: "cancel_sleep", label: t.cancel });
       return cmds;
     }
@@ -140,6 +139,86 @@
     }
     mainCommands.push({ key: "cancel", label: t.cancel });
     return mainCommands;
+  }
+
+  //=============================================================================
+  // The cryogenic pod: date picker helpers
+  //=============================================================================
+
+  const CRYO_FIELDS = ["day", "month", "year"];
+
+  function TDS() {
+    return window.TimeDateSystem || {};
+  }
+
+  function cryoRange() {
+    const api = TDS();
+    return api.getCryoDateRange ? api.getCryoDateRange() : null;
+  }
+
+  function cryoMonthNames() {
+    const names = window.T ? window.T.list("TimeDate.months") : [];
+    return names && names.length === 12 ? names : [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December",
+    ];
+  }
+
+  function cryoDayStamp(parts) {
+    const api = TDS();
+    return api.getCryoDayStamp
+      ? api.getCryoDayStamp(parts.year, parts.month, parts.day)
+      : Math.round(Date.UTC(parts.year, parts.month, parts.day) / 86400000);
+  }
+
+  function cryoDaysInMonth(year, month) {
+    const api = TDS();
+    return api.getCryoDaysInMonth
+      ? api.getCryoDaysInMonth(year, month)
+      : new Date(year, month + 1, 0).getDate();
+  }
+
+  // Pulls a picked date back inside the window the pod will accept. The day is
+  // clamped to the real length of its month first (so stepping off 31 January
+  // into February, or off 29 February in a year that has no 29th, lands on a
+  // date that exists), then the whole date to the range's ends.
+  function clampCryoDate(parts, range) {
+    const out = {
+      year: parts.year,
+      month: Math.max(0, Math.min(11, parts.month)),
+      day: parts.day,
+    };
+    out.day = Math.max(1, Math.min(cryoDaysInMonth(out.year, out.month), out.day));
+    const stamp = cryoDayStamp(out);
+    if (stamp < cryoDayStamp(range.min)) return Object.assign({}, range.min);
+    if (stamp > cryoDayStamp(range.max)) return Object.assign({}, range.max);
+    return out;
+  }
+
+  // "4 days", "1 year, 2 months, 3 days": the span written out in the units it
+  // is actually long in, so a short freeze never reads as "0 years".
+  function cryoSpanLabel(fromParts, toParts) {
+    const t = sleepLabels();
+    let years = toParts.year - fromParts.year;
+    let months = toParts.month - fromParts.month;
+    let days = toParts.day - fromParts.day;
+    if (days < 0) {
+      months--;
+      const prevMonth = (toParts.month + 11) % 12;
+      const prevYear = toParts.month === 0 ? toParts.year - 1 : toParts.year;
+      days += cryoDaysInMonth(prevYear, prevMonth);
+    }
+    if (months < 0) { years--; months += 12; }
+    const parts = [];
+    if (years > 0) parts.push((years === 1 ? t.cryoSpanYear : t.cryoSpanYears).format(years));
+    if (months > 0) parts.push((months === 1 ? t.cryoSpanMonth : t.cryoSpanMonths).format(months));
+    if (days > 0) parts.push((days === 1 ? t.cryoSpanDay : t.cryoSpanDays).format(days));
+    return parts.length ? parts.join(", ") : t.cryoSpanDays.format(0);
+  }
+
+  // Money is euros everywhere in this game, and euros are gold / 100.
+  function cryoEuros(gold) {
+    return "€" + (Math.max(0, Math.round(gold)) / 100).toFixed(2);
   }
 
   // RMMZ swallows every wheel event at the document level (rmmz_core.js,
@@ -266,6 +345,21 @@
         return;
       }
 
+      // The pod's calendar is a spinner row, not a list: left/right walk the
+      // day/month/year fields and up/down step the one under the cursor, while
+      // OK and Cancel keep doing what they do everywhere else in this menu.
+      if (scene._sleepMenuMode === "cryo" && cryoRange()) {
+        if (isLeft) { scene._moveCryoField(-1); return; }
+        if (isRight) { scene._moveCryoField(1); return; }
+        if (isUp) { scene._adjustCryoField(1); return; }
+        if (isDown) { scene._adjustCryoField(-1); return; }
+        if (Input.isTriggered("ok")) { scene.execSleepMenuCommand("cryo_confirm"); return; }
+        if (Input.isTriggered("escape") || Input.isTriggered("cancel") || TouchInput.isCancelled()) {
+          scene.cancelSleepMenu();
+        }
+        return;
+      }
+
       const cmds = commandsForMode(scene._sleepMenuMode, sleepAllowedFor(scene));
       const total = cmds.length;
       if (isUp) {
@@ -370,12 +464,15 @@
       .join("");
     const isDuration = mode === "sleep" || mode === "wait";
     const typeSelectorHTML = isDuration ? this._sleepMenuTypeSelectorHTML() : "";
+    const cryoHTML = mode === "cryo" ? this._cryoPickerHTML() : "";
     this._sleepMenuEl.innerHTML = `
-      <div class="army-dialog">
+      <div class="army-dialog${mode === "cryo" ? " army-dialog--cryo" : ""}">
         <h3>${titleForMode(mode)}</h3>
         ${typeSelectorHTML}
+        ${cryoHTML}
         <div class="army-dialog-options${isDuration ? " army-dialog-options--scroll" : ""}">${optionsHTML}</div>
       </div>`;
+    if (mode === "cryo") this._bindCryoPickerDOM();
     this._sleepMenuEl.querySelectorAll(".army-dialog-btn").forEach((btn, i) => {
       btn.addEventListener("click", () => {
         this._sleepMenuIndex = i;
@@ -397,6 +494,121 @@
       // Sleep <-> Wait flip has to be brought back under the cursor.
       this._updateSleepMenuHighlight(true);
     }
+  };
+
+  //=============================================================================
+  // The cryogenic pod: the date picker
+  //=============================================================================
+
+  // The picked date, defaulted to the earliest the pod will take (tomorrow) and
+  // kept inside the window on every read, since the window's far end moves with
+  // the purse and the purse can change between two openings of the menu.
+  Scene_Map.prototype._ensureCryoDate = function () {
+    const range = cryoRange();
+    if (!range) return null;
+    if (!this._cryoDate) this._cryoDate = Object.assign({}, range.min);
+    this._cryoDate = clampCryoDate(this._cryoDate, range);
+    if (this._cryoField == null) this._cryoField = 0;
+    return range;
+  };
+
+  Scene_Map.prototype._cryoPickerHTML = function () {
+    const t = sleepLabels();
+    const range = this._ensureCryoDate();
+    if (!range) {
+      const reason = TDS().getCryoUnavailableReason ? TDS().getCryoUnavailableReason() : "era";
+      const text = reason === "funds"
+        ? t.cryoNoFunds.format(cryoEuros(3000))
+        : t.cryoEraOver;
+      return `<p class="cryo-unavailable">${text}</p>`;
+    }
+
+    const api = TDS();
+    const date = this._cryoDate;
+    const months = cryoMonthNames();
+    const now = api.getCurrentDateObj ? api.getCurrentDateObj() : new Date(2001, 0, 1);
+    const from = { year: now.getFullYear(), month: now.getMonth(), day: now.getDate() };
+    const days = api.getCryoDays ? api.getCryoDays(date.year, date.month, date.day) : 0;
+    const cost = api.getCryoCost ? api.getCryoCost(date.year, date.month, date.day) : 0;
+    const gold = window.$gameParty ? $gameParty.gold() : 0;
+
+    const values = [String(date.day), months[date.month], String(date.year)];
+    const labels = [t.cryoFieldDay, t.cryoFieldMonth, t.cryoFieldYear];
+    const fieldsHTML = CRYO_FIELDS.map((name, i) => `
+      <div class="cryo-field${i === this._cryoField ? " selected" : ""}" data-field="${i}">
+        <span class="cryo-field-arrow" data-step="1">&#9650;</span>
+        <span class="cryo-field-value">${values[i]}</span>
+        <span class="cryo-field-arrow" data-step="-1">&#9660;</span>
+        <span class="cryo-field-label">${labels[i]}</span>
+      </div>`).join("");
+
+    return `
+      <div class="cryo-date-row">${fieldsHTML}</div>
+      <div class="cryo-summary">
+        <div class="cryo-summary-row"><span>${t.cryoSpanLabel}</span><span>${cryoSpanLabel(from, date)}</span></div>
+        <div class="cryo-summary-row"><span>${t.cryoRate}</span><span>${t.cryoPerDay.format(cryoEuros(range.goldPerDay))}</span></div>
+        <div class="cryo-summary-row cryo-summary-row--total"><span>${t.cryoCost}</span><span>${cryoEuros(cost)}</span></div>
+        <div class="cryo-summary-row cryo-summary-row--purse"><span>${t.cryoPurse}</span><span>${cryoEuros(gold)}</span></div>
+        <div class="cryo-summary-note">${t.cryoNights.format(days)}</div>
+      </div>`;
+  };
+
+  Scene_Map.prototype._bindCryoPickerDOM = function () {
+    if (!this._sleepMenuEl) return;
+    this._sleepMenuEl.querySelectorAll(".cryo-field").forEach((field) => {
+      const index = Number(field.dataset.field);
+      field.addEventListener("click", () => {
+        if (this._cryoField !== index) {
+          this._cryoField = index;
+          SoundManager.playCursor();
+          this._refreshSleepMenuDOM();
+        }
+      });
+      field.querySelectorAll(".cryo-field-arrow").forEach((arrow) => {
+        arrow.addEventListener("click", (event) => {
+          event.stopPropagation();
+          this._cryoField = index;
+          this._adjustCryoField(Number(arrow.dataset.step));
+        });
+      });
+    });
+  };
+
+  Scene_Map.prototype._moveCryoField = function (direction) {
+    const total = CRYO_FIELDS.length;
+    this._cryoField = ((this._cryoField || 0) + direction + total) % total;
+    SoundManager.playCursor();
+    this._refreshSleepMenuDOM();
+  };
+
+  // One step of the focused field. Days roll through their month and months
+  // through their year, because the step is taken by the calendar itself, and
+  // the result is pulled back inside the window the pod will accept.
+  Scene_Map.prototype._adjustCryoField = function (step) {
+    const range = this._ensureCryoDate();
+    if (!range) return;
+    const date = this._cryoDate;
+    let next;
+    if (this._cryoField === 0) {
+      next = new Date(date.year, date.month, date.day + step);
+    } else if (this._cryoField === 1) {
+      const month = date.month + step;
+      const year = date.year + Math.floor(month / 12);
+      const wrapped = ((month % 12) + 12) % 12;
+      next = new Date(year, wrapped, Math.min(date.day, cryoDaysInMonth(year, wrapped)));
+    } else {
+      const year = date.year + step;
+      next = new Date(year, date.month, Math.min(date.day, cryoDaysInMonth(year, date.month)));
+    }
+    const picked = clampCryoDate(
+      { year: next.getFullYear(), month: next.getMonth(), day: next.getDate() },
+      range
+    );
+    const changed = cryoDayStamp(picked) !== cryoDayStamp(date);
+    this._cryoDate = picked;
+    if (changed) SoundManager.playCursor();
+    else SoundManager.playBuzzer();
+    this._refreshSleepMenuDOM();
   };
 
   // Sleep <-> Wait toggle row shown above the duration list. Only offered
@@ -503,18 +715,29 @@
       this.startSleepSequence(hours, true);
       return;
     }
-    if (key.startsWith("cryo_")) {
-      const year = Number(key.slice(5));
-      const minutes = window.TimeDateSystem.getCryoAdvanceMinutes
-        ? window.TimeDateSystem.getCryoAdvanceMinutes(year)
+    if (key === "cryo_confirm") {
+      const api = TDS();
+      const range = this._ensureCryoDate();
+      const date = this._cryoDate;
+      // The pod may have closed between the panel being drawn and this press
+      // (a purse spent elsewhere, a clock that reached 2012).
+      if (!range || !date) { SoundManager.playBuzzer(); return; }
+      const minutes = range && api.getCryoAdvanceMinutesForDate
+        ? api.getCryoAdvanceMinutesForDate(date.year, date.month, date.day)
         : 0;
-      if (minutes > 0) {
-        SoundManager.playOk();
-        this.closeSleepMenu(true);
-        this.startCryoSequence(minutes);
-      } else {
-        this.cancelSleepMenu();
+      const cost = range && api.getCryoCost ? api.getCryoCost(date.year, date.month, date.day) : 0;
+      const gold = window.$gameParty ? $gameParty.gold() : 0;
+      if (minutes <= 0 || cost > gold) {
+        SoundManager.playBuzzer();
+        return;
       }
+      SoundManager.playOk();
+      this.closeSleepMenu(true);
+      this.startCryoSequence(minutes, {
+        cost: cost,
+        days: api.getCryoDays ? api.getCryoDays(date.year, date.month, date.day) : 0,
+        wakeDate: Object.assign({}, date),
+      });
       return;
     }
     switch (key) {
@@ -552,6 +775,175 @@
         $gameScreen.startFadeIn(60);
         break;
     }
+  };
+
+  //=============================================================================
+  // The cryogenic pod: the travel screen
+  //
+  // What the party sees while the pod runs: the calendar going past, and a
+  // vitals board that does not move, because nothing about them does. Only the
+  // date, the elapsed span and the bar are touched per frame; the party cards
+  // are drawn once at the top of the sleep and left exactly as they are, which
+  // is both the cheap way to do it and the honest picture of what is happening.
+  //=============================================================================
+
+  function cryoStamp(minute) {
+    const api = TDS();
+    return api.getDateTimeFromMinutes ? api.getDateTimeFromMinutes(minute) : null;
+  }
+
+  // A clock stamp as the {year, month, day} the calendar helpers speak in
+  // (monthNum is 1-12, every month index in this file is 0-11).
+  function cryoPartsOf(stamp) {
+    if (!stamp) return null;
+    return {
+      year: Number(stamp.year),
+      month: Number(stamp.monthNum) - 1,
+      day: Number(stamp.day),
+    };
+  }
+
+  // "12 March 2005, 10:30", with the month named in the player's language.
+  function cryoDateText(stamp) {
+    if (!stamp) return "";
+    const parts = cryoPartsOf(stamp);
+    const months = cryoMonthNames();
+    return `${parts.day} ${months[parts.month]} ${parts.year}, ${stamp.time24}`;
+  }
+
+  function cryoGaugeHTML(label, value, max, cls) {
+    const pct = max > 0 ? Math.max(0, Math.min(100, (value / max) * 100)) : 0;
+    return `<div class="cryo-vital">
+        <span class="cryo-vital-label">${label}</span>
+        <span class="cryo-vital-bar"><span class="cryo-vital-fill ${cls}" style="width:${pct.toFixed(1)}%"></span></span>
+        <span class="cryo-vital-value">${Math.round(value)}</span>
+      </div>`;
+  }
+
+  function cryoPartyCardsHTML() {
+    const t = sleepLabels();
+    const api = TDS();
+    const maxHunger = api.maxHunger || 100;
+    const maxSleep = api.maxSleep || 100;
+    if (!window.$gameParty) return "";
+    return $gameParty.members().map((actor) => `
+      <div class="cryo-pod-card" data-actor="${actor.actorId()}">
+        <div class="cryo-pod-head">
+          <span class="cryo-pod-name">${actor.name()}</span>
+          <span class="cryo-pod-level">${t.cryoLevel.format(actor.level)}</span>
+        </div>
+        ${cryoGaugeHTML(t.cryoHp, actor.hp, actor.mhp, "cryo-fill-hp")}
+        ${cryoGaugeHTML(t.cryoMp, actor.mp, actor.mmp, "cryo-fill-mp")}
+        ${cryoGaugeHTML(t.cryoTp, actor.tp, 100, "cryo-fill-tp")}
+        ${cryoGaugeHTML(t.cryoHunger, actor.hunger ? actor.hunger() : 0, maxHunger, "cryo-fill-food")}
+        ${cryoGaugeHTML(t.cryoSleep, actor.sleep ? actor.sleep() : 0, maxSleep, "cryo-fill-rest")}
+        <div class="cryo-pod-status" data-status="${actor.actorId()}">${t.cryoHeld}</div>
+      </div>`).join("");
+  }
+
+  Scene_Map.prototype.openCryoTravelScreen = function (info) {
+    const t = sleepLabels();
+    this.closeCryoTravelScreen();
+    const el = document.createElement("div");
+    el.id = "cryo-travel-overlay";
+    el.className = "army-dialog-overlay cryo-overlay";
+    el.style.opacity = "0";
+    el.style.transition = "opacity 0.4s ease-out";
+    const start = cryoStamp(info.startTime);
+    el.innerHTML = `
+      <div class="cryo-panel">
+        <div class="cryo-panel-head">
+          <h3>${t.cryoTravelTitle}</h3>
+          <p class="cryo-panel-sub" id="cryo-sub">${t.cryoTravelSub}</p>
+        </div>
+        <div class="cryo-clock">
+          <div class="cryo-clock-year" id="cryo-year">${start ? start.year : ""}</div>
+          <div class="cryo-clock-date" id="cryo-date">${cryoDateText(start)}</div>
+          <div class="cryo-clock-elapsed" id="cryo-elapsed">${t.cryoElapsed.format("")}</div>
+          <div class="cryo-progress"><span class="cryo-progress-fill" id="cryo-bar" style="width:0%"></span></div>
+          <div class="cryo-clock-fare">${t.cryoFarePaid.format(cryoEuros(info.cost))}</div>
+        </div>
+        <div class="cryo-pods">${cryoPartyCardsHTML()}</div>
+      </div>`;
+    document.body.appendChild(el);
+    this._cryoScreen = {
+      el: el,
+      year: el.querySelector("#cryo-year"),
+      date: el.querySelector("#cryo-date"),
+      elapsed: el.querySelector("#cryo-elapsed"),
+      bar: el.querySelector("#cryo-bar"),
+      sub: el.querySelector("#cryo-sub"),
+      startTime: info.startTime,
+    };
+    setTimeout(() => {
+      if (this._cryoScreen) this._cryoScreen.el.style.opacity = "1";
+    }, 16);
+  };
+
+  Scene_Map.prototype.updateCryoTravelScreen = function (info) {
+    const s = this._cryoScreen;
+    if (!s) return;
+    const t = sleepLabels();
+    const stamp = cryoStamp(info.minute);
+    if (stamp) {
+      if (s.year.textContent !== String(stamp.year)) s.year.textContent = stamp.year;
+      s.date.textContent = cryoDateText(stamp);
+      const fromParts = cryoPartsOf(cryoStamp(s.startTime));
+      const toParts = cryoPartsOf(stamp);
+      if (fromParts && toParts) {
+        s.elapsed.textContent = t.cryoElapsed.format(cryoSpanLabel(fromParts, toParts));
+      }
+    }
+    const pct = info.total > 0 ? Math.max(0, Math.min(100, (info.elapsed / info.total) * 100)) : 100;
+    s.bar.style.width = pct.toFixed(2) + "%";
+  };
+
+  // The lid opens: the board finally moves, once, to say what each of them woke
+  // up with.
+  Scene_Map.prototype.showCryoWakeScreen = function (info) {
+    const s = this._cryoScreen;
+    if (!s) return;
+    const t = sleepLabels();
+    s.el.classList.add("cryo-overlay--wake");
+    s.sub.textContent = t.cryoWakeSub;
+    s.bar.style.width = "100%";
+    const stamp = cryoStamp(info.minute);
+    if (stamp) {
+      s.year.textContent = stamp.year;
+      s.date.textContent = cryoDateText(stamp);
+    }
+    if (!window.$gameParty) return;
+    for (const actor of $gameParty.members()) {
+      const node = s.el.querySelector(`[data-status="${actor.actorId()}"]`);
+      if (!node) continue;
+      const names = actor.states().map((state) => state.name).filter(Boolean);
+      node.textContent = names.length ? names.join(" · ") : t.cryoWakeClean;
+      node.classList.add("cryo-pod-status--wake");
+    }
+  };
+
+  Scene_Map.prototype.closeCryoTravelScreen = function () {
+    const s = this._cryoScreen;
+    if (!s) return;
+    this._cryoScreen = null;
+    const el = s.el;
+    el.style.transition = "opacity 0.5s ease-out";
+    el.style.opacity = "0";
+    el.style.pointerEvents = "none";
+    setTimeout(() => {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    }, 520);
+  };
+
+  // A scene teardown mid-sleep would otherwise leave the board on screen.
+  const _Scene_Map_terminate_cryo = Scene_Map.prototype.terminate;
+  Scene_Map.prototype.terminate = function () {
+    if (this._cryoScreen) {
+      const el = this._cryoScreen.el;
+      this._cryoScreen = null;
+      if (el.parentNode) el.parentNode.removeChild(el);
+    }
+    _Scene_Map_terminate_cryo.call(this);
   };
 
   const _Scene_Map_update_sleepUI = Scene_Map.prototype.update;

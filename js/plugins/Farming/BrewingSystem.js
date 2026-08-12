@@ -338,6 +338,8 @@
                 const rolled = out.min + Math.floor(rng() * (out.max - out.min + 1));
                 const amount = Math.max(1, Math.round(rolled * skill));
                 $gameParty.gainItem(item, amount);
+                // What came out of the barrel, in the party's diary (Diary.js).
+                if (window.Diary) window.Diary.onCrafted('brew', item.name, amount);
                 gains.push(`${item.name} ×${amount}`);
             }
 

@@ -1,0 +1,156 @@
+{
+  "name": {
+    "dungeon": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Dungeon", "Keep", "Undercroft", "Hold", "Warrens", "Deeps", "Galleries", "Sublevel", "Redoubt", "Labyrinth"],
+      "adj": ["Sunken", "Forgotten", "Iron", "Silent", "Crooked", "Weeping", "Lower", "Blind", "Hollow", "Nameless"],
+      "of": ["the Nine Locks", "the Magistrate", "Saint Ulric", "the Drowned Bell", "the Long Winter", "the Hanged Clerk", "Cold Ash", "the Broken Oath", "the Sleepless Guard", "the Last Warden"]
+    },
+    "crypt": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Crypt", "Sepulchre", "Ossuary", "Charnel", "Mausoleum", "Tomb", "Reliquary", "Bone Vault", "Grave House", "Undercroft"],
+      "adj": ["Cold", "Whispering", "Sealed", "Pale", "Quiet", "Second", "Deeper", "Marble", "Hushed", "Unlit"],
+      "of": ["the Fifth Family", "Mother Agnes", "the Drowned Choir", "the Unnamed", "the Grey Abbot", "Nine Sisters", "the Winter Dead", "the Kept Vow", "the Plague Year", "the Old Blood"]
+    },
+    "cellar": {
+      "pattern": ["The {adj} {noun}", "{of}'s {noun}", "{noun} of {of}", "The {adj} {noun} of {of}"],
+      "noun": ["Cellar", "Store", "Cache", "Larder", "Undercroft", "Strongroom", "Pantry", "Stash", "Cold Room", "Bolthole"],
+      "adj": ["Bricked", "Sour", "Dusty", "Damp", "Padlocked", "Forgotten", "Little", "Low", "Mouldered", "Snug"],
+      "of": ["the Innkeeper", "a Dead Uncle", "the Widow", "the Coin Counter", "Old Marek", "the Baker", "a Missing Notary", "a Cheerful Thief", "a Bad Harvest", "the Absent Landlord"]
+    },
+    "den": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun}"],
+      "noun": ["Den", "Lair", "Hollow", "Burrow", "Warren", "Roost", "Nest", "Earth", "Sett", "Pit"],
+      "adj": ["Reeking", "Warm", "Bone-Strewn", "Low", "Deep", "Chewed", "Rank", "Torn", "Matted", "Close"],
+      "of": ["Something Large", "the Thing That Digs", "the Mother", "the Nine Whelps", "the Chewer", "the Old Male", "What Feeds", "the Pack", "the Winter Sleeper", "the Marked Beast"]
+    },
+    "temple": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Temple", "Sanctum", "Basilica", "Hypogeum", "Nave", "Chapel", "Cloister", "Reliquary", "Sanctuary", "Hall"],
+      "adj": ["Buried", "Nine-Doored", "Gilded", "Hushed", "Sunken", "Marble", "Elder", "Unfinished", "Windowless", "Sealed"],
+      "of": ["a God with No Mouth", "the Ninefold Name", "Saint Perpetua", "the Unmade Hour", "the Turning Wheel", "the Mute Choir", "the Eleventh Angel", "the Long Fast", "the Kept Flame", "the First Word"]
+    },
+    "sewer": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {adj} {noun} of {of}", "{of} {noun}"],
+      "noun": ["Sewer", "Drain", "Outfall", "Trunk Main", "Interceptor", "Culvert", "Channels", "Sluice", "Overflow", "Storm Drain"],
+      "adj": ["Municipal", "Overflowing", "Blocked", "Grey", "Stinking", "Disused", "Northern", "Lower", "Condemned", "Brick"],
+      "of": ["the Old Town", "the Cattle Market", "the Fish Quarter", "the Waterworks", "the Corn Exchange", "Ward Six", "the Cathedral Close", "the Tannery", "the Poor Quarter", "the New Cut"]
+    },
+    "vault": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Vault", "Hoard", "Treasury", "Strongroom", "Deposit", "Reserve", "Coffer", "Trove", "Repository", "Hold"],
+      "adj": ["Sealed", "Private", "Numbered", "Deep", "Anonymous", "Gilded", "Quiet", "Unlisted", "Bonded", "Iron"],
+      "of": ["a Careful Man", "the Ninth Account", "the Silent Partner", "a Long Absence", "the Undeclared", "the Late Owner", "the Standing Order", "the Grey Ledger", "No One", "the Sleeping Fund"]
+    },
+    "catacombs": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Catacombs", "Ossuary", "Bone Galleries", "Niches", "Loculi", "Necropolis", "Bonefields", "Deadways", "Corridors", "Halls"],
+      "adj": ["Endless", "Powdered", "Stacked", "Lamplit", "Nameless", "Municipal", "Overfull", "Older", "Numbered", "Chalked"],
+      "of": ["Thirty Thousand", "the Cholera Year", "Saint Blaise", "the Parish Poor", "the Second Plague", "the Unclaimed", "the Charnel Guild", "Brother Anselm", "the Levelled Graveyard", "the Moved Dead"]
+    },
+    "mine": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "{of} {noun}", "{adj} {noun} of {of}"],
+      "noun": ["Mine", "Shaft", "Workings", "Drift", "Adit", "Seam", "Pit", "Gallery", "Colliery", "Diggings"],
+      "adj": ["Flooded", "Abandoned", "Deep", "Sour", "Collapsed", "Company", "Silent", "Worked-Out", "Lower", "Old"],
+      "of": ["the Widow-Maker", "the Consortium", "Saint Barbara", "the Eighty-One", "the Long Strike", "Cold Iron", "the Bad Air", "the Deep Seam", "the Last Shift", "the Buried Crew"]
+    },
+    "frozenCave": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun}"],
+      "noun": ["Cave", "Grotto", "Hollow", "Icehouse", "Glacier Cave", "Cold Chamber", "Rime Hollow", "Deep", "Cavern", "Chimney"],
+      "adj": ["Frozen", "Rimed", "Blue", "Silent", "Whitened", "Glass", "Everfrost", "Breathless", "Crystalline", "Still"],
+      "of": ["the Long Winter", "the Frost Line", "the Standing Water", "the White Year", "the Cold Saint", "Nine Degrees", "the Slow Thaw", "the Buried Herd", "the Ice Fair", "the Blue Hour"]
+    },
+    "cistern": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Cistern", "Reservoir", "Tanks", "Waterworks", "Sump", "Catchment", "Drowned Hall", "Baths", "Well House", "Aqueduct"],
+      "adj": ["Flooded", "Municipal", "Drowned", "Vaulted", "Still", "Green", "Overflowing", "Silent", "Lower", "Brackish"],
+      "of": ["Four Hundred Columns", "the Dry Year", "the Fever", "the Water Board", "the Old Aqueduct", "the Standing Water", "the Drowned Engineer", "the Clean Supply", "the Sunken Bell", "the Blind Fish"]
+    },
+    "fungal": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun}"],
+      "noun": ["Warren", "Beds", "Bloom", "Understory", "Mycelium", "Caps", "Hollows", "Garden", "Flush", "Spore Halls"],
+      "adj": ["Fungal", "Sporing", "Damp", "Glowing", "Breathing", "Soft", "Pale", "Fruiting", "Overgrown", "Creeping"],
+      "of": ["the Slow Bloom", "One Organism", "the Buried Orchard", "the Grey Cap", "the Damp Year", "the Thing That Spreads", "the Sweet Rot", "the Fifth Flush", "the Root Network", "the Soft Mother"]
+    },
+    "crystal": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun}"],
+      "noun": ["Cavern", "Geode", "Crystal Halls", "Vug", "Lattice", "Chamber", "Cathedral", "Pocket", "Prisms", "Deep"],
+      "adj": ["Singing", "Glass", "Faceted", "Cold", "Bright", "Blue", "Unmapped", "Humming", "Growing", "Sharp"],
+      "of": ["the Long Pressure", "a Sound Like Bells", "the Broken Compass", "the Ninth Facet", "the Slow Mineral", "the Blind Prospector", "the Cut Stone", "the White Vein", "the Patient Water", "the Locked Light"]
+    },
+    "oubliette": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Oubliette", "Cells", "Gaol", "Holding", "Cages", "Bottle Dungeon", "Lockup", "Pen", "Cellars", "Pit"],
+      "adj": ["Forgotten", "Debtors'", "Lower", "Military", "Political", "Damp", "Unregistered", "Quiet", "Numbered", "Provisional"],
+      "of": ["the Emergency", "No Charge", "the Missing File", "the Third Regime", "the Quiet Arrest", "Ward Nine", "the Unsentenced", "the Long Remand", "the Grey List", "the Absent Judge"]
+    },
+    "library": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Library", "Stacks", "Archive", "Reading Rooms", "Collection", "Repository", "Bibliotheca", "Depository", "Scriptorium", "Index"],
+      "adj": ["Sunken", "Sealed", "Uncatalogued", "Silent", "Burned", "Private", "Forbidden", "Drowned", "Closed", "Unlit"],
+      "of": ["Books Nobody Wrote", "the Withdrawn", "the Ninth Shelf", "a Dead Society", "the Unread", "the Long Loan", "the Copyist", "the Missing Volume", "the Marginalia", "the Last Reader"]
+    },
+    "forge": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Forge", "Foundry", "Works", "Furnace", "Smithy", "Ironworks", "Casting Hall", "Bloomery", "Crucible", "Heat"],
+      "adj": ["Under", "Banked", "Roaring", "Cold", "Company", "Deep", "Molten", "Blacked", "Idle", "Lower"],
+      "of": ["a Patient Fire", "the Iron Guild", "Saint Eligius", "the Last Pour", "the Broken Mould", "the Night Shift", "the Standing Heat", "the Unquenched", "the Buried Hammer", "the Red Hour"]
+    },
+    "bunker": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "{adj} {noun} of {of}", "{noun} {num}"],
+      "noun": ["Bunker", "Shelter", "Installation", "Facility", "Complex", "Post", "Redoubt", "Station", "Depot", "Site"],
+      "adj": ["Hardened", "Decommissioned", "Forgotten", "Grey", "Sealed", "Government", "Regional", "Unlisted", "Standby", "Deep"],
+      "of": ["a War That Waited", "Contingency Nine", "the Grey Envelope", "the Standing Order", "Civil Defence", "the Blue File", "the Last Exercise", "the Quiet Ministry", "the Unlisted Wing", "the Long Alert"],
+      "num": ["Fourteen", "Nine", "Twenty-Two", "Six", "Thirty-One", "Four", "Seventeen", "Eight", "Twelve", "Forty"]
+    },
+    "lab": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "{adj} {noun} of {of}", "{noun} {num}"],
+      "noun": ["Laboratory", "Facility", "Wing", "Institute", "Station", "Annexe", "Works", "Section", "Suite", "Programme"],
+      "adj": ["Buried", "Decommissioned", "Sterile", "Sealed", "Private", "Grey", "Unlisted", "Closed", "Deep", "Provisional"],
+      "of": ["a Cancelled Programme", "the Ninth Trial", "the Grey Institute", "No Ethics Board", "the Quiet Grant", "Subject Fourteen", "the Buried Findings", "the Second Protocol", "the Missing Cohort", "the Unpublished"],
+      "num": ["Fourteen", "Nine", "Twenty-Two", "Six", "Thirty-One", "Four", "Seventeen", "Eight", "Twelve", "Forty"]
+    },
+    "shrine": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Shrine", "Sanctum", "Circle", "Altar", "Chapel", "Sanctuary", "Rotunda", "Ring", "Seat", "Nave"],
+      "adj": ["Profane", "Unconsecrated", "Nine-Sided", "Bleeding", "Silent", "Reversed", "Candlelit", "Sealed", "Inverted", "Waiting"],
+      "of": ["a Name Best Unsaid", "the Ninefold Mouth", "the Turned Cross", "the Long Patience", "the Goat-Footed", "the Hollow Choir", "the Second Covenant", "What Answers", "the Sold Hour", "the Thing Beneath"]
+    },
+    "smuggler": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "{adj} {noun} of {of}", "{of} {noun}"],
+      "noun": ["Run", "Tunnel", "Passage", "Cut", "Route", "Bolthole", "Way", "Crawl", "Line", "Drop"],
+      "adj": ["Smugglers'", "Quiet", "Unlicensed", "Duty-Free", "Night", "Crooked", "Untaxed", "Hidden", "Backdoor", "Discreet"],
+      "of": ["the Salt Trade", "Untaxed Brandy", "the Night Cargo", "a Quiet Arrangement", "the Customs Man", "the Border Year", "a Favour Owed", "the Blind Watch", "the Second Ledger", "the Sleeping Guard"]
+    },
+    "grotto": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun}"],
+      "noun": ["Grotto", "Sea Cave", "Hollow", "Tidal Cave", "Pool", "Chamber", "Sound", "Cove", "Undercave", "Blowhole"],
+      "adj": ["Tidal", "Drowned", "Salt", "Echoing", "Green", "Sunken", "Blue", "Weed-Hung", "Half-Flooded", "Singing"],
+      "of": ["the Turning Tide", "the Drowned Crew", "the Salt Line", "the Neap", "the Lost Boat", "the Grey Seals", "the Long Swell", "the Sunken Chain", "a Fisher's Vow", "the Moon's Pull"]
+    },
+    "lavaTube": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun}"],
+      "noun": ["Tube", "Flow", "Vent", "Conduit", "Pipe", "Throat", "Channel", "Chimney", "Gallery", "Course"],
+      "adj": ["Volcanic", "Molten", "Glowing", "Basalt", "Breathing", "Red", "Cooling", "Deep", "Sulphurous", "Unstable"],
+      "of": ["the Last Eruption", "the Mountain's Throat", "the Red Year", "the Standing Fire", "the Buried Village", "the Slow Cooling", "the Fire Beneath", "the Sulphur Saint", "the Broken Crust", "the Ash Fall"]
+    },
+    "barrow": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun} of {of}"],
+      "noun": ["Barrow", "Mound", "Howe", "Tumulus", "Long Barrow", "Cairn", "Grave Mound", "Passage Grave", "Ring", "Hill"],
+      "adj": ["Long", "Kingly", "Grassed", "Older", "Opened", "Unopened", "Nine-Chambered", "Silent", "Ancestral", "Ringed"],
+      "of": ["a King Nobody Names", "the Horse and Rider", "the Bronze Years", "the Ninth Chief", "the Gold Under Grass", "the Antler Crown", "the First People", "the Burnt Offering", "the Standing Stones", "the Unquiet Chief"]
+    },
+    "metro": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "{adj} {noun} of {of}", "{of} {noun}"],
+      "noun": ["Station", "Platform", "Halt", "Terminus", "Interchange", "Junction", "Sidings", "Concourse", "Depot", "Tunnels"],
+      "adj": ["Disused", "Ghost", "Closed", "Lower", "Unopened", "Wartime", "Abandoned", "Deep-Level", "Boarded", "Northern"],
+      "of": ["the Cancelled Line", "the Shelter Years", "the Missing Stop", "the Last Train", "the Grey Timetable", "the Second Extension", "the Bricked Platform", "the Night Service", "the Closed Branch", "the Unsold Ticket"]
+    },
+    "salt": {
+      "pattern": ["The {adj} {noun}", "{noun} of {of}", "The {noun} of {of}", "{adj} {noun}"],
+      "noun": ["Salt Works", "Salt Mine", "Galleries", "Pans", "Workings", "Chambers", "Salt Halls", "Diggings", "Levels", "Deposit"],
+      "adj": ["White", "Royal", "Blinding", "Dry", "Deep", "Preserved", "Company", "Bitter", "Crystalline", "Worked"],
+      "of": ["the Salt Road", "the Preserved", "the Bitter Tax", "the White Year", "Saint Kinga", "the Long Drought", "the Sealed Level", "the Salt Cathedral", "the Dry Sea", "the Old Monopoly"]
+    }
+  }
+}

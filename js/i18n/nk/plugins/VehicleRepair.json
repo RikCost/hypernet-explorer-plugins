@@ -1,0 +1,112 @@
+{
+  "notEnoughMaterials": "NOT ENOUGH MATERIALS.",
+  "vehicleFullyRepaired": "VEHICLE FULLY REPAIRED!",
+  "vehicleRepaired": "VEHICLE REPAIRED.",
+  "vehicleIsOperationalAgain": "VEHICLE IZ OPERATIONAL AGAIN!",
+  "installed": "INSTALLED",
+  "hullAppearanceUpdated": "HULL APPEARANCE UPDATED.",
+  "camperExpedition": "CAMPER EXPEDITION",
+  "aReinforcedHeavyCamperDesigned": "A REINFORCED HEAVY CAMPER DESIGNED TA ENDURE WILDERNESS TOURS AN' LONG JOURNEYS. DEMANDS HIGH OVERALL STRUCTURAL INTEGRITY!",
+  "standardUrbanSedan": "STANDARD URBAN SEDAN",
+  "aClassicStandardEngineTransport": "A CLASSIC STANDARD ENGINE TRANSPORT SUITED FOR URBAN ENVIRONMENTS. RELIES ON TIGHT STEERIN' AN' TRANSMISSION CONTROL!",
+  "lightSportMotorcycle": "LIGHT SPORT MOTORCYCLE",
+  "anAgileAndRapidPersonal": "AN AGILE AN' RAPID PERSONAL SPORT BIKE. REQUIRES PERFECT CHAIN LUBRICATION AN' BRAKE RESPONSIVENESS!",
+  "explorerStarship": "EXPLORER STARSHIP",
+  "anAdvancedDeepSpaceExplorer": "AN ADVANCED DEEP-SPACE EXPLORER EQUIPPED WIT HYPER-NAVIGATION DRIVES. CRITICAL PARTS MUST BE FLAWLESS TA PERMIT ASCENT!",
+  "inflatableDinghy": "INFLATABLE DINGHY",
+  "aLightPackableBoatFor": "A LIGHT PACKABLE BOAT FOR OPEN WATER. ITS HULL AN' AIR CHAMBERS MUST STAY INTACT TA KEEP IT AFLOAT!",
+  "critical": "CRITICAL",
+  "changeAppearance": "CHANGE APPEARANCE",
+  "statusBroken": "STATUS: BROKEN",
+  "statusOperational": "STATUS: OPERATIONAL",
+  "allCriticalComponentsMustMaintain": "ALL CRITICAL COMPONENTS MUST MAINTAIN ABOVE 0% INTEGRITY TA OPERATE!",
+  "repair": "REPAIR",
+  "upgrades": "UPGRADES",
+  "close": "CLOSE",
+  "componentsRegistry": "COMPONENTS REGISTRY",
+  "fullRepair": "FULL REPAIR",
+  "notInstalled": "NOT INSTALLED",
+  "lv": "LV.",
+  "maxed": "MAXED",
+  "install": "INSTALL",
+  "upgrade": {
+    "accel": {
+      "name": "TURBO INJECTORS",
+      "desc": "SHARPER THROTTLE RESPONSE AN' QUICKER ACCELERATION!"
+    },
+    "speed": {
+      "name": "AERO STREAMLININ'",
+      "desc": "HIGHER TOP SPEED AN' LESS GAME-TIME SPENT CROSSIN' EACH WORLD TILE!"
+    },
+    "fuel": {
+      "name": "EXPANDED TANK",
+      "desc": "A LARGER RESERVOIR RAISES DA MAXIMUM FUEL CAPACITY!"
+    },
+    "health": {
+      "name": "REINFORCED CHASSIS",
+      "desc": "A HARDENED FRAME MAKES DA VEHICLE TAKE LESS DAMAGE FROM IMPACTS!"
+    },
+    "aquatic": {
+      "name": "AMPHIBIOUS CONVERSION",
+      "desc": "A SEALED HULL AN' PONTOONS LET DA CAMPER DRIVE ON AN' DIVE BENEATH WATER!"
+    },
+    "flight": {
+      "name": "ANTIGRAVITY ROTORS",
+      "desc": "FOLD-OUT ANTIGRAVITY ROTORS LET DA CAMPER TAKE OFF AN' FLY!"
+    }
+  },
+  "upgradeWorkshop": "UPGRADE WORKSHOP",
+  "noUpgradesAvailable": "NO UPGRADES AVAILABLE.",
+  "acceleration": "ACCELERATION",
+  "fuelCapacity": "FUEL CAPACITY",
+  "damageReduction": "DAMAGE REDUCTION",
+  "enablesDrivingOnAndDiving": "ENABLES DRIVIN' ON AN' DIVIN' UNDER WATER!",
+  "enablesTakeOffAndFlight": "ENABLES TAKE-OFF AN' FLIGHT!",
+  "repairPercent": "REPAIR ({percent}%)",
+  "timePerTile": "TIME PER TILE: {minutes} MIN",
+  "timePerTileNext": " → {minutes} MIN (SAVE {saved} MIN)",
+  "part": {
+    "Engine": "ENGINE",
+    "Transmission": "TRANSMISSION",
+    "Brakes": "BRAKES",
+    "Steering": "STEERIN'",
+    "Battery": "BATTERY",
+    "Alternator": "ALTERNATOR",
+    "Radiator": "RADIATOR",
+    "Fuel System": "FUEL SYSTEM",
+    "Exhaust": "EXHAUST",
+    "Suspension": "SUSPENSION",
+    "Tires": "TIRES",
+    "Body": "BODY",
+    "Interior": "INTERIOR",
+    "Electronics": "ELECTRONICS",
+    "Air Filter": "AIR FILTER",
+    "Oil System": "OIL SYSTEM",
+    "Chain": "CHAIN",
+    "Handlebars": "HANDLEBARS",
+    "Frame": "FRAME",
+    "Lights": "LIGHTS",
+    "Hull": "HULL",
+    "Air Chambers": "AIR CHAMBERS",
+    "Oars": "OARS",
+    "Valves": "VALVES",
+    "Ropes": "ROPES",
+    "Patch Kit": "PATCH KIT"
+  },
+  "systemNotReady": "SYSTEM NOT READY. TRY AGAIN!",
+  "criticalDamage": "\\C[2]CRITICAL DAMAGE!\\C[0] DA {vehicle} IZ NOW BROKEN!",
+  "tookDamage": "DA {vehicle} HAB TAKEN DAMAGE!",
+  "fullyRepaired": "DA {vehicle} HAB BEEN FULLY REPAIRED!",
+  "partiallyRepaired": "DA {vehicle} HAB BEEN PARTIALLY REPAIRED ({percent}%)!",
+  "nowOperational": "\\C[3]DA {vehicle} IZ NOW OPERATIONAL!\\C[0]",
+  "brokenCannotUse": "DA {vehicle} IZ BROKEN AN' NO CAN BE USED!",
+  "repairCriticalFirstLong": "CRITICAL PARTS MUST BE REPAIRED BEFORE IT CAN BE USED!",
+  "repairCriticalFirst": "CRITICAL PARTS MUST BE REPAIRED FIRST!",
+  "vehicle": {
+    "camper": "CAMPER",
+    "car": "CAR",
+    "starship": "STARSHIP",
+    "bike": "BIKE",
+    "boat": "BOAT"
+  }
+}

@@ -18,11 +18,14 @@
  * Input._updateGamepadState in rmmz_core.js), so any menu that navigates with
  * Input.isRepeated('up') already supports the stick for discrete navigation.
  *
- * This helper adds the two things core does NOT provide:
+ * This helper adds the three things core does NOT provide:
  *   1. A tunable, deadzoned RAW axis API for analog pointer / camera panning /
  *      zoom in spatial UIs (star map, OS desktop, world/travel map, editors).
  *   2. A discrete key-repeat direction API for the rare DOM scenes that cannot
  *      route through RMMZ Input.
+ *   3. Hysteresis on core's own stick-to-d-pad fold, so a stick resting near
+ *      the threshold latches once instead of flapping across it and walking a
+ *      grid menu diagonally. See snapAxes() in the body.
  *
  * Use exactly one discrete source per scene to avoid double-firing: an
  * Input-based menu keeps using Input.isRepeated (stick already included); only
@@ -56,8 +59,60 @@
     const params = PluginManager.parameters('Core/AnalogStickInput');
     const DEFAULT_DEADZONE = Number(params['deadzone'] || 0.30);
 
-    // Magnitude past which a single axis counts as a "press" for discrete nav.
+    // Magnitude past which a single axis counts as a "press" for discrete nav,
+    // and the lower magnitude it has to fall back to before it counts as
+    // released. The gap is a Schmitt trigger: see snapAxes() below for why a
+    // single threshold is not enough on a real stick.
     const STEP_THRESHOLD = 0.5;
+    const STEP_RELEASE = 0.35;
+
+    // Latched per-axis direction for the left stick, shared by the RMMZ core
+    // hook and this helper's own discrete API so both read the same press.
+    const _latch = { x: 0, y: 0 };
+
+    // A gamepad stick held toward a corner does not sit still: it wobbles a few
+    // hundredths either side of wherever the thumb is resting. RMMZ core folds
+    // the stick into the d-pad with a bare `axis > 0.5` test, so an axis parked
+    // near the threshold crosses it over and over, and every crossing is a fresh
+    // key press. Input.update tracks a single _latestButton, so those crossings
+    // alternate it between (say) 'down' and 'right', which is what walks a
+    // two-column grid diagonally instead of down it: one step down, one step
+    // right, one step down. It is worst on a Steam Deck, whose sticks rest
+    // slightly off-centre and whose menus are the two-column archetype pickers.
+    //
+    // Hysteresis fixes it without costing anything else: an axis has to reach
+    // 0.5 to latch and fall under 0.35 to let go, so a held direction latches
+    // once and stays latched. Diagonal MOVEMENT is untouched, because both axes
+    // may be latched at the same time; it is only the flapping that stops.
+    function snapAxes(axes) {
+        const out = Array.prototype.slice.call(axes || []);
+        const raw = ['x', 'y'];
+        for (let i = 0; i < 2; i++) {
+            const v = out[i] || 0;
+            const key = raw[i];
+            if (Math.abs(v) >= STEP_THRESHOLD) {
+                _latch[key] = v < 0 ? -1 : 1;
+            } else if (Math.abs(v) < STEP_RELEASE) {
+                _latch[key] = 0;
+            }
+            // Report the latched direction at full deflection so whatever
+            // threshold the consumer uses agrees with the latch.
+            out[i] = _latch[key];
+        }
+        return out;
+    }
+
+    // RMMZ core reads the raw axes straight off the gamepad; hand it the latched
+    // ones instead. _gamepadStates is keyed by index, so a plain shim carrying
+    // the same index and buttons is all core needs.
+    const _Input_updateGamepadState = Input._updateGamepadState;
+    Input._updateGamepadState = function (gamepad) {
+        _Input_updateGamepadState.call(this, {
+            index: gamepad.index,
+            buttons: gamepad.buttons,
+            axes: snapAxes(gamepad.axes)
+        });
+    };
 
     const AnalogStickInput = {
         deadzone: DEFAULT_DEADZONE,
@@ -143,12 +198,16 @@
                 this._lt = this._rt = 0;
             }
 
-            // Discrete key-repeat emulation from the raw (pre-deadzone-irrelevant) left axes.
+            // Discrete key-repeat emulation. Read off the same latch the RMMZ
+            // core hook uses (see snapAxes) rather than the analog values, so a
+            // DOM scene stepping through a list and a Window_Selectable doing
+            // the same both see one steady press instead of a stick flapping
+            // across the threshold.
             const dirState = {
-                up: this._ly < -STEP_THRESHOLD,
-                down: this._ly > STEP_THRESHOLD,
-                left: this._lx < -STEP_THRESHOLD,
-                right: this._lx > STEP_THRESHOLD
+                up: _latch.y < 0,
+                down: _latch.y > 0,
+                left: _latch.x < 0,
+                right: _latch.x > 0
             };
             const wait = Input.keyRepeatWait;
             const interval = Input.keyRepeatInterval;

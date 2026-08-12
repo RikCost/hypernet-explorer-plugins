@@ -1,0 +1,305 @@
+{
+  "title": "DIARY",
+  "opening": "{names} OPENED DIS DIARY AT {place}.",
+  "empty": "NOTHIN' WRITTEN HERE YET.",
+  "blankPage": "DA REST OF DA PAGE IZ STILL BLANK!",
+  "date": {
+    "heading": "{day} {month} {year}"
+  },
+  "month": {
+    "jan": "JANUARY",
+    "feb": "FEBRUARY",
+    "mar": "MARCH",
+    "apr": "APRIL",
+    "may": "MAY",
+    "jun": "JUNE",
+    "jul": "JULY",
+    "aug": "AUGUST",
+    "sep": "SEPTEMBER",
+    "oct": "OCTOBER",
+    "nov": "NOVEMBER",
+    "dec": "DECEMBER"
+  },
+  "cat": {
+    "all": "EVERYTHIN'",
+    "journey": "JOURNEY",
+    "rest": "REST",
+    "combat": "FIGHTIN'",
+    "party": "COMPANY",
+    "people": "PEOPLE",
+    "health": "HEALTH",
+    "wealth": "BELONGINGS",
+    "law": "LAW",
+    "work": "WORK",
+    "knowledge": "LEARNIN'",
+    "leisure": "DIVERSIONS",
+    "other": "OTHER"
+  },
+  "foot": {
+    "ours": "DA DIARY OF {names}",
+    "theirs": "KEPT BY {names}",
+    "unknown": "AN UNSIGNED DIARY",
+    "page": "DAY {shown} OF {total}"
+  },
+  "fmt": {
+    "itemCount": "{name} X{count}"
+  },
+  "eris": {
+    "wonderful": "WONDERFULLY",
+    "warm": "WARMLY",
+    "awkward": "AWKWARDLY",
+    "disaster": "DISASTROUSLY"
+  },
+  "surgery": {
+    "success": "AN' IT HELD",
+    "failure": "AN' IT DID NOT HOLD"
+  },
+  "worlds": {
+    "tab": "DIARIES",
+    "none": "NO PARTY HAB KEPT A DIARY IN DIS WORLD YET!",
+    "entry": "{names}",
+    "meta": "{count} LINES, LAST SEEN AT {place}",
+    "unknownParty": "AN UNNAMED PARTY",
+    "read": "READ"
+  },
+  "entry": {
+    "note": "{text}",
+    "travel": {
+      "depart": "LEFT {from} FOR {to} BY {transport} AT {time}, {km} KM AHEAD OF US!",
+      "arrive": "REACHED {to} AT {time}, AFTER {hours}H {minutes}M ON DA ROAD!",
+      "refuel": "PUT {litres} LITRES INTO {vehicle} AT {place}."
+    },
+    "landing": {
+      "planet": "SET DA SHIP DOWN ON {planet}, IN DA {system} SYSTEM, AT {time}!",
+      "site": "TOUCHED DOWN AT {place} AT {time}."
+    },
+    "warp": {
+      "system": "OPENED A BRIDGE STRAIGHT TA {system} AT {time}!",
+      "orbit": "BRIDGED INTO ORBIT OF {planet}, {system}, AT {time}!",
+      "galaxy": "BRIDGED OUT OF {from} ALTOGETHER: {system}, IN {galaxy}, AT {time}!"
+    },
+    "place": {
+      "entered": "CAME TA {place} AT {time}."
+    },
+    "structure": {
+      "entered": "WENT DOWN INTO {place} AT {time}."
+    },
+    "floor": {
+      "changed": "DOWN TA FLOOR {floor} OF {place}."
+    },
+    "rest": {
+      "sleep": "SLEPT {hours} HOURS AT {place}, FROM {from} TA {to}!",
+      "wait": "WAITED {hours} HOURS AT {place}, FROM {from} TA {to}!",
+      "cryo": "INTO DA CRYOGENIC POD AT {from}, AN' OUT AGAIN ON {date}!"
+    },
+    "battle": {
+      "won": "BEAT {enemies}. {exp} EXPERIENCE AN' {gold} BETWEEN US!",
+      "boss": "FELLED {name}, LEVEL {level}, AN' IT WAZ NO ORDINARY CREATURE!",
+      "petrodemon": "PUT DOWN A PETRODEMON, {name}, LEVEL {level}!",
+      "fled": "RAN FOR IT AT {place}.",
+      "lost": "LOST DA FIGHT AGAINST {enemies}.",
+      "arena": "ARENA: {streak} WINS IN A ROW."
+    },
+    "party": {
+      "join": "{name} JOINED US, A {cls} OF LEVEL {level}.",
+      "leave": "{name} WENT DEY OWN WAY.",
+      "death": "{name} DIED AT {place}, LEVEL {level}.",
+      "retire": "{name} STAYED BEHIND AT {place}.",
+      "recall": "CALLED AN OLD COMPANION BACK OFF DA BENCH!",
+      "level": "{name} REACHED LEVEL {level}.",
+      "leader": "{name} LEADS DA PARTY NOW."
+    },
+    "pet": {
+      "join": "TOOK IN {name}, A {kind}.",
+      "follower": "{name} DECIDED TA COME ALONG WIT US!",
+      "abandon": "LEFT {name} BEHIND AT {place}."
+    },
+    "birth": {
+      "pregnant": "{name} IZ EXPECTIN'.",
+      "born": "{parent} GAVE BIRTH TA {child}.",
+      "mitosis": "{name} DIVIDED. DERE IZ TWO OF DEM NOW: {copy}!"
+    },
+    "npc": {
+      "friend": "{name} AN' {npc} IZ FRIENDS NOW.",
+      "enemy": "{npc} HAB NO MORE TIME FOR {name}.",
+      "romance": "{name} AN' {npc}: {stage}."
+    },
+    "eris": {
+      "date": "AN EVENIN' WIT ERIS AT {place}, FROM {time}!",
+      "dateEnd": "IT WENT {outcome}. SHE IZ AT {opinion} WIT US!"
+    },
+    "faction": {
+      "standing": "WHERE WE STAND WIT {faction} HAB MOVED: {value}!"
+    },
+    "health": {
+      "disease": "{name} CAME DOWN WIT {disease}, OFF {source}.",
+      "epidemic": "{name} CAUGHT {disease} IN DA OUTBREAK.",
+      "cured": "{name} IZ OVER {disease}.",
+      "partLost": "{name} LOST {part}.",
+      "augmentLost": "{name} LOST DA {augment} WIT IT.",
+      "augmentFit": "{name} WAZ FITTED WIT A {augment} ON DA {part}!",
+      "surgery": "{surgeon} OPERATED ON {patient}, {outcome}.",
+      "relief": "{name} TOOK A MOMENT FOR THEMSELVES!"
+    },
+    "item": {
+      "found": "FOUND {item} X{count} AT {place}.",
+      "artifactGot": "DA {item} IZ OURS, TAKEN AT {place}.",
+      "artifactLost": "DA {item} IZ GONE."
+    },
+    "container": {
+      "stored": "PLACED {items} IN A CONTAINER AT {place}!"
+    },
+    "shop": {
+      "buy": "BOUGHT {items} FROM {place}, {total}.",
+      "sell": "SOLD {items} AT {place} FOR {total}.",
+      "order": "ORDERED {items} OFF DA HYPERNET, {total}!"
+    },
+    "property": {
+      "bought": "BOUGHT {property} AT {place}.",
+      "sold": "SOLD {property}.",
+      "rented": "TOOK A ROOM AT {place} FOR {price}."
+    },
+    "bank": {
+      "loan": "BORROWED {amount} FROM {bank}.",
+      "repaid": "PAID BACK {amount}."
+    },
+    "stock": {
+      "trade": "{action} {count} OF {stock} AT {price}."
+    },
+    "crime": {
+      "committed": "{crime}, AT {place}. WORTH {bounty} TA SOMEBODY!",
+      "settled": "SETTLED DA CHARGE OF {crime}."
+    },
+    "steal": {
+      "success": "LIFTED {item} FROM {place}.",
+      "caught": "TRIED FOR {item} AT {place} AN' WAZ SEEN!"
+    },
+    "law": {
+      "trial": "STOOD TRIAL AT {place}.",
+      "verdict": "{verdict}. {sentence}",
+      "prison": "SENT DOWN: {term}."
+    },
+    "work": {
+      "shift": "WORKED A SHIFT AS {job} AT {place}, {hours} HOURS FOR {pay}!"
+    },
+    "farm": {
+      "sown": "SOWED {plant} AT {place}.",
+      "harvested": "TOOK IN DA {plant} AT {place}."
+    },
+    "animal": {
+      "bought": "BOUGHT A {animal} FOR {place}.",
+      "produce": "COLLECTED {items} FROM DA {animal} AT {place}."
+    },
+    "apiary": {
+      "harvest": "TOOK {items} OFF DA HIVES AT {place}."
+    },
+    "craft": {
+      "forge": "FORGED {item} X{count} AT {place}.",
+      "cook": "COOKED {item} X{count} AT {place}.",
+      "alchemy": "BREWED {item} X{count} AT DA BENCH.",
+      "brew": "SET {item} X{count} TA FERMENT AT {place}."
+    },
+    "build": {
+      "placed": "PUT UP {item} AT {place}.",
+      "dismantled": "PULLED DOWN {item} AT {place}."
+    },
+    "skill": {
+      "learned": "{name} LEARNED {skill}."
+    },
+    "spec": {
+      "tier": "{name} IZ {tier} AT {spec} NOW."
+    },
+    "tech": {
+      "researched": "WORKED OUT {tech}."
+    },
+    "quest": {
+      "accepted": "TOOK ON {quest} AT {place}.",
+      "completed": "FINISHED {quest}."
+    },
+    "bestiary": {
+      "found": "WROTE UP {creature} IN DA BESTIARY."
+    },
+    "alien": {
+      "identified": "NAMED A NEW SPECIES ON {planet}: {species}!"
+    },
+    "minigame": {
+      "played": "PLAYED {game} AT {place}. {outcome} {score}"
+    },
+    "tv": {
+      "watched": "WATCHED {programme} ON {channel} AT {place}."
+    },
+    "dream": {
+      "had": "DREAMED. {dream}"
+    },
+    "mail": {
+      "sent": "POSTED A LETTER TA {to}: {subject}",
+      "dimension": "POSTED A LETTER ACROSS DA DIMENSIONS, TA {to} IN {world}: {subject}"
+    },
+    "mining": {
+      "stripped": "STRIPPED {body} OUT ENTIRELY, IN {system}!"
+    }
+  },
+  "game": {
+    "arcade": "DA ARCADE",
+    "frogger": "FROGGER",
+    "snake": "SNAKE",
+    "bubblePop": "BUBBLE POP",
+    "slots": "DA SLOT MACHINE",
+    "bowling": "BOWLIN'",
+    "pool": "POOL",
+    "lockpick": "A LOCK",
+    "tetris": "TETRIS",
+    "scratchCard": "A SCRATCH CARD",
+    "horseRace": "DA HORSES",
+    "tarot": "DA TAROT",
+    "fishing": "FISHIN'",
+    "surfing": "SURFIN'",
+    "piano": "DA PIANO",
+    "periodicTable": "DA PERIODIC TABLE",
+    "raman": "DA SPECTROSCOPE",
+    "chess": "CHESS",
+    "tournament": "DA MONSTER TOURNAMENT",
+    "hyperTamer": "HYPER TAMER",
+    "boosters": "BOOSTER PACKS",
+    "cardDuel": "A CARD DUEL",
+    "dream": "A DREAM"
+  },
+  "romance": {
+    "flirt": "A LITTLE FLIRTIN'",
+    "admire": "AN ADMIRIN' WORD",
+    "loveLetter": "A LOVE LETTER",
+    "serenade": "A SERENADE",
+    "askDance": "A DANCE",
+    "holdHands": "HELD HANDS",
+    "askOut": "AN EVENIN' OUT",
+    "confess": "A CONFESSION",
+    "kiss": "A KISS"
+  },
+  "vehicle": {
+    "camper": "DA CAMPER",
+    "car": "DA CAR",
+    "bike": "DA BIKE",
+    "boat": "DA BOAT",
+    "airship": "DA STARSHIP",
+    "broom": "DA BROOM"
+  },
+  "verdict": {
+    "acquitted": "ACQUITTED",
+    "guilty": "GUILTY"
+  },
+  "term": {
+    "open": "NO TERM NAMED",
+    "fixed": "{days} DAYS AN' {hours} HOURS"
+  },
+  "trade": {
+    "bought": "BOUGHT",
+    "sold": "SOLD"
+  },
+  "stock": {
+    "oil": "OIL",
+    "souls": "SOULS"
+  },
+  "place": {
+    "stockbusters": "STOCKBUSTERS"
+  }
+}

@@ -435,5 +435,19 @@
     "artifactBadge": "ARTIFACT",
     "military": "military",
     "economy": "economy"
+  },
+  "assembly": {
+    "motion": "The assembly voted on {title}. {result} by {forCount} to {againstCount} with {abstainCount} abstaining, on a {ballot} ballot. {envoy} spoke {stance} {delegation}.",
+    "graveMotion": "The assembly took up {title} and referred it to the Security Council. {result} by {forCount} to {againstCount} with {abstainCount} abstaining, on a {ballot} ballot. {envoy} spoke {stance} {delegation}.",
+    "unattendedMotion": "The assembly voted on {title}. {result} by {forCount} to {againstCount} with {abstainCount} abstaining, on a {ballot} ballot.",
+    "unattendedGraveMotion": "The assembly took up {title} and referred it to the Security Council. {result} by {forCount} to {againstCount} with {abstainCount} abstaining, on a {ballot} ballot."
+  },
+  "battle": {
+    "bossSlain": "The party of {leader} defeated {enemy}.",
+    "petrodemonSlain": "The party of {leader} defeated the petrodemon {enemy}."
+  },
+  "party": {
+    "wipe": "The party of {party} was lost with all hands.",
+    "wipeAt": "The party of {party} was lost with all hands at {place}."
   }
 }

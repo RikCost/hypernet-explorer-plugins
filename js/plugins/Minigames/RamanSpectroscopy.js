@@ -753,8 +753,6 @@
             this.container.addChild(sbar);
 
             this.statusTxt = this._addText('INITIALIZING LASER...', 10, 0x00FF88, this.pX + 10, statusY + 6);
-
-            this._addCenteredText('[OK / CANCEL / CLICK  TO CLOSE]', 9, 0x334455, this.pY + this.pH - 18);
         }
 
         _addText(str, size, fill, x, y, letterSpacing = 0) {

@@ -2,7 +2,8 @@
   "title": "Skills",
   "back": "Back",
   "unit": {
-    "ap": "AP"
+    "ap": "AP",
+    "mp": "MP"
   },
   "cost": {
     "mp": "{n} MP",
@@ -37,13 +38,15 @@
     "allSkills": "All Skills",
     "use": "Use",
     "cancel": "Cancel",
-    "carry": "Carry",
-    "bench": "Bench"
+    "carry": "Sync",
+    "bench": "Desync",
+    "basic": "Basic",
+    "esoteric": "Esoteric"
   },
   "action": {
     "useSkill": "[ Use Skill ]",
-    "carry": "[ Carry ]",
-    "bench": "[ Bench ]",
+    "carry": "[ Sync ]",
+    "bench": "[ Desync ]",
     "back": "[ Back ]"
   },
   "info": {
@@ -81,10 +84,26 @@
     "skills": "Skills",
     "magic": "Magic",
     "count": "{group} {n}/{max}",
-    "carried": "Carried",
-    "benched": "Benched",
+    "carried": "Synced",
+    "benched": "Desynced",
     "always": "Always",
-    "hint": "Shift carries or benches the selected skill",
-    "full": "{group} loadout is full ({max} carried). Bench one first."
+    "hint": "Shift syncs or desyncs the selected skill",
+    "full": "{group} loadout is full ({max} synced). Desync one first."
+  },
+  "tag": {
+    "field": "Field"
+  },
+  "magicSystem": {
+    "label": "Magic System",
+    "Arcane": "Arcane",
+    "Sacred": "Sacred",
+    "Sympathetic": "Sympathetic",
+    "Dimensional": "Dimensional",
+    "Psionics": "Psionics",
+    "Technomagic": "Technomagic",
+    "Pataphysic": "Pataphysic",
+    "Natural": "Natural",
+    "Thermodynamics": "Thermodynamics",
+    "Ritual": "Ritual"
   }
 }

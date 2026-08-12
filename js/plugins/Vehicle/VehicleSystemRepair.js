@@ -455,18 +455,29 @@
     }
   }
 
-  function applyDamage(vehicleType, damagePercent) {
+  /**
+   * Knocks `damagePercent` off some of a vehicle's parts and answers which ones
+   * took it, so a caller can name them.
+   *
+   * `options.parts` narrows the pool to a named set (anything the vehicle does
+   * not have is dropped), which is how a glancing knock is confined to the front
+   * of the car rather than spread through the gearbox; `options.count` says how
+   * many of that pool are hit, instead of the usual 3-7 of a real crash.
+   */
+  function applyDamage(vehicleType, damagePercent, options) {
     const health = getVehicleHealth(vehicleType);
-    if (!health) return;
+    if (!health) return [];
 
     const partsConfig = getPartsConfig(vehicleType);
-    const partNames = Object.keys(partsConfig);
+    const opts = options || {};
+    const pool = Array.isArray(opts.parts) ? opts.parts.filter(p => partsConfig[p]) : [];
+    const partNames = pool.length ? pool : Object.keys(partsConfig);
 
-    // Randomly select parts to damage
-    const numPartsToDamage = Math.floor(Math.random() * 5) + 3; // 3-7 parts
+    const wanted = opts.count != null ? Number(opts.count) : Math.floor(Math.random() * 5) + 3;
+    const numPartsToDamage = Math.min(Math.max(1, wanted), partNames.length);
     const partsToDamage = [];
 
-    while (partsToDamage.length < numPartsToDamage && partsToDamage.length < partNames.length) {
+    while (partsToDamage.length < numPartsToDamage) {
       const randomPart = partNames[Math.floor(Math.random() * partNames.length)];
       if (!partsToDamage.includes(randomPart)) {
         partsToDamage.push(randomPart);
@@ -485,6 +496,7 @@
     }
 
     updateVehicleStatus(vehicleType);
+    return partsToDamage;
   }
 
   // Message-free access to the damage/health primitives above, for other

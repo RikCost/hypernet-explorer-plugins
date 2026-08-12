@@ -58,6 +58,20 @@
       "legislature": "Da Moot",
       "partyKind": "clan"
     },
+    "thetourists": {
+      "govType": "gerarchia di caste",
+      "headTitle": "Direttore del Tour",
+      "legislature": "L'Itinerario",
+      "partyKind": "casta",
+      "electorTitle": "Sorvegliante",
+      "electorTitlePlural": "Sorveglianti"
+    },
+    "thedargos": {
+      "govType": "scherzo organizzato",
+      "headTitle": "Primo Dargos",
+      "legislature": "La Gag",
+      "partyKind": "numero"
+    },
     "default": {
       "govType": "repubblica",
       "headTitle": "Presidente",

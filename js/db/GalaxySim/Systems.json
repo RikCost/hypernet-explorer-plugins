@@ -3242,5 +3242,65 @@
       }
     },
     "planets": []
+  },
+  "titania": {
+    "name": "Titania",
+    "galaxy": "Andromeda (M31)",
+    "type": "SUPERMASSIVE_BLACK_HOLE",
+    "mass": 260000,
+    "radius": 0.06,
+    "temperature": null,
+    "position": {
+      "x": 486.2,
+      "y": -21.7,
+      "z": -712.4
+    },
+    "planets": [
+      {
+        "name": "Titania",
+        "type": "acid_ocean",
+        "orbitRadius": 92,
+        "radius": 1.15,
+        "mass": 1.4,
+        "phase": 0.7,
+        "atmosphere": true,
+        "life": true,
+        "note": "One ocean, all of it acid, wrapped around a hole four hundred thousand times the Sun. The Dargos live on the water and refer to the hole as the neighbour. Humanity has had a standing invitation here since 1977 and nobody on Titania has yet stopped finding that funny.",
+        "landingLocations": [
+          {
+            "name": "Human embassy",
+            "mapId": 100,
+            "x": 1,
+            "y": 1
+          }
+        ],
+        "moons": [
+          {
+            "name": "Grunnu",
+            "type": "ice",
+            "orbitRadius": 0.0032,
+            "radius": 0.24,
+            "mass": 0.014,
+            "phase": 1.1
+          },
+          {
+            "name": "Habb",
+            "type": "dwarf",
+            "orbitRadius": 0.0061,
+            "radius": 0.31,
+            "mass": 0.026,
+            "phase": 3.4
+          },
+          {
+            "name": "Ilfo",
+            "type": "planetesimal",
+            "orbitRadius": 0.0104,
+            "radius": 0.17,
+            "mass": 0.007,
+            "phase": 5.2
+          }
+        ]
+      }
+    ]
   }
 }

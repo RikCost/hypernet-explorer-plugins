@@ -1,6 +1,5 @@
 {
   "noWinTryAgain": "Non hai vinto. Riprova!",
-  "pressOkOrEscTo": "Premi OK o ESC per continuare",
   "title": {
     "esoteric": "Gratta & Maledici",
     "corporate": "Gratta & Profitto",
@@ -8,7 +7,7 @@
     "hypercapitalist": "Gratta & Domina"
   },
   "cellsRemaining": "Caselle rimaste: {remaining}",
-  "needMoney": "Servono €{cost} per giocare. Premi OK per uscire.",
+  "needMoney": "Servono €{cost} per giocare.",
   "youWon": "HAI VINTO €{amount}!",
   "matchThree": "TROVA TRE SIMBOLI UGUALI E VINCI",
   "stake": "PUNTATA €{cost}",
@@ -21,7 +20,6 @@
     "back": "Indietro",
     "backDesc": "Lascia il bancone con i soldi ancora in tasca.",
     "needMoney": "Soldi insufficienti per questo biglietto.",
-    "controls": "Sinistra/Destra per scegliere  ·  OK per comprare  ·  ESC per uscire",
     "desc": {
       "esoteric": "Foglia viola e sigilli presi in prestito. Tetto modesto.",
       "corporate": "Inchiostro blu, ottimismo trimestrale, mezzo milione sul tavolo.",
@@ -29,7 +27,5 @@
       "hypercapitalist": "Biglietto nero, foglia d'oro, stampato per chi ha già vinto."
     }
   },
-  "controlsMouse": "Trascina per girare il biglietto  ·  Sfrega o clicca una casella per grattarla  ·  ESC gratta il resto",
-  "controlsPad": "Frecce per scegliere  ·  OK per grattare  ·  Levetta destra per girare  ·  L2/R2 zoom  ·  SHIFT raddrizza",
   "noRenderer": "Renderer 3D non disponibile"
 }

@@ -33,7 +33,8 @@
               "characterSprite": "Skab/!$Archivist",
               "bustName": "Archivist"
             }
-          ]
+          ],
+          "titleIt": "Cronache del Secolo"
         },
         {
           "id": "great_debates",
@@ -56,7 +57,8 @@
               "characterSprite": "Skab/!$MageSage",
               "bustName": "MageSage"
             }
-          ]
+          ],
+          "titleIt": "I Grandi Dibattiti"
         },
         {
           "id": "in_memoriam",
@@ -69,7 +71,8 @@
               "characterSprite": "Skab/!$OldNun",
               "bustName": "OldNun"
             }
-          ]
+          ],
+          "titleIt": "In Memoriam"
         },
         {
           "id": "this_week_in_history",
@@ -82,7 +85,8 @@
               "characterSprite": "Skab/!$ArchivistLibrarian",
               "bustName": "ArchivistLibrarian"
             }
-          ]
+          ],
+          "titleIt": "Questa Settimana nella Storia"
         },
         {
           "id": "before_the_tower",
@@ -95,21 +99,24 @@
               "characterSprite": "Skab/!$MageSage",
               "bustName": "MageSage"
             }
-          ]
+          ],
+          "titleIt": "Prima della Torre"
         },
         {
           "id": "ninety_two",
           "format": "documentary",
           "title": "Ninety-Two: An Anatomy of the Squishing",
           "tone": "serious",
-          "cast": []
+          "cast": [],
+          "titleIt": "Novantadue: Anatomia dello Squishing"
         },
         {
           "id": "kola_file",
           "format": "documentary",
           "title": "The Kola File",
           "tone": "unsettling",
-          "cast": []
+          "cast": [],
+          "titleIt": "Il Dossier Kola"
         },
         {
           "id": "pillars",
@@ -127,7 +134,8 @@
               "characterSprite": "Skab/!$Archeologist",
               "bustName": "Archeologist"
             }
-          ]
+          ],
+          "titleIt": "Tre Pilastri, Una Tesi"
         },
         {
           "id": "deicide_hour",
@@ -140,21 +148,24 @@
               "characterSprite": "Skab/!$UndeadSage",
               "bustName": "UndeadSage"
             }
-          ]
+          ],
+          "titleIt": "L'Ora del Deicidio"
         },
         {
           "id": "falklands",
           "format": "historical_epic",
           "title": "Okeanus: The Falklands Reconstruction",
           "tone": "serious",
-          "cast": []
+          "cast": [],
+          "titleIt": "Okeanus: la Ricostruzione delle Falkland"
         },
         {
           "id": "road_of_ages",
           "format": "historical_epic",
           "title": "The Road of Ages",
           "tone": "earnest",
-          "cast": []
+          "cast": [],
+          "titleIt": "La Strada dei Secoli"
         },
         {
           "id": "archive_reading",
@@ -167,7 +178,8 @@
               "characterSprite": "Skab/!$ArchivistLibrarian",
               "bustName": "ArchivistLibrarian"
             }
-          ]
+          ],
+          "titleIt": "Sala di Lettura: l'Archivio Spiega"
         },
         {
           "id": "footnotes",
@@ -185,14 +197,16 @@
               "characterSprite": "Skab/!$OldNun",
               "bustName": "OldNun"
             }
-          ]
+          ],
+          "titleIt": "Note a Piè di Pagina e Rimostranze"
         },
         {
           "id": "y2k_retrospective",
           "format": "documentary",
           "title": "Two Billion: A Y2K Retrospective",
           "tone": "solemn",
-          "cast": []
+          "cast": [],
+          "titleIt": "Due Miliardi: Retrospettiva sul Millennium Bug"
         },
         {
           "id": "ask_the_archive",
@@ -210,14 +224,16 @@
               "characterSprite": "Skab/!$Archivist",
               "bustName": "Archivist"
             }
-          ]
+          ],
+          "titleIt": "Chiedilo all'Archivio"
         },
         {
           "id": "long_reconstruction",
           "format": "documentary",
           "title": "The Long Reconstruction",
           "tone": "earnest",
-          "cast": []
+          "cast": [],
+          "titleIt": "La Lunga Ricostruzione"
         },
         {
           "id": "voices_from_the_loop",
@@ -235,14 +251,16 @@
               "characterSprite": "Skab/!$UndeadSage",
               "bustName": "UndeadSage"
             }
-          ]
+          ],
+          "titleIt": "Voci dall'Anello"
         },
         {
           "id": "kola_tapes",
           "format": "glitch",
           "title": "The Kola Tapes",
           "tone": "unsettling",
-          "cast": []
+          "cast": [],
+          "titleIt": "I Nastri di Kola"
         },
         {
           "id": "old_world_court",
@@ -260,7 +278,8 @@
               "characterSprite": "Skab/!$ArchivistLibrarian",
               "bustName": "ArchivistLibrarian"
             }
-          ]
+          ],
+          "titleIt": "Atti Giudiziari del Vecchio Mondo"
         },
         {
           "id": "ledger_of_empires",
@@ -273,7 +292,8 @@
               "characterSprite": "Skab/!$GoldTrader",
               "bustName": "GoldTrader"
             }
-          ]
+          ],
+          "titleIt": "Il Libro Mastro degli Imperi"
         },
         {
           "id": "antiques_parish",
@@ -291,9 +311,11 @@
               "characterSprite": "Skab/!$Pensioner",
               "bustName": "Pensioner"
             }
-          ]
+          ],
+          "titleIt": "Antiquariato dell'Oratorio"
         }
-      ]
+      ],
+      "nameIt": "Il Canale della Storia dei Secoli"
     },
     {
       "id": "news",
@@ -322,7 +344,8 @@
               "characterSprite": "Skab/!$Reporter",
               "bustName": "Reporter"
             }
-          ]
+          ],
+          "titleIt": "La Redazione della Sera"
         },
         {
           "id": "breaking",
@@ -335,7 +358,8 @@
               "characterSprite": "Skab/!$Reporter",
               "bustName": "Reporter"
             }
-          ]
+          ],
+          "titleIt": "Trasmissione Straordinaria"
         },
         {
           "id": "forecast",
@@ -348,7 +372,8 @@
               "characterSprite": "Skab/!$Astronomer",
               "bustName": "Astronomer"
             }
-          ]
+          ],
+          "titleIt": "Le Previsioni della Realtà"
         },
         {
           "id": "morning_brief",
@@ -361,7 +386,8 @@
               "characterSprite": "Skab/!$Reporter",
               "bustName": "Reporter"
             }
-          ]
+          ],
+          "titleIt": "Il Punto del Mattino"
         },
         {
           "id": "boundary_watch",
@@ -379,7 +405,8 @@
               "characterSprite": "Skab/!$OPSec",
               "bustName": "OPSec"
             }
-          ]
+          ],
+          "titleIt": "Osservatorio di Confine"
         },
         {
           "id": "road_report",
@@ -392,7 +419,8 @@
               "characterSprite": "Skab/!$Trucker",
               "bustName": "Trucker"
             }
-          ]
+          ],
+          "titleIt": "Report del Lungo Tragitto"
         },
         {
           "id": "closing_bell",
@@ -405,7 +433,8 @@
               "characterSprite": "Skab/!$Banker",
               "bustName": "Banker"
             }
-          ]
+          ],
+          "titleIt": "La Campana di Chiusura"
         },
         {
           "id": "docket",
@@ -418,7 +447,8 @@
               "characterSprite": "Skab/!$Lawyer",
               "bustName": "Lawyer"
             }
-          ]
+          ],
+          "titleIt": "Il Ruolo dalla Dimensione Giudiziaria"
         },
         {
           "id": "above_the_cloud",
@@ -431,7 +461,8 @@
               "characterSprite": "Skab/!$Scientist",
               "bustName": "Scientist"
             }
-          ]
+          ],
+          "titleIt": "Sopra la Nuvola"
         },
         {
           "id": "your_call",
@@ -449,7 +480,8 @@
               "characterSprite": "Skab/!$Reporter",
               "bustName": "Reporter"
             }
-          ]
+          ],
+          "titleIt": "La Tua Chiamata, il Nostro Segnale"
         },
         {
           "id": "civil_advisory",
@@ -462,7 +494,8 @@
               "characterSprite": "Skab/!$OPSec",
               "bustName": "OPSec"
             }
-          ]
+          ],
+          "titleIt": "Canale della Protezione Civile"
         },
         {
           "id": "goblin_ball",
@@ -480,7 +513,8 @@
               "characterSprite": "Skab/!$GymInstructor",
               "bustName": "GymInstructor"
             }
-          ]
+          ],
+          "titleIt": "Speciale Palla-Goblin"
         },
         {
           "id": "correspondents",
@@ -498,7 +532,8 @@
               "characterSprite": "Skab/!$Journalist",
               "bustName": "Journalist"
             }
-          ]
+          ],
+          "titleIt": "Corrispondenti in Giro"
         },
         {
           "id": "night_desk",
@@ -511,7 +546,8 @@
               "characterSprite": "Skab/!$AndroidJournalist",
               "bustName": "AndroidJournalist"
             }
-          ]
+          ],
+          "titleIt": "La Redazione di Notte"
         },
         {
           "id": "weekend_review",
@@ -534,14 +570,16 @@
               "characterSprite": "Skab/!$Banker",
               "bustName": "Banker"
             }
-          ]
+          ],
+          "titleIt": "La Settimana in Rassegna"
         },
         {
           "id": "foreign_desk",
           "format": "documentary",
           "title": "The Foreign Desk",
           "tone": "serious",
-          "cast": []
+          "cast": [],
+          "titleIt": "La Redazione Esteri"
         },
         {
           "id": "ministerial",
@@ -554,7 +592,8 @@
               "characterSprite": "Skab/!$Regent",
               "bustName": "Regent"
             }
-          ]
+          ],
+          "titleIt": "Il Discorso del Ministro"
         },
         {
           "id": "late_bulletin",
@@ -567,7 +606,8 @@
               "characterSprite": "Skab/!$AndroidJournalist",
               "bustName": "AndroidJournalist"
             }
-          ]
+          ],
+          "titleIt": "L'Ultimo Notiziario"
         },
         {
           "id": "obituaries",
@@ -580,14 +620,16 @@
               "characterSprite": "Skab/!$Reporter",
               "bustName": "Reporter"
             }
-          ]
+          ],
+          "titleIt": "I Necrologi"
         },
         {
           "id": "signal_check",
           "format": "test_pattern",
           "title": "Signal Check",
           "tone": "serious",
-          "cast": []
+          "cast": [],
+          "titleIt": "Prova Segnale"
         },
         {
           "id": "consumer_corner",
@@ -600,9 +642,11 @@
               "characterSprite": "Skab/!$Manager",
               "bustName": "Manager"
             }
-          ]
+          ],
+          "titleIt": "Lo Spazio del Consumatore"
         }
-      ]
+      ],
+      "nameIt": "Notizie Temporali 24 su 24"
     },
     {
       "id": "chaos",
@@ -631,14 +675,16 @@
               "characterSprite": "Skab/!$PunkWitch",
               "bustName": "PunkWitch"
             }
-          ]
+          ],
+          "titleIt": "La Ruota della Fortuna Temporale"
         },
         {
           "id": "static_hour",
           "format": "glitch",
           "title": "The Static Hour",
           "tone": "unsettling",
-          "cast": []
+          "cast": [],
+          "titleIt": "L'Ora del Disturbo"
         },
         {
           "id": "prophecy_corner",
@@ -651,7 +697,8 @@
               "characterSprite": "Skab/!$PunkWitch",
               "bustName": "PunkWitch"
             }
-          ]
+          ],
+          "titleIt": "Angolo della Profezia"
         },
         {
           "id": "panic_at_six",
@@ -674,7 +721,8 @@
               "characterSprite": "Skab/!$CreepyJester",
               "bustName": "CreepyJester"
             }
-          ]
+          ],
+          "titleIt": "Panico alle Sei"
         },
         {
           "id": "bubble_house",
@@ -712,7 +760,8 @@
               "characterSprite": "Skab/!$BrainSurgeon",
               "bustName": "BrainSurgeon"
             }
-          ]
+          ],
+          "titleIt": "La Casa nella Bolla"
         },
         {
           "id": "who_remembers",
@@ -725,21 +774,24 @@
               "characterSprite": "Skab/!$CreepyJester",
               "bustName": "CreepyJester"
             }
-          ]
+          ],
+          "titleIt": "Chi se lo Ricorda Ancora?"
         },
         {
           "id": "signal_bleed",
           "format": "glitch",
           "title": "Signal Bleed",
           "tone": "weird",
-          "cast": []
+          "cast": [],
+          "titleIt": "Sbavatura di Segnale"
         },
         {
           "id": "carrier_wave",
           "format": "test_pattern",
           "title": "Carrier Wave",
           "tone": "unsettling",
-          "cast": []
+          "cast": [],
+          "titleIt": "Onda Portante"
         },
         {
           "id": "corpse_paint_countdown",
@@ -752,7 +804,8 @@
               "characterSprite": "Skab/!$BikerSkull",
               "bustName": "BikerSkull"
             }
-          ]
+          ],
+          "titleIt": "La Classifica in Corpse Paint"
         },
         {
           "id": "the_reckoning",
@@ -765,7 +818,8 @@
               "characterSprite": "Skab/!$ConspiracyTheorist",
               "bustName": "ConspiracyTheorist"
             }
-          ]
+          ],
+          "titleIt": "La Resa dei Conti con Gideon Graves"
         },
         {
           "id": "flatmates",
@@ -788,14 +842,16 @@
               "characterSprite": "Skab/!$OgreWitch",
               "bustName": "OgreWitch"
             }
-          ]
+          ],
+          "titleIt": "Due Maghi, Una Linea di Ley"
         },
         {
           "id": "dead_air",
           "format": "test_pattern",
           "title": "Dead Air",
           "tone": "cryptic",
-          "cast": []
+          "cast": [],
+          "titleIt": "Silenzio in Onda"
         },
         {
           "id": "spin_again",
@@ -813,7 +869,8 @@
               "characterSprite": "Skab/!$PunkGirl",
               "bustName": "PunkGirl"
             }
-          ]
+          ],
+          "titleIt": "Gira Ancora, per Sempre"
         },
         {
           "id": "open_lines",
@@ -826,7 +883,8 @@
               "characterSprite": "Skab/!$PunkWitch",
               "bustName": "PunkWitch"
             }
-          ]
+          ],
+          "titleIt": "Linee Aperte, Porte Aperte"
         },
         {
           "id": "unofficial_emergency",
@@ -839,7 +897,8 @@
               "characterSprite": "Skab/!$ConspiracyTheorist",
               "bustName": "ConspiracyTheorist"
             }
-          ]
+          ],
+          "titleIt": "Trasmissione di Emergenza (Non Ufficiale)"
         },
         {
           "id": "weather_probably",
@@ -852,7 +911,8 @@
               "characterSprite": "Skab/!$Astrologist",
               "bustName": "Astrologist"
             }
-          ]
+          ],
+          "titleIt": "Il Tempo, Probabilmente"
         },
         {
           "id": "chef_chaos",
@@ -865,7 +925,8 @@
               "characterSprite": "Skab/!$OrcCook",
               "bustName": "OrcCook"
             }
-          ]
+          ],
+          "titleIt": "Chef Caos"
         },
         {
           "id": "sermon_of_static",
@@ -878,7 +939,8 @@
               "characterSprite": "Skab/!$Cultist",
               "bustName": "Cultist"
             }
-          ]
+          ],
+          "titleIt": "Omelia del Disturbo"
         },
         {
           "id": "chaos_docket",
@@ -891,7 +953,8 @@
               "characterSprite": "Skab/!$OrcJester",
               "bustName": "OrcJester"
             }
-          ]
+          ],
+          "titleIt": "Il Ruolo del Caos"
         },
         {
           "id": "playtime_for_adults",
@@ -909,9 +972,11 @@
               "characterSprite": "Skab/!$Mannequin",
               "bustName": "Mannequin"
             }
-          ]
+          ],
+          "titleIt": "Ricreazione per Adulti"
         }
-      ]
+      ],
+      "nameIt": "Radiotelevisione del Caos"
     },
     {
       "id": "kitchen",
@@ -935,7 +1000,8 @@
               "characterSprite": "Skab/!$GnomeChef",
               "bustName": "GnomeChef"
             }
-          ]
+          ],
+          "titleIt": "L'Alchimista Parsimonioso"
         },
         {
           "id": "tavern_rescue",
@@ -953,7 +1019,8 @@
               "characterSprite": "Skab/!$VillageTavernkeeper",
               "bustName": "VillageTavernkeeper"
             }
-          ]
+          ],
+          "titleIt": "Taverne da Incubo"
         },
         {
           "id": "pixie_dust",
@@ -966,7 +1033,8 @@
               "characterSprite": "Skab/!$GnomeChef",
               "bustName": "GnomeChef"
             }
-          ]
+          ],
+          "titleIt": "Un Pizzico di Polvere di Fata"
         },
         {
           "id": "one_loop_meals",
@@ -979,7 +1047,8 @@
               "characterSprite": "Skab/!$SushiCook",
               "bustName": "SushiCook"
             }
-          ]
+          ],
+          "titleIt": "Piatti in un Anello Solo"
         },
         {
           "id": "verden_table",
@@ -992,7 +1061,8 @@
               "characterSprite": "Skab/!$OldChef",
               "bustName": "OldChef"
             }
-          ]
+          ],
+          "titleIt": "La Tavola di Verden"
         },
         {
           "id": "broken_leyline_bakes",
@@ -1010,7 +1080,8 @@
               "characterSprite": "Skab/!$GnomeChef",
               "bustName": "GnomeChef"
             }
-          ]
+          ],
+          "titleIt": "Dolci sulla Ley Spezzata"
         },
         {
           "id": "pantry_politics",
@@ -1028,14 +1099,16 @@
               "characterSprite": "Skab/!$Trader",
               "bustName": "Trader"
             }
-          ]
+          ],
+          "titleIt": "Politica della Dispensa"
         },
         {
           "id": "field_rations",
           "format": "documentary",
           "title": "Field Rations of the Long Haul",
           "tone": "earnest",
-          "cast": []
+          "cast": [],
+          "titleIt": "Razioni da Campo del Lungo Tragitto"
         },
         {
           "id": "kitchen_calls",
@@ -1053,7 +1126,8 @@
               "characterSprite": "Skab/!$SushiCook",
               "bustName": "SushiCook"
             }
-          ]
+          ],
+          "titleIt": "Telefonate in Cucina"
         },
         {
           "id": "front_of_house",
@@ -1081,7 +1155,8 @@
               "characterSprite": "Skab/!$FastfoodWorker",
               "bustName": "FastfoodWorker"
             }
-          ]
+          ],
+          "titleIt": "Sala e Clienti"
         },
         {
           "id": "sunday_roast",
@@ -1094,7 +1169,8 @@
               "characterSprite": "Skab/!$OldChef",
               "bustName": "OldChef"
             }
-          ]
+          ],
+          "titleIt": "Il Lunghissimo Pranzo della Domenica"
         },
         {
           "id": "cellar_hour",
@@ -1107,7 +1183,8 @@
               "characterSprite": "Skab/!$VillageTavernkeeper",
               "bustName": "VillageTavernkeeper"
             }
-          ]
+          ],
+          "titleIt": "L'Ora della Cantina"
         },
         {
           "id": "market_morning",
@@ -1120,7 +1197,8 @@
               "characterSprite": "Skab/!$Trader",
               "bustName": "Trader"
             }
-          ]
+          ],
+          "titleIt": "Mattina al Mercato"
         },
         {
           "id": "larder_run",
@@ -1133,7 +1211,8 @@
               "characterSprite": "Skab/!$TruckerShopkeeper",
               "bustName": "TruckerShopkeeper"
             }
-          ]
+          ],
+          "titleIt": "La Dispensa del Lungo Tragitto"
         },
         {
           "id": "kitchen_court",
@@ -1151,14 +1230,16 @@
               "characterSprite": "Skab/!$GnomeChef",
               "bustName": "GnomeChef"
             }
-          ]
+          ],
+          "titleIt": "Tribunale in Cucina"
         },
         {
           "id": "beagle_confidential",
           "format": "documentary",
           "title": "Kitchen Confidential: Beagle",
           "tone": "wry",
-          "cast": []
+          "cast": [],
+          "titleIt": "Cucine Segrete: Beagle"
         },
         {
           "id": "recipe_emergency",
@@ -1171,7 +1252,8 @@
               "characterSprite": "Skab/!$SushiCook",
               "bustName": "SushiCook"
             }
-          ]
+          ],
+          "titleIt": "Ricetta di Emergenza"
         },
         {
           "id": "sermon_roast",
@@ -1189,7 +1271,8 @@
               "characterSprite": "Skab/!$OldChef",
               "bustName": "OldChef"
             }
-          ]
+          ],
+          "titleIt": "L'Arrosto dell'Omelia"
         },
         {
           "id": "allotment_hour",
@@ -1207,7 +1290,8 @@
               "characterSprite": "Skab/!$Botanist",
               "bustName": "Botanist"
             }
-          ]
+          ],
+          "titleIt": "L'Ora dell'Orto"
         },
         {
           "id": "two_rooms_ladder",
@@ -1225,9 +1309,11 @@
               "characterSprite": "Skab/!$Mechanic",
               "bustName": "Mechanic"
             }
-          ]
+          ],
+          "titleIt": "Due Stanze e una Scala"
         }
-      ]
+      ],
+      "nameIt": "La Cucina dell'Alchimista"
     },
     {
       "id": "kids",
@@ -1245,7 +1331,8 @@
           "format": "children_show",
           "title": "Temporal Tommy's Time Adventures",
           "tone": "light",
-          "cast": []
+          "cast": [],
+          "titleIt": "Le Avventure Temporali di Tommy"
         },
         {
           "id": "rangers",
@@ -1268,7 +1355,8 @@
               "characterSprite": "Skab/!$WarCadet",
               "bustName": "WarCadet"
             }
-          ]
+          ],
+          "titleIt": "I Ranger della Realtà"
         },
         {
           "id": "camelcase",
@@ -1281,7 +1369,8 @@
               "characterSprite": "Skab/!$ScienceTeacher",
               "bustName": "ScienceTeacher"
             }
-          ]
+          ],
+          "titleIt": "La Magia del CamelCase"
         },
         {
           "id": "sockington",
@@ -1299,14 +1388,16 @@
               "characterSprite": "Skab/!$ElvenSinger",
               "bustName": "ElvenSinger"
             }
-          ]
+          ],
+          "titleIt": "Il Signor Calzino Spiega le Regole"
         },
         {
           "id": "eighty_song",
           "format": "children_show",
           "title": "The Eighty Song",
           "tone": "light",
-          "cast": []
+          "cast": [],
+          "titleIt": "La Canzone degli Ottanta"
         },
         {
           "id": "first_spell",
@@ -1319,7 +1410,8 @@
               "characterSprite": "Skab/!$Witch1",
               "bustName": "Witch1"
             }
-          ]
+          ],
+          "titleIt": "Il Tuo Primissimo Incantesimo"
         },
         {
           "id": "goblin_friends",
@@ -1337,7 +1429,8 @@
               "characterSprite": "Skab/!$GoblinRecruit",
               "bustName": "GoblinRecruit"
             }
-          ]
+          ],
+          "titleIt": "I Goblin Sono Nostri Amici? (No)"
         },
         {
           "id": "leyline_lessons",
@@ -1350,7 +1443,8 @@
               "characterSprite": "Skab/!$ScienceTeacher",
               "bustName": "ScienceTeacher"
             }
-          ]
+          ],
+          "titleIt": "Lezioni di Linee di Ley"
         },
         {
           "id": "puppet_court",
@@ -1368,14 +1462,16 @@
               "characterSprite": "Skab/!$Sheepman",
               "bustName": "Sheepman"
             }
-          ]
+          ],
+          "titleIt": "Il Tribunale dei Calzini"
         },
         {
           "id": "storytime",
           "format": "children_show",
           "title": "Storytime Before The Reset",
           "tone": "light",
-          "cast": []
+          "cast": [],
+          "titleIt": "Favole Prima del Reset"
         },
         {
           "id": "tower_tour",
@@ -1388,7 +1484,8 @@
               "characterSprite": "Skab/!$TowerController",
               "bustName": "TowerController"
             }
-          ]
+          ],
+          "titleIt": "Una Torre Altissima: la Visita"
         },
         {
           "id": "pip_lost",
@@ -1406,7 +1503,8 @@
               "characterSprite": "Skab/!$SchoolTeacher",
               "bustName": "SchoolTeacher"
             }
-          ]
+          ],
+          "titleIt": "Pip si Perde di Nuovo"
         },
         {
           "id": "cadet_lines",
@@ -1424,7 +1522,8 @@
               "characterSprite": "Skab/!$ForestRanger",
               "bustName": "ForestRanger"
             }
-          ]
+          ],
+          "titleIt": "Filo Diretto con le Reclute Ranger"
         },
         {
           "id": "very_small_news",
@@ -1437,14 +1536,16 @@
               "characterSprite": "Skab/!$GnomeVillager",
               "bustName": "GnomeVillager"
             }
-          ]
+          ],
+          "titleIt": "Il Telegiornale Piccolissimo"
         },
         {
           "id": "songs_from_the_road",
           "format": "music_video",
           "title": "Songs From The Road",
           "tone": "light",
-          "cast": []
+          "cast": [],
+          "titleIt": "Canzoni dalla Strada"
         },
         {
           "id": "sports_day",
@@ -1462,7 +1563,8 @@
               "characterSprite": "Skab/!$ElvenJester",
               "bustName": "ElvenJester"
             }
-          ]
+          ],
+          "titleIt": "Giornata dello Sport"
         },
         {
           "id": "pets_people",
@@ -1480,9 +1582,11 @@
               "characterSprite": "Skab/!$DogNoble",
               "bustName": "DogNoble"
             }
-          ]
+          ],
+          "titleIt": "Gli Animali e i Loro Umani"
         }
-      ]
+      ],
+      "nameIt": "Il Teatrino dei Ricordi"
     },
     {
       "id": "latenight",
@@ -1506,7 +1610,8 @@
               "characterSprite": "Skab/!$DJ",
               "bustName": "DJ"
             }
-          ]
+          ],
+          "titleIt": "Gli Archivi dell'Insonnia"
         },
         {
           "id": "witching_hour",
@@ -1519,7 +1624,8 @@
               "characterSprite": "Skab/!$TarotWitch",
               "bustName": "TarotWitch"
             }
-          ]
+          ],
+          "titleIt": "Trasmissione dell'Ora delle Streghe"
         },
         {
           "id": "after_dark",
@@ -1537,7 +1643,8 @@
               "characterSprite": "Skab/!$TarotWitch",
               "bustName": "TarotWitch"
             }
-          ]
+          ],
+          "titleIt": "Controllo Realtà a Notte Fonda"
         },
         {
           "id": "long_haul_lines",
@@ -1555,7 +1662,8 @@
               "characterSprite": "Skab/!$DJ",
               "bustName": "DJ"
             }
-          ]
+          ],
+          "titleIt": "Linee del Lungo Tragitto"
         },
         {
           "id": "third_shift",
@@ -1568,7 +1676,8 @@
               "characterSprite": "Skab/!$DJ",
               "bustName": "DJ"
             }
-          ]
+          ],
+          "titleIt": "Il Terzo Turno"
         },
         {
           "id": "under_the_asphalt",
@@ -1581,7 +1690,8 @@
               "characterSprite": "Skab/!$ConspiracyTheorist",
               "bustName": "ConspiracyTheorist"
             }
-          ]
+          ],
+          "titleIt": "Sotto l'Asfalto"
         },
         {
           "id": "who_owns_the_dark",
@@ -1599,7 +1709,8 @@
               "characterSprite": "Skab/!$TarotWitch",
               "bustName": "TarotWitch"
             }
-          ]
+          ],
+          "titleIt": "A Chi Appartiene il Buio"
         },
         {
           "id": "night_convoy",
@@ -1612,7 +1723,8 @@
               "characterSprite": "Skab/!$TruckerWanderer",
               "bustName": "TruckerWanderer"
             }
-          ]
+          ],
+          "titleIt": "Convoglio Notturno"
         },
         {
           "id": "the_estate",
@@ -1645,28 +1757,32 @@
               "characterSprite": "Skab/!$Lawyer",
               "bustName": "Lawyer"
             }
-          ]
+          ],
+          "titleIt": "La Tenuta di Marrow Hollow"
         },
         {
           "id": "small_hours_music",
           "format": "music_video",
           "title": "Small Hours, Loud Gods",
           "tone": "weird",
-          "cast": []
+          "cast": [],
+          "titleIt": "Ore Piccole, Dei Rumorosi"
         },
         {
           "id": "sign_off",
           "format": "test_pattern",
           "title": "Sign Off",
           "tone": "cryptic",
-          "cast": []
+          "cast": [],
+          "titleIt": "Chiusura delle Trasmissioni"
         },
         {
           "id": "unaired",
           "format": "glitch",
           "title": "The Unaired Tape",
           "tone": "unsettling",
-          "cast": []
+          "cast": [],
+          "titleIt": "Il Nastro Mai Andato in Onda"
         },
         {
           "id": "night_kitchen",
@@ -1714,7 +1830,8 @@
               "characterSprite": "Skab/!$Woodworker",
               "bustName": "Woodworker"
             }
-          ]
+          ],
+          "titleIt": "Nessuno Dorme a Marrow Hollow"
         },
         {
           "id": "small_hours_desk",
@@ -1727,7 +1844,8 @@
               "characterSprite": "Skab/!$AndroidJournalist",
               "bustName": "AndroidJournalist"
             }
-          ]
+          ],
+          "titleIt": "La Redazione delle Ore Piccole"
         },
         {
           "id": "nightschool",
@@ -1740,7 +1858,8 @@
               "characterSprite": "Skab/!$TarotWitch",
               "bustName": "TarotWitch"
             }
-          ]
+          ],
+          "titleIt": "Scuola Serale"
         },
         {
           "id": "overnight_docket",
@@ -1753,7 +1872,8 @@
               "characterSprite": "Skab/!$Judge",
               "bustName": "Judge"
             }
-          ]
+          ],
+          "titleIt": "Il Ruolo della Notte"
         },
         {
           "id": "cold_kitchen",
@@ -1766,7 +1886,8 @@
               "characterSprite": "Skab/!$Butcher",
               "bustName": "Butcher"
             }
-          ]
+          ],
+          "titleIt": "Cucina Fredda"
         },
         {
           "id": "three_am_weather",
@@ -1779,14 +1900,16 @@
               "characterSprite": "Skab/!$Astrologist",
               "bustName": "Astrologist"
             }
-          ]
+          ],
+          "titleIt": "Il Meteo delle Tre"
         },
         {
           "id": "repeats",
           "format": "historical_epic",
           "title": "Repeats",
           "tone": "weird",
-          "cast": []
+          "cast": [],
+          "titleIt": "Repliche"
         },
         {
           "id": "late_quiz",
@@ -1804,7 +1927,8 @@
               "characterSprite": "Skab/!$UniversityStudent",
               "bustName": "UniversityStudent"
             }
-          ]
+          ],
+          "titleIt": "Il Quiz di Fine Serata"
         },
         {
           "id": "night_bus",
@@ -1817,9 +1941,11 @@
               "characterSprite": "Skab/!$TaxiDriver",
               "bustName": "TaxiDriver"
             }
-          ]
+          ],
+          "titleIt": "L'Autobus Notturno"
         }
-      ]
+      ],
+      "nameIt": "Mezzanotte sulla Strada"
     },
     {
       "id": "faith",
@@ -1843,7 +1969,8 @@
               "characterSprite": "Skab/!$Priest",
               "bustName": "Priest"
             }
-          ]
+          ],
+          "titleIt": "Il Vangelo Secondo Margaret"
         },
         {
           "id": "infinite_loops",
@@ -1856,7 +1983,8 @@
               "characterSprite": "Skab/!$Cardinal",
               "bustName": "Cardinal"
             }
-          ]
+          ],
+          "titleIt": "La Chiesa degli Anelli Infiniti"
         },
         {
           "id": "testimony",
@@ -1869,7 +1997,8 @@
               "characterSprite": "Skab/!$Oracle",
               "bustName": "Oracle"
             }
-          ]
+          ],
+          "titleIt": "Testimonianze Temporali"
         },
         {
           "id": "ringtone_vespers",
@@ -1882,7 +2011,8 @@
               "characterSprite": "Skab/!$Vestal",
               "bustName": "Vestal"
             }
-          ]
+          ],
+          "titleIt": "Vespri con Suoneria"
         },
         {
           "id": "the_stone_gods",
@@ -1895,7 +2025,8 @@
               "characterSprite": "Skab/!$Monk",
               "bustName": "Monk"
             }
-          ]
+          ],
+          "titleIt": "Gli Dei di Pietra del Deserto Bianco"
         },
         {
           "id": "from_the_citadel",
@@ -1908,7 +2039,8 @@
               "characterSprite": "Skab/!$ArchPriest",
               "bustName": "ArchPriest"
             }
-          ]
+          ],
+          "titleIt": "Dalla Cittadella Fluttuante"
         },
         {
           "id": "the_widow_maat",
@@ -1921,7 +2053,8 @@
               "characterSprite": "Skab/!$MotherNun",
               "bustName": "MotherNun"
             }
-          ]
+          ],
+          "titleIt": "Una Preghiera per la Donna Sotto la Crosta"
         },
         {
           "id": "discord_docket",
@@ -1934,7 +2067,8 @@
               "characterSprite": "Skab/!$Inquisitor",
               "bustName": "Inquisitor"
             }
-          ]
+          ],
+          "titleIt": "La Misericordia della Discordia"
         },
         {
           "id": "open_line_to_heaven",
@@ -1952,14 +2086,16 @@
               "characterSprite": "Skab/!$Vestal",
               "bustName": "Vestal"
             }
-          ]
+          ],
+          "titleIt": "Linea Aperta con Chiunque Risponda"
         },
         {
           "id": "seven_artefacts",
           "format": "documentary",
           "title": "Seven Artefacts, One Night",
           "tone": "solemn",
-          "cast": []
+          "cast": [],
+          "titleIt": "Sette Artefatti, Una Notte"
         },
         {
           "id": "catechism",
@@ -1972,7 +2108,8 @@
               "characterSprite": "Skab/!$Monk",
               "bustName": "Monk"
             }
-          ]
+          ],
+          "titleIt": "Catechismo per un Paradiso Ridotto"
         },
         {
           "id": "the_signal_is_the_message",
@@ -1985,7 +2122,8 @@
               "characterSprite": "Skab/!$Oracle",
               "bustName": "Oracle"
             }
-          ]
+          ],
+          "titleIt": "Il Segnale è il Messaggio"
         },
         {
           "id": "faithful_line",
@@ -1998,7 +2136,8 @@
               "characterSprite": "Skab/!$MotherNun",
               "bustName": "MotherNun"
             }
-          ]
+          ],
+          "titleIt": "La Linea dei Fedeli"
         },
         {
           "id": "sacred_science",
@@ -2011,21 +2150,24 @@
               "characterSprite": "Skab/!$BioScientist",
               "bustName": "BioScientist"
             }
-          ]
+          ],
+          "titleIt": "Scienza Sacra"
         },
         {
           "id": "reduced_miracle",
           "format": "documentary",
           "title": "The Reduced Miracle",
           "tone": "solemn",
-          "cast": []
+          "cast": [],
+          "titleIt": "Il Miracolo Ridotto"
         },
         {
           "id": "quiet_heaven",
           "format": "music_video",
           "title": "Hymns for a Quiet Heaven",
           "tone": "solemn",
-          "cast": []
+          "cast": [],
+          "titleIt": "Inni per un Paradiso Silenzioso"
         },
         {
           "id": "parish_notices",
@@ -2038,16 +2180,19 @@
               "characterSprite": "Skab/!$Vestal",
               "bustName": "Vestal"
             }
-          ]
+          ],
+          "titleIt": "Avvisi Parrocchiali"
         },
         {
           "id": "the_vigil",
           "format": "test_pattern",
           "title": "The Vigil",
           "tone": "solemn",
-          "cast": []
+          "cast": [],
+          "titleIt": "La Veglia"
         }
-      ]
+      ],
+      "nameIt": "Anoki, Ora della Fede"
     },
     {
       "id": "shopping",
@@ -2076,7 +2221,8 @@
               "characterSprite": "Skab/!$Stylist",
               "bustName": "Stylist"
             }
-          ]
+          ],
+          "titleIt": "Maratona di Offerte di Mezzanotte"
         },
         {
           "id": "as_seen",
@@ -2089,7 +2235,8 @@
               "characterSprite": "Skab/!$Stylist",
               "bustName": "Stylist"
             }
-          ]
+          ],
+          "titleIt": "Visto sulla Strada"
         },
         {
           "id": "fire_sale",
@@ -2102,7 +2249,8 @@
               "characterSprite": "Skab/!$Stylist",
               "bustName": "Stylist"
             }
-          ]
+          ],
+          "titleIt": "Svendita di Ancore di Realtà"
         },
         {
           "id": "loop_escape_hour",
@@ -2115,7 +2263,8 @@
               "characterSprite": "Skab/!$SpacerSalesman",
               "bustName": "SpacerSalesman"
             }
-          ]
+          ],
+          "titleIt": "L'Ora della Fuga dall'Anello"
         },
         {
           "id": "warehouse_appears",
@@ -2128,7 +2277,8 @@
               "characterSprite": "Skab/!$FactoryWorker",
               "bustName": "FactoryWorker"
             }
-          ]
+          ],
+          "titleIt": "È Semplicemente Apparso in Magazzino"
         },
         {
           "id": "the_ticker",
@@ -2141,7 +2291,8 @@
               "characterSprite": "Skab/!$Banker",
               "bustName": "Banker"
             }
-          ]
+          ],
+          "titleIt": "Il Tabellone"
         },
         {
           "id": "pyramid_hour",
@@ -2159,7 +2310,8 @@
               "characterSprite": "Skab/!$Billionaire",
               "bustName": "Billionaire"
             }
-          ]
+          ],
+          "titleIt": "L'Ora delle Opportunità"
         },
         {
           "id": "bid_your_memories",
@@ -2172,7 +2324,8 @@
               "characterSprite": "Skab/!$TicketMaster",
               "bustName": "TicketMaster"
             }
-          ]
+          ],
+          "titleIt": "Metti i Tuoi Ricordi allAsta"
         },
         {
           "id": "customer_lines",
@@ -2190,7 +2343,8 @@
               "characterSprite": "Skab/!$Secretary",
               "bustName": "Secretary"
             }
-          ]
+          ],
+          "titleIt": "Le Linee Clienti Sono Aperte per Sempre"
         },
         {
           "id": "unboxing_the_tower",
@@ -2213,7 +2367,8 @@
               "characterSprite": "Skab/!$GoblinCourier",
               "bustName": "GoblinCourier"
             }
-          ]
+          ],
+          "titleIt": "Apriamo la Torre"
         },
         {
           "id": "clearance",
@@ -2226,7 +2381,8 @@
               "characterSprite": "Skab/!$SpacerSalesman",
               "bustName": "SpacerSalesman"
             }
-          ]
+          ],
+          "titleIt": "Liquidazione Finale"
         },
         {
           "id": "brand_devotional",
@@ -2239,7 +2395,8 @@
               "characterSprite": "Skab/!$Cultist",
               "bustName": "Cultist"
             }
-          ]
+          ],
+          "titleIt": "Devozionale per il Dio del Mercato"
         },
         {
           "id": "depot_report",
@@ -2252,7 +2409,8 @@
               "characterSprite": "Skab/!$Trucker",
               "bustName": "Trucker"
             }
-          ]
+          ],
+          "titleIt": "Report dal Deposito"
         },
         {
           "id": "unclaimed_auction",
@@ -2270,7 +2428,8 @@
               "characterSprite": "Skab/!$GoblinCourier",
               "bustName": "GoblinCourier"
             }
-          ]
+          ],
+          "titleIt": "Asta dei Beni Non Reclamati"
         },
         {
           "id": "complaints_line",
@@ -2283,7 +2442,8 @@
               "characterSprite": "Skab/!$Secretary",
               "bustName": "Secretary"
             }
-          ]
+          ],
+          "titleIt": "La Linea Reclami"
         },
         {
           "id": "warehouse_live",
@@ -2306,7 +2466,8 @@
               "characterSprite": "Skab/!$BotAssistant",
               "bustName": "BotAssistant"
             }
-          ]
+          ],
+          "titleIt": "Magazzino in Diretta"
         },
         {
           "id": "sponsored_weather",
@@ -2319,7 +2480,8 @@
               "characterSprite": "Skab/!$Stylist",
               "bustName": "Stylist"
             }
-          ]
+          ],
+          "titleIt": "Il Meteo Sponsorizzato"
         },
         {
           "id": "before_the_boundary",
@@ -2332,7 +2494,8 @@
               "characterSprite": "Skab/!$SpacerSalesman",
               "bustName": "SpacerSalesman"
             }
-          ]
+          ],
+          "titleIt": "Compralo Prima del Confine"
         },
         {
           "id": "car_boot",
@@ -2350,9 +2513,11 @@
               "characterSprite": "Skab/!$TravelingSalesman",
               "bustName": "TravelingSalesman"
             }
-          ]
+          ],
+          "titleIt": "Il Mercatino del Baule"
         }
-      ]
+      ],
+      "nameIt": "Rete Ipercapitalista di Acquisti"
     },
     {
       "id": "mediahex",
@@ -2386,7 +2551,8 @@
               "characterSprite": "Skab/!$ElephantMascotte",
               "bustName": "ElephantMascotte"
             }
-          ]
+          ],
+          "titleIt": "Striscia la Notizia"
         },
         {
           "id": "wheel_fortunes",
@@ -2404,7 +2570,8 @@
               "characterSprite": "Skab/!$SnobStylist",
               "bustName": "SnobStylist"
             }
-          ]
+          ],
+          "titleIt": "La Ruota della Fortuna"
         },
         {
           "id": "price_correct",
@@ -2417,7 +2584,8 @@
               "characterSprite": "Skab/!$OperaGoddess",
               "bustName": "OperaGoddess"
             }
-          ]
+          ],
+          "titleIt": "OK, il Prezzo è Giusto"
         },
         {
           "id": "papperissima",
@@ -2435,7 +2603,8 @@
               "characterSprite": "Skab/!$ElephantMascotte",
               "bustName": "ElephantMascotte"
             }
-          ]
+          ],
+          "titleIt": "Papperissima"
         },
         {
           "id": "sarabander",
@@ -2448,7 +2617,8 @@
               "characterSprite": "Skab/!$CityDJ",
               "bustName": "CityDJ"
             }
-          ]
+          ],
+          "titleIt": "Sarabander"
         },
         {
           "id": "not_the_rye",
@@ -2461,7 +2631,8 @@
               "characterSprite": "Skab/!$NobleSinger",
               "bustName": "NobleSinger"
             }
-          ]
+          ],
+          "titleIt": "Non è la Segale"
         },
         {
           "id": "costanza_show",
@@ -2474,7 +2645,8 @@
               "characterSprite": "Skab/!$Wiseman",
               "bustName": "Wiseman"
             }
-          ]
+          ],
+          "titleIt": "Il Maurizio Costanza Show"
         },
         {
           "id": "forum_hex",
@@ -2492,7 +2664,8 @@
               "characterSprite": "Skab/!$Judge",
               "bustName": "Judge"
             }
-          ]
+          ],
+          "titleIt": "Forum"
         },
         {
           "id": "lunch_served",
@@ -2505,7 +2678,8 @@
               "characterSprite": "Skab/!$Innkeeper",
               "bustName": "Innkeeper"
             }
-          ]
+          ],
+          "titleIt": "Il Pranzo è Servito"
         },
         {
           "id": "telemick",
@@ -2518,7 +2692,8 @@
               "characterSprite": "Skab/!$Instructor",
               "bustName": "Instructor"
             }
-          ]
+          ],
+          "titleIt": "Telemick"
         },
         {
           "id": "studio_open",
@@ -2531,7 +2706,8 @@
               "characterSprite": "Skab/!$BotJournalist",
               "bustName": "BotJournalist"
             }
-          ]
+          ],
+          "titleIt": "Studio Aperto"
         },
         {
           "id": "beautifool",
@@ -2574,7 +2750,8 @@
               "characterSprite": "Skab/!$Hairdresser",
               "bustName": "Hairdresser"
             }
-          ]
+          ],
+          "titleIt": "Beautifool"
         },
         {
           "id": "bim_bum_bang",
@@ -2592,7 +2769,8 @@
               "characterSprite": "Skab/!$BotMarionette",
               "bustName": "BotMarionette"
             }
-          ]
+          ],
+          "titleIt": "Bim Bum Bang"
         },
         {
           "id": "superchart",
@@ -2605,7 +2783,8 @@
               "characterSprite": "Skab/!$WastelandDJ",
               "bustName": "WastelandDJ"
             }
-          ]
+          ],
+          "titleIt": "Superclassifica Show"
         },
         {
           "id": "coalpo_grosso",
@@ -2618,7 +2797,8 @@
               "characterSprite": "Skab/!$Partygoer",
               "bustName": "Partygoer"
             }
-          ]
+          ],
+          "titleIt": "Coalpo Grosso"
         },
         {
           "id": "know_the_latest",
@@ -2631,9 +2811,11 @@
               "characterSprite": "Skab/!$Jester",
               "bustName": "Jester"
             }
-          ]
+          ],
+          "titleIt": "Lo Sai l'Ultima?"
         }
-      ]
+      ],
+      "nameIt": "Mediahex"
     }
   ]
 }

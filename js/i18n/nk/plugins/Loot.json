@@ -1,0 +1,12 @@
+{
+  "found": "YOU FOUND",
+  "foundWithTier": "YOU FOUND ({tier})",
+  "foundMessage": "\\c[0]YOU FOUND \\c[{color}]{item}",
+  "tier": {
+    "common": "COMMON",
+    "uncommon": "UNCOMMON",
+    "rare": "RARE",
+    "epic": "EPIC",
+    "legendary": "LEGENDARY"
+  }
+}

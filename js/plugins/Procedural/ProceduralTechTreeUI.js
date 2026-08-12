@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Tech Tree (UI) v2.0.0 - horizontal-tab book-spread, vertical DAG with SVG connectors
+ * @plugindesc Tech Tree (UI) v2.1.0 - full-screen book-spread, vertical discipline rail, vertical DAG with SVG connectors
  * @author Omni-Lex
  * @url https://nocoldiz.itch.io/hypernet-explorer
  * @help Requires ProceduralTechTree.js loaded before this file.
@@ -15,14 +15,17 @@
     }
     const PTT = window.ProceduralTechTree;
 
-    // Matches the game-wide stat relabeling (see ItemSystemEquipment.js i18n):
-    // atk->STR, def->CON, mat->INT, mdf->WIS, agi->DEX, luk->PSI. Identical in
-    // English and Italian, same as the equipment sheet.
+    // Matches the game-wide stat relabeling (js/i18n/<lang>/stats.json):
+    // atk->STR, def->CON, mat->INT, mdf->WIS, agi->DEX, luk->PSI in English,
+    // and FRZ/COS/INT/SAG/DES/PSI in Italian, same as the equipment sheet.
     const STAT_NAMES = {
         mhp: 'HP', mmp: 'MP', atk: 'STR', def: 'CON',
         mat: 'INT', mdf: 'WIS', agi: 'DEX', luk: 'PSI'
     };
-    const STAT_NAMES_IT = STAT_NAMES;
+    const STAT_NAMES_IT = {
+        mhp: 'HP', mmp: 'MP', atk: 'FRZ', def: 'COS',
+        mat: 'INT', mdf: 'SAG', agi: 'DES', luk: 'PSI'
+    };
 
     function isIt() { return ConfigManager.language === 'it'; }
     function dbName(entry) {
@@ -84,10 +87,12 @@
 
             if (Input.isTriggered('ok')) { s.handleOk(); return; }
 
+            // The disciplines are a vertical rail down the left edge, so the
+            // axes swap: up/down walks the list, right steps into the tree.
             if (s._section === 'tabs') {
-                if (isLeft) s.cycleTree(-1);
-                else if (isRight) s.cycleTree(1);
-                else if (isDown) { s._section = 'tree'; s._syncSelectionDom(); s._updateRight(); SoundManager.playCursor(); }
+                if (isUp) s.cycleTree(-1);
+                else if (isDown) s.cycleTree(1);
+                else if (isRight) { s._section = 'tree'; s._syncSelectionDom(); s._updateRight(); SoundManager.playCursor(); }
             } else {
                 if (isUp) s.moveTree(-1, 0);
                 else if (isDown) s.moveTree(1, 0);
@@ -138,8 +143,21 @@
                 if (k === 'a') { this._wasdHeld.left = false; this._wasdHoldFrames.left = 0; }
                 if (k === 'd') { this._wasdHeld.right = false; this._wasdHoldFrames.right = 0; }
             };
+            // Every size in the layout is a percentage or a viewport clamp, but
+            // the SVG connectors are measured in pixels once and would be left
+            // pointing at where the nodes used to be. Redraw them whenever the
+            // window changes shape (resolution switch, docking, going
+            // fullscreen), coalesced into one frame.
+            this._resizeListener = () => {
+                if (this._resizeRaf) cancelAnimationFrame(this._resizeRaf);
+                this._resizeRaf = requestAnimationFrame(() => {
+                    this._resizeRaf = 0;
+                    if (this._container) { this._drawLinks(); this._scrollToSelected(); }
+                });
+            };
             window.addEventListener('keydown', this._wasdListener);
             window.addEventListener('keyup', this._wasdUp);
+            window.addEventListener('resize', this._resizeListener);
 
             if (!this._trees || !this._trees.length) { this.popScene(); return; }
 
@@ -199,9 +217,10 @@
         _refreshDOM() {
             if (!this._container) return;
             this._container.innerHTML =
-                `<div class="tt-tabbar">` +
+                `<div class="tt-rail">` +
                 `<div class="back-button tt-back">${T('TechTree.back')}</div>` +
-                `${this._buildTabs()}</div>` +
+                `<div class="tt-rail-title">${T('TechTree.disciplines')}</div>` +
+                `<div class="tt-rail-list">${this._buildTabs()}</div></div>` +
                 `<div class="book-spread tt-spread">` +
                 `<div class="left-page tt-left"><div class="tt-tree"></div></div>` +
                 `<div class="right-page tt-right">${this._buildRight()}</div>` +
@@ -488,8 +507,12 @@
         }
 
         _scrollToSelected() {
-            if (this._section !== 'tree' || !this._container) return;
-            const sel = this._container.querySelector('.tt-node.selected');
+            if (!this._container) return;
+            // The rail scrolls too: on a short screen (a Steam Deck's 800px)
+            // the eight disciplines can run past the bottom of the list.
+            const sel = this._section === 'tree'
+                ? this._container.querySelector('.tt-node.selected')
+                : this._container.querySelector('.tt-tab.selected');
             if (sel) sel.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         }
 
@@ -507,7 +530,11 @@
         }
 
         moveTree(dr, dl) {
-            if (dr < 0 && this._selRow === 0) {
+            // Left off the first lane steps back out onto the discipline rail,
+            // which is where it physically sits. Up out of the first row does
+            // NOT: up/down inside the rail changes discipline, so a player
+            // walking up the tree would flip the whole tab by accident.
+            if (dl < 0 && this._selLane === 0) {
                 this._section = 'tabs';
                 SoundManager.playCursor();
                 this._syncSelectionDom();
@@ -616,7 +643,7 @@
             // detail page, or the tree if it is taller than the left page) and
             // stop the event before it reaches the game.
             this._container.addEventListener('wheel', (e) => {
-                const box = e.target.closest('.tt-right, .tt-tree');
+                const box = e.target.closest('.tt-right, .tt-tree, .tt-rail-list');
                 if (box) box.scrollTop += e.deltaY;
                 e.stopPropagation();
                 e.preventDefault();
@@ -679,6 +706,11 @@
                 window.removeEventListener('keyup', this._wasdUp);
                 this._wasdListener = this._wasdUp = null;
             }
+            if (this._resizeListener) {
+                window.removeEventListener('resize', this._resizeListener);
+                this._resizeListener = null;
+            }
+            if (this._resizeRaf) { cancelAnimationFrame(this._resizeRaf); this._resizeRaf = 0; }
             UITTInput.deactivate();
             if (window.SpecBadge) window.SpecBadge.hide();
             if (this._container) {

@@ -129,6 +129,46 @@
         return h >>> 0;
     }
 
+    // Marker identity: every quest that can be pinned on a map (the compass
+    // arrows in WorldMapReturn.js, the diamonds in WorldMap.js, this board's own
+    // card) is coloured and iconed from its id alone, so the same quest always
+    // reads the same everywhere and two different quests never collide. Neither
+    // is stored on the quest record: deriving it from a hash means an old save,
+    // one loaded before this existed, still gets a stable answer.
+    //
+    // A separate, saturated palette from NOTE_COLORS (the pastel post-it paper):
+    // a pale cream or sage note colour would all but vanish painted on a map.
+    const MARKER_COLORS = [
+        '#e0483e', '#3e7fe0', '#3ea85a', '#e0a13e', '#8a4ee0', '#3ec2c2',
+        '#d43e93', '#c2c23e', '#3ecfa0', '#e0673e', '#5a5ae0', '#a0873e'
+    ];
+
+    // IconSet.png indices, 65-215 in steps of 5: the item/equipment bank of the
+    // sheet (the first 64 icons are HUD stat glyphs and party emblems, no use as
+    // a quest token), spread wide enough that neighbouring quests rarely land on
+    // near-identical icons.
+    const QUEST_ICONS = [
+        65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135,
+        140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215
+    ];
+
+    function markerColorFor(id) {
+        return MARKER_COLORS[hashStr(String(id) + ':mk') % MARKER_COLORS.length];
+    }
+
+    function markerIconFor(id) {
+        return QUEST_ICONS[hashStr(String(id) + ':ic') % QUEST_ICONS.length];
+    }
+
+    // Inline background-position/-size for a single IconSet cell drawn at
+    // `size`px (native icons are 32px, so this also handles the downscale).
+    function iconBadgeStyle(icon, size) {
+        const cols = 16;
+        const col = icon % cols;
+        const row = Math.floor(icon / cols);
+        return `width:${size}px;height:${size}px;background-position:-${col * size}px -${row * size}px;background-size:${cols * size}px auto;`;
+    }
+
     function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
             '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -155,11 +195,14 @@
             ? '<span class="kb-star"></span>'.repeat(Math.min(5, meta.diff)) : '';
         const urgent = (!done && !failed && meta.deadlineHours > 0)
             ? `<div class="kb-urgent">${T('Kanban.urgent')} ${meta.deadlineHours}h</div>` : '';
+        const markerColor = markerColorFor(q.id);
+        const markerIconCss = iconBadgeStyle(markerIconFor(q.id), 30);
 
         return `<div class="kb-card${o.focused ? ' focused' : ''}${done || failed ? ' kb-done' : ''}"
                      ${o.attrs || ''}
-                     style="--rot:${rot}deg; --note-bg:${q.color || '#faf2d3'}; --pin:${pin}; --seal:${seal}">
+                     style="--rot:${rot}deg; --note-bg:${q.color || '#faf2d3'}; --pin:${pin}; --seal:${seal}; --marker:${markerColor}">
           <div class="kb-pin"></div>
+          <div class="kb-quest-icon" style="${markerIconCss}" title="${T('Kanban.mapMarker') || ''}"></div>
           ${urgent}
           <span class="kb-card-title">${esc(q.title)}</span>
           ${meta.giver ? `<span class="kb-card-giver">${esc(meta.giver)}</span>` : ''}
@@ -244,6 +287,12 @@
 .kb-pin { position: absolute; top: 8px; left: 50%; width: 18px; height: 18px; margin-left: -9px;
   border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f0f0f0, var(--pin, #b03030) 55%, #501010);
   box-shadow: 0 3px 4px rgba(0,0,0,0.5); }
+/* The map-marker identity: the same icon+colour this quest is pinned with on
+   every compass/map indicator (WorldMapReturn.js, WorldMap.js). */
+.kb-quest-icon { position: absolute; top: 8px; left: 10px;
+  background-image: url('img/system/IconSet.png'); image-rendering: pixelated;
+  border-radius: 5px; background-color: rgba(43,16,8,0.55);
+  outline: 2px solid var(--marker, #7a4d24); box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
 .kb-card-title { display: block; font-size: 1.02rem; font-weight: bold; line-height: 1.2; margin-bottom: 8px; }
 .kb-card-giver { display: block; font-size: 0.85rem; font-style: italic; opacity: 0.8; margin-bottom: 8px; }
 .kb-card-reward { display: block; font-size: 0.92rem; font-weight: bold; color: #5d3a00; }
@@ -946,8 +995,6 @@
                 </div>`;
             });
 
-            const hint = T('Kanban.colShiftMoveCardOk');
-
             // Replace only the rendered layers: the injected <style> child has to
             // survive every refresh.
             this._el.querySelectorAll('#kb-board-header, #kb-columns, #kb-detail-backdrop')
@@ -956,7 +1003,6 @@
               <div id="kb-board-header">
                 <div class="back-button kb-board-back">${T('Kanban.back')}</div>
                 <span class="kb-board-title">${T('Kanban.questLog')}</span>
-                <span class="kb-board-hint">${hint}</span>
               </div>
               <div id="kb-columns">
                 ${colsHTML.join('<div class="kb-col-divider"></div>')}
@@ -1086,6 +1132,54 @@
         SceneManager.push(Scene_KanbanQuest);
         SceneManager.prepareNextScene(questId);
         return true;
+    };
+
+    // The stable colour/icon a quest is pinned with everywhere it is pointed
+    // to on a map: the board card, the world-map diamonds (WorldMap.js) and the
+    // in-world compass arrows (WorldMapReturn.js). Same id, same answer, always.
+    QuestManager.colorFor = markerColorFor;
+    QuestManager.iconFor = markerIconFor;
+
+    // Every quest the player is actively chasing, reduced to a world-map tile
+    // (map 315 / vars 43-44 space) plus the colour/icon that identify it. This
+    // is the single feed every map/compass marker draws from:
+    //  - ProceduralQuestSystem's own questMarkers() supplies its (possibly
+    //    multi-step) procedural contracts, already limited to the In Progress
+    //    column by its own isTrackedOnBoard() gate;
+    //  - any OTHER quest sitting In Progress on this board that carries its own
+    //    meta.location (a hand-authored quest can set one via setMeta) is
+    //    picked up too, so the compass isn't procedural-quest-only.
+    QuestManager.activeMarkers = function () {
+        const out = [];
+        const seen = new Set();
+        const api = window.ProceduralQuests;
+        if (api && typeof api.questMarkers === 'function') {
+            try {
+                for (const m of api.questMarkers()) {
+                    if (m.wx == null || m.wy == null) continue;
+                    out.push({
+                        qid: m.qid, wx: m.wx, wy: m.wy,
+                        title: m.title, label: m.label, objective: m.objective,
+                        step: m.step, stepCount: m.stepCount, multi: m.multi,
+                        color: this.colorFor(m.qid), icon: this.iconFor(m.qid),
+                    });
+                    seen.add(m.qid);
+                }
+            } catch (e) { }
+        }
+        for (const id of this._questOrder.inProgress) {
+            if (seen.has(id)) continue;
+            const q = this._quests[id];
+            const loc = q && q.meta && q.meta.location;
+            if (!loc || loc.wx == null || loc.wy == null) continue;
+            out.push({
+                qid: id, wx: loc.wx, wy: loc.wy,
+                title: q.title, label: loc.label || q.title, objective: loc.label || q.title,
+                step: 1, stepCount: 1, multi: false,
+                color: this.colorFor(id), icon: this.iconFor(id),
+            });
+        }
+        return out;
     };
 
     // Menu Integration

@@ -604,7 +604,6 @@
     "여성",
     "논바이너리"
   ],
-  "genderChanged": "호르몬 때문에 성별이 {gender}(으)로 바뀌었습니다!",
   "unit": {
     "breathsPerMinute": "{n}회/분",
     "millionPerDay": "{n}백만/일"

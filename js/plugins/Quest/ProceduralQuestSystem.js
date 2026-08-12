@@ -115,7 +115,26 @@
       ?? ($gameVariables ? $gameVariables.value(114) : 0);
   }
 
-  function dayIndex() { return Math.floor(nowMinutes() / 1440); }
+  // ---------------------------------------------------------------------------
+  // Empty world (WorldManager.populationMode). The notices on a board were
+  // pinned up by people, and those people are dead. They are still there, still
+  // readable, and can still be taken on , the target really does spawn , but
+  // nobody is waiting to be told it is done, so a quest taken in an empty world
+  // can never be handed in. See emptyWorldNote / blockedByEmptyWorld below.
+  function isEmptyWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+  }
+
+  // Boards do not rotate in an empty world: nobody takes the old notices down
+  // and nobody pins new ones up, so every board shows the same weathered set
+  // for ever. A constant day is what freezes it, since the day is the board's
+  // whole seed.
+  const EMPTY_WORLD_BOARD_DAY = 0;
+  function dayIndex() {
+    if (isEmptyWorld()) return EMPTY_WORLD_BOARD_DAY;
+    return Math.floor(nowMinutes() / 1440);
+  }
 
   function hoursLeftText(deadlineAt) {
     const mins = deadlineAt - nowMinutes();
@@ -519,7 +538,7 @@
 
   // Anchor coordinate sites near known destinations so "go to (x,y)" is always
   // a reachable spot on the world map (map 315 coordinate space, vars 43/44).
-  // A destination's `base` is its world-map tile; `fastTravelMap` is a pixel
+  // A destination's `base` is its world-map tile; `mapOffset` is a pixel
   // position on the 1232x1039 travel picture (roughly 4.8px per tile) and would
   // land every site far outside the 256x256 world map.
   // Open water cannot be walked to, so a site that rolls onto it is rerolled.
@@ -1462,6 +1481,11 @@
     if (ctx.FACTION == null) ctx.FACTION = o.factionPlain || o.giverLabel;
     o.title = composeTitle(rng, o, ctx);
     o.body = annotateSite(composeBody(rng, o, ctx), ctx);
+    // The notice reads exactly as its poster wrote it, and then says plainly
+    // what the party will find out anyway: nobody is coming to collect it.
+    // Appended rather than substituted, so the errand, the target and the
+    // promised pay are all still legible on the page.
+    if (isEmptyWorld()) o.body += "\n\n" + T('Quests.giverIsDead');
     return o;
   }
 
@@ -2101,6 +2125,15 @@
     const q = st.active[qid];
     if (!q || q.status !== "claimable") return { ok: false };
 
+    // The objectives can all be met , the target really does spawn and really
+    // does die , but the hand-in cannot happen: whoever pinned the notice up is
+    // dead, and there is nobody at the board to collect from. The quest stays
+    // active and claimable for ever rather than failing, so the party keeps
+    // whatever they went and fetched.
+    if (isEmptyWorld()) {
+      return { ok: false, reason: T('Quests.giverIsDead') };
+    }
+
     for (const s of q.steps) {
       if (s.kind === "supply_items") {
         const it = $dataItems[s.itemId];
@@ -2205,7 +2238,11 @@
     for (const q of activeQuests()) {
       if (q.status === "failed") continue;
 
-      if (q.deadlineAt && now >= q.deadlineAt && q.status === "active") {
+      // A deadline is somebody expecting you by a certain hour. In an empty
+      // world nobody is expecting anything, so nothing runs out: a quest that
+      // cannot be handed in must not also be failed, fined and held against
+      // the party for not handing it in.
+      if (q.deadlineAt && now >= q.deadlineAt && q.status === "active" && !isEmptyWorld()) {
         failQuest(q.qid, q.scam
           ? T('Quests.theSellerNeverExistedYouHaveBeenScammed')
           : T('Quests.theDeadlinePassed'));
@@ -2390,9 +2427,25 @@
       const b = bounties()[here.key];
       if (b && !b.killed) {
         const spot = findSpawnTile("bounty:" + here.key, 8, 24);
-        const img = b.criminal
-          ? { name: "Evil01", index: irange(mulberry32(hashStr(here.key)), 0, 7) } // i18n-ignore: sprite sheet name
-          : { name: chance(mulberry32(hashStr(here.key + "m")), 0.5) ? "Dungeon_Monsters1" : "Dungeon_Monsters2", index: irange(mulberry32(hashStr(here.key + "i")), 0, 7) };
+        // i18n-ignore-start: sprite sheet names (img/characters/NPCs, one
+        // character apiece, so the index is always 0)
+        const CRIMINAL_SPRITES = [
+          "NPCs/!$OrcWarrior1", "NPCs/!$Lich3", "NPCs/!$VoidAbstracter1",
+          "NPCs/!$Evil014", "NPCs/!$Evil015", "NPCs/!$GoblinRaider1",
+          "NPCs/!$BotExplorer1", "NPCs/!$Ninja2",
+        ];
+        const BEAST_SPRITES = [
+          "NPCs/!$GoblinJester1", "NPCs/!$GoblinKnight1", "NPCs/!$GoblinCourier1",
+          "NPCs/!$GoblinRecruit1", "NPCs/!$GoblinCleric1", "NPCs/!$Lich1",
+          "NPCs/!$Lich2", "NPCs/!$OrcBrawler1", "NPCs/!$GoblinArtist1",
+          "NPCs/!$VoidSpawn1", "NPCs/!$VoidSpawn2",
+        ];
+        // i18n-ignore-end
+        const pool = b.criminal ? CRIMINAL_SPRITES : BEAST_SPRITES;
+        const img = {
+          name: pool[irange(mulberry32(hashStr(here.key + "i")), 0, pool.length - 1)],
+          index: 0,
+        };
         injectEvent(makeEventData(0, "PQBounty:" + here.key, spot.x, spot.y, img, 2, 1, 1));
       }
     }

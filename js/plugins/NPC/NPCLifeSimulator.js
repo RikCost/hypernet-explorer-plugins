@@ -316,11 +316,18 @@
     };
   }
 
-  function rollLocationHistory(record, homeGroup, rng) {
+  // `nativeChance` (0..1) is how likely this person was born in the town they
+  // live in rather than anywhere on the map. Somebody generated AS a citizen of
+  // a place (Bologna's own Bolognesi) is dealt a 1 and is native by definition;
+  // an NPC met on the road is dealt nothing and keeps the old flat roll over
+  // every destination in the world.
+  function rollLocationHistory(record, homeGroup, rng, nativeChance) {
     const destinations = getDestinations();
     const homeDest = destinationForGroup(homeGroup);
     const fallback = homeDest || (destinations.length ? rng.pick(destinations) : T('NPCLife.partsUnknown'));
-    const birthplace = destinations.length ? rng.pick(destinations) : fallback;
+    const native = homeDest && nativeChance > 0 && rng.next() < nativeChance;
+    const birthplace = native ? homeDest
+      : (destinations.length ? rng.pick(destinations) : fallback);
 
     const history = [];
     const nowYear = yearOf(record._nowMinute);
@@ -550,7 +557,7 @@
   // `salt` re-rolls a life that has already been dealt (rerollLifeRecord); the
   // name alone is otherwise the whole seed, so the same person always gets the
   // same life back in the same world.
-  function ensureLifeRecord(name, homeGroupHint, salt) {
+  function ensureLifeRecord(name, homeGroupHint, salt, opts) {
     const records = getRecords();
     if (!records) return null;
     if (records[name]) return enforceAdultBirth(records[name]);
@@ -572,7 +579,7 @@
 
     record.honesty = rollHonesty(name, profile, rng);
     Object.assign(record, rollBirth(name, profile, rng, nowMinute));
-    rollLocationHistory(record, record.homeGroup, rng);
+    rollLocationHistory(record, record.homeGroup, rng, opts && opts.nativeChance);
     rollCareerHistory(record, profile, rng);
     rollCriminalHistory(record, rng);
     // Some low-morality NPCs start the game already wanted, a seeded bounty
@@ -948,11 +955,30 @@
       }
     }
 
-    const ideologies = window._NPCSocietyDataLoader?.ideologies;
-    if (Array.isArray(ideologies) && ideologies.length > 1 && profile.ideologyIndex != null) {
-      if (sampleCount(rng, RATES.ideologyShift * deltaDays) > 0) {
-        const dir = rng.next() < 0.5 ? -1 : 1;
-        profile.ideologyIndex = (profile.ideologyIndex + dir + ideologies.length) % ideologies.length;
+    // A worldview shifts to a NEIGHBOURING creed, not to the next line of the
+    // file. Ideology.json is authored in thematic blocks, so walking the index
+    // by one used to turn a Trade Unionist into a Feminist Emancipationist one
+    // year and an Anarcho-Capitalist the next, and could walk a citizen
+    // straight into an off-world creed. The move is now measured on the five
+    // axes every creed carries: one of the handful standing nearest to where
+    // this person already stands, inside their own pool, nearer ones likelier.
+    const ideologies = window.NPCShared.ideologyList();
+    const creed = window.NPCShared.ideologyFor(profile);
+    if (ideologies.length > 1 && creed && sampleCount(rng, RATES.ideologyShift * deltaDays) > 0) {
+      const near = window.NPCShared.nearestIdeologies(creed, {
+        alien: !!creed.alien, limit: 7, exclude: creed.id,
+      });
+      if (near.length) {
+        let total = 0;
+        const weights = near.map(e => { const w = 1 / (1 + e.distance / 25); total += w; return w; });
+        let roll = rng.next() * total;
+        let pick = near[near.length - 1];
+        for (let i = 0; i < near.length; i++) {
+          roll -= weights[i];
+          if (roll <= 0) { pick = near[i]; break; }
+        }
+        profile.ideologyIndex = pick.index;
+        profile.ideologyId    = pick.ideo.id;
         const atMinute = lastMinute + Math.floor(rng.next() * Math.max(1, nowMinute - lastMinute));
         pushLifeEvent(record, atMinute, "outlook", "NPCLife.event.worldviewShifted");
       }
@@ -975,8 +1001,18 @@
 
   let _catchUpRunning = false;
 
+
+  // True in a world created with populationMode "empty" (WorldManager).
+  function isEmptyWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+  }
+
   function catchUp(nowMinute) {
     if (_catchUpRunning) return;
+    // Nobody is left to have a life to simulate: no jobs taken, no partners
+    // found, no children born. See WorldManager.populationMode.
+    if (isEmptyWorld()) return;
     if (!$gameSystem || !$gameVariables) return;
     const records = getRecords();
     if (!records) return;

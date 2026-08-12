@@ -79,38 +79,65 @@
  * A class with no entry in classSkillCategories falls back to every category.
  *
  * ============================================================================
- * The sphere grid
+ * The atlas of circles
  * ============================================================================
  *
- * A category is not a list, it is a map: a non-linear graph running from its
- * weakest skills to its strongest, several branches wide, with alternative
- * routes and sideways steps between branches. A pupil may only buy a skill
- * they are standing next to. ONE known neighbour is enough - links are
- * alternative ways in, never joint requirements - and the tier-0 skills are
- * always open, so a pupil who knows nothing still has a way in.
+ * A category is not a list, it is a SPHERE GRID in the manner of Final
+ * Fantasy X's: concentric rings of skills joined by short radial spokes, run
+ * from the school's weakest working outward to its strongest, with upgrade
+ * spurs hanging off the rim that dead-end in its esoteric ones. A pupil may
+ * only buy a skill they are standing next to. ONE known neighbour is enough -
+ * links are alternative ways in, never joint requirements - and the skills on
+ * the innermost ring of the school are always open, so a pupil who knows
+ * nothing still has a way in.
+ *
+ * A school's FORBIDDEN workings are not on the grid at all. They sit alone in
+ * the heart of the figure, joined to nothing and to each other least of all:
+ * the whole school must be known before any of them opens, and then any one of
+ * them may be taken first.
+ *
+ * The plate is drawn as an ALCHEMICAL CIRCLE: a double rule, a thin ring per
+ * tier, a faint guide down every lane, and the squared circle at the heart.
+ * ONE school is drawn at a time, alone on the page: a curriculum of six schools
+ * is six views, not one crowded field, so a circle is read whole instead of
+ * hunted for. The school is changed with the pager on the header bar, or by
+ * walking off the rim left or right. The wheel and Shift zoom; dragging pans;
+ * choosing a skill opens its sheet as a popup over the circle.
+ *
+ * A school OUTSIDE the pupil's curriculum is browsable only once they already
+ * know a skill in it, has no free entrance (they may only walk outward from
+ * what they know), and charges three times the knowledge.
  *
  * The graph is data, authored into each skill's notebox by
  * tools/skills/gen_skill_graph.py (re-runnable; it strips and rewrites its own
  * tags, so hand-tuning survives until the next run):
  *
- *   <Node: tier,branch>   its cell on the grid; tier 0 is an entry point
+ *   <Node: ring,lane>     ring is its distance out, lane its bearing
  *   <Link: 12,45,78>      the skills it borders, inside the same category
  *
+ * The generator draws the figure exactly as this plugin does and deletes any
+ * link that would cross another, so no two links ever overlap on the page.
  * Links are read as symmetric, so a hand-written notebox naming only one side
- * still works. A skill with no <Node:> at all is never blocked by the grid.
+ * still works. A skill with no <Node:> at all is never on a circle, and is never
+ * blocked by one either.
  *
  * ============================================================================
  * Knowledge cost
  * ============================================================================
  *
- * What a skill costs to teach is what it is worth in a fight, not a flat fee:
- * skillPower() scores its resource cost, damage scaling, flat damage, repeats,
- * target breadth, applied effects and its <Forbidden> / <Esoteric> tags, and
- * the price rises as a power of that score. A basic move is ~5 KP, an average
- * skill ~20, a strong one a few hundred, and an eldritch ultimate close to a
- * thousand: each band is roughly an order of magnitude above the last. A
- * PRIMARY school then halves the price (a secondary school is full price), and
- * every skill carries a flat +10 KP on top.
+ * What a skill costs to teach is what it is worth in a fight, not a flat fee.
+ * The MP and TP it asks for is the designer's own verdict on it and is the
+ * leading term; skillPower() reads that first, then damage scaling, flat
+ * damage, repeats, target breadth and applied effects. The plainest skill in
+ * the book costs the base price of 50 KP and everything above it rises as a
+ * power of that score, to a few hundred for an ordinary skill and a couple of
+ * thousand for the strongest ordinary one.
+ *
+ * The two occult tags are priced apart from all of that, because they are not a
+ * matter of degree: an <Esoteric> skill costs TEN times its score and a
+ * <Forbidden> one costs a HUNDRED times (every Forbidden skill is Esoteric too;
+ * it takes the larger multiplier, never both). A PRIMARY school then halves the
+ * price, a secondary school pays full, and nothing is ever cheaper than 50 KP.
  *
  * ============================================================================
  * Skill Categorization
@@ -328,12 +355,34 @@
         return match ? match[1].trim() : null;
     }
 
+    // <MagicSystem:> (gen_magic_system_tags.js) on a skill and <MagicalSystem:>
+    // (gen_class_magic_system_tags.js) on a class: two different tag names on
+    // purpose, one per skill and one per class, read the same way.
+    function getSkillMagicSystem(skillId) {
+        if (!skillId) return null;
+        const skill = $dataSkills[skillId];
+        if (!skill || !skill.note) return null;
+        const match = skill.note.match(/<MagicSystem:\s*([^>]+)>/i);
+        return match ? match[1].trim() : null;
+    }
+
+    function getActorMagicSystem(actorId) {
+        if (!actorId) return null;
+        const classId = actorCategoryManager._classIdFor(actorId);
+        const cls = classId && $dataClasses[classId];
+        if (!cls || !cls.note) return null;
+        const match = cls.note.match(/<MagicalSystem:\s*([^>]+)>/i);
+        return match ? match[1].trim() : null;
+    }
+
     const actorCategoryManager = {
         _primary: [],
         _secondary: [],
         _initialized: false,
         _actorId: 1,
         _classId: 0,
+        _foreign: [],
+        _foreignKey: '',
 
         // Switch the manager to a specific pupil so the KP discounts and the
         // "3.0X / 1.5X KP" badges reflect that actor's class. Recomputes on next use.
@@ -384,15 +433,55 @@
             return this._secondary.includes(category);
         },
 
-        // The categories the pupil's class actually studies (primary first, then
-        // secondary). The training menu shows nothing outside this list, so a
-        // Knight is never offered Necromancy. Returns null when the class has no
-        // table at all (or Categories.json has not loaded yet), which means "no
-        // restriction" rather than "nothing to learn".
+        // A school the pupil's class does NOT study, but in which they already
+        // know a skill: a Knight who picked up one necromantic trick from a
+        // grimoire, a body part or a level-up can go on down that tree from
+        // where they stand. The tree opens, the ordinary adjacency rule still
+        // applies (so only neighbours of what they know are buyable), and every
+        // skill in it is charged FOREIGN_KP_MULT.
+        foreignCategories: function () {
+            this.initialize();
+            const own = this._primary.concat(this._secondary);
+            if (!own.length) return [];   // no table means the whole book is theirs already
+            const actor = (typeof $gameActors !== 'undefined' && $gameActors)
+                ? $gameActors.actor(this._actorId) : null;
+            if (!actor || !actor.skills) return [];
+            const known = actor.skills();
+            // Every rendered card asks the price, so answer from a cache and
+            // rebuild it only when the pupil, their class or their skill list moves.
+            const key = `${this._actorId}:${this._classId}:${known.length}`;
+            if (this._foreignKey === key) return this._foreign;
+            const out = [];
+            for (const skill of known) {
+                if (!skill) continue;
+                const cat = getSkillCategory(skill.id);
+                if (!cat || own.includes(cat) || out.includes(cat)) continue;
+                out.push(cat);
+            }
+            this._foreignKey = key;
+            this._foreign = out;
+            return out;
+        },
+
+        // Is this school open to the pupil only because they already know
+        // something in it? Those skills are charged triple.
+        isForeign: function (category) {
+            if (!category) return false;
+            if (this.isPrimary(category) || this.isSecondary(category)) return false;
+            return this.foreignCategories().includes(category);
+        },
+
+        // The categories the pupil can browse: primary first, then secondary,
+        // then any school they have a foothold in. The training menu shows
+        // nothing outside this list, so a Knight is never offered Necromancy
+        // unless they already know a necromantic skill. Returns null when the
+        // class has no table at all (or Categories.json has not loaded yet),
+        // which means "no restriction" rather than "nothing to learn".
         allowedCategories: function () {
             this.initialize();
             const list = this._primary.concat(this._secondary);
-            return list.length ? list : null;
+            if (!list.length) return null;
+            return list.concat(this.foreignCategories());
         },
 
         getMultiplier: function (skillId) {
@@ -455,17 +544,39 @@
     // about a skill and kpTeachCost() raises that score to a power, which is what
     // turns a linear reading of a skill into an exponential price.
     //
-    //   power ~1  -> 5 KP      (a basic move)
-    //   power ~3  -> 20 KP     (an ordinary skill)
-    //   power ~6  -> 90 KP     (a strong one)
-    //   power ~9  -> 230 KP
-    //   power ~14 -> 600 KP    (a Forbidden esoteric ultimate)
+    // The MP and TP a skill asks for LEADS that score: it is the one number the
+    // designer set by hand on every skill in the book, and it already separates a
+    // 0 MP jab from a 9999 MP working better than any formula reading can.
+    //
+    //   power 1     -> 50 KP     (the base price: a skill that asks nothing)
+    //   power ~2    -> 170 KP    (an ordinary skill)
+    //   power ~3.5  -> 460 KP
+    //   power ~5    -> 850 KP    (the strongest ordinary skills)
+    //
+    // Over the 1279 untagged skills in the book that reads 61 KP at the bottom,
+    // ~370 median and ~1700 at the very top. The occult tags are then a
+    // multiplier on the finished price rather than a term inside the score:
+    // Esoteric x10 (roughly 1,100-5,000 KP) and Forbidden x100, which is a price
+    // nobody pays by accident.
     //=============================================================================
 
-    const KP_TEACH_UNIT = 1.6;    // price of a power-1 skill
-    const KP_TEACH_EXP = 2.25;    // how hard power is punished
-    const KP_TEACH_MIN = 5;       // nothing is free to learn
-    const KP_TEACH_MAX = 4000;    // ceiling, so a broken formula can't price itself out
+    const KP_TEACH_BASE = 50;     // the base price: what a power-1 skill costs
+    const KP_TEACH_EXP = 1.75;    // how hard power is punished
+    const KP_TEACH_MIN = 50;      // no skill is ever cheaper than the base price
+    const KP_TEACH_MAX = 250000;  // ceiling, so a broken formula can't price itself out
+
+    // The two occult tags, priced apart from the score. Every <Forbidden> skill
+    // carries <Esoteric> as well and takes the larger of the two, never both.
+    const KP_ESOTERIC_MULT = 10;
+    const KP_FORBIDDEN_MULT = 100;
+    // What a school nobody taught them costs: a foothold is not a curriculum.
+    const FOREIGN_KP_MULT = 3;
+
+    // A TP point is scarcer than an MP point (TP caps at 100 and is earned in the
+    // fight, MP runs to thousands and is carried into it), so it weighs more.
+    const KP_TP_WEIGHT = 4;
+    const KP_RESOURCE_SOFT = 12;  // MP a skill may ask before the price notices
+    const KP_RESOURCE_WEIGHT = 0.55;
 
     // Stats a damage formula can scale off, biggest multiplier wins. Compiled
     // once: a grid prices every node it draws.
@@ -498,71 +609,93 @@
         return { multiplier: multiplier, flat: flat };
     }
 
+    // Everything the score itself reads. The occult tags are NOT in here: they
+    // multiply the finished price (kpTeachCost), so the 10x and the 100x stay
+    // exactly what they say they are instead of being bent by the exponent.
     function skillPower(skill) {
         if (!skill) return 1;
-        const note = skill.note || '';
-        const resource = (skill.mpCost || 0) + (skill.tpCost || 0);
-        // Resource cost is the designer's own verdict on a skill, but it spans
-        // 0-9999, so it is read logarithmically instead of raw.
-        let power = Math.log2(1 + resource / 10) * 0.9;
+        const resource = (skill.mpCost || 0) + (skill.tpCost || 0) * KP_TP_WEIGHT;
+        // Resource cost is the designer's own verdict on a skill and leads the
+        // score, but it spans 0-9999, so it is read logarithmically, not raw.
+        let power = 1 + Math.log2(1 + resource / KP_RESOURCE_SOFT) * KP_RESOURCE_WEIGHT;
 
         const dmg = skill.damage || {};
         if (dmg.type > 0) {
             const w = kpFormulaWeight(dmg.formula || '');
-            power += Math.min(w.multiplier, 20) * 0.35;
-            power += Math.min(w.flat / 300, 6);
+            power += Math.min(w.multiplier, 25) * 0.07;
+            power += Math.min(w.flat / 1000, 2);
         }
-        power += Math.max(0, (skill.repeats || 1) - 1) * 0.6;
-        power += KP_SCOPE_WEIGHT[skill.scope] !== undefined ? KP_SCOPE_WEIGHT[skill.scope] : 0.3;
+        power += Math.max(0, (skill.repeats || 1) - 1) * 0.25;
+        power += (KP_SCOPE_WEIGHT[skill.scope] !== undefined ? KP_SCOPE_WEIGHT[skill.scope] : 0.3) * 0.35;
 
         for (const eff of (skill.effects || [])) {
             if (!eff) continue;
             switch (eff.code) {
                 case Game_Action.EFFECT_ADD_STATE:
                 case Game_Action.EFFECT_REMOVE_STATE:
-                    power += 0.3 * Math.min(1, Math.max(0.2, eff.value1 || 1)); break;
+                    power += 0.12 * Math.min(1, Math.max(0.2, eff.value1 || 1)); break;
                 case Game_Action.EFFECT_ADD_BUFF:
                 case Game_Action.EFFECT_ADD_DEBUFF:
-                    power += 0.2; break;
+                    power += 0.1; break;
                 case Game_Action.EFFECT_RECOVER_HP:
                 case Game_Action.EFFECT_RECOVER_MP:
-                    power += 0.25; break;
-                case Game_Action.EFFECT_GAIN_TP: power += 0.15; break;
-                case Game_Action.EFFECT_GROW: power += 0.8; break;     // permanent stat growth
-                case Game_Action.EFFECT_LEARN_SKILL: power += 0.5; break;
-                case Game_Action.EFFECT_SPECIAL: power += 0.3; break;
-                case Game_Action.EFFECT_COMMON_EVENT: power += 0.2; break;
+                    power += 0.1; break;
+                case Game_Action.EFFECT_GAIN_TP: power += 0.06; break;
+                case Game_Action.EFFECT_GROW: power += 0.3; break;     // permanent stat growth
+                case Game_Action.EFFECT_LEARN_SKILL: power += 0.2; break;
+                case Game_Action.EFFECT_SPECIAL: power += 0.12; break;
+                case Game_Action.EFFECT_COMMON_EVENT: power += 0.12; break;
             }
         }
 
-        if (/<Esoteric>/i.test(note)) power += 0.5;
-        if (/<Forbidden>/i.test(note)) power *= 1.45;   // the tag is on the game-breakers
-        return Math.max(0.35, power);
+        return Math.max(1, power);
+    }
+
+    // What the occult tags do to a price. Forbidden wins outright: every
+    // Forbidden skill carries Esoteric as well and must not pay both.
+    function kpOccultMultiplier(skill) {
+        const note = (skill && skill.note) || '';
+        if (/<Forbidden>/i.test(note)) return KP_FORBIDDEN_MULT;
+        if (/<Esoteric>/i.test(note)) return KP_ESOTERIC_MULT;
+        return 1;
     }
 
     function kpTeachCost(skill) {
-        const raw = KP_TEACH_UNIT * Math.pow(skillPower(skill), KP_TEACH_EXP);
+        const raw = KP_TEACH_BASE * Math.pow(skillPower(skill), KP_TEACH_EXP)
+            * kpOccultMultiplier(skill);
         return Math.max(KP_TEACH_MIN, Math.min(KP_TEACH_MAX, Math.round(raw)));
     }
 
     // Cost scales with the skill's power; only a PRIMARY school then discounts it
-    // (a secondary school is taught at full price). Every price then carries the
-    // same flat surcharge, so nothing is ever pocket change.
-    const KP_TEACH_SURCHARGE = 10;    // paid on every skill, whatever its power
-
+    // (a secondary school is taught at full price). The base price is a floor the
+    // discount cannot go under, so the cheapest skill in the book is 50 KP to
+    // anybody.
     Game_System.prototype.getSkillKnowledgeCost = function (skillId, actorId) {
         const skill = $dataSkills[skillId];
-        if (!skill) return 10 + KP_TEACH_SURCHARGE;
+        if (!skill) return KP_TEACH_MIN;
         // The badges, the discounts and this price all have to be reading the same
         // pupil; every caller names one, so honour it rather than whichever actor
         // the manager happens to be holding.
         if (actorId) actorCategoryManager.setActor(actorId);
         let cost = kpTeachCost(skill);
         const category = getSkillCategory(skillId);
-        if (category && actorId && actorCategoryManager.isPrimary(category)) {
-            cost = Math.max(1, Math.floor(cost * 0.5));
+        if (category && actorId) {
+            if (actorCategoryManager.isPrimary(category)) cost = Math.floor(cost * 0.5);
+            // A school nobody taught them: they are reading it off their own
+            // one trick, and it costs them three times over.
+            else if (actorCategoryManager.isForeign(category)) cost *= FOREIGN_KP_MULT;
         }
-        return cost + KP_TEACH_SURCHARGE;
+        // A pupil whose class is itself filed under a magic system (Witch's
+        // Arcane, Fire Mage's Thermodynamics, ...) reads a spell of that same
+        // system half as dear again, on top of whatever the school discount
+        // already did: the two are independent coupons, not alternatives.
+        if (actorId) {
+            const skillSystem = getSkillMagicSystem(skillId);
+            if (skillSystem && skillSystem === getActorMagicSystem(actorId)) {
+                cost = Math.floor(cost * 0.5);
+            }
+        }
+        return Math.max(KP_TEACH_MIN, cost);
     };
 
     //=============================================================================
@@ -576,10 +709,11 @@
     //   value = KP_BASE * ratio ^ KP_CURVE, clamped to [KP_MIN, KP_MAX]
     //
     // At parity that is 3 KP; half again the party's level pays ~5.5; double
-    // pays ~8.5; quadruple hits the 25 KP ceiling. Teaching a skill costs 5 KP
-    // to a few hundred by its power (getSkillKnowledgeCost, median ~20 before
-    // the school discount), so an ordinary skill is a handful of even fights or
-    // one good bounty away, while an ultimate is a campaign's worth of them.
+    // pays ~8.5; quadruple hits the 25 KP ceiling. Teaching a skill costs 50 KP
+    // at the base price and a few hundred for an ordinary one
+    // (getSkillKnowledgeCost, median ~370 before the school discount), so a
+    // skill is a run of fights or a couple of bounties away, while an esoteric
+    // working is a campaign's worth of them and a Forbidden one is a lifetime's.
     //=============================================================================
 
     const KP_BASE = 3;            // value of an exactly level-matched enemy
@@ -594,7 +728,7 @@
     const KP_QUEST_BASE = { 1: 5, 2: 10, 3: 20, 4: 40, 5: 70 };
 
     const KP_FUSION_PREMIUM = 1.25; // forging costs more than the parts teach
-    const KP_FUSION_MIN = 15;
+    const KP_FUSION_MIN = 50;       // the base price: a forging is never cheaper
 
     function kpForEnemy(enemyLevel, partyLevel) {
         const pl = Math.max(1, partyLevel || 1);
@@ -671,6 +805,11 @@
     };
 
     Game_System.prototype.addCustomSpell = function (skill) {
+        // Its own lane on the maker's plate, so no two fusions land on top of
+        // each other. Ring 0 and no <Link:> is what makes it an island.
+        const mine = this.getCustomSpells().filter(s => s && s._ownerActorId === skill._ownerActorId);
+        skill.note = String(skill.note || '').replace(/\n?<Node:[^>]*>/i, '')
+            + '\n<Node: 0,' + mine.length + '>';
         this.getCustomSpells().push(skill);
         if (typeof $dataSkills !== 'undefined' && $dataSkills) $dataSkills[skill.id] = skill;
     };
@@ -760,7 +899,11 @@
         fused.description = T(
             recIsSkill ? 'SkillMaster.fusedSkillDesc' : 'SkillMaster.fusedSpellDesc',
             { parts: names, dominant: dominant.name });
-        fused.note = '<customSpell>';
+        // A fusion is nobody's school but its maker's: it is filed under the
+        // Fusion category, which is drawn per pupil, and it stands alone on the
+        // plate (ring 0, its own lane, joined to nothing) because it was not
+        // walked to - it was made.
+        fused.note = '<customSpell>\n<category:' + FUSION_CATEGORY + '>';
         fused.meta = { customSpell: true };
         fused._customSpell = true;
         fused._ownerActorId = actorId;
@@ -964,14 +1107,25 @@
         const categories = new Set();
         categories.add("All");   // i18n-ignore: category id
 
+        // A school whose every skill is of the wrong nature for this world has
+        // nothing left to teach, so it is not a school here at all: it leaves
+        // the tab list and the atlas rather than opening onto a blank seal.
+        const MN = window.MagicNature;
+        const filterNature = !!(MN && MN.isFiltering());
+
         for (const skill of $dataSkills) {
             if (!skill) continue;
+            if (skill._customSpell) continue;   // the Fusion school is added below, per pupil
+            if (filterNature && !MN.allowsData(skill)) continue;
             const categoryMatch = skill.note.match(/<category:(.+?)>/i);
             if (categoryMatch) {
                 if (allowed && !allowed.includes(categoryMatch[1].trim())) continue;
                 categories.add(categoryMatch[1]);
             }
         }
+        // A pupil who has forged anything gets their own school for it, whatever
+        // their class studies.
+        if (getSkillsByCategory(FUSION_CATEGORY).length) categories.add(FUSION_CATEGORY);
 
         return Array.from(categories);
     }
@@ -1004,6 +1158,15 @@
     }
 
     function getSkillsByCategory(category) {
+        // The maker's own school: only the focused pupil's fusions, and they are
+        // the one place a <customSpell> is ever listed.
+        if (category === FUSION_CATEGORY) {
+            const actorId = (SceneManager._scene && SceneManager._scene._teachActorId) || 0;
+            return $gameSystem.getCustomSpells()
+                .filter(s => s && s.name && s._ownerActorId === actorId)
+                .map(s => $dataSkills[s.id] || s)
+                .filter(Boolean);
+        }
         const skills = [];
         // Build the category regex once per query instead of once per skill.
         const catRegex = category === "All" ? null : new RegExp(`<category:${category}>`, 'i');
@@ -1011,9 +1174,18 @@
         // skills of every school their class studies and nothing outside them.
         const allowed = catRegex ? null : actorCategoryManager.allowedCategories();
 
+        // How much magic this world has (window.MagicNature). A severed world
+        // never learned the magical half of the book and an unbound one never
+        // needed the mundane half: the skill is not on the seal at all, so the
+        // atlas is redrawn around what is left rather than showing a node
+        // nobody can ever buy. A skill a character already KNOWS is untouched.
+        const MN = window.MagicNature;
+        const filterNature = !!(MN && MN.isFiltering());
+
         for (const skill of $dataSkills) {
             if (!skill || !skill.name || skill.name.startsWith('<--')) continue;
             if (skill._customSpell) continue; // fused spells never appear in the browse list
+            if (filterNature && !MN.allowsData(skill)) continue;
 
             if (catRegex) {
                 if (catRegex.test(skill.note)) skills.push(skill);
@@ -1030,19 +1202,19 @@
     }
 
     //=============================================================================
-    // Skill graph - the sphere grid
+    // Skill graph - what a school is made of
     //
     // A category is not a list, it is a map. Where each skill sits and what it
     // borders is authored into the noteboxes by tools/skills/gen_skill_graph.py:
     //
-    //     <Node: tier,branch>    its cell; tier 0 is an entry point
+    //     <Node: tier,branch>    tier is its ring, branch its ray; 0 is the heart
     //     <Link: 12,45,78>       the skills it is adjacent to (same category)
     //
     // A pupil may only buy what they are standing next to. ONE known neighbour
     // is enough: links are alternative ways in, never joint requirements, which
-    // is the whole rule of the grid. Tier 0 is always open, so a pupil who knows
-    // nothing at all still has a way in, and a skill outside the grid entirely
-    // (a fused spell, an uncategorised leftover) is never blocked by it.
+    // is the whole rule of the circle. Tier 0 is always open, so a pupil who knows
+    // nothing at all still has a way in, and a skill on no circle at all
+    // (a fused spell, an uncategorised leftover) is never blocked by one.
     //
     // Links are stored on both endpoints and read as symmetric anyway, so a
     // hand-edited notebox that names only one side still works.
@@ -1050,6 +1222,9 @@
 
     const NODE_RE = /<Node:\s*(\d+)\s*,\s*(\d+)\s*>/i;
     const LINK_RE = /<Link:\s*([\d,\s]*)>/i;
+    // The maker's own school: every spell a pupil has forged, and nothing
+    // else. Drawn per pupil, so two characters never see each other's work.
+    const FUSION_CATEGORY = 'Fusion';   // i18n-ignore: category id
 
     const SkillGraph = {
         _nodes: null,        // skillId -> { tier, branch, category }
@@ -1095,24 +1270,99 @@
             return this._links[skillId] || [];
         },
 
+        // A forbidden working sits in the heart of the figure joined to nothing:
+        // no path reaches it, and it opens only once the whole school around it
+        // is known. Then any one of them may be taken first.
+        isForbidden: function (skillId) {
+            const skill = $dataSkills[skillId];
+            return !!(skill && /<Forbidden>/i.test(skill.note || ''));
+        },
+
+        // The school's forbidden core, and the skills that must be finished
+        // before it opens. Cached per category: neither list ever changes.
+        _core: {},
+        core: function (category) {
+            if (this._core[category]) return this._core[category];
+            const inner = [], outer = [];
+            for (const skill of $dataSkills) {
+                if (!skill || !skill.name || skill.name.startsWith('<--')) continue;
+                if (getSkillCategory(skill.id) !== category) continue;
+                (this.isForbidden(skill.id) ? inner : outer).push(skill.id);
+            }
+            const entry = { forbidden: inner, school: outer };
+            this._core[category] = entry;
+            return entry;
+        },
+
+        // Has this pupil finished everything the school teaches short of its
+        // forbidden core?
+        schoolMastered: function (actor, category) {
+            if (!actor || !category) return false;
+            const school = this.core(category).school;
+            return school.length > 0 && school.every(id => actor.isLearnedSkill(id));
+        },
+
         // A skill nobody has to walk to: the grid's entrance, or a skill that was
-        // never put on a grid in the first place.
+        // never put on a grid in the first place. The entrance is the innermost
+        // ring the SCHOOL occupies, which is ring 1 wherever a forbidden core
+        // holds ring 0.
         isEntry: function (skillId) {
             const node = this.node(skillId);
-            return !node || node.tier === 0;
+            if (!node) return true;
+            if (this.isForbidden(skillId)) return false;
+            const category = getSkillCategory(skillId);
+            if (!category) return node.tier === 0;
+            const floor = this._entryTier(category);
+            return node.tier === floor;
+        },
+
+        _entryTiers: {},
+        _entryTier: function (category) {
+            if (this._entryTiers[category] !== undefined) return this._entryTiers[category];
+            let floor = Infinity;
+            for (const id of this.core(category).school) {
+                const node = this.node(id);
+                if (node && node.tier < floor) floor = node.tier;
+            }
+            if (!isFinite(floor)) floor = 0;
+            this._entryTiers[category] = floor;
+            return floor;
         },
 
         // Can this pupil buy it right now? Known skills are not "open" (there is
         // nothing left to buy), which is what the UI colours them by.
+        //
+        // A school outside the pupil's curriculum has no entrance: they got in
+        // through the one skill they already know and may only walk outward
+        // from it, so the free tier-0 entry does not apply there.
         isOpen: function (actor, skillId) {
             if (!actor || actor.isLearnedSkill(skillId)) return false;
-            if (this.isEntry(skillId)) return true;
+            // Sandbox play (and a party led by "test") is a workshop: the whole
+            // book is open in any order, so the grid never blocks anything.
+            if (isWorkshopMode()) return true;
+            // the price badge and this gate have to be reading the same pupil
+            if (actor.actorId) actorCategoryManager.setActor(actor.actorId());
+            const category = getSkillCategory(skillId);
+            // The core is walled off: finish the school and every one of them
+            // opens at once, in any order.
+            if (this.isForbidden(skillId)) return this.schoolMastered(actor, category);
+            const foreign = actorCategoryManager.isForeign(category);
+            if (!foreign && this.isEntry(skillId)) return true;
             return this.links(skillId).some(id => actor.isLearnedSkill(id));
         },
 
         // The skills that would open this one, for the "you are not next to it
-        // yet" line on the right page.
-        openers: function (skillId) {
+        // yet" line on the right page. A forbidden working is opened by the
+        // school itself, so it answers with what is still missing from it.
+        openers: function (skillId, actor) {
+            if (this.isForbidden(skillId)) {
+                const school = this.core(getSkillCategory(skillId)).school;
+                return school
+                    .filter(id => !(actor && actor.isLearnedSkill(id)))
+                    .map(id => $dataSkills[id])
+                    .filter(s => s && s.name)
+                    .slice(0, 8);
+            }
             return this.links(skillId)
                 .map(id => $dataSkills[id])
                 .filter(s => s && s.name);
@@ -1120,9 +1370,21 @@
 
         // Nodes and edges of one category, laid out on the (tier, branch) grid.
         // Cached: the shape is static, only the pupil's colours change.
+        invalidate: function () {
+            this._nodes = null;
+            this._links = null;
+            this._graphs = null;
+            this._core = {};
+            this._entryTiers = {};
+        },
+
         graph: function (category) {
             this._build();
-            if (this._graphs[category]) return this._graphs[category];
+            // The Fusion plate belongs to one pupil, so it is cached per pupil.
+            const key = category === FUSION_CATEGORY
+                ? `${category}:${$gameParty && SceneManager._scene && SceneManager._scene._teachActorId || 0}`
+                : category;
+            if (this._graphs[key]) return this._graphs[key];
 
             const nodes = [];
             for (const skill of getSkillsByCategory(category)) {
@@ -1153,12 +1415,224 @@
                 tiers = Math.max(tiers, n.tier + 1);
                 branches = Math.max(branches, n.branch + 1);
             }
-            this._graphs[category] = { nodes: nodes, edges: edges, tiers: tiers, branches: branches };
-            return this._graphs[category];
+            this._graphs[key] = { nodes: nodes, edges: edges, tiers: tiers, branches: branches };
+            return this._graphs[key];
         }
     };
 
     window.SkillGraph = SkillGraph;
+
+    //=============================================================================
+    // The atlas of circles
+    //
+    // A school is not a lattice of columns, it is an ALCHEMICAL CIRCLE laid out
+    // as a sphere grid: ring inside ring around a heart. Every ring is a tier of
+    // the grid and every lane a bearing, so a skill keeps the same bearing on
+    // every ring it appears on and a spoke always runs outward along a lane. The
+    // heart is the school's forbidden core where it has one, and its innermost
+    // ordinary ring where it does not.
+    //
+    // ONE school is drawn at a time, alone on the page: a circle is a figure to be
+    // read whole, and six of them crowded into one field is a field, not a
+    // figure. The school being read is changed with the pager on the header bar
+    // or by walking off the rim of the circle, and every school keeps its own zoom
+    // and its own cursor, so leaving one and coming back is not starting over.
+    // The line-work around each circle (the rules, the tier rings, the lane
+    // guides and the squared circle at its heart) is the same alchemical figure
+    // for every school; what tells two schools apart is the shape of their grid.
+    //=============================================================================
+
+    const TAU = Math.PI * 2;
+
+    const CIRCLE_NODE = 42;        // node diameter
+    const CIRCLE_MIN_ARC = 118;    // closest two skills may come on one ring
+    const CIRCLE_RING_STEP = 116;  // distance between two rings, on a shallow school
+    const CIRCLE_RING_STEP_MIN = 86;  // ... and on a deep one, which packs tighter
+    const CIRCLE_RING_EASY = 12;   // tiers a school may have before it starts packing
+    const CIRCLE_R0 = 132;         // the first ring, when the heart holds one skill
+    const CIRCLE_MARGIN = 104;     // ink and name banner outside the outermost ring
+    const CIRCLE_LABEL_W = 106;    // width a skill's name is allowed
+    const CIRCLE_BANNER_ROOM = 70; // room under the figure for the school's banner
+    const ATLAS_PAD = 90;        // clear air around the circle on its own page
+    const ATLAS_LEGEND_H = 156;  // header bar + school pager + legend row above it
+    const ATLAS_ZOOM_MIN = 0.08;   // far enough back to hold the deepest circle whole
+    const ATLAS_ZOOM_MAX = 1.6;
+    const ATLAS_WHEEL_STEP = 1.05;  // one notch of the wheel
+    const ATLAS_ZOOM_STEP = 1.07;  // one notch, as a factor: small, so the wheel is a nudge
+    const ATLAS_READ_ZOOM = 0.66;  // the smallest a name is still worth reading at
+    const ATLAS_LABEL_MAX = 2.6;   // most a name may be grown back by
+    const ATLAS_ICON_SHARE = 0.55; // an icon takes this share of the name's growth
+    const ATLAS_FAR_ZOOM = 0.42;   // below this the names come off and the circles stand alone
+
+    const SkillAtlas = {
+        _atlas: null,
+        _key: null,
+
+        // One stable number per school name: the circle's figure, its phase and its
+        // terminals are all drawn from it.
+        _hash: function (str) {
+            let h = 2166136261;
+            for (let i = 0; i < str.length; i++) {
+                h ^= str.charCodeAt(i);
+                h = Math.imul(h, 16777619);
+            }
+            return h >>> 0;
+        },
+
+        // One school, on a page of its own. Cached on that school: the geometry
+        // is static, only the pupil's colours change and those are painted on
+        // top of it. An array is still accepted, since a caller holding a whole
+        // curriculum means "draw the first of these".
+        build: function (category) {
+            const name = Array.isArray(category) ? category[0] : category;
+            // The magic level is part of the key: a severed and an unbound
+            // world draw DIFFERENT seals for the same school (the skills of
+            // the wrong nature are not on it), and this cache outlives a world
+            // switch inside one session.
+            const MN = window.MagicNature;
+            const key = String(name || '') + '|' + ((MN && MN.level && MN.level()) || 'normal');
+            if (this._atlas && this._key === key) return this._atlas;
+            const circle = name ? this._circle(name) : null;
+            const atlas = this._frame(circle && circle.nodes.length ? circle : null);
+            atlas.index = {};
+            for (const s of atlas.circles) {
+                for (const node of s.nodes) atlas.index[node.id] = node;
+            }
+            // Consumers compare atlas.category to a plain school name, so the
+            // cache suffix stays out of it.
+            atlas.category = String(name || '');
+            atlas.key = key;
+            this._key = key;
+            this._atlas = atlas;
+            return atlas;
+        },
+
+        invalidate: function () {
+            this._atlas = null;
+            this._key = null;
+        },
+
+        // One school, laid out as concentric rings around its heart. A ring is
+        // pushed out until no two skills on it come closer than CIRCLE_MIN_ARC, so
+        // a crowded tier makes a wider ring rather than a tangle.
+        _circle: function (category) {
+            const graph = SkillGraph.graph(category);
+            if (!graph || !graph.nodes.length) return null;
+            const seed = this._hash(category);
+
+            const branchValues = Array.from(new Set(graph.nodes.map(n => n.branch))).sort((a, b) => a - b);
+            const rayOf = {};
+            branchValues.forEach((b, i) => { rayOf[b] = i; });
+            const rays = Math.max(1, branchValues.length);
+            const rayStep = TAU / rays;
+            // North, turned a little off true by the school's own name, so two
+            // circles side by side are never the same figure twice.
+            const phase = -Math.PI / 2 + (seed % 17) / 17 * rayStep;
+
+            const tiers = Array.from(new Set(graph.nodes.map(n => n.tier))).sort((a, b) => a - b);
+            // A school of twenty tiers drawn at a shallow school's spacing would
+            // be a circle nobody could hold on the page, so a deep one packs its
+            // rings tighter, down to a floor that still clears a name.
+            const ringStep = Math.max(CIRCLE_RING_STEP_MIN,
+                CIRCLE_RING_STEP * Math.min(1, CIRCLE_RING_EASY / Math.max(1, tiers.length)));
+            const nodes = [];
+            const rings = [];
+            let prev = -1;
+            let outermost = 0;
+
+            tiers.forEach((tier, rank) => {
+                const ring = graph.nodes.filter(n => n.tier === tier)
+                    .sort((a, b) => rayOf[a.branch] - rayOf[b.branch] || a.id - b.id);
+                const angles = ring.map(n => phase + rayStep * rayOf[n.branch]);
+                // Two skills authored onto the same ray of the same ring would sit
+                // one on top of the other; step the later one part of a ray over.
+                for (let i = 1; i < angles.length; i++) {
+                    if (Math.abs(angles[i] - angles[i - 1]) < 1e-6) angles[i] += rayStep * 0.44;
+                }
+
+                let r;
+                if (rank === 0 && ring.length === 1) {
+                    r = 0;                                  // the heart itself
+                } else {
+                    let tightest = TAU;
+                    if (angles.length > 1) {
+                        const sorted = angles.slice().sort((a, b) => a - b);
+                        for (let i = 0; i < sorted.length; i++) {
+                            const d = (i === sorted.length - 1)
+                                ? sorted[0] + TAU - sorted[i]
+                                : sorted[i + 1] - sorted[i];
+                            if (d > 1e-6) tightest = Math.min(tightest, d);
+                        }
+                    }
+                    const spread = angles.length > 1 ? CIRCLE_MIN_ARC / tightest : CIRCLE_R0;
+                    r = Math.max(spread, prev > 0 ? prev + ringStep : CIRCLE_R0);
+                }
+
+                ring.forEach((n, i) => {
+                    const a = angles[i];
+                    nodes.push({
+                        id: n.id, skill: n.skill, category: category,
+                        tier: n.tier, branch: n.branch, ring: rank,
+                        angle: a, radius: r,
+                        x: Math.cos(a) * r, y: Math.sin(a) * r,
+                        ax: 0, ay: 0
+                    });
+                });
+                if (r > 0) rings.push(r);
+                prev = r;
+                outermost = Math.max(outermost, r);
+            });
+
+            const byId = {};
+            for (const n of nodes) byId[n.id] = n;
+            const edges = [];
+            for (const [a, b] of graph.edges) {
+                if (byId[a.id] && byId[b.id]) edges.push([byId[a.id], byId[b.id]]);
+            }
+
+            const outer = outermost + 46;
+            return {
+                category: category,
+                nodes: nodes, edges: edges,
+                rings: rings, rays: rays, rayStep: rayStep, phase: phase, seed: seed,
+                inner: Math.min(outer * 0.5, rings.length ? rings[0] * 0.46 : CIRCLE_R0 * 0.46),
+                outer: outer,
+                radius: outermost + CIRCLE_MARGIN,
+                cx: 0, cy: 0
+            };
+        },
+
+        // The circle, centred on a page cut to fit it and nothing else. The room
+        // below is a little deeper than the room above: the school's banner is
+        // written under the figure and must not be cropped off the page.
+        _frame: function (circle) {
+            if (!circle) return { circles: [], width: 0, height: 0 };
+            const size = circle.radius * 2;
+            const width = Math.round(size + ATLAS_PAD * 2);
+            const height = Math.round(size + ATLAS_PAD * 2 + CIRCLE_BANNER_ROOM);
+            circle.cx = width / 2;
+            circle.cy = ATLAS_PAD + circle.radius;
+            for (const n of circle.nodes) {
+                n.ax = circle.cx + n.x;
+                n.ay = circle.cy + n.y;
+            }
+            return { circles: [circle], width: width, height: height };
+        },
+
+        // The plate's edge, and nothing else. Every line drawn across this page
+        // is a link between two skills: tier rings, lane guides and the figure
+        // at the heart were decoration, and decoration crossing the graph reads
+        // as part of it.
+        glyph: function (circle) {
+            const cx = circle.cx.toFixed(1), cy = circle.cy.toFixed(1);
+            const ring = (r, w, op) =>
+                `<circle cx="${cx}" cy="${cy}" r="${Math.max(1, r).toFixed(1)}" fill="none" stroke-width="${w}" stroke-opacity="${op}" />`;
+            return `<g class="sg-circle" data-circle="${circle.category}" fill="none" stroke="currentColor">`
+                + ring(circle.outer, 2.2, 0.85) + ring(circle.outer - 10, 1.1, 0.5) + `</g>`;
+        }
+    };
+
+    window.SkillAtlas = SkillAtlas;
 
     //=============================================================================
     // Window_SkillCategory - Grid Layout
@@ -1193,6 +1667,8 @@
                     commandName += " (3x)";
                 } else if (actorCategoryManager.isSecondary(category)) {
                     commandName += " (1.5x)";
+                } else if (actorCategoryManager.isForeign(category)) {
+                    commandName += ` (${T('SkillMaster.foreignSchool')})`;
                 }
             }
             const icon = getCategoryIcon(category);
@@ -1843,20 +2319,6 @@
     // Number of columns used by the per-category skill grid (left page of the split spread).
     const SKILL_GRID_COLS = 2;
 
-    // Sphere-grid geometry, in page pixels. A tier is a column and a branch is a
-    // row, so the grid always reads left (weakest, the way in) to right.
-    // The lattice now owns the whole spread, so its spacing is not fixed: it is
-    // stretched to fill the page it was given, between these bounds, and a grid
-    // smaller than the page is centred on it rather than pinned to the corner.
-    const GRID_NODE = 42;      // node diameter (floor)
-    const GRID_NODE_MAX = 62;
-    const GRID_COL_W = 92;     // distance between tiers (floor)
-    const GRID_COL_W_MAX = 220;
-    const GRID_ROW_H = 68;     // distance between branches (floor)
-    const GRID_ROW_H_MAX = 150;
-    const GRID_PAD = 26;       // margin around the whole grid
-    const GRID_LEGEND_H = 96;  // header bar + legend row above the lattice
-
     // Pupils offered by the companion switcher. Matches the Skills scene, which
     // lists every party member (reserves included) rather than the battle party.
     function getSwitchableMembers() {
@@ -1882,6 +2344,13 @@
         this._selectedCategoryIndex = 0;
         this._selectedSkillIndex = 0;
         this._selectedActionIndex = 0;
+        // Where the cursor stands on the circle, which is a skill rather than an
+        // index: the circle is a figure, not a list, and the cursor walks it.
+        this._focusSkillId = 0;
+        this._atlasZoom = 0;
+        // The school on the page, and what every other school was left at.
+        this._atlasCategory = null;
+        this._atlasMemory = {};
         // True when the cursor has walked off the bottom of the Magic grid onto
         // the Fuse Spells button, which is a focus target of its own.
         this._categoryFuseFocused = false;
@@ -1911,6 +2380,7 @@
                         const skillIdx = skills.findIndex(s => s.id === skillId);
                         if (skillIdx !== -1) {
                             this._selectedSkillIndex = skillIdx;
+                            this._focusSkillId = skillId;
                             this._viewMode = 'detail';
                             this._selectedActionIndex = 0;
                             this._preselectedSkillId = 0;
@@ -1982,6 +2452,7 @@
         // Styles for the shared skill inspect block (.inspect-*) rendered on the
         // right page; owned by CategorizedBattleSkills' SkillDetails service.
         if (window.SkillDetails) window.SkillDetails.injectStyles();
+        this.injectAtlasStyles();
 
         this._dndContainer = document.createElement('div');
         this._dndContainer.id = 'menu-container';
@@ -2017,16 +2488,28 @@
 
         document.body.appendChild(this._dndContainer);
 
-        // Wheel scroll on category/skills list regardless of focus
+        // Wheel scroll on category/skills list regardless of focus. On the atlas
+        // the wheel zooms instead, about the point it is pointing at.
         this._dndContainer.addEventListener("wheel", (e) => {
             e.preventDefault();
             let box = e.target.closest && e.target.closest('.skill-scroll-box');
             if (!box) {
                 box = document.getElementById('category-scroll-box-left') ||
                       document.getElementById('category-scroll-box-right') ||
-                      document.getElementById('skills-scroll-box');
+                      document.getElementById('skills-scroll-box') ||
+                      document.getElementById('skill-atlas-box');
             }
-            if (box) box.scrollTop += e.deltaY;
+            if (!box) return;
+            if (box.id === 'skill-atlas-box') {
+                const rect = box.getBoundingClientRect();
+                this.setAtlasZoom(
+                    this.atlasZoom() * (e.deltaY > 0 ? 1 / ATLAS_WHEEL_STEP : ATLAS_WHEEL_STEP),
+                    box.scrollLeft + (e.clientX - rect.left),
+                    box.scrollTop + (e.clientY - rect.top)
+                );
+                return;
+            }
+            box.scrollTop += e.deltaY;
         }, { passive: false });
 
         // Inject separation of layout styles
@@ -2054,194 +2537,477 @@
     };
 
     //=========================================================================
-    // The sphere grid, drawn
+    // The atlas, drawn
     //
-    // The left page of a category is the graph itself: edges as one SVG under
-    // the nodes, nodes as absolutely positioned cards on the (tier, branch)
-    // lattice. Learned skills are lit, the skills bordering them are open to
-    // buy, everything else is dimmed but still readable, so a pupil can see
-    // where a branch goes before committing to it.
+    // The spread holds ONE school: its circle, alone, taking both pages. Learned
+    // skills are lit, the skills bordering them are open to buy and everything
+    // else is dimmed but still readable. The other schools are a page turn away
+    // (the pager on the header bar, or walking off the rim left or right), and
+    // each of them keeps the zoom and the cursor it was left at.
     //=========================================================================
 
-    // "All" is a flat browse list (a graph of every school at once would be
-    // soup); a real category is drawn as its grid, unless it has no grid data
-    // at all, in which case the old list is still a working fallback.
+    // Every school the pupil studies, in the order the shelf lists them.
+    Scene_SkillEncyclopedia.prototype.atlasCategories = function () {
+        const split = this.getSplitCategoriesCached();
+        return split.Skill.filter(c => c !== 'All').concat(split.Magic);   // i18n-ignore: category id
+    };
+
+    // The school on the page. "All" is not a circle of its own, so it opens on the
+    // first school of the curriculum, and a school the pupil has stopped
+    // studying (the pupil switcher) falls back the same way.
+    Scene_SkillEncyclopedia.prototype.viewedCategory = function () {
+        const list = this.atlasCategories();
+        if (!list.length) return null;
+        if (!this._atlasCategory || !list.includes(this._atlasCategory)) {
+            const chosen = this._selectedCategory;
+            this._atlasCategory = list.includes(chosen) ? chosen : list[0];
+        }
+        return this._atlasCategory;
+    };
+
+    Scene_SkillEncyclopedia.prototype.currentAtlas = function () {
+        return SkillAtlas.build(this.viewedCategory());
+    };
+
+    // Turn the page to another school. The cursor and the zoom of the one being
+    // left are remembered, so coming back lands where it was left standing.
+    Scene_SkillEncyclopedia.prototype.showAtlasCategory = function (category) {
+        const list = this.atlasCategories();
+        if (!category || !list.includes(category) || category === this._atlasCategory) return false;
+        if (!this._atlasMemory) this._atlasMemory = {};
+        if (this._atlasCategory) {
+            this._atlasMemory[this._atlasCategory] = {
+                skillId: this._focusSkillId, zoom: this._atlasZoom
+            };
+        }
+        this._atlasCategory = category;
+        this._selectedCategory = category;
+        if (this._skillListWindow) this._skillListWindow.setCategory(category);
+        const kept = this._atlasMemory[category];
+        this._atlasZoom = 0;
+        this._focusSkillId = 0;
+        if (kept && this.currentAtlas().index[kept.skillId]) {
+            this._focusSkillId = kept.skillId;
+            this._atlasZoom = kept.zoom || 0;
+        } else {
+            this.defaultGraphFocus();
+        }
+        return true;
+    };
+
+    // The pager: one school forward or back, wrapping, so a curriculum is
+    // walked end to end without going back to the shelf.
+    Scene_SkillEncyclopedia.prototype.pageAtlasSchool = function (dir) {
+        const list = this.atlasCategories();
+        if (list.length <= 1) return false;
+        const cur = list.indexOf(this.viewedCategory());
+        const next = ((cur < 0 ? 0 : cur) + dir + list.length) % list.length;
+        if (!this.showAtlasCategory(list[next])) return false;
+        SoundManager.playCursor();
+        this.refreshUISkillDOM();
+        this.centreAtlasOnFocus();
+        return true;
+    };
+
+    // The atlas is the browsing view whenever there is anything to draw; the old
+    // flat list survives only for a curriculum with no graph data at all.
     Scene_SkillEncyclopedia.prototype.usesGraphView = function () {
-        if (!this._selectedCategory || this._selectedCategory === 'All') return false;   // i18n-ignore: category id
-        const graph = SkillGraph.graph(this._selectedCategory);
-        return graph && graph.nodes.length > 0;
+        return this.currentAtlas().circles.length > 0;
     };
 
     Scene_SkillEncyclopedia.prototype.focusedSkill = function () {
+        if (this.usesGraphView()) {
+            const skill = $dataSkills[this._focusSkillId];
+            if (skill) return skill;
+        }
         const skills = this.getSkillsByCategoryCached(this._selectedCategory);
         return skills[this._selectedSkillIndex] || null;
     };
 
-    // Focus a skill by id, keeping _selectedSkillIndex (which the detail page,
-    // the teach button and the preview all read) as the one source of truth.
+    // The school on the page. Everything that names one (the header, the sheet,
+    // the KP price, the banner) reads it from here.
+    Scene_SkillEncyclopedia.prototype.focusedCategory = function () {
+        if (this.usesGraphView()) return this.viewedCategory();
+        return this._selectedCategory;
+    };
+
+    // Focus a skill by id. On the atlas that is a node of the school on the
+    // page; anything else falls back to the flat list's cursor.
     Scene_SkillEncyclopedia.prototype.focusSkillId = function (skillId) {
+        if (this.currentAtlas().index[skillId]) {
+            this._focusSkillId = skillId;
+            return true;
+        }
         const skills = this.getSkillsByCategoryCached(this._selectedCategory);
         const idx = skills.findIndex(s => s.id === skillId);
-        if (idx >= 0) this._selectedSkillIndex = idx;
+        if (idx >= 0) {
+            this._selectedSkillIndex = idx;
+            this._focusSkillId = skillId;
+        }
         return idx >= 0;
     };
 
-    // Where the cursor lands when a grid is opened: on something the pupil
-    // already knows if they know anything here, otherwise on the way in.
+    // The cursor must always be standing somewhere on the atlas. A skill
+    // preselected from a school that has no circle, or a pupil switched under it,
+    // can leave it nowhere at all, and a cursor that is nowhere cannot move.
+    Scene_SkillEncyclopedia.prototype.ensureAtlasFocus = function () {
+        const atlas = this.currentAtlas();
+        if (!atlas.circles.length || atlas.index[this._focusSkillId]) return;
+        this.defaultGraphFocus();
+    };
+
+    // Where the cursor lands when a school is opened: standing on something the
+    // pupil already knows there if they know anything at all, otherwise on the
+    // way in.
     Scene_SkillEncyclopedia.prototype.defaultGraphFocus = function () {
-        const graph = SkillGraph.graph(this._selectedCategory);
-        if (!graph || !graph.nodes.length) return;
+        const atlas = this.currentAtlas();
+        if (!atlas.circles.length) return;
+        const circle = atlas.circles[0];
         const actor = this.getTeachActor();
-        const known = actor ? graph.nodes.find(n => actor.isLearnedSkill(n.id)) : null;
-        const entry = graph.nodes.find(n => n.tier === 0) || graph.nodes[0];
+        const known = actor ? circle.nodes.find(n => actor.isLearnedSkill(n.id)) : null;
+        const entry = circle.nodes.find(n => n.tier === 0) || circle.nodes[0];
         this.focusSkillId((known || entry).id);
     };
 
     // Everything that changes a node's COLOUR (never its position, and never the
-    // cursor): the school, the pupil, and how much of it they have learned.
+    // cursor): the curriculum, the pupil, and how much of it they have learned.
     Scene_SkillEncyclopedia.prototype.graphStateKey = function () {
         const actor = this.getTeachActor();
-        const graph = SkillGraph.graph(this._selectedCategory);
+        const atlas = this.currentAtlas();
         let learned = 0;
-        if (actor && graph) {
-            for (const node of graph.nodes) if (actor.isLearnedSkill(node.id)) learned++;
-        }
-        return `${this._selectedCategory}|${actor ? actor.actorId() : 0}|${learned}`;
-    };
-
-    // How wide a tier and how tall a branch are on THIS page: a four-node school
-    // spreads over the spread instead of huddling in one corner, a 193-node one
-    // keeps its compact spacing and scrolls. Whatever is left over becomes an
-    // origin offset, so a small lattice sits in the middle of the page.
-    Scene_SkillEncyclopedia.prototype.computeGridMetrics = function (graph) {
-        const box = document.getElementById('left-page-content');
-        const availW = Math.max(420, (box ? box.clientWidth : 900) - 20);
-        const availH = Math.max(300, (box ? box.clientHeight : 640) - GRID_LEGEND_H);
-        const tiers = Math.max(1, graph.tiers);
-        const branches = Math.max(1, graph.branches);
-        const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-
-        const colW = Math.round(clamp((availW - GRID_PAD * 2) / tiers, GRID_COL_W, GRID_COL_W_MAX));
-        const rowH = Math.round(clamp((availH - GRID_PAD * 2) / branches, GRID_ROW_H, GRID_ROW_H_MAX));
-        const node = Math.round(clamp(Math.min(colW * 0.42, rowH * 0.62), GRID_NODE, GRID_NODE_MAX));
-
-        const contentW = GRID_PAD * 2 + (tiers - 1) * colW + node;
-        const contentH = GRID_PAD * 2 + (branches - 1) * rowH + node + 16;
-        // Centred by an origin offset rather than by flexbox: a flex-centred
-        // child that outgrows its scroll box can no longer be scrolled back to
-        // its top-left corner.
-        const originX = Math.round(Math.max(0, (availW - contentW) / 2));
-        const originY = Math.round(Math.max(0, (availH - contentH) / 2));
-        // Roomier cells carry bigger lettering, up to a comfortable ceiling.
-        const spread = (colW - GRID_COL_W) / (GRID_COL_W_MAX - GRID_COL_W);
-        const font = 0.78 + clamp(spread, 0, 1) * 0.2;
-
-        this._grid = {
-            colW: colW, rowH: rowH, node: node, originX: originX, originY: originY,
-            width: contentW + originX * 2, height: contentH + originY * 2,
-            font: font
-        };
-        return this._grid;
-    };
-
-    Scene_SkillEncyclopedia.prototype.gridMetrics = function () {
-        return this._grid || {
-            colW: GRID_COL_W, rowH: GRID_ROW_H, node: GRID_NODE,
-            originX: 0, originY: 0, width: 0, height: 0, font: 0.78
-        };
-    };
-
-    Scene_SkillEncyclopedia.prototype.graphNodeCenter = function (node) {
-        const g = this.gridMetrics();
-        return {
-            x: g.originX + GRID_PAD + node.tier * g.colW + g.node / 2,
-            y: g.originY + GRID_PAD + node.branch * g.rowH + g.node / 2
-        };
-    };
-
-    Scene_SkillEncyclopedia.prototype.renderSkillGraphHTML = function () {
-        const graph = SkillGraph.graph(this._selectedCategory);
-        const actor = this.getTeachActor();
-        const focusedId = this.focusedSkill() ? this.focusedSkill().id : 0;
-
-        const g = this.computeGridMetrics(graph);
-        const width = g.width;
-        const height = g.height;
-
-        let edgesHTML = "";
-        for (const [a, b] of graph.edges) {
-            const pa = this.graphNodeCenter(a);
-            const pb = this.graphNodeCenter(b);
-            const knownA = actor ? actor.isLearnedSkill(a.id) : false;
-            const knownB = actor ? actor.isLearnedSkill(b.id) : false;
-            let stroke = 'var(--border-secondary-hover-translucent-15)';
-            let opacity = 0.55;
-            let dash = '3 5';
-            if (knownA && knownB) { stroke = 'var(--text-forest-complete)'; opacity = 0.95; dash = ''; }
-            else if (knownA || knownB) { stroke = 'var(--text-secondary-active)'; opacity = 0.9; dash = ''; }
-            edgesHTML += `<line x1="${pa.x}" y1="${pa.y}" x2="${pb.x}" y2="${pb.y}" stroke="${stroke}" stroke-width="${knownA && knownB ? 3 : 2}" stroke-opacity="${opacity}" ${dash ? `stroke-dasharray="${dash}"` : ''} stroke-linecap="round" />`;
-        }
-
-        let nodesHTML = "";
-        for (const node of graph.nodes) {
-            const learned = actor ? actor.isLearnedSkill(node.id) : false;
-            const open = SkillGraph.isOpen(actor, node.id);
-            const focused = node.id === focusedId;
-            const p = this.graphNodeCenter(node);
-
-            // The ring carries the state (learned / open / locked); the name is
-            // white in every state so the lattice stays readable at a glance.
-            let border = 'var(--border-secondary-hover-translucent-15)';
-            let background = 'var(--bg-card-translucent-5)';
-            const nameColor = 'var(--text-pure-white)';
-            let alpha = 0.72;
-            if (learned) {
-                border = 'var(--border-forest-green)';
-                background = 'var(--bg-success-green-15)';
-                alpha = 1;
-            } else if (open) {
-                border = 'var(--text-secondary-active)';
-                background = 'var(--bg-tertiary-focus-translucent-45)';
-                alpha = 1;
+        if (actor) {
+            for (const circle of atlas.circles) {
+                for (const node of circle.nodes) if (actor.isLearnedSkill(node.id)) learned++;
             }
-            const ring = focused
-                ? `box-shadow:0 0 0 3px var(--text-secondary-active), 0 0 12px var(--shadow-primary-hover-translucent-5);`
-                : '';
-            // Only a node you could actually buy prices itself on the grid.
-            const cost = (actor && open)
-                ? $gameSystem.getSkillKnowledgeCost(node.id, actor.actorId()) : 0;
+        }
+        return `${atlas.key}|${actor ? actor.actorId() : 0}|${learned}`;
+    };
 
-            nodesHTML += `
-                <div class="sg-node ${focused ? 'sg-focus' : ''}" data-id="${node.id}" onclick="SceneManager._scene.selectGraphNode(${node.id})"
-                     style="position:absolute; left:${p.x - g.colW / 2}px; top:${p.y - g.node / 2}px; width:${g.colW}px; display:flex; flex-direction:column; align-items:center; cursor:pointer; opacity:${alpha}; font-family:'Lora', serif;">
-                    <div style="width:${g.node}px; height:${g.node}px; border-radius:50%; border:2px solid ${border}; background:${background}; display:flex; align-items:center; justify-content:center; ${ring} transition:all 0.15s ease;">
-                        <div style="${getSkillIconStyle(node.skill.iconIndex)} transform:scale(${(g.node / GRID_NODE * 0.8).toFixed(2)}); image-rendering:pixelated;"></div>
-                    </div>
-                    <div style="margin-top:4px; max-width:${g.colW - 6}px; font-size:${g.font.toFixed(2)}rem; line-height:1.15; text-align:center; color:${nameColor}; font-weight:${focused || learned ? 'bold' : 'normal'}; text-shadow:0 1px 2px var(--shadow-black-translucent-75); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${node.skill.name}</div>
-                    ${open && cost ? `<div style="font-size:${(g.font - 0.06).toFixed(2)}rem; color:var(--text-text-alt-3); letter-spacing:0.3px;">${cost} KP</div>` : ''}
-                </div>
-            `;
+    Scene_SkillEncyclopedia.prototype.atlasLearnedCount = function (category) {
+        const circle = this.currentAtlas().circles.find(s => !category || s.category === category);
+        const actor = this.getTeachActor();
+        if (!circle) return { learned: 0, total: 0 };
+        let learned = 0;
+        if (actor) for (const node of circle.nodes) if (actor.isLearnedSkill(node.id)) learned++;
+        return { learned: learned, total: circle.nodes.length };
+    };
+
+    Scene_SkillEncyclopedia.prototype.atlasProgressText = function (category) {
+        const count = this.atlasLearnedCount(category);
+        return T('SkillMaster.atlas.progress', { learned: count.learned, total: count.total });
+    };
+
+    //---------------------------------------------------------------- zoom / pan
+
+    // A deep circle is wider than the page, so the page is a window onto it: the
+    // wheel and the two rules on the legend bar zoom, dragging pans, and the
+    // cursor keeps itself inside a comfortable margin of the window.
+    Scene_SkillEncyclopedia.prototype.atlasZoom = function () {
+        if (!this._atlasZoom) this._atlasZoom = this.defaultAtlasZoom();
+        return this._atlasZoom;
+    };
+
+    // Open at a size the school can be READ at. A deep school will not fit
+    // whole and is not shrunk until it does; it is held here and panned, and
+    // Shift is what steps back far enough to see the whole figure.
+    Scene_SkillEncyclopedia.prototype.defaultAtlasZoom = function () {
+        const atlas = this.currentAtlas();
+        if (!atlas.circles.length) return 1;
+        const circle = atlas.circles[0];
+        const box = document.getElementById('left-page-content');
+        const w = Math.max(420, (box ? box.clientWidth : 1100) - 24);
+        const h = Math.max(300, (box ? box.clientHeight : 660) - ATLAS_LEGEND_H);
+        const fit = Math.min(w, h) / (circle.radius * 2 + 40);
+        return Math.max(ATLAS_READ_ZOOM, Math.min(1, fit));
+    };
+
+    // Far enough back that the whole circle is on the page at once: what one
+    // press of Shift steps out to.
+    Scene_SkillEncyclopedia.prototype.wholeAtlasZoom = function () {
+        const atlas = this.currentAtlas();
+        if (!atlas.width || !atlas.height) return this.defaultAtlasZoom();
+        const box = document.getElementById('left-page-content');
+        const w = Math.max(420, (box ? box.clientWidth : 1100) - 24);
+        const h = Math.max(300, (box ? box.clientHeight : 660) - ATLAS_LEGEND_H);
+        return Math.max(ATLAS_ZOOM_MIN, Math.min(1, Math.min(w / atlas.width, h / atlas.height)));
+    };
+
+    // Anchor coordinates are in the scroll box's own content space; the point
+    // under them is held still while the atlas grows or shrinks beneath it.
+    Scene_SkillEncyclopedia.prototype.setAtlasZoom = function (zoom, anchorX, anchorY) {
+        const atlas = this.currentAtlas();
+        const box = document.getElementById('skill-atlas-box');
+        const sizer = document.getElementById('skill-atlas-sizer');
+        const canvas = document.getElementById('skill-atlas-canvas');
+        if (!box || !sizer || !canvas) return;
+        const next = Math.max(ATLAS_ZOOM_MIN, Math.min(ATLAS_ZOOM_MAX, zoom));
+        const prev = this.atlasZoom();
+        if (Math.abs(next - prev) < 0.001) return;
+
+        const ax = (anchorX === undefined) ? box.scrollLeft + box.clientWidth / 2 : anchorX;
+        const ay = (anchorY === undefined) ? box.scrollTop + box.clientHeight / 2 : anchorY;
+        const worldX = ax / prev;
+        const worldY = ay / prev;
+
+        this._atlasZoom = next;
+        sizer.style.width = Math.round(atlas.width * next) + 'px';
+        sizer.style.height = Math.round(atlas.height * next) + 'px';
+        canvas.style.transform = `scale(${next})`;
+        this.applyAtlasFarView(canvas, next);
+        box.scrollLeft += worldX * next - ax;
+        box.scrollTop += worldY * next - ay;
+    };
+
+    // Stepped far enough back, a skill's name is a smudge and the atlas reads
+    // better as pure figures: the names come off and the school names are held
+    // at the size they had when they came off, so the circles stay identifiable.
+    Scene_SkillEncyclopedia.prototype.applyAtlasFarView = function (canvas, zoom) {
+        if (!canvas) return;
+        const far = zoom < ATLAS_FAR_ZOOM;
+        canvas.classList.toggle('sg-far', far);
+        // Below 1:1 the plate is drawn smaller than it was written, so the
+        // writing and the icons are scaled back UP by the same factor, capped
+        // so they never grow into each other on a school stepped fully back.
+        const back = zoom < 1 ? Math.min(ATLAS_LABEL_MAX, 1 / zoom) : 1;
+        canvas.style.setProperty('--sg-label-scale', back.toFixed(2));
+        canvas.style.setProperty('--sg-icon-scale', (1 + (back - 1) * ATLAS_ICON_SHARE).toFixed(2));
+        canvas.style.setProperty('--sg-banner-scale', back.toFixed(2));
+    };
+
+    Scene_SkillEncyclopedia.prototype.zoomAtlas = function (dir) {
+        this.setAtlasZoom(dir > 0 ? this.atlasZoom() * ATLAS_ZOOM_STEP
+            : this.atlasZoom() / ATLAS_ZOOM_STEP);
+    };
+
+    // Drag anywhere on the field to pan. A press that never travelled is a
+    // click, so the nodes keep their own onclick; one that did swallows it, so
+    // panning across a circle never teaches anything by accident. Every listener
+    // is on the box itself, so a rebuilt atlas leaves none of them behind.
+    Scene_SkillEncyclopedia.prototype.bindAtlasPointer = function () {
+        const box = document.getElementById('skill-atlas-box');
+        if (!box || box._atlasBound) return;
+        box._atlasBound = true;
+        const DEAD = 6;
+        let dragging = false, travelled = false;
+        let fromX = 0, fromY = 0, scrollX = 0, scrollY = 0;
+        box.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0) return;
+            dragging = true;
+            travelled = false;
+            fromX = e.clientX; fromY = e.clientY;
+            scrollX = box.scrollLeft; scrollY = box.scrollTop;
+            box.setPointerCapture(e.pointerId);
+        });
+        box.addEventListener('pointermove', (e) => {
+            if (!dragging) return;
+            const dx = e.clientX - fromX;
+            const dy = e.clientY - fromY;
+            if (!travelled && Math.abs(dx) + Math.abs(dy) < DEAD) return;
+            travelled = true;
+            box.scrollLeft = scrollX - dx;
+            box.scrollTop = scrollY - dy;
+        });
+        const release = (e) => {
+            dragging = false;
+            if (box.hasPointerCapture && box.hasPointerCapture(e.pointerId)) box.releasePointerCapture(e.pointerId);
+        };
+        box.addEventListener('pointerup', release);
+        box.addEventListener('pointercancel', release);
+        box.addEventListener('click', (e) => {
+            if (!travelled) return;
+            travelled = false;
+            e.stopPropagation();
+            e.preventDefault();
+        }, true);
+    };
+
+    // The styles the atlas draws itself with. State lives in classes rather than
+    // in inline style, so a curriculum of a thousand nodes is one string to
+    // build and a cursor step is a class toggle instead of a repaint.
+    Scene_SkillEncyclopedia.prototype.injectAtlasStyles = function () {
+        if (document.getElementById('skillmaster-atlas-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'skillmaster-atlas-styles';
+        style.textContent = `
+            #skill-atlas-box { position:relative; overflow:auto; min-height:0; box-sizing:border-box; cursor:grab; touch-action:none; }
+            #skill-atlas-box:active { cursor:grabbing; }
+            #skill-atlas-sizer { margin:0 auto; }
+            #skill-atlas-canvas { position:relative; transform-origin:0 0; }
+            #skill-atlas-canvas svg { position:absolute; left:0; top:0; pointer-events:none; }
+            .sg-circle { color:var(--text-secondary-active); }
+            .sg-node {
+                position:absolute; display:flex; flex-direction:column; align-items:center;
+                width:${CIRCLE_LABEL_W}px; cursor:pointer; font-family:'Lora', serif; user-select:none;
+            }
+            .sg-in { display:flex; flex-direction:column; align-items:center; }
+            .sg-node.sg-locked .sg-in { opacity:0.66; }
+            .sg-ring {
+                width:${CIRCLE_NODE}px; height:${CIRCLE_NODE}px; border-radius:50%; box-sizing:border-box;
+                border:2px solid var(--border-secondary-hover-translucent-15);
+                background:var(--bg-card-translucent-5);
+                display:flex; align-items:center; justify-content:center;
+            }
+            .sg-node.sg-learned .sg-ring { border-color:var(--border-forest-green); background:var(--bg-success-green-15); }
+            .sg-node.sg-open .sg-ring { border-color:var(--text-secondary-active); background:var(--bg-tertiary-focus-translucent-45); }
+            .sg-node.sg-focus .sg-ring { box-shadow:0 0 0 3px var(--text-secondary-active), 0 0 14px var(--shadow-primary-hover-translucent-5); }
+            /* The circle is not a page of a book: while it is up, the spread
+               gives up its 1560x960 plate and takes the whole screen. Scoped to
+               .skill-fullpage, which only this scene ever sets. */
+            #menu-container .book-spread.skill-fullpage {
+                width:100%; height:100%; max-width:none; max-height:none;
+            }
+            .sg-name {
+                margin-top:5px; max-width:${CIRCLE_LABEL_W}px; font-size:0.78rem; line-height:1.14;
+                text-align:center; color:var(--text-pure-white); overflow:hidden;
+                text-shadow:0 1px 2px var(--shadow-black-translucent-75);
+                display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+            }
+            .sg-node.sg-learned .sg-name, .sg-node.sg-focus .sg-name { font-weight:bold; }
+            .sg-cost { font-size:0.7rem; color:var(--text-text-alt-3); letter-spacing:0.3px; }
+            .sg-banner {
+                position:absolute; text-align:center; pointer-events:none; font-family:'Lora', serif;
+                text-transform:uppercase; letter-spacing:2.5px; font-weight:bold; font-size:1.05rem;
+                color:var(--text-secondary-active); text-shadow:0 1px 3px var(--shadow-black-translucent-75);
+            }
+            /* Stepping back shrinks the whole plate, so the writing on it is
+               grown back by the same amount (up to a ceiling): a school seen
+               whole still reads as a set of named skills rather than a smudge. */
+            .sg-name, .sg-cost { transform:scale(var(--sg-label-scale, 1)); transform-origin:top center; }
+            .sg-ring { transform:scale(var(--sg-icon-scale, 1)); }
+            .sg-banner { transform:scale(var(--sg-banner-scale, 1)); transform-origin:top center; }
+            .sg-banner-sub {
+                display:block; margin-top:2px; font-size:0.72rem; letter-spacing:1px;
+                font-weight:normal; text-transform:none; color:var(--text-pure-white);
+            }
+            .sg-legend {
+                display:flex; align-items:center; gap:16px; justify-content:center; flex-wrap:wrap;
+                font-family:'Lora', serif; font-size:0.82rem; color:var(--text-pure-white); padding:2px 0 8px 0;
+            }
+            .sg-pager {
+                display:flex; align-items:center; justify-content:center; gap:12px; flex:0 0 auto;
+                font-family:'Lora', serif; padding:2px 0 6px 0; user-select:none;
+            }
+            .sg-pager-arrow {
+                display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
+                border:1px solid var(--text-secondary-active); border-radius:50%; color:var(--text-secondary-active);
+                cursor:pointer; font-size:1.05rem; line-height:1; font-weight:bold;
+            }
+            .sg-pager-name {
+                font-size:0.95rem; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase;
+                color:var(--text-secondary-active);
+            }
+            .sg-pager-count { font-size:0.76rem; color:var(--text-card-medium); letter-spacing:0.5px; }
+            .sg-legend-key { display:inline-flex; align-items:center; gap:5px; }
+            .sg-legend-dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
+            .sg-zoom {
+                display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+                border:1px solid var(--text-secondary-active); border-radius:50%; color:var(--text-secondary-active);
+                cursor:pointer; font-weight:bold; line-height:1; user-select:none;
+            }
+            .sg-hint { opacity:0.65; font-size:0.75rem; }
+            .sg-occult {
+                font-size:0.62rem; letter-spacing:1px; font-weight:bold; padding:1px 6px; border-radius:3px;
+                border:1px solid var(--text-secondary-active); color:var(--text-secondary-active);
+            }
+            .sg-occult.sg-forbidden {
+                border-color:var(--text-primary-hover); color:var(--text-primary-hover);
+            }
+        `;
+        document.head.appendChild(style);
+    };
+
+    // The pager: which school of the curriculum is on the page, and the way to
+    // the one before and the one after it. A curriculum of one school shows
+    // nothing, since there is nowhere to turn to.
+    Scene_SkillEncyclopedia.prototype.renderAtlasPagerHTML = function () {
+        const list = this.atlasCategories();
+        const cur = list.indexOf(this.viewedCategory());
+        if (list.length <= 1 || cur < 0) return '';
+        const prev = list[(cur - 1 + list.length) % list.length];
+        const next = list[(cur + 1) % list.length];
+        return `
+            <div class="sg-pager">
+                <span class="sg-pager-arrow" onclick="SceneManager._scene.pageAtlasSchool(-1)" title="${getCategoryDisplayName(prev)}">&#8249;</span>
+                <span class="sg-pager-name">${getCategoryDisplayName(list[cur])}</span>
+                <span class="sg-pager-count">${T('SkillMaster.atlas.schoolOf', { index: cur + 1, total: list.length })}</span>
+                <span class="sg-pager-arrow" onclick="SceneManager._scene.pageAtlasSchool(1)" title="${getCategoryDisplayName(next)}">&#8250;</span>
+            </div>`;
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderSkillAtlasHTML = function () {
+        const atlas = this.currentAtlas();
+        const actor = this.getTeachActor();
+        const focusedId = this._focusSkillId;
+        const zoom = this.atlasZoom();
+        const labelScale = (zoom < 1 ? Math.min(ATLAS_LABEL_MAX, 1 / zoom) : 1).toFixed(2);
+
+        let glyphsHTML = "";
+        let edgesHTML = "";
+        let nodesHTML = "";
+        let bannersHTML = "";
+
+        for (const circle of atlas.circles) {
+            glyphsHTML += SkillAtlas.glyph(circle);
+
+            let sealEdges = "";
+            for (const [a, b] of circle.edges) {
+                const knownA = actor ? actor.isLearnedSkill(a.id) : false;
+                const knownB = actor ? actor.isLearnedSkill(b.id) : false;
+                // A link between two skills the pupil does not have is still a
+                // link and still shows the shape of the school: drawn solid and
+                // plainly visible, only cooler and thinner than a walked one.
+                let stroke = 'var(--border-secondary-hover-translucent-15)';
+                let opacity = 0.7;
+                let dash = '';
+                if (knownA && knownB) { stroke = 'var(--text-forest-complete)'; opacity = 0.95; dash = ''; }
+                else if (knownA || knownB) { stroke = 'var(--text-secondary-active)'; opacity = 0.9; dash = ''; }
+                sealEdges += `<line x1="${a.ax.toFixed(1)}" y1="${a.ay.toFixed(1)}" x2="${b.ax.toFixed(1)}" y2="${b.ay.toFixed(1)}" stroke="${stroke}" stroke-width="${knownA && knownB ? 3 : (knownA || knownB ? 2.4 : 1.6)}" stroke-opacity="${opacity}"${dash ? ` stroke-dasharray="${dash}"` : ''} stroke-linecap="round" />`;
+            }
+            edgesHTML += `<g class="sg-edges" data-circle="${circle.category}">${sealEdges}</g>`;
+
+            for (const node of circle.nodes) {
+                const learned = actor ? actor.isLearnedSkill(node.id) : false;
+                const open = !learned && SkillGraph.isOpen(actor, node.id);
+                const state = learned ? 'sg-learned' : (open ? 'sg-open' : 'sg-locked');   // i18n-ignore: CSS class
+                const focus = node.id === focusedId ? ' sg-focus' : '';   // i18n-ignore: CSS class
+                // Only a skill you could actually buy prices itself on the circle.
+                const cost = (actor && open) ? $gameSystem.getSkillKnowledgeCost(node.id, actor.actorId()) : 0;
+                nodesHTML += `<div class="sg-node ${state}${focus}" data-id="${node.id}" data-circle="${circle.category}" onclick="SceneManager._scene.selectGraphNode(${node.id})" style="left:${(node.ax - CIRCLE_LABEL_W / 2).toFixed(1)}px; top:${(node.ay - CIRCLE_NODE / 2).toFixed(1)}px;"><div class="sg-in"><div class="sg-ring"><div style="${getSkillIconStyle(node.skill.iconIndex)} transform:scale(0.9);"></div></div><div class="sg-name">${node.skill.name}</div>${cost ? `<div class="sg-cost">${cost} KP</div>` : ''}</div></div>`;
+            }
+
+            const count = this.atlasLearnedCount(circle.category);
+            bannersHTML += `<div class="sg-banner" data-circle="${circle.category}" style="left:${(circle.cx - circle.radius).toFixed(1)}px; top:${(circle.cy + circle.outer + 18).toFixed(1)}px; width:${(circle.radius * 2).toFixed(1)}px;">${getCategoryDisplayName(circle.category)}<span class="sg-banner-sub">${T('SkillMaster.atlas.progress', { learned: count.learned, total: count.total })}</span></div>`;
         }
 
-        const legend = (color, label) =>
-            `<span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:9px; height:9px; border-radius:50%; border:2px solid ${color}; display:inline-block;"></span>${label}</span>`;
+        const legendKey = (color, label) =>
+            `<span class="sg-legend-key"><span class="sg-legend-dot" style="border:2px solid ${color};"></span>${label}</span>`;
 
         return `
-            <div style="display:flex; gap:18px; justify-content:center; font-family:'Lora', serif; font-size:0.85rem; color:var(--text-pure-white); padding:4px 0 8px 0;">
-                ${legend('var(--border-forest-green)', T('SkillMaster.graph.legendLearned'))}
-                ${legend('var(--text-secondary-active)', T('SkillMaster.graph.legendOpen'))}
-                ${legend('var(--border-secondary-hover-translucent-15)', T('SkillMaster.graph.legendLocked'))}
+            ${this.renderAtlasPagerHTML()}
+            <div class="sg-legend">
+                ${legendKey('var(--border-forest-green)', T('SkillMaster.graph.legendLearned'))}
+                ${legendKey('var(--text-secondary-active)', T('SkillMaster.graph.legendOpen'))}
+                ${legendKey('var(--border-secondary-hover-translucent-15)', T('SkillMaster.graph.legendLocked'))}
+                <span class="sg-legend-key">
+                    <span class="sg-zoom" onclick="SceneManager._scene.zoomAtlas(-1)">-</span>
+                    <span class="sg-zoom" onclick="SceneManager._scene.zoomAtlas(1)">+</span>
+                </span>
+                <span class="sg-hint">${T('SkillMaster.atlas.hint')}</span>
             </div>
-            <div id="skill-graph-box" class="skill-scroll-box" style="flex:1; overflow:auto; box-sizing:border-box;">
-                <div style="position:relative; width:${width}px; height:${height}px;">
-                    <svg width="${width}" height="${height}" style="position:absolute; left:0px; top:0px; pointer-events:none;">${edgesHTML}</svg>
-                    ${nodesHTML}
+            <div id="skill-atlas-box" class="skill-scroll-box" style="flex:1;">
+                <div id="skill-atlas-sizer" style="position:relative; width:${Math.round(atlas.width * zoom)}px; height:${Math.round(atlas.height * zoom)}px;">
+                    <div id="skill-atlas-canvas" class="${zoom < ATLAS_FAR_ZOOM ? 'sg-far' : ''}" style="width:${atlas.width}px; height:${atlas.height}px; transform:scale(${zoom}); --sg-label-scale:${labelScale}; --sg-icon-scale:${(1 + (labelScale - 1) * ATLAS_ICON_SHARE).toFixed(2)}; --sg-banner-scale:${labelScale};">
+                        <svg width="${atlas.width}" height="${atlas.height}">${glyphsHTML}${edgesHTML}</svg>
+                        ${bannersHTML}
+                        ${nodesHTML}
+                    </div>
                 </div>
             </div>
         `;
     };
 
-    // The flat list, kept for "All" and for any category with no grid authored.
+    // The flat list, the fallback for a curriculum with no circle on it at all
+    // (nothing in any of the pupil's schools carries a <Node:> tag).
     Scene_SkillEncyclopedia.prototype.renderSkillListHTML = function () {
         const skills = getSkillsByCategory(this._selectedCategory);
         const teachActor = this.getTeachActor();
@@ -2273,55 +3039,98 @@
         `;
     };
 
-    // Click on a node: focus it. Clicking the node already focused opens its
-    // actions, so the mouse can teach without touching the keyboard.
+    // Choosing a node on the circle opens its sheet, there and then: one click,
+    // one popup, with everything the skill is and the button that teaches it.
+    // A node is never selected without being read.
     Scene_SkillEncyclopedia.prototype.selectGraphNode = function (skillId) {
-        const current = this.focusedSkill();
-        if (current && current.id === skillId) {
-            this.selectSkill(this._selectedSkillIndex);
-            return;
-        }
-        if (!this.focusSkillId(skillId)) return;
-        SoundManager.playCursor();
-        this.refreshUISkillDOM();
+        if (this._focusSkillId !== skillId && !this.focusSkillId(skillId)) return;
         this.scrollGraphToFocus();
+        this.openFocusedSkill();
     };
 
-    // Directional movement across a sparse lattice: take the nearest node that
-    // actually lies the way the stick was pushed, measuring along that axis
-    // first so a step right never jumps a whole branch away.
+    // Open the sheet of whatever the cursor is standing on.
+    Scene_SkillEncyclopedia.prototype.openFocusedSkill = function () {
+        const skill = this.focusedSkill();
+        if (!skill) { SoundManager.playBuzzer(); return; }
+        this._skillDetailWindow.setSkill(skill);
+        this._viewMode = 'detail';
+        this._selectedActionIndex = 0;
+        SoundManager.playOk();
+        this.refreshUISkillDOM();
+    };
+
+    // Directional movement over the circle, measured where the skills actually
+    // are rather than on a lattice of rows: take the nearest node that lies
+    // inside a cone the way the stick was pushed. That walks a ring and steps
+    // out to the next one; running out of circle to the left or the right is what
+    // turns the page to the school before or after this one.
     Scene_SkillEncyclopedia.prototype.moveGraphFocus = function (dx, dy) {
-        const graph = SkillGraph.graph(this._selectedCategory);
-        const current = this.focusedSkill();
-        if (!graph || !current) return false;
-        const from = graph.nodes.find(n => n.id === current.id);
+        this.ensureAtlasFocus();
+        const atlas = this.currentAtlas();
+        const from = atlas.index[this._focusSkillId];
         if (!from) return false;
 
         let best = null;
         let bestScore = Infinity;
-        for (const node of graph.nodes) {
-            if (node.id === from.id) continue;
-            const ddx = (node.tier - from.tier) * dx + (node.branch - from.branch) * dy;
-            if (ddx <= 0) continue;   // not in the direction asked for
-            const off = Math.abs(dx ? node.branch - from.branch : node.tier - from.tier);
-            const score = ddx * 10 + off * 3;
-            if (score < bestScore) { bestScore = score; best = node; }
+        for (const circle of atlas.circles) {
+            for (const node of circle.nodes) {
+                if (node.id === from.id) continue;
+                const vx = node.ax - from.ax;
+                const vy = node.ay - from.ay;
+                const along = vx * dx + vy * dy;
+                if (along <= 1) continue;                   // not the way asked for
+                const across = Math.abs(vx * dy - vy * dx);
+                if (across > along * 1.9) continue;         // outside the cone
+                const score = along + across * 2.2;
+                if (score < bestScore) { bestScore = score; best = node; }
+            }
         }
         if (!best) return false;
         this.focusSkillId(best.id);
         return true;
     };
 
+    // Keep the cursor inside a comfortable margin of the window rather than
+    // snapping the atlas on every step: walking one ring should not swing the
+    // whole page about.
     Scene_SkillEncyclopedia.prototype.scrollGraphToFocus = function () {
-        const box = document.getElementById('skill-graph-box');
-        const node = box ? box.querySelector('.sg-node.sg-focus') : null;   // i18n-ignore: CSS selector
+        const box = document.getElementById('skill-atlas-box');
+        const node = this.currentAtlas().index[this._focusSkillId];
         if (!box || !node) return;
-        const boxRect = box.getBoundingClientRect();
-        const nodeRect = node.getBoundingClientRect();
-        if (nodeRect.right > boxRect.right) box.scrollLeft += nodeRect.right - boxRect.right + 24;
-        else if (nodeRect.left < boxRect.left) box.scrollLeft -= boxRect.left - nodeRect.left + 24;
-        if (nodeRect.bottom > boxRect.bottom) box.scrollTop += nodeRect.bottom - boxRect.bottom + 20;
-        else if (nodeRect.top < boxRect.top) box.scrollTop -= boxRect.top - nodeRect.top + 20;
+        const zoom = this.atlasZoom();
+        const x = node.ax * zoom;
+        const y = node.ay * zoom;
+        const padX = Math.min(box.clientWidth * 0.34, 260);
+        const padY = Math.min(box.clientHeight * 0.34, 220);
+        if (x < box.scrollLeft + padX) box.scrollLeft = x - padX;
+        else if (x > box.scrollLeft + box.clientWidth - padX) box.scrollLeft = x - box.clientWidth + padX;
+        if (y < box.scrollTop + padY) box.scrollTop = y - padY;
+        else if (y > box.scrollTop + box.clientHeight - padY) box.scrollTop = y - box.clientHeight + padY;
+    };
+
+    // Put a whole circle on the page: the step taken when a school is opened from
+    // the shelf, where the cursor could be anywhere on the atlas.
+    Scene_SkillEncyclopedia.prototype.centreAtlasOnFocus = function () {
+        const box = document.getElementById('skill-atlas-box');
+        const node = this.currentAtlas().index[this._focusSkillId];
+        if (!box || !node) return;
+        const zoom = this.atlasZoom();
+        box.scrollLeft = node.ax * zoom - box.clientWidth / 2;
+        box.scrollTop = node.ay * zoom - box.clientHeight / 2;
+    };
+
+    // Only the cursor has changed: repaint the ring in place instead of
+    // rebuilding a school's worth of nodes for one step.
+    Scene_SkillEncyclopedia.prototype.repaintAtlasFocus = function () {
+        const canvas = document.getElementById('skill-atlas-canvas');
+        if (!canvas) return;
+        const focusedId = this._focusSkillId;
+        canvas.querySelectorAll('.sg-node').forEach((el) => {
+            el.classList.toggle('sg-focus', parseInt(el.dataset.id, 10) === focusedId);
+        });
+        const title = document.getElementById('atlas-school-name');
+        const activeCat = this.focusedCategory();
+        if (title && activeCat) title.textContent = getCategoryDisplayName(activeCat);
     };
 
     //=========================================================================
@@ -2329,7 +3138,7 @@
     //
     // One renderer for both places it can appear: the right page (a flat list
     // category, where the sheet is the facing page) and the popup that opens
-    // over a sphere grid, where the lattice owns the whole spread.
+    // over the atlas, where the circles own the whole spread.
     //=========================================================================
     Scene_SkillEncyclopedia.prototype.renderSkillDetailHTML = function (skill, knowledge, opts) {
         opts = opts || {};
@@ -2358,8 +3167,18 @@
                         <span style="font-family:'Lora', serif; font-size:0.8rem; text-transform:uppercase;">✓ ${T('SkillMaster.learned')}</span>
                     </div>
                 `;
+                // Knowing a skill and carrying it into a fight are two different
+                // things: the same loadout the skill menu edits is editable here,
+                // so a skill just bought can be taken up without leaving training.
+                actionsListHTML += this.carryToggleHTML(actor, skill, allowActionFocus);
+                // A spell the pupil forged is theirs to name and theirs to unmake.
+                actionsListHTML += this.fusionActionsHTML(actor, skill);
             } else if (!isOpen) {
-                const openers = SkillGraph.openers(skill.id).map(s => s.name);
+                const openers = SkillGraph.openers(skill.id, actor).map(s => s.name);
+                const lockLine = SkillGraph.isForbidden(skill.id)
+                    ? T('SkillMaster.graph.lockedBySchool', { skills: openers.join(', ') })
+                    : (openers.length ? T('SkillMaster.graph.lockedBy', { skills: openers.join(', ') })
+                        : T('SkillMaster.graph.lockedHint'));
                 actionsListHTML += `
                     <div style="padding:10px 14px; background:var(--bg-card-translucent-5); border:1px dashed var(--border-secondary-hover-translucent-15); border-radius:6px; font-family:'Lora', serif;">
                         <div style="display:flex; justify-content:space-between; align-items:center; font-weight:bold; font-size:0.9rem; color:var(--text-card-medium);">
@@ -2367,7 +3186,7 @@
                             <span style="color:var(--shadow-shadow-alt-5-translucent-40);">${cost} KP</span>
                         </div>
                         <div style="margin-top:5px; font-size:0.76rem; line-height:1.35; color:var(--text-card-medium);">
-                            ${openers.length ? T('SkillMaster.graph.lockedBy', { skills: openers.join(', ') }) : T('SkillMaster.graph.lockedHint')}
+                            ${lockLine}
                         </div>
                     </div>
                 `;
@@ -2399,6 +3218,14 @@
                 <span style="font-weight:bold; text-transform:uppercase; font-size:0.78rem; color:${isPreviewFocused ? 'var(--text-pure-black)' : 'var(--text-secondary-active)'};">${T('SkillMaster.preview')}</span>
             </div>`;
 
+        // Why an occult skill is priced where it is: the tag is on the card, so
+        // a four-figure number reads as a reason rather than a mistake.
+        const note = skill.note || '';
+        const occultBadge = /<Forbidden>/i.test(note)
+            ? `<span class="sg-occult sg-forbidden">${T('SkillMaster.tag.forbidden')}</span>`
+            : (/<Esoteric>/i.test(note)
+                ? `<span class="sg-occult">${T('SkillMaster.tag.esoteric')}</span>` : '');
+
         // A popup card is already a sized flex column, so the sheet grows into
         // it instead of claiming a height of its own.
         const rootSizing = opts.popup ? 'flex:1 1 auto; min-height:0;' : 'height:100%;';
@@ -2414,8 +3241,9 @@
                         <h3 class="cc-header-gothic" style="font-size:1.55rem; color:var(--text-secondary-active); margin:0; line-height:1.2;">
                             ${skill.name}
                         </h3>
-                        <div style="font-size:0.8rem; color:var(--text-inverse); text-transform:uppercase; font-family:'Lora', serif; letter-spacing:0.5px;">
-                            ${getCategoryDisplayName(this._selectedCategory)}
+                        <div style="display:flex; align-items:center; gap:8px; font-size:0.8rem; color:var(--text-inverse); text-transform:uppercase; font-family:'Lora', serif; letter-spacing:0.5px;">
+                            <span>${getCategoryDisplayName(this.focusedCategory())}</span>
+                            ${occultBadge}
                         </div>
                     </div>
                     ${closeBtnHTML}
@@ -2432,6 +3260,7 @@
                 <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto; border-top:1px dashed var(--scroll-thumb-hover-translucent-60); padding-top:12px;">
                     <h4 style="margin:0 0 4px 0; font-family:'Lora', serif; color:var(--text-secondary-active); font-size:1.15rem; text-align:center;">
                         ${T('SkillMaster.teach')}
+                        <span style="font-size:0.8rem; font-weight:normal; color:var(--text-card-medium); letter-spacing:0.5px;">&middot; ${T('SkillMaster.atlas.held', { knowledge: knowledge })}</span>
                     </h4>
                     <div style="display:flex; gap:8px; align-items:stretch;">
                         <div style="flex:1; display:flex; flex-direction:column; gap:8px; max-height:150px; overflow-y:auto; padding-right:4px;">
@@ -2448,7 +3277,11 @@
     // afford and which action the cursor is on.
     Scene_SkillEncyclopedia.prototype.skillPopupKey = function (skill, knowledge) {
         const actor = this.getTeachActor();
-        return `${skill.id}|${actor ? actor.actorId() : 0}|${knowledge}|${this._selectedActionIndex}|${actor && actor.isLearnedSkill(skill.id) ? 1 : 0}`;
+        // the carried state is part of what the sheet draws, so a carry toggle
+        // has to move the key or the pane never rebuilds
+        const LO = window.BattleLoadout;
+        const carried = (LO && actor) ? `${LO.isActive(actor, skill) ? 1 : 0}${LO.count(actor)}` : '';
+        return `${skill.id}|${actor ? actor.actorId() : 0}|${knowledge}|${this._selectedActionIndex}|${actor && actor.isLearnedSkill(skill.id) ? 1 : 0}|${carried}`;
     };
 
     Scene_SkillEncyclopedia.prototype.closeSkillDetailPopup = function () {
@@ -2458,7 +3291,7 @@
     };
 
     // Dismiss from the popup itself (its ✕ or the backdrop), which is the same
-    // step Cancel takes: back to the lattice with nothing chosen.
+    // step Cancel takes: back to the atlas with nothing chosen.
     Scene_SkillEncyclopedia.prototype.dismissSkillDetail = function () {
         if (this._viewMode !== 'detail') return;
         this._viewMode = 'list';
@@ -2466,6 +3299,10 @@
         this.refreshUISkillDOM();
     };
 
+    // Choosing a node opens the skill's sheet as a BAR DOWN THE RIGHT of the
+    // plate rather than a card over the middle of it: the figure stays visible
+    // and stays draggable while the sheet is read, which a centred modal with a
+    // scrim did not allow. Only the bar itself takes the pointer.
     Scene_SkillEncyclopedia.prototype.updateSkillDetailPopup = function (skill, knowledge) {
         if (!this._dndContainer) return;
         const key = this.skillPopupKey(skill, knowledge);
@@ -2478,14 +3315,11 @@
             overlay.id = 'skill-detail-popup';
             // Explicit edges rather than the `inset` shorthand: the game's
             // Chromium collapses full-screen overlays written with it.
-            // A light scrim, not a blackout: the lattice the node sits on stays
-            // readable behind its own sheet.
-            overlay.style.cssText = "position:absolute; top:0; left:0; right:0; bottom:0; z-index:1500; display:flex; align-items:center; justify-content:center; background:var(--shadow-black-translucent-45); font-family:'Lora', serif;";
-            overlay.onclick = () => this.dismissSkillDetail();
+            overlay.style.cssText = "position:absolute; top:0; right:0; bottom:0; z-index:1500; display:flex; align-items:stretch; justify-content:flex-end; pointer-events:none; font-family:'Lora', serif;";
             this._dndContainer.appendChild(overlay);
         }
         overlay.innerHTML = `
-            <div onclick="event.stopPropagation()" style="width:56%; max-width:640px; max-height:88%; display:flex; flex-direction:column; padding:20px; box-sizing:border-box; background:var(--bg-dark-warm-translucent-96); border:1.5px solid var(--border-focus-hover); border-radius:12px; box-shadow:0 10px 30px var(--shadow-black-translucent-75);">
+            <div id="skill-detail-bar" onclick="event.stopPropagation()" style="pointer-events:auto; width:min(30vw, 460px); min-width:340px; height:100%; display:flex; flex-direction:column; overflow-y:auto; padding:18px 20px; box-sizing:border-box; background:var(--bg-dark-warm-translucent-96); border-left:1.5px solid var(--border-focus-hover); box-shadow:-10px 0 30px var(--shadow-black-translucent-75);">
                 ${cardHTML}
             </div>`;
         this._lastPopupKey = key;
@@ -2525,10 +3359,11 @@
 
         // 0. Layout: the category browser puts Skills on the left page and Magic
         //    on the right, and a flat-list category keeps its sheet on the facing
-        //    page. A sphere grid is not a list, though: the lattice takes BOTH
-        //    pages and the skill's sheet becomes a popup opened on a chosen node.
+        //    page. The atlas is not a list, though: it takes BOTH pages and the
+        //    skill's sheet becomes a popup opened on a chosen node.
         const graphSpread = (this._viewMode === 'list' || this._viewMode === 'detail' ||
             this._viewMode === 'preview') && this.usesGraphView();
+        if (graphSpread) this.ensureAtlasFocus();
         const fullPageList = graphSpread;
         const spreadEl = this._dndContainer.querySelector('.book-spread');
         const leftPageEl = this._dndContainer.querySelector('.left-page');
@@ -2539,7 +3374,7 @@
         if (rightPageEl) rightPageEl.style.display = fullPageList ? 'none' : '';
         if (spineEl) spineEl.style.display = fullPageList ? 'none' : '';
 
-        // The pupil tabs live on the right page, which the grid takes over, so
+        // The pupil tabs live on the right page, which the atlas takes over, so
         // they move to the top-right corner of the page that is actually there.
         // They sit OUTSIDE #left-page-content, which is rebuilt by innerHTML.
         if (compRow && compRow.style.display !== 'none') {
@@ -2560,7 +3395,7 @@
             }
         }
 
-        // The sheet popup belongs to the grid alone; any other view takes it down.
+        // The sheet popup belongs to the atlas alone; any other view takes it down.
         if (!graphSpread) this.closeSkillDetailPopup();
 
         // The Spell Forge editor owns a self-contained renderer (both pages are
@@ -2583,6 +3418,8 @@
                         bonusBadge = `<span style="font-family:'Lora', serif; font-size:0.65rem; background:var(--text-secondary-active); color:var(--text-pure-black); border-radius:3px; padding:1px 5px; font-weight:bold; letter-spacing:0.5px;">${T('SkillMaster.kpMultiplier3x')}</span>`;
                     } else if (actorCategoryManager.isSecondary(cat)) {
                         bonusBadge = `<span style="font-family:'Lora', serif; font-size:0.65rem; background:var(--accent-gold-2); color:var(--bg-bg-alt-25-translucent-8); border-radius:3px; padding:1px 5px; font-weight:bold; letter-spacing:0.5px;">${T('SkillMaster.kpMultiplier15x')}</span>`;
+                    } else if (actorCategoryManager.isForeign(cat)) {
+                        bonusBadge = `<span style="font-family:'Lora', serif; font-size:0.65rem; background:transparent; color:var(--text-card-medium); border:1px solid var(--border-secondary-hover-translucent-15); border-radius:3px; padding:1px 5px; font-weight:bold; letter-spacing:0.5px; font-style:italic;">${T('SkillMaster.foreignSchool')}</span>`;
                     }
                 }
                 html += `
@@ -2602,16 +3439,23 @@
         const leftPageBox = document.getElementById('left-page-content');
         if (!leftPageBox) return;
 
-        // The grid is redrawn when its colours could have changed (a skill was
-        // learned, the pupil changed); moving the cursor around it only repaints
-        // the focus ring, so walking a 193-node school stays cheap. The lattice
-        // is the same page whether or not a sheet is open over it, so opening
-        // and closing the popup is not a rebuild either.
+        // The atlas is redrawn when its colours could have changed (a skill was
+        // learned, the pupil changed); moving the cursor over it only repaints
+        // the focus ring, so walking a whole school stays cheap. Opening or
+        // closing the sheet over it is not a rebuild either; turning the page to
+        // another school is, since that is a different circle entirely.
         const graphKey = this.usesGraphView() ? this.graphStateKey() : null;
-        const leftMode = graphSpread ? 'graph' : this._viewMode;   // i18n-ignore: cache key
+        const leftMode = graphSpread ? 'atlas' : this._viewMode;   // i18n-ignore: cache key
         const needsLeftRebuild = (this._lastLeftMode !== leftMode) ||
-            (this._viewMode !== 'category' && this._lastLeftCategory !== this._selectedCategory) ||
+            (leftMode !== 'atlas' && this._viewMode !== 'category' &&   // i18n-ignore: cache key
+                this._lastLeftCategory !== this._selectedCategory) ||
             (graphKey !== null && graphKey !== this._lastGraphKey);
+
+        // A rebuilt atlas comes back scrolled to its corner; the reader was
+        // somewhere else entirely, so remember where and put them back.
+        const oldAtlasBox = needsLeftRebuild ? document.getElementById('skill-atlas-box') : null;
+        const keptScroll = oldAtlasBox
+            ? { left: oldAtlasBox.scrollLeft, top: oldAtlasBox.scrollTop } : null;
 
         if (needsLeftRebuild) {
             this._lastGraphKey = graphKey;
@@ -2634,13 +3478,17 @@
                 `;
             } else {
                 const returnBtnText = T('SkillMaster.back');
-                const bodyHTML = this.usesGraphView()
-                    ? this.renderSkillGraphHTML()
+                const onAtlas = this.usesGraphView();
+                const bodyHTML = onAtlas
+                    ? this.renderSkillAtlasHTML()
                     : this.renderSkillListHTML();
+                // On the atlas the heading names the school on the page, and it
+                // is rewritten in place when the pager turns to another.
+                const heading = onAtlas ? this.focusedCategory() : this._selectedCategory;
                 leftPageHTML = `
                     <div class="page-header-bar" style="width: 100%;">
                       <div class="back-button focusable" onclick="SceneManager._scene.goBack()">${returnBtnText}</div>
-                      <h2 class="cc-header-gothic" style="border: none; margin: 0; padding: 0; text-align: center; font-size: 1.55rem;">${getCategoryDisplayName(this._selectedCategory)}</h2>
+                      <h2 id="atlas-school-name" class="cc-header-gothic" style="border: none; margin: 0; padding: 0; text-align: center; font-size: 1.55rem;">${getCategoryDisplayName(heading)}</h2>
                     </div>
                     ${bodyHTML}
                 `;
@@ -2678,23 +3526,19 @@
                 if (on && fuseEl.scrollIntoView) fuseEl.scrollIntoView({ block: 'nearest' });
             }
         } else if (this.usesGraphView()) {
-            // Only the ring moves: repaint it in place instead of rebuilding the
-            // whole lattice for a cursor step.
-            const focusedSkill = this.focusedSkill();
-            const focusedId = focusedSkill ? focusedSkill.id : 0;
-            leftPageBox.querySelectorAll('.sg-node').forEach((el) => {
-                const on = parseInt(el.dataset.id, 10) === focusedId;
-                el.classList.toggle('sg-focus', on);
-                const circle = el.firstElementChild;
-                if (circle) {
-                    circle.style.boxShadow = on
-                        ? '0 0 0 3px var(--text-secondary-active), 0 0 12px var(--shadow-primary-hover-translucent-5)'
-                        : '';
+            this.repaintAtlasFocus();
+            if (needsLeftRebuild) {
+                this.bindAtlasPointer();
+                // A rebuilt atlas starts in its corner, so put the reader back
+                // where they were standing (after teaching, after a redraw).
+                if (keptScroll) {
+                    const box = document.getElementById('skill-atlas-box');
+                    if (box) { box.scrollLeft = keptScroll.left; box.scrollTop = keptScroll.top; }
+                    this.scrollGraphToFocus();
+                } else {
+                    this.centreAtlasOnFocus();
                 }
-            });
-            // A rebuilt lattice starts scrolled to its corner, so put the pupil
-            // back where they were standing (after teaching, after a redraw).
-            if (needsLeftRebuild) this.scrollGraphToFocus();
+            }
         } else {
             const cards = leftPageBox.querySelectorAll('.skill-card');
             cards.forEach((card, idx) => {
@@ -2716,13 +3560,12 @@
         const rightPageBox = document.getElementById('right-page-content');
         if (!rightPageBox) return;
 
-        const skills = getSkillsByCategory(this._selectedCategory);
-        const skill = skills[this._selectedSkillIndex];
+        const skill = this.focusedSkill();
         const skillId = skill ? skill.id : null;
 
-        // On a grid there is no facing page to read: the sheet is a popup, and
-        // only for a node the player actually chose. Walking the lattice shows
-        // nothing but the lattice.
+        // On the atlas there is no facing page to read: the sheet is a popup, and
+        // only for a node the player actually chose. Walking the circles shows
+        // nothing but the circles.
         if (graphSpread) {
             if (this._viewMode === 'detail' && skill) {
                 this.updateSkillDetailPopup(skill, knowledge);
@@ -2822,11 +3665,19 @@
         const allowed = actorCategoryManager.allowedCategories();
         const stillOpen = !this._selectedCategory || this._selectedCategory === 'All' ||   // i18n-ignore: category id
             !allowed || allowed.includes(this._selectedCategory);
+        // A different pupil studies a different curriculum, so the school on the
+        // page may not be one of theirs at all and nothing that was remembered
+        // about the old one applies.
+        this._atlasZoom = 0;
+        this._atlasMemory = {};
+        if (this._atlasCategory && allowed && !allowed.includes(this._atlasCategory)) {
+            this._atlasCategory = null;
+        }
         if (!stillOpen && (this._viewMode === 'list' || this._viewMode === 'detail')) {
             this._viewMode = 'category';
             this._selectedCategory = null;
         } else if (this.usesGraphView()) {
-            // Same grid, different pupil: stand them where they already are on it.
+            // Same circle, different pupil: stand them where they already are on it.
             this.defaultGraphFocus();
         }
         // Learned badges, KP costs and available fusions are pupil-specific, so
@@ -2856,11 +3707,18 @@
         this._skillListWindow.setCategory(this._selectedCategory);
         this._viewMode = 'list';
         this._selectedSkillIndex = 0;
-        // A grid opens where the pupil already stands, not at its top-left corner.
+        // One school to a page: the chosen one, or the first of the curriculum
+        // when "All" was picked, since "all of them" is not a circle.
+        const schools = this.atlasCategories();
+        this._atlasCategory = schools.includes(cat) ? cat : (schools[0] || null);
+        this._atlasZoom = 0;
+        this._focusSkillId = 0;
+        // The pupil stands where they already stand on that circle, rather than at
+        // its way in.
         if (this.usesGraphView()) this.defaultGraphFocus();
         SoundManager.playOk();
         this.refreshUISkillDOM();
-        this.scrollGraphToFocus();
+        this.centreAtlasOnFocus();
     };
 
     Scene_SkillEncyclopedia.prototype.selectCategoryClick = function (pane, index) {
@@ -2883,6 +3741,7 @@
         const skills = getSkillsByCategory(this._selectedCategory);
         const skill = skills[this._selectedSkillIndex];
         if (skill) {
+            this._focusSkillId = skill.id;
             this._skillDetailWindow.setSkill(skill);
             this._viewMode = 'detail';
             this._selectedActionIndex = 0;
@@ -2891,23 +3750,148 @@
         }
     };
 
+    // Whether a skill the pupil already knows is carried into battle, toggled
+    // from the training sheet. The store is CategorizedBattleSkills' own, so
+    // this and the skill menu are editing one loadout, not two.
+    Scene_SkillEncyclopedia.prototype.carryToggleHTML = function (actor, skill, allowFocus) {
+        const LO = window.BattleLoadout;
+        if (!LO) return '';
+        const locked = LO.isAlwaysCarried(actor, skill);
+        const active = LO.isActive(actor, skill);
+        const full = !active && !locked && !LO.hasRoom(actor);
+        const label = locked ? T('SkillMaster.carry.locked')
+            : active ? T('SkillMaster.carry.drop')
+                : full ? T('SkillMaster.carry.full') : T('SkillMaster.carry.take');
+        const count = `${LO.count(actor)} / ${LO.MAX}`;
+        const focused = allowFocus && (this._selectedActionIndex === 0) && !locked;
+        const usable = !locked && (active || !full);
+        return `
+            <div class="action-button carry-button ${focused ? 'focused' : ''} ${usable ? '' : 'disabled'}" onclick="SceneManager._scene.toggleCarry(${actor.actorId()})" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; margin-top:6px; background:${active ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--accent-gray-2-translucent-0)'}; border:1px solid ${focused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:${usable ? 'pointer' : 'not-allowed'}; font-family:'Lora', serif; opacity:${usable ? 1 : 0.6}; transition:all 0.15s ease;">
+                <span style="font-weight:bold; font-size:0.9rem; text-transform:uppercase;">${active ? '◉' : '○'} ${label}</span>
+                <span style="font-size:0.8rem; color:var(--text-card-medium);">${count}</span>
+            </div>
+        `;
+    };
+
+    // A fused spell has two things an ordinary skill has not: a name its maker
+    // chose, and no database entry to fall back on. Both are edited here.
+    Scene_SkillEncyclopedia.prototype.fusionActionsHTML = function (actor, skill) {
+        if (!skill || !skill._customSpell || skill._ownerActorId !== actor.actorId()) return '';
+        const btn = (label, handler, danger) => `
+            <div class="action-button focusable" onclick="${handler}" style="flex:1; display:flex; justify-content:center; align-items:center; padding:9px 12px; background:var(--accent-gray-2-translucent-0); border:1px solid ${danger ? 'var(--text-danger-hover)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; font-size:0.84rem; font-weight:bold; text-transform:uppercase; color:${danger ? 'var(--text-danger-hover)' : 'var(--text-secondary-active)'};">${label}</div>`;
+        return `
+            <div style="display:flex; gap:8px; margin-top:6px;">
+                ${btn(T('SkillMaster.fusion.rename'), `SceneManager._scene.beginRenameFusion(${skill.id})`, false)}
+                ${btn(T('SkillMaster.fusion.delete'), `SceneManager._scene.deleteFusion(${skill.id})`, true)}
+            </div>
+            <div id="fusion-rename-row" style="display:none; gap:8px; margin-top:6px;">
+                <input id="fusion-rename-input" maxlength="24" value="${String(skill.name).replace(/"/g, '&quot;')}" style="flex:1; padding:8px 10px; font-family:'Lora', serif; font-size:0.9rem; color:var(--text-pure-white); background:var(--bg-card-translucent-5); border:1px solid var(--text-secondary-active); border-radius:6px; outline:none;" />
+                ${btn(T('SkillMaster.fusion.confirm'), `SceneManager._scene.commitRenameFusion(${skill.id})`, false)}
+            </div>
+        `;
+    };
+
+    Scene_SkillEncyclopedia.prototype.beginRenameFusion = function () {
+        const row = document.getElementById('fusion-rename-row');
+        const input = document.getElementById('fusion-rename-input');
+        if (!row || !input) return;
+        row.style.display = 'flex';
+        input.focus();
+        input.select();
+        // The engine reads the keyboard globally; while the field has it, it does not.
+        input.onkeydown = (e) => e.stopPropagation();
+        input.onkeyup = (e) => e.stopPropagation();
+    };
+
+    Scene_SkillEncyclopedia.prototype.commitRenameFusion = function (skillId) {
+        const input = document.getElementById('fusion-rename-input');
+        const skill = $dataSkills[skillId];
+        const name = input ? String(input.value || '').trim().slice(0, 24) : '';
+        if (!skill || !skill._customSpell || !name) { SoundManager.playBuzzer(); return; }
+        skill.name = name;
+        // The stored copy is what survives the save; $dataSkills is rebuilt from it.
+        const stored = $gameSystem.getCustomSpells().find(s => s && s.id === skillId);
+        if (stored) stored.name = name;
+        SoundManager.playOk();
+        this.invalidateLearnedSkillCaches();
+        this._lastPopupKey = null;
+        this.refreshUISkillDOM();
+    };
+
+    // Unmaking a fusion is not splitting it: the components are gone for good,
+    // which is why it asks once before it does it.
+    Scene_SkillEncyclopedia.prototype.deleteFusion = function (skillId) {
+        const skill = $dataSkills[skillId];
+        const actor = this.getTeachActor();
+        if (!skill || !skill._customSpell || !actor) { SoundManager.playBuzzer(); return; }
+        if (this._pendingFusionDelete !== skillId) {
+            this._pendingFusionDelete = skillId;
+            SoundManager.playBuzzer();
+            this._skillDetailWindow.showMessage(T('SkillMaster.fusion.confirmDelete', { skill: skill.name }));
+            return;
+        }
+        this._pendingFusionDelete = 0;
+        const name = skill.name;
+        if (window.BattleLoadout) window.BattleLoadout.drop(actor, skillId);
+        actor.forgetSkill(skillId);
+        $gameSystem.removeCustomSpell(skillId);
+        this.invalidateLearnedSkillCaches();
+        this._focusSkillId = 0;
+        this._viewMode = 'list';
+        this.closeSkillDetailPopup();
+        SoundManager.playCancel();
+        this._skillDetailWindow.showMessage(T('SkillMaster.fusion.deleted', { skill: name }));
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.toggleCarry = function (actorId) {
+        const LO = window.BattleLoadout;
+        const actor = $gameActors.actor(actorId);
+        const skill = this.focusedSkill();
+        if (!LO || !actor || !skill || !actor.isLearnedSkill(skill.id)) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        const result = LO.toggle(actor, skill);
+        if (result === 'locked' || result === 'full') {
+            SoundManager.playBuzzer();
+            this._skillDetailWindow.showMessage(
+                result === 'full' ? T('SkillMaster.carry.fullToast', { max: LO.MAX })
+                    : T('SkillMaster.carry.lockedToast', { skill: skill.name }));
+        } else {
+            SoundManager.playEquip();
+            this._skillDetailWindow.showMessage(result === 'on'
+                ? T('SkillMaster.carry.takenToast', { skill: skill.name })
+                : T('SkillMaster.carry.droppedToast', { skill: skill.name }));
+        }
+        this.refreshUISkillDOM();
+    };
+
+    // Sandbox play, and a party led by somebody called "test", is a workshop:
+    // the whole book is buyable in any order and knowledge never runs out.
+    function isWorkshopMode() {
+        if ($gameSystem && ($gameSystem._isSandboxMode || $gameSystem._sandboxKnowledgePointsGiven)) return true;
+        const leader = $gameParty && $gameParty.allMembers && $gameParty.allMembers()[0];
+        return !!(leader && leader.name && leader.name().toLowerCase() === 'test');
+    }
+    window.SkillMasterWorkshop = isWorkshopMode;
+
     Scene_SkillEncyclopedia.prototype.teachSkill = function (actorId, cost) {
         const actor = $gameActors.actor(actorId);
-        const skills = getSkillsByCategory(this._selectedCategory);
-        const skill = skills[this._selectedSkillIndex];
-        if (!actor || !skill || $gameSystem.getKnowledge() < cost) {
+        const skill = this.focusedSkill();
+        if (!actor || !skill || (!isWorkshopMode() && $gameSystem.getKnowledge() < cost)) {
             SoundManager.playBuzzer();
             return;
         }
         // The adjacency rule is enforced here, not just drawn: the flat "All"
         // list and the mouse both come through this door.
-        if (!SkillGraph.isOpen(actor, skill.id)) {
+        if (!isWorkshopMode() && !SkillGraph.isOpen(actor, skill.id)) {
             SoundManager.playBuzzer();
             this._skillDetailWindow.showMessage(T('SkillMaster.graph.lockedToast', { skill: skill.name }));
             this.refreshUISkillDOM();
             return;
         }
-        $gameSystem.spendKnowledge(cost);
+        if (!isWorkshopMode()) $gameSystem.spendKnowledge(cost);
         actor.learnSkill(skill.id);
         this.invalidateLearnedSkillCaches();
         SoundManager.playRecovery();
@@ -2980,7 +3964,7 @@
                     <!-- Empty target dummy: a ground disc with a target reticle. -->
                     <div style="position:absolute; left:50%; bottom:26px; transform:translate(-50%, 0) perspective(420px) rotateX(66deg); width:150px; height:150px; border-radius:50%; border:2px solid var(--accent-gold-translucent-50); box-shadow:0 0 0 18px var(--accent-gold-translucent-16) inset; background:radial-gradient(circle, var(--accent-gold-translucent-16) 0%, transparent 70%);"></div>
                     <div style="position:absolute; left:50%; bottom:88px; transform:translateX(-50%); width:2px; height:70px; background:linear-gradient(to bottom, transparent, var(--accent-gold-translucent-50)); pointer-events:none;"></div>
-                    <canvas id="spell-preview-canvas" style="position:absolute; inset:0; width:100%; height:100%; cursor:grab; touch-action:none;"></canvas>
+                    <canvas id="spell-preview-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; cursor:grab; touch-action:none;"></canvas>
                     ${noEfkNote}
                 </div>
                 <div style="text-align:center; font-size:0.82rem; color:var(--text-secondary-active); font-weight:bold;">${animLabel}</div>
@@ -3052,6 +4036,11 @@
     // (which category/skill/actor keys can't detect on their own).
     Scene_SkillEncyclopedia.prototype.invalidateLearnedSkillCaches = function () {
         this._editorCandidatesKey = null;
+        // A fusion made or unmade changes $dataSkills, which both the graph and
+        // the plate were built from.
+        SkillGraph.invalidate();
+        SkillAtlas.invalidate();
+        this._splitCategoriesCache = null;
     };
 
     Scene_SkillEncyclopedia.prototype.getSplitCategoriesCached = function () {
@@ -3475,7 +4464,7 @@
                     </div>
                     <div style="position:relative; width:100%; height:210px; border-radius:8px; overflow:hidden; border:1.5px solid var(--border-secondary-hover-translucent-15); background:radial-gradient(circle at 50% 40%, var(--bg-tertiary-focus-translucent-45) 0%, var(--shadow-heavy) 100%); perspective:600px;">
                         <div style="position:absolute; left:50%; bottom:6px; transform:translateX(-50%) rotateX(8deg); width:150px; height:150px; background:url('img/faces/${actor.faceName()}.png') -${faceX}px -${faceY}px no-repeat; image-rendering:pixelated; filter:drop-shadow(0 6px 10px var(--shadow-primary-hover-translucent-5));"></div>
-                        <canvas id="anim-preview-canvas" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none;"></canvas>
+                        <canvas id="anim-preview-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
                     </div>
                     <div id="anim-preview-label" style="text-align:center; font-family:'Lora',serif; font-size:0.85rem; color:var(--text-secondary-active); font-weight:bold; margin:8px 0;">${cur ? `#${cur.id} · ${cur.name}` : ''}</div>
                     <div id="anim-list-box" class="skill-scroll-box" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:5px; padding-right:6px; min-height:60px;">
@@ -3715,6 +4704,47 @@
                 this.scrollToActiveItem(boxId, `#${boxId} .category-card.focused`);   // i18n-ignore: CSS selector
             }
         } else if (this._viewMode === 'list') {
+            // On the atlas the cursor walks the circles rather than a wrapping
+            // list, so it is asked first: the flat list is only the fallback for
+            // a curriculum with no graph data at all.
+            if (this.usesGraphView()) {
+                if (Input.isTriggered('ok')) {
+                    this.openFocusedSkill();
+                    return;
+                }
+                if (Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled()) {
+                    this._viewMode = 'category';
+                    SoundManager.playCancel();
+                    this.refreshUISkillDOM();
+                    return;
+                }
+                if (Input.isTriggered('shift')) {
+                    // One press steps back far enough to see the whole circle and
+                    // the next brings it home, so a reader is never lost on it.
+                    const wide = this.wholeAtlasZoom();
+                    this.setAtlasZoom(this.atlasZoom() > wide + 0.01 ? wide : this.defaultAtlasZoom());
+                    this.scrollGraphToFocus();
+                    SoundManager.playCursor();
+                    return;
+                }
+                let moved = false;
+                // Running out of circle sideways turns the page to the next
+                // school; there is nothing above or below one to turn to.
+                if (Input.isTriggered('right') || Input.isRepeated('right')) {
+                    moved = this.moveGraphFocus(1, 0);
+                    if (!moved && this.pageAtlasSchool(1)) return;
+                } else if (Input.isTriggered('left') || Input.isRepeated('left')) {
+                    moved = this.moveGraphFocus(-1, 0);
+                    if (!moved && this.pageAtlasSchool(-1)) return;
+                } else if (Input.isTriggered('down') || Input.isRepeated('down')) moved = this.moveGraphFocus(0, 1);
+                else if (Input.isTriggered('up') || Input.isRepeated('up')) moved = this.moveGraphFocus(0, -1);
+                if (moved) {
+                    SoundManager.playCursor();
+                    this.refreshUISkillDOM();
+                    this.scrollGraphToFocus();
+                }
+                return;
+            }
             const skills = this.getSkillsByCategoryCached(this._selectedCategory);
             const max = skills.length;
             if (max === 0) {
@@ -3722,30 +4752,6 @@
                     this._viewMode = 'category';
                     SoundManager.playCancel();
                     this.refreshUISkillDOM();
-                }
-                return;
-            }
-            // On a grid the cursor walks the lattice rather than a wrapping list.
-            if (this.usesGraphView()) {
-                if (Input.isTriggered('ok')) {
-                    this.selectSkill(this._selectedSkillIndex);
-                    return;
-                }
-                if (Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled()) {
-                    this._viewMode = 'category';
-                    SoundManager.playCancel();
-                    this.refreshUISkillDOM();
-                    return;
-                }
-                let moved = false;
-                if (Input.isTriggered('right') || Input.isRepeated('right')) moved = this.moveGraphFocus(1, 0);
-                else if (Input.isTriggered('left') || Input.isRepeated('left')) moved = this.moveGraphFocus(-1, 0);
-                else if (Input.isTriggered('down') || Input.isRepeated('down')) moved = this.moveGraphFocus(0, 1);
-                else if (Input.isTriggered('up') || Input.isRepeated('up')) moved = this.moveGraphFocus(0, -1);
-                if (moved) {
-                    SoundManager.playCursor();
-                    this.refreshUISkillDOM();
-                    this.scrollGraphToFocus();
                 }
                 return;
             }
@@ -3783,8 +4789,7 @@
         } else if (this._viewMode === 'preview') {
             this.updateSpellPreviewInput();
         } else if (this._viewMode === 'detail') {
-            const skills = this.getSkillsByCategoryCached(this._selectedCategory);
-            const skill = skills[this._selectedSkillIndex];
+            const skill = this.focusedSkill();
             // Action 0 = teach the chosen pupil; action 1 = preview animation.
             const maxActions = 2;
 
@@ -3799,7 +4804,9 @@
                 SoundManager.playCursor();
                 this.refreshUISkillDOM();
             } else if (Input.isTriggered('ok')) {
-                if (this._selectedActionIndex === 0) {
+                if (!skill) {
+                    SoundManager.playBuzzer();
+                } else if (this._selectedActionIndex === 0) {
                     const actor = this.getTeachActor();
                     const cost = $gameSystem.getSkillKnowledgeCost(skill.id, actor.actorId());
                     this.teachSkill(actor.actorId(), cost);

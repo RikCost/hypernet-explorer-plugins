@@ -613,8 +613,6 @@
             this._deathText.bitmap = new Bitmap(320, 240);
             this._deathText.bitmap.fontSize = 24;
             this._deathText.bitmap.drawText(T('HyperTamer.petDied'), 0, 100, 320, 32, 'center');
-            this._deathText.bitmap.fontSize = 16;
-            this._deathText.bitmap.drawText(T('HyperTamer.pressOkNewPet'), 0, 140, 320, 32, 'center');
             this._lcdContainer.addChild(this._deathText);
         }
         

@@ -278,22 +278,399 @@
     }
   }
 
+  // ===========================================================================
+  // THE STRUCTURE CATALOGUE
+  // ===========================================================================
+  // Every enclosed interior the game generates is one entry in this table, and
+  // the table is the ONLY place that knows the list. Six files used to keep a
+  // hardcoded roll-call of structure biome names apiece (this generator, the
+  // forced-biome command, the chest pass, the trap pass, the encounter spawner,
+  // the puzzle placer) and they had already drifted apart from one another; a
+  // catalogue this size cannot be maintained that way, so they all read
+  // `window.ProcGenDungeon.structure()` now.
+  //
+  // An entry declares six things:
+  //
+  //   layout      which carver draws the plan (see generateDungeonBiome)
+  //   palette     the LIMITED set of ground textures the place is paved with:
+  //               one `main` (every corridor and every unpatterned floor tile),
+  //               `accents` (a room takes one, so rooms differ from each other
+  //               while the structure still reads as one place), the `rim` rock
+  //               drawn in the dead mass around the plan, and which wall family
+  //               the faces are cut from. Names are FEATURE names off the
+  //               tileset note, never tile ids: which variant of a feature a
+  //               given structure uses is rolled from the map seed, so two
+  //               cellars are floored differently and one cellar is always
+  //               floored the same.
+  //   patterns    what a room may draw on its floor in its accent
+  //   ornaments   deliberate dressing (pit props down a drift, graves in the
+  //               wall niches, a pentagram at the centre) laid before the old
+  //               random scatter, which stays on top at a lower rate
+  //   entrances   which terrain feature may open onto it. An empty list means
+  //               the place is never rolled: the Sewer belongs to the towns
+  //               that carry it (Grate) and a patron's Vault to their Hatch.
+  //   enemy       who lives there, and how dangerous it is
+  //
+  // `affinity` is the surface families whose stairways favour this structure
+  // (ice country keeps frozen caves under it, a graveyard catacombs); see
+  // ProceduralTerrainInteractions, which owns the roll.
+  const DANGER = { SAFE: "safe", ORDINARY: "ordinary", HOSTILE: "hostile", DEADLY: "deadly" };
+
+  // i18n-ignore-start  biome ids, layout/rule/feature names and enemy tags: every
+  // one of these is a database id, never text the player sees. What IS shown -
+  // the structure's display name and its rolled proper name - comes from
+  // js/i18n/<lang>/plugins/Biomes.json and Structures.json.
+  const STRUCTURES = [
+    // --- the five that already existed, reworked ---------------------------
+    {
+      key: "Dungeon", layout: "bsp", weight: 24, name: "dungeon",
+      entrances: ["stairsDown"], affinity: ["dead", "urban", "mountain", "rural"],
+      danger: DANGER.ORDINARY,
+      palette: { main: ["DungeonFloor"], accents: ["Pavement", "DungeonFloor", "Dirt"],
+                 rim: ["DungeonWall", "CaveWall"], wall: "dungeon" },
+      patterns: ["border", "checker", "runner", "none", "none"],
+      ornaments: ["braziers", "stoneRims", "statuePairs"],
+      dressing: { floor: 0.05, wall: 0.1 },
+      enemy: { biomes: ["Dungeon", "Abandoned", "Ruins"], cap: 4, boss: true },
+      chests: [4, 7],
+      hazards: true,
+    },
+    {
+      key: "Crypt", layout: "tombs", weight: 20, name: "crypt",
+      entrances: ["stairsDown"], affinity: ["dead", "rural", "desert"],
+      danger: DANGER.ORDINARY,
+      palette: { main: ["DungeonFloor"], accents: ["Dirt", "Pavement"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["border", "medallion", "none"],
+      ornaments: ["nicheGraves", "bonePiles", "candleRing"],
+      dressing: { floor: 0.06, wall: 0.1 },
+      enemy: { biomes: ["Crypt", "Graveyard"], archetypes: ["Undead", "Skeleton", "Ghost", "ConstructedUndead", "Vampire"], cap: 4, boss: true },
+      chests: [4, 7],
+      hazards: true,
+    },
+    {
+      key: "LootCellar", layout: "cellar", weight: 26, name: "cellar",
+      entrances: ["stairsDown"], affinity: ["rural", "urban", "dead"],
+      danger: DANGER.SAFE,
+      palette: { main: ["DungeonFloor"], accents: ["WoodenFloor", "Dirt"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["border", "none", "none"],
+      ornaments: ["cratePiles", "braziers"],
+      dressing: { floor: 0.08, wall: 0.07 },
+      enemy: { biomes: ["Sewer", "Abandoned"], cap: [0, 1], boss: false },
+      chests: [1, 2],
+    },
+    {
+      key: "CaveDen", layout: "cavern", weight: 20, name: "den",
+      entrances: ["stairsDown", "cave"], affinity: ["mountain", "wood", "rural"],
+      danger: DANGER.ORDINARY,
+      palette: { main: ["CaveFloor"], accents: ["Dirt"],
+                 rim: ["CaveWall"], wall: "cave" },
+      patterns: ["none"],
+      ornaments: ["bonePiles", "rockFall"],
+      dressing: { floor: 0.12, wall: 0.1 },
+      enemy: { biomes: ["Cave", "Underdark"], cap: 8, boss: false, uniform: true },
+      chests: [0, 1],
+    },
+    {
+      key: "TempleInside", layout: "temple", weight: 8, name: "temple",
+      entrances: ["stairsDown", "stairsUp"], affinity: ["dead", "weird", "wood"],
+      danger: DANGER.DEADLY,
+      palette: { main: ["DungeonFloor"], accents: ["Pavement", "Carpet"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["runner", "border", "medallion"],
+      ornaments: ["columnRows", "statuePairs", "candleRing"],
+      dressing: { floor: 0.05, wall: 0.1 },
+      enemy: { biomes: ["Temple", "Crypt", "Heaven", "Eldritch"], cap: 4, boss: false },
+      chests: [4, 7],
+      hazards: true,
+    },
+
+    // --- entrance-exclusive: never rolled ----------------------------------
+    {
+      key: "Sewer", layout: "canals", weight: 0, name: "sewer",
+      entrances: [], affinity: [], danger: DANGER.ORDINARY,
+      palette: { main: ["DungeonFloor"], accents: ["Pavement", "CaveFloor"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["border", "none"],
+      ornaments: ["waterLanes", "railLine"],
+      dressing: { floor: 0.05, wall: 0.14 },
+      enemy: { biomes: ["Sewer", "CaveFlooded"], cap: 4, boss: true },
+      chests: [4, 7],
+      hazards: true,
+    },
+    {
+      key: "PatronVault", layout: "vault", weight: 0, name: "vault",
+      entrances: [], affinity: [], danger: DANGER.HOSTILE,
+      palette: { main: ["DungeonFloor"], accents: ["Carpet", "Parquet"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["border", "medallion", "checker"],
+      ornaments: ["columnRows", "braziers", "stoneRims"],
+      dressing: { floor: 0.44, wall: 0.2 },
+      // A patron's vault is a reward, not a fight: no keepers guard it.
+      enemy: { biomes: ["Sewer", "Dungeon"], cap: 0, boss: false },
+      chests: [99, 99],
+    },
+
+    // --- the new catalogue --------------------------------------------------
+    {
+      key: "Catacombs", layout: "warren", weight: 16, name: "catacombs",
+      entrances: ["stairsDown"], affinity: ["dead", "urban", "desert"],
+      danger: DANGER.ORDINARY,
+      palette: { main: ["Dirt"], accents: ["DungeonFloor", "CaveFloor"],
+                 rim: ["CaveWall", "DungeonWall"], wall: "dungeon" },
+      patterns: ["none", "speckle"],
+      ornaments: ["nicheGraves", "bonePiles", "candleRing"],
+      dressing: { floor: 0.09, wall: 0.12 },
+      enemy: { biomes: ["Crypt", "Graveyard", "Underdark"], archetypes: ["Undead", "Skeleton", "Ghost", "Bat", "Spider"], cap: 5, boss: true },
+      chests: [2, 4],
+      hazards: true,
+    },
+    {
+      key: "Mineshaft", layout: "drifts", weight: 16, name: "mine",
+      entrances: ["stairsDown"], affinity: ["mountain", "desert", "rural"],
+      danger: DANGER.ORDINARY,
+      palette: { main: ["Dirt"], accents: ["CaveFloor", "WoodenFloor"],
+                 rim: ["CaveWall"], wall: "cave" },
+      patterns: ["runner", "none"],
+      ornaments: ["pitProps", "oreVeins", "railLine", "cratePiles"],
+      dressing: { floor: 0.07, wall: 0.1 },
+      enemy: { biomes: ["Mines", "Underdark"], archetypes: ["Gnome", "Golem", "Insectoid", "CrystalEntity", "Bat"], cap: 5, boss: true },
+      chests: [2, 4],
+      hazards: true,
+    },
+    {
+      key: "CaveFrozen", layout: "cavern", weight: 12, name: "frozenCave",
+      entrances: ["stairsDown", "cave"], affinity: ["ice"],
+      danger: DANGER.HOSTILE,
+      palette: { main: ["CaveFloor"], accents: ["Salt", "Pavement"],
+                 rim: ["CaveWall"], wall: "cave" },
+      patterns: ["speckle", "none"],
+      ornaments: ["iceSpikes", "rockFall", "crystalClusters"],
+      dressing: { floor: 0.1, wall: 0.08 },
+      enemy: { biomes: ["CaveIce", "Ice", "Permafrost", "MountainIce"], cap: 5, boss: true },
+      chests: [1, 3],
+    },
+    {
+      key: "Cistern", layout: "piers", weight: 12, name: "cistern",
+      entrances: ["stairsDown"], affinity: ["wet", "urban", "rural"],
+      danger: DANGER.ORDINARY,
+      palette: { main: ["Pavement"], accents: ["DungeonFloor", "CaveFloor"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["border", "checker", "none"],
+      ornaments: ["waterLanes", "columnRows", "puddles"],
+      dressing: { floor: 0.05, wall: 0.13 },
+      enemy: { biomes: ["CaveFlooded", "SeaBed", "Sewer"], cap: 5, boss: true },
+      chests: [2, 5],
+      hazards: true,
+    },
+    {
+      key: "FungalWarren", layout: "warren", weight: 14, name: "fungal",
+      entrances: ["stairsDown", "cave"], affinity: ["wood", "wet", "mountain"],
+      danger: DANGER.ORDINARY,
+      palette: { main: ["Dirt"], accents: ["CaveFloor", "Grass"],
+                 rim: ["CaveWall"], wall: "cave" },
+      patterns: ["speckle", "none"],
+      ornaments: ["mushroomBeds", "vineCurtains", "puddles"],
+      dressing: { floor: 0.14, wall: 0.1 },
+      enemy: { biomes: ["Mushroom", "Underdark", "Swamp"], archetypes: ["Plant", "Mushroom", "Insectoid", "Slime", "InsectSwarm"], cap: 6, boss: true },
+      chests: [1, 3],
+    },
+    {
+      key: "CrystalCavern", layout: "chambers", weight: 10, name: "crystal",
+      entrances: ["stairsDown", "cave"], affinity: ["mountain", "ice", "weird"],
+      danger: DANGER.HOSTILE,
+      palette: { main: ["CaveFloor"], accents: ["Salt", "Pavement"],
+                 rim: ["CaveWall"], wall: "cave" },
+      patterns: ["speckle", "none"],
+      ornaments: ["crystalClusters", "oreVeins"],
+      dressing: { floor: 0.1, wall: 0.09 },
+      enemy: { biomes: ["Crystals", "Underdark", "Mines"], archetypes: ["CrystalEntity", "Golem", "Elemental", "Gnome"], cap: 5, boss: true },
+      chests: [2, 4],
+    },
+    {
+      key: "Oubliette", layout: "cells", weight: 11, name: "oubliette",
+      entrances: ["stairsDown"], affinity: ["dead", "urban", "mountain"],
+      danger: DANGER.HOSTILE,
+      palette: { main: ["DungeonFloor"], accents: ["Pavement", "Dirt"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["border", "none"],
+      ornaments: ["cellDoors", "chains", "bonePiles"],
+      dressing: { floor: 0.07, wall: 0.14 },
+      enemy: { biomes: ["Dungeon", "Abandoned", "Crypt"], archetypes: ["Humanoid", "Undead", "Ghost", "ArmoredKnight"], cap: 5, boss: true },
+      chests: [2, 4],
+      hazards: true,
+    },
+    {
+      key: "SunkenLibrary", layout: "halls", weight: 7, name: "library",
+      entrances: ["stairsDown", "stairsUp"], affinity: ["weird", "dead", "urban"],
+      danger: DANGER.DEADLY,
+      palette: { main: ["Parquet"], accents: ["Carpet", "WoodenFloor"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["runner", "border", "medallion"],
+      ornaments: ["shelfStacks", "readingDesks", "candleRing"],
+      dressing: { floor: 0.06, wall: 0.1 },
+      enemy: { biomes: ["Eldritch", "Limbo", "Abandoned"], archetypes: ["Ghost", "Voidspawn", "Humanoid", "Demon"], cap: 4, boss: false },
+      chests: [3, 6],
+      hazards: true,
+    },
+    {
+      key: "UnderForge", layout: "grid", weight: 9, name: "forge",
+      entrances: ["stairsDown"], affinity: ["volcanic", "mountain", "urban"],
+      danger: DANGER.HOSTILE,
+      palette: { main: ["Metal"], accents: ["DungeonFloor", "Dirt"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["checker", "border", "none"],
+      ornaments: ["lavaFlow", "forgeGear", "chains"],
+      dressing: { floor: 0.08, wall: 0.12 },
+      enemy: { biomes: ["Volcano", "Hell", "Factory", "FactoryInside"], archetypes: ["FireElemental", "Golem", "Demon", "Robot"], cap: 5, boss: true },
+      chests: [2, 5],
+      hazards: true,
+    },
+    {
+      key: "ColdWarBunker", layout: "grid", weight: 10, name: "bunker",
+      entrances: ["stairsDown"], affinity: ["urban", "rural", "ice"],
+      danger: DANGER.HOSTILE,
+      palette: { main: ["Metal"], accents: ["TechnoFloor", "Pavement"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["checker", "border", "none"],
+      ornaments: ["techPanels", "cratePiles", "railLine"],
+      dressing: { floor: 0.07, wall: 0.12 },
+      enemy: { biomes: ["Factory", "FactoryInside", "Spacecenter", "Abandoned"], archetypes: ["Robot", "Drone", "RoboticDefender", "Turret", "Humanoid"], cap: 5, boss: true },
+      chests: [3, 6],
+      hazards: true,
+    },
+    {
+      key: "BuriedLab", layout: "grid", weight: 8, name: "lab",
+      entrances: ["stairsDown"], affinity: ["urban", "weird"],
+      danger: DANGER.HOSTILE,
+      palette: { main: ["TechnoFloor"], accents: ["Metal", "Techno"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["checker", "border"],
+      ornaments: ["glassWalls", "techPanels", "readingDesks"],
+      dressing: { floor: 0.07, wall: 0.11 },
+      enemy: { biomes: ["Laboratory", "Spacecenter", "Factory"], archetypes: ["Robot", "Mutant", "Slime", "Bacterial", "Drone"], cap: 5, boss: true },
+      chests: [3, 6],
+      hazards: true,
+    },
+    {
+      key: "ProfaneShrine", layout: "rings", weight: 6, name: "shrine",
+      entrances: ["stairsDown", "stairsUp"], affinity: ["weird", "dead", "volcanic"],
+      danger: DANGER.DEADLY,
+      palette: { main: ["DungeonFloor"], accents: ["Carpet", "Pavement"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["medallion", "border"],
+      ornaments: ["pentagramCentre", "candleRing", "bloodStains", "statuePairs"],
+      dressing: { floor: 0.07, wall: 0.12 },
+      enemy: { biomes: ["Hell", "Eldritch", "Limbo"], archetypes: ["Demon", "Voidspawn", "Vampire", "TentacledCreature", "Ghost"], cap: 4, boss: false },
+      chests: [2, 5],
+      hazards: true,
+    },
+    {
+      key: "SmugglerTunnel", layout: "tube", weight: 14, name: "smuggler",
+      entrances: ["stairsDown"], affinity: ["rural", "urban", "wet"],
+      danger: DANGER.SAFE,
+      palette: { main: ["Dirt"], accents: ["WoodenFloor", "CaveFloor"],
+                 rim: ["CaveWall"], wall: "cave" },
+      patterns: ["none", "runner"],
+      ornaments: ["cratePiles", "pitProps"],
+      dressing: { floor: 0.09, wall: 0.08 },
+      enemy: { biomes: ["Abandoned", "Docks", "City"], archetypes: ["Humanoid", "Goblin", "Beast"], cap: [0, 2], boss: false },
+      chests: [2, 3],
+    },
+    {
+      key: "SeaGrotto", layout: "cavern", weight: 11, name: "grotto",
+      entrances: ["stairsDown", "cave"], affinity: ["wet"],
+      danger: DANGER.ORDINARY,
+      palette: { main: ["CaveFloor"], accents: ["Sand", "Dirt"],
+                 rim: ["CaveWall"], wall: "cave" },
+      patterns: ["speckle", "none"],
+      ornaments: ["tidePool", "shellBeds", "rockFall"],
+      dressing: { floor: 0.11, wall: 0.08 },
+      enemy: { biomes: ["CaveFlooded", "SeaBed", "Beach", "Ocean"], archetypes: ["AquaticFish", "Crustacean", "Octopus", "Turtle", "Serpent"], cap: 5, boss: true },
+      chests: [1, 3],
+    },
+    {
+      key: "LavaTube", layout: "tube", weight: 7, name: "lavaTube",
+      entrances: ["stairsDown", "cave"], affinity: ["volcanic", "mountain"],
+      danger: DANGER.DEADLY,
+      palette: { main: ["CaveFloor"], accents: ["Dirt", "Metal"],
+                 rim: ["CaveWall"], wall: "cave" },
+      patterns: ["speckle", "none"],
+      ornaments: ["lavaFlow", "rockFall", "crystalClusters"],
+      dressing: { floor: 0.08, wall: 0.08 },
+      enemy: { biomes: ["Volcano", "Hell"], archetypes: ["FireElemental", "Hellhound", "Dragon", "Demon", "Elemental"], cap: 4, boss: false },
+      chests: [1, 3],
+    },
+    {
+      key: "Barrow", layout: "mound", weight: 10, name: "barrow",
+      entrances: ["stairsDown", "stairsUp"], affinity: ["rural", "dead", "ice", "mountain"],
+      danger: DANGER.HOSTILE,
+      palette: { main: ["Dirt"], accents: ["DungeonFloor", "Grass"],
+                 rim: ["CaveWall", "DungeonWall"], wall: "dungeon" },
+      patterns: ["border", "medallion", "none"],
+      ornaments: ["nicheGraves", "statuePairs", "hoard", "bonePiles"],
+      dressing: { floor: 0.08, wall: 0.1 },
+      enemy: { biomes: ["Graveyard", "Crypt", "Highlands"], archetypes: ["Undead", "Skeleton", "ArmoredKnight", "Ghost", "Totem"], cap: 4, boss: true },
+      chests: [3, 5],
+      hazards: true,
+    },
+    {
+      key: "MetroStation", layout: "platform", weight: 9, name: "metro",
+      entrances: ["stairsDown"], affinity: ["urban"],
+      danger: DANGER.ORDINARY,
+      palette: { main: ["Pavement"], accents: ["Metal", "DungeonFloor"],
+                 rim: ["DungeonWall"], wall: "dungeon" },
+      patterns: ["border", "checker", "none"],
+      ornaments: ["railLine", "platformFittings", "techPanels"],
+      dressing: { floor: 0.07, wall: 0.12 },
+      enemy: { biomes: ["Metro", "City", "Abandoned", "Sewer"], archetypes: ["Humanoid", "TrashCreature", "Robot", "Slime", "Ghost"], cap: 5, boss: true },
+      chests: [2, 4],
+      hazards: true,
+    },
+    {
+      key: "SaltWorks", layout: "drifts", weight: 9, name: "salt",
+      entrances: ["stairsDown"], affinity: ["desert", "wet", "ice"],
+      danger: DANGER.ORDINARY,
+      palette: { main: ["Salt"], accents: ["Dirt", "CaveFloor"],
+                 rim: ["CaveWall"], wall: "cave" },
+      patterns: ["border", "runner", "none"],
+      ornaments: ["pitProps", "oreVeins", "cratePiles", "puddles"],
+      dressing: { floor: 0.07, wall: 0.09 },
+      enemy: { biomes: ["Mines", "Desert", "SaltFlats", "Underdark"], archetypes: ["Golem", "Crustacean", "Elemental", "Insectoid"], cap: 5, boss: true },
+      chests: [2, 4],
+      hazards: true,
+    },
+  ];
+
+  // i18n-ignore-end
+
+  const STRUCTURE_INDEX = {};
+  for (const s of STRUCTURES) STRUCTURE_INDEX[s.key.toLowerCase()] = s;
+
+  // The carve of the most recent structure generated (see generateDungeonBiome).
+  let _lastCarved = null;
+
+  // The entry behind a biome name, or null. Dungeon / Crypt / Sewer are matched
+  // on their PREFIX as they always have been (a "DungeonIce" or "Sewer2" in a
+  // world's data still has to render as one), everything else exactly.
+  function structureFor(biomeName) {
+    const n = String(biomeName || "").toLowerCase().trim();
+    if (!n) return null;
+    if (STRUCTURE_INDEX[n]) return STRUCTURE_INDEX[n];
+    if (n.startsWith("dungeon")) return STRUCTURE_INDEX["dungeon"];
+    if (n.startsWith("crypt")) return STRUCTURE_INDEX["crypt"];
+    if (n.startsWith("sewer")) return STRUCTURE_INDEX["sewer"];
+    return null;
+  }
+
   /**
    * Check if biome is a dungeon-family biome (rendered by the enclosed
-   * floor/Ceiling/wall generator): Dungeon / Crypt / Sewer plus the
-   * structure biomes entered through terrain features (LootCellar via
-   * StairsDown, TempleInside via StairsUp, CaveDen via Cave, PatronVault via
-   * a patron's Hatch).
+   * floor/rim/wall generator). Every structure in the catalogue is one, which
+   * is the whole point of the catalogue: the list lives in exactly one place.
    */
   function isDungeonBiome(biomeName) {
-    const n = biomeName.toLowerCase();
-    return (
-      n === "dungeon" || n.startsWith("dungeon") ||
-      n === "crypt"   || n.startsWith("crypt")   ||
-      n === "sewer"   || n.startsWith("sewer")   ||
-      n === "lootcellar" || n === "templeinside" || n === "caveden" ||
-      n === "patronvault"
-    );
+    return !!structureFor(biomeName);
   }
 
   /**
@@ -347,6 +724,40 @@
   function getRandomFeatureTile(tiles, rng) {
     if (!tiles || tiles.length === 0) return 0;
     return tiles[Math.floor(rng() * tiles.length)];
+  }
+
+  /**
+   * Orientation-aware dashed center-line tiles, resolved exactly the way the
+   * Road biome resolves them (ProceduralMapRoadGenerator.getDashedLineTileIds):
+   * a directional DashedLineHorizontal/DashedLineVertical tag wins over the
+   * legacy undirected DashedLine tag. window.ProcGenRoads is read lazily
+   * (this plugin can load before ProceduralMapRoadGenerator; by the time a
+   * map is actually generated at runtime every plugin has finished loading).
+   * @returns {{horizontal: number|null, vertical: number|null}}
+   */
+  function getDashedLinesForFeatures(allFeatures) {
+    const RoadGen = window.ProcGenRoads;
+    if (RoadGen && typeof RoadGen.getDashedLineTileIds === "function") {
+      return RoadGen.getDashedLineTileIds(allFeatures);
+    }
+    const legacy = getFeatureTiles("DashedLine", allFeatures);
+    const legacyTile = legacy ? legacy[0] : null;
+    return { horizontal: legacyTile, vertical: legacyTile };
+  }
+
+  /**
+   * Orientation-aware pedestrian-crossing ("zebra") tile grids, or
+   * {horizontal:null, vertical:null} on a tileset that defines neither -
+   * which is what keeps a crossing off any biome whose tileset never
+   * declared ZebraHorizontal/ZebraVertical in the first place.
+   * @returns {{horizontal: object|null, vertical: object|null}}
+   */
+  function getZebraForFeatures(allFeatures) {
+    const RoadGen = window.ProcGenRoads;
+    if (RoadGen && typeof RoadGen.getZebraTileIds === "function") {
+      return RoadGen.getZebraTileIds(allFeatures);
+    }
+    return { horizontal: null, vertical: null };
   }
 
   /**
@@ -426,6 +837,215 @@
     return { top: w, mid: w, bot: w };
   }
 
+  // ===========================================================================
+  // PALETTE
+  // ===========================================================================
+  // A structure is paved from a LIMITED set of ground textures: one main tile
+  // and two or three accents. It used to be a third of the DungeonFloor
+  // palette, dealt per tile, so every room of every structure was the same
+  // speckle of six tiles and nothing looked like a place.
+  //
+  // Which variant of a feature a structure gets is rolled from the map seed,
+  // so one stairway always opens onto the same floor and the cellar next door
+  // is floored differently. Only A-sheet ground tiles are eligible (id >= 1536):
+  // the B-E sheets are overlay art with transparency and read as holes when
+  // laid on layer 0.
+  const GROUND_TILE_MIN = 1536;
+
+  function groundTiles(names, allFeatures, tilesetId) {
+    const out = [];
+    for (const nm of names || []) {
+      for (const v of allFeatures[nm] || []) {
+        if (v.type !== "single" || !v.tileId) continue;
+        if (v.tileId < GROUND_TILE_MIN) continue;
+        if (!isTilePassableInTileset(tilesetId, v.tileId)) continue;
+        if (!out.includes(v.tileId)) out.push(v.tileId);
+      }
+    }
+    return out;
+  }
+
+  // The rim is the rock drawn in the dead mass hugging the plan. It is never
+  // walked on (the impassable wall ring stands between it and the floor), so
+  // passability is not asked of it, only that it is a real A-sheet tile.
+  function rimTile(names, allFeatures, rng) {
+    for (const nm of names || []) {
+      const pool = [];
+      for (const v of allFeatures[nm] || []) {
+        if (v.type === "single" && v.tileId >= GROUND_TILE_MIN) pool.push(v.tileId);
+        else if (v.type === "grid") {
+          for (const row of v.grid) for (const t of row) if (t >= GROUND_TILE_MIN) pool.push(t);
+        }
+      }
+      if (pool.length) return pool[Math.floor(rng() * pool.length)];
+    }
+    return 0;
+  }
+
+  function buildPalette(S, allFeatures, tilesetId, rng) {
+    const p = (S && S.palette) || {};
+    // Main: one tile, and the fallback chain ends on DungeonFloor so a tileset
+    // that happens not to carry a structure's preferred ground still paves.
+    let mainPool = groundTiles(p.main, allFeatures, tilesetId);
+    if (!mainPool.length) mainPool = groundTiles(["DungeonFloor", "CaveFloor"], allFeatures, tilesetId);
+    if (!mainPool.length) mainPool = [2816];
+    const main = mainPool[Math.floor(rng() * mainPool.length)];
+
+    // Accents: 2-3 tiles, never the main one. Drawn from the declared accent
+    // features first and topped up from the main feature's other variants, so
+    // a structure with a one-tile accent feature still has rooms that differ.
+    const accentPool = groundTiles(p.accents, allFeatures, tilesetId)
+      .concat(mainPool)
+      .filter((t) => t !== main);
+    const accents = [];
+    const wanted = Math.min(3, Math.max(1, accentPool.length));
+    while (accents.length < wanted && accentPool.length) {
+      const t = accentPool.splice(Math.floor(rng() * accentPool.length), 1)[0];
+      if (!accents.includes(t)) accents.push(t);
+    }
+    if (!accents.length) accents.push(main);
+
+    // Wall faces: worked masonry, or the natural rock a cave is cut through.
+    let wall;
+    if (p.wall === "cave") {
+      const caveWalls = getFeatureTiles("CaveWall", allFeatures);
+      const cw = caveWalls && caveWalls.length ? caveWalls[0] : null;
+      wall = cw ? { top: cw, mid: cw, bot: cw } : pickWallColumn(allFeatures, rng);
+    } else {
+      wall = pickWallColumn(allFeatures, rng);
+    }
+
+    const waterList = getFeatureTiles("Water", allFeatures);
+    const lavaList = getFeatureTiles("Lava", allFeatures);
+    return {
+      main, accents,
+      rim: rimTile(p.rim, allFeatures, rng),
+      wall,
+      water: waterList && waterList.length ? waterList[0] : 0,
+      lava: lavaList && lavaList.length ? lavaList[Math.floor(rng() * lavaList.length)] : 0,
+      patterns: (S && S.patterns && S.patterns.length) ? S.patterns : ["none"],
+    };
+  }
+
+  // ===========================================================================
+  // FLOOR PATTERNS
+  // ===========================================================================
+  // A room takes ONE accent and ONE pattern, so the rooms of a structure differ
+  // from one another while the corridors between them stay the structure's main
+  // texture and hold the place together.
+  function paintPattern(setTile, room, main, accent, kind, rng) {
+    const x0 = room.x, y0 = room.y, w = room.width, h = room.height;
+    const x1 = x0 + w - 1, y1 = y0 + h - 1;
+    switch (kind) {
+      case "border":
+        // An accent rim one tile inside the room's own edge.
+        for (let x = x0; x <= x1; x++) { setTile(x, y0, accent); setTile(x, y1, accent); }
+        for (let y = y0; y <= y1; y++) { setTile(x0, y, accent); setTile(x1, y, accent); }
+        break;
+      case "checker":
+        // 2x2 blocks, not single tiles: a one-tile chequer of two floor
+        // textures reads as tiling noise rather than as a paved floor.
+        for (let y = y0; y <= y1; y++)
+          for (let x = x0; x <= x1; x++)
+            if (((x >> 1) + (y >> 1)) % 2 === 0) setTile(x, y, accent);
+        break;
+      case "runner": {
+        // A carpet-runner aisle down the room's long axis.
+        const horizontal = w >= h;
+        const band = Math.max(1, Math.min(3, Math.floor((horizontal ? h : w) / 3)));
+        const mid = horizontal ? y0 + (h >> 1) : x0 + (w >> 1);
+        const from = mid - ((band - 1) >> 1);
+        for (let k = 0; k < band; k++) {
+          if (horizontal) for (let x = x0; x <= x1; x++) setTile(x, from + k, accent);
+          else for (let y = y0; y <= y1; y++) setTile(from + k, y, accent);
+        }
+        break;
+      }
+      case "medallion": {
+        // Concentric blocks at the room's centre, main and accent alternating.
+        const cx = x0 + (w >> 1), cy = y0 + (h >> 1);
+        const r = Math.max(1, Math.min(Math.min(w, h) >> 1, 4));
+        for (let dy = -r; dy <= r; dy++)
+          for (let dx = -r; dx <= r; dx++) {
+            const ring = Math.max(Math.abs(dx), Math.abs(dy));
+            setTile(cx + dx, cy + dy, (ring & 1) === 0 ? accent : main);
+          }
+        break;
+      }
+      case "speckle": {
+        // The organic answer: a scatter of the accent through the whole room,
+        // which is what a cave floor of two minerals looks like.
+        const rate = 0.08 + rng() * 0.07;
+        for (let y = y0; y <= y1; y++)
+          for (let x = x0; x <= x1; x++)
+            if (rng() < rate) setTile(x, y, accent);
+        break;
+      }
+      default: break;
+    }
+  }
+
+  // ===========================================================================
+  // ORNAMENTS
+  // ===========================================================================
+  // Deliberate dressing, laid before the old random scatter: pit props down a
+  // drift, graves in the wall niches, shelves in rows with an aisle between
+  // them, a pentagram at the centre of a shrine. A structure names the ones it
+  // wears; the random scatter still runs on top of them, at a lower rate.
+  //
+  // `rule` says WHERE the feature lands:
+  //   edge     floor that fronts rock, so the thing stands against a wall
+  //   corners  the four inner corners of a room
+  //   axis     the centre line of a room, along its long side
+  //   centre   the middle of the biggest room, once
+  //   scatter  anywhere inside a room
+  //   rows     evenly spaced rows across a room with an aisle left between them
+  //   wall     hung on the impassable wall faces (torches, chains, vines)
+  // Everything except `wall` is placed through the same all-four-neighbours-are
+  // floor test the random props use, so no ornament can seal a corridor; the
+  // final unseal pass then guarantees it for the map as a whole.
+  // i18n-ignore-start  Features.json feature names, never labels
+  const ORNAMENTS = {
+    braziers:         { rule: "corners", features: ["Brazier", "Torch", "Candle"], rate: 0.6 },
+    stoneRims:        { rule: "edge", features: ["StoneBlock"], rate: 0.1 },
+    statuePairs:      { rule: "corners", features: ["Statue", "ColumnBroken"], rate: 0.35 },
+    columnRows:       { rule: "rows", features: ["Column", "ColumnBroken"], rate: 0.9, pitch: 4 },
+    pitProps:         { rule: "rows", features: ["WoodPillar", "Column"], rate: 0.8, pitch: 5 },
+    nicheGraves:      { rule: "edge", features: ["Grave", "Coffin", "Tomb"], rate: 0.22 },
+    bonePiles:        { rule: "scatter", features: ["Bones", "Skull"], rate: 0.07 },
+    candleRing:       { rule: "corners", features: ["Candle", "Torch"], rate: 0.5 },
+    cratePiles:       { rule: "edge", features: ["Crate", "Sack", "Beer", "Bucket"], rate: 0.16 },
+    rockFall:         { rule: "scatter", features: ["Rock", "Stalagmite", "Debris"], rate: 0.05 },
+    oreVeins:         { rule: "edge", features: ["Mineral", "Crystal"], rate: 0.14 },
+    railLine:         { rule: "axis", features: ["Rail"], rate: 1 },
+    crystalClusters:  { rule: "scatter", features: ["Crystal", "Mineral"], rate: 0.05 },
+    iceSpikes:        { rule: "scatter", features: ["RockIce", "IcePool", "Crystal"], rate: 0.06 },
+    mushroomBeds:     { rule: "scatter", features: ["Mushroom"], rate: 0.1 },
+    vineCurtains:     { rule: "wall", features: ["Vine"], rate: 0.14 },
+    puddles:          { rule: "scatter", features: ["Puddle", "Mud"], rate: 0.04 },
+    chains:           { rule: "wall", features: ["Chain"], rate: 0.16 },
+    cellDoors:        { rule: "wall", features: ["Prison", "WindowJail"], rate: 0.3 },
+    shelfStacks:      { rule: "rows", features: ["Shelf", "Library"], rate: 0.95, pitch: 3 },
+    readingDesks:     { rule: "scatter", features: ["Table", "Chair", "Stool", "Book"], rate: 0.05 },
+    forgeGear:        { rule: "edge", features: ["Stove", "Cauldron", "Gear"], rate: 0.12 },
+    techPanels:       { rule: "wall", features: ["Tech", "Techno", "ColumnTech", "Gear"], rate: 0.18 },
+    glassWalls:       { rule: "rows", features: ["Glass"], rate: 0.7, pitch: 4 },
+    pentagramCentre:  { rule: "centre", features: ["Pentagram"], rate: 1 },
+    bloodStains:      { rule: "scatter", features: ["Blood"], rate: 0.04 },
+    shellBeds:        { rule: "scatter", features: ["Seashell", "SeaPlant", "WaterRock"], rate: 0.07 },
+    platformFittings: { rule: "edge", features: ["Streetlight", "Sign", "Clock", "Pole", "Trash", "Chair"], rate: 0.12 },
+    hoard:            { rule: "scatter", features: ["Gold", "Weapon", "Vase"], rate: 0.05 },
+    // The three that paint layer 0 rather than props are special-cased in the
+    // generator, since they change what the ground IS: waterLanes floods the
+    // lanes of a cistern or sewer, tidePool drowns a grotto's deepest pocket
+    // and lavaFlow runs molten rock through the rock the plan is cut into.
+    waterLanes:       { rule: "special" },
+    tidePool:         { rule: "special" },
+    lavaFlow:         { rule: "special" },
+  };
+
+  // i18n-ignore-end
+
   /**
    * Rewritten dungeon/crypt/sewer generator.
    *   - DungeonFloor  -> room / corridor pavement (only passable variants used)
@@ -450,62 +1070,55 @@
     const height = PROC_MAP_HEIGHT;
     const rng = createSeededRandom(seed);
     const tilesetId = biome.tilesetId;
-    const bname = ((biome && biome.name) || "").toLowerCase();
-    const isCrypt = bname.startsWith("crypt");
-    const isSewer = bname.startsWith("sewer");
-    const isCellar = bname === "lootcellar";
-    const isTemple = bname === "templeinside";
-    const isCaveDen = bname === "caveden";
+    // Which structure is being drawn. Everything that used to be a chain of
+    // name tests is one catalogue entry now; an unknown name falls back to the
+    // plain dungeon rather than rendering as an unpaved void.
+    const S = structureFor(biome && biome.name) || STRUCTURE_INDEX["dungeon"];
+    const layout = S.layout;
+    const isCrypt = layout === "tombs";
+    const isSewer = layout === "canals";
+    const isCellar = layout === "cellar";
+    const isTemple = layout === "temple";
+    const isCaveDen = layout === "cavern";
     // A patron's vault: the loot cellar's tiles and dressing on a far bigger
     // plan (PatreonRewards, entered through that patron's own Hatch).
-    const isVault = bname === "patronvault";
+    const isVault = layout === "vault";
+    // The lower tower (DungeonFloorSystem): a floor with no way off but its
+    // own staircase events, so the south-border entrance every other
+    // structure is carved with is left out entirely rather than carved and
+    // then merely blocked - a doorway leading off the map edge to nothing
+    // reads as broken even when a player can never actually step through it.
+    const sealEntrance = !!(allOtherData && allOtherData.worldCoords && allOtherData.worldCoords.sealEntrance);
     const MARGIN = 3;
+    const ornaments = S.ornaments || [];
+    const hasOrnament = (nm) => ornaments.indexOf(nm) >= 0;
 
     // --- Tiles --------------------------------------------------------------
-    // Cave dens pave with a single (seeded) CaveFloor variant like real cave
-    // biomes; everything else draws from the DungeonFloor palette.
-    const floorFeature = isCaveDen ? "CaveFloor" : "DungeonFloor";
-    const floorPool = (getFeatureTiles(floorFeature, allFeatures) || [2816])
-      .filter((t) => isTilePassableInTileset(tilesetId, t));
-    const floorAll = floorPool.length ? floorPool : [2816];
-    // Partition the floor palette into thirds so each dungeon type looks distinct.
-    const paletteOf = (part) => {
-      if (floorAll.length <= 3) return floorAll;
-      const size = Math.ceil(floorAll.length / 3);
-      const slice = floorAll.slice(part * size, part * size + size);
-      return slice.length ? slice : floorAll;
-    };
-    const floorTiles =
-      isCaveDen ? [floorAll[Math.floor(rng() * floorAll.length)]]
-      : isCrypt || isCellar || isVault ? paletteOf(1)
-      : isSewer ? paletteOf(2)
-      : paletteOf(0);
-
-    const ceilingList = getFeatureTiles("Ceiling", allFeatures);
-    // A tileset with no Ceiling feature leaves the rock rim EMPTY. It used to
-    // fall back to a floor tile, which paved the whole square in rubble - rooms,
-    // corridors and the dead mass between them all in the same pavement - and
-    // that is what every interior on tileset 300 (Dungeon, Crypt, Sewer,
-    // LootCellar, TempleInside, CaveDen, PatronVault) looked like.
-    const ceilingTile = ceilingList && ceilingList.length ? ceilingList[0] : 0;
-    // Cave dens use the (impassable) CaveWall tile as their wall face so they
-    // read as natural rock instead of worked masonry.
-    let wall;
-    if (isCaveDen) {
-      const caveWalls = getFeatureTiles("CaveWall", allFeatures);
-      const cw = caveWalls && caveWalls.length ? caveWalls[0] : null;
-      wall = cw ? { top: cw, mid: cw, bot: cw } : pickWallColumn(allFeatures, rng);
-    } else {
-      wall = pickWallColumn(allFeatures, rng);
-    }
-    const waterList = getFeatureTiles("Water", allFeatures);
-    const waterTile = waterList && waterList.length ? waterList[0] : 0;
+    // One main ground texture for the whole structure, two or three accents for
+    // its rooms, a rock rim and a wall family: see buildPalette.
+    const pal = buildPalette(S, allFeatures, tilesetId, rng);
+    const floorTiles = [pal.main];
+    // The rock rim hugging the plan. It used to be whatever the tileset's
+    // Ceiling feature held, which on tileset 300 is nothing at all, so every
+    // interior in the game was rooms drawn on a black void with no rock around
+    // them. Each structure names its own rim now (mined stone, ice, masonry),
+    // and it stays unreachable: the impassable wall ring stands between the rim
+    // and the floor. What must NOT happen is paving the whole map with it -
+    // that buries the plan in rubble - so it is still only the 2-tile band
+    // `nearFloor` marks out.
+    const ceilingTile = pal.rim;
+    const wall = pal.wall;
+    const waterTile = pal.water;
 
     // --- 1. Layout: carved[y][x] = walkable floor ---------------------------
     const carved = Array.from({ length: height }, () => new Array(width).fill(false));
     const rooms = [];
     const canalRows = [];
     const dungeonNarrowCorridors = [];
+    // A loot cellar that came out roomy and well stocked instead of the cramped
+    // hole most of them are. Rolled in the cellar branch below, read again by
+    // the dressing pass and published on the map data so the chest pass knows.
+    let cellarGrand = false;
 
     const carveRect = (rx, ry, rw, rh) => {
       for (let y = ry; y < ry + rh; y++)
@@ -524,6 +1137,63 @@
         for (let t = 0; t < thick; t++)
           if (y >= 0 && y < height && x + t >= 0 && x + t < width) carved[y][x + t] = true;
     };
+    const clampTo = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    const addRoom = (rx, ry, rw, rh) => {
+      const x = clampTo(rx, MARGIN, width - MARGIN - rw);
+      const y = clampTo(ry, MARGIN, height - MARGIN - rh);
+      carveRect(x, y, rw, rh);
+      const r = { x, y, width: rw, height: rh };
+      rooms.push(r);
+      return r;
+    };
+    // Cut an L-shaped passage from a point to the nearest tile already carved,
+    // so a chamber placed with a free hand can never end up walled off from the
+    // rest of the plan. Called a couple of dozen times at most, so the linear
+    // scan for the nearest carved tile is not worth indexing.
+    const connectToPlan = (cx, cy, thick = 1) => {
+      let best = null, bestD = Infinity;
+      for (let y = MARGIN; y < height - MARGIN; y++) {
+        for (let x = MARGIN; x < width - MARGIN; x++) {
+          if (!carved[y][x]) continue;
+          const d = Math.abs(x - cx) + Math.abs(y - cy);
+          if (d < bestD) { bestD = d; best = { x, y }; }
+        }
+      }
+      if (!best || bestD === 0) return;
+      carveH(cx, best.x, cy, thick);
+      carveV(cy, best.y, best.x, thick);
+    };
+    // Reduce a carve to its largest connected pocket. What makes an organic
+    // carve read as ONE place rather than a handful of sealed bubbles.
+    const keepLargestPocket = () => {
+      const compOf = Array.from({ length: height }, () => new Array(width).fill(0));
+      let bestComp = 0, bestSize = 0, compId = 0;
+      for (let sy = 0; sy < height; sy++) {
+        for (let sx = 0; sx < width; sx++) {
+          if (!carved[sy][sx] || compOf[sy][sx]) continue;
+          compId++;
+          let size = 0;
+          const stack = [[sx, sy]];
+          compOf[sy][sx] = compId;
+          while (stack.length) {
+            const [px, py] = stack.pop();
+            size++;
+            for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+              const nx = px + dx, ny = py + dy;
+              if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+              if (!carved[ny][nx] || compOf[ny][nx]) continue;
+              compOf[ny][nx] = compId;
+              stack.push([nx, ny]);
+            }
+          }
+          if (size > bestSize) { bestSize = size; bestComp = compId; }
+        }
+      }
+      for (let y = 0; y < height; y++)
+        for (let x = 0; x < width; x++)
+          if (carved[y][x] && compOf[y][x] !== bestComp) carved[y][x] = false;
+      return bestSize;
+    };
 
     if (isVault) {
       // Patron's vault: the loot cellar written large. One great hall filling
@@ -532,8 +1202,10 @@
       // the hall by a 3-wide spoke corridor drawn from the room's centre to the
       // hall's, so nothing can ever end up walled off from the rest.
       const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-      const hallW = 22 + Math.floor(rng() * 7);   // 22-28
-      const hallH = 12 + Math.floor(rng() * 5);   // 12-16
+      // The hall is as wide as it can be and still leave room for a strongroom
+      // (up to 12 tiles) plus its gap on either flank inside the margins.
+      const hallW = 25 + Math.floor(rng() * 4);   // 25-28
+      const hallH = 17 + Math.floor(rng() * 5);   // 17-21
       const hx = Math.max(MARGIN + 1, Math.floor((width - hallW) / 2));
       const hy = clamp(height - MARGIN - hallH - 4 - Math.floor(rng() * 4),
         MARGIN + 16, height - MARGIN - hallH - 1);
@@ -549,23 +1221,25 @@
       };
 
       // Deep back chamber: the far end of the vault, straight behind the hall.
-      const bw = 12 + Math.floor(rng() * 5);      // 12-16
-      const bh = 8 + Math.floor(rng() * 4);       // 8-11
+      const bw = 17 + Math.floor(rng() * 5);      // 17-21
+      const bh = 10 + Math.floor(rng() * 4);      // 10-13
       const bx0 = clamp(hcx - (bw >> 1), MARGIN + 1, width - MARGIN - bw - 1);
       const by0 = clamp(hy - bh - 4 - Math.floor(rng() * 3), MARGIN + 1, hy - bh - 2);
       carveRect(bx0, by0, bw, bh);
       rooms.push({ x: bx0, y: by0, width: bw, height: bh });
       spoke(bx0 + (bw >> 1), by0 + (bh >> 1), hcx, hcy);
 
-      // Strongrooms: two flanking the hall on each side, and two in the top
-      // corners flanking the back chamber, taken in that rotation so a vault
-      // with only six of them still comes out symmetric.
+      // Strongrooms: a stack of them flanking the hall on each side and more in
+      // the top corners flanking the back chamber, dealt in that rotation so a
+      // vault comes out symmetric however many it rolls. They are placed with a
+      // free hand and are allowed to run into one another: a patron's vault is
+      // meant to sprawl, and merged cells read as one long strongroom.
       const SIDES = ["W", "E", "NW", "NE"];
-      const strongrooms = 6 + Math.floor(rng() * 3); // 6-8
+      const strongrooms = 10 + Math.floor(rng() * 4); // 10-13
       for (let i = 0; i < strongrooms; i++) {
         const side = SIDES[i % SIDES.length];
-        const cw = 8 + Math.floor(rng() * 4);     // 8-11
-        const ch = 6 + Math.floor(rng() * 4);     // 6-9
+        const cw = 9 + Math.floor(rng() * 4);     // 9-12
+        const ch = 7 + Math.floor(rng() * 4);     // 7-10
         const gap = 2 + Math.floor(rng() * 3);
         let cx0, cy0;
         if (side === "W" || side === "E") {
@@ -586,15 +1260,24 @@
     } else if (isCellar) {
       // Loot cellar: one small vaulted store-room (plus an occasional side
       // alcove) sitting just behind the stairs, near the south border so the
-      // entrance corridor stays short.
-      const rw = 9 + Math.floor(rng() * 8);   // 9-16
-      const rh = 7 + Math.floor(rng() * 6);   // 7-12
+      // entrance corridor stays short. Most of them are a cramped hole with a
+      // couple of things worth taking in it; the roomy, well-stocked kind (the
+      // sizing and the dressing EVERY cellar used to get) is a rare find, and
+      // the whole cellar is built and dressed off this one roll.
+      cellarGrand = rng() < 0.12;
+      // The small kind never drops below 6x5: the Bunker origin scatters six
+      // gold hoards over the cellar's open floor and has to fit them all.
+      const rw = cellarGrand ? 9 + Math.floor(rng() * 8)  // 9-16
+        : 6 + Math.floor(rng() * 4);                      // 6-9
+      const rh = cellarGrand ? 7 + Math.floor(rng() * 6)  // 7-12
+        : 5 + Math.floor(rng() * 3);                      // 5-7
       const rx = Math.max(MARGIN + 1, Math.floor((width - rw) / 2) + Math.floor(rng() * 7) - 3);
       const ry = Math.max(MARGIN + 1, height - MARGIN - rh - 2 - Math.floor(rng() * 4));
       carveRect(rx, ry, rw, rh);
       rooms.push({ x: rx, y: ry, width: rw, height: rh });
-      if (rng() < 0.55) {
-        const aw = 4 + Math.floor(rng() * 3), ah = 4 + Math.floor(rng() * 3);
+      if (rng() < (cellarGrand ? 0.55 : 0.18)) {
+        const aw = (cellarGrand ? 4 : 3) + Math.floor(rng() * 3);
+        const ah = (cellarGrand ? 4 : 3) + Math.floor(rng() * 3);
         const left = rng() < 0.5;
         const ax = left ? rx - aw : rx + rw;
         const ay = ry + 1 + Math.floor(rng() * Math.max(1, rh - ah - 1));
@@ -684,32 +1367,7 @@
           if (sub[y * dw + x] === FLOOR) carved[oy + y][ox + x] = true;
 
       // Keep only the largest connected floor pocket ("single room" cave).
-      const compOf = Array.from({ length: height }, () => new Array(width).fill(0));
-      let bestComp = 0, bestSize = 0, compId = 0;
-      for (let sy2 = 0; sy2 < height; sy2++) {
-        for (let sx2 = 0; sx2 < width; sx2++) {
-          if (!carved[sy2][sx2] || compOf[sy2][sx2]) continue;
-          compId++;
-          let size = 0;
-          const stack = [[sx2, sy2]];
-          compOf[sy2][sx2] = compId;
-          while (stack.length) {
-            const [px, py] = stack.pop();
-            size++;
-            for (const [dx2, dy2] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-              const nx = px + dx2, ny = py + dy2;
-              if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
-              if (!carved[ny][nx] || compOf[ny][nx]) continue;
-              compOf[ny][nx] = compId;
-              stack.push([nx, ny]);
-            }
-          }
-          if (size > bestSize) { bestSize = size; bestComp = compId; }
-        }
-      }
-      for (let y = 0; y < height; y++)
-        for (let x = 0; x < width; x++)
-          if (carved[y][x] && compOf[y][x] !== bestComp) carved[y][x] = false;
+      const bestSize = keepLargestPocket();
 
       // Degenerate carve (tiny disconnected pockets): fall back to an ellipse.
       if (bestSize < 40) {
@@ -749,21 +1407,348 @@
           if (i + 1 < grid.length && grid[i + 1][j]) carveV(cy, grid[i + 1][j].y + (chamber >> 1), cx);
         }
       }
+    } else if (layout === "warren") {
+      // Warren (catacombs, fungal warren): an organic carve threaded through
+      // the rock, with rectangular alcoves cut into its flanks. The alcoves are
+      // what make it read as dug rather than found.
+      const innerW = width - MARGIN * 2, innerH = height - MARGIN * 2;
+      const FLOOR = 1, CEIL = 2;
+      const sub = Utils2.generateCaveWithCellularAutomata(innerW, innerH, innerW, seed ^ 0x7A55, FLOOR, CEIL);
+      for (let y = 0; y < innerH; y++)
+        for (let x = 0; x < innerW; x++)
+          if (sub[y * innerW + x] === FLOOR) carved[MARGIN + y][MARGIN + x] = true;
+      if (keepLargestPocket() < 200) {
+        // A carve that came out as dust: fall back to a plain hall so the
+        // structure is always enterable.
+        addRoom(Math.floor(width / 2) - 9, Math.floor(height / 2) - 6, 18, 12);
+      }
+      const nAlcoves = 9 + Math.floor(rng() * 9);
+      for (let i = 0; i < nAlcoves; i++) {
+        const aw = 3 + Math.floor(rng() * 4), ah = 3 + Math.floor(rng() * 3);
+        const ax = MARGIN + 1 + Math.floor(rng() * (width - MARGIN * 2 - aw - 2));
+        const ay = MARGIN + 1 + Math.floor(rng() * (height - MARGIN * 2 - ah - 2));
+        const r = addRoom(ax, ay, aw, ah);
+        connectToPlan(r.x + (aw >> 1), r.y + (ah >> 1));
+      }
+    } else if (layout === "drifts") {
+      // Drifts (mine, salt works): parallel galleries driven the length of the
+      // map, cross-cuts joining them, and one worked-out stope where the seam
+      // was richest.
+      const top = MARGIN + 2, bot = height - MARGIN - 3;
+      const nDrifts = 3 + Math.floor(rng() * 3);
+      const span = width - MARGIN * 2 - 8;
+      const xs = [];
+      for (let i = 0; i < nDrifts; i++) {
+        const dx = clampTo(MARGIN + 4 + Math.floor((span * (i + 0.5)) / nDrifts) + Math.floor(rng() * 5) - 2,
+          MARGIN + 1, width - MARGIN - 4);
+        const dw = 2 + Math.floor(rng() * 2);
+        carveV(top, bot, dx, dw);
+        rooms.push({ x: dx, y: top, width: dw, height: bot - top });
+        xs.push(dx);
+      }
+      const nCuts = 3 + Math.floor(rng() * 3);
+      for (let i = 0; i < nCuts; i++) {
+        const cy = clampTo(top + 4 + Math.floor(((bot - top - 8) * (i + rng() * 0.7)) / nCuts),
+          MARGIN + 1, height - MARGIN - 3);
+        carveH(xs[0], xs[xs.length - 1] + 2, cy, 2);
+      }
+      const sw = 12 + Math.floor(rng() * 10), sh = 8 + Math.floor(rng() * 7);
+      const stope = addRoom(xs[Math.floor(rng() * xs.length)] - (sw >> 1),
+        top + 2 + Math.floor(rng() * Math.max(1, (bot - top) - sh - 4)), sw, sh);
+      connectToPlan(stope.x + (sw >> 1), stope.y + (sh >> 1), 2);
+    } else if (layout === "cells") {
+      // Cell block (oubliette): a spine corridor with a row of identical cells
+      // down each side, and one guard room at the head of it.
+      const cx = Math.floor(width / 2);
+      const top = MARGIN + 6, bot = height - MARGIN - 4;
+      const spineW = 3;
+      carveV(top, bot, cx - 1, spineW);
+      rooms.push({ x: cx - 1, y: top, width: spineW, height: bot - top });
+      const cellW = 5 + Math.floor(rng() * 3), cellH = 4 + Math.floor(rng() * 2);
+      const pitch = cellH + 2;
+      for (let y = top + 1; y + cellH < bot; y += pitch) {
+        for (const side of [-1, 1]) {
+          if (rng() < 0.12) continue;   // the odd cell was never cut, or caved in
+          const rx = side < 0 ? cx - 2 - cellW : cx + spineW - 1;
+          const r = addRoom(rx, y, cellW, cellH);
+          // The cell mouth: one tile joining it to the spine, which is where
+          // the ornament pass hangs the bars.
+          const my = r.y + (cellH >> 1);
+          if (side < 0) carveH(r.x + cellW - 1, cx - 1, my);
+          else carveH(cx + spineW - 1, r.x, my);
+        }
+      }
+      const gw = 11 + Math.floor(rng() * 6), gh = 7 + Math.floor(rng() * 4);
+      const guard = addRoom(cx - (gw >> 1), MARGIN + 1, gw, gh);
+      carveV(guard.y + gh - 1, top, cx, 2);
+    } else if (layout === "rings") {
+      // Rings (profane shrine): concentric galleries around a sanctum, joined
+      // by four radial spokes. Everything faces the middle, which is where the
+      // ornament pass puts the sigil.
+      const cx = Math.floor(width / 2), cy = Math.floor(height / 2) + 2;
+      const nRings = 2 + Math.floor(rng() * 2);
+      const step = 7 + Math.floor(rng() * 3);
+      const maxR = Math.min(cx - MARGIN - 2, cy - MARGIN - 2, height - MARGIN - cy - 2);
+      const inner = 5 + Math.floor(rng() * 2);
+      addRoom(cx - inner, cy - inner, inner * 2 + 1, inner * 2 + 1);
+      for (let i = 1; i <= nRings; i++) {
+        const r = Math.min(maxR - 1, inner + i * step);
+        if (r <= inner + 1) break;
+        const band = 2 + Math.floor(rng() * 2);
+        carveH(cx - r, cx + r, cy - r, band);
+        carveH(cx - r, cx + r, cy + r, band);
+        carveV(cy - r, cy + r, cx - r, band);
+        carveV(cy - r, cy + r, cx + r, band);
+        rooms.push({ x: cx - r, y: cy - r, width: r * 2, height: band });
+        rooms.push({ x: cx - r, y: cy + r, width: r * 2, height: band });
+      }
+      // Spokes: one per compass point, offset a little so the plan is not a
+      // perfect cross.
+      const rOut = Math.min(maxR - 1, inner + nRings * step);
+      carveV(cy - rOut, cy - inner, cx, 2);
+      carveV(cy + inner, cy + rOut, cx, 2);
+      carveH(cx - rOut, cx - inner, cy, 2);
+      carveH(cx + inner, cx + rOut, cy, 2);
+    } else if (layout === "piers") {
+      // Piers (cistern): a vaulted hall whose roof is carried on a grid of
+      // square piers, so the space is one room and a maze at the same time.
+      const x0 = MARGIN + 2, y0 = MARGIN + 2;
+      const x1 = width - MARGIN - 3, y1 = height - MARGIN - 3;
+      carveRect(x0, y0, x1 - x0, y1 - y0);
+      rooms.push({ x: x0, y: y0, width: x1 - x0, height: y1 - y0 });
+      const pier = 2 + Math.floor(rng() * 2);
+      const bay = pier + 3 + Math.floor(rng() * 2);
+      for (let y = y0 + 3; y + pier < y1 - 2; y += bay)
+        for (let x = x0 + 3; x + pier < x1 - 2; x += bay)
+          for (let dy = 0; dy < pier; dy++)
+            for (let dx = 0; dx < pier; dx++)
+              carved[y + dy][x + dx] = false;
+    } else if (layout === "halls") {
+      // Stack halls (sunken library): long parallel halls tied together at both
+      // ends, with a rotunda cut through the middle of them.
+      const top = MARGIN + 3, bot = height - MARGIN - 4;
+      const nHalls = 3 + Math.floor(rng() * 3);
+      const hw = 5 + Math.floor(rng() * 3);
+      const gap = 3 + Math.floor(rng() * 2);
+      const totalW = nHalls * hw + (nHalls - 1) * gap;
+      const startX = Math.max(MARGIN + 2, Math.floor((width - totalW) / 2));
+      for (let i = 0; i < nHalls; i++) {
+        const hx = startX + i * (hw + gap);
+        if (hx + hw >= width - MARGIN) break;
+        carveRect(hx, top, hw, bot - top);
+        rooms.push({ x: hx, y: top, width: hw, height: bot - top });
+      }
+      carveH(startX, startX + totalW, top, 3);
+      carveH(startX, startX + totalW, bot - 3, 3);
+      const rr = 6 + Math.floor(rng() * 3);
+      const rcx = startX + (totalW >> 1), rcy = Math.floor((top + bot) / 2);
+      for (let dy = -rr; dy <= rr; dy++)
+        for (let dx = -rr; dx <= rr; dx++)
+          if (dx * dx + dy * dy <= rr * rr) {
+            const gx = rcx + dx, gy = rcy + dy;
+            if (gx > MARGIN && gy > MARGIN && gx < width - MARGIN && gy < height - MARGIN) carved[gy][gx] = true;
+          }
+      rooms.push({ x: rcx - rr + 2, y: rcy - rr + 2, width: rr * 2 - 3, height: rr * 2 - 3 });
+    } else if (layout === "tube") {
+      // Tube (smuggler's run, lava tube): ONE winding passage with bulges along
+      // it and a chamber at the far end. A random walk with momentum, so it
+      // wanders without doubling back into a knot.
+      let px = Math.floor(width / 2) + Math.floor(rng() * 9) - 4;
+      let py = height - MARGIN - 4;
+      let dir = 8;
+      const steps = 150 + Math.floor(rng() * 90);
+      const bulges = [];
+      for (let i = 0; i < steps; i++) {
+        const w2 = 2 + Math.floor(rng() * 3);
+        for (let dy = 0; dy < w2; dy++)
+          for (let dx = 0; dx < w2; dx++) {
+            const gx = clampTo(px + dx, MARGIN, width - MARGIN - 1);
+            const gy = clampTo(py + dy, MARGIN, height - MARGIN - 1);
+            carved[gy][gx] = true;
+          }
+        if (rng() < 0.08) bulges.push({ x: px, y: py });
+        // Keep going the way we were most of the time; turn now and then.
+        if (rng() < 0.28) dir = [2, 4, 6, 8][Math.floor(rng() * 4)];
+        // The step must be shorter than the passage is wide, or successive
+        // stamps leave a gap and the "one tunnel" comes out as a dotted line.
+        const run = 1 + Math.floor(rng() * 2);
+        if (dir === 8) py -= run; else if (dir === 2) py += run;
+        else if (dir === 4) px -= run; else px += run;
+        // Bounce off the margins rather than clamping into a corner.
+        if (px < MARGIN + 2) { px = MARGIN + 2; dir = 6; }
+        if (px > width - MARGIN - 4) { px = width - MARGIN - 4; dir = 4; }
+        if (py < MARGIN + 2) { py = MARGIN + 2; dir = 2; }
+        if (py > height - MARGIN - 4) { py = height - MARGIN - 4; dir = 8; }
+      }
+      for (const b of bulges.slice(0, 8)) {
+        const bw = 5 + Math.floor(rng() * 5), bh = 4 + Math.floor(rng() * 4);
+        addRoom(b.x - (bw >> 1), b.y - (bh >> 1), bw, bh);
+      }
+      const ew = 12 + Math.floor(rng() * 8), eh = 9 + Math.floor(rng() * 6);
+      const end = addRoom(px - (ew >> 1), py - (eh >> 1), ew, eh);
+      connectToPlan(end.x + (ew >> 1), end.y + (eh >> 1), 2);
+    } else if (layout === "chambers") {
+      // Chambers (crystal cavern): Voronoi pockets joined by the tunnels the
+      // algorithm draws between their seeds.
+      const innerW = width - MARGIN * 2, innerH = height - MARGIN * 2;
+      const FLOOR = 1, CEIL = 2;
+      const sub = Utils2.generateCaveWithVoronoi(innerW, innerH, innerW, seed ^ 0xC0FFEE, FLOOR, CEIL);
+      for (let y = 0; y < innerH; y++)
+        for (let x = 0; x < innerW; x++)
+          if (sub[y * innerW + x] === FLOOR) carved[MARGIN + y][MARGIN + x] = true;
+      if (keepLargestPocket() < 200) {
+        addRoom(Math.floor(width / 2) - 10, Math.floor(height / 2) - 7, 20, 14);
+      }
+      // The pockets are not rectangles, so publish a coarse room grid over the
+      // carve for the prefab / chest / ornament passes to aim at.
+      for (let gy = MARGIN + 4; gy < height - MARGIN - 8; gy += 12) {
+        for (let gx = MARGIN + 4; gx < width - MARGIN - 8; gx += 12) {
+          let n = 0;
+          for (let y = gy; y < gy + 8; y++) for (let x = gx; x < gx + 8; x++) if (carved[y][x]) n++;
+          if (n > 40) rooms.push({ x: gx, y: gy, width: 8, height: 8 });
+        }
+      }
+    } else if (layout === "platform") {
+      // Platform (metro station): one long concourse with a raised island
+      // platform down the middle and running tunnels leaving both ends.
+      const hh = 15 + Math.floor(rng() * 7);
+      const hy = clampTo(Math.floor(height / 2) - (hh >> 1) + Math.floor(rng() * 7) - 3,
+        MARGIN + 3, height - MARGIN - hh - 6);
+      const hx = MARGIN + 4, hw = width - MARGIN * 2 - 8;
+      carveRect(hx, hy, hw, hh);
+      rooms.push({ x: hx, y: hy, width: hw, height: hh });
+      // Two running tunnels leaving the ends, and the stairs down from the
+      // south border meeting the concourse.
+      const ty = hy + (hh >> 1);
+      carveH(MARGIN, hx, ty, 3);
+      carveH(hx + hw - 1, width - MARGIN - 1, ty, 3);
+      const cx = hx + (hw >> 1);
+      carveV(hy + hh - 1, height - MARGIN - 2, cx, 3);
+      rooms.push({ x: cx - 1, y: hy + hh, width: 3, height: height - MARGIN - hy - hh - 2 });
+    } else if (layout === "mound") {
+      // Mound (barrow): a central burial hall with a ring of chambers around
+      // it, each on its own short spoke. Symmetric on purpose - it was built,
+      // not dug out.
+      const cx = Math.floor(width / 2), cy = Math.floor(height / 2) + 3;
+      const hw = 13 + Math.floor(rng() * 7), hh = 9 + Math.floor(rng() * 5);
+      const hall = addRoom(cx - (hw >> 1), cy - (hh >> 1), hw, hh);
+      const nCh = 5 + Math.floor(rng() * 4);
+      const radius = Math.min(cx - MARGIN - 10, cy - MARGIN - 10, height - MARGIN - cy - 10);
+      for (let i = 0; i < nCh; i++) {
+        const ang = (Math.PI * 2 * i) / nCh + rng() * 0.4;
+        const rr = radius - 2 + Math.floor(rng() * 4);
+        const chw = 6 + Math.floor(rng() * 5), chh = 5 + Math.floor(rng() * 4);
+        const chx = Math.round(cx + Math.cos(ang) * rr) - (chw >> 1);
+        const chy = Math.round(cy + Math.sin(ang) * rr) - (chh >> 1);
+        const r = addRoom(chx, chy, chw, chh);
+        const rcx = r.x + (chw >> 1), rcy = r.y + (chh >> 1);
+        carveH(rcx, cx, rcy, 2);
+        carveV(rcy, cy, cx, 2);
+      }
+      hall.width = hw; // (kept for readability: the hall is the boss room hint)
+    } else if (layout === "grid") {
+      // Grid (forge, bunker, buried lab): orthogonal service corridors with
+      // sealed rooms hung off them. Built by people with a ruler.
+      const cols = 3 + Math.floor(rng() * 2);
+      const rowsN = 3 + Math.floor(rng() * 2);
+      const cw = Math.floor((width - MARGIN * 2 - 6) / cols);
+      const ch = Math.floor((height - MARGIN * 2 - 6) / rowsN);
+      const corr = 2 + Math.floor(rng() * 2);
+      const xs = [], ys = [];
+      for (let i = 0; i <= cols; i++) xs.push(MARGIN + 3 + i * cw);
+      for (let i = 0; i <= rowsN; i++) ys.push(MARGIN + 3 + i * ch);
+      for (const y of ys) carveH(xs[0], xs[xs.length - 1], clampTo(y, MARGIN, height - MARGIN - corr), corr);
+      for (const x of xs) carveV(ys[0], ys[ys.length - 1], clampTo(x, MARGIN, width - MARGIN - corr), corr);
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rowsN; j++) {
+          if (rng() < 0.15) continue;   // a sealed cell nobody ever opened
+          const inset = 2;
+          const rx = xs[i] + corr + inset - 1;
+          const ry = ys[j] + corr + inset - 1;
+          const rw = cw - corr - inset * 2, rh = ch - corr - inset * 2;
+          if (rw < 4 || rh < 4) continue;
+          const r = addRoom(rx, ry, rw, rh);
+          // One doorway per room onto the corridor that runs past it.
+          const dx = r.x + Math.floor(rng() * rw);
+          carveV(r.y - 1, ys[j] + corr - 1, clampTo(dx, MARGIN, width - MARGIN - 1));
+        }
+      }
     } else {
-      // Dungeon: BSP irregular rooms + winding corridors, varied room sizes,
-      // rounded (chamfered) corners and variable corridor width.
-      const bsp = Utils2.generateDungeonBSP(width, height, seed, 5, 19);
+      // Dungeon: BSP irregular rooms + winding corridors, chamfered corners and
+      // variable corridor width. The room band is rolled per dungeon (some are
+      // warrens of closets, some are halls), then one to three leaves are
+      // knocked together into a great hall and the deepest room is opened out
+      // into a chamber worth walking to, so a dungeon is not a grid of rooms
+      // that are all the same size.
+      const minRoom = 4 + Math.floor(rng() * 3);          // 4-6
+      const maxRoom = 13 + Math.floor(rng() * 10);        // 13-22
+      const bsp = Utils2.generateDungeonBSP(width, height, seed, minRoom, maxRoom);
       for (let y = 0; y < height; y++)
         for (let x = 0; x < width; x++)
           if (bsp.carved[y][x]) carved[y][x] = true;
       if (bsp.rooms) rooms.push(...bsp.rooms);
       if (bsp.narrowCorridors) dungeonNarrowCorridors.push(...bsp.narrowCorridors);
+
+      if (rooms.length > 4) {
+        const nHalls = 1 + Math.floor(rng() * 3);
+        for (let i = 0; i < nHalls; i++) {
+          const a = rooms[Math.floor(rng() * rooms.length)];
+          // The nearest other room, knocked through into one hall.
+          let b = null, bestD = Infinity;
+          for (const r of rooms) {
+            if (r === a) continue;
+            const d = Math.abs(r.x - a.x) + Math.abs(r.y - a.y);
+            if (d < bestD) { bestD = d; b = r; }
+          }
+          if (!b || bestD > 26) continue;
+          const nx = Math.min(a.x, b.x), ny = Math.min(a.y, b.y);
+          const nw = Math.max(a.x + a.width, b.x + b.width) - nx;
+          const nh = Math.max(a.y + a.height, b.y + b.height) - ny;
+          if (nw > 34 || nh > 26) continue;
+          addRoom(nx, ny, nw, nh);
+        }
+      }
     }
 
     // Solid border margin so the ONLY way off-map is the carved entrance.
     for (let y = 0; y < height; y++)
       for (let x = 0; x < width; x++)
         if (x < MARGIN || x >= width - MARGIN || y < MARGIN || y >= height - MARGIN) carved[y][x] = false;
+
+    // The margin clip can erase a room outright (a BSP leaf that fell against
+    // the border), and a phantom rectangle is worse than no rectangle: the
+    // chest, prefab and ornament passes all aim at rooms, and one aimed at a
+    // room that is not there any more silently places nothing.
+    for (let i = rooms.length - 1; i >= 0; i--) {
+      const r = rooms[i];
+      r.x = clampTo(r.x, MARGIN, width - MARGIN - 1);
+      r.y = clampTo(r.y, MARGIN, height - MARGIN - 1);
+      r.width = Math.min(r.width, width - MARGIN - r.x);
+      r.height = Math.min(r.height, height - MARGIN - r.y);
+      let any = false;
+      for (let y = r.y; y < r.y + r.height && !any; y++)
+        for (let x = r.x; x < r.x + r.width && !any; x++)
+          if (carved[y][x]) any = true;
+      if (!any || r.width < 2 || r.height < 2) rooms.splice(i, 1);
+    }
+
+    // An organic carve publishes no rectangles of its own, and everything that
+    // dresses a structure works room by room: without one, a cave den got no
+    // patterned floor and none of its ornaments. Give it the bounding box of
+    // what was carved - painting and stamping are both clipped to real floor,
+    // so a box that overlaps rock is harmless.
+    if (!rooms.length) {
+      let minX = width, minY = height, maxX = 0, maxY = 0;
+      for (let y = 0; y < height; y++)
+        for (let x = 0; x < width; x++)
+          if (carved[y][x]) {
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+      if (maxX >= minX) rooms.push({ x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1 });
+    }
 
     // --- 2. Entrance: carve a corridor from a room down to the south border --
     let target = null, best = Infinity;
@@ -782,10 +1767,86 @@
       target = { x: tcx, y: ry };
     }
     const bx = Math.max(MARGIN, Math.min(width - MARGIN - 1, target.x));
-    carveV(target.y, height - 1, bx);   // punch through the bottom margin into the room
-    carveH(bx, target.x, target.y);     // step across to the room if offset
-    const spawnX = bx, spawnY = height - 2, spawnDir = 8;
-    const entranceX = bx, entranceY = height - 1;
+    let spawnX, spawnY, spawnDir, entranceX, entranceY;
+    if (sealEntrance) {
+      // No corridor punched through the border margin at all: it stays solid
+      // on every side, same as the rest of the wall ring, and the only "way
+      // in" is the room the BFS below starts flooding from. entranceX/Y are
+      // read as "how far from the door should a chest be", not as a real
+      // door, so they point at that same room rather than at nothing.
+      carveH(bx, target.x, target.y);   // still step across to the room if offset
+      spawnX = target.x; spawnY = target.y; spawnDir = 2;
+      entranceX = target.x; entranceY = target.y;
+    } else {
+      carveV(target.y, height - 1, bx);   // punch through the bottom margin into the room
+      carveH(bx, target.x, target.y);     // step across to the room if offset
+      spawnX = bx; spawnY = height - 2; spawnDir = 8;
+      entranceX = bx; entranceY = height - 1;
+    }
+
+    // The way in is sacred. A prop stamped on the entrance corridor - and the
+    // ornament pass is allowed to stand things against walls, which is exactly
+    // what a 1-wide corridor is made of - walls the party in at the door, and
+    // the tile they arrive on is the one tile in the structure they cannot
+    // walk around. Nothing may be placed on it or on the passage behind it.
+    const protectedTiles = new Set();
+    for (let y = Math.min(target.y, spawnY) - 1; y <= height - 1; y++) {
+      if (y < 0) continue;
+      for (let dx = -1; dx <= 1; dx++) {
+        const px = bx + dx;
+        if (px >= 0 && px < width) protectedTiles.add(px + y * width);
+      }
+    }
+    for (let x = Math.min(bx, target.x); x <= Math.max(bx, target.x); x++)
+      protectedTiles.add(x + target.y * width);
+
+    // --- 2b. Every carved tile must be reachable from the entrance ----------
+    // A chamber placed with a free hand, a cave carve that came out in two
+    // halves, a doorway punched at the wrong end: any of them leaves floor the
+    // party can see on the minimap and never stand on, and a chest dealt into
+    // one is gone for good. Flood from the entrance and cut a passage to
+    // whatever the flood did not reach, until it reaches everything.
+    const floodFrom = (sx, sy, open) => {
+      const seen = new Uint8Array(width * height);
+      if (!open(sx, sy)) return seen;
+      const stack = [sx + sy * width];
+      seen[sx + sy * width] = 1;
+      while (stack.length) {
+        const k = stack.pop();
+        const x = k % width, y = (k / width) | 0;
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+          const nk = nx + ny * width;
+          if (seen[nk] || !open(nx, ny)) continue;
+          seen[nk] = 1;
+          stack.push(nk);
+        }
+      }
+      return seen;
+    };
+    // One pocket is joined per turn, and a plan can hold a dozen of them (a
+    // tunnel with eight bulges hung off it, a warren of alcoves), so the guard
+    // has to be generous: stopping early is exactly the bug this pass exists
+    // to prevent.
+    for (let guard = 0; guard < 40; guard++) {
+      const seen = floodFrom(spawnX, spawnY, (x, y) => carved[y][x]);
+      let orphan = null;
+      for (let y = MARGIN; y < height - MARGIN && !orphan; y++)
+        for (let x = MARGIN; x < width - MARGIN; x++)
+          if (carved[y][x] && !seen[x + y * width]) { orphan = { x, y }; break; }
+      if (!orphan) break;
+      let near = null, nearD = Infinity;
+      for (let y = MARGIN; y < height - MARGIN; y++)
+        for (let x = MARGIN; x < width - MARGIN; x++) {
+          if (!seen[x + y * width]) continue;
+          const d = Math.abs(x - orphan.x) + Math.abs(y - orphan.y);
+          if (d < nearD) { nearD = d; near = { x, y }; }
+        }
+      if (!near) break;
+      carveH(orphan.x, near.x, orphan.y);
+      carveV(orphan.y, near.y, near.x);
+    }
 
     // --- 3. Render layer 0: floor / rock rim / empty space ------------------
     // The dead mass between the rooms is NOT paved wall to wall with the
@@ -794,16 +1855,23 @@
     // the carved space keeps the Ceiling, which is exactly what the wall ring
     // (1 tile), the 3-tall north faces of step 4 and the wall-mounted fixtures
     // of step 6 ever draw on; everything deeper is left as an empty tile, so
-    // the interior reads as rooms and corridors on an unlit void.
+    // the interior reads as rooms and corridors on an unlit void. The rim only
+    // needs that depth to the NORTH, where it backs the tall wall face and
+    // holds its fixtures: south, east and west never draw anything past the
+    // 1-tile wall ring itself, so a wider band there was nothing but a visible
+    // decorative border. Those three sides get just enough rim to back that
+    // one ring tile, and fall to void (black) immediately beyond it.
     const ROCK_RIM = 2;
+    const ROCK_RIM_SIDE = 1;
     const nearFloor = Array.from({ length: height }, () => new Array(width).fill(false));
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         if (!carved[y][x]) continue;
-        for (let dy = -ROCK_RIM; dy <= ROCK_RIM; dy++) {
+        for (let dy = -ROCK_RIM; dy <= ROCK_RIM_SIDE; dy++) {
           const ny = y + dy;
           if (ny < 0 || ny >= height) continue;
-          for (let dx = -ROCK_RIM; dx <= ROCK_RIM; dx++) {
+          const rim = dy < 0 ? ROCK_RIM : ROCK_RIM_SIDE;
+          for (let dx = -rim; dx <= rim; dx++) {
             const nx = x + dx;
             if (nx >= 0 && nx < width) nearFloor[ny][nx] = true;
           }
@@ -819,13 +1887,45 @@
       }
     }
 
+    // --- 3b. Room floors: one accent and one pattern per room ---------------
+    // Corridors keep the structure's main texture, which is what holds the
+    // place together; a room lays its own accent over it in one of the
+    // patterns the structure allows. Only carved tiles are painted, so a
+    // pattern can never spill onto the rock or through a wall.
+    const setFloorTile = (x, y, tile) => {
+      if (x < 0 || y < 0 || x >= width || y >= height) return;
+      if (!carved[y][x] || !tile) return;
+      mapData[calculateIndex(x, y, 0, width, height)] = tile;
+    };
+    for (const r of rooms) {
+      if (r.width < 3 || r.height < 3) continue;
+      let kind = pal.patterns[Math.floor(rng() * pal.patterns.length)];
+      // A pattern is a ROOM's dressing. Laid over a hall that fills the map
+      // (a cistern, a cavern's bounding box) it stops being a pattern and
+      // becomes the floor, and the structure loses its main texture, so a big
+      // space only ever gets an edging.
+      if (r.width * r.height > 700 && kind !== "border") kind = rng() < 0.5 ? "border" : "none";
+      if (kind === "none") continue;
+      const accent = pal.accents[Math.floor(rng() * pal.accents.length)];
+      paintPattern(setFloorTile, r, pal.main, accent, kind, rng);
+    }
+
     // --- 4. Walls: enclosing ring + 3-tall north faces ----------------------
+    // The ring is drawn on all four sides because it has to be: the Ceiling
+    // rim beyond it is passable, so a floor tile with no wall on its south,
+    // east or west edge would open straight into it. But `wall.bot` is the
+    // FOOT of the column - the piece whose art carries the base/floor lip
+    // that only reads correctly directly under `wall.mid` - so stamped alone
+    // as a standalone side cap it looks like a stray inner tile rather than a
+    // wall. `wall.mid` is the segment built to repeat with nothing above or
+    // below it, so the ring uses that instead everywhere except where the
+    // second pass below is about to lay a full 3-tall north face over it.
     const isFloor = (x, y) => x >= 0 && x < width && y >= 0 && y < height && carved[y][x];
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         if (carved[y][x]) continue;
         if (isFloor(x - 1, y) || isFloor(x + 1, y) || isFloor(x, y - 1) || isFloor(x, y + 1)) {
-          mapData[calculateIndex(x, y, 0, width, height)] = wall.bot;
+          mapData[calculateIndex(x, y, 0, width, height)] = wall.mid;
         }
       }
     }
@@ -841,17 +1941,66 @@
       }
     }
 
-    // --- 5. Region data + sewer canals --------------------------------------
+    // --- 5. Region data + the ornaments that change what the ground IS -------
+    // Water and lava are not props: they replace the floor, so they are laid
+    // here rather than in the decoration pass. Both follow the same rule the
+    // sewer's canals always did - a flooded tile must have floor above AND
+    // below it, so a channel can never cut the plan in two.
     const regiondata = new Array(width * height).fill(0);
-    if (isSewer && waterTile) {
-      // Water down the centre row of each horizontal tunnel; the two flanking
-      // rows stay walkable so the canals never block traversal.
-      for (const cy of canalRows) {
+    const floodRow = (cy) => {
+      for (let x = MARGIN; x < width - MARGIN; x++) {
+        if (isFloor(x, cy) && isFloor(x, cy - 1) && isFloor(x, cy + 1)) {
+          mapData[calculateIndex(x, cy, 0, width, height)] = waterTile;
+          regiondata[cy * width + x] = 99;
+        }
+      }
+    };
+    if (waterTile && hasOrnament("waterLanes")) {
+      if (canalRows.length) {
+        for (const cy of canalRows) floodRow(cy);
+      } else {
+        // A cistern has no canal rows of its own: flood every third bay so the
+        // hall reads as standing water walked around on the dry lanes.
+        const pitch = 6 + Math.floor(rng() * 3);
+        for (let cy = MARGIN + 5; cy < height - MARGIN - 4; cy += pitch) floodRow(cy);
+      }
+    }
+    if (waterTile && hasOrnament("tidePool")) {
+      // The deepest pocket of a grotto stands under water. Centred on the
+      // carved tile farthest from the entrance so the party wades in rather
+      // than starting wet.
+      let px = -1, py = -1, far = -1;
+      for (let y = MARGIN; y < height - MARGIN; y++)
         for (let x = MARGIN; x < width - MARGIN; x++) {
-          if (isFloor(x, cy) && isFloor(x, cy - 1) && isFloor(x, cy + 1)) {
-            mapData[calculateIndex(x, cy, 0, width, height)] = waterTile;
-            regiondata[cy * width + x] = 99;
+          if (!carved[y][x]) continue;
+          const d = (height - y) + Math.abs(x - Math.floor(width / 2)) * 0.3;
+          if (d > far) { far = d; px = x; py = y; }
+        }
+      if (px >= 0) {
+        const r = 5 + Math.floor(rng() * 6);
+        for (let dy = -r; dy <= r; dy++)
+          for (let dx = -r; dx <= r; dx++) {
+            if (dx * dx + dy * dy > r * r) continue;
+            const gx = px + dx, gy = py + dy;
+            if (!isFloor(gx, gy) || !isFloor(gx, gy - 1) || !isFloor(gx, gy + 1)) continue;
+            if (!isFloor(gx - 1, gy) || !isFloor(gx + 1, gy)) continue;
+            mapData[calculateIndex(gx, gy, 0, width, height)] = waterTile;
+            regiondata[gy * width + gx] = 99;
           }
+      }
+    }
+    if (pal.lava && hasOrnament("lavaFlow")) {
+      // Molten rock runs through the mass the plan is cut into, never through
+      // the plan itself: only rim tiles are painted, and the rim sits behind
+      // the impassable wall ring, so it glows without ever being stood on.
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (carved[y][x]) continue;
+          const idx = calculateIndex(x, y, 0, width, height);
+          if (mapData[idx] !== ceilingTile || !ceilingTile) continue;
+          // A coarse vein pattern rather than a wash, so it reads as flowing.
+          const vein = Math.sin(x * 0.21 + y * 0.13) + Math.sin(y * 0.31 - x * 0.07);
+          if (vein > 1.1 && rng() < 0.75) mapData[idx] = pal.lava;
         }
       }
     }
@@ -867,7 +2016,16 @@
     // Grid (multi-tile) feature variants are supported too, so props like the
     // 2x2 Drain and the 2-tall Torch — which have no single-tile variant — are
     // actually placed instead of being silently skipped.
-    const structural = new Set(["DungeonFloor", "DungeonWall", "Ceiling", "Water", "CaveFloor", "CaveWall", "MountainWall"]);
+    // Ground and wall features are what the place is BUILT of, so they are
+    // never dealt out as props on top of it. The list covers every feature any
+    // structure's palette may pave with, not just the three the dungeon used
+    // to know: a Salt or Parquet listed as a biome feature would otherwise be
+    // scattered over the floor it already is.
+    const structural = new Set([
+      "DungeonFloor", "DungeonWall", "Ceiling", "Water", "CaveFloor", "CaveWall", "MountainWall",
+      "Dirt", "Pavement", "Salt", "Parquet", "TechnoFloor", "Metal", "WoodenFloor",
+      "Grass", "Sand", "Techno", "Carpet", "Lava", "Soil", "Path", "Mud", "StoneBlock",
+    ]);
     const WALL_MOUNTED = new Set(["Torch", "Chain", "Drain", "Grate", "Banner", "Cobweb", "Sconce", "Lamp", "Pipe"]);
 
     const floorDecorPool = [];   // { variants, weight }
@@ -922,6 +2080,7 @@
         for (let c = 0; c < w; c++) {
           const gx = ox + c, gy = oy + r;
           if (gx < 0 || gy < 0 || gx >= width || gy >= height) return false;
+          if (protectedTiles.has(gx + gy * width)) return false;
           if (!(isFloor(gx, gy) && isFloor(gx - 1, gy) && isFloor(gx + 1, gy) &&
                 isFloor(gx, gy - 1) && isFloor(gx, gy + 1))) return false;
           if (mapData[calculateIndex(gx, gy, 0, width, height)] === waterTile) return false;
@@ -952,11 +2111,123 @@
       return true;
     };
 
+    // --- 6b. Ornaments: deliberate dressing ---------------------------------
+    // Laid BEFORE the random scatter, so the pit props, the graves in the wall
+    // niches, the shelf rows and the sigil at the centre get the tiles they
+    // want and the scatter fills in around them. Placement is loose here (a
+    // thing standing against a wall could not exist under the scatter's
+    // all-four-neighbours-are-floor rule); the unseal pass below is what
+    // guarantees nothing any of this puts down can cut the plan in two.
+    const looseFits = (v, ox, oy) => {
+      const { w, h } = variantSize(v);
+      for (let r = 0; r < h; r++)
+        for (let c = 0; c < w; c++) {
+          const gx = ox + c, gy = oy + r;
+          if (!isFloor(gx, gy)) return false;
+          if (protectedTiles.has(gx + gy * width)) return false;
+          if (mapData[calculateIndex(gx, gy, 0, width, height)] === waterTile) return false;
+          if (mapData[calculateIndex(gx, gy, 2, width, height)] !== 0) return false;
+        }
+      return true;
+    };
+    const tryStamp = (v, x, y) => { if (looseFits(v, x, y)) { stampFeature(v, x, y); return true; } return false; };
+
+    const runOrnament = (spec) => {
+      const variants = [];
+      for (const nm of spec.features || [])
+        for (const v of allFeatures[nm] || []) if (v.tileId || (v.grid && v.grid.length)) variants.push(v);
+      if (!variants.length) return;
+      const pick = () => variants[Math.floor(rng() * variants.length)];
+      const rate = spec.rate == null ? 0.1 : spec.rate;
+      switch (spec.rule) {
+        case "edge":
+          // Against the rock: the tile is floor and at least one neighbour is not.
+          for (let y = MARGIN; y < height - MARGIN; y++)
+            for (let x = MARGIN; x < width - MARGIN; x++) {
+              if (!carved[y][x] || rng() >= rate) continue;
+              if (isFloor(x - 1, y) && isFloor(x + 1, y) && isFloor(x, y - 1) && isFloor(x, y + 1)) continue;
+              tryStamp(pick(), x, y);
+            }
+          break;
+        case "corners":
+          for (const r of rooms) {
+            if (r.width < 4 || r.height < 4) continue;
+            for (const [cx, cy] of [[r.x + 1, r.y + 1], [r.x + r.width - 2, r.y + 1],
+                                    [r.x + 1, r.y + r.height - 2], [r.x + r.width - 2, r.y + r.height - 2]]) {
+              if (rng() < rate) tryStamp(pick(), cx, cy);
+            }
+          }
+          break;
+        case "axis":
+          for (const r of rooms) {
+            const horizontal = r.width >= r.height;
+            const mid = horizontal ? r.y + (r.height >> 1) : r.x + (r.width >> 1);
+            const from = horizontal ? r.x : r.y;
+            const to = horizontal ? r.x + r.width : r.y + r.height;
+            for (let k = from; k < to; k++) {
+              if (rng() >= rate) continue;
+              if (horizontal) tryStamp(pick(), k, mid); else tryStamp(pick(), mid, k);
+            }
+          }
+          break;
+        case "centre": {
+          // The middle of the biggest room, once: this is the sigil.
+          let big = null, bestA = 0;
+          for (const r of rooms) {
+            const a = r.width * r.height;
+            if (a > bestA) { bestA = a; big = r; }
+          }
+          if (!big) break;
+          const v = pick();
+          const sz = variantSize(v);
+          tryStamp(v, big.x + (big.width >> 1) - (sz.w >> 1), big.y + (big.height >> 1) - (sz.h >> 1));
+          break;
+        }
+        case "rows":
+          // Stacks, colonnades, pit props: rows along the room's long axis,
+          // spaced across the short one, always two tiles clear at each end so
+          // there is an aisle round them.
+          for (const r of rooms) {
+            if (r.width < 7 || r.height < 7 || rng() > rate) continue;
+            const pitch = spec.pitch || 4;
+            const horizontal = r.width >= r.height;
+            if (horizontal) {
+              for (let y = r.y + 2; y < r.y + r.height - 2; y += pitch)
+                for (let x = r.x + 2; x < r.x + r.width - 2; x++) tryStamp(pick(), x, y);
+            } else {
+              for (let x = r.x + 2; x < r.x + r.width - 2; x += pitch)
+                for (let y = r.y + 2; y < r.y + r.height - 2; y++) tryStamp(pick(), x, y);
+            }
+          }
+          break;
+        case "scatter":
+          for (const r of rooms)
+            for (let y = r.y; y < r.y + r.height; y++)
+              for (let x = r.x; x < r.x + r.width; x++)
+                if (rng() < rate) tryStamp(pick(), x, y);
+          break;
+        case "wall":
+          for (let y = 0; y < height; y++)
+            for (let x = 0; x < width; x++) {
+              if (carved[y][x] || !isFloor(x, y + 1) || rng() >= rate) continue;
+              const v = pick();
+              if (wallFits(v, x, y)) stampFeature(v, x, y - (variantSize(v).h - 1));
+            }
+          break;
+        default: break;   // "special": laid with the ground, in step 5
+      }
+    };
+    for (const nm of ornaments) {
+      const spec = ORNAMENTS[nm];
+      if (spec && spec.rule !== "special") runOrnament(spec);
+    }
+
     if (floorDecorPool.length) {
-      // Denser dressing for the structure biomes: a loot cellar is packed with
-      // valuables, a patron's vault is buried in them, a cave den is littered
-      // with bones; temples stay stately.
-      const floorRate = isVault ? 0.3 : isCellar ? 0.18 : isCaveDen ? 0.12 : 0.05;
+      // How thickly a structure is littered is its own business (a patron's
+      // vault is buried in valuables, a cave den in bones, a temple stays
+      // stately), so the rate comes off the catalogue entry. The one exception
+      // is the rare grand loot cellar, which is stocked like a dungeon.
+      const floorRate = (isCellar && cellarGrand) ? 0.18 : (S.dressing && S.dressing.floor) || 0.05;
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           if (!carved[y][x] || rng() >= floorRate) continue;
@@ -967,7 +2238,7 @@
       }
     }
     if (wallDecorPool.length) {
-      const wallRate = isSewer ? 0.14 : isVault ? 0.14 : isCellar ? 0.12 : 0.1;
+      const wallRate = (isCellar && cellarGrand) ? 0.12 : (S.dressing && S.dressing.wall) || 0.1;
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           if (carved[y][x] || !isFloor(x, y + 1) || rng() >= wallRate) continue;
@@ -978,11 +2249,49 @@
       }
     }
 
+    // --- 7. Nothing put down may seal the plan ------------------------------
+    // The ornaments are placed by rules about how a room LOOKS (rows of
+    // shelves, props standing against the rock), not about what they block, so
+    // the guarantee is made here instead: flood the map as the party would walk
+    // it and take away whatever is standing between the entrance and the rest.
+    // Water counts as open - region 99 is swum, not walked.
+    const tilePassable = (t) => !t || isTilePassableInTileset(tilesetId, t);
+    const walkable = (x, y) => {
+      if (!carved[y][x]) return false;
+      if (regiondata[y * width + x] === 99) return true;
+      return tilePassable(mapData[calculateIndex(x, y, 0, width, height)]) &&
+             tilePassable(mapData[calculateIndex(x, y, 2, width, height)]);
+    };
+    for (let pass = 0; pass < 5; pass++) {
+      const seen = floodFrom(spawnX, spawnY, walkable);
+      const stranded = [];
+      // The whole map, not the margins only: the entrance corridor runs
+      // through the border, and a flood that cannot even leave the doorway
+      // must be able to report the doorway as the problem.
+      for (let y = 0; y < height; y++)
+        for (let x = 0; x < width; x++)
+          if (carved[y][x] && !seen[x + y * width]) stranded.push([x, y]);
+      if (!stranded.length) break;
+      // Clear the prop on every stranded tile AND on the tiles fronting them,
+      // since the thing doing the blocking stands on the reachable side.
+      for (const [x, y] of stranded) {
+        mapData[calculateIndex(x, y, 2, width, height)] = 0;
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+          if (carved[ny][nx]) mapData[calculateIndex(nx, ny, 2, width, height)] = 0;
+        }
+      }
+    }
+
     mapData.regiondata = regiondata;
     // Room rectangles + entrance metadata for the (room-aware) prefab pass and the
     // caller that positions the player. Prefabs are applied later by the prefab
     // load-hook using mapData.rooms so they are fitted inside rooms.
     mapData.rooms = rooms.map((r) => ({ x: r.x, y: r.y, width: r.width, height: r.height }));
+    // A rare well-stocked loot cellar, so the chest pass can be as generous
+    // with it as the dressing pass was.
+    if (isCellar) mapData.cellarGrand = cellarGrand;
     mapData.spawnX = spawnX;
     mapData.spawnY = spawnY;
     mapData.spawnDir = spawnDir;
@@ -992,10 +2301,19 @@
     // Door hints: the START of a 1-tile-wide corridor (BSP dungeon layout
     // only) - the tile where the passage leaves a room - still carved after
     // the border margin clip and far enough from the entrance, spaced apart so
-    // up to 6 "Dungeon door" events never cluster.
+    // up to 6 "Dungeon door" events never cluster. The mouth was recorded
+    // while its own corridor was being carved, but a later corridor, an
+    // orphan reconnection or a chamfered room corner can widen what was a
+    // narrow passage by the time the whole plan is finished; a door only
+    // blocks anything if the two tiles flanking it, perpendicular to the
+    // corridor's own run, are still walls on the FINAL carve.
+    const isDoorBottleneck = (c) => c.horizontal
+      ? !isFloor(c.x, c.y - 1) && !isFloor(c.x, c.y + 1)
+      : !isFloor(c.x - 1, c.y) && !isFloor(c.x + 1, c.y);
     if (dungeonNarrowCorridors.length) {
       const shuffled = dungeonNarrowCorridors
-        .filter((c) => isFloor(c.x, c.y) && Math.abs(c.x - entranceX) + Math.abs(c.y - entranceY) > 6)
+        .filter((c) => isFloor(c.x, c.y) && isDoorBottleneck(c) &&
+          Math.abs(c.x - entranceX) + Math.abs(c.y - entranceY) > 6)
         .sort(() => rng() - 0.5);
       const doorHints = [];
       for (const c of shuffled) {
@@ -1018,6 +2336,10 @@
       mapData.bossRoomHint = bestRoom;
     }
 
+    // The carve of the last structure generated, for the debugger and the
+    // offline verification harness. Held here rather than on mapData because
+    // mapData is what goes into the savegame.
+    _lastCarved = carved;
     return mapData;
   }
 
@@ -1071,10 +2393,10 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     const borderRoadOccupied = new Array(width * height).fill(false);
 
     if (hasCardinalRoads) {
-      const dashedLineTiles = getFeatureTiles("DashedLine", allFeatures);
-      const dashedLineTile = dashedLineTiles ? dashedLineTiles[0] : null;
+      const dashedLines = getDashedLinesForFeatures(allFeatures);
+      const zebra = getZebraForFeatures(allFeatures);
 
-      applyBorderRoadConnections(mapData, width, height, adjacentBiomes, cardinalRoadTile, dashedLineTile);
+      applyBorderRoadConnections(mapData, width, height, adjacentBiomes, cardinalRoadTile, dashedLines, zebra, rng);
 
       // ... (Border road marking logic kept identical to previous version) ...
       const centerX = Math.floor(width / 2);
@@ -1160,6 +2482,11 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       if (window.ProceduralMapPrefabs && window.ProceduralMapPrefabs.applyPrefabsToMap) {
         try {
           window.ProceduralMapPrefabs.applyPrefabsToMap(mapData, biome.name, worldCoords, allOtherData);
+          // This placement is the one that took the map's roads and lots into
+          // account; it must take priority over the generic, hint-blind pass
+          // DataManager.loadMapData would otherwise still run on this same
+          // array and stamp a second, uncoordinated round of buildings on top.
+          window.ProceduralMapPrefabs.markPrefabbed(mapData);
         } catch (e) { console.warn(e); }
       }
     }
@@ -1253,7 +2580,13 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     }
 
     addDirectionalBeach(mapData, width, height, adjacentBiomes, allFeatures, rng);
-    
+
+    // The green comes back over the paths and the yards, thicker every year
+    // (see cityOvergrowth). Run after the paths and the beach so it can grow
+    // over both, and before the region data so nothing it plants is read as
+    // water.
+    overgrowMapData(mapData, width, height, allFeatures, biome && biome.tilesetId, seed);
+
     // Region Data
     const regiondata = new Array(width * height).fill(0);
     let waterTileIds = new Set();
@@ -1280,16 +2613,23 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
    * @param {number} centerY - Center Y coordinate
    * @param {string} direction - Direction to draw ("north", "south", "east", "west")
    * @param {number} roadTile - Road tile ID
-   * @param {number} dashedLineTile - Dashed line tile ID
+   * @param {{horizontal: number|null, vertical: number|null}} dashedLines - Orientation-aware center-line tiles
    * @param {number} width - Map width
    * @param {number} height - Map height
+   * @param {{horizontal: object|null, vertical: object|null}} [zebra] - Orientation-aware crossing tile grids
+   * @param {Function} [rng] - Seeded random function, gates the occasional crossing
    */
-  function drawBorderConnectionRoad(mapData, centerX, centerY, direction, roadTile, dashedLineTile, width, height) {
+  function drawBorderConnectionRoad(mapData, centerX, centerY, direction, roadTile, dashedLines, width, height, zebra, rng) {
     const roadWidth = 7;  // Single 7-tile wide road centered on border
     const halfRoad = Math.floor(roadWidth / 2);
     const DASH_LENGTH = 3;
     const DASH_GAP = 1;
     const DASH_CYCLE = DASH_LENGTH + DASH_GAP;
+    const dl = dashedLines || { horizontal: null, vertical: null };
+    // A crossing, sometimes, well clear of the border edge and of the
+    // junction at the map center where this run meets the street grid.
+    const ZEBRA_CHANCE = 0.35;
+    const ZEBRA_MARGIN = 10;
 
     if (direction === "north") {
       // Draw single vertical road from center upward to north edge
@@ -1306,13 +2646,18 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
           }
         }
         // Draw dashed center line
-        if (dashedLineTile) {
+        if (dl.vertical) {
           const cyclePos = y % DASH_CYCLE;
           if (cyclePos < DASH_LENGTH) {
             const idx = calculateIndex(centerLineX, y, 1, width, height);
-            mapData[idx] = dashedLineTile;
+            mapData[idx] = dl.vertical;
           }
         }
+      }
+
+      if (zebra?.vertical && rng && centerY > ZEBRA_MARGIN * 2 && rng() < ZEBRA_CHANCE) {
+        const crossY = ZEBRA_MARGIN + Math.floor(rng() * (centerY - ZEBRA_MARGIN * 2));
+        window.ProcGenRoads?.stampZebraCrossing(mapData, zebra.vertical, "vertical", startX, roadWidth, crossY, width, height);
       }
     } else if (direction === "south") {
       // Draw single vertical road from center downward to south edge
@@ -1329,13 +2674,19 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
           }
         }
         // Draw dashed center line
-        if (dashedLineTile) {
+        if (dl.vertical) {
           const cyclePos = (y - centerY) % DASH_CYCLE;
           if (cyclePos < DASH_LENGTH) {
             const idx = calculateIndex(centerLineX, y, 1, width, height);
-            mapData[idx] = dashedLineTile;
+            mapData[idx] = dl.vertical;
           }
         }
+      }
+
+      const southSpan = height - centerY;
+      if (zebra?.vertical && rng && southSpan > ZEBRA_MARGIN * 2 && rng() < ZEBRA_CHANCE) {
+        const crossY = centerY + ZEBRA_MARGIN + Math.floor(rng() * (southSpan - ZEBRA_MARGIN * 2));
+        window.ProcGenRoads?.stampZebraCrossing(mapData, zebra.vertical, "vertical", startX, roadWidth, crossY, width, height);
       }
     } else if (direction === "east") {
       // Draw single horizontal road from center rightward to east edge
@@ -1352,13 +2703,19 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
           }
         }
         // Draw dashed center line
-        if (dashedLineTile) {
+        if (dl.horizontal) {
           const cyclePos = (x - centerX) % DASH_CYCLE;
           if (cyclePos < DASH_LENGTH) {
             const idx = calculateIndex(x, centerLineY, 1, width, height);
-            mapData[idx] = dashedLineTile;
+            mapData[idx] = dl.horizontal;
           }
         }
+      }
+
+      const eastSpan = width - centerX;
+      if (zebra?.horizontal && rng && eastSpan > ZEBRA_MARGIN * 2 && rng() < ZEBRA_CHANCE) {
+        const crossX = centerX + ZEBRA_MARGIN + Math.floor(rng() * (eastSpan - ZEBRA_MARGIN * 2));
+        window.ProcGenRoads?.stampZebraCrossing(mapData, zebra.horizontal, "horizontal", startY, roadWidth, crossX, width, height);
       }
     } else if (direction === "west") {
       // Draw single horizontal road from center leftward to west edge
@@ -1375,13 +2732,18 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
           }
         }
         // Draw dashed center line
-        if (dashedLineTile) {
+        if (dl.horizontal) {
           const cyclePos = (centerX - x) % DASH_CYCLE;
           if (cyclePos < DASH_LENGTH) {
             const idx = calculateIndex(x, centerLineY, 1, width, height);
-            mapData[idx] = dashedLineTile;
+            mapData[idx] = dl.horizontal;
           }
         }
+      }
+
+      if (zebra?.horizontal && rng && centerX > ZEBRA_MARGIN * 2 && rng() < ZEBRA_CHANCE) {
+        const crossX = ZEBRA_MARGIN + Math.floor(rng() * (centerX - ZEBRA_MARGIN * 2));
+        window.ProcGenRoads?.stampZebraCrossing(mapData, zebra.horizontal, "horizontal", startY, roadWidth, crossX, width, height);
       }
     }
   }
@@ -1420,22 +2782,22 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
    * Draws roads from center to edges where adjacent cities/burgs/roads exist
    * Uses dual road style with dashed center lines matching city streets
    */
-  function applyBorderRoadConnections(mapData, width, height, adjacentBiomes, roadTile, dashedLineTile) {
+  function applyBorderRoadConnections(mapData, width, height, adjacentBiomes, roadTile, dashedLines, zebra, rng) {
     const centerX = Math.floor(width / 2);
     const centerY = Math.floor(height / 2);
     const borderDirs = getCityBorderRoadDirections(adjacentBiomes);
 
     if (borderDirs.north) {
-      drawBorderConnectionRoad(mapData, centerX, centerY, "north", roadTile, dashedLineTile, width, height);
+      drawBorderConnectionRoad(mapData, centerX, centerY, "north", roadTile, dashedLines, width, height, zebra, rng);
     }
     if (borderDirs.south) {
-      drawBorderConnectionRoad(mapData, centerX, centerY, "south", roadTile, dashedLineTile, width, height);
+      drawBorderConnectionRoad(mapData, centerX, centerY, "south", roadTile, dashedLines, width, height, zebra, rng);
     }
     if (borderDirs.east) {
-      drawBorderConnectionRoad(mapData, centerX, centerY, "east", roadTile, dashedLineTile, width, height);
+      drawBorderConnectionRoad(mapData, centerX, centerY, "east", roadTile, dashedLines, width, height, zebra, rng);
     }
     if (borderDirs.west) {
-      drawBorderConnectionRoad(mapData, centerX, centerY, "west", roadTile, dashedLineTile, width, height);
+      drawBorderConnectionRoad(mapData, centerX, centerY, "west", roadTile, dashedLines, width, height, zebra, rng);
     }
 
     dlog(
@@ -1451,11 +2813,11 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
    * @param {number} height - Map height
    * @param {Object} borderDirs - Border directions with boolean values (north, south, east, west)
    * @param {number} roadTile - Road tile ID
-   * @param {number} dashedLineTile - Dashed line tile ID (for center lines)
+   * @param {{horizontal: number|null, vertical: number|null}} dashedLines - Orientation-aware center-line tiles
    * @param {Array} occupiedMap - Occupied map tracking array
    * @param {Function} rng - Seeded random function
    */
-  function generateInternalRoadsFromBorders(mapData, width, height, borderDirs, roadTile, dashedLineTile, occupiedMap, rng) {
+  function generateInternalRoadsFromBorders(mapData, width, height, borderDirs, roadTile, dashedLines, occupiedMap, rng) {
     const centerX = Math.floor(width / 2);
     const centerY = Math.floor(height / 2);
     const roadWidth = 3;  // Thinner roads for internal branching
@@ -1463,6 +2825,7 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     const DASH_LENGTH = 3;
     const DASH_GAP = 1;
     const DASH_CYCLE = DASH_LENGTH + DASH_GAP;
+    const dl = dashedLines || { horizontal: null, vertical: null };
 
     /**
      * Draw a single road tile and mark it as occupied
@@ -1482,6 +2845,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     function drawBranchingRoad(startX, startY, dirX, dirY, maxLength) {
       let x = startX;
       let y = startY;
+      // A branch travels mainly along one axis; its centre line uses the
+      // same Horizontal/Vertical tile a road running that way would.
+      const branchDashTile = dirX !== 0 ? dl.horizontal : dl.vertical;
 
       for (let step = 0; step < maxLength; step++) {
         // Draw road tile
@@ -1492,10 +2858,10 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
         }
 
         // Draw dashed center line
-        if (dashedLineTile && step % DASH_CYCLE < DASH_LENGTH) {
+        if (branchDashTile && step % DASH_CYCLE < DASH_LENGTH) {
           const centerIdx = calculateIndex(Math.floor(x), Math.floor(y), 1, width, height);
           if (centerIdx >= 0 && centerIdx < mapData.length) {
-            mapData[centerIdx] = dashedLineTile;
+            mapData[centerIdx] = branchDashTile;
           }
         }
 
@@ -1684,6 +3050,622 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     return count;
   }
 
+  // ==========================================================================
+  // CITY STREET DRESSING (tileset 303)
+  // ==========================================================================
+  //
+  // A city is not a road grid with houses dropped into it. What makes a street
+  // read as a street is everything the tileset stands ALONG it: the plane trees
+  // in a row against the kerb, the lamp posts, the benches and the bins, the
+  // hydrant, the phone box, the bus shelter, the stop sign at the junction, the
+  // cones around the hole in the road, the manhole, the litter nobody picked up,
+  // the graffiti on the gable end, and the people sleeping rough in the park.
+  // Tileset 303 carries all of it and none of it was ever placed.
+  //
+  // Every pass below works off one shared context, so the City generator and the
+  // Burg generator (which track their roads and their lots quite differently)
+  // can hand over their own bookkeeping and get the same streets:
+  //
+  //   ctx.mapData / width / height   the map being written
+  //   ctx.allFeatures                the tileset's parsed feature table
+  //   ctx.rng                        a stream of the map's own seed
+  //   ctx.isRoad(x, y)               the tile is carriageway
+  //   ctx.isOccupied(x, y)           road, building lot, or something placed
+  //   ctx.mark(x, y)                 reserve a tile just written to
+  //   ctx.openBase                   the ground tiles a prop may stand on
+  //
+  // Nothing here ever writes over a road, a building or another prop: a pass
+  // asks before it writes and marks what it takes.
+  const CITY_LAYER_MARK = 1;   // ground markings (parking bays, road paint)
+  const CITY_LAYER_PROP = 2;   // the layer ProceduralTerrainInteractions reads
+
+  // Every single-tile id declared by any of `names`.
+  function cityTileSet(names, allFeatures) {
+    const out = new Set();
+    for (const n of names) {
+      for (const v of (allFeatures[n] || [])) {
+        if (v.type === "single" && v.tileId) out.add(v.tileId);
+      }
+    }
+    return out;
+  }
+
+  function cityVariants(ctx, name) {
+    const v = ctx.allFeatures && ctx.allFeatures[name];
+    return (Array.isArray(v) && v.length) ? v : null;
+  }
+
+  // A footprint for a variant, single and grid alike, so a pass never has to
+  // care which shape the tileset happens to declare a prop in.
+  function cityVariantSize(v) {
+    if (!v) return null;
+    if (v.type === "single") return { w: 1, h: 1 };
+    if (!v.grid || !v.grid.length) return null;
+    let w = 0;
+    for (const row of v.grid) w = Math.max(w, row.length);
+    return { w, h: v.grid.length };
+  }
+
+  // Can a prop stand here? Open ground the biome or the pavement pass laid, with
+  // nothing on any object layer and nothing else claiming the tile.
+  function cityCellFree(ctx, x, y) {
+    if (x < 1 || y < 1 || x >= ctx.width - 1 || y >= ctx.height - 1) return false;
+    if (ctx.isOccupied(x, y)) return false;
+    if (!ctx.openBase.has(ctx.mapData[calculateIndex(x, y, 0, ctx.width, ctx.height)])) return false;
+    for (const z of [1, 2, 3]) {
+      if (ctx.mapData[calculateIndex(x, y, z, ctx.width, ctx.height)] !== 0) return false;
+    }
+    return true;
+  }
+
+  // Place one variant of `name` with its top-left at (x, y), whole or not at
+  // all. `layer` defaults to the prop layer. Returns true when it went down.
+  function cityPlace(ctx, name, x, y, layer) {
+    const variants = cityVariants(ctx, name);
+    if (!variants) return false;
+    const z = (layer == null) ? CITY_LAYER_PROP : layer;
+    const v = variants[Math.floor(ctx.rng() * variants.length)];
+    const size = cityVariantSize(v);
+    if (!size) return false;
+    for (let gy = 0; gy < size.h; gy++) {
+      for (let gx = 0; gx < size.w; gx++) {
+        if (!cityCellFree(ctx, x + gx, y + gy)) return false;
+      }
+    }
+    if (v.type === "single") {
+      ctx.mapData[calculateIndex(x, y, z, ctx.width, ctx.height)] = v.tileId;
+      ctx.mark(x, y);
+      return true;
+    }
+    for (let gy = 0; gy < v.grid.length; gy++) {
+      for (let gx = 0; gx < v.grid[gy].length; gx++) {
+        const tid = v.grid[gy][gx];
+        // A blank cell of a grid variant is part of the footprint (nothing else
+        // may stand inside a bus shelter) but paints nothing.
+        if (tid) ctx.mapData[calculateIndex(x + gx, y + gy, z, ctx.width, ctx.height)] = tid;
+        ctx.mark(x + gx, y + gy);
+      }
+    }
+    return true;
+  }
+
+  // Same, but anchored so the BOTTOM row of the prop lands on (x, y): a tall
+  // sprite (a street tree, a lamp post, a phone box) is drawn upward from the
+  // tile it actually stands on, and anchoring by the top would leave it hanging.
+  function cityPlaceStanding(ctx, name, x, y, layer) {
+    const variants = cityVariants(ctx, name);
+    if (!variants) return false;
+    const v = variants[Math.floor(ctx.rng() * variants.length)];
+    const size = cityVariantSize(v);
+    if (!size) return false;
+    return cityPlace(ctx, name, x, y - (size.h - 1), layer);
+  }
+
+  // Is any tile of this feature already on the map? A prefab may have stamped
+  // one, and a guarantee has to count what is there before it adds its own.
+  function cityHasFeature(ctx, name) {
+    const ids = new Set();
+    for (const v of (ctx.allFeatures[name] || [])) {
+      if (v.type === "single" && v.tileId) ids.add(v.tileId);
+      else if (v.grid) for (const row of v.grid) for (const t of row) if (t) ids.add(t);
+    }
+    if (!ids.size) return false;
+    const layerSize = ctx.width * ctx.height;
+    for (let z = 1; z <= 3; z++) {
+      for (let i = 0; i < layerSize; i++) {
+        if (ids.has(ctx.mapData[z * layerSize + i])) return true;
+      }
+    }
+    return false;
+  }
+
+  // Every free verge tile: open ground touching the carriageway. This is the
+  // pavement a pedestrian walks on and where all the street furniture lives.
+  function cityVergeTiles(ctx) {
+    const out = [];
+    for (let y = 1; y < ctx.height - 1; y++) {
+      for (let x = 1; x < ctx.width - 1; x++) {
+        if (!cityCellFree(ctx, x, y)) continue;
+        if (ctx.isRoad(x - 1, y) || ctx.isRoad(x + 1, y) ||
+            ctx.isRoad(x, y - 1) || ctx.isRoad(x, y + 1)) out.push({ x, y });
+      }
+    }
+    return out;
+  }
+
+  function cityShuffle(list, rng) {
+    for (let i = list.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      const t = list[i]; list[i] = list[j]; list[j] = t;
+    }
+    return list;
+  }
+
+  // ---- pass: rows of street trees against the kerb --------------------------
+  // A single tree on a verge is scenery; a ROW of them is a boulevard, so they
+  // are laid along one side of a road at a fixed pitch rather than scattered.
+  function cityStreetTreeRows(ctx, cap) {
+    if (!cityVariants(ctx, "TreeStreet")) return 0;
+    let placed = 0;
+    const limit = cap == null ? 26 : cap;
+    const pitch = 4 + Math.floor(ctx.rng() * 2);   // one every 4-5 tiles
+    // Horizontal runs: walk each row, and where a stretch of verge sits against
+    // a road, plant it out. Only some rows are planted, or every street in the
+    // city would be a boulevard and the trees would stop meaning anything.
+    for (let y = 2; y < ctx.height - 2 && placed < limit; y++) {
+      if (ctx.rng() > 0.4) continue;
+      let run = 0;
+      for (let x = 2; x < ctx.width - 2 && placed < limit; x++) {
+        const onVerge = cityCellFree(ctx, x, y) && (ctx.isRoad(x, y - 1) || ctx.isRoad(x, y + 1));
+        if (!onVerge) { run = 0; continue; }
+        if (run % pitch === 0 && cityPlaceStanding(ctx, "TreeStreet", x, y)) placed++;
+        run++;
+      }
+    }
+    // Vertical runs, along the avenues.
+    for (let x = 2; x < ctx.width - 2 && placed < limit; x++) {
+      if (ctx.rng() > 0.32) continue;
+      let run = 0;
+      for (let y = 2; y < ctx.height - 2 && placed < limit; y++) {
+        const onVerge = cityCellFree(ctx, x, y) && (ctx.isRoad(x - 1, y) || ctx.isRoad(x + 1, y));
+        if (!onVerge) { run = 0; continue; }
+        if (run % pitch === 0 && cityPlaceStanding(ctx, "TreeStreet", x, y)) placed++;
+        run++;
+      }
+    }
+    return placed;
+  }
+
+  function cityPickWeighted(ctx, table) {
+    let total = 0;
+    for (const e of table) if (cityVariants(ctx, e.name)) total += e.weight;
+    if (!total) return null;
+    let roll = ctx.rng() * total;
+    for (const e of table) {
+      if (!cityVariants(ctx, e.name)) continue;
+      roll -= e.weight;
+      if (roll <= 0) return e;
+    }
+    return null;
+  }
+
+  // ---- pass: bus stops ------------------------------------------------------
+  // Every settlement gets at least one, because the bus is how the fast-travel
+  // network is boarded (ProceduralHouseSystem's SignBus handler) and a city you
+  // cannot leave by bus is a dead end. The shelter is placed against a road
+  // where there is room for it, and a SignBus goes up beside it; if nothing on
+  // the map can hold the shelter, the sign alone still stands.
+  function cityBusStops(ctx, verge, want) {
+    let shelters = cityHasFeature(ctx, "BusStop") ? 1 : 0;
+    let signs = 0;
+    const targets = cityShuffle(verge.slice(), ctx.rng);
+    for (const t of targets) {
+      if (shelters >= want) break;
+      if (!cityPlace(ctx, "BusStop", t.x, t.y)) continue;
+      shelters++;
+      // The sign goes at the near end of the shelter, on the verge.
+      const spots = [{ x: t.x - 1, y: t.y }, { x: t.x + 5, y: t.y }, { x: t.x, y: t.y - 1 }];
+      for (const s of spots) if (cityPlaceStanding(ctx, "SignBus", s.x, s.y)) { signs++; break; }
+    }
+    // The guarantee: a settlement always answers the bus.
+    if (!shelters) {
+      for (let y = 2; y < ctx.height - 4 && !shelters; y++) {
+        for (let x = 2; x < ctx.width - 6 && !shelters; x++) {
+          if (cityPlace(ctx, "BusStop", x, y)) shelters++;
+        }
+      }
+    }
+    if (!signs && !cityHasFeature(ctx, "SignBus")) {
+      for (const t of targets) if (cityPlaceStanding(ctx, "SignBus", t.x, t.y)) { signs++; break; }
+    }
+    return { shelters, signs };
+  }
+
+  // ---- pass: greenery over grass -------------------------------------------
+  // Wherever the ground is still the biome's own grass - a verge the pavement
+  // pass did not reach, the corner of a lot, a park - it is planted. Nothing is
+  // planted on pavement or on a road: a tree growing out of tarmac reads wrong.
+  function cityGreenery(ctx, density) {
+    const grass = cityTileSet(["Grass", "GrassFlower", "GrassDark", "GrassJungle", "GrassRock", "DirtGrass"], ctx.allFeatures);
+    if (!grass.size) return 0;
+    const table = [
+      { name: "Flower", weight: 34 },
+      { name: "Bush", weight: 20 },
+      { name: "Tree", weight: 16, standing: true },
+      { name: "Weed", weight: 12 },
+      { name: "PottedPlant", weight: 6, standing: true },
+      { name: "Vine", weight: 5 },
+      { name: "Plant", weight: 7 },
+    ];
+    let placed = 0;
+    for (let y = 1; y < ctx.height - 1; y++) {
+      for (let x = 1; x < ctx.width - 1; x++) {
+        if (ctx.rng() > density) continue;
+        if (!grass.has(ctx.mapData[calculateIndex(x, y, 0, ctx.width, ctx.height)])) continue;
+        if (!cityCellFree(ctx, x, y)) continue;
+        const entry = cityPickWeighted(ctx, table);
+        if (!entry) break;
+        const ok = entry.standing ? cityPlaceStanding(ctx, entry.name, x, y) : cityPlace(ctx, entry.name, x, y);
+        if (ok) placed++;
+      }
+    }
+    return placed;
+  }
+
+  // Which day the world clock is on (TimeDateSystem's Variable 114, minutes).
+  // Litter is dealt off this rather than off the map seed alone, so a street is
+  // strewn differently every morning, the way a beach is re-strewn with shells
+  // by the tide (ProceduralBeachGenerator.getTideDependentSeed).
+  function cityDayIndex() {
+    if (typeof $gameVariables === "undefined" || !$gameVariables) return 0;
+    // Nobody drops litter and nobody collects it in an empty world, so the
+    // street is strewn exactly as it was strewn the day everyone went and is
+    // never re-dealt: a constant day means one deal, for good.
+    if (isEmptyWorld()) return 0;
+    return Math.floor(($gameVariables.value(114) | 0) / 1440);
+  }
+
+  function isEmptyWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+  }
+
+  // The in-game year, on the same clock and the same 1 January 2001 epoch the
+  // spawn era is read from (BSE.Helpers.getCurrentGameYear).
+  function cityGameYear() {
+    if (typeof $gameVariables === "undefined" || !$gameVariables) return 2001;
+    const date = new Date(2001, 0, 1, 10, 0, 0);
+    date.setMinutes(date.getMinutes() + (($gameVariables.value(114) | 0)));
+    return date.getFullYear() + date.getMonth() / 12;
+  }
+
+  // Nobody is emptying the bins any more. The Squishing takes the civic
+  // services with everything else: through 2010 and 2011 the rubbish piles up
+  // month by month, and from 2012 the streets are simply full of it. Before
+  // 2010 a city is as clean as a city ever is.
+  const LITTER_RISE_YEAR = 2010;    // the year the collections start failing
+  const LITTER_FULL_YEAR = 2012;    // the year the city is buried in it
+  const LITTER_COLLAPSE_FACTOR = 14;
+  function cityLitterFactor() {
+    // The amount must not drift either: an empty world's streets hold what
+    // they held, whatever year the clock says, because the collections did not
+    // fail gradually there, they simply stopped.
+    if (isEmptyWorld()) return LITTER_COLLAPSE_FACTOR;
+    const year = cityGameYear();
+    if (year < LITTER_RISE_YEAR) return 1;
+    if (year >= LITTER_FULL_YEAR) return LITTER_COLLAPSE_FACTOR;
+    // Two years of it getting worse, month by month rather than in one step.
+    const t = (year - LITTER_RISE_YEAR) / (LITTER_FULL_YEAR - LITTER_RISE_YEAR);
+    return 1 + t * (LITTER_COLLAPSE_FACTOR - 1);
+  }
+
+  // ---- pass: overgrowth -----------------------------------------------------
+  // Nature does not wait for the Squishing. Rubbish needs somebody to STOP
+  // collecting it, which is why the litter curve above only starts in 2010; a
+  // weed only needs to be left alone, so this one starts on day one. Year by
+  // year from 2001 the cracks in the pavement open, the verges spread over the
+  // kerb and the vines get into the brickwork, until by the collapse the street
+  // grid is something you can only just make out under the green.
+  //
+  // Modelled on cityLitterFactor, with two differences that matter:
+  //
+  //   * it is MONOTONIC. Each candidate tile is given a fixed value from the
+  //     map seed and is planted once the year's threshold passes it, so a plant
+  //     that appeared in 2004 is still there in 2009 and the years only ever
+  //     ADD. Re-rolling every year would make the greenery flicker from one
+  //     visit to the next.
+  //   * it never blocks a route it grows over. On a carriageway or a pavement
+  //     only plants that are actually walk-through are used, checked against
+  //     the tileset's own passage flags rather than assumed, so a city cannot
+  //     be sealed off by its own weeds. (Bush and PottedPlant are impassable in
+  //     both city tilesets, which is exactly the trap this avoids.)
+  const OVERGROWTH_START_YEAR = 2001;  // the year the maintenance stops
+  const OVERGROWTH_FULL_YEAR = 2012;   // the year the green has won
+  const OVERGROWTH_MAX_FACTOR = 10;
+  function cityOvergrowthFactor() {
+    // An empty world is at the far end of the curve whatever the clock says:
+    // there was never anybody to cut it back.
+    if (isEmptyWorld()) return OVERGROWTH_MAX_FACTOR;
+    const year = cityGameYear();
+    if (year <= OVERGROWTH_START_YEAR) return 1;
+    if (year >= OVERGROWTH_FULL_YEAR) return OVERGROWTH_MAX_FACTOR;
+    const t = (year - OVERGROWTH_START_YEAR) / (OVERGROWTH_FULL_YEAR - OVERGROWTH_START_YEAR);
+    return 1 + t * (OVERGROWTH_MAX_FACTOR - 1);
+  }
+
+  // A fixed value in [0,1) for one tile of one map. Not from ctx.rng: the
+  // threshold has to be able to rise past the same tile's value next year, so
+  // the value may not depend on how many tiles were tested before it.
+  function overgrowthRoll(ctx, x, y) {
+    let h = (ctx.seed ^ 0x9e3779b9) >>> 0;
+    h = Math.imul(h ^ (x * 0x85ebca6b), 0xc2b2ae35) >>> 0;
+    h = Math.imul(h ^ (y * 0x27d4eb2f), 0x165667b1) >>> 0;
+    h ^= h >>> 15;
+    return (h >>> 0) / 4294967296;
+  }
+
+  // The plants that may stand on something people used to walk or drive on.
+  // Filtered by real passability, so re-tagging a tileset cannot turn this pass
+  // into a wall. `standing` props are anchored by their bottom row.
+  // Grass is deliberately NOT here: it is a layer-0 terrain autotile, not a
+  // prop, and painting it onto the prop layer would put a ground tile in the
+  // air. Tarmac going back to green is done properly, by repainting the ground
+  // itself (see the conversion step in cityOvergrowth).
+  const OVERGROWTH_HARD_TABLE = [
+    { name: "Weed", weight: 30 },
+    { name: "Flower", weight: 24 },
+    { name: "Vine", weight: 22 },
+    { name: "Tree", weight: 8, standing: true },
+    { name: "TreeStreet", weight: 6, standing: true },
+  ];
+  // On ground that was already soft, anything goes: nothing is being kept off
+  // a verge that a bush could not have grown on anyway.
+  const OVERGROWTH_SOFT_TABLE = OVERGROWTH_HARD_TABLE.concat([
+    { name: "Bush", weight: 16 },
+    { name: "Shrub", weight: 8 },
+    { name: "Fern", weight: 6 },
+  ]);
+
+  // Every variant of `name` walk-through in this tileset?
+  function overgrowthPassable(ctx, name) {
+    const variants = cityVariants(ctx, name);
+    if (!variants || !variants.length) return false;
+    const tsId = ctx.tilesetId;
+    if (!tsId) return true;
+    return variants.every(v => {
+      if (v.type === "single") return isTilePassableInTileset(tsId, v.tileId);
+      return (v.grid || []).every(row =>
+        (row || []).every(t => !t || isTilePassableInTileset(tsId, t)));
+    });
+  }
+
+  function cityOvergrowth(ctx, baseDensity) {
+    const factor = cityOvergrowthFactor();
+    if (factor <= 1) return 0;
+    const density = Math.min(0.85, (baseDensity != null ? baseDensity : 0.035) * factor);
+
+    // Soft ground: the verges, the parks, the corners the pavement never
+    // reached. Hard ground: pavement and carriageway, where only the
+    // walk-through plants are allowed.
+    const soft = cityTileSet(
+      ["Grass", "GrassFlower", "GrassDark", "GrassJungle", "GrassRock", "DirtGrass", "Dirt", "Mud"],
+      ctx.allFeatures);
+    const hard = cityTileSet(
+      ["Sidewalk", "Pavement", "Road", "DashedLine", "RoadLine", "Asphalt", "Salt"],
+      ctx.allFeatures);
+    if (!soft.size && !hard.size) return 0;
+
+    const hardTable = OVERGROWTH_HARD_TABLE.filter(e => overgrowthPassable(ctx, e.name));
+    const softTable = OVERGROWTH_SOFT_TABLE.filter(e => cityVariants(ctx, e.name));
+    if (!hardTable.length && !softTable.length) return 0;
+
+    // The carriageway is not in ctx.openBase (nothing is built on a road), so
+    // it is opened for the duration of this pass and put straight back: the
+    // passes after this one must see the map they always did.
+    const openBase = ctx.openBase;
+    ctx.openBase = new Set([...openBase, ...hard]);
+
+    // What tarmac turns back into. Layer 0, so it stays walkable whatever it
+    // is: this is the ground itself going green, not something standing on it.
+    const greenGround = [...cityTileSet(["Grass", "GrassDark", "GrassFlower", "DirtGrass"], ctx.allFeatures)]
+      .filter(t => !ctx.tilesetId || isTilePassableInTileset(ctx.tilesetId, t));
+
+    let placed = 0;
+    for (let y = 1; y < ctx.height - 1; y++) {
+      for (let x = 1; x < ctx.width - 1; x++) {
+        const gIdx = calculateIndex(x, y, 0, ctx.width, ctx.height);
+        const ground = ctx.mapData[gIdx];
+        const onSoft = soft.has(ground);
+        const onHard = !onSoft && hard.has(ground);
+        if (!onSoft && !onHard) continue;
+        // Hard ground resists: tarmac takes longer to break than a verge does.
+        const roll = overgrowthRoll(ctx, x, y);
+        const local = density * (onHard ? 0.55 : 1);
+        if (roll >= local) continue;
+
+        // The worst-affected fraction of broken tarmac stops being tarmac.
+        // Only where nothing is standing on the tile, so a road marking or a
+        // manhole is never left floating over a meadow.
+        if (onHard && greenGround.length && roll < local * 0.35 &&
+            !ctx.isOccupied(x, y) &&
+            ctx.mapData[calculateIndex(x, y, 1, ctx.width, ctx.height)] === 0 &&
+            ctx.mapData[calculateIndex(x, y, 2, ctx.width, ctx.height)] === 0) {
+          ctx.mapData[gIdx] = greenGround[Math.floor(roll * 997) % greenGround.length];
+        }
+
+        if (!cityCellFree(ctx, x, y)) continue;
+        const table = onHard ? hardTable : softTable;
+        const entry = cityPickWeighted(ctx, table);
+        if (!entry) continue;
+        const ok = entry.standing
+          ? cityPlaceStanding(ctx, entry.name, x, y)
+          : cityPlace(ctx, entry.name, x, y);
+        if (ok) placed++;
+      }
+    }
+
+    ctx.openBase = openBase;
+    return placed;
+  }
+
+  // The same pass for a generator that has no city context of its own. A
+  // village lays paths and lots without ever building the occupancy map the
+  // city dressing runs on, and a road biome is only a carriageway and its
+  // verges, so both get a minimal ctx here: occupancy is read straight off the
+  // map (anything already standing on a prop layer is in the way), which is all
+  // the overgrowth needs to know. Exposed so the road generator can call it.
+  function overgrowMapData(mapData, width, height, allFeatures, tilesetId, seed, baseDensity) {
+    if (cityOvergrowthFactor() <= 1) return 0;
+    const taken = new Uint8Array(width * height);
+    const ctx = {
+      mapData, width, height, allFeatures, seed, tilesetId,
+      rng: createSeededRandom((seed ^ 0x0Bee7) >>> 0),
+      isRoad: () => false,
+      isOccupied: (x, y) =>
+        x < 0 || y < 0 || x >= width || y >= height || taken[y * width + x] !== 0,
+      mark: (x, y) => {
+        if (x >= 0 && x < width && y >= 0 && y < height) taken[y * width + x] = 1;
+      },
+      // Everything the pass itself decides is plantable; cityCellFree still
+      // refuses any tile with something already on a prop layer.
+      openBase: null,
+    };
+    ctx.openBase = cityTileSet(
+      ["Grass", "GrassFlower", "GrassDark", "GrassJungle", "GrassRock", "DirtGrass",
+        "Dirt", "Mud", "Sidewalk", "Pavement", "Path", "Road", "DashedLine"],
+      allFeatures);
+    return cityOvergrowth(ctx, baseDensity);
+  }
+
+  // ---- pass: litter --------------------------------------------------------
+  // Trash lies about the pavement and is re-dealt every day. Wall art
+  // (posters/graffiti) is kept out of city/village generation entirely.
+  function cityLitterAndWallArt(ctx, litterCount) {
+    let litter = 0;
+    // The litter pass runs entirely on its own daily stream, so it can be
+    // re-dealt without shifting one prop, tree or building anywhere else on the
+    // map: ctx.rng is swapped out for the duration and put straight back, and
+    // the passes after this one see exactly the stream they always did.
+    const mapRng = ctx.rng;
+    ctx.rng = createSeededRandom((ctx.seed ^ Math.imul(cityDayIndex() + 1, 0x9e3779b1)) >>> 0);
+    const want = Math.round(litterCount * cityLitterFactor());
+    // Four throws a piece is enough while a street is mostly empty; once the
+    // collections have failed the pavement is already half covered, so the
+    // attempt budget has to grow with the target or the pile stops short of it.
+    for (let n = 0; n < want * 6 && litter < want; n++) {
+      const x = 2 + Math.floor(ctx.rng() * (ctx.width - 4));
+      const y = 2 + Math.floor(ctx.rng() * (ctx.height - 4));
+      if (cityPlace(ctx, "Trash", x, y)) litter++;
+    }
+    ctx.rng = mapRng;
+    return { litter, art: 0 };
+  }
+
+  // ---- block dressing: parks, car parks, plazas, vacant lots ---------------
+  function cityPaintGround(ctx, rect, tileIds) {
+    if (!tileIds || !tileIds.length) return;
+    for (let y = rect.y; y < rect.y + rect.h; y++) {
+      for (let x = rect.x; x < rect.x + rect.w; x++) {
+        if (x < 1 || y < 1 || x >= ctx.width - 1 || y >= ctx.height - 1) continue;
+        if (ctx.isOccupied(x, y)) continue;
+        ctx.mapData[calculateIndex(x, y, 0, ctx.width, ctx.height)] =
+          tileIds[Math.floor(ctx.rng() * tileIds.length)];
+      }
+    }
+  }
+
+  function cityRectTiles(ctx, rect) {
+    const out = [];
+    for (let y = rect.y; y < rect.y + rect.h; y++) {
+      for (let x = rect.x; x < rect.x + rect.w; x++) {
+        if (cityCellFree(ctx, x, y)) out.push({ x, y });
+      }
+    }
+    return out;
+  }
+
+  // Open blocks are painted their ground and left almost bare now: a lot cut
+  // "park"/"parking"/"plaza"/"vacant" is still room the block-fitting pass
+  // can hand to an oversized prefab (see generateCityBiome's release step),
+  // so nothing here is dressed heavily enough to make that space feel spoken
+  // for. Only trash and a little planting, ever.
+  function cityDressPark(ctx, rect) {
+    const grass = [...cityTileSet(["Grass", "GrassFlower", "GrassDark"], ctx.allFeatures)];
+    cityPaintGround(ctx, rect, grass);
+    const tiles = cityShuffle(cityRectTiles(ctx, rect), ctx.rng);
+    for (let n = 0, want = 1 + Math.floor(ctx.rng() * 2); n < want; n++) {
+      for (const t of tiles) if (cityPlace(ctx, "Trash", t.x, t.y)) break;
+    }
+    for (let n = 0, want = 1 + Math.floor(ctx.rng() * 3); n < want; n++) {
+      for (const t of tiles) if (cityPlace(ctx, ctx.rng() < 0.5 ? "Flower" : "Bush", t.x, t.y)) break;
+    }
+  }
+
+  function cityDressCarPark(ctx, rect) {
+    const pavement = [...cityTileSet(["Pavement", "Sidewalk"], ctx.allFeatures)];
+    cityPaintGround(ctx, rect, pavement);
+    const tiles = cityShuffle(cityRectTiles(ctx, rect), ctx.rng);
+    for (let n = 0, want = 1 + Math.floor(ctx.rng() * 2); n < want; n++) {
+      for (const t of tiles) if (cityPlace(ctx, "Trash", t.x, t.y)) break;
+    }
+  }
+
+  function cityDressPlaza(ctx, rect) {
+    const pavement = [...cityTileSet(["Pavement", "Sidewalk"], ctx.allFeatures)];
+    cityPaintGround(ctx, rect, pavement);
+    const tiles = cityShuffle(cityRectTiles(ctx, rect), ctx.rng);
+    for (let n = 0, want = 1 + Math.floor(ctx.rng() * 2); n < want; n++) {
+      for (const t of tiles) if (cityPlace(ctx, "Trash", t.x, t.y)) break;
+    }
+    for (const t of tiles) if (cityPlaceStanding(ctx, "PottedPlant", t.x, t.y)) break;
+  }
+
+  function cityDressVacantLot(ctx, rect) {
+    const dirt = [...cityTileSet(["Dirt", "DirtGrass", "Mud"], ctx.allFeatures)];
+    cityPaintGround(ctx, rect, dirt);
+    const tiles = cityShuffle(cityRectTiles(ctx, rect), ctx.rng);
+    for (let n = 0, want = 1 + Math.floor(ctx.rng() * 2); n < want; n++) {
+      for (const t of tiles) if (cityPlace(ctx, "Trash", t.x, t.y)) break;
+    }
+  }
+
+  // The whole street-level pass, cut down to bus stops, street trees, litter
+  // and plants: everything else that used to compete with a building for
+  // room on the block (verge furniture, road hardware, camp sites) is gone.
+  function dressCityStreets(ctx, opts) {
+    const o = opts || {};
+    const verge = cityVergeTiles(ctx);
+    cityStreetTreeRows(ctx, o.streetTrees);
+    cityBusStops(ctx, verge, o.busStops != null ? o.busStops : 2);
+    cityGreenery(ctx, o.greenery != null ? o.greenery : 0.10);
+    // After the greenery (which only plants on ground that was already soft)
+    // and before the litter, so a weed can come up through a pavement that has
+    // nothing else on it but rubbish is still strewn on top of the lot.
+    cityOvergrowth(ctx, o.overgrowth);
+    cityLitterAndWallArt(ctx, o.litter != null ? o.litter : 14);
+  }
+
+  // ==========================================================================
+  // CITY
+  // ==========================================================================
+  //
+  // The old generator could not lay a city on the map it was handed. Its block
+  // sizes were written for a 128-tile square (minBlockSize 80, maxBlockSize 90,
+  // a 12-tile border) while a procedural map is 64x64: the first block it queued
+  // was 40x40, already narrower than its own minimum split width, so no street
+  // was ever cut and every city in the world came out as ONE enormous lot with a
+  // single prefab on it, ringed by whatever roads its neighbours asked for. It
+  // placed no street furniture of any kind.
+  //
+  // What is generated now:
+  //   1. the biome's own ground, so the Desert and Ice variants stay themselves
+  //   2. a real street grid - one avenue each way through the centre (which is
+  //      what the border roads run into) and secondary streets outward from it
+  //      every 8-14 tiles, so a 64-tile square carries 9 to 25 blocks
+  //   3. a zoning per block: built / park / car park / plaza / vacant
+  //   4. one prefab per built block (the existing prefab pass)
+  //   5. pavement, and sidewalks around every carriageway
+  //   6. the street itself (dressCityStreets above)
   function generateCityBiome(biome, seed, allFeatures, adjacentBiomes, allOtherData = {}) {
     const width = PROC_MAP_WIDTH;
     const height = PROC_MAP_HEIGHT;
@@ -1716,344 +3698,216 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
 
     // Get Road Tiles
     const roadTiles = getFeatureTiles("Road", allFeatures);
-    const dashedLineTiles = getFeatureTiles("DashedLine", allFeatures);
     if (!roadTiles || roadTiles.length === 0) return mapData;
 
     const roadTile = roadTiles[0];
-    const dashedLineTile = dashedLineTiles ? dashedLineTiles[0] : roadTile;
+    const dashedLines = getDashedLinesForFeatures(allFeatures);
+    const zebra = getZebraForFeatures(allFeatures);
 
-    // --- Road Configuration (matching RoadGenerator style) ---
-    const normalRoadWidth = 7;  // Matches ProceduralMapRoadGenerator
-    const thinRoadWidth = 3;    // Thinner road variant
-    const separation = 3;       // Separation between dual roads
-    const DASH_LENGTH = 3;      // Dashes: 3 on, 1 off pattern
-    const DASH_GAP = 1;
-    const DASH_CYCLE = DASH_LENGTH + DASH_GAP;
+    // 0 free · 1 carriageway · 2 building lot · 3 prop/furniture
+    const occupiedMap = new Uint8Array(width * height);
+    const isRoadAt = (x, y) =>
+      x >= 0 && y >= 0 && x < width && y < height && occupiedMap[y * width + x] === 1;
+    const markRoad = (x, y) => {
+      if (x >= 0 && x < width && y >= 0 && y < height) occupiedMap[y * width + x] = 1;
+    };
 
-    // Track occupied areas for building placement and border roads
-    // DEFINED HERE
-    const occupiedMap = new Array(width * height).fill(0); 
-    const borderRoadOccupied = new Array(width * height).fill(false);
-    const zoningBlocks = [];
+    // --- STEP 0: the roads the neighbouring squares run into this one --------
+    applyBorderRoadConnections(mapData, width, height, adjacentBiomes, roadTile, dashedLines, zebra, rng);
 
-    // --- STEP 0: Draw border roads FIRST, mark them as occupied ---
-    applyBorderRoadConnections(mapData, width, height, adjacentBiomes, roadTile, dashedLineTile);
-
-    // Mark all border road tiles as occupied to prevent grid roads from overlapping
     const centerX = Math.floor(width / 2);
     const centerY = Math.floor(height / 2);
     const borderDirs = getCityBorderRoadDirections(adjacentBiomes);
-    const borderRoadWidth = 7; // Single road width
-    const borderHalfRoad = Math.floor(borderRoadWidth / 2);
+    const BORDER_ROAD_WIDTH = 7;
+    const borderHalfRoad = Math.floor(BORDER_ROAD_WIDTH / 2);
 
-    // Mark border road tiles (single centered road only)
-    if (borderDirs.north) {
-      const startX = centerX - borderHalfRoad;
-      const endX = startX + borderRoadWidth;
-      for (let y = 0; y <= centerY; y++) {
-        for (let x = startX; x < endX; x++) {
-          if (x >= 0 && x < width && y >= 0 && y < height) {
-            borderRoadOccupied[y * width + x] = true;
-            occupiedMap[y * width + x] = 1;
-          }
+    const markBorderRun = (x0, y0, x1, y1) => {
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) markRoad(x, y);
+    };
+    if (borderDirs.north) markBorderRun(centerX - borderHalfRoad, 0, centerX + borderHalfRoad, centerY);
+    if (borderDirs.south) markBorderRun(centerX - borderHalfRoad, centerY, centerX + borderHalfRoad, height - 1);
+    if (borderDirs.west) markBorderRun(0, centerY - borderHalfRoad, centerX, centerY + borderHalfRoad);
+    if (borderDirs.east) markBorderRun(centerX, centerY - borderHalfRoad, width - 1, centerY + borderHalfRoad);
+
+    // --- STEP 1: the street grid --------------------------------------------
+    // Cuts are dealt outward from the centre so the main avenues always meet
+    // where the border roads arrive, and everything else hangs off them.
+    const MARGIN = 3;
+    const MAIN_WIDTH = 5;
+    function axisCuts(center, size, mainWidth) {
+      const half = Math.floor(mainWidth / 2);
+      const cuts = [{ pos: center - half, w: mainWidth, main: true }];
+      for (const dir of [-1, 1]) {
+        let edge = dir < 0 ? center - half : center - half + mainWidth;
+        for (;;) {
+          // 16-30 tiles of frontage: wide enough, once inset for pavement,
+          // to actually hold the authored city buildings (mostly 12-28 tiles
+          // a side). The old 8-14 tile blocks were narrower than almost every
+          // building in the pool, so a prefab could never fit and the "built"
+          // lots came out as bare pavement instead.
+          const block = 16 + Math.floor(rng() * 15);
+          const w = rng() < 0.3 ? 5 : 3;                // an avenue or a street
+          const pos = dir < 0 ? edge - block - w : edge + block;
+          if (pos < MARGIN || pos + w > size - MARGIN) break;
+          cuts.push({ pos, w, main: false });
+          edge = dir < 0 ? pos : pos + w;
         }
       }
-    }
-    if (borderDirs.south) {
-      const startX = centerX - borderHalfRoad;
-      const endX = startX + borderRoadWidth;
-      for (let y = centerY; y < height; y++) {
-        for (let x = startX; x < endX; x++) {
-          if (x >= 0 && x < width && y >= 0 && y < height) {
-            borderRoadOccupied[y * width + x] = true;
-            occupiedMap[y * width + x] = 1;
-          }
-        }
-      }
-    }
-    if (borderDirs.east) {
-      const startY = centerY - borderHalfRoad;
-      const endY = startY + borderRoadWidth;
-      for (let x = centerX; x < width; x++) {
-        for (let y = startY; y < endY; y++) {
-          if (x >= 0 && x < width && y >= 0 && y < height) {
-            borderRoadOccupied[y * width + x] = true;
-            occupiedMap[y * width + x] = 1;
-          }
-        }
-      }
-    }
-    if (borderDirs.west) {
-      const startY = centerY - borderHalfRoad;
-      const endY = startY + borderRoadWidth;
-      for (let x = 0; x <= centerX; x++) {
-        for (let y = startY; y < endY; y++) {
-          if (x >= 0 && x < width && y >= 0 && y < height) {
-            borderRoadOccupied[y * width + x] = true;
-            occupiedMap[y * width + x] = 1;
-          }
-        }
-      }
+      return cuts.sort((a, b) => a.pos - b.pos);
     }
 
-    dlog("[CityGenerator] Border roads marked as occupied");
+    const vCuts = axisCuts(centerX, width, borderDirs.north || borderDirs.south ? BORDER_ROAD_WIDTH : MAIN_WIDTH);
+    const hCuts = axisCuts(centerY, height, borderDirs.east || borderDirs.west ? BORDER_ROAD_WIDTH : MAIN_WIDTH);
 
-    // --- STEP 0.5: Generate internal roads sprouting from border roads ---
-    generateInternalRoadsFromBorders(mapData, width, height, borderDirs, roadTile, dashedLineTile, occupiedMap, rng);
+    // Every street that runs toward a bordering city/burg/road/village reaches
+    // that edge outright, not just the one centred connector: two city squares
+    // sharing an edge should meet as a street grid, not as one avenue with a
+    // dead end either side of it. A side with no connectable neighbour still
+    // keeps its MARGIN clearance from the map edge.
+    const vTop = borderDirs.north ? 0 : MARGIN;
+    const vBottom = borderDirs.south ? height : height - MARGIN;
+    const hLeft = borderDirs.west ? 0 : MARGIN;
+    const hRight = borderDirs.east ? width : width - MARGIN;
 
-    // --- Road Configuration (matching RoadGenerator style) ---
-    // Fewer, larger blocks (50-66 tiles for less density)
-    const minBlockSize = 80;
-    const maxBlockSize = 90;
-    const maxRoadWidth = normalRoadWidth; // Use max width for block calculations to ensure proper spacing
-
-    // --- Step A: Grid-based road layout with wider blocks, avoiding border roads ---
-
-    const border = 12;  // Increased border spacing to keep grid away from edges
-    let blockQueue = [{ x: border, y: border, w: width - border*2, h: height - border*2 }];
-    const roadsToDraw = [];
-
-    while (blockQueue.length > 0) {
-      const block = blockQueue.shift();
-
-      // Check if block overlaps with border roads - skip if it does
-      let overlapsBorderRoad = false;
-      for (let y = block.y; y < block.y + block.h && !overlapsBorderRoad; y++) {
-        for (let x = block.x; x < block.x + block.w && !overlapsBorderRoad; x++) {
-          if (borderRoadOccupied[y * width + x]) {
-            overlapsBorderRoad = true;
-          }
-        }
+    const paintRoad = (x, y) => {
+      if (x < 0 || y < 0 || x >= width || y >= height) return;
+      mapData[calculateIndex(x, y, 0, width, height)] = roadTile;
+      markRoad(x, y);
+    };
+    for (const c of vCuts) {
+      for (let y = vTop; y < vBottom; y++) {
+        for (let x = c.pos; x < c.pos + c.w; x++) paintRoad(x, y);
       }
-
-      if (overlapsBorderRoad) {
-        continue;
-      }
-
-      let splitVert = false;
-      let splitHorz = false;
-
-      // Force split if too big
-      if (block.w > maxBlockSize) splitVert = true;
-      if (block.h > maxBlockSize) splitHorz = true;
-
-      // Random split if big enough
-      if (!splitVert && !splitHorz) {
-        if (block.w > minBlockSize * 2 && block.h > minBlockSize * 2) {
-          if (rng() < 0.5) splitVert = true; else splitHorz = true;
-        } else if (block.w > minBlockSize * 2) splitVert = true;
-        else if (block.h > minBlockSize * 2) splitHorz = true;
-      }
-
-      if (splitVert) {
-        const splitRange = block.w - (minBlockSize * 2) - maxRoadWidth;
-        const splitOffset = Math.floor(rng() * splitRange);
-        const splitX = block.x + minBlockSize + splitOffset;
-
-        // Check if vertical road would overlap border road
-        let roadOverlapsBorder = false;
-        for (let y = block.y; y < block.y + block.h; y++) {
-          for (let x = splitX; x < splitX + maxRoadWidth; x++) {
-            if (borderRoadOccupied[y * width + x]) {
-              roadOverlapsBorder = true;
-              break;
-            }
-          }
-          if (roadOverlapsBorder) break;
-        }
-
-        if (!roadOverlapsBorder) {
-          roadsToDraw.push({ x: splitX, y: block.y, len: block.h, type: 'vert' });
-          blockQueue.push({ x: block.x, y: block.y, w: splitX - block.x, h: block.h });
-          blockQueue.push({ x: splitX + maxRoadWidth, y: block.y, w: (block.x + block.w) - (splitX + maxRoadWidth), h: block.h });
-        } else {
-          zoningBlocks.push(block);
-        }
-      } else if (splitHorz) {
-        const splitRange = block.h - (minBlockSize * 2) - maxRoadWidth;
-        const splitOffset = Math.floor(rng() * splitRange);
-        const splitY = block.y + minBlockSize + splitOffset;
-
-        // Check if horizontal road would overlap border road
-        let roadOverlapsBorder = false;
-        for (let x = block.x; x < block.x + block.w; x++) {
-          for (let y = splitY; y < splitY + maxRoadWidth; y++) {
-            if (borderRoadOccupied[y * width + x]) {
-              roadOverlapsBorder = true;
-              break;
-            }
-          }
-          if (roadOverlapsBorder) break;
-        }
-
-        if (!roadOverlapsBorder) {
-          roadsToDraw.push({ x: block.x, y: splitY, len: block.w, type: 'horz' });
-          blockQueue.push({ x: block.x, y: block.y, w: block.w, h: splitY - block.y });
-          blockQueue.push({ x: block.x, y: splitY + maxRoadWidth, w: block.w, h: (block.y + block.h) - (splitY + maxRoadWidth) });
-        } else {
-          zoningBlocks.push(block);
-        }
-      } else {
-        zoningBlocks.push(block);
+    }
+    for (const c of hCuts) {
+      for (let x = hLeft; x < hRight; x++) {
+        for (let y = c.pos; y < c.pos + c.w; y++) paintRoad(x, y);
       }
     }
 
-    // --- Step B: Draw dual roads with dashed center lines (RoadGenerator style) ---
-
-    function markOccupied(mx, my) {
-      if (mx >= 0 && mx < width && my >= 0 && my < height) {
-        occupiedMap[my * width + mx] = 1;
+    // Centre lines: only a carriageway wide enough to have two lanes gets one,
+    // and only where it is not standing on a junction (a dash across a crossing
+    // reads as a lane marking that runs into the traffic it crosses).
+    const DASH_CYCLE = 4, DASH_LENGTH = 3;
+    if (dashedLines.vertical) {
+      for (const c of vCuts) {
+        if (c.w < 5) continue;
+        const cx = c.pos + Math.floor(c.w / 2);
+        for (let y = vTop; y < vBottom; y++) {
+          if (y % DASH_CYCLE >= DASH_LENGTH) continue;
+          if (hCuts.some(h => y >= h.pos - 1 && y < h.pos + h.w + 1)) continue;
+          mapData[calculateIndex(cx, y, 1, width, height)] = dashedLines.vertical;
+        }
       }
     }
-
-    function drawRoadRect(rx, ry, rw, rh) {
-      for (let y = ry; y < ry + rh && y < height; y++) {
-        for (let x = rx; x < rx + rw && x < width; x++) {
-          if (x >= 0 && y >= 0) {
-            const idx = calculateIndex(x, y, 0, width, height);
-            mapData[idx] = roadTile;
-            markOccupied(x, y);
-          }
+    if (dashedLines.horizontal) {
+      for (const c of hCuts) {
+        if (c.w < 5) continue;
+        const cy = c.pos + Math.floor(c.w / 2);
+        for (let x = hLeft; x < hRight; x++) {
+          if (x % DASH_CYCLE >= DASH_LENGTH) continue;
+          if (vCuts.some(v => x >= v.pos - 1 && x < v.pos + v.w + 1)) continue;
+          mapData[calculateIndex(x, cy, 1, width, height)] = dashedLines.horizontal;
         }
       }
     }
 
-    function drawDualVerticalRoads(rx, startY, len) {
-      const roadWidth = rng() < 0.7 ? normalRoadWidth : thinRoadWidth;
-      const halfRoad = Math.floor(roadWidth / 2);
-      const leftRoadX = rx - halfRoad - roadWidth - separation;
-      const rightRoadX = rx + halfRoad + separation;
-
-      // Left and right roads
-      drawRoadRect(leftRoadX, startY, roadWidth, len);
-      drawRoadRect(rightRoadX, startY, roadWidth, len);
-
-      // Dashed center lines
-      const leftCenterX = leftRoadX + halfRoad;
-      const rightCenterX = rightRoadX + halfRoad;
-      for (let y = startY; y < startY + len && y < height; y++) {
-        const cyclePos = y % DASH_CYCLE;
-        if (cyclePos < DASH_LENGTH) {
-          const idx1 = calculateIndex(leftCenterX, y, 1, width, height);
-          const idx2 = calculateIndex(rightCenterX, y, 1, width, height);
-          mapData[idx1] = dashedLineTile;
-          mapData[idx2] = dashedLineTile;
+    // Pedestrian crossings: sometimes, on a carriageway wide enough to carry
+    // a centre line, well clear of any junction (a crossing belongs
+    // mid-block, not stamped over an intersection's own markings). Drawn
+    // after the centre lines so a crossing always wins where the two overlap.
+    const ZEBRA_CHANCE = 0.4;
+    if (zebra.vertical) {
+      for (const c of vCuts) {
+        if (c.w < 5) continue;
+        if (rng() >= ZEBRA_CHANCE) continue;
+        const candidates = [];
+        for (let y = MARGIN + 2; y < height - MARGIN - 2; y++) {
+          if (hCuts.some(h => y >= h.pos - 2 && y < h.pos + h.w + 2)) continue;
+          candidates.push(y);
         }
+        if (!candidates.length) continue;
+        const y = candidates[Math.floor(rng() * candidates.length)];
+        window.ProcGenRoads.stampZebraCrossing(mapData, zebra.vertical, "vertical", c.pos, c.w, y, width, height);
       }
     }
-
-    function drawDualHorizontalRoads(startX, ry, len) {
-      const roadWidth = rng() < 0.7 ? normalRoadWidth : thinRoadWidth;
-      const halfRoad = Math.floor(roadWidth / 2);
-      const topRoadY = ry - halfRoad - roadWidth - separation;
-      const bottomRoadY = ry + halfRoad + separation;
-
-      // Top and bottom roads
-      drawRoadRect(startX, topRoadY, len, roadWidth);
-      drawRoadRect(startX, bottomRoadY, len, roadWidth);
-
-      // Dashed center lines
-      const topCenterY = topRoadY + halfRoad;
-      const bottomCenterY = bottomRoadY + halfRoad;
-      for (let x = startX; x < startX + len && x < width; x++) {
-        const cyclePos = x % DASH_CYCLE;
-        if (cyclePos < DASH_LENGTH) {
-          const idx1 = calculateIndex(x, topCenterY, 1, width, height);
-          const idx2 = calculateIndex(x, bottomCenterY, 1, width, height);
-          mapData[idx1] = dashedLineTile;
-          mapData[idx2] = dashedLineTile;
+    if (zebra.horizontal) {
+      for (const c of hCuts) {
+        if (c.w < 5) continue;
+        if (rng() >= ZEBRA_CHANCE) continue;
+        const candidates = [];
+        for (let x = MARGIN + 2; x < width - MARGIN - 2; x++) {
+          if (vCuts.some(v => x >= v.pos - 2 && x < v.pos + v.w + 2)) continue;
+          candidates.push(x);
         }
+        if (!candidates.length) continue;
+        const x = candidates[Math.floor(rng() * candidates.length)];
+        window.ProcGenRoads.stampZebraCrossing(mapData, zebra.horizontal, "horizontal", c.pos, c.w, x, width, height);
       }
     }
 
-    // Draw internal roads (grid roads that don't overlap border roads)
-    for (const r of roadsToDraw) {
-      if (r.type === 'vert') {
-        drawDualVerticalRoads(r.x, r.y, r.len);
-      } else {
-        drawDualHorizontalRoads(r.x, r.y, r.len);
+    // --- STEP 2: the blocks between the streets, and what each one is for ----
+    const spans = (cuts, size) => {
+      const out = [];
+      let from = MARGIN;
+      for (const c of cuts) {
+        if (c.pos - from >= 4) out.push({ from, to: c.pos });
+        from = c.pos + c.w;
+      }
+      if (size - MARGIN - from >= 4) out.push({ from, to: size - MARGIN });
+      return out;
+    };
+    const xs = spans(vCuts, width);
+    const ys = spans(hCuts, height);
+
+    const blocks = [];
+    for (const sy of ys) {
+      for (const sx of xs) {
+        blocks.push({ x: sx.from, y: sy.from, w: sx.to - sx.from, h: sy.to - sy.from });
       }
     }
 
-    // --- Step C: Building lot placement - ONE prefab per grid tile ---
+    // A block too small to hold a building is never zoned as one. Weighted
+    // heavily toward "built" so a prefab claims most of the grid first; the
+    // open zones (park/parking/plaza/vacant) are what the street-furniture
+    // pass dresses with props, and a city that is mostly buildings reads as
+    // a city rather than as a furniture showroom.
+    const ZONES = [
+      { kind: "built", weight: 74 },
+      { kind: "park", weight: 8 },
+      { kind: "parking", weight: 8 },
+      { kind: "plaza", weight: 4 },
+      { kind: "vacant", weight: 6 },
+    ];
+    const zoneFor = (block) => {
+      if (block.w < 6 || block.h < 6) return rng() < 0.5 ? "plaza" : "vacant";
+      let total = 0;
+      for (const z of ZONES) total += z.weight;
+      let roll = rng() * total;
+      for (const z of ZONES) { roll -= z.weight; if (roll <= 0) return z.kind; }
+      return "built";
+    };
+
     const buildingLots = [];
-
-    function hasRoadCollision(x, y, w, h) {
-      // Check the lot plus a 1-tile margin so building lots never sit flush
-      // against a road or another building: this leaves room for sidewalks and
-      // stops prefabs from visually merging into roads/neighbours. Any occupied
-      // cell (road = 1, building = 2) counts as a collision.
-      for (let py = y - 1; py <= y + h; py++) {
-        for (let px = x - 1; px <= x + w; px++) {
-          const inCore = px >= x && px < x + w && py >= y && py < y + h;
-          if (px < 0 || px >= width || py < 0 || py >= height) {
-            if (inCore) return true; // the lot itself must stay on-map
-            continue;                // off-map margin is fine
-          }
-          if (occupiedMap[py * width + px] !== 0) return true;
+    const openBlocks = [];   // park / plaza / car park / vacant, dressed later
+    for (const block of blocks) {
+      const kind = zoneFor(block);
+      if (kind === "built") {
+        // Inset by one so the building never sits flush against the kerb: that
+        // one tile is the pavement the sidewalk pass and the furniture use.
+        const lot = { x: block.x + 1, y: block.y + 1, w: block.w - 2, h: block.h - 2 };
+        if (lot.w < 4 || lot.h < 4) { openBlocks.push({ kind: "vacant", rect: block }); continue; }
+        buildingLots.push(lot);
+        for (let y = lot.y; y < lot.y + lot.h; y++) {
+          for (let x = lot.x; x < lot.x + lot.w; x++) occupiedMap[y * width + x] = 2;
         }
-      }
-      return false;
-    }
-
-    function findLargestSquareInBlock(block) {
-      const maxSize = Math.min(block.w, block.h);
-      for (let size = maxSize; size >= 3; size--) {
-        const centerX = Math.floor(block.x + block.w / 2);
-        const centerY = Math.floor(block.y + block.h / 2);
-
-        let x = centerX - Math.floor(size / 2);
-        let y = centerY - Math.floor(size / 2);
-
-        x = Math.max(block.x, Math.min(x, block.x + block.w - size));
-        y = Math.max(block.y, Math.min(y, block.y + block.h - size));
-
-        if (!hasRoadCollision(x, y, size, size)) {
-          return { x, y, size };
-        }
-
-        const positions = [
-          { x: block.x + 1, y: block.y + 1 },
-          { x: block.x + block.w - size - 1, y: block.y + 1 },
-          { x: block.x + 1, y: block.y + block.h - size - 1 },
-          { x: block.x + block.w - size - 1, y: block.y + block.h - size - 1 }
-        ];
-
-        for (const pos of positions) {
-          const px = Math.max(block.x, Math.min(pos.x, block.x + block.w - size));
-          const py = Math.max(block.y, Math.min(pos.y, block.y + block.h - size));
-          if (!hasRoadCollision(px, py, size, size)) {
-            return { x: px, y: py, size };
-          }
-        }
-      }
-      return null;
-    }
-
-    for (const block of zoningBlocks) {
-      const placement = findLargestSquareInBlock(block);
-
-      if (placement) {
-        buildingLots.push({
-          x: placement.x,
-          y: placement.y,
-          w: placement.size,
-          h: placement.size
-        });
-
-        // Mark as occupied so no future placements overlap
-        for (let py = placement.y; py < placement.y + placement.size; py++) {
-          for (let px = placement.x; px < placement.x + placement.size; px++) {
-            if (px >= 0 && px < width && py >= 0 && py < height) {
-              occupiedMap[py * width + px] = 2; // Building
-            }
-          }
-        }
+      } else {
+        openBlocks.push({ kind, rect: { x: block.x + 1, y: block.y + 1, w: block.w - 2, h: block.h - 2 } });
       }
     }
 
-    // --- Step D: Prefab Application - one prefab per lot ---
-    if (biome && biome.prefabs && biome.prefabs.length > 0) {
+    // --- STEP 3: prefabs, one per built lot ---------------------------------
+    if (biome && biome.prefabs && biome.prefabs.length > 0 && buildingLots.length) {
       const worldCoords = allOtherData?.worldCoords || { x: 0, y: 0 };
       allOtherData.blockHints = buildingLots;
       allOtherData.singlePrefabPerBlock = true;
@@ -2062,71 +3916,100 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
       if (window.ProceduralMapPrefabs && window.ProceduralMapPrefabs.applyPrefabsToMap) {
         try {
           window.ProceduralMapPrefabs.applyPrefabsToMap(mapData, biome.name, worldCoords, allOtherData);
+          // This lot-aligned placement takes priority over the generic pass
+          // DataManager.loadMapData would otherwise still run on this array.
+          window.ProceduralMapPrefabs.markPrefabbed(mapData);
         } catch (e) { console.warn(`[CityGenerator] Error: ${e.message}`); }
       }
     }
 
-    // --- Step B.5: Place sidewalks around roads (AFTER Prefabs to avoid overwrite) ---
-    // UPDATED: Now includes checks to ensure it DOES NOT overwrite Prefabs (baseTile check)
+    // A prefab rarely fills the lot it was given, and what it leaves over is not
+    // building, it is the yard behind it. Releasing every lot tile the prefab
+    // did not paint gives those tiles back to the pavement and dressing passes,
+    // so a block reads as a building with a yard rather than as a building
+    // sitting in a fenced-off rectangle of untouched grass.
+    for (const lot of buildingLots) {
+      for (let y = lot.y; y < lot.y + lot.h; y++) {
+        for (let x = lot.x; x < lot.x + lot.w; x++) {
+          if (mapData[calculateIndex(x, y, 0, width, height)] !== baseTile) continue;
+          if (mapData[calculateIndex(x, y, 1, width, height)] !== 0) continue;
+          if (mapData[calculateIndex(x, y, 2, width, height)] !== 0) continue;
+          if (mapData[calculateIndex(x, y, 3, width, height)] !== 0) continue;
+          occupiedMap[y * width + x] = 0;
+        }
+      }
+    }
+
+    // --- STEP 4: pavement, laid after the prefabs so nothing is overwritten --
     const sidewalkTiles = getFeatureTiles("Sidewalk", allFeatures);
     if (sidewalkTiles) {
       const sidewalkTile = sidewalkTiles[0];
-      const roadTileIds = getFeatureTiles("Road", allFeatures) || [];
-      const pathTileSet = new Set(roadTileIds);
-
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          
-          // Only look for roads
-          if (occupiedMap[y * width + x] === 1) {
-            
-            // Place sidewalks in cardinal and diagonal directions
-            for (let dy = -3; dy <= 3; dy++) {
-              for (let dx = -3; dx <= 3; dx++) {
-                const sx = x + dx;
-                const sy = y + dy;
-
-                if (sx < 1 || sx >= width - 1 || sy < 1 || sy >= height - 1) continue;
-                if (occupiedMap[sy * width + sx] === 1) continue; // Skip if it's already a road
-
-                const dist = Math.max(Math.abs(dx), Math.abs(dy));
-
-                if (dist >= 2 && dist <= 3) {
-                  const sidx = calculateIndex(sx, sy, 0, width, height);
-                  const currentTile = mapData[sidx];
-
-                  // 1. Never overwrite road/path tiles
-                  if (pathTileSet.has(currentTile)) continue;
-
-                  // 2. CRITICAL FIX: Never overwrite Prefab tiles
-                  // If the tile is NOT base terrain and NOT empty (0), assume it is a Prefab.
-                  if (currentTile !== baseTile && currentTile !== 0) continue;
-
-                  // 3. Ensure we aren't writing over a building slot (even if empty)
-                  if (occupiedMap[sy * width + sx] !== 0) continue;
-
-                  mapData[sidx] = sidewalkTile;
-                }
-              }
-            }
+      const painted = [];
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          if (occupiedMap[y * width + x] !== 0) continue;
+          // Only the biome's own untouched ground becomes pavement: anything a
+          // prefab painted is that prefab's, whatever it happens to be.
+          if (mapData[calculateIndex(x, y, 0, width, height)] !== baseTile) continue;
+          let near = false;
+          for (let dy = -2; dy <= 2 && !near; dy++) {
+            for (let dx = -2; dx <= 2 && !near; dx++) if (isRoadAt(x + dx, y + dy)) near = true;
           }
+          if (near) painted.push(y * width + x);
         }
       }
-      dlog("[CityGenerator] Sidewalks placed safely.");
+      for (const i of painted) mapData[i] = sidewalkTile;
+      dlog(`[CityGenerator] ${painted.length} pavement tiles laid.`);
     }
 
-    // --- Step E.1: Directional Beach Generation ---
+    // --- STEP 5: the streets themselves -------------------------------------
+    const ctx = {
+      mapData, width, height, allFeatures, rng, seed,
+      // The overgrowth pass asks the tileset itself which plants are
+      // walk-through, so it can never seal a street off (see cityOvergrowth).
+      tilesetId: biome && biome.tilesetId,
+      isRoad: isRoadAt,
+      isOccupied: (x, y) =>
+        x < 0 || y < 0 || x >= width || y >= height || occupiedMap[y * width + x] !== 0,
+      mark: (x, y) => {
+        if (x >= 0 && x < width && y >= 0 && y < height && occupiedMap[y * width + x] === 0) {
+          occupiedMap[y * width + x] = 3;
+        }
+      },
+      openBase: cityTileSet(
+        ["Grass", "GrassFlower", "GrassDark", "GrassJungle", "GrassRock", "DirtGrass",
+          "Dirt", "Sidewalk", "Pavement", "Sand", "Snow", "Mud", "Beach", "Salt"],
+        allFeatures
+      ),
+    };
+    ctx.openBase.add(baseTile);
+
+    // Blocks that are not built on are dressed after the buildings.
+    for (const b of openBlocks) {
+      if (b.rect.w < 2 || b.rect.h < 2) continue;
+      if (b.kind === "park") cityDressPark(ctx, b.rect);
+      else if (b.kind === "parking") cityDressCarPark(ctx, b.rect);
+      else if (b.kind === "plaza") cityDressPlaza(ctx, b.rect);
+      else cityDressVacantLot(ctx, b.rect);
+    }
+
+    dressCityStreets(ctx, {
+      streetTrees: 14,
+      busStops: 1 + Math.floor(rng() * 2),
+      greenery: 0.05,
+      litter: 5 + Math.floor(rng() * 6),
+    });
+
+    // --- STEP 6: beach, road poles, water regions ---------------------------
     addDirectionalBeach(mapData, width, height, adjacentBiomes, allFeatures, rng);
 
-    // --- Step E.2: RoadPole markers at road intersection corners ---
     placeRoadPolesAtIntersections(
       mapData, width, height, allFeatures, biome, seed,
-      (x, y) => roadTiles.includes(mapData[calculateIndex(x, y, 0, width, height)]),
+      isRoadAt,
       (x, y) => occupiedMap[y * width + x] !== 0,
       (x, y) => { occupiedMap[y * width + x] = 3; }
     );
 
-    // --- Step E: Water/Region Data ---
     const regiondata = new Array(width * height).fill(0);
     let waterTileIds = new Set();
     ["Water", "Ocean", "Beach"].forEach(f => {
@@ -2176,13 +4059,13 @@ function generateBurgBiome(biome, seed, allFeatures, adjacentBiomes, allOtherDat
 
   // Get Road Tiles
   const roadTiles = getFeatureTiles("Road", allFeatures);
-  const dashedLineTiles = getFeatureTiles("DashedLine", allFeatures);
   if (!roadTiles || roadTiles.length === 0) return mapData;
   const roadTile = roadTiles[0];
-  const dashedLineTile = dashedLineTiles ? dashedLineTiles[0] : null;
+  const dashedLines = getDashedLinesForFeatures(allFeatures);
+  const zebra = getZebraForFeatures(allFeatures);
 
   // --- STEP 0: Draw border roads FIRST, mark them as occupied ---
-  applyBorderRoadConnections(mapData, width, height, adjacentBiomes, roadTile, dashedLineTile);
+  applyBorderRoadConnections(mapData, width, height, adjacentBiomes, roadTile, dashedLines, zebra, rng);
 
   const centerX = Math.floor(width / 2);
   const centerY = Math.floor(height / 2);
@@ -2286,7 +4169,7 @@ function generateBurgBiome(biome, seed, allFeatures, adjacentBiomes, allOtherDat
       }
     }
   }
-  generateInternalRoadsFromBorders(mapData, width, height, borderDirs, roadTile, dashedLineTile, occupiedMapBurg, rng);
+  generateInternalRoadsFromBorders(mapData, width, height, borderDirs, roadTile, dashedLines, occupiedMapBurg, rng);
 
   // --- Configuration for Circular Layout ---
   const maxRadius = Math.min(centerX, centerY) - 5; // Max radius for roads
@@ -2488,11 +4371,49 @@ function generateBurgBiome(biome, seed, allFeatures, adjacentBiomes, allOtherDat
     if (window.ProceduralMapPrefabs && window.ProceduralMapPrefabs.applyPrefabsToMap) {
       try {
         window.ProceduralMapPrefabs.applyPrefabsToMap(mapData, biome.name, worldCoords, allOtherData);
+        // This lot-aligned placement takes priority over the generic pass
+        // DataManager.loadMapData would otherwise still run on this array.
+        window.ProceduralMapPrefabs.markPrefabbed(mapData);
         dlog(`[BurgGenerator] Prefabs applied.`);
       } catch (e) {
         console.warn(`[BurgGenerator] Error: ${e.message}`);
       }
     }
+  }
+
+  // --- Step D.5: Street dressing ---------------------------------------------
+  // A burg is a smaller town on the same tileset, so it gets the same streets
+  // the city does, only quieter: fewer bins and lamps, one bus stop, more green.
+  // Its bookkeeping is its own (roads live in roadSet, lots in lotOverlap), which
+  // is exactly why the dressing pass takes them as callbacks.
+  {
+    const burgCtx = {
+      mapData, width, height, allFeatures, rng, seed,
+      // The overgrowth pass asks the tileset itself which plants are
+      // walk-through, so it can never seal a street off (see cityOvergrowth).
+      tilesetId: biome && biome.tilesetId,
+      isRoad: (x, y) => roadSet.has(`${x},${y}`),
+      isOccupied: (x, y) =>
+        x < 0 || y < 0 || x >= width || y >= height ||
+        roadSet.has(`${x},${y}`) || lotOverlap[y * width + x],
+      mark: (x, y) => {
+        if (x >= 0 && x < width && y >= 0 && y < height) lotOverlap[y * width + x] = true;
+      },
+      openBase: cityTileSet(
+        ["Grass", "GrassFlower", "GrassDark", "GrassJungle", "GrassRock", "DirtGrass",
+          "Dirt", "Sidewalk", "Pavement", "Sand", "Snow", "Mud", "Beach", "Salt"],
+        allFeatures
+      ),
+    };
+    burgCtx.openBase.add(baseTile);
+    dressCityStreets(burgCtx, {
+      furnitureDensity: 0.24,
+      streetTrees: 16,
+      busStops: 1,
+      greenery: 0.16,
+      litter: 6 + Math.floor(rng() * 8),
+      camps: rng() < 0.45 ? 1 : 0,
+    });
   }
 
   // --- Step E.1: Directional Beach Generation ---
@@ -2523,9 +4444,65 @@ function generateBurgBiome(biome, seed, allFeatures, adjacentBiomes, allOtherDat
   return mapData;
 }
 
+  // ===========================================================================
+  // NAMING
+  // ===========================================================================
+  // Nothing underground used to have a name: the banner over a stairway read
+  // "Loot Cellar" whichever cellar it was. A structure is named from its own
+  // bank of patterns and words, so a mine and an ossuary never sound alike,
+  // and the name is derived rather than stored: (world seed, world square,
+  // entrance tile, structure) always composes the same one, so a place the
+  // party walks back into a hundred hours later is still called what it was.
+  function structureNameFor(structureKey, salt) {
+    const S = structureFor(structureKey);
+    const fallback = () => (window.BiomeNames
+      ? window.BiomeNames.display(structureKey)
+      : String(structureKey || ""));
+    const id = S && S.name;
+    const T = window.T;
+    if (!id || !T || typeof T.pool !== "function") return fallback();
+    const patterns = T.pool("Structures.name." + id + ".pattern");
+    if (!patterns || !patterns.length) return fallback();
+
+    let h = (salt | 0) >>> 0;
+    if (Utils2 && typeof Utils2.getWorldSeed === "function") {
+      h = (h ^ (Utils2.getWorldSeed() >>> 0)) >>> 0;
+    }
+    const pg = (typeof $gameSystem !== "undefined" && $gameSystem) ? $gameSystem._procGenData : null;
+    if (pg) {
+      h = (h ^ Math.imul(pg.originX | 0, 73856093) ^ Math.imul(pg.originY | 0, 19349663)) >>> 0;
+    }
+    for (let i = 0; i < id.length; i++) h = (Math.imul(h, 31) + id.charCodeAt(i)) >>> 0;
+    const rng = createSeededRandom(h);
+
+    const pick = (bank) => {
+      const p = T.pool("Structures.name." + id + "." + bank);
+      return (p && p.length) ? String(p[Math.floor(rng() * p.length)]) : "";
+    };
+    const pattern = String(patterns[Math.floor(rng() * patterns.length)]);
+    const out = pattern.replace(/\{(\w+)\}/g, (m, k) => pick(k)).replace(/\s+/g, " ").trim();
+    return out || fallback();
+  }
+
   // ===== EXPORT DUNGEON FUNCTIONS =====
 
+  // The catalogue is the one place that knows what a structure is. Everything
+  // downstream (the forced-biome command, the chest and trap passes, the
+  // encounter spawner, the puzzle placer, the entrance roll) reads it from here
+  // instead of keeping a list of its own.
+  window.StructureNames = { nameFor: structureNameFor };
+
   window.ProcGenDungeon = {
+    // The year-driven overgrowth pass, for the generators that have no city
+    // dressing context of their own (the road biome). See cityOvergrowth.
+    overgrowMapData,
+    overgrowthFactor: cityOvergrowthFactor,
+    structure: structureFor,
+    structures: () => STRUCTURES.slice(),
+    isStructure: (name) => !!structureFor(name),
+    lastCarved: () => _lastCarved,
+    ORNAMENTS,
+    DANGER,
     isDungeonBiome,
     isVillageBiome,
     isCityBiome,

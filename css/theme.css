@@ -595,22 +595,167 @@
     color: var(--text-card-medium);
 }
 
-/* Label-only variant: pickers that list names (the creature profile image
-   roster) have nothing to fill a poster-sized card with, so the card collapses
-   to a row and the pin-head dot goes away. */
-.cc-wanted-card.cc-card-compact {
+/* Flat roster row: the variant for a picker whose entries are a name and
+   nothing else (the class roster, the creature profile-image roster). The
+   poster card is wrong for a long list three ways: its plate paints a slab
+   behind every row, its 168px floor turns eight classes into a page of
+   scrolling, and its hover/selected scale pushes the highlighted row's border
+   under the scroll box's left edge, where it is clipped rather than drawn. A
+   row here is bare text on a hairline rule and selection is a gold bar down
+   its left side, which costs no geometry at all. */
+.cc-presets-board .cc-wanted-card.cc-card-flat {
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--border-border-alt-5);
+    border-left: 3px solid transparent;
+    border-radius: 0;
+    box-shadow: none;
     min-height: 0;
-    padding: 9px 10px;
+    padding: 6px 10px;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
-.cc-wanted-card.cc-card-compact::after {
-    display: none;
+/* No pin head and no corner stamp: both are drawn for a card with a face. */
+.cc-wanted-card.cc-card-flat::after,
+.cc-wanted-card.cc-card-flat.selected::before {
+    content: none;
 }
 
-.cc-wanted-card.cc-card-compact .cc-wanted-name {
-    font-size: 0.95rem;
+.cc-presets-board .cc-wanted-card.cc-card-flat:hover,
+.cc-presets-board .cc-wanted-card.cc-card-flat.highlighted {
+    transform: none;
+    box-shadow: none;
+    outline: none;
+    background: var(--bg-tertiary-focus-translucent-45);
+    border-left-color: var(--border-focus-hover);
+}
+
+.cc-presets-board .cc-wanted-card.cc-card-flat.selected {
+    transform: none;
+    background: var(--bg-tertiary-focus-translucent-45);
+    border-left-color: var(--text-primary-hover);
+    border-bottom-color: var(--border-focus-hover);
+}
+
+.cc-card-flat .cc-wanted-name {
+    font-size: 1rem;
     margin-bottom: 0;
-    line-height: 1.25;
+    line-height: 1.3;
+    text-align: left;
+}
+
+.cc-card-flat .cc-wanted-class {
+    font-size: 0.68rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Section head inside a flat roster (Non Sentient / Sentient). */
+.cc-roster-head {
+    grid-column: 1 / -1;
+    font-family: 'Lora', serif;
+    font-size: 0.82rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-card-medium);
+    margin: 10px 0 2px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid var(--border-secondary-hover-translucent-15);
+}
+
+.cc-roster-head:first-child {
+    margin-top: 0;
+}
+
+/* Primary / secondary role marks (the two archetypes a creature is built from).
+   These used to carry their colours inline as parchment-era red and purple,
+   which no theme could reach and which sank into the near-black page; the two
+   are named here so each theme can ink them (see omega_tower.css). */
+.cc-role-badge {
+    display: inline-block;
+    font-family: monospace;
+    font-size: 0.66rem;
+    font-weight: bold;
+    padding: 1px 5px;
+    margin-left: 5px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+/* The parchment inks. A dark theme repaints both (omega_tower.css). */
+.cc-role-badge.primary,
+.cc-archetype-role.primary {
+    color: #822d2d;
+}
+
+.cc-role-badge.secondary,
+.cc-archetype-role.secondary {
+    color: #5a3d75;
+}
+
+.cc-role-badge.primary {
+    background: rgba(130, 45, 45, 0.15);
+}
+
+.cc-role-badge.secondary {
+    background: rgba(90, 61, 117, 0.15);
+}
+
+.cc-archetype-role {
+    font-weight: bold;
+    font-size: 0.72rem;
+    margin-top: 2px;
+}
+
+/* Compact chip: the pill badge worn by a LIST rather than by a single
+   showpiece. A dossier that names twelve weapon types and five skills reads as
+   a wall of lozenges at 12px radius, and the uppercase transform costs the
+   word shapes that make a name readable at this size. */
+.cc-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 6px;
+}
+
+.cc-element-badge.cc-chip {
+    padding: 2px 8px;
+    margin: 0;
+    border-radius: 3px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    text-transform: none;
+    line-height: 1.35;
+    white-space: nowrap;
+    box-shadow: none;
+}
+
+/* Tight dossier card: the same card with its air taken out, for a page that
+   stacks four or five of them and still has to reach its buttons. */
+.cc-dossier-card.cc-card-tight {
+    padding: 10px 12px;
+    margin-bottom: 10px;
+}
+
+.cc-card-tight .cc-subheader {
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+    padding-bottom: 3px;
+}
+
+.cc-card-tight .cc-dossier-row {
+    margin-bottom: 5px;
+    padding-bottom: 2px;
+    font-size: 0.9rem;
+}
+
+.cc-card-tight .cc-dossier-row:last-child {
+    margin-bottom: 0;
 }
 
 .cc-wanted-sprite {
@@ -649,7 +794,9 @@
    space at the top of every cell. The frame is cut to 4:5 and the art is
    covered from the bottom edge, so that band is cropped instead of padded.
    Specificity (0,3,0) keeps the surface off in themes that repaint
-   .cc-presets-board .cc-wanted-card. */
+   .cc-presets-board .cc-wanted-card.
+   The bust gallery itself no longer crops: see .cc-bust-vgrid below, which
+   overrides both the frame and the fit so the portrait is shown whole. */
 .cc-presets-board .cc-bust-card.cc-wanted-card {
     display: block;
     position: relative;
@@ -671,10 +818,13 @@
     content: none;
 }
 
+/* The cell is not zoomed on pick: the board is virtualised and every cell is
+   absolutely placed, so a scaled card grows over its neighbours. The border is
+   the whole of the selection mark. */
 .cc-presets-board .cc-bust-card.cc-wanted-card.selected {
     background: transparent;
     border-color: var(--border-focus-hover);
-    transform: scale(1.05);
+    transform: none;
 }
 
 .cc-presets-board .cc-bust-card.cc-wanted-card:hover,
@@ -693,11 +843,15 @@
     background-position: center bottom;
     background-size: cover;
     background-repeat: no-repeat;
-    transition: transform 0.3s ease;
 }
 
-.cc-bust-card:hover .cc-bust-image {
-    transform: scale(1.1);
+/* The portrait is never zoomed, on hover or on pick: the cell is cut to the
+   art's own ratio and shows it whole, so scaling it only crops the head off
+   and pushes it out of the frame. */
+.cc-bust-card:hover .cc-bust-image,
+.cc-bust-card.highlighted .cc-bust-image,
+.cc-bust-card.selected .cc-bust-image {
+    transform: none;
 }
 
 /* The name rides on the art now, so it carries its own fade rather than the
@@ -720,6 +874,254 @@
     background: linear-gradient(to top, var(--bg-panel) 0%, var(--bg-panel) 55%, transparent 100%);
 }
 
+/* --- Sprite board: virtualised ---
+   Same shape as the bust board below: only the rows on screen exist, so a cell
+   carries its own absolute geometry and the scroll height comes from the
+   spacer. The cell is a fixed box and the art is centred inside it, which is
+   what keeps a sheet that has not loaded yet from moving anything: it paints
+   into a space already reserved instead of resizing the cell under the player. */
+.cc-presets-board.cc-sprite-vgrid {
+    display: block;
+    position: relative;
+}
+
+.cc-sprite-vgrid .cc-sprite-vcanvas {
+    position: relative;
+    width: 100%;
+}
+
+.cc-presets-board.cc-sprite-vgrid .cc-sprite-card.cc-wanted-card {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 4px;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: none;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    box-shadow: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.cc-presets-board.cc-sprite-vgrid .cc-sprite-card.cc-wanted-card.selected {
+    border-color: var(--border-focus-hover);
+    background: var(--border-accent-hover-translucent-5);
+}
+
+/* Geometry is written by the scene, and only once the sheet has reported its
+   real frame. The fade is what the player sees instead of a resize. */
+.cc-sprite-vgrid .cc-sprite-card .cc-wanted-sprite {
+    margin: 0;
+    flex: 0 0 auto;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    transition: opacity 0.15s ease;
+}
+
+.cc-sprite-vgrid .cc-sprite-card:hover .cc-wanted-sprite {
+    transform: none;
+}
+
+/* The band that divides the board's two blocks ("Beta sprites"). It is placed
+   by the scene like a cell, spans every column and scrolls with the rows. */
+.cc-sprite-vgrid .cc-sprite-section {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    box-sizing: border-box;
+    padding: 0 2px 6px;
+    color: var(--text-primary-hover);
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 2px double var(--border-primary-hover-translucent-15);
+    pointer-events: none;
+}
+
+/* --- Sprite board: plain grid ---
+   The same cell as the virtualised board above (bare art, no plate, no pin
+   head, no corner stamp), for the short rosters that fit the page in one go
+   and need no virtualising: the creature sprite step. Only the geometry
+   differs, since these cells are laid out by the grid rather than placed. */
+.cc-presets-board.cc-sprite-board {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    align-content: start;
+}
+
+.cc-presets-board.cc-sprite-board .cc-sprite-card.cc-wanted-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    height: 78px;
+    margin: 0;
+    padding: 4px;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: none;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    box-shadow: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.cc-presets-board.cc-sprite-board .cc-sprite-card.cc-wanted-card:hover,
+.cc-presets-board.cc-sprite-board .cc-sprite-card.cc-wanted-card.highlighted {
+    transform: none;
+    box-shadow: none;
+    outline: none;
+    background: var(--bg-primary-hover-translucent-35);
+    border-color: var(--border-focus-hover);
+}
+
+.cc-presets-board.cc-sprite-board .cc-sprite-card.cc-wanted-card.selected {
+    transform: none;
+    border-color: var(--border-focus-hover);
+    background: var(--border-accent-hover-translucent-5);
+}
+
+.cc-sprite-board .cc-sprite-card .cc-wanted-sprite,
+.cc-sprite-board .cc-sprite-card:hover .cc-wanted-sprite {
+    margin: 0;
+    flex: 0 0 auto;
+    transform: scale(1.2);
+    background-repeat: no-repeat;
+}
+
+/* --- Sprite board: the right page ---
+   The sheet's own bust stands ABOVE its walking sprite, never one over the
+   other: the sprite used to be absolutely centred on the bust and covered its
+   face. The bust is the larger of the two, since it is what the player is
+   actually picking a face by. A sheet with no bust keeps the old round
+   incubator plate around the sprite alone. */
+.cc-sprite-portrait {
+    position: relative;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    min-height: 380px;
+    margin: 8px 0 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    border-radius: 8px;
+}
+
+.cc-sprite-portrait-bust {
+    position: relative;
+    flex: 0 0 auto;
+    width: 260px;
+    height: 280px;
+    background-position: center top;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.cc-sprite-portrait-sprite {
+    position: relative;
+    flex: 0 0 auto;
+    z-index: 2;
+    margin: 4px 0 0;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 3px 4px var(--shadow-translucent-45, rgba(0, 0, 0, 0.45)));
+    transition: opacity 0.15s ease;
+}
+
+.cc-sprite-portrait.no-bust {
+    width: 180px;
+    height: 180px;
+    min-height: 180px;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--bg-panel) 0%, var(--bg-panel-alt, var(--bg-panel)) 100%);
+}
+
+/* Nothing to stand beside: the plate holds the sprite alone. */
+.cc-sprite-portrait.no-bust .cc-sprite-portrait-bust {
+    display: none;
+}
+
+.cc-sprite-portrait.no-bust .cc-sprite-portrait-sprite {
+    margin: 0;
+    transform: scale(2.5);
+    transform-origin: center;
+    filter: none;
+}
+
+/* --- Bust gallery: virtualised board ---
+   The board holds only the rows on screen, so a cell carries its own absolute
+   geometry (written by the scene) and the scroll height comes from the spacer
+   underneath it. Specificity (0,4,0) beats the flow-layout rules above and the
+   theme overrides that repaint bust cards. */
+.cc-presets-board.cc-bust-vgrid {
+    display: block;
+    position: relative;
+}
+
+.cc-bust-vgrid .cc-bust-vcanvas {
+    position: relative;
+    width: 100%;
+}
+
+.cc-presets-board.cc-bust-vgrid .cc-bust-card.cc-wanted-card {
+    position: absolute;
+    height: auto;
+    padding: 0;
+}
+
+/* The card shows the bust whole: no crop, nothing cut off the top. The cell is
+   cut to the art's own 883x1200, so "contain" fills it edge to edge without
+   letterboxing. The base rule covers a 4:5 frame from the bottom instead, which
+   would take the head off. */
+.cc-bust-vgrid .cc-bust-card .cc-bust-image {
+    background-size: contain;
+    background-position: center;
+}
+
+/* Right page: the one full-resolution portrait on screen, above the species
+   list. Loaded only once the cursor has settled. */
+.cc-bust-preview {
+    flex: 0 0 auto;
+    height: 32%;
+    min-height: 0;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.cc-bust-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.cc-bust-preview img:not([src]) {
+    display: none;
+}
+
+/* Positioned so a species card's offsetTop is measured against the pane the
+   cursor scrolls, and not against whatever ancestor happens to be positioned. */
+.cc-presets-board.cc-categories-list {
+    position: relative;
+}
+
 .cc-categories-list .cc-card-option {
     flex-direction: row !important;
     justify-content: space-between !important;
@@ -731,10 +1133,10 @@
     box-sizing: border-box !important;
 }
 
+/* No corner stamp on a species row: the row is a name and a count pill, and the
+   badge landed on top of the count. The border and the fill say which is open. */
 .cc-categories-list .cc-card-option.selected::before {
-    top: 50% !important;
-    right: 15px !important;
-    transform: translateY(-50%) !important;
+    content: none !important;
 }
 
 /* Species rows read as a name and a count, so the card title drops to list
@@ -1125,12 +1527,25 @@
 }
 
 /* --- Wax Treaty Signature Buttons --- */
+/* The panel is the last child of a .cc-page, which scrolls (`overflow-y: auto`).
+   The viewport fit is sized so a page's contents fit without scrolling, but a
+   step with an unusually long list (or a player who has pushed UI Scale up) can
+   still overflow, and a Back/Confirm bar that scrolls out of sight reads as a
+   menu with no way forward. Sticking it to the bottom of the scroller keeps it
+   on screen whatever the page is holding; the background is opaque so list rows
+   pass behind it rather than through it. */
 .cc-button-panel {
     display: flex;
     justify-content: center;
     gap: 20px;
     margin-top: auto;
     padding-top: 16px;
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    padding-bottom: 4px;
+    background: var(--bg-panel);
+    box-shadow: 0 -8px 12px -8px var(--shadow-primary-hover-translucent-5);
 }
 
 .cc-btn-treaty {
@@ -3758,6 +4173,23 @@
     font-weight: bold;
 }
 
+/* The trade a Thinker shelf is written in, under its name (ThinkerMenu.js) */
+.category-trade {
+    display: block;
+    font-family: 'Lora', serif;
+    font-weight: normal;
+    font-size: 0.62em;
+    color: var(--text-secondary-active);
+    opacity: 0.85;
+}
+
+/* Learned / All book row, under the assemble-disassemble tabs */
+.mode-tabs.filter-tabs {
+    margin-top: -8px;
+    margin-bottom: 12px;
+    border-bottom-style: dotted;
+}
+
 /* Item blueprint rows */
 .blueprint-row {
     display: flex;
@@ -4044,6 +4476,8 @@
 }
 .workbench-skill.locked { color: var(--border-muted-focus); opacity: 0.85; }
 .workbench-risk { color: var(--text-amber-hint); }
+/* What knowing the trade saves off a finished job (ThinkerMenu.js) */
+.workbench-reclaim { color: var(--text-info); }
 
 .reagents-header {
     font-family: 'Lora', serif;
@@ -5336,6 +5770,274 @@
     border-radius: 3px;
 }
 
+/* ==========================================================================
+   The cryogenic pod (TimeDateSystemUI.js): the date picker and the travel
+   board shown while the years run past a party that does not move.
+   ========================================================================== */
+
+.army-dialog--cryo {
+    width: 380px;
+}
+
+.cryo-unavailable {
+    margin: 6px 0 14px 0;
+    font-size: 0.95em;
+    line-height: 1.45;
+    color: var(--text-success-active);
+    opacity: 0.85;
+}
+
+.cryo-date-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 4px 0 12px 0;
+}
+
+.cryo-field {
+    flex: 1;
+    padding: 6px 4px 4px 4px;
+    border: 1px solid var(--border-focus-hover);
+    border-radius: 4px;
+    background: var(--bg-primary-hover-translucent-35);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.cryo-field.selected {
+    border-color: var(--text-primary-hover);
+    box-shadow: inset 0 0 12px var(--shadow-primary-hover-translucent-5);
+}
+
+.cryo-field-arrow {
+    display: block;
+    font-size: 0.7em;
+    line-height: 1.1;
+    color: var(--text-success-active);
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.cryo-field.selected .cryo-field-arrow {
+    opacity: 1;
+    color: var(--text-primary-hover);
+}
+
+.cryo-field-value {
+    display: block;
+    font-size: 1.25em;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary-hover);
+}
+
+.cryo-field-label {
+    display: block;
+    font-size: 0.7em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-success-active);
+    opacity: 0.65;
+}
+
+.cryo-summary {
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    border: 1px solid var(--border-focus-hover);
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: var(--text-success-active);
+}
+
+.cryo-summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    line-height: 1.5;
+}
+
+.cryo-summary-row--total {
+    font-size: 1.1em;
+    color: var(--text-primary-hover);
+}
+
+.cryo-summary-row--purse {
+    opacity: 0.7;
+}
+
+.cryo-summary-note {
+    margin-top: 4px;
+    font-size: 0.8em;
+    opacity: 0.6;
+}
+
+/* The travel board. Its own overlay, drawn over the faded-out map. */
+.cryo-overlay {
+    background: var(--bg-secondary-hover);
+}
+
+.cryo-panel {
+    width: min(90%, 820px);
+    max-height: 92%;
+    overflow-y: auto;
+    padding: 18px 22px;
+    border: 3px double var(--text-primary-hover);
+    border-radius: 6px;
+    background: var(--bg-well);
+    box-shadow: inset 0 0 40px var(--shadow-primary-hover-translucent-5);
+    font-family: 'Lora', serif;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.cryo-panel-head h3 {
+    margin: 0 0 4px 0;
+    font-size: 1.35em;
+    letter-spacing: 0.06em;
+    color: var(--text-primary-hover);
+}
+
+.cryo-panel-sub {
+    margin: 0 0 14px 0;
+    font-size: 0.9em;
+    color: var(--text-success-active);
+    opacity: 0.75;
+}
+
+.cryo-clock-year {
+    font-size: 3.4em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary-hover);
+    text-shadow: 0 0 18px var(--shadow-primary-hover-translucent-5);
+}
+
+.cryo-clock-date,
+.cryo-clock-elapsed,
+.cryo-clock-fare {
+    font-size: 0.9em;
+    color: var(--text-success-active);
+    font-variant-numeric: tabular-nums;
+}
+
+.cryo-clock-elapsed {
+    opacity: 0.8;
+}
+
+.cryo-clock-fare {
+    margin-top: 4px;
+    font-size: 0.8em;
+    opacity: 0.6;
+}
+
+.cryo-progress {
+    height: 6px;
+    margin: 10px auto 6px auto;
+    width: 80%;
+    border: 1px solid var(--border-focus-hover);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.cryo-progress-fill {
+    display: block;
+    height: 100%;
+    background: var(--bg-mp-bar);
+}
+
+.cryo-pods {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.cryo-pod-card {
+    flex: 1 1 200px;
+    max-width: 250px;
+    padding: 8px 10px;
+    border: 1px solid var(--border-focus-hover);
+    border-radius: 4px;
+    background: var(--bg-primary-hover-translucent-35);
+    text-align: left;
+}
+
+.cryo-pod-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+    color: var(--text-primary-hover);
+}
+
+.cryo-pod-name {
+    font-size: 1.05em;
+}
+
+.cryo-pod-level {
+    font-size: 0.75em;
+    opacity: 0.7;
+}
+
+.cryo-vital {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75em;
+    color: var(--text-success-active);
+    line-height: 1.6;
+}
+
+.cryo-vital-label {
+    width: 34px;
+    opacity: 0.7;
+}
+
+.cryo-vital-bar {
+    flex: 1;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--bg-white-translucent-25);
+    overflow: hidden;
+}
+
+.cryo-vital-fill {
+    display: block;
+    height: 100%;
+}
+
+.cryo-vital-value {
+    width: 32px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.8;
+}
+
+.cryo-fill-hp { background: var(--bg-hp-bar); }
+.cryo-fill-mp { background: var(--bg-mp-bar); }
+.cryo-fill-tp { background: var(--text-primary-hover); }
+.cryo-fill-food { background: var(--text-info); }
+.cryo-fill-rest { background: var(--bg-mp-bar-alt); }
+
+.cryo-pod-status {
+    margin-top: 6px;
+    padding-top: 4px;
+    border-top: 1px solid var(--border-focus-hover);
+    font-size: 0.72em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-success-active);
+    opacity: 0.6;
+}
+
+.cryo-pod-status--wake {
+    color: var(--text-primary-hover);
+    opacity: 1;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
 /* Extracted from StockMarketSystem.js */
 #stock-container {
     position: absolute;
@@ -5646,13 +6348,80 @@
     box-sizing: border-box;
 }
 
-/* UI Scaling (Options > Video). --ui-scale is set on :root by GameOptions.js.
-   The zoom sits on the panel inside the overlay, not on the overlay itself, so
-   the backdrop still covers the screen and the flex centering keeps the scaled
-   panel in the middle. Every parchment menu roots at #menu-container, so this
-   one rule scales all of them. */
+/* ==========================================================================
+   Interface scaling / viewport fit
+   --------------------------------------------------------------------------
+   --ui-zoom is set on :root by GameOptions.js and is the smaller of two things:
+   the player's UI Scale (Options > Video) and the "fit", how much of the
+   1560x960 design box the current viewport can actually show. On a 1080p
+   desktop the fit is 1 and this is purely the player's setting; on a 1280x800
+   handheld (Steam Deck) it lands near 0.78, so a menu lays out at its full
+   design size and is then drawn small enough to fit the panel on screen.
+
+   The zoom sits on the panel INSIDE the overlay, never on the overlay itself,
+   so the backdrop still covers the whole screen and the flex centering keeps
+   the scaled panel in the middle. Adding a menu means adding its overlay root
+   to the selector list below; a menu that roots at #menu-container (most of
+   them do) is already covered.
+   ========================================================================== */
 #menu-container > * {
-    zoom: var(--ui-scale, 1);
+    zoom: var(--ui-zoom, 1);
+}
+
+/* Every other full-screen DOM menu that owns its own overlay id. Each one below
+   was checked to be a `position: fixed/absolute` backdrop that flex-centres a
+   single panel, which is what makes scaling the panel the whole job: the
+   backdrop still covers the screen and the centring absorbs the slack.
+
+   Deliberately NOT listed, and each for a reason:
+     - canvas-aligned overlays (battle bars, damage text, the message window,
+       map HUDs, toasts, #credits-overlay) are positioned and sized from the
+       game canvas rect and already scale with it; zooming would double-scale;
+     - #cs-mini / #hv-mini ARE the panel rather than a backdrop, and already
+       cap themselves at 94vw / 80vh with an internal scroller;
+     - #rent-room-list is a small corner list, not a centred panel;
+     - #tt-container and #qb-overlay are full-bleed boards whose children are
+       meant to reach the screen edges, so zooming them would leave a margin;
+     - #hypernet-os-container is a desktop that does its own viewport fitting. */
+#character-creation-container > *,
+#status-menu-container > *,
+#state-list-container > *,
+#apiary-container > *,
+#arena-ui-container > *,
+#bestiary-container > *,
+#biologic-container > *,
+#blacksmith-container > *,
+#blade-bind-container > *,
+#blade-status-container > *,
+#brewery-container > *,
+#cooking-container > *,
+#equip-container > *,
+#game-updater-container > *,
+#gx-ship-appearance > *,
+#help-container > *,
+#history-container > *,
+#minigame-menu-container > *,
+#mod-manager-container > *,
+#mp-container > *,
+#mp-type-container > *,
+#refuel-overlay > *,
+#save-menu-container > *,
+#shop-container > *,
+#shop-mgmt-container > *,
+#steal-overlay > *,
+#stock-container > *,
+#thinker-container > *,
+#travel-journal-container > *,
+#travel-overlay > *,
+#world-manage-container > *,
+.army-dialog-overlay > * {
+    zoom: var(--ui-zoom, 1);
+}
+
+/* The two menus that are a bare .book-spread appended to the body with no
+   backdrop of their own, so the zoom goes on the spread itself. */
+#music-sel-container {
+    zoom: var(--ui-zoom, 1);
 }
 
 .companion-tabs-row {
@@ -5707,17 +6476,68 @@
     padding-bottom: 4px;
 }
 
+/* Right page heading: the party switcher shares the line with the page title
+   instead of floating over it, so long names can never print on top of the
+   heading however narrow the page gets. */
+.status-right-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex: 0 0 auto;
+    margin: 0 0 12px 0;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--border-primary-hover-translucent-15);
+}
+
+.status-right-header .right-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border-bottom: none;
+    overflow-wrap: break-word;
+}
+
+.status-right-header .companion-switcher {
+    flex: 0 1 auto;
+    min-width: 0;
+    justify-content: flex-end;
+}
+
+.status-right-header .companion-tabs-row {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
 .status-bust-wrapper {
     position: relative;
-    width: 440px;
-    height: 500px;
+    width: 100%;
+    max-width: 440px;
+    /* Flex basis rather than a fixed height: the portrait is the one block on
+       the page that may give way, so a short screen shrinks it instead of
+       letting it run over the gauges below. */
+    flex: 0 1 500px;
+    min-height: 90px;
     margin: 0 auto 12px auto;
     background: transparent;
     border: none;
     box-shadow: none;
+    overflow: hidden;
 }
 
-#status-bust {
+/* Both portraits (the drawn bust and the live 3D model) fill the box exactly,
+   letterboxed by object-fit, so neither can print over the gauges below. They
+   are absolutely placed so their height never depends on a percentage
+   resolving against a flex item. */
+#status-bust,
+#status-bust-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     display: block;
@@ -5727,6 +6547,8 @@
 }
 
 .status-gauges-box {
+    /* Never shrinks: the portrait above absorbs the whole shortfall. */
+    flex: 0 0 auto;
     background: var(--bg-primary-hover-translucent-35);
     border: 1px solid var(--border-primary-hover-translucent-15);
     border-radius: 8px;
@@ -5798,6 +6620,22 @@
 
 .status-gauge-bar-inner.exp {
     background: var(--gradient-11);
+}
+
+/* Sub-line under a gauge (how much experience the next level still wants). */
+.status-gauge-note {
+    font-family: 'Lora', serif;
+    font-size: 0.72em;
+    color: var(--text-text-alt-1-active);
+    opacity: 0.75;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.status-gauge-note:empty {
+    display: none;
 }
 
 .status-needs-rows {
@@ -5876,9 +6714,11 @@
     box-shadow: 0 2px 4px var(--shadow-primary-hover-translucent-5);
 }
 
-.alignment-traits-row {
+/* The alignment box is what is left on the attributes tab under the medallions,
+   now that the traits have a page of their own. */
+.status-alignment-row {
     display: grid;
-    grid-template-columns: 1fr 1.2fr;
+    grid-template-columns: 1fr;
     gap: 12px;
     margin-bottom: 12px;
 }
@@ -5913,13 +6753,31 @@
     border: 1px solid var(--border-primary-hover-translucent-15);
 }
 
-.status-traits-card {
-    background: var(--bg-primary-hover-translucent-35);
-    border: 1px solid var(--border-primary-hover-translucent-15);
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
+/* The traits page: every trait the character carries, each written out in full,
+   one dossier under the next down a scrolling card. */
+.status-traits-full {
+    flex-grow: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.status-trait-entry {
+    font-family: 'Lora', serif;
+    padding: 8px 0;
+}
+
+.status-trait-entry + .status-trait-entry {
+    border-top: 1px dashed var(--border-primary-hover-translucent-15);
+}
+
+.status-traits-empty {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    color: var(--text-card-medium);
+    font-size: 0.85em;
+    text-align: center;
+    padding: 12px;
 }
 
 .card-label {
@@ -5932,61 +6790,186 @@
     margin-bottom: 5px;
 }
 
-.traits-list-inline {
+/* The stack the right page's tab panels live in. */
+#status-lower-cards {
     display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    max-height: 70px;
-    overflow-y: auto;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
 }
 
-.status-trait-item {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.15s ease;
+/* The medallions take only their own height: the alignment box under them is
+   not pushed off the page by a grid that wanted to grow. */
+#status-attr-cards {
+    flex: 0 0 auto;
 }
 
-.status-trait-item:hover {
-    background: var(--border-primary-hover-translucent-15);
+/* Right-page section tabs. The chips are the shared bookmark-tab design
+   (.backpack-tabs / .backpack-tab); only the spacing is this page's own, since
+   what sits under them is a flex column that must not be squeezed. */
+#status-tabs {
+    flex: 0 0 auto;
+    gap: 4px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
 }
 
-.status-trait-tooltip {
+#status-tabs .backpack-tab {
+    font-size: 0.8em;
+    padding: 3px 12px;
+    border-radius: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* One section is in the layout at a time: a hidden panel leaves the flex column
+   entirely, so the visible one gets the whole height the page has left. */
+.status-tab-panel {
     display: none;
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--bg-dark-warm-translucent-96);
-    color: var(--text-muted-hover);
-    font-family: 'Lora', serif;
-    font-size: 0.78em;
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid var(--text-primary-hover);
-    z-index: 9999;
-    pointer-events: none;
-    box-shadow: 0 4px 12px var(--shadow-black-translucent-50);
-    max-width: 200px;
-    white-space: normal;
-    text-align: center;
-    line-height: 1.35;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
-.status-trait-tooltip strong {
-    display: block;
+.status-tab-panel.active {
+    display: flex;
+}
+
+/* A card that states a fact rather than holding a list: it takes only its own
+   height and leaves the rest of the panel to the scrolling card below it. The
+   selector carries .bodyparts-card so it beats that card's own grow/min-height
+   whichever of the two rules comes later in the sheet. */
+.bodyparts-card.status-card-fixed {
+    flex: 0 0 auto;
+    min-height: 0;
+    margin-bottom: 8px;
+}
+
+/* Passive abilities list: the class's signature passive and the trait ones. */
+.status-passive-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 4px;
+    border-bottom: 1px dashed var(--border-primary-hover-translucent-15);
+}
+
+.status-passive-row:last-child {
+    border-bottom: none;
+}
+
+.status-passive-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.status-passive-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-family: 'Lora', serif;
+    font-size: 0.92em;
+    font-weight: bold;
     color: var(--text-primary-hover);
     margin-bottom: 2px;
-    font-size: 1em;
 }
 
-.status-trait-item:hover .status-trait-tooltip {
-    display: block;
+.status-passive-tag {
+    font-size: 0.72em;
+    font-weight: normal;
+    color: var(--text-muted-hover);
+    background: var(--border-primary-hover-translucent-15);
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    border-radius: 10px;
+    padding: 0 7px;
+}
+
+.status-passive-desc {
+    font-family: 'Lora', serif;
+    font-size: 0.8em;
+    line-height: 1.35;
+    color: var(--text-card-medium);
+}
+
+.status-empty-note {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    text-align: center;
+    color: var(--text-card-medium);
+    padding: 12px;
+    font-size: 0.85em;
+}
+
+/* Actions bar under the tab panels (Empathize). */
+.status-actions {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.status-actions:empty {
+    display: none;
+}
+
+.status-actions .inspect-btn {
+    font-size: 0.9em;
+    padding: 5px 22px;
+}
+
+.status-trait-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary-hover);
+    font-weight: bold;
+    font-size: 1.02em;
+    border-bottom: 1px dashed var(--border-primary-hover-translucent-15);
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+}
+
+.status-trait-desc {
+    color: var(--text-card-medium);
+    font-size: 0.85em;
+    line-height: 1.35;
+    margin-bottom: 8px;
+}
+
+.status-trait-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.status-trait-row-label {
+    flex: 0 0 auto;
+    color: var(--text-primary-hover);
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.status-trait-badges {
+    flex: 1 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: flex-end;
+}
+
+.status-trait-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--border-primary-hover-translucent-15);
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 0.78em;
+    color: var(--text-muted-hover);
 }
 
 .bodyparts-card {
@@ -6959,16 +7942,19 @@
 
 .status-bust-wrapper {
     position: relative;
-    width: 440px;
-    height: 500px;
+    width: 100%;
+    max-width: 440px;
     margin: 0 auto 12px auto;
     background: transparent;
     border: none;
     box-shadow: none;
     /* The portrait yields height first, so the gauges below it are never
-       clipped by the page's overflow:hidden at small resolutions. */
-    flex: 0 1 auto;
-    min-height: 0;
+       clipped by the page's overflow:hidden at small resolutions. The canvas
+       inside is sized in percentages (never in pixels) so it shrinks with the
+       wrapper instead of spilling over the gauges. */
+    flex: 0 1 500px;
+    min-height: 90px;
+    overflow: hidden;
 }
 
 #biologic-bust {
@@ -8160,16 +9146,37 @@
     user-select: none;
 }
 
-/* Destinations served by the rail network, flagged when the full (non train
-   filtered) destination list is shown. Declared before the hover/selected rule
-   so selection still repaints background and border on top of it; the inset
+/* Destinations the transport network reaches, i.e. the entries that declare an
+   arrival stop of their own. Declared before the hover/selected rule so
+   selection still repaints background and border on top of it; the inset
    stripe survives because selection never sets box-shadow. */
-.travel-dest-item.has-train {
+.travel-dest-item.is-hub {
     background: var(--accent-gold-translucent-16);
     box-shadow: inset 3px 0 0 var(--accent-gold-pure);
 }
 
-.travel-dest-train {
+/* The kind of place, from the entry's own "type". A village is the plain row;
+   the rest carry a left rule of their own, which the gold hub stripe overrides
+   where a place is both. */
+.travel-dest-item.travel-kind-city {
+    box-shadow: inset 3px 0 0 var(--text-primary-hover);
+}
+
+.travel-dest-item.travel-kind-dungeon {
+    box-shadow: inset 3px 0 0 var(--text-danger-hover);
+}
+
+.travel-dest-item.travel-kind-gasstation {
+    box-shadow: inset 3px 0 0 var(--text-success-active);
+}
+
+.travel-dest-item.is-hub.travel-kind-city,
+.travel-dest-item.is-hub.travel-kind-dungeon,
+.travel-dest-item.is-hub.travel-kind-gasstation {
+    box-shadow: inset 3px 0 0 var(--accent-gold-pure);
+}
+
+.travel-dest-hub {
     display: inline-block;
     margin-left: 8px;
     padding: 1px 6px;
@@ -8242,6 +9249,50 @@
     user-select: none;
 }
 
+/* After the impact there is no Europe to draw: the right page becomes the
+   space the Earth used to occupy, with the Omega Tower hanging at the middle
+   of it. Painted rather than loaded, so no asset is needed for it and the
+   starfield never fails to arrive (FastTravelSystem, earthLost). */
+.travel-map-space {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1232px;
+    height: 1039px;
+    pointer-events: none;
+    user-select: none;
+    background:
+        radial-gradient(circle at 22% 28%, rgba(90, 70, 160, 0.20), transparent 46%),
+        radial-gradient(circle at 74% 68%, rgba(40, 90, 140, 0.18), transparent 52%),
+        radial-gradient(2px 2px at 12% 18%, #fff, transparent),
+        radial-gradient(2px 2px at 37% 62%, #dfe8ff, transparent),
+        radial-gradient(1px 1px at 58% 12%, #fff, transparent),
+        radial-gradient(2px 2px at 81% 34%, #ffe9c0, transparent),
+        radial-gradient(1px 1px at 26% 81%, #fff, transparent),
+        radial-gradient(1px 1px at 66% 88%, #cfe0ff, transparent),
+        radial-gradient(2px 2px at 92% 74%, #fff, transparent),
+        radial-gradient(1px 1px at 45% 41%, #fff, transparent),
+        #05060c;
+}
+
+/* The tower itself: a thin black lance with gold along its edge, standing at
+   the centre of the page where the marker for it is placed. */
+.travel-space-tower {
+    position: absolute;
+    width: 14px;
+    height: 190px;
+    margin-left: -7px;
+    margin-top: -150px;
+    background: linear-gradient(180deg,
+        transparent 0%,
+        #c9a03c 3%,
+        #0b0b10 9%,
+        #0b0b10 88%,
+        #1a1a22 100%);
+    clip-path: polygon(50% 0%, 62% 12%, 78% 100%, 22% 100%, 38% 12%);
+    box-shadow: 0 0 26px rgba(201, 160, 60, 0.45), 0 0 70px rgba(201, 160, 60, 0.18);
+}
+
 .travel-svg-layer {
     position: absolute;
     top: 0;
@@ -8276,29 +9327,75 @@
 
 .travel-marker {
     position: absolute;
-    width: 14px;
-    height: 14px;
-    margin-left: -7px;
-    margin-top: -7px;
+    width: 10px;
+    height: 10px;
+    margin-left: -5px;
+    margin-top: -5px;
     border-radius: 50%;
     background: var(--text-disabled);
-    border: 1.5px solid var(--text-danger-hover);
+    border: 1.25px solid var(--text-danger-hover);
     box-shadow: 0 2px 5px var(--shadow-glow-active-translucent-40);
     cursor: pointer;
     z-index: 10;
     transition: all 0.2s ease;
 }
 
-/* Train stations read bigger and in gold, ordinary stops stay grey. Declared
-   before hover/selected so the selected state keeps winning on colour while the
-   larger size persists. */
-.travel-marker.has-train {
-    width: 20px;
-    height: 20px;
-    margin-left: -10px;
-    margin-top: -10px;
+/* The SHAPE of a pin says what kind of place it is, from the entry's own "type"
+   in Destinations.json. A village keeps the plain disc above; a city is a
+   larger square, a delve a diamond, a roadside stop a narrow upright pill.
+   Colour is a separate question, answered by .is-hub below. */
+.travel-marker.travel-kind-city {
+    width: 13px;
+    height: 13px;
+    margin-left: -6.5px;
+    margin-top: -6.5px;
+    border-radius: 2px;
+}
+
+.travel-marker.travel-kind-dungeon {
+    width: 13px;
+    height: 13px;
+    margin-left: -6.5px;
+    margin-top: -6.5px;
+    border-radius: 0;
+    /* The border is clipped away with the corners, so the fill has to carry the
+       shape on its own. */
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    background: var(--text-danger-hover);
+}
+
+.travel-marker.travel-kind-gasstation {
+    width: 7px;
+    height: 12px;
+    margin-left: -3.5px;
+    margin-top: -6px;
+    border-radius: 2px;
+}
+
+/* Places the transport network actually reaches read bigger and in gold, every
+   other stop stays grey. Declared before hover/selected so the selected state
+   keeps winning on colour while the larger size persists. */
+.travel-marker.is-hub {
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    margin-top: -7px;
     background: var(--accent-gold-pure);
-    border-width: 2.5px;
+    border-width: 2px;
+}
+
+.travel-marker.is-hub.travel-kind-city {
+    width: 17px;
+    height: 17px;
+    margin-left: -8.5px;
+    margin-top: -8.5px;
+}
+
+.travel-marker.is-hub.travel-kind-gasstation {
+    width: 9px;
+    height: 15px;
+    margin-left: -4.5px;
+    margin-top: -7.5px;
 }
 
 .travel-marker:hover,
@@ -8311,7 +9408,7 @@
 
 .travel-marker-tooltip {
     position: absolute;
-    bottom: 22px;
+    bottom: 16px;
     left: 50%;
     transform: translateX(-50%);
     background: #000000;
@@ -8335,10 +9432,10 @@
 
 .travel-player-marker {
     position: absolute;
-    width: 28px;
-    height: 28px;
-    margin-left: -14px;
-    margin-top: -14px;
+    width: 20px;
+    height: 20px;
+    margin-left: -10px;
+    margin-top: -10px;
     z-index: 15;
     pointer-events: none;
 }
@@ -8351,21 +9448,21 @@
     height: 100%;
     border-radius: 50%;
     background: var(--bg-bg-alt-7-translucent-12);
-    border: 2.5px solid var(--text-text-alt-3);
+    border: 2px solid var(--text-text-alt-3);
     animation: player-ring 1.8s ease-out infinite;
     box-sizing: border-box;
 }
 
 .travel-player-dot {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 12px;
-    height: 12px;
+    top: 6px;
+    left: 6px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: var(--text-text-alt-3);
-    border: 2px solid var(--text-warning-hover);
-    box-shadow: 0 0 10px var(--text-text-alt-3);
+    border: 1.5px solid var(--text-warning-hover);
+    box-shadow: 0 0 8px var(--text-text-alt-3);
 }
 
 @keyframes player-ring {
@@ -8567,6 +9664,35 @@
     padding-left: 30px;
 }
 
+/* The head of either page: Back pinned left, title centred, ruled off from the
+   list under it. It used to carry its colours inline, so the rule and the Back
+   button stayed parchment-brown on every theme. */
+.shop-page-head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px dashed var(--border-muted-focus);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    min-height: 40px;
+}
+
+.shop-funds {
+    font-family: 'Lora', serif;
+    font-size: 17px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.5px;
+    margin-top: -10px;
+    margin-bottom: 12px;
+    color: var(--text-inverse);
+}
+
+.shop-funds-value {
+    color: var(--text-cost-ok);
+}
+
 .shop-title {
     font-family: 'Lora', serif;
     font-size: 2.2em;
@@ -8729,17 +9855,121 @@
     font-weight: bold;
 }
 
+/* A sell line the player has put on the counter: it keeps its own quantity and
+   subtotal, so several lines can be trimmed before the one sale goes through. */
+.item-card.selected {
+    background: var(--bg-tertiary-focus-translucent-45);
+    border-color: var(--text-secondary-active);
+    box-shadow: inset 3px 0 0 var(--text-cost-ok);
+}
+
+.sell-qty {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.sell-qty-step {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    font-weight: bold;
+    cursor: pointer;
+    background: var(--text-secondary-active);
+    color: var(--bg-secondary-hover);
+    transition: all 0.15s ease;
+}
+
+.sell-qty-step:hover {
+    background: var(--text-primary-hover);
+}
+
+.sell-qty-val {
+    min-width: 28px;
+    text-align: center;
+    font-weight: bold;
+    color: var(--text-muted-hover);
+}
+
+.sell-qty-total {
+    font-size: 0.85em;
+    font-weight: bold;
+    color: var(--text-cost-ok);
+}
+
+.shop-sell-hint {
+    font-family: 'Lora', serif;
+    font-size: 0.78em;
+    font-style: italic;
+    text-align: center;
+    color: var(--text-inverse);
+    margin-bottom: 10px;
+}
+
+.shop-selection-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border: 1px solid var(--text-secondary-active);
+    border-radius: 6px;
+    background: var(--bg-tertiary-focus-translucent-45);
+}
+
+.shop-selection-bar .selection-summary {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    font-family: 'Lora', serif;
+}
+
+.shop-selection-bar .selection-count {
+    font-size: 0.78em;
+    color: var(--text-inverse);
+}
+
+.shop-selection-bar .selection-value {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--text-cost-ok);
+}
+
+.shop-selection-bar .selection-actions {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+}
+
+.shop-selection-bar .action-btn {
+    padding: 6px 10px;
+    font-size: 0.78em;
+}
+
+/* The dossier scrolls; the BUY/SELL button under it is a sibling and never
+   does, so a long item sheet can no longer push the one press off the page. */
 .detail-scroll {
     background: var(--bg-secondary-hover);
     border: 1px solid var(--border-secondary-hover-translucent-15);
     border-radius: 6px;
     box-shadow: inset 0 0 20px var(--border-secondary-hover-translucent-15);
     padding: 20px;
-    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
     box-sizing: border-box;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+}
+
+#detail-viewport > #right-action-btn {
+    flex: none;
+    flex-shrink: 0;
 }
 
 .detail-header {
@@ -8784,16 +10014,45 @@
     color: var(--border-muted-focus);
 }
 
+/* The item's own prose: the longest, smallest-set text on the page, so it is
+   inked at full body contrast rather than the muted tone it used to borrow. */
 .detail-desc {
-    font-style: italic;
-    color: var(--text-disabled);
-    font-size: 0.85em;
-    line-height: 1.5;
+    color: var(--text-text-alt-7);
+    font-size: 0.95em;
+    line-height: 1.6;
     background: var(--shadow-primary-hover-translucent-5);
     border-radius: 4px;
     padding: 10px 14px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     border-left: 3px solid var(--text-secondary-active);
+}
+
+.detail-lore {
+    color: var(--text-text-alt-7);
+    font-style: italic;
+    font-size: 0.9em;
+    line-height: 1.55;
+    padding: 0 4px;
+    margin-bottom: 16px;
+}
+
+/* A cure-all carries two dozen effects, so they wrap as chips instead of
+   running down the page one line each. */
+.detail-effect-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.detail-effect-chip {
+    font-size: 0.8em;
+    line-height: 1.2;
+    padding: 3px 8px;
+    border-radius: 10px;
+    background: var(--border-secondary-hover-translucent-15);
+    border: 1px solid var(--border-secondary-hover-translucent-15);
+    color: var(--text-text-alt-7);
+    white-space: nowrap;
 }
 
 .gauges-section {
@@ -12298,6 +13557,25 @@
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .npc-cc-row-arrow { flex: 0 0 auto; font-size: 1.02rem; color: var(--border-focus-hover); opacity: 0.75; }
+    /* Small per-row reroll button beside a "pick" row's value, left of the
+       arrow. Its own mousedown handler stops propagation so it never also
+       opens the row's picker. */
+    .npc-cc-row-rand {
+      flex: 0 0 auto;
+      font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.02em;
+      padding: 1px 7px;
+      border: 1px solid var(--border-primary-hover-translucent-15);
+      border-radius: 10px;
+      color: var(--text-text-alt-4);
+      opacity: 0.8;
+      cursor: pointer;
+    }
+    .npc-cc-row-rand:hover {
+      opacity: 1;
+      color: var(--text-primary-hover);
+      border-color: var(--border-focus-hover);
+      background: var(--bg-primary-hover-translucent-35);
+    }
     /* Running total carried by a picker: the specialization point budget, the
        only place those points are shown. */
     .npc-cc-note {
@@ -12424,6 +13702,10 @@
     font-size: 0.66em; letter-spacing: 0.06em;
     color: var(--text-text-alt-11); margin-left: auto;
 }
+/* A second tag sits beside the first rather than sharing the free space with
+   it, which is what two margin-left:auto items would do. */
+.gu-build-tag ~ .gu-build-tag { margin-left: 6px; }
+.gu-build-tag--major { color: var(--text-text-alt-5-hover); font-weight: bold; }
 .gu-build-message {
     font-size: 0.82em; color: var(--text-primary-hover);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -12476,6 +13758,11 @@
     padding: 4px 8px; margin-bottom: 6px; text-align: center;
 }
 .gu-note--bad { color: var(--text-text-alt-5-hover); border-color: var(--text-text-alt-5-hover); }
+/* The note carries up to two lines: the major-update warning on top, then
+   whatever the screen itself has to say. */
+.gu-note-line + .gu-note-line { margin-top: 4px; }
+.gu-note-line--major { color: var(--text-text-alt-5-hover); font-weight: bold; }
+.gu-note--major { border-color: var(--text-text-alt-5-hover); }
 .gu-changelog {
     margin-top: 8px; padding-top: 6px; margin-bottom: 6px;
     border-top: 1px dashed var(--border-success);
@@ -12634,6 +13921,12 @@
     padding: 0.5em 1.1em;
     transition: opacity 0.4s ease;
     max-width: 24em;
+}
+/* A standing notification (ParchmentToast.sticky) is up because the condition
+   it names is still true, so it wears a heavier frame than a passing one. */
+#html-toast-stack .html-toast--sticky {
+    border-color: var(--border-danger-active);
+    outline-color: var(--border-danger-active);
 }
 .html-toast--info    { color: var(--border-subtle); }
 .html-toast--warning { color: var(--text-text-alt-17); }
@@ -13196,9 +14489,21 @@
    ═══════════════════════════════════════════════════════════ */
 
 .rf-subtitle {
-    font-size: 0.9em;
+    font-size: 1.05em;
     margin: 4px 0 10px;
     color: var(--text-text-alt-9);
+}
+
+#refuel-container .inspect-section-title {
+    font-size: 1em;
+}
+
+#refuel-container .inspect-spec-row {
+    font-size: 0.95rem;
+}
+
+#refuel-container .rf-label {
+    font-size: 1em;
 }
 
 .rf-option-list {
@@ -13223,7 +14528,7 @@
 
 .rf-cost {
     color: var(--text-text-alt-9);
-    font-size: 0.85em;
+    font-size: 0.95em;
     white-space: nowrap;
 }
 
@@ -13486,7 +14791,13 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   TECH TREE UI (v2, horizontal tabs + vertical DAG)
+   TECH TREE UI (v2, vertical discipline rail + vertical DAG)
+
+   The screen is laid out edge to edge rather than as a fixed 1560x960 book
+   floating in the middle: the rail takes a fixed slice of the left edge and
+   the spread eats everything left over. Every size below is either a
+   percentage or a clamp() of the viewport, so the same layout holds from a
+   Steam Deck's 1280x800 up to a 4K desktop without a breakpoint.
    ═══════════════════════════════════════════════════════════ */
 
 #tt-container {
@@ -13494,52 +14805,82 @@
     top: 0; right: 0; bottom: 0; left: 0;
     z-index: 60;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+    flex-direction: row;
+    align-items: stretch;
+    gap: clamp(5px, 0.6vw, 12px);
+    padding: clamp(5px, 0.7vh, 14px);
+    box-sizing: border-box;
     font-family: 'Lora', serif;
     color: var(--text-primary-hover);
+    /* One root size the whole screen derives from. Bounded by BOTH axes so a
+       short-but-wide panel (1280x800) does not blow the type up past what the
+       page can hold vertically. */
+    font-size: clamp(0.8rem, min(0.95vw, 1.6vh), 1.15rem);
 }
 
-/* ── Horizontal tab bar (on top) ─────────────────────────── */
-.tt-tabbar {
+/* ── Vertical discipline rail (left edge) ────────────────── */
+.tt-rail {
     position: relative;
+    flex: 0 0 auto;
+    width: clamp(146px, 13vw, 232px);
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
     gap: 6px;
-    width: min(1560px, 96vw);
-    /* Left padding reserves the lane the absolutely-placed Back button sits in,
-       so a full row of tabs can never slide underneath it. */
-    padding: 6px 10px 6px 96px;
+    padding: clamp(6px, 0.8vh, 12px) clamp(6px, 0.5vw, 10px);
+    box-sizing: border-box;
     background: var(--bg-panel);
     border: 2px solid var(--border-muted-focus);
-    border-radius: 8px 8px 4px 4px;
+    border-radius: 8px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
 }
 
-/* Back is pinned to the tab bar's left edge, out of the flex flow, so the tabs
-   stay centred and keep wrapping normally. .tt-tabbar is the positioned
-   ancestor (see position:relative above) — without it the global
-   .back-button left:0 would resolve against the page and cover the tree. */
-.tt-tabbar .back-button {
-    position: absolute;
-    left: 10px;
-    top: 8px;
+/* The global .back-button is position:absolute;left:0. In the rail it is just
+   the first item in the column, so that has to be undone here or it would
+   float over the discipline list underneath it. */
+.tt-rail .back-button {
+    position: static;
     flex: 0 0 auto;
+    text-align: center;
+    padding: 5px 10px;
+}
+
+.tt-rail-title {
+    flex: 0 0 auto;
+    font-size: 0.78em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    color: var(--text-text-alt-4);
+    border-bottom: 1px dashed var(--border-success);
+    padding-bottom: 4px;
+    margin-top: 2px;
+}
+
+/* The list is the only scrolling part, so Back and the heading stay put when
+   the eight disciplines run past a short screen. */
+.tt-rail-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
 }
 
 .tt-tab {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
+    flex: 0 0 auto;
+    padding: clamp(4px, 0.6vh, 9px) 8px;
     border: 1.5px solid var(--border-muted-focus);
     border-radius: 6px;
     background: var(--bg-primary-hover-translucent-35);
     color: var(--text-text-alt-4);
-    font-size: 0.92em;
+    font-size: 0.9em;
     cursor: pointer;
     transition: all 0.18s ease;
     user-select: none;
@@ -13558,8 +14899,18 @@
 }
 .tt-tab.active.selected { color: #fff; }
 .tt-tab-icon { display: inline-block; flex-shrink: 0; }
-.tt-tab-name { font-weight: bold; }
+/* A discipline name ("Social Sciences") is wider than the rail: it wraps onto
+   a second line rather than being clipped, since the rail's whole job is to
+   name the eight of them. */
+.tt-tab-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-weight: bold;
+    line-height: 1.15;
+    overflow-wrap: break-word;
+}
 .tt-tab-count {
+    flex: 0 0 auto;
     font-family: monospace;
     font-size: 0.85em;
     padding: 1px 6px;
@@ -13568,12 +14919,30 @@
 }
 
 /* ── Spread pages ────────────────────────────────────────── */
-.tt-spread { margin: 0; }
-.tt-left { overflow: hidden; }
+/* The shared .book-spread caps itself at 1560x960 and centres; here it is the
+   whole remaining screen instead, and its 1.15rem type gives way to the
+   container's viewport-derived size. */
+.tt-spread {
+    margin: 0;
+    /* Basis 0, not auto: the pages inside are percentage-width, so a
+       content-derived basis has nothing to measure and the spread would size
+       itself off its own children. */
+    flex: 1 1 0%;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    height: 100%;
+    font-size: inherit;
+}
+.tt-left {
+    overflow: hidden;
+    padding: clamp(8px, 1.4vh, 30px) clamp(8px, 1vw, 34px);
+}
 /* The detail page scrolls whenever a node's text, materials and yield run past
    the page. RMMZ preventDefaults document wheel events, so the actual scrolling
    is driven by the wheel handler in ProceduralTechTreeUI._wireEvents. */
 .tt-right {
+    padding: clamp(8px, 1.4vh, 30px) clamp(10px, 1.2vw, 40px);
     justify-content: flex-start;
     min-height: 0;
     overflow-y: auto;
@@ -13590,7 +14959,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 18px;
+    gap: clamp(9px, 1.8vh, 22px);
     padding: 6px 4px 12px;
     overflow: auto;
     scrollbar-width: thin;
@@ -13620,7 +14989,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px;
+    gap: clamp(5px, 0.5vw, 12px);
     width: 100%;
 }
 
@@ -13628,8 +14997,11 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    width: 148px;
-    padding: 5px 7px;
+    /* Sized off the viewport so a row holds roughly the same number of nodes
+       at 1280 wide as at 2560, instead of the tree turning into a single
+       column on a small panel. */
+    width: clamp(100px, 8.5vw, 176px);
+    padding: clamp(3px, 0.45vh, 7px) 7px;
     border: 1.5px solid var(--border-muted-focus);
     border-radius: 6px;
     background: var(--bg-panel);
@@ -13647,8 +15019,10 @@
 .tt-node-body { display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 /* Names wrap to at most two short lines: the whole tree has to fit the left
    page without scrolling, so nodes are sized down rather than ellipsised. */
+/* Absolute floor and ceiling on top of the em: the container's own size is
+   already viewport-scaled, and 0.74 of it drops under 10px on a Steam Deck. */
 .tt-node-name {
-    font-size: 0.74em;
+    font-size: clamp(10px, 0.78em, 15px);
     font-weight: bold;
     line-height: 1.2;
     color: var(--text-primary-hover);
@@ -13657,7 +15031,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-.tt-node-badge { font-size: 0.6em; color: var(--text-text-alt-4); }
+.tt-node-badge { font-size: clamp(8px, 0.62em, 12px); color: var(--text-text-alt-4); }
 
 .tt-node--done { border-color: var(--text-text-alt-11); }
 .tt-node--done .tt-node-glyph { color: var(--text-text-alt-11); }
@@ -13706,8 +15080,11 @@
 .tt-blurb { font-style: italic; color: var(--text-text-alt-4); line-height: 1.5; }
 
 .tt-section {
-    margin: 12px 0 4px;
-    font-size: 0.8rem;
+    margin: clamp(7px, 1vh, 14px) 0 4px;
+    /* em, not rem: the page's own size is viewport-derived, and a fixed rem
+       here would read as body text on a small panel and as fine print on a
+       large one. */
+    font-size: 0.8em;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--text-primary-hover);
@@ -14820,236 +16197,6 @@ body, canvas {
 .fbuild-grid::-webkit-scrollbar-track, .fbuild-materials::-webkit-scrollbar-track, .fbuild-cats::-webkit-scrollbar-track { background: transparent; }
 
 /* ==========================================================================
-   AnimatedSlotMachine, Art Deco casino (.asm-*)
-   ========================================================================== */
-.asm-overlay {
-    position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1000;
-    display: flex; align-items: center; justify-content: center;
-    font-family: "Georgia","Times New Roman",serif;
-    -webkit-user-select: none; user-select: none; overflow: hidden;
-}
-.asm-bg {
-    position: absolute; top: 0; right: 0; bottom: 0; left: 0;
-    background: radial-gradient(circle at 50% 40%, #1c2238 0%, #0c0e18 70%, #050608 100%);
-}
-.asm-bg::before {
-    content: ""; position: absolute; top: -20%; right: -20%; bottom: -20%; left: -20%;
-    background: repeating-conic-gradient(from 0deg at 50% 42%,
-        var(--shadow-amber-translucent-5) 0deg 6deg, transparent 6deg 12deg);
-    animation: asm-rays 60s linear infinite;
-}
-@keyframes asm-rays { to { transform: rotate(360deg); } }
-.asm-cabinet {
-    position: relative;
-    width: min(660px,92vw);
-    padding: 18px 26px 22px;
-    background: linear-gradient(160deg,#16182a 0%,#0e0f1c 100%);
-    border: 3px solid var(--accent-amber-gold);
-    border-radius: 14px;
-    box-shadow: 0 0 0 6px var(--accent-dark-navy), 0 0 0 8px var(--accent-amber-gold), 0 24px 60px var(--shadow-black-translucent-80), inset 0 0 40px var(--shadow-black-translucent-55);
-    transform: scale(0.96);
-}
-.asm-cabinet::before,.asm-cabinet::after {
-    content: ""; position: absolute; left: 14px; right: 14px; height: 0;
-    border-top: 2px solid var(--accent-gold-translucent-50);
-}
-.asm-cabinet::before { top: 9px; }
-.asm-cabinet::after { bottom: 9px; }
-.asm-marquee { position: relative; text-align: center; padding: 6px 0 10px; }
-.asm-sunburst {
-    position: absolute; left: 50%; top: 60%; width: 340px; height: 340px;
-    transform: translate(-50%,-50%);
-    background: repeating-conic-gradient(from 0deg, var(--accent-gold-translucent-16) 0deg 9deg, rgba(202,164,74,0) 9deg 18deg);
-    -webkit-mask-image: radial-gradient(circle, var(--text-pure-black) 0%, transparent 62%);
-    mask-image: radial-gradient(circle, var(--text-pure-black) 0%, transparent 62%);
-    pointer-events: none;
-}
-.asm-title {
-    position: relative;
-    font-size: 46px; font-weight: bold; letter-spacing: 10px;
-    color: var(--accent-cream-warm); text-transform: uppercase;
-    text-shadow: 0 0 10px var(--shadow-amber-60),0 2px 0 var(--accent-amber-dark),0 3px 6px var(--text-pure-black);
-    background: linear-gradient(180deg,var(--accent-cream-lightest) 0%,var(--accent-amber-light) 55%,#9c7a2c 100%);
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 2px 1px var(--shadow-black-translucent-55));
-}
-.asm-subtitle { position: relative; margin-top: 2px; font-size: 13px; letter-spacing: 6px; color: var(--accent-amber-gold); }
-.asm-banner {
-    position: relative; margin: 4px auto 12px; max-width: 90%;
-    padding: 6px 14px; text-align: center;
-    font-size: 15px; letter-spacing: 2px; color: var(--accent-cream-light);
-    background: linear-gradient(180deg,var(--accent-navy-dark),#13142440);
-    border-top: 1px solid var(--accent-gold-translucent-60);
-    border-bottom: 1px solid var(--accent-gold-translucent-60);
-}
-.asm-reels-frame {
-    position: relative;
-    margin: 0 auto; padding: 14px;
-    width: max-content;
-    background: linear-gradient(180deg,var(--accent-navy-very-dark),var(--accent-navy-near-black));
-    border: 2px solid var(--accent-amber-gold); border-radius: 10px;
-    box-shadow: inset 0 0 30px var(--shadow-black-translucent-95),0 0 0 4px var(--accent-dark-navy);
-}
-.asm-reels { display: flex; gap: 12px; }
-.asm-reel {
-    position: relative;
-    width: calc(var(--icon-px) + 28px);
-    height: calc(var(--cell-h) * var(--rows));
-    overflow: hidden; border-radius: 8px;
-    background: linear-gradient(180deg,#f5f1e6 0%,#cfc8b4 50%,#f5f1e6 100%);
-    box-shadow: inset 0 0 14px var(--shadow-black-translucent-40),0 0 0 2px var(--accent-amber-gold);
-}
-.asm-reel::after {
-    content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none;
-    background: linear-gradient(180deg, var(--shadow-black-translucent-55) 0%, transparent 22%, transparent 78%, var(--shadow-black-translucent-55) 100%);
-}
-.asm-strip { will-change: transform; }
-.asm-strip.asm-spin-blur { filter: blur(1.5px) brightness(1.05); }
-.asm-strip.asm-land { animation: asm-bounce 0.32s cubic-bezier(.2,1.4,.5,1); }
-@keyframes asm-bounce { 0% { margin-top: -8px; } 60% { margin-top: 4px; } 100% { margin-top: 0; } }
-.asm-cell { height: var(--cell-h); display: flex; align-items: center; justify-content: center; }
-.asm-icon { filter: drop-shadow(0 2px 2px var(--shadow-black-translucent-45)); }
-.asm-payline {
-    position: absolute; left: 6px; right: 6px; top: 50%; height: 0;
-    transform: translateY(-50%);
-    border-top: 2px solid var(--accent-coral-translucent-90);
-    box-shadow: 0 0 10px var(--accent-coral-translucent-80);
-    pointer-events: none;
-}
-.asm-marker {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    color: var(--accent-coral); font-size: 20px;
-    text-shadow: 0 0 8px var(--accent-coral-translucent-90);
-    animation: asm-marker 1s ease-in-out infinite alternate;
-}
-.asm-marker-left { left: -4px; }
-.asm-marker-right { right: -4px; }
-@keyframes asm-marker { from { opacity: 0.4; } to { opacity: 1; } }
-
-/* Side-mounted pull lever, sits in the empty panel right of the reel frame. */
-.asm-lever {
-    position: absolute; right: -116px; bottom: 10px;
-    width: 96px; height: 214px; z-index: 5;
-    cursor: pointer;
-}
-.asm-lever-mount {
-    position: absolute; left: 50%; bottom: 0;
-    width: 46px; height: 46px; margin-left: -23px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 38% 32%, var(--accent-amber-light) 0%, var(--accent-amber-gold) 45%, var(--accent-amber-dark) 100%);
-    border: 2px solid var(--accent-amber-gold);
-    box-shadow: 0 3px 8px var(--shadow-black-translucent-55), inset 0 -3px 6px var(--shadow-black-translucent-45);
-}
-.asm-lever-arm {
-    position: absolute; left: 50%; bottom: 22px;
-    width: 16px; height: 150px; margin-left: -8px;
-    transform-origin: 50% 100%;
-    transition: transform 0.18s ease-out;
-}
-.asm-lever-shaft {
-    position: absolute; left: 0; right: 0; top: 20px; bottom: 0;
-    border-radius: 8px;
-    background: linear-gradient(90deg, #4a4e5a 0%, #e8ebf2 34%, #a7adbc 62%, #3d4150 100%);
-    box-shadow: 0 2px 6px var(--shadow-black-translucent-55);
-}
-.asm-lever-knob {
-    position: absolute; left: 50%; top: 0;
-    width: 44px; height: 44px; margin-left: -22px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 34% 28%, var(--accent-red-3) 0%, var(--accent-red-2) 45%, var(--accent-red-warm-dark) 100%);
-    border: 2px solid var(--accent-amber-gold);
-    box-shadow: 0 5px 12px var(--shadow-black-translucent-55), inset 0 -5px 9px var(--shadow-black-translucent-45);
-}
-.asm-lever:hover .asm-lever-arm { transform: rotate(9deg); }
-.asm-lever-arm.asm-lever-pull { animation: asm-lever-pull 0.8s cubic-bezier(.32,.72,.36,1); }
-@keyframes asm-lever-pull {
-    0%   { transform: rotate(0deg); }
-    20%  { transform: rotate(58deg); }
-    36%  { transform: rotate(58deg); }
-    72%  { transform: rotate(-9deg); }
-    88%  { transform: rotate(4deg); }
-    100% { transform: rotate(0deg); }
-}
-.asm-info {
-    display: flex; justify-content: space-around; align-items: center;
-    margin: 14px auto 4px; max-width: 92%;
-}
-.asm-stat { text-align: center; padding: 4px 10px; }
-.asm-label { display: block; font-size: 11px; letter-spacing: 3px; color: var(--accent-amber-gold); }
-.asm-value { display: block; font-size: 24px; color: var(--accent-cream-warm); margin-top: 2px; text-shadow: 0 1px 2px var(--text-pure-black); }
-.asm-stat-bet .asm-value { color: var(--text-teal); }
-.asm-win { color: var(--accent-amber-light); }
-.asm-stat-bet.asm-flash .asm-value { animation: asm-pop 0.25s ease; }
-@keyframes asm-pop { 50% { transform: scale(1.35); } }
-.asm-controls { display: flex; gap: 14px; justify-content: center; align-items: center; margin: 8px 0 6px; }
-.asm-btn {
-    font-family: inherit; cursor: pointer;
-    color: var(--accent-cream-light); font-size: 14px; letter-spacing: 1px;
-    padding: 10px 14px; border-radius: 8px;
-    background: linear-gradient(180deg,var(--accent-navy-mid),var(--accent-navy-deep));
-    border: 2px solid var(--accent-amber-gold);
-    box-shadow: 0 3px 0 var(--accent-dark-navy);
-}
-.asm-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--accent-dark-navy); }
-.asm-spin {
-    font-family: inherit; cursor: pointer;
-    width: 120px; height: 64px; border-radius: 50px;
-    font-size: 22px; font-weight: bold; letter-spacing: 3px;
-    color: var(--accent-amber-very-dark); text-transform: uppercase;
-    background: radial-gradient(circle at 50% 30%,var(--accent-cream-very-light),var(--accent-amber-light) 45%,#a9802c 100%);
-    border: 3px solid var(--accent-amber-dark);
-    box-shadow: 0 5px 0 var(--accent-amber-dark),0 0 22px var(--shadow-amber-60);
-    text-shadow: 0 1px 0 var(--bg-white-translucent-45);
-}
-.asm-spin:hover { filter: brightness(1.08); }
-.asm-spin:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--accent-amber-dark); }
-.asm-hint {
-    text-align: center; font-size: 11px; letter-spacing: 1px;
-    color: var(--text-pure-white); margin-top: 2px;
-    text-shadow: 0 1px 2px var(--text-pure-black);
-}
-.asm-paytable {
-    display: flex; justify-content: center; gap: 18px; flex-wrap: wrap;
-    margin-top: 10px; padding-top: 8px;
-    border-top: 1px solid var(--accent-gold-translucent-50);
-}
-.asm-pay-entry { display: flex; align-items: center; gap: 6px; }
-.asm-pay-icons { display: flex; }
-.asm-pay-icon { transform: scale(0.42); margin: -20px -18px; }
-.asm-pay-mult { color: var(--accent-amber-light); font-size: 15px; letter-spacing: 1px; }
-.asm-bulbs { display: flex; justify-content: space-between; padding: 0 6px; }
-.asm-bulbs-top { margin-bottom: 6px; }
-.asm-bulbs-bottom { margin-top: 10px; }
-.asm-bulb {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: var(--accent-amber-gold);
-    box-shadow: 0 0 8px var(--shadow-amber-gold-90);
-    animation: asm-bulb 0.9s ease-in-out infinite;
-}
-@keyframes asm-bulb {
-    0%,100% { background: var(--accent-amber-bronze); box-shadow: 0 0 3px var(--shadow-black-translucent-55); }
-    50% { background: var(--accent-amber-glow); box-shadow: 0 0 12px var(--shadow-amber-anim); }
-}
-.asm-close {
-    position: absolute; top: -14px; right: -14px;
-    width: 34px; height: 34px; border-radius: 50%;
-    font-size: 20px; line-height: 1; cursor: pointer; color: var(--accent-cream-light);
-    background: linear-gradient(180deg,var(--accent-red-warmth),var(--accent-red-warm-dark));
-    border: 2px solid var(--accent-amber-gold); box-shadow: 0 3px 8px var(--shadow-black-translucent-55);
-}
-.asm-close:hover { filter: brightness(1.15); }
-.asm-winpulse { animation: asm-winpulse 0.7s ease; }
-@keyframes asm-winpulse {
-    50% { box-shadow: 0 0 0 6px var(--accent-dark-navy),0 0 0 8px var(--accent-amber-light), 0 0 60px var(--shadow-amber-gold-90),0 24px 60px var(--shadow-black-translucent-80); }
-}
-.asm-jackpot { animation: asm-jackpot 0.4s ease infinite; }
-@keyframes asm-jackpot {
-    0%,100% { box-shadow: 0 0 0 6px var(--accent-dark-navy),0 0 0 8px var(--accent-amber-light), 0 0 50px var(--shadow-amber-gold-90),0 24px 60px var(--shadow-black-translucent-80); }
-    50% { box-shadow: 0 0 0 6px var(--accent-dark-navy),0 0 0 8px var(--accent-cream-very-light), 0 0 90px var(--shadow-amber-anim),0 24px 60px var(--shadow-black-translucent-80); }
-}
-
-/* ==========================================================================
    Titlescreen, sci-fi vertical menu (.ts-menu-*)
 
    The wrapper is stretched over the game canvas by Scene_Title.layoutOverlays
@@ -15166,8 +16313,10 @@ body.ascii-ui-active #title-menu-container {
     flex-direction: column;
     align-items: center;
     max-height: 84%;
+    max-width: 96%;
 }
 .mg-menu-title {
+    flex: 0 0 auto; /* the list shrinks into the panel, the heading never does */
     color: var(--accent-gold-pure, #ffd700);
     font-size: 34px;
     letter-spacing: 2px;
@@ -15183,9 +16332,30 @@ body.ascii-ui-active #title-menu-container {
     background: var(--shadow-black-translucent-55);
     border: 1px solid var(--accent-gold-pure-translucent-18);
     overflow-y: auto;
-    max-height: 100%;
     min-width: 300px;
+    /* Shrink into whatever the panel has left under the title instead of taking
+       its own 100% and having the last row clipped by the overlay's cap; this is
+       also the height applyGridLayout measures its column count from. */
+    flex: 0 1 auto;
+    min-height: 0;
 }
+/* A catalogue too long for one column is dealt down columns instead (the row
+   count is measured and written inline by Scene_MinigameList.applyGridLayout),
+   so the whole arcade is on screen at once with nothing to scroll. */
+.mg-menu-list.mg-grid {
+    display: grid;
+    grid-auto-flow: column;
+    /* Equal columns, each as wide as the longest title in the catalogue, which is
+       the width applyGridLayout counts the columns against. */
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 3px 8px;
+    align-content: start;
+    overflow-y: hidden;
+    min-width: 0;
+}
+/* The row metrics are deliberately NOT changed here: applyGridLayout measures a
+   rendered row to decide the column count, so a grid row must be the same size
+   as the column row it was measured from. */
 .mg-menu-list::-webkit-scrollbar {
     width: 8px;
 }
@@ -15221,463 +16391,6 @@ body.ascii-ui-active #title-menu-container {
     font-weight: normal;
     text-rendering: geometricPrecision;
     -webkit-font-smoothing: antialiased;
-}
-
-/* ==========================================================================
-   Horse race betting board (.hr-*)
-   The DOM half of AnimatedHorseRace.js. Same gold on black language as the
-   other UI plugins, every colour from the active theme's tokens. Deliberately
-   hard edged: 1px keylines, no blur, pixelated sprites, crisp browser type.
-   ========================================================================== */
-#horse-race-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    font-family: 'Square', monospace;
-    color: var(--text-primary-hover);
-}
-#horse-race-container * {
-    box-sizing: border-box;
-}
-.hr-frame {
-    pointer-events: auto;
-    /* Sized like the other full-board overlays (stock spread, empathize): the
-       board fills the display instead of sitting in a small centred box, so the
-       runners' names and the longer localised labels have room to breathe. */
-    width: min(96%, 1440px);
-    max-height: 94%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 16px 20px 18px;
-    background: var(--bg-panel);
-    border: 1px solid var(--accent-gold-pure);
-    box-shadow: inset 0 0 0 1px var(--accent-gold-pure-translucent-18);
-    overflow-y: auto;
-}
-.hr-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-muted-focus);
-}
-.hr-title {
-    font-size: 26px;
-    letter-spacing: 3px;
-    color: var(--accent-gold-pure);
-}
-.hr-tag {
-    font-size: 11px;
-    letter-spacing: 2px;
-    padding: 2px 8px;
-    color: var(--bg-panel);
-    background: var(--accent-gold-pure);
-}
-.hr-purse {
-    margin-left: auto;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-}
-.hr-purse-label {
-    font-size: 13px;
-    letter-spacing: 1px;
-    color: var(--text-muted-hover);
-}
-.hr-purse-value {
-    font-size: 22px;
-    color: var(--text-highlight-active);
-}
-.hr-help {
-    font-size: 14px;
-    line-height: 1.45;
-    color: var(--text-text-alt-12);
-    min-height: 20px;
-}
-.hr-inline-icon {
-    vertical-align: middle;
-    margin-right: 4px;
-}
-.hr-body {
-    display: flex;
-    gap: 18px;
-    align-items: flex-start;
-}
-.hr-col-main {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-/* The slip column follows the board's width so the longer localised labels
-   ("Vincita potenziale") stay on one line on a wide display and the column
-   still shrinks to a usable size in 4:3. */
-.hr-col-side {
-    flex: 0 0 clamp(240px, 24%, 340px);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.hr-section-title {
-    font-size: 13px;
-    letter-spacing: 3px;
-    color: var(--text-muted-hover);
-    margin: 4px 0 8px;
-}
-
-/* --- the field ---------------------------------------------------------- */
-.hr-list {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-.hr-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 8px 12px;
-    background: var(--bg-well);
-    border: 1px solid transparent;
-    border-left: 3px solid var(--border-muted-focus);
-    cursor: pointer;
-}
-.hr-row:hover {
-    background: var(--bg-primary-hover-translucent-35);
-}
-.hr-row.selected {
-    background: var(--bg-tertiary-focus-translucent-45);
-    border-color: var(--border-focus-hover);
-    border-left-color: var(--accent-gold-pure);
-}
-.hr-row.staked .hr-gate {
-    color: var(--bg-panel);
-    background: var(--accent-gold-pure);
-}
-.hr-gate {
-    width: 24px;
-    height: 24px;
-    line-height: 22px;
-    text-align: center;
-    font-size: 13px;
-    color: var(--text-muted-hover);
-    border: 1px solid var(--border-muted-focus);
-    flex-shrink: 0;
-}
-.hr-silk {
-    image-rendering: pixelated;
-}
-.hr-name {
-    flex: 1 1 auto;
-    min-width: 0;
-    font-size: 17px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-shadow: 1px 1px 0 var(--shadow-black-translucent-55);
-}
-.hr-form {
-    flex: 0 0 clamp(130px, 15%, 200px);
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-.hr-form-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.hr-form-row i {
-    font-style: normal;
-    font-size: 10px;
-    letter-spacing: 1px;
-    color: var(--text-disabled);
-    width: 26px;
-}
-.hr-meter {
-    flex: 1 1 auto;
-    height: 6px;
-    background: var(--bg-bg-alt-3);
-    border: 1px solid var(--border-muted-focus);
-    display: block;
-}
-.hr-meter > b {
-    display: block;
-    height: 100%;
-    background: var(--accent-gold-pure);
-}
-.hr-odds {
-    flex: 0 0 70px;
-    text-align: right;
-    font-size: 17px;
-    color: var(--text-secondary-active);
-}
-
-/* --- betting slip ------------------------------------------------------- */
-.hr-slip {
-    padding: 12px 14px;
-    background: var(--bg-well);
-    border: 1px solid var(--border-muted-focus);
-}
-.hr-slip-title {
-    font-size: 12px;
-    letter-spacing: 2px;
-    color: var(--text-muted-hover);
-    margin-bottom: 6px;
-}
-.hr-stepper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 10px;
-}
-.hr-step {
-    width: 26px;
-    height: 26px;
-    line-height: 24px;
-    text-align: center;
-    font-size: 14px;
-    color: var(--text-secondary-active);
-    border: 1px solid var(--border-muted-focus);
-    cursor: pointer;
-}
-.hr-step:hover {
-    color: var(--bg-panel);
-    background: var(--accent-gold-pure);
-}
-.hr-bet-value {
-    flex: 1 1 auto;
-    text-align: center;
-    font-size: 24px;
-    color: var(--text-highlight-active);
-}
-/* A label long enough to wrap (most of them once localised) must keep its
-   value on the label's first line, hence the baseline alignment and the
-   shrinking label / fixed value pair. */
-.hr-slip-line {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 13px;
-    line-height: 1.4;
-    padding: 3px 0;
-    color: var(--text-text-alt-12);
-}
-.hr-slip-line > span:first-child {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-.hr-slip-line b,
-.hr-slip-pick {
-    flex: 0 1 auto;
-    font-weight: normal;
-    color: var(--text-primary-hover);
-    max-width: 60%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.hr-dim {
-    color: var(--text-disabled);
-}
-.hr-win {
-    color: var(--text-text-alt-11);
-}
-.hr-loss {
-    color: var(--text-text-alt-10);
-}
-.hr-legend {
-    padding: 12px 14px;
-    font-size: 12px;
-    line-height: 1.6;
-    color: var(--text-disabled);
-    background: var(--bg-bg-alt-20);
-    border: 1px solid var(--border-muted-focus);
-}
-/* One key per paragraph: a wrapped line is indented under its own key so the
-   list still reads as one entry per row. */
-.hr-legend > div {
-    padding: 2px 0 2px 14px;
-    text-indent: -14px;
-}
-.hr-notice {
-    margin-top: 10px;
-    padding: 7px 10px;
-    font-size: 13px;
-    color: var(--text-secondary-active);
-    border-left: 3px solid var(--accent-gold-pure);
-    background: var(--bg-primary-hover-translucent-35);
-}
-.hr-notice-warn {
-    color: var(--text-text-alt-10);
-    border-left-color: var(--border-danger-active);
-}
-
-/* --- the track ---------------------------------------------------------- */
-.hr-track {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-.hr-lane {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 5px 10px;
-    background: var(--bg-well);
-    border: 1px solid transparent;
-}
-.hr-lane:nth-child(even) {
-    background: var(--bg-bg-alt-3);
-}
-.hr-lane.mine {
-    border-color: var(--accent-gold-pure);
-}
-.hr-lane.done .hr-pct {
-    color: var(--text-text-alt-11);
-}
-.hr-lane-gate {
-    width: 20px;
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-disabled);
-    flex-shrink: 0;
-}
-.hr-lane-name {
-    flex: 0 0 clamp(150px, 18%, 240px);
-    font-size: 15px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.hr-strip {
-    position: relative;
-    flex: 1 1 auto;
-    min-width: 0;
-    height: 40px;
-    border-left: 2px solid var(--border-muted-focus);
-    border-right: 2px solid var(--border-danger-active);
-    background: repeating-linear-gradient(90deg,
-        transparent 0 22px,
-        var(--accent-gold-pure-translucent-18) 22px 24px);
-}
-.hr-runner {
-    position: absolute;
-    top: 4px;
-    left: 0;
-    transform: translateX(-50%);
-    image-rendering: pixelated;
-}
-.hr-pct {
-    flex: 0 0 52px;
-    text-align: right;
-    font-size: 14px;
-    color: var(--text-muted-hover);
-}
-
-/* --- results ------------------------------------------------------------ */
-.hr-winner {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    background: var(--bg-well);
-    border: 1px solid var(--accent-gold-pure);
-}
-.hr-winner-name {
-    font-size: 22px;
-    flex: 1 1 auto;
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.hr-winner-tag {
-    font-size: 10px;
-    letter-spacing: 2px;
-    padding: 2px 6px;
-    color: var(--bg-panel);
-    background: var(--accent-gold-pure);
-}
-.hr-verdict {
-    font-size: 30px;
-    letter-spacing: 3px;
-    text-align: center;
-    margin: 14px 0;
-}
-.hr-result-line {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 15px;
-    padding: 4px 12px;
-    color: var(--text-text-alt-12);
-}
-.hr-result-line b {
-    font-weight: normal;
-    color: var(--text-primary-hover);
-}
-.hr-order {
-    padding: 12px 14px;
-    background: var(--bg-bg-alt-20);
-    border: 1px solid var(--border-muted-focus);
-}
-.hr-order-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    padding: 3px 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.hr-place {
-    width: 18px;
-    flex-shrink: 0;
-    text-align: center;
-    color: var(--text-disabled);
-}
-
-/* --- buttons ------------------------------------------------------------ */
-.hr-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border-muted-focus);
-}
-.hr-btn {
-    padding: 9px 24px;
-    font-size: 14px;
-    letter-spacing: 2px;
-    color: var(--text-secondary-active);
-    background: var(--bg-well);
-    border: 1px solid var(--border-muted-focus);
-    cursor: pointer;
-}
-.hr-btn:hover {
-    border-color: var(--accent-gold-pure);
-    background: var(--bg-tertiary-focus-translucent-45);
-}
-.hr-btn-primary {
-    color: var(--bg-panel);
-    background: var(--accent-gold-pure);
-    border-color: var(--accent-gold-pure);
-}
-.hr-btn-primary:hover {
-    filter: brightness(1.12);
-}
-.hr-btn-off {
-    opacity: 0.4;
-    cursor: default;
 }
 
 /* ==========================================================================
@@ -16105,3 +16818,158 @@ body.ascii-ui-active .mp-type-spread {
     letter-spacing: 1px;
     text-align: center;
 }
+
+/* =========================================================================
+   The disease sheet (.dz-*)
+   -------------------------------------------------------------------------
+   One stylesheet for one renderer: Health_DiseaseSystem draws the illnesses
+   page, and the Biologics chapter, the status screen tab and the Archive
+   dossier all print that same markup, so they cannot drift apart.
+   ========================================================================= */
+.dz-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: 'Lora', serif;
+}
+
+.dz-card {
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    border-left: 4px solid var(--text-primary-hover);
+    border-radius: 6px;
+    padding: 8px 10px;
+    background: var(--bg-primary-hover-translucent-35);
+}
+
+.dz-card.dz-sev-severe { border-left-color: var(--accent-gold-pure); }
+.dz-card.dz-sev-lethal { border-left-color: var(--text-danger, #b23); }
+.dz-card.dz-card-flat { border-left-width: 1px; }
+
+.dz-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.dz-name {
+    font-weight: bold;
+    font-size: 1.02em;
+    color: var(--text-text-alt-2);
+}
+
+.dz-cat {
+    font-size: 0.75em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-text-alt-9-translucent-50);
+}
+
+.dz-desc {
+    font-size: 0.85em;
+    font-style: italic;
+    margin: 4px 0 6px;
+    color: var(--text-text-alt-16);
+}
+
+.dz-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 2px 0 4px;
+}
+
+.dz-chip {
+    font-size: 0.72em;
+    padding: 1px 6px;
+    border-radius: 8px;
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    color: var(--text-text-alt-16);
+}
+
+.dz-chip-hot { border-color: var(--accent-gold-pure); color: var(--accent-gold-pure); }
+.dz-chip-bad { border-color: var(--text-danger, #b23); color: var(--text-danger, #b23); }
+.dz-chip-good { border-color: var(--text-success, #3a7); color: var(--text-success, #3a7); }
+.dz-chip-unknown { font-style: italic; }
+
+.dz-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.82em;
+    padding: 1px 0;
+}
+
+.dz-line.dz-warn .dz-val { color: var(--text-danger, #b23); }
+.dz-key { color: var(--text-text-alt-9-translucent-50); }
+.dz-val { color: var(--text-text-alt-2); text-align: right; }
+
+.dz-bar {
+    height: 6px;
+    margin: 6px 0 2px;
+    border-radius: 3px;
+    background: var(--shadow-primary-hover-translucent-5);
+    overflow: hidden;
+}
+
+.dz-bar-fill {
+    height: 100%;
+    background: var(--text-primary-hover);
+    transition: width 0.25s ease;
+}
+
+.dz-remedies { margin-top: 6px; }
+
+.dz-remedies-label {
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-text-alt-9-translucent-50);
+    margin-bottom: 3px;
+}
+
+/* A remedy the party is not carrying is dimmed rather than hidden: knowing
+   what you would need is half of what the page is for. */
+.dz-remedy {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8em;
+    padding: 2px 4px;
+    border-radius: 4px;
+    opacity: 0.55;
+}
+
+.dz-remedy.dz-have {
+    opacity: 1;
+    background: var(--border-primary-hover-translucent-15);
+}
+
+.dz-remedy-none { font-style: italic; opacity: 0.7; }
+.dz-remedy-name { flex: 1 1 auto; color: var(--text-text-alt-2); }
+.dz-remedy-course { color: var(--text-text-alt-9-translucent-50); }
+.dz-remedy-have { min-width: 3.2em; text-align: right; }
+
+.dz-icon {
+    display: inline-block;
+    flex: 0 0 auto;
+    image-rendering: pixelated;
+}
+
+.dz-section {
+    font-size: 0.75em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-text-alt-9-translucent-50);
+    border-bottom: 1px solid var(--border-primary-hover-translucent-15);
+    padding-bottom: 2px;
+    margin-top: 4px;
+}
+
+.dz-past, .dz-empty {
+    font-size: 0.85em;
+    color: var(--text-text-alt-16);
+    font-style: italic;
+}
+
+.dz-dossier { display: flex; flex-direction: column; gap: 1px; }

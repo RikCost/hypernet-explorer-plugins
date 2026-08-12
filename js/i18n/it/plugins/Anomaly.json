@@ -1059,7 +1059,7 @@
           "aria abbastanza densa da nuotarci"
         ],
         "hazard": [
-          "uno scafo al limite di profondita",
+          "uno scafo al limite di profondità",
           "il taglio tra gli strati",
           "nessun fondo su cui fermarsi"
         ],
@@ -1099,7 +1099,7 @@
           "un mare senza sponde"
         ],
         "hazard": [
-          "la profondita sotto lo scafo",
+          "la profondità sotto lo scafo",
           "un'onda che cresce dal nulla",
           "qualunque cosa tenga limpida l'acqua"
         ],
@@ -2388,7 +2388,7 @@
           }
         },
         "c1": {
-          "text": "Prende la cima, la prova, la avvolge come si deve, e ci ormeggia il lander, e poi consegna a {leader} la cosa che porta con se dall'arrivo della prima nave.",
+          "text": "Prende la cima, la prova, la avvolge come si deve, e ci ormeggia il lander, e poi consegna a {leader} la cosa che porta con sé dall'arrivo della prima nave.",
           "outcome": {
             "kind": "artifact",
             "mag": "large",
@@ -2729,7 +2729,7 @@
           }
         },
         "c1": {
-          "text": "Tre scambi e finisce le frasi registrate e comincia a costruirsene di sue, male, e il modo in cui sbaglia e ciò che tutti ricorderanno.\nSe ne va. Lascia qualcosa dietro di se, su {ground}, a metà strada.",
+          "text": "Tre scambi e finisce le frasi registrate e comincia a costruirsene di sue, male, e il modo in cui sbaglia e ciò che tutti ricorderanno.\nSe ne va. Lascia qualcosa dietro di sé, su {ground}, a metà strada.",
           "outcome": {
             "kind": "gear",
             "slot": "armor",

@@ -17,11 +17,7 @@
   "skillAttack": "공격",
   "skillFinish": "",
   "ui": {
-    "hintCycle": "",
     "bet": "",
-    "hintBet": "",
-    "hintConfirm": "",
-    "keepCurrentBet": "",
-    "hintChoose": ""
+    "keepCurrentBet": ""
   }
 }

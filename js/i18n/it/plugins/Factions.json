@@ -43,6 +43,29 @@
   "selectTitle": "Scegli una fazione",
   "selectHint": "Scegli una fazione dall'elenco a sinistra per vederne ideologia, dirigenza e rapporti diplomatici.",
   "councilLeaders": "Guide del consiglio:",
+  "currentGovernment": "Governo attuale:",
+  "rulingPartyLine": "partito di governo: {party}",
+  "independentParty": "Indipendente",
   "independent": "Indipendente.",
-  "diplomaticAgreements": "Accordi diplomatici"
+  "diplomaticAgreements": "Accordi diplomatici",
+  "branches": "Rami:",
+  "standingOf": "Considerazione di {name}:",
+  "noDossier": "Non esiste un dossier su questa potenza.",
+  "power": {
+    "holyvaticanempire": "Sacro Impero Vaticano",
+    "britannia": "Britannia",
+    "sovietunion": "Unione Sovietica",
+    "ottomanempire": "Impero Ottomano",
+    "goblinhorde": "Orda dei Goblin",
+    "freestatesofmidwest": "Stati Liberi del Midwest",
+    "cascadiaprotectorate": "Protettorato di Cascadia",
+    "easternseaboard": "Costa Orientale",
+    "magesguild": "Gilda dei Maghi",
+    "archivefoundation": "Fondazione Archivio",
+    "hypercapitalistcollective": "Collettivo Ipercapitalista",
+    "thegods": "Gli Dei",
+    "continentalunion": "Unione Continentale",
+    "thetourists": "I Turisti",
+    "thedargos": "I Dargos"
+  }
 }

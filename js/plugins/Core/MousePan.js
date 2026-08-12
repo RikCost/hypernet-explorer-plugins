@@ -46,8 +46,68 @@
 
             // Prevent default scrolling behavior
             e.preventDefault();
+        } else if (isMap315CameraZoomable()) {
+            const delta = e.deltaY;
+            map315Zoom = clampMap315Zoom(map315Zoom + (delta < 0 ? MAP315_WHEEL_STEP : -MAP315_WHEEL_STEP));
+            e.preventDefault();
         }
     }, { passive: false });
+
+    // ------------------------------------------------------------------------
+    // Map 315 Camera Zoom (mouse wheel + controller L2/R2)
+    // ------------------------------------------------------------------------
+    // The world map (315) is walked on foot like any other map, so unlike the
+    // fullscreen "M" map sheet (WorldMap.js, its own independent zoomScale) this
+    // zooms the live game camera via the engine's own Game_Screen zoom, centred
+    // on the screen (the player stays centred by MousePan's own scroll-follow).
+    const MAP315_ID = 315;
+    const MAP315_ZOOM_MIN = 0.5;
+    const MAP315_ZOOM_MAX = 2.5;
+    const MAP315_WHEEL_STEP = 0.1;
+    const MAP315_TRIGGER_RATE = 0.03; // zoom change per frame at full trigger pull
+    const MAP315_TRIGGER_DEADZONE = 0.15;
+
+    let map315Zoom = 1;
+    let map315ZoomActive = false;
+
+    function clampMap315Zoom(v) {
+        return Math.max(MAP315_ZOOM_MIN, Math.min(MAP315_ZOOM_MAX, v));
+    }
+
+    function isMap315CameraZoomable() {
+        if (!(SceneManager._scene instanceof Scene_Map)) return false;
+        if (!$gameMap || $gameMap.mapId() !== MAP315_ID) return false;
+        if (window.isWorldMapFullscreen && window.isWorldMapFullscreen()) return false;
+        if (window.$gameSplitScreen && window.$gameSplitScreen.active) return false;
+        if ($gameSystem && $gameSystem._mousePanDisabled) return false;
+        return true;
+    }
+
+    // Per-frame driver: applies the wheel-set zoom, reads L2/R2 (right trigger
+    // zooms in, left trigger zooms out) through the shared AnalogStickInput
+    // helper (core Input.gamepadMapper does not cover buttons 6/7), and snaps
+    // back to neutral the moment the player leaves map 315 or the world map is
+    // opened, so the zoom never leaks onto another map's camera.
+    Scene_Map.prototype.updateMap315Zoom = function () {
+        if (!isMap315CameraZoomable()) {
+            if (map315ZoomActive) {
+                map315Zoom = 1;
+                map315ZoomActive = false;
+                $gameScreen.setZoom(Graphics.width / 2, Graphics.height / 2, 1);
+            }
+            return;
+        }
+
+        if (window.AnalogStickInput) {
+            const rt = window.AnalogStickInput.rightTrigger ? window.AnalogStickInput.rightTrigger() : 0;
+            const lt = window.AnalogStickInput.leftTrigger ? window.AnalogStickInput.leftTrigger() : 0;
+            const pull = (rt > MAP315_TRIGGER_DEADZONE ? rt : 0) - (lt > MAP315_TRIGGER_DEADZONE ? lt : 0);
+            if (pull) map315Zoom = clampMap315Zoom(map315Zoom + pull * MAP315_TRIGGER_RATE);
+        }
+
+        map315ZoomActive = true;
+        $gameScreen.setZoom(Graphics.width / 2, Graphics.height / 2, map315Zoom);
+    };
 
     let isDragging = false;
     let dragStartX = 0;
@@ -225,6 +285,7 @@
             const isWorldMapFullscreen = window.isWorldMapFullscreen && window.isWorldMapFullscreen();
             if (!$gameSystem._mousePanDisabled && !isWorldMapFullscreen) {
                 this.updateMousePan();
+                this.updateMap315Zoom();
 
                 // Save current state (only write when it actually changed)
                 if (!$gameSystem._mousePan) $gameSystem._mousePan = {};
@@ -366,7 +427,7 @@
 
     // i18n-ignore-start: fallback ids; the display copy comes from classes.json
     const classNames = {
-        1: "Freelancer", 2: "Witch", 3: "Nun", 4: "Knight", 5: "Wrestler",
+        1: "Freelancer", 2: "Witch", 3: "Nun", 4: "Knight", 5: "Convoker",
         6: "CEO", 7: "Vampire", 8: "Cultist", 9: "Combat Medic", 10: "Elementalist",
         11: "Martial Artist", 12: "Enchanter", 13: "Berserker", 14: "Acrobat", 15: "Monk",
         16: "Brawler", 17: "Boxer", 18: "Pro Wrestler", 19: "Fire Mage", 20: "Ice Mage",
@@ -383,6 +444,10 @@
 
     // Default horizontal offset. Can be overridden in event notes with <xOffset: number>
     const X_OFFSET = 0;
+
+    // The world map draws its own place names (WorldMap.js / MapLabels), so the
+    // event hover would only repeat them over the teleport markers.
+    const WORLD_MAP_ID = 315;
 
     // Canvas element + scale are cached: getElementById/getBoundingClientRect
     // every frame is expensive. Invalidated on window resize and when the
@@ -644,8 +709,9 @@
             }
         };
 
-        // Disable in split-screen
-        if (window.$gameSplitScreen && window.$gameSplitScreen.active) {
+        // Disable in split-screen, and on the world map entirely
+        if (($gameMap && $gameMap.mapId() === WORLD_MAP_ID) ||
+            (window.$gameSplitScreen && window.$gameSplitScreen.active)) {
             this._eventHoverWindow.hide();
             if (this._eventHoverWindows) {
                 this._eventHoverWindows.forEach(win => win.hide());

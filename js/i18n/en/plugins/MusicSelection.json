@@ -7,7 +7,6 @@
   "playingAsBattle": "Playing as battle background music.",
   "composer": "Composer",
   "currentSelection": "✓ Current selection",
-  "hint": "↑↓ preview · OK select · Esc cancel",
   "ui": {
     "pressOkHint": "Press OK to set as battle music"
   }

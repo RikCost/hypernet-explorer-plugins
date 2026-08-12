@@ -1,0 +1,20 @@
+{
+  "stage": {
+    "baby": "BABY",
+    "adult": "ADULT"
+  },
+  "collected": "\\I[{icon}]COLLECTED \\c[14]{item}\\c[0] ×{qty}!",
+  "mapNumbered": "MAP {id}",
+  "itemNumbered": "ITEM #{id}",
+  "petNote": "A {stage} {animal} RAISED AT {place}.",
+  "cannotKeep": "YOU NO CAN KEEP ANIMALS HERE!",
+  "noAnimalToSell": "NO ANIMAL HERE TA SELL.",
+  "sold": "SOLD \\c[14]{animal}\\c[0] FOR €{amount}!",
+  "nothingToCollect": "NOTHIN' TA COLLECT YET.",
+  "youngAnimal": {
+    "one": "A YOUNG \\c[14]{animal}\\c[0]. FULLY GROWN IN ABOUT {count} DAY!",
+    "other": "A YOUNG \\c[14]{animal}\\c[0]. FULLY GROWN IN ABOUT {count} DAYS!"
+  },
+  "pleased": "DA \\c[14]{animal}\\c[0] IZ PLEASED TA SEE YOU!",
+  "nothingReady": "DA \\c[14]{animal}\\c[0] HAB NOTHIN' READY YET!"
+}

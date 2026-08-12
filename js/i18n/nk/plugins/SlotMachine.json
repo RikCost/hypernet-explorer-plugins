@@ -1,0 +1,18 @@
+{
+  "noThree": "THREE.JS IZ NOT LOADED - SLOT MACHINE UNAVAILABLE",
+  "noTokens": "YOU NO HAB ANY TOKENS.",
+  "notEnoughTokens": "NOT ENOUGH TOKENS! HAB {have}, NEED {need}!",
+  "spinning": "DA REELS IZ TURNIN'...",
+  "jackpot": "JACKPOT! THREE OF A KIND, WON {amount} TOKENS! (X{mult})",
+  "pair": "TWO MATCHIN' SYMBOLS, WON {amount} TOKENS!",
+  "noMatch": "NO MATCH. TRY AGAIN!",
+  "ui": {
+    "title": "FORTUNE",
+    "subtitle": "DELUXE",
+    "pressSpin": "PULL DA LEVER TA PLAY",
+    "tokens": "TOKENS",
+    "bet": "BET",
+    "lastWin": "LAST WIN",
+    "payouts": "PAYOUTS"
+  }
+}

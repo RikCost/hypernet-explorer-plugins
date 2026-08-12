@@ -218,6 +218,44 @@
             ? window.WorkSystem.destinationName(name)
             : String(name == null ? '' : name);
 
+    // ------------------------------------------------------------------------
+    // AFTER THE IMPACT
+    // ------------------------------------------------------------------------
+    // Once Earth has been struck out (switch 199, WorldMapTransfer.earthLost)
+    // there is no continent to cross and nothing left on it: the network is one
+    // stop. The book still opens, but the right page is not a map of Europe any
+    // more - it is the space the Earth used to be in, with the Omega Tower
+    // hanging at the middle of it, and that is the only place anything goes.
+    const OMEGA_TOWER_DEST = 'Omega Tower';   // i18n-ignore  Destinations.json key
+    // Middle of the 1232x1039 page the markers are laid out on.
+    const SPACE_CENTRE = { x: 616, y: 520 };
+
+    function earthLost() {
+        const WMT = window.WorldMapTransfer;
+        return !!(WMT && WMT.earthLost && WMT.earthLost());
+    }
+    // Where a destination's pin sits on the page. Off Earth every pin is the
+    // same pin, so the map is drawn from this rather than from the world tile
+    // the entry names.
+    function destPixel(dest) {
+        if (earthLost()) return { x: SPACE_CENTRE.x, y: SPACE_CENTRE.y };
+        const original = TRANSPORT_DESTINATIONS[dest && dest.name] || dest || {};
+        const image = original.image ||
+            (dest && dest.transportOverrides && dest.transportOverrides.image) || { x: 0, y: 0 };
+        return {
+            x: parseFloat(image.x) * SCALE_FACTOR + X_OFFSET,
+            y: parseFloat(image.y) * SCALE_FACTOR + Y_OFFSET,
+        };
+    }
+    // The party's own pin. They are already at the tower, so it is the same one.
+    function playerPixel() {
+        if (earthLost()) return { x: SPACE_CENTRE.x, y: SPACE_CENTRE.y };
+        return {
+            x: Math.round($gameVariables.value(playerXVar) * MAP_SCALE_X + MAP_OFFSET_X),
+            y: Math.round($gameVariables.value(playerYVar) * MAP_SCALE_Y + MAP_OFFSET_Y),
+        };
+    }
+
     let _travelSelectedIndex = 0;
     // Cached reference to the travel overlay element, set when it is created and
     // cleared when removed, so the per-frame Scene_Map hooks below avoid a
@@ -231,13 +269,13 @@
     for (const name in TRANSPORT_DESTINATIONS) {
         const dest = TRANSPORT_DESTINATIONS[name];
         
-        // Prioritize explicit fastTravelMap coordinates if they have been set
-        if (dest.fastTravelMap && (dest.fastTravelMap.x !== 0 || dest.fastTravelMap.y !== 0)) {
-            dest.image = { 
-                x: String(dest.fastTravelMap.x), 
-                y: String(dest.fastTravelMap.y) 
+        // Prioritize explicit mapOffset coordinates if they have been set
+        if (dest.mapOffset && (dest.mapOffset.x !== 0 || dest.mapOffset.y !== 0)) {
+            dest.image = {
+                x: String(dest.mapOffset.x),
+                y: String(dest.mapOffset.y)
             };
-        } 
+        }
         // Fallback to calculating from base tile coordinates
         else if (dest.base) {
             const x = Math.round(dest.base.x * MAP_SCALE_X + MAP_OFFSET_X);
@@ -294,7 +332,7 @@
 
     // The transport ids a Destinations.json entry may carry as an arrival
     // override. Every other key in an entry ("name", "type", "base",
-    // "fastTravelMap", "picture", "minLevel", ...) describes the place itself
+    // "mapOffset", "picture", "minLevel", ...) describes the place itself
     // and must never be mistaken for a transport stop.
     const TRANSPORT_KEYS = Object.keys(transportMultipliers);
 
@@ -633,8 +671,13 @@
     // Vehicle fuel/position are owned by VehicleSystem's per-vehicle stores
     // (window.VehicleFuel / window.VehiclePosition), NOT RPG Maker variables.
     // These helpers route through those stores.
-    function setVehiclePos(key, mapId, x, y) {
-        if (window.VehiclePosition) window.VehiclePosition.set(key, mapId, x, y);
+    // worldX/worldY are the map-315 square the vehicle is now parked on. They are
+    // passed explicitly wherever the destination knows them: a station or helipad
+    // map cannot be asked where in the world it is (most maps still carry the
+    // editor template's <Coords>, which is not an answer), so leaving it to be
+    // guessed is what stranded fast-travelled vehicles on the wrong square.
+    function setVehiclePos(key, mapId, x, y, worldX, worldY) {
+        if (window.VehiclePosition) window.VehiclePosition.set(key, mapId, x, y, worldX, worldY);
     }
     function vehPosMap(key) { return window.VehiclePosition ? window.VehiclePosition.mapId(key) : 0; }
     function vehPosX(key)   { return window.VehiclePosition ? window.VehiclePosition.x(key) : 0; }
@@ -719,6 +762,11 @@
             destinations.push({
                 name: destinationName,
                 fullName: 'Teleport - ' + destinationName,  // i18n-ignore  event name prefix
+                // What kind of place it is, straight off the entry: "city" for a
+                // town spanning four or more world-map tiles, "village" for a
+                // smaller one, "dungeon" for a delve nobody lives in,
+                // "gasStation" for a stop on the road.
+                type: transportData.type || 'village',   // i18n-ignore  Destinations.json id
                 mapId: defaultLocation.mapId,
                 x: defaultLocation.x,
                 y: defaultLocation.y,
@@ -742,26 +790,98 @@
         return initializeDestinationCache();
     }
 
+    // Every arrival carries the town's WORLD square alongside the tile it lands
+    // on. A transport override points at an interior map (a platform, a helipad)
+    // whose local coordinates say nothing about where in the world the party now
+    // is, and writing those into the world-coordinate variables is what used to
+    // leave "return to the world map" pointing at a tile picked out of a station
+    // floor plan.
+    function withWorldPosition(destination, dest) {
+        const world = getWorldPosition(destination);
+        dest.worldX = world.x;
+        dest.worldY = world.y;
+        return dest;
+    }
+
+    // ── Which places a transport actually serves ────────────────────────────
+    //
+    // A bus is not a train. A train needs a platform and a helicopter needs a
+    // pad, so both list only the entries that declare one of their own. The bus
+    // serves every TOWN, because every town has somewhere to stand and wait: the
+    // city generator guarantees a BusStop on every procedural city and burg it
+    // builds (ProceduralMapStructureGenerator.cityBusStops), so a procedural
+    // town is reachable whether or not anybody ever wrote a "bus" block for it,
+    // and the bus puts the party down at that shelter rather than on the world
+    // map outside it.
+    //
+    // A NON-procedural town is a hand-made map with no generated shelter
+    // anywhere in it, and nothing can invent a bus bay in an authored map. Such
+    // a town is listed only where its entry names the bay the bus pulls into,
+    // and the journey ends there exactly as it always did.
+    const PROC_TOWN_TYPES = ['city', 'village'];   // i18n-ignore  Destinations.json ids
+
+    function isProceduralTown(dest) {
+        const o = dest && dest.transportOverrides;
+        if (!o || o.procedural !== true) return false;
+        return PROC_TOWN_TYPES.includes(String(dest.type || '').toLowerCase());
+    }
+
+    function servesTransport(dest, transportType) {
+        const o = dest && dest.transportOverrides;
+        if (!o) return false;
+        if (o[transportType]) return true;
+        return transportType === 'bus' && isProceduralTown(dest);
+    }
+
     function getActualDestination(destination, transportType) {
+        // One arrival, whatever was picked and whatever it was picked on: the
+        // stations, the stops and the helipads were all on the ground.
+        if (earthLost()) {
+            const t = window.WorldMapTransfer.towerLanding();
+            return { mapId: t.mapId, x: t.x, y: t.y, name: destination.name };
+        }
         const overrides = destination.transportOverrides || {};
         const base = overrides['base'];
 
         // Vehicles always arrive on the world map, on the town's own tile.
         if (transportType === 'camper' || transportType === 'carsharing') {
-            if (base) return { mapId: 315, x: base.x, y: base.y, name: destination.name };
+            if (base) return withWorldPosition(destination, { mapId: 315, x: base.x, y: base.y, name: destination.name });
         }
 
         // A transport with its own station/stop/pad in the entry arrives there.
         if (TRANSPORT_KEYS.includes(transportType) && overrides[transportType]) {
             const override = overrides[transportType];
-            return { mapId: override.mapId, x: override.x, y: override.y, name: destination.name };
+            return withWorldPosition(destination, { mapId: override.mapId, x: override.x, y: override.y, name: destination.name });
         }
 
         // Everything else arrives on the world map at the town's base tile.
-        if (base) return { mapId: 315, x: base.x, y: base.y, name: destination.name };
+        if (base) return withWorldPosition(destination, { mapId: 315, x: base.x, y: base.y, name: destination.name });
 
         // Default destination
-        return { mapId: destination.mapId, x: destination.x, y: destination.y + 1, name: destination.name };
+        return withWorldPosition(destination, { mapId: destination.mapId, x: destination.x, y: destination.y + 1, name: destination.name });
+    }
+
+    // The world square an arrival lands on, for the world-coordinate variables and
+    // for a vehicle parked there: the destination's own square, falling back to
+    // the arrival tile when the trip is to the world map itself.
+    function destWorld(dest) {
+        if (!dest) return { x: 0, y: 0 };
+        if (typeof dest.worldX === 'number' && typeof dest.worldY === 'number') {
+            return { x: dest.worldX, y: dest.worldY };
+        }
+        if (dest.mapId === 315) return { x: dest.x, y: dest.y };
+        return { x: $gameVariables.value(playerXVar), y: $gameVariables.value(playerYVar) };
+    }
+
+    // Move the party's world square to where an arrival really is.
+    function setPlayerWorldFromDest(dest) {
+        const world = destWorld(dest);
+        if (window.WorldMapTransfer) {
+            window.WorldMapTransfer.setPlayerWorld(world.x, world.y);
+            return;
+        }
+        $gameVariables.setValue(playerXVar, world.x);
+        $gameVariables.setValue(playerYVar, world.y);
     }
 
     // World-map (map 315) tile of a destination. Distance, cost and travel time
@@ -770,6 +890,12 @@
     // the place is.
     function getWorldPosition(destination) {
         const base = destination.transportOverrides && destination.transportOverrides['base'];
+        // Off Earth there is no world tile to measure to and nothing to measure
+        // from: the party's own square is returned, so the distance is zero and
+        // with it the fare, the fuel and the hours (see calculateTravelCost).
+        if (earthLost()) {
+            return { x: $gameVariables.value(playerXVar), y: $gameVariables.value(playerYVar) };
+        }
         if (base) return { x: base.x, y: base.y };
         return { x: destination.x, y: destination.y };
     }
@@ -895,8 +1021,7 @@
             setTimeout(() => {
                 $gamePlayer.reserveTransfer(actualDest.mapId, actualDest.x, actualDest.y, 2, 0);
                 clearFastTravelData();
-                $gameVariables.setValue(playerXVar, actualDest.x);
-                $gameVariables.setValue(playerYVar, actualDest.y);
+                setPlayerWorldFromDest(actualDest);
                 $gameVariables.setValue(45, actualDest.mapId);
                 $gameScreen.startFadeIn(24);
                 $gamePlayer.setMovementLock(false);
@@ -911,14 +1036,14 @@
             const currentFuel = getCurrentFuel();
             setCurrentFuel(currentFuel - cost);
             const actualDest = getActualDestination(destination, data.selectedTransport);
-            setVehiclePos('camper', 315, actualDest.x, actualDest.y);
+            setVehiclePos('camper', 315, actualDest.x, actualDest.y, actualDest.x, actualDest.y);
 
         }
         else if (data.selectedTransport === 'carsharing') {
             const currentFuel = getCurrentCarFuel();
             setCurrentCarFuel(currentFuel - cost);
             const actualDest = getActualDestination(destination, data.selectedTransport);
-            setVehiclePos('car', 315, actualDest.x, actualDest.y);
+            setVehiclePos('car', 315, actualDest.x, actualDest.y, actualDest.x, actualDest.y);
 
         } else {
             $gameParty.loseGold(cost);
@@ -927,6 +1052,19 @@
         SceneManager._scene.closeFastTravelWindow();
         data.finalDestination = getActualDestination(destination, data.selectedTransport);
         data.originalMap = { mapId: $gameMap.mapId(), x: $gamePlayer.x, y: $gamePlayer.y };
+
+        // A bus into a procedural town has a second leg: the arrival above is on
+        // the world map at the town's own square, and the party is then taken
+        // down into the town itself, to its bus shelter. It is booked here and
+        // taken on the next map load, because the square has to be arrived at
+        // before it can be generated (the generator reads the tile the party is
+        // standing on). Booked only on the real travel path - the character
+        // creation and vehicle paths above all return before this line.
+        $gameSystem._busTownArrival =
+            (data.selectedTransport === 'bus' && isProceduralTown(destination))
+                ? { name: destination.name,
+                    x: data.finalDestination.x, y: data.finalDestination.y }
+                : null;
 
         // Always use stored player coordinates from variables for distance calculation
         const playerX = $gameVariables.value(playerXVar);
@@ -974,8 +1112,7 @@
             2, 0
         );
 
-        $gameVariables.setValue(playerXVar, data.finalDestination.x);
-        $gameVariables.setValue(playerYVar, data.finalDestination.y);
+        setPlayerWorldFromDest(data.finalDestination);
         $gameVariables.setValue(45, data.finalDestination.mapId);
         clearFastTravelData();
     }
@@ -1005,10 +1142,10 @@
             vehicle.setLocation(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
 
             // Persist the parked camper location to the position store.
-            setVehiclePos('camper', data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
+            const world = destWorld(data.finalDestination);
+            setVehiclePos('camper', data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1, world.x, world.y);
 
-            $gameVariables.setValue(playerXVar, data.finalDestination.x);
-            $gameVariables.setValue(playerYVar, data.finalDestination.y);
+            setPlayerWorldFromDest(data.finalDestination);
             $gameVariables.setValue(45, data.finalDestination.mapId);
             clearFastTravelData();
         }
@@ -1044,9 +1181,9 @@
             vehicle.setLocation(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
 
             // Persist the parked car location to the position store.
-            setVehiclePos('car', data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
-            $gameVariables.setValue(playerXVar, data.finalDestination.x);
-            $gameVariables.setValue(playerYVar, data.finalDestination.y);
+            const world = destWorld(data.finalDestination);
+            setVehiclePos('car', data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1, world.x, world.y);
+            setPlayerWorldFromDest(data.finalDestination);
             $gameVariables.setValue(45, data.finalDestination.mapId);
             clearFastTravelData();
         }
@@ -1078,9 +1215,9 @@
             vehicle.setLocation(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
 
             // Persist the parked airship location to the position store.
-            setVehiclePos('airship', data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
-            $gameVariables.setValue(playerXVar, data.finalDestination.x);
-            $gameVariables.setValue(playerYVar, data.finalDestination.y);
+            const world = destWorld(data.finalDestination);
+            setVehiclePos('airship', data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1, world.x, world.y);
+            setPlayerWorldFromDest(data.finalDestination);
             $gameVariables.setValue(45, data.finalDestination.mapId);
             clearFastTravelData();
         }
@@ -1141,10 +1278,99 @@
             data.finalDestination.y,
             2, 0
         );
-        $gameVariables.setValue(playerXVar, data.finalDestination.x);
-        $gameVariables.setValue(playerYVar, data.finalDestination.y);
+        setPlayerWorldFromDest(data.finalDestination);
         clearFastTravelData();
     }
+
+    // ── The second leg of a bus ride into a procedural town ─────────────────
+    // The coach has put the party down on the town's world square; now they get
+    // off at the shelter. The map does not exist until the square is generated,
+    // which is why this waits for the arrival rather than being folded into the
+    // arrival itself.
+    const PROC_MAP_ID_FT = 636;
+
+    // Every tile id the tileset draws a bus shelter with, single and grid alike.
+    function busStopTileIds(tilesetId) {
+        const U = window.ProcGenUtils;
+        if (!U || !U.Cache || !tilesetId) return null;
+        const all = U.Cache.getTilesetFeatures(tilesetId) || {};
+        const ids = new Set();
+        for (const v of all["BusStop"] || []) {  // i18n-ignore  Features.json id
+            if (v.type === "single" && v.tileId) ids.add(v.tileId);
+            else if (v.grid) for (const row of v.grid) for (const t of row) if (t) ids.add(t);
+        }
+        return ids.size ? ids : null;
+    }
+
+    // Where a passenger steps off: an open tile beside the shelter, never inside
+    // it. Returns null when the square holds no shelter at all, and the caller
+    // then falls back to the middle of the map, which is what walking in does.
+    function busStopArrivalTile() {
+        const pg = $gameSystem && $gameSystem._procGenData;
+        const data = pg && pg.generatedMapData;
+        if (!data) return null;
+        const U = window.ProcGenUtils;
+        const W = (U && U.PROC_MAP_WIDTH) || 64;
+        const H = (U && U.PROC_MAP_HEIGHT) || 64;
+        const ids = busStopTileIds(pg.currentBiomeTileset);
+        if (!ids) return null;
+
+        const layer = W * H;
+        const shelters = [];
+        for (let z = 1; z <= 3; z++) {
+            for (let i = 0; i < layer; i++) {
+                if (ids.has(data[z * layer + i])) shelters.push({ x: i % W, y: Math.floor(i / W) });
+            }
+        }
+        if (!shelters.length) return null;
+
+        const open = (x, y) =>
+            x > 0 && y > 0 && x < W - 1 && y < H - 1 &&
+            data[y * W + x] !== 0 &&
+            data[layer + y * W + x] === 0 &&
+            data[2 * layer + y * W + x] === 0 &&
+            data[3 * layer + y * W + x] === 0;
+
+        // Outward from the shelter a ring at a time, so the party lands as close
+        // to it as the street allows.
+        for (let r = 1; r <= 4; r++) {
+            for (const s of shelters) {
+                for (const [dx, dy] of [[0, r], [r, 0], [-r, 0], [0, -r], [r, r], [-r, r], [r, -r], [-r, -r]]) {
+                    if (open(s.x + dx, s.y + dy)) return { x: s.x + dx, y: s.y + dy };
+                }
+            }
+        }
+        return null;
+    }
+
+    function descendIntoBusTown() {
+        if (!$gameSystem.generateProceduralMap || !$gameSystem.generateProceduralMap()) return false;
+        const U = window.ProcGenUtils;
+        const tile = busStopArrivalTile() || {
+            x: Math.floor(((U && U.PROC_MAP_WIDTH) || 64) / 2),
+            y: Math.floor(((U && U.PROC_MAP_HEIGHT) || 64) / 2),
+        };
+        $gameVariables.setValue(110, 1);
+        $gameVariables.setValue(111, 1);
+        $gamePlayer.reserveTransfer(PROC_MAP_ID_FT, tile.x, tile.y, 2, 0);
+        return true;
+    }
+
+    const _Scene_Map_onMapLoaded_FTBus = Scene_Map.prototype.onMapLoaded;
+    Scene_Map.prototype.onMapLoaded = function () {
+        _Scene_Map_onMapLoaded_FTBus.call(this);
+        const booking = $gameSystem && $gameSystem._busTownArrival;
+        if (!booking) return;
+        // Only on the town's own world square, and only once. The square is
+        // checked as well as the map so a booking left behind by an abandoned
+        // trip cannot pull the party into some unrelated town later, and the
+        // booking is spent whether or not the descent works, so a square with no
+        // shelter on it never traps them in a loop of re-entering it.
+        if ($gameMap.mapId() !== 315) return;
+        if ($gamePlayer.x !== booking.x || $gamePlayer.y !== booking.y) return;
+        $gameSystem._busTownArrival = null;
+        descendIntoBusTown();
+    };
 
     const _DataManager_createGameObjects = DataManager.createGameObjects;
     DataManager.createGameObjects = function () {
@@ -1317,28 +1543,37 @@
         const transportType = data.selectedTransport;
         const playerX = $gameVariables.value(playerXVar);
         const playerY = $gameVariables.value(playerYVar);
+        const offEarth = earthLost();
 
-        const playerPixelX = Math.round(playerX * MAP_SCALE_X + MAP_OFFSET_X);
-        const playerPixelY = Math.round(playerY * MAP_SCALE_Y + MAP_OFFSET_Y);
+        const playerPix = playerPixel();
+        const playerPixelX = playerPix.x;
+        const playerPixelY = playerPix.y;
 
         // Filter and sort destinations
         const currentMapName = $dataMapInfos[$gameMap.mapId()]?.name || '';
         let filtered = data.destinations;
 
-        if (transportType === 'bus' || transportType === 'train' || transportType === 'helicopter') {
-            filtered = data.destinations.filter(dest => {
-                return dest.transportOverrides && dest.transportOverrides[transportType];
+        if (offEarth) {
+            // Every filter below asks a question about a network that no longer
+            // exists, so none of them is asked: one stop, always listed,
+            // whichever transport the party thinks they are taking.
+            filtered = data.destinations.filter(dest => dest.name === OMEGA_TOWER_DEST);
+        } else {
+            if (transportType === 'bus' || transportType === 'train' || transportType === 'helicopter') {
+                filtered = data.destinations.filter(dest => {
+                    return servesTransport(dest, transportType);
+                });
+            }
+
+            filtered = filtered.filter(dest => {
+                return !currentMapName.toLowerCase().includes(dest.name.toLowerCase());
             });
-        }
 
-        filtered = filtered.filter(dest => {
-            return !currentMapName.toLowerCase().includes(dest.name.toLowerCase());
-        });
-
-        if (data.allowedDestinations && data.allowedDestinations.length > 0) {
-            filtered = filtered.filter(dest =>
-                data.allowedDestinations.includes(dest.name)
-            );
+            if (data.allowedDestinations && data.allowedDestinations.length > 0) {
+                filtered = filtered.filter(dest =>
+                    data.allowedDestinations.includes(dest.name)
+                );
+            }
         }
 
         const destinationsWithDistance = filtered
@@ -1354,11 +1589,21 @@
         overlay.id = 'travel-overlay';
         _travelOverlayEl = overlay;
 
-        // When the list is not already restricted to train stations (i.e. the full
-        // destination list), flag the ones that do have a station so the rail
-        // network stays readable at a glance.
-        const markTrainStations = transportType !== 'train';
-        const hasTrainStation = dest => !!(dest && dest.transportOverrides && dest.transportOverrides.train);
+        // Gold is the transport network, and nothing else. A place reads as a hub
+        // when its Destinations.json entry declares an arrival stop of its own -
+        // any of them, a platform, a bus bay, a helipad - and that is the only
+        // thing that colours a pin or a row. It does not depend on which
+        // transport the player is taking, so the network reads the same however
+        // they are travelling.
+        const isHub = dest => !!(dest && dest.transportOverrides
+            && TRANSPORT_KEYS.some(key => dest.transportOverrides[key]));
+
+        // What kind of place it is comes from the entry's own "type" (city,
+        // village, dungeon, gasStation), which decides the SHAPE of the pin.
+        // Shape and colour are independent: a gold pin still reads as a city, a
+        // village or a delve.
+        const kindClass = dest => ' travel-kind-' +
+            String(dest && dest.type ? dest.type : 'village').toLowerCase();
 
         const listItemsHTML = destinationsWithDistance.map(item => {
             const dest = item.destination;
@@ -1383,15 +1628,15 @@
             }
 
             const disabledClass = enabled ? "" : "disabled";
-            const isStation = markTrainStations && hasTrainStation(dest);
-            const stationClass = isStation ? " has-train" : "";
-            const stationBadge = isStation
-                ? `<span class="travel-dest-train" title="${T('FastTravel.trainStationTitle')}">${T('FastTravel.stationBadge')}</span>`
+            const hub = isHub(dest);
+            const hubClass = hub ? " is-hub" : "";
+            const hubBadge = hub
+                ? `<span class="travel-dest-hub" title="${T('FastTravel.hubTitle')}">${T('FastTravel.hubBadge')}</span>`
                 : "";
 
             return `
-                <div class="travel-dest-item ${disabledClass}${stationClass}" data-name="${dest.name}" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
-                    <span class="travel-dest-name">${destLabel(dest.name)}${stationBadge}</span>
+                <div class="travel-dest-item ${disabledClass}${hubClass}${kindClass(dest)}" data-name="${dest.name}" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
+                    <span class="travel-dest-name">${destLabel(dest.name)}${hubBadge}</span>
                     <span class="travel-dest-meta">
                         <span>Distance: ${distanceInKm} km</span>
                         <span style="font-weight: bold; color: #ffcc66;">${costText}</span>
@@ -1402,19 +1647,18 @@
 
         const markersHTML = destinationsWithDistance.map(item => {
             const dest = item.destination;
-            const originalDest = TRANSPORT_DESTINATIONS[dest.name] || dest;
-            const image = originalDest.image || (dest.transportOverrides && dest.transportOverrides.image) || { x: "0", y: "0" };
-            const x = parseFloat(image.x) * SCALE_FACTOR + X_OFFSET;
-            const y = parseFloat(image.y) * SCALE_FACTOR + Y_OFFSET;
+            const pix = destPixel(dest);
+            const x = pix.x;
+            const y = pix.y;
 
-            const isStation = markTrainStations && hasTrainStation(dest);
-            const stationClass = isStation ? " has-train" : "";
-            const baseLabel = isStation
-                ? T('FastTravel.stationLabel', { place: destLabel(dest.name) }) : destLabel(dest.name);
+            const hub = isHub(dest);
+            const hubClass = hub ? " is-hub" : "";
+            const baseLabel = hub
+                ? T('FastTravel.hubLabel', { place: destLabel(dest.name) }) : destLabel(dest.name);
             const label = isSandbox ? `${baseLabel} (X: ${Math.round(x)}, Y: ${Math.round(y)})` : baseLabel;
 
             return `
-                <div class="travel-marker${stationClass}" id="marker-${dest.name}" style="left: ${x}px; top: ${y}px;" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
+                <div class="travel-marker${hubClass}${kindClass(dest)}" id="marker-${dest.name}" style="left: ${x}px; top: ${y}px;" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
                     <div class="travel-marker-tooltip">${label}</div>
                 </div>
             `;
@@ -1495,8 +1739,11 @@
                 <div class="travel-right-page">
                     <div class="travel-map-viewer" id="travel-viewer">
                         <div class="travel-map-wrapper" id="travel-wrapper">
-                            <img class="travel-map-img" src="img/worldmap/OldEuropeParacetamolo.png">
-                            
+                            ${offEarth
+                                ? `<div class="travel-map-space"><div class="travel-space-tower"
+                                        style="left:${SPACE_CENTRE.x}px; top:${SPACE_CENTRE.y}px;"></div></div>`
+                                : `<img class="travel-map-img" src="img/worldmap/OldEuropeParacetamolo.png">`}
+
                             <svg class="travel-svg-layer" viewBox="0 0 1232 1039">
                                 <path class="travel-route-line-bg" id="travel-route-bg" d=""></path>
                                 <path class="travel-route-line" id="travel-route" d=""></path>
@@ -1713,9 +1960,9 @@ Scene_Map.prototype.printTravelCoordinates = function () {
                 delete updatedDestinations[name].image;
             }
             
-            // If this location was moved in the current edit session, update its fastTravelMap coordinates
+            // If this location was moved in the current edit session, update its mapOffset coordinates
             if (positions[name]) {
-                updatedDestinations[name].fastTravelMap = {
+                updatedDestinations[name].mapOffset = {
                     x: Math.round(positions[name].x),
                     y: Math.round(positions[name].y)
                 };
@@ -1730,8 +1977,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
         const dest = data.destinations.find(d => d.name === destName);
         if (!dest) return;
 
-        const originalDest = TRANSPORT_DESTINATIONS[dest.name] || dest;
-        const image = originalDest.image || (dest.transportOverrides && dest.transportOverrides.image) || { x: "0", y: "0" };
+        const destPix = destPixel(dest);
 
         SoundManager.playCursor();
 
@@ -1756,8 +2002,8 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             const rect = viewer.getBoundingClientRect();
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            const destX = parseFloat(image.x) * SCALE_FACTOR + X_OFFSET;
-            const destY = parseFloat(image.y) * SCALE_FACTOR + Y_OFFSET;
+            const destX = destPix.x;
+            const destY = destPix.y;
             const startPanX = this._travelPanX;
             const startPanY = this._travelPanY;
             const targetPanX = centerX - destX * this._travelZoom;
@@ -1778,10 +2024,11 @@ Scene_Map.prototype.printTravelCoordinates = function () {
 
         const playerX = $gameVariables.value(playerXVar);
         const playerY = $gameVariables.value(playerYVar);
-        const playerPixelX = Math.round(playerX * MAP_SCALE_X + MAP_OFFSET_X);
-        const playerPixelY = Math.round(playerY * MAP_SCALE_Y + MAP_OFFSET_Y);
-        const destPixelX = parseFloat(image.x) * SCALE_FACTOR + X_OFFSET;
-        const destPixelY = parseFloat(image.y) * SCALE_FACTOR + Y_OFFSET;
+        const playerPix = playerPixel();
+        const playerPixelX = playerPix.x;
+        const playerPixelY = playerPix.y;
+        const destPixelX = destPix.x;
+        const destPixelY = destPix.y;
 
         const routeLine = document.getElementById('travel-route');
         const routeLineBg = document.getElementById('travel-route-bg');
@@ -1810,8 +2057,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
         const dest = data.destinations.find(d => d.name === destName);
         if (!dest) return;
 
-        const originalDest = TRANSPORT_DESTINATIONS[dest.name] || dest;
-        const image = originalDest.image || (dest.transportOverrides && dest.transportOverrides.image) || { x: "0", y: "0" };
+        const destPix = destPixel(dest);
 
         // Play cursor sound
         SoundManager.playCursor();
@@ -1843,8 +2089,8 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             const rect = viewer.getBoundingClientRect();
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            const destX = parseFloat(image.x) * SCALE_FACTOR + X_OFFSET;
-            const destY = parseFloat(image.y) * SCALE_FACTOR + Y_OFFSET;
+            const destX = destPix.x;
+            const destY = destPix.y;
 
             const startPanX = this._travelPanX;
             const startPanY = this._travelPanY;
@@ -1875,10 +2121,11 @@ Scene_Map.prototype.printTravelCoordinates = function () {
         // Draw animated SVG route line
         const playerX = $gameVariables.value(playerXVar);
         const playerY = $gameVariables.value(playerYVar);
-        const playerPixelX = Math.round(playerX * MAP_SCALE_X + MAP_OFFSET_X);
-        const playerPixelY = Math.round(playerY * MAP_SCALE_Y + MAP_OFFSET_Y);
-        const destPixelX = parseFloat(image.x) * SCALE_FACTOR + X_OFFSET;
-        const destPixelY = parseFloat(image.y) * SCALE_FACTOR + Y_OFFSET;
+        const playerPix = playerPixel();
+        const playerPixelX = playerPix.x;
+        const playerPixelY = playerPix.y;
+        const destPixelX = destPix.x;
+        const destPixelY = destPix.y;
 
         const routeLine = document.getElementById('travel-route');
         const routeLineBg = document.getElementById('travel-route-bg');
@@ -2265,9 +2512,21 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             // Filter destinations based on transport type requirements
             let filteredDestinations = data.destinations;
 
+            // Off Earth the network is one stop and no filter below applies
+            // (see openFastTravelUIOverlay, which does the same for the book).
+            if (earthLost()) {
+                const tower = data.destinations.find(d => d.name === OMEGA_TOWER_DEST);
+                if (tower) {
+                    this.addCommand(T('FastTravel.destCost',
+                        { place: destLabel(tower.name), cost: '0.00', km: 0 }),
+                        "destination", true, tower);
+                }
+                return;
+            }
+
             if (transportType === 'bus' || transportType === 'train' || transportType === 'helicopter') {
                 filteredDestinations = data.destinations.filter(dest => {
-                    return dest.transportOverrides && dest.transportOverrides[transportType];
+                    return servesTransport(dest, transportType);
                 });
             }
 

@@ -65,7 +65,21 @@
     .map((id) => parseInt(id.trim()))
     .filter((id) => id > 0);
   const actorId = parseInt(parameters["actorId"]) || 1;
-  const getTraits = () => (window.Health ? window.Health.Traits || [] : []);
+  // The one list every trait UI in this file reads: the browsable categories,
+  // the randomizer and the Detailed editor's re-roll all go through it. A
+  // trait of the wrong nature is not offered at all in a severed or unbound
+  // world (window.MagicNature), so it is never browsed, never rolled and never
+  // printed on a sheet. A trait a character ALREADY carries is untouched: the
+  // level decides what is offered from now on, not what somebody is.
+  const getTraits = () => {
+    const all = (window.Health ? window.Health.Traits || [] : []);
+    const MN = window.MagicNature;
+    if (!MN || !MN.isFiltering()) return all;
+    const kept = all.filter(t => MN.allowsTrait(t));
+    // Never hand back an empty trait book: a world with no traits at all would
+    // leave character creation with a step it cannot complete.
+    return kept.length ? kept : all;
+  };
   // Database display names, localized. This plugin loads before
   // CharacterCreationShared, so the lookup stays lazy.
   const dbName = (entry) =>
@@ -75,13 +89,42 @@
   // theme.css so keyboard up/down moves the cursor by one visual row.
   const TRAIT_GRID_COLS = 4;
 
-  const TRAIT_CATEGORIES = ["genetic", "physical", "mental", "magical"];
+  // "diseases" is a fifth tab and not a fifth kind of trait: what is picked
+  // there is an illness the character walks in already carrying, it costs none
+  // of the four trait slots, and it is handed to Health_DiseaseSystem rather
+  // than folded into paramPlus.
+  const TRAIT_CATEGORIES = ["genetic", "physical", "mental", "magical", "diseases"];
   const TRAIT_CATEGORY_LABELS = {
     genetic: "tabGenetic",
     physical: "tabPhysical",
     mental: "tabMental",
     magical: "tabMagical",
+    diseases: "tabDiseases",
   };   // i18n-ignore: keys into Traits.<tab*>
+  const DISEASE_CATEGORY = "diseases";  // i18n-ignore: category key
+
+  // The illness library, dressed as trait cards so one grid draws both. A
+  // stage nobody catches (AIDS is reached, never contracted) is left off the
+  // board; everything else in the library can be chosen freely.
+  const getDiseaseCards = () => {
+    const api = window.DiseaseSystem;
+    if (!api || !api.all) return [];
+    return api.all()
+      .filter((d) => !d.stageOnly)
+      .map((d) => ({
+        id: "disease:" + d.id,          // i18n-ignore: card identity
+        diseaseId: d.id,
+        category: DISEASE_CATEGORY,
+        icon: 180,
+        name: d.name,
+        description: d.desc,
+        positive: {},
+        negative: {},
+        skills: [], items: [], equipment: [], switches: [], incompatible: [],
+        _disease: d,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  };
 
   const t = (key) => T('Traits.' + key);
 
@@ -180,7 +223,7 @@
     const rows = [];
     window.Specializations.list.forEach((spec) => {
       const lvl = spec.traitStart && spec.traitStart[slug];
-      if (lvl) rows.push({ name: spec.name, levelName: window.Specializations.levelName(lvl) });
+      if (lvl) rows.push({ name: window.Specializations.displayName(spec), levelName: window.Specializations.levelName(lvl) });
     });
     rows.sort((a, b) => a.name.localeCompare(b.name));
     return rows;
@@ -207,6 +250,7 @@
     create() {
       super.create();
       this._selectedTraits = [];
+      this._selectedDiseases = [];
       this._currentCategory = TRAIT_CATEGORIES[0];
       this._cursor = 0;
       // Confirmation prompt: null when closed, otherwise the focused answer.
@@ -281,6 +325,10 @@
     currentTraits() {
       const category = this._currentCategory || TRAIT_CATEGORIES[0];
       if (!this._categoryCache) this._categoryCache = {};
+      if (category === DISEASE_CATEGORY) {
+        if (!this._diseaseCards || !this._diseaseCards.length) this._diseaseCards = getDiseaseCards();
+        return this._diseaseCards;
+      }
       if (!this._categoryCache[category]) {
         const rows = getTraits().filter((trait) => (trait.category || "mental") === category);
         // Do not memoise an empty result: window.Health may still be loading.
@@ -311,6 +359,11 @@
     // A trait can be bound unless it is already bound, the four slots are full,
     // or it clashes with something already bound.
     traitState(trait) {
+      // An illness never competes for a trait slot, so it is never blocked and
+      // never counts toward the four.
+      if (trait && trait.diseaseId) {
+        return { selected: this._selectedDiseases.includes(trait), incompatible: false, blocked: false };
+      }
       const selected = this._selectedTraits.includes(trait);
       const incompatible = !selected && this._selectedTraits.some(
         (bound) =>
@@ -357,6 +410,11 @@
 
             <div class="cc-dossier-card" id="ts-slots"></div>
 
+            <div class="cc-dossier-card" id="ts-diseases-card" style="display: none;">
+              <h3 class="cc-subheader">${t("selectedDiseasesLabel")}</h3>
+              <div id="ts-diseases" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+            </div>
+
             <div class="cc-dossier-card">
               <h3 class="cc-subheader">${t("totalBonuses")}</h3>
               <div id="ts-bonuses" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
@@ -382,6 +440,8 @@
       const q = (selector) => this._dndContainer.querySelector(selector);
       this._el = {
         tabs: q("#ts-tabs"),
+        diseases: q("#ts-diseases"),
+        diseasesCard: q("#ts-diseases-card"),
         grid: q("#ts-grid"),
         info: q("#ts-info"),
         slots: q("#ts-slots"),
@@ -448,6 +508,7 @@
         this._el.info.innerHTML = "";
         return;
       }
+      if (trait.diseaseId) return this.renderDiseaseInfo(trait);
 
       const statBadges = (stats, color) => Object.keys(stats || {}).map((key) => {
         const value = stats[key];
@@ -522,6 +583,36 @@
       });
     }
 
+    // The illnesses chosen on the diseases tab, listed on the right page under
+    // the four trait slots. The card hides itself while none are picked, so a
+    // party built without one never sees it.
+    renderDiseases() {
+      if (!this._el.diseases) return;
+      const cards = this._selectedDiseases;
+      this._el.diseasesCard.style.display = cards.length ? "" : "none";
+      this._el.diseases.innerHTML = cards.map((card, idx) => `
+        <span class="cc-element-badge focusable" data-disease-slot="${idx}" style="cursor: pointer;">
+          <span style="${this.getIconStyle(card.icon, 16)} margin-right: 6px;"></span>${card.name} ✕
+        </span>
+      `).join("");
+      this._el.diseases.querySelectorAll("[data-disease-slot]").forEach((node) => {
+        const at = parseInt(node.dataset.diseaseSlot, 10);
+        node.addEventListener("click", () => this.releaseTrait(this._selectedDiseases[at]));
+      });
+    }
+
+    // The open card for an illness is the disease system's own dossier, so it
+    // reads exactly as it will on the character sheet afterwards.
+    renderDiseaseInfo(card) {
+      const api = window.DiseaseSystem;
+      this._el.info.innerHTML = `
+        <div class="cc-dossier-card">
+          <h3 class="cc-subheader">${card.name}</h3>
+          ${api && api.diseaseDossierHTML ? api.diseaseDossierHTML(card.diseaseId) : `<p class="cc-text-desc">${card.description}</p>`}
+        </div>
+      `;
+    }
+
     renderBonuses() {
       const totals = this.calculateTotalBonuses();
       const badges = Object.keys(totals).filter((key) => totals[key] !== 0).map((key) => {
@@ -587,11 +678,13 @@
       const starved = this._cardEls.length === 0 && this.currentTraits().length > 0;
       if (force || starved || sig.category !== this._currentCategory) this.renderGrid();
 
-      const selectionSig = this._selectedTraits.map((trait) => trait.id).join(",");
+      const selectionSig = this._selectedTraits.map((trait) => trait.id).join(",") +
+        "|" + this._selectedDiseases.map((card) => card.id).join(","); // i18n-ignore: signature
       const selectionChanged = force || sig.selection !== selectionSig;
       if (selectionChanged) {
         sig.selection = selectionSig;
         this.renderSlots();
+        this.renderDiseases();
         this.renderBonuses();
         this.renderSkills();
       }
@@ -654,6 +747,13 @@
     // Binds a free trait, releases a bound one, buzzes on anything blocked.
     toggleTrait(trait) {
       if (!trait) return;
+      if (trait.diseaseId) {
+        const at = this._selectedDiseases.indexOf(trait);
+        if (at >= 0) { SoundManager.playCancel(); this._selectedDiseases.splice(at, 1); }
+        else { SoundManager.playOk(); this._selectedDiseases.push(trait); }
+        this.syncOverlay(false);
+        return;
+      }
       const state = this.traitState(trait);
       if (state.selected) {
         this.releaseTrait(trait);
@@ -667,6 +767,14 @@
     }
 
     releaseTrait(trait) {
+      if (trait && trait.diseaseId) {
+        const idx = this._selectedDiseases.indexOf(trait);
+        if (idx < 0) return;
+        SoundManager.playCancel();
+        this._selectedDiseases.splice(idx, 1);
+        this.syncOverlay(false);
+        return;
+      }
       const at = this._selectedTraits.indexOf(trait);
       if (at < 0) return;
       SoundManager.playCancel();
@@ -832,7 +940,32 @@
         });
       });
 
+      // Whatever was picked on the diseases tab is handed straight to
+      // Health_DiseaseSystem: it is an illness, not a stat block, and it
+      // arrives already running so its window period and its course start the
+      // moment the character does. Re-entering this step replaces the list
+      // rather than stacking it.
+      this.applySelectedDiseases(actor);
+
       actor.refresh();
+    }
+
+    applySelectedDiseases(actor) {
+      const api = window.DiseaseSystem;
+      if (!api || !api.infectActor) return;
+      // Two entries in the trait list were illnesses all along: Possessed and
+      // Lycanthrope are caught, they run a course and the right rite answers
+      // them, so they carry a `disease` pointer and are handed over here
+      // instead of being folded into paramPlus.
+      const wanted = this._selectedDiseases.map((card) => card.diseaseId)
+        .concat(this._selectedTraits.map((trait) => trait.disease).filter(Boolean));
+      for (const entry of [...(actor._diseases || [])]) {
+        if ((actor._ccDiseases || []).includes(entry.id) && !wanted.includes(entry.id)) {
+          api.cureActor(actor, entry.id);
+        }
+      }
+      for (const id of wanted) api.infectActor(actor, id, null, null, { silent: true });
+      actor._ccDiseases = wanted.slice();
     }
 
     // New method to apply traits by ID array (for use by other plugins like ClassSelector)

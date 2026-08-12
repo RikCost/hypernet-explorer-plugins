@@ -1385,7 +1385,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Dungeon_HeroMan1",
+            "characterName": "NPCs/!$CarPilot1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -1464,10 +1464,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Dungeon_HeroMan1",
+            "characterName": "NPCs/!$CarPilot6",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 5
+            "characterIndex": 0
           },
           "list": [
             {
@@ -1534,10 +1534,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Dungeon_HeroMan1",
+            "characterName": "NPCs/!$CarPilot6",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 5
+            "characterIndex": 0
           },
           "list": [
             {
@@ -1604,7 +1604,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -1655,14 +1655,14 @@
             "switch1Valid": false,
             "switch2Id": 1,
             "switch2Valid": false,
-            "variableId": 66,
+            "variableId": 131,
             "variableValid": true,
-            "variableValue": 10000
+            "variableValue": 50
           },
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -1694,64 +1694,6 @@
             "wait": false
           },
           "moveSpeed": 4,
-          "moveType": 2,
-          "priorityType": 1,
-          "stepAnime": false,
-          "through": false,
-          "trigger": 2,
-          "walkAnime": true
-        },
-        {
-          "conditions": {
-            "actorId": 1,
-            "actorValid": false,
-            "itemId": 1,
-            "itemValid": false,
-            "selfSwitchCh": "A",
-            "selfSwitchValid": false,
-            "switch1Id": 1,
-            "switch1Valid": false,
-            "switch2Id": 1,
-            "switch2Valid": false,
-            "variableId": 66,
-            "variableValid": true,
-            "variableValue": 100000
-          },
-          "directionFix": false,
-          "image": {
-            "tileId": 0,
-            "characterName": "Police",
-            "direction": 2,
-            "pattern": 1,
-            "characterIndex": 0
-          },
-          "list": [
-            {
-              "code": 117,
-              "indent": 0,
-              "parameters": [
-                124
-              ]
-            },
-            {
-              "code": 0,
-              "indent": 0,
-              "parameters": []
-            }
-          ],
-          "moveFrequency": 5,
-          "moveRoute": {
-            "list": [
-              {
-                "code": 0,
-                "parameters": []
-              }
-            ],
-            "repeat": true,
-            "skippable": false,
-            "wait": false
-          },
-          "moveSpeed": 5,
           "moveType": 2,
           "priorityType": 1,
           "stepAnime": false,
@@ -2741,10 +2683,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Heroes01Color",
+            "characterName": "NPCs/!$Jeweler2",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 1
+            "characterIndex": 0
           },
           "list": [
             {
@@ -2811,10 +2753,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Heroes01Color",
+            "characterName": "NPCs/!$Jeweler2",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 1
+            "characterIndex": 0
           },
           "list": [
             {
@@ -2890,10 +2832,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Heroes01Color",
+            "characterName": "NPCs/!$Jeweler2",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 1
+            "characterIndex": 0
           },
           "list": [
             {
@@ -2969,10 +2911,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Animals01Color",
+            "characterName": "NPCs/!$DogTail1",
             "direction": 8,
             "pattern": 1,
-            "characterIndex": 1
+            "characterIndex": 0
           },
           "list": [
             {
@@ -3120,7 +3062,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Dungeon_HeroMan1",
+            "characterName": "NPCs/!$CarPilot1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -3193,13 +3135,71 @@
             "switch2Id": 1,
             "switch2Valid": false,
             "variableId": 85,
-            "variableValid": true,
+            "variableValid": false,
             "variableValue": 6
           },
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
+            "direction": 2,
+            "pattern": 1,
+            "characterIndex": 0
+          },
+          "list": [
+            {
+              "code": 117,
+              "indent": 0,
+              "parameters": [
+                130
+              ]
+            },
+            {
+              "code": 0,
+              "indent": 0,
+              "parameters": []
+            }
+          ],
+          "moveFrequency": 5,
+          "moveRoute": {
+            "list": [
+              {
+                "code": 0,
+                "parameters": []
+              }
+            ],
+            "repeat": true,
+            "skippable": false,
+            "wait": false
+          },
+          "moveSpeed": 3,
+          "moveType": 1,
+          "priorityType": 1,
+          "stepAnime": false,
+          "through": false,
+          "trigger": 0,
+          "walkAnime": true
+        },
+        {
+          "conditions": {
+            "actorId": 1,
+            "actorValid": false,
+            "itemId": 1,
+            "itemValid": false,
+            "selfSwitchCh": "A",
+            "selfSwitchValid": false,
+            "switch1Id": 1,
+            "switch1Valid": false,
+            "switch2Id": 1,
+            "switch2Valid": false,
+            "variableId": 131,
+            "variableValid": true,
+            "variableValue": 50
+          },
+          "directionFix": false,
+          "image": {
+            "tileId": 0,
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -3266,10 +3266,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Dungeon_Monsters2",
+            "characterName": "NPCs/!$GoblinArtist1",
             "direction": 6,
             "pattern": 1,
-            "characterIndex": 1
+            "characterIndex": 0
           },
           "list": [
             {
@@ -4063,10 +4063,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Animals01Color",
+            "characterName": "NPCs/!$DogTail1",
             "direction": 6,
             "pattern": 0,
-            "characterIndex": 1
+            "characterIndex": 0
           },
           "list": [
             {
@@ -4211,10 +4211,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Animals01Color",
+            "characterName": "NPCs/!$AvianNoble1",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 2
+            "characterIndex": 0
           },
           "list": [
             {

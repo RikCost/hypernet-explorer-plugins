@@ -26,6 +26,7 @@
   "minigame": {
     "arena": "Arena",
     "camperDriving": "Guida Camper",
+    "dream": "Sogno",
     "surfing": "Surf",
     "pool": "Biliardo",
     "chess": "Scacchi",
@@ -37,6 +38,9 @@
     "tarotReading": "Lettura dei Tarocchi",
     "scratchCard": "Gratta e Vinci",
     "monsterTournament": "Torneo dei Mostri",
+    "cardBattle": "Battaglia di carte",
+    "cardBattleYou": "Sfidante",
+    "cardBattleFoe": "Sconosciuto",
     "hyperTamer": "Hyper Tamer",
     "periodicTable": "Tavola Periodica",
     "boosterPack": "Bustina",
@@ -132,7 +136,12 @@
     "restartTip": "La nuova build è installata. Clicca per riavviare il gioco su di essa.",
     "upToDate": "✦ GIÀ AGGIORNATO",
     "failed": "✦ AGGIORNAMENTO FALLITO, RIPROVA",
-    "tip": "C'è una build più recente in attesa. Clicca per installarla e riavviare."
+    "tip": "C'è una build più recente in attesa. Clicca per installarla e riavviare.",
+    "majorLine": "AGGIORNAMENTO MAJOR, POI RISCARICA IL GIOCO INTERO",
+    "majorTip": "Questa build è un aggiornamento major. Si installa da qui, ma per la piena compatibilità va riscaricato l'intero gioco.",
+    "majorInstalled": "AGGIORNAMENTO MAJOR INSTALLATO",
+    "majorInstalledLine": "RISCARICA L'INTERO GIOCO PER LA PIENA COMPATIBILITÀ",
+    "majorInstalledTip": "Questa copia è stata aggiornata attraverso un aggiornamento major. Riscarica l'intero gioco per la piena compatibilità."
   },
   "hyperverse": {
     "lead": "IPERVERSO // ",
@@ -144,7 +153,7 @@
     "catalogButton": "CATALOGO",
     "catalogTitle": "CATALOGO // CORPI NOTI",
     "catalogEmpty": "NESSUN CORPO CATALOGATO DISPONIBILE",
-    "catalogControls": "SU GIU: SELEZIONA . OK: INQUADRA . ANNULLA: CHIUDI",
+    "catalogControls": "SU GIÙ: SELEZIONA . OK: INQUADRA . ANNULLA: CHIUDI",
     "groups": {
       "planets": "PIANETI E LUNE",
       "stars": "STELLE",

@@ -26,6 +26,12 @@
  * - When rented, self switch A will be turned ON for that event
  * When the rent command is called, it will show a confirmation window.
  * If accepted, self switch A will be turned ON for 24 hours.
+ * * One bed, one party: a booking is written to the world folder
+ * (save/worlds/<name>/rentals.json) with the renting party's leader, so no
+ * other savegame of the same world can take that room for the day. They are
+ * told "Already booked by <leader>'s party" instead, in the room list and at
+ * the door. The booking runs on game time (variable 114) and lapses after 24
+ * game-hours, at the same moment the rental itself does.
  * * Price conversion: 1000 gold = 10€
  * * The switch will only change on map transfers, not when loading saves
  * to prevent players from getting stuck in rented areas.
@@ -84,6 +90,195 @@
         if (!$dataSystem.rentals) {
             $dataSystem.rentals = {};
         }
+    }
+
+    //=============================================================================
+    // World-shared bookings
+    //=============================================================================
+    // A room is one bed in one inn, and an inn is part of the world rather than
+    // part of a story: once a party has taken a room for the night, no OTHER
+    // savegame of the same world can take it until the day is up. It is told who
+    // holds it ("Already booked by <leader>'s party"), which is the only reason
+    // the leader's name is written down beside the booking.
+    //
+    //   save/worlds/<name>/rentals.json
+    //     -> { rooms: { "<placeKey>_<eventId>": { party, leader, until } } }
+    //
+    // `until` is counted in game minutes (variable 114), which is world-shared
+    // and monotonic, so every savegame agrees on when the night is over. The
+    // party's own rental stays where it was, in the savegame ($dataSystem
+    // .rentals): this table only says which room is spoken for, and by whom.
+    const BOOKING_MINUTES = 24 * 60; // a booking holds the room for one day
+
+    function bookingRooms(create) {
+        if (!window.WorldManager || typeof window.WorldManager.getFile !== 'function') return null;
+        let store = null;
+        try { store = window.WorldManager.getFile('rentals'); } catch (e) { return null; }
+        if (!store) return null;
+        if (!store.rooms) {
+            if (!create) return null;
+            store.rooms = {};
+        }
+        return store.rooms;
+    }
+
+    function flushBookings() {
+        if (window.WorldManager && typeof window.WorldManager.flush === 'function') {
+            try { window.WorldManager.flush(); } catch (e) { /* non-fatal */ }
+        }
+    }
+
+    // Map ids are not always places (map 636 is every procedural world square),
+    // so a booking is keyed by the composite map key every world-persistent
+    // system uses, and falls back to the plain map id everywhere else.
+    function roomPlaceKey(mapId) {
+        const here = $gameMap ? $gameMap.mapId() : 0;
+        const id = (mapId != null) ? mapId : here;
+        let key = String(id);
+        const fs = window.FurnitureSystem;
+        if (id === here && fs && typeof fs.furnitureMapKey === 'function') {
+            try {
+                const k = fs.furnitureMapKey();
+                if (k != null) key = String(k);
+            } catch (e) { /* fall back to the plain map id */ }
+        }
+        return key;
+    }
+
+    function bookingKey(mapId, eventId) {
+        return `${roomPlaceKey(mapId)}_${eventId}`;
+    }
+
+    // Who this savegame's party is, as far as the world folder is concerned. The
+    // id is minted once and kept in the save, so a party keeps its own bookings
+    // across sessions while every other savegame reads them as somebody else's.
+    function partyBookingId() {
+        if (typeof $gameSystem === 'undefined' || !$gameSystem) return null;
+        if (!$gameSystem._rentPartyId) {
+            $gameSystem._rentPartyId = 'party-' + Date.now().toString(36) + '-' +
+                Math.floor(Math.random() * 0x1000000).toString(36);
+        }
+        return $gameSystem._rentPartyId;
+    }
+
+    function partyLeaderName() {
+        const leader = ($gameParty && $gameParty.leader) ? $gameParty.leader() : null;
+        return (leader && leader.name()) ? leader.name() : T('Rent.someoneElse');
+    }
+
+    // The live booking on a room, expired ones swept as they are read.
+    function getBooking(mapId, eventId) {
+        const rooms = bookingRooms(false);
+        if (!rooms) return null;
+        const key = bookingKey(mapId, eventId);
+        const rec = rooms[key];
+        if (!rec) return null;
+        const now = $gameVariables ? ($gameVariables.value(114) || 0) : 0;
+        if (rec.until == null || now >= rec.until || now < rec.until - BOOKING_MINUTES) {
+            delete rooms[key]; // the night is over (or the clock rolled back)
+            return null;
+        }
+        return rec;
+    }
+
+    // A booking held by a party that is not this savegame's, or null.
+    function foreignBooking(mapId, eventId) {
+        const rec = getBooking(mapId, eventId);
+        if (!rec || rec.party === partyBookingId()) return null;
+        return rec;
+    }
+
+    // What to tell a party that wants a room somebody else is sleeping in.
+    function bookedByMessage(rec) {
+        return T('Rent.bookedBy', { name: (rec && rec.leader) || T('Rent.someoneElse') });
+    }
+
+    function showBookedMessage(rec) {
+        window.skipLocalization = true;
+        $gameSystem._rentHideBust = true;
+        $gameMessage.add(bookedByMessage(rec));
+        window.skipLocalization = false;
+    }
+
+    function recordBooking(mapId, eventId) {
+        const rooms = bookingRooms(true);
+        if (!rooms) return;
+        const now = $gameVariables ? ($gameVariables.value(114) || 0) : 0;
+        rooms[bookingKey(mapId, eventId)] = {
+            party: partyBookingId(),
+            leader: partyLeaderName(),
+            until: now + BOOKING_MINUTES
+        };
+        // Written through immediately so another savegame of the world sees the
+        // room taken without waiting for this one to be saved.
+        flushBookings();
+    }
+
+    // Gives the room back when this party's own rental runs out. Another party's
+    // booking is never touched: it expires on its own clock.
+    function releaseBooking(mapId, eventId, storedKey) {
+        const rooms = bookingRooms(false);
+        if (!rooms) return;
+        const key = storedKey || bookingKey(mapId, eventId);
+        const rec = rooms[key];
+        if (!rec || rec.party !== partyBookingId()) return;
+        delete rooms[key];
+        flushBookings();
+    }
+
+    //=============================================================================
+    // Empty-world rooms
+    //=============================================================================
+    // Nobody is left to take rent, and nobody is left to lock up again either.
+    // A room's own door was simply left however it was left: a seeded coin flip
+    // decides, once and for all, whether this particular room happens to be
+    // open or happens to be stuck (mirrors ProceduralHouseSystem's empty-world
+    // doors). No message is ever shown here: there is nobody to ask, and
+    // nobody to answer to.
+    const EMPTY_WORLD_UNLOCKED_SHARE = 0.5; // half the rooms were left open
+
+    function seededRandom(seed) {
+        const x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+
+    function getWorldSeed() {
+        if (window.HistoryManager && typeof window.HistoryManager.getSeed === 'function') {
+            return window.HistoryManager.getSeed() >>> 0;
+        }
+        if (typeof $gameSystem !== 'undefined' && $gameSystem && $gameSystem._historySeed !== undefined) {
+            return $gameSystem._historySeed >>> 0;
+        }
+        return 19002001;
+    }
+
+    // A pure function of (place, event, world seed), so one door gives the
+    // same answer forever and in every savegame of the world.
+    function isEmptyWorldRoomOpen(mapId, eventId) {
+        const event = $dataMap && $dataMap.events ? $dataMap.events[eventId] : null;
+        const x = event ? event.x : 0;
+        const y = event ? event.y : 0;
+        const seed = ((mapId * 1000000 + x * 1000 + y) ^ getWorldSeed() ^ 0x00be9d00) >>> 0;
+        return seededRandom(seed) < EMPTY_WORLD_UNLOCKED_SHARE;
+    }
+
+    // Called instead of the whole rent/booking flow in an empty world: no
+    // price, no confirmation, no booking record. A room already left unlocked
+    // is simply walked into; a locked one is kicked open on the spot, since
+    // there is nobody left to ask permission from. Either way self switch A
+    // is set and never expires (no $dataSystem.rentals entry is written), so
+    // the room stays open for good, exactly as ProceduralHouseSystem's forced
+    // doors never relock in an empty world.
+    function handleEmptyWorldRent(mapId, eventId) {
+        const key = [mapId, eventId, 'A'];
+        if ($gameSelfSwitches.value(key)) return; // already standing open
+
+        if (!isEmptyWorldRoomOpen(mapId, eventId)) {
+            // Locked, and nobody is left to answer to: the door gets bashed in.
+            AudioManager.playSe({ name: "Crash", volume: 100, pitch: 100, pan: 0 });
+        }
+        $gameSelfSwitches.setValue(key, true);
+        $gameMap.requestRefresh();
     }
 
     // Function to get player's approach direction to an event
@@ -180,7 +375,10 @@
         const rows = rooms.map((room, i) => {
             const sel = i === this._roomListIdx ? ' selected' : '';
             let statusHTML;
-            if (room.isRented) {
+            if (room.bookedBy) {
+                // Another party of this world is sleeping in it tonight.
+                statusHTML = `<span class="rent-status rent-rented">${T('Rent.bookedBy', { name: room.bookedBy })}</span>`;
+            } else if (room.isRented) {
                 const t = getTimeRemaining(room.expirationTime);
                 statusHTML = `<span class="rent-status rent-rented">${_ri18n('rented')} · ${t}</span>`;
             } else {
@@ -193,8 +391,7 @@
         }).join('');
         this._roomListEl.innerHTML = `
             <div class="inspect-section-title rent-list-title">${T('Rent.ui.rooms')}</div>
-            ${rows}
-            <p class="rent-hint">${T('Rent.ui.hint')}</p>`;
+            ${rows}`;
         // Cache the status spans so the per-second tick can update just the
         // countdown text instead of rebuilding the whole list innerHTML.
         this._roomStatusEls = Array.prototype.map.call(
@@ -211,7 +408,7 @@
         for (let i = 0; i < rooms.length; i++) {
             const room = rooms[i];
             const el = els[i];
-            if (!room || !el || !room.isRented) continue;
+            if (!room || !el || !room.isRented || room.bookedBy) continue;
             const t = getTimeRemaining(room.expirationTime);
             el.textContent = `${_ri18n('rented')} · ${t}`;
         }
@@ -267,6 +464,14 @@
         const rooms = this._roomListRooms || [];
         const room  = rooms[this._roomListIdx];
         if (!room) return;
+        // Re-read the booking rather than trusting the row: the list is scanned
+        // once when the overlay opens, and another savegame may have taken the
+        // room since (the world file is written the moment they do).
+        const booked = foreignBooking(room.mapId, room.eventId);
+        if (booked) {
+            showBookedMessage(booked);
+            return;
+        }
         if (room.isRented) {
             window.skipLocalization = true;
             $gameSystem._rentHideBust = true;
@@ -329,6 +534,18 @@
     // Register plugin command
     PluginManager.registerCommand(PLUGIN_NAME, "rent", args => {
 
+        // Renting is an arrangement with a landlord, and there is no landlord
+        // left in an empty world. No prompt is shown at all: the room's lock
+        // is simply whatever it was left as (or forced open on the spot), see
+        // handleEmptyWorldRent. See WorldManager.populationMode.
+        const WM = window.WorldManager;
+        if (WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld()) {
+            const interpreter = $gameMap._interpreter;
+            const eventId = interpreter._eventId || interpreter.eventId();
+            if (eventId) handleEmptyWorldRent($gameMap.mapId(), eventId);
+            return;
+        }
+
         const price = parseInt(args.price) || 1000;
 
         // Get current event ID more reliably
@@ -370,10 +587,19 @@
         const eventKey = mapId + '_' + eventId;
         const eventName = $dataMap.events[eventId]?.name || 'Location';  // i18n-ignore  event-name read, matched not shown
 
+        // The room may belong to another savegame's party for the night. Their
+        // booking is read before the price is ever quoted, unless this party
+        // is the one already renting it (then the confirmation restores
+        // access). A room somebody else holds cannot be paid for, but it can
+        // still be bashed in, so the booking is passed into the confirmation
+        // rather than stopping the interaction outright.
+        const rentedHere = $dataSystem.rentals[eventKey];
+        const bookedRec = (rentedHere && rentedHere.active) ? null : foreignBooking(mapId, eventId);
+
         // Convert gold to euros (1000 gold = 10€)
         const priceInEuros = (price / 100).toFixed(2);
 
-        showRentConfirmation(eventName, price, priceInEuros, eventKey, mapId, eventId);
+        showRentConfirmation(eventName, price, priceInEuros, eventKey, mapId, eventId, false, !!(rentedHere && rentedHere.active), bookedRec);
     });
 
     // Register plugin command for showing room list
@@ -421,52 +647,89 @@
         debugLog('Self switch set to:', $gameSelfSwitches.value(key));
     }
 
+    // Bashing a room door always counts as breaking and entering (mirrors
+    // ProceduralHouseSystem.bashDoor). It buys one day of access, exactly like
+    // a paid rental, but nothing is paid and nobody else's booking is
+    // disturbed: the room simply stops being locked to THIS party for the
+    // day. Never reached in an empty world (see handleEmptyWorldRent, which
+    // handles every empty-world interaction on its own, silently and for
+    // good), so the crime is always filed here.
+    function bashRoomDoor(mapId, eventId) {
+        if (typeof CrimeSystem !== 'undefined' && CrimeSystem.addPresetCrime) {
+            CrimeSystem.addPresetCrime("breakingAndEntering");
+        }
+        AudioManager.playSe({ name: "Crash", volume: 100, pitch: 100, pan: 0 });
+
+        initializeRentals();
+        const eventKey = mapId + '_' + eventId;
+        const currentGameMinutes = $gameVariables.value(114) || 0;
+        const expirationTime = Date.now() + (24 * 60 * 60 * 1000);
+        $dataSystem.rentals[eventKey] = {
+            mapId: mapId,
+            eventId: eventId,
+            startTime: Date.now(),
+            expirationTime: expirationTime,
+            expirationGameMinutes: currentGameMinutes + (24 * 60),
+            forced: true,
+            active: true
+        };
+        storeRentalStartTime(expirationTime);
+
+        const key = [mapId, eventId, 'A'];
+        $gameSelfSwitches.setValue(key, true);
+        $gameMap.requestRefresh();
+    }
+
     // Function to show rent confirmation window
-    function showRentConfirmation(eventName, price, priceInEuros, eventKey, mapId, eventId, hasDirectionalAccess, isAlreadyRented) {
-        const message = `${_ri18n('rent_question')} ${eventName}?`;
-        let option1Text;
+    function showRentConfirmation(eventName, price, priceInEuros, eventKey, mapId, eventId, hasDirectionalAccess, isAlreadyRented, bookedRec) {
+        const message = bookedRec ? bookedByMessage(bookedRec) : `${_ri18n('rent_question')} ${eventName}?`;
+        const choices = [];
+        const actions = [];
 
         if (hasDirectionalAccess) {
-            option1Text = _ri18n('free_access');
+            choices.push(_ri18n('free_access')); actions.push('free');
         } else if (isAlreadyRented) {
-            option1Text = _ri18n('already_rented');
-        } else {
-            option1Text = `€${priceInEuros} ${_ri18n('for_24h_rent')}`;
+            choices.push(_ri18n('already_rented')); actions.push('already');
+        } else if (!bookedRec) {
+            choices.push(`€${priceInEuros} ${_ri18n('for_24h_rent')}`); actions.push('pay');
         }
+        // A door left unpaid for, or held by someone else's party, can still
+        // be forced. Free access and an already-rented room need no bash.
+        if (!hasDirectionalAccess && !isAlreadyRented) {
+            choices.push(_ri18n('bash')); actions.push('bash');
+        }
+        choices.push(_ri18n('cancel')); actions.push('cancel');
+
         window.skipLocalization = true;
         $gameSystem._rentHideBust = true;
         $gameMessage.add(message);
         window.skipLocalization = false;
 
-        $gameMessage.setChoices([option1Text, _ri18n('cancel')], 0, 1);
+        $gameMessage.setChoices(choices, choices.length - 1, choices.length - 1);
         $gameMessage.setChoiceCallback(n => {
-            if (n === 0) { // First option selected
-                window.skipLocalization = true;
+            const action = actions[n];
+            window.skipLocalization = true;
 
-                if (hasDirectionalAccess) {
-                    // Free access granted based on direction
-                    processDirectionalAccess(mapId, eventId);
-                } else if (isAlreadyRented) {
-                    // Restore access without resetting timer
-                    processAlreadyRentedAccess(mapId, eventId);
+            if (action === 'free') {
+                processDirectionalAccess(mapId, eventId);
+            } else if (action === 'already') {
+                processAlreadyRentedAccess(mapId, eventId);
+            } else if (action === 'pay') {
+                if ($gameParty.gold() >= price) {
+                    $gameParty.loseGold(price);
+                    processRental(eventKey, mapId, eventId);
+                    SoundManager.playShop();
                 } else {
-                    // Normal rental process
-                    if ($gameParty.gold() >= price) {
-                        $gameParty.loseGold(price);
-                        processRental(eventKey, mapId, eventId);
-                        SoundManager.playShop();
-
-                    } else {
-                        window.skipLocalization = true;
-                        $gameSystem._rentHideBust = true;
-                        $gameMessage.add(_ri18n('not_enough_gold'));
-                        window.skipLocalization = false;
-
-                    }
+                    window.skipLocalization = true;
+                    $gameSystem._rentHideBust = true;
+                    $gameMessage.add(_ri18n('not_enough_gold'));
+                    window.skipLocalization = false;
                 }
-
+            } else if (action === 'bash') {
+                bashRoomDoor(mapId, eventId);
             }
-            // If n === 1 (Cancel), do nothing - choice window will close automatically
+            // 'cancel' (or window dismissed): nothing happens.
+            window.skipLocalization = false;
         });
 
     }
@@ -490,11 +753,20 @@
             startTime: currentTime,
             expirationTime: expirationTime,
             expirationGameMinutes: expirationGameMinutes,
+            // The world-folder key this rental booked the room under. Kept on the
+            // record because the composite key is derived from the map the party
+            // is STANDING on, and the rental is given back from wherever they
+            // happen to be when it runs out.
+            bookingKey: bookingKey(mapId, eventId),
             active: true
         };
 
         // Store game time when rental started (for TimeDateSystem compatibility)
         storeRentalStartTime(expirationTime);
+
+        // Spoken for in the world folder, so no other savegame of this world can
+        // take the same room tonight.
+        recordBooking(mapId, eventId);
 
         // Turn on self switch A for the current event
         const key = [mapId, eventId, 'A'];
@@ -531,6 +803,8 @@
                 // Turn off self switch A
                 const key = [rental.mapId, rental.eventId, 'A'];
                 $gameSelfSwitches.setValue(key, false);
+                // Hand the room back to the world: it is free for anyone again.
+                releaseBooking(rental.mapId, rental.eventId, rental.bookingKey);
                 anyExpired = true;
 
                 debugLog(`Rental expired: Event ${rental.eventId} on Map ${rental.mapId}`);
@@ -706,8 +980,10 @@
 
             const eventName = event.name || '';
 
-            // Only include events named "Room"
-            if (eventName.toLowerCase() === 'room') {
+            // Only include events named "Room". Read as a leading word rather
+            // than as the whole name, so "Room 12" and "Room (deluxe)" are the
+            // rooms they say they are, while a "Living Room" prop is not.
+            if (/^room\b/.test(eventName.toLowerCase())) {
                 // Try to extract price from event note or use default
                 let price = 1000; // Default price
                 if (event.note) {
@@ -720,13 +996,17 @@
                 const eventKey = mapId + '_' + eventId;
                 const rental = $dataSystem.rentals[eventKey];
                 const isRented = rental && rental.active;
+                // Held by another savegame's party: occupied, but not by us, so
+                // it is neither rentable nor ours to count down.
+                const booked = isRented ? null : foreignBooking(mapId, eventId);
 
                 rooms.push({
                     eventId: eventId,
                     mapId: mapId,
                     name: eventName,
                     price: price,
-                    isRented: isRented,
+                    isRented: !!(isRented || booked),
+                    bookedBy: booked ? booked.leader : null,
                     expirationTime: isRented ? rental.expirationTime : null
                 });
             }
@@ -736,6 +1016,93 @@
         return rooms;
     }
 
+
+    //=============================================================================
+    // Public API
+    //=============================================================================
+    // A room is a place in the world, not a menu: the town's NPCs take one when
+    // they are tired (NPC/NPCSimulationCore.js) and so does a loose party member
+    // (Core/AutoIdleExplorer.js). Both need to ask what is free, what it costs,
+    // and to take it, without going through the player's confirmation window.
+    //
+    // A rental taken by somebody who is not the party is recorded separately, in
+    // $gameSystem._npcRentals, and NEVER flips the room's self switch A: that
+    // switch is what opens the door for the PLAYER. It only makes the room
+    // occupied, so a town where everyone has turned in has no beds left.
+    const NPC_RENT_MINUTES = 24 * 60; // a night, on the game clock (var 114)
+
+    function npcRentals() {
+        if (!$gameSystem) return {};
+        if (!$gameSystem._npcRentals) $gameSystem._npcRentals = {};
+        const now = $gameVariables ? ($gameVariables.value(114) || 0) : 0;
+        for (const [key, rec] of Object.entries($gameSystem._npcRentals)) {
+            if (!rec || rec.until <= now) delete $gameSystem._npcRentals[key];
+        }
+        return $gameSystem._npcRentals;
+    }
+
+    window.RentSystem = {
+        // Every "Room" event on a map, with its price and who holds it.
+        rooms(mapId) {
+            const id = mapId || ($gameMap ? $gameMap.mapId() : 0);
+            if (!$gameMap || id !== $gameMap.mapId()) return [];
+            initializeRentals();
+            const held = npcRentals();
+            return getRoomsOnCurrentMap().map((room) => {
+                const key = room.mapId + '_' + room.eventId;
+                const npc = held[key] || null;
+                return Object.assign({}, room, {
+                    isRented: room.isRented || !!npc,
+                    // Another savegame's party is a tenant like any other: the
+                    // room is taken, and the caller is told whose it is.
+                    tenant: npc ? npc.name : (room.bookedBy || (room.isRented ? 'party' : null)), // i18n-ignore: record value
+                });
+            });
+        },
+
+        freeRooms(mapId) {
+            return this.rooms(mapId).filter((r) => !r.isRented);
+        },
+
+        isFree(mapId, eventId) {
+            return this.rooms(mapId).some((r) => r.eventId === eventId && !r.isRented);
+        },
+
+        priceOf(mapId, eventId) {
+            const room = this.rooms(mapId).find((r) => r.eventId === eventId);
+            return room ? room.price : 0;
+        },
+
+        // Taken by the party: paid in party gold, and the door opens for them.
+        rentForParty(mapId, eventId) {
+            const room = this.rooms(mapId).find((r) => r.eventId === eventId);
+            if (!room || room.isRented) return null;
+            if (!$gameParty || $gameParty.gold() < room.price) return null;
+            $gameParty.loseGold(room.price);
+            processRental(`${room.mapId}_${room.eventId}`, room.mapId, room.eventId);
+            return { price: room.price, mapId: room.mapId, eventId: room.eventId };
+        },
+
+        // Taken by somebody else: paid out of their own purse, and the room is
+        // simply occupied for the night.
+        // Who holds a room, when it is another savegame's party: the leader's
+        // name, or null when the room is free or held by this one.
+        bookedBy(mapId, eventId) {
+            const rec = foreignBooking(mapId != null ? mapId : ($gameMap ? $gameMap.mapId() : 0), eventId);
+            return rec ? rec.leader : null;
+        },
+
+        rentForNPC(name, mapId, eventId, purse) {
+            const room = this.rooms(mapId).find((r) => r.eventId === eventId);
+            if (!room || room.isRented || !name) return null;
+            if (purse != null && purse < room.price) return null;
+            const now = $gameVariables ? ($gameVariables.value(114) || 0) : 0;
+            npcRentals()[`${room.mapId}_${room.eventId}`] = {
+                name, until: now + NPC_RENT_MINUTES,
+            };
+            return { price: room.price, mapId: room.mapId, eventId: room.eventId };
+        },
+    };
 
     // Debug commands
     window.checkRentals = function () {

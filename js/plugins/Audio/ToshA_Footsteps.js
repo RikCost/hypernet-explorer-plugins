@@ -1,8 +1,8 @@
 /*:
  * @target MZ
- * @plugindesc [v1.1.0] Plays footstep sounds for player and events with customizable settings, terrain tags, and region IDs.
+ * @plugindesc [v1.2.0] Plays footstep sounds for player and events with customizable settings, terrain tags, region IDs, and procedural terrain features.
  * @author ToshaAngel
- * @version v1.1.0
+ * @version v1.2.0
  * @url https://toshaangel.itch.io/
  * @help
  * ___________          .__              
@@ -23,6 +23,7 @@
  * 
  * === Features ===
  * - Footstep sounds when walking on different terrain tags.
+ * - Material sounds from the terrain feature underfoot on the procedural map.
  * - Tileset-specific region ID sound configuration via notes.
  * - Support for multiple sounds for each terrain/region.
  * - Play modes: sequential or random.
@@ -67,8 +68,43 @@
  * 4. Enable or disable event footsteps in plugin parameters.
  * 
  * === Priority System ===
- * Region sounds (from tileset notes) have priority over terrain tag sounds.
+ * 1. Region sounds (from tileset notes).
+ * 2. Terrain feature material (see below).
+ * 3. Terrain tag sounds (from the plugin parameters).
+ * 4. Terrain tag material, for tags the parameters leave unset.
  * If a tile has both a region ID and terrain tag, region sound plays.
+ *
+ * === Terrain Feature Materials ===
+ * Applies to ANY map whose tileset note defines terrain features. Procedurally
+ * generated maps get their ground from those features, not from painted terrain
+ * tags, and a handful of tilesets serve all of the biomes - so the terrain tag
+ * cannot tell snow from sand from pavement, and tags 4 (mountain) and 7 (ice)
+ * have no sound configured at all.
+ *
+ * The tile under the character is therefore traced back to its feature name
+ * (via ProcGenUtils), the feature name to a material, and the material to a
+ * sound set:
+ *
+ *   grass  dirt  mud  sand  gravel  stone
+ *   concrete  wood  snow  ice  metal  water
+ *
+ * The topmost layer that names a material wins, so a bridge over water sounds
+ * like wood and a bush growing on snow rustles. Unmapped features fall through
+ * to the layer below, and finally to the terrain tag. Feature names that are
+ * not listed explicitly are matched on substrings (SnowRock -> snow,
+ * WoodenFloor -> wood, GrassRock -> grass), so new features usually need no
+ * configuration at all.
+ *
+ * A tileset whose note tags no features is unaffected and keeps using region
+ * notes and terrain tags alone.
+ *
+ * The tables live in js/db/WorldGen/FootstepMaterials.json, which is also read
+ * by the tileset feature tagger in tools/ so it can mark which features already
+ * have a step sound. If that file is missing the material layer simply stays
+ * off. Fields: materials (sounds + per-material mix), defaults, featureMaterials
+ * (explicit name -> material, null to opt a name out), materialPatterns
+ * (ordered substring rules), overlayMaterials (materials a feature stacked above
+ * the ground may impose) and terrainTagMaterials.
  * 
  * === Notes ===
  * - Region IDs range from 1 to 255 (0 is ignored).
@@ -200,6 +236,200 @@
     // ====== Region Sound Cache ======
     let regionSoundCache = {};
 
+    // ========================================================================
+    // Terrain feature material footsteps
+    // ========================================================================
+    // Maps built by the procedural generator get their ground from terrain
+    // FEATURES declared in the tileset note (<Snow: A5 104>, <Bridge: [B10,B11]>,
+    // ...), not from hand painted terrain tags. The tag is far too coarse to
+    // tell snow from sand from pavement - and tags 4 (mountain) and 7 (ice)
+    // carry no configured sound at all, which left a large part of every cold
+    // and mountainous map silent.
+    //
+    // So wherever the tileset note defines features, the tile under the
+    // character is resolved back to its feature name, the feature name to a
+    // material, and the material to a sound set. A tileset with no feature tags
+    // is untouched and keeps using region notes and terrain tags alone.
+    //
+    // The material tables live in js/db/WorldGen/FootstepMaterials.json
+    // (window.WorldGen.FootstepMaterials) so that the tileset feature tagger in
+    // tools/ can flag which features already have a step sound without keeping
+    // its own copy of this mapping.
+
+    const materialByFeature = new Map();
+    const materialConfigs = {};
+    let materialTileCache = {};
+    let materialData;
+
+    /**
+     * The material tables, or null when FootstepMaterials.json is absent - in
+     * which case the whole material layer stays off and footsteps behave
+     * exactly as they did before it existed.
+     */
+    function getMaterialData() {
+        if (materialData !== undefined) return materialData;
+        const raw = window.WorldGen && window.WorldGen.FootstepMaterials;
+        if (!raw || !raw.materials) {
+            materialData = null;
+            return null;
+        }
+        materialData = {
+            defaults: raw.defaults || {},
+            materials: raw.materials,
+            featureMaterials: raw.featureMaterials || {},
+            materialPatterns: raw.materialPatterns || [],
+            overlayMaterials: new Set(raw.overlayMaterials || []),
+            terrainTagMaterials: raw.terrainTagMaterials || {},
+        };
+        return materialData;
+    }
+
+    /**
+     * Material for a feature name: an explicit entry first, then the ordered
+     * substring rules. Memoised, since the same handful of names recur on every
+     * step.
+     */
+    function materialForFeature(name) {
+        if (!name || name === "Unknown") return null;
+        if (materialByFeature.has(name)) return materialByFeature.get(name);
+
+        const data = getMaterialData();
+        if (!data) return null;
+
+        // An explicit entry is authoritative, including an explicit null: that
+        // is how a name the substring rules would misread opts out entirely.
+        let material = null;
+        if (Object.prototype.hasOwnProperty.call(data.featureMaterials, name)) {
+            material = data.featureMaterials[name];
+        } else {
+            for (const rule of data.materialPatterns) {
+                if ((rule.contains || []).some(n => name.includes(n))) {
+                    material = rule.material;
+                    break;
+                }
+            }
+        }
+        if (material && !data.materials[material]) material = null;
+        materialByFeature.set(name, material);
+        return material;
+    }
+
+    /**
+     * tileId -> material for one tileset, built once from the tileset's feature
+     * notes. Only tiles that resolve to a material are kept, so an empty table
+     * means "this tileset declares no features we have sounds for".
+     */
+    function materialTableFor(tilesetId) {
+        if (materialTileCache[tilesetId]) return materialTileCache[tilesetId];
+
+        const U = window.ProcGenUtils;
+        const table = {};
+        if (getMaterialData() && U && U.Cache && U.createTileToFeatureMap) {
+            const tileToFeature = U.createTileToFeatureMap(U.Cache.getTilesetFeatures(tilesetId));
+            for (const tileId of Object.keys(tileToFeature)) {
+                const material = materialForFeature(tileToFeature[tileId]);
+                if (material) table[tileId] = material;
+            }
+        }
+        table.__empty = Object.keys(table).length === 0;
+        materialTileCache[tilesetId] = table;
+        return table;
+    }
+
+    /**
+     * A1-A4 autotiles are laid down shaped: the id on the map is the id of the
+     * autotile KIND plus a shape offset of 0-47, while the tileset note records
+     * only the kind. Snap back to the kind so a shaped shore or road still
+     * resolves. A5 (1536-1663) and the B-E sheets are unshaped and match as-is.
+     */
+    function materialForTileId(table, tileId) {
+        if (!tileId) return null;
+        const direct = table[tileId];
+        if (direct) return direct;
+        if (tileId >= 2048) {
+            return table[2048 + Math.floor((tileId - 2048) / 48) * 48] || null;
+        }
+        return null;
+    }
+
+    /**
+     * Material underfoot at (x, y): the topmost layer that names one, so a
+     * bridge over water sounds like wood and a bush on snow rustles.
+     */
+    function materialAt(table, x, y) {
+        const overlay = getMaterialData().overlayMaterials;
+        for (let z = 3; z >= 0; z--) {
+            const material = materialForTileId(table, $gameMap.tileId(x, y, z));
+            if (!material) continue;
+            // Layers 2 and 3 are scenery; only the ones you actually walk on
+            // may speak over the ground below them.
+            if (z >= 2 && !overlay.has(material)) continue;
+            return material;
+        }
+        return null;
+    }
+
+    /**
+     * A sound config for a material, shaped like the ones parsed from the
+     * plugin parameters. Built once per material and reused.
+     */
+    function configForMaterial(material) {
+        if (materialConfigs[material]) return materialConfigs[material];
+        const data = getMaterialData();
+        const spec = data.materials[material] || {};
+        const def = data.defaults;
+        const pick = (key, fallback) =>
+            spec[key] !== undefined ? spec[key] : (def[key] !== undefined ? def[key] : fallback);
+        materialConfigs[material] = {
+            configKey: "material:" + material,
+            soundNames: spec.sounds || [],
+            playMode: spec.playMode || "sequential",
+            volume: pick("volume", 88),
+            pitchMin: pick("pitchMin", 94),
+            pitchMax: pick("pitchMax", 108),
+            pan: pick("pan", 0),
+            maxDistance: pick("maxDistance", 5),
+            animationFrames: pick("animationFrames", [0, 2]),
+        };
+        return materialConfigs[material];
+    }
+
+    /**
+     * The material table for the current map, or null when this tileset tags no
+     * terrain features and the material layer therefore does not apply here.
+     */
+    function currentMaterialTable() {
+        if (!getMaterialData() || !$gameMap) return null;
+        const tileset = $gameMap.tileset();
+        if (!tileset) return null;
+        const table = materialTableFor(tileset.id);
+        return table.__empty ? null : table;
+    }
+
+    /**
+     * Material sound config from the terrain feature under the character, or
+     * null on ground no feature claims.
+     */
+    function getFeatureSoundConfig(character) {
+        const table = currentMaterialTable();
+        if (!table) return null;
+        const material = materialAt(table, character.x, character.y);
+        return material ? configForMaterial(material) : null;
+    }
+
+    /**
+     * Last resort, and only where the tileset tags features: terrain tags the
+     * plugin parameters do not configure - notably 4 (mountain) and 7 (ice) -
+     * would otherwise be silent. Runs AFTER the parameter lookup, so every
+     * authored terrain tag setting still wins.
+     */
+    function getTerrainTagMaterialConfig(character) {
+        if (!currentMaterialTable()) return null;
+        const data = getMaterialData();
+        const material = data.terrainTagMaterials[String(character.terrainTag())];
+        return material && data.materials[material] ? configForMaterial(material) : null;
+    }
+
     // ====== Parse Region Sounds from Tileset Notes ======
     function parseRegionSounds(tilesetId) {
         if (!tilesetId || regionSoundCache[tilesetId]) {
@@ -314,11 +544,18 @@
             const stepSound = stepSounds.find(sound => sound.terrainTag === 3);
             if (stepSound) return stepSound;
         }
-        
-        // Priority 2: Terrain tag sounds from plugin parameters
+
+        // Priority 2: material of the terrain feature underfoot
+        const materialSound = getFeatureSoundConfig(character);
+        if (materialSound) return materialSound;
+
+        // Priority 3: Terrain tag sounds from plugin parameters
         const terrainTag = character.terrainTag();
         const stepSound = stepSounds.find(sound => sound.terrainTag === terrainTag);
-        return stepSound || null;
+        if (stepSound) return stepSound;
+
+        // Priority 4: material for a terrain tag the parameters leave unset
+        return getTerrainTagMaterialConfig(character);
     }
 
     // ====== Ship BGS Management Variables ======
@@ -481,7 +718,7 @@
             }
 
             let soundName;
-            const configId = stepSound.regionId || stepSound.terrainTag || 0;
+            const configId = stepSound.configKey || stepSound.regionId || stepSound.terrainTag || 0;
             const indexKey = '_footstepSoundIndex_' + configId;
             const terrainKey = '_lastSoundConfig_' + configId;
 
@@ -602,8 +839,11 @@
     const _Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
     Scene_Map.prototype.onMapLoaded = function() {
         _Scene_Map_onMapLoaded.call(this);
-        // Clear cache when changing maps to ensure fresh data
+        // Clear caches when changing maps to ensure fresh data. The material
+        // table is rebuilt from the tileset notes, which ProcGenUtils may have
+        // re-parsed in the meantime.
         regionSoundCache = {};
+        materialTileCache = {};
     };
 
     // ====== Check if the event has the <NoFootsteps> tag ======

@@ -154,7 +154,25 @@
         return match ? match[1] : null;
     };
 
+    // Some things are not company. A <NoRecruit> creature (the petrodemons, and
+    // anything else that is a force rather than a person) can never be talked
+    // round, petted, taken as a pet or a follower, or asked to join the party:
+    // every one of those answers with the same refusal.
+    // The rule lives on the DATA, so systems holding a $dataEnemies entry rather
+    // than a live battler (SummonSystem's mark / last-slain) can ask it too.
+    window.EnemyTalk = window.EnemyTalk || {};
+    window.EnemyTalk.isUnrecruitableData = function (data) {
+        if (!data) return false;
+        if (data._bsePetrodemon) return true;
+        return /<NoRecruit>/i.test(data.note || '');
+    };
+
+    Game_Enemy.prototype.isUnrecruitable = function () {
+        return window.EnemyTalk.isUnrecruitableData(this.enemy());
+    };
+
     Game_Enemy.prototype.canTalk = function () {
+        if (this.isUnrecruitable()) return false;
         const note = this.enemy().note;
         if (!note.includes('<Talk>')) return false;
 
@@ -362,6 +380,18 @@
         // while there is an open slot. The pet/follower option is always shown.
         const partyFull  = $gameParty.size() >= 3;
 
+        // Nothing that cannot be recruited is offered a way in: no join, no
+        // follower, no petting it. What is left is what you can do to it.
+        if (enemy.isUnrecruitable()) {
+            return [
+                { label: choices[0], key: 'chat',       pct: 0    },
+                { label: choices[2], key: 'surrender',  pct: 0    },
+                { label: choices[3], key: 'insult',     pct: 0    },
+                { label: choices[4], key: 'throwStone', pct: 100  },
+                { label: choices[6], key: 'cancel',     pct: null },
+            ];
+        }
+
         const opts = [{ label: choices[0], key: 'chat', pct: talk }];
         if (!partyFull) {
             opts.push({ label: choices[1], key: 'joinParty', pct: this.calculateJoinSuccessChance() });
@@ -375,9 +405,20 @@
         return opts;
     };
 
+    // The one refusal every approach to an unrecruitable creature ends on.
+    // Returns true when it fired, so a handler can simply bail on it.
+    Scene_Battle.prototype._refuseUnrecruitable = function (enemy) {
+        if (!enemy || !enemy.isUnrecruitable()) return false;
+        window.skipLocalization = true;
+        $gameMessage.add(T('EnemyTalk.msg.unrecruitable', { name: enemy.name() }));
+        window.skipLocalization = false;
+        this.closeTalkMenu();
+        return true;
+    };
+
     Scene_Battle.prototype.calculatePetFollowerChance = function () {
         const enemy = this._talkEnemy();
-        if (!enemy) return 0;
+        if (!enemy || enemy.isUnrecruitable()) return 0;
         // Pets/followers are easier to win over than a full party recruit:
         // disposition-based, with a flat bonus and a friendly floor.
         const base = this.calculateTalkSuccessChance();
@@ -413,8 +454,7 @@
               <span class="etalk-option-name">${opt.label}</span>${pctHTML}
             </div>`;
         }).join('');
-        const hint = T('EnemyTalk.navHint');
-        return `${headerHTML}<div class="etalk-option-list">${rows}</div><p class="etalk-hint">${hint}</p>`;
+        return `${headerHTML}<div class="etalk-option-list">${rows}</div>`;
     };
 
     Scene_Battle.prototype._updateTalkHighlight = function () {
@@ -439,6 +479,7 @@
         const enemy = this._talkEnemy();
 
         if (!actor || !enemy) return 0;
+        if (enemy.isUnrecruitable()) return 0;
 
         const actorLuck = actor.luk;
         const enemyLuck = enemy.luk;
@@ -459,7 +500,7 @@
 
     Scene_Battle.prototype.calculateJoinSuccessChance = function () {
         const enemy = this._talkEnemy();
-        if (!enemy) return 0;
+        if (!enemy || enemy.isUnrecruitable()) return 0;
 
         // Small percentage to recruit even under the disposition threshold
         const disposition = enemy.disposition();
@@ -472,7 +513,7 @@
 
     Scene_Battle.prototype.calculatePetSuccessChance = function () {
         const enemy = this._talkEnemy();
-        if (!enemy) return 0;
+        if (!enemy || enemy.isUnrecruitable()) return 0;
 
         const hasTalkTag = enemy.enemy().note.includes('<Talk>');
 
@@ -495,6 +536,8 @@
             this.closeTalkMenu();
             return;
         }
+
+        if (this._refuseUnrecruitable(enemy)) return;
 
         if (!enemy.canTalk()) {
             window.skipLocalization = true;
@@ -562,6 +605,8 @@
             return;
         }
 
+        if (this._refuseUnrecruitable(enemy)) return;
+
         if (!enemy.canTalk()) {
             window.skipLocalization = true;
             // Check if enemy has <Talk> tag but is affected by state
@@ -600,6 +645,8 @@
             this.closeTalkMenu();
             return;
         }
+
+        if (this._refuseUnrecruitable(enemy)) return;
 
         if (!enemy.canTalk()) {
             window.skipLocalization = true;
@@ -679,6 +726,8 @@
             return;
         }
 
+        if (this._refuseUnrecruitable(enemy)) return;
+
         const hasTalkTag = enemy.enemy().note.includes('<Talk>');
 
         if (hasTalkTag && enemy.disposition() < 70) {
@@ -713,31 +762,30 @@
     Scene_Battle.prototype.getArchetypeSprite = function (archetype) {
         let characterName, characterIndex;
 
+        // Every sheet below holds a single character (img/characters/NPCs), so
+        // the index is always 0; the joined sheets these were cut out of are
+        // gone.
         // i18n-ignore-start: EnemyArchetypes.json ids and sprite sheet names
         switch (archetype) {
             case 'Goblin':
-                // Random between Dungeon_Monster1 (1-5) or Dungeon_Monster2 (0) or Evil01Color (5)
-                const goblinChoice = Math.floor(Math.random() * 7);
-                if (goblinChoice < 5) {
-                    characterName = 'Dungeon_Monsters1';
-                    characterIndex = goblinChoice;
-                } else if (goblinChoice === 5) {
-                    characterName = 'Dungeon_Monsters2';
-                    characterIndex = 0;
-                } else {
-                    characterName = 'Evil01Color';
-                    characterIndex = 5;
-                }
+                const goblinSheets = [
+                    'NPCs/!$GoblinJester1', 'NPCs/!$GoblinKnight1',
+                    'NPCs/!$GoblinCourier1', 'NPCs/!$GoblinRecruit1',
+                    'NPCs/!$GoblinCleric1', 'NPCs/!$OrcBrawler1',
+                    'NPCs/!$BotSpacer1'
+                ];
+                characterName = goblinSheets[Math.floor(Math.random() * goblinSheets.length)];
+                characterIndex = 0;
                 break;
 
             case 'ArmoredKnight':
-                characterName = 'Evil01Color';
+                characterName = 'NPCs/!$WanderingKnight1';
                 characterIndex = 0;
                 break;
 
             case 'Ghost':
-                characterName = 'Evil01Color';
-                characterIndex = 2;
+                characterName = 'NPCs/!$Slime9';
+                characterIndex = 0;
                 break;
 
             case 'Dragon':
@@ -747,21 +795,46 @@
 
             // i18n-ignore-end
             case 'Humanoid': // i18n-ignore: EnemyArchetypes.json id
-                // Random sprite from various human sprite sheets
+                // Random sprite out of the people the old NPCs/Actor/Heroes
+                // sheets held.
                 const humanSheets = [
-                    'NPCs01Color', 'NPCs02Color', 'NPCs03Color',
-                    'Actor1', 'Actor2', 'Actor3',
-                    'Actor1RMVX', 'Actor2RMVX', 'Actor3RMVX',
-                    'Heroes01Color', 'Heroes02Color'
+                    'NPCs/!$Fisherman2', 'NPCs/!$BioCadet1', 'NPCs/!$Translator1',
+                    'NPCs/!$Backpacker1', 'NPCs/!$GnomeExplorer1', 'NPCs/!$Librarian3',
+                    'NPCs/!$Employee1', 'NPCs/!$FastfoodWorker1', 'NPCs/!$King2',
+                    'NPCs/!$Queen2', 'NPCs/!$Page3', 'NPCs/!$NobleHeir2',
+                    'NPCs/!$NobleGuard3', 'NPCs/!$Scarf4', 'NPCs/!$Maid2',
+                    'NPCs/!$LeatherDaddy2', 'NPCs/!$Catboy2', 'NPCs/!$GnomeExplorer2',
+                    'NPCs/!$Archivist2', 'NPCs/!$Pirate1', 'NPCs/!$Operator1',
+                    'NPCs/!$Librarian4', 'NPCs/!$Tracker1', 'NPCs/!$Mafia1',
+                    'NPCs/!$WarSniper1', 'NPCs/!$UniversityStudent1', 'NPCs/!$DJ1',
+                    'NPCs/!$ArchivistArmorer1', 'NPCs/!$Jogger1', 'NPCs/!$Witch11',
+                    'NPCs/!$ElvenArcher1', 'NPCs/!$ArmorDiver1', 'NPCs/!$ElvenBarbarian1',
+                    'NPCs/!$SunCultist1', 'NPCs/!$Stylist1', 'NPCs/!$ElvenEnchantress1',
+                    'NPCs/!$PirateHacker1', 'NPCs/!$TechnoBarbarian1', 'NPCs/!$Page1',
+                    'NPCs/!$ValiantKnight1', 'NPCs/!$Botanist1', 'NPCs/!$CharmingPrince1',
+                    'NPCs/!$GeniusGeneral1', 'NPCs/!$Astrologist2', 'NPCs/!$Ninja1',
+                    'NPCs/!$CyberWitch1', 'NPCs/!$Infiltrator1', 'NPCs/!$Gunman1',
+                    'NPCs/!$Mage1', 'NPCs/!$Ranger1', 'NPCs/!$Partygoer1',
+                    'NPCs/!$Revolutionary1', 'NPCs/!$Jeweler1', 'NPCs/!$Journalist1',
+                    'NPCs/!$WastelandKnight1', 'NPCs/!$WarPilot1', 'NPCs/!$ElvenGuard1',
+                    'NPCs/!$ElvenVeteran1', 'NPCs/!$Princess1', 'NPCs/!$PizzaRider1',
+                    'NPCs/!$SchoolTeacher1', 'NPCs/!$ScienceTeacher1', 'NPCs/!$ArmsTerader1',
+                    'NPCs/!$Astrologist1', 'NPCs/!$DJ2', 'NPCs/!$WarWitch1',
+                    'NPCs/!$WarSniper2', 'NPCs/!$WastelandThinkerer1', 'NPCs/!$ElvenScout1',
+                    'NPCs/!$ElvenSinger1', 'NPCs/!$ElvenSwordsman1', 'NPCs/!$Catboy1',
+                    'NPCs/!$Scarf3', 'NPCs/!$Jeweler2', 'NPCs/!$Guerrilla2',
+                    'NPCs/!$Revolutionary2', 'NPCs/!$SpacerMonk1', 'NPCs/!$Announcer1',
+                    'NPCs/!$Archeologist2', 'NPCs/!$Astrologist5', 'NPCs/!$Priest2',
+                    'NPCs/!$Nun2', 'NPCs/!$ExoticBard1', 'NPCs/!$ElvenGuard3',
+                    'NPCs/!$Coroner3', 'NPCs/!$Medic1'
                 ];
                 characterName = humanSheets[Math.floor(Math.random() * humanSheets.length)];
-                characterIndex = Math.floor(Math.random() * 8);
+                characterIndex = 0;
                 break;
 
             default:
-                // All other archetypes use Evil01Color 4th sprite (index 3)
-                characterName = 'Evil01Color';
-                characterIndex = 3;
+                characterName = 'NPCs/!$VoidPerson1';
+                characterIndex = 0;
                 break;
         }
 
@@ -836,6 +909,8 @@
             this.closeTalkMenu();
             return;
         }
+
+        if (this._refuseUnrecruitable(enemy)) return;
 
         const partySize = $gameParty.size();
         if (partySize >= 3) {
@@ -972,6 +1047,8 @@
             this.closeTalkMenu();
             return;
         }
+
+        if (this._refuseUnrecruitable(enemy)) return;
 
         if (!window.PetSystem) {
             console.warn("EnemyTalkSystem: PetFollowerSystem.js not loaded, cannot recruit pet.");

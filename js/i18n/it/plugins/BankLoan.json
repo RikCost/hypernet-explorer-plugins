@@ -85,7 +85,7 @@
     "actionWithdrew": "prelevato",
     "actionBorrowed": "preso in prestito",
     "actionRepaid": "rimborsato",
-    "navHint": "Frecce/WASD: Naviga | Invio: Conferma | Esc: Chiudi la banca",
-    "ratePerDays": "{rate}% / {days} giorni"
+    "ratePerDays": "{rate}% / {days} giorni",
+    "noOneLeft": "La filiale e al buio e le porte sono chiuse. Non e rimasto nessuno con cui fare banca."
   }
 }

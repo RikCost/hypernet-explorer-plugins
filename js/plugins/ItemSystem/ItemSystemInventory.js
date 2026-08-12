@@ -29,6 +29,13 @@
     throw new Error("ItemSystemInventory.js requires ItemSystemUtils.js to be loaded first!");
   }
 
+  // A severed-magic world has no magic in it, so there is nothing to spend a
+  // magic meter on: the MP row is not drawn at all. See window.MagicNature.
+  function hideMpBar() {
+    const MN = window.MagicNature;
+    return !!(MN && typeof MN.level === "function" && MN.level() === "severed");
+  }
+
   // Import utilities from ItemSystemUtils
   const utils = window.ItemSystemUtils;
   const {
@@ -2128,12 +2135,14 @@
     this.changeTextColor(ColorManager.hpColor(actor));
     this.drawText(actor.hp + " / " + actor.mhp + "", gaugeX + 35, gaugeY, gaugeWidth - 35, "left");
 
-    gaugeY += gaugeHeight + 8;
-    this.changeTextColor(ColorManager.systemColor());
-    this.drawText("MP ", gaugeX, gaugeY, 30);
-    this.drawGauge(gaugeX + 35, gaugeY, gaugeWidth - 35, actor.mpRate(), ColorManager.mpGaugeColor1(), ColorManager.mpGaugeColor2());
-    this.changeTextColor(ColorManager.mpColor(actor));
-    this.drawText(actor.mp + " / " + actor.mmp + "", gaugeX + 35, gaugeY, gaugeWidth - 35, "left");
+    if (!hideMpBar()) {
+      gaugeY += gaugeHeight + 8;
+      this.changeTextColor(ColorManager.systemColor());
+      this.drawText("MP ", gaugeX, gaugeY, 30);
+      this.drawGauge(gaugeX + 35, gaugeY, gaugeWidth - 35, actor.mpRate(), ColorManager.mpGaugeColor1(), ColorManager.mpGaugeColor2());
+      this.changeTextColor(ColorManager.mpColor(actor));
+      this.drawText(actor.mp + " / " + actor.mmp + "", gaugeX + 35, gaugeY, gaugeWidth - 35, "left");
+    }
 
     if ($dataSystem.optDisplayTp) {
       gaugeY += gaugeHeight + 8;

@@ -196,7 +196,6 @@
             this.generateProperties();
             this.lastUpdateTime = getGameDateAsJSDate();
             this.startDailyUpdates();
-            console.log("## test")
 
             // Register with News System for market effects
             this.registerWithNewsSystem();
@@ -230,40 +229,86 @@
             });
         }
 
+        // The register of properties is the WORLD'S, not this savegame's. It
+        // used to be rolled on Math.random(), so the thirty houses on the board
+        // were thirty different houses in every savegame while their ids stayed
+        // the bare loop index 0..29: "property 3" named one building here and
+        // another one next door. Rolled from the world seed instead, every
+        // playthrough of a world walks into the same market, which is what lets
+        // a house bought in one savegame be recognisably the same house that is
+        // no longer for sale in the next (see markTaken).
+        //
+        // Only the catalogue is seeded. What the market DOES afterwards
+        // (occupancy drifting, trends moving with the news) stays live and
+        // per-savegame, as does who owns what.
+        marketRng() {
+            let seed = 19002001;
+            try {
+                if (window.HistoryManager && typeof window.HistoryManager.getSeed === 'function') {
+                    const s = window.HistoryManager.getSeed();
+                    if (s !== null && s !== undefined && s !== '') {
+                        seed = (typeof s === 'number') ? s : String(s).split('').reduce(
+                            (h, c) => (Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0), 2166136261);
+                    }
+                }
+            } catch (e) { /* no world yet: the constant is the fallback */ }
+            let t = (seed ^ 0x9e3779b9) >>> 0;
+            return function () {
+                t = (t + 0x6d2b79f5) >>> 0;
+                let x = Math.imul(t ^ (t >>> 15), 1 | t);
+                x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x;
+                return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+            };
+        }
+
         generateProperties() {
             const usedCombinations = new Set();
+            const rng = this.marketRng();
 
             for (let i = 0; i < 30; i++) {
                 let property;
+                // Bounded: a seeded stream that cannot find an unused pairing
+                // must not spin here for ever.
+                let tries = 0;
                 do {
-                    property = this.createRandomProperty(i);
-                } while (usedCombinations.has(`${property.type}-${property.location}`));
+                    property = this.createRandomProperty(i, rng);
+                } while (usedCombinations.has(`${property.type}-${property.location}`) && ++tries < 200);
 
                 usedCombinations.add(`${property.type}-${property.location}`);
                 this.properties.push(property);
             }
+            // Marks the catalogue as one the world agrees on, so a savegame
+            // carrying an older privately rolled board is rebuilt on load.
+            this.marketSeeded = true;
         }
 
-        createRandomProperty(id) {
+        createRandomProperty(id, rng) {
+            const roll = rng || Math.random;
             const types = Object.keys(PROPERTY_TYPES);
-            const type = types[Math.floor(Math.random() * types.length)];
+            const type = types[Math.floor(roll() * types.length)];
             const locations = getLocations();
-            const location = locations[Math.floor(Math.random() * locations.length)];
-            const stars = Math.floor(Math.random() * 5) + 1;
+            const location = locations[Math.floor(roll() * locations.length)];
+            const stars = Math.floor(roll() * 5) + 1;
             const typeData = PROPERTY_TYPES[type];
             const basePrice = typeData.basePrice[stars - 1];
-            const priceVariation = 0.8 + Math.random() * 0.4; // ±20% variation
+            const priceVariation = 0.8 + roll() * 0.4; // ±20% variation
+            // Property is worth what somebody will pay for it, and in an empty
+            // world nobody will. Zeroed at the source: the sale price, the
+            // effective price and the rent are all derived from these two, so
+            // the whole board reads as free without touching a call site.
+            const WM = window.WorldManager;
+            const worthless = !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
 
             return {
                 id: id,
-                name: this.generatePropertyName(type, location, stars),
+                name: this.generatePropertyName(type, location, stars, roll),
                 type: type,
                 location: location,
                 stars: stars,
-                price: Math.floor(basePrice * priceVariation),
+                price: worthless ? 0 : Math.floor(basePrice * priceVariation),
                 maxOccupants: typeData.maxCap,
                 currentOccupants: 0,
-                rentPerOccupant: Math.floor((basePrice * priceVariation * 0.001) / 30), // ~0.1% daily
+                rentPerOccupant: worthless ? 0 : Math.floor((basePrice * priceVariation * 0.001) / 30), // ~0.1% daily
                 isOwned: false,
                 isRentedByPlayer: false, // player is a tenant here (not owner)
                 isForSale: true,
@@ -272,18 +317,73 @@
             };
         }
 
-        generatePropertyName(type, location, stars) {
+        generatePropertyName(type, location, stars, rng) {
+            const roll = rng || Math.random;
             const starNames = t('starLevels');
             const prefix = starNames[stars - 1];
 
             const suffixes = t('propertySuffixes');
-            const suffix = suffixes[type][Math.floor(Math.random() * suffixes[type].length)];
+            const suffix = suffixes[type][Math.floor(roll() * suffixes[type].length)];
             return `${prefix} ${suffix}`;
+        }
+
+        // Replaces a privately rolled board with the world's own, carrying the
+        // party's holdings across by id and re-declaring them to the world
+        // register, so a legacy purchase also takes its house off the market.
+        rebuildSeededMarket() {
+            const held = new Set(this.ownedProperties);
+            const rented = new Set(this.rentedProperties);
+            this.properties = [];
+            this.generateProperties();
+            for (const property of this.properties) {
+                if (held.has(property.id)) {
+                    property.isOwned = true;
+                    property.isForSale = false;
+                    property.isForRent = true;
+                    this.markTaken(property.id, 'bought');
+                } else if (rented.has(property.id)) {
+                    property.isRentedByPlayer = true;
+                    property.isForSale = false;
+                    property.isForRent = false;
+                    this.markTaken(property.id, 'rented');
+                }
+            }
+        }
+
+        // A property somebody else's playthrough of this world has already
+        // taken. The register lives in the world folder (market.json ->
+        // realEstateTaken) and says only that the place is off the market, not
+        // whose it is: ownership is this savegame's own business, so a party
+        // never inherits, sells or collects rent on another party's house.
+        isTakenByAnother(propertyId) {
+            const taken = $gameSystem && $gameSystem._realEstateTaken;
+            if (!taken || !taken[propertyId]) return false;
+            return !this.ownedProperties.includes(propertyId) &&
+                !this.rentedProperties.includes(propertyId);
+        }
+
+        markTaken(propertyId, how) {
+            if (!$gameSystem) return;
+            const taken = $gameSystem._realEstateTaken || ($gameSystem._realEstateTaken = {});
+            taken[propertyId] = {
+                how: how, // i18n-ignore: stored record key
+                by: ($gameParty && $gameParty.leader() && $gameParty.leader().name()) || null,
+                at: ($gameVariables && $gameVariables.value(114)) || 0
+            };
+            $gameSystem._realEstateTaken = taken;
+        }
+
+        releaseTaken(propertyId) {
+            const taken = $gameSystem && $gameSystem._realEstateTaken;
+            if (!taken || !taken[propertyId]) return;
+            delete taken[propertyId];
+            $gameSystem._realEstateTaken = taken;
         }
 
         buyProperty(propertyId) {
             const property = this.properties.find(p => p.id === propertyId);
             if (!property || property.isOwned || property.isRentedByPlayer) return false;
+            if (this.isTakenByAnother(propertyId)) return false;
 
             const effectivePrice = this.calculateEffectivePrice(property);
             const goldCost = effectivePrice * 100; // Convert euros to gold
@@ -295,6 +395,7 @@
             property.isForRent = true;
             property.currentOccupants = Math.floor(Math.random() * property.maxOccupants * 0.3);
             this.ownedProperties.push(property.id);
+            this.markTaken(property.id, 'bought');
 
             // Closing on a property is how the trade is learned, and the bigger
             // the deal the more of it there was to learn (specialization 722).
@@ -328,6 +429,7 @@
 
             const index = this.ownedProperties.indexOf(property.id);
             if (index > -1) this.ownedProperties.splice(index, 1);
+            this.releaseTaken(property.id);
 
             return true;
         }
@@ -358,6 +460,7 @@
         rentProperty(propertyId) {
             const property = this.properties.find(p => p.id === propertyId);
             if (!property || property.isOwned || property.isRentedByPlayer) return false;
+            if (this.isTakenByAnother(propertyId)) return false;
 
             const goldCost = this.getMonthlyRent(property) * 100; // first month due on move-in
             if ($gameParty.gold() < goldCost) return false;
@@ -368,6 +471,7 @@
             property.isForRent = false;
             property.currentOccupants = Math.floor(Math.random() * property.maxOccupants * 0.3);
             this.rentedProperties.push(property.id);
+            this.markTaken(property.id, 'rented');
 
             return true;
         }
@@ -384,6 +488,7 @@
 
             const index = this.rentedProperties.indexOf(property.id);
             if (index > -1) this.rentedProperties.splice(index, 1);
+            this.releaseTaken(property.id);
 
             return true;
         }
@@ -394,6 +499,7 @@
             const property = this.properties.find(p => p.id === propertyId);
             const index = this.rentedProperties.indexOf(propertyId);
             if (index > -1) this.rentedProperties.splice(index, 1);
+            this.releaseTaken(propertyId);
             if (!property) return null;
 
             property.isRentedByPlayer = false;
@@ -562,7 +668,8 @@
                 companyPrices: this.companyPrices,
                 companyCostBasis: this.companyCostBasis,
                 customCompanies: this.customCompanies,
-                ownedDestinations: this.ownedDestinations
+                ownedDestinations: this.ownedDestinations,
+                marketSeeded: this.marketSeeded === true
             };
         }
 
@@ -580,10 +687,20 @@
                 this.companyCostBasis = data.companyCostBasis || {};
                 this.customCompanies = data.customCompanies || {};
                 this.ownedDestinations = data.ownedDestinations || [];
+                this.marketSeeded = data.marketSeeded === true;
 
                 // If no properties exist, initialize
                 if (this.properties.length === 0) {
                     this.initialize();
+                } else if (!this.marketSeeded) {
+                    // A board this savegame rolled privately, before the market
+                    // was the world's. Rebuild it from the world seed so it is
+                    // the same thirty houses everyone else is looking at, and
+                    // put the party back on the ids they held: they keep a
+                    // property at each slot they bought, which is now the
+                    // world's house at that slot rather than their own.
+                    this.rebuildSeededMarket();
+                    this.registerWithNewsSystem();
                 } else {
                     // Re-register with news system
                     this.registerWithNewsSystem();
@@ -1004,6 +1121,10 @@
                 } else if (prop.isRentedByPlayer) {
                     statusLabel = T('RealEstate.ui.rented');
                     statusColor = 'var(--text-info)';
+                } else if ($realEstateManager && $realEstateManager.isTakenByAnother(prop.id)) {
+                    // Off the market: another playthrough of this world took it.
+                    statusLabel = T('RealEstate.ui.taken');
+                    statusColor = 'var(--text-disabled)';
                 } else {
                     statusLabel = T('RealEstate.ui.available');
                     statusColor = 'var(--text-primary-hover)';
@@ -1053,6 +1174,9 @@
                 commands.push({ label: T('RealEstate.ui.liquidateAsset'), action: "sell", danger: true });
             } else if (selectedProperty.isRentedByPlayer) {
                 commands.push({ label: T('RealEstate.ui.vacateRental'), action: "vacate", danger: true });
+            } else if ($realEstateManager.isTakenByAnother(selectedProperty.id)) {
+                // Another playthrough of this world holds it: nothing to offer
+                // but the news, so neither deed nor lease is put up for sale.
             } else {
                 commands.push({ label: T('RealEstate.ui.acquireDeed'), action: "buy" });
                 commands.push({ label: T('RealEstate.ui.rent'), action: "rent", secondary: true });
@@ -1218,23 +1342,19 @@
                 const companies = $realEstateManager.getCompanies();
                 const company = companies[this._companyIndex] || null;
                 const title = T('RealEstate.ui.shareProspectus');
-                const navHint = T('RealEstate.ui.wSNavigateAD');
                 return `
                     <div class="right-page">
                         <h2 class="title">${title}</h2>
                         <div id="re-deed-wrap" style="flex:1;display:flex;flex-direction:column;overflow-y:auto;">${this.buildProspectusHTML(company)}</div>
-                        <div class="re-nav-hint">${navHint}</div>
                     </div>`;
             }
             const properties = $realEstateManager.properties;
             const selectedProperty = properties[this._propertyListWindow.index()] || null;
             const deedTitle = T('RealEstate.ui.deedOfTransaction');
-            const navHint = T('RealEstate.ui.wSNavigateAD');
             return `
                 <div class="right-page">
                     <h2 class="title">${deedTitle}</h2>
                     <div id="re-deed-wrap" style="flex:1;display:flex;flex-direction:column;overflow-y:auto;">${this.buildDeedHTML(selectedProperty)}</div>
-                    <div class="re-nav-hint">${navHint}</div>
                 </div>`;
         }
 
@@ -1492,7 +1612,7 @@
                 commands.push('sell');
             } else if (property.isRentedByPlayer) {
                 commands.push('vacate');
-            } else {
+            } else if (!$realEstateManager.isTakenByAnother(property.id)) {
                 commands.push('buy', 'rent');
             }
             const effects = $realEstateManager.getActiveEffectsForLocation(property.location);
@@ -1865,7 +1985,8 @@
             if (this._property) {
                 if (this._property.isOwned) {
                     this.addCommand(t('sell'), 'sell');
-                } else {
+                } else if (!($realEstateManager &&
+                        $realEstateManager.isTakenByAnother(this._property.id))) {
                     this.addCommand(t('buy'), 'buy');
                 }
 

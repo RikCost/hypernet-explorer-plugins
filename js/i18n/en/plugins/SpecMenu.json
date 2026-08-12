@@ -3,12 +3,15 @@
     "back": "Back",
     "specializations": "Specializations",
     "trained": "Trained",
+    "all": "All",
     "noneTrained": "No specializations trained yet.",
     "untrained": "Untrained",
     "noneSelected": "No specialization selected.",
     "classes": "Classes",
     "traits": "Traits",
     "towards": "Towards {level}",
+    "pointsToNext": "{points} more points to {level}",
+    "mastered": "Fully mastered. Nothing left to learn.",
     "governingStat": "Governing stat: {stat}"
   }
 }

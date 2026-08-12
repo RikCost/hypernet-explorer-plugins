@@ -101,9 +101,10 @@
     {
       id: 1,
       name: "Bubba",
+      characterType: "humanoid",
       classId: 54,
-      sprite: "Fantasy_Characters1",
-      spriteIndex: 1,
+      sprite: "NPCs/!$Bubba1",
+      spriteIndex: 0,
       mapId: 722,
       x: 55,
       y: 48,
@@ -134,6 +135,7 @@
     {
       id: 2,
       name: "Em",
+      characterType: "humanoid",
       classId: 2,
       sprite: "Other/!$Em",
       spriteIndex: 1,
@@ -151,7 +153,13 @@
       sexualOrientation: "asexual", // key into js/db/NPC/Orientations.json (sexual)
       romanticOrientation: "aromantic", // key into js/db/NPC/Orientations.json (romantic)
       money: 20000,
-      items: [{ id: 111, amount: 1 }], // Liminal cuffs
+      // The cuffs and the broom she arrived with. The broom is summoned from the
+      // item wherever she stands (VehicleSystem, item 168 -> common event 214),
+      // so unlike The Beast below it is carried rather than parked.
+      items: [
+        { id: 111, amount: 1 }, // Liminal cuffs
+        { id: 168, amount: 1 }, // Flying broom
+      ],
       weapons: [{ id: 6, amount: 1 }],
       armors: [
         { id: 434, amount: 1 },
@@ -178,9 +186,10 @@
     {
       id: 3,
       name: "Selene",
+      characterType: "humanoid",
       classId: 6,
-      sprite: "School01RM",
-      spriteIndex: 2,
+      sprite: "NPCs/!$Hitman1",
+      spriteIndex: 0,
       mapId: 561,
       x: 15,
       y: 11,
@@ -207,6 +216,7 @@
     {
       id: 4,
       name: "Giulio Andreotti",
+      characterType: "humanoid",
       classId: 6, // CEO (power broker / statesman, closest analog to career politician)
       sprite: "Skab/!$Andreotti",
       spriteIndex: 0,
@@ -246,6 +256,7 @@
     {
       id: 5,
       name: "Margherita Hack",
+      characterType: "humanoid",
       classId: 53, // Physicist (astrophysicist)
       sprite: "Skab/!$MargheritaHack",
       spriteIndex: 0,
@@ -280,6 +291,7 @@
     {
       id: 6,
       name: "Bill Clinton",
+      characterType: "humanoid",
       classId: 35, // Bard (charismatic orator and saxophonist)
       sprite: "Skab/!$BillClinton",
       spriteIndex: 0,
@@ -293,10 +305,10 @@
       sexualOrientation: "heterosexual", // key into js/db/NPC/Orientations.json (sexual)
       romanticOrientation: "heteroromantic", // key into js/db/NPC/Orientations.json (romantic)
       money: 4000000, // 40,000€ - wealthy career politician and public speaker
-      items: [175],
-      weapons: [],
+      items: [{ id: 175, amount: 1 }],
+      weapons: [{ id: 187, amount: 1 }], // Presidential Saxophone - the sax goes everywhere he does
       armors: [{ id: 311, amount: 1 }], // Deal-Closer Suit
-      equips: [null, null, null, null, null],
+      equips: [187, null, null, null, null],
       skills: [],
       traits: [81, 132, 143, 174], // Charismatic, Scholar, Bard, Infamous
       specializations: [
@@ -310,6 +322,7 @@
     {
       id: 7,
       name: "Richard Benson",
+      characterType: "humanoid",
       classId: 60, // Entertainer (flamboyant Italian TV showman)
       sprite: "Skab/!$RichardBenson",
       spriteIndex: 0,
@@ -322,10 +335,13 @@
       sexualOrientation: "heterosexual", // key into js/db/NPC/Orientations.json (sexual)
       romanticOrientation: "heteroromantic", // key into js/db/NPC/Orientations.json (romantic)
       money: 800000, // 8,000€ - TV celebrity earnings
-      items: [],
-      weapons: [],
+      items: [{ id: 593, amount: 1 }], // Raw Chicken
+      weapons: [
+        { id: 189, amount: 1 }, // La chitarra infernale - the cherry burst Soloist
+        { id: 325, amount: 1 }, // Il bastone infernale - the cane with the blade in it
+      ],
       armors: [{ id: 298, amount: 1 }], // Rhinestone Denim Suit
-      equips: [null, null, null, null, null],
+      equips: [189, null, null, null, null],
       skills: [],
       traits: [81, 82, 143, 173], // Charismatic, Extrovert, Bard, Famous
       specializations: [
@@ -433,6 +449,7 @@
     {
       id: 8,
       name: "Pope Petrus II",
+      characterType: "humanoid",
       classId: 59, // Priest
       sprite: "Skab/!$Ratzinger",
       spriteIndex: 0,
@@ -463,6 +480,7 @@
     {
       id: 9,
       name: "Rita Levi-Montalcini",
+      characterType: "humanoid",
       classId: 42, // Scientist (Nobel-laureate neurologist)
       sprite: "Skab/!$RitaLeviMontalcini",
       spriteIndex: 0,
@@ -497,6 +515,7 @@
     {
       id: 10,
       name: "Aleister Crowley",
+      characterType: "humanoid",
       classId: 8, // Cultist (founder of Thelema)
       sprite: "Skab/!$AleisterCrowley",
       spriteIndex: 0,
@@ -532,12 +551,13 @@
     {
       id: 11,
       name: "Kofi Annan",
+      characterType: "humanoid",
       classId: 39, // Sage (elder statesman / diplomat)
       sprite: "Skab/!$KofiAnnan",
       spriteIndex: 0,
-      mapId: 708,
-      x: 24,
-      y: 12,
+      mapId: 400,
+      x: 41,
+      y: 15,
       switches: [],
       birthDate: "1938-04-08", // Date of birth
       // No nationId: Ghana is not a nation tracked by HistorySimulator_COUNTRIES
@@ -545,7 +565,7 @@
       sexualOrientation: "heterosexual", // key into js/db/NPC/Orientations.json (sexual)
       romanticOrientation: "heteroromantic", // key into js/db/NPC/Orientations.json (romantic)
       money: 700000, // 7,000€ - UN Secretary-General, Nobel Peace Prize laureate
-      items: [],
+      items: [379],
       weapons: [],
       armors: [{ id: 378, amount: 1 }], // Envoy's Sashed Coat
       equips: [null, null, null, null, null],
@@ -562,6 +582,7 @@
     {
       id: 12,
       name: "George W. Bush",
+      characterType: "humanoid",
       classId: 32, // Commander (wartime president)
       sprite: "Skab/!$GeorgeWBush",
       spriteIndex: 0,
@@ -591,6 +612,218 @@
     }
   ];
   // i18n-ignore-end
+
+  //=============================================================================
+  // Tutorial-exclusive presets
+  //=============================================================================
+  // The tutorial never builds a character from scratch: it offers exactly
+  // these three dossiers on the same preset board used everywhere else (see
+  // CharacterCreation.js's showPresetSelection / getAvailableCharacterPresets
+  // below). None of the three is ever spent - every one is reusable across
+  // every playthrough of every world - and each is rolled fresh (name,
+  // gender, and for the sprite-pool ones the sprite too) every time the
+  // tutorial's character creation opens, so no two tutorials look alike.
+  //
+  // `characterType` ("humanoid" | "creature") and, for a creature dossier,
+  // `archetypes` (1-2 EnemyArchetypes.json keys, joined "A / B" for a hybrid)
+  // are a general extension of the preset schema, not tutorial-only fields:
+  // see CharacterCreation.js's _applyPreset, which reads them through
+  // window.applyCreatureSelection (CharacterCreationCreature.js) for any
+  // preset that declares characterType: "creature".
+
+  // i18n-ignore-start: sprite sheet keys, not prose
+  const TUTORIAL_SLIME_SPRITES = [
+    "NPCs/!$Slime1", "NPCs/!$Slime2", "NPCs/!$Slime3", "NPCs/!$Slime4",
+    "NPCs/!$Slime5", "NPCs/!$Slime6", "NPCs/!$Slime7", "NPCs/!$Slime8",
+  ];
+  // i18n-ignore-end
+
+  // Every walk sheet the sprite catalogue carries for the Goblin archetype
+  // (both the extracted NPCs/ cells and the hand-drawn Skab/ ones). A
+  // beta sheet is left out unless the world was created with beta sprites
+  // on, the same rule SpriteCatalog.npcKeys() applies everywhere else.
+  function tutorialGoblinSpritePool() {
+    const catalog = (window.WorldGen && window.WorldGen.NPCs) || {};
+    const betaOk = !!(window.SpriteCatalog && window.SpriteCatalog.betaEnabled && window.SpriteCatalog.betaEnabled());
+    return Object.keys(catalog).filter((key) => {
+      const entry = catalog[key];
+      if (!entry || entry.npc !== true || entry.Archetype !== "Goblin") return false;
+      return betaOk || entry.beta !== true;
+    });
+  }
+
+  function tutorialSpritePool(poolKey) {
+    if (poolKey === "slime") return TUTORIAL_SLIME_SPRITES;
+    if (poolKey === "goblin") return tutorialGoblinSpritePool();
+    return null;
+  }
+
+  const TUTORIAL_PRESETS = [
+    {
+      id: 9001,
+      tutorialOnly: true,
+      endless: true,
+      characterType: "humanoid",
+      classId: 66, // Mana Cyborg
+      sprite: "Skab/!$CyborgActivist",
+      spriteIndex: 0,
+      busts: "CyborgActivist",
+      mapId: 1414,
+      x: 8,
+      y: 8,
+      switches: [],
+      sexualOrientation: "heterosexual",
+      romanticOrientation: "heteroromantic",
+      money: 0,
+      items: [],
+      weapons: [],
+      armors: [],
+      equips: [null, null, null, null, null],
+      skills: [],
+      traits: [],
+      specializations: [],
+    },
+    {
+      id: 9002,
+      tutorialOnly: true,
+      endless: true,
+      characterType: "creature",
+      archetypes: ["Slime"],
+      classId: 64, // Mimic
+      spritePoolKey: "slime",
+      spriteIndex: 0,
+      mapId: 1414,
+      x: 8,
+      y: 8,
+      switches: [],
+      money: 0,
+      items: [],
+      weapons: [],
+      armors: [],
+      equips: [null, null, null, null, null],
+      skills: [],
+      traits: [],
+      specializations: [],
+    },
+    {
+      id: 9003,
+      tutorialOnly: true,
+      endless: true,
+      characterType: "humanoid",
+      classId: 42, // Scientist
+      spritePoolKey: "goblin",
+      spriteIndex: 0,
+      mapId: 1414,
+      x: 8,
+      y: 8,
+      switches: [],
+      sexualOrientation: "heterosexual",
+      romanticOrientation: "heteroromantic",
+      money: 0,
+      items: [],
+      weapons: [],
+      armors: [],
+      equips: [null, null, null, null, null],
+      skills: [],
+      traits: [],
+      specializations: [],
+    },
+  ];
+
+  /**
+   * Every field the tutorial rolls fresh for one dossier: a Markov name, a
+   * random gender (0 male / 1 female / 2 non-binary / 3 cocoon), and, for a
+   * dossier drawing from a sprite pool, the sprite and bust to go with it.
+   * @param {object} preset - Entry from TUTORIAL_PRESETS
+   * @returns {object} { name, gender, sprite?, busts? }
+   */
+  function rollTutorialPresetFields(preset) {
+    const roll = { gender: Math.floor(Math.random() * 4) };
+
+    if (window.generateSeededMarkovName) {
+      const seed = Date.now() + preset.id * 1000;
+      const name = window.generateSeededMarkovName(
+        Math.floor(seed / 1000) % 1000000,
+        Math.floor(Math.random() * 1000000),
+        preset.id,
+        "names", 2, 4, 12
+      );
+      roll.name = (name && !/unknown/i.test(name)) ? name : "";
+    }
+    if (!roll.name) {
+      roll.name = T('CharPresets.tutorialFallbackName') + " " + preset.id;
+    }
+
+    if (preset.spritePoolKey) {
+      const pool = tutorialSpritePool(preset.spritePoolKey);
+      const sprite = pool && pool.length
+        ? pool[Math.floor(Math.random() * pool.length)]
+        : null;
+      if (sprite) {
+        roll.sprite = sprite;
+        const catalog = (window.WorldGen && window.WorldGen.NPCs) || {};
+        const entry = catalog[sprite];
+        roll.busts = (entry && entry.busts && entry.busts[0]) || "";
+      }
+    }
+
+    return roll;
+  }
+
+  /**
+   * The per-save cache the tutorial's rolled dossier fields live in, so the
+   * board and the dossier page agree while the player is browsing it.
+   * @returns {object} presetId -> rolled fields
+   */
+  function tutorialPresetRollCache() {
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return {};
+    if (!$gameSystem._tutorialPresetRoll) $gameSystem._tutorialPresetRoll = {};
+    return $gameSystem._tutorialPresetRoll;
+  }
+
+  /**
+   * Re-rolls every tutorial dossier. Called once whenever the tutorial's
+   * character creation opens, so no two tutorials look alike; the rolled
+   * fields then stay stable (see getTutorialCharacterPresets) for the rest
+   * of that session.
+   */
+  function resetTutorialPresetRolls() {
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+    $gameSystem._tutorialPresetRoll = {};
+  }
+
+  /**
+   * The tutorial's three dossiers, with this session's rolled name/gender/
+   * sprite filled in (rolling them now if nothing has yet).
+   * @returns {array} Array of preset objects
+   */
+  function getTutorialCharacterPresets() {
+    const cache = tutorialPresetRollCache();
+    return TUTORIAL_PRESETS.map((preset) => {
+      if (!cache[preset.id]) cache[preset.id] = rollTutorialPresetFields(preset);
+      const roll = cache[preset.id];
+      return Object.assign({}, preset, {
+        name: roll.name,
+        gender: roll.gender,
+        sprite: roll.sprite || preset.sprite,
+        busts: roll.busts || preset.busts,
+      });
+    });
+  }
+
+  /**
+   * Whether the tutorial's dossier board should be shown instead of the
+   * world's own preset pool: the in-scene flag while the wizard is running,
+   * falling back to the switch (cleared at the add-member step, mirroring
+   * CharacterCreation.js's own isTutorialFlow).
+   * @returns {boolean} True while the tutorial's creation flow is active
+   */
+  function isTutorialPresetFlow() {
+    if (typeof Scene_CharacterCreation !== "undefined" && Scene_CharacterCreation && Scene_CharacterCreation._tutorialMode) {
+      return true;
+    }
+    return !!($gameSwitches && $gameSwitches.value(100));
+  }
 
   //=============================================================================
   // Procedural dossier lore (Em)
@@ -655,14 +888,33 @@
   }
 
   /**
+   * Whether this playthrough's Em is the world's first: the native one, born in
+   * Wimbledon on this very branch, rather than one who fell in from elsewhere.
+   * Read off the same counter emHometown() locks its own answer from, so the
+   * two stay in step (Wimbledon + the fixed canon lore, or a rhyming town +
+   * a rolled branch).
+   * @returns {boolean} True when no Em has been taken from this world before
+   */
+  function isFirstEmIncarnation() {
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return true;
+    return ($gameSystem._emIncarnations | 0) === 0;
+  }
+
+  /**
    * Lore of a dossier, resolving procedural backgrounds. Every consumer of
    * preset.lore should go through this instead of reading the field directly.
+   * The world's first Em never fell from anywhere: she is native to this
+   * branch, so her dossier reads the fixed canon lore instead of a rolled
+   * "fell through a door" background. Every Em after her is a genuine drifter
+   * and gets the fully random composed one.
    * @param {object} preset - Preset dossier
    * @returns {string} Lore in the active language, or "" when there is none
    */
   function getPresetLore(preset) {
     if (!preset) return "";
-    if (preset.proceduralLore === "em") return buildEmLore(emDimensionSeed());
+    if (preset.proceduralLore === "em") {
+      return isFirstEmIncarnation() ? T('CharPresets.emOriginalLore') : buildEmLore(emDimensionSeed());
+    }
     const key = 'CharPresets.lore.' + preset.id;
     if (T.has(key)) return T(key);
     // A retired party member's generated dossier carries its own sentence.
@@ -955,6 +1207,9 @@
    * @returns {array} Array of preset objects
    */
   function getAvailableCharacterPresets() {
+    // The tutorial offers its own three dossiers and nothing else (see
+    // TUTORIAL_PRESETS above); the world's own pool is never mixed in.
+    if (isTutorialPresetFlow()) return getTutorialCharacterPresets();
     const used = getUsedPresetIds();
     return getCharacterPresets().filter(
       (preset) => preset.endless || used.indexOf(preset.id) < 0
@@ -1086,10 +1341,18 @@
   // vehicle shows up both on the map it is parked on and on the world map at the
   // dossier's world coordinates.
 
-  // Vehicle key -> { Game_Vehicle type, availability switch }.
+  // Vehicle key -> { Game_Vehicle type, availability switch, shared-slot
+  // sub-type }. The Car, Bike, Boat and Broom all share the engine's single
+  // 'boat' Game_Vehicle, so parking one of them also has to say which one the
+  // slot currently stands for ($gameSystem._boatType). Only the Camper and the
+  // Car are additionally gated by an availability switch; the rest are owned by
+  // holding their summoning item.
   const PRESET_VEHICLES = {
     camper: { type: "ship", switchId: 51 },
-    car: { type: "boat", switchId: 64 },
+    car: { type: "boat", switchId: 64, boatType: "car" },
+    bike: { type: "boat", switchId: 0, boatType: "bike" },
+    boat: { type: "boat", switchId: 0, boatType: "boat" },
+    broom: { type: "boat", switchId: 0, boatType: "broom" },
     airship: { type: "airship", switchId: 0 }
   };
 
@@ -1122,9 +1385,9 @@
       console.warn("CharacterPresets: VehicleSystem not loaded; preset vehicle not parked.");
     }
 
-    // The car and the bike share the engine's single 'boat' vehicle, so the
-    // shared slot has to be told which one it currently is.
-    if (key === "car") $gameSystem._boatType = "car";
+    // The car, bike, boat and broom share the engine's single 'boat' vehicle, so
+    // the shared slot has to be told which one it currently is.
+    if (meta.boatType) $gameSystem._boatType = meta.boatType;
 
     // Makes the vehicle available to the menus and events that gate on it.
     if (meta.switchId > 0) $gameSwitches.setValue(meta.switchId, true);
@@ -2114,6 +2377,8 @@
     isStepCompleted,
     hasCompletedFirstCreation,
     markFirstCreationComplete,
+    getTutorialCharacterPresets,
+    resetTutorialPresetRolls,
 
     // Windows
     Window_CharacterPresets,

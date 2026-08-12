@@ -16626,18 +16626,6 @@
           },
           "list": [
             {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
-            {
               "code": 201,
               "indent": 0,
               "parameters": [
@@ -16709,18 +16697,6 @@
             "tileId": 0
           },
           "list": [
-            {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
             {
               "code": 201,
               "indent": 0,
@@ -16794,18 +16770,6 @@
           },
           "list": [
             {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
-            {
               "code": 201,
               "indent": 0,
               "parameters": [
@@ -16877,18 +16841,6 @@
             "tileId": 0
           },
           "list": [
-            {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
             {
               "code": 201,
               "indent": 0,
@@ -16962,18 +16914,6 @@
           },
           "list": [
             {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
-            {
               "code": 201,
               "indent": 0,
               "parameters": [
@@ -17045,18 +16985,6 @@
             "tileId": 0
           },
           "list": [
-            {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
             {
               "code": 201,
               "indent": 0,
@@ -17130,18 +17058,6 @@
           },
           "list": [
             {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
-            {
               "code": 201,
               "indent": 0,
               "parameters": [
@@ -17214,18 +17130,6 @@
           },
           "list": [
             {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
-            {
               "code": 201,
               "indent": 0,
               "parameters": [
@@ -17297,18 +17201,6 @@
             "tileId": 0
           },
           "list": [
-            {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
             {
               "code": 201,
               "indent": 0,
@@ -18487,10 +18379,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "GrayNPCs02",
+            "characterName": "NPCs/!$Scarf2",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 5
+            "characterIndex": 0
           },
           "list": [
             {
@@ -18794,18 +18686,6 @@
           },
           "list": [
             {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
-            {
               "code": 201,
               "indent": 0,
               "parameters": [
@@ -18878,18 +18758,6 @@
           },
           "list": [
             {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
-            {
               "code": 201,
               "indent": 0,
               "parameters": [
@@ -18961,18 +18829,6 @@
             "tileId": 0
           },
           "list": [
-            {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
             {
               "code": 201,
               "indent": 0,
@@ -19527,18 +19383,6 @@
           },
           "list": [
             {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
-            {
               "code": 201,
               "indent": 0,
               "parameters": [
@@ -19610,18 +19454,6 @@
             "tileId": 0
           },
           "list": [
-            {
-              "code": 250,
-              "indent": 0,
-              "parameters": [
-                {
-                  "name": "Move1",
-                  "volume": 90,
-                  "pitch": 100,
-                  "pan": 0
-                }
-              ]
-            },
             {
               "code": 201,
               "indent": 0,

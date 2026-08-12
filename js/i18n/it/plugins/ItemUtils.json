@@ -19,6 +19,10 @@
     "Epic": "Epico",
     "Legendary": "Leggendario"
   },
+  "encumbrance": {
+    "title": "Sovraccarico",
+    "load": "{load} trasportati, movimento rallentato"
+  },
   "addiction": {
     "all": "Ogni voglia",
     "label": "Voglia",

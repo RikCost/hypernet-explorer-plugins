@@ -466,19 +466,35 @@
             this.core.scale.set(1.15, 0.95, 1.1); this.core.position.y = 1.0;
             this.core.children.forEach(c => { c.visible = false; });
             const headMat = this.core.material;
-            // Snout / muzzle jutting forward.
-            const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.24, 0.34, 12), headMat); snout.rotation.x = Math.PI / 2; snout.position.set(0, -0.1, 0.42); this.core.add(snout);
-            // Two pointed ears.
-            for (const ex of [-0.28, 0.28]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.26, 6), headMat); ear.position.set(ex, 0.42, -0.05); ear.rotation.x = -0.2; this.core.add(ear); }
+            // Short rounded muzzle: a cat's face is flat, not a dog's snout.
+            const snout = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 10), headMat); snout.scale.set(1.1, 0.75, 0.85); snout.position.set(0, -0.14, 0.4); this.core.add(snout);
+            const nose = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), this._mat(p.accent, 0.9, 0.3, p.accent)); nose.scale.set(1.3, 0.85, 0.9); nose.position.set(0, -0.1, 0.6); this.core.add(nose);
+            // Two pointed ears with a glowing inner shell.
+            for (const ex of [-0.28, 0.28]) {
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.28, 6), headMat); ear.position.set(ex, 0.42, -0.05); ear.rotation.set(-0.2, 0, -Math.sign(ex) * 0.16); this.core.add(ear);
+                const inner = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.2, 6), this._mat(p.accent, 0.5, 0.3, p.accent)); inner.position.set(ex, 0.41, 0.02); inner.rotation.copy(ear.rotation); this.core.add(inner);
+            }
+            // Whiskers trailing off into vapour.
+            const wMat = this._mat(p.accent, 0.45, 0.3, p.accent);
+            for (const side of [-1, 1]) for (let k = 0; k < 2; k++) {
+                const w = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.5, 4), wMat);
+                w.position.set(side * 0.3, -0.16 + k * 0.09, 0.44); w.rotation.z = Math.PI / 2; w.rotation.y = side * (0.3 - k * 0.15); this.core.add(w);
+            }
             // Glowing fangs jutting from the muzzle.
             this.fangs = new THREE.Group();
             for (const fx of [-0.1, 0.1]) { const fang = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.22, 6), this._mat(p.accent, 0.95, 0.2, p.accent)); fang.position.set(fx, -0.22, 0.55); fang.rotation.x = Math.PI; this.fangs.add(fang); }
             this.core.add(this.fangs);
             // Stripe marks (thin glowing arcs over the brow).
             for (let i = 0; i < 3; i++) { const st = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.18, 0.02), this._mat(p.accent, 0.5, 0.3, p.accent)); st.position.set((i - 1) * 0.16, 0.18, 0.4); this.core.add(st); }
-            // Place the eyes on the tiger face.
+            // Place the eyes on the tiger face: big, round and catchlit.
             this.face.position.set(0, 1.05, 0.32); this.face.scale.set(1.1, 1.0, 1.0); this.face.children[2].visible = false;
-            this.face.children[0].position.set(-0.18, 0.04, 0.16); this.face.children[1].position.set(0.18, 0.04, 0.16);
+            this.face.children[0].position.set(-0.19, 0.06, 0.16); this.face.children[1].position.set(0.19, 0.06, 0.16);
+            const glintMat = this._mat(0xffffff, 0.9, 0.05, 0xffffff);
+            for (const e of [this.face.children[0], this.face.children[1]]) {
+                e.scale.set(1.5, 1.5, 1.3);
+                const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), this._mat(0x141826, 1.0, 0.2)); pupil.scale.set(0.6, 1.0, 0.6); pupil.position.z = 0.055; e.add(pupil);
+                const glint = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), glintMat); glint.position.set(-0.03, 0.035, 0.07); e.add(glint);
+            }
             // Body dissolving into spectral wisps (forelegs trailing off).
             this.leftWisp.geometry.dispose(); this.leftWisp.geometry = new THREE.ConeGeometry(0.16, 0.85, 8); this.leftWisp.position.set(-0.28, 0.45, 0.1); this.leftWisp.rotation.z = 0.2;
             this.rightWisp.geometry.dispose(); this.rightWisp.geometry = new THREE.ConeGeometry(0.16, 0.85, 8); this.rightWisp.position.set(0.28, 0.45, 0.1); this.rightWisp.rotation.z = -0.2;

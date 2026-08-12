@@ -1,0 +1,15 @@
+{
+  "title": "TV GUIDE",
+  "status": "{channels} CHANNELS | STUDIO MAP {map} | {slots} DAILY SLOTS",
+  "noSignal": "NO TRANSMISSION SIGNAL. (RANDOMTVTRANSMISSIONGENERATOR NOT LOADED?)",
+  "endOfTransmission": "- END OF TRANSMISSION -",
+  "narrator": "NARRATOR",
+  "format": "FORMAT:",
+  "tone": "TONE:",
+  "cast": "CAST:",
+  "watch": "▶ WATCH",
+  "programs": "PROGRAMS",
+  "noPrograms": "NO PROGRAMS SCHEDULED.",
+  "transmission": "TRANSMISSION",
+  "tuneInHint": "SELECT A PROGRAM ABOVE TA TUNE IN!"
+}

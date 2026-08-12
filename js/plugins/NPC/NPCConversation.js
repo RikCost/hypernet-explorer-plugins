@@ -691,14 +691,31 @@
       return null;
     },
 
+    // Nibiru is not a settlement-scoped mood, it's a fact of survival, so it
+    // is picked per personality (like WEATHER_THOUGHTS) rather than as shared
+    // text run through applyVoice, and it outranks every routine topic below.
+    _pickWorldEndingRaw(ctx, persName) {
+      const topic = ctx.earthDestroyed ? WORLD_THOUGHTS().earthDestroyed
+                  : ctx.earthSaved ? WORLD_THOUGHTS().earthSaved
+                  : null;
+      if (!topic) return null;
+      const pool = (persName && topic[persName]) || topic.default;
+      return pool && pool.length ? _pickFrom(pool) : null;
+    },
+
     pickWorldThought(profile) {
       const name = profile?._eventName;
       if (!window.NPCWorldWeb?.getConversationContext) return null;
       let ctx;
       try { ctx = window.NPCWorldWeb.getConversationContext(name); } catch (_) { return null; }
       if (!ctx) return null;
+      const persName = _personalityNameOf(profile);
+      if ((ctx.earthDestroyed || ctx.earthSaved) && Math.random() < 0.5) {
+        const ending = this._pickWorldEndingRaw(ctx, persName);
+        if (ending) return ending;
+      }
       const line = this._pickRaw(ctx);
-      return line ? applyVoice(line, _personalityNameOf(profile)) : null;
+      return line ? applyVoice(line, persName) : null;
     },
   };
 

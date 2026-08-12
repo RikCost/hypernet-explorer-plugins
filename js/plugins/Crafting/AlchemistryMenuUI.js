@@ -1,18 +1,26 @@
 /*:
  * @target MZ
- * @plugindesc Alchemistry Menu UI v2.0, DOM overlay (asymmetric book-spread) for AlchemistryMenu
+ * @plugindesc Alchemistry Menu UI v3.0, DOM overlay (book-spread) for AlchemistryMenu
  * @author Omni-Lex
  * @help AlchemistryMenuUI.js
  *
  * DOM layer for Scene_Alchemistry. Must be listed AFTER AlchemistryMenu.js
  * in the Plugin Manager.
  *
- * Implements:
- *  - Parchment book-spread overlay (58/42 asymmetric pages)
- *  - Left page  : project pockets (2-column grid)
- *  - Right page : selected project inspect (reagents + procedure + actions)
- *  - Modal flows: action picker, reagent picker
- *  - Full keyboard + controller support (WASD, arrows, L1/R1, gamepad B = cancel)
+ * NOTHING IS EVER REDRAWN
+ * -----------------------
+ * The spread is built ONCE on mount and from then on it is only ever patched:
+ * every update writes textContent, toggles a class or shows/hides an element,
+ * and every list reuses the rows it already has (`syncRows` trims or extends
+ * the pool and fills the survivors in place). No element that stays on screen
+ * is ever destroyed and rebuilt, so the page never flickers, never loses its
+ * scroll position and never drops the focus ring, which is what the old
+ * innerHTML-per-keypress rendering did on every cursor move.
+ *
+ * Layout:
+ *  - Left page  : Ready / Missing / Benches tabs over one list
+ *  - Right page : the party switcher, then the dossier for whatever is picked
+ *  - Modals     : action picker, reagent picker, bench picker
  */
 
 (function () {
@@ -23,12 +31,47 @@
     }
 
     const ACTIONS = window.AlchemistryActions;
+    const A = window.Alchemistry;
     // Named so it does not shadow the global i18n resolver.
     const alch = () => window.AlchemistryI18n();
     const tn = (str) => (window.translateText ? window.translateText(str) : str);
 
+    const TAB_READY = 0, TAB_MISSING = 1, TAB_BENCH = 2;
+    const COLS = 2;
+
     // =========================================================================
-    // create, DOM extension
+    // DOM pooling helpers, the whole reason nothing here redraws
+    // =========================================================================
+
+    // Bring `host` to exactly `count` children, reusing what is already there.
+    // `make()` builds one row; it is called only for rows that do not exist yet.
+    function syncRows(host, count, make) {
+        while (host.children.length > count) host.removeChild(host.lastElementChild);
+        while (host.children.length < count) host.appendChild(make());
+        return host.children;
+    }
+
+    function el(tag, className, parent) {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (parent) parent.appendChild(node);
+        return node;
+    }
+
+    // Write only when it changed: an unchanged assignment still dirties the
+    // node in some engines, and this keeps the per-frame clock update free.
+    function setText(node, text) {
+        const value = text == null ? '' : String(text);
+        if (node.textContent !== value) node.textContent = value;
+    }
+
+    function setShown(node, shown) {
+        const value = shown ? '' : 'none';
+        if (node.style.display !== value) node.style.display = value;
+    }
+
+    // =========================================================================
+    // create / terminate
     // =========================================================================
 
     const _Scene_Alchemistry_create = Scene_Alchemistry.prototype.create;
@@ -58,32 +101,43 @@
         window.addEventListener('keydown', this._wasdListener);
         window.addEventListener('keyup',   this._wasdUpListener);
 
-        // DOM state
-        this._selectedProjectIndex = $gameSystem._currentAlchemistryProjectIndex || 0;
-        this._activeSection        = 'projects'; // 'projects' | 'actions'
-        this._selectedActionIndex  = 0;
-        this._actionsList          = [];         // populated on render
-        this._statusMessage        = '';
+        // Navigation state
+        this._tab            = TAB_READY;
+        this._area           = 'list';   // 'tabs' | 'list' | 'actions'
+        this._listIndex      = 0;
+        this._actionIndex    = 0;
+        this._alchemistIndex = 0;
+        this._statusMessage  = '';
 
-        // Modal state ('action' | 'item' | null)
-        this._modalMode            = null;
-        this._modalSelectedIndex   = 0;
-        this._modalItems           = [];
-        this._pendingAction        = null;
+        // Modal state ('action' | 'item' | 'slot' | null)
+        this._modalMode          = null;
+        this._modalSelectedIndex = 0;
+        this._modalItems         = [];
+        this._pendingAction      = null;
+        this._pendingRecipeId    = null;
 
-        // Refresh hook used by async recipe loading in the data file.
-        this.onRecipesLoaded = () => {
-            this._selectedProjectIndex = 0;
-            $gameSystem._currentAlchemistryProjectIndex = 0;
-            this.refreshAlchemistryDOM();
-        };
+        // What the last patch was drawn against, so the per-frame sweep can
+        // tell a real change (a bench finished, a reagent was spent) from
+        // nothing having happened at all.
+        this._signature = '';
 
-        this.createAlchemistryOverlay();
+        this.buildAlchemistryDOM();
+        this.syncAll();
+
+        if (window.CharSwitcher) {
+            window.CharSwitcher.installTabKey(this, (dir) => this.cycleAlchemist(dir));
+        }
+        UIAlchemistryInputManager.activate(this);
+
+        setTimeout(() => {
+            if (this._alcContainer) this._alcContainer.style.opacity = '1';
+        }, 16);
     };
 
     Scene_Alchemistry.prototype.update = function () {
         Scene_MenuBase.prototype.update.call(this);
         UIAlchemistryInputManager.update();
+        this.updateLiveReadouts();
     };
 
     Scene_Alchemistry.prototype.terminate = function () {
@@ -93,6 +147,8 @@
             this._wasdListener   = null;
             this._wasdUpListener = null;
         }
+        if (window.CharSwitcher) window.CharSwitcher.removeTabKey(this);
+        if (window.SpecBadge) window.SpecBadge.hide();
 
         UIAlchemistryInputManager.deactivate();
 
@@ -105,31 +161,123 @@
                 if (container && container.parentNode) container.parentNode.removeChild(container);
             }, 200);
             this._alcContainer = null;
+            this._el = null;
         }
 
         Scene_MenuBase.prototype.terminate.call(this);
     };
 
     // =========================================================================
-    // Overlay creation
+    // Build once
     // =========================================================================
 
-    Scene_Alchemistry.prototype.createAlchemistryOverlay = function () {
-        this._alcContainer = document.createElement('div');
-        this._alcContainer.id = 'menu-container';
-        this._alcContainer.style.opacity    = '0';
-        this._alcContainer.style.transition = 'opacity 0.22s ease-out';
-        document.body.appendChild(this._alcContainer);
+    Scene_Alchemistry.prototype.buildAlchemistryDOM = function () {
+        const t = alch();
 
-        // Right-click → cancel / back
+        const container = document.createElement('div');
+        container.id = 'menu-container';
+        container.style.opacity    = '0';
+        container.style.transition = 'opacity 0.22s ease-out';
+        document.body.appendChild(container);
+        this._alcContainer = container;
+
+        const spread = el('div', 'book-spread', container);
+
+        // ---- left page ------------------------------------------------------
+        const left = el('div', 'left-page', spread);
+        const header = el('div', 'page-header-bar', left);
+        const back = el('div', 'back-button', header);
+        setText(back, t.back);
+        back.addEventListener('click', () => this.onAlchemistryCancel());
+        const title = el('h2', 'title', header);
+        setText(title, t.title);
+
+        const tabsRow = el('div', 'backpack-tabs', left);
+        tabsRow.id = 'alc-tabs';
+        const tabNodes = [t.tabReady, t.tabMissing, t.tabBenches].map((label, idx) => {
+            const node = el('div', 'backpack-tab', tabsRow);
+            setText(node, label);
+            node.addEventListener('click', () => this.selectTab(idx));
+            return node;
+        });
+
+        const grid = el('div', 'backpack-grid', left);
+        grid.id = 'alchemistry-grid';
+
+        // ---- right page -----------------------------------------------------
+        const right = el('div', 'right-page', spread);
+        const companionRow = el('div', 'companion-switcher companion-switcher--header', right);
+        companionRow.id = 'alc-companion-row';
+
+        const inspect = el('div', 'item-inspect', right);
+
+        const inspectHeader = el('div', 'inspect-header', inspect);
+        const frame = el('div', 'inspect-frame', inspectHeader);
+        const canvas = document.createElement('canvas');
+        canvas.id = 'alc-inspect-canvas';
+        canvas.width = 32; canvas.height = 32;
+        canvas.className = 'inspect-canvas';
+        frame.appendChild(canvas);
+        const titleBox = el('div', 'inspect-title-box', inspectHeader);
+        const nameNode = el('h3', 'inspect-name', titleBox);
+        const formulaNode = el('div', 'inspect-rarity', titleBox);
+        formulaNode.style.color = 'var(--border-focus-hover)';
+
+        const lore = el('div', 'inspect-lore', inspect);
+
+        const reagentTitle = el('div', 'inspect-section-title', lore);
+        setText(reagentTitle, t.requiredReagents);
+        const reagentList = el('div', '', lore);
+
+        const skillTitle = el('div', 'inspect-section-title', lore);
+        setText(skillTitle, t.requiredSkills);
+        const skillList = el('div', '', lore);
+
+        const oddsList = el('div', '', lore);
+
+        const stepTitle = el('div', 'inspect-section-title', lore);
+        setText(stepTitle, t.steps);
+        const stepList = el('div', '', lore);
+
+        const actions = el('div', 'inspect-actions', inspect);
+        const status = el('div', 'inspect-placeholder-text', inspect);
+        status.style.margin = '6px 0 0';
+        status.style.color = 'var(--text-primary-hover)';
+
+        // ---- modal layer ----------------------------------------------------
+        const modalLayer = el('div', 'army-dialog-overlay', container);
+        modalLayer.id = 'alc-modal';
+        const modalBox = el('div', 'target-overlay', modalLayer);
+        modalBox.style.minWidth = '320px';
+        modalBox.style.maxHeight = '70%';
+        modalBox.style.overflowY = 'auto';
+        const modalTitle = el('h3', 'target-title', modalBox);
+        const modalOptions = el('div', 'inspect-actions', modalBox);
+        const modalCancel = el('div', 'target-option', modalBox);
+        modalCancel.style.marginTop = '10px';
+        modalCancel.style.opacity = '0.85';
+        setText(modalCancel, t.cancel);
+        modalCancel.addEventListener('click', () => { SoundManager.playCancel(); this.closeModal(); });
+        setShown(modalLayer, false);
+
+        this._el = {
+            spread, tabsRow, tabNodes, grid,
+            companionRow, canvas, nameNode, formulaNode,
+            reagentTitle, reagentList, skillTitle, skillList, oddsList,
+            stepTitle, stepList, actions, status,
+            modalLayer, modalTitle, modalOptions
+        };
+        this._actionsList = [];
+
+        // Right-click / wheel behave as they did.
         this._rightClickStartedHere = false;
-        this._alcContainer.addEventListener('mousedown', (event) => {
+        container.addEventListener('mousedown', (event) => {
             if (event.button === 2) { this._rightClickStartedHere = true; event.stopPropagation(); }
         });
-        this._alcContainer.addEventListener('mouseup', (event) => {
+        container.addEventListener('mouseup', (event) => {
             if (event.button === 2) event.stopPropagation();
         });
-        this._alcContainer.addEventListener('contextmenu', (event) => {
+        container.addEventListener('contextmenu', (event) => {
             event.preventDefault();
             event.stopPropagation();
             if (!this._rightClickStartedHere) return;
@@ -137,44 +285,419 @@
             const scene = SceneManager._scene;
             if (scene && scene.isActive()) UIAlchemistryInputManager.handleCancel();
         });
-        this._alcContainer.addEventListener('wheel', (e) => {
+        container.addEventListener('wheel', (e) => {
             e.preventDefault();
-            const grid = this._alcContainer.querySelector('#alchemistry-grid');
-            if (grid) grid.scrollTop += e.deltaY;
+            const under = e.target && e.target.closest ? e.target.closest('.backpack-grid, .inspect-lore') : null;
+            (under || grid).scrollTop += e.deltaY;
         }, { passive: false });
-
-        this.refreshAlchemistryDOM();
-        UIAlchemistryInputManager.activate(this);
-
-        setTimeout(() => {
-            if (this._alcContainer) this._alcContainer.style.opacity = '1';
-        }, 16);
     };
 
     // =========================================================================
-    // Rendering helpers
+    // What is on screen
     // =========================================================================
 
-    Scene_Alchemistry.prototype.projects = function () {
-        return $gameSystem._alchemistryProjects || [];
+    Scene_Alchemistry.prototype.alchemistMembers = function () {
+        return ($gameParty && $gameParty.members) ? $gameParty.members() : [];
     };
 
-    Scene_Alchemistry.prototype.currentProject = function () {
-        return this.projects()[this._selectedProjectIndex] || null;
+    Scene_Alchemistry.prototype.alchemist = function () {
+        const members = this.alchemistMembers();
+        if (!members.length) return null;
+        return members[Math.max(0, Math.min(members.length - 1, this._alchemistIndex || 0))];
     };
 
-    Scene_Alchemistry.prototype.isProcessing = function (index) {
-        return $gameSystem._alchemistryActiveProjectIndex === index && $gameSystem._alchemistryTimer > 0;
+    Scene_Alchemistry.prototype.selectAlchemist = function (index) {
+        const members = this.alchemistMembers();
+        if (!members.length) return;
+        const next = ((index % members.length) + members.length) % members.length;
+        if (next === this._alchemistIndex) return;
+        this._alchemistIndex = next;
+        SoundManager.playCursor();
+        // Another pair of hands changes every odds line on the page, and the
+        // bench they are standing at answers to them from now on.
+        const entry = this.currentEntry();
+        if (entry && entry.kind === 'project' && !A.isRunning(entry.project)) {
+            const actor = this.alchemist();
+            entry.project.actorId = actor ? actor.actorId() : null;
+        }
+        this.syncAll();
     };
 
-    Scene_Alchemistry.prototype.drawAlcIcon = function (iconIndex, canvasId) {
-        const canvas = document.getElementById(canvasId);
+    Scene_Alchemistry.prototype.cycleAlchemist = function (dir) {
+        this.selectAlchemist((this._alchemistIndex || 0) + dir);
+    };
+
+    // The list the open tab shows. Recipes are alphabetical, and the ones the
+    // pack can actually pay for are a tab of their own so the readable list is
+    // the one you can act on.
+    Scene_Alchemistry.prototype.entries = function () {
+        if (this._tab === TAB_BENCH) {
+            return A.projects().map((project, slot) => ({ kind: 'project', project, slot }));
+        }
+        const wantReady = this._tab === TAB_READY;
+        const list = A.recipes().filter(r => A.hasReagents(r) === wantReady);
+        return A.sorted(list).map(recipe => ({ kind: 'recipe', recipe }));
+    };
+
+    Scene_Alchemistry.prototype.currentEntry = function () {
+        const list = this.entries();
+        if (!list.length) return null;
+        return list[Math.max(0, Math.min(list.length - 1, this._listIndex))] || null;
+    };
+
+    // The recipe behind whatever is selected: a bench reports the recipe it was
+    // copied from, so its skill check and its odds read the same as the book's.
+    Scene_Alchemistry.prototype.currentRecipe = function () {
+        const entry = this.currentEntry();
+        if (!entry) return null;
+        if (entry.kind === 'recipe') return entry.recipe;
+        return entry.project.recipeId ? A.recipeById(entry.project.recipeId) : null;
+    };
+
+    // =========================================================================
+    // Patch in place
+    // =========================================================================
+
+    Scene_Alchemistry.prototype.syncAll = function () {
+        if (!this._el) return;
+        const list = this.entries();
+        if (this._listIndex >= list.length) this._listIndex = Math.max(0, list.length - 1);
+        this.syncTabs();
+        this.syncSwitcher();
+        this.syncList(list);
+        this.syncInspect();
+        this._signature = this.stateSignature();
+
+        if (window.SpecBadge) {
+            const recipe = this.currentRecipe();
+            const first = recipe && A.requirementsOf(recipe)[0];
+            window.SpecBadge.show(first ? first.spec : 'Alchemy', { actor: this.alchemist() }); // i18n-ignore: Specialization.json id
+        }
+    };
+
+    Scene_Alchemistry.prototype.syncTabs = function () {
+        const counts = [0, 0, A.PROJECT_SLOTS];
+        A.recipes().forEach(r => { if (A.hasReagents(r)) counts[TAB_READY]++; else counts[TAB_MISSING]++; });
+        const labels = [alch().tabReady, alch().tabMissing, alch().tabBenches];
+        this._el.tabNodes.forEach((node, idx) => {
+            setText(node, `${labels[idx]} (${counts[idx]})`);
+            node.classList.toggle('active', this._tab === idx);
+            node.classList.toggle('selected', this._area === 'tabs' && this._tab === idx);
+        });
+    };
+
+    Scene_Alchemistry.prototype.syncSwitcher = function () {
+        const row = this._el.companionRow;
+        const members = this.alchemistMembers();
+        if (!window.CharSwitcher) { setShown(row, false); return; }
+        window.CharSwitcher.injectStyles();
+        const parts = window.CharSwitcher.parts(members.length);
+
+        // Built once into three stable slots (hint, tabs, hint) and patched
+        // after that, so switching member never rebuilds the row it lives in.
+        if (!row._built) {
+            row._left  = el('span', '', row);
+            row._tabs  = el('div', 'companion-tabs-row', row);
+            row._right = el('span', '', row);
+            row._built = true;
+        }
+        // The two hint chips are static markup from CharSwitcher; written only
+        // when they actually change (a pad being plugged in swaps TAB for L/R).
+        if (row._leftHTML !== parts.left)  { row._left.innerHTML  = parts.left;  row._leftHTML  = parts.left; }
+        if (row._rightHTML !== parts.right) { row._right.innerHTML = parts.right; row._rightHTML = parts.right; }
+
+        const nodes = syncRows(row._tabs, members.length, () => {
+            const tab = document.createElement('div');
+            tab.className = 'companion-tab';
+            tab.addEventListener('click', () => {
+                this.selectAlchemist(Array.prototype.indexOf.call(tab.parentNode.children, tab));
+            });
+            return tab;
+        });
+        members.forEach((m, idx) => {
+            setText(nodes[idx], m.name());
+            nodes[idx].classList.toggle('selected', idx === this._alchemistIndex);
+        });
+    };
+
+    Scene_Alchemistry.prototype.syncList = function (list) {
+        const t = alch();
+        const host = this._el.grid;
+
+        const nodes = syncRows(host, list.length, () => {
+            const slot = document.createElement('div');
+            slot.className = 'item-slot';
+            const icon = el('div', 'item-slot-icon', slot);
+            const canvas = document.createElement('canvas');
+            canvas.width = 32; canvas.height = 32;
+            canvas.style.width = '32px'; canvas.style.height = '32px';
+            icon.appendChild(canvas);
+            const info = el('div', 'item-slot-info', slot);
+            slot._name = el('div', 'item-slot-name', info);
+            slot._meta = el('div', 'item-slot-meta', info);
+            slot._canvas = canvas;
+            slot.addEventListener('click', () => {
+                this.selectListRow(Array.prototype.indexOf.call(host.children, slot));
+            });
+            return slot;
+        });
+
+        list.forEach((entry, idx) => {
+            const node = nodes[idx];
+            let name, meta, iconIndex = 0;
+            if (entry.kind === 'recipe') {
+                const item = $dataItems[entry.recipe.target_item_id];
+                name = A.recipeName(entry.recipe);
+                iconIndex = A.isRealItem(item) ? item.iconIndex : 0;
+                const odds = A.assess(this.alchemist(), entry.recipe);
+                meta = odds.ok
+                    ? t.guaranteed
+                    : T('Alchemistry.failChance', { pct: A.percent(odds.failChance) });
+            } else {
+                const project = entry.project;
+                const item = $dataItems[project.target_item_id];
+                iconIndex = A.isRealItem(item) ? item.iconIndex : 0;
+                name = A.isEmpty(project) ? T('Alchemistry.projectName', { n: entry.slot + 1 }) : tn(project.name);
+                if (A.isRunning(project)) {
+                    meta = `${t.processing} · ${A.formatMinutes(A.minutesLeft(project))}`;
+                } else if (A.isEmpty(project)) {
+                    meta = t.benchEmpty;
+                } else {
+                    meta = `${project.steps.length} ${String(t.steps).toLowerCase()}` +
+                        (project.repeat ? ` · ${t.repeatOn}` : '');
+                }
+            }
+            setText(node._name, name);
+            setText(node._meta, meta);
+            node.classList.toggle('selected', this._area !== 'tabs' && this._listIndex === idx);
+            if (node._iconIndex !== iconIndex) {
+                node._iconIndex = iconIndex;
+                this.drawAlcIconOn(node._canvas, iconIndex);
+            }
+        });
+
+        if (this._area === 'list') {
+            const focused = nodes[this._listIndex];
+            if (focused) focused.scrollIntoView({ block: 'nearest' });
+        }
+    };
+
+    Scene_Alchemistry.prototype.syncInspect = function () {
+        const t = alch();
+        const e = this._el;
+        const entry = this.currentEntry();
+
+        if (!entry) {
+            setText(e.nameNode, t.title);
+            setText(e.formulaNode, '');
+            setShown(e.reagentTitle, false); setShown(e.reagentList, false);
+            setShown(e.skillTitle, false);   setShown(e.skillList, false);
+            setShown(e.oddsList, false);
+            setShown(e.stepTitle, false);    setShown(e.stepList, false);
+            syncRows(e.actions, 0, () => document.createElement('div'));
+            this._actionsList = [];
+            setText(e.status, t.empty);
+            setShown(e.canvas, false);
+            return;
+        }
+
+        const isProject = entry.kind === 'project';
+        const project = isProject ? entry.project : null;
+        const recipe  = this.currentRecipe();
+        const targetId = isProject ? project.target_item_id : entry.recipe.target_item_id;
+        const targetItem = $dataItems[targetId];
+
+        // ---- header ----
+        const displayName = isProject
+            ? (A.isEmpty(project) ? T('Alchemistry.projectName', { n: entry.slot + 1 }) : tn(project.name))
+            : A.recipeName(entry.recipe);
+        setText(e.nameNode, displayName);
+        setText(e.formulaNode, this.getItemFormula(targetItem));
+        const iconIndex = A.isRealItem(targetItem) ? targetItem.iconIndex : 0;
+        setShown(e.canvas, !!iconIndex);
+        if (e.canvas._iconIndex !== iconIndex) {
+            e.canvas._iconIndex = iconIndex;
+            this.drawAlcIconOn(e.canvas, iconIndex);
+        }
+
+        // ---- reagents, with what the pack can cover ----
+        const bill = isProject ? { required_ingredients: project.required_ingredients } : entry.recipe;
+        const reagents = A.reagentRows(bill);
+        setShown(e.reagentTitle, reagents.length > 0);
+        setShown(e.reagentList, reagents.length > 0);
+        const rNodes = syncRows(e.reagentList, reagents.length, () => this.makeSpecRow());
+        reagents.forEach((row, i) => {
+            setText(rNodes[i]._label, tn(row.item.name));
+            setText(rNodes[i]._value, `${row.have} / ${row.need}`);
+            rNodes[i]._value.style.color = row.ok ? '' : 'var(--border-danger-active)';
+        });
+
+        // ---- the skill check against the member on the switcher ----
+        const odds = recipe ? A.assess(this.alchemist(), recipe) : null;
+        const skills = odds ? odds.rows : [];
+        setShown(e.skillTitle, skills.length > 0);
+        setShown(e.skillList, skills.length > 0);
+        const sNodes = syncRows(e.skillList, skills.length, () => this.makeSpecRow());
+        const levelName = (lvl) => (window.Specializations && window.Specializations.levelName)
+            ? window.Specializations.levelName(lvl) : String(lvl);
+        skills.forEach((row, i) => {
+            setText(sNodes[i]._label, row.label);
+            setText(sNodes[i]._value, `${levelName(row.have)} / ${levelName(row.need)}`);
+            sNodes[i]._value.style.color = row.ok ? 'var(--text-gold-dark)' : 'var(--border-danger-active)';
+        });
+
+        // ---- the two numbers the whole bench turns on ----
+        const oddsLines = [];
+        if (odds) {
+            oddsLines.push([t.successChance, odds.failChance > 0
+                ? `${100 - A.percent(odds.failChance)}%`
+                : t.guaranteed]);
+            oddsLines.push([t.yieldLabel, T('Alchemistry.yieldCount', { qty: odds.yield })]);
+        }
+        if (isProject && project.steps.length) {
+            oddsLines.push([t.duration, A.formatMinutes(A.durationOf(project))]);
+        } else if (!isProject) {
+            oddsLines.push([t.duration, A.formatMinutes(
+                (entry.recipe.steps || []).reduce((s, x) => s + (x.duration || 0), 0) * A.MINUTES_PER_DURATION)]);
+        }
+        setShown(e.oddsList, oddsLines.length > 0);
+        const oNodes = syncRows(e.oddsList, oddsLines.length, () => this.makeSpecRow());
+        oddsLines.forEach((line, i) => {
+            setText(oNodes[i]._label, line[0]);
+            setText(oNodes[i]._value, line[1]);
+        });
+
+        // ---- procedure ----
+        const steps = isProject ? project.steps : (entry.recipe.steps || []);
+        setShown(e.stepTitle, true);
+        setShown(e.stepList, true);
+        const stepLines = [];
+        steps.forEach((step, i) => {
+            stepLines.push({
+                bullet: `${i + 1}. ${step.action} ${t.stepAt} ${step.temperature != null ? step.temperature : 25}° ${t.stepFor} ${step.duration}`
+            });
+            (step.ingredients || []).forEach(ing => {
+                const item = $dataItems[ing.item_id];
+                if (!A.isRealItem(item)) return;
+                stepLines.push({ label: tn(item.name), value: `x${ing.quantity}` });
+            });
+        });
+        if (!stepLines.length) stepLines.push({ bullet: t.noSteps, italic: true });
+        const stNodes = syncRows(e.stepList, stepLines.length, () => {
+            const node = document.createElement('div');
+            node._bullet = el('div', 'inspect-bullet-item', node);
+            node._row = el('div', 'inspect-spec-row', node);
+            node._row.style.paddingLeft = '18px';
+            node._label = el('span', 'inspect-spec-label', node._row);
+            node._value = el('span', 'inspect-spec-value', node._row);
+            return node;
+        });
+        stepLines.forEach((line, i) => {
+            const node = stNodes[i];
+            setShown(node._bullet, line.bullet != null);
+            setShown(node._row, line.bullet == null);
+            node._bullet.style.fontStyle = line.italic ? 'italic' : '';
+            setText(node._bullet, line.bullet || '');
+            setText(node._label, line.label || '');
+            setText(node._value, line.value || '');
+        });
+
+        // ---- actions ----
+        this.syncActions(entry);
+        setText(e.status, this._statusMessage);
+    };
+
+    Scene_Alchemistry.prototype.makeSpecRow = function () {
+        const node = document.createElement('div');
+        node.className = 'inspect-spec-row';
+        node._label = el('span', 'inspect-spec-label', node);
+        node._value = el('span', 'inspect-spec-value', node);
+        return node;
+    };
+
+    // Which buttons the picked thing offers. The keys are the contract with
+    // both the click handler and the keyboard, so the list is built once here.
+    Scene_Alchemistry.prototype.actionsFor = function (entry) {
+        const t = alch();
+        if (!entry) return [];
+        if (entry.kind === 'recipe') {
+            return [{ key: 'copy', label: t.copyToBench }];
+        }
+        const project = entry.project;
+        if (A.isRunning(project)) {
+            return [{ key: 'busy', label: `${t.processing} · ${A.formatMinutes(A.minutesLeft(project))}`, disabled: true, live: true }];
+        }
+        const out = [];
+        if (project.steps.length) {
+            out.push({ key: 'start', label: t.execute, danger: false });
+            out.push({ key: 'repeat', label: project.repeat ? t.repeatOn : t.repeatOff });
+        }
+        out.push({ key: 'addStep', label: t.addStep });
+        if (project.steps.length) out.push({ key: 'clearSteps', label: t.clearSteps, danger: true });
+        return out;
+    };
+
+    Scene_Alchemistry.prototype.syncActions = function (entry) {
+        const defs = this.actionsFor(entry);
+        this._actionsList = defs.map(d => d.key);
+        const nodes = syncRows(this._el.actions, defs.length, () => {
+            const node = document.createElement('div');
+            node.className = 'inspect-btn';
+            node.addEventListener('click', () => {
+                const idx = Array.prototype.indexOf.call(node.parentNode.children, node);
+                const key = this._actionsList[idx];
+                if (key) this.onActionButton(key);
+            });
+            return node;
+        });
+        defs.forEach((def, i) => {
+            const node = nodes[i];
+            setText(node, def.label);
+            node.classList.toggle('inspect-btn--danger', !!def.danger);
+            node.classList.toggle('inspect-btn--disabled', !!def.disabled);
+            node.classList.toggle('selected', this._area === 'actions' && this._actionIndex === i);
+            node._live = !!def.live;
+        });
+    };
+
+    // The only thing that moves on its own: a running bench counting down on
+    // the world clock. Patched per frame as text, never as a rebuild.
+    Scene_Alchemistry.prototype.updateLiveReadouts = function () {
+        if (!this._el) return;
+        const signature = this.stateSignature();
+        if (signature !== this._signature) { this.syncAll(); return; }
+
+        const entry = this.currentEntry();
+        if (entry && entry.kind === 'project' && A.isRunning(entry.project)) {
+            const label = `${alch().processing} · ${A.formatMinutes(A.minutesLeft(entry.project))}`;
+            const node = this._el.actions.firstElementChild;
+            if (node && node._live) setText(node, label);
+        }
+    };
+
+    // Everything a patch depends on, folded into one string. A bench finishing
+    // in the background, a reagent being spent or a repeat kicking in all move
+    // it, and nothing else does.
+    Scene_Alchemistry.prototype.stateSignature = function () {
+        const parts = [this._tab, this._area, this._listIndex, this._actionIndex, this._alchemistIndex, this._modalMode];
+        A.projects().forEach(p => {
+            parts.push(p.recipeId || '-', p.steps.length, p.repeat ? 1 : 0, p.endsAt == null ? '-' : 'run');
+        });
+        return parts.join('|');
+    };
+
+    // =========================================================================
+    // Icons
+    // =========================================================================
+
+    Scene_Alchemistry.prototype.drawAlcIconOn = function (canvas, iconIndex) {
         if (!canvas) return;
         const bitmap = ImageManager.loadSystem('IconSet');
         const draw = () => {
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (!iconIndex) return;
             ctx.imageSmoothingEnabled = false;
             const pw = 32, ph = 32;
             const sx = (iconIndex % 16) * pw;
@@ -185,345 +708,174 @@
         else bitmap.addLoadListener(draw);
     };
 
-    // Build the right-page inspect markup for the selected project.
-    Scene_Alchemistry.prototype.buildInspectHTML = function () {
-        const t = alch();
-        const project = this.currentProject();
-
-        if (!project) {
-            return `
-              <div class="item-inspect item-inspect--empty" style="justify-content:center;text-align:center;">
-                <div class="inspect-placeholder-icon"></div>
-                <h3 class="title">${t.title}</h3>
-                <p class="inspect-placeholder-text">${t.empty}</p>
-              </div>`;
-        }
-
-        const targetItem = project.target_item_id ? $dataItems[project.target_item_id] : null;
-        const formula    = this.getItemFormula(targetItem);
-        const projName   = tn(project.name);
-
-        // ---- Inspect header (icon frame + name + formula subtitle) ----
-        const headerHTML = `
-          <div class="inspect-header">
-            <div class="inspect-frame">
-              ${targetItem ? `<canvas id="alc-inspect-canvas" width="32" height="32" class="inspect-canvas"></canvas>` : `<div class="inspect-placeholder-icon" style="font-size:2em;"></div>`}
-            </div>
-            <div class="inspect-title-box">
-              <h3 class="inspect-name">${projName}</h3>
-              ${formula ? `<div class="inspect-rarity" style="color:var(--border-focus-hover);">${formula}</div>` : ''}
-            </div>
-          </div>`;
-
-        // ---- Lore area: reagents + procedure ----
-        let loreHTML = '';
-
-        const reagents = project.required_ingredients || [];
-        if (reagents.length > 0) {
-            loreHTML += `<div class="inspect-section-title">${t.requiredReagents}</div>`;
-            reagents.forEach(ing => {
-                const item = $dataItems[ing.item_id];
-                if (!item) return;
-                loreHTML += `
-                  <div class="inspect-spec-row">
-                    <span class="inspect-spec-label">${tn(item.name)}</span>
-                    <span class="inspect-spec-value">x${ing.quantity}</span>
-                  </div>`;
-            });
-        }
-
-        loreHTML += `<div class="inspect-section-title">${t.steps}</div>`;
-        if (!project.steps.length) {
-            loreHTML += `<div class="inspect-bullet-item" style="font-style:italic;">${t.noSteps}</div>`;
-        } else {
-            project.steps.forEach((step, i) => {
-                const actText = `${i + 1}. ${step.action} ${t.stepAt} ${step.temperature || 25}° ${t.stepFor} ${step.duration}s`;
-                loreHTML += `<div class="inspect-bullet-item">${actText}</div>`;
-                (step.ingredients || []).forEach(ing => {
-                    const item = $dataItems[ing.item_id];
-                    if (!item) return;
-                    const f = this.getItemFormula(item);
-                    loreHTML += `
-                      <div class="inspect-spec-row" style="padding-left:18px;">
-                        <span class="inspect-spec-label">${tn(item.name)}${f ? ` <span style="color:var(--border-focus-hover);">(${f})</span>` : ''}</span>
-                        <span class="inspect-spec-value">x${ing.quantity}</span>
-                      </div>`;
-                });
-            });
-        }
-
-        // ---- Actions (or processing notice) ----
-        let actionsHTML = '';
-        this._actionsList = [];
-
-        if (this.isProcessing(this._selectedProjectIndex)) {
-            const seconds = Math.ceil($gameSystem._alchemistryTimer / 60);
-            actionsHTML = `<div class="inspect-btn inspect-btn--disabled">${t.processing}… ${seconds}s ${t.remaining}</div>`;
-        } else {
-            const mk = (key, label, extraClass) => {
-                const isFocused = (this._activeSection === 'actions' && this._selectedActionIndex === this._actionsList.length) ? 'selected' : '';
-                this._actionsList.push(key);
-                return `<div class="inspect-btn ${extraClass || ''} ${isFocused}" onclick="SceneManager._scene.onActionButton('${key}')">${label}</div>`;
-            };
-            actionsHTML += mk('addStep',  t.addStep);
-            if (project.steps.length > 0) {
-                actionsHTML += mk('execute',    t.execute);
-                actionsHTML += mk('clearSteps', t.clearSteps, 'inspect-btn--danger');
-            }
-        }
-
-        const statusHTML = this._statusMessage
-            ? `<div class="inspect-placeholder-text" style="margin:6px 0 0;color:var(--text-primary-hover);">${this._statusMessage}</div>`
-            : '';
-
-        return `
-          <div class="item-inspect">
-            ${headerHTML}
-            <div class="inspect-lore">${loreHTML}</div>
-            <div class="inspect-actions">${actionsHTML}${statusHTML}</div>
-          </div>`;
-    };
-
-    // Build modal overlay markup (action picker / reagent picker).
-    Scene_Alchemistry.prototype.buildModalHTML = function () {
-        if (!this._modalMode) return '';
-        const t = alch();
-        let title, optionsHTML = '';
-
-        if (this._modalMode === 'action') {
-            title = t.selectAction;
-            ACTIONS.forEach((act, idx) => {
-                const isFocused = this._modalSelectedIndex === idx ? 'selected' : '';
-                optionsHTML += `<div class="target-option ${isFocused}" onclick="SceneManager._scene.onModalPick(${idx})">${t.actions[act.key]}</div>`;
-            });
-        } else { // 'item'
-            title = t.selectReagent;
-            this._modalItems.forEach((item, idx) => {
-                const isFocused = this._modalSelectedIndex === idx ? 'selected' : '';
-                const count = ($gameSystem && $gameSystem._isSandboxMode) ? 99 : $gameParty.numItems(item);
-                optionsHTML += `<div class="target-option ${isFocused}" onclick="SceneManager._scene.onModalPick(${idx})">${tn(item.name)} <span style="opacity:0.7;">x${count}</span></div>`;
-            });
-            if (!this._modalItems.length) {
-                optionsHTML += `<div class="target-option" style="opacity:0.6;">—</div>`;
-            }
-        }
-
-        return `
-          <div class="army-dialog-overlay" id="alc-modal">
-            <div class="target-overlay" style="min-width:320px;max-height:70%;overflow-y:auto;">
-              <h3 class="target-title">${title}</h3>
-              <div class="inspect-actions">
-                ${optionsHTML}
-                <div class="target-option" style="margin-top:10px;opacity:0.85;" onclick="SceneManager._scene.closeModal()">${t.cancel}</div>
-              </div>
-            </div>
-          </div>`;
-    };
-
     // =========================================================================
-    // Rendering: a full rebuild (init / recipe load) plus targeted region
-    // updates so that clicking a button never re-renders the whole spread.
+    // Interaction
     // =========================================================================
 
-    // Clamp the selected index to the current project list and mirror it to
-    // $gameSystem. Shared by the full rebuild and the targeted updates.
-    Scene_Alchemistry.prototype._syncSelectedIndex = function () {
-        const projects = this.projects();
-        if (this._selectedProjectIndex >= projects.length) {
-            this._selectedProjectIndex = Math.max(0, projects.length - 1);
-        }
-        $gameSystem._currentAlchemistryProjectIndex = this._selectedProjectIndex;
-    };
-
-    // Left-page markup (header + project grid).
-    Scene_Alchemistry.prototype.buildLeftPageHTML = function () {
-        const t = alch();
-        const projects = this.projects();
-
-        let gridHTML = '';
-        if (!projects.length) {
-            gridHTML = `<div class="item-grid-empty">—</div>`;
-        } else {
-            projects.forEach((project, idx) => {
-                const isFocused = (this._activeSection === 'projects' && this._selectedProjectIndex === idx) ? 'selected' : '';
-                const item      = project.target_item_id ? $dataItems[project.target_item_id] : null;
-                const canvasId  = `alc-proj-canvas-${idx}`;
-                gridHTML += `
-                  <div class="item-slot ${isFocused}" onclick="SceneManager._scene.selectProject(${idx})">
-                    <div class="item-slot-icon">
-                      ${item ? `<canvas id="${canvasId}" width="32" height="32" style="width:32px;height:32px;"></canvas>` : ''}
-                    </div>
-                    <div class="item-slot-info">
-                      <div class="item-slot-name">${tn(project.name)}</div>
-                      <div class="item-slot-meta"><span>${project.steps.length} ${t.steps.toLowerCase()}</span></div>
-                    </div>
-                  </div>`;
-            });
-        }
-
-        return `
-          <div class="left-page">
-            <div class="page-header-bar">
-              <div class="back-button" onclick="SceneManager._scene.onAlchemistryCancel()">${t.back}</div>
-              <h2 class="title">${t.title}</h2>
-            </div>
-            <div class="backpack-grid" id="alchemistry-grid">${gridHTML}</div>
-          </div>`;
-    };
-
-    // Redraw the target-item icon for every project slot.
-    Scene_Alchemistry.prototype.drawProjectIcons = function () {
-        this.projects().forEach((project, idx) => {
-            if (project.target_item_id) {
-                const item = $dataItems[project.target_item_id];
-                if (item) this.drawAlcIcon(item.iconIndex, `alc-proj-canvas-${idx}`);
-            }
-        });
-    };
-
-    // Redraw the inspect-panel icon for the current project.
-    Scene_Alchemistry.prototype.drawInspectIcon = function () {
-        const cur = this.currentProject();
-        if (cur && cur.target_item_id && $dataItems[cur.target_item_id]) {
-            this.drawAlcIcon($dataItems[cur.target_item_id].iconIndex, 'alc-inspect-canvas');
-        }
-    };
-
-    Scene_Alchemistry.prototype.scrollFocusedProjectIntoView = function () {
-        if (this._activeSection !== 'projects' || !this._alcContainer) return;
-        const focused = this._alcContainer.querySelector('.item-slot.selected');
-        if (focused) focused.scrollIntoView({ block: 'nearest' });
-    };
-
-    // Full rebuild, used only for initial mount and recipe (re)loading.
-    Scene_Alchemistry.prototype.refreshAlchemistryDOM = function () {
-        if (!this._alcContainer) return;
-        this._syncSelectedIndex();
-
-        this._alcContainer.innerHTML =
-            `<div class="book-spread">${this.buildLeftPageHTML()}` +
-            `<div class="right-page" id="alc-right-page">${this.buildInspectHTML()}</div></div>` +
-            `<div id="alc-modal-layer">${this.buildModalHTML()}</div>`;
-
-        this.drawProjectIcons();
-        this.drawInspectIcon();
-        this.scrollFocusedProjectIntoView();
-    };
-
-    // ---- Targeted region updates ------------------------------------------
-
-    // Toggle the `selected` class on project slots without rebuilding them.
-    Scene_Alchemistry.prototype.updateProjectSelection = function () {
-        if (!this._alcContainer) return;
-        this._syncSelectedIndex();
-        const slots = this._alcContainer.querySelectorAll('#alchemistry-grid .item-slot');
-        slots.forEach((el, idx) => {
-            el.classList.toggle('selected', this._activeSection === 'projects' && this._selectedProjectIndex === idx);
-        });
-        this.scrollFocusedProjectIntoView();
-    };
-
-    // Refresh a single project slot's step count (after add/clear steps).
-    Scene_Alchemistry.prototype.updateProjectMeta = function (idx) {
-        if (!this._alcContainer) return;
-        const slots = this._alcContainer.querySelectorAll('#alchemistry-grid .item-slot');
-        const el = slots[idx];
-        const project = this.projects()[idx];
-        if (!el || !project) return;
-        const meta = el.querySelector('.item-slot-meta');
-        if (meta) meta.innerHTML = `<span>${project.steps.length} ${alch().steps.toLowerCase()}</span>`;
-    };
-
-    // Rebuild only the right (inspect) page.
-    Scene_Alchemistry.prototype.updateRightPage = function () {
-        if (!this._alcContainer) return;
-        const rp = this._alcContainer.querySelector('#alc-right-page');
-        if (!rp) { this.refreshAlchemistryDOM(); return; }
-        rp.innerHTML = this.buildInspectHTML();
-        this.drawInspectIcon();
-    };
-
-    // Toggle the `selected` class on action buttons (same-section move).
-    Scene_Alchemistry.prototype.updateActionHighlight = function () {
-        if (!this._alcContainer) return;
-        const btns = this._alcContainer.querySelectorAll('#alc-right-page .inspect-actions .inspect-btn');
-        btns.forEach((el, idx) => {
-            el.classList.toggle('selected', this._activeSection === 'actions' && this._selectedActionIndex === idx);
-        });
-    };
-
-    // Rebuild only the modal layer (open / close / reagent list changes).
-    Scene_Alchemistry.prototype.updateModalLayer = function () {
-        if (!this._alcContainer) return;
-        const layer = this._alcContainer.querySelector('#alc-modal-layer');
-        if (!layer) { this.refreshAlchemistryDOM(); return; }
-        layer.innerHTML = this.buildModalHTML();
-    };
-
-    // Toggle the `selected` class on modal options (modal navigation).
-    Scene_Alchemistry.prototype.updateModalHighlight = function () {
-        if (!this._alcContainer) return;
-        const opts = this._alcContainer.querySelectorAll('#alc-modal .inspect-actions > .target-option');
-        opts.forEach((el, idx) => {
-            el.classList.toggle('selected', idx === this._modalSelectedIndex);
-        });
-    };
-
-    // =========================================================================
-    // Interaction handlers
-    // =========================================================================
-
-    Scene_Alchemistry.prototype.selectProject = function (idx) {
-        if (this._selectedProjectIndex === idx && this._activeSection === 'projects') {
-            // Re-click on focused project → jump to actions panel
-            SoundManager.playOk();
-            this._activeSection       = 'actions';
-            this._selectedActionIndex = 0;
-        } else {
-            SoundManager.playCursor();
-            this._activeSection        = 'projects';
-            this._selectedProjectIndex = idx;
-        }
+    Scene_Alchemistry.prototype.selectTab = function (idx) {
+        if (this._tab === idx) { this._area = 'list'; this.syncAll(); return; }
+        SoundManager.playCursor();
+        this._tab = idx;
+        this._listIndex = 0;
+        this._actionIndex = 0;
+        this._area = 'list';
         this._statusMessage = '';
-        this.updateProjectSelection();
-        this.updateRightPage();
+        this.syncAll();
+    };
+
+    Scene_Alchemistry.prototype.selectListRow = function (idx) {
+        if (this._listIndex === idx && this._area === 'list') {
+            this.confirmListRow();
+            return;
+        }
+        SoundManager.playCursor();
+        this._area = 'list';
+        this._listIndex = idx;
+        this._actionIndex = 0;
+        this._statusMessage = '';
+        this.syncAll();
+    };
+
+    // OK on a list row: a recipe asks which bench to copy it onto, a bench
+    // hands the cursor to its own buttons.
+    Scene_Alchemistry.prototype.confirmListRow = function () {
+        const entry = this.currentEntry();
+        if (!entry) return;
+        if (entry.kind === 'recipe') {
+            SoundManager.playOk();
+            this.openSlotModal(entry.recipe.id);
+        } else if (this._actionsList.length) {
+            SoundManager.playOk();
+            this._area = 'actions';
+            this._actionIndex = 0;
+            this.syncAll();
+        }
     };
 
     Scene_Alchemistry.prototype.onActionButton = function (key) {
-        if (this.isProcessing(this._selectedProjectIndex)) { SoundManager.playBuzzer(); return; }
+        const entry = this.currentEntry();
+        if (!entry) return;
+
+        if (key === 'copy') {
+            SoundManager.playOk();
+            this.openSlotModal(entry.recipe.id);
+            return;
+        }
+        if (entry.kind !== 'project') return;
+        const slot = entry.slot;
+        const project = entry.project;
+        if (A.isRunning(project)) { SoundManager.playBuzzer(); return; }
+
         if (key === 'addStep') {
             SoundManager.playOk();
             this.openActionModal();
-        } else if (key === 'execute') {
-            this.startExecution();
+        } else if (key === 'start') {
+            const actor = this.alchemist();
+            project.actorId = actor ? actor.actorId() : null;
+            if (A.start(slot)) {
+                SoundManager.playOk();
+                this._statusMessage = '';
+            } else {
+                SoundManager.playBuzzer();
+                this._statusMessage = alch().notEnough;
+            }
+            this.syncAll();
+        } else if (key === 'repeat') {
+            SoundManager.playCursor();
+            project.repeat = !project.repeat;
+            this.syncAll();
         } else if (key === 'clearSteps') {
             SoundManager.playCancel();
-            const project = this.currentProject();
-            if (project) project.steps = [];
+            this.clearProjectSteps(slot);
             this._statusMessage = '';
-            this.updateProjectMeta(this._selectedProjectIndex);
-            this.updateRightPage();
+            this.syncAll();
         }
     };
 
-    // ---- Modal: action picker ----
+    // ---- modals -------------------------------------------------------------
+
     Scene_Alchemistry.prototype.openActionModal = function () {
-        this._modalMode          = 'action';
+        this._modalMode = 'action';
         this._modalSelectedIndex = 0;
-        this.updateModalLayer();
+        this.syncModal();
     };
 
-    // ---- Modal: reagent picker ----
     Scene_Alchemistry.prototype.openItemModal = function () {
-        const isSandbox = $gameSystem && $gameSystem._isSandboxMode;
-        const list = $dataItems.filter(item =>
-            item && item.note && /<category:\s*Alchemistry\s*>/i.test(item.note) &&
-            (isSandbox || $gameParty.numItems(item) > 0)
-        );
-        this._modalMode          = 'item';
-        this._modalItems         = list;
+        const isSandbox = A.isSandbox();
+        // Everything the bench can reach for: the Alchemistry shelf, plus
+        // anything the book itself calls for (wood, bone, ore, herb extract,
+        // arcane essence...), or a hand-cleared bench could never be rebuilt.
+        const fromBook = A.bookReagentIds();
+        this._modalItems = $dataItems.filter(item =>
+            item && A.isRealItem(item) &&
+            ((item.note && /<category:\s*Alchemistry\s*>/i.test(item.note)) || fromBook.has(item.id)) &&
+            (isSandbox || $gameParty.numItems(item) > 0));
+        this._modalMode = 'item';
         this._modalSelectedIndex = 0;
-        this.updateModalLayer();
+        this.syncModal();
+    };
+
+    Scene_Alchemistry.prototype.openSlotModal = function (recipeId) {
+        this._pendingRecipeId = recipeId;
+        this._modalMode = 'slot';
+        this._modalSelectedIndex = 0;
+        this.syncModal();
+    };
+
+    Scene_Alchemistry.prototype.modalOptionCount = function () {
+        if (this._modalMode === 'action') return ACTIONS.length;
+        if (this._modalMode === 'item')   return this._modalItems.length;
+        if (this._modalMode === 'slot')   return A.PROJECT_SLOTS;
+        return 0;
+    };
+
+    Scene_Alchemistry.prototype.modalOptionLabel = function (idx) {
+        const t = alch();
+        if (this._modalMode === 'action') return t.actions[ACTIONS[idx].key];
+        if (this._modalMode === 'item') {
+            const item = this._modalItems[idx];
+            const count = A.isSandbox() ? 99 : $gameParty.numItems(item);
+            return `${tn(item.name)}  x${count}`;
+        }
+        const project = A.project(idx);
+        const label = T('Alchemistry.projectName', { n: idx + 1 });
+        if (A.isRunning(project)) return `${label} — ${t.processing}`;
+        if (A.isEmpty(project))   return `${label} — ${t.benchEmpty}`;
+        return `${label} — ${tn(project.name)}`;
+    };
+
+    Scene_Alchemistry.prototype.syncModal = function () {
+        const e = this._el;
+        const t = alch();
+        setShown(e.modalLayer, !!this._modalMode);
+        if (!this._modalMode) { this._signature = this.stateSignature(); return; }
+
+        setText(e.modalTitle,
+            this._modalMode === 'action' ? t.selectAction :
+            this._modalMode === 'item'   ? t.selectReagent : t.selectBench);
+
+        const count = this.modalOptionCount();
+        const nodes = syncRows(e.modalOptions, Math.max(count, 1), () => {
+            const node = document.createElement('div');
+            node.className = 'target-option';
+            node.addEventListener('click', () => {
+                const idx = Array.prototype.indexOf.call(node.parentNode.children, node);
+                this.onModalPick(idx);
+            });
+            return node;
+        });
+        if (!count) {
+            setText(nodes[0], '—');
+            nodes[0].style.opacity = '0.6';
+            nodes[0].classList.remove('selected');
+        } else {
+            for (let i = 0; i < count; i++) {
+                setText(nodes[i], this.modalOptionLabel(i));
+                nodes[i].style.opacity = '';
+                nodes[i].classList.toggle('selected', i === this._modalSelectedIndex);
+            }
+        }
+        this._signature = this.stateSignature();
     };
 
     Scene_Alchemistry.prototype.onModalPick = function (idx) {
@@ -535,53 +887,52 @@
             if (act.needsItem) {
                 this.openItemModal();
             } else {
-                this.addStepToCurrentProject(act.key, null);
+                const entry = this.currentEntry();
+                if (entry && entry.kind === 'project') this.addStepToProject(entry.slot, act.key, null);
                 this.closeModal();
             }
         } else if (this._modalMode === 'item') {
             const item = this._modalItems[idx];
             if (!item) return;
-            const isSandbox = $gameSystem && $gameSystem._isSandboxMode;
-            if (isSandbox || $gameParty.numItems(item) > 0) {
-                SoundManager.playOk();
-                if (!isSandbox) $gameParty.loseItem(item, 1);
-                this.addStepToCurrentProject(this._pendingAction, item.id);
-                this.closeModal();
-            } else {
+            SoundManager.playOk();
+            // Nothing is spent here: a step only declares what the run will
+            // need, and the whole bill is paid when the bench is started.
+            const entry = this.currentEntry();
+            if (entry && entry.kind === 'project') this.addStepToProject(entry.slot, this._pendingAction, item.id);
+            this.closeModal();
+        } else if (this._modalMode === 'slot') {
+            const project = A.project(idx);
+            if (!project) return;
+            if (A.isRunning(project)) {
                 SoundManager.playBuzzer();
-                this._statusMessage = alch().notEnough;
-                this.updateRightPage();
+                this._statusMessage = alch().benchBusy;
+                this.closeModal();
+                return;
             }
+            SoundManager.playOk();
+            const actor = this.alchemist();
+            A.assignRecipe(idx, this._pendingRecipeId, actor ? actor.actorId() : null);
+            this._pendingRecipeId = null;
+            this._modalMode = null;
+            // Follow the copy onto the bench it landed on, which is where every
+            // next action (start, repeat, edit) is taken.
+            this._tab = TAB_BENCH;
+            this._listIndex = idx;
+            this._area = 'list';
+            this._actionIndex = 0;
+            this._statusMessage = '';
+            this.syncModal();
+            this.syncAll();
         }
     };
 
     Scene_Alchemistry.prototype.closeModal = function () {
-        this._modalMode     = null;
+        this._modalMode = null;
         this._pendingAction = null;
-        this._modalItems    = [];
-        this._activeSection = 'actions';
-        this.updateModalLayer();
-        this.updateProjectSelection();
-        this.updateProjectMeta(this._selectedProjectIndex);
-        this.updateRightPage();
-    };
-
-    Scene_Alchemistry.prototype.startExecution = function () {
-        const project = this.currentProject();
-        if (!project || !project.steps.length) { SoundManager.playBuzzer(); return; }
-        SoundManager.playOk();
-        const t = alch();
-        this._statusMessage = `${t.processing}…`;
-        this.updateRightPage();
-
-        this.executeProject(project).then(({ totalDuration }) => {
-            this._statusMessage = `${t.processing}… ${totalDuration}s ${t.remaining}`;
-            this.updateRightPage();
-            setTimeout(() => { this.popScene(); }, 900);
-        }).catch(err => {
-            console.error('Failed to execute project', err);
-            SoundManager.playBuzzer();
-        });
+        this._pendingRecipeId = null;
+        this._modalItems = [];
+        this.syncModal();
+        this.syncAll();
     };
 
     Scene_Alchemistry.prototype.onAlchemistryCancel = function () {
@@ -628,11 +979,11 @@
 
             // Modal takes full input priority
             if (scene._modalMode) {
-                const count = scene._modalMode === 'action' ? ACTIONS.length : scene._modalItems.length;
+                const count = scene.modalOptionCount();
                 if (isDown && scene._modalSelectedIndex < count - 1) {
-                    SoundManager.playCursor(); scene._modalSelectedIndex++; scene.updateModalHighlight();
+                    SoundManager.playCursor(); scene._modalSelectedIndex++; scene.syncModal();
                 } else if (isUp && scene._modalSelectedIndex > 0) {
-                    SoundManager.playCursor(); scene._modalSelectedIndex--; scene.updateModalHighlight();
+                    SoundManager.playCursor(); scene._modalSelectedIndex--; scene.syncModal();
                 } else if (Input.isTriggered('ok')) {
                     if (count > 0) scene.onModalPick(scene._modalSelectedIndex);
                 } else if (Input.isTriggered('escape') || Input.isTriggered('cancel') || TouchInput.isCancelled()) {
@@ -641,20 +992,10 @@
                 return;
             }
 
-            // L1 / R1, cycle projects from anywhere
-            if (Input.isTriggered('pageup') || Input.isTriggered('pagedown')) {
-                const total = scene.projects().length;
-                if (total > 0) {
-                    const dir  = Input.isTriggered('pageup') ? -1 : 1;
-                    SoundManager.playCursor();
-                    scene._selectedProjectIndex = (scene._selectedProjectIndex + dir + total) % total;
-                    scene._activeSection = 'projects';
-                    scene._statusMessage = '';
-                    scene.updateProjectSelection();
-                    scene.updateRightPage();
-                }
-                return;
-            }
+            // The shoulder buttons switch who is at the bench, the same rule
+            // every other book-spread menu in the game follows.
+            if (Input.isTriggered('pagedown')) { scene.cycleAlchemist(1);  return; }
+            if (Input.isTriggered('pageup'))   { scene.cycleAlchemist(-1); return; }
 
             if      (isDown)  this.handleMove('down');
             else if (isUp)    this.handleMove('up');
@@ -667,82 +1008,61 @@
         handleMove(dir) {
             const scene = this._scene;
 
-            const selectProjectAt = (newIdx) => {
-                SoundManager.playCursor();
-                scene._selectedProjectIndex = newIdx;
-                scene._statusMessage = '';
-                scene.updateProjectSelection();
-                scene.updateRightPage();
-            };
+            if (scene._area === 'tabs') {
+                if (dir === 'left' && scene._tab > 0) scene.selectTab(scene._tab - 1);
+                else if (dir === 'right' && scene._tab < scene._el.tabNodes.length - 1) scene.selectTab(scene._tab + 1);
+                else if (dir === 'down') { SoundManager.playCursor(); scene._area = 'list'; scene.syncAll(); }
+                return;
+            }
 
-            if (scene._activeSection === 'projects') {
-                const COLS  = 2;
-                const total = scene.projects().length;
-                const idx   = scene._selectedProjectIndex;
+            if (scene._area === 'list') {
+                const total = scene.entries().length;
+                const idx = scene._listIndex;
+                const go = (next) => { SoundManager.playCursor(); scene._listIndex = next; scene._actionIndex = 0; scene._statusMessage = ''; scene.syncAll(); };
                 if (dir === 'up') {
-                    if (idx - COLS >= 0) selectProjectAt(idx - COLS);
+                    if (idx - COLS >= 0) go(idx - COLS);
+                    else { SoundManager.playCursor(); scene._area = 'tabs'; scene.syncAll(); }
                 } else if (dir === 'down') {
-                    if (idx + COLS < total) selectProjectAt(idx + COLS);
+                    if (idx + COLS < total) go(idx + COLS);
                 } else if (dir === 'left') {
-                    if (idx % COLS !== 0) selectProjectAt(idx - 1);
+                    if (idx % COLS !== 0) go(idx - 1);
                 } else if (dir === 'right') {
-                    if (idx % COLS !== COLS - 1 && idx + 1 < total) {
-                        selectProjectAt(idx + 1);
-                    } else if (scene._actionsList.length > 0) {
-                        // Cross into the actions panel: left highlight clears,
-                        // the inspect page re-renders with the action focus.
+                    if (idx % COLS !== COLS - 1 && idx + 1 < total) go(idx + 1);
+                    else if (scene._actionsList.length) {
                         SoundManager.playCursor();
-                        scene._activeSection = 'actions';
-                        scene._selectedActionIndex = 0;
-                        scene.updateProjectSelection();
-                        scene.updateRightPage();
+                        scene._area = 'actions';
+                        scene._actionIndex = 0;
+                        scene.syncAll();
                     }
                 }
-            } else if (scene._activeSection === 'actions') {
-                const count = scene._actionsList.length;
-                if (dir === 'up' && scene._selectedActionIndex > 0) {
-                    SoundManager.playCursor(); scene._selectedActionIndex--; scene.updateActionHighlight();
-                } else if (dir === 'down' && scene._selectedActionIndex < count - 1) {
-                    SoundManager.playCursor(); scene._selectedActionIndex++; scene.updateActionHighlight();
-                } else if (dir === 'left') {
-                    // Back to the project grid: restore left highlight, clear
-                    // the action focus in the inspect page.
-                    SoundManager.playCursor();
-                    scene._activeSection = 'projects';
-                    scene.updateProjectSelection();
-                    scene.updateRightPage();
-                }
+                return;
+            }
+
+            // actions
+            const count = scene._actionsList.length;
+            if (dir === 'up' && scene._actionIndex > 0) {
+                SoundManager.playCursor(); scene._actionIndex--; scene.syncAll();
+            } else if (dir === 'down' && scene._actionIndex < count - 1) {
+                SoundManager.playCursor(); scene._actionIndex++; scene.syncAll();
+            } else if (dir === 'left') {
+                SoundManager.playCursor(); scene._area = 'list'; scene.syncAll();
             }
         },
 
         handleOk() {
             const scene = this._scene;
-            if (scene._activeSection === 'projects') {
-                if (scene._actionsList.length > 0) {
-                    SoundManager.playOk();
-                    scene._activeSection = 'actions';
-                    scene._selectedActionIndex = 0;
-                    scene.updateProjectSelection();
-                    scene.updateRightPage();
-                }
-            } else if (scene._activeSection === 'actions') {
-                const key = scene._actionsList[scene._selectedActionIndex];
-                if (key) scene.onActionButton(key);
-            }
+            if (scene._area === 'tabs') { scene.selectTab(scene._tab); return; }
+            if (scene._area === 'list') { scene.confirmListRow(); return; }
+            const key = scene._actionsList[scene._actionIndex];
+            if (key) scene.onActionButton(key);
         },
 
         handleCancel() {
             const scene = this._scene;
-            if (scene._modalMode) {
-                SoundManager.playCancel(); scene.closeModal();
-            } else if (scene._activeSection === 'actions') {
-                SoundManager.playCancel();
-                scene._activeSection = 'projects';
-                scene.updateProjectSelection();
-                scene.updateRightPage();
-            } else {
-                SoundManager.playCancel(); scene.popScene();
-            }
+            if (scene._modalMode) { SoundManager.playCancel(); scene.closeModal(); }
+            else if (scene._area === 'actions') { SoundManager.playCancel(); scene._area = 'list'; scene.syncAll(); }
+            else if (scene._area === 'list')    { SoundManager.playCancel(); scene._area = 'tabs'; scene.syncAll(); }
+            else { SoundManager.playCancel(); scene.popScene(); }
         }
     };
 

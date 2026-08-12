@@ -1,0 +1,3219 @@
+{
+  "_comment": "Display text for the specialization table. Structure (ids, stat, category, classStart, traitStart, wtypeId) stays in js/db/Skills/Specialization.json, and the English name there is the LOOKUP KEY every by-name call site uses, so it is never translated: this file carries what the player reads, keyed by id.",
+  "level": {
+    "Untrained": "Non addestrato",
+    "Beginner": "Principiante",
+    "Intermediate": "Intermedio",
+    "Advanced": "Avanzato",
+    "Master": "Maestro"
+  },
+  "category": {
+    "Combat": "Combattimento",
+    "Weapons": "Armi",
+    "Athletics": "Atletica",
+    "Arcana": "Arcano",
+    "Occult": "Occulto",
+    "Medicine": "Medicina",
+    "Science": "Scienza",
+    "Technology": "Tecnologia",
+    "Crafting": "Artigianato",
+    "Survival": "Sopravvivenza",
+    "Social": "Sociale",
+    "Crime": "Crimine",
+    "Academia": "Accademia",
+    "Commerce": "Commercio",
+    "Vehicles": "Veicoli",
+    "Arts": "Arti",
+    "Culinary": "Cucina"
+  },
+  "spec": {
+    "490": {
+      "name": "Modellazione e Stampa 3D",
+      "description": "Costruire oggetti come mesh digitali e produrli su una stampante additiva."
+    },
+    "1": {
+      "name": "Contabilità",
+      "description": "Tenere e interpretare le scritture contabili: libri, bilanci e riconciliazioni."
+    },
+    "492": {
+      "name": "Acustica",
+      "description": "Il comportamento del suono in uno spazio, e come sagomare stanze e materiali per governarlo."
+    },
+    "2": {
+      "name": "Acrobatica",
+      "description": "Capriole, volteggi e lavoro di equilibrio controllati in movimento."
+    },
+    "3": {
+      "name": "Recitazione",
+      "description": "Interpretare un personaggio in modo convincente per un pubblico o una macchina da presa."
+    },
+    "493": {
+      "name": "Scienza Attuariale",
+      "description": "Prezzare il rischio con la statistica: mortalità, sinistri e impegni di lungo periodo."
+    },
+    "306": {
+      "name": "Tessuti Aerei",
+      "description": "Salire, avvolgersi e cadere su tessuti sospesi."
+    },
+    "494": {
+      "name": "Aerobica",
+      "description": "Esercizio ritmico prolungato che allena cuore e polmoni."
+    },
+    "4": {
+      "name": "Teoria Aerodinamica",
+      "description": "Come si comporta l'aria attorno a un corpo in moto: portanza, resistenza e distacco del flusso."
+    },
+    "307": {
+      "name": "Agroforestazione",
+      "description": "Coltivare e allevare fra alberi governati sullo stesso terreno."
+    },
+    "6": {
+      "name": "Aikido",
+      "description": "Arte giapponese che devia la forza dell'attaccante in proiezioni e leve articolari."
+    },
+    "308": {
+      "name": "Controllo del Traffico Aereo",
+      "description": "Sequenziare e separare gli aerei via radio e radar."
+    },
+    "8": {
+      "name": "Pilotaggio Aereo",
+      "description": "Pilotare un velivolo ad ala fissa, dai controlli prevolo all'atterraggio."
+    },
+    "309": {
+      "name": "Alchimica",
+      "description": "L'arte prechimica della trasmutazione, della distillazione e della tria prima."
+    },
+    "9": {
+      "name": "Tolleranza all'Alcol",
+      "description": "Reggere il bere senza perdere coordinazione né giudizio."
+    },
+    "10": {
+      "name": "Tattiche di Imboscata",
+      "description": "Scegliere terreno, copertura e momento per colpire per primi."
+    },
+    "618": {
+      "name": "Ricarica di Munizioni",
+      "description": "Assemblare cartucce da innesco, polvere, bossolo e proiettile."
+    },
+    "11": {
+      "name": "Anatomia",
+      "description": "La struttura del corpo: ossa, muscoli, vasi e organi, e dove si trovano."
+    },
+    "12": {
+      "name": "Zootecnia",
+      "description": "Riprodurre, alimentare e mantenere in salute il bestiame."
+    },
+    "13": {
+      "name": "Addestramento Animali",
+      "description": "Condizionare un animale a lavorare su segnali, premio e ripetizione."
+    },
+    "495": {
+      "name": "Animazione",
+      "description": "Far muovere figure disegnate o modellate fotogramma per fotogramma."
+    },
+    "14": {
+      "name": "Animismo",
+      "description": "Leggere il mondo come popolato di spiriti, e trattare con loro."
+    },
+    "15": {
+      "name": "Antropologia",
+      "description": "Lo studio comparato delle culture umane, della parentela e della vita materiale."
+    },
+    "310": {
+      "name": "Armaiolo di Armi Antiche",
+      "description": "Riparare e restaurare armi da fuoco premoderne e i loro meccanismi."
+    },
+    "725": {
+      "name": "Restauro di Antiquariato",
+      "description": "Riportare oggetti antichi in condizioni sane senza cancellarne l'età."
+    },
+    "16": {
+      "name": "Scienza Applicata",
+      "description": "Trasformare una teoria consolidata in metodo e apparato funzionanti."
+    },
+    "496": {
+      "name": "Stima",
+      "description": "Giudicare quanto vale un oggetto, e perché."
+    },
+    "497": {
+      "name": "Acquaponica",
+      "description": "Coltivare piante e pesci in un unico circuito, con gli scarti dei pesci a nutrire le colture."
+    },
+    "18": {
+      "name": "Architettura",
+      "description": "Progettare edifici che stiano in piedi, funzionino e si possano davvero costruire."
+    },
+    "19": {
+      "name": "Braccio di Ferro",
+      "description": "Piegare l'altro braccio sul tavolo con leva e presa."
+    },
+    "498": {
+      "name": "Perforazione Corazze",
+      "description": "Battere l'armatura: angoli, penetratori e le giunture deboli."
+    },
+    "20": {
+      "name": "Forgiatura di Armature",
+      "description": "Formare, adattare e articolare piastre e maglia."
+    },
+    "312": {
+      "name": "Falsificazione d'Arte",
+      "description": "Riprodurre la mano, i materiali e la provenienza di un altro artista."
+    },
+    "21": {
+      "name": "Storia dell'Arte",
+      "description": "Collocare le opere per periodo, scuola e contesto."
+    },
+    "499": {
+      "name": "Restauro Artistico",
+      "description": "Pulire, consolidare e ritoccare opere danneggiate."
+    },
+    "313": {
+      "name": "Rimozione dell'Amianto",
+      "description": "Rimuovere isolante friabile senza liberare fibre."
+    },
+    "860": {
+      "name": "Proiezione Astrale",
+      "description": "Separare la coscienza dal corpo e viaggiare senza di esso."
+    },
+    "835": {
+      "name": "Astrobiologia",
+      "description": "La ricerca e lo studio della vita oltre la Terra e delle sue condizioni."
+    },
+    "22": {
+      "name": "Astrologia",
+      "description": "Leggere carattere ed eventi dalla posizione dei pianeti."
+    },
+    "23": {
+      "name": "Astronomia",
+      "description": "Osservare e interpretare il cielo: corpi, moti e distanze."
+    },
+    "314": {
+      "name": "Astrofotografia",
+      "description": "Fotografare oggetti celesti deboli con lunghe esposizioni e inseguimento."
+    },
+    "24": {
+      "name": "Atletica",
+      "description": "Capacità generale di correre, saltare e lanciare sotto sforzo."
+    },
+    "501": {
+      "name": "Battitura d'Asta",
+      "description": "Condurre una vendita: cantilena, individuazione dei rilanci e aggiudicazione."
+    },
+    "846": {
+      "name": "Audiologia",
+      "description": "Esaminare l'udito e adattare gli apparecchi che lo correggono."
+    },
+    "502": {
+      "name": "Revisione Contabile",
+      "description": "Verificare conti e procedure contro le prove e le regole."
+    },
+    "503": {
+      "name": "Detailing Auto",
+      "description": "Rimettere a nuovo la finitura di un veicolo dentro e fuori."
+    },
+    "315": {
+      "name": "Riparazione Avionica",
+      "description": "Diagnosticare e riparare l'elettronica e la strumentazione di bordo."
+    },
+    "891": {
+      "name": "Ascia",
+      "description": "Combattere con asce da mano e i loro archi sbilanciati in avanti."
+    },
+    "863": {
+      "name": "Lancio dell'Ascia",
+      "description": "Lanciare un'ascia curando rotazione e conficcamento a distanza fissa."
+    },
+    "504": {
+      "name": "Movimentazione Bagagli",
+      "description": "Spostare e smistare bagagli al carico senza danni né ritardi."
+    },
+    "505": {
+      "name": "Cauzioni",
+      "description": "Prestare garanzia per un imputato e rientrare del rischio."
+    },
+    "26": {
+      "name": "Panificazione",
+      "description": "Lavorare impasti e paste: idratazione, lievitazione e calore del forno."
+    },
+    "27": {
+      "name": "Danza Classica",
+      "description": "Tecnica accademica di en dehors, linea e posizioni codificate."
+    },
+    "28": {
+      "name": "Balistica",
+      "description": "Il volo di un proiettile, e cosa combina all'arrivo."
+    },
+    "506": {
+      "name": "Sculture con Palloncini",
+      "description": "Attorcigliare palloncini gonfiati in figure riconoscibili."
+    },
+    "316": {
+      "name": "Banjo",
+      "description": "Suonare il banjo a cinque corde, tra rulli e clawhammer."
+    },
+    "317": {
+      "name": "Bottaio",
+      "description": "Assemblare doghe e cerchi in botti a tenuta stagna."
+    },
+    "178": {
+      "name": "Barman",
+      "description": "Miscelare drink a regola d'arte e reggere un bancone sotto pressione."
+    },
+    "30": {
+      "name": "Baratto",
+      "description": "Scambiare merce con merce, senza che passi denaro."
+    },
+    "318": {
+      "name": "Costruzione di Basi",
+      "description": "Impostare un insediamento o un campo difendibile e funzionante."
+    },
+    "32": {
+      "name": "Base Jumping",
+      "description": "Lanciarsi col paracadute da un punto fisso con quasi nessuna quota di margine."
+    },
+    "31": {
+      "name": "Baseball",
+      "description": "Battuta, difesa e lancio nel gioco su nove riprese."
+    },
+    "319": {
+      "name": "Intreccio di Cesti",
+      "description": "Intrecciare fibra o vimini preparati in recipienti e contenitori."
+    },
+    "34": {
+      "name": "Pallacanestro",
+      "description": "Tirare, passare e difendere sul campo."
+    },
+    "507": {
+      "name": "Twirling",
+      "description": "Far roteare e lanciare una bacchetta metallica in coreografia."
+    },
+    "854": {
+      "name": "Raccolta sulla Battigia",
+      "description": "Battere una riva per quel che la marea ha lasciato."
+    },
+    "35": {
+      "name": "Beatboxing",
+      "description": "Produrre percussioni e bassi con la sola voce."
+    },
+    "36": {
+      "name": "Apicoltura",
+      "description": "Tenere gli alveari in salute e prendere il miele senza perdere la famiglia."
+    },
+    "509": {
+      "name": "Riparazione Biciclette",
+      "description": "Centrare, registrare e ricostruire i meccanismi di una bicicletta."
+    },
+    "37": {
+      "name": "Biliardo",
+      "description": "Controllo della stecca, angoli e gioco di posizione sul tavolo."
+    },
+    "510": {
+      "name": "Vincolo",
+      "description": "Tenere uno spirito, una creatura o una forza legati a dei patti."
+    },
+    "320": {
+      "name": "Estrazione di Bio-Succo",
+      "description": "Ridurre materia biologica a fluido utilizzabile."
+    },
+    "511": {
+      "name": "Ingegneria Biochimica",
+      "description": "Progettare processi che usano sistemi viventi su scala industriale."
+    },
+    "38": {
+      "name": "Biocinesi",
+      "description": "Guidare il tessuto vivo con la volontà: crescita, guarigione, mutamento."
+    },
+    "39": {
+      "name": "Biomanzia",
+      "description": "Magia operata direttamente sulla carne e sui suoi processi."
+    },
+    "840": {
+      "name": "Sicurezza Biometrica",
+      "description": "Sistemi di identità basati su impronte, iridi e andatura."
+    },
+    "512": {
+      "name": "Installazione Bionica",
+      "description": "Innestare protesi motorizzate e impianti sul tessuto vivo."
+    },
+    "406": {
+      "name": "Birdwatching",
+      "description": "Riconoscere gli uccelli a vista, al canto e dal comportamento sul campo."
+    },
+    "40": {
+      "name": "Fabbro Ferraio",
+      "description": "Forgiare e sagomare ferro e acciaio caldi sull'incudine."
+    },
+    "321": {
+      "name": "Forgiatura di Lame",
+      "description": "Forgiare, molare e trattare termicamente lame da taglio."
+    },
+    "514": {
+      "name": "Blogging",
+      "description": "Scrivere con regolarità per un pubblico che arriva da solo."
+    },
+    "515": {
+      "name": "Magia del Sangue",
+      "description": "Lavorare col sangue come prezzo e come mezzo."
+    },
+    "41": {
+      "name": "Strategia da Tavolo",
+      "description": "Leggere posizione, tempo e probabilità su una plancia."
+    },
+    "516": {
+      "name": "Costruzione Navale",
+      "description": "Costruire scafi da ossatura e fasciame, o da guscio stampato."
+    },
+    "42": {
+      "name": "Condotta di Motoscafi",
+      "description": "Governare un'imbarcazione a motore tra traffico, corrente e tempo."
+    },
+    "517": {
+      "name": "Bob",
+      "description": "Guidare una slitta lungo una pista ghiacciata a velocità."
+    },
+    "864": {
+      "name": "Bocce",
+      "description": "Far rotolare le bocce fino al pallino su un campo irregolare."
+    },
+    "43": {
+      "name": "Culturismo",
+      "description": "Allenamento e dieta rivolti a volume e definizione muscolare."
+    },
+    "322": {
+      "name": "Coltivazione di Bonsai",
+      "description": "Mantenere un albero piccolo, sano e formato negli anni."
+    },
+    "518": {
+      "name": "Legatoria",
+      "description": "Cucire, incollare e rilegare le pagine in un libro che duri."
+    },
+    "323": {
+      "name": "Costruzione di Boomerang",
+      "description": "Intagliare un profilo alare che torni indietro."
+    },
+    "519": {
+      "name": "Lancio del Boomerang",
+      "description": "Lanciare per il ritorno, leggendo vento e inclinazione."
+    },
+    "44": {
+      "name": "Botanica",
+      "description": "La classificazione, la struttura e la vita delle piante."
+    },
+    "324": {
+      "name": "Bouldering",
+      "description": "Arrampicata breve e dura senza corda, vicino a terra."
+    },
+    "894": {
+      "name": "Arco",
+      "description": "Tirare con l'arco: trazione, ancoraggio, rilascio e stima della distanza."
+    },
+    "46": {
+      "name": "Pugilato",
+      "description": "Colpi, guardia e gioco di gambe secondo le regole del ring."
+    },
+    "522": {
+      "name": "Neurochirurgia",
+      "description": "Operare dentro il cranio senza portarsi via la persona."
+    },
+    "47": {
+      "name": "Lavaggio del Cervello",
+      "description": "Smontare e rimontare ciò in cui qualcuno crede."
+    },
+    "523": {
+      "name": "Recupero Bossoli",
+      "description": "Raccogliere i bossoli espulsi prima che tocchino terra."
+    },
+    "48": {
+      "name": "Apnea Statica",
+      "description": "Prolungare l'apnea con tolleranza, tecnica e calma."
+    },
+    "49": {
+      "name": "Birrificazione",
+      "description": "Ammostare, bollire e fermentare il cereale fino a farne birra."
+    },
+    "524": {
+      "name": "Preparazione di Pozioni",
+      "description": "Comporre preparati liquidi che portano un effetto magico."
+    },
+    "50": {
+      "name": "Muratura in Laterizio",
+      "description": "Posare mattoni a filo, in bolla e in legatura, con giunti di malta sani."
+    },
+    "325": {
+      "name": "Produzione di Mattoni",
+      "description": "Formare e cuocere argilla in mattoni di misura e durezza uniformi."
+    },
+    "525": {
+      "name": "Giornalismo Televisivo",
+      "description": "Fare cronaca davanti a telecamera e microfono contro il tempo di chiusura."
+    },
+    "526": {
+      "name": "Monta del Toro",
+      "description": "Restare su un toro che sgroppa per gli otto secondi."
+    },
+    "326": {
+      "name": "Collaudo di Corde Elastiche",
+      "description": "Provare a carico una corda elastica fino al punto in cui non deve cedere."
+    },
+    "51": {
+      "name": "Bungee Jumping",
+      "description": "Saltare su una corda misurata e sopravvivere al rimbalzo."
+    },
+    "52": {
+      "name": "Macelleria",
+      "description": "Sezionare una carcassa nei tagli canonici con il minimo scarto."
+    },
+    "53": {
+      "name": "Ebanisteria",
+      "description": "Falegnameria fine: mobili, cassetti e ante che restano in squadra."
+    },
+    "327": {
+      "name": "Giunzione Cavi",
+      "description": "Unire cavi in modo che la giunzione regga carico o segnale quanto il tratto."
+    },
+    "528": {
+      "name": "Callistenia",
+      "description": "Allenamento di forza a corpo libero."
+    },
+    "527": {
+      "name": "Gestione Call Center",
+      "description": "Smaltire chiamate in coda rispettando copione, obiettivo e pazienza."
+    },
+    "54": {
+      "name": "Calligrafia",
+      "description": "Tracciare le lettere come una mano controllata e deliberata."
+    },
+    "328": {
+      "name": "Cucina da Campo",
+      "description": "Cucinare su fuoco vivo e braci, con quel che si ha addosso."
+    },
+    "55": {
+      "name": "Canoa",
+      "description": "Pagaiare e leggere l'acqua da un'imbarcazione aperta."
+    },
+    "529": {
+      "name": "Capoeira",
+      "description": "Arte brasiliana di calci, spazzate e schivate a ritmo."
+    },
+    "56": {
+      "name": "Guida dell'Auto",
+      "description": "Guidare un'automobile: controllo, senso del traffico e lettura del pericolo."
+    },
+    "57": {
+      "name": "Conteggio delle Carte",
+      "description": "Seguire il mazzo residuo per sapere quando le probabilità girano."
+    },
+    "58": {
+      "name": "Falegnameria",
+      "description": "Tagliare e assemblare legname in strutture e serramenti."
+    },
+    "530": {
+      "name": "Posa di Moquette",
+      "description": "Adattare, tendere e giuntare rivestimenti per pavimenti."
+    },
+    "59": {
+      "name": "Cartografia",
+      "description": "Rilevare e disegnare mappe su cui si possa davvero navigare."
+    },
+    "531": {
+      "name": "Speleosubacquea",
+      "description": "Immergersi in gallerie allagate, sulla sagola, senza via diretta verso l'alto."
+    },
+    "331": {
+      "name": "Speleologia",
+      "description": "Muoversi in sicurezza nei sistemi carsici: armo, strettoie e percorso."
+    },
+    "185": {
+      "name": "Navigazione Astronomica",
+      "description": "Fissare la posizione con sole, stelle e orizzonte."
+    },
+    "851": {
+      "name": "Tessitura della Maglia di Ferro",
+      "description": "Ribadire e chiudere anelli in una maglia dalla trama uniforme."
+    },
+    "532": {
+      "name": "Uso della Motosega",
+      "description": "Abbattere e sezionare senza far incastrare la lama né provocare contraccolpi."
+    },
+    "870": {
+      "name": "Arte col Gesso",
+      "description": "Disegnare col gesso su grande scala, sapendo che verrà lavato via."
+    },
+    "533": {
+      "name": "Salumeria",
+      "description": "Stagionare, salare e fermentare la carne per conservarla."
+    },
+    "60": {
+      "name": "Caseificazione",
+      "description": "Cagliare, pressare e stagionare il latte fino a farne formaggio."
+    },
+    "61": {
+      "name": "Chimica",
+      "description": "La composizione e le reazioni delle sostanze, e come condurle."
+    },
+    "62": {
+      "name": "Scacchi",
+      "description": "Apertura, mediogioco e finale sulle sessantaquattro caselle."
+    },
+    "534": {
+      "name": "Cura dei Bambini",
+      "description": "Tenere i bambini al sicuro, nutriti e occupati per ore."
+    },
+    "63": {
+      "name": "Chiropratica",
+      "description": "Manipolazione manuale della colonna e delle articolazioni."
+    },
+    "873": {
+      "name": "Temperaggio del Cioccolato",
+      "description": "Portare la copertura lungo la sua curva di cristallizzazione per lucentezza e croccantezza."
+    },
+    "535": {
+      "name": "Canto Corale",
+      "description": "Cantare la propria parte intonata e fusa con le altre voci."
+    },
+    "64": {
+      "name": "Spaccare Legna",
+      "description": "Spaccare e abbattere con ascia o mazza, con efficienza e a ripetizione."
+    },
+    "65": {
+      "name": "Cronocinesi",
+      "description": "Piegare con la volontà il ritmo locale del tempo."
+    },
+    "536": {
+      "name": "Direzione della Fotografia",
+      "description": "Illuminare e inquadrare una scena per la macchina da presa."
+    },
+    "66": {
+      "name": "Chiaroveggenza",
+      "description": "Percepire ciò che è lontano o nascosto senza i sensi."
+    },
+    "897": {
+      "name": "Artiglio",
+      "description": "Combattere con artigli da mano e la loro portata corta e lacerante."
+    },
+    "743": {
+      "name": "Tiro al Piattello",
+      "description": "Spezzare bersagli in volo anticipando la traiettoria."
+    },
+    "538": {
+      "name": "Orologeria",
+      "description": "Costruire e revisionare orologi meccanici."
+    },
+    "539": {
+      "name": "Lettura delle Nuvole",
+      "description": "Prevedere le ore successive dalla forma e dal moto delle nubi."
+    },
+    "540": {
+      "name": "Lavorazione CNC",
+      "description": "Programmare e condurre macchine utensili a controllo numerico."
+    },
+    "336": {
+      "name": "Costruzione in Cob",
+      "description": "Alzare muri di argilla, sabbia e paglia, strato su strato."
+    },
+    "874": {
+      "name": "Torrefazione del Caffè",
+      "description": "Portare il caffè verde oltre il primo crack fino al profilo scelto."
+    },
+    "68": {
+      "name": "Lettura a Freddo",
+      "description": "Produrre dettagli dal suono accurato partendo da indizi e probabilità."
+    },
+    "69": {
+      "name": "Tolleranza al Freddo",
+      "description": "Lavorare e ragionare con lucidità in un freddo che fermerebbe altri."
+    },
+    "71": {
+      "name": "Matematica Superiore",
+      "description": "Matematica formale avanzata, oltre il calcolo di routine."
+    },
+    "541": {
+      "name": "Compostaggio",
+      "description": "Far marcire gli scarti organici fino a terriccio utilizzabile, alla temperatura giusta."
+    },
+    "72": {
+      "name": "Informatica",
+      "description": "Usare, configurare e risolvere i problemi dei sistemi informatici."
+    },
+    "542": {
+      "name": "Confezionamento del Calcestruzzo",
+      "description": "Dosare cemento, inerti e acqua in un impasto lavorabile e sano."
+    },
+    "544": {
+      "name": "Complottismo",
+      "description": "Comporre fatti sparsi in uno schema nascosto che sta in piedi."
+    },
+    "545": {
+      "name": "Contact Juggling",
+      "description": "Far rotolare e isolare una sfera fra mani e corpo."
+    },
+    "74": {
+      "name": "Contorsionismo",
+      "description": "Flessibilità estrema e controllata della colonna e delle articolazioni."
+    },
+    "75": {
+      "name": "Cucina",
+      "description": "Preparare pasti: calore, condimento, tempi e cosa si accompagna a cosa."
+    },
+    "546": {
+      "name": "Copywriting",
+      "description": "Scrivere testi che vendono, con il minor numero di parole che funzioni."
+    },
+    "337": {
+      "name": "Ripristino delle Barriere Coralline",
+      "description": "Propagare e ripiantare corallo su barriera danneggiata."
+    },
+    "547": {
+      "name": "Macellazione di Cadaveri",
+      "description": "Smembrare un corpo con pulizia, qualunque sia il motivo."
+    },
+    "76": {
+      "name": "Cosplay",
+      "description": "Costruire e indossare il costume fedele di un personaggio noto."
+    },
+    "881": {
+      "name": "Contraffazione",
+      "description": "Produrre valuta o documenti falsi che superino un controllo."
+    },
+    "548": {
+      "name": "Caccia agli Sconti",
+      "description": "Sommare offerte e coupon fino a smontare un conto."
+    },
+    "549": {
+      "name": "Uso della Gru",
+      "description": "Sollevare e posare carichi con la gru, a vista e a segnali."
+    },
+    "550": {
+      "name": "Scrittura Creativa",
+      "description": "Scrivere narrativa, versi e racconto con un'intenzione."
+    },
+    "551": {
+      "name": "Cricket",
+      "description": "Battuta, lancio e difesa lungo gli innings."
+    },
+    "552": {
+      "name": "Rilievi sulla Scena del Crimine",
+      "description": "Registrare, preservare e prelevare prove da una scena."
+    },
+    "339": {
+      "name": "Criminologia",
+      "description": "Lo studio del crimine, di chi lo commette e di cosa lo scoraggi davvero."
+    },
+    "77": {
+      "name": "Uncinetto",
+      "description": "Fare tessuto da un solo anello di filo lavorato all'uncinetto."
+    },
+    "553": {
+      "name": "Rotazione delle Colture",
+      "description": "Alternare le colture nei campi per tenere il terreno in forza."
+    },
+    "554": {
+      "name": "Crossfit",
+      "description": "Allenamento misto ad alta intensità contro il cronometro."
+    },
+    "520": {
+      "name": "Ordine Pubblico",
+      "description": "Muovere e contenere una folla senza che degeneri."
+    },
+    "857": {
+      "name": "Lettura della Folla",
+      "description": "Valutare umore, intenzioni e il margine pericoloso di una folla."
+    },
+    "555": {
+      "name": "Crowd Surfing",
+      "description": "Farsi portare sopra le mani alzate senza finire a terra."
+    },
+    "80": {
+      "name": "Criocinesi",
+      "description": "Estrarre il calore dalla materia con la volontà."
+    },
+    "79": {
+      "name": "Crittografia",
+      "description": "Cifratura, gestione delle chiavi e rottura dei cifrari deboli."
+    },
+    "340": {
+      "name": "Criptozoologia",
+      "description": "Inseguire animali segnalati ma non catalogati."
+    },
+    "823": {
+      "name": "Cristallografia",
+      "description": "Determinare la struttura dal modo in cui i cristalli diffrangono."
+    },
+    "556": {
+      "name": "Curling",
+      "description": "Lanciare e spazzare le pietre verso la casa."
+    },
+    "557": {
+      "name": "Assistenza Clienti",
+      "description": "Gestire persone, reclami e resi senza perdere né l'uno né l'altro."
+    },
+    "558": {
+      "name": "Cibernetica",
+      "description": "Controllo e retroazione in macchine e viventi, e le giunture fra i due."
+    },
+    "900": {
+      "name": "Ciclismo",
+      "description": "Andare in bicicletta con efficienza, equilibrio e senso del traffico."
+    },
+    "559": {
+      "name": "Produzione Casearia",
+      "description": "Mungere, trattare e lavorare il latte in quantità e in igiene."
+    },
+    "848": {
+      "name": "Forgiatura dell'Acciaio Damasco",
+      "description": "Saldare a forgia acciai stratificati in billette damascate."
+    },
+    "82": {
+      "name": "Ballo",
+      "description": "Muoversi a tempo e in forma sulla musica, da soli o condotti."
+    },
+    "83": {
+      "name": "Analisi dei Dati",
+      "description": "Ripulire, sintetizzare e trarre dai dati conclusioni difendibili."
+    },
+    "561": {
+      "name": "Recupero Crediti",
+      "description": "Riscuotere il dovuto, legalmente e con insistenza."
+    },
+    "562": {
+      "name": "Decathlon",
+      "description": "Dieci discipline di atletica, valutate come una sola."
+    },
+    "84": {
+      "name": "Inganno",
+      "description": "Mentire in modo convincente, a parole e nel contegno."
+    },
+    "341": {
+      "name": "Immersione Profonda",
+      "description": "Lavorare in profondità a miscele, con disciplina di decompressione."
+    },
+    "85": {
+      "name": "Demolizioni",
+      "description": "Piazzare le cariche perché la struttura cada dove deve cadere."
+    },
+    "86": {
+      "name": "Odontoiatria",
+      "description": "Diagnosticare e curare denti, gengive e occlusione."
+    },
+    "563": {
+      "name": "Preparazione Dialettale",
+      "description": "Insegnare un accento finché non regge all'improvvisazione."
+    },
+    "564": {
+      "name": "Marketing Digitale",
+      "description": "Raggiungere un pubblico attraverso ricerca, posta e metriche."
+    },
+    "88": {
+      "name": "Diplomazia",
+      "description": "Negoziare fra parti che preferirebbero non mettersi d'accordo."
+    },
+    "89": {
+      "name": "Regia",
+      "description": "Plasmare recitazione, messa in scena e montaggio in un unico insieme voluto."
+    },
+    "565": {
+      "name": "Senso dell'Orientamento",
+      "description": "Sapere dov'è il nord, dov'è l'uscita e da dove si è venuti."
+    },
+    "567": {
+      "name": "Gestione delle Emergenze",
+      "description": "Coordinare soccorsi, triage e rifornimenti dopo una catastrofe."
+    },
+    "568": {
+      "name": "Disc Golf",
+      "description": "Lanciare dischi nel cesto nel minor numero di tiri."
+    },
+    "569": {
+      "name": "Lavaggio Piatti",
+      "description": "Smaltire i piatti di un intero servizio in fretta e bene."
+    },
+    "570": {
+      "name": "Distillazione",
+      "description": "Separare lo spirito dal mosto col calore, e tagliare le teste dal cuore."
+    },
+    "571": {
+      "name": "Divinazione",
+      "description": "Trarre risposte da sorti, carte, viscere o fumo."
+    },
+    "90": {
+      "name": "DJ",
+      "description": "Sincronizzare e concatenare dischi per tenere una pista."
+    },
+    "91": {
+      "name": "Schivata",
+      "description": "Leggere un attacco in arrivo abbastanza presto da non essere lì."
+    },
+    "343": {
+      "name": "Slitta Trainata da Cani",
+      "description": "Condurre e governare una muta da lavoro sulla neve."
+    },
+    "572": {
+      "name": "Dog Sitting",
+      "description": "Gestire più cani al guinzaglio senza incidenti."
+    },
+    "573": {
+      "name": "Costruzione di Bambole",
+      "description": "Costruire figure snodate, dall'armatura al volto."
+    },
+    "574": {
+      "name": "Disegno Tecnico",
+      "description": "Produrre disegni quotati da cui altri possano costruire."
+    },
+    "92": {
+      "name": "Disegno",
+      "description": "Restituire in linea e tono ciò che si vede o si immagina."
+    },
+    "575": {
+      "name": "Dressage",
+      "description": "Condurre un cavallo attraverso figure precise di scuola."
+    },
+    "576": {
+      "name": "Pilotaggio di Droni",
+      "description": "Far volare un velivolo remoto a vista o in soggettiva."
+    },
+    "93": {
+      "name": "Druidismo",
+      "description": "Pratica antica legata agli alberi, alle stagioni e alla legge propria della terra."
+    },
+    "344": {
+      "name": "Costruzione di Tamburi",
+      "description": "Costruire fusti e intonare le pelli."
+    },
+    "345": {
+      "name": "Muri a Secco",
+      "description": "Alzare muri che stanno su per incastro e gravità, senza malta."
+    },
+    "577": {
+      "name": "Posa del Cartongesso",
+      "description": "Montare, nastrare e rasare lastre di cartongesso in piano."
+    },
+    "346": {
+      "name": "Commercio Elettronico",
+      "description": "Gestire un negozio online: inserzioni, magazzino, pagamenti e resi."
+    },
+    "347": {
+      "name": "Sopravvivenza ai Terremoti",
+      "description": "Comportarsi correttamente durante la scossa e nelle ore successive."
+    },
+    "94": {
+      "name": "Modellazione della Terra",
+      "description": "Muovere e riplasmare terra e pietra con la volontà."
+    },
+    "95": {
+      "name": "Memoria Eidetica",
+      "description": "Richiamare i dettagli esattamente, molto dopo averli visti una volta."
+    },
+    "578": {
+      "name": "Ingegneria Elettrica",
+      "description": "Progettare circuiti, sistemi di potenza e le macchine che alimentano."
+    },
+    "96": {
+      "name": "Impianti Elettrici",
+      "description": "Posare, attestare e collaudare impianti civili e industriali."
+    },
+    "97": {
+      "name": "Elettrocinesi",
+      "description": "Dirigere la corrente elettrica con la volontà."
+    },
+    "824": {
+      "name": "Microscopia Elettronica",
+      "description": "Fotografare la materia sotto la lunghezza d'onda della luce."
+    },
+    "98": {
+      "name": "Elettronica",
+      "description": "Leggere, montare e riparare circuiti a livello di componente."
+    },
+    "349": {
+      "name": "Conduzione degli Elefanti",
+      "description": "Lavorare con gli elefanti in sicurezza, con voce, uncino e abitudine."
+    },
+    "579": {
+      "name": "Riparazione Ascensori",
+      "description": "Manutenzione di argani, comandi e dispositivi di sicurezza."
+    },
+    "99": {
+      "name": "Ricamo",
+      "description": "Cucire decorazioni sul tessuto a mano o al telaietto."
+    },
+    "348": {
+      "name": "Costruzione di Dispositivi EMP",
+      "description": "Costruire ordigni a impulso che uccidono l'elettronica senza un botto."
+    },
+    "843": {
+      "name": "Endocrinologia",
+      "description": "I sistemi ormonali, e cosa succede quando si inceppano."
+    },
+    "580": {
+      "name": "Incisione",
+      "description": "Incidere il segno nel metallo, nel vetro o nella pietra."
+    },
+    "581": {
+      "name": "Entomologia",
+      "description": "Lo studio degli insetti: identificazione, cicli vitali e controllo."
+    },
+    "878": {
+      "name": "Epigrafia",
+      "description": "Leggere e datare iscrizioni incise su materiale duro."
+    },
+    "582": {
+      "name": "Arte della Fuga",
+      "description": "Uscire da corde, manette e casse, in fretta."
+    },
+    "350": {
+      "name": "Spionaggio",
+      "description": "Raccogliere informazioni protette senza farsi identificare."
+    },
+    "583": {
+      "name": "Esport",
+      "description": "Videogioco competitivo a livello allenato e cronometrato."
+    },
+    "585": {
+      "name": "Galateo",
+      "description": "Conoscere la forma attesa in qualunque stanza, e usarla."
+    },
+    "586": {
+      "name": "Evangelizzazione",
+      "description": "Predicare una convinzione a chi non l'ha chiesta."
+    },
+    "461": {
+      "name": "Addestramento all'Evasione",
+      "description": "Rompere il contatto, muoversi non visti e rientrare."
+    },
+    "101": {
+      "name": "Organizzazione Eventi",
+      "description": "Gestire logistica, budget e programma di un evento."
+    },
+    "87": {
+      "name": "Scavo Archeologico",
+      "description": "Scavare un sito per strati controllati, documentando via via."
+    },
+    "587": {
+      "name": "Uso dell'Escavatore",
+      "description": "Manovrare un escavatore cingolato con precisione e stabilità."
+    },
+    "588": {
+      "name": "Esorcismo",
+      "description": "Scacciare uno spirito possessore con il rito e la volontà."
+    },
+    "589": {
+      "name": "Stiratura Estrema",
+      "description": "Stirare il bucato in un posto dove non avrebbe alcun senso stirare."
+    },
+    "102": {
+      "name": "Carpenteria Metallica",
+      "description": "Tagliare, formare e saldare materiale grezzo in pezzi finiti."
+    },
+    "103": {
+      "name": "Falconeria",
+      "description": "Addestrare rapaci e cacciare con loro."
+    },
+    "590": {
+      "name": "Scrittura di Fanfiction",
+      "description": "Scrivere storie nuove dentro il mondo di qualcun altro."
+    },
+    "104": {
+      "name": "Agricoltura",
+      "description": "Lavorare terra e bestiame lungo la stagione: semina, cura, raccolto."
+    },
+    "105": {
+      "name": "Digiuno",
+      "description": "Restare senza cibo di proposito, e restare funzionanti."
+    },
+    "591": {
+      "name": "Costruzione di Recinzioni",
+      "description": "Piantare i pali e tendere filo o traverse su una linea diritta."
+    },
+    "592": {
+      "name": "Feng Shui",
+      "description": "Disporre uno spazio perché il flusso che lo attraversa sia favorevole."
+    },
+    "107": {
+      "name": "Fermentazione",
+      "description": "Coltivare cibi e bevande con un deterioramento controllato."
+    },
+    "108": {
+      "name": "Pattinaggio Artistico",
+      "description": "Salti, trottole e lavoro di lamina sul ghiaccio."
+    },
+    "594": {
+      "name": "Critica Cinematografica",
+      "description": "Analizzare un film per mestiere, forma e intenzione."
+    },
+    "595": {
+      "name": "Pianificazione Finanziaria",
+      "description": "Tradurre reddito, rischio e tempo in un piano che qualcuno riesca a seguire."
+    },
+    "596": {
+      "name": "Danza col Fuoco",
+      "description": "Esibirsi con poi, bastoni o ventagli accesi."
+    },
+    "353": {
+      "name": "Giocoleria col Fuoco",
+      "description": "Fare giocoleria con attrezzi accesi senza farli cadere."
+    },
+    "109": {
+      "name": "Accensione del Fuoco",
+      "description": "Ottenere fiamma da scintilla, attrito o lente in condizioni sfavorevoli."
+    },
+    "597": {
+      "name": "Pulizia Armi da Fuoco",
+      "description": "Smontare, pulire e rimontare un'arma perché funzioni."
+    },
+    "354": {
+      "name": "Camminata sui Carboni",
+      "description": "Attraversare braci ardenti sulla fisica del tempo di contatto."
+    },
+    "837": {
+      "name": "Reverse Engineering di Firmware",
+      "description": "Smontare codice embedded per scoprire cosa fa davvero."
+    },
+    "110": {
+      "name": "Primo Soccorso",
+      "description": "Tenere in vita e stabile un ferito finché non arriva aiuto migliore."
+    },
+    "355": {
+      "name": "Sfilettatura del Pesce",
+      "description": "Ricavare filetti puliti da un pesce con il minimo scarto."
+    },
+    "112": {
+      "name": "Pesca",
+      "description": "Prendere pesce con canna, lenza, rete o trappola."
+    },
+    "477": {
+      "name": "Riconoscimento Bandiere",
+      "description": "Dare un nome a una nazione o a un segnale dalla sua bandiera."
+    },
+    "598": {
+      "name": "Gestione Flotte",
+      "description": "Tenere una flotta di veicoli revisionata, assicurata e in strada."
+    },
+    "599": {
+      "name": "Scheggiatura della Selce",
+      "description": "Ridurre la pietra a lame e punte per frattura controllata."
+    },
+    "114": {
+      "name": "Flirt",
+      "description": "Segnalare interesse senza impegnarsi."
+    },
+    "600": {
+      "name": "Composizione Floreale",
+      "description": "Comporre fiori recisi per linea, massa e durata."
+    },
+    "828": {
+      "name": "Fluidodinamica",
+      "description": "Come si muovono liquidi e gas: flusso, turbolenza e pressione."
+    },
+    "601": {
+      "name": "Rumorismo",
+      "description": "Creare a mano in studio i suoni di una scena."
+    },
+    "115": {
+      "name": "Raccolta Spontanea",
+      "description": "Trovare e riconoscere in sicurezza cibo selvatico commestibile."
+    },
+    "357": {
+      "name": "Generazione di Campi di Forza",
+      "description": "Alzare una barriera di pura forza."
+    },
+    "358": {
+      "name": "Selvicoltura",
+      "description": "Governare un bosco: impianto, diradamento, taglio e resa."
+    },
+    "603": {
+      "name": "Uso del Muletto",
+      "description": "Sollevare, impilare e manovrare carichi col carrello elevatore."
+    },
+    "116": {
+      "name": "Cartomanzia",
+      "description": "Dire a un cliente il suo futuro in termini che accetterà."
+    },
+    "876": {
+      "name": "Gestione in Franchising",
+      "description": "Far funzionare i punti vendita secondo lo standard e il margine del marchio."
+    },
+    "117": {
+      "name": "Apnea Profonda",
+      "description": "Scendere in profondità con un solo respiro e risalire."
+    },
+    "360": {
+      "name": "Resistenza Fungina",
+      "description": "La tolleranza del corpo a spore, marciume e tossine fungine."
+    },
+    "606": {
+      "name": "Game Design",
+      "description": "Progettare regole e sistemi che restino interessanti da giocare."
+    },
+    "118": {
+      "name": "Giardinaggio",
+      "description": "Coltivare e mantenere piante ornamentali e dell'orto."
+    },
+    "361": {
+      "name": "Taglio delle Gemme",
+      "description": "Sfaccettare la pietra grezza per resa di luce e simmetria."
+    },
+    "119": {
+      "name": "Gemmologia",
+      "description": "Identificare, classificare e valutare le pietre preziose."
+    },
+    "607": {
+      "name": "Genealogia",
+      "description": "Ricostruire una discendenza attraverso i registri e le loro lacune."
+    },
+    "825": {
+      "name": "Sequenziamento del Genoma",
+      "description": "Leggere un genoma e assemblarlo in una sequenza utilizzabile."
+    },
+    "362": {
+      "name": "Geocaching",
+      "description": "Trovare nascondigli seguendo coordinate e indizi."
+    },
+    "120": {
+      "name": "Geografia",
+      "description": "Terra, clima, popolazione, e come si distribuiscono."
+    },
+    "844": {
+      "name": "Geriatria",
+      "description": "La medicina e la cura del corpo e della mente che invecchiano."
+    },
+    "363": {
+      "name": "Glaciologia",
+      "description": "Lo studio delle calotte, dei ghiacciai e del loro movimento."
+    },
+    "608": {
+      "name": "Taglio del Vetro",
+      "description": "Incidere e spezzare il vetro lungo la linea voluta, netta."
+    },
+    "849": {
+      "name": "Incisione su Vetro",
+      "description": "Satinare e incidere motivi nel vetro con acido o abrasivo."
+    },
+    "121": {
+      "name": "Soffiatura del Vetro",
+      "description": "Raccogliere, gonfiare e modellare il vetro caldo alla canna."
+    },
+    "898": {
+      "name": "Guanto",
+      "description": "Combattere a pugni guantati, a distanza ravvicinata."
+    },
+    "122": {
+      "name": "Strategia del Go",
+      "description": "Territorio, vita e morte sul goban a diciannove linee."
+    },
+    "364": {
+      "name": "Ricerca dell'Oro",
+      "description": "Lavare la ghiaia fino a quel che resta, pesante e giallo."
+    },
+    "609": {
+      "name": "Golemanzia",
+      "description": "Fabbricare un corpo inerte e metterlo al lavoro."
+    },
+    "123": {
+      "name": "Golf",
+      "description": "Drive, avvicinamento e putt lungo un percorso."
+    },
+    "877": {
+      "name": "Richieste di Finanziamento",
+      "description": "Scrivere domande che vengono davvero finanziate."
+    },
+    "611": {
+      "name": "Grafica",
+      "description": "Disporre carattere, immagine e spazio per comunicare."
+    },
+    "124": {
+      "name": "Lotta Corpo a Corpo",
+      "description": "Controllare un corpo da vicino: prese, proiezioni e leve."
+    },
+    "612": {
+      "name": "Scavo di Fosse",
+      "description": "Aprire e richiudere fosse a profondità, in qualunque terreno."
+    },
+    "613": {
+      "name": "Gestione della Serra",
+      "description": "Governare calore, umidità e luce sotto vetro."
+    },
+    "614": {
+      "name": "Spesa Alimentare",
+      "description": "Approvvigionarsi bene contro una lista, un budget e una scadenza."
+    },
+    "615": {
+      "name": "Guerriglia",
+      "description": "Combattere una forza superiore con incursioni, terreno e ripiegamenti."
+    },
+    "896": {
+      "name": "Arma da Fuoco",
+      "description": "Maneggiare e sparare con precisione sotto pressione."
+    },
+    "366": {
+      "name": "Macinazione della Polvere Nera",
+      "description": "Macinare e granulare polvere nera senza farla partire."
+    },
+    "616": {
+      "name": "Armaiolo",
+      "description": "Costruire, adattare e riparare armi da fuoco."
+    },
+    "125": {
+      "name": "Ginnastica Artistica",
+      "description": "Forza e controllo al corpo libero e agli attrezzi."
+    },
+    "367": {
+      "name": "Ripristino degli Habitat",
+      "description": "Ricostruire un habitat danneggiato finché non regge le proprie specie."
+    },
+    "126": {
+      "name": "Hacking",
+      "description": "Entrare nei sistemi per falla, cattiva configurazione o tramite chi li usa."
+    },
+    "127": {
+      "name": "Contrattazione",
+      "description": "Far scendere un prezzo senza far saltare l'affare."
+    },
+    "128": {
+      "name": "Acconciatura",
+      "description": "Tagliare, colorare e mettere in piega secondo un progetto."
+    },
+    "617": {
+      "name": "Lancio del Martello",
+      "description": "Lanciare il martello a cavo per la massima distanza."
+    },
+    "365": {
+      "name": "Analisi della Scrittura",
+      "description": "Leggere una grafia per attribuzione, falso o stato d'animo."
+    },
+    "130": {
+      "name": "Deltaplano",
+      "description": "Volare con un'ala non motorizzata su ascendenze e terreno."
+    },
+    "368": {
+      "name": "Clavicembalo",
+      "description": "Suonare una tastiera a corde pizzicate, dove il tocco non cambia il volume."
+    },
+    "131": {
+      "name": "Tolleranza al Caldo",
+      "description": "Lavorare in un caldo che metterebbe altri a terra."
+    },
+    "890": {
+      "name": "Arma Pesante",
+      "description": "Combattere con armi pesanti a due mani e i loro fendenti impegnativi."
+    },
+    "620": {
+      "name": "Addestramento Armatura Pesante",
+      "description": "Muoversi, combattere e durare in armatura completa e sotto carico."
+    },
+    "132": {
+      "name": "Uso di Macchinari Pesanti",
+      "description": "Condurre in sicurezza grandi mezzi in un cantiere attivo."
+    },
+    "369": {
+      "name": "Meccanica di Elicotteri",
+      "description": "Manutenere rotori, scatole di rinvio e turbine."
+    },
+    "133": {
+      "name": "Pilotaggio di Elicotteri",
+      "description": "Pilotare un rotore, incluse la sospensione e l'autorotazione."
+    },
+    "370": {
+      "name": "Preparazione di Impiastri",
+      "description": "Preparare cataplasmi d'erbe che richiamano, leniscono o chiudono."
+    },
+    "134": {
+      "name": "Erboristeria",
+      "description": "Riconoscere e preparare le piante a scopo medicinale."
+    },
+    "831": {
+      "name": "Erpetologia",
+      "description": "Lo studio dei rettili e degli anfibi."
+    },
+    "383": {
+      "name": "Concia delle Pelli",
+      "description": "Trasformare la pelle grezza in cuoio che non marcisca."
+    },
+    "622": {
+      "name": "Salto in Alto",
+      "description": "Superare un'asticella rialzata con rincorsa."
+    },
+    "371": {
+      "name": "Acclimatazione in Quota",
+      "description": "Adattarsi all'aria rarefatta senza ammalarsi."
+    },
+    "621": {
+      "name": "Arti Marziali Storiche Europee",
+      "description": "Combattere secondo i trattati di scherma europei superstiti."
+    },
+    "135": {
+      "name": "Storia",
+      "description": "Cosa è successo, in che ordine, e su quali prove."
+    },
+    "624": {
+      "name": "Home Staging",
+      "description": "Allestire un immobile perché si mostri e si venda."
+    },
+    "100": {
+      "name": "Equitazione",
+      "description": "Montare e condurre un cavallo a tutte le andature."
+    },
+    "856": {
+      "name": "Trattativa con Sequestratori",
+      "description": "Far rientrare una situazione barricata senza lasciarci un morto."
+    },
+    "625": {
+      "name": "Mongolfiera",
+      "description": "Volare in pallone con bruciatore, zavorra e il vento che scegli."
+    },
+    "868": {
+      "name": "Pilotaggio di Hovercraft",
+      "description": "Governare un mezzo a cuscino d'aria su terra e acqua."
+    },
+    "372": {
+      "name": "Danza Hula",
+      "description": "Danza hawaiana in cui sono le mani a raccontare la storia."
+    },
+    "626": {
+      "name": "Hula Hoop",
+      "description": "Tenere in rotazione i cerchi su corpo e arti."
+    },
+    "627": {
+      "name": "Risorse Umane",
+      "description": "Assunzioni, contratti, contenzioso e la burocrazia delle persone."
+    },
+    "628": {
+      "name": "Caccia",
+      "description": "Seguire, avvicinare e abbattere la selvaggina con pulizia."
+    },
+    "136": {
+      "name": "Manutenzione di Impianti HVAC",
+      "description": "Fare manutenzione a impianti di riscaldamento, ventilazione e raffrescamento."
+    },
+    "373": {
+      "name": "Idrogeologia",
+      "description": "Acque sotterranee: dove sono, come si muovono e cosa portano con sé."
+    },
+    "629": {
+      "name": "Idroponica",
+      "description": "Coltivare in soluzione nutritiva senza terra."
+    },
+    "137": {
+      "name": "Ipnosi",
+      "description": "Indurre una trance suggestionabile e lavorarci dentro."
+    },
+    "630": {
+      "name": "Autodiagnosi Ipocondriaca",
+      "description": "Trovare la spiegazione peggiore ma plausibile per qualunque sintomo."
+    },
+    "861": {
+      "name": "Arrampicata su Ghiaccio",
+      "description": "Salire cascate gelate e ghiaccio con piccozze e ramponi."
+    },
+    "855": {
+      "name": "Carotaggio del Ghiaccio",
+      "description": "Estrarre e catalogare carote che conservano il clima antico."
+    },
+    "374": {
+      "name": "Pesca sul Ghiaccio",
+      "description": "Pescare da un foro nel ghiaccio, dopo aver letto il ghiaccio."
+    },
+    "631": {
+      "name": "Scultura su Ghiaccio",
+      "description": "Scolpire blocchi di ghiaccio contro l'orologio dello scioglimento."
+    },
+    "138": {
+      "name": "Pattinaggio su Ghiaccio",
+      "description": "Lamine, equilibrio e velocità sui pattini."
+    },
+    "832": {
+      "name": "Ittiologia",
+      "description": "Lo studio dei pesci: specie, anatomia e popolazioni."
+    },
+    "375": {
+      "name": "Costruzione di Igloo",
+      "description": "Tagliare e posare blocchi di neve in un riparo a spirale."
+    },
+    "632": {
+      "name": "Magia Illusoria",
+      "description": "Far riferire ai sensi ciò che non c'è."
+    },
+    "634": {
+      "name": "Immunologia",
+      "description": "Il sistema immunitario, le sue difese e i suoi errori."
+    },
+    "635": {
+      "name": "Comicità Improvvisata",
+      "description": "Costruire una scena dal vivo, dal nulla, insieme ad altri."
+    },
+    "376": {
+      "name": "Ordigni Improvvisati",
+      "description": "Costruire cariche con quel che si ha sottomano, e sopravviverci."
+    },
+    "744": {
+      "name": "Arti Industriali",
+      "description": "Lavoro d'officina fra metallo, legno e macchina."
+    },
+    "636": {
+      "name": "Stampaggio a Iniezione",
+      "description": "Condurre stampi, punti di iniezione e cicli per pezzi in plastica."
+    },
+    "184": {
+      "name": "Navigazione Strumentale",
+      "description": "Navigare con i soli strumenti, senza riferimenti esterni."
+    },
+    "637": {
+      "name": "Assunzione di Rischi Assicurativi",
+      "description": "Decidere cosa coprire, a quali condizioni e a quale premio."
+    },
+    "377": {
+      "name": "Raccolta di Informazioni",
+      "description": "Raccogliere, ordinare e pesare notizie fino a farne fatti utilizzabili."
+    },
+    "797": {
+      "name": "Progettazione di Interfacce",
+      "description": "Disporre i comandi perché la gente li usi senza che glielo si spieghi."
+    },
+    "141": {
+      "name": "Design d'Interni",
+      "description": "Progettare funzione, luce, colore e arredo di una stanza."
+    },
+    "139": {
+      "name": "Interrogatorio",
+      "description": "Ottenere informazioni veritiere da chi non vuole darle."
+    },
+    "140": {
+      "name": "Intimidazione",
+      "description": "Far credere a qualcuno quali sarebbero le conseguenze di un rifiuto."
+    },
+    "638": {
+      "name": "Giornalismo d'Inchiesta",
+      "description": "Tirare fuori una storia che qualcuno sta tenendo nascosta."
+    },
+    "639": {
+      "name": "Banca d'Affari",
+      "description": "Raccogliere capitale, prezzare operazioni e prendersi la commissione."
+    },
+    "640": {
+      "name": "Stiratura",
+      "description": "Stendere il tessuto senza bruciarlo né lucidarlo."
+    },
+    "537": {
+      "name": "Pulizie Civili",
+      "description": "Tenere un edificio pulito, rifornito e sicuro durante la notte."
+    },
+    "641": {
+      "name": "Lancio del Giavellotto",
+      "description": "Lanciare il giavellotto per distanza con rilascio regolare."
+    },
+    "642": {
+      "name": "Moto d'Acqua",
+      "description": "Governare una moto d'acqua a velocità e col mare mosso."
+    },
+    "643": {
+      "name": "Oreficeria",
+      "description": "Fabbricare e incastonare gioielli in metallo e pietra."
+    },
+    "644": {
+      "name": "Puzzle",
+      "description": "Ricomporre immagini tagliate per bordo, colore e forma."
+    },
+    "70": {
+      "name": "Raccontare Barzellette",
+      "description": "Tempi, premessa e consegna che fanno arrivare la battuta."
+    },
+    "142": {
+      "name": "Giornalismo",
+      "description": "Fare cronaca: trovare le fonti, verificarle e scriverla dritta."
+    },
+    "645": {
+      "name": "Giostra",
+      "description": "Caricare un altro cavaliere con la lancia e restare in sella."
+    },
+    "143": {
+      "name": "Judo",
+      "description": "Proiezioni, immobilizzazioni e strangolamenti dall'arte giapponese di presa."
+    },
+    "144": {
+      "name": "Giocoleria",
+      "description": "Tenere oggetti in aria secondo uno schema."
+    },
+    "145": {
+      "name": "Karate",
+      "description": "Arte di percussione fatta di parate, pugni e calci su forme codificate."
+    },
+    "646": {
+      "name": "Kart",
+      "description": "Correre in kart su traiettoria, frenata e inerzia."
+    },
+    "146": {
+      "name": "Kayak",
+      "description": "Pagaiare un'imbarcazione chiusa, eschimotaggio e acque mosse compresi."
+    },
+    "380": {
+      "name": "Coltivazione di Alghe",
+      "description": "Far crescere e raccogliere alghe su cavo in mare."
+    },
+    "148": {
+      "name": "Kendo",
+      "description": "Scherma giapponese con lo shinai, in armatura e a regolamento."
+    },
+    "149": {
+      "name": "Kickboxing",
+      "description": "Pugni e calci secondo le regole del pieno contatto."
+    },
+    "381": {
+      "name": "Riparazione Kintsugi",
+      "description": "Riunire ceramica rotta con l'oro, lasciando visibile la frattura."
+    },
+    "647": {
+      "name": "Aquiloni",
+      "description": "Far decollare, volare e atterrare aquiloni con vento variabile."
+    },
+    "150": {
+      "name": "Lavoro a Maglia",
+      "description": "Fare tessuto ai ferri da un filo continuo."
+    },
+    "151": {
+      "name": "Nodi",
+      "description": "Scegliere e legare il nodo che tiene, e che poi si scioglie."
+    },
+    "152": {
+      "name": "Krav Maga",
+      "description": "Combattimento ravvicinato israeliano, pensato per chiudere in fretta."
+    },
+    "382": {
+      "name": "Navigazione nei Labirinti",
+      "description": "Tenere orientamento e percorso dentro un dedalo costruito apposta."
+    },
+    "649": {
+      "name": "Lacrosse",
+      "description": "Cullare, passare e tirare con il bastone a rete."
+    },
+    "153": {
+      "name": "Progettazione del Verde",
+      "description": "Modellare, piantumare e pavimentare secondo un progetto."
+    },
+    "650": {
+      "name": "Laser Tag",
+      "description": "Scaramuccia a infrarossi: copertura, angoli ed evitare i colpi."
+    },
+    "651": {
+      "name": "Lazo",
+      "description": "Lanciare e serrare un cappio su un bersaglio in movimento."
+    },
+    "652": {
+      "name": "Gestione della Lavanderia",
+      "description": "Smistare, lavare e far girare biancheria in quantità."
+    },
+    "155": {
+      "name": "Diritto",
+      "description": "Le norme, la procedura e l'argomentazione che decidono una causa."
+    },
+    "521": {
+      "name": "Bowls",
+      "description": "Far rotolare bocce sbilanciate verso il pallino sul prato."
+    },
+    "653": {
+      "name": "Cura del Prato",
+      "description": "Tagliare, concimare e rappezzare il tappeto erboso lungo l'anno."
+    },
+    "156": {
+      "name": "Comando",
+      "description": "Far agire insieme un gruppo, e fare in modo che continui."
+    },
+    "157": {
+      "name": "Lavorazione del Cuoio",
+      "description": "Tagliare, cucire e rifinire manufatti in cuoio."
+    },
+    "654": {
+      "name": "Salvataggio in Acqua",
+      "description": "Sorvegliare l'acqua, cogliere i guai per tempo e tirar fuori la gente."
+    },
+    "888": {
+      "name": "Arma Leggera",
+      "description": "Combattere con armi leggere e rapide, che barattano portata per velocità."
+    },
+    "655": {
+      "name": "Addestramento Armatura Leggera",
+      "description": "Combattere in armatura leggera conservando la mobilità che le compete."
+    },
+    "158": {
+      "name": "Passo Leggero",
+      "description": "Muoversi in silenzio e leggeri, lasciando poco da sentire o seguire."
+    },
+    "656": {
+      "name": "Disegno Luci",
+      "description": "Illuminare un palco o un set per atmosfera, fuoco e visibilità."
+    },
+    "833": {
+      "name": "Limnologia",
+      "description": "Lo studio di laghi, fiumi e della loro ecologia interna."
+    },
+    "657": {
+      "name": "Line Dance",
+      "description": "Ballare passi coreografati fissi in formazione."
+    },
+    "159": {
+      "name": "Linguistica",
+      "description": "La struttura della lingua: suono, grammatica e mutamento."
+    },
+    "160": {
+      "name": "Lettura Labiale",
+      "description": "Leggere il parlato dalla bocca senza sentirlo."
+    },
+    "161": {
+      "name": "Scasso Serrature",
+      "description": "Aprire serrature con tensione e sensibilità, senza la chiave."
+    },
+    "862": {
+      "name": "Log Rolling",
+      "description": "Restare in piedi su un tronco galleggiante che gira."
+    },
+    "384": {
+      "name": "Tessitura al Telaio",
+      "description": "Ordire e tessere stoffa al telaio."
+    },
+    "164": {
+      "name": "Sogno Lucido",
+      "description": "Prendere coscienza dentro un sogno e agirvi deliberatamente."
+    },
+    "659": {
+      "name": "Taglio del Legname",
+      "description": "Abbattere, sramare e movimentare tronchi nel bosco."
+    },
+    "660": {
+      "name": "Produzione della Liscivia",
+      "description": "Lisciviare la cenere di legna in soda caustica, in sicurezza."
+    },
+    "385": {
+      "name": "Apprendimento Automatico",
+      "description": "Addestrare modelli statistici a svolgere un compito partendo dai dati."
+    },
+    "661": {
+      "name": "Macramè",
+      "description": "Annodare cordino in tessuto decorato senza ago né telaio."
+    },
+    "165": {
+      "name": "Teoria Magica",
+      "description": "I principi formali sotto un incantesimo: corrispondenza, costo e limite."
+    },
+    "166": {
+      "name": "Mago",
+      "description": "La pratica completa di un mago istruito, non una sola sua scuola."
+    },
+    "167": {
+      "name": "Manutenzione",
+      "description": "Tenere in funzione un edificio o una macchina con la cura ordinaria."
+    },
+    "168": {
+      "name": "Trucco",
+      "description": "Dipingere un volto per la camera, il palco o l'effetto."
+    },
+    "663": {
+      "name": "Recitazione di Mantra",
+      "description": "Ripetizione prolungata di una formula, per effetto sulla mente o sul mondo."
+    },
+    "387": {
+      "name": "Lavorazione Manuale",
+      "description": "Lavorare tornio, fresa e lima a mano rispettando una tolleranza."
+    },
+    "664": {
+      "name": "Lettura delle Mappe",
+      "description": "Trasformare mappa e terreno in un percorso e in una posizione."
+    },
+    "388": {
+      "name": "Sciroppo d'Acero",
+      "description": "Incidere, raccogliere e far bollire la linfa fino a sciroppo."
+    },
+    "169": {
+      "name": "Maratona",
+      "description": "Correre la distanza con ritmo, alimentazione e disciplina di passo."
+    },
+    "170": {
+      "name": "Biologia Marina",
+      "description": "La vita del mare, dal plancton alla barriera alla balena."
+    },
+    "389": {
+      "name": "Navigazione Marittima",
+      "description": "Tracciare e tenere una rotta in mare per punto nave e stima."
+    },
+    "795": {
+      "name": "Tricking",
+      "description": "Calci acrobatici e capriole eseguiti come esibizione."
+    },
+    "665": {
+      "name": "Muratura in Pietra",
+      "description": "Tagliare e posare pietra in muri, archi e corsi."
+    },
+    "822": {
+      "name": "Spettrometria di Massa",
+      "description": "Identificare sostanze ionizzandole e pesandone i frammenti."
+    },
+    "172": {
+      "name": "Massoterapia",
+      "description": "Lavorare i tessuti molli per dolore, mobilità e circolazione."
+    },
+    "390": {
+      "name": "Combinare Matrimoni",
+      "description": "Presentare due persone che si troveranno davvero bene insieme."
+    },
+    "391": {
+      "name": "Stagionatura della Carne",
+      "description": "Conservare la carne con sale, fumo, nitrato e tempo."
+    },
+    "666": {
+      "name": "Ingegneria Meccanica",
+      "description": "Progettare macchine, meccanismi e i carichi che sopportano."
+    },
+    "173": {
+      "name": "Meccanica",
+      "description": "Diagnosticare e riparare motori e trasmissioni."
+    },
+    "667": {
+      "name": "Mediazione",
+      "description": "Portare due parti a un accordo che nessuna delle due ha dettato."
+    },
+    "668": {
+      "name": "Fatturazione Sanitaria",
+      "description": "Codificare le prestazioni e farsele pagare."
+    },
+    "174": {
+      "name": "Meditazione",
+      "description": "Pratica di attenzione prolungata, e la quiete che ne segue."
+    },
+    "175": {
+      "name": "Calcolo Mentale",
+      "description": "Calcolare a mente con precisione, e in fretta."
+    },
+    "670": {
+      "name": "Metal Detecting",
+      "description": "Battere il terreno e leggere il segnale prima di scavare."
+    },
+    "176": {
+      "name": "Lavorazione dei Metalli",
+      "description": "Tagliare, formare e unire semilavorati metallici."
+    },
+    "393": {
+      "name": "Ricerca di Meteoriti",
+      "description": "Trovare e riconoscere sul campo roccia caduta dallo spazio."
+    },
+    "177": {
+      "name": "Meteorologia",
+      "description": "Leggere e prevedere il tempo dai dati e dal cielo."
+    },
+    "671": {
+      "name": "Microbiologia",
+      "description": "Lo studio di batteri, virus e di cosa fanno a un ospite."
+    },
+    "672": {
+      "name": "Mimo",
+      "description": "Raccontare una storia con il solo gesto e il solo corpo."
+    },
+    "395": {
+      "name": "Minigolf",
+      "description": "Mandare in buca fra gli ostacoli di un percorso breve e costruito."
+    },
+    "673": {
+      "name": "Pittura di Miniature",
+      "description": "Dipingere figure piccole con grande dettaglio."
+    },
+    "674": {
+      "name": "Attività Mineraria",
+      "description": "Estrarre minerale e pietra, e sapere cosa valga la pena estrarre."
+    },
+    "675": {
+      "name": "Missilistica Amatoriale",
+      "description": "Costruire e far volare piccoli razzi curando recupero e stabilità."
+    },
+    "396": {
+      "name": "Cucina Molecolare",
+      "description": "Cucinare sulla chimica: gel, spume e cambi di fase."
+    },
+    "882": {
+      "name": "Riciclaggio di Denaro",
+      "description": "Far passare denaro sporco attraverso libri contabili puliti."
+    },
+    "867": {
+      "name": "Conduzione di Monorotaia",
+      "description": "Guidare e far partire una monorotaia in orario."
+    },
+    "179": {
+      "name": "Codice Morse",
+      "description": "Trasmettere e leggere il codice con tasto, luce o suono."
+    },
+    "397": {
+      "name": "Mosaico",
+      "description": "Posare tessere in immagini e motivi."
+    },
+    "676": {
+      "name": "Motocross",
+      "description": "Correre in moto su terra, salti e solchi."
+    },
+    "180": {
+      "name": "Guida della Moto",
+      "description": "Guidare e controllare una motocicletta su strada e in piega."
+    },
+    "181": {
+      "name": "Alpinismo",
+      "description": "Salire in alta quota con giudizio su via, tempo e altitudine."
+    },
+    "182": {
+      "name": "Muay Thai",
+      "description": "Percussione thailandese con pugni, gomiti, ginocchia e tibie."
+    },
+    "677": {
+      "name": "Pittura Murale",
+      "description": "Dipingere su scala architettonica, su un muro che resta."
+    },
+    "398": {
+      "name": "Coltivazione di Funghi",
+      "description": "Far crescere funghi commestibili su substrato preparato."
+    },
+    "183": {
+      "name": "Composizione Musicale",
+      "description": "Scrivere musica: linea, armonia e struttura."
+    },
+    "399": {
+      "name": "Preparazione di Mutageni",
+      "description": "Comporre agenti che riscrivono il tessuto vivo."
+    },
+    "678": {
+      "name": "Adattamento Mutageno",
+      "description": "Sopravvivere al cambiamento del proprio corpo e volgerlo a proprio vantaggio."
+    },
+    "830": {
+      "name": "Micologia",
+      "description": "Lo studio dei funghi: identificazione, ecologia e tossicità."
+    },
+    "400": {
+      "name": "Nanotecnologia",
+      "description": "Ingegnerizzare la materia alla scala delle molecole."
+    },
+    "679": {
+      "name": "Naturopatia",
+      "description": "Curare la malattia con dieta, erbe e regime di vita."
+    },
+    "186": {
+      "name": "Negoziazione",
+      "description": "Arrivare a condizioni che entrambe le parti firmeranno e rispetteranno."
+    },
+    "401": {
+      "name": "Insegne al Neon",
+      "description": "Piegare e riempire tubi di vetro fino a farne insegne accese."
+    },
+    "680": {
+      "name": "Costruzione di Reti",
+      "description": "Annodare e riparare reti alla maglia giusta."
+    },
+    "681": {
+      "name": "Amministrazione di Rete",
+      "description": "Far funzionare le reti: instradamento, indirizzi, continuità e accessi."
+    },
+    "402": {
+      "name": "Neurohacking",
+      "description": "Intervenire direttamente su un sistema nervoso per cambiarne il funzionamento."
+    },
+    "682": {
+      "name": "Neurologia",
+      "description": "Il sistema nervoso, le sue malattie e la loro diagnosi."
+    },
+    "187": {
+      "name": "Agilità",
+      "description": "Prontezza di mani e piedi nei momenti stretti e scomodi."
+    },
+    "683": {
+      "name": "Fisica Nucleare",
+      "description": "Il nucleo: decadimento, fissione, fusione e sezioni d'urto."
+    },
+    "879": {
+      "name": "Numismatica",
+      "description": "Lo studio e la raccolta delle monete e delle loro emissioni."
+    },
+    "188": {
+      "name": "Infermieristica",
+      "description": "Assistenza al letto, osservazione e il lato pratico della medicina."
+    },
+    "342": {
+      "name": "Nutrizione",
+      "description": "Cosa fa il cibo nel corpo, e cosa manca a una dieta."
+    },
+    "404": {
+      "name": "Oboe",
+      "description": "Suonare l'oboe, costruzione dell'ancia compresa."
+    },
+    "684": {
+      "name": "Corsa a Ostacoli",
+      "description": "Percorrere un tracciato di salite, trasporti e strisciate."
+    },
+    "405": {
+      "name": "Oceanografia",
+      "description": "La fisica, la chimica e la circolazione del mare."
+    },
+    "685": {
+      "name": "Trivellazione Petrolifera",
+      "description": "Perforare, rivestire e controllare un pozzo."
+    },
+    "686": {
+      "name": "Canto Lirico",
+      "description": "Cantare repertorio classico di scuola senza amplificazione."
+    },
+    "687": {
+      "name": "Optometria",
+      "description": "Misurare la vista e prescrivere la correzione."
+    },
+    "189": {
+      "name": "Orientamento Sportivo",
+      "description": "Correre fra punti di controllo con mappa e bussola."
+    },
+    "190": {
+      "name": "Origami",
+      "description": "Piegare la carta in forme senza tagliarla."
+    },
+    "688": {
+      "name": "Imballaggio",
+      "description": "Far stare quel che serve in quel che si riesce davvero a portare."
+    },
+    "191": {
+      "name": "Sopportazione del Dolore",
+      "description": "Restare funzionanti attraverso un dolore che fermerebbe altri."
+    },
+    "689": {
+      "name": "Paintball",
+      "description": "Scaramuccia con marcatori: copertura, angoli e fuoco di soppressione."
+    },
+    "192": {
+      "name": "Pittura",
+      "description": "Lavorare col colore: tinta, valore e superficie."
+    },
+    "407": {
+      "name": "Paleobotanica",
+      "description": "Piante fossili, e i climi che registrano."
+    },
+    "690": {
+      "name": "Paleontologia",
+      "description": "Scavare e interpretare fossili e la vita da cui provengono."
+    },
+    "193": {
+      "name": "Pancrazio",
+      "description": "Lotta greca antica senza esclusione: percussione e presa insieme."
+    },
+    "408": {
+      "name": "Cartapesta",
+      "description": "Costruire forme con colla e carta a strati."
+    },
+    "691": {
+      "name": "Fabbricazione della Carta",
+      "description": "Ridurre in pasta, formare e asciugare fogli a mano."
+    },
+    "880": {
+      "name": "Papirologia",
+      "description": "Leggere e conservare testi scritti su papiro."
+    },
+    "194": {
+      "name": "Paracadutismo",
+      "description": "Lancio, controllo della vela e atterraggio."
+    },
+    "692": {
+      "name": "Parapendio",
+      "description": "Volare con una vela a decollo pedestre su termiche e dinamica."
+    },
+    "409": {
+      "name": "Medicina d'Urgenza Territoriale",
+      "description": "Medicina d'emergenza sul posto, prima dell'ospedale."
+    },
+    "195": {
+      "name": "Parkour",
+      "description": "Attraversare il costruito con volteggi, salite e discese."
+    },
+    "410": {
+      "name": "Posa del Parquet",
+      "description": "Posare pavimenti in legno a disegno, diritti e serrati."
+    },
+    "826": {
+      "name": "Fisica delle Particelle",
+      "description": "Le particelle fondamentali e le forze fra loro."
+    },
+    "693": {
+      "name": "Pasticceria",
+      "description": "Sfogliare, decorare a sac à poche e cuocere pasticceria fine."
+    },
+    "411": {
+      "name": "Pesca delle Perle",
+      "description": "Immergersi in apnea per le ostriche, e aprirle in cerca della perla."
+    },
+    "196": {
+      "name": "Pen Spinning",
+      "description": "Far girare una penna fra le dita secondo schemi."
+    },
+    "412": {
+      "name": "Profumeria",
+      "description": "Comporre note di testa, cuore e fondo in un profumo che duri."
+    },
+    "853": {
+      "name": "Progettazione in Permacultura",
+      "description": "Progettare un sistema coltivato che in gran parte si mantiene da solo."
+    },
+    "696": {
+      "name": "Disinfestazione",
+      "description": "Riconoscere, escludere ed eliminare un'infestazione."
+    },
+    "413": {
+      "name": "Fusione del Peltro",
+      "description": "Fondere e colare il peltro negli stampi."
+    },
+    "197": {
+      "name": "Farmacologia",
+      "description": "Cosa fanno i farmaci, a che dose, e cosa fanno insieme."
+    },
+    "198": {
+      "name": "Dispensazione Farmaceutica",
+      "description": "Evadere ricette con precisione e controllare le interazioni."
+    },
+    "199": {
+      "name": "Filosofia",
+      "description": "L'argomentare su conoscenza, essere, etica e mente."
+    },
+    "697": {
+      "name": "Prelievo Ematico",
+      "description": "Prelevare sangue in modo pulito ed etichettarlo correttamente."
+    },
+    "201": {
+      "name": "Fotografia",
+      "description": "Esposizione, messa a fuoco e composizione, in macchina."
+    },
+    "200": {
+      "name": "Fotocinesi",
+      "description": "Piegare e generare luce con la volontà."
+    },
+    "414": {
+      "name": "Frenologia",
+      "description": "Leggere il carattere dalle bozze del cranio, come volevano i vecchi trattati."
+    },
+    "202": {
+      "name": "Fisica",
+      "description": "Materia, energia, moto e le leggi cui obbediscono."
+    },
+    "415": {
+      "name": "Fitodepurazione",
+      "description": "Bonificare terreno contaminato con piante che assorbono il veleno."
+    },
+    "698": {
+      "name": "Pickleball",
+      "description": "Gioco di racchetta su campo corto con pallina forata."
+    },
+    "203": {
+      "name": "Borseggio",
+      "description": "Sfilare qualcosa a una persona senza che se ne accorga."
+    },
+    "416": {
+      "name": "Incorniciatura",
+      "description": "Tagliare, montare e vetrare un'opera per l'esposizione."
+    },
+    "700": {
+      "name": "Colombofilia",
+      "description": "Allevare, addestrare e cronometrare piccioni viaggiatori."
+    },
+    "205": {
+      "name": "Pilates",
+      "description": "Condizionamento controllato del centro attraverso movimenti codificati."
+    },
+    "701": {
+      "name": "Curvatura di Tubi",
+      "description": "Piegare tubi e guaine ad angolo senza schiacciarli."
+    },
+    "417": {
+      "name": "Posa di Condotte",
+      "description": "Posare, giuntare e allettare tubazioni con la giusta pendenza."
+    },
+    "702": {
+      "name": "Pixel Art",
+      "description": "Disegnare al livello del singolo pixel."
+    },
+    "418": {
+      "name": "Uso del Planetario",
+      "description": "Far funzionare un proiettore a cupola e lo spettacolo che lo accompagna."
+    },
+    "419": {
+      "name": "Intonacatura",
+      "description": "Stendere e rifinire l'intonaco piano e duro."
+    },
+    "206": {
+      "name": "Basso",
+      "description": "Tenere le frequenze basse a tempo con la batteria."
+    },
+    "207": {
+      "name": "Batteria",
+      "description": "Tenere e modellare il tempo su un kit."
+    },
+    "208": {
+      "name": "Chitarra",
+      "description": "Suonare la chitarra: accordi, assolo e timbro."
+    },
+    "209": {
+      "name": "Pianoforte",
+      "description": "Suonare il pianoforte a due mani, leggendo o a orecchio."
+    },
+    "210": {
+      "name": "Violino",
+      "description": "Passare l'archetto e intonare il violino."
+    },
+    "211": {
+      "name": "Idraulica",
+      "description": "Posare, giuntare e collaudare adduzione e scarico."
+    },
+    "845": {
+      "name": "Podologia",
+      "description": "Curare i piedi, l'andatura e i problemi che ne derivano più in alto."
+    },
+    "212": {
+      "name": "Poesia",
+      "description": "Scrivere versi che si meritano i propri a capo."
+    },
+    "213": {
+      "name": "Resistenza ai Veleni",
+      "description": "Un corpo che ha imparato a sopravvivere a dosi cui non si dovrebbe sopravvivere."
+    },
+    "214": {
+      "name": "Poker",
+      "description": "Puntare, leggere e lasciare lungo la mano."
+    },
+    "420": {
+      "name": "Faccia da Poker",
+      "description": "Non lasciar trapelare nulla dal volto, sotto pressione."
+    },
+    "704": {
+      "name": "Salto con l'Asta",
+      "description": "Superare l'asticella su un'asta piantata e caricata."
+    },
+    "705": {
+      "name": "Identikit",
+      "description": "Disegnare una somiglianza utilizzabile dalla descrizione di un testimone."
+    },
+    "706": {
+      "name": "Scienze Politiche",
+      "description": "Come si comportano davvero il potere, le istituzioni e il voto."
+    },
+    "421": {
+      "name": "Uso del Poligrafo",
+      "description": "Condurre e interpretare una macchina della verità, per quel che vale."
+    },
+    "707": {
+      "name": "Manutenzione Piscine",
+      "description": "Tenere una piscina equilibrata, filtrata e limpida."
+    },
+    "215": {
+      "name": "Ceramica",
+      "description": "Tornire, rifinire e cuocere recipienti d'argilla."
+    },
+    "278": {
+      "name": "Lancio di Potenza",
+      "description": "Lanciare oggetti pesanti con forza, con tutto il corpo dietro."
+    },
+    "216": {
+      "name": "Powerlifting",
+      "description": "Forza massimale in squat, panca e stacco."
+    },
+    "279": {
+      "name": "Lancio di Precisione",
+      "description": "Colpire un bersaglio piccolo a distanza con un oggetto lanciato."
+    },
+    "710": {
+      "name": "Fuoco Primitivo",
+      "description": "Accendere il fuoco per solo attrito, con materiali preparati."
+    },
+    "217": {
+      "name": "Programmazione",
+      "description": "Scrivere, strutturare e correggere codice."
+    },
+    "711": {
+      "name": "Gestione Progetti",
+      "description": "Ambito, tempi e persone, tenuti insieme fino alla consegna."
+    },
+    "895": {
+      "name": "Arma da Lancio",
+      "description": "Combattere a distanza con armi lanciate e scagliate."
+    },
+    "712": {
+      "name": "Costruzione di Oggetti di Scena",
+      "description": "Costruire oggetti convincenti per il palco o la macchina da presa."
+    },
+    "425": {
+      "name": "Progettazione di Protesi",
+      "description": "Progettare arti e dispositivi che un corpo riesca davvero a usare."
+    },
+    "713": {
+      "name": "Psichiatria",
+      "description": "Diagnosticare e curare la malattia mentale, farmaci compresi."
+    },
+    "426": {
+      "name": "Psicoanalisi",
+      "description": "Leggere l'inconscio attraverso la parola, il sogno e il lapsus."
+    },
+    "714": {
+      "name": "Psicologia",
+      "description": "Come le persone pensano, imparano e si comportano, e come lo si verifica."
+    },
+    "709": {
+      "name": "Relazioni Pubbliche",
+      "description": "Governare cosa si dice di un cliente, e chi lo dice."
+    },
+    "218": {
+      "name": "Parlare in Pubblico",
+      "description": "Tenere una sala dalla cattedra, con struttura e voce."
+    },
+    "715": {
+      "name": "Teatro dei Burattini",
+      "description": "Dare a un burattino peso, sguardo e vita."
+    },
+    "219": {
+      "name": "Pirocinesi",
+      "description": "Accendere e guidare il fuoco con la volontà."
+    },
+    "716": {
+      "name": "Qi Gong",
+      "description": "Postura, respiro e intenzione coordinati come pratica."
+    },
+    "717": {
+      "name": "Controllo Qualità",
+      "description": "Collaudare per trovare il guasto prima che lo trovi il cliente."
+    },
+    "427": {
+      "name": "Calcolo Quantistico",
+      "description": "Calcolare su sovrapposizione e interferenza, non sui soli bit."
+    },
+    "836": {
+      "name": "Crittografia Quantistica",
+      "description": "Scambio di chiavi che una misurazione tradirebbe."
+    },
+    "428": {
+      "name": "Quilling",
+      "description": "Arrotolare e modellare strisce di carta in disegni a rilievo."
+    },
+    "718": {
+      "name": "Trapuntatura",
+      "description": "Assemblare e cucire strati di stoffa in trapunte."
+    },
+    "719": {
+      "name": "Racquetball",
+      "description": "Gioco veloce in campo chiuso, su tutte le pareti."
+    },
+    "720": {
+      "name": "Gestione delle Radiazioni",
+      "description": "Lavorare con le sorgenti in sicurezza: schermatura, dose e tempo."
+    },
+    "429": {
+      "name": "Radioastronomia",
+      "description": "Osservare il cielo alle lunghezze d'onda radio."
+    },
+    "220": {
+      "name": "Uso della Radio",
+      "description": "Far funzionare un apparato radio: bande, procedura e traffico."
+    },
+    "721": {
+      "name": "Recupero di Componenti Radio",
+      "description": "Tirare fuori pezzi funzionanti e segnale da apparecchi morti."
+    },
+    "842": {
+      "name": "Radiologia",
+      "description": "Produrre e leggere immagini diagnostiche."
+    },
+    "821": {
+      "name": "Spettroscopia Raman",
+      "description": "Identificare sostanze dal modo in cui diffondono la luce laser."
+    },
+    "221": {
+      "name": "Rap",
+      "description": "Scrivere e recitare versi in rima a tempo."
+    },
+    "430": {
+      "name": "Riabilitazione dei Rapaci",
+      "description": "Curare e liberare rapaci feriti."
+    },
+    "431": {
+      "name": "Lettura delle Microespressioni",
+      "description": "Cogliere l'espressione che affiora prima di essere controllata."
+    },
+    "722": {
+      "name": "Perizia Immobiliare",
+      "description": "Valutare un immobile su comparabili e stato di conservazione."
+    },
+    "432": {
+      "name": "Lavorazione del Rame",
+      "description": "Lavorare rame e sue leghe al banco."
+    },
+    "723": {
+      "name": "Arbitraggio",
+      "description": "Dirigere una gara con coerenza, e farsi obbedire."
+    },
+    "724": {
+      "name": "Colata di Resina",
+      "description": "Miscelare e colare resina senza bolle né danni da calore."
+    },
+    "338": {
+      "name": "Rianimazione",
+      "description": "Far ripartire respiro e circolo."
+    },
+    "726": {
+      "name": "Gestione del Punto Vendita",
+      "description": "Far girare un negozio: merce, personale e incassi."
+    },
+    "727": {
+      "name": "Ginnastica Ritmica",
+      "description": "Lavoro agli attrezzi con nastro, cerchio, palla e clavette."
+    },
+    "728": {
+      "name": "Robotica",
+      "description": "Costruire macchine che percepiscono, decidono e si muovono."
+    },
+    "224": {
+      "name": "Arrampicata su Roccia",
+      "description": "Arrampicare in cordata su roccia: tecnica, protezioni e manovre."
+    },
+    "435": {
+      "name": "Roller Derby",
+      "description": "Bloccare, sfondare e pattinare dentro il gruppo."
+    },
+    "225": {
+      "name": "Pattinaggio a Rotelle",
+      "description": "Equilibrio, velocità e frenate sulle rotelle."
+    },
+    "226": {
+      "name": "Copertura di Tetti",
+      "description": "Coprire e scossalare un tetto perché resti a tenuta."
+    },
+    "729": {
+      "name": "Fabbricazione di Corde",
+      "description": "Comporre la fibra in corda di torsione e resistenza uniformi."
+    },
+    "730": {
+      "name": "Canottaggio",
+      "description": "Far correre una barca a remi, in cadenza e in equipaggio."
+    },
+    "228": {
+      "name": "Rugby",
+      "description": "Contatto, gioco di mano e fasi statiche nel gioco corso."
+    },
+    "610": {
+      "name": "Diffusione di Voci",
+      "description": "Far partire una storia che viaggerà e attecchirà."
+    },
+    "731": {
+      "name": "Runeria",
+      "description": "Incidere e caricare rune perché trattengano ciò che vi si mette."
+    },
+    "437": {
+      "name": "Traduzione Runica",
+      "description": "Leggere un'iscrizione runica e sapere di quale futhark si tratti."
+    },
+    "732": {
+      "name": "Guida del Camper",
+      "description": "Guidare un grande motorhome: lunghezza, altezza e massa."
+    },
+    "883": {
+      "name": "Scasso di Casseforti",
+      "description": "Aprire una cassaforte per manipolazione, trapano o abitudini del proprietario."
+    },
+    "434": {
+      "name": "Attrezzatura Velica",
+      "description": "Allestire correttamente manovre fisse e correnti."
+    },
+    "229": {
+      "name": "Vela",
+      "description": "Condurre una barca a vela su vento, marea e regolazione."
+    },
+    "438": {
+      "name": "Velaio",
+      "description": "Tagliare e cucire vele che tengano la forma."
+    },
+    "733": {
+      "name": "Vendita",
+      "description": "Trovare il bisogno, farvi combaciare l'offerta e chiudere."
+    },
+    "869": {
+      "name": "Scultura di Sabbia",
+      "description": "Compattare e intagliare la sabbia prima che si asciughi."
+    },
+    "734": {
+      "name": "Sabbiatura",
+      "description": "Decapare e testurizzare superfici con abrasivo in pressione."
+    },
+    "838": {
+      "name": "Collegamento Satellitare",
+      "description": "Allineare una parabola e tenere il collegamento con un satellite."
+    },
+    "820": {
+      "name": "Sassofono",
+      "description": "Suonare il sassofono: ancia, fiato e fraseggio."
+    },
+    "735": {
+      "name": "Ponteggi",
+      "description": "Montare e ancorare ponteggi che reggano il carico."
+    },
+    "736": {
+      "name": "Album di Ritagli",
+      "description": "Comporre fotografie e cimeli in pagine da conservare."
+    },
+    "439": {
+      "name": "Scrimshaw",
+      "description": "Incidere e inchiostrare disegni su osso o avorio."
+    },
+    "737": {
+      "name": "Vergatura di Pergamene",
+      "description": "Scrivere un incantesimo su una pergamena perché scatti alla lettura."
+    },
+    "230": {
+      "name": "Immersione con Autorespiratore",
+      "description": "Immergersi ad aria compressa con disciplina di assetto e di gas."
+    },
+    "440": {
+      "name": "Falciatura a Mano",
+      "description": "Falciare l'erba in piedi con la falce, e battere la lama."
+    },
+    "441": {
+      "name": "Ricerca e Soccorso",
+      "description": "Trovare i dispersi e riportarli fuori vivi."
+    },
+    "738": {
+      "name": "Ottimizzazione per i Motori di Ricerca",
+      "description": "Far posizionare una pagina su ciò che la gente cerca davvero."
+    },
+    "231": {
+      "name": "Seduzione",
+      "description": "Attirare qualcuno di proposito, e capire quando sta funzionando."
+    },
+    "442": {
+      "name": "Sismologia",
+      "description": "Registrare e interpretare i movimenti del suolo e i terremoti."
+    },
+    "233": {
+      "name": "Cucito",
+      "description": "Unire stoffa a mano o a macchina con una cucitura che tiene."
+    },
+    "740": {
+      "name": "Tosatura delle Pecore",
+      "description": "Togliere il vello in un pezzo solo senza tagliare la pecora."
+    },
+    "741": {
+      "name": "Costruzione di Ripari",
+      "description": "Costruire un riparo con il terreno e i materiali a disposizione."
+    },
+    "444": {
+      "name": "Pastorizia",
+      "description": "Spostare, far pascolare e custodire un gregge."
+    },
+    "742": {
+      "name": "Spedizioni",
+      "description": "Noli, manifesti, dogane e far arrivare la merce."
+    },
+    "234": {
+      "name": "Calzoleria",
+      "description": "Montare in forma, cucire e risuolare calzature."
+    },
+    "746": {
+      "name": "Salto a Ostacoli",
+      "description": "Percorrere un tracciato di ostacoli netto e nel tempo."
+    },
+    "865": {
+      "name": "Shuffleboard",
+      "description": "Far scivolare dischi pesati nelle zone di punteggio."
+    },
+    "887": {
+      "name": "Ingegneria d'Assedio",
+      "description": "Costruire e usare macchine che abbattono le fortificazioni."
+    },
+    "238": {
+      "name": "Lingua dei Segni",
+      "description": "Conversazione segnata, con una grammatica e uno spazio propri."
+    },
+    "747": {
+      "name": "Cartelli Pubblicitari",
+      "description": "Lanciare e far roteare un cartello pubblicitario per farsi notare."
+    },
+    "448": {
+      "name": "Bachicoltura",
+      "description": "Allevare bachi da seta e trarre il filo dai bozzoli."
+    },
+    "239": {
+      "name": "Argenteria",
+      "description": "Alzare, saldare e rifinire l'argento."
+    },
+    "240": {
+      "name": "Canto",
+      "description": "Intonazione, fiato e timbro con la voce educata."
+    },
+    "241": {
+      "name": "Skateboard",
+      "description": "Guida, equilibrio e trick sulla tavola."
+    },
+    "748": {
+      "name": "Paracadutismo Sportivo",
+      "description": "Stabilità in caduta libera, vela e atterraggio."
+    },
+    "749": {
+      "name": "Slackline",
+      "description": "Stare in equilibrio e camminare su una fettuccia tesa."
+    },
+    "750": {
+      "name": "Slittino",
+      "description": "Guidare e frenare una slitta in discesa."
+    },
+    "242": {
+      "name": "Privazione del Sonno",
+      "description": "Funzionare anche dopo il sonno che il corpo aveva in credito."
+    },
+    "243": {
+      "name": "Gioco di Prestigio",
+      "description": "Fare con le mani qualcosa che nessuno vede."
+    },
+    "450": {
+      "name": "Manipolazione di Serpenti",
+      "description": "Maneggiare serpenti, velenosi compresi, senza farsi mordere."
+    },
+    "751": {
+      "name": "Snorkeling",
+      "description": "Nuotare e immergersi dalla superficie con maschera e boccaglio."
+    },
+    "246": {
+      "name": "Snowboard",
+      "description": "Lamine, curve condotte e terreno sulla tavola."
+    },
+    "752": {
+      "name": "Motoslitta",
+      "description": "Guidare una motoslitta su neve alta e ghiaccio."
+    },
+    "451": {
+      "name": "Guida dello Spazzaneve",
+      "description": "Liberare le strade dalla neve senza portarsi via la strada."
+    },
+    "753": {
+      "name": "Ciaspole",
+      "description": "Spostarsi su neve alta senza sprofondare."
+    },
+    "754": {
+      "name": "Produzione del Sapone",
+      "description": "Saponificare il grasso con la liscivia fino a sapone stagionato."
+    },
+    "247": {
+      "name": "Calcio",
+      "description": "Controllo di palla, passaggio e tiro nel gioco a undici."
+    },
+    "248": {
+      "name": "Sociologia",
+      "description": "Come si comportano davvero società, classi e istituzioni."
+    },
+    "756": {
+      "name": "Softball",
+      "description": "Battuta, lancio e difesa nel gioco dal basso."
+    },
+    "757": {
+      "name": "Collaudo del Software",
+      "description": "Progettare test che trovino difetti veri, non che passino e basta."
+    },
+    "834": {
+      "name": "Scienza del Suolo",
+      "description": "Struttura, chimica e fertilità del terreno."
+    },
+    "249": {
+      "name": "Saldatura a Stagno",
+      "description": "Unire metalli ed elettronica con lega d'apporto e calore controllato."
+    },
+    "250": {
+      "name": "Ingegneria del Suono",
+      "description": "Registrare, missare e amplificare il suono."
+    },
+    "901": {
+      "name": "Pilotaggio Spaziale",
+      "description": "Governare una nave nello spazio: accensioni, orbita e allunaggio."
+    },
+    "251": {
+      "name": "Manipolazione Spaziale",
+      "description": "Ripiegare distanza e volume con la volontà."
+    },
+    "899": {
+      "name": "Lancia",
+      "description": "Combattere con la lancia: portata, affondo e posizione."
+    },
+    "452": {
+      "name": "Pesca Subacquea",
+      "description": "Prendere pesce sott'acqua in apnea con elastico o fucile."
+    },
+    "253": {
+      "name": "Lettura Veloce",
+      "description": "Leggere in fretta senza perdere ciò che stava sulla pagina."
+    },
+    "759": {
+      "name": "Pattinaggio di Velocità",
+      "description": "Lavoro di lamina lungo e basso, a ritmo di gara."
+    },
+    "453": {
+      "name": "Speed Stacking",
+      "description": "Impilare e disfare bicchieri contro il cronometro."
+    },
+    "227": {
+      "name": "Speedcubing",
+      "description": "Risolvere cubi e rompicapo a incastro per algoritmo, a velocità."
+    },
+    "254": {
+      "name": "Speedrunning",
+      "description": "Finire un gioco per la via più veloce conosciuta, e trovarne di più veloci."
+    },
+    "73": {
+      "name": "Concentrazione Magica",
+      "description": "Tenere insieme un incantesimo mentre si viene colpiti, spostati o distratti."
+    },
+    "255": {
+      "name": "Arte Incantatoria",
+      "description": "Costruire e lanciare un incantesimo a partire dalle sue componenti."
+    },
+    "760": {
+      "name": "Filatura",
+      "description": "Stirare e torcere la fibra in filato al filatoio o al fuso."
+    },
+    "106": {
+      "name": "Scherma Sportiva",
+      "description": "Fioretto, spada e sciabola secondo il regolamento di gara."
+    },
+    "761": {
+      "name": "Allenamento Sportivo",
+      "description": "Preparare atleti, e far giocare una squadra come una cosa sola."
+    },
+    "847": {
+      "name": "Medicina dello Sport",
+      "description": "Curare e prevenire gli infortuni che lo sport provoca."
+    },
+    "257": {
+      "name": "Velocità",
+      "description": "Massima velocità sulla distanza breve, fin dalla partenza."
+    },
+    "762": {
+      "name": "Squash",
+      "description": "Gioco veloce di racchetta in campo chiuso, sulla parete frontale."
+    },
+    "893": {
+      "name": "Bastone",
+      "description": "Combattere col bastone e la leva delle sue due estremità."
+    },
+    "763": {
+      "name": "Vetrate Artistiche",
+      "description": "Tagliare, piombare e saldare vetro colorato in pannelli."
+    },
+    "764": {
+      "name": "Stand-up Paddle",
+      "description": "Stare in piedi e pagaiare su una tavola in acque aperte."
+    },
+    "258": {
+      "name": "Statistica",
+      "description": "Campionamento, inferenza e sapere cosa un numero non dice."
+    },
+    "456": {
+      "name": "Uso dello Steadicam",
+      "description": "Portare una camera stabilizzata e camminare un'inquadratura fluida."
+    },
+    "765": {
+      "name": "Uccisioni Furtive",
+      "description": "Chiudere uno scontro prima che cominci, alle spalle."
+    },
+    "245": {
+      "name": "Movimento Furtivo",
+      "description": "Muoversi non visti né uditi oltre l'attenzione altrui."
+    },
+    "745": {
+      "name": "Stenografia",
+      "description": "Trascrivere il parlato alla lettera, alla velocità con cui viene detto."
+    },
+    "457": {
+      "name": "Camminata sui Trampoli",
+      "description": "Camminare, girare e lavorare in quota sui trampoli."
+    },
+    "259": {
+      "name": "Compravendita di Titoli",
+      "description": "Comprare e vendere titoli con analisi e sangue freddo."
+    },
+    "766": {
+      "name": "Taglio della Pietra",
+      "description": "Spaccare e squadrare la pietra a misura."
+    },
+    "458": {
+      "name": "Rimbalzelli",
+      "description": "Lanciare un sasso piatto per il massimo numero di rimbalzi."
+    },
+    "260": {
+      "name": "Modellazione delle Tempeste",
+      "description": "Chiamare e guidare il tempo atmosferico con la volontà."
+    },
+    "459": {
+      "name": "Magia da Strada",
+      "description": "Prestidigitazione ravvicinata, senza palco e senza angoli morti."
+    },
+    "767": {
+      "name": "Spazzamento Strade",
+      "description": "Ripulire le strade a macchina e a mano."
+    },
+    "261": {
+      "name": "Esperienza di Strada",
+      "description": "Leggere le regole di una città: a chi chiedere, dove non andare."
+    },
+    "262": {
+      "name": "Ingegneria Strutturale",
+      "description": "Dimensionare una struttura perché regga il carico e resti in piedi."
+    },
+    "768": {
+      "name": "Guida Acrobatica",
+      "description": "Derapate, salti e guida di precisione al segno."
+    },
+    "769": {
+      "name": "Pilotaggio di Sommergibili",
+      "description": "Governare un sommergibile su assetto, quota e zavorra."
+    },
+    "263": {
+      "name": "Sumo",
+      "description": "Spingere l'avversario fuori dal cerchio, o a terra dentro."
+    },
+    "770": {
+      "name": "Gestione della Filiera",
+      "description": "Tenere in movimento pezzi e scorte dal fornitore allo scaffale."
+    },
+    "264": {
+      "name": "Surf",
+      "description": "Leggere, prendere e cavalcare un'onda."
+    },
+    "265": {
+      "name": "Chirurgia",
+      "description": "Operare: aprire, riparare e richiudere un corpo vivo."
+    },
+    "771": {
+      "name": "Topografia",
+      "description": "Misurare il terreno e tracciare quote e confini."
+    },
+    "266": {
+      "name": "Sopravvivenza",
+      "description": "Restare vivi all'aperto: acqua, riparo, fuoco, cibo."
+    },
+    "872": {
+      "name": "Preparazione del Sushi",
+      "description": "Riso, taglio e trattamento del pesce crudo a regola d'arte."
+    },
+    "267": {
+      "name": "Nuoto",
+      "description": "Nuotate efficienti e sicurezza in acque libere."
+    },
+    "889": {
+      "name": "Spada",
+      "description": "Combattere con la spada: guardia, taglio e stoccata."
+    },
+    "462": {
+      "name": "Mangiatore di Spade",
+      "description": "Far scendere una lama in gola senza ferirsi."
+    },
+    "772": {
+      "name": "Nuoto Sincronizzato",
+      "description": "Figure e sollevamenti eseguiti a tempo, per lo più sott'acqua."
+    },
+    "773": {
+      "name": "Ping Pong",
+      "description": "Rotazione, piazzamento e velocità sul tavolo."
+    },
+    "268": {
+      "name": "Taekwondo",
+      "description": "Arte di percussione coreana fondata su calci alti e rapidi."
+    },
+    "775": {
+      "name": "Tai Chi",
+      "description": "Forma interna lenta, praticata per equilibrio, salute e struttura."
+    },
+    "774": {
+      "name": "Festa nel Parcheggio",
+      "description": "Organizzare come si deve una festa nel parcheggio, cibo compreso."
+    },
+    "269": {
+      "name": "Sartoria",
+      "description": "Tagliare e adattare capi su un corpo."
+    },
+    "776": {
+      "name": "Fusione del Sego",
+      "description": "Depurare il grasso animale per candele, sapone e cucina."
+    },
+    "270": {
+      "name": "Tango",
+      "description": "Danza di coppia stretta fatta di guida, pausa e camminata."
+    },
+    "271": {
+      "name": "Lettura dei Tarocchi",
+      "description": "Stendere e interpretare le carte per un consultante."
+    },
+    "778": {
+      "name": "Tatuaggio",
+      "description": "Mettere inchiostro nella pelle: linea, sfumatura e guarigione."
+    },
+    "272": {
+      "name": "Tassidermia",
+      "description": "Scuoiare, montare e atteggiare un animale perché sembri vivo."
+    },
+    "463": {
+      "name": "Lettura dei Fondi di Tè",
+      "description": "Leggere le forme lasciate nella tazza."
+    },
+    "779": {
+      "name": "Tolleranza ai Gas Lacrimogeni",
+      "description": "Continuare a operare in un gas fatto apposta per fermarti."
+    },
+    "273": {
+      "name": "Tecnomanzia",
+      "description": "Operare magia attraverso macchine e codice."
+    },
+    "274": {
+      "name": "Telecinesi",
+      "description": "Muovere oggetti a distanza con la volontà."
+    },
+    "780": {
+      "name": "Telemarketing",
+      "description": "Vendere per telefono a gente che non ha chiamato."
+    },
+    "275": {
+      "name": "Telepatia",
+      "description": "Leggere e trasmettere il pensiero senza parola."
+    },
+    "781": {
+      "name": "Teletrasporto",
+      "description": "Passare da un luogo a un altro senza attraversare lo spazio in mezzo."
+    },
+    "464": {
+      "name": "Costruzione di Telescopi",
+      "description": "Molare, figurare e montare ottiche che tengano ferma una stella."
+    },
+    "276": {
+      "name": "Tennis",
+      "description": "Servizio, colpi da fondo e movimento in campo."
+    },
+    "45": {
+      "name": "Bowling",
+      "description": "Traiettoria, effetto e recupero degli spare in pista."
+    },
+    "465": {
+      "name": "Teratologia",
+      "description": "Lo studio delle malformazioni: cosa va storto nello sviluppo, e come."
+    },
+    "466": {
+      "name": "Costruzione di Terrari",
+      "description": "Costruire un contenitore piantumato e chiuso che si mantenga da sé."
+    },
+    "782": {
+      "name": "Copertura in Paglia",
+      "description": "Coprire un tetto in canna o paglia perché scoli acqua per decenni."
+    },
+    "277": {
+      "name": "Teologia",
+      "description": "Dottrina, scrittura e le dispute interne a una fede."
+    },
+    "469": {
+      "name": "Preparazione della Termite",
+      "description": "Miscelare ossido metallico e combustibile in una carica che taglia l'acciaio."
+    },
+    "827": {
+      "name": "Termodinamica",
+      "description": "Calore, lavoro e ciò che non si può riavere indietro."
+    },
+    "871": {
+      "name": "Canto Difonico",
+      "description": "Produrre due o più suoni insieme con una sola voce."
+    },
+    "783": {
+      "name": "Funambolismo",
+      "description": "Attraversare un cavo teso con il solo equilibrio."
+    },
+    "784": {
+      "name": "Piastrellatura",
+      "description": "Posare, distanziare e stuccare piastrelle in piano e a livello."
+    },
+    "470": {
+      "name": "Lattoneria",
+      "description": "Tagliare, formare e aggraffare lamiera stagnata."
+    },
+    "471": {
+      "name": "Arte Topiaria",
+      "description": "Potare arbusti vivi in forme mantenute."
+    },
+    "280": {
+      "name": "Tortura",
+      "description": "Infliggere dolore per uno scopo, e quanto valga davvero."
+    },
+    "785": {
+      "name": "Dattilografia Cieca",
+      "description": "Scrivere a macchina con precisione e velocità senza guardare."
+    },
+    "786": {
+      "name": "Guida Turistica",
+      "description": "Condurre un gruppo e tenerne l'attenzione mentre si cammina."
+    },
+    "788": {
+      "name": "Tossicologia",
+      "description": "Veleni: dose, effetto, rilevamento e antidoto."
+    },
+    "281": {
+      "name": "Tracciamento",
+      "description": "Seguire le tracce lasciate da persone e animali."
+    },
+    "789": {
+      "name": "Guida del Trattore",
+      "description": "Guidare un trattore e far lavorare i suoi attrezzi."
+    },
+    "790": {
+      "name": "Conduzione Ferroviaria",
+      "description": "Gestire orario, segnali e passeggeri di un treno."
+    },
+    "791": {
+      "name": "Trampolino Elastico",
+      "description": "Altezza, figura e controllo in uscita dal telo."
+    },
+    "282": {
+      "name": "Traduzione",
+      "description": "Portare il senso da una lingua all'altra, non solo le parole."
+    },
+    "283": {
+      "name": "Trappolaggio",
+      "description": "Preparare, collocare e controllare trappole per la selvaggina."
+    },
+    "792": {
+      "name": "Raccolta Rifiuti",
+      "description": "Fare un giro di raccolta: percorso, sollevamento e carico."
+    },
+    "793": {
+      "name": "Tree Climbing",
+      "description": "Salire sugli alberi con corda e ramponi, in sicurezza."
+    },
+    "886": {
+      "name": "Tattiche di Trincea",
+      "description": "Tenere, incursionare e vivere su linee fisse."
+    },
+    "794": {
+      "name": "Triathlon",
+      "description": "Nuoto, bici e corsa, con le transizioni in mezzo."
+    },
+    "796": {
+      "name": "Salto Triplo",
+      "description": "Balzo, passo e salto da un'unica rincorsa."
+    },
+    "285": {
+      "name": "Guida di Camion",
+      "description": "Guidare mezzi pesanti: carico, freni e ore di guida."
+    },
+    "472": {
+      "name": "Ricerca dei Tartufi",
+      "description": "Trovare tartufi con un cane addestrato e un buon naso."
+    },
+    "473": {
+      "name": "Tipografia",
+      "description": "Comporre il testo: carattere, corpo, spaziatura e ritmo."
+    },
+    "474": {
+      "name": "Ufologia",
+      "description": "Raccogliere e valutare segnalazioni di velivoli non identificati."
+    },
+    "798": {
+      "name": "Ultimate Frisbee",
+      "description": "Gestione del disco, tagli e difesa nel gioco corso."
+    },
+    "286": {
+      "name": "Combattimento Disarmato",
+      "description": "Combattere col solo corpo: colpi, corpo a corpo e controllo."
+    },
+    "460": {
+      "name": "Saldatura Subacquea",
+      "description": "Saldare in profondità, dove elettricità e acqua si incontrano."
+    },
+    "799": {
+      "name": "Monociclo",
+      "description": "Andare, girare e restare fermi su una ruota sola."
+    },
+    "287": {
+      "name": "Tappezzeria",
+      "description": "Scarnire, imbottire e rivestire fusti di mobili."
+    },
+    "476": {
+      "name": "Esplorazione Urbana",
+      "description": "Entrare in strutture dismesse, e uscirne."
+    },
+    "288": {
+      "name": "Urbanistica",
+      "description": "Zonizzazione, trasporti e come una città cresce o si soffoca."
+    },
+    "787": {
+      "name": "Traino Veicoli",
+      "description": "Recuperare e trainare veicoli in sicurezza e a norma."
+    },
+    "800": {
+      "name": "Ventriloquio",
+      "description": "Parlare senza movimenti visibili, e collocare altrove la voce."
+    },
+    "801": {
+      "name": "Medicina Veterinaria",
+      "description": "Diagnosticare e curare animali che non sanno dire dove fa male."
+    },
+    "478": {
+      "name": "Ingegneria dei Viadotti",
+      "description": "Progettare e costruire lunghe campate sopraelevate."
+    },
+    "289": {
+      "name": "Montaggio Video",
+      "description": "Montare le riprese in sequenza, ritmo e senso."
+    },
+    "290": {
+      "name": "Videogiochi",
+      "description": "Giocare bene ai videogiochi: riflessi, sistemi e schemi."
+    },
+    "479": {
+      "name": "Restauro di Auto d'Epoca",
+      "description": "Rimettere in strada un'auto d'epoca in condizioni originali."
+    },
+    "850": {
+      "name": "Liuteria",
+      "description": "Intagliare, sgusciare e verniciare violini."
+    },
+    "803": {
+      "name": "Doppiaggio",
+      "description": "Recitare con la sola voce, su immagine o su pagina."
+    },
+    "829": {
+      "name": "Vulcanologia",
+      "description": "Vulcani: comportamento, segnali premonitori e prodotti."
+    },
+    "804": {
+      "name": "Pallavolo",
+      "description": "Servizio, alzata, schiacciata e muro sopra la rete."
+    },
+    "292": {
+      "name": "Wakeboard",
+      "description": "Cavalcare e saltare la scia dietro una barca."
+    },
+    "805": {
+      "name": "Fabbricazione di Bacchette",
+      "description": "Scegliere, tornire e abbinare il legno fino a farne una bacchetta funzionante."
+    },
+    "480": {
+      "name": "Rabdomanzia",
+      "description": "Trovare l'acqua con la bacchetta, e la sicurezza per scavare lì."
+    },
+    "806": {
+      "name": "Pallanuoto",
+      "description": "Nuotare, tenere la posizione e tirare nel gioco in acqua."
+    },
+    "294": {
+      "name": "Sci Nautico",
+      "description": "Sciare dietro una barca, sulla scia e attraversandola."
+    },
+    "222": {
+      "name": "Ricarica Armi",
+      "description": "Ricaricare in fretta e bene, senza guardare."
+    },
+    "807": {
+      "name": "Forgiatura di Armi",
+      "description": "Fare armi che siano bilanciate, tengano il filo e reggano l'uso."
+    },
+    "809": {
+      "name": "Sviluppo Web",
+      "description": "Costruire siti e applicazioni web, davanti e dietro."
+    },
+    "295": {
+      "name": "Sollevamento Pesi",
+      "description": "Strappo e slancio, eseguiti con tecnica."
+    },
+    "296": {
+      "name": "Saldatura",
+      "description": "Fondere il metallo con un cordone sano e portante."
+    },
+    "810": {
+      "name": "Scavo di Pozzi",
+      "description": "Affondare e rivestire un pozzo fino all'acqua sicura."
+    },
+    "811": {
+      "name": "Atletica in Carrozzina",
+      "description": "Correre in carrozzina da pista su tecnica di spinta e traiettoria."
+    },
+    "892": {
+      "name": "Frusta",
+      "description": "Combattere con la frusta: portata, schiocco e presa."
+    },
+    "297": {
+      "name": "Intaglio a Coltello",
+      "description": "Ricavare piccoli oggetti dal legno con il solo coltello."
+    },
+    "482": {
+      "name": "Fabbricazione di Parrucche",
+      "description": "Annodare e acconciare capelli in parrucche che non si notano."
+    },
+    "859": {
+      "name": "Sintonia con la Forma Selvatica",
+      "description": "Reggere una forma animale presa in prestito senza perdersi dentro."
+    },
+    "852": {
+      "name": "Primo Soccorso in Ambiente Ostile",
+      "description": "Medicina d'emergenza a ore di distanza da qualunque strada."
+    },
+    "483": {
+      "name": "Riparazione di Aerogeneratori",
+      "description": "Manutenere le turbine in quota, con il tempo che fa."
+    },
+    "812": {
+      "name": "Lavaggio Vetri",
+      "description": "Pulire il vetro senza aloni, anche in quota."
+    },
+    "298": {
+      "name": "Windsurf",
+      "description": "Navigare una tavola su attrezzatura, assetto e postura."
+    },
+    "758": {
+      "name": "Degustazione del Vino",
+      "description": "Valutare un vino con occhio, naso e palato, e saperlo nominare."
+    },
+    "299": {
+      "name": "Vinificazione",
+      "description": "Pigiare, fermentare e affinare l'uva fino a farne vino."
+    },
+    "484": {
+      "name": "Trafilatura",
+      "description": "Trafilare il metallo in filo di sezione uniforme."
+    },
+    "300": {
+      "name": "Intaglio del Legno",
+      "description": "Scolpire figure e rilievi nel legno con sgorbia e scalpello."
+    },
+    "301": {
+      "name": "Lotta",
+      "description": "Atterramenti, controllo e schienate sul materassino."
+    },
+    "814": {
+      "name": "Uso dei Raggi X",
+      "description": "Posizionare, esporre e schermare per una radiografia utilizzabile."
+    },
+    "485": {
+      "name": "Xilofono",
+      "description": "Suonare barre intonate con le bacchette, a tempo."
+    },
+    "304": {
+      "name": "Yo-Yo",
+      "description": "Trick sul filo, dormita e ritorno dello yo-yo."
+    },
+    "487": {
+      "name": "Jodel",
+      "description": "Cantare attraversando in fretta il passaggio tra voce di petto e di testa."
+    },
+    "303": {
+      "name": "Yoga",
+      "description": "Posture, respiro e attenzione tenuti insieme."
+    },
+    "817": {
+      "name": "Guida della Zamboni",
+      "description": "Rifare il ghiaccio uniformemente, in un solo passaggio, prima del tempo successivo."
+    },
+    "866": {
+      "name": "Pilotaggio di Dirigibili",
+      "description": "Far volare un dirigibile rigido su zavorra, assetto e decisioni lente."
+    },
+    "818": {
+      "name": "Fanzine",
+      "description": "Scrivere, impaginare e fotocopiare una piccola rivista autoprodotta."
+    },
+    "819": {
+      "name": "Custodia allo Zoo",
+      "description": "Nutrire, arricchire e gestire animali in cattività."
+    },
+    "305": {
+      "name": "Zoologia",
+      "description": "Lo studio degli animali: classificazione, anatomia e comportamento."
+    }
+  }
+}

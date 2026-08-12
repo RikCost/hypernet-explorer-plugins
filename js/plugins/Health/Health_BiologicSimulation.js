@@ -21,6 +21,19 @@
  * @command BirthSeed
  * @desc Plants one seed from stockpile (Plant-type reproduction only).
  *
+ * @command InfectMember
+ * @desc Asks which party member to infect, then gives them the disease.
+ * Works on the map and in battle. Used by the disease vials.
+ *
+ * @arg disease
+ * @type string
+ * @desc Disease id from js/db/Health/Diseases.json (e.g. influenza, rabies).
+ *
+ * @arg silent
+ * @type boolean
+ * @default false
+ * @desc true infects the leader outright, without asking.
+ *
  */
 
 (function () {
@@ -240,6 +253,263 @@
     return id === 2 ? 39 : id === 3 ? 40 : 38;
   }
 
+  // Gender itself lives on the actor now (ActorCharacterFields); variables
+  // 38-40 were freed, so they are only read as a fallback for a runtime that
+  // does not carry that plugin.
+  function readGender(actor) {
+    if (actor && typeof actor.gender === "function") return actor.gender() || 0;
+    return $gameVariables.value(getGenderVarId(actor)) || 0;
+  }
+
+  function writeGender(actor, value) {
+    if (actor && typeof actor.setGender === "function") actor.setGender(value);
+    else $gameVariables.setValue(getGenderVarId(actor), value);
+  }
+
+  // ── Endocrine implants ────────────────────────────────────────────────────
+  // Two implants installed on the torso (BODY on a creature) write the sex
+  // hormones directly, and they are applied AFTER the gender-appropriate
+  // clamps in updateHormones: a body produces what its organs produce, so the
+  // gland outranks the range the recorded gender would allow. Both are
+  // declared in js/db/Health/ProstheticTypes.json.
+  const ANDROGEN_GLAND = "ANDROGEN_GLAND";
+  const ESTROGEN_AUTOINJECTOR = "ESTROGEN_AUTOINJECTOR";
+  const ANDROGEN_FLOOR = 900;     // ng/dL the gland holds the blood at
+  const ANDROGEN_CEILING = 1200;  // ng/dL it pumps up to
+  const ANDROGEN_RATE = 25;       // ng/dL added per simulation tick
+  const ESTROGEN_FLOOR = 300;     // pg/mL the reservoir maintains between shots
+  const ESTROGEN_DOSE = 120;      // pg/mL of one daily shot
+  const ESTROGEN_CEILING = 450;   // pg/mL
+
+  const getProstheticTypes = () => window.Health ? window.Health.ProstheticTypes : null;
+
+  function hasImplant(actor, prostheticKey) {
+    const installed = actor && actor._prosthetics;
+    if (!installed) return false;
+    for (const partKey in installed) {
+      if (installed[partKey] === prostheticKey) return true;
+    }
+    return false;
+  }
+
+  // Which day of the world clock (variable 114, game minutes) we stand on.
+  function currentGameDay() {
+    return Math.floor(($gameVariables.value(114) || 0) / 1440);
+  }
+
+  // The autoinjector fires once per game day. It records the day it was fitted
+  // without dosing (fitting an implant is not a shot) and settles at most one
+  // dose per day afterwards, so the days spent away from the panel do not pile
+  // up into a single flood.
+  function applyEstrogenInjection(actor) {
+    if (!actor || !actor._biologicData || !actor._biologicData.hormones) return false;
+    if (!hasImplant(actor, ESTROGEN_AUTOINJECTOR)) return false;
+    const bio = actor._biologicData;
+    const today = currentGameDay();
+    if (bio.lastEstrogenInjectionDay === today) return false;
+    const fitting = bio.lastEstrogenInjectionDay === undefined;
+    bio.lastEstrogenInjectionDay = today;
+    if (fitting) return false;
+    bio.hormones.estrogen = Math.min(
+      ESTROGEN_CEILING,
+      Math.max(ESTROGEN_FLOOR, num(bio.hormones.estrogen, 0) + ESTROGEN_DOSE)
+    );
+    return true;
+  }
+
+  function runEstrogenAutoinjector(actor) {
+    if (!applyEstrogenInjection(actor)) return;
+    if (window.ParchmentToast) {
+      window.ParchmentToast.show(
+        T('Biologic.estrogenShotDelivered', { name: actor.name() }),
+        { severity: "info", duration: 200 }
+      );
+    }
+  }
+
+  function applyEndocrineImplants(actor, bio) {
+    if (!actor || !bio || !bio.hormones) return;
+    if (hasImplant(actor, ANDROGEN_GLAND)) {
+      bio.hormones.testosterone = Math.min(
+        ANDROGEN_CEILING,
+        Math.max(ANDROGEN_FLOOR, num(bio.hormones.testosterone, 0) + ANDROGEN_RATE)
+      );
+    }
+    if (hasImplant(actor, ESTROGEN_AUTOINJECTOR)) {
+      bio.hormones.estrogen = Math.min(
+        ESTROGEN_CEILING,
+        Math.max(ESTROGEN_FLOOR, num(bio.hormones.estrogen, 0))
+      );
+    }
+  }
+
+  // The panel is not where a day passes, so the injector is also swept on the
+  // map: once per game day, never per step.
+  let _lastInjectorSweepDay = -1;
+  const _Party_increaseSteps = Game_Party.prototype.increaseSteps;
+  Game_Party.prototype.increaseSteps = function () {
+    _Party_increaseSteps.call(this);
+    const today = currentGameDay();
+    if (today === _lastInjectorSweepDay) return;
+    _lastInjectorSweepDay = today;
+    this.members().forEach(runEstrogenAutoinjector);
+  };
+
+  // What an endocrine implant does is written in the blood rather than in a
+  // parameter table, so the augment register (PartyAugmentsMenu) asks the
+  // system that implements it for the line to print.
+  window.EndocrineImplants = {
+    describe(prostheticKey) {
+      if (prostheticKey === ANDROGEN_GLAND) {
+        return T('Biologic.androgenGlandOutput', { low: ANDROGEN_FLOOR, high: ANDROGEN_CEILING });
+      }
+      if (prostheticKey === ESTROGEN_AUTOINJECTOR) {
+        return T('Biologic.estrogenAutoinjectorOutput', { dose: ESTROGEN_DOSE, floor: ESTROGEN_FLOOR });
+      }
+      return null;
+    }
+  };
+
+  // ── Blood type ──────────────────────────────────────────────────────────
+  // The ABO/Rh table, plus four vanishingly rare antigen-negative variants,
+  // lives in js/db/Health/BloodTypes.json (window.Health.BloodTypes). This is
+  // the one place that rolls it, looks it up, localizes it and computes real
+  // ABO/Rh transfusion compatibility, so the party Biologics screen,
+  // NPCEmpathizeUI and CharacterCreationFull all read the same answer.
+  window.BloodTypeService = {
+    list() {
+      return (window.Health && window.Health.BloodTypes) || [];
+    },
+
+    get(id) {
+      if (!id) return null;
+      return this.list().find((entry) => entry.id === id) || null;
+    },
+
+    // Localized "O+ (Common)" style pieces, plus the raw fields the party
+    // Biologics screen already reads directly (bloodType.type / .rarity).
+    describe(id) {
+      const entry = this.get(id);
+      if (!entry) return null;
+      const key = entry.id.toLowerCase();
+      const nameKey = 'Biologic.bloodTypes.' + key + '.name';
+      const descKey = 'Biologic.bloodTypes.' + key + '.desc';
+      return {
+        id: entry.id,
+        type: entry.type,
+        abo: entry.abo,
+        rh: entry.rh,
+        rareAntigen: entry.rareAntigen || null,
+        rarityKey: entry.rarityKey,
+        rarity: T('Biologic.rarity.' + entry.rarityKey),
+        name: T.has(nameKey) ? T(nameKey) : entry.type,
+        desc: T.has(descKey) ? T(descKey) : '',
+      };
+    },
+
+    // Deterministic pick from a name, weighted by real-world population
+    // frequency, so an actor or NPC nobody has assigned one to by hand always
+    // rolls the same type for the same name.
+    rollForName(name) {
+      const table = this.list();
+      if (!table.length) return null;
+      let hash = 0;
+      const str = String(name || '');
+      for (let i = 0; i < str.length; i++) hash = ((hash << 5) - hash + str.charCodeAt(i)) & 0xffffffff;
+      const rand = Math.abs(hash) % 10000;
+      let cumulative = 0;
+      for (const entry of table) {
+        cumulative += entry.percent * 100;
+        if (rand < cumulative) return entry.id;
+      }
+      return table[0].id;
+    },
+
+    // A party member's blood type is chosen once and then sticky: set by hand
+    // in Detailed character creation (actor._ccBloodType), or rolled from
+    // their name the first time anything asks. Mirrored onto
+    // _biologicData.bloodType once that exists, for the older direct reads.
+    forActor(actor) {
+      if (!actor) return null;
+      if (!actor._ccBloodType) {
+        actor._ccBloodType = this.rollForName(actor.name ? actor.name() : '');
+      }
+      const described = this.describe(actor._ccBloodType);
+      if (actor._biologicData) actor._biologicData.bloodType = described;
+      return described;
+    },
+
+    setForActor(actor, id) {
+      if (!actor || !this.get(id)) return false;
+      actor._ccBloodType = id;
+      if (actor._biologicData) actor._biologicData.bloodType = this.describe(id);
+      return true;
+    },
+
+    // The same weighted roll, seeded per NPC name and per world the way every
+    // other seeded-but-unrecorded NPC trait is (NPCShared.Rng), so a stranger
+    // always reads the same blood type in the same world without needing a
+    // saved record for every citizen.
+    forNpc(npcName) {
+      const table = this.list();
+      const Shared = window.NPCShared;
+      if (!table.length || !Shared) return null;
+      const rng = new Shared.Rng(Shared.nameHash(String(npcName || '') + '_blood') ^ Shared.worldSeed());
+      const roll = rng.next() * 100;
+      let cumulative = 0;
+      for (const entry of table) {
+        cumulative += entry.percent;
+        if (roll < cumulative) return this.describe(entry.id);
+      }
+      return this.describe(table[0].id);
+    },
+
+    _aboCompatible(donorAbo, recipientAbo) {
+      if (!donorAbo || !recipientAbo) return donorAbo === recipientAbo;
+      if (donorAbo === 'O') return true;
+      if (recipientAbo === 'AB') return true;
+      return donorAbo === recipientAbo;
+    },
+
+    _rhCompatible(donorRh, recipientRh) {
+      if (!donorRh || !recipientRh) return donorRh === recipientRh;
+      if (donorRh === '-') return true;
+      return recipientRh === '+';
+    },
+
+    // Real ABO/Rh transfusion rules: O is the universal ABO donor, AB the
+    // universal ABO recipient, and Rh-negative blood can be given to either
+    // Rh but only received from Rh-negative. The rare antigen-negative
+    // variants layer one exception on top: Rh-null carries none of the Rh
+    // system at all, so it donates to any Rh phenotype but can only be
+    // replenished by another Rh-null carrier; a Duffy/Diego/Kidd-negative
+    // recipient reacts against that antigen on repeat exposure, so (Rh-null
+    // aside) they can only safely receive from a donor missing the same one.
+    canDonate(donorId, recipientId) {
+      const donor = this.get(donorId);
+      const recipient = this.get(recipientId);
+      if (!donor || !recipient) return false;
+
+      if (recipient.rareAntigen) {
+        return donor.rareAntigen === recipient.rareAntigen;
+      }
+      if (donor.rareAntigen === 'rhNull') {
+        return this._aboCompatible(donor.abo, recipient.abo);
+      }
+      return this._aboCompatible(donor.abo, recipient.abo) && this._rhCompatible(donor.rh, recipient.rh);
+    },
+
+    isUniversalDonor(id) {
+      const entry = this.get(id);
+      return !!entry && entry.abo === 'O' && entry.rh === '-' && !entry.rareAntigen;
+    },
+
+    isUniversalRecipient(id) {
+      const entry = this.get(id);
+      return !!entry && entry.abo === 'AB' && entry.rh === '+' && !entry.rareAntigen;
+    },
+  };
+
   function getActorBustImagePath(actor) {
     if (!actor) return null;
     const actorId = actor.actorId && actor.actorId();
@@ -333,7 +603,7 @@
     // Tab ids; the label is read from Biologic.tab.<id> at draw time.
     this._categories = [
       "overview", "vitals", "hormones", "immune",
-      "leyVeins", "brain", "reproduction", "augments",
+      "leyVeins", "brain", "reproduction", "diseases",
     ];
     this._lastKeyboardScrollY = 0;
     this._lastTriggerDir = 0;
@@ -467,7 +737,7 @@
   Scene_BiologicSimulation.prototype.syncUIScrollVar = function (page) {
     const win = this._biologicWindow;
     if (!win || !page) return;
-    const byCategory = { 0: "_partsScrollY", 1: "_vitalScrollY", 5: "_brainScrollY", 7: "_augmentsScrollY" };
+    const byCategory = { 0: "_partsScrollY", 1: "_vitalScrollY", 5: "_brainScrollY" };
     win[byCategory[win._category] || "_vitalScrollY"] = page.scrollTop;
   };
 
@@ -703,8 +973,11 @@
       case 6:
         rightHTML += this.renderChapterReproduction(actor, useTranslation);
         break;
+      // Appended rather than slotted in beside Vitals: the chapter indices are
+      // read by name in a dozen places (the brain page is 5, the parts page 0),
+      // so a new tab goes on the end and nothing else moves.
       case 7:
-        rightHTML += this.renderChapterAugments(actor, useTranslation);
+        rightHTML += this.renderChapterDiseases(actor);
         break;
     }
 
@@ -1234,6 +1507,20 @@
       `;
   };
 
+  // The Diseases chapter is not drawn here: Health_DiseaseSystem owns the
+  // sheet and the status screen prints the identical one, so a patient reads
+  // the same wherever the player opens them.
+  Scene_BiologicSimulation.prototype.renderChapterDiseases = function (actor) {
+    const api = window.DiseaseSystem;
+    if (!api || !api.panelHTML) return `<div class="card-header">${T('Biologic.tab.diseases')}</div>`;
+    return `
+      <div class="bodyparts-card">
+        <div class="card-label">${T('Biologic.tab.diseases')}</div>
+        ${api.panelHTML(actor)}
+      </div>
+    `;
+  };
+
   Scene_BiologicSimulation.prototype.renderChapterReproduction = function (actor, useTranslation) {
     const repType = $gameVariables.value(getReproductionVarId(actor));
     const uterus = actor._uterusData;
@@ -1363,68 +1650,6 @@
     }
 
     return `<div style="text-align:center; padding: 40px 10px;">${T('Biologic.noReproductiveRegisterDataAvailable')}</div>`;
-  };
-
-  Scene_BiologicSimulation.prototype.renderChapterAugments = function (actor, useTranslation) {
-    const bodyParts = actor._bodyParts || {};
-    let entries = [];
-
-    for (let partKey in bodyParts) {
-      const part = bodyParts[partKey];
-      if (part && part.installedAugments && part.installedAugments.length > 0) {
-        part.installedAugments.forEach(augName => {
-          entries.push({
-            partName: part.name,
-            augName: augName,
-            effects: [
-              T('Biologic.enhancedStructuralIntegrity'),
-              T('Biologic.activeStatMultipliersApplied')
-            ]
-          });
-        });
-      }
-    }
-
-    if (entries.length === 0) {
-      return `
-              <div class="card" style="text-align: center; padding: 40px 10px; color: #2b1207; opacity: 0.85;">
-                  <div style="font-size: 40px; margin-bottom: 10px;"></div>
-                  <h3>${T('Biologic.noCyberneticAugments')}</h3>
-                  <p style="font-size: 13px; opacity: 0.85; margin-top: 8px;">
-                      ${T('Biologic.theSubjectCurrentlyPossessesNo')}
-                  </p>
-              </div>
-          `;
-    }
-
-    let augHTML = "";
-    entries.forEach(e => {
-      let effectsListHTML = "";
-      e.effects.forEach(eff => {
-        effectsListHTML += `<div style="font-size: 12px; margin-top: 2px; color: #8b1e10;">✦ ${eff}</div>`;
-      });
-
-      augHTML += `
-              <div class="metric-row" style="border-bottom: 1px dashed rgba(43,18,7,0.15); padding: 8px 0; align-items: flex-start;">
-                  <div>
-                      <strong style="font-family: 'Lora', serif; color: #2b1207; font-size: 14px;">${e.partName} &rarr; ${e.augName}</strong>
-                      <div style="margin-top: 4px;">
-                          ${effectsListHTML}
-                      </div>
-                  </div>
-                  <span class="badge info" style="font-size: 10px;">${T('Biologic.implant')}</span>
-              </div>
-          `;
-    });
-
-    return `
-          <div class="card" style="padding: 10px 14px;">
-              <div class="card-header" style="color: var(--text-text-alt-17);">${T('Biologic.cyberneticsProstheticsRegister')}</div>
-              <div style="margin-top: 6px;">
-                  ${augHTML}
-              </div>
-          </div>
-      `;
   };
 
   // State Reaction System for Biologic Simulation
@@ -2050,7 +2275,7 @@
     y += lineHeight;
 
     if (data.infections.length === 0) {
-      this.drawText("None detected", 20, y, 300);
+      this.drawText(T('Biologic.noneDetected'), 20, y, 300);
       y += lineHeight;
     } else {
       for (var i = 0; i < data.infections.length; i++) {
@@ -2085,7 +2310,7 @@
     y += lineHeight;
 
     if (data.viruses.length === 0) {
-      this.drawText("None detected", 20, y, 300);
+      this.drawText(T('Biologic.noneDetected'), 20, y, 300);
       y += lineHeight;
     } else {
       for (var i = 0; i < Math.min(data.viruses.length, 5); i++) {
@@ -2123,7 +2348,7 @@
     y += lineHeight;
 
     if (data.bacteria.length === 0) {
-      this.drawText("None detected", 20, y, 300);
+      this.drawText(T('Biologic.noneDetected'), 20, y, 300);
     } else {
       for (var i = 0; i < Math.min(data.bacteria.length, 5); i++) {
         var bacteria = data.bacteria[i];
@@ -2247,6 +2472,88 @@
     }
   );
 
+  // ── Infecting somebody on purpose ─────────────────────────────────────────
+  // Every disease in the library has a sealed vial on the shelf, and every
+  // vial's common event ends here. The choice is put through $gameMessage
+  // rather than a scene of its own precisely so it works in both places the
+  // vial can be opened: a choice list is drawn by Scene_Message, which both
+  // Scene_Map and Scene_Battle are.
+  window.BiologicInfection = {
+    // Who can be handed a disease right now. In a fight that is the battle
+    // line; outside one it is everybody travelling with the party.
+    targets() {
+      if (!window.$gameParty) return [];
+      const inBattle = typeof $gameParty.inBattle === "function" && $gameParty.inBattle();
+      const list = inBattle ? $gameParty.battleMembers() : $gameParty.members();
+      return (list || []).filter((actor) => actor && !actor.isDead());
+    },
+
+    // Hand one member one disease, and say so. Everything about how the
+    // illness then behaves (its window period, its course, its slide into
+    // something worse) belongs to Health_DiseaseSystem; this only starts it.
+    infect(actor, diseaseId) {
+      const api = window.DiseaseSystem;
+      if (!api || !actor || !diseaseId) return false;
+      const disease = api.getDisease(diseaseId);
+      if (!disease) {
+        console.warn("[Health_BiologicSimulation] no such disease: " + diseaseId);
+        return false;
+      }
+      // infectActor announces it itself, and answers false when the member is
+      // already carrying it, which is what the refusal line reports.
+      const took = api.infectActor(actor, diseaseId, T("Biologic.infect.source"));
+      if (!took && window.ParchmentToast) {
+        window.ParchmentToast.show(
+          T("Biologic.infect.already", { actor: actor.name(), disease: disease.name }),
+          { severity: "warning", duration: 200 }
+        );
+      }
+      return took;
+    },
+
+    // The prompt. One member alive means there is nothing to ask.
+    ask(diseaseId) {
+      const api = window.DiseaseSystem;
+      const disease = api && api.getDisease(diseaseId);
+      const members = this.targets();
+      if (!disease || !members.length) return;
+      if (members.length === 1) {
+        this.infect(members[0], diseaseId);
+        return;
+      }
+      if (!window.$gameMessage) {
+        this.infect(members[0], diseaseId);
+        return;
+      }
+      $gameMessage.add(T("Biologic.infect.prompt", { disease: disease.name }));
+      $gameMessage.setChoices(
+        members.map((actor) => actor.name()).concat(T("Biologic.infect.cancel")),
+        0,
+        members.length            // the cancel row is also what Escape picks
+      );
+      $gameMessage.setChoiceCallback((index) => {
+        const actor = members[index];
+        if (actor) this.infect(actor, diseaseId);
+      });
+    },
+  };
+
+  PluginManager.registerCommand(
+    "Health_BiologicSimulation",
+    "InfectMember",
+    (args) => {
+      const diseaseId = String((args && args.disease) || "").trim();
+      if (!diseaseId) return;
+      const silent = String((args && args.silent) || "").toLowerCase() === "true";
+      if (silent) {
+        const first = window.BiologicInfection.targets()[0];
+        if (first) window.BiologicInfection.infect(first, diseaseId);
+        return;
+      }
+      window.BiologicInfection.ask(diseaseId);
+    }
+  );
+
 
   Window_BiologicSimulation.prototype.determinePersonality = function (name) {
     const personalityData = getPersonalityData();
@@ -2289,14 +2596,12 @@
     this._maxVitalScroll = 0;
     this._partsScrollY = 0;
     this._maxPartsScroll = 0;
-    this._augmentsScrollY = 0;
-    this._maxAugmentsScroll = 0;
     this._actor = $gameParty.members()[Scene_BiologicSimulation._targetActorIndex] || $gameParty.members()[0];
     this._category = 0; // 0: Home, 1: Vital Signs, 2: Hormones, 3: Immune System, 4: Ley Veins, 5: Brain Activity, 6: Reproduction
     // Only the length of this list is read; the labels live in Biologic.tab.
     this._categories = [
       "overview", "vitals", "hormones", "immune",
-      "leyVeins", "brain", "reproduction", "augments",
+      "leyVeins", "brain", "reproduction", "diseases",
     ];
 
     this.initializeBiologicData();
@@ -2327,10 +2632,6 @@
       // Home / Body Parts tab
       this._partsScrollY = Math.max(0, this._partsScrollY - this.lineHeight());
       this.refresh();
-    } else if (this._category === 7) {
-      // Augments tab
-      this._augmentsScrollY = Math.max(0, this._augmentsScrollY - this.lineHeight());
-      this.refresh();
     } else {
       // Normal cursor behavior for other tabs
       Window_Selectable.prototype.cursorUp.call(this, wrap);
@@ -2357,13 +2658,6 @@
       this._partsScrollY = Math.min(
         this._maxPartsScroll,
         this._partsScrollY + this.lineHeight()
-      );
-      this.refresh();
-    } else if (this._category === 7) {
-      // Augments tab
-      this._augmentsScrollY = Math.min(
-        this._maxAugmentsScroll,
-        this._augmentsScrollY + this.lineHeight()
       );
       this.refresh();
     } else {
@@ -2525,7 +2819,7 @@
     var hormoneMods = bio.personality.modifiers?.hormones || {};
 
     // Hormones fluctuate based on circadian rhythm, hunger, and sleep
-    var currentGender = $gameVariables.value(getGenderVarId(this._actor)) || 0;
+    var currentGender = readGender(this._actor);
 
     // Growth hormone increases during sleep deprivation (body trying to compensate)
     if (sleep < 40) {
@@ -2583,6 +2877,12 @@
         Math.min(400 * estMod, bio.hormones.estrogen)
       );
     }
+
+    // An implanted gland is the body's actual endocrine output, so it is
+    // written after the gender-appropriate ranges above rather than inside
+    // them, and the autoinjector settles its daily dose while the panel runs.
+    runEstrogenAutoinjector(this._actor);
+    applyEndocrineImplants(this._actor, bio);
 
     bio.hormones.progesterone = Math.max(
       0.1,
@@ -2945,7 +3245,7 @@
       };
 
       // Initialize hormones with gender consideration
-      var currentGender = $gameVariables.value(getGenderVarId(this._actor)) || 0;
+      var currentGender = readGender(this._actor);
       this._actor._biologicData.hormones = {
         testosterone: this.getInitialTestosterone(currentGender),
         estrogen: this.getInitialEstrogen(currentGender),
@@ -2985,10 +3285,9 @@
       // Initialize brain activity
       this.initializeBrainActivity(this._actor._biologicData);
       this.initializeUterusData();
-      // Set blood type based on character name
-      this._actor._biologicData.bloodType = this.determineBloodType(
-        this._actor.name()
-      );
+      // Blood type is chosen once (Detailed character creation) or rolled
+      // once from the name, then stuck to the actor from then on.
+      window.BloodTypeService.forActor(this._actor);
 
       this.updateLeyVeinsFromDamage();
 
@@ -4070,42 +4369,6 @@
     }
   };
 
-  Window_BiologicSimulation.prototype.determineBloodType = function (name) {
-    // Use character name as seed for consistent blood type
-    var hash = 0;
-    for (var i = 0; i < name.length; i++) {
-      hash = ((hash << 5) - hash + name.charCodeAt(i)) & 0xffffffff;
-    }
-
-    var bloodTypes = [
-      { type: "O+", rarity: T('Biologic.rarity.common'), percent: 37.4 },
-      { type: "A+", rarity: T('Biologic.rarity.common'), percent: 35.7 },
-      { type: "B+", rarity: T('Biologic.rarity.common'), percent: 8.5 },
-      { type: "AB+", rarity: T('Biologic.rarity.uncommon'), percent: 3.4 },
-      { type: "O-", rarity: T('Biologic.rarity.uncommon'), percent: 6.6 },
-      { type: "A-", rarity: T('Biologic.rarity.uncommon'), percent: 6.3 },
-      { type: "B-", rarity: T('Biologic.rarity.rare'), percent: 1.5 },
-      { type: "AB-", rarity: T('Biologic.rarity.rare'), percent: 0.6 },
-      { type: "Rh-null", rarity: T('Biologic.rarity.ultraRare'), percent: 0.0001 },
-      { type: "Duffy-", rarity: T('Biologic.rarity.veryRare'), percent: 0.01 },
-      { type: "Diego(b-)", rarity: T('Biologic.rarity.veryRare'), percent: 0.001 },
-      { type: "Kidd(b-)", rarity: T('Biologic.rarity.veryRare'), percent: 0.001 },
-    ];
-
-    // Weighted random selection based on rarity
-    var rand = Math.abs(hash) % 10000;
-    var cumulative = 0;
-
-    for (var i = 0; i < bloodTypes.length; i++) {
-      cumulative += bloodTypes[i].percent * 100;
-      if (rand < cumulative) {
-        return bloodTypes[i];
-      }
-    }
-
-    return bloodTypes[0]; // Default to O+ if something goes wrong
-  };
-
   Window_BiologicSimulation.prototype.checkForInfections = function () {
     var infections = [];
 
@@ -4202,8 +4465,7 @@
     var average = (testosteroneNorm + estrogenNorm) / 2;
     var tolerance = average * 0.1; // 10% tolerance
 
-    var genderVarId = getGenderVarId(this._actor);
-    var currentGender = $gameVariables.value(genderVarId);
+    var currentGender = readGender(this._actor);
     var newGender = currentGender;
 
     if (difference <= tolerance) {
@@ -4218,18 +4480,23 @@
     }
 
     if (newGender !== currentGender) {
-      $gameVariables.setValue(genderVarId, newGender);
-      var genderName = T.list('Biologic.genderNames')[newGender];
-      var message = T('Biologic.genderChanged', { gender: genderName });
-      // Hormones shift while the player is reading a panel, so this reports
+      writeGender(this._actor, newGender);
+      // Hormones drift while the player is reading a panel, so this reports
       // through the shared notification popup rather than interrupting with a
-      // message box.
+      // message box, and it names the direction the body moved in rather than
+      // the label it landed on: a shift toward masculinity or femininity.
+      var MASCULINITY = { 0: 1, 2: 0, 1: -1 }; // male / non-binary / female
+      var from = MASCULINITY[currentGender];
+      var to = MASCULINITY[newGender];
+      var towardMasculine = (from !== undefined && to !== undefined && to !== from)
+        ? to > from
+        : testosteroneNorm > estrogenNorm;
+      var direction = towardMasculine ? T('Biologic.masculinity') : T('Biologic.femininity');
       if (window.ParchmentToast) {
-        window.ParchmentToast.show(message, { severity: "warning", duration: 240 });
-      } else {
-        window.skipLocalization = true;
-        $gameMessage.add(message);
-        window.skipLocalization = false;
+        window.ParchmentToast.show(
+          T('Biologic.genderShifted', { direction: direction }),
+          { severity: "warning", duration: 240 }
+        );
       }
     }
   };
@@ -4237,9 +4504,6 @@
   Window_BiologicSimulation.prototype.maxItems = function () {
     return this._categories.length;
   };
-
-  Window_BiologicSimulation.prototype.drawAugments = function (startY) { };
-
 
   // i18n-ignore-start: unreachable canvas fallback (opens with `return;`, no caller); the DOM panel renders this section.
   Window_BiologicSimulation.prototype.drawBodyPartsGrid = function (startY) {
@@ -4357,6 +4621,11 @@
     }
 
     this.initializeBiologicData();
+    // Before the gender read below, not after: an implanted gland decides the
+    // blood, and settling it here keeps the panel from reporting a shift on
+    // its first frame that the next tick immediately reverses.
+    runEstrogenAutoinjector(this._actor);
+    applyEndocrineImplants(this._actor, this._actor._biologicData);
     this.updateLeyVeinsFromDamage();
     // Only the player (actor 1) has hormone-driven gender changes; running this
     // every tick for companions would flip their gender variable each refresh.
@@ -5666,7 +5935,7 @@
     y += lineHeight;
 
     if (data.infections.length === 0) {
-      this.drawText("None detected", 20, y, 300);
+      this.drawText(T('Biologic.noneDetected'), 20, y, 300);
       y += lineHeight;
     } else {
       for (var i = 0; i < data.infections.length; i++) {
@@ -5701,7 +5970,7 @@
     y += lineHeight;
 
     if (data.viruses.length === 0) {
-      this.drawText("None detected", 20, y, 300);
+      this.drawText(T('Biologic.noneDetected'), 20, y, 300);
       y += lineHeight;
     } else {
       for (var i = 0; i < Math.min(data.viruses.length, 5); i++) {
@@ -5744,7 +6013,7 @@
     y += lineHeight;
 
     if (data.bacteria.length === 0) {
-      this.drawText("None detected", 20, y, 300);
+      this.drawText(T('Biologic.noneDetected'), 20, y, 300);
     } else {
       for (var i = 0; i < Math.min(data.bacteria.length, 5); i++) {
         var bacteria = data.bacteria[i];
@@ -5922,7 +6191,6 @@
     this._brainScrollY = 0; // Reset brain scroll
     this._vitalScrollY = 0; // Reset vital scroll
     this._partsScrollY = 0; // Reset parts scroll
-    this._augmentsScrollY = 0; // Reset augments scroll
     this._category = (this._category + 1) % this._categories.length;
     this.refresh();
   };
@@ -5931,7 +6199,6 @@
     this._brainScrollY = 0; // Reset brain scroll
     this._vitalScrollY = 0; // Reset vital scroll
     this._partsScrollY = 0; // Reset parts scroll
-    this._augmentsScrollY = 0; // Reset augments scroll
     this._category =
       (this._category - 1 + this._categories.length) % this._categories.length;
     this.refresh();

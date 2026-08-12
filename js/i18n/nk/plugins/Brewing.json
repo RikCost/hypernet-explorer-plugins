@@ -1,0 +1,61 @@
+{
+  "monthAbbr": [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC"
+  ],
+  "dayAbbr": [
+    "SUN",
+    "MON",
+    "TUE",
+    "WED",
+    "THU",
+    "FRI",
+    "SAT"
+  ],
+  "loadError": "ERROR: COULD NOT LOAD RECIPE DATA!",
+  "stillFermenting": "STILL FERMENTIN'... COME BACK LATER!",
+  "missingLine": "{item} ×{need} (HAB {have})",
+  "missing": "MISSIN': {list}",
+  "started": "BREWIN' STARTED: {recipe}",
+  "itemNumbered": "ITEM#{id} ×{qty}",
+  "units": "{min}–{max} UNITS",
+  "stage": {
+    "primary": "PRIMARY FERMENTATION",
+    "secondary": "SECONDARY FERMENTATION",
+    "conditioning": "CONDITIONIN'",
+    "ready": "READY TA HARVEST!"
+  },
+  "ui": {
+    "ready": "READY!",
+    "loadingRecipes": "LOADIN' RECIPES...",
+    "barrel": "BARREL",
+    "status": "STATUS",
+    "state": "STATE",
+    "empty": "EMPTY",
+    "selectRecipeHint": "SELECT A RECIPE ON DA LEFT AN' PRESS OK TA BEGIN BREWIN'!",
+    "beginBrewing": "BEGIN BREWIN'",
+    "exit": "EXIT",
+    "harvest": "HARVEST",
+    "fermenting": "FERMENTIN'…",
+    "fermentingTitle": "FERMENTIN'",
+    "recipe": "RECIPE",
+    "stage": "STAGE",
+    "timeRemaining": "TIME REMAININ'",
+    "started": "STARTED",
+    "expectedOutput": "EXPECTED OUTPUT",
+    "back": "BACK",
+    "brewery": "BREWERY",
+    "recipes": "RECIPES",
+    "ingredients": "INGREDIENTS"
+  }
+}

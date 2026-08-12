@@ -3,13 +3,9 @@
   "player": "Joueur",
   "cpu": "Ordi",
   "cpuLiningUp": "L'ordi se met en position...",
-  "aimPrompt": "Joueur : Gauche/Droite pour viser, OK",
-  "powerPrompt": "Règle la puissance et appuie sur OK",
-  "setTouch": "Règle ton toucher et appuie sur OK",
   "itsGood": "C'EST DEDANS !",
   "swish": "SWISH !",
   "score": "PANIER !",
   "miss": "RATÉ",
-  "finalScore": "Joueur : {player}  Ordi : {cpu}",
-  "pressOkExit": "Appuie sur OK pour quitter"
+  "finalScore": "Joueur : {player}  Ordi : {cpu}"
 }

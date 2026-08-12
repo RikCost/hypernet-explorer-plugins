@@ -42,7 +42,7 @@
     },
     "11": {
       "name": "Flux de chi",
-      "desc": "Une action sur trois rembourse ses PT et accorde une poussée d'énergie supplémentaire."
+      "desc": "Une action sur trois rembourse ses AP et accorde une poussée d'énergie supplémentaire."
     },
     "12": {
       "name": "Forgeron de runes",
@@ -146,7 +146,7 @@
     },
     "37": {
       "name": "Mage de guerre",
-      "desc": "Tu lances tes sorts en première ligne sans pénalité et tes sorts puisent dans les PT quand tes PM sont épuisés."
+      "desc": "Tu lances tes sorts en première ligne sans pénalité et tes sorts puisent dans les AP quand tes PM sont épuisés."
     },
     "38": {
       "name": "Contractuel",

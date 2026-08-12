@@ -94,28 +94,5 @@
         "tileIds": []
       }
     ]
-  },
-  "Streetlight": {
-    "tilesets": [
-      {
-        "tilesetId": 300,
-        "tileIds": [
-          300,
-          990,
-          1006
-        ]
-      },
-      {
-        "tilesetId": 303,
-        "tileIds": [
-          595,
-          889
-        ]
-      },
-      {
-        "tilesetId": 900,
-        "tileIds": []
-      }
-    ]
   }
 }

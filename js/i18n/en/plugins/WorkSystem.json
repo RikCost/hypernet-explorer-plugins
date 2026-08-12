@@ -70,10 +70,5 @@
     "27": "Vatican",
     "30": "Battle Nuns"
   },
-  "ui": {
-    "navSelectOffer": "W/S: Navigate | Ok: Select Offer",
-    "navAcceptContract": "W/S: Navigate | Ok: Accept Contract",
-    "navChooseJob": "W/S: Navigate | Ok: Choose Job",
-    "navSignContract": "W/S: Navigate | Ok: Sign Contract"
-  }
+  "ui": {}
 }

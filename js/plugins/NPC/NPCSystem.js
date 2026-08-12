@@ -42,6 +42,25 @@
       return this.NPC_FREE_MAP_IDS.includes(mapId);
     },
 
+    // An empty world (WorldManager.populationMode) has nobody left in it: no
+    // roaming crowd, no <AI> wanderers, no local residents and nobody behind a
+    // shop counter, on any map. Read rather than cached, since the answer
+    // belongs to the world and a session can change worlds.
+    isEmptyWorld() {
+      const WM = window.WorldManager;
+      return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+    },
+
+    // The dead got up (WorldManager.populationMode "zombie"). Nine people in
+    // ten never made it: where an NPC would have been staffed there is an
+    // undead creature standing instead, on the same tile, in the same event
+    // slot. The tenth is a survivor and is staffed exactly as always.
+    isZombieWorld() {
+      const WM = window.WorldManager;
+      return !!(WM && typeof WM.isZombieWorld === "function" && WM.isZombieWorld());
+    },
+    ZOMBIE_REPLACE_CHANCE: 0.9,
+
     treasureRoomParentIds: [133],
     get housePoolParentIds() {
       return window.ProceduralHouseSystem ? window.ProceduralHouseSystem.housePoolParentIds : [1132, 1133, 1134, 1135, 1136, 1137, 1394, 1156, 1157];
@@ -97,6 +116,21 @@
     // from an authored template.
     OMEGA_CITY_PROCEDURAL_RATIO: 0.5,
 
+    // Bologna (BolognaMapSystem.js) is a real city cut into a grid of OSM
+    // cells that all share map id 353, so it cannot live in the static map
+    // index any more than the procedural map can, and its cells carry no
+    // authored events at all: the crowd is spawned onto slots BolognaMapSystem
+    // injects. It is populated Omega City style, half the world's own faces
+    // (any authored NPC from any map pool, alien maps included) and half
+    // Bolognesi born in the city, all of them citizens of Italy and so of the
+    // Holy Vatican Empire that controls it (Countries.json), which is what
+    // NPCPolitics reads off the group's nationId.
+    BOLOGNA_MAP_ID: 353,
+    BOLOGNA_GROUP_NAME: "Bologna", // i18n-ignore: Destinations.json key
+    BOLOGNA_NATION: "Italy",       // i18n-ignore: Countries.json key
+    BOLOGNA_NPC_COUNT: 40,
+    BOLOGNA_PROCEDURAL_RATIO: 0.55,
+
     // Fixed seed for placeholder-name ("NPC") Markov generation, deliberately
     // independent of the world's history seed so generated names stay stable
     // even across different history seeds/world generations.
@@ -123,6 +157,20 @@
   // activating a different world must not hand it the previous world's pool.
   function buildNPCCharacterPool() {
     return window.SpriteCatalog?.npcKeys() || [];
+  }
+
+  // One face off a single seeded float. The alien sheets are never in the pool
+  // above: the catalogue deals them on a share of the same draw, and that share
+  // is decided by where the pick is being made (a street, a train carriage, a
+  // landing site on another world), so this is how a citizen's sprite is
+  // chosen everywhere rather than indexing the pool by hand.
+  function pickNPCCharacter(r, pool) {
+    if (window.SpriteCatalog?.pickNpcKey) {
+      const key = window.SpriteCatalog.pickNpcKey(r);
+      if (key) return key;
+    }
+    const list = pool || buildNPCCharacterPool();
+    return list.length ? list[Math.floor(r * list.length)] : null;
   }
 
   // ==========================================================================
@@ -210,6 +258,30 @@
         }
       }
       return null;
+    },
+    // True when an authored map event may be driven around the map as an NPC.
+    // Two things disqualify one whatever its note says:
+    //   - it carries no character sheet on any page. A graphic-less event is a
+    //     trigger, a marker or a spawn slot, never a person, and giving one a
+    //     controller leaves an invisible body walking the map and blocking
+    //     tiles. The <Shop> counters are the single exception: they have no
+    //     graphic of their own precisely because a rota persona is written onto
+    //     them (see ShopShiftManager, NPCSimulationCore.js).
+    //   - its self-switch A is ON, i.e. it is a recruited NPC already hidden
+    //     behind its blank page (see NPCSystemParty.joinParty), so it belongs
+    //     to the party and must not be animated as a citizen as well.
+    // Procedural NPC slots (map 636) are authored graphic-less on purpose and
+    // are never asked this question: they are handled by ProceduralManager,
+    // which paints a face on before wiring up a controller.
+    isControllableEvent: (ev) => {
+      const data = ev && ev.event ? ev.event() : null;
+      if (!data) return false;
+      if ($gameSelfSwitches?.value([$gameMap.mapId(), ev.eventId(), 'A'])) return false;
+      // A slot the zombie apocalypse took is not a person any more: it holds a
+      // creature, and a creature is never given an NPC brain, a routine or a
+      // conversation (see zombifyEvent).
+      if (ev._npcZombified) return false;
+      return Utils.hasOwnGraphic(data) || Utils.hasShopTag(data.note);
     },
     isExitEvent: (name) => name.startsWith("House") || name.startsWith("Transfer") || name.startsWith("Door ("), // i18n-ignore: event names matched at runtime
     // An interactable door an NPC walks *through* (opens it, then keeps heading
@@ -1017,6 +1089,10 @@
           // party member (and strip the flag that keeps them hidden). See
           // NPCSystemParty.joinParty.
           if ($gameSelfSwitches?.value([$gameMap.mapId(), e.eventId(), 'A'])) return false;
+          // A zombified slot is a monster standing where a person used to; never
+          // hand it out as a roster placeholder, or transplantData would paint a
+          // living NPC's face straight over the undead sprite it was just given.
+          if (e._npcZombified) return false;
           return name.startsWith("NPC") || name.startsWith("Placeholder") || (includePlayers && name.match(/^Player\d+$/)); // i18n-ignore: event-name prefixes
         })
         .map(ev => ({ event: ev, originalX: ev.x, originalY: ev.y }));
@@ -1083,7 +1159,8 @@
       const pool = buildNPCCharacterPool();
       if (!pool.length) return null;
       const s = (seed >>> 0) || 1;
-      const spriteName = pool[Math.floor(Utils.seededRandom(s) * pool.length)];
+      const spriteName = pickNPCCharacter(Utils.seededRandom(s), pool);
+      if (!spriteName) return null;
       const isBig = spriteName.includes('!$');
       const charIdx = isBig ? 0 : Math.floor(Utils.seededRandom((s * 2) >>> 0) * 8);
       let name = T('NPCSystem.shopkeeperFallback');
@@ -1177,6 +1254,13 @@
       const selfSwitchEventId = targetEvent.eventId();
       for (const ch of ['A', 'B', 'C', 'D']) {
         $gameSelfSwitches.setValue([selfSwitchMapId, selfSwitchEventId, ch], false);
+      }
+      // A person the world has lost stays lost. If the spawner has just dealt
+      // this slot somebody who walked off with a party or was killed where they
+      // stood, put them straight back behind their blank page instead of
+      // walking them around the town again.
+      if (GoneRegistry.isNameGone(originalData.name)) {
+        $gameSelfSwitches.setValue([selfSwitchMapId, selfSwitchEventId, 'A'], true);
       }
 
       targetEvent.refresh();
@@ -1433,8 +1517,13 @@ initializeGroupNPCs: (groupName, activeMapId = null) => {
       const npcByName = new Map(npcPool.map(n => [n.eventData.name, n]));
 
       // Only roster spawns turn over; pre-placed <AI>/<Local> events are left be.
+      // A visiting party member is neither: they are a particular person who
+      // was left standing here by another playthrough, and their name is not in
+      // this town's roster, so the turnover would hand their slot to a local
+      // and they would vanish on the hour (NPCSystem VisitingParties).
       const controllers = ($gameSystem.npcControllers || []).filter(c => c?.event && !c.event._erased);
-      const managed = controllers.filter(c => c.event._npcRosterSpawn && !c.isLocal);
+      const managed = controllers.filter(
+        c => c.event._npcRosterSpawn && !c.isLocal && !c.event[VisitingParties.EVENT_TAG]);
 
       // The display roster includes main-map visitor borrow, sized to however
       // many roster events we have to fill, so hubs stay busy across the hour
@@ -1717,14 +1806,21 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // and every one of them is then given one of the city's own residential
     // doors as an address (NPCSim.assignHomesOnMap), so the houses standing on
     // the map are actually somebody's home.
-    randomizeOmegaCityMap: (mapId, groupName) => {
+    // A whole city populated in one pass: half the crowd transplanted from the
+    // authored templates of every map pool in the world, half born here.
+    // `opts` is what makes it reusable by a city other than Omega:
+    //   count            , how many people the city fields
+    //   proceduralRatio  , share of them born here rather than borrowed
+    //   poolGroup        , which pool the borrowed half is drawn from
+    //   nativePlace      , the town name the home-grown half is born in
+    randomizeOmegaCityMap: (mapId, groupName, opts = {}) => {
       const allPlaceholders = SpawnManager.getPlaceholders(true); // Player1..PlayerN
       if (!allPlaceholders.length) return;
 
       const tiles = MapManager.getSpreadSpawnTiles();
       if (!tiles.length) { allPlaceholders.forEach(p => p.event.erase()); return; }
 
-      const worldPool = Utils.shuffle(SpawnManager.getNPCPool(groupName));
+      const worldPool = Utils.shuffle(SpawnManager.getNPCPool(opts.poolGroup || groupName));
       // Procedural citizens are spawned onto a placeholder like anyone else, so
       // they need a donor event to clone talkable pages/behaviour from, exactly
       // like a procedural settlement's own people (see makeSocietyTemplate).
@@ -1737,8 +1833,11 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       // rather than spawning blank events.
       if (!donor) { allPlaceholders.forEach(p => p.event.erase()); return; }
 
-      const total = Math.min(Config.OMEGA_CITY_NPC_COUNT, allPlaceholders.length, tiles.length);
-      const procCount = Math.min(Math.round(total * Config.OMEGA_CITY_PROCEDURAL_RATIO), total);
+      const wanted = opts.count || Config.OMEGA_CITY_NPC_COUNT;
+      const ratio = (opts.proceduralRatio != null)
+        ? opts.proceduralRatio : Config.OMEGA_CITY_PROCEDURAL_RATIO;
+      const total = Math.min(wanted, allPlaceholders.length, tiles.length);
+      const procCount = Math.min(Math.round(total * ratio), total);
       const poolCount = total - procCount;
 
       const activePlaceholders = allPlaceholders.slice(0, poolCount + procCount);
@@ -1777,7 +1876,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       for (let i = 0; i < procCount; i++, slot++) {
         const { event: targetEvent } = activePlaceholders[slot];
         if (!targetEvent) continue;
-        const citizen = SpawnManager.makeCityCitizen(citySeed, i, groupName, donor, takenNames);
+        const citizen = SpawnManager.makeCityCitizen(citySeed, i, groupName, donor, takenNames, opts.nativePlace);
         if (!citizen) { targetEvent.erase(); continue; }
         if (!SpawnManager.transplantData(targetEvent, citizen.eventData, slot)) { targetEvent.erase(); continue; }
         // transplantData clones the DONOR's pages, images included, so the
@@ -1793,7 +1892,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
 
       unusedPlaceholders.forEach(u => u.event.erase());
 
-      console.log(`[NPC System] ${spawnedNames.length} NPCs spawned in Omega City (map ${mapId}): ${poolCount} from world pools, ${procCount} procedural.`);
+      console.log(`[NPC System] ${spawnedNames.length} NPCs spawned in city "${groupName}" (map ${mapId}): ${poolCount} from world pools, ${procCount} procedural.`);
 
       SpawnManager.houseOmegaCitizens(mapId, groupName, spawnedNames);
     },
@@ -1803,7 +1902,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // so the same slot always resolves to the same person in a given world,
     // mirroring how a procedural settlement seeds its people
     // (setupProceduralMapNPCs).
-    makeCityCitizen: (citySeed, index, groupName, donor, taken) => {
+    makeCityCitizen: (citySeed, index, groupName, donor, taken, nativePlace) => {
       const charPool = buildNPCCharacterPool();
       if (!charPool.length || !donor || !window.generateSeededMarkovName) return null;
 
@@ -1828,7 +1927,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       if (!name) return null;
       taken?.add(name);
 
-      const charName = charPool[Math.floor(Utils.seededRandom(seed) * charPool.length)];
+      const charName = pickNPCCharacter(Utils.seededRandom(seed), charPool);
       // Big-character sprites (!$) have one slot; normal sheets use 0-7.
       const isBigSprite = charName.includes('!$');
       const charIdx = isBigSprite ? 0 : Math.floor(Utils.seededRandom((seed * 2) >>> 0) * 8);
@@ -1850,8 +1949,15 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         if (spriteBust && spriteBust !== "7") profile._bustName = spriteBust;
         if (npcEntry?.markovDB && profile.markovDb == null) profile.markovDb = npcEntry.markovDB;
         if (npcEntry && npcEntry.Gender != null) profile.gender = npcEntry.Gender;
+        // A city that names its natives (Bologna) is where this person was
+        // born, in the biography the Empathize panel reads as well as in the
+        // life record below.
+        if (nativePlace) profile._birthplaceOverride = nativePlace;
       }
-      try { window.NPCLifeSim?.ensureLifeRecord?.(name, groupName); } catch (_) {}
+      try {
+        window.NPCLifeSim?.ensureLifeRecord?.(name, groupName, null,
+          nativePlace ? { nativeChance: 1 } : null);
+      } catch (_) {}
 
       return {
         name,
@@ -2000,8 +2106,13 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   // just City/Village/Burg (a lone farmstead or hamlet on a Plains/Forest/...
   // tile), see ProceduralHouseSystem.residentialPoolForDoor for the matching
   // "which house pool" logic on the interaction side.
+  // The trade doors of the city tileset count too: a clinic, a gym and a police
+  // station are places people come out of exactly as a shop is, and leaving them
+  // off meant a city street's own doors never put anybody on the pavement.
   const SETTLEMENT_DOOR_FEATURES = new Set([
-    "DoorHouse", "DoorInn", "DoorShop", "DoorSkyscraper", "Tent" // i18n-ignore: Features.json ids
+    "DoorHouse", "DoorInn", "DoorShop", "DoorSkyscraper", "Tent", // i18n-ignore: Features.json ids
+    "DoorClinic", "DoorPoliceStation", "DoorWeaponStore", "DoorGym", // i18n-ignore: Features.json ids
+    "DoorHardwareStore", "DoorIceCream", "DoorMusicStore", "GarageDoor" // i18n-ignore: Features.json ids
   ]);
 
   // Scans the current map's feature layers (2-3, matching
@@ -2043,6 +2154,14 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   // band beyond the doorstep instead of parked on it.
   const DOOR_CLEARANCE = 1;        // Chebyshev ring kept free around every door
   const DOOR_CLUSTER_RADIUS = 5;   // still counts as "outside this building"
+
+  // A lone farmstead, hut or tent standing on an open-country tile is one
+  // household, not a hamlet: at most ONE citizen is ever found outside it, and
+  // only for some of them, so a tile carrying a handful of doors reads as
+  // scattered country people rather than a crowd. The cap holds however many
+  // buildings the prefab pass dropped.
+  const DOOR_NPC_CHANCE = 0.6;     // odds a given building has someone outside
+  const DOOR_NPC_CAP = 4;          // most citizens a doorside cluster may total
 
   // Keys of every tile within DOOR_CLEARANCE of one of the given door tiles.
   function getDoorwayClearance(doorTiles) {
@@ -2099,9 +2218,37 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   }
 
   const ProceduralManager = {
+    // Erases every procedural NPC slot standing on the live map. Map 636 is
+    // rebuilt from its template on each visit, so this only has to hold for the
+    // square currently loaded.
+    clearProceduralNPCs: () => {
+      for (const ev of $gameMap.events()) {
+        const name = ev?.event()?.name;
+        if (!name) continue;
+        if (name.startsWith("NPC") || name.startsWith("Placeholder")) { // i18n-ignore: event-name prefixes
+          $gameMap.eraseEvent(ev.eventId());
+        }
+      }
+      $gameSystem._currentProcGroup = null;
+    },
+
     setupProceduralMapNPCs: () => {
       if (!$gameMap || !$dataMap) return;
       if ($gameMap.mapId() !== 636) return;
+
+      // A procedural interior (cave, dungeon, crypt, sewer, loot cellar, temple
+      // inside, cave den, patron vault, and any layer below the surface) has no
+      // population: nobody is staffed there and the slots the template carries
+      // are erased outright, so a dungeon never inherits the citizens of the
+      // open-air square it was entered from. This has to be asked of
+      // ProceduralInteriors rather than read off the map: every one of them
+      // shares map id 636 with that square. The usual "an event with no
+      // graphic is never an NPC" rule cannot do this job here, procedural slots
+      // are authored graphic-less and only get a face when they are staffed.
+      if (window.ProceduralInteriors?.isCurrent?.()) {
+        ProceduralManager.clearProceduralNPCs();
+        return;
+      }
 
       const worldX = $gameVariables.value(43) || 1;
       const worldY = $gameVariables.value(44) || 1;
@@ -2175,8 +2322,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         let wantCount = 0;
         settlementDoorTiles.forEach((_, i) => {
           const doorRng = Utils.seededRandom(baseSeed ^ (0x0d00d ^ (i * 7919)));
-          wantCount += 1 + Math.floor(doorRng * 2);
+          if (doorRng < DOOR_NPC_CHANCE) wantCount++;
         });
+        wantCount = Math.min(wantCount, DOOR_NPC_CAP);
         const keepCount = Math.max(1, Math.min(npcEvents.length, wantCount));
         const indices = Array.from({ length: npcEvents.length }, (_, i) => i);
 
@@ -2235,10 +2383,22 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
           $gameMap.eraseEvent(ev.eventId());
           return;
         }
+        ProceduralManager.dressProcCitizen(ev, baseSeed, settlementGroup, worldX, worldY, procWorldSeed);
+      });
 
+      console.log(`[NPC System] ${activeEvents.length} NPCs set up on procedural map ${$gameMap.mapId()} (${MapManager.getMapName($gameMap.mapId())}), settlement "${settlementGroup}"`);
+    },
+
+    // Turns one bare procedural NPC slot into a citizen: sprite, name, society
+    // profile and a wandering controller, all seeded off the world tile and the
+    // event id so the same slot is always the same person. Split out of
+    // setupProceduralMapNPCs so a citizen can also be born one at a time, long
+    // after the map was populated (RoadCarAI's drivers pulling into a lay-by).
+    dressProcCitizen: (ev, baseSeed, settlementGroup, worldX, worldY, procWorldSeed) => {
+      {
         const graphicSeed = baseSeed ^ (ev.eventId() * 83492791);
         const charPool    = buildNPCCharacterPool();
-        const charName    = charPool[Math.floor(Utils.seededRandom(graphicSeed) * charPool.length)];
+        const charName    = pickNPCCharacter(Utils.seededRandom(graphicSeed), charPool);
         // Big-character sprites (!$) have one slot; normal multi-character sheets use 0-7
         const isBigSprite = charName.includes('!$');
         const charIdx     = isBigSprite ? 0 : Math.floor(Utils.seededRandom(graphicSeed * 2) * 8);
@@ -2317,9 +2477,114 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         const controller = new NPCController(genName);
         $gameSystem.npcControllers.push(controller);
         controller.decideNextGoal();
-      });
+        return genName;
+      }
+    },
 
-      console.log(`[NPC System] ${activeEvents.length} NPCs set up on procedural map ${$gameMap.mapId()} (${MapManager.getMapName($gameMap.mapId())}), settlement "${settlementGroup}"`);
+    // A free NPC slot on the procedural map: one the population pass culled, or
+    // one it never needed. Map 636 carries a fixed number of them and they are
+    // re-read from the template on every visit, so a slot taken here is given
+    // back the next time the square is entered.
+    freeProcNPCSlot: () => {
+      for (const ev of $gameMap.events()) {
+        const name = ev?.event()?.name;
+        if (!name) continue;
+        if (!name.startsWith("NPC") && !name.startsWith("Placeholder")) continue; // i18n-ignore: event-name prefixes
+        if (!ev._erased) continue;
+        if (ev._roadsideNPC) continue;
+        return ev;
+      }
+      return null;
+    },
+
+    /**
+     * Puts one person on the map at (x, y), outside the population pass: the
+     * driver who has just parked, and whoever else turns up beside them.
+     *
+     * `visitor` draws an authored face from the world-wide pool (somebody
+     * passing through from another town) instead of minting a citizen of this
+     * square. Answers the event, or null when there is no slot left.
+     */
+    spawnRoadsideNPC: (x, y, options) => {
+      if (!$gameMap || $gameMap.mapId() !== 636) return null;
+      const ev = ProceduralManager.freeProcNPCSlot();
+      if (!ev) return null;
+
+      const worldX = $gameVariables.value(43) || 1;
+      const worldY = $gameVariables.value(44) || 1;
+      const procWorldSeed = window.ProcGenUtils?.getWorldSeed?.() ?? 19002001;
+      const baseSeed = (window.ProcGenUtils?.hashCoords?.(procWorldSeed, worldX, worldY)
+        ?? ((worldX * 73856093) ^ (worldY * 19349663))) ^ (Math.floor(Math.random() * 0x7fffffff));
+      const biomeName = $gameSystem?._procGenData?.currentBiome || "Fields";  // i18n-ignore  biome id
+      const settlementGroup = ProceduralManager.ensureProcSettlement(worldX, worldY, biomeName);
+
+      ev._erased = false;
+      ev.refresh();
+      ev.locate(x, y);
+      ev._roadsideNPC = true;
+
+      // Somebody passing through: an authored template out of the world pool,
+      // which is where every other map's faces live.
+      if (options && options.visitor) {
+        const pool = SpawnManager.getNPCPool(Config.GLOBAL_GROUP_NAME) || [];
+        const pick = pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+        if (pick?.eventData && SpawnManager.transplantData(ev, pick.eventData, ev.eventId())) {
+          ev.locate(x, y);
+          SpawnManager.injectBrain(ev, ev.event());
+          return ev;
+        }
+        // No pool to draw a visitor from: fall through and mint a local.
+      }
+
+      ProceduralManager.dressProcCitizen(ev, baseSeed, settlementGroup, worldX, worldY, procWorldSeed);
+      return ev;
+    },
+
+    // Registers (once) Bologna as a settlement of its own. It is a real city
+    // with a Destinations.json entry, so unlike a "Proc:x,y" tile it is named
+    // outright and everyone born in it is a Bolognese; the nation is pinned to
+    // Italy by name rather than read off Variable 86, because the party can
+    // reach Bologna without ever having crossed the world-map square that sets
+    // it. NPCPolitics turns that nationId into the power the city answers to,
+    // which for Italy is the Holy Vatican Empire.
+    ensureBolognaSettlement: () => {
+      if (!$gameSystem) return null;
+      const groupName = Config.BOLOGNA_GROUP_NAME;
+      const groups = $gameSystem._npcMapGroups || ($gameSystem._npcMapGroups = {});
+
+      if (!groups[groupName]) {
+        const group = {
+          maps: [Config.BOLOGNA_MAP_ID],
+          mainMaps: [Config.BOLOGNA_MAP_ID],
+          // Bologna's doors are tiles, not events, so nothing is scanned here;
+          // registerProcCitizen-style placeholder addresses come from the
+          // housing pass instead.
+          residentialBuildings: [],
+          _bologna: true,
+        };
+        _populateGroupJobs({ [groupName]: group });
+        groups[groupName] = group;
+        if (GroupRegistry._cache && GroupRegistry._cache !== groups) {
+          GroupRegistry._cache[groupName] = group;
+        }
+        // The map index is built once and cached; a group registered after it
+        // was built would never be found for map 353.
+        GroupRegistry._mapIndex = null;
+      }
+
+      // Refreshed on every visit, which also backfills a group saved before
+      // these fields existed.
+      const country = (window.WorldGen?.Countries || [])
+        .find(c => c.country === Config.BOLOGNA_NATION) || null;
+      const grp = groups[groupName];
+      grp.nationId = country?.id ?? 0;
+      grp.country = country?.country || null;
+      grp.displayName = country
+        ? T('NPCSystem.placeOfCountry', { place: groupName, country: country.country })
+        : T('NPCSystem.placeSettlement', { place: groupName });
+
+      MapManager.setCurrentMapGroup(groupName);
+      return groupName;
     },
 
     PROC_GROUP_PREFIX: "Proc", // i18n-ignore: settlement key prefix, "Proc:x,y"
@@ -2493,6 +2758,477 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     }
   };
 
+  // ── Citizens the world has lost ───────────────────────────────────────────
+  // Somebody recruited into a party, or killed where they stood, is taken off
+  // the map by flipping their event's self switch A. Self switches live in the
+  // binary savegame, so the same person could be recruited a second time in
+  // the next savegame of the world, and a new game started in that world found
+  // everybody standing where they always had. The record therefore lives in
+  // the world folder (npcs.json -> goneCitizens) and is re-applied on map load.
+  //
+  // The key is the event slot, but the NAME is what decides. Authored NPC
+  // slots are placeholders the spawner transplants a different person onto, so
+  // silencing a slot outright would bury whoever moved in afterwards: a record
+  // only holds while the event still carries the person it was written for.
+  // The procedural map is not covered here, its citizens have no stable event
+  // slot and are recorded per world tile by recordProceduralRecruit above.
+  const GoneRegistry = {
+    PROC_MAP_ID: 636,
+
+    key: (mapId, eventId) => `${mapId}_${eventId}`,
+
+    store(create) {
+      if (typeof $gameSystem === "undefined" || !$gameSystem) return null;
+      const held = $gameSystem._npcGoneCitizens;
+      if (held) return held;
+      if (!create) return null;
+      return ($gameSystem._npcGoneCitizens = {});
+    },
+
+    // Names are asked for on every spawn transplant, so the set is derived once
+    // and rebuilt only when the record actually changes.
+    _names: null,
+    _nameSet() {
+      if (this._names) return this._names;
+      const store = this.store(false);
+      const set = new Set();
+      if (store) {
+        for (const rec of Object.values(store)) {
+          if (rec && rec.name) set.add(rec.name);
+        }
+      }
+      return (this._names = set);
+    },
+
+    // reason: "joined" (walked off with a party) or "killed".
+    record(mapId, eventId, name, reason) {
+      mapId = Number(mapId) || 0;
+      eventId = Number(eventId) || 0;
+      if (!mapId || !eventId || mapId === this.PROC_MAP_ID) return;
+      const store = this.store(true);
+      if (!store) return;
+      store[this.key(mapId, eventId)] = {
+        name: name || null,
+        mapId, eventId,
+        reason: reason || "joined", // i18n-ignore: stored record key
+        at: ($gameVariables && $gameVariables.value(114)) || 0,
+        by: ($gameParty && $gameParty.leader() && $gameParty.leader().name()) || null
+      };
+      // Reassigning the accessor-backed field re-persists it through WorldManager.
+      $gameSystem._npcGoneCitizens = store;
+      this._names = null;
+    },
+
+    isGone(mapId, eventId, name) {
+      const store = this.store(false);
+      if (!store) return false;
+      const rec = store[this.key(mapId, eventId)];
+      if (!rec) return false;
+      // A slot re-let to somebody else is not the person who left it.
+      return !(rec.name && name && rec.name !== name);
+    },
+
+    isNameGone(name) {
+      return !!name && this._nameSet().has(name);
+    },
+
+    // Puts every lost citizen of this map back behind their blank page. Called
+    // after the spawn pass, which clears the self switches of the slots it
+    // deals, so the order matters.
+    applyToMap() {
+      const store = this.store(false);
+      if (!store || typeof $gameMap === "undefined" || !$gameMap) return;
+      const mapId = $gameMap.mapId();
+      if (!mapId || mapId === this.PROC_MAP_ID) return;
+      for (const ev of $gameMap.events()) {
+        if (!ev || ev._erased) continue;
+        const eventId = ev.eventId();
+        const rec = store[this.key(mapId, eventId)];
+        if (!rec) continue;
+        const name = ev.event() ? ev.event().name : null;
+        if (rec.name && name && rec.name !== name) continue;
+        const key = [mapId, eventId, "A"];
+        if ($gameSelfSwitches.value(key)) continue;
+        $gameSelfSwitches.setValue(key, true);
+        ev.refresh();
+      }
+    }
+  };
+  window.NPCGone = GoneRegistry;
+
+  // ── The other playthroughs of this world ──────────────────────────────────
+  // A world holds several savegames, and until now they never saw each other:
+  // each party walked an empty world that happened to share its history. A
+  // manual save (never the shared autosave, and never a quicksave) writes down
+  // where that party is standing and who is in it, into the world folder
+  // (party.json). Every other savegame that walks into the same place finds
+  // them there: the members and whatever pet was at heel, spawned as ordinary
+  // NPCs with the ordinary NPC brain, wandering the map and going about the
+  // day's activities like anybody else.
+  //
+  // They are people to talk to, not people to take from. Nothing done to a
+  // visitor may change the playthrough they belong to, so the panel they open
+  // is stripped down to conversation (see NPCEmpathizeUI): no recruiting, no
+  // fighting, no trading, no gifts. What IS remembered is how everybody feels
+  // about everybody, and that is written to the world folder too, keyed by a
+  // stable member key rather than by an actor id, which names a different
+  // person in every savegame.
+  const VisitingParties = {
+    // The event name a visitor's spawned event carries, so the rest of the NPC
+    // system can tell one at a glance without looking anything up.
+    EVENT_TAG: "_visitorKey",
+
+    // The playthrough this savegame is: the slot it is bound to (SaveSystem
+    // assigns it after character creation). 0 means unbound, e.g. the sandbox,
+    // which is never written down.
+    currentSlot() {
+      const id = ($gameSystem && typeof $gameSystem.savefileId === "function")
+        ? Number($gameSystem.savefileId()) : 0;
+      return Number.isFinite(id) && id > 0 ? id : 0;
+    },
+
+    // A member of a party, named in a way that means the same person in every
+    // savegame of the world. An actor id alone does not: actor 2 is somebody
+    // different in each playthrough.
+    memberKey(slot, actorId) {
+      return `p${Number(slot) || 0}a${Number(actorId) || 0}`;
+    },
+
+    keyForActor(actor) {
+      if (!actor) return null;
+      const id = typeof actor.actorId === "function" ? actor.actorId() : actor;
+      return this.memberKey(this.currentSlot(), id);
+    },
+
+    store(create) {
+      if (typeof $gameSystem === "undefined" || !$gameSystem) return null;
+      const held = $gameSystem._partyPresence;
+      if (held) return held;
+      if (!create) return null;
+      return ($gameSystem._partyPresence = {});
+    },
+
+    parties() {
+      return this.store(false) || {};
+    },
+
+    // Everybody else's party. The savegame doing the looking is never its own
+    // visitor, and neither is a playthrough that has since been deleted.
+    otherParties() {
+      const mine = this.currentSlot();
+      const out = [];
+      for (const [slot, party] of Object.entries(this.parties())) {
+        if (Number(slot) === mine || !party || !party.location) continue;
+        out.push(party);
+      }
+      return out;
+    },
+
+    // ── Writing it down ────────────────────────────────────────────────────
+    // Called from the save path. Slot 0 is the world's shared autosave and the
+    // quicksave band is scratch, so neither is a statement about where a
+    // playthrough lives; only a real manual save into the playthrough's own
+    // slot is.
+    isRecordableSlot(savefileId) {
+      const id = Number(savefileId);
+      if (!Number.isFinite(id) || id <= 0) return false;                 // autosave
+      if (window.SaveSystem && window.SaveSystem.isQuickSlot &&
+          window.SaveSystem.isQuickSlot(id)) return false;               // quicksave
+      return id === this.currentSlot();
+    },
+
+    record(savefileId) {
+      if (!this.isRecordableSlot(savefileId)) return false;
+      if (!$gameParty || !$gameMap || !$gamePlayer) return false;
+      const slot = this.currentSlot();
+      const store = this.store(true);
+      if (!store) return false;
+
+      // Where the party is standing, as the full address of a tile: the map,
+      // the world square it answers to, the depth in the procedural stack and
+      // the interior it is inside. Two savegames are in the same place only
+      // when all of that agrees (WorldMapTransfer.sameRealm), which is the
+      // only way to tell a dungeon from the field above it on map 636.
+      let location = null;
+      const WMT = window.WorldMapTransfer;
+      if (WMT && typeof WMT.locate === "function") {
+        try { location = WMT.locate($gamePlayer.x, $gamePlayer.y); } catch (e) { location = null; }
+      }
+      if (!location) {
+        location = { mapId: $gameMap.mapId(), x: $gamePlayer.x, y: $gamePlayer.y };
+      }
+
+      const members = $gameParty.members().map(actor => ({
+        key: this.memberKey(slot, actor.actorId()),
+        actorId: actor.actorId(),
+        name: actor.name(),
+        characterName: actor.characterName(),
+        characterIndex: actor.characterIndex(),
+        classId: actor._classId,
+        level: actor.level
+      }));
+
+      // Whatever was at heel. A benched pet is not walking the world with
+      // them, so only the active one is put on the map.
+      const pets = [];
+      const pet = window.PetSystem && window.PetSystem.getActivePet
+        ? window.PetSystem.getActivePet() : null;
+      if (pet) {
+        pets.push({
+          key: `${this.memberKey(slot, 0)}pet${pet.id}`,
+          name: pet.name,
+          characterName: pet.characterName || "",
+          characterIndex: pet.characterIndex || 0,
+          isPet: true
+        });
+      }
+
+      store[slot] = {
+        slot,
+        leaderName: ($gameParty.leader() && $gameParty.leader().name()) || null,
+        savedAtMin: ($gameVariables && $gameVariables.value(114)) || 0,
+        location, members, pets
+      };
+      $gameSystem._partyPresence = store;
+      return true;
+    },
+
+    // Where a playthrough was last written down, as a place rather than a set
+    // of coordinates: the named world square, else the map's own display name,
+    // else the biome (WorldMapTransfer.locationName). Answers null when that
+    // playthrough has never saved, which is not the same as being nowhere.
+    lastSeenName(slot) {
+      const party = this.parties()[Number(slot)];
+      if (!party || !party.location) return null;
+      const WMT = window.WorldMapTransfer;
+      if (WMT && typeof WMT.locationName === "function") {
+        try {
+          const name = WMT.locationName(party.location);
+          if (name) return name;
+        } catch (e) { /* fall through to the map's own name */ }
+      }
+      const info = $dataMapInfos && $dataMapInfos[party.location.mapId];
+      return (info && info.name) || null;
+    },
+
+    // The same, for whichever playthrough a named member belongs to. This
+    // savegame's own party answers with where it last saved, which is where it
+    // would be found by anybody else looking.
+    lastSeenForMember(name) {
+      if (!name) return null;
+      for (const [slot, party] of Object.entries(this.parties())) {
+        if (!party) continue;
+        const found = (party.members || []).concat(party.pets || [])
+          .some(person => person && person.name === name);
+        if (found) return this.lastSeenName(slot);
+      }
+      return null;
+    },
+
+    // ── Standing ───────────────────────────────────────────────────────────
+    // How a member stands with somebody: an NPC by name, or another
+    // playthrough's member by key. Kept in the world folder rather than in the
+    // savegame, so a party is remembered by the people it met even from a
+    // playthrough that is not the one being played.
+    dispositions(create) {
+      if (typeof $gameSystem === "undefined" || !$gameSystem) return null;
+      const held = $gameSystem._partyDispositions;
+      if (held) return held;
+      if (!create) return null;
+      return ($gameSystem._partyDispositions = {});
+    },
+
+    disposition(memberKey, towardKey) {
+      const all = this.dispositions(false);
+      const mine = all && all[memberKey];
+      const v = mine && mine[towardKey];
+      return typeof v === "number" ? v : 0;
+    },
+
+    setDisposition(memberKey, towardKey, value) {
+      if (!memberKey || !towardKey) return 0;
+      const all = this.dispositions(true);
+      if (!all) return 0;
+      const v = Math.max(-100, Math.min(100, Math.round(value)));
+      (all[memberKey] || (all[memberKey] = {}))[towardKey] = v;
+      $gameSystem._partyDispositions = all;
+      return v;
+    },
+
+    changeDisposition(memberKey, towardKey, delta) {
+      return this.setDisposition(memberKey, towardKey,
+        this.disposition(memberKey, towardKey) + (Number(delta) || 0));
+    },
+
+    // ── Standing on the map ────────────────────────────────────────────────
+    // Whether a visitor record belongs where the party is standing now.
+    isHere(party) {
+      if (!party || !party.location || !$gameMap) return false;
+      const WMT = window.WorldMapTransfer;
+      if (WMT && typeof WMT.sameRealm === "function" && typeof WMT.locate === "function") {
+        try {
+          const here = WMT.locate($gamePlayer.x, $gamePlayer.y);
+          if (Number(party.location.mapId) !== Number(here.mapId)) return false;
+          // sameRealm only tells the layer/interior/planet apart, never WHICH
+          // world square they belong to (map 636 is every procedural biome in
+          // the game), so without this a party saved in one town's cellar
+          // would be found in every cellar on the map. VehicleSystem.js checks
+          // the same pair for a parked vehicle for the same reason.
+          if (Number(party.location.worldX) !== Number(here.worldX) ||
+              Number(party.location.worldY) !== Number(here.worldY)) return false;
+          return WMT.sameRealm(party.location, here);
+        } catch (e) { /* fall through to the map id */ }
+      }
+      return Number(party.location.mapId) === $gameMap.mapId();
+    },
+
+    visitorsHere() {
+      return this.otherParties().filter(party => this.isHere(party));
+    },
+
+    // The record behind a spawned event, or null when the event is not one.
+    memberForEvent(event) {
+      const key = event && event[this.EVENT_TAG];
+      if (!key) return null;
+      for (const party of Object.values(this.parties())) {
+        for (const person of (party.members || []).concat(party.pets || [])) {
+          if (person && person.key === key) return { person, party };
+        }
+      }
+      return null;
+    },
+
+    memberByKey(key) {
+      const found = this.memberForEvent({ [this.EVENT_TAG]: key });
+      return found ? found.person : null;
+    },
+
+    // Is this name somebody else's party member rather than a citizen of the
+    // world? Read by the Empathize panel, which strips itself down for them.
+    isVisitorName(name) {
+      if (!name) return false;
+      const mine = this.currentSlot();
+      for (const [slot, party] of Object.entries(this.parties())) {
+        if (Number(slot) === mine || !party) continue;
+        if ((party.members || []).some(m => m && m.name === name)) return true;
+        if ((party.pets || []).some(p => p && p.name === name)) return true;
+      }
+      return false;
+    },
+
+    // ── Putting them on the map ────────────────────────────────────────────
+    // A visitor is injected as a real event with an <AI> note, which is all
+    // the NPC brain asks for: injectBrain gives it a controller, the
+    // controller gives it somewhere to be, and NPCSim gives it something to
+    // do. They are people the world is holding, so they get a society profile
+    // of their own (world-shared, like everyone else's), which is also what
+    // makes the Empathize panel and the wiki work on them.
+    spawnHere() {
+      if (!$dataMap || !$gameMap || !$gameSystem) return 0;
+      const visitors = this.visitorsHere();
+      if (!visitors.length) return 0;
+      if (!$dataMap.events) $dataMap.events = [null];
+      let spawned = 0;
+      for (const party of visitors) {
+        for (const person of (party.members || []).concat(party.pets || [])) {
+          if (!person || !person.name) continue;
+          if (this.findEvent(person.key)) continue;
+          if (this.spawnOne(person, party)) spawned++;
+        }
+      }
+      return spawned;
+    },
+
+    findEvent(key) {
+      if (!$gameMap) return null;
+      for (const ev of $gameMap.events()) {
+        if (ev && ev[this.EVENT_TAG] === key && !ev._erased) return ev;
+      }
+      return null;
+    },
+
+    // Somewhere to stand: near where their party was last standing, on a tile
+    // that is actually walkable and unoccupied.
+    findSpot(party) {
+      const baseX = Number(party.location && party.location.x) || 1;
+      const baseY = Number(party.location && party.location.y) || 1;
+      for (let radius = 1; radius <= 6; radius++) {
+        for (let tries = 0; tries < 12; tries++) {
+          const x = baseX + Math.floor(Math.random() * (radius * 2 + 1)) - radius;
+          const y = baseY + Math.floor(Math.random() * (radius * 2 + 1)) - radius;
+          if (!$gameMap.isValid(x, y)) continue;
+          if (!$gameMap.isPassable(x, y, 2)) continue;
+          if ($gameMap.eventsXy(x, y).length) continue;
+          if ($gamePlayer.x === x && $gamePlayer.y === y) continue;
+          return { x, y };
+        }
+      }
+      return { x: baseX, y: baseY };
+    },
+
+    spawnOne(person, party) {
+      const spot = this.findSpot(party);
+      const eventId = $dataMap.events.length;
+      // <AI> is what injectBrain reads to hand the event a controller; the
+      // name is what every profile, conversation and wiki lookup goes by.
+      $dataMap.events[eventId] = {
+        id: eventId, name: person.name, note: "<AI>",  // i18n-ignore: note tag
+        x: spot.x, y: spot.y,
+        pages: [{
+          conditions: {
+            actorId: 1, actorValid: false, itemId: 1, itemValid: false,
+            selfSwitchCh: "A", selfSwitchValid: false,
+            switch1Id: 1, switch1Valid: false, switch2Id: 1, switch2Valid: false,
+            variableId: 1, variableValid: false
+          },
+          directionFix: false,
+          image: {
+            tileId: 0,
+            characterName: person.characterName || "",
+            characterIndex: person.characterIndex || 0,
+            direction: 2, pattern: 1
+          },
+          list: [
+            { code: 357, indent: 0, parameters: [pluginName, "VisitorInteract", "Visitor", { key: person.key }] },  // i18n-ignore: plugin command id
+            { code: 0, indent: 0, parameters: [] }
+          ],
+          moveFrequency: 3,
+          moveRoute: { list: [{ code: 0 }], repeat: true, skippable: false, wait: false },
+          moveSpeed: 3, moveType: 0, priorityType: 1, stepAnime: true,
+          through: false, trigger: 0, walkAnime: true
+        }]
+      };
+      if (!$gameMap._events) $gameMap._events = [];
+      const ev = new Game_Event($gameMap.mapId(), eventId);
+      ev[this.EVENT_TAG] = person.key;
+      ev._visitorSlot = party.slot;
+      $gameMap._events[eventId] = ev;
+
+      // A face the world knows: the same society profile everybody else has,
+      // which is what the panel, the wiki and the activity sim all read.
+      try {
+        window.NPCSocietyRegistry?.ensureProfile?.(person.name, person.classId,
+          $gameSystem._currentNpcGroup || null);
+        const profile = window.NPCSocietyRegistry?.getProfile?.(person.name);
+        if (profile) {
+          profile._visitorKey = person.key;
+          profile._visitorSlot = party.slot;
+          if (person.level) profile.level = person.level;
+        }
+      } catch (e) { /* the sim can live without a profile; the event still stands */ }
+
+      SpawnManager.injectBrain(ev, $dataMap.events[eventId]);
+      // The spriteset is already built when a visitor is spawned mid-session,
+      // so the sprite has to be asked for by hand.
+      const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
+      if (spriteset && typeof spriteset.addVisitorCharacterSprite === "function") {
+        spriteset.addVisitorCharacterSprite(ev);
+      }
+      return ev;
+    }
+  };
+  window.PartyPresence = VisitingParties;
+
   // ── MinHeap ────────────────────────────────────────────────────────────────
   // Binary min-heap for A* open set, O(log n) push/pop/update vs O(n) for the
   // old sorted-array approach, which had O(n) indexOf + splice on every node update.
@@ -2563,6 +3299,188 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     _traitsById = new Map(arr.map(t => [t.id, t]));
     return _traitsById;
   }
+
+  // ==========================================================================
+  // MAKING WAY IN A ONE-TILE CORRIDOR
+  // ==========================================================================
+  // An NPC standing in a one-wide passage is a wall: the player walks into it,
+  // the step fails, and with a second NPC behind it there is nowhere to go
+  // round. Nothing in the roaming AI ever reads the player as an obstruction,
+  // so the queue never dissolves on its own and the player is softlocked.
+  //
+  // So the bump itself is the signal. When the player's step is refused by the
+  // tile an NPC occupies, and either of them is standing somewhere one tile
+  // wide, that NPC (and every other one sharing the same narrow run) picks a
+  // spot OUT of the passage, in an open part of the map away from the player,
+  // and walks there. It walks it phased (_through), so the NPCs queued ahead of
+  // it in the corridor are not obstacles either: the whole line drains out of
+  // the passage instead of shuffling one tile at a time. Being phased also
+  // clears the softlock immediately, since the player can pass straight through
+  // whoever is still on the way out.
+  const NPCYield = {
+    MIN_STEPS: 2,        // never "make way" by standing still
+    MIN_PLAYER_GAP: 2,   // and never by stepping into the player's lap
+    MAX_SEARCH: 14,      // tiles of corridor an NPC will walk to get clear
+    OPEN_DEPTH: 3,       // how far past the corridor mouth to prefer standing
+    CORRIDOR_MAX: 12,    // longest narrow run cleared by a single bump
+    DURATION: 12000,     // ms before a yield gives up and the NPC resumes life
+
+    _lastCheck: -999,
+    _reserved: new Map(),
+
+    // Terrain-only passability: what the map allows, with events left out of
+    // it entirely (the yielding NPC walks through those). Mirrors the water and
+    // region rules Pathfinder.isPassable applies so nobody wades off a quay.
+    canStepTerrain(x, y, d) {
+      const nx = $gameMap.roundXWithDirection(x, d);
+      const ny = $gameMap.roundYWithDirection(y, d);
+      if (!$gameMap.isValid(nx, ny)) return false;
+      const r = $gameMap.regionId(nx, ny);
+      if (r === 10) return false;
+      if (r === 99 || $gameMap.terrainTag(nx, ny) === 3) return false;
+      if (r === 5 || $gameMap.regionId(x, y) === 5) return true;
+      return $gameMap.isPassable(x, y, d) && $gameMap.isPassable(nx, ny, 10 - d);
+    },
+
+    openNeighbourCount(x, y) {
+      let n = 0;
+      for (const dir of [2, 4, 6, 8]) if (this.canStepTerrain(x, y, dir)) n++;
+      return n;
+    },
+
+    // One tile wide: a passage tile only leads on and back (2), or is a dead
+    // end (1). A junction or any part of a room answers 3 or 4.
+    isNarrow(x, y) {
+      return this.openNeighbourCount(x, y) <= 2;
+    },
+
+    // The controller whose NPC occupies (x, y), matching the logical tile and
+    // the drawn one: a walking NPC's _x/_y is already a step ahead of its
+    // sprite, and the player bumps into whichever of the two is in the way.
+    controllerAt(x, y) {
+      for (const c of ($gameSystem?.getActiveNPCControllers?.() ?? [])) {
+        const ev = c.event;
+        if (!ev || ev._erased) continue;
+        if ((ev._x === x && ev._y === y) ||
+            (Math.round(ev._realX) === x && Math.round(ev._realY) === y)) return c;
+      }
+      return null;
+    },
+
+    isReserved(k) {
+      const at = this._reserved.get(k);
+      return at !== undefined && Graphics.frameCount - at < 600;
+    },
+
+    reserve(k) {
+      if (this._reserved.size > 64) this._reserved.clear();
+      this._reserved.set(k, Graphics.frameCount);
+    },
+
+    // Where an NPC should get to. Flood the map from where it stands (never
+    // through the player, so the search only ever runs away from them) and take
+    // the roomiest tile a few steps past the mouth of the passage: far enough
+    // that the corridor is genuinely clear, near enough that the NPC does not
+    // sprint across town. With nothing but corridor in reach, retreat as far
+    // along it as the search got.
+    findYieldSpot(ev, px, py) {
+      const mapW = $gameMap.width();
+      const key = (x, y) => x + y * mapW;
+      const startK = key(ev.x, ev.y);
+      const dist = new Map([[startK, 0]]);
+      const queue = [startK];
+      const candidates = [];
+      let head = 0;
+
+      while (head < queue.length && head < 600) {
+        const cK = queue[head++];
+        const d = dist.get(cK);
+        if (d >= this.MAX_SEARCH) continue;
+        const cx = cK % mapW, cy = Math.floor(cK / mapW);
+        for (const dir of [2, 4, 6, 8]) {
+          const nx = $gameMap.roundXWithDirection(cx, dir);
+          const ny = $gameMap.roundYWithDirection(cy, dir);
+          const nK = key(nx, ny);
+          if (dist.has(nK) || (nx === px && ny === py)) continue;
+          if (!this.canStepTerrain(cx, cy, dir)) continue;
+          dist.set(nK, d + 1);
+          queue.push(nK);
+
+          const open = this.openNeighbourCount(nx, ny);
+          if (d + 1 >= this.MIN_STEPS && open > 2 && !this.isReserved(nK) &&
+              $gameMap.eventsXyNt(nx, ny).length === 0 &&
+              Math.abs(nx - px) + Math.abs(ny - py) >= this.MIN_PLAYER_GAP) {
+            candidates.push({ x: nx, y: ny, k: nK, d: d + 1, open });
+          }
+        }
+      }
+
+      if (candidates.length) {
+        let nearest = Infinity;
+        for (const c of candidates) if (c.d < nearest) nearest = c.d;
+        candidates.sort((a, b) => (b.open - a.open) || (b.d - a.d));
+        const pool = candidates.filter(c => c.d <= nearest + this.OPEN_DEPTH);
+        return (pool.length ? pool : candidates)[0];
+      }
+
+      const ownGap = Math.abs(ev.x - px) + Math.abs(ev.y - py);
+      let best = null, bestD = -1;
+      for (const [k, d] of dist) {
+        if (k === startK || d <= bestD || this.isReserved(k)) continue;
+        const x = k % mapW, y = Math.floor(k / mapW);
+        if (Math.abs(x - px) + Math.abs(y - py) <= ownGap) continue;
+        bestD = d; best = { x, y, k };
+      }
+      return best;
+    },
+
+    // Every NPC sharing the blocked tile's narrow run, so one bump drains the
+    // whole queue rather than the front of it. The walk stops at the first tile
+    // that is no longer one wide, which is exactly the mouth of the passage.
+    corridorControllers(bx, by, px, py) {
+      const mapW = $gameMap.width();
+      const key = (x, y) => x + y * mapW;
+      const found = [], seenCtrl = new Set();
+      const collect = (x, y) => {
+        const c = this.controllerAt(x, y);
+        if (c && !seenCtrl.has(c) && c.state !== 'talkingToPlayer') {
+          seenCtrl.add(c); found.push(c);
+        }
+      };
+      const seen = new Set([key(bx, by), key(px, py)]);
+      const queue = [{ x: bx, y: by }];
+      let head = 0;
+      collect(bx, by);
+      while (head < queue.length && queue.length < this.CORRIDOR_MAX) {
+        const { x, y } = queue[head++];
+        if (!this.isNarrow(x, y)) continue;
+        for (const dir of [2, 4, 6, 8]) {
+          const nx = $gameMap.roundXWithDirection(x, dir);
+          const ny = $gameMap.roundYWithDirection(y, dir);
+          const k = key(nx, ny);
+          if (seen.has(k) || !this.canStepTerrain(x, y, dir)) continue;
+          seen.add(k);
+          queue.push({ x: nx, y: ny });
+          if (this.isNarrow(nx, ny)) collect(nx, ny);
+        }
+      }
+      return found;
+    },
+
+    // The player's step at (bx, by) was refused. Act only when an NPC is what
+    // refused it and the geometry leaves no way round.
+    onPlayerBlocked(bx, by) {
+      if (!$gameMap || !$gamePlayer) return;
+      if ($gameMap.isEventRunning() || $gameMap.isAnyEventStarting()) return;
+      const fc = Graphics.frameCount;
+      if (fc - this._lastCheck < 10) return;
+      this._lastCheck = fc;
+      if (!this.controllerAt(bx, by)) return;
+      const px = $gamePlayer.x, py = $gamePlayer.y;
+      if (!this.isNarrow(bx, by) && !this.isNarrow(px, py)) return;
+      for (const ctrl of this.corridorControllers(bx, by, px, py)) ctrl.yieldToPlayer();
+    },
+  };
 
   // ==========================================================================
   // CORE AI CLASSES
@@ -2642,6 +3560,37 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       }
       return path;
     }
+
+    // Terrain-only route used by the yield behaviour (see NPCYield below): the
+    // NPC walks it with _through on, so other events are not obstacles and the
+    // only thing that can block a step is the map itself. A plain BFS, since
+    // every step costs the same and the goal is always a few tiles away.
+    findNoclipPath(startX, startY, goalX, goalY) {
+      const mapW = $gameMap.width();
+      const getKey = (x, y) => x + y * mapW;
+      const startK = getKey(startX, startY), goalK = getKey(goalX, goalY);
+      if (startK === goalK) return [];
+
+      const cameFrom = new Map();
+      const seen = new Set([startK]);
+      const queue = [startK];
+      let head = 0;
+      while (head < queue.length && head < 1200) {
+        const currentK = queue[head++];
+        const cx = currentK % mapW, cy = Math.floor(currentK / mapW);
+        for (const dir of [2, 4, 6, 8]) {
+          const nx = $gameMap.roundXWithDirection(cx, dir);
+          const ny = $gameMap.roundYWithDirection(cy, dir);
+          const nK = getKey(nx, ny);
+          if (seen.has(nK) || !NPCYield.canStepTerrain(cx, cy, dir)) continue;
+          seen.add(nK);
+          cameFrom.set(nK, { pos: currentK, dir });
+          if (nK === goalK) return this.reconstructPath(cameFrom, nK);
+          queue.push(nK);
+        }
+      }
+      return null;
+    }
   }
 
   class NPCController {
@@ -2664,8 +3613,36 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     }
 
     refreshEvent() {
+      // A yield in progress does not survive being rebound to another event
+      // (map change, hourly turnover, a save restored mid-step): it is closed
+      // here so nothing is ever left permanently phased. The flags are put back
+      // on the event being let go, and again on the newly resolved one when it
+      // is the same slot rehydrated (a restore hands back a copy, so clearing
+      // only the old reference would leave the live event walking through
+      // walls).
+      const wasYielding = this.state === 'yielding';
+      const staleEvent = wasYielding ? this.event : null;
+      const staleThrough = this._yieldWasThrough ?? false;
+      const staleSpeed = this._yieldSpeed ?? 3;
+      if (wasYielding) {
+        this.state = 'idle';
+        this.path = [];
+        this.target = null;
+        this._yieldWasThrough = undefined;
+        this._yieldSpeed = undefined;
+        this._yieldStandAside = false;
+        if (staleEvent && !staleEvent._erased) {
+          staleEvent.setThrough(staleThrough);
+          staleEvent.setMoveSpeed(staleSpeed);
+        }
+      }
       this.event = $gameMap.events().find(e => e?.event()?.name === this.eventName);
       this.eventId = this.event?.eventId();
+      if (wasYielding && this.event && this.event !== staleEvent &&
+          this.event.eventId() === staleEvent?.eventId?.()) {
+        this.event.setThrough(staleThrough);
+        this.event.setMoveSpeed(staleSpeed);
+      }
       if (this.event) {
         this.pathfinder = new Pathfinder(this.event);
         const note = this.event.event()?.note || "";
@@ -2698,6 +3675,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       const key = [$gameMap.mapId(), eid, 'A'];
       if (!$gameSelfSwitches?.value(key)) return;
       if ($gameParty?.members().some(a => a?.name?.() === this.eventName)) return;
+      // A switch the world itself set is not a stale one: this person was
+      // recruited or killed, and the party they left with may be another
+      // savegame's entirely, so party membership says nothing about them.
+      if (GoneRegistry.isGone($gameMap.mapId(), eid, this.eventName)) return;
       const page = this.event.page();
       const stuck = !page || (page.list?.length ?? 0) <= 1;
       if (!stuck) return;
@@ -2710,7 +3691,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       // Checked first so throttled frames pay for nothing else; the interval is
       // picked from the player distance cached on the previous throttled tick.
       // Guard: if eventId is null/undefined, modulo produces NaN which !== anything → permanent freeze.
-      const throttleInterval = this._lastDist <= 5 ? 2 : 10;
+      // A yielding NPC keeps the close-range interval whatever the distance:
+      // it is clearing a passage the player is waiting on, so its steps must
+      // not stall for ten frames each once it gets ahead of them.
+      const throttleInterval = (this._lastDist <= 5 || this.state === 'yielding') ? 2 : 10;
       const _eid = Number.isFinite(this.eventId) ? this.eventId : 0;
       if (Graphics.frameCount % throttleInterval !== _eid % throttleInterval) {
         return;
@@ -2728,6 +3712,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       if (!this.event || this.event._erased) return;
 
       const isTalking = $gameMap.isEventRunning() && $gameMap._interpreter.eventId() === this.eventId;
+      // Talked to mid-yield: close the yield properly so _through and the walk
+      // speed are put back, rather than leaving the NPC phased for good.
+      if (isTalking && this.state === 'yielding') this._endYield(false);
       if (isTalking) {
         if (this.state !== "talkingToPlayer") { this.state = "talkingToPlayer"; this.path = []; }
         this.turnToward($gamePlayer);
@@ -2753,6 +3740,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
 
     updatePlayerAwareness(time) {
       if (!this.event) return;
+      // Mid-yield the NPC is already dealing with the player; a flee/distrust
+      // reaction here would overwrite the escape route and strand it phased.
+      if (this.state === 'yielding') return;
       const wasAware = this.playerAware;
       this.playerAware = Utils.distance(this.event, $gamePlayer) <= Config.playerAwarenessRange * 0.5;
       if (!this.playerAware || wasAware || time - this.lastPlayerReaction <= 20000) return;
@@ -2867,6 +3857,76 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       if (!this.event.isMoving()) {
         this._stepAlongPath(() => this.calculatePath());
       }
+    }
+
+    // ── Making way (see NPCYield) ─────────────────────────────────────────────
+
+    // Leave the passage. The route is terrain-only and walked with _through on,
+    // so the NPCs queued between here and the way out are stepped through
+    // instead of waited on, and the player can walk through this one meanwhile.
+    yieldToPlayer() {
+      if (!this.event || this.event._erased) return;
+      if (this.state === 'yielding' || this.state === 'talkingToPlayer') return;
+      const spot = NPCYield.findYieldSpot(this.event, $gamePlayer.x, $gamePlayer.y);
+      const path = spot
+        ? this.pathfinder.findNoclipPath(this.event.x, this.event.y, spot.x, spot.y)
+        : null;
+      if (spot && path && path.length) {
+        NPCYield.reserve(spot.k ?? (spot.x + spot.y * $gameMap.width()));
+        this.path = path;
+        this.target = { x: spot.x, y: spot.y };
+        this._yieldStandAside = false;
+      } else {
+        // A dead end, or the only way out leads through the player. There is
+        // nowhere to walk to, so the NPC stays put but stays phased: the
+        // passage stops being a wall even when nobody can leave it.
+        this.path = [];
+        this.target = null;
+        this._yieldStandAside = true;
+      }
+      this.state = 'yielding';
+      this.stateEndTime = performance.now() + NPCYield.DURATION;
+      this._yieldWasThrough = this.event.isThrough();
+      this._yieldSpeed = this.event._moveSpeed;
+      this.event.setThrough(true);
+      this.event.setMoveSpeed(5);
+      const lines = T.list('NPCSystem.thought.yield');
+      if (lines.length) {
+        window.NPCSim?.emit('npc:thought', {
+          name: this.eventName,
+          thought: Utils.randomElement(lines),
+        });
+      }
+    }
+
+    updateYielding(time) {
+      if (!this.event || this.event._erased) return this._endYield(false);
+      if (time >= this.stateEndTime) return this._endYield(true);
+      if (this.event.isMoving() || this.event.isMoveRouteForcing()) return;
+      if (!this.path.length) {
+        // Standing aside with the player right on top of them: hold the phase
+        // until they have got by (or the yield times out).
+        if (this._yieldStandAside && Utils.distance(this.event, $gamePlayer) <= 1) return;
+        return this._endYield(true);
+      }
+      // Phased, so a step can only fail on terrain the route already vetted;
+      // if it somehow does, stop rather than grind against it.
+      this._stepAlongPath(() => { this.path = []; });
+    }
+
+    _endYield(pickNewGoal) {
+      if (this.event && !this.event._erased) {
+        this.event.setThrough(this._yieldWasThrough ?? false);
+        this.event.setMoveSpeed(this._yieldSpeed ?? 3);
+      }
+      this._yieldWasThrough = undefined;
+      this._yieldSpeed = undefined;
+      this._yieldStandAside = false;
+      this.path = [];
+      this.target = null;
+      this.state = 'idle';
+      this.nextMoveTime = performance.now() + Utils.randBetween(600, 1800);
+      if (pickNewGoal) this.decideNextGoal();
     }
 
     updateInZone(time) {
@@ -3375,6 +4435,17 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     if (best) best.start();
   };
 
+  // Walking into an NPC is how the player asks it to move (see NPCYield). Only
+  // a refused step is looked at, so an ordinary walk costs two roundXWithDirection
+  // calls and nothing else.
+  const _NPCSys_Game_Player_moveStraight = Game_Player.prototype.moveStraight;
+  Game_Player.prototype.moveStraight = function (d) {
+    const bx = $gameMap.roundXWithDirection(this.x, d);
+    const by = $gameMap.roundYWithDirection(this.y, d);
+    _NPCSys_Game_Player_moveStraight.call(this, d);
+    if (!this.isMovementSucceeded()) NPCYield.onPlayerBlocked(bx, by);
+  };
+
   // Console diagnostic: face a stubborn NPC, then run window.npcWhyNoTalk() from
   // the dev console (F12). Prints why nothing triggers, event state and all.
   window.npcWhyNoTalk = function () {
@@ -3520,7 +4591,158 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   // image cache, so the shopkeeper only appeared once the sprite noticed the
   // change and the character sheet came off disk. Idempotent, a counter that
   // already holds a rota is skipped, so the later pass costs nothing.
+  // Everybody the NPC system would have put on this map, taken off it. Called
+  // in place of the whole spawn pass in an empty world: the roster slots, the
+  // <AI> wanderers and the local residents are all events this system would
+  // have peopled, so with nobody left they are erased rather than left standing
+  // as motionless scenery. A counter the map author drew a face on is NOT one
+  // of ours (see Utils.hasOwnGraphic): it is deliberate map design, often
+  // story-critical, and is left exactly as it is.
+  //
+  // A <Shop> counter is deliberately NOT erased either, staffed or not. Nobody
+  // is behind it (stageShopPersonas bails out first), but the shop itself is
+  // still there with whatever was on its shelves the day everyone went, and
+  // that stock is the point: it is stocked once, never replenished
+  // (ItemSystemShop.getShopDateKey) and can be cleared out through
+  // StealingSystem, which is the only way to shop in an empty world.
+  // A <Shop> counter that carries its own graphic is normally read as a named
+  // shopkeeper the rota must never cover (see ShopShiftManager.isShopEvent) -
+  // deliberate map design, worth keeping in a populated world. But a till is
+  // not a person: in an empty world nobody is behind ANY counter, author-
+  // drawn face or not, so the graphic and whatever movement came baked into
+  // the page (most of these were copy-pasted from an ordinary wandering-NPC
+  // template) are stripped here. Written onto the page data itself, exactly
+  // as ShopShiftManager._applyPersonaSprite does, so a later page refresh
+  // (self-switch, variable change) can't re-derive the graphic and bring the
+  // "shopkeeper" back. The event survives untouched otherwise: its Shop
+  // Processing / RandomDailyShop command still runs, so the till still has
+  // whatever was on its shelves and StealingSystem can still clear it out.
+  function blankShopCounter(ev, data) {
+    if (ev._npcShopBlanked) return;
+    ev._npcShopBlanked = true;
+    for (const page of (data.pages || [])) {
+      if (page?.image) {
+        page.image.characterName = "";
+        page.image.characterIndex = 0;
+      }
+      if (page) page.moveType = 0; // Fixed: nobody left to wander behind it
+    }
+    ev.refresh();
+    ev.setImage("", 0);
+    ev._moveType = 0;
+    ev.setMoveFrequency(0);
+    ev.setThrough(false);
+  }
+
+  function eraseUnpeopledEvents() {
+    if (!$gameMap || !$dataMap) return;
+    for (const ev of $gameMap.events()) {
+      const data = ev && ev.event ? ev.event() : null;
+      if (!data) continue;
+      // The multiplayer avatar slots are not people of this world.
+      if (String(data.name || "").startsWith("Player")) continue; // i18n-ignore: event name matched at runtime
+      const note = data.note || "";
+      // An unattended till is still a till: never erased (its stock stays
+      // stealable), but stripped of whatever graphic/movement it carries.
+      if (Utils.hasShopTag(note)) { blankShopCounter(ev, data); continue; }
+      const isRosterSlot = String(data.name || "").startsWith("NPC"); // i18n-ignore: event name matched at runtime
+      if (isRosterSlot || Utils.hasAITag(note) || Utils.hasLocalTag(note)) ev.erase();
+    }
+  }
+
+  // ---- zombie apocalypse -----------------------------------------------
+  // The pool of troops an NPC can have been replaced by: every troop whose
+  // whole line-up is undead, read off the creature table rather than listed
+  // here, so a creature added to Enemies.json joins it without a code change.
+  // An enemy counts as undead when its <Archetype:> is Undead itself or any
+  // sibling archetype the book already treats as undead-family (Skeleton,
+  // ConstructedUndead, and anything else the data ever names "...Undead"),
+  // plus anything with Zombie in its own name regardless of archetype. Any
+  // level: the dead do not scale to the party, and a city street can hold
+  // something far past you.
+  let _zombieTroopPool = null;
+  function zombieTroopPool() {
+    if (_zombieTroopPool) return _zombieTroopPool;
+    const undead = new Set();
+    for (let i = 1; i < $dataEnemies.length; i++) {
+      const e = $dataEnemies[i];
+      if (!e || !e.name) continue;
+      const m = e.note ? e.note.match(/<Archetype:\s*(.+?)>/i) : null;
+      const archetype = m ? m[1].trim() : "";
+      if (/undead|skeleton/i.test(archetype) || /zombie/i.test(e.name)) undead.add(i);
+    }
+    const pool = [];
+    for (let i = 1; i < $dataTroops.length; i++) {
+      const t = $dataTroops[i];
+      if (!t || !t.members || !t.members.length) continue;
+      if (t._bseReinforced || t._bsePetrodemon) continue;
+      if (!t.members.every(mem => undead.has(mem.enemyId))) continue;
+      // The magic level still has the last word: a severed world's dead are
+      // only the ones that rose for some ordinary reason.
+      if (window.MagicNature && !window.MagicNature.allowsData($dataEnemies[t.members[0].enemyId])) continue;
+      pool.push(i);
+    }
+    _zombieTroopPool = pool;
+    return pool;
+  }
+
+  // Turn one staffed-NPC slot into an undead creature standing where they
+  // were. Seeded on (map, event, world seed) rather than rolled, so the same
+  // street holds the same dead every time it is walked into and two savegames
+  // of one world agree about who did not make it.
+  function zombifyEvent(ev) {
+    const pool = zombieTroopPool();
+    if (!pool.length || !ev || !ev.event) return false;
+    const seedBase = (window.HistoryManager && window.HistoryManager.getSeed)
+      ? window.HistoryManager.getSeed() : 19002001;
+    let h = ($gameMap.mapId() * 73856093) ^ (ev.eventId() * 19349663) ^ seedBase;
+    h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) >>> 0;
+    const roll = (h % 1000) / 1000;
+    if (roll >= Config.ZOMBIE_REPLACE_CHANCE) return false;   // a survivor
+    const troopId = pool[(h >>> 10) % pool.length];
+    ev._fixedTroopId = troopId;
+    ev._isAquaticEnemy = undefined;
+    ev._isAmphibiousEnemy = undefined;
+    if (window.BSE && BSE.Helpers && BSE.Helpers.applyEnemyMovement) {
+      BSE.Helpers.applyEnemyMovement(ev);
+    }
+    if (ev.updateCharacterSprite) ev.updateCharacterSprite();
+    ev.setOpacity(255);
+    ev.setThrough(false);
+    ev._npcZombified = true;
+    return true;
+  }
+
+  // A map that still has a manned till on it is a safe zone: the whole map is
+  // left unzombified so the ordinary staffing passes populate it with living
+  // NPCs the way a non-zombie world would, and (since zombification is the
+  // only source of an undead map event) no undead ever stands on it either.
+  function mapIsZombieSafeZone() {
+    if (!$gameMap) return false;
+    return $gameMap.events().some(ev => Utils.hasShopTag(ev?.event()?.note));
+  }
+
+  // Every slot the crowd would have been dealt into, walked once. Returns the
+  // events that are still people, so the ordinary staffing runs on those alone.
+  function zombifyMapNPCs() {
+    if (!$gameMap || !$dataMap) return;
+    if (mapIsZombieSafeZone()) return;
+    for (const ev of $gameMap.events()) {
+      const data = ev && ev.event ? ev.event() : null;
+      if (!data) continue;
+      if (String(data.name || "").startsWith("Player")) continue; // i18n-ignore: event name matched at runtime
+      const note = data.note || "";
+      if (Utils.hasShopTag(note)) continue;      // a till is not a person
+      const isRosterSlot = String(data.name || "").startsWith("NPC"); // i18n-ignore: event name matched at runtime
+      if (!isRosterSlot && !Utils.hasAITag(note) && !Utils.hasLocalTag(note)) continue;
+      if (ev._npcZombified) continue;
+      zombifyEvent(ev);
+    }
+  }
+
   function stageShopPersonas() {
+    // Nobody is behind any counter in an empty world.
+    if (Config.isEmptyWorld()) return;
     const SSM = window.NPCSim?.ShopShiftManager;
     if (!SSM || !$dataMap || !$gameMap) return;
     const mapId = $gameMap.mapId();
@@ -3627,6 +4849,15 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         if ($gameMap?.mapId() !== mapId) return;
         $gameMap.setupNPCControllers();
         window.NPCSim?.placeNPCsInActivities?.();
+        // After the spawn pass, which clears the self switches of every slot it
+        // deals: whoever this world lost goes back behind their blank page.
+        GoneRegistry.applyToMap();
+        // ...and whoever else's party was left standing here turns up.
+        try {
+          VisitingParties.spawnHere();
+        } catch (e) {
+          console.error("[NPC System] visiting party spawn failed", e);
+        }
       });
     }
   };
@@ -3662,6 +4893,21 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // leaves their placeholder slots alone, which is what the multiplayer
     // avatars on those maps need.
     if (Config.isNPCFreeMap(currentMapId)) return;
+
+    // Nobody is left to spawn anywhere in an empty world. The placeholder
+    // slots the crowd would have been dealt into are erased rather than left
+    // standing, or every town would be full of motionless strangers wearing
+    // whatever graphic their event page was authored with.
+    if (Config.isEmptyWorld()) {
+      eraseUnpeopledEvents();
+      return;
+    }
+
+    // Nine in ten of the crowd are undead instead. Run BEFORE the roster is
+    // staffed so the dead are never given a brain, a job or a conversation:
+    // Utils.isControllableEvent refuses a zombified slot, so the <AI> and
+    // <Local> passes below skip them of their own accord.
+    if (Config.isZombieWorld()) zombifyMapNPCs();
 
     $gameSystem._npcMapSizes = $gameSystem._npcMapSizes || {};
     $gameSystem._npcMapSizes[currentMapId] = $dataMap.width * $dataMap.height;
@@ -3700,6 +4946,27 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     stageShopPersonas();
 
     if (currentMapId === 636) return ProceduralManager.setupProceduralMapNPCs();
+
+    // Bologna: one map id for every cell of the OSM grid, no authored events on
+    // any of them. BolognaMapSystem injects the empty slots before the map is
+    // set up; the city is then filled the way Omega City is, so a Bolognese
+    // stands next to somebody who came in from any other town in the world,
+    // Earth or otherwise.
+    if (currentMapId === Config.BOLOGNA_MAP_ID && window.BolognaMapSystem) {
+      const bolognaGroup = ProceduralManager.ensureBolognaSettlement();
+      if (bolognaGroup) {
+        SpawnManager.randomizeOmegaCityMap(currentMapId, bolognaGroup, {
+          count: Config.BOLOGNA_NPC_COUNT,
+          proceduralRatio: Config.BOLOGNA_PROCEDURAL_RATIO,
+          // The borrowed half comes from the global pool, i.e. from every map
+          // group in the world, alien crews included.
+          poolGroup: Config.GLOBAL_GROUP_NAME,
+          nativePlace: bolognaGroup,
+        });
+        $gameMap._npcSystemGroupHandled = true;
+      }
+      return;
+    }
 
     if (MapManager.isHouseMap(currentMapId)) {
       const houseGrpName = MapManager.getCurrentMapGroup()
@@ -3783,8 +5050,12 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         // also spawning as a separate wanderer here, see ShopShiftManager
         // (NPCSimulationCore.js) and the reservation filter in spawnAssignedNPCs.
         // Must run after the roster (_npcGroupAssignments[currentMapId]) is
-        // settled above, so local-resident candidates are available.
-        window.NPCSim?.ShopShiftManager?.assignPersonas?.(currentMapId, groupName);
+        // settled above, so local-resident candidates are available. Skipped
+        // in an empty world, same rule as stageShopPersonas: nobody is behind
+        // any counter, the till stays but the persona does not get drawn.
+        if (!Config.isEmptyWorld()) {
+          window.NPCSim?.ShopShiftManager?.assignPersonas?.(currentMapId, groupName);
+        }
 
         SpawnManager.spawnAssignedNPCs(currentMapId, group, groupName);
         $gameMap._npcSystemGroupHandled = true;
@@ -3800,8 +5071,11 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
 
     // <AI>-tagged events get an NPCController whenever they're present,
     // pre-placed AI events are deliberate map-design choices, so they're
-    // wired up regardless of <MapGroup>/<Abandoned> status.
-    const npcEvents = $gameMap.events().filter(e => Utils.hasAITag(e?.event()?.note));
+    // wired up regardless of <MapGroup>/<Abandoned> status. A tagged event the
+    // author drew no face on (or one already recruited into the party, its
+    // self-switch A on) is not a person and is left alone, see
+    // Utils.isControllableEvent.
+    const npcEvents = $gameMap.events().filter(e => Utils.hasAITag(e?.event()?.note) && Utils.isControllableEvent(e));
 
     // If a group/global-group pass already handled NPCs on this map, skip
     // this section's repositioning and culling to avoid overwriting it.
@@ -3833,7 +5107,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
 
     // Setup LOCAL NPCs on the map (always spawn here regardless of group rosters,
     // their template can still travel to other maps' rosters, see buildNPCPool)
-    const localEvents = $gameMap.events().filter(e => e?.event()?.note?.toLowerCase().includes("local"));
+    const localEvents = $gameMap.events().filter(e => Utils.hasLocalTag(e?.event()?.note) && Utils.isControllableEvent(e));
     const passableTiles = [...MapManager.findPassableTerrainTiles()];
     localEvents.forEach(npc => {
       // Never relocate or claim the active Player 2 avatar.
@@ -3859,7 +5133,26 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         controller.decideNextGoal();
       }
     });
+
+    // The dead have the last word. The staffing passes above may have painted
+    // a face onto a slot before isControllableEvent could refuse it (the
+    // roster assignment writes sprites straight onto the event), so the
+    // zombified slots are re-asserted here: same troop, same tile, the
+    // creature's own sprite back on top. Idempotent, and a no-op everywhere
+    // but a zombie world.
+    if (Config.isZombieWorld()) reassertZombies();
   };
+
+  // Puts every already-zombified slot back the way zombifyEvent left it.
+  function reassertZombies() {
+    if (!$gameMap) return;
+    for (const ev of $gameMap.events()) {
+      if (!ev || !ev._npcZombified || !ev._fixedTroopId) continue;
+      if (ev.updateCharacterSprite) ev.updateCharacterSprite();
+      ev.setOpacity(255);
+      ev.setThrough(false);
+    }
+  }
 
   // Pending hour-boundary refresh stages, processed one per frame (see below)
   let _hourlyRefreshQueue = null;
@@ -3932,7 +5225,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
             // hour boundary replaces any still-pending queue.
             _hourlyRefreshQueue = { mapId, steps: [
               () => SpawnManager.initializeGroupNPCs(groupName, mapId),
-              () => window.NPCSim?.ShopShiftManager?.assignPersonas?.(mapId, groupName),
+              () => { if (!Config.isEmptyWorld()) window.NPCSim?.ShopShiftManager?.assignPersonas?.(mapId, groupName); },
               () => SpawnManager.refreshCurrentMapForHour(groupName),
             ] };
           }
@@ -4079,6 +5372,11 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // Procedural recruit lifecycle (map 636): record a citizen that joined the
     // party so it is cached in the world folder and never respawns on its tile.
     recordProceduralRecruit: ProceduralManager.recordProceduralRecruit,
+    // One person put on the procedural map outside the population pass, on a
+    // slot that pass did not need. `{ visitor: true }` draws an authored face
+    // from the world-wide pool instead of minting a citizen of this square.
+    // Used by RoadCarAI for the drivers who pull over and get out.
+    spawnRoadsideNPC: ProceduralManager.spawnRoadsideNPC,
     getRecruitedProcEventIds: ProceduralManager.getRecruitedEventIds,
     // --- Map Battle Mode stepping (MapBattleMode.js) -------------------------
     // Bank N tiles of movement for every live NPC on the map. Called once per
@@ -4094,5 +5392,76 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       }),
     clearTacticalSteps: () =>
       ($gameSystem.npcControllers || []).forEach(c => c?.clearTacticalSteps?.()),
+    // --- Making way in a one-tile corridor (NPCYield) ------------------------
+    // Exposed so another movement plugin can ask an NPC to clear a passage
+    // (or read the geometry the check runs on) rather than duplicating it.
+    isNarrowTile: (x, y) => NPCYield.isNarrow(x, y),
+    requestYield: (x, y) => {
+      const c = NPCYield.controllerAt(x, y);
+      if (!c) return false;
+      c.yieldToPlayer();
+      return c.state === 'yielding';
+    },
   };
+
+  //===========================================================================
+  // Visiting parties: the map hooks, the sprite and the interaction
+  //===========================================================================
+
+  // A visitor spawned into a session whose spriteset is already built has to
+  // be given its sprite by hand, exactly as a mid-session animal or crop is.
+  Spriteset_Map.prototype.addVisitorCharacterSprite = function (event) {
+    if (!this._characterSprites || !this._tilemap) return;
+    const sprite = new Sprite_Character(event);
+    this._characterSprites.push(sprite);
+    this._tilemap.addChild(sprite);
+  };
+
+  // Where a playthrough is standing is written down when it saves. Only a real
+  // manual save into the playthrough's own slot counts (see isRecordableSlot):
+  // the autosave is the world's, shared by everybody, and a quicksave is
+  // scratch. The record goes in before the world files are flushed, which
+  // DataManager.saveGame does on the way out.
+  const _DataManager_saveGame_presence = DataManager.saveGame;
+  DataManager.saveGame = function (savefileId) {
+    try {
+      VisitingParties.record(savefileId);
+    } catch (e) {
+      console.error("[NPC System] failed to record where the party was left", e);
+    }
+    return _DataManager_saveGame_presence.call(this, savefileId);
+  };
+
+  // Talking to somebody else's party member. Three answers only: hear them
+  // out, read them properly, or leave them be. Everything that would reach
+  // into the playthrough they belong to is not on offer here at all, and the
+  // panel strips itself down for them as well (NPCEmpathizeUI).
+  PluginManager.registerCommand(pluginName, "VisitorInteract", args => {
+    const key = String((args && args.key) || "");
+    const found = VisitingParties.memberByKey(key);
+    const name = (found && found.name) || "";
+    if (!name) return;
+    $gameMessage.setChoices(
+      [T('NPCSystem.visitor.talk'), T('NPCSystem.visitor.empathize'), T('NPCSystem.visitor.cancel')],
+      0, 2
+    );
+    $gameMessage.setChoiceCallback(choice => {
+      if (choice === 0) {
+        // A line of their own, in their own voice: the same Markov banks every
+        // other NPC in the world speaks out of.
+        let line = "";
+        try {
+          line = window.generateMarkovString ? window.generateMarkovString("all") : "";  // i18n-ignore: Markov bank id
+        } catch (e) { line = ""; }
+        if (!line) line = T('NPCSystem.visitor.silent');
+        $gameMessage.setSpeakerName(name);
+        $gameMessage.add(line);
+        try {
+          window.NPCEmpathize?.recordNPCLine?.(name, line);
+        } catch (e) { /* the line was still said */ }
+      } else if (choice === 1) {
+        window.NPCEmpathize?.openByName?.(name);
+      }
+    });
+  });
 })();

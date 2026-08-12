@@ -1,0 +1,35 @@
+{
+  "ui": {
+    "back": "Back",
+    "title": "Augments",
+    "tab": {
+      "fitted": "Fitted ({count})",
+      "catalogue": "Catalogue ({count})"
+    },
+    "noneFitted": "Nobody in the party is carrying an augment.",
+    "noCatalogue": "No augment catalogue is loaded.",
+    "noneSelected": "Pick an augment to read its dossier.",
+    "wornBy": "{actor} · {part}",
+    "type": {
+      "biological": "Biological",
+      "technological": "Technological",
+      "magical": "Magical"
+    },
+    "damagedHost": "host part damaged",
+    "effects": "Effects",
+    "noStatChange": "No change to any parameter.",
+    "grantedSkill": "Ability granted",
+    "alwaysCarried": "Carried into every fight; it spends no skill slot.",
+    "sockets": "Sockets it fits",
+    "noSocket": "No socket accepts it.",
+    "fittedTo": "Fitted to",
+    "damagedWarning": "The part it sits in is ruined. The augment still works, but the limb does not.",
+    "severWarning": "Severing the part takes the augment with it.",
+    "need": {
+      "halted": "{need} never depletes.",
+      "slowed": "{need} drains {pct}% slower.",
+      "hastened": "{need} drains {pct}% faster.",
+      "restores": "{need} refills instead of draining, at {pct}% of the usual rate."
+    }
+  }
+}

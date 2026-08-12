@@ -8,14 +8,7 @@
   "hint": {
     "loading": "",
     "no3d": "",
-    "aim": "",
-    "power": "",
-    "casting": "",
-    "waiting": "",
-    "bite": "",
-    "reeling": "",
-    "caught": "",
-    "miss": ""
+    "casting": ""
   },
   "meter": {
     "power": "",

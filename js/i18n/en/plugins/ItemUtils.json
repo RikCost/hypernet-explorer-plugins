@@ -19,6 +19,10 @@
     "Epic": "Epic",
     "Legendary": "Legendary"
   },
+  "encumbrance": {
+    "title": "Overencumbered",
+    "load": "{load} carried, movement slowed"
+  },
   "addiction": {
     "all": "Every craving",
     "label": "Craving",

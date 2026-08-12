@@ -2,35 +2,43 @@
   "HelpTopics": {
     "squishing": {
       "title": "Lore: The Squishing",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "description": "On 21 December 2012, the goddess of discord Eris will kill the goddess of justice Maat by hurling the Omega Tower at her. That has already happened, in the future. What reached this dimension was the throw's echo, sent twenty years backward and across ninety-two dimensions, landing on 21 December 1992 as dimension three's own sky, ours.\n\nThe paradox has been fraying the timeline and the stability of all ninety-two dimensions ever since. From 1992 onward, spacetime began knotting itself into localized time-loop bubbles (see: the Rule of 80), and fragments of other dimensions started collapsing into this one, the Empty Empire of Varlenia foremost among them. The damage compounds: by 2012, when the throw finally lands for real, the distortion is expected to make this dimension outright uninhabitable.\n\nSquishing does not strike every dimension evenly. The higher a dimension's number, the faster it unravels, the Green Fields, dimension 77, are already largely uninhabitable. The Omega Tower, driven into the earth by the very throw that started all this, is the one thing still holding the ninety-two dimensions apart from collapsing into each other; without it, by most accounts, they already would have.",
+      "type": "lore"
     },
     "ruleOf80": {
       "title": "Lore: The Rule of 80",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      "description": "Since the Squishing began, anything that moves faster than 80 kilometers per hour is pulled into the nearest time-loop bubble, a patch of spacetime, from a few meters to hundreds of kilometers across, where the day resets at its end as if it never happened. Once inside, the rule inverts: the only way out is to move outward past 80 km/h again, and staying under that speed keeps you looping.\n\nBubbles are nearly invisible from the outside, little more than a shimmer in the air at close range, so they are marked on every road map to keep travelers from wandering in by accident. Their number and their size have both been growing since 1992, and both keep climbing as 2012 approaches.\n\nLooping has its own grim comfort: the only way to die for good inside a bubble is to die while moving above 80 km/h, or be struck by something that is. Everything else just resets. The cost is stagnation, the mind adjusts to the repetition faster than most expect, and a looper keeps their memories of every previous day even as the world resets around them. No signal, electronic, mental, or magical, crosses a bubble's edge, which is why carrier pigeons fitted with USB drives (they can hit 90-100 km/h with a tailwind) remain the fastest reliable post between one loop and the next, and why the Truckers Society exists at all: someone has to carry people, goods, and news between communities that live in different bubbles. Bubba's liminal engine is the one known way to drive straight through a bubble without ever slowing below the threshold.",
+      "type": "lore"
     },
     "encompassingRoad": {
       "title": "Lore: The Encompassing Road",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      "description": "Every road in every world of the multiverse is, underneath, the same road. Bubba's liminal engine compresses the stretch ahead of a vehicle, and correctly calibrated, it opens onto the Encompassing Road itself: a mode of travel where an ordinary highway exit can lead somewhere else entirely, another place, another dimension, another time, even the Scraps of Creation.\n\nThe road predates every driver on it. Trillions of years ago, so the story goes, the concept of a road was born from the God of Asphalt, who paved the first one, and became the first victim of a hit-and-run, run down by a greater god.",
+      "type": "lore"
     },
     "magesGuild": {
       "title": "Lore: The Mages Guild",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "Founded in 950 BC by King Solomon, the Mages Guild governed the world's hidden balance for millennia before Margaret Thatcher revealed the existence of magic to the entire planet, live, when she deployed it during the Falklands War. In the early 1900s the Guild was refounded by Sir Aleister Crowley under the patronage of the British royal house as a pseudo-chivalric order, which is why its leadership still carries the styles Sir and Lady.\n\nBeyond rebuilding lost technology with magic on behalf of the world's governments, the Guild's stated purpose is defending reality from extradimensional threats and the horrors the Squishing keeps letting in. Internally it is fractured into as many currents as there are schools of magic, but every major decision runs through the Three Pillars, who stand for the past, the present, and the future. As of 2001, the seats are held by Sir Aleister Crowley (the past), Lady Margaret Thatcher (the present), and 'the Father,' Shoko Asahara (the future).\n\nHolding a Pillar's seat halts its holder's aging for as long as they keep it; a Pillar's term normally runs fifty years. Crowley has never once stepped down, and nobody left in the Guild is in any position to make him, he knows spells even the gods have never heard of.",
+      "type": "lore"
     },
     "hypercapitalistCollective": {
       "title": "Lore: Hypercapitalist Collective",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "The Hypercapitalist Collective is a pyramid scheme the size of a continent, running the trade between dimensions. Its members took the Rule of 80 and made it doctrine: by staying above the threshold long enough, their bodies stopped resetting even once they finally stand still, so while the rest of the world loops and forgets, the Collective remembers everything, indefinitely.\n\nThat memory is the whole business model. They sell escapes to people trapped in time loops, and they trade absolutely anything else, memories and emotions included. They also hold a monopoly on the one resource nobody can loop their way around: they control every source of clean water left, while everything outside their reach is cut with LSD.\n\nThe Collective is at open war with the Archive Foundation, whose radical-transparency doctrine stands directly in the way of a trade empire built on secrecy and leverage, and stands allied with the Gods.",
+      "type": "lore"
     },
     "emTheMemoryWitch": {
       "title": "Lore: Em, the Memory Witch",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "description": "Em was born in 1984 in Wimbledon, Britannia, wanting to be a witch in an age that had filed magic away among the fairy tales. That changed when Margaret Thatcher, who was secretly a power broker within the Mages Guild, needed a focal point for the Solomon Ritual and chose her.\n\nThe ritual's price was 92% of her memories. They did not simply vanish, they were forged into the Spear of Memory, the same weapon Eris later used to kill the Father aspect of YHWH. Em woke up alone on Ritual Island on the first of January, 2001, with no past she could recall and a magical power she is still learning to hold.\n\nShe has been on the road ever since, riding a camper she shares with Bubba, heading toward a meeting in Beagle that she can barely remember agreeing to.",
+      "type": "lore"
     },
     "camelcaseMagic": {
       "title": "Lore: CamelCase Magic",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "description": "Every spell cast since the Squishing must be written and spoken in CamelCase: words run together, a capital letter opening each one. It is not stylistic, and it is not optional. FireBall works. 'Fire ball' does not, and speaking it costs the caster dearly for the attempt.\n\nMulti-word formulas belong to a different tier entirely: transcendentals, incantations powerful enough to reshape reality on command, and the exclusive province of gods. A mortal who breaks a spell into separate words has the universe read it as an attempted transcendental and bill them accordingly, anywhere from the loss of their voice to considerably worse.\n\nGrimoires make the rule visible: a spell written wrong on the page begins infecting the neighboring words with copies of itself, and a book left unburned will go on to consume whatever is left beside it. A caster's active spells are chosen while they sleep, each carrying its own cap on daily uses. Slot two spells into the same slot and they fuse into a single temporary spell for as long as it holds; permanent versions of proven combinations can be bought from vending machines, or earned through ritual.",
+      "type": "lore"
     },
     "alagaddaCityOfMasks": {
       "title": "Lore: Alagadda, City of Masks",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "[Archive Foundation dossier, incomplete]\n\nAlagadda does not appear on any map the Guild or the Foundation has managed to fix in place, and every field team sent looking for it has come back with a different account of how they got in, if they came back at all. What survives every retelling, and what every witness insists on repeating first, is the one rule the city enforces without exception: every visitor wears a mask, and it does not come off.\n\nRemove it, for any reason, for any length of time, and the city stops counting you as a person. The condition has a name on file, Unperson, and a description consistent across every witness: invisible, untouchable, unable to leave, drifting through streets that no longer register you exist.\n\nTotal Disclosure notwithstanding, this is the entirety of what the Foundation is willing to put its name to. Field teams are advised: mask on, mask secured, mask never removed.",
+      "type": "lore"
     },
     "bladeSeeds": {
       "title": "Blade Seeds",
@@ -134,71 +142,287 @@
     },
     "arcaneSurge": {
       "title": "State: Arcane Surge",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "Increases magic power but consumes MP each turn. It raises INT by 50%, raises WIS by 50% and drains 10% of max MP every turn. It lasts 3-5 actions.",
+      "type": "state"
     },
     "berserk": {
       "title": "State: Berserk",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "Increases attack power but decreases defense and makes target attack randomly. It raises STR by 50% and lowers CON by 30%. The afflicted attacks anyone at random, ally or enemy. It lasts 2-4 actions.",
+      "type": "state"
     },
     "bleeding": {
       "title": "State: Bleeding",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "It drains 10% of max HP every turn. It does not wear off on its own. And it follows you out of the fight.",
+      "type": "state"
     },
     "blind": {
       "title": "State: Blind",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      "description": "It lowers accuracy by 50%. It lasts 3-5 actions.",
+      "type": "state"
     },
     "burned": {
       "title": "State: Burned",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "It drains 10% of max HP every turn. It does not wear off on its own. And it follows you out of the fight.",
+      "type": "state"
     },
     "charm": {
       "title": "State: Charm",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "description": "It carries no stat change of its own. The afflicted turns on their own side. It lasts 2-4 actions. A solid hit can break it early.",
+      "type": "state"
     },
     "cold": {
       "title": "State: Cold",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "It lowers ice damage taken 50%, raises STR by 10% and raises fire damage taken 200%. It lasts 5 turns.",
+      "type": "state"
     },
     "confusion": {
       "title": "State: Confusion",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "It carries no stat change of its own. The afflicted attacks anyone at random, ally or enemy. It lasts 2-4 actions. A solid hit can break it early.",
+      "type": "state"
     },
     "shadow": {
-      "title": "State: Shadow",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "title": "State: Shadow Veil",
+      "description": "Makes target harder to hit but also reduces their accuracy. It lowers accuracy by 40% and lowers how often it is targeted by 50%. It lasts 2-4 actions.",
+      "type": "state"
     },
     "silence": {
       "title": "State: Silence",
-      "description": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "description": "It seals a school of skills. It lasts 3-5 actions.",
+      "type": "state"
     },
     "sleep": {
       "title": "State: Sleep",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      "description": "It lowers evasion by 100%. The afflicted cannot act at all. It lasts 3-5 turns. A solid hit can break it early.",
+      "type": "state"
     },
     "static": {
       "title": "State: Static",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "It lowers thunder damage taken 50% and raises STR by 10%. It lasts 5 turns.",
+      "type": "state"
     },
     "stun": {
       "title": "State: Stun",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "It lowers evasion by 100%. The afflicted cannot act at all. It lasts 1-2 turns.",
+      "type": "state"
     },
     "unbalanced": {
       "title": "State: Unbalanced",
-      "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      "description": "Target has a chance to fail their action at the end of each turn. It lowers accuracy by 30%. It lasts 1-3 actions. A solid hit can break it early.",
+      "type": "state"
     },
     "vulnerability": {
       "title": "State: Vulnerability",
-      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+      "description": "Decreases the target's physical defense. It lowers CON by 50%. It does not wear off on its own. And it follows you out of the fight.",
+      "type": "state"
     },
     "wet": {
       "title": "State: Wet",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      "description": "It lowers fire damage taken 50% and raises thunder damage taken 100%. It lasts 5 turns.",
+      "type": "state"
     },
     "petro": {
       "title": "Petro",
       "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+    },
+    "immortal": {
+      "title": "State: Immortal",
+      "description": "It wards off Dead. It lasts 1-2 turns.",
+      "type": "state"
+    },
+    "poison": {
+      "title": "State: Poison",
+      "description": "It drains 5% of max HP every turn. It does not wear off on its own. Walking it off works too, and it follows you out of the fight.",
+      "type": "state"
+    },
+    "rage": {
+      "title": "State: Rage",
+      "description": "It raises STR by 50%. The afflicted attacks an enemy at random and cannot be commanded. It lasts 2-4 actions. A solid hit can break it early.",
+      "type": "state"
+    },
+    "freeze": {
+      "title": "State: Freeze",
+      "description": "It lowers evasion by 100%, seals a school of skills and seals a school of skills. The afflicted cannot act at all. It lasts 3 turns.",
+      "type": "state"
+    },
+    "paralysis": {
+      "title": "State: Paralysis",
+      "description": "It lowers evasion by 100%. The afflicted cannot act at all. It lasts 3 turns.",
+      "type": "state"
+    },
+    "lockedOn": {
+      "title": "State: Locked on",
+      "description": "Increases critical rate It raises critical rate by 300%. It lasts 2-4 actions.",
+      "type": "state"
+    },
+    "hpRegeneration": {
+      "title": "State: HP Regeneration",
+      "description": "It restores 10% of max HP every turn. It lasts 4 turns.",
+      "type": "state"
+    },
+    "mpRegeneration": {
+      "title": "State: MP Regeneration",
+      "description": "It restores 10% of max MP every turn. It lasts 4 turns.",
+      "type": "state"
+    },
+    "apRegeneration": {
+      "title": "State: AP Regeneration",
+      "description": "It restores 10% of max AP every turn. It lasts 4 turns.",
+      "type": "state"
+    },
+    "magicReflection": {
+      "title": "State: Magic Reflection",
+      "description": "It raises magic reflection by 100%. It lasts 5 turns.",
+      "type": "state"
+    },
+    "protect": {
+      "title": "State: Protect",
+      "description": "It changes how the battler behaves. It lasts 1 turn.",
+      "type": "state"
+    },
+    "provoke": {
+      "title": "State: Provoke",
+      "description": "It raises how often it is targeted by 800%. It lasts 5 turns.",
+      "type": "state"
+    },
+    "hide": {
+      "title": "State: Hide",
+      "description": "It stops how often it is targeted entirely. It lasts 5 turns.",
+      "type": "state"
+    },
+    "counterAttack": {
+      "title": "State: Counter Attack",
+      "description": "It raises counter rate by 100%. It lasts 3 actions.",
+      "type": "state"
+    },
+    "statusAilmentBlock": {
+      "title": "State: Status Ailment Block",
+      "description": "It wards off 9 different conditions. It lasts 5 turns.",
+      "type": "state"
+    },
+    "inspired": {
+      "title": "State: Inspired",
+      "description": "Reduces MP cost. It lowers MP cost by 75%. It lasts 5 turns.",
+      "type": "state"
+    },
+    "hot": {
+      "title": "State: Hot",
+      "description": "It raises water damage taken 100%, raises STR by 10% and lowers petro damage taken 50%. It lasts 5 turns.",
+      "type": "state"
+    },
+    "divineShield": {
+      "title": "State: Divine Shield",
+      "description": "Reduces all incoming damage and prevents critical hits. It lowers physical damage taken 30%, lowers fire damage taken 30%, lowers ice damage taken 30%, lowers thunder damage taken 30%, lowers water damage taken 30%, lowers petro damage taken 30%, lowers wind damage taken 30%, lowers sacred damage taken 30%, lowers cursed damage taken 30% and raises critical evasion by 100%. It lasts 3-5 turns.",
+      "type": "state"
+    },
+    "deathMark": {
+      "title": "State: Death Mark",
+      "description": "Target receives increased damage from all sources and is more likely to be targeted. It raises physical damage taken 30%, raises fire damage taken 30%, raises ice damage taken 30%, raises thunder damage taken 30%, raises water damage taken 30%, raises petro damage taken 30%, raises wind damage taken 30%, raises sacred damage taken 30%, raises cursed damage taken 30% and raises how often it is targeted by 900%. It lasts 2-3 actions.",
+      "type": "state"
+    },
+    "perfectFocus": {
+      "title": "State: Perfect Focus",
+      "description": "Guarantees critical hits but reduces defense. It raises critical rate by 100% and lowers CON by 20%. It lasts 2-3 turns.",
+      "type": "state"
+    },
+    "ethereal": {
+      "title": "State: Ethereal",
+      "description": "Target takes no physical damage but double magical damage. It makes physical damage harmless, raises fire damage taken 100%, raises ice damage taken 100%, raises thunder damage taken 100%, raises water damage taken 100%, raises petro damage taken 100%, raises wind damage taken 100%, raises sacred damage taken 100% and raises cursed damage taken 100%. It lasts 3-5 turns.",
+      "type": "state"
+    },
+    "lifeLink": {
+      "title": "State: Life Link",
+      "description": "Damage taken is shared among all party members. It carries no stat change of its own. It lasts 3-5 turns.",
+      "type": "state"
+    },
+    "nausea": {
+      "title": "State: Nausea",
+      "description": "It drains 10% of max MP every turn. It does not wear off on its own. And it follows you out of the fight.",
+      "type": "state"
+    },
+    "drunk": {
+      "title": "State: Drunk",
+      "description": "It drains 40% of max AP every turn. It does not wear off on its own. A solid hit can break it early, walking it off works too, and it follows you out of the fight.",
+      "type": "state"
+    },
+    "infected": {
+      "title": "State: Infected",
+      "description": "It drains 10% of max HP every turn. It does not wear off on its own. And it follows you out of the fight.",
+      "type": "state"
+    },
+    "floating": {
+      "title": "State: Floating",
+      "description": "It raises thunder damage taken 100%, raises STR by 10%, makes petro damage harmless and lowers physical damage taken 50%. It lasts 5 turns.",
+      "type": "state"
+    },
+    "invisible": {
+      "title": "State: Invisible",
+      "description": "It raises evasion by 999%, raises magic evasion by 999%, raises critical evasion by 999% and lowers how often it is targeted by 70%. It lasts 3 turns. A solid hit can break it early.",
+      "type": "state"
+    },
+    "oily": {
+      "title": "State: Oily",
+      "description": "It raises fire damage taken 899%. It lasts 5 turns.",
+      "type": "state"
+    },
+    "dodge": {
+      "title": "State: Dodge",
+      "description": "It raises evasion by 200% and raises magic evasion by 200%. It lasts 1 turn.",
+      "type": "state"
+    },
+    "withdrawal": {
+      "title": "State: Withdrawal",
+      "description": "It lowers STR by 15%, lowers INT by 15%, lowers DEX by 10%, lowers accuracy by 15% and lowers evasion by 5%. It does not wear off on its own. And it follows you out of the fight.",
+      "type": "state"
+    },
+    "grappled": {
+      "title": "State: Grappled",
+      "description": "Held in a lock. Agility and evasion collapse and physical blows land harder. It lowers DEX by 60%, lowers evasion by 60% and raises physical damage taken by 25%. It lasts 2-3 turns.",
+      "type": "state"
+    },
+    "pinned": {
+      "title": "State: Pinned",
+      "description": "Pinned to the ground and unable to act. One solid hit shakes it loose. It lowers evasion by 90%. The afflicted cannot act at all. It lasts 1-2 turns. A solid hit can break it early.",
+      "type": "state"
+    },
+    "guardBroken": {
+      "title": "State: Guard Broken",
+      "description": "Their defence is prised open: defence halved and guarding does nothing. It lowers CON by 50%, lowers WIS by 20% and stops guarding entirely. It lasts 2 turns.",
+      "type": "state"
+    },
+    "winded": {
+      "title": "State: Winded",
+      "description": "The breath is gone: slower, and no stamina builds up while it lasts. It lowers DEX by 20%, lowers AP charge rate by 65% and drains 5% of max MP every turn. It lasts 3 turns.",
+      "type": "state"
+    },
+    "comboReady": {
+      "title": "State: Combo Ready",
+      "description": "The opening has been read and the follow-up is loaded. Some techniques hit far harder with it. It raises accuracy by 20% and raises critical rate by 15%. It lasts 2 turns.",
+      "type": "state"
+    },
+    "vitalExposed": {
+      "title": "State: Vital Exposed",
+      "description": "A vital point is uncovered. Every physical blow that follows does half again as much. It raises physical damage taken by 50% and lowers critical evasion by 30%. It lasts 2-3 turns.",
+      "type": "state"
+    },
+    "rootedStance": {
+      "title": "State: Rooted Stance",
+      "description": "Planted and immovable: much harder to hurt or knock over, and slower for it. It raises CON by 40%, lowers DEX by 30% and wards off 3 different conditions. It lasts 4 turns.",
+      "type": "state"
+    },
+    "flowState": {
+      "title": "State: Flow State",
+      "description": "Reading the blow before it is thrown: turns attacks aside and answers some of them. It raises counter rate by 25%, raises evasion by 20% and lowers physical damage taken by 15%. It lasts 3 turns.",
+      "type": "state"
+    },
+    "chiBurn": {
+      "title": "State: Chi Burn",
+      "description": "The price of spending everything at once. The body keeps paying for a while. It drains 4% of max HP every turn, lowers INT by 15% and lowers AP charge rate by 50%. It lasts 3 turns.",
+      "type": "state"
+    },
+    "concussed": {
+      "title": "State: Concussed",
+      "description": "A blow to the head. Nothing aims true and nothing thinks straight. It lowers INT by 30%, lowers WIS by 30% and lowers accuracy by 20%. It lasts 2-3 turns.",
+      "type": "state"
     }
   }
 }

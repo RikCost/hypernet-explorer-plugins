@@ -5,7 +5,10 @@
     "10": "His name is printed on tens of billions of banknotes and financial transaction logs, more times than the name of God across every printed Bible. The euro's security strip is laced with flecks of Fantablack scraped from the Omega Tower's outer walls, and between that arcane residue and the law that names are power, Draghi ascended as the godhead of the market itself, an abstract concept now driving the multiverse's economy from behind the scenes.",
     "6": "Current president of the Independent Midwest States, one of the three fragments the Americas were split into after independence never fully happened: the Republic of Cascadia on the east coast, the Independent Midwest States in the center, and the Atlantic Protectorate on the west coast under Britannia's control.",
     "5": "Head of the European Space Agency, currently testing new rockets built almost entirely from armor plating meant to be chewed apart by orbital debris, buying astronauts just enough time to clear low orbit. The Kessler Syndrome triggered during the Y2K event turned any ordinary launch into a coin flip with over 90% odds of failure.",
-    "1": "A mechanic from Westford, Texas, and something of a living legend. Built the Liminal Engine himself, a device that chews through dimensional energy and lets him drive across realities in a battered camper he calls The Beast. He once spent years running Route 666 with Eris, the goddess of discord, robbing banks by having her bend probability to crack any safe."
+    "1": "A mechanic from Westford, Texas, and something of a living legend. Built the Liminal Engine himself, a device that chews through dimensional energy and lets him drive across realities in a battered camper he calls The Beast. He once spent years running Route 666 with Eris, the goddess of discord, robbing banks by having her bend probability to crack any safe.",
+    "9001": "Half of what used to be a person, wired to a mana core that never quite stopped whispering. Anyone this early in their own story is still deciding which half is in charge.",
+    "9002": "A puddle with opinions. Whatever it was before it started imitating other things, it is honestly a little vague on the details itself.",
+    "9003": "Left the warren for a lab coat and never looked back, or so the paperwork claims. Every hypothesis so far has ended in something catching fire."
   },
   "emBank": {
     "0": [
@@ -69,6 +72,7 @@
       "For now she works for whoever pays, and asks the locals careful questions about their gods."
     ]
   },
+  "emOriginalLore": "Born in Wimbledon, Britannia, in 1984, on the branch where the Ritual actually happened: this is dimension three, the original. She gave up ninety-two percent of her memories to forge the spear that killed the Father aspect of YHWH, and woke on Ritual Island with no past and a magical potential that has been growing past what she can hold ever since. Every other Em fell here from somewhere else; she never had anywhere to fall from.",
   "emBackstory": [
     "Em was born in {town}, Britannia, and wanted to be a witch in an age that had filed magic away with the fairy tales.",
     "When Margaret Thatcher, quietly one of the three pillars of the Mage Guild, needed a fulcrum for the Solomonic Ritual, she picked Em. Em offered herself as the sacrifice. The price was ninety-two percent of her memories.",
@@ -99,6 +103,7 @@
   },
   "camper": "Camper",
   "theBeast": "The Beast",
+  "tutorialFallbackName": "Traveler",
   "noCharacterToSave": "No character to save!",
   "presetUpdated": "Updated character preset: {name}",
   "presetSaved": "Saved new character preset: {name} (ID: {id})",

@@ -60141,7 +60141,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$DepravedBlackguard",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -60220,7 +60220,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$DepravedBlackguard",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -60299,7 +60299,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$DepravedBlackguard",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -60378,7 +60378,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$DepravedBlackguard",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -60457,7 +60457,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$DepravedBlackguard",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -60536,7 +60536,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$PlayfulChild",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -60615,7 +60615,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$DepravedBlackguard",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -60694,7 +60694,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$PlayfulChild",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -60773,7 +60773,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$PlayfulChild",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -60852,7 +60852,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$PlayfulChild",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0
@@ -60931,7 +60931,7 @@
           "directionFix": true,
           "image": {
             "tileId": 0,
-            "characterName": "Monsters/$GoblinArcher",
+            "characterName":"Monsters/$PlayfulChild",
             "direction": 2,
             "pattern": 0,
             "characterIndex": 0

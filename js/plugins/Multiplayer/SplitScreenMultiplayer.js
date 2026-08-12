@@ -62,13 +62,13 @@
  * @text Character Image Pool
  * @desc JSON array of character image names for random P2 selection.
  * @type text
- * @default ["Actor1","Actor2","Actor3"]
+ * @default ["NPCs/!$WarSniper1","NPCs/!$SunCultist1","NPCs/!$GeniusGeneral1"]
  *
  * @param CharacterIndexPool
  * @text Character Index Pool
  * @desc JSON array of character indexes (0-7) matching the pool above.
  * @type text
- * @default [0,1,2]
+ * @default [0,0,0]
  *
  * @param ---Keyboard Controls---
  * @default
@@ -973,10 +973,13 @@
             const name = window.translateText ? window.translateText(cand.name) : cand.name;
             const cls = window.translateText ? window.translateText(cand.className) : cand.className;
 
+            // Attribute names come from $dataSystem.terms.params, which
+            // Hendrix_Localization translates in place, so the inspect panel
+            // reads the same as the character sheet in every language.
             const stats = [
-                ["ATK", cand.stats.atk], ["DEF", cand.stats.def],
-                ["MAT", cand.stats.mat], ["MDF", cand.stats.mdf],
-                ["AGI", cand.stats.agi], ["LUK", cand.stats.luk]
+                [TextManager.param(2), cand.stats.atk], [TextManager.param(3), cand.stats.def],
+                [TextManager.param(4), cand.stats.mat], [TextManager.param(5), cand.stats.mdf],
+                [TextManager.param(6), cand.stats.agi], [TextManager.param(7), cand.stats.luk]
             ];
             const statRows = stats.map(([n, v]) => `
                 <div class="inspect-meta-item">

@@ -14,5 +14,6 @@
     "PSI"
   ],
   "vitalOrganDestroyed": "L'organo vitale ({part}) di {actor} è stato distrutto! È morto all'istante ed è stato rimosso dal gruppo.",
-  "partDestroyed": "Il {part} di {actor} è stato distrutto e rimosso!"
+  "partDestroyed": "Il {part} di {actor} è stato distrutto e rimosso!",
+  "augmentLost": "L'innesto installato lì ({augment}) è stato strappato via con esso."
 }

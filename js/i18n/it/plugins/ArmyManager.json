@@ -53,5 +53,15 @@
     "other": "({n} truppe)"
   },
   "noSquads": "Nell'accampamento non ci sono squadre. Per formarne una servono almeno 2 truppe identiche.",
-  "squadHint": "Scegli una squadra dalla pagina di sinistra per assegnarle un ufficiale del gruppo e darle bonus in combattimento!"
+  "squadHint": "Scegli una squadra dalla pagina di sinistra per assegnarle un ufficiale del gruppo e darle bonus in combattimento!",
+  "availableTroops": "Truppe disponibili",
+  "recruitsAvailable": {
+    "one": "{n} recluta disponibile",
+    "other": "{n} reclute disponibili"
+  },
+  "factionLabel": "Fazione:",
+  "regimentLabel": "Reggimento:",
+  "manualFooter": "Manuale d'Esercito Mount & Blade ✦ Esoteric Industries",
+  "clickToRecruit": "Clicca per ingaggiare",
+  "cannotAfford": "Fondi insufficienti"
 }

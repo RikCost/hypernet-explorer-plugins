@@ -42,7 +42,7 @@
     },
     "11": {
       "name": "Chi Flow",
-      "desc": "Every 3rd action refunds its TP and grants a surge of extra energy."
+      "desc": "Every 3rd action refunds its AP and grants a surge of extra energy."
     },
     "15": {
       "name": "Ascetic",
@@ -102,7 +102,7 @@
     },
     "37": {
       "name": "War Caster",
-      "desc": "You cast from the front line without penalty and spells draw on TP when your MP runs dry."
+      "desc": "You cast from the front line without penalty and spells draw on AP when your MP runs dry."
     },
     "23": {
       "name": "Pact",

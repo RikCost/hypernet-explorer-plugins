@@ -95,7 +95,16 @@
     //=============================================================================
     
     class StealCalculator {
+        // There is nobody behind the counter and nobody to call, so taking
+        // something off a shelf in an empty world is not a risk, it is just
+        // carrying it out. Always 100%, whatever the item weighs or is worth.
+        static isEmptyWorld() {
+            const WM = window.WorldManager;
+            return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+        }
+
         static calculateStealChance(item, agility) {
+            if (this.isEmptyWorld()) return 100;
             const baseChance = 50;
             const agilityBonus = agility * 0.5; // 0.5% per point of agility
             const value = item.price || 0;

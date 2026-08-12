@@ -3,12 +3,15 @@
     "back": "Indietro",
     "specializations": "Specializzazioni",
     "trained": "Addestrate",
+    "all": "Tutte",
     "noneTrained": "Nessuna specializzazione ancora addestrata.",
     "untrained": "Non addestrate",
     "noneSelected": "Nessuna specializzazione selezionata.",
     "classes": "Classi",
     "traits": "Tratti",
     "towards": "Verso {level}",
+    "pointsToNext": "{points} punti ancora per {level}",
+    "mastered": "Padronanza completa. Non c'è più nulla da imparare.",
     "governingStat": "Statistica di riferimento: {stat}"
   }
 }

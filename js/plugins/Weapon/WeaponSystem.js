@@ -401,45 +401,60 @@
 
 
 
-  Game_Actor.prototype.getWeaponSounds = function () {
-    const weapons = this.weapons();
-    if (weapons.length === 0) {
-      debugLog(`Actor ${this.name()}: No weapons equipped, using unarmed sounds`);
-      // When unarmed, use glove sounds (weapon type 11)
-      return DEFAULT_WEAPON_SOUNDS[11];
-    }
-
-    const weapon = weapons[0];
-    if (!weapon) {
-      debugLog(`Actor ${this.name()}: Weapon data is null`);
-      return null;
-    }
-
-    debugLog(
-      `Actor ${this.name()}: Using weapon "${weapon.name}" (Type ID: ${weapon.wtypeId
-      })`
-    );
-
+  /**
+   * What a weapon sounds like, whoever is holding it and wherever it is being
+   * held: its own <weaponSound(s)> if it declares any, otherwise the default
+   * bank for its type. No weapon at all is a bare hand, which is what the
+   * Glove bank (type 11) is.
+   */
+  const weaponSoundsFor = (weapon) => {
+    if (!weapon) return DEFAULT_WEAPON_SOUNDS[11];
     if (weapon.weaponSounds && weapon.weaponSounds.length > 0) {
-      debugLog(
-        `Actor ${this.name()}: Found custom sounds`,
-        weapon.weaponSounds
-      );
       return weapon.weaponSounds;
     }
-
     if (weapon.wtypeId && DEFAULT_WEAPON_SOUNDS[weapon.wtypeId]) {
-      debugLog(
-        `Actor ${this.name()}: Using default sounds for type ${weapon.wtypeId}`,
-        DEFAULT_WEAPON_SOUNDS[weapon.wtypeId]
-      );
       return DEFAULT_WEAPON_SOUNDS[weapon.wtypeId];
     }
-
-    debugLog(
-      `Actor ${this.name()}: No sounds found for weapon type ${weapon.wtypeId}`
-    );
     return null;
+  };
+
+  /**
+   * Plays one of them, pitch-varied.
+   * @returns {number} the pitch it was played at, so a caller can layer another
+   *   SE over it in tune, or 0 when the weapon has nothing to say.
+   */
+  const playWeaponSoundFor = (weapon) => {
+    const sounds = weaponSoundsFor(weapon);
+    if (!sounds || sounds.length === 0) return 0;
+
+    const soundName = sounds[Math.floor(Math.random() * sounds.length)];
+    const randomPitch = 100 + (Math.random() * pitchVariation * 2 - pitchVariation);
+    const pitch = Math.round(Math.max(50, Math.min(150, randomPitch)));
+    const finalSoundName =
+      useSubfolder && !soundName.includes("/") ? "Weapons/" + soundName : soundName;
+
+    debugLog(`Playing weapon sound "${finalSoundName}" (pitch: ${pitch})`);
+    try {
+      AudioManager.playSe({
+        name: finalSoundName,
+        volume: volume,
+        pitch: pitch,
+        pan: 0,
+      });
+    } catch (error) {
+      console.error("[WeaponSystem] Error playing sound:", error);
+      return 0;
+    }
+    return pitch;
+  };
+
+  // The one reading of what a weapon sounds like, so anything holding one
+  // outside a battle (the dream's first-person weapon, DreamSystem.js) makes
+  // the same noise the same weapon makes in the party's hands.
+  window.WeaponSounds = { soundsFor: weaponSoundsFor, play: playWeaponSoundFor };
+
+  Game_Actor.prototype.getWeaponSounds = function () {
+    return weaponSoundsFor(this.weapons()[0]);
   };
 
   Game_Actor.prototype.hasNoMultiAttackSound = function () {
@@ -451,43 +466,9 @@
   };
 
   Game_Actor.prototype.playWeaponSound = function () {
-    const sounds = this.getWeaponSounds();
-    if (!sounds || sounds.length === 0) {
-      debugLog(`Actor ${this.name()}: No weapon sounds to play`);
-      return;
-    }
-
-    const soundName = sounds[Math.floor(Math.random() * sounds.length)];
-
-    const basePitch = 100;
-    const variation = pitchVariation;
-    const randomPitch = basePitch + (Math.random() * variation * 2 - variation);
-    const pitch = Math.round(Math.max(50, Math.min(150, randomPitch)));
-
-    let finalSoundName = soundName;
-    if (useSubfolder && !soundName.includes("/")) {
-      finalSoundName = "Weapons/" + soundName;
-    }
-
-    debugLog(
-      `Actor ${this.name()}: Playing sound "${finalSoundName}" (pitch: ${pitch})`
-    );
-
-    const se = {
-      name: finalSoundName,
-      volume: volume,
-      pitch: pitch,
-      pan: 0,
-    };
-
-    try {
-      AudioManager.playSe(se);
-      // Layer the elemental shimmer SE over the weapon sound when applicable.
-      this.playWeaponShimmerSE(pitch);
-    } catch (error) {
-      console.error("[WeaponSystem] Error playing sound:", error);
-      debugLog("Error details:", error);
-    }
+    const pitch = playWeaponSoundFor(this.weapons()[0]);
+    // Layer the elemental shimmer SE over the weapon sound when applicable.
+    if (pitch) this.playWeaponShimmerSE(pitch);
   };
 
   // Bullet system methods

@@ -65,8 +65,7 @@
 
       return `
         <div class="inspect-section-title">${T('MusicSelection.battleMusic')}</div>
-        <div class="ms-track-list">${rows}</div>
-        <p class="ms-hint">${T('MusicSelection.hint')}</p>`;
+        <div class="ms-track-list">${rows}</div>`;
     }
 
     // ── Right page: selected track detail ─────────────────────

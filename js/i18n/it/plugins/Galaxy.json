@@ -91,7 +91,22 @@
     "moons": "Lune",
     "oreBody": "Giacimento",
     "units": "{remaining} / {capacity} unità",
-    "condition": "Condizione"
+    "condition": "Condizione",
+    "weakSigns": "Tracce deboli"
+  },
+  "nibiru": {
+    "impactRow": "Impatto con la Terra",
+    "countdownYears": "{years} a {days} g {hh}:{mm}",
+    "countdownDays": "{days} g {hh}:{mm}",
+    "countdownNow": "da un momento all'altro",
+    "noteFar": "Un mondo senza sole, che cade dal buio su una rotta che nessuno ha tracciato e nessuno può piegare. Le effemeridi lo mettono sopra la Terra il ventuno dicembre 2012.",
+    "noteNear": "Ormai dentro il sistema, e non rallenta più. Tiene esattamente l'angolo della Terra, che è un altro modo di dire che non la mancherà.",
+    "saturnNote": "Nibiru è finito dentro il gigante, e il gigante ha preso fuoco. Saturno adesso brucia: troppo poco per essere una stella, troppo per essere ancora un pianeta. Gli anelli sono andati per primi.",
+    "towerNote": "Dove stava la Terra c'è una lancia nera alta dodici chilometri, oro su ogni spigolo, che gira nell'orbita lasciata dal suo mondo. Niente a bordo risponde, e una porta è aperta.",
+    "towerLanding": "Guglia della Torre Omega",
+    "entered": "Nibiru è entrato nel Sistema Solare.",
+    "hitSaturn": "Nibiru ha colpito Saturno. Il gigante sta bruciando.",
+    "hitEarth": "Nibiru ha colpito la Terra. Non c'è più nessuna delle due."
   },
   "unnamedGalaxy": "Galassia senza nome",
   "unit": {
@@ -145,7 +160,6 @@
     "serviced": "Riparato",
     "repair": "Ripara",
     "close": "Chiudi",
-    "landingGridHelp": "Clicca una casella, oppure spostati con le frecce e conferma con Invio/OK. Esc annulla.",
     "ship": "Nave",
     "scanForBiosignatures": "Cerca biofirme",
     "sbBridge": "Ponte SB",
@@ -160,7 +174,11 @@
     "rechargesIn": "Si ricarica tra",
     "nominal": "Nominale",
     "mineProgress": "{mined} / {capacity} unità · ~{eta}s all'esaurimento",
-    "critical": "CRITICO"
+    "critical": "CRITICO",
+    "bookmarkAdd": "Aggiungi ai segnalibri",
+    "bookmarkRemove": "Rimuovi dai segnalibri",
+    "bookmarked": "Nei segnalibri",
+    "bookmark": "Segnalibro"
   },
   "hubblePart": {
     "DF-224 Computer": {
@@ -313,7 +331,8 @@
     "companion": "classe {type} · compagna",
     "donor": "classe {type} · donatrice",
     "life": " · vita",
-    "moonOf": "{type} · luna di {planet}"
+    "moonOf": "{type} · luna di {planet}",
+    "weakLife": " · tracce deboli"
   },
   "tab": {
     "current": "Sistema attuale",
@@ -326,6 +345,7 @@
     "anomalies": "Anomalie pluridimensionali",
     "nebulae": "Nebulose",
     "starSystems": "Sistemi stellari",
+    "farSystems": "Sistemi in altre galassie",
     "bookmarks": "Segnalibri",
     "bookmarksEmpty": "Nessun segnalibro: usa il pulsante Segnalibro su una selezione qualsiasi.",
     "bookmarkedBodies": "Corpi nei segnalibri",
@@ -337,7 +357,8 @@
     "landingSites": "Siti di atterraggio",
     "patrons": "Mecenati",
     "patronsEmpty": "Nessun mondo di mecenati in archivio.",
-    "patronWorlds": "Mondi dei mecenati"
+    "patronWorlds": "Mondi dei mecenati",
+    "weakSignatures": "Tracce deboli"
   },
   "scan": {
     "worldsFound": {
@@ -346,7 +367,11 @@
     },
     "hubbleOnline": " (Hubble in linea)",
     "newCount": " · {count} nuovi",
-    "loggedInCatalog": " · registrati nel Catalogo"
+    "loggedInCatalog": " · registrati nel Catalogo",
+    "weakCount": {
+      "one": " · {count} lettura debole",
+      "other": " · {count} letture deboli"
+    }
   },
   "refuel": {
     "refuel": "Rifornisci",

@@ -52,6 +52,218 @@
         "Ho venduto le azioni prima che non valessero più niente. Il mercato è marcio.",
         "Non mettere i tuoi risparmi in borsa adesso. Fidati."
       ]
+    },
+    "earthDestroyed": {
+      "Nervous": [
+        "Siamo davvero gli ultimi? Tutti noi, a galleggiare in questa torre, e basta?",
+        "Non riesco a smettere di guardare fuori dalla finestra. Non c'è niente là fuori. Proprio niente."
+      ],
+      "Calm": [
+        "Il mondo è finito e in qualche modo siamo ancora qui. Ho fatto pace con la torre.",
+        "Fuori da queste mura ormai ci sono solo stelle. Ho smesso di aver bisogno d'altro."
+      ],
+      "Aggressive": [
+        "Un sasso ha fatto quello che niente altro poteva fare. Mi viene voglia di rompere qualcosa.",
+        "La Terra non c'è più e io respiro ancora. Qualunque cosa sia rimasta, la difenderò a pugni."
+      ],
+      "Melancholic": [
+        "Tutto quello che ho conosciuto è polvere da qualche parte là fuori. Certe notti lo sogno ancora.",
+        "Non c'è più una casa da rimpiangere. Solo questa torre, e il buio dove una volta c'era casa."
+      ],
+      "Sanguine": [
+        "Siamo vivi! Non è cosa da poco, dopo quello che è successo a tutto il resto.",
+        "Ogni mattina in cui mi sveglio in questa torre è una mattina che non pensavo di avere."
+      ],
+      "Cautious": [
+        "Riciclatori d'aria, depuratori d'acqua, scorte di scorte. In questa torre non ci si può permettere leggerezze.",
+        "Tengo un elenco di chi è ancora vivo. Si accorcia più di quanto vorrei."
+      ],
+      "Impulsive": [
+        "Andiamo a GUARDARE fuori, dai. Cosa può succedere di peggio, ormai?",
+        "La Terra non c'è più, e allora? Non me ne sto qui ferma ad aspettare che finisca l'aria anche qui."
+      ],
+      "Stoic": [
+        "Il pianeta non c'è più. La torre resiste. Io mi occupo di ciò che resiste.",
+        "Il dolore non riempie i serbatoi d'acqua. Il lavoro sì."
+      ],
+      "Paranoid": [
+        "Qualcuno in questa torre lo sapeva che sarebbe successo e non ha detto niente. Ci scommetto.",
+        "Ogni porta chiusa qui dentro nasconde una decisione che nessuno ci ha spiegato."
+      ],
+      "Empathetic": [
+        "Ognuno qui dentro ha perso tutti quelli che conosceva. Cerco di stare vicino a chi ne ha bisogno.",
+        "Siamo tutto quello che ci resta l'uno dell'altro. Mi assicuro che nessuno pianga da solo qui dentro."
+      ],
+      "Authoritative": [
+        "Il panico non tiene accese le luci. Turni, razioni, sorveglianza. È così che si resiste.",
+        "Ogni anima rimasta risponde a qualcuno, ormai. Meglio così che il caos in una torre alla deriva."
+      ],
+      "Scholarly": [
+        "Un impatto di quella portata avrebbe dovuto vaporizzare anche la torre insieme al resto. Voglio sapere perché non è successo.",
+        "Sto catalogando tutto ciò che ricordiamo della Terra prima che i ricordi comincino a sfumare."
+      ],
+      "Artistic": [
+        "Lo sto dipingendo a memoria prima di dimenticare il colore di un cielo vero.",
+        "La torre non ha più un orizzonte da dipingere. Solo il buio, e noi dentro."
+      ],
+      "Adventurous": [
+        "Da qualche parte oltre quella finestra c'è ogni direzione che sia mai esistita. Intendo vederne qualcuna.",
+        "Il pianeta intero non c'è più e in qualche modo voglio ancora sapere cosa c'è oltre il prossimo corridoio."
+      ],
+      "Nurturing": [
+        "I bambini nati in questa torre non sapranno mai che profumo ha l'erba. Glielo racconto lo stesso.",
+        "Qui dentro siamo tutti famiglia di qualcuno, ormai, che lo si sia voluto o no."
+      ],
+      "Mischievous": [
+        "Ultimi sopravvissuti e stiamo ANCORA litigando su chi tocca pulire i riciclatori.",
+        "Fine del mondo, e sono sempre io quella che nasconde la tazza del capitano. Priorità."
+      ],
+      "Cynical": [
+        "Ci mancherebbe. Il pianeta si è finalmente preso quel che si meritava, e siamo noi a dover ripulire dopo.",
+        "Ultimi sopravvissuti dell'umanità. Scommetto che qualcuno sta già cercando di far pagare l'affitto per una branda."
+      ],
+      "Disciplined": [
+        "La routine non si ferma solo perché il pianeta l'ha fatto. Il turno inizia in orario.",
+        "Esercitazioni, rotazioni, manutenzione. La disciplina è l'unica cosa che rende questa torre una casa e non una bara."
+      ],
+      "Fatalistic": [
+        "Quel sasso stava arrivando da sempre. È solo capitato che fossimo noi ancora in piedi quando è arrivato.",
+        "La Terra ha avuto il suo turno. Ora tocca a questa torre. Tutto finisce da qualche parte."
+      ],
+      "Grumpy": [
+        "Fine del mondo e ANCORA non riesco a farmi un pasto caldo qui dentro.",
+        "Sparito un intero pianeta e a rompersi sono proprio i riciclatori. Ovviamente."
+      ],
+      "Loyal": [
+        "Ho perso tutto il mio mondo, ma ho ancora chi mi sta accanto in questa torre.",
+        "Qualunque cosa resti dell'umanità, io resto al fianco di ognuno di loro."
+      ],
+      "Brave": [
+        "Il pianeta non c'è più. Va bene. Noi ci siamo ancora, e intendo farne qualcosa.",
+        "Qualcuno deve tenere in piedi questa torre. Tanto vale che sia io."
+      ],
+      "Timid": [
+        "Non mi piace più guardare fuori dalla finestra. C'è solo... niente, là fuori.",
+        "Ormai resto nei corridoi interni. Meno cose di cui aver paura, qui."
+      ],
+      "Hedonistic": [
+        "Il mondo è finito, quindi tanto vale goderci quel che resta nelle scorte.",
+        "Niente più Terra, niente più regole su cosa sia opportuno. Stasera mi prendo le razioni buone."
+      ],
+      "Apathetic": [
+        "La Terra non c'è più. La torre sì, a quanto pare, e anch'io.",
+        "Ultimi dell'umanità, eh. Non mi cambia poi tanto la giornata."
+      ],
+      "default": [
+        "La Terra non c'è più. Questa torre è tutto ciò che ne resta, e tutto ciò che resta di noi.",
+        "Siamo gli ultimi dell'umanità ormai, a galleggiare in quella che era l'orbita di casa."
+      ]
+    },
+    "earthSaved": {
+      "Nervous": [
+        "Ci ha mancati. Ci ha davvero mancati. Non smetterò di tremare per una settimana.",
+        "C'è una nuova luce nel cielo ormai e trasalisco ancora ogni volta che la guardo."
+      ],
+      "Calm": [
+        "Il cielo ha una nuova stella e la Terra gira ancora sotto i miei piedi. Mi va bene così.",
+        "Saturno brucia adesso al posto nostro. Cerco di non pensare troppo a quanto ci siamo andati vicini."
+      ],
+      "Aggressive": [
+        "Quella cosa voleva noi e si è presa Saturno invece. Bene. Che bruci pure.",
+        "Siamo ancora in piedi. Chiunque abbia deviato quel sasso, gli devo da bere."
+      ],
+      "Melancholic": [
+        "Siamo stati salvati, eppure non riesco a scrollarmi di dosso il freddo che ho sentito aspettando la fine.",
+        "Tutti festeggiano la nuova stella. Io ricordo solo quanto siamo andati vicini a non vederla mai."
+      ],
+      "Sanguine": [
+        "Guarda in alto! C'è una stella tutta nuova nel cielo e possiamo continuare a vivere sotto di essa!",
+        "La Terra è ancora qui! Da adesso ogni singolo giorno sembra un regalo!"
+      ],
+      "Cautious": [
+        "Essere stati salvati una volta non vuol dire essere al sicuro per sempre. Tengo le scorte pronte comunque.",
+        "Osservo quella nuova stella ogni notte. Non si sa mai che altro decida di cadere."
+      ],
+      "Impulsive": [
+        "Il mondo non è finito! Facciamo davvero qualcosa con il tempo che non abbiamo perso!",
+        "Nuova stella nel cielo e sono la prima a salire sul tetto della torre per vederla da vicino."
+      ],
+      "Stoic": [
+        "La minaccia è passata. La vita riprende. Non c'è altro da dire.",
+        "Saturno brucia perché noi non dovessimo. Ne prendo atto e torno al lavoro."
+      ],
+      "Paranoid": [
+        "Qualcuno lassù nella torre ha fatto succedere questo. Voglio sapere esattamente chi, e perché.",
+        "Uno scampato pericolo così non si risolve da solo. Qualcuno nasconde come ha fatto."
+      ],
+      "Empathetic": [
+        "Ho abbracciato ogni vicino che ho il giorno in cui il cielo si è acceso su Saturno invece che su di noi.",
+        "Tante persone erano terrorizzate. Sono solo felice che possiamo consolarci a vicenda invece di piangere."
+      ],
+      "Authoritative": [
+        "La crisi è passata perché la gente è rimasta al proprio posto. Ricordatelo, la prossima volta che ne arriva una.",
+        "L'ordine ha retto mentre il cielo quasi ci cadeva addosso. Non è fortuna, è disciplina. Continuate così."
+      ],
+      "Scholarly": [
+        "Un pianeta è appena diventato una stella. Non ho mai avuto così tante domande in vita mia.",
+        "La meccanica orbitale di quel mancato impatto da sola mi terrà occupato per anni."
+      ],
+      "Artistic": [
+        "C'è un colore del tutto nuovo nel cielo notturno ormai. Devo dipingerlo prima di farci l'abitudine.",
+        "Saturno che brucia così, è terrificante ed è la cosa più bella che abbia mai visto."
+      ],
+      "Adventurous": [
+        "Una stella completamente nuova è appena comparsa sopra le nostre teste. Voglio vederla da ogni angolazione possibile.",
+        "Il mondo per poco non finiva e invece ci siamo ritrovati un nuovo punto di riferimento nel cielo. Non lo spreco."
+      ],
+      "Nurturing": [
+        "Ho stretto forte i più piccoli la notte in cui il cielo è cambiato. Ora li guardo crescere sotto quella luce.",
+        "Ogni bambino nato dopo crescerà sotto quella nuova stella. Voglio che sappia cosa è costata."
+      ],
+      "Mischievous": [
+        "Nuova stella, nuove ombre, nuovi posti che nessuno ha ancora pensato di controllare. Mi piacciono le probabilità.",
+        "Il mondo ha avuto una tregua e in qualche modo sono ancora la prima sospettata quando manca qualcosa."
+      ],
+      "Cynical": [
+        "Siamo stati fortunati. Non fatevi raccontare che è stato altro.",
+        "Saturno si prende il colpo al posto nostro e la gente si comporta come se l'universo ci dovesse qualcosa. Non è così."
+      ],
+      "Disciplined": [
+        "Crisi o no, il programma tiene. È esattamente così che ce l'abbiamo fatta.",
+        "Le esercitazioni hanno pagato. Continuiamo ad addestrarci, nuova stella nel cielo o no."
+      ],
+      "Fatalistic": [
+        "Doveva cadere da qualche parte, comunque. Questa volta, per fortuna, non su di noi.",
+        "È toccato a Saturno invece che a noi. Non chiedo perché. Continuo solo a vivere i giorni che ho."
+      ],
+      "Grumpy": [
+        "Il mondo per poco non finiva e ho dovuto fare le stesse faccende di sempre dopo. Tipico.",
+        "Tutti a fissare la nuova stella. Qualcuno deve pur sempre aggiustare lo steccato."
+      ],
+      "Loyal": [
+        "Ho passato tutta quella notte con le persone che contano per me. Lo rifarei volentieri.",
+        "Ce l'abbiamo fatta insieme. È l'unica ragione per cui m'importa di avercela fatta."
+      ],
+      "Brave": [
+        "Ho guardato in faccia la fine di tutto e non ci ha portati via. Dopo quello, niente mi spaventa più allo stesso modo.",
+        "Abbiamo fissato il cielo stesso e ha ceduto per primo lui. Quella sfida la accetto sempre volentieri."
+      ],
+      "Timid": [
+        "Mi sono nascosta per tutta la notte in cui è successo. Sono contenta di avere ancora un posto dove nascondermi.",
+        "La nuova stella è bellissima, da molto lontano, attraverso una finestra ben chiusa."
+      ],
+      "Hedonistic": [
+        "Non siamo morti! Festeggio come si deve, a partire da stasera.",
+        "Niente ti fa apprezzare un buon pasto come rischiare di non poterne mangiare un altro."
+      ],
+      "Apathetic": [
+        "Toh. Non siamo morti. Immagino che continuerò a fare quello che facevo.",
+        "Nuova stella, vecchia vita. Per me non cambia poi molto."
+      ],
+      "default": [
+        "Nibiru ha colpito Saturno invece di noi. La Terra è sopravvissuta, e nel cielo notturno brucia una nuova stella a dimostrarlo.",
+        "Siamo stati risparmiati. Ora Saturno brucia dove Nibiru avrebbe dovuto colpire la Terra."
+      ]
     }
   },
   "fallback": {

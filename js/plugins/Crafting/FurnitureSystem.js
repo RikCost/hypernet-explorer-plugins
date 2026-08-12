@@ -934,9 +934,12 @@
                 "plant_pot",
                 "crafting_bench"
             ],
-            placedFurnitureId: 0,  // Unique ID counter for placed furniture
-            tiles: {},             // Raw wall/terrain/feature/door placements per map key
-            placedTileId: 0        // Unique ID counter for placed tiles/doors
+            // What has actually been BUILT (the pieces standing on each world
+            // coordinate, the raw wall/terrain/feature/door tiles, and the two
+            // id counters behind them) is not here: it belongs to the world,
+            // not to this playthrough, and lives in the world folder through
+            // builtFurniture() / builtTiles() below. A savegame that still
+            // carries them in this blob hands them over in getFurnitureData().
         };
     };
 
@@ -957,11 +960,59 @@
             }
             data.materials = {};
         }
-        // Backfill for saves created before the wall/terrain/feature/door tile
-        // system existed.
-        if (!data.tiles) data.tiles = {};
-        if (data.placedTileId === undefined) data.placedTileId = 0;
+        // One-time migration: what the party BUILT belongs to the world, not to
+        // the savegame that built it. A wall raised on a world square stands
+        // there for every playthrough of the world, exactly as the terrain the
+        // party dismantled around it already did (terrain.json). Anything still
+        // holding its placements in this private blob hands them over here.
+        if (data.maps && Object.keys(data.maps).length > 0) {
+            mergeIntoWorld(this.builtFurniture(), data.maps);
+            delete data.maps;
+        }
+        if (data.tiles && Object.keys(data.tiles).length > 0) {
+            mergeIntoWorld(this.builtTiles(), data.tiles);
+            delete data.tiles;
+        }
+        if (data.placedFurnitureId !== undefined) {
+            this._furnitureBuiltId = data.placedFurnitureId;
+            delete data.placedFurnitureId;
+        }
+        if (data.placedTileId !== undefined) {
+            this._furnitureBuiltTileId = data.placedTileId;
+            delete data.placedTileId;
+        }
         return this._furnitureData;
+    };
+
+    // Folds a legacy per-savegame placement table into the world's own, keyed
+    // by map, unioned by each piece's id, so nothing another savegame of this
+    // world already built is knocked down by an older copy of the table.
+    function mergeIntoWorld(worldTable, legacyTable) {
+        for (const mapKey of Object.keys(legacyTable)) {
+            const legacy = legacyTable[mapKey] || [];
+            const held = worldTable[mapKey] || (worldTable[mapKey] = []);
+            const seen = new Set(held.map(rec => rec && rec.id));
+            for (const rec of legacy) {
+                if (!rec || seen.has(rec.id)) continue;
+                seen.add(rec.id);
+                held.push(rec);
+            }
+        }
+    }
+
+    // What the party has built, per world coordinate (furnitureMapKey), held in
+    // the world folder rather than the binary savegame (WorldManager, the
+    // "furniture" file). The pieces standing on a square, the raw tiles written
+    // into the map, and the two id counters behind them, which are shared so no
+    // two savegames of the world ever hand one number to two pieces.
+    Game_System.prototype.builtFurniture = function () {
+        if (!this._furnitureBuilt) this._furnitureBuilt = {};
+        return this._furnitureBuilt;
+    };
+
+    Game_System.prototype.builtTiles = function () {
+        if (!this._furnitureBuiltTiles) this._furnitureBuiltTiles = {};
+        return this._furnitureBuiltTiles;
     };
 
     Game_System.prototype.addFurniture = function (furnitureId, quantity = 1) {
@@ -1077,12 +1128,14 @@
     };
 
     Game_System.prototype.placeFurniture = function (mapId, furnitureId, x, y, flipped = false) {
-        const data = this.getFurnitureData();
-        if (!data.maps[mapId]) {
-            data.maps[mapId] = [];
+        this.getFurnitureData();
+        const maps = this.builtFurniture();
+        if (!maps[mapId]) {
+            maps[mapId] = [];
         }
 
-        const placedId = data.placedFurnitureId++;
+        const placedId = this._furnitureBuiltId || 0;
+        this._furnitureBuiltId = placedId + 1;
         const placedFurniture = {
             id: placedId,
             furnitureId: furnitureId,
@@ -1091,26 +1144,27 @@
             flipped: flipped
         };
 
-        data.maps[mapId].push(placedFurniture);
+        maps[mapId].push(placedFurniture);
         return placedFurniture;
     };
 
     Game_System.prototype.removePlacedFurniture = function (mapId, placedId) {
-        const data = this.getFurnitureData();
-        if (!data.maps[mapId]) return null;
+        this.getFurnitureData();
+        const maps = this.builtFurniture();
+        if (!maps[mapId]) return null;
 
-        const index = data.maps[mapId].findIndex(f => f.id === placedId);
+        const index = maps[mapId].findIndex(f => f.id === placedId);
         if (index >= 0) {
-            const furniture = data.maps[mapId][index];
-            data.maps[mapId].splice(index, 1);
+            const furniture = maps[mapId][index];
+            maps[mapId].splice(index, 1);
             return furniture;
         }
         return null;
     };
 
     Game_System.prototype.getMapFurniture = function (mapId) {
-        const data = this.getFurnitureData();
-        return data.maps[mapId] || [];
+        this.getFurnitureData();
+        return this.builtFurniture()[mapId] || [];
     };
 
     // ── Raw tile placements (walls / terrain / features / house doors) ─────────
@@ -1118,25 +1172,29 @@
     // written into the map's own data array (see the Tile Placement System
     // section below), so they render/collide using the tileset's own flags.
     Game_System.prototype.getMapTiles = function (mapId) {
-        const data = this.getFurnitureData();
-        return data.tiles[mapId] || [];
+        this.getFurnitureData();
+        return this.builtTiles()[mapId] || [];
     };
 
     Game_System.prototype.placeMapTile = function (mapId, record) {
-        const data = this.getFurnitureData();
-        if (!data.tiles[mapId]) data.tiles[mapId] = [];
-        const placed = Object.assign({ id: data.placedTileId++ }, record);
-        data.tiles[mapId].push(placed);
+        this.getFurnitureData();
+        const tiles = this.builtTiles();
+        if (!tiles[mapId]) tiles[mapId] = [];
+        const placedId = this._furnitureBuiltTileId || 0;
+        this._furnitureBuiltTileId = placedId + 1;
+        const placed = Object.assign({ id: placedId }, record);
+        tiles[mapId].push(placed);
         return placed;
     };
 
     Game_System.prototype.removePlacedTile = function (mapId, placedId) {
-        const data = this.getFurnitureData();
-        if (!data.tiles[mapId]) return null;
-        const index = data.tiles[mapId].findIndex(t => t.id === placedId);
+        this.getFurnitureData();
+        const tiles = this.builtTiles();
+        if (!tiles[mapId]) return null;
+        const index = tiles[mapId].findIndex(t => t.id === placedId);
         if (index < 0) return null;
-        const rec = data.tiles[mapId][index];
-        data.tiles[mapId].splice(index, 1);
+        const rec = tiles[mapId][index];
+        tiles[mapId].splice(index, 1);
         return rec;
     };
 
@@ -3657,6 +3715,10 @@
         const flipped = this._fbPreview ? this._fbPreview.getFlipped() : false;
         const placed = $gameSystem.placeFurniture(furnitureMapKey(), id, x, y, flipped);
         if (this._spriteset) this._spriteset.addFurnitureSprite(placed);
+        // What the party built, in its own diary (Diary.js). Only what the
+        // PLAYER puts up: the seeded furnishing of a procedural interior goes
+        // through placeFurniture too and is nobody's doing.
+        if (window.Diary) window.Diary.onBuilt(f.name || id);
         // Placed set + materials/gold changed: force the build-mode validity recompute.
         this._fbPlaceCacheKey = null;
         fbPlayBuildSound(() => SoundManager.playOk());
@@ -3834,6 +3896,7 @@
                 $gameSystem.removePlacedFurniture(mapId, p.id);
                 if (this._spriteset) this._spriteset.removeFurnitureSprite(p.id);
                 refundFurnitureMaterials(f);
+                if (window.Diary) window.Diary.onDismantled(f.name || p.furnitureId);
                 // Placed set + materials changed: force the validity recompute.
                 this._fbPlaceCacheKey = null;
                 fbPlayBuildSound(() => SoundManager.playUseItem());
@@ -4238,7 +4301,8 @@
 
     PluginManager.registerCommand(pluginName, 'removeAllFurniture', () => {
         const mapId = furnitureMapKey();
-        $gameSystem.getFurnitureData().maps[mapId] = [];
+        $gameSystem.getFurnitureData();
+        $gameSystem.builtFurniture()[mapId] = [];
         if (SceneManager._scene instanceof Scene_Map) {
             SceneManager.goto(Scene_Map);
         }

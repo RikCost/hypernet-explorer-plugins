@@ -1,0 +1,420 @@
+{
+  "_comment": "Footstep materials for Audio/ToshA_Footsteps.js. Single source of truth, also read by the tileset feature tagger (tools/modules/tileset-tagger.js) to flag which terrain features have a step sound. Loaded as window.WorldGen.FootstepMaterials.",
+  "defaults": {
+    "volume": 88,
+    "pitchMin": 94,
+    "pitchMax": 108,
+    "pan": 0,
+    "maxDistance": 5,
+    "animationFrames": [
+      0,
+      2
+    ]
+  },
+  "materials": {
+    "grass": {
+      "volume": 85,
+      "sounds": [
+        "StepSound/stepFoliage",
+        "StepSound/stepFoliage2",
+        "StepSound/stepFoliage3",
+        "StepSound/leaves01",
+        "StepSound/leaves02"
+      ]
+    },
+    "dirt": {
+      "volume": 88,
+      "sounds": [
+        "StepSound/stepGraund",
+        "StepSound/stepGraund2",
+        "StepSound/stepGraund3"
+      ]
+    },
+    "mud": {
+      "volume": 90,
+      "pitchMin": 92,
+      "pitchMax": 105,
+      "sounds": [
+        "StepSound/stepSwamp",
+        "StepSound/stepSwamp2",
+        "StepSound/stepSwamp3",
+        "StepSound/mud02"
+      ]
+    },
+    "sand": {
+      "volume": 85,
+      "sounds": [
+        "StepSound/sand01",
+        "StepSound/sand02",
+        "StepSound/sand03",
+        "StepSound/sand04",
+        "StepSound/sand05",
+        "StepSound/sand06"
+      ]
+    },
+    "gravel": {
+      "volume": 82,
+      "sounds": [
+        "StepSound/gravel",
+        "StepSound/gravel02",
+        "StepSound/gravel03",
+        "StepSound/gravel04",
+        "StepSound/gravel05"
+      ]
+    },
+    "stone": {
+      "volume": 85,
+      "sounds": [
+        "StepSound/stepStone",
+        "StepSound/stone02",
+        "StepSound/stepStone2",
+        "StepSound/stone03",
+        "StepSound/stepStone3",
+        "StepSound/stone01",
+        "StepSound/stone04",
+        "StepSound/stone05"
+      ]
+    },
+    "concrete": {
+      "volume": 78,
+      "sounds": [
+        "StepSound/concrete01",
+        "StepSound/concrete02",
+        "StepSound/concrete03",
+        "StepSound/concrete04",
+        "StepSound/concrete05",
+        "StepSound/concrete06"
+      ]
+    },
+    "wood": {
+      "volume": 88,
+      "pitchMax": 112,
+      "sounds": [
+        "StepSound/wood01",
+        "StepSound/wood02",
+        "StepSound/wood03"
+      ]
+    },
+    "snow": {
+      "volume": 90,
+      "pitchMax": 112,
+      "sounds": [
+        "StepSound/stepSnow",
+        "StepSound/stepSnow2",
+        "StepSound/stepSnow3"
+      ]
+    },
+    "ice": {
+      "volume": 85,
+      "pitchMin": 96,
+      "sounds": [
+        "StepSound/ice01",
+        "StepSound/ice02",
+        "StepSound/ice03",
+        "StepSound/ice04"
+      ]
+    },
+    "metal": {
+      "volume": 78,
+      "sounds": [
+        "StepSound/stepMetal",
+        "StepSound/stepMetal2",
+        "StepSound/stepMetal3"
+      ]
+    },
+    "water": {
+      "volume": 85,
+      "pitchMax": 112,
+      "sounds": [
+        "Water/Water1",
+        "Water/Water2",
+        "Water/Water3",
+        "Water/Water4",
+        "Water/Water5"
+      ]
+    }
+  },
+  "overlayMaterials": [
+    "wood",
+    "metal",
+    "water",
+    "grass",
+    "gravel",
+    "snow",
+    "ice",
+    "mud"
+  ],
+  "terrainTagMaterials": {
+    "1": "wood",
+    "2": "dirt",
+    "3": "water",
+    "4": "stone",
+    "5": "grass",
+    "6": "metal",
+    "7": "ice"
+  },
+  "featureMaterials": {
+    "Grass": "grass",
+    "GrassDark": "grass",
+    "GrassJungle": "grass",
+    "DirtGrass": "grass",
+    "JungleBush": "grass",
+    "JungleRock": "stone",
+    "RockJungle": "stone",
+    "DoorIceCream": null,
+    "Snow": "snow",
+    "Ice": "ice",
+    "Permafrost": "ice",
+    "Glacier": "ice",
+    "Sand": "sand",
+    "Beach": "sand",
+    "Dune": "sand",
+    "Stone": "stone",
+    "CaveFloor": "stone",
+    "CaveCeiling": "stone",
+    "DungeonFloor": "stone",
+    "Badland": "stone",
+    "Salt": "stone",
+    "Lava": "stone",
+    "Ash": "dirt",
+    "Tundra": "dirt",
+    "Dirt": "dirt",
+    "Soil": "dirt",
+    "TilledSoil": "dirt",
+    "Swamp": "mud",
+    "Moor": "mud",
+    "Mud": "mud",
+    "Bog": "mud",
+    "Marsh": "mud",
+    "Pavement": "concrete",
+    "Sidewalk": "concrete",
+    "Road": "concrete",
+    "Parking": "concrete",
+    "ParkingDrawing": "concrete",
+    "DashedLine": "concrete",
+    "DashedLineHorizontal": "concrete",
+    "DashedLineVertical": "concrete",
+    "ZebraHorizontal": "concrete",
+    "ZebraVertical": "concrete",
+    "TechnoFloor": "concrete",
+    "Techno": "concrete",
+    "Circuit": "metal",
+    "Path": "gravel",
+    "PathDesert": "gravel",
+    "PathIce": "ice",
+    "Parquet": "wood",
+    "Wooden": "wood",
+    "WoodenFloor": "wood",
+    "Wood": "wood",
+    "Metal": "metal",
+    "MetalPanel": "metal",
+    "Water": "water",
+    "Bridge": "wood",
+    "BridgeEO": "wood",
+    "BridgeNS": "wood",
+    "BridgeUp": "wood",
+    "BridgeLeft": "wood",
+    "Log": "wood",
+    "Driftwood": "wood",
+    "Ladder": "wood",
+    "Grate": "metal",
+    "Manhole": "metal",
+    "Drain": "metal",
+    "Hatch": "metal",
+    "Rail": "metal",
+    "RailNS": "metal",
+    "RailEOStart": "metal",
+    "RailEOEnd": "metal",
+    "RailLeft": "metal",
+    "RailRight": "metal",
+    "RailNE": "metal",
+    "RailSE": "metal",
+    "RailSO": "metal",
+    "Puddle": "water",
+    "Lilypad": "water",
+    "Lylipad": "water",
+    "GrassWater": "water",
+    "Lake": "water",
+    "Pond": "water",
+    "River": "water",
+    "Brook": "water",
+    "Ocean": "water",
+    "Rapids": "water",
+    "Spring": "water",
+    "Lagoon": "water",
+    "Oasis": "water",
+    "Waterfall": "water",
+    "SeaFloor": "sand",
+    "Seashell": "sand",
+    "Rubble": "gravel",
+    "Debris": "gravel",
+    "Trash": "gravel",
+    "Pebble": "gravel",
+    "SnowPile": "snow",
+    "Snowman": "snow",
+    "IcePool": "ice",
+    "Carpet": "dirt",
+    "Hay": "grass",
+    "Leaves": "grass",
+    "Moss": "grass",
+    "Clover": "grass",
+    "Reed": "grass",
+    "Sedge": "grass",
+    "Cattail": "grass",
+    "Kelp": "grass",
+    "Seaweed": "grass",
+    "Mountain": "stone",
+    "Cliff": "stone",
+    "Crater": "stone",
+    "Crevasse": "stone"
+  },
+  "materialPatterns": [
+    {
+      "material": "snow",
+      "contains": [
+        "Snow"
+      ]
+    },
+    {
+      "material": "ice",
+      "contains": [
+        "Ice",
+        "Frozen",
+        "Frost"
+      ]
+    },
+    {
+      "material": "water",
+      "contains": [
+        "Water",
+        "Pool",
+        "Puddle",
+        "Lake",
+        "Pond",
+        "River",
+        "Sea",
+        "Swim"
+      ]
+    },
+    {
+      "material": "mud",
+      "contains": [
+        "Mud",
+        "Swamp",
+        "Bog",
+        "Marsh",
+        "Moor"
+      ]
+    },
+    {
+      "material": "sand",
+      "contains": [
+        "Sand",
+        "Dune",
+        "Beach",
+        "Desert"
+      ]
+    },
+    {
+      "material": "grass",
+      "contains": [
+        "Grass",
+        "Leaf",
+        "Leaves",
+        "Plant",
+        "Weed",
+        "Flower",
+        "Bush",
+        "Fern",
+        "Moss",
+        "Clover",
+        "Herb",
+        "Sprout",
+        "Vine",
+        "Ivy",
+        "Reed",
+        "Hay",
+        "Wheat",
+        "Corn",
+        "Crop",
+        "Thistle",
+        "Lichen",
+        "Shrub"
+      ]
+    },
+    {
+      "material": "wood",
+      "contains": [
+        "Wood",
+        "Bridge",
+        "Log",
+        "Plank",
+        "Parquet",
+        "Timber"
+      ]
+    },
+    {
+      "material": "metal",
+      "contains": [
+        "Metal",
+        "Grate",
+        "Rail",
+        "Steel",
+        "Iron",
+        "Pipe"
+      ]
+    },
+    {
+      "material": "gravel",
+      "contains": [
+        "Gravel",
+        "Pebble",
+        "Rubble",
+        "Debris",
+        "Trash"
+      ]
+    },
+    {
+      "material": "concrete",
+      "contains": [
+        "Pavement",
+        "Sidewalk",
+        "Road",
+        "Asphalt",
+        "Concrete",
+        "Tile",
+        "Parking",
+        "Zebra",
+        "DashedLine",
+        "Techno"
+      ]
+    },
+    {
+      "material": "stone",
+      "contains": [
+        "Stone",
+        "Rock",
+        "Cliff",
+        "Mountain",
+        "Cave",
+        "Dungeon",
+        "Marble",
+        "Brick",
+        "Granite",
+        "Slab",
+        "Ruin"
+      ]
+    },
+    {
+      "material": "dirt",
+      "contains": [
+        "Dirt",
+        "Soil",
+        "Earth",
+        "Ash",
+        "Ground",
+        "Path"
+      ]
+    }
+  ]
+}

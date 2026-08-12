@@ -1,0 +1,23 @@
+{
+  "stat": "STAT",
+  "fighter": "FIGHTER",
+  "uses": "{user} USES {skill}!",
+  "no3d": "3D SYSTEM UNAVAILABLE - NO CAN OPEN TOURNAMENT",
+  "chooseFighter": "MONSTER TOURNAMENT - CHOOSE YA FIGHTER",
+  "fighterOf": "FIGHTER {index} / {total}",
+  "doubleBet": "DOUBLE YA BET (+{bet})",
+  "noTokens": "NO TOKENS AVAILABLE!",
+  "placeBet": "{name} - PLACE YA BET",
+  "wins": "{name} WINS!",
+  "defeated": "{name} WAZ DEFEATED...",
+  "eliminated": "{name} WAZ ELIMINATED",
+  "youLost": "YOU LOST {tokens} TOKENS",
+  "champion": "CHAMPION: {name}!",
+  "youWon": "YOU WON {tokens} TOKENS!",
+  "skillAttack": "ATTACK",
+  "skillFinish": "FINISH",
+  "ui": {
+    "bet": "BET:",
+    "keepCurrentBet": "KEEP CURRENT BET"
+  }
+}

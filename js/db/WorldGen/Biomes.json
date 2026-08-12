@@ -104,6 +104,13 @@
       "KevinMacLeod/Horror/The Other Side of the Door",
       "KevinMacLeod/Dark/Darkling"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Horror/The House of Leaves",
+      "KevinMacLeod/Horror/Land of Phantoms"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "creepy-dungeon-ambience"
@@ -209,10 +216,6 @@
       {
         "name": "Skull",
         "density": 0.3
-      },
-      {
-        "name": "StairsDown",
-        "density": 0.004
       }
     ]
   },
@@ -241,6 +244,13 @@
       "KevinMacLeod/Horror/The Other Side of the Door",
       "KevinMacLeod/Dark/Gathering Darkness",
       "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Horror/The House of Leaves",
+      "KevinMacLeod/Horror/Darkest Child",
+      "KevinMacLeod/Dark/Bent and Broken"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -403,6 +413,13 @@
       "KevinMacLeod/Atmospheric/Penumbra",
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Horror/Nightmare Machine"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -572,6 +589,13 @@
       "KevinMacLeod/Horror/Unseen Horrors",
       "KevinMacLeod/Atmospheric/Penumbra",
       "KevinMacLeod/Mysterious/Phantom from Space"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Long Note Four"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -748,6 +772,13 @@
       "KevinMacLeod/Techno/Volatile Reaction",
       "KevinMacLeod/Dramatic/Despair and Triumph"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Frozen Star"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "night-ambience",
@@ -902,6 +933,13 @@
       "KevinMacLeod/Atmospheric/Long Note One",
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Mysterious/Vanishing"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Unanswered Questions",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Dark/Darkling"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -1062,6 +1100,13 @@
       "KevinMacLeod/Calm/Tranquility Base",
       "KevinMacLeod/Mysterious/Comfortable Mystery 3",
       "KevinMacLeod/Sad/Hush"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Atmospheric/Lost Time"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -1234,6 +1279,13 @@
       "KevinMacLeod/Calm/Tranquility Base",
       "KevinMacLeod/Atmospheric/Penumbra"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Atmospheric/Lithium"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "gentle-waves-quiet-beach",
@@ -1338,6 +1390,10 @@
       {
         "name": "Log",
         "density": 0.3
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -1412,6 +1468,13 @@
       "KevinMacLeod/Atmospheric/Long Note One",
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Mysterious/Vanishing"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Unanswered Questions",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Dark/Darkling"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -1594,6 +1657,13 @@
       "KevinMacLeod/Sad/Heavy Heart",
       "KevinMacLeod/Dark/Ancient Rite"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Horror/Ghost Story",
+      "KevinMacLeod/Sad/Heavy Heart",
+      "KevinMacLeod/Dark/Ancient Rite"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "night-ambience",
@@ -1729,6 +1799,13 @@
       "KevinMacLeod/Horror/Ghost Story",
       "KevinMacLeod/Calm/Ashton Manor",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Heavy Heart",
+      "KevinMacLeod/Horror/Ghost Story",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Aftermath"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -1868,6 +1945,13 @@
       "KevinMacLeod/Horror/Unseen Horrors",
       "KevinMacLeod/Atmospheric/Distant Tension"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Dark/Darkling"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "ce-cavern-looped",
@@ -1980,6 +2064,13 @@
       "KevinMacLeod/Atmospheric/Night Cave",
       "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Atmospheric/Distant Tension"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "water-dripping-in-cave"
@@ -2079,6 +2170,13 @@
       "KevinMacLeod/Dark/Lightless Dawn",
       "KevinMacLeod/Atmospheric/Night Cave",
       "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Lightless Dawn"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -2189,6 +2287,13 @@
       "KevinMacLeod/Dark/Ancient Rite",
       "KevinMacLeod/Horror/Ghost Story",
       "KevinMacLeod/Atmospheric/Ossuary 5 - Rest"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Sad/Mourning Song",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Horror/Ghost Story"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -2344,7 +2449,39 @@
         251,
         252,
         253,
-        254
+        254,
+        731,
+        732,
+        733,
+        734,
+        735,
+        736,
+        737,
+        738,
+        739,
+        740,
+        741,
+        742,
+        743,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        753,
+        754,
+        755,
+        756,
+        757,
+        758,
+        759,
+        760,
+        761,
+        762
       ]
     ],
     "specialBiomes": [],
@@ -2370,6 +2507,13 @@
       "KevinMacLeod/Sad/Decline",
       "KevinMacLeod/Jazz/Local Forecast - Slower",
       "KevinMacLeod/Mysterious/Deadly Roulette"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Dark/Bent and Broken"
     ],
     "bgsNight": [
       "city-night",
@@ -2495,7 +2639,39 @@
         251,
         252,
         253,
-        254
+        254,
+        731,
+        732,
+        733,
+        734,
+        735,
+        736,
+        737,
+        738,
+        739,
+        740,
+        741,
+        742,
+        743,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        753,
+        754,
+        755,
+        756,
+        757,
+        758,
+        759,
+        760,
+        761,
+        762
       ]
     ],
     "specialBiomes": [],
@@ -2517,6 +2693,13 @@
       "KevinMacLeod/Dark/Ancient Rite",
       "KevinMacLeod/Mysterious/Curse of the Scarab",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Sad/Decline"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -2636,7 +2819,39 @@
         251,
         252,
         253,
-        254
+        254,
+        731,
+        732,
+        733,
+        734,
+        735,
+        736,
+        737,
+        738,
+        739,
+        740,
+        741,
+        742,
+        743,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        753,
+        754,
+        755,
+        756,
+        757,
+        758,
+        759,
+        760,
+        761,
+        762
       ]
     ],
     "specialBiomes": [],
@@ -2657,6 +2872,13 @@
       "KevinMacLeod/Mysterious/Hidden Agenda",
       "KevinMacLeod/Dark/Ice Demon",
       "KevinMacLeod/Calm/Night in Venice"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Penumbra"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -2781,7 +3003,39 @@
         251,
         252,
         253,
-        254
+        254,
+        731,
+        732,
+        733,
+        734,
+        735,
+        736,
+        737,
+        738,
+        739,
+        740,
+        741,
+        742,
+        743,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        753,
+        754,
+        755,
+        756,
+        757,
+        758,
+        759,
+        760,
+        761,
+        762
       ]
     ],
     "specialBiomes": [],
@@ -2804,6 +3058,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery",
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Atmospheric/Long Note One"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Sad/Decline"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -2925,7 +3186,39 @@
         251,
         252,
         253,
-        254
+        254,
+        731,
+        732,
+        733,
+        734,
+        735,
+        736,
+        737,
+        738,
+        739,
+        740,
+        741,
+        742,
+        743,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        753,
+        754,
+        755,
+        756,
+        757,
+        758,
+        759,
+        760,
+        761,
+        762
       ]
     ],
     "specialBiomes": [],
@@ -2947,6 +3240,13 @@
       "KevinMacLeod/Dark/Ancient Rite",
       "KevinMacLeod/Mysterious/Curse of the Scarab",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Dark/Bent and Broken"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -3053,7 +3353,39 @@
         251,
         252,
         253,
-        254
+        254,
+        731,
+        732,
+        733,
+        734,
+        735,
+        736,
+        737,
+        738,
+        739,
+        740,
+        741,
+        742,
+        743,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        753,
+        754,
+        755,
+        756,
+        757,
+        758,
+        759,
+        760,
+        761,
+        762
       ]
     ],
     "specialBiomes": [],
@@ -3074,6 +3406,13 @@
       "KevinMacLeod/Calm/Night in Venice",
       "KevinMacLeod/Dark/Ice Demon",
       "KevinMacLeod/Atmospheric/Long Note Three"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Gloom Horizon"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -3179,6 +3518,13 @@
       "KevinMacLeod/Horror/Nightmare Machine",
       "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
       "KevinMacLeod/Horror/The Other Side of the Door"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Horror/Classic Horror 1",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -3335,6 +3681,13 @@
       "KevinMacLeod/Atmospheric/Penumbra",
       "KevinMacLeod/Mysterious/Crypto"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Dark/Lightless Dawn"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "crickets5",
@@ -3411,6 +3764,10 @@
       {
         "name": "Rock",
         "density": 0.5
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -3512,6 +3869,13 @@
       "KevinMacLeod/Atmospheric/Long Note Four",
       "KevinMacLeod/Sad/Unanswered Questions"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Sad/Unanswered Questions",
+      "KevinMacLeod/Dark/Gathering Darkness"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "desert-ambience",
@@ -3608,10 +3972,6 @@
       {
         "name": "Skull",
         "density": 0.02
-      },
-      {
-        "name": "StairsUp",
-        "density": 0.004
       }
     ]
   },
@@ -3699,6 +4059,13 @@
       "KevinMacLeod/Sad/Heavy Heart",
       "KevinMacLeod/Dark/Darkling"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Sad/Heavy Heart",
+      "KevinMacLeod/Dark/Darkling"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "desert-ambience",
@@ -3777,6 +4144,10 @@
       {
         "name": "RockDesert",
         "density": 2
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -3853,6 +4224,13 @@
       "KevinMacLeod/Techno/Space Fighter Loop",
       "KevinMacLeod/Atmospheric/Long Note Four",
       "KevinMacLeod/Horror/Nightmare Machine"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Floating Cities"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -4007,6 +4385,13 @@
       "KevinMacLeod/Atmospheric/Long Note One",
       "KevinMacLeod/Sad/Decline",
       "KevinMacLeod/Mysterious/Spy Glass"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Deep Haze"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -4194,6 +4579,13 @@
       "KevinMacLeod/Mysterious/Vanishing",
       "KevinMacLeod/Dreamy/Winter Chimes"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Penumbra"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "dream2"
@@ -4321,6 +4713,13 @@
       "KevinMacLeod/Dark/Gathering Darkness",
       "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "dungeon-ambiance"
@@ -4428,6 +4827,13 @@
       "KevinMacLeod/Atmospheric/Night Cave",
       "KevinMacLeod/Mysterious/Deadly Roulette",
       "KevinMacLeod/Dark/Darkling"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Horror/Unseen Horrors"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -4556,6 +4962,13 @@
       "KevinMacLeod/Atmospheric/Night Cave",
       "KevinMacLeod/Mysterious/Deadly Roulette",
       "KevinMacLeod/Dark/Darkling"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Atmospheric/Deep Haze"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -4757,6 +5170,13 @@
       "KevinMacLeod/Horror/Ghost Story",
       "KevinMacLeod/Atmospheric/Ossuary 5 - Rest"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Sad/Mourning Song",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Horror/Ghost Story"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "creepy-dungeon-ambience"
@@ -4875,6 +5295,13 @@
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Horror/Unseen Horrors",
       "KevinMacLeod/Atmospheric/Distant Tension"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Dark/Darkling"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -5038,6 +5465,13 @@
       "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
       "KevinMacLeod/Horror/Anguish"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Horror/Anxiety"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "horror",
@@ -5197,6 +5631,13 @@
       "KevinMacLeod/Atmospheric/Lost Time",
       "KevinMacLeod/Horror/Nightmare Machine"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Frozen Star"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "industrial-ambience",
@@ -5304,6 +5745,13 @@
       "KevinMacLeod/Atmospheric/Lost Time",
       "KevinMacLeod/Horror/Nightmare Machine",
       "KevinMacLeod/Techno/District Four"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -5463,6 +5911,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery",
       "KevinMacLeod/Dreamy/Light Awash",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Unanswered Questions",
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -5647,6 +6102,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery",
       "KevinMacLeod/Dreamy/Dreamer"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Hush"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "crickets5",
@@ -5752,10 +6214,6 @@
       {
         "name": "Fruit",
         "density": 0.6
-      },
-      {
-        "name": "StairsDown",
-        "density": 0.004
       }
     ]
   },
@@ -5914,6 +6372,13 @@
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Mysterious/Comfortable Mystery",
       "KevinMacLeod/Dreamy/Dreamer"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Hush"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -6094,6 +6559,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery",
       "KevinMacLeod/Dreamy/Dreamer"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Hush"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "crickets5",
@@ -6267,6 +6739,13 @@
       "KevinMacLeod/Calm/Meditation Impromptu 03",
       "KevinMacLeod/Dreamy/Dreamer"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "forest-night",
@@ -6396,6 +6875,10 @@
       {
         "name": "Leaves",
         "density": 0.8
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -6472,6 +6955,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery 4",
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Atmospheric/Night Cave"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Distant Tension"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -6670,6 +7160,13 @@
       "KevinMacLeod/Atmospheric/Penumbra",
       "KevinMacLeod/Dark/Lightless Dawn"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Long Note Two"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "wind-blizzard",
@@ -6763,6 +7260,10 @@
       {
         "name": "FlowerIce",
         "density": 1.5
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -6843,6 +7344,13 @@
       "KevinMacLeod/Dark/Gathering Darkness",
       "KevinMacLeod/Horror/Unseen Horrors",
       "KevinMacLeod/Atmospheric/Ossuary 5 - Rest"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Horror/Classic Horror 1",
+      "KevinMacLeod/Sad/Heartbreaking",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Horror/Land of Phantoms"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -6944,10 +7452,6 @@
       {
         "name": "Tree",
         "density": 0.3
-      },
-      {
-        "name": "StairsDown",
-        "density": 0.004
       }
     ]
   },
@@ -7024,6 +7528,13 @@
       "KevinMacLeod/Sad/Sad Trio",
       "KevinMacLeod/Calm/Healing",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Unanswered Questions"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -7201,6 +7712,13 @@
       "KevinMacLeod/Dark/Unholy Knight",
       "KevinMacLeod/Horror/Unseen Horrors",
       "KevinMacLeod/Dark/Mystic Force"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Dark/Crossing the Chasm"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -7391,6 +7909,13 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Dramatic/Impact Prelude"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Heavy Heart",
+      "KevinMacLeod/Dark/The Ice Giants"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "night-crickets",
@@ -7498,10 +8023,6 @@
         "density": 1
       },
       {
-        "name": "StairsUp",
-        "density": 0.004
-      },
-      {
         "name": "Cave",
         "density": 0.004
       }
@@ -7532,6 +8053,13 @@
       "KevinMacLeod/Atmospheric/Long Note One",
       "KevinMacLeod/Mysterious/Lost Frontier",
       "KevinMacLeod/Techno/District Four"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Frozen Star"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -7693,6 +8221,13 @@
     "lowerLayer": "Dungeon",
     "bgm": [],
     "bgmNight": [],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Sad/Heavy Heart",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Sad/Decline"
+    ],
     "bgmBattle": [],
     "bgsNight": [],
     "bgs": [],
@@ -7800,6 +8335,13 @@
     "lowerLayer": "Dungeon",
     "bgm": [],
     "bgmNight": [],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Heavy Heart",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Wounded"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "room-low",
@@ -8029,6 +8571,13 @@
       "KevinMacLeod/Dark/Lightless Dawn",
       "KevinMacLeod/Sad/Unanswered Questions"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Long Note Two"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "wind-blizzard",
@@ -8129,6 +8678,10 @@
       {
         "name": "WeedIce",
         "density": 0.4
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -8231,6 +8784,13 @@
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Atmospheric/Penumbra"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "wind-blizzard",
@@ -8319,6 +8879,10 @@
       {
         "name": "WeedIce",
         "density": 0.4
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -8393,6 +8957,13 @@
       "KevinMacLeod/Horror/Land of Phantoms",
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Atmospheric/Night Cave"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Horror/Land of Phantoms",
+      "KevinMacLeod/Dark/Darkling"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -8491,8 +9062,8 @@
         "density": 0.6
       },
       {
-        "name": "StairsUp",
-        "density": 0.004
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -8568,6 +9139,13 @@
       "KevinMacLeod/Techno/Volatile Reaction",
       "KevinMacLeod/Horror/Anxiety",
       "KevinMacLeod/Mysterious/Unnatural Situation"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Horror/Anxiety",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -8729,6 +9307,13 @@
       "KevinMacLeod/Dark/Gathering Darkness",
       "KevinMacLeod/Atmospheric/Distant Tension"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Horror/Ghostpocalypse - 7 Master",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "dungeon_ambient_1"
@@ -8805,6 +9390,10 @@
       {
         "name": "Gold",
         "density": 0.4
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -8881,6 +9470,13 @@
       "KevinMacLeod/Atmospheric/Deep Haze",
       "KevinMacLeod/Dreamy/Dreamer",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Lithium"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -9053,6 +9649,13 @@
       "KevinMacLeod/Atmospheric/Aftermath",
       "KevinMacLeod/Horror/The House of Leaves",
       "KevinMacLeod/Mysterious/Circus of Freaks",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Horror/The House of Leaves",
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Horror/Unseen Horrors"
     ],
@@ -9234,6 +9837,13 @@
       "KevinMacLeod/Horror/The Other Side of the Door",
       "KevinMacLeod/Mysterious/Vanishing"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "drone",
@@ -9386,6 +9996,13 @@
       "KevinMacLeod/Horror/Ghost Story",
       "KevinMacLeod/Dark/Gathering Darkness"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Dark/Darkling"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "frogs-croaking-at-night",
@@ -9495,6 +10112,10 @@
         "name": "Moor",
         "terrain": true,
         "density": 0.8
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -9569,6 +10190,13 @@
       "KevinMacLeod/Dark/Bent and Broken",
       "KevinMacLeod/Horror/Unseen Horrors",
       "KevinMacLeod/Mysterious/Deadly Roulette"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Dark/Crossing the Chasm"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -9725,6 +10353,13 @@
       "KevinMacLeod/Horror/Unseen Horrors",
       "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Horror/Unseen Horrors"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "old-mine-ambience",
@@ -9813,6 +10448,10 @@
       {
         "name": "Gold",
         "density": 0.3
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -9888,6 +10527,13 @@
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Atmospheric/Penumbra",
       "KevinMacLeod/Sad/Heavy Heart"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Atmospheric/Penumbra"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -10006,6 +10652,10 @@
       {
         "name": "Pebble",
         "density": 1
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -10081,6 +10731,13 @@
       "KevinMacLeod/Dark/Lightless Dawn",
       "KevinMacLeod/Atmospheric/Long Note Two",
       "KevinMacLeod/Sad/Unanswered Questions"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -10193,6 +10850,10 @@
       {
         "name": "PebbleIce",
         "density": 1
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -10267,6 +10928,13 @@
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Atmospheric/Penumbra",
       "KevinMacLeod/Horror/Nightmare Machine"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Darkling"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -10364,6 +11032,10 @@
       {
         "name": "Tree",
         "density": 0.5
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -10423,6 +11095,13 @@
       "KevinMacLeod/Mysterious/Secret of Tiki Island",
       "KevinMacLeod/Atmospheric/Penumbra",
       "KevinMacLeod/Dark/Lightless Dawn"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Atmospheric/Lithium"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -10614,6 +11293,13 @@
       "KevinMacLeod/Mysterious/Hidden Agenda",
       "KevinMacLeod/Atmospheric/Lost Time"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Horror/Anxiety",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Frozen Star"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "room-office",
@@ -10773,6 +11459,13 @@
       "KevinMacLeod/Horror/Nightmare Machine",
       "KevinMacLeod/Techno/Screen Saver"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Lithium"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "Wind5",
@@ -10845,14 +11538,6 @@
       {
         "name": "Gear",
         "density": 1
-      },
-      {
-        "name": "StairsUp",
-        "density": 0.004
-      },
-      {
-        "name": "StairsDown",
-        "density": 0.004
       }
     ]
   },
@@ -10928,6 +11613,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery",
       "KevinMacLeod/Dreamy/Light Awash",
       "KevinMacLeod/Calm/Tranquility Base"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Dark/Bent and Broken"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -11090,7 +11782,9 @@
         664
       ]
     ],
-    "specialBiomes": [],
+    "specialBiomes": [
+      "Crystals"
+    ],
     "lowerLayer": "CaveIce",
     "bgm": [
       "KevinMacLeod/Dreamy/Frost Waltz",
@@ -11109,6 +11803,13 @@
       "KevinMacLeod/Atmospheric/Long Note Two",
       "KevinMacLeod/Dark/Lightless Dawn",
       "KevinMacLeod/Sad/Unanswered Questions"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Long Note Two"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -11182,6 +11883,10 @@
       {
         "name": "MoorIce",
         "density": 0.8
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -11258,6 +11963,13 @@
       "KevinMacLeod/Atmospheric/Deep Haze",
       "KevinMacLeod/Dreamy/Dreamer",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -11404,6 +12116,13 @@
       "KevinMacLeod/Atmospheric/Deep Haze",
       "KevinMacLeod/Dreamy/Dreamer",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Long Note Three"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -11553,6 +12272,13 @@
       "KevinMacLeod/Atmospheric/Deep Haze",
       "KevinMacLeod/Dreamy/Dreamer",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Lithium"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -11706,6 +12432,13 @@
       "KevinMacLeod/Dreamy/Dreamer",
       "KevinMacLeod/Atmospheric/Penumbra"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "water-river",
@@ -11813,6 +12546,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery",
       "KevinMacLeod/Dreamy/Dreamer"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Hush"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "water-river",
@@ -11910,10 +12650,6 @@
       {
         "name": "Plant",
         "density": 0.5
-      },
-      {
-        "name": "Bridge",
-        "density": 0.2
       }
     ]
   },
@@ -11976,6 +12712,13 @@
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Long Note Four"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -12075,6 +12818,13 @@
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Distant Tension"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -12245,6 +12995,13 @@
       "KevinMacLeod/Horror/Ghost Story",
       "KevinMacLeod/Atmospheric/Penumbra"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Sad/Cryptic Sorrow",
+      "KevinMacLeod/Sad/Heavy Heart",
+      "KevinMacLeod/Atmospheric/Aftermath"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "night-crickets",
@@ -12306,12 +13063,45 @@
     },
     "features": [
       {
-        "name": "StairsDown",
-        "density": 0.004
+        "name": "Grass",
+        "terrain": true,
+        "density": 1
       },
       {
-        "name": "StairsUp",
-        "density": 0.004
+        "name": "GrassRock",
+        "terrain": true,
+        "density": 0.4
+      },
+      {
+        "name": "DirtGrass",
+        "terrain": true,
+        "density": 0.4
+      },
+      {
+        "name": "GrassPlant",
+        "terrain": true,
+        "density": 0.4
+      },
+      {
+        "name": "GrassFlower",
+        "terrain": true,
+        "density": 0.2
+      },
+      {
+        "name": "StoneBlock",
+        "density": 1.5
+      },
+      {
+        "name": "Column",
+        "density": 0.6
+      },
+      {
+        "name": "Statue",
+        "density": 0.3
+      },
+      {
+        "name": "Vine",
+        "density": 0.4
       }
     ]
   },
@@ -12386,6 +13176,13 @@
       "KevinMacLeod/Atmospheric/Long Note One",
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Mysterious/Vanishing"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Unanswered Questions",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Dark/Darkling"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -12526,6 +13323,13 @@
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Mysterious/Comfortable Mystery 3"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Distant Tension"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "crickets5",
@@ -12658,6 +13462,13 @@
       "KevinMacLeod/Horror/Unseen Horrors",
       "KevinMacLeod/Atmospheric/Dark Fog",
       "KevinMacLeod/Dark/Darkling"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -12804,6 +13615,13 @@
       "KevinMacLeod/Atmospheric/Night Cave",
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Horror/The Other Side of the Door"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Dark/Darkling"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -12965,6 +13783,13 @@
       "KevinMacLeod/Atmospheric/Deep Haze"
     ],
     "bgmNight": [],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Long Note Four"
+    ],
     "bgmBattle": [],
     "bgsNight": [],
     "bgs": [
@@ -13136,6 +13961,13 @@
       "KevinMacLeod/Atmospheric/Lost Time",
       "KevinMacLeod/Techno/Space Fighter Loop"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Lithium"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "room-scifi",
@@ -13291,6 +14123,13 @@
       "KevinMacLeod/Sad/Unanswered Questions",
       "KevinMacLeod/Horror/Land of Phantoms"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Horror/Ghost Story",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Dark/Darkling"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "frogs-croaking-at-night",
@@ -13395,6 +14234,10 @@
       {
         "name": "Crystal",
         "density": 0.4
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -13469,6 +14312,13 @@
       "KevinMacLeod/Dark/Darkling",
       "KevinMacLeod/Calm/Tranquility Base",
       "KevinMacLeod/Mysterious/Comfortable Mystery"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Atmospheric/Gloom Horizon"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -13674,6 +14524,13 @@
       "KevinMacLeod/Horror/Ghost Story",
       "KevinMacLeod/Dark/Gathering Darkness"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Dark/Darkling"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "frogs-croaking-at-night",
@@ -13768,6 +14625,10 @@
         "name": "Moor",
         "terrain": true,
         "density": 1
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -13844,6 +14705,13 @@
       "KevinMacLeod/Sad/Unanswered Questions",
       "KevinMacLeod/Atmospheric/Penumbra",
       "KevinMacLeod/Dark/Lightless Dawn"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Long Note Two"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -14013,6 +14881,13 @@
       "KevinMacLeod/Sad/Mourning Song",
       "KevinMacLeod/Dark/Gathering Darkness",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Sad/Mourning Song",
+      "KevinMacLeod/Dark/Gathering Darkness"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -14197,6 +15072,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery 3",
       "KevinMacLeod/Sad/Hush"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Horror/Ghost Story",
+      "KevinMacLeod/Sad/Unanswered Questions",
+      "KevinMacLeod/Dark/Ancient Rite"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "temple-shadow",
@@ -14376,6 +15258,13 @@
       "KevinMacLeod/Jazz/Airport Lounge",
       "KevinMacLeod/Mysterious/Hidden Agenda"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Lithium"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "train",
@@ -14511,7 +15400,9 @@
         664
       ]
     ],
-    "specialBiomes": [],
+    "specialBiomes": [
+      "Crystals"
+    ],
     "lowerLayer": "Cave",
     "bgm": [
       "KevinMacLeod/Dreamy/Winter Chimes",
@@ -14530,6 +15421,13 @@
       "KevinMacLeod/Atmospheric/Long Note One",
       "KevinMacLeod/Dark/The Ice Giants",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -14621,6 +15519,10 @@
       {
         "name": "PebbleIce",
         "density": 0.8
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -14697,6 +15599,13 @@
       "KevinMacLeod/Horror/Ghostpocalypse - 7 Master",
       "KevinMacLeod/Dark/Gathering Darkness",
       "KevinMacLeod/Horror/Nightmare Machine"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Horror/Ghostpocalypse - 7 Master"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -14778,6 +15687,10 @@
       {
         "name": "Stalagmite",
         "density": 0.6
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -14852,6 +15765,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery 2",
       "KevinMacLeod/Sad/Unanswered Questions",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Heavy Heart",
+      "KevinMacLeod/Horror/Ghost Story",
+      "KevinMacLeod/Sad/Unanswered Questions",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Lost Time"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -15069,6 +15989,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery",
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Atmospheric/Long Note One"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Sad/Heavy Heart"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -15290,6 +16217,13 @@
       "KevinMacLeod/Dark/Ice Demon",
       "KevinMacLeod/Atmospheric/Long Note Three"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Gloom Horizon"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "village-night",
@@ -15498,6 +16432,13 @@
       "KevinMacLeod/Mysterious/Comfortable Mystery",
       "KevinMacLeod/Atmospheric/Penumbra"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Sad/Heavy Heart",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "village-night",
@@ -15559,9 +16500,22 @@
     },
     "features": [
       {
-        "name": "Rock",
+        "name": "Dirt",
         "terrain": true,
         "density": 1.5
+      },
+      {
+        "name": "GrassDark",
+        "terrain": true,
+        "density": 0.5
+      },
+      {
+        "name": "Rock",
+        "density": 1.5
+      },
+      {
+        "name": "Pebble",
+        "density": 0.6
       }
     ]
   },
@@ -15663,6 +16617,13 @@
       "KevinMacLeod/Atmospheric/Penumbra",
       "KevinMacLeod/Dark/Ancient Rite",
       "KevinMacLeod/Mysterious/Curse of the Scarab"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Dark/Bent and Broken"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -15860,6 +16821,13 @@
       "KevinMacLeod/Dreamy/Dreamer",
       "KevinMacLeod/Mysterious/Comfortable Mystery"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Distant Tension"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "village-night",
@@ -16043,6 +17011,13 @@
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Penumbra"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Deep Haze"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -16237,6 +17212,13 @@
       "KevinMacLeod/Atmospheric/Aftermath",
       "KevinMacLeod/Dark/Bent and Broken"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "lava-loop-1",
@@ -16326,6 +17308,10 @@
         "name": "Lava",
         "terrain": true,
         "density": 1.5
+      },
+      {
+        "name": "Cave",
+        "density": 0.003
       }
     ]
   },
@@ -16354,6 +17340,13 @@
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Gloom Horizon"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -16456,6 +17449,13 @@
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Sad/Unanswered Questions"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "bus-night",
@@ -16556,6 +17556,13 @@
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Gloom Horizon"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -16658,6 +17665,13 @@
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Long Note Four"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "bus-night",
@@ -16758,6 +17772,13 @@
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Sad/Unanswered Questions",
+      "KevinMacLeod/Atmospheric/Dark Fog"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -16860,6 +17881,13 @@
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Long Note Four"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "bus-night",
@@ -16960,6 +17988,13 @@
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Dark/Gathering Darkness"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -17062,6 +18097,13 @@
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Dark/Dark Walk"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "bus-night",
@@ -17162,6 +18204,13 @@
       "KevinMacLeod/Sad/Hush",
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Dark/Gathering Darkness"
     ],
     "bgmBattle": [],
     "bgsNight": [
@@ -17264,6 +18313,13 @@
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Dark/Gathering Darkness"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "bus-night",
@@ -17365,6 +18421,13 @@
       "KevinMacLeod/Jazz/Sweeter Vermouth",
       "KevinMacLeod/Atmospheric/Long Note One"
     ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Sad/Hush",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Long Note Four"
+    ],
     "bgmBattle": [],
     "bgsNight": [
       "bus-night",
@@ -17437,6 +18500,2285 @@
         "name": "DashedLine",
         "terrain": true,
         "density": 1
+      }
+    ]
+  },
+  {
+    "name": "Catacombs",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#3b3128",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Crypt",
+    "bgm": [
+      "KevinMacLeod/Horror/Classic Horror 1",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Horror/Land of Phantoms",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Horror/Darkest Child",
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Horror/Darkest Child",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Horror/Land of Phantoms",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Horror/The Other Side of the Door"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Horror/Classic Horror 1",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "creepy-dungeon-ambience",
+      "cave-dripping"
+    ],
+    "bgs": [
+      "creepy-dungeon-ambience",
+      "cave-dripping"
+    ],
+    "dayTemperature": 9,
+    "nightTemperature": 8,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": 8.3,
+        "nightTemp": 7.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 50,
+        "nightHumidity": 56
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": 8.8,
+        "nightTemp": 7.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 45,
+        "nightHumidity": 50
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": 9.7,
+        "nightTemp": 8.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 37,
+        "nightHumidity": 41
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": 9.1,
+        "nightTemp": 8.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 49,
+        "nightHumidity": 54
+      }
+    },
+    "features": [
+      {
+        "name": "DungeonFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Grave",
+        "density": 1.2
+      },
+      {
+        "name": "Bones",
+        "density": 1.2
+      },
+      {
+        "name": "Skull",
+        "density": 1
+      },
+      {
+        "name": "Cobweb",
+        "density": 0.5
+      },
+      {
+        "name": "Candle",
+        "density": 0.4
+      },
+      {
+        "name": "Rock",
+        "density": 0.3
+      },
+      {
+        "name": "Vase",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "Mineshaft",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#5a4630",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Dramatic/Lord of the Rangs",
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Mysterious/Investigations",
+      "KevinMacLeod/Dramatic/Industrial Cinematic",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Mysterious/Crypto",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dramatic/Impact Prelude"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "old-mine-ambience",
+      "cave-deep"
+    ],
+    "bgs": [
+      "old-mine-ambience",
+      "cave-deep"
+    ],
+    "dayTemperature": 13,
+    "nightTemperature": 12,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": 12.3,
+        "nightTemp": 11.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 50,
+        "nightHumidity": 56
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": 12.8,
+        "nightTemp": 11.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 45,
+        "nightHumidity": 50
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": 13.7,
+        "nightTemp": 12.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 37,
+        "nightHumidity": 41
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": 13.1,
+        "nightTemp": 12.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 49,
+        "nightHumidity": 54
+      }
+    },
+    "features": [
+      {
+        "name": "Dirt",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Mineral",
+        "density": 1.2
+      },
+      {
+        "name": "Rock",
+        "density": 0.9
+      },
+      {
+        "name": "Crate",
+        "density": 0.7
+      },
+      {
+        "name": "Debris",
+        "density": 0.6
+      },
+      {
+        "name": "Torch",
+        "density": 0.5
+      },
+      {
+        "name": "Ladder",
+        "density": 0.4
+      },
+      {
+        "name": "Bucket",
+        "density": 0.3
+      },
+      {
+        "name": "Shovel",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "CaveFrozen",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#a9c9d8",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dreamy/Frost Waltz",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Atmospheric/Long Note Three"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Lightless Dawn"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "cold-wind-loop",
+      "cave-wind"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "cave-wind"
+    ],
+    "dayTemperature": -3,
+    "nightTemperature": -6,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": -3.7,
+        "nightTemp": -6.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 95,
+        "nightHumidity": 100
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": -3.2,
+        "nightTemp": -6.2,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 85,
+        "nightHumidity": 90
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": -2.3,
+        "nightTemp": -5.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 70,
+        "nightHumidity": 74
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": -2.9,
+        "nightTemp": -5.9,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 92,
+        "nightHumidity": 97
+      }
+    },
+    "features": [
+      {
+        "name": "CaveFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "RockIce",
+        "density": 1.4
+      },
+      {
+        "name": "Crystal",
+        "density": 0.8
+      },
+      {
+        "name": "Rock",
+        "density": 0.6
+      },
+      {
+        "name": "Stalagmite",
+        "density": 0.5
+      },
+      {
+        "name": "Bones",
+        "density": 0.4
+      },
+      {
+        "name": "IcePool",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "Cistern",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#3f5a5e",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "CaveFlooded",
+    "bgm": [
+      "KevinMacLeod/Mysterious/Crypto",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Techno/District Four",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Dark/Darkling"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Horror/The Other Side of the Door"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Dark/Darkling"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "cave-dripping",
+      "sewer-water"
+    ],
+    "bgs": [
+      "cave-dripping",
+      "sewer-water"
+    ],
+    "dayTemperature": 13,
+    "nightTemperature": 12,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": 12.3,
+        "nightTemp": 11.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 95,
+        "nightHumidity": 100
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": 12.8,
+        "nightTemp": 11.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 85,
+        "nightHumidity": 90
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": 13.7,
+        "nightTemp": 12.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 70,
+        "nightHumidity": 74
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": 13.1,
+        "nightTemp": 12.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 92,
+        "nightHumidity": 97
+      }
+    },
+    "features": [
+      {
+        "name": "Pavement",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Puddle",
+        "density": 1
+      },
+      {
+        "name": "Column",
+        "density": 0.8
+      },
+      {
+        "name": "Drain",
+        "density": 0.6
+      },
+      {
+        "name": "Debris",
+        "density": 0.5
+      },
+      {
+        "name": "Torch",
+        "density": 0.5
+      },
+      {
+        "name": "Reed",
+        "density": 0.4
+      },
+      {
+        "name": "Vase",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "FungalWarren",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#6b5f7a",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Dreamy/Magic Forest",
+      "KevinMacLeod/Dreamy/Mesmerize",
+      "KevinMacLeod/Dreamy/Hidden Wonders",
+      "KevinMacLeod/Mysterious/Circus of Freaks",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Dreamy/Light Awash",
+      "KevinMacLeod/Mysterious/Goblin_Tinker_Soldier_Spy",
+      "KevinMacLeod/Atmospheric/Lithium"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Mysterious/Comfortable Mystery 4",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Horror/Nightmare Machine"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Darkling"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "cave-forgotten",
+      "cave-dripping"
+    ],
+    "bgs": [
+      "cave-forgotten",
+      "cave-dripping"
+    ],
+    "dayTemperature": 16,
+    "nightTemperature": 15,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": 14.6,
+        "nightTemp": 13.6,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 58,
+        "nightHumidity": 76
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": 15.5,
+        "nightTemp": 14.5,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 52,
+        "nightHumidity": 68
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": 17.4,
+        "nightTemp": 16.4,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 43,
+        "nightHumidity": 56
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": 16.3,
+        "nightTemp": 15.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 56,
+        "nightHumidity": 73
+      }
+    },
+    "features": [
+      {
+        "name": "Dirt",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Mushroom",
+        "density": 2
+      },
+      {
+        "name": "Vine",
+        "density": 0.9
+      },
+      {
+        "name": "Weed",
+        "density": 0.6
+      },
+      {
+        "name": "Rock",
+        "density": 0.4
+      },
+      {
+        "name": "Puddle",
+        "density": 0.4
+      },
+      {
+        "name": "Bones",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "CrystalCavern",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#7fb6c9",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Underdark",
+    "bgm": [
+      "KevinMacLeod/Dreamy/Mesmerize",
+      "KevinMacLeod/Dreamy/Hidden Wonders",
+      "KevinMacLeod/Dreamy/Light Awash",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Calm/Daybreak",
+      "KevinMacLeod/Dreamy/Crinoline Dreams",
+      "KevinMacLeod/Atmospheric/Long Note Four"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dreamy/Winter Chimes",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Mysterious/Crypto"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Dark/Lightless Dawn"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "ce-cavern-looped",
+      "cave-deep"
+    ],
+    "bgs": [
+      "ce-cavern-looped",
+      "cave-deep"
+    ],
+    "dayTemperature": 11,
+    "nightTemperature": 10,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": 9.6,
+        "nightTemp": 8.6,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 58,
+        "nightHumidity": 76
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": 10.5,
+        "nightTemp": 9.5,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 52,
+        "nightHumidity": 68
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": 12.4,
+        "nightTemp": 11.4,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 43,
+        "nightHumidity": 56
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": 11.3,
+        "nightTemp": 10.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 56,
+        "nightHumidity": 73
+      }
+    },
+    "features": [
+      {
+        "name": "CaveFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Crystal",
+        "density": 1.8
+      },
+      {
+        "name": "Mineral",
+        "density": 1.2
+      },
+      {
+        "name": "Rock",
+        "density": 0.6
+      },
+      {
+        "name": "Stalagmite",
+        "density": 0.5
+      },
+      {
+        "name": "Glass",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "Oubliette",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#4a4038",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Dungeon",
+    "bgm": [
+      "KevinMacLeod/Mysterious/Comfortable Mystery 2",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Mysterious/Crypto",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Mysterious/Goblin_Tinker_Soldier_Spy",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Mysterious/Investigations",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "creepy-dungeon-ambience",
+      "dungeon-air"
+    ],
+    "bgs": [
+      "creepy-dungeon-ambience",
+      "dungeon-air"
+    ],
+    "dayTemperature": 9,
+    "nightTemperature": 8,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": 8.3,
+        "nightTemp": 7.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 50,
+        "nightHumidity": 56
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": 8.8,
+        "nightTemp": 7.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 45,
+        "nightHumidity": 50
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": 9.7,
+        "nightTemp": 8.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 37,
+        "nightHumidity": 41
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": 9.1,
+        "nightTemp": 8.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 49,
+        "nightHumidity": 54
+      }
+    },
+    "features": [
+      {
+        "name": "DungeonFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Chain",
+        "density": 0.9
+      },
+      {
+        "name": "Skull",
+        "density": 0.8
+      },
+      {
+        "name": "Bones",
+        "density": 0.7
+      },
+      {
+        "name": "Torch",
+        "density": 0.6
+      },
+      {
+        "name": "Cobweb",
+        "density": 0.5
+      },
+      {
+        "name": "Bed",
+        "density": 0.4
+      },
+      {
+        "name": "Table",
+        "density": 0.3
+      },
+      {
+        "name": "Trash",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "SunkenLibrary",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#6d5334",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Dungeon",
+    "bgm": [
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Horror/The House of Leaves",
+      "KevinMacLeod/Horror/Land of Phantoms",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Atmospheric/Lost Time"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Horror/The House of Leaves",
+      "KevinMacLeod/Horror/Land of Phantoms",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Horror/Ghost Story",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Horror/The Other Side of the Door",
+      "KevinMacLeod/Dark/Darkling"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Horror/The House of Leaves",
+      "KevinMacLeod/Horror/Land of Phantoms"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "dungeon-air",
+      "cabin-wind"
+    ],
+    "bgs": [
+      "dungeon-air",
+      "cabin-wind"
+    ],
+    "dayTemperature": 12,
+    "nightTemperature": 11,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 8.5,
+        "nightTemp": 7.5,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 10.8,
+        "nightTemp": 9.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 15.5,
+        "nightTemp": 14.5,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 12.7,
+        "nightTemp": 11.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "features": [
+      {
+        "name": "Parquet",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Book",
+        "density": 1.4
+      },
+      {
+        "name": "Shelf",
+        "density": 1
+      },
+      {
+        "name": "Library",
+        "density": 0.8
+      },
+      {
+        "name": "Candle",
+        "density": 0.6
+      },
+      {
+        "name": "Table",
+        "density": 0.5
+      },
+      {
+        "name": "Chair",
+        "density": 0.5
+      },
+      {
+        "name": "Cobweb",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "UnderForge",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#8a3b22",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Dramatic/Mountain Emperor",
+      "KevinMacLeod/Dramatic/The Pyre",
+      "KevinMacLeod/Dramatic/Impact Prelude",
+      "KevinMacLeod/Action/Rocket Power",
+      "KevinMacLeod/Dramatic/Despair and Triumph",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dramatic/Industrial Cinematic"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dramatic/The Pyre",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "lava-loop-1",
+      "industrial-machinery"
+    ],
+    "bgs": [
+      "lava-loop-1",
+      "industrial-machinery"
+    ],
+    "dayTemperature": 42,
+    "nightTemperature": 40,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 39.9,
+        "nightTemp": 37.9,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 17,
+        "nightHumidity": 28
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 41.3,
+        "nightTemp": 39.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 15,
+        "nightHumidity": 25
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 44.1,
+        "nightTemp": 42.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 12,
+        "nightHumidity": 20
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 42.4,
+        "nightTemp": 40.4,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 16,
+        "nightHumidity": 27
+      }
+    },
+    "features": [
+      {
+        "name": "Metal",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Gear",
+        "density": 1
+      },
+      {
+        "name": "Chain",
+        "density": 0.6
+      },
+      {
+        "name": "Stove",
+        "density": 0.6
+      },
+      {
+        "name": "Crate",
+        "density": 0.5
+      },
+      {
+        "name": "Debris",
+        "density": 0.5
+      },
+      {
+        "name": "Torch",
+        "density": 0.6
+      },
+      {
+        "name": "Cauldron",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "ColdWarBunker",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#55605a",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Dungeon",
+    "bgm": [
+      "KevinMacLeod/Dramatic/Industrial Cinematic",
+      "KevinMacLeod/Mysterious/Hidden Agenda",
+      "KevinMacLeod/Jazz/Fast Talkin",
+      "KevinMacLeod/Techno/District Four",
+      "KevinMacLeod/Techno/Bass Walker",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Techno/Funk Game Loop",
+      "KevinMacLeod/Dramatic/Impact Prelude"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dramatic/Industrial Cinematic",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Techno/District Four",
+      "KevinMacLeod/Mysterious/Hidden Agenda",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Horror/Nightmare Machine"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Night Cave"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "industrial-machinery",
+      "dungeon_ambient_1"
+    ],
+    "bgs": [
+      "industrial-machinery",
+      "dungeon_ambient_1"
+    ],
+    "dayTemperature": 14,
+    "nightTemperature": 13,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 10.5,
+        "nightTemp": 9.5,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 12.8,
+        "nightTemp": 11.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 17.5,
+        "nightTemp": 16.5,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 14.7,
+        "nightTemp": 13.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "features": [
+      {
+        "name": "Metal",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Tech",
+        "density": 1
+      },
+      {
+        "name": "Crate",
+        "density": 0.9
+      },
+      {
+        "name": "Gear",
+        "density": 0.6
+      },
+      {
+        "name": "Lamp",
+        "density": 0.5
+      },
+      {
+        "name": "Debris",
+        "density": 0.5
+      },
+      {
+        "name": "Bucket",
+        "density": 0.4
+      },
+      {
+        "name": "Sign",
+        "density": 0.3
+      },
+      {
+        "name": "Bed",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "BuriedLab",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#6f7f8c",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Dungeon",
+    "bgm": [
+      "KevinMacLeod/Techno/Screen Saver",
+      "KevinMacLeod/Techno/Static Motion",
+      "KevinMacLeod/Techno/Volatile Reaction",
+      "KevinMacLeod/Jazz/Thinking Music",
+      "KevinMacLeod/Calm/Concentration",
+      "KevinMacLeod/Techno/Brain Dance",
+      "KevinMacLeod/Techno/Bass Walker",
+      "KevinMacLeod/Mysterious/Investigations",
+      "KevinMacLeod/Techno/Loopster"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Techno/Static Motion",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Techno/Volatile Reaction",
+      "KevinMacLeod/Horror/Anxiety",
+      "KevinMacLeod/Mysterious/Unnatural Situation"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Horror/Anxiety",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Dark/Gathering Darkness"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "room-office",
+      "industrial-machinery"
+    ],
+    "bgs": [
+      "room-office",
+      "industrial-machinery"
+    ],
+    "dayTemperature": 18,
+    "nightTemperature": 17,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": 17.3,
+        "nightTemp": 16.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 50,
+        "nightHumidity": 56
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": 17.8,
+        "nightTemp": 16.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 45,
+        "nightHumidity": 50
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": 18.7,
+        "nightTemp": 17.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 37,
+        "nightHumidity": 41
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": 18.1,
+        "nightTemp": 17.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 49,
+        "nightHumidity": 54
+      }
+    },
+    "features": [
+      {
+        "name": "TechnoFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Glass",
+        "density": 1
+      },
+      {
+        "name": "Tech",
+        "density": 1
+      },
+      {
+        "name": "Techno",
+        "density": 0.6
+      },
+      {
+        "name": "Shelf",
+        "density": 0.5
+      },
+      {
+        "name": "Lamp",
+        "density": 0.4
+      },
+      {
+        "name": "Mannequin",
+        "density": 0.4
+      },
+      {
+        "name": "Book",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "ProfaneShrine",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#5c1f2b",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Crypt",
+    "bgm": [
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dramatic/Despair and Triumph",
+      "KevinMacLeod/Dramatic/The Pyre",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Dramatic/The Pyre",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Dark/Mystic Force"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Dark/Crossing the Chasm"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "creepy-dungeon-ambience",
+      "abyss-ambience"
+    ],
+    "bgs": [
+      "creepy-dungeon-ambience",
+      "abyss-ambience"
+    ],
+    "dayTemperature": 15,
+    "nightTemperature": 14,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 12.9,
+        "nightTemp": 11.9,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 17,
+        "nightHumidity": 28
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 14.3,
+        "nightTemp": 13.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 15,
+        "nightHumidity": 25
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 17.1,
+        "nightTemp": 16.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 12,
+        "nightHumidity": 20
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 15.4,
+        "nightTemp": 14.4,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 16,
+        "nightHumidity": 27
+      }
+    },
+    "features": [
+      {
+        "name": "DungeonFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Candle",
+        "density": 1.2
+      },
+      {
+        "name": "Skull",
+        "density": 1
+      },
+      {
+        "name": "Blood",
+        "density": 0.8
+      },
+      {
+        "name": "Bones",
+        "density": 0.6
+      },
+      {
+        "name": "Statue",
+        "density": 0.6
+      },
+      {
+        "name": "Brazier",
+        "density": 0.5
+      },
+      {
+        "name": "Cauldron",
+        "density": 0.4
+      },
+      {
+        "name": "Pentagram",
+        "density": 0.15
+      }
+    ]
+  },
+  {
+    "name": "SmugglerTunnel",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#6b5a3c",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Horror/The House of Leaves",
+      "KevinMacLeod/Horror/Land of Phantoms",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Sad/Decline",
+      "KevinMacLeod/Atmospheric/Lost Time"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Horror/The House of Leaves",
+      "KevinMacLeod/Horror/Land of Phantoms",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Horror/Ghost Story",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Horror/The Other Side of the Door",
+      "KevinMacLeod/Dark/Darkling"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Sad/Wounded",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Horror/The House of Leaves",
+      "KevinMacLeod/Horror/Land of Phantoms"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "cave-deep",
+      "dungeon-air"
+    ],
+    "bgs": [
+      "cave-deep",
+      "dungeon-air"
+    ],
+    "dayTemperature": 14,
+    "nightTemperature": 13,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 10.5,
+        "nightTemp": 9.5,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 12.8,
+        "nightTemp": 11.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 17.5,
+        "nightTemp": 16.5,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 14.7,
+        "nightTemp": 13.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "features": [
+      {
+        "name": "Dirt",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Crate",
+        "density": 1.4
+      },
+      {
+        "name": "Sack",
+        "density": 1
+      },
+      {
+        "name": "Beer",
+        "density": 0.9
+      },
+      {
+        "name": "Bucket",
+        "density": 0.5
+      },
+      {
+        "name": "Rope",
+        "density": 0.4
+      },
+      {
+        "name": "Lamp",
+        "density": 0.4
+      },
+      {
+        "name": "Debris",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "SeaGrotto",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#3d7d86",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "CaveFlooded",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Calm/Aquarium",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Atmospheric/Distant Tension"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "cave-dripping",
+      "ce-cavern-looped"
+    ],
+    "bgs": [
+      "cave-dripping",
+      "ce-cavern-looped"
+    ],
+    "dayTemperature": 17,
+    "nightTemperature": 16,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": 16.3,
+        "nightTemp": 15.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 95,
+        "nightHumidity": 100
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": 16.8,
+        "nightTemp": 15.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 85,
+        "nightHumidity": 90
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": 17.7,
+        "nightTemp": 16.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 70,
+        "nightHumidity": 74
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": 17.1,
+        "nightTemp": 16.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 92,
+        "nightHumidity": 97
+      }
+    },
+    "features": [
+      {
+        "name": "CaveFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Seashell",
+        "density": 1.2
+      },
+      {
+        "name": "WaterRock",
+        "density": 0.9
+      },
+      {
+        "name": "SeaPlant",
+        "density": 0.8
+      },
+      {
+        "name": "Puddle",
+        "density": 0.5
+      },
+      {
+        "name": "Rock",
+        "density": 0.5
+      },
+      {
+        "name": "Bones",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "LavaTube",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#7a2f1c",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Dramatic/Mountain Emperor",
+      "KevinMacLeod/Dramatic/The Pyre",
+      "KevinMacLeod/Dramatic/Impact Prelude",
+      "KevinMacLeod/Action/Rocket Power",
+      "KevinMacLeod/Dramatic/Despair and Triumph",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dramatic/Industrial Cinematic"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dramatic/The Pyre",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Dark/Bent and Broken"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "lava-loop-2",
+      "cave-deep"
+    ],
+    "bgs": [
+      "lava-loop-2",
+      "cave-deep"
+    ],
+    "dayTemperature": 46,
+    "nightTemperature": 44,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 43.9,
+        "nightTemp": 41.9,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 17,
+        "nightHumidity": 28
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 45.3,
+        "nightTemp": 43.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 15,
+        "nightHumidity": 25
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 48.1,
+        "nightTemp": 46.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 12,
+        "nightHumidity": 20
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 46.4,
+        "nightTemp": 44.4,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 16,
+        "nightHumidity": 27
+      }
+    },
+    "features": [
+      {
+        "name": "CaveFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Rock",
+        "density": 1
+      },
+      {
+        "name": "Stalagmite",
+        "density": 0.8
+      },
+      {
+        "name": "Crystal",
+        "density": 0.5
+      },
+      {
+        "name": "Debris",
+        "density": 0.5
+      },
+      {
+        "name": "Skull",
+        "density": 0.3
+      },
+      {
+        "name": "Campfire",
+        "density": 0.2
+      }
+    ]
+  },
+  {
+    "name": "Barrow",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#4e4a33",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Crypt",
+    "bgm": [
+      "KevinMacLeod/Horror/Classic Horror 1",
+      "KevinMacLeod/Sad/Heartbreaking",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Horror/Land of Phantoms",
+      "KevinMacLeod/Sad/Cryptic Sorrow",
+      "KevinMacLeod/Sad/Mourning Song",
+      "KevinMacLeod/Horror/Ghost Story",
+      "KevinMacLeod/Sad/Unanswered Questions"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Horror/Ghost Story",
+      "KevinMacLeod/Horror/Land of Phantoms",
+      "KevinMacLeod/Horror/Darkest Child",
+      "KevinMacLeod/Sad/Mourning Song",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Horror/Classic Horror 1",
+      "KevinMacLeod/Sad/Heartbreaking",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Horror/Land of Phantoms"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "cave-forgotten",
+      "creepy-dungeon-ambience"
+    ],
+    "bgs": [
+      "cave-forgotten",
+      "creepy-dungeon-ambience"
+    ],
+    "dayTemperature": 8,
+    "nightTemperature": 7,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 4.5,
+        "nightTemp": 3.5,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 6.8,
+        "nightTemp": 5.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 11.5,
+        "nightTemp": 10.5,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 8.7,
+        "nightTemp": 7.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "features": [
+      {
+        "name": "Dirt",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Grave",
+        "density": 1.2
+      },
+      {
+        "name": "Bones",
+        "density": 1
+      },
+      {
+        "name": "Skull",
+        "density": 0.8
+      },
+      {
+        "name": "Statue",
+        "density": 0.5
+      },
+      {
+        "name": "Vase",
+        "density": 0.5
+      },
+      {
+        "name": "Weapon",
+        "density": 0.4
+      },
+      {
+        "name": "Torch",
+        "density": 0.4
+      },
+      {
+        "name": "Gold",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "MetroStation",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#4b4f58",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Sewer",
+    "bgm": [
+      "KevinMacLeod/Techno/District Four",
+      "KevinMacLeod/Dramatic/Industrial Cinematic",
+      "KevinMacLeod/Mysterious/Hidden Agenda",
+      "KevinMacLeod/Techno/Bass Walker",
+      "KevinMacLeod/Mysterious/Spy Glass",
+      "KevinMacLeod/Techno/Loopster",
+      "KevinMacLeod/Jazz/Fast Talkin",
+      "KevinMacLeod/Atmospheric/Distant Tension"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Techno/District Four",
+      "KevinMacLeod/Mysterious/Hidden Agenda",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Mysterious/Deadly Roulette"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Atmospheric/Dark Fog"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "sewer-north",
+      "dungeon_ambient_1"
+    ],
+    "bgs": [
+      "sewer-north",
+      "dungeon_ambient_1"
+    ],
+    "dayTemperature": 15,
+    "nightTemperature": 14,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": 14.3,
+        "nightTemp": 13.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 50,
+        "nightHumidity": 56
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": 14.8,
+        "nightTemp": 13.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 45,
+        "nightHumidity": 50
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": 15.7,
+        "nightTemp": 14.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 37,
+        "nightHumidity": 41
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": 15.1,
+        "nightTemp": 14.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 49,
+        "nightHumidity": 54
+      }
+    },
+    "features": [
+      {
+        "name": "Pavement",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Trash",
+        "density": 1
+      },
+      {
+        "name": "Debris",
+        "density": 0.8
+      },
+      {
+        "name": "Sign",
+        "density": 0.7
+      },
+      {
+        "name": "Streetlight",
+        "density": 0.5
+      },
+      {
+        "name": "Rail",
+        "density": 0.5
+      },
+      {
+        "name": "Chair",
+        "density": 0.4
+      },
+      {
+        "name": "Clock",
+        "density": 0.3
+      },
+      {
+        "name": "Mailbox",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "SaltWorks",
+    "hasNPC": false,
+    "tilesetId": 300,
+    "color": "#c8c2b0",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Dramatic/Lord of the Rangs",
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Mysterious/Investigations",
+      "KevinMacLeod/Dramatic/Industrial Cinematic",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Mysterious/Crypto",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dramatic/Impact Prelude"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Horror/Unseen Horrors",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath"
+    ],
+    "emptyWorldBGM": [
+      "KevinMacLeod/Horror/The Descent",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "old-mine-ambience",
+      "cave-wind"
+    ],
+    "bgs": [
+      "old-mine-ambience",
+      "cave-wind"
+    ],
+    "dayTemperature": 19,
+    "nightTemperature": 17,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:00",
+        "sunset": "17:00",
+        "dayTemp": 18.3,
+        "nightTemp": 16.3,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 50,
+        "nightHumidity": 56
+      },
+      "spring": {
+        "sunrise": "06:30",
+        "sunset": "18:30",
+        "dayTemp": 18.8,
+        "nightTemp": 16.8,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 45,
+        "nightHumidity": 50
+      },
+      "summer": {
+        "sunrise": "06:00",
+        "sunset": "19:30",
+        "dayTemp": 19.7,
+        "nightTemp": 17.7,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 37,
+        "nightHumidity": 41
+      },
+      "autumn": {
+        "sunrise": "06:45",
+        "sunset": "18:00",
+        "dayTemp": 19.1,
+        "nightTemp": 17.1,
+        "precipitation": 0,
+        "windSpeed": 1.2,
+        "cloudCover": 0,
+        "dayHumidity": 49,
+        "nightHumidity": 54
+      }
+    },
+    "features": [
+      {
+        "name": "Salt",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Mineral",
+        "density": 1
+      },
+      {
+        "name": "Crystal",
+        "density": 0.7
+      },
+      {
+        "name": "Crate",
+        "density": 0.6
+      },
+      {
+        "name": "Rock",
+        "density": 0.6
+      },
+      {
+        "name": "Bucket",
+        "density": 0.4
+      },
+      {
+        "name": "Torch",
+        "density": 0.4
+      },
+      {
+        "name": "Ladder",
+        "density": 0.3
       }
     ]
   }

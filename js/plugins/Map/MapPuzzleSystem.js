@@ -2759,14 +2759,20 @@
     // door that is actually placed, and only show the counter in the enclosed /
     // underground biomes where locked doors can exist at all.
     const PROC_MAP_ID = 636;
-    const UNDERGROUND_BIOME_RE =
-        /^(dungeon|crypt|sewer|cave|caveden|lootcellar|patronvault|templeinside|mine|tomb|catacomb)/;
+    // Ordinary open-air cave squares, which are underground without being one
+    // of the generated structures. Every structure is asked of the catalogue
+    // (ProceduralMapStructureGenerator) instead of listed here, since the list
+    // is two dozen long and grows.
+    const UNDERGROUND_BIOME_RE = /^(cave|mine|underdark|crystals|lair|seabed|metro)/;
 
     function isUndergroundProcContext() {
         const pd = $gameSystem._procGenData;
         if (!pd) return false;
         if (pd.biomeLayerStack && pd.biomeLayerStack.length > 0) return true;
-        return UNDERGROUND_BIOME_RE.test(String(pd.currentBiome || '').toLowerCase());
+        const name = String(pd.currentBiome || '').toLowerCase();
+        const D = window.ProcGenDungeon;
+        if (D && typeof D.isStructure === 'function' && D.isStructure(name)) return true;
+        return UNDERGROUND_BIOME_RE.test(name);
     }
 
     function hasPlacedDungeonDoor() {

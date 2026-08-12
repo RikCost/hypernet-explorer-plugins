@@ -8,18 +8,40 @@
   "hint": {
     "loading": "Loading the lake...",
     "no3d": "3D system unavailable",
-    "aim": "WASD / arrows / drag to aim     Confirm to cast     Cancel to leave",
-    "power": "Confirm to set the cast power",
+    "aim": "Taking aim",
+    "power": "Winding up the cast",
     "casting": "Cast away...",
-    "waiting": "Waiting for a bite     WASD to look around",
-    "bite": "Confirm NOW to set the hook",
-    "reeling": "Hold Confirm to reel     release to give line",
-    "caught": "Landed it     Confirm to cast again",
-    "miss": "It got away     Confirm to cast again"
+    "waiting": "Waiting for a bite",
+    "bite": "A bite!",
+    "reeling": "Reeling it in",
+    "caught": "Landed it",
+    "miss": "It got away"
   },
   "meter": {
     "power": "POWER",
     "line": "LINE - keep it out of the red",
     "dist": "DIST"
+  },
+  "fish": {
+    "1": "Carp",
+    "2": "Bass",
+    "3": "Trout",
+    "4": "Salmon",
+    "5": "Catfish",
+    "6": "Pike",
+    "7": "Perch",
+    "8": "Eel",
+    "9": "Goldfish",
+    "10": "Tuna",
+    "11": "Swordfish",
+    "12": "Blowfish",
+    "13": "Clownfish",
+    "14": "Anglerfish",
+    "15": "Piranha",
+    "16": "Sturgeon",
+    "17": "Koi",
+    "18": "Pufferfish",
+    "19": "Jellyfish",
+    "20": "Kraken"
   }
 }

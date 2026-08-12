@@ -1,0 +1,49 @@
+{
+  "anItem": "AN ITEM",
+  "mapFallback": "MAP {id}",
+  "homePool": {
+    "huts": "HUT",
+    "houses": "HOUSE",
+    "villas": "VILLA",
+    "skyscrapers": "HIGH-RISE"
+  },
+  "log": {
+    "work": "WORKED AS {job} AN' EARNED {pay}",
+    "harvested": "HARVESTED MATURE CROPS",
+    "animalProduce": "COLLECTED ANIMAL PRODUCE",
+    "stole": "STOLE {item}",
+    "caughtStealing": "CAUGHT STEALIN' {item}",
+    "bought": "BOUGHT {item} FOR {price}",
+    "cooked": "COOKED {a} WIT {b}",
+    "foundInContainer": "FOUND {amount} RUMMAGIN' THROUGH A CONTAINER",
+    "rentedRoom": "RENTED A ROOM FOR DA NIGHT ({price})",
+    "soldHoney": "SOLD A BATCH OF HONEY AN' WAX FOR {amount}",
+    "tookLoan": "TOOK OUT A LOAN FOR {amount}",
+    "deposited": "DEPOSITED {amount} INTO A SAVINGS ACCOUNT",
+    "rentalIncome": "COLLECTED {amount} IN RENTAL INCOME",
+    "stocksGain": "MADE {amount} TRADIN' STOCKS",
+    "stocksLoss": "LOST {amount} TRADIN' STOCKS",
+    "movedHome": "MOVED TA A {home} ({saved} SAVED)",
+    "reachedLevel": "REACHED LEVEL {level}",
+    "met": "MET {name}"
+  },
+  "narrative": {
+    "noHistory": "{name} HAB NO RECORDED HISTORY YET!",
+    "workShifts": "WORKED {count} SHIFTS (LAST: {last})",
+    "tendsCrops": "TENDS CROPS REGULARLY",
+    "hasMet": "HAB MET {name}",
+    "acquainted": "IZ ACQUAINTED WIT {names}",
+    "and": "AN'",
+    "cooksRegularly": "COOKS DEY OWN MEALS REGULARLY",
+    "rentsSometimes": "RENTS A ROOM FROM TIME TA TIME",
+    "keepsBees": "KEEPS BEES ON DA SIDE",
+    "livesOffRent": "LIVES OFF RENTAL INCOME FROM OWNED PROPERTY",
+    "dabblesStocks": "DABBLES IN DA STOCK MARKET",
+    "wasCaught": "WAZ ONCE CAUGHT, {what}",
+    "familiarFace": "CONSIDERS DA PLAYER A FAMILIAR FACE",
+    "spokenBefore": "HAB SPOKEN TA DA PLAYER BEFORE",
+    "summary": "{name}: {list}.",
+    "quiet": "{name} HAB BEEN LIVIN' QUIETLY."
+  },
+  "unknownDate": "UNKNOWN"
+}

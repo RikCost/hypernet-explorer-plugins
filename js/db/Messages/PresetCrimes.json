@@ -23,6 +23,12 @@
     "category": "Theft",
     "name_int": "crime.burglary.name"
   },
+  "graverobbing": {
+    "name": "Grave Robbing",
+    "bounty": 450,
+    "category": "Theft",
+    "name_int": "crime.graverobbing.name"
+  },
   "robbery": {
     "name": "Robbery",
     "bounty": 750,
@@ -490,6 +496,12 @@
     "bounty": 50000,
     "category": "State Crimes",
     "name_int": "crime.terrorism.name"
+  },
+  "bioterrorism": {
+    "name": "Bioterrorism",
+    "bounty": 1000000,
+    "category": "State Crimes",
+    "name_int": "crime.bioterrorism.name"
   },
   "treason": {
     "name": "Treason",

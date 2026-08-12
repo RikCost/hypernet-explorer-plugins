@@ -90,6 +90,7 @@
     --text-text-alt-6-active: #333;
     --text-text-alt-7: #1a1a1a;
     --text-text-alt-8: #7a7368;
+    --text-text-alt-9: #5c2c16;
     --text-text-alt-9-translucent-50: rgba(92, 44, 22, 0.5);
     --text-warning-hover: #ffffff;
 
@@ -514,6 +515,16 @@
    ========================================================================== */
 #thinker-container .blueprint-name[style*="#FFFFFF"],
 #thinker-container .workbench-item-name[style*="#FFFFFF"],
+/* success-overlay background uses var(--text-highlight-active) which
+   is already cream (#f4edd4) in this theme, but its child .success-item-row
+   inherits the base theme's white background. Override so the rows sit
+   visibly on the cream page and don't wash out the common-rarity items. */
+#thinker-container .success-overlay {
+    background: rgba(244, 237, 212, 0.92) !important;
+}
+#thinker-container .success-item-row {
+    background: rgba(200, 180, 150, 0.35) !important;
+}
 #thinker-container .success-item-row span[style*="#FFFFFF"] {
     color: var(--rarity-common) !important;
 }
@@ -1194,8 +1205,8 @@ body .name-edit-bracket-box .name-display-text {
     color: var(--accent-cream-light) !important;
 }
 
-/* Train badge on a fast-travel destination: pure gold on a 16% gold wash. */
-.travel-dest-train {
+/* Transport-hub badge on a fast-travel destination: pure gold on a 16% gold wash. */
+.travel-dest-hub {
     color: #5a3c00 !important;
     background: var(--bg-warm-cream-25) !important;
 }
@@ -1405,5 +1416,63 @@ body .name-edit-bracket-box .name-display-text {
    quote next to it carries its own dark plate and is left alone.
    ========================================================================== */
 .save-details-card > [style*="#c8b088"] {
+    color: #3a2414 !important;
+}
+
+/* ==========================================================================
+   The shop counter (#shop-container), parchment-theme readability
+   The shop draws from the shared tokens, several of which were tuned for the
+   dark tower page and land badly on the cream one: .item-card-stock and the
+   selection summary take --text-secondary-active (#8c1d0f) at 0.78em bold, a
+   danger red for what is only a caption; .category-btn and .shop-tab take
+   --text-disabled / --text-inverse, mid sepias that read as disabled; and the
+   dossier's prose on the right page needs the same solid ink every other
+   description block on this theme was given above.
+   ========================================================================== */
+
+/* --- Left page: labels and captions read as quiet ink, not as warnings. --- */
+#shop-container .shop-funds {
+    color: var(--text-brown-dark) !important;
+}
+#shop-container .shop-tab {
+    color: #6b503a !important;
+}
+#shop-container .shop-tab.active {
+    color: var(--text-primary-hover) !important;
+    border-bottom-color: var(--text-primary-hover) !important;
+}
+#shop-container .category-btn {
+    color: #3a2414 !important;
+}
+#shop-container .category-btn.active {
+    color: var(--bg-secondary-hover) !important;
+}
+#shop-container .item-card-name {
+    color: var(--text-primary-hover) !important;
+}
+#shop-container .item-card-sub,
+#shop-container .item-card-stock {
+    color: #3a2414 !important;
+    font-weight: normal !important;
+}
+#shop-container .shop-sell-hint,
+#shop-container .shop-selection-bar .selection-count {
+    color: #3a2414 !important;
+}
+
+/* --- Right page: the dossier's own prose and its effect chips. --- */
+#shop-container .detail-desc,
+#shop-container .detail-lore {
+    color: var(--text-pure-black) !important;
+}
+#shop-container .detail-desc {
+    background: var(--bg-parchment-warm-60) !important;
+}
+#shop-container .detail-name {
+    color: var(--text-primary-hover) !important;
+}
+#shop-container .badge-lbl,
+#shop-container .badge-val,
+#shop-container .detail-effect-chip {
     color: #3a2414 !important;
 }

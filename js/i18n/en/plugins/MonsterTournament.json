@@ -17,11 +17,7 @@
   "skillAttack": "Attack",
   "skillFinish": "Finish",
   "ui": {
-    "hintCycle": "&#9664; &#9654;  Cycle&nbsp;&nbsp;&nbsp;Enter  Select&nbsp;&nbsp;&nbsp;Esc  Exit",
     "bet": "Bet:",
-    "hintBet": "&#9664; &#9654;  &plusmn;1&nbsp;&nbsp;&nbsp;&#9650; &#9660;  &plusmn;10",
-    "hintConfirm": "Enter  Confirm&nbsp;&nbsp;&nbsp;Esc  Cancel",
-    "keepCurrentBet": "Keep current bet",
-    "hintChoose": "&#9650; &#9660;  Choose&nbsp;&nbsp;&nbsp;Enter  Confirm"
+    "keepCurrentBet": "Keep current bet"
   }
 }

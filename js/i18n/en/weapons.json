@@ -2158,5 +2158,45 @@
   "540": {
     "name": "Seed Spear",
     "description": "A light and easy-to-wield short-bladed sword."
+  },
+  "541": {
+    "name": "Busker's Acoustic",
+    "description": "A battered dreadnought with three strings left,\nswung by the neck."
+  },
+  "542": {
+    "name": "Presidential Saxophone",
+    "description": "A brass tenor sax, played on late night television\nand swung when the questions get harder."
+  },
+  "543": {
+    "name": "Pawnshop Stratocaster",
+    "description": "A copy of a copy, bought secondhand and never\nquite in tune."
+  },
+  "544": {
+    "name": "La chitarra infernale",
+    "description": "A cherry burst superstrat, quilted and shark-finned.\nIt is louder than the room and hotter than the amp."
+  },
+  "545": {
+    "name": "Flying V",
+    "description": "A guitar shaped like the thing it is used as.\nNobody has to explain this one twice."
+  },
+  "546": {
+    "name": "Bass Guitar",
+    "description": "Four strings, a long neck and a great deal of mass.\nThe low end is felt rather than heard."
+  },
+  "547": {
+    "name": "Double-Neck Warhorse",
+    "description": "Twelve strings above, six below, and a strap that\nhas taken more weight than any strap should."
+  },
+  "548": {
+    "name": "Feedback Cannon",
+    "description": "A guitar wired straight into a stack that is no\nlonger there. It still howls."
+  },
+  "549": {
+    "name": "Hellfire Superstrat",
+    "description": "The neck runs the whole length of the body and the\nbody has been on fire since the day it was strung."
+  },
+  "550": {
+    "name": "Il bastone infernale",
+    "description": "A gentleman's cane with a skull grip. The shaft is\na scabbard, and what it sheathes is not polite."
   }
 }

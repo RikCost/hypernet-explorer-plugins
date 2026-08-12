@@ -15,7 +15,7 @@
  * @text Available Classes
  * @desc List of class IDs that can be selected (comma-separated)
  * @type string
- * @default 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66
+ * @default 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62
  *
  * @param classNameVariable
  * @text Class Name Variable
@@ -133,7 +133,7 @@
     const rows = [];
     window.Specializations.list.forEach((spec) => {
       const lvl = spec.classStart && spec.classStart[className];
-      if (lvl) rows.push({ name: spec.name, levelName: window.Specializations.levelName(lvl) });
+      if (lvl) rows.push({ name: window.Specializations.displayName(spec), levelName: window.Specializations.levelName(lvl) });
     });
     rows.sort((a, b) => a.name.localeCompare(b.name));
     return rows;
@@ -143,12 +143,12 @@
     const rows = getClassGrantedSpecializations(className);
     if (!rows.length) return "";
     const badges = rows.map((r) =>
-      `<div class="cc-element-badge" style="margin: 2px;">${r.name} <span style="opacity:0.7;">(${r.levelName})</span></div>`
+      `<span class="cc-element-badge cc-chip">${r.name} <span style="opacity:0.7;">(${r.levelName})</span></span>`
     ).join(" ");
     return `
-      <div class="cc-dossier-card">
+      <div class="cc-dossier-card cc-card-tight">
         <h3 class="cc-subheader">${T('ClassSelect.startingSpecializations')}</h3>
-        <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+        <div class="cc-chip-row">
           ${badges}
         </div>
       </div>
@@ -162,10 +162,17 @@
   const parameters = PluginManager.parameters(pluginName);
   const availableClassesParam =
     parameters["availableClasses"] ||
-    "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66";
+    "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62";
   const availableClasses = availableClassesParam
     .split(",")
     .map((id) => Number(id.trim()));
+
+  // Classes 1-62 are the sentient roster a person is built from; Feral (63)
+  // and everything after it are the creature classes (Feral, Mimic, Monster,
+  // Mana Cyborg, Ghost, Zombie, Mutant, Drone), offered only to a creature
+  // whose archetypes list them. See the classes / creatureClasses rosters in
+  // EnemyArchetypes.json.
+  const SENTIENT_CLASS_MAX = window.CreatureClasses.sentientMax();
 
   //=============================================================================
   // Aliases for dependencies
@@ -201,18 +208,56 @@
     }
 
     makeClassList() {
-      let list = availableClasses.filter(
-        (classId) => classId > 0 && $dataClasses[classId]
-      );
-      // Full-mode archetype flow scopes the scrollview to the chosen archetype's
-      // classes. A null/empty filter means "show every available class".
+      // How many of the entries at the head of the list are creature classes,
+      // which is where the board draws its "Non Sentient" / "Sentient" heads.
+      this._creatureCount = 0;
+
+      const known = (ids) => ids.filter((id) => id > 0 && $dataClasses[id]);
       const filter = window.$ccArchetypeClassFilter;
+
+      // Severed hides every Magical class, unbound hides every Mundane one
+      // (both/untagged always pass); see window.MagicNature. Freelancer and
+      // Monster are tagged <Nature: Both> in Classes.json specifically so
+      // they are never among the ones filtered out, whichever way the world
+      // leans: there is always at least a themeless class to fall back on.
+      // A scope that would filter down to nothing keeps its unfiltered set
+      // rather than lock the step out (same "never a locked door" rule the
+      // sprite/bust wardrobes use).
+      const magicAllowed = (ids) => {
+        const MN = window.MagicNature;
+        if (!MN || !MN.isFiltering()) return ids;
+        const kept = ids.filter((id) => MN.allowsData($dataClasses[id]));
+        return kept.length > 0 ? kept : ids;
+      };
+
+      // A creature is scoped by its archetypes and comes in two groups, its own
+      // kind first. See CreatureClasses.groupsForArchetypes.
+      if (filter && !Array.isArray(filter) && (filter.creature || filter.sentient)) {
+        const creature = magicAllowed(known(filter.creature || []));
+        const sentient = magicAllowed(known(filter.sentient || []));
+        if (creature.length || sentient.length) {
+          this._creatureCount = creature.length;
+          return creature.concat(sentient);
+        }
+      }
+
+      // Everyone else browses the sentient roster. A caller may scope it to a
+      // list of ids; a null/empty filter means the whole roster.
+      let list = magicAllowed(known(availableClasses).filter(
+        (classId) => classId <= SENTIENT_CLASS_MAX
+      ));
       if (Array.isArray(filter) && filter.length > 0) {
         const allowed = new Set(filter);
         const scoped = list.filter((classId) => allowed.has(classId));
         if (scoped.length > 0) list = scoped;
       }
       return list;
+    }
+
+    // Index of the first sentient class, i.e. where the second group starts.
+    // -1 when the list is not grouped.
+    groupBreak() {
+      return this._creatureCount > 0 ? this._creatureCount : -1;
     }
 
     maxItems() {
@@ -437,6 +482,21 @@
             this.drawIcon(elementIcon, 140 + textWidth + 8, currentY);
           }
         }
+      }
+
+      // Extract and display magic system (gen_class_magic_system_tags.js):
+      // shares the element's row when there is one, since every class
+      // already carries an <elem:> tag; opens its own row otherwise.
+      const magicMatch = rawNote.match(/<MagicalSystem:\s*([^>]+)>/i);
+      if (magicMatch) {
+        if (!elemMatch) currentY += this.lineHeight() * 3 + 10;
+        const systemKey = magicMatch[1].trim();
+        const systemName = T('SkillsMenu.magicSystem.' + systemKey) || systemKey;
+        const colX = Math.floor(this.contents.width * 0.55);
+        this.changeTextColor(ColorManager.systemColor());
+        this.drawText(T('ClassSelect.magicSystemHeading'), colX, currentY, 110);
+        this.resetTextColor();
+        this.drawText(systemName, colX + 110, currentY, this.contents.width - colX - 110);
       }
     }
 
@@ -710,12 +770,12 @@
             ` : `
               <h2 class="cc-header-gothic">${T('CharCreate.masteries')}</h2>
               <div class="cc-dossier-card" style="margin-top: 12px; padding: 18px; margin-bottom: 16px;">
-                <h4 class="cc-subheader" style="color: #ffcc66; font-size: 1.1rem; margin-bottom: 8px;">${T('CharCreate.primaryMastery')}</h4>
-                <p style="font-size: 0.95rem; color: #dddddd; line-height: 1.4;">${(c && getClassSkillCats(c.id).primary.length ? getClassSkillCats(c.id).primary.map(s => s.replace(/([A-Z])/g, ' $1').trim()).join(", ") : "") || T('CharCreate.none')}</p>
+                <h4 class="cc-subheader" style="color: var(--text-primary-hover); font-size: 1.1rem; margin-bottom: 8px;">${T('CharCreate.primaryMastery')}</h4>
+                <p style="font-size: 0.95rem; color: var(--text-card-dark); line-height: 1.4;">${(c && getClassSkillCats(c.id).primary.length ? getClassSkillCats(c.id).primary.map(s => s.replace(/([A-Z])/g, ' $1').trim()).join(", ") : "") || T('CharCreate.none')}</p>
               </div>
               <div class="cc-dossier-card" style="padding: 18px; flex-grow: 1;">
-                <h4 class="cc-subheader" style="color: #e9c46a; font-size: 1.1rem; margin-bottom: 8px;">${T('CharCreate.secondaryMastery')}</h4>
-                <p style="font-size: 0.95rem; color: #dddddd; line-height: 1.4;">${(c && getClassSkillCats(c.id).secondary.length ? getClassSkillCats(c.id).secondary.map(s => s.replace(/([A-Z])/g, ' $1').trim()).join(", ") : "") || T('CharCreate.none')}</p>
+                <h4 class="cc-subheader" style="color: var(--text-muted-hover); font-size: 1.1rem; margin-bottom: 8px;">${T('CharCreate.secondaryMastery')}</h4>
+                <p style="font-size: 0.95rem; color: var(--text-card-dark); line-height: 1.4;">${(c && getClassSkillCats(c.id).secondary.length ? getClassSkillCats(c.id).secondary.map(s => s.replace(/([A-Z])/g, ' $1').trim()).join(", ") : "") || T('CharCreate.none')}</p>
               </div>
             `}
           </div>
@@ -738,16 +798,31 @@
         const classList = this._classWindow._data;
         const activeIndex = this._classWindow.index();
 
+        // A creature's roster arrives in two groups, its own kind first. The
+        // heads span the whole board and are not cards, so the card indices the
+        // click handler and the partial update walk stay the flat list's.
+        const groupBreak = this._classWindow.groupBreak();
+        const sectionHead = (label) => `
+            <h3 class="cc-roster-head">${label}</h3>
+          `;
+
         const classCards = classList.map((classId, index) => {
           const isSelected = index === activeIndex;
           const classObj = $dataClasses[classId];
           const className = classObj ? window.CCDbName(classObj) : T('ClassSelect.vocation');
           const classLevel = this._classWindow.getClassLevel(classId);
 
+          let head = "";
+          if (groupBreak > 0) {
+            if (index === 0) head = sectionHead(T('ClassSelect.ui.nonSentient'));
+            else if (index === groupBreak) head = sectionHead(T('ClassSelect.ui.sentient'));
+          }
+
           return `
-            <div class="cc-wanted-card cc-class-card ${isSelected ? 'selected' : ''}" style="padding: 18px 12px; border-width: 2px; border-style: solid;" onclick="SceneManager._scene.onClassCardClick(${index})">
-              <div class="cc-wanted-name" style="color: #ffffff;">${className}</div>
-              <div class="cc-wanted-class" style="color: #ffcc66; font-weight: bold; margin-top: 4px;">Lv. ${classLevel}</div>
+            ${head}
+            <div class="cc-wanted-card cc-card-flat cc-class-card ${isSelected ? 'selected' : ''}" onclick="SceneManager._scene.onClassCardClick(${index})">
+              <div class="cc-wanted-name">${className}</div>
+              <div class="cc-wanted-class">Lv. ${classLevel}</div>
             </div>
           `;
         }).join("");
@@ -812,7 +887,7 @@
           const weaponBadges = [];
           for (let wId = 1; wId <= 12; wId++) {
             if (this.canUseWeaponType(c, wId)) {
-              weaponBadges.push(`<span class="cc-element-badge" style="margin: 2px; font-size: 0.72rem;">${weaponNames[wId] || "Weapon"}</span>`);
+              weaponBadges.push(`<span class="cc-element-badge cc-chip">${weaponNames[wId] || "Weapon"}</span>`);
             }
           }
 
@@ -823,12 +898,12 @@
             if (lv1.length > 0) {
               lv1SkillsHtml = lv1.map(l => {
                 const sk = $dataSkills[l.skillId];
-                return sk ? `<div class="cc-element-badge" style="margin: 2px;">${window.CCDbName(sk)}</div>` : "";
+                return sk ? `<span class="cc-element-badge cc-chip">${window.CCDbName(sk)}</span>` : "";
               }).join(" ");
             }
           }
           if (!lv1SkillsHtml) {
-            lv1SkillsHtml = `<span style="font-size: 0.85rem; color: #5c4b3d; font-style: italic;">${T('CharCreate.noStartingSkills')}</span>`;
+            lv1SkillsHtml = `<span style="font-size: 0.85rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.noStartingSkills')}</span>`;
           }
 
           // Thematic class starting items (Items.json only). See
@@ -849,7 +924,7 @@
             }).join("");
           const startingItemsCardHtml = classItemsHtml
             ? `
-                <div class="cc-dossier-card">
+                <div class="cc-dossier-card cc-card-tight">
                   <h3 class="cc-subheader">${T('CharCreate.startingItems')}</h3>
                   ${classItemsHtml}
                 </div>
@@ -867,7 +942,7 @@
               <h2 class="cc-header-gothic">${T('CharCreate.classes')}</h2>
               ${creatureNote}
 
-              <div class="cc-presets-board" style="grid-template-columns: repeat(2, 1fr); flex: 1; min-height: 0; overflow-y: auto; align-content: start;">
+              <div class="cc-presets-board" style="grid-template-columns: repeat(2, 1fr); gap: 0 24px; margin-top: 6px; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; align-content: start;">
                 ${classCards}
               </div>
             </div>
@@ -876,23 +951,23 @@
         rightHtml = `
           <div class="cc-page cc-page-right">
             <h2 class="cc-header-gothic">${window.CCDbName(c)}</h2>
-            <p style="font-size: 0.92rem; line-height: 1.45; color: #3d2f26; font-style: italic; text-align: center; margin-bottom: 16px;">
+            <p style="font-size: 0.95rem; line-height: 1.45; color: var(--text-card-dark); font-style: italic; text-align: center; margin-bottom: 12px;">
               "${note}"
             </p>
 
-            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 12px;">
               ${elementHtml}
             </div>
 
-            <div class="cc-dossier-card">
+            <div class="cc-dossier-card cc-card-tight">
               <h3 class="cc-subheader">${T('CharCreate.startingWeaponProficiencies')}</h3>
-              <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-                ${weaponBadges.join("") || T('CharCreate.none')}
+              <div class="cc-chip-row">
+                ${weaponBadges.join("") || `<span style="font-size: 0.85rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.none')}</span>`}
               </div>
             </div>
 
-            <div class="cc-dossier-card">
-              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+            <div class="cc-dossier-card cc-card-tight">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 16px;">
                 <div>
                   <div class="cc-dossier-row"><span class="cc-dossier-label">STR:</span><span class="cc-dossier-value">${str}</span></div>
                   <div class="cc-dossier-row"><span class="cc-dossier-label">DEX:</span><span class="cc-dossier-value">${agi}</span></div>
@@ -906,9 +981,9 @@
               </div>
             </div>
 
-            <div class="cc-dossier-card">
+            <div class="cc-dossier-card cc-card-tight">
               <h3 class="cc-subheader">${T('CharCreate.startingSpecialSkills')}</h3>
-              <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+              <div class="cc-chip-row">
                 ${lv1SkillsHtml}
               </div>
             </div>
@@ -1011,6 +1086,26 @@
       this._lastConfIndex = (this._confirmationWindow && this._confirmationWindow.isOpen()) ? this._confirmationWindow.index() : -1;
       this._lastShowSub = showSub;
       this._lastActiveCategory = activeCategory;
+
+      this._scrollToSelectedCard();
+    }
+
+    // The roster is longer than the page: keep the row the cursor is standing
+    // on inside the scroll box. The section heads are not cards, so the card
+    // list still indexes as the flat class list does.
+    _scrollToSelectedCard() {
+      if (!this._dndContainer || !this._classWindow) return;
+      const board = this._dndContainer.querySelector(".cc-page-left .cc-presets-board");
+      if (!board) return;
+      const card = board.querySelectorAll(".cc-class-card")[this._classWindow.index()];
+      if (!card) return;
+      const boardRect = board.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      if (cardRect.bottom > boardRect.bottom) {
+        board.scrollTop += cardRect.bottom - boardRect.bottom + 4;
+      } else if (cardRect.top < boardRect.top) {
+        board.scrollTop -= boardRect.top - cardRect.top + 4;
+      }
     }
 
     onClassCardClick(index) {

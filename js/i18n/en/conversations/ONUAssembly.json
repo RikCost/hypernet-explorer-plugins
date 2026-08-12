@@ -1,0 +1,957 @@
+{
+ "venues": [
+  "the {ninety-first|sixty-fourth|thirty-third|twelfth} floor of the Omega Tower, {where the carpet is still wet|which is technically three floors at once|rented by the hour from the Archive Foundation}",
+  "a {department store|underground jungle clearing|reactor gallery} inside the Tower that nobody has {finished|started|admitted to} converting",
+  "the Tower's Hall of Neutral Ground, {a corridor of camping tents|a former food court|a room that measures differently every time it is measured}",
+  "the {Grand|Provisional|Emergency} Chamber, {reassembled after the last one drifted|hung between two floors on cables|still smelling of the jungle it was cut out of}",
+  "a {conference room|ballroom|loading bay} on the Tower's forty-fourth floor, {lit by one working strip light|open to the shaft on one side|where the gravity is a suggestion}",
+  "the Archive Foundation's own reading room, {cleared of shelves for the occasion|with the shelves left exactly where they were|under a ceiling of index cards}"
+ ],
+ "chairs": [
+  "Chief Librarian Silence of the Archive Foundation",
+  "a {rotating|provisional|deeply reluctant} chair from the Archive Foundation",
+  "Curator Magnus, {presiding|gavelling|reading from a card}",
+  "Archivist Vera, who is {also minuting|minuting everything including this|recording the room for publication}",
+  "Keeper Silas of the Archive Foundation, {chairing under protest|chairing for the ninth week running}",
+  "the Chair, {whose name is on the agenda but not on the badge|who has not given a name}"
+ ],
+ "openings": [
+  "The session opens in {venue}. {chair} calls the room to order. {name} takes the seat reserved for {power}.",
+  "{chair} raps the {table|gavel|nearest pipe} twice. The room, {venue}, settles. {name} sits down behind the card that reads {power}.",
+  "{venue}. Twenty one seats, {nineteen of them occupied|most of them occupied|all of them occupied, one by something that is not sitting}. {chair} opens the session. {name} is here for {power}.",
+  "The delegations file in. {chair} takes the chair. {name} finds the desk marked {power} and {sits|does not sit down yet|moves the nameplate a quarter turn}.",
+  "{chair} reads the standing convention aloud: the Tower is neutral ground, {and the Tower does not care|whatever anyone brought in with them|and anything said here is minuted and published}. {name} answers for {power}. The room is {venue}."
+ ],
+ "ambience": [
+  "Somewhere below, {a reactor changes note|the jungle floor is being watered|a department store announces a closing sale}.",
+  "The translation feed {is running four seconds behind|renders every third word as MarkovSpeak|has given up on two of the languages entirely}.",
+  "A {Trucker|Swiss Guard|clerk} at the back is {asleep|eating|holding a carrier pigeon}.",
+  "The air {tastes faintly of oil|is doing something wrong near the ceiling|has that pre-loop stillness to it}.",
+  "Somebody's {Anoki phone|pager|carrier pigeon} goes off. Nobody admits to it.",
+  "The lights dip {once|twice|for exactly eighty seconds} and come back {unchanged|slightly warmer|noticeably older}.",
+  "A page walks the length of the chamber carrying {a single sheet of paper|a sealed tube|a plate of biscuits nobody touches}."
+ ],
+ "interruptions": [
+  "{power} is {gavelled down|asked to conclude|reminded of the four minute limit}.",
+  "Two delegations {talk over each other|stand at once|table the same amendment}. The chair {waits|does not wait|starts the clock again}.",
+  "Somebody at the back shouts {a point of order|a number|something in Goblin}. It is minuted verbatim.",
+  "The floor microphone {cuts out|feeds back|starts broadcasting a different session entirely} for eleven seconds.",
+  "A {clerk|page|guard} hands {power} a note. {power} reads it and puts it face down.",
+  "The delegation of {power} {walks out|threatens to walk out|stands, reconsiders, sits}.",
+  "Somebody proposes a recess. It is {defeated|ignored|carried and then forgotten}."
+ ],
+ "motion": {
+  "alliance": {
+   "tag": "the treaty",
+   "title": "Motion of {sponsor}: a treaty of mutual defence with {target}",
+   "text": [
+    "{sponsor} moves a treaty of mutual defence with {target}. {leader} has signed it already, {which the chair notes is not how this works|in ink that is still drying|in three copies, one of which is missing}.",
+    "The motion from {sponsor}: {target} and {sponsor} to stand together {against all comers|in the event of the Squishing accelerating|for a period of ninety two years}. {leader} calls it {overdue|inevitable|a formality}.",
+    "{sponsor} asks the assembly to recognise a defensive pact with {target}. The text is {four pages|one page|four hundred pages}, and {two of them are blank|the last clause is in a language nobody present reads|clause nine refers to a clause ten that does not exist}."
+   ]
+  },
+  "trade": {
+   "tag": "the trade compact",
+   "title": "Motion of {sponsor}: open the corridors to {target}",
+   "text": [
+    "{sponsor} moves that the {freight|leyline|liminal} corridors be opened to {target} at {no tariff|a tariff of one per cent|whatever tariff the market decides on the day}.",
+    "A compact of free passage between {sponsor} and {target}. {leader} points out that goods already move that way, {and that the vote is a formality|and that the vote would merely make it legal|and that the only change would be the paperwork}.",
+    "{sponsor} tables a schedule of {tariffs|quotas|exemptions} covering {clean water|memories|fantablack|carrier pigeons} between itself and {target}. {leader} calls the current arrangement {theft|charity|an accident of geography}."
+   ]
+  },
+  "war": {
+   "tag": "the declaration",
+   "title": "Motion of {sponsor}: a declaration of war upon {target}",
+   "text": [
+    "{sponsor} moves a formal declaration of war upon {target}. {leader} reads the casus belli aloud. It takes {four minutes|forty seconds|the better part of an hour} and mentions {a border|a bridge|a shipment of nothing in particular} {eleven|three|eighty} times.",
+    "War. {sponsor} against {target}. {leader} says the word plainly and then {sits down|does not sit down|apologises for the plainness}. The chair asks for it to be entered exactly as spoken.",
+    "{sponsor} asks the assembly to recognise a state of war with {target}, {retroactive to last spring|effective at midnight|effective whenever the Council stops arguing}. {leader} has brought {maps|a lawyer|nothing at all}."
+   ]
+  },
+  "censure": {
+   "tag": "the censure",
+   "title": "Motion of {sponsor}: censure of {target}",
+   "text": [
+    "{sponsor} moves the censure of {target} for {conduct unbecoming|breaking a convention nobody has read since 1971|what happened in the corridor last week}. {leader} would like it minuted.",
+    "A motion of censure against {target}, brought by {sponsor}. It carries {no penalty|no penalty and no expiry|a penalty that was struck out in committee}, which {leader} says is the point.",
+    "{sponsor} asks the room to say, formally and in writing, that {target} has {gone too far|gone slightly too far|been going too far continuously since 1992}."
+   ]
+  },
+  "territory": {
+   "tag": "the claim",
+   "title": "Motion of {sponsor}: recognition of its claim against {target}",
+   "text": [
+    "{sponsor} claims {a corridor|a coastline|four hundred square kilometres of somewhere that keeps resetting} currently administered by {target}. {leader} produces {a map|a deed|a photograph} as evidence.",
+    "The claim from {sponsor}: territory held by {target} that {sponsor} says was {never ceded|ceded under duress|ceded to a state that no longer exists}. {leader} is happy to wait for a ruling. {leader} is not happy to wait long.",
+    "{sponsor} asks for recognition of a border that {target} does not recognise. Both delegations have brought {the same map|different maps of the same place|maps drawn after the Squishing, which the chair rules inadmissible}."
+   ]
+  },
+  "incident": {
+   "tag": "the incident",
+   "title": "Motion of {sponsor}: an inquiry into the incident at {target}'s frontier",
+   "text": [
+    "An {inquiry|inquest|fact finding mission} into what happened on {target}'s frontier. {sponsor} says {a bubble opened where no bubble should open|a convoy went in at eighty one and did not come out|the sky did something it has not done before}.",
+    "{sponsor} moves an inquiry. The facts, as far as anyone has them: {a leyline broke|a town reset twice in one day|three hundred people came back from a loop that nobody sent them into} on {target}'s side of the line. {leader} wants it looked at by somebody neutral.",
+    "The incident. {sponsor} has {photographs|a survivor|a recording that plays differently each time} and would like the assembly to send observers into {target}'s territory. {leader} concedes this is a great deal to ask."
+   ]
+  },
+  "plague": {
+   "tag": "the outbreak",
+   "title": "Motion of {sponsor}: a coordinated response to the outbreak",
+   "text": [
+    "{sponsor} moves a coordinated response to the outbreak: {cordons|shared stocks|open borders for physicians and nothing else}. {leader} reads the mortality figures and then {stops reading them|reads them again|puts the paper down}.",
+    "The outbreak has crossed {three|five|nine} borders. {sponsor} asks for {a joint cordon|a shared register of the sick|the suspension of quarantine so that food can move}. {leader} says the alternative is arithmetic.",
+    "{sponsor} tables a response to the sickness moving through the continent. {target} is already inside the cordon. {leader} is careful not to say whose fault that is, {twice|at length|and then says it}."
+   ]
+  },
+  "admission": {
+   "tag": "the admission",
+   "title": "Motion of {sponsor}: the admission of a new delegation",
+   "text": [
+    "{sponsor} moves that a twenty second chair be brought in and {a new delegation|a delegation nobody has met|something that has asked politely} be seated. {leader} vouches for them.",
+    "A new seat. {sponsor} says the world has changed and the room has not. {leader} points out that {two of the powers here no longer exist|one of the chairs is empty and still votes|the last admission was in 1971}.",
+    "The admission question. {sponsor} has brought the applicant {into the building|as far as the corridor|in a sealed container}. {target} objects {on procedure|on principle|before the sentence is finished}."
+   ]
+  },
+  "ruleof80": {
+   "tag": "the Rule of 80",
+   "title": "Motion of {sponsor}: a common standard for the Rule of 80",
+   "text": [
+    "{sponsor} moves a common standard for marking bubbles on road maps: {one symbol|one colour|one register kept by somebody neutral}. {leader} notes that at present there are {twelve|nine|as many standards as there are mapmakers}.",
+    "The Rule of 80. {sponsor} asks that every power publish its bubble survey {monthly|honestly|at all}. {leader} says drivers are dying of a filing problem.",
+    "{sponsor} tables a standard for liminal engine certification, {because the cheap ones are killing people|because the expensive ones are killing people more slowly|which {target} calls a restraint of trade}."
+   ]
+  },
+  "artifact": {
+   "tag": "the artifact",
+   "title": "Motion of {sponsor}: custody of the artifact",
+   "text": [
+    "Custody of {an artifact of esoteric significance|something scraped off the Tower|a bone carved into a horn}. {sponsor} says it is theirs. {target} says it is not. {leader} says it is dangerous either way.",
+    "{sponsor} moves that the assembly recognise its custody of the artifact recovered from {a Libyan tomb|the White Desert|the wreck of a satellite}. {leader} declines to say what it does, {which the chair notes|which nobody presses|which everybody notes}.",
+    "The artifact question. Seven of these consumed in one night is a theonuclear device, {which everyone in the room knows|which two people in the room know|which nobody says out loud}. {sponsor} wants this one registered. {target} wants it destroyed."
+   ]
+  },
+  "kessler": {
+   "tag": "the debris",
+   "title": "Motion of {sponsor}: a joint programme to clear Earth orbit",
+   "text": [
+    "{sponsor} moves a joint programme to clear the debris. {leader} puts the launch survival rate at {under ten per cent|whatever it was last month|a number the chair asks to have repeated}.",
+    "Earth orbit. {sponsor} asks every power to contribute {money|armour plate|volunteers} to the clearance effort. {leader} notes that volunteers are the one thing not in short supply.",
+    "The Kessler question, {for the fourth time|again|for the last time before it stops mattering}. {sponsor} says the sky closed in a year and will not reopen on its own. {target} says space was always somebody else's problem."
+   ]
+  },
+  "theonuclear": {
+   "tag": "the disarmament",
+   "title": "Motion of {sponsor}: a prohibition on theonuclear devices",
+   "text": [
+    "{sponsor} moves an absolute prohibition on theonuclear devices. {leader} reminds the room what they leave behind: {the buildings|the bodies|everything except the soul}.",
+    "Prohibition. {sponsor} asks every power to declare its stocks {within ninety days|honestly|at all}. {leader} does not look at {target} while saying it, {which is itself a statement|which everyone notices|which the minute taker records}.",
+    "The disarmament motion. {sponsor} has drafted it {narrowly|so broadly it prohibits the ritual itself|to cover devices, catalysts and anyone who has read the method}. {leader} calls New York the argument."
+   ]
+  },
+  "goblinquestion": {
+   "tag": "the goblin question",
+   "title": "Motion of {sponsor}: the standing of the Naguka",
+   "text": [
+    "{sponsor} moves on the standing of the Naguka: {recognition|containment|a border commission and nothing else}. {leader} is careful with the wording, {because the collective unconscious is listening|because harming one of them means all of them|and stops being careful halfway through}.",
+    "The goblin question. {sponsor} says the shaft at Kola should have been {filled|guarded|left alone}. {leader} notes that whatever the assembly decides, {the Naguka will hear it|the Vatican has already opened relations|the Mahyem will set it to music}.",
+    "{sponsor} asks the assembly to settle what the Naguka are: {a people|an invasion|a species with one mind and several million bodies}. {target} objects to all three formulations."
+   ]
+  },
+  "reparations": {
+   "tag": "the reparations",
+   "title": "Motion of {sponsor}: reparations for the Squishing",
+   "text": [
+    "{sponsor} moves that the powers whose territory the Squishing spared pay toward the ones it did not. {leader} names {Canadafrica|the Green Fields|dimension seventy seven} as the case in point.",
+    "Reparations. {sponsor} says the paradox was not evenly distributed and the cost should not be either. {target} says the paradox has no author and therefore no debtor. {leader} says it has an author and everybody knows her name.",
+    "{sponsor} tables a levy {on liminal engine sales|on every crossing of the Encompassing Road|on the arcane arms trade}, to be paid to communities living inside loops. {leader} calls it rent."
+   ]
+  },
+  "budget": {
+   "tag": "the estimates",
+   "title": "Motion of {sponsor}: the assembly's estimates for the year",
+   "text": [
+    "The estimates. {sponsor} moves the assembly's budget for the year: {translation|the pigeons|the building}. {leader} apologises in advance for how long this will take.",
+    "{sponsor} moves the estimates. Three quarters of the sum is {the carrier pigeon service|the Archive Foundation's minute taking|rent to a Tower that has no landlord}. {leader} invites anyone to find a cheaper way.",
+    "Money. {sponsor} tables the accounts. {target} disputes {line eleven|the exchange rate used|the existence of line eleven}. {leader} suggests this be settled before the sentence ends."
+   ]
+  },
+  "tower": {
+   "tag": "the Tower",
+   "title": "Motion of {sponsor}: the standing convention on the Omega Tower",
+   "text": [
+    "{sponsor} moves to reaffirm that the Tower is neutral ground, {and to say what that means|for the first time in writing|with a list of what it does not mean}. {leader} calls the present arrangement {a courtesy|an accident|a flag holding a hamburger together}.",
+    "The Tower. {sponsor} asks that every power's offices inside it be {registered|capped|opened to inspection}. {target} has {nine floors|more floors than it has declared|a floor that does not appear on any plan}.",
+    "{sponsor} moves that the assembly recognise the Tower as the only thing keeping the ninety two dimensions from collapsing into one another, {and act accordingly|and fund it accordingly|which {target} says is theology, not procedure}."
+   ]
+  }
+ },
+ "voice": {
+  "common": {
+   "open": [
+    "The delegation of {power} {rises|is recognised|takes the floor}.",
+    "{power} {asks to be heard|signals|is called}. {leader} speaks.",
+    "{leader}, for {power}, {stands|leans into the microphone|does not stand}."
+   ],
+   "for": [
+    "{power} supports the motion.",
+    "{power} will vote for {topic}.",
+    "\"We are content with {topic},\" says {leader}."
+   ],
+   "against": [
+    "{power} opposes the motion.",
+    "{power} will vote against {topic}.",
+    "\"We cannot accept {topic},\" says {leader}."
+   ],
+   "odd": [
+    "{power} says something that is not about {topic} and sits down.",
+    "{leader} speaks for four minutes without reaching a verb.",
+    "{power} abstains before the vote is called, which is not procedurally possible."
+   ]
+  },
+  "vatican": {
+   "open": [
+    "The Holy Vatican Empire is recognised. {leader} {rises|crosses himself first|waits for the room to quieten}.",
+    "{leader}, for the Holy See, begins {in Latin|with a blessing nobody asked for|by reading the date aloud}.",
+    "The delegation of {power} stands as one. {leader} speaks {from a prepared text|without notes|from memory, which is worse}."
+   ],
+   "for": [
+    "\"{topic} is {consonant with|not repugnant to|sanctified by} the order of things. We give it our voice, {and our prayers|and nothing further|freely}.\"",
+    "\"Rome has considered {topic} {at length|since Tuesday|since before this chamber existed}. Rome is content. {Let it be so|Fiat|We shall not oppose it}.\"",
+    "\"We supported this when it was {unfashionable|heresy|proposed by our enemies}. We support it now, {without pleasure|with pleasure|as a duty}.\"",
+    "\"The Citadel floats eight hundred metres above Rome and can see {topic} clearly. It is {good|permissible|not a sin}.\""
+   ],
+   "against": [
+    "\"{topic} is {an abomination|an error|a temptation dressed as a schedule}. We oppose it {absolutely|with sorrow|and will say so again next week}.\"",
+    "\"We have burned people for less than {topic}, {and we would again|though we are told not to say so|which is a matter of record}.\"",
+    "\"Since the death of the Father {our miracles no longer answer|the sacred spells have gone quiet|we have had to think for ourselves}. We will not compound it with {topic}.\"",
+    "\"Rome says no. {Rome has said no before|We are aware this is unpopular|The vote will proceed regardless}.\""
+   ],
+   "odd": [
+    "{leader} reads a list of saints for ninety seconds and then says the Empire is content with whatever the chair decides.",
+    "\"We are advised by the Umbra Excidii that {topic} is arcane in origin. We are further advised not to have said that.\"",
+    "\"His Holiness Peter II has {no view|every view|a view that has not been translated}. We shall vote when it arrives.\"",
+    "{leader} spends his four minutes on Jenna of Northpoint, who is not on the agenda."
+   ]
+  },
+  "britannia": {
+   "open": [
+    "Britannia is recognised. {leader} {stands|does not stand|adjusts a cuff}.",
+    "{leader}, for Britannia, {begins|says he will be brief|says he will be brief and is not}.",
+    "The British delegation {signals|raises a pencil|has been signalling for some time}."
+   ],
+   "for": [
+    "\"His Majesty's Government finds {topic} {broadly acceptable|not objectionable|acceptable, on the understanding that we drafted most of it}.\"",
+    "\"We are minded to support {topic}. {We would prefer it in writing|We would prefer a smaller room|We have of course read the annexes}.\"",
+    "\"Britannia will vote for the motion. {We note our reservations at paragraph nine|We note that we have reservations and will not be listing them|We reserve the right to have been against it later}.\"",
+    "\"Yes. {Next item|If the chair would move on|We are content}.\""
+   ],
+   "against": [
+    "\"His Majesty's Government is {unable|not minded|regretfully unable} to support {topic}. {We shall not be drawn|We shall say no more|Our reasons are in the annex, which is classified}.\"",
+    "\"We would remind the assembly that Okeanus was demonstrated {on television|to a fleet|only once}. {topic} is not necessary.\"",
+    "\"No. {We have looked at it|We have had it looked at|Somebody in Cheltenham has looked at it and the answer is no}.\"",
+    "\"Britannia opposes. {This is not a threat|We should hate for this to be read as a threat|The Atlantic Protectorate concurs, having been asked}.\""
+   ],
+   "odd": [
+    "\"Britannia has no position on {topic}. Britannia has a position on the person who tabled it, which we shall keep.\"",
+    "{leader} makes a joke. The translation feed renders it as a number. Three delegations laugh anyway.",
+    "\"We would draw the chair's attention to the fact that our seat is one inch closer to the door than it was last week.\"",
+    "\"Q sends his regards to whoever has been reading the pouch.\""
+   ]
+  },
+  "soviet": {
+   "open": [
+    "The Soviet Union is recognised. {leader} {rises|rises with papers|rises without papers and is more dangerous for it}.",
+    "{leader}, for the Union, opens {with figures|with a correction to the minutes|by rejecting the framing of the question}.",
+    "The Soviet delegation {stands|has been standing|stood some time ago and was not called}."
+   ],
+   "for": [
+    "\"The Union supports {topic}. {The arithmetic is not complicated|The figures are in the annex, and the annex is correct|Comrades, this is simply materially true}.\"",
+    "\"We have run {topic} through the Gosplan model. Output rises {four|eleven|by a margin the chair may verify} per cent. We vote yes.\"",
+    "\"History moves in one direction and {topic} moves with it. {We shall not obstruct it|The Union does not obstruct history|Obstruction is for the seat opposite}.\"",
+    "\"Da. And let the minute record that we said so before the seat opposite did.\""
+   ],
+   "against": [
+    "\"The Union rejects {topic}. {It is a class question dressed as a procedural one|It is a tariff wearing a treaty|It is the Collective's motion with somebody else's name on it}.\"",
+    "\"We dug too deep once and the surface has been paying for it since 1970. We will not vote for another {topic}.\"",
+    "\"Nyet. {The figures are in the annex|We will not be repeating ourselves|The delegation of the Collective may sit down}.\"",
+    "\"Comrades, {topic} is a mechanism for transferring {water|memory|the future} from those who work to those who bill. The Union opposes.\""
+   ],
+   "odd": [
+    "{leader} reads tractor production figures for the fourth quarter. They are excellent. They have nothing to do with {topic}.",
+    "\"The Union notes that the delegation of the Gods is present and that this remains, in our view, a scientific impossibility.\"",
+    "\"We have no position on {topic} and a very long position on the minutes of the eleventh session, which we shall now read.\"",
+    "\"Marshal Zhukov would have voted. That is all the delegation wishes to say.\""
+   ]
+  },
+  "ottoman": {
+   "open": [
+    "The Sublime Porte is recognised. {leader} {rises|inclines his head|waits until the room is entirely silent}.",
+    "{leader}, for the Ottoman Empire, begins {with courtesies|with the courtesies, at length|by thanking every delegation individually}.",
+    "The Ottoman delegation {signals|is called|has submitted its remarks in writing and reads them anyway}."
+   ],
+   "for": [
+    "\"The Porte finds {topic} {well made|acceptable in substance and in form|agreeable, which is rarer}. We give our voice.\"",
+    "\"This has passed through {three|nine|eleven} departments of the Tanzimat and emerged {intact|improved|with only one clause missing}. We support it.\"",
+    "\"The Empire has governed places it did not understand for six hundred years. {topic} is not difficult by comparison. Yes.\"",
+    "\"We are content, {and grateful to the sponsor|and would ask only that the wording of clause four be preserved exactly|with thanks to the chair}.\""
+   ],
+   "against": [
+    "\"The Porte cannot support {topic} {as drafted|in this form|until it has been through committee, which will take until spring}.\"",
+    "\"There is a procedure for this. {topic} is not it. {We would be glad to explain the procedure|The procedure is set out in nine volumes|We have brought the volumes}.\"",
+    "\"With every courtesy to the sponsor: no. {The courtesy is genuine|The no is also genuine|We shall repeat both as often as required}.\"",
+    "\"The Empire opposes. We have opposed larger things than {topic} and outlasted them.\""
+   ],
+   "odd": [
+    "{leader} delivers six minutes of impeccable courtesies and no position whatever. The chair thanks him.",
+    "\"The Porte would like the record to show that our delegation was seated below the Soviet Union, and that we have noticed.\"",
+    "\"We refer the assembly to a firman of 1876 which settles this. We have not brought it. We are told it is beautiful.\"",
+    "\"The Janissary Guard asks whether {topic} may be resolved by combat. The delegation apologises for the Janissary Guard.\""
+   ]
+  },
+  "horde": {
+   "open": [
+    "The Goblin Horde is recognised. The delegation is {four goblins in corpse paint|a drum kit and two goblins|one goblin standing on another goblin}.",
+    "{leader} takes the floor. Somewhere in the delegation, {a guitar is tuned|a guitar is not tuned|feedback starts and does not stop}.",
+    "The Horde's delegation {howls once for order|is already standing|has been standing on the table since the session opened}."
+   ],
+   "for": [
+    "\"MAHYEM SAY YES!\" {leader} shouts. \"{topic} IS TRUE! IS BLACK! IS COLD! WE VOTE!\"",
+    "\"The gods of metal look on {topic} and they are pleased. {We are pleased|The Horde is pleased|Varg is pleased, which is rarer}.\"",
+    "\"We take {topic}. We take it like we took the shaft at Kola. {UP|UPWARD|UP AND OUT}.\"",
+    "\"YES. And the drums say yes. And the drums are not wrong.\""
+   ],
+   "against": [
+    "\"NO!\" says {leader}. \"{topic} IS {WARM|SOFT|MADE OF PAPER}! THE HORDE SPITS!\"",
+    "\"Mahyem heard {topic} and Mahyem turned the amplifier off. That has not happened before. We vote no.\"",
+    "\"You buried us for ten million years and now you write us {topic}? {NO|The Horde says no|Say it again to our face, in the corridor}.\"",
+    "\"The Horde opposes. The Horde will explain the opposition {outside|later|with instruments}.\""
+   ],
+   "odd": [
+    "The Horde's delegation performs eleven seconds of a song. The chair asks them to stop. They stop after forty.",
+    "\"WHERE IS THE FOOD,\" says {leader}, and the point is not withdrawn.",
+    "\"The Horde has painted its face for this and would like that noted before the vote.\"",
+    "{leader} asks whether the Tower can be climbed from the inside. The chair rules the question out of order. The Horde writes it down anyway."
+   ]
+  },
+  "midwest": {
+   "open": [
+    "The Free States of the Midwest are recognised. {leader} {stands|stands slowly|checks a watch first}.",
+    "{leader}, for the Midwest, {begins|says he will keep it short|says he has come a long way for this}.",
+    "The Midwest delegation {is called|raises a hand|had not expected to be called}."
+   ],
+   "for": [
+    "\"The Free States can live with {topic}. {That is not enthusiasm|That is as far as we go|Take it as a yes}.\"",
+    "\"We came four thousand miles to sit here. We are not going to sit here and vote against {topic}.\"",
+    "\"President Lincoln XIII instructed us to support anything that keeps the corridors open. {topic} does. Yes.\"",
+    "\"Aye. {With reservations we will not bore the room with|And we would ask the room to remember it|And that is the whole of it}.\""
+   ],
+   "against": [
+    "\"The Free States decline {topic}. {We were not consulted|We were consulted after it was drafted, which is not consultation|Nobody here has been to the Midwest}.\"",
+    "\"Every one of these motions moves something east across the water and nothing west. No.\"",
+    "\"We have three Americas and none of them is independent. {topic} does not change that, so it does not interest us.\"",
+    "\"Nay. {And we would like that spelled correctly this time|And we will explain to the sponsor privately|Next item}.\""
+   ],
+   "odd": [
+    "\"Is the Atlantic Protectorate voting, or is Britannia voting twice? The delegation asks in good faith.\"",
+    "{leader} spends his four minutes describing a river. It is not clear which river or why.",
+    "\"The Free States have no position. The Free States have a great deal to say and no position.\"",
+    "\"Bill Clinton sends his regards to a delegation he declines to name.\""
+   ]
+  },
+  "cascadia": {
+   "open": [
+    "The Cascadia Protectorate is recognised. {leader} {rises|turns a page|sets down a small humming device first}.",
+    "{leader}, for Cascadia, {begins with data|begins with an apology for the data|distributes a summary nobody will read}.",
+    "The Cascadian delegation {is called|had already begun|signals with a light}."
+   ],
+   "for": [
+    "\"Cascadia supports {topic}. {The modelling is clear|The modelling is in your folders|The modelling took nine seconds and we ran it eleven thousand times}.\"",
+    "\"Thaumo-Director Tesla's office finds {topic} {tractable|elegant|the least bad of the four options we modelled}. Yes.\"",
+    "\"We will fund part of {topic} ourselves. {We would rather it were done well than fairly|We are aware how that sounds|The offer stands until Friday}.\"",
+    "\"Support. And we would ask the assembly to let us instrument it.\""
+   ],
+   "against": [
+    "\"Cascadia opposes {topic}. {The numbers do not work|The numbers work and the physics does not|We have modelled this and it ends badly in eleven of twelve runs}.\"",
+    "\"We built half the instruments this assembly relies on. Do not ask us to certify {topic}.\"",
+    "\"No. {Ask us again when the second-order effects are in|Ask us again in a year|Ask us privately}.\"",
+    "\"The Protectorate declines. We would rather be the delegation that said no early than the one that said sorry late.\""
+   ],
+   "odd": [
+    "\"Cascadia would like to know whether anyone else's clocks disagreed by four seconds during the last vote. Ours did.\"",
+    "{leader} presents a graph. The graph is beautiful. It concerns rainfall.",
+    "\"We have no position on {topic}. We have a very strong position on how badly it has been measured.\"",
+    "\"The Protectorate notes that this chamber is not, strictly speaking, a single room, and has adjusted its microphones accordingly.\""
+   ]
+  },
+  "seaboard": {
+   "open": [
+    "The Eastern Seaboard is recognised. {leader} {stands|is prompted to stand|reads from a card}.",
+    "{leader}, for the Seaboard, speaks {briefly|too briefly|as though expecting to be interrupted}.",
+    "The Seaboard delegation {is called|is called twice|is found at the back}."
+   ],
+   "for": [
+    "\"The Protectorate supports {topic}, {as instructed|having consulted|which we are permitted to say}.\"",
+    "\"Yes. {We have no amendments|We rarely have amendments|Colonial Administration has none either}.\"",
+    "\"The Seaboard votes with the motion, {and would rather not be asked why|for reasons that are our own|and thanks the sponsor}.\"",
+    "\"Aye, and we would ask the chair to move briskly on.\""
+   ],
+   "against": [
+    "\"The Seaboard opposes {topic}. {We are aware how little that weighs|We have been told to|We would rather not have been asked}.\"",
+    "\"No. {The Protectorate has been governed from elsewhere since 1783|We are a coast, not a country, and the coast says no|We shall not elaborate}.\"",
+    "\"We decline the motion. Warden Arnold has {views|instructions|a list}.\"",
+    "\"Against, {reluctantly|without heat|and the delegation would like that noted}.\""
+   ],
+   "odd": [
+    "\"The Seaboard would like to know when its delegation was last quoted in the minutes. The delegation suspects the answer is never.\"",
+    "{leader} begins a sentence about independence and does not finish it.",
+    "\"We abstain. We have abstained on everything since March and would like a reason to stop.\"",
+    "\"Somebody has moved our nameplate again.\""
+   ]
+  },
+  "guild": {
+   "open": [
+    "The Mages' Guild is recognised. {leader} rises. {A second Guild delegate also rises|Two other Guild delegates also rise|The Guild's three chairs are all occupied and all disagreeing}.",
+    "{leader}, for the Guild, {begins|is interrupted by his own delegation|speaks over his own delegation}.",
+    "The Guild delegation {is called|argues briefly among itself|settles on a speaker}."
+   ],
+   "for": [
+    "\"The Guild supports {topic}. {That is the position of the present|Sir Aleister does not object|Lady Margaret's office has cleared it}.\"",
+    "\"Three pillars. Past, present and future. {Two of them support {topic}|All three support {topic}, which has not happened since 1982|One is not answering, so two will do}.\"",
+    "\"We support it, and we would ask the chair to strike the sponsor's phrasing in clause two: {it is written in separated words|it is a transcendental as written|somebody will read that aloud and lose their vocal cords}.\"",
+    "\"Yes, and the Guild will second it under its proper name, in CamelCase, as the law requires.\""
+   ],
+   "against": [
+    "\"The Guild opposes {topic}. {It is badly written|It is badly written in a way that will spread|A grimoire with a clause like that eats the books beside it}.\"",
+    "\"We were founded in 950 BC and refounded in 1900 and we have seen {topic} before, {twice|under another name|and burned the notes}.\"",
+    "\"No. {Ask the Gods why|Ask the Gods, they are sitting right there|The delegation of the Gods knows precisely why}.\"",
+    "\"The Guild cannot support this. {We would need a ritual to undo it|Rituals are hard to undo and this is a ritual with a budget line|That is not a metaphor}.\""
+   ],
+   "odd": [
+    "The Guild delegation spends its four minutes disagreeing with itself about whether it has a position.",
+    "\"The Guild would remind the assembly that spells must be pronounced in CamelCase. This applies to motions too. We are only half joking.\"",
+    "\"Sir Aleister has held his seat since 1900 and has views on the seating plan.\"",
+    "\"The Guild is currently looking for one specific person on this planet and would appreciate it if the chamber remained seated.\""
+   ]
+  },
+  "archive": {
+   "open": [
+    "The Archive Foundation is recognised. {leader} {rises|rises, still writing|does not stop writing}.",
+    "{leader}, for the Foundation, {begins|first corrects the minutes|first corrects the minutes of a session held in 1997}.",
+    "The Foundation's delegation {is called|has been minuting from the floor|raises a point of order before being called}."
+   ],
+   "for": [
+    "\"The Foundation supports {topic}, on one condition: {that it be published|that the annexes be published|that the vote be published, including the abstentions}.\"",
+    "\"We have catalogued {four|nine|eleven} prior attempts at {topic}. {All failed for the same reason|This draft avoids that reason|The reason is on page eleven}. Yes.\"",
+    "\"Support, and the Foundation offers to hold the register {at no charge|at cost|permanently}.\"",
+    "\"Yes. {The record will show it|The record already shows it|We entered it before the vote, which we accept was premature}.\""
+   ],
+   "against": [
+    "\"The Foundation opposes {topic}. {Clause six creates a secret|We do not vote for secrets|A sealed annex is a lie with a filing number}.\"",
+    "\"No, and the Foundation will publish its reasons {tonight|within the hour|before the chair has finished counting}.\"",
+    "\"We stop people at checkpoints to publish the messages on their telephones. You may imagine our view of {topic}.\"",
+    "\"Against. {The Collective supports it, which is sufficient|The Collective drafted it, which is more than sufficient|We have read who drafted it}.\""
+   ],
+   "odd": [
+    "\"Point of order: the chair said sixty-four floors and the Tower has never had sixty-four floors on a Tuesday.\"",
+    "{leader} reads the attendance list aloud, in full, including the two delegations that are not here.",
+    "\"The Foundation has no position on {topic} and forty one pages on the procedure by which it reached no position.\"",
+    "\"Everything said in this room is being published. The delegation reminds the assembly of this every week and every week somebody forgets.\""
+   ]
+  },
+  "capital": {
+   "open": [
+    "The Hypercapitalist Collective is recognised. {leader} {rises|is already standing|does not rise, and the microphone comes to him}.",
+    "{leader}, for the Collective, opens {with a number|with a price|by asking what the assembly's time is worth}.",
+    "The Collective's delegation {is called|has bought the speaking slot before it|signals with a pen}."
+   ],
+   "for": [
+    "\"The Collective supports {topic}. {We have priced it|We have priced it at four|We are already selling it, so the vote is a formality}.\"",
+    "\"Yes. {topic} {opens a market|clears an inefficiency|converts a problem into a product}. {We thank the sponsor|We will be thanking the sponsor privately|The sponsor will be pleased}.\"",
+    "\"We support it and we would like the concession. {Those are the same sentence|Those are two sentences and one vote|The chair may treat them separately}.\"",
+    "\"Aye. And the Collective offers the assembly a fifteen per cent facility on the implementation.\""
+   ],
+   "against": [
+    "\"The Collective opposes {topic}. {It is a restraint of trade|It prices something that is already priced|It is a subsidy with a moral attached}.\"",
+    "\"No. {We hold the only clean water on the continent|Everything else is cut with LSD, which is disclosed on the label|Read the label}.\"",
+    "\"{topic} would cost the Collective {four hundred million|a quarter|nothing, and we oppose it on principle}. We vote against.\"",
+    "\"Against. The Collective trades memories, emotions and the escape from a loop, and it will not be told which of the three is legitimate.\""
+   ],
+   "odd": [
+    "\"The Collective would like to buy the motion. Not the outcome. The motion.\"",
+    "{leader} does not blink for the whole of his four minutes. The delegation behind him has not moved since 1996.",
+    "\"Our people spent so long above eighty that the loop has stopped applying to us standing still. That is not relevant to {topic}. We mention it.\"",
+    "\"The Collective abstains and will sell its abstention to whichever delegation asks first.\""
+   ]
+  },
+  "gods": {
+   "open": [
+    "The delegation of the Gods is recognised. {leader} {is already speaking|has been speaking since before the session opened|arrives at the podium without crossing the room}.",
+    "{leader}, for the Gods, {rises|does not rise|is in two chairs at once, which the chair rules is one delegation}.",
+    "The Gods' delegation {is called|was already called|is called and answers from a different direction than expected}."
+   ],
+   "for": [
+    "\"Oh, {topic}? Yes. {Yes, absolutely|Yes, obviously|Yes, and it will end badly, and yes}.\"",
+    "\"The Gods support {topic} because {it is funny|somebody will regret it|the alternative is worse and we do prefer worse, but not today}.\"",
+    "\"Eris is content. {That is the whole of the position|Do not ask what she is content about|She was content before the motion was tabled}.\"",
+    "\"We vote for it. {We have already voted for it|We voted for it in 2012|The vote has always been for it}.\""
+   ],
+   "against": [
+    "\"No. {No, and no|No, and the delegation will not be elaborating|No, and somebody in this room already knows why}.\"",
+    "\"{topic} smells of the Guild. The Gods are at war with the Guild. {This is not complicated|The vote follows|Do the arithmetic}.\"",
+    "\"A god lives on the number of people willing to believe in one. {topic} makes that number smaller. Against.\"",
+    "\"The Gods oppose. {The throne is occupied|The throne is occupied and nobody had the courage to say no|Ask who sits on it and then ask again about the motion}.\""
+   ],
+   "odd": [
+    "{leader} answers the previous motion. That motion was concluded eleven minutes ago and the answer is still correct.",
+    "\"The delegation of the Gods would like the assembly to know that the goddess of justice is buried four hundred kilometres beneath this building and has no comment.\"",
+    "\"There is a body in orbit that used to be answering questions like this. It is being hit by satellites. Next item.\"",
+    "\"We have no position. We have a wager. The delegation declines to say on what.\""
+   ]
+  },
+  "union": {
+   "open": [
+    "The Continental Union is recognised. {leader} {rises|rises with a folder|distributes the folder first}.",
+    "{leader}, for the Union, {begins|begins by thanking the chair for the ordering of the agenda|notes a procedural matter}.",
+    "The Union's delegation {is called|is called in the correct order, which it appreciates|has been waiting patiently}."
+   ],
+   "for": [
+    "\"The Union supports {topic}. {It is proportionate|It is proportionate and subsidiary|It respects the competences of the parties}.\"",
+    "\"Yes, {subject to a short technical annex|with a two year review clause|and the Union will draft the implementing regulation at no cost}.\"",
+    "\"The Union is in favour. {Procedure was followed|Procedure was followed exactly|We would have supported it even if it had not been, though less warmly}.\"",
+    "\"Aye. {The Union asks only that the timetable be respected|And the Union thanks the sponsor for tabling it on time|Next item, chair}.\""
+   ],
+   "against": [
+    "\"The Union cannot support {topic} {as tabled|without a legal base|before the impact assessment}.\"",
+    "\"No. {The competence is not the assembly's|The competence lies elsewhere and we shall say where|This belongs in committee and the committee meets in March}.\"",
+    "\"The Union opposes on procedure. {The substance may well be sound|We take no view on the substance|The substance is not before us}.\"",
+    "\"Against, {without prejudice to a redrafted text|and we would gladly help redraft it|and we have already begun redrafting it}.\""
+   ],
+   "odd": [
+    "{leader} raises a point of order about the numbering of the agenda and holds the floor for four minutes.",
+    "\"The Union notes that it is the only delegation to have submitted its remarks in advance, in all working languages, and that nobody has read them.\"",
+    "\"We have no position pending a decision by a body that will meet after this session ends.\"",
+    "\"The Union would like the record to show that this is the eleventh consecutive session to overrun.\""
+   ]
+  },
+  "naguka": {
+   "open": [
+    "The Naguka are recognised. Their delegate {stands on the chair|stands on the table|is standing on somebody}.",
+    "{leader} of the Naguka {shouts|points|bites the microphone and then speaks into it}.",
+    "The Naguka delegate {comes to the front|comes to the front too fast|was already at the front, eating}."
+   ],
+   "for": [
+    "\"YES! {leader} say yes! {topic} good! Good like {meat|dark|the deep place}! Naguka say YES!\"",
+    "\"We like! {topic} is {shiny|warm|big}! Naguka want! Naguka vote WANT!\"",
+    "\"{leader} smell {topic}. Smell good. {Not lying smell|Not paper smell|Smell like when tunnel go up}. YES.\"",
+    "\"All of us say yes. ALL of us. {You know how many that is|Count us. You cannot|Every one, everywhere, all at once}. Yes!\""
+   ],
+   "against": [
+    "\"NO! {topic} is {bad|trick|paper}! {leader} throw it! Naguka throw it!\"",
+    "\"You make word for us again. Always word. Word not food. {NO|Naguka say no|We bite the word}.\"",
+    "\"{leader} say: you hurt one, you hurt ALL. {topic} hurt one. So. {No|NO|You know already, in your head, you know}.\"",
+    "\"Bad! Bad and cold and thin! Naguka not take! {Take it back|Take it back or come get it|We will remember the face that made it}.\""
+   ],
+   "odd": [
+    "\"Where food?\" says {leader}. The chair rules the question out of order. {leader} asks it again, louder.",
+    "The Naguka delegate paints his face during the debate. He is not asked to stop and does not offer to.",
+    "\"{leader} not understand this one. {leader} vote anyway. Is fine. Is what all do.\"",
+    "\"Music!\" shouts {leader}. \"Music say what to do! Where music!\" There is no music. The delegate is not consoled.",
+    "\"Hole go UP,\" says {leader}, apropos of nothing. \"Long time. Then UP. That is all. Sit down now.\""
+   ]
+  },
+  "verden": {
+   "open": [
+    "The Verden are recognised. Their delegate {rises|rises slowly|touches the table before speaking, which is a courtesy where they come from}.",
+    "{leader}, for the Verden, {begins|begins in flawless MarkovSpeak|apologises for the length of what follows and is not lying}.",
+    "The Verden delegation {is called|is called and thanks the chair by name|inclines, blue and unhurried}."
+   ],
+   "for": [
+    "\"The Verden support {topic}. {It is a good arrangement|It is a patient arrangement|It will still be a good arrangement in four hundred years, which is how we read a motion}.\"",
+    "\"We threw our machines into a star once and spent three thousand years being sure about it. {topic} is a smaller decision than that. Yes.\"",
+    "\"We favour it, {and we would like to see how it is built|and we would like to watch the engineering|and, if the assembly permits, to touch the machine}.\"",
+    "\"Yes. {The Green Fields are gone|We lost a dimension to hurry|We are in no hurry, and we say yes}.\""
+   ],
+   "against": [
+    "\"The Verden cannot support {topic}. {It is written in a hurry|It smells of hurry|Hurry is what number seventy seven died of}.\"",
+    "\"No. {We have read the Naguka on this|We have read the collective unconscious on this, which we can do and they cannot stop|We know what they will do before they do, and {topic} makes it worse}.\"",
+    "\"We oppose, {gently|and would be glad to be argued out of it|and will oppose it just as gently next week}.\"",
+    "\"The Verden vote against. {A limb of ours, cut off and planted, becomes another of us|We take root where we are put|Do not put us here}.\""
+   ],
+   "odd": [
+    "\"The Verden would like to compliment whoever built the lighting in this chamber. It is the seventh time we have asked and nobody knows.\"",
+    "{leader} spends two of his four minutes admiring a wristwatch belonging to the delegate beside him.",
+    "\"We have no position on {topic}. We have a question about the ceiling that the chair has twice declined to answer.\"",
+    "\"Our cousins are shouting again. We hear it whether we listen or not. The delegation apologises for the distraction and does not stop hearing it.\""
+   ]
+  },
+  "truckers": {
+   "open": [
+    "The Trucker's Society is recognised. {leader} {stands|leans on the desk|puts a very old telephone on the table first}.",
+    "{leader}, for the Society, {begins|clears his throat into a microphone that does not need it|says he has eleven hours behind him and will be quick}.",
+    "The Society's delegate {is called|is called and takes a moment|arrives at the microphone from the wrong side of the room}."
+   ],
+   "for": [
+    "\"Society's for it. {Road says yes|Anything that keeps the road open, we're for|We asked the network, network came back yes}.\"",
+    "\"Yes. {We run stuff between bubbles for people who can't phone each other|We're the only reason half these communities know the year|{topic} makes that easier, so, yes}.\"",
+    "\"Copy that, chair. Society votes aye. {And we'll haul it if it needs hauling|And we'll do the first run at cost|Somebody's got to move it and it'll be us}.\"",
+    "\"For. {No notes|No amendments|Just don't put it in writing so long we can't carry it}.\""
+   ],
+   "against": [
+    "\"Negative. {topic}'s written by people who've never driven it. {No|Society votes no|Come out on the road and we'll talk about it}.\"",
+    "\"No. {Every clause in there adds a checkpoint|Checkpoints are how drivers die|You want a form, we want a road}.\"",
+    "\"Society's against. {The Rule of 80 doesn't care about your annex|Eighty is eighty|Physics doesn't take amendments}.\"",
+    "\"Against, {and I'll tell you why for free|and I'd rather not say why here|and I'll tell you in the corridor}.\""
+   ],
+   "odd": [
+    "\"Anybody in this room actually been inside a bubble? Show of hands.\" Two hands go up. One of them is the Collective's.",
+    "{leader} takes an Anoki phone out of his jacket, looks at it, and puts it back. He does this three times during the debate.",
+    "\"Society's got no position on {topic}. Society's got a pigeon outside with a USB stick on its leg and it's been out there an hour.\"",
+    "\"Zephyr cheats at cards. That's not on the agenda. I'm saying it anyway.\""
+   ]
+  },
+  "industries": {
+   "open": [
+    "Esoteric Heavy Industries is recognised. {The chair reserved for it is empty|The delegate's chair is empty and the microphone is live|A voice comes from the delegation's seat}.",
+    "The seat marked Esoteric Heavy Industries {is occupied|is not occupied|is occupied in the sense that matters}. {leader} speaks.",
+    "Esoteric Heavy Industries {answers|answers before it is called|answers, and nobody afterwards can agree on who spoke}."
+   ],
+   "for": [
+    "\"Esoteric Heavy Industries is in favour of {topic}. {No further comment is offered|The vote is recorded|The order will be delivered}.\"",
+    "\"We concur. {The tooling exists|The tooling has existed for some time|The first units are already in the warehouse}.\"",
+    "\"Yes. {Our objects do not reset|Ours will still work inside a loop, as always|That is the whole of our contribution and it is sufficient}.\"",
+    "\"In favour. Delivery in {six weeks|no weeks|the usual manner}.\""
+   ],
+   "against": [
+    "\"Esoteric Heavy Industries is not in favour. {No reason is offered|A reason is not offered|The delegation has said what it intends to say}.\"",
+    "\"No. {topic} {requires disclosure|would require inspection|contains the word premises}. We decline.\"",
+    "\"Against. {The assembly is welcome to visit our factories|We have never disclosed where they are|Nobody has ever seen our workers, and that is not going to change over this}.\"",
+    "\"Declined. {The chair may proceed|Next item|We will supply the assembly regardless, which is not the same as agreeing}.\""
+   ],
+   "odd": [
+    "The delegation says nothing at all for its full four minutes. The minute taker records four minutes of nothing, precisely.",
+    "\"Esoteric Heavy Industries has no position. Esoteric Heavy Industries has an invoice.\"",
+    "\"A flying broom and a fusion reactor are the same problem at different scales. The delegation offers this without further explanation.\"",
+    "\"The goods appear in the warehouse when nobody is looking. The delegation has been asked about this eleven times and has answered eleven times.\""
+   ]
+  },
+  "northpoint": {
+   "open": [
+    "The North Point Army is recognised. {leader} {stands|stands to attention|does not sit down again afterwards}.",
+    "{leader}, for North Point, {begins|begins with the name of Jenna|waits, because half the room has started muttering}.",
+    "The North Point delegation {is called|is called over an objection from the Vatican|takes the floor as the Vatican delegation turns its chairs}."
+   ],
+   "for": [
+    "\"North Point supports {topic}. {Jenna has read it|Jenna has read it and finds it clean|It was read aloud in the north and nothing objected}.\"",
+    "\"Yes. {We are called the Antichrist by a man who floats his city over Rome|We are called worse|The name does not change the vote}.\"",
+    "\"The Army is in favour. {We will hold the line for it|We have already held a line for less|Ask the Empire what our lines are worth}.\"",
+    "\"For. {And we invite the Holy See to say so too|And the Holy See will vote against it for that reason alone|Watch}.\""
+   ],
+   "against": [
+    "\"North Point opposes {topic}. {It was drafted in Rome|It smells of Rome|Rome's fingerprints are on clause four and everyone can see them}.\"",
+    "\"No. {We have been declared war upon for existing|We are at war with a theocracy that thinks we are a prophecy|We do not vote for the prophecies of our enemies}.\"",
+    "\"Against. {Jenna says no|Jenna says nothing, and the Army says no|The Army does not need to be told}.\"",
+    "\"We refuse it. {The Empire will call that blasphemy|Everything is blasphemy|Let them}.\""
+   ],
+   "odd": [
+    "{leader} looks directly at the Vatican delegation for the whole of his four minutes and says nothing at all.",
+    "\"North Point would like the record to note which delegations turned their chairs when we were called.\"",
+    "\"We have no position on {topic}. We have a great deal to say about being an item on somebody else's agenda.\"",
+    "\"Peter II declared war on a person. The delegation would like to know the procedure for that and has been told there isn't one.\""
+   ]
+  },
+  "citadel": {
+   "open": [
+    "The Inverted Citadel is recognised. Its delegate {rises|rises out of a chair that seems too deep|has not been seen to arrive}.",
+    "{leader}, for the Citadel, {speaks|speaks quietly and the room quietens to hear|speaks and the sound arrives a fraction late}.",
+    "The Citadel's delegation {is called|is called, and looks up|answers from further away than it is sitting}."
+   ],
+   "for": [
+    "\"The Citadel consents to {topic}. {It is a small thing|Most things are|We have watched larger things than {topic} settle and pass}.\"",
+    "\"Yes. {The city was built by people who left no writing|We inherited an empty city and we know what emptiness costs|We would rather this room stayed full}.\"",
+    "\"We consent. {The core is warm and the shell holds|The shell has held for longer than the surface has had a calendar|That is our argument}.\"",
+    "\"In favour, {and quietly|and without a speech|and we will not be asked to repeat it}.\""
+   ],
+   "against": [
+    "\"The Citadel declines {topic}. {It reaches downward|We do not welcome things that reach downward|The last thing that reached downward was a Soviet drill}.\"",
+    "\"No. {The surface decides and the depth pays|You have done this before|We remember it, which is the whole of our objection}.\"",
+    "\"Against. {There is something asleep under our city|It takes one person at a time|{topic} would give it more people, and we say no}.\"",
+    "\"We refuse. {Look up in our city and you see the rest of the city|That is what we mean by consequence|Consider it}.\""
+   ],
+   "odd": [
+    "\"The Citadel would like to know whether anyone in this chamber has lately done anything they cannot explain. It is not a rhetorical question.\"",
+    "{leader} describes the light of the core for three minutes. Two delegations are visibly moved and could not say why.",
+    "\"We have no position on {topic}. We have a very old position on being asked.\"",
+    "\"Something dug the Serpentine Road before there was anyone to dig it for. The delegation mentions this and does not connect it to the motion.\""
+   ]
+  },
+  "petrodemons": {
+   "open": [
+    "The Petrodemons are recognised. {leader} {rises|does not so much rise as arrive at standing|leaves a mark on the desk}.",
+    "{leader}, for the Petrodemons, {speaks|speaks, and the microphone runs hot|begins by asking who holds the leyline under this floor}.",
+    "The Petrodemon delegation {is called|is called and the lights dim slightly|answers in a voice that is several voices}."
+   ],
+   "for": [
+    "\"We contract to {topic}. {The terms are acceptable|The terms are acceptable and binding|A contract with us is binding in ways your lawyers have not modelled}.\"",
+    "\"Yes. {The leylines will carry it|We will carry it, and the leylines will carry us|Redirection is what we are for}.\"",
+    "\"Agreed. {Our price is in the annex|Our price is not money|You will find our price reasonable and will dislike paying it}.\"",
+    "\"We consent to {topic}. {Written, witnessed and signed|Signed in the usual medium|Do not ask what the ink is}.\""
+   ],
+   "against": [
+    "\"No. {topic} {breaks a line|breaks a leyline|proposes breaking a leyline, which is proposing to kill us slowly}. We refuse.\"",
+    "\"We decline. {We were dinosaurs once, in a manner of speaking|Whatever was in them stayed in the oil|You are voting on our ancestors}.\"",
+    "\"Against. {We are all but indestructible near a line|Away from one we are merely formidable|Do not test which this chamber is}.\"",
+    "\"The delegation refuses. {Mattei tried something like this|It went badly|His aeroplane came down in 1962 and the parchment was never found}.\""
+   ],
+   "odd": [
+    "\"There is a leyline eleven metres beneath the chair's feet. The delegation mentions this every session and it is never minuted.\"",
+    "{leader} speaks for four minutes and the transcript afterwards is shorter than it should be.",
+    "\"We have no position. We have a standing offer, and it has been standing since 1962.\"",
+    "\"Porphyrin,\" says {leader}, \"is the thread. Blood, oil, line. The delegation will say no more.\""
+   ]
+  },
+  "tourists": {
+   "open": [
+    "The Tourists are recognised. Their delegate {stands|stands, holding a camera|is photographing the chamber and has to be prompted}.",
+    "{leader}, for the Tourists, {begins|begins by asking which session this is|asks the chair to repeat the question}.",
+    "The Tourists' delegation {is called|is called twice|is discovered to be sitting in the wrong seat, again}."
+   ],
+   "for": [
+    "\"We're in favour! {topic} sounds {lovely|marvellous|extremely photogenic}.\"",
+    "\"Yes! {We don't entirely follow it|We followed most of it|We followed the first part and then the translation feed did something}, but yes!\"",
+    "\"For! {Everyone's been so welcoming|We've had a wonderful time|We'd like a copy of the minutes as a keepsake}.\"",
+    "\"Aye! And could somebody sign the agenda afterwards?\""
+   ],
+   "against": [
+    "\"Against, I'm afraid. {It sounds dangerous|Somebody said it was dangerous|The nice delegation in blue said it was dangerous}.\"",
+    "\"No thank you. {We came for the Tower|We came a very long way for the Tower|We would rather nothing happened to the Tower}.\"",
+    "\"We'll vote no. {It's a shame|Nothing personal|We do like the sponsor's flag}.\"",
+    "\"Against. {We got caught in a loop in March|Ten weeks, same Tuesday|We're voting on instinct now}.\""
+   ],
+   "odd": [
+    "\"Is this floor real? Somebody said this floor is only here on odd weeks.\"",
+    "{leader} takes a photograph of the voting board. Four delegations object simultaneously.",
+    "\"We have no position and honestly no idea. We're having a lovely time.\"",
+    "\"Which one of you is the goddess? We were told one of you is the goddess.\""
+   ]
+  }
+ },
+ "observer": {
+  "common": {
+   "floor": [
+    "{power} has no vote here and speaks anyway. {leader} is brief and pleased.",
+    "The observing chair of {power} is recognised. {leader} says something warm and unhelpful.",
+    "{leader}, observing for {power}, offers a remark nobody asked for."
+   ],
+   "carried": [
+    "{power} applauds. They are not entitled to, and do it regardless.",
+    "The observing chair of {power} writes the result down carefully."
+   ],
+   "failed": [
+    "{power} looks delighted anyway.",
+    "The observing chair of {power} makes a note and underlines it twice."
+   ]
+  },
+  "tourists": {
+   "floor": [
+    "\"We have no vote, so we'll just say: {you're all doing wonderfully|this is the best one yet|we adore you}.\"",
+    "\"Observing only! But {topic} is {our favourite so far|the reason we came|going straight in the album}.\"",
+    "\"{sponsor} argued that {beautifully|with such feeling|at such length}. We've written it down.\"",
+    "\"Do carry on. {We're not allowed to help|We're not allowed to vote|We promised the Overseers we'd only watch}, and honestly it's more fun this way.\"",
+    "\"{leader} for the Tourists. No vote. {Only affection|Only admiration|Only three cameras}.\"",
+    "\"A species that will argue about {topic} for {forty minutes|an hour|a whole afternoon} is a species worth {crossing a void for|the trip|every light year}.\"",
+    "\"We'd vote if we could. {We'd probably vote wrong|We'd vote for whoever spoke last|We'd vote twice}, which is why we're not allowed to.\"",
+    "\"{sponsor} and {target} are shouting again. {Marvellous|Please don't stop|We've missed this}.\"",
+    "\"No position. {Enormous enthusiasm|Boundless goodwill|Complete ignorance and total delight}, though.\""
+   ],
+   "carried": [
+    "\"Carried! {We're so pleased for you|Look at you all|Well done, everyone}.\"",
+    "\"{We didn't vote|We couldn't vote|We're not allowed}, but we'd like it noted that we were {thrilled|holding our breath|filming}.\"",
+    "\"Is this the part where you shake hands? {We love this part|We've been waiting for this part}.\"",
+    "\"A motion carried by {forCount} to {againstCount}. {We've written the numbers on a postcard|We're keeping the numbers}.\""
+   ],
+   "failed": [
+    "\"Failed! {Oh, that's a shame|Never mind|You'll get it next time}. You were all {so good|so passionate|magnificent} about it.\"",
+    "\"{We'd have voted for it|We'd have voted against it|We'd have abstained beautifully} if anybody had let us.\"",
+    "\"Down it goes. {Do it again next week|We'll come back for the rematch|We're free next week}.\"",
+    "\"Nothing happens, and everyone is furious. {This is our favourite outcome|We adore this species}.\""
+   ]
+  }
+ },
+ "choice": {
+  "support": [
+   "Speak for {topic}. Put {power}'s voice behind it, plainly.",
+   "Support the motion on behalf of {power}, {without qualification|and say so before anyone else does|and dare the room to follow}.",
+   "Rise for {topic}. {power} is in favour and the chamber may as well hear it now.",
+   "Back {sponsor}. Say that {power} sees no reason to stand in the way of {topic}."
+  ],
+  "oppose": [
+   "Speak against {topic}. {power} says no, and says it early.",
+   "Oppose the motion. {Give the reasons|Give one reason and keep the rest|Give no reasons at all}.",
+   "Rise against {topic}. Let {sponsor} hear it from {power} directly.",
+   "Refuse it on behalf of {power}, {courteously|coldly|at length}."
+  ],
+  "amend": [
+   "Propose an amendment. Narrow {topic} until {power} can live with it.",
+   "Move to amend. Take the {teeth|money|timetable} out of {topic} and offer it back to {sponsor}.",
+   "Split the difference: support {topic} in principle, and send the detail to committee.",
+   "Amend it. {Half a motion carried beats a whole one lost|A committee is where motions go to be survivable|{power} would rather have a fraction than a fight}."
+  ],
+  "filibuster": [
+   "Talk. Keep talking. Give {topic} no room to be voted on cleanly.",
+   "Hold the floor until the room stops caring about {topic}.",
+   "Filibuster. {Read the annexes aloud|Read the attendance list aloud|Read anything aloud}.",
+   "Bore {topic} to death. {It has worked before|Nobody thanks you for it|{power} will not thank you either}."
+  ],
+  "wild": [
+   "Say the thing nobody says out loud about {topic}, {and watch what it does|and let the room deal with it|on the record}.",
+   "Address the chamber in the second person, one delegation at a time, {starting with {sponsor}|and end on the empty chair|until somebody stops you}.",
+   "Read out what {power} actually wants, {not what the brief says|word for word|as it was written in the margin}.",
+   "Do something the minute taker will have trouble with.",
+   "Ask the assembly what any of this is for. Mean it."
+  ],
+  "sg": {
+   "amend": [
+    "Rephrase the motion from the chair until both sides can vote for it.",
+    "Broker it. Take the sharp clause out of {topic} and put the room back together around what is left.",
+    "Offer wording. {A chair who drafts is a chair who decides|Nobody objects to a chair who is only trying to help|Neither side will notice until it is minuted}."
+   ],
+   "support": [
+    "Say from the chair that {topic} deserves to carry, and let that be heard for what it is.",
+    "Put the weight of the chair behind {sponsor}, {openly|in the framing rather than the words|once}.",
+    "Frame the vote so that a yes sounds like the reasonable answer."
+   ],
+   "oppose": [
+    "Say from the chair that {topic} should not carry, and accept what that costs.",
+    "Frame the vote so that a no sounds like the careful answer.",
+    "Put the chair against {sponsor}. {It will be remembered|It is not what chairs are for|Do it anyway}."
+   ],
+   "abstain": [
+    "Chair it and nothing more. Let the room decide {topic} unhelped.",
+    "Stay out of it. {The chair's silence is also a position|Say nothing and be seen to say nothing|Let them argue}.",
+    "Take no view. Call the vote."
+   ],
+   "wild": [
+    "Call a recess in the middle of {topic} and see who talks to whom in the corridor.",
+    "Put a delegation on the speakers' list that nobody expected to hear from.",
+    "Read the motion back to the chamber in the sponsor's own earlier words, from a session nobody remembers."
+   ]
+  }
+ },
+ "reactions": {
+  "normal": [
+   "{power} sits. The chamber {absorbs it|does not react|reacts, briefly, and is gavelled}.",
+   "There is {a pause|the particular pause that follows a position|movement along three benches}.",
+   "Two delegations {confer|confer without pretending not to|write notes at the same moment}.",
+   "The minute taker's pen {catches up|does not catch up|stops for a second and then catches up}."
+  ],
+  "wild": [
+   "The chamber {goes very quiet|does not go quiet at all|produces a sound it has not made before}.",
+   "{power}'s intervention is entered into the record {verbatim|verbatim, twice|with a footnote from the Archive Foundation}.",
+   "Somewhere behind the delegations, {somebody laughs|somebody stands up|a chair falls over}.",
+   "The chair {rules it in order|rules it out of order and lets it stand|declines to rule}."
+  ]
+ },
+ "ballot": {
+  "public": [
+   "{chair} calls the division. The board lights seat by seat, and every one of them has a name on it.",
+   "A show of hands, then the board. {chair} reads the seats out in order. Nobody is spared the reading.",
+   "The vote is public. {chair} begins at the far end and works across, and the room watches every light."
+  ],
+  "secret": [
+   "{chair} orders a secret ballot. The nameplates go dark. The board is shuffled before it is shown.",
+   "Sealed vote. The seats are unlabelled, the order is scrambled, and the tally is the only honest thing on the board.",
+   "{chair} calls a secret division. Twenty one lights, no names, and afterwards nobody can prove anything."
+  ]
+ },
+ "council": {
+  "opening": [
+   "{chair} refers the motion to the Security Council. Four delegations remain seated while the rest of the chamber turns to watch.",
+   "This one goes to the Council. {chair} names the four permanent members and asks each in turn.",
+   "The gravity of the motion sends it upward. {chair} calls Britannia, the Union, Rome and the Porte."
+  ],
+  "approve": [
+   "\"{power} approves.\" {leader} {says it flatly|does not elaborate|makes it sound like a concession}.",
+   "{power}: approve. {leader} {nods once|signs the card|holds the card up long enough to be photographed}.",
+   "\"Approved,\" says {leader}. \"{With reservations|Without enthusiasm|And let the record note who asked us}.\""
+  ],
+  "veto": [
+   "\"{power} vetoes.\" {leader} {says it without raising his voice|says it twice|says it as though it costs nothing}.",
+   "{power}: veto. {leader} {does not explain|explains at length and explains nothing|puts the card down face up}.",
+   "\"Vetoed,\" says {leader}. \"{We are not obliged to give a reason|The reason is obvious|The reason is in a folder nobody in this room will read}.\""
+  ],
+  "noTiebreaker": [
+   "Two and two. There is no Secretary General to break it, and the motion dies on the tie.",
+   "The Council splits down the middle. The chair looks at the empty place where a Secretary General would sit, and rules the motion lost.",
+   "Two votes each way and nobody with the standing to decide. The motion falls, and everyone knew it would the moment the split appeared."
+  ],
+  "tiebreak": {
+   "approve": [
+    "\"Two and two,\" says {name}. \"Then it falls to me. {The room has spoken and the Council has not|I have listened to both halves of this chamber|I am going to take the assembly's side}. Approved.\"",
+    "{name} lets the silence run a moment longer than is comfortable. \"The chamber wanted this. The Council could not agree to stop it. It carries.\"",
+    "\"I am not here to represent anybody,\" says {name}, \"which is the only reason this works. Approved.\""
+   ],
+   "veto": [
+    "\"Two and two,\" says {name}. \"Then it falls to me, and I will not carry it. {The chamber was not persuaded either|Half of this Council is enough doubt|Vetoed}.\"",
+    "{name} reads the tally twice before speaking. \"When the Council is evenly divided on something this large, the answer is no. Vetoed.\"",
+    "\"I would rather be the one who stopped it,\" says {name}, \"than the one who let it through on a coin toss. Vetoed.\""
+   ]
+  }
+ },
+ "outcome": {
+  "carried": [
+   "The motion carries, {forCount} to {againstCount}. \"{title}\" passes into the record.",
+   "Carried: {forCount} for, {againstCount} against. The chair enters \"{title}\" as adopted and moves on {immediately|before anyone can reopen it|with visible relief}.",
+   "{forCount} to {againstCount}. It carries. {Somewhere a treaty acquires a number|The Archive Foundation begins publishing before the gavel lands|Three delegations begin drafting objections for next week}."
+  ],
+  "failed": [
+   "The motion falls, {forCount} to {againstCount}. \"{title}\" goes no further.",
+   "Defeated: {forCount} for, {againstCount} against. The chair records \"{title}\" as lost and {moves on|waits for the noise to stop|calls the next item over the noise}.",
+   "{forCount} to {againstCount}. It fails. {The sponsor is already redrafting|The sponsor does not look surprised|Nobody looks surprised}."
+  ]
+ },
+ "closings": [
+  "{chair} closes the session. {carried} of {total} motions carried. The delegations {file out|do not file out|remain seated, arguing, for another hour}.",
+  "The gavel falls. {carried} carried, out of {total}. {The Archive Foundation is already publishing|The pigeons are already leaving|Somebody has taken the biscuits}.",
+  "Session closed. {carried} of {total}. {chair} thanks the assembly {without conviction|with the same words as last week|and is not heard over the scraping of chairs}."
+ ],
+ "lobby": {
+  "intro": [
+   "The credentials desk sits outside the chamber: {venue}. {A clerk waits|Two clerks wait, one of them asleep|A clerk waits with a ledger older than the assembly}.",
+   "Outside the chamber, at {venue}, the register is open and the coffee is {cold|free|neither}.",
+   "The assembly's antechamber. {venue}, and a queue of nobody."
+  ],
+  "presiding": [
+   "{name} takes the chair. From this moment {name} represents nobody at all, which is the whole of the office.",
+   "The gavel changes hands. {name} is Secretary General, and the first thing the office takes is the seat that came before it.",
+   "{name} sets down the nameplate of whatever power it was and picks up the one that has no flag on it."
+  ],
+  "resigned": [
+   "{name} hands back the credentials of {power}. The clerk stamps them {without comment|twice|and looks up, once}.",
+   "{name} resigns the seat of {power}. It takes {four minutes|one signature|less time than it took to get it}.",
+   "The nameplate reading {power} goes back in the drawer. {name} walks out past the chamber without looking in."
+  ]
+ },
+ "joining": {
+  "intro": [
+   "The credentials clerk turns the ledger around. \"Which of them, then?\" {The list is shorter than it looks|Not every power will have you|Some of these names have never taken an outsider}. {name} reads.",
+   "\"Accreditation,\" says the clerk, \"is a matter of who will vouch for you.\" A list is produced. {name}'s name is at the top of a blank page.",
+   "There are twenty one seats and a much shorter list of powers that would let {name} sit in one."
+  ],
+  "refused": [
+   "The clerk turns the ledger around and it is empty. Nobody will vouch for {name}. {Not this week|Not yet|Not while the ledger says what it says}.",
+   "\"Nobody,\" the clerk says, not unkindly. \"You'll want to mend some of it first.\" {name} is not accredited.",
+   "There is no power in the register willing to put {name}'s name on a seat."
+  ],
+  "declined": [
+   "{name} closes the ledger. The clerk {shrugs|makes a note|had expected it}.",
+   "\"Another week, then,\" says the clerk, and turns the ledger back around. {name} takes nothing.",
+   "{name} leaves the desk unaccredited, {which is a decision too|which the clerk records as a decision|and the clerk writes exactly that}."
+  ],
+  "accepted": [
+   "\"{name}. Accredited to {power}.\" The clerk stamps it. \"{leader} will be told. {leader} is told everything.\"",
+   "The nameplate is printed while {name} watches: {power}, and underneath in smaller letters, {name}. \"{leader} approved it {this morning|in advance|without reading it}.\"",
+   "\"Welcome to the delegation of {power},\" says the clerk, in the voice of somebody who has said it four hundred times. \"{leader} sends nothing. {leader} never does.\""
+  ]
+ }
+}

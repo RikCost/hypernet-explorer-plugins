@@ -304,9 +304,7 @@
       "description": "Beating another arm across a table with leverage and grip.",
       "stat": "STR",
       "category": "Athletics",
-      "classStart": {
-        "Wrestler": 2
-      }
+      "classStart": {}
     },
     {
       "id": 498,
@@ -375,7 +373,8 @@
       "category": "Occult",
       "classStart": {
         "Archmage": 2,
-        "Oracle": 2
+        "Oracle": 2,
+        "Convoker": 2
       },
       "traitStart": {
         "superstitious": 2,
@@ -780,7 +779,8 @@
       "stat": "PSI",
       "category": "Arcana",
       "classStart": {
-        "Vampire": 2
+        "Vampire": 2,
+        "Convoker": 2
       }
     },
     {
@@ -828,7 +828,6 @@
       "stat": "STR",
       "category": "Athletics",
       "classStart": {
-        "Wrestler": 2,
         "Berserker": 2,
         "Boxer": 2,
         "Pro Wrestler": 2,
@@ -929,8 +928,7 @@
       "category": "Athletics",
       "classStart": {
         "Brawler": 2,
-        "Boxer": 3,
-        "Wrestler": 2
+        "Boxer": 3
       },
       "traitStart": {
         "brawler": 2
@@ -2252,7 +2250,8 @@
       "classStart": {
         "Priest": 2,
         "Cleric": 2,
-        "Nun": 2
+        "Nun": 2,
+        "Convoker": 2
       }
     },
     {
@@ -2708,7 +2707,6 @@
         "Freelancer": 3,
         "Witch": 3,
         "Knight": 3,
-        "Wrestler": 3,
         "CEO": 3,
         "Cultist": 3,
         "Combat Medic": 3,
@@ -2797,9 +2795,7 @@
       "description": "Controlling a body at close quarters: holds, throws and locks.",
       "stat": "STR",
       "category": "Combat",
-      "classStart": {
-        "Wrestler": 2
-      }
+      "classStart": {}
     },
     {
       "id": 612,
@@ -3818,7 +3814,8 @@
         "Wretch": 3,
         "Mimic": 3,
         "Monster": 3,
-        "Mana Cyborg": 3
+        "Mana Cyborg": 3,
+        "Convoker": 3
       },
       "traitStart": {
         "assassin": 2
@@ -3965,7 +3962,8 @@
         "Necromancer": 3,
         "Spellblade": 2,
         "Battlemage": 3,
-        "Mana Cyborg": 2
+        "Mana Cyborg": 2,
+        "Convoker": 3
       },
       "traitStart": {
         "magically_gifted": 3,
@@ -5064,9 +5062,7 @@
       "description": "Maximal strength in the squat, bench and deadlift.",
       "stat": "STR",
       "category": "Athletics",
-      "classStart": {
-        "Wrestler": 2
-      },
+      "classStart": {},
       "traitStart": {
         "gigantism": 2,
         "muscular": 2
@@ -6163,7 +6159,8 @@
         "Wretch": 3,
         "Mimic": 3,
         "Monster": 3,
-        "Mana Cyborg": 3
+        "Mana Cyborg": 3,
+        "Convoker": 3
       }
     },
     {
@@ -6350,7 +6347,6 @@
       "stat": "STR",
       "category": "Athletics",
       "classStart": {
-        "Wrestler": 2,
         "Pro Wrestler": 2,
         "Gladiator": 2
       }
@@ -6457,7 +6453,8 @@
         "Wretch": 3,
         "Mimic": 3,
         "Monster": 3,
-        "Mana Cyborg": 3
+        "Mana Cyborg": 3,
+        "Convoker": 3
       },
       "traitStart": {
         "duelist": 2,
@@ -6666,7 +6663,8 @@
         "Cultist": 2,
         "Paladin": 2,
         "Cleric": 3,
-        "Priest": 3
+        "Priest": 3,
+        "Convoker": 2
       },
       "traitStart": {
         "blessed": 2,
@@ -7271,7 +7269,6 @@
       "stat": "STR",
       "category": "Athletics",
       "classStart": {
-        "Wrestler": 3,
         "Brawler": 2,
         "Pro Wrestler": 3,
         "Gladiator": 2

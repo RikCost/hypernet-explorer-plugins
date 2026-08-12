@@ -29,7 +29,16 @@
  * --- Special Floor Transitions ---
  * - From Town (Floor 0), using "nextFloor" teleports you to Map ID 101 (X:16, Y:38).
  * - From Floor 1, using "prevFloor" teleports you to the dungeon base Map ID 635 at (X:13, Y:27).
- * - If the current floor is a negative number, "nextFloor" and "prevFloor" are disabled.
+ *
+ * --- The lower tower (floors -1 to -92) ---
+ * Everything below ground is generated rather than authored: each lower floor
+ * is one of the structures in the procedural catalogue (sewer, crypt, cellar,
+ * mineshaft, ...), rolled from the world seed and walked through the NextFloor
+ * / PrevFloor / Elevator events the procedural map (636) already carries.
+ * The staircases read the other way round down there: deeper means a SMALLER
+ * number, so "nextFloor" takes -21 to -22 and "prevFloor" takes -23 back to
+ * -22. Floor 0 is map 635 (the Stairs Hall), whose "prevFloor" is the mouth of
+ * the lower tower.
  *
  * Plugin Commands:
  * generateDungeon - Creates a new random dungeon layout (resets max floor)
@@ -337,6 +346,10 @@
         this._elevatorSpawnPoints = {};
         this._eventPositions = {};
         this._treasureRoomPositions = {}; // ADD THIS LINE
+        // How far into the LOWER tower the world has been, counted in floors
+        // (22 means floor -22 has been stood on). The upper half keeps its own
+        // record in variable 2.
+        this._dungeonDepthReached = 0;
     }
 };
 
@@ -518,13 +531,21 @@ Game_System.prototype.findRegion14Tiles = function (mapData) {
       .filter((entry) => entry !== null);
   };
 
-  Game_System.prototype.generateDungeon = function () {
-    let historySeed = 19002001;
-    if (window.HistoryManager && typeof window.HistoryManager.getSeed === 'function') {
-        historySeed = window.HistoryManager.getSeed();
-    } else if ($gameSystem && $gameSystem._historySeed !== undefined) {
-        historySeed = $gameSystem._historySeed;
+  // The world's RNG root. Both halves of the tower are rolled from it, so a
+  // world's hundred floors above ground and its ninety-two below are the same
+  // in every savegame of that world.
+  function dungeonWorldSeed() {
+    if (window.HistoryManager && typeof window.HistoryManager.getSeed === "function") {
+      return window.HistoryManager.getSeed();
     }
+    if (typeof $gameSystem !== "undefined" && $gameSystem && $gameSystem._historySeed !== undefined) {
+      return $gameSystem._historySeed;
+    }
+    return 19002001;
+  }
+
+  Game_System.prototype.generateDungeon = function () {
+    const historySeed = dungeonWorldSeed();
     this._seededRandom = createSeededRandom(String(historySeed));
     this._mapRegion13Cache = {}; // Clear cache on new generation
 
@@ -964,6 +985,15 @@ Game_System.prototype.isPassableTileFromTilesets = function (mapData, x, y) {
   });
 
   PluginManager.registerCommand(pluginName, "nextFloor", (args) => {
+    // Below ground the numbering runs the other way: NextFloor is the way
+    // DEEPER, so it takes -21 to -22 and stops at the bottom of the shaft.
+    const lower = activeLowerFloor();
+    if (lower) {
+        if (lower <= TOWER.DEEPEST) return;
+        moveToLowerFloor(lower - 1, "prev");
+        return;
+    }
+
     let currentFloor = $gameVariables.value(params.currentFloorVariable);
     // Map 635 is the dungeon base (floor 0). Reaching it via the world graph
     // (303/540/631), fast-travel or respawn can leave a stale floor value here,
@@ -981,6 +1011,22 @@ Game_System.prototype.isPassableTileFromTilesets = function (mapData, x, y) {
 });
 
   PluginManager.registerCommand(pluginName, "prevFloor", (args) => {
+    // The Stairs Hall is the mouth of the lower tower: going down from here is
+    // floor -1, whatever the last floor value happened to be.
+    if ($gameMap.mapId() === TOWER.STAIRS_HALL.mapId) {
+        moveToLowerFloor(-1, "prev");
+        return;
+    }
+
+    // Below ground PrevFloor is the way back UP, and out of floor -1 it leaves
+    // the tower altogether.
+    const lower = activeLowerFloor();
+    if (lower) {
+        if (lower === -1) leaveLowerTower();
+        else moveToLowerFloor(lower + 1, "next");
+        return;
+    }
+
     let currentFloor = $gameVariables.value(params.currentFloorVariable);
     // Map 101 is always floor 1 (hardcoded in generateDungeon). Arriving here by
     // any other route (fast travel, respawn, a stale/negative floor value) would
@@ -1005,7 +1051,33 @@ Game_System.prototype.isPassableTileFromTilesets = function (mapData, x, y) {
     moveToFloor(floor, "downstairs");
 });
 PluginManager.registerCommand(pluginName, "elevator", (args) => {
-  const floor = $gameVariables.value(params.elevatorFloorVariable);
+  // The floor panel writes the chosen floor to variable 17; the elevator hall's
+  // own door event writes variable 1. Read the choice first and fall back to
+  // the hall's value only when variable 17 holds nothing that names a floor.
+  const chosen = $gameVariables.value(params.elevatorFloorVariable);
+  const floor = isKnownFloor(chosen)
+      ? chosen
+      : $gameVariables.value(params.currentFloorVariable);
+
+  if (floor === TOWER.SECRET_STAIRWAY.floor) {
+      // Floor -22's doors open on Omega City, never on the stairway itself.
+      const city = TOWER.OMEGA_CITY;
+      $gameVariables.setValue(params.currentFloorVariable, floor);
+      $gameVariables.setValue(params.elevatorFloorVariable, floor);
+      recordTowerDepth(floor);
+      clearTowerSession();
+      $gameScreen.startFadeOut(1);
+      $gamePlayer.reserveTransfer(city.mapId, city.x, city.y, city.dir, 0);
+      return;
+  }
+  if (isGeneratedLowerFloor(floor)) {
+      moveToLowerFloor(floor, "elevator");
+      return;
+  }
+  // The Tip of the Spear is not a stop on this line: floor -91's staircase is
+  // the only way onto it, so a lift asked for it does nothing.
+  if (isLowerFloor(floor)) return;
+
   const maxFloor = params.demoMode ? params.demoMaxFloor : 100;
   if (floor >= 0 && floor <= maxFloor) {
       moveToFloor(floor, "elevator");
@@ -1068,7 +1140,544 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
     return null; // Return null if no region 20 tile found
   }
   
+  //=============================================================================
+  // THE LOWER TOWER (floors -1 to -92)
+  //=============================================================================
+  // The hundred floors above ground are hand-made maps dealt from the pools at
+  // the top of this file. Everything BELOW ground is generated instead: each of
+  // the 92 lower floors is one of the structures in the procedural catalogue (a
+  // sewer, a crypt, a cellar, a mineshaft, ...), rolled from the world seed so
+  // a given floor is always the same place, and walked through the NextFloor /
+  // PrevFloor / Elevator events the procedural map (636) already carries.
+  //
+  // The staircases read the other way round down here: deeper means a SMALLER
+  // number, so NextFloor takes -21 to -22 and PrevFloor takes -23 back to -22.
+  // That inversion is the whole difference between the two halves of the tower.
+  //
+  // Two of the 92 are authored maps rather than generated ones, and they are
+  // also the only two that hold no roaming enemies, so the depth ladder steps
+  // over them: -22 is the Secret Stairway (whose lift opens on Omega City) and
+  // -92 is the Tip of the Spear, which nothing but floor -91's staircase
+  // reaches and which the elevator never lists.
+  const PROC_MAP_ID = 636;
+
+  const TOWER = {
+    DEEPEST: -92,
+    // The tower's own world square (WorldGen/HardcodedBiomeNames "79,124").
+    // Every lower floor is generated FROM it rather than from wherever the
+    // party happened to be standing when they took the stairs, or the same
+    // floor would be a different place on every visit.
+    WORLD_X: 79,
+    WORLD_Y: 124,
+    // Floor 0: the hall the lower tower hangs off. Coming back up from -1
+    // lands north of its down staircase, facing away from it.
+    STAIRS_HALL: { mapId: 635, x: 13, y: 19, dir: 8 },
+    SECRET_STAIRWAY: {
+      floor: -22, mapId: 1177,
+      down: { x: 3, y: 6, dir: 2 },   // arrived from -21, on the way deeper
+      up: { x: 12, y: 10, dir: 4 },   // arrived from -23, on the way back up
+    },
+    OMEGA_CITY: { mapId: 631, x: 66, y: 153, dir: 2 },
+    TIP_OF_THE_SPEAR: { floor: -92, mapId: 834, x: 6, y: 6, dir: 2 },
+    // What a creature standing on the first lower floor weighs, and what one
+    // standing on the last generated floor (-91) does. Everything in between is
+    // a straight climb over the 90 floors that hold enemies at all.
+    FIRST_LEVEL: 40,
+    LAST_LEVEL: 222,
+    // Folded into the procedural seed so no two floors share a layout, and into
+    // the terrain/furniture record key so nothing carried out of one is still
+    // standing in another.
+    SALT: 7700,
+  };
+
+  function isLowerFloor(floor) {
+    return Number.isFinite(floor) && floor <= -1 && floor >= TOWER.DEEPEST;
+  }
+
+  // The two lower floors that are authored maps: no generation, no enemies.
+  function isAuthoredLowerFloor(floor) {
+    return floor === TOWER.SECRET_STAIRWAY.floor || floor === TOWER.TIP_OF_THE_SPEAR.floor;
+  }
+
+  function isGeneratedLowerFloor(floor) {
+    return isLowerFloor(floor) && !isAuthoredLowerFloor(floor);
+  }
+
+  function isKnownFloor(floor) {
+    return Number.isFinite(floor) && floor >= TOWER.DEEPEST && floor <= 100;
+  }
+
+  // How many enemy-bearing lower floors there are, and where a floor stands in
+  // that run: -1 is the first (index 0) and -91 the last (index 89).
+  const TOWER_ENEMY_FLOORS = 90;
+
+  function towerFloorIndex(floor) {
+    let index = 0;
+    for (let f = -1; f > floor; f--) {
+      if (!isAuthoredLowerFloor(f)) index++;
+    }
+    return index;
+  }
+
+  // The level a creature met on a lower floor is built around. It is the depth
+  // and nothing else: the party's own level, the biome and the calendar all
+  // have no say down here, which is what makes the descent a ladder.
+  function towerEnemyLevel(floor) {
+    if (!isGeneratedLowerFloor(floor)) return 0;
+    const span = TOWER_ENEMY_FLOORS - 1;
+    const t = Math.max(0, Math.min(1, towerFloorIndex(floor) / span));
+    return Math.round(TOWER.FIRST_LEVEL + (TOWER.LAST_LEVEL - TOWER.FIRST_LEVEL) * t);
+  }
+
+  // Which structure a floor is. Read off the procedural catalogue, which is the
+  // only list of them, so a structure added there is dealt down here too. A
+  // patron's vault belongs to one hatch in one world square and is never dealt.
+  function towerStructureKeys() {
+    const D = window.ProcGenDungeon;
+    const all = (D && typeof D.structures === "function") ? D.structures() : [];
+    return all.filter((s) => s && s.key && s.key !== "PatronVault");
+  }
+
+  function towerFloorBiome(floor) {
+    const list = towerStructureKeys();
+    if (!list.length) return "Dungeon";
+    // The catalogue's own weights, floored so the entrance-exclusive structures
+    // (the Sewer weighs 0 out in the world, because a grate is the only way in)
+    // are at home in a tower whose floors have no surface to be entered from.
+    const weights = list.map((s) => Math.max(10, s.weight || 0));
+    const total = weights.reduce((sum, w) => sum + w, 0);
+    const rng = createSeededRandom(`tower:${dungeonWorldSeed()}:${floor}`);  // i18n-ignore  seed string
+    let roll = rng() * total;
+    for (let i = 0; i < list.length; i++) {
+      roll -= weights[i];
+      if (roll <= 0) return list[i].key;
+    }
+    return list[list.length - 1].key;
+  }
+
+  // How deep the world has been. Kept as a positive number of floors, so 22
+  // means floor -22 has been stood on. RandomLootSystem reads it through
+  // window.DungeonFloors so a deep descent pays like a high climb does.
+  function recordTowerDepth(floor) {
+    if (!isLowerFloor(floor)) return;
+    const depth = Math.abs(floor);
+    if (depth > (($gameSystem && $gameSystem._dungeonDepthReached) || 0)) {
+      $gameSystem._dungeonDepthReached = depth;
+    }
+  }
+
+  function towerDepthReached() {
+    return (typeof $gameSystem !== "undefined" && $gameSystem && $gameSystem._dungeonDepthReached) || 0;
+  }
+
+  // Floor -1 and floor -22 are open from the start; everything else has to have
+  // been reached. The upper half keeps its own rule (variable 2).
+  function isLowerFloorUnlocked(floor) {
+    if (!isLowerFloor(floor)) return false;
+    if (floor === -1 || floor === TOWER.SECRET_STAIRWAY.floor) return true;
+    return Math.abs(floor) <= towerDepthReached();
+  }
+
+  // The floor the party is standing on, read off the procedural session rather
+  // than off variable 1: the variable can go stale (fast travel, a respawn, a
+  // save made elsewhere) and the session cannot, since it is written when the
+  // floor is generated and torn down when the party leaves it.
+  function currentTowerFloor() {
+    if (typeof $gameMap === "undefined" || !$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return 0;
+    const pg = $gameSystem && $gameSystem._procGenData;
+    const session = pg && pg._dungeonSession;
+    if (!session || session.type !== "tower") return 0;
+    const floor = session.floor || 0;
+    // A session left standing by some other way out of the tower (a respawn, a
+    // load, a fast travel) must never turn the next ordinary square into a
+    // floor, so the biome the map was actually built from has to be the one
+    // that floor is made of.
+    if (!isGeneratedLowerFloor(floor)) return 0;
+    if (pg.currentBiome !== towerFloorBiome(floor)) return 0;
+    return floor;
+  }
+
+  // A tower session says where the party IS, and its owner clears it: leaving a
+  // floor by any of the tower's own exits ends it, or the border of the next
+  // ordinary procedural map would still be sealed.
+  function clearTowerSession() {
+    const pg = $gameSystem && $gameSystem._procGenData;
+    if (pg && pg._dungeonSession && pg._dungeonSession.type === "tower") {
+      pg._dungeonSession = null;
+    }
+    $gameSystem._towerArrival = null;
+    $gameSystem._towerLayout = null;
+  }
+
+  // The floor a staircase command should act on. The generated floor underfoot
+  // is read off the procedural session; the two authored floors carry no
+  // session of their own, so on those two maps - and on no others - the map id
+  // names the floor. Variable 1 is never trusted for this: it goes stale on a
+  // fast travel or a respawn, and a stale value would drop a party standing in
+  // the Stairs Hall down the shaft.
+  function activeLowerFloor() {
+    const live = currentTowerFloor();
+    if (live) return live;
+    const mapId = (typeof $gameMap !== "undefined" && $gameMap) ? $gameMap.mapId() : 0;
+    if (mapId === TOWER.SECRET_STAIRWAY.mapId) return TOWER.SECRET_STAIRWAY.floor;
+    if (mapId === TOWER.TIP_OF_THE_SPEAR.mapId) return TOWER.TIP_OF_THE_SPEAR.floor;
+    return 0;
+  }
+
+  function ensureProcGenData() {
+    if (!$gameSystem._procGenData) {
+      $gameSystem._procGenData = {
+        originX: 0, originY: 0, currentBiome: null, currentRoadDirection: null,
+        currentBiomeTileset: null, generatedMapData: null, biomeToTileset: {},
+        mapPreloaded: false, seed: 12345, biomeCoordinateCache: {},
+        lastLoadedProcMapX: null, lastLoadedProcMapY: null, displayAsBeach: false,
+        biomeLayerStack: [],
+      };
+    }
+    return $gameSystem._procGenData;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Where the three staircase events stand on a generated floor
+  // ---------------------------------------------------------------------------
+  // NextFloor, PrevFloor and the Elevator all have to be reachable from one
+  // another and none of them may stand in a one-tile corridor, where an event
+  // with a solid priority (the lift) would wall the floor in two. The rule is
+  // read off the map as it was actually carved, not off the room rectangles the
+  // carver started from: ornaments, the border clip and the wall ring all move
+  // afterwards, so only the finished map can be trusted.
+  const TOWER_MIN_OPENNESS = 8;     // standable tiles in the 3x3 around a post
+  // The hard floor: a genuine 1-wide corridor (self + the tile ahead + the
+  // tile behind, nothing to either side) opens onto 3 of the 9 tiles around
+  // it, a corner a couple more. Relaxation never goes below this, so a post
+  // is never dealt a spot with no room to stand beside it.
+  const TOWER_MIN_WIDTH_OPENNESS = 5;
+  const TOWER_GAPS = [12, 8, 5, 2, 0];
+
+  function towerCanStand(x, y) {
+    if (x < 0 || y < 0 || x >= $gameMap.width() || y >= $gameMap.height()) return false;
+    if ($gameMap.regionId(x, y) === 99) return true;       // water is swum, not walked
+    return $gameMap.checkPassage(x, y, 0x0f);
+  }
+
+  function towerOpenness(x, y) {
+    let n = 0;
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (towerCanStand(x + dx, y + dy)) n++;
+      }
+    }
+    return n;
+  }
+
+  // Walking distance from the carved entrance to every tile the party can
+  // reach. Anything left at -1 is walled off and can never hold a staircase.
+  function towerDistanceMap(startX, startY) {
+    const w = $gameMap.width(), h = $gameMap.height();
+    const dist = new Int32Array(w * h).fill(-1);
+    if (!towerCanStand(startX, startY)) return dist;
+    const queue = [startX + startY * w];
+    dist[startX + startY * w] = 0;
+    for (let head = 0; head < queue.length; head++) {
+      const idx = queue[head];
+      const x = idx % w, y = (idx / w) | 0;
+      const d = dist[idx];
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        const ni = nx + ny * w;
+        if (dist[ni] !== -1 || !towerCanStand(nx, ny)) continue;
+        dist[ni] = d + 1;
+        queue.push(ni);
+      }
+    }
+    return dist;
+  }
+
+  function towerLayout(floor) {
+    const cached = $gameSystem._towerLayout;
+    if (cached && cached.floor === floor && cached.width === $gameMap.width()) return cached;
+    const layout = buildTowerLayout(floor);
+    $gameSystem._towerLayout = layout;
+    return layout;
+  }
+
+  function buildTowerLayout(floor) {
+    const w = $gameMap.width(), h = $gameMap.height();
+    const gen = ($gameSystem._procGenData && $gameSystem._procGenData.generatedMapData) || null;
+    const startX = (gen && gen.spawnX != null) ? gen.spawnX : Math.floor(w / 2);
+    const startY = (gen && gen.spawnY != null) ? gen.spawnY : Math.floor(h / 2);
+    const dist = towerDistanceMap(startX, startY);
+    const rng = createSeededRandom(`towerLayout:${dungeonWorldSeed()}:${floor}`);  // i18n-ignore  seed string
+
+    // Every tile the party can walk to, ranked by how open it is. A post is
+    // only ever taken from the open end of that list.
+    const reachable = [];
+    for (let y = 2; y < h - 2; y++) {
+      for (let x = 2; x < w - 2; x++) {
+        if (dist[x + y * w] < 0) continue;
+        reachable.push({ x, y, dist: dist[x + y * w], open: towerOpenness(x, y) });
+      }
+    }
+    if (!reachable.length) {
+      const fallback = { x: startX, y: Math.max(1, startY - 1) };
+      return towerLayoutFrom(floor, w, fallback, fallback, fallback);
+    }
+
+    let rooms = reachable.filter((t) => t.open >= TOWER_MIN_OPENNESS);
+    for (let relax = TOWER_MIN_OPENNESS - 1; !rooms.length && relax >= TOWER_MIN_WIDTH_OPENNESS; relax--) {
+      rooms = reachable.filter((t) => t.open >= relax);
+    }
+    // Relaxation stops at TOWER_MIN_WIDTH_OPENNESS on purpose and never below
+    // it: a straight 1-wide corridor tile opens onto at most itself and the
+    // two tiles ahead/behind it (3), a corner or dead end little more, so
+    // dropping the floor further is exactly how a stair used to land in one.
+    // If even that is too much to ask of the whole floor, take the widest
+    // spots there are instead of giving up on width altogether.
+    if (!rooms.length) {
+      const maxOpen = reachable.reduce((m, t) => Math.max(m, t.open), 0);
+      rooms = reachable.filter((t) => t.open >= maxOpen);
+    }
+
+    // The lift is set into a wall: the tile it stands on has rock to its north
+    // and open floor to its south, so the party steps out in front of it.
+    const lifts = reachable.filter((t) =>
+      !towerCanStand(t.x, t.y - 1) &&
+      towerCanStand(t.x, t.y + 1) && towerCanStand(t.x, t.y + 2) &&
+      towerCanStand(t.x - 1, t.y + 1) && towerCanStand(t.x + 1, t.y + 1) &&
+      towerOpenness(t.x, t.y + 1) >= 7);
+    const elevator = lifts.length
+      ? lifts[Math.floor(rng() * lifts.length)]
+      : rooms[Math.floor(rng() * rooms.length)];
+
+    const far = (a, b, gap) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y) >= gap;
+    let prev = null, next = null;
+    for (const gap of TOWER_GAPS) {
+      // The way back up sits nearest the entrance the floor was carved with;
+      // the way down sits as deep into the plan as the carver's own boss-room
+      // hint says, or simply as far from the entrance as the floor allows.
+      const prevPool = rooms.filter((t) => far(t, elevator, gap));
+      if (!prevPool.length) continue;
+      prev = prevPool.reduce((best, t) => (t.dist < best.dist ? t : best), prevPool[0]);
+      const hint = gen && gen.bossRoomHint;
+      const nextPool = rooms.filter((t) => far(t, elevator, gap) && far(t, prev, gap));
+      if (!nextPool.length) { prev = null; continue; }
+      next = hint
+        ? nextPool.reduce((best, t) => (
+            Math.abs(t.x - hint.x) + Math.abs(t.y - hint.y) <
+            Math.abs(best.x - hint.x) + Math.abs(best.y - hint.y) ? t : best), nextPool[0])
+        : nextPool.reduce((best, t) => (t.dist > best.dist ? t : best), nextPool[0]);
+      break;
+    }
+    if (!prev) prev = rooms[0];
+    if (!next) next = rooms[rooms.length - 1];
+
+    return towerLayoutFrom(floor, w, prev, next, elevator);
+  }
+
+  // Where the party lands when they arrive by each of the three routes: beside
+  // the staircase they came out of, never on it, or the tile in front of the
+  // lift's doors.
+  function towerLayoutFrom(floor, width, prev, next, elevator) {
+    return {
+      floor: floor,
+      width: width,
+      prev: { x: prev.x, y: prev.y },
+      next: { x: next.x, y: next.y },
+      elevator: { x: elevator.x, y: elevator.y },
+      prevSpot: towerSpotBeside(prev),
+      nextSpot: towerSpotBeside(next),
+      elevatorSpot: towerCanStand(elevator.x, elevator.y + 1)
+        ? { x: elevator.x, y: elevator.y + 1, dir: 2 }
+        : towerSpotBeside(elevator),
+    };
+  }
+
+  function towerSpotBeside(post) {
+    const around = [[0, 1, 8], [0, -1, 2], [-1, 0, 6], [1, 0, 4]];
+    for (const [dx, dy, dir] of around) {
+      if (towerCanStand(post.x + dx, post.y + dy)) {
+        return { x: post.x + dx, y: post.y + dy, dir: dir };
+      }
+    }
+    return { x: post.x, y: post.y, dir: 2 };
+  }
+
+  function towerStaircaseEvents() {
+    const found = { NextFloor: null, PrevFloor: null, Elevator: null };
+    for (const event of $gameMap.events()) {
+      const data = event && event.event();
+      if (!data) continue;
+      if (found.hasOwnProperty(data.name) && !found[data.name]) found[data.name] = event;
+    }
+    return found;
+  }
+
+  function towerShowEvent(event, at) {
+    if (!event || !at) return;
+    event.locate(at.x, at.y);
+    event.setOpacity(255);
+    event.setThrough(false);
+  }
+
+  function towerHideEvent(event) {
+    if (!event) return;
+    event.locate(-1, -1);
+    event.setOpacity(0);
+    event.setThrough(true);
+  }
+
+  // The three staircase events belong to the lower tower alone. Every other
+  // procedural map - a field, a cave, a cellar under a farmhouse - must not
+  // show them, and before this they stood wherever the map template parked them
+  // on every square in the world.
+  function updateTowerFloorEvents() {
+    const events = towerStaircaseEvents();
+    const floor = currentTowerFloor();
+    if (!isGeneratedLowerFloor(floor)) {
+      towerHideEvent(events.NextFloor);
+      towerHideEvent(events.PrevFloor);
+      towerHideEvent(events.Elevator);
+      $gameSystem._towerArrival = null;
+      return;
+    }
+    const layout = towerLayout(floor);
+    towerShowEvent(events.PrevFloor, layout.prev);
+    towerShowEvent(events.NextFloor, layout.next);
+    towerShowEvent(events.Elevator, layout.elevator);
+
+    const arrival = $gameSystem._towerArrival;
+    if (!arrival) return;
+    $gameSystem._towerArrival = null;
+    const spot = arrival === "elevator" ? layout.elevatorSpot
+      : arrival === "next" ? layout.nextSpot : layout.prevSpot;
+    if (!spot) return;
+    $gamePlayer.locate(spot.x, spot.y);
+    $gamePlayer.setDirection(spot.dir);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Going down and coming back up
+  // ---------------------------------------------------------------------------
+  // `arrival` names the staircase the party comes out beside on the new floor:
+  // going deeper they arrive at its PrevFloor (the way back), coming up they
+  // arrive at its NextFloor, and out of the lift they arrive in front of it.
+  function enterGeneratedLowerFloor(floor, arrival) {
+    const biome = towerFloorBiome(floor);
+    const pg = ensureProcGenData();
+    pg.originX = TOWER.WORLD_X;
+    pg.originY = TOWER.WORLD_Y;
+    // Every lower floor stands on the tower's own world square, so two
+    // different floors read as "the same coordinates as last time" to
+    // WorldMapReturn's DataManager.loadMapData - which then treats the new
+    // floor as the square already sitting in $dataMap and returns without
+    // calling the underlying loader at all. That skips the WHOLE chain hung
+    // off it, not just the file re-read: ProceduralMapPrefabs' prefab stamp
+    // (the set piece a TempleInside floor rolls) and the fresh copy of
+    // $dataMap.events (NextFloor / PrevFloor / Elevator among them) both live
+    // behind that same call and never run past floor one. Clearing the
+    // cached coordinates forces a genuine reload on every descent or climb.
+    pg.lastLoadedProcMapX = null;
+    pg.lastLoadedProcMapY = null;
+    // No door back to the surface: the structure generator's south-border
+    // entrance corridor is a way out that the tower must never have, since
+    // the only ways off a floor are its own three staircase events. Read once
+    // by startForcedBiome and cleared there so it never leaks into an
+    // unrelated sandbox dungeon.
+    pg._sealEntrance = true;
+    $gameVariables.setValue(43, TOWER.WORLD_X);
+    $gameVariables.setValue(44, TOWER.WORLD_Y);
+    $gameSystem._towerArrival = arrival || "prev";
+    $gameSystem._towerLayout = null;
+
+    PluginManager.callCommand($gameMap._interpreter || {}, "WorldMapReturn", "startForcedBiome",
+      { Biome: biome, Salt: TOWER.SALT + Math.abs(floor) });
+
+    // startForcedBiome opens an ordinary sandbox session, whose border is the
+    // way out. A tower floor has no way out but its own staircases, so the
+    // session is re-stamped: WorldMapReturn reads the type and seals the border.
+    const session = $gameSystem._procGenData && $gameSystem._procGenData._dungeonSession;
+    if (session) {
+      session.type = "tower";
+      session.floor = floor;
+    }
+  }
+
+  function moveToLowerFloor(floor, arrival) {
+    if (!isLowerFloor(floor)) return;
+    $gameVariables.setValue(params.currentFloorVariable, floor);
+    $gameVariables.setValue(params.elevatorFloorVariable, floor);
+    recordTowerDepth(floor);
+    $gameSystem._towerArrival = null;
+
+    if (floor === TOWER.SECRET_STAIRWAY.floor) {
+      const stair = TOWER.SECRET_STAIRWAY;
+      clearTowerSession();
+      $gameScreen.startFadeOut(1);
+      if (arrival === "elevator") {
+        // The lift does not stop at the stairway itself: its doors open on
+        // Omega City, which is the whole reason floor -22 is open from the start.
+        const city = TOWER.OMEGA_CITY;
+        $gamePlayer.reserveTransfer(city.mapId, city.x, city.y, city.dir, 0);
+      } else {
+        const spot = arrival === "next" ? stair.up : stair.down;
+        $gamePlayer.reserveTransfer(stair.mapId, spot.x, spot.y, spot.dir, 0);
+      }
+      return;
+    }
+
+    if (floor === TOWER.TIP_OF_THE_SPEAR.floor) {
+      const tip = TOWER.TIP_OF_THE_SPEAR;
+      clearTowerSession();
+      $gameScreen.startFadeOut(1);
+      $gamePlayer.reserveTransfer(tip.mapId, tip.x, tip.y, tip.dir, 0);
+      return;
+    }
+
+    enterGeneratedLowerFloor(floor, arrival);
+  }
+
+  // Out of floor -1 and back into the hall the tower hangs off.
+  function leaveLowerTower() {
+    $gameVariables.setValue(params.currentFloorVariable, 0);
+    $gameVariables.setValue(params.elevatorFloorVariable, 0);
+    clearTowerSession();
+    const hall = TOWER.STAIRS_HALL;
+    $gameScreen.startFadeOut(1);
+    $gamePlayer.reserveTransfer(hall.mapId, hall.x, hall.y, hall.dir, 0);
+  }
+
+  // What the elevator's floor list calls a lower floor. An unreached one is
+  // never named: the structure it holds is part of what is found down there.
+  function lowerFloorLabel(floor) {
+    if (floor === TOWER.SECRET_STAIRWAY.floor) return T("FloorList.omegaCity");
+    if (floor === TOWER.TIP_OF_THE_SPEAR.floor) return T("FloorList.tipOfTheSpear");
+    const biome = towerFloorBiome(floor);
+    const name = window.BiomeNames ? window.BiomeNames.display(biome) : biome;
+    return T("FloorList.lowerFloor", { num: floor, name: name });
+  }
+
+  // The named façade. Everything outside this plugin that has to know how deep
+  // the world has been, or what a creature down here weighs, asks through it.
+  window.DungeonFloors = {
+    deepestFloor: TOWER.DEEPEST,
+    isLowerFloor,
+    isGeneratedLowerFloor,
+    isLowerFloorUnlocked,
+    lowerFloorLabel,
+    floorBiome: towerFloorBiome,
+    depthReached: towerDepthReached,
+    // The floor the party is standing on right now, 0 when they are not on one.
+    currentFloor: currentTowerFloor,
+    // The level the creatures on that floor are built around, 0 off the tower.
+    currentFloorLevel() { return towerEnemyLevel(currentTowerFloor()); },
+    floorLevel: towerEnemyLevel,
+  };
+
   function moveToFloor(floor, spawnMode) {
+    // Every floor this handles is an authored map above ground, so whatever the
+    // party was standing on below it, they are leaving the lower tower.
+    clearTowerSession();
     if (!$gameSystem.isDungeonGenerated()) {
         $gameSystem.generateDungeon();
     } else if ($gameSystem.isDemoLayoutStale()) {
@@ -1312,7 +1921,7 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
             } else if (upstairsLoc.mapId === currentMapId) {
                 event.locate(upstairsLoc.x, upstairsLoc.y);
                 event.setOpacity(255);
-                event.setThrough(true);
+                event.setThrough(false);
             } else {
                 event.locate(-1, -1);
                 event.setOpacity(0);
@@ -1321,7 +1930,7 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
             if (downstairsLoc.mapId === currentMapId) {
                 event.locate(downstairsLoc.x, downstairsLoc.y);
                 event.setOpacity(255);
-                event.setThrough(true);
+                event.setThrough(false);
             } else {
                 event.locate(-1, -1);
                 event.setOpacity(0);
@@ -1389,7 +1998,14 @@ PluginManager.registerCommand(pluginName, "elevator", (args) => {
   const _Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
   Scene_Map.prototype.onMapLoaded = function () {
     _Scene_Map_onMapLoaded.call(this);
-    repositionStairEvents();
+    // The procedural map answers to the lower tower's rules, never to the
+    // hand-made floors': its NextFloor / PrevFloor / Elevator events belong to
+    // a generated floor and are taken off every other square in the world.
+    if ($gameMap.mapId() === PROC_MAP_ID) {
+      updateTowerFloorEvents();
+    } else {
+      repositionStairEvents();
+    }
 
     // Disable saving in dungeon maps, enable it outside
     const currentMapId = $gameMap.mapId();

@@ -392,8 +392,8 @@
   // Bookmark toggle, offered on any body a panel can meaningfully bookmark.
   const bookmarkBtn = (on) =>
     `<span class="gx-btn gx-bookmark${on ? " gx-on" : ""} focusable" tabindex="0" ` +
-    `data-action="bookmark-toggle" title="${on ? "Remove bookmark" : "Bookmark this"}">` +
-    `${on ? "★ Bookmarked" : "☆ Bookmark"}</span>`;
+    `data-action="bookmark-toggle" title="${on ? T('Galaxy.hud.bookmarkRemove') : T('Galaxy.hud.bookmarkAdd')}">` +
+    `${on ? "★ " + T('Galaxy.hud.bookmarked') : "☆ " + T('Galaxy.hud.bookmark')}</span>`;
 
   const num = (v, d) => (typeof v === "number" && isFinite(v) ? v.toFixed(d) : null);
   // Formats a Schrödingerite harvest cooldown (in-game minutes remaining) as
@@ -422,6 +422,13 @@
     return m;
   });
   // i18n-ignore-end
+
+  // How long Earth has left, for the one body that is bringing the end with it.
+  // Answers null for everything else, so the row simply is not drawn.
+  const impactCountdown = (body) => {
+    const N = window.GalaxySim && window.GalaxySim.Nibiru;
+    return (N && N.countdownFor) ? N.countdownFor(body) : null;
+  };
 
   // A body's `type` is written in English on the catalogue record in
   // Scene3D_Cosmos, where it doubles as data; this is the one place it is shown,
@@ -577,7 +584,6 @@
       landingGrid.innerHTML =
         `<div class="gx-lg-card">` +
         `<div class="gx-title" data-role="lg-title">${T('Galaxy.hud.chooseLandingSite')}</div>` +
-        `<div class="gx-muted">${T('Galaxy.hud.landingGridHelp')}</div>` +
         `<canvas class="gx-lg-canvas" data-role="lg-canvas" width="640" height="360"></canvas>` +
         `<div class="gx-actions">` +
         `<span class="gx-btn focusable" tabindex="0" data-action="landing-grid-cancel">${T('Galaxy.hud.cancel')}</span>` +
@@ -1132,6 +1138,9 @@
         [T('Galaxy.row.megastructure'), system.dyson
           ? (system.dyson === "abandoned" ? T('Galaxy.row.dysonAbandoned')
                                           : T('Galaxy.row.dyson')) : null],
+        // What is left of Earth's clock, on the body carrying it in (Nibiru
+        // reads as a system of its own until 2010; see GalaxySim.Nibiru).
+        [T('Galaxy.nibiru.impactRow'), impactCountdown(system)],
       ]);
       let actions = ZOOM_BTN + bookmarkBtn(!!opts.isBookmarked);
       if (opts.canEnter) {
@@ -1207,7 +1216,11 @@
         // via opts); "Has Life" is only shown when the planet actually has life.
         [T('Galaxy.row.breathableAir'), opts.breathable != null
           ? (opts.breathable ? T('Galaxy.row.yes') : T('Galaxy.row.no')) : null],
-        [T('Galaxy.row.life'), opts.hasLife ? T('Galaxy.row.detected') : null],
+        // "Life" reads Detected for a real biosphere and Weak signs for a world
+        // that only grows the tentacle things (GalaxySim.planetLifeSigns); a
+        // dead world simply omits the row.
+        [T('Galaxy.row.life'), opts.hasLife ? T('Galaxy.row.detected')
+          : (opts.weakLife ? T('Galaxy.row.weakSigns') : null)],
         [T('Anomaly.ui.signalRow'), opts.canInvestigate ? T('Anomaly.ui.signalUnread') : null],
         [T('Galaxy.row.moons'), body.moons ? body.moons.length : null],
         // Anything the ship's lasers have already taken off this body.
@@ -1215,6 +1228,7 @@
           ? T('Galaxy.row.units', { remaining: opts.mining.remaining,
                                     capacity: opts.mining.capacity }) : null],
         [T('Galaxy.row.condition'), opts.hubbleCondition != null ? opts.hubbleCondition + "%" : null],
+        [T('Galaxy.nibiru.impactRow'), impactCountdown(body)],
       ]);
       let actions = ZOOM_BTN + bookmarkBtn(!!opts.isBookmarked);
       if (opts.canTravelTo) {

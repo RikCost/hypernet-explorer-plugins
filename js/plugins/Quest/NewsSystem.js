@@ -289,6 +289,7 @@
 
         // Process daily hardcoded news
         processDailyNews() {
+            if (this.isEmptyWorld()) return;
             if (!RealNews || !Array.isArray(RealNews)) {
                 console.log('NewsManager: No RealNews data available for daily processing');
                 return;
@@ -384,6 +385,29 @@
             if (SceneManager._scene instanceof Scene_Map) {
                 this.showNewsNotification(title);
             }
+        }
+
+        // The world's own chronicle reaching the wire. HistorySimulator writes
+        // an entry a day into the world folder and hands the readable ones
+        // here, so what the ticker carries is what actually happened in this
+        // world rather than only invented filler. Nothing is applied to prices
+        // or occupancy: a coup in the Archive is a headline, not a market.
+        addWorldEvent(text, dateStr) {
+            const line = String(text || "").trim();
+            if (!line) return;
+            if (this.newsHistory.some((news) => news.text === line)) return;
+            this.newsHistory.unshift({
+                text: line,
+                location: dateStr || "",
+                category: 'world',
+                type: 'chronicle',
+                timestamp: getGameDateAsJSDate(),
+                priceEffect: 1,
+                occupancyEffect: 1,
+                isRealNews: true,
+                isHistorical: false
+            });
+            if (this.newsHistory.length > 100) this.newsHistory.pop();
         }
 
         showNewsNotification(title) {
@@ -611,7 +635,16 @@
             this.save();
         }
 
+        // Nothing happens in an empty world, so nothing is reported in one:
+        // the ticker, the daily bulletin and the backfill all stop dead rather
+        // than printing a paper for a continent with nobody on it.
+        isEmptyWorld() {
+            const WM = window.WorldManager;
+            return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+        }
+
         generateNewsEvent() {
+            if (this.isEmptyWorld()) return null;
             const locations = window.NewsSystemUtils.getLocations();
             const location = locations[Math.floor(Math.random() * locations.length)];
             const eventCategory = this.selectEventCategory();
@@ -844,6 +877,7 @@
         }
 
         fillProceduralNewsGaps() {
+            if (this.isEmptyWorld()) return;
             const now = getGameDateAsJSDate();
             const currentYear = now.getFullYear();
             const january1st = new Date(currentYear, 0, 1);

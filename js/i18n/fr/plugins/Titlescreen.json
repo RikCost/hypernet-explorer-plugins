@@ -25,6 +25,7 @@
   "minigame": {
     "arena": "Arène",
     "camperDriving": "Conduite du Camper",
+    "dream": "Rêve",
     "surfing": "Surf",
     "pool": "Billard",
     "chess": "Échecs",
@@ -110,7 +111,12 @@
     "checkingTip": "Le serveur de mise à jour est interrogé sur la version la plus récente.",
     "ready": "✦ VERSION {build} PRÊTE",
     "readyPlain": "✦ NOUVELLE VERSION PRÊTE",
-    "tip": "Une version plus récente vous attend. Ouvrez le programme de mise à jour pour l'installer."
+    "tip": "Une version plus récente vous attend. Ouvrez le programme de mise à jour pour l'installer.",
+    "majorLine": "",
+    "majorTip": "",
+    "majorInstalled": "",
+    "majorInstalledLine": "",
+    "majorInstalledTip": ""
   },
   "hyperverse": {
     "lead": "HYPERVERS // ",

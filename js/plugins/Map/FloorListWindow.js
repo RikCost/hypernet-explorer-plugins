@@ -85,20 +85,18 @@
             return T('FloorList.' + key);
         },
 
+        // The shaft is listed the way it stands: the floors above ground first,
+        // the deepest at the bottom, and the ground itself in between. The
+        // cursor opens on it (see initialIndex), so the list is entered at the
+        // level the party is used to reading from.
         buildItemList() {
             const data = [];
-            // Always add Hypermetro
-            data.push({ floor: -22, label: T('FloorList.omegaCity'), isOmegaCity: true });
-            data.push({ floor: -1, label: T('FloorList.hypermetro'), isHypermetro: true });
-            // Always add F0 - Hypernet point at the top
-            data.push({ floor: 0, label: T('FloorList.hypernetPoint'), isHypernet: true });
+            const generated = $gameSystem.isDungeonGenerated();
 
-            if (!$gameSystem.isDungeonGenerated()) {
-                data.push({ floor: null, label: this.text("noFloors") });
-            } else {
+            if (generated) {
                 const maxFloor = $gameVariables.value(MAX_FLOOR_VAR) || 0;
                 const floors   = $gameSystem._dungeonFloors || [];
-                for (let i = 1; i < floors.length; i++) {
+                for (let i = floors.length - 1; i >= 1; i--) {
                     if (i <= maxFloor) {
                         const mapId = floors[i];
                         const actualMapId = getFirstMapId(mapId);
@@ -111,7 +109,37 @@
                     }
                 }
             }
+
+            data.push({ floor: 0, label: T('FloorList.hypernetPoint'), isHypernet: true });
+
+            // The lower tower. An unreached floor is never named: which
+            // structure it holds is part of what is found down there.
+            const tower = window.DungeonFloors;
+            if (tower) {
+                for (let f = -1; f >= tower.deepestFloor; f--) {
+                    // The Tip of the Spear is not a stop on this line.
+                    if (f === tower.deepestFloor) continue;
+                    data.push({
+                        floor: f,
+                        label: tower.isLowerFloorUnlocked(f)
+                            ? tower.lowerFloorLabel(f)
+                            : this.text("unknown"),
+                    });
+                }
+            }
+
+            if (!generated) data.push({ floor: null, label: this.text("noFloors") });
             return data;
+        },
+
+        // Where the cursor opens: on the ground floor, so the list is entered
+        // between the climb and the descent rather than at the top of a hundred
+        // unreached floors.
+        initialIndex(items) {
+            const ground = items.findIndex(item => item && item.floor === 0);
+            if (ground >= 0) return ground;
+            const first = items.findIndex(item => this.isEnabled(item));
+            return first >= 0 ? first : 0;
         },
 
         // Resolves proper display names from the map JSON files, mutating the
@@ -152,9 +180,11 @@
         isEnabled(item) {
             if (!item) return false;
             if (item.floor === null) return true;
-            if (item.floor === 0 && item.isHypernet) return true;
-            if (item.floor === -1 && item.isHypermetro) return true;
-            if (item.floor === -22 && item.isOmegaCity) return true;
+            if (item.floor === 0) return true;
+            if (item.floor < 0) {
+                const tower = window.DungeonFloors;
+                return tower ? tower.isLowerFloorUnlocked(item.floor) : false;
+            }
             const maxFloor = $gameVariables.value(MAX_FLOOR_VAR) || 0;
             return item.floor <= maxFloor;
         },

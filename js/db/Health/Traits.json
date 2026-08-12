@@ -22,7 +22,8 @@
     ],
     "name": "traits.obese.name",
     "description": "traits.obese.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 2,
@@ -45,7 +46,8 @@
     ],
     "name": "traits.underweight.name",
     "description": "traits.underweight.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 3,
@@ -65,7 +67,8 @@
     "incompatible": [],
     "name": "traits.claustrophobic.name",
     "description": "traits.claustrophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 4,
@@ -90,7 +93,8 @@
     ],
     "name": "traits.trigger_happy.name",
     "description": "traits.trigger_happy.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 5,
@@ -113,7 +117,8 @@
     ],
     "name": "traits.paranoid.name",
     "description": "traits.paranoid.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 6,
@@ -141,7 +146,8 @@
     ],
     "name": "traits.athletic.name",
     "description": "traits.athletic.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 7,
@@ -167,7 +173,8 @@
     ],
     "name": "traits.genius.name",
     "description": "traits.genius.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 8,
@@ -190,7 +197,8 @@
     ],
     "name": "traits.lucky.name",
     "description": "traits.lucky.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 9,
@@ -216,7 +224,8 @@
     ],
     "name": "traits.narcoleptic.name",
     "description": "traits.narcoleptic.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 10,
@@ -243,7 +252,8 @@
     ],
     "name": "traits.hot-headed.name",
     "description": "traits.hot-headed.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 11,
@@ -268,7 +278,8 @@
     ],
     "name": "traits.defensive.name",
     "description": "traits.defensive.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 12,
@@ -299,7 +310,8 @@
     ],
     "name": "traits.marksman.name",
     "description": "traits.marksman.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 13,
@@ -320,7 +332,8 @@
     ],
     "name": "traits.nearsighted.name",
     "description": "traits.nearsighted.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 14,
@@ -343,7 +356,8 @@
     ],
     "name": "traits.lombrosian_physiognomy.name",
     "description": "traits.lombrosian_physiognomy.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 67,
@@ -363,7 +377,8 @@
     "incompatible": [],
     "name": "traits.hydrophobic.name",
     "description": "traits.hydrophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 16,
@@ -392,7 +407,8 @@
     ],
     "name": "traits.silvertongue.name",
     "description": "traits.silvertongue.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 17,
@@ -415,7 +431,8 @@
     ],
     "name": "traits.vegan.name",
     "description": "traits.vegan.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 18,
@@ -438,7 +455,8 @@
     ],
     "name": "traits.vegetarian.name",
     "description": "traits.vegetarian.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 247,
@@ -463,7 +481,8 @@
     ],
     "name": "traits.impostor_syndrome.name",
     "description": "traits.impostor_syndrome.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 20,
@@ -494,7 +513,8 @@
     ],
     "name": "traits.vampire.name",
     "description": "traits.vampire.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 21,
@@ -521,7 +541,8 @@
     ],
     "name": "traits.insomniac.name",
     "description": "traits.insomniac.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 22,
@@ -553,7 +574,8 @@
     ],
     "name": "traits.alcoholic.name",
     "description": "traits.alcoholic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 23,
@@ -579,7 +601,8 @@
     ],
     "name": "traits.germaphobe.name",
     "description": "traits.germaphobe.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 24,
@@ -608,7 +631,8 @@
     ],
     "name": "traits.adrenaline_junkie.name",
     "description": "traits.adrenaline_junkie.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 25,
@@ -639,7 +663,8 @@
     ],
     "name": "traits.pacifist.name",
     "description": "traits.pacifist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 26,
@@ -670,7 +695,8 @@
     ],
     "name": "traits.pyromaniac.name",
     "description": "traits.pyromaniac.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 27,
@@ -699,7 +725,8 @@
     ],
     "name": "traits.hoarder.name",
     "description": "traits.hoarder.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 28,
@@ -724,7 +751,8 @@
     ],
     "name": "traits.minimalist.name",
     "description": "traits.minimalist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 29,
@@ -751,7 +779,8 @@
     ],
     "name": "traits.compulsive_liar.name",
     "description": "traits.compulsive_liar.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 30,
@@ -781,7 +810,8 @@
     ],
     "name": "traits.perfectionist.name",
     "description": "traits.perfectionist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 31,
@@ -804,7 +834,8 @@
     "incompatible": [],
     "name": "traits.masochist.name",
     "description": "traits.masochist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 32,
@@ -832,7 +863,8 @@
     ],
     "name": "traits.sociopath.name",
     "description": "traits.sociopath.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 33,
@@ -862,7 +894,8 @@
     ],
     "name": "traits.empath.name",
     "description": "traits.empath.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 34,
@@ -889,7 +922,8 @@
     ],
     "name": "traits.technophobe.name",
     "description": "traits.technophobe.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 35,
@@ -918,7 +952,8 @@
     ],
     "name": "traits.tech_savvy.name",
     "description": "traits.tech_savvy.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 36,
@@ -946,7 +981,8 @@
     ],
     "name": "traits.superstitious.name",
     "description": "traits.superstitious.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 37,
@@ -971,7 +1007,8 @@
     ],
     "name": "traits.skeptic.name",
     "description": "traits.skeptic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 38,
@@ -995,7 +1032,8 @@
     ],
     "name": "traits.night_owl.name",
     "description": "traits.night_owl.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 39,
@@ -1021,7 +1059,8 @@
     ],
     "name": "traits.early_bird.name",
     "description": "traits.early_bird.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 40,
@@ -1049,7 +1088,8 @@
     ],
     "name": "traits.workaholic.name",
     "description": "traits.workaholic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 41,
@@ -1076,7 +1116,8 @@
     ],
     "name": "traits.photographic_memory.name",
     "description": "traits.photographic_memory.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 42,
@@ -1096,7 +1137,8 @@
     "incompatible": [],
     "name": "traits.colorblind.name",
     "description": "traits.colorblind.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 43,
@@ -1119,7 +1161,8 @@
     "incompatible": [],
     "name": "traits.ambidextrous.name",
     "description": "traits.ambidextrous.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 44,
@@ -1146,7 +1189,8 @@
     ],
     "name": "traits.blind.name",
     "description": "traits.blind.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 45,
@@ -1168,7 +1212,8 @@
     "incompatible": [],
     "name": "traits.deaf.name",
     "description": "traits.deaf.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 46,
@@ -1191,7 +1236,8 @@
     ],
     "name": "traits.agoraphobic.name",
     "description": "traits.agoraphobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 47,
@@ -1220,7 +1266,8 @@
     ],
     "name": "traits.sadist.name",
     "description": "traits.sadist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 48,
@@ -1246,7 +1293,8 @@
     ],
     "name": "traits.hemophobic.name",
     "description": "traits.hemophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 49,
@@ -1275,7 +1323,8 @@
     ],
     "name": "traits.kleptomaniac.name",
     "description": "traits.kleptomaniac.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 50,
@@ -1306,7 +1355,8 @@
     ],
     "name": "traits.ascetic.name",
     "description": "traits.ascetic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 51,
@@ -1328,7 +1378,8 @@
     "incompatible": [],
     "name": "traits.acrophobic.name",
     "description": "traits.acrophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 52,
@@ -1353,7 +1404,8 @@
     ],
     "name": "traits.synesthete.name",
     "description": "traits.synesthete.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 53,
@@ -1381,7 +1433,8 @@
     ],
     "name": "traits.berserker.name",
     "description": "traits.berserker.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 54,
@@ -1409,7 +1462,8 @@
     ],
     "name": "traits.coward.name",
     "description": "traits.coward.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 55,
@@ -1434,7 +1488,8 @@
     ],
     "name": "traits.xenophobic.name",
     "description": "traits.xenophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 56,
@@ -1458,7 +1513,8 @@
     ],
     "name": "traits.hypochondriac.name",
     "description": "traits.hypochondriac.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 57,
@@ -1485,7 +1541,8 @@
     ],
     "name": "traits.eidetic_reader.name",
     "description": "traits.eidetic_reader.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 58,
@@ -1508,7 +1565,8 @@
     ],
     "name": "traits.amblyopic.name",
     "description": "traits.amblyopic.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 59,
@@ -1530,7 +1588,8 @@
     "incompatible": [],
     "name": "traits.prosopagnosic.name",
     "description": "traits.prosopagnosic.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 60,
@@ -1558,7 +1617,8 @@
     ],
     "name": "traits.megalomaniac.name",
     "description": "traits.megalomaniac.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 61,
@@ -1580,7 +1640,8 @@
     "incompatible": [],
     "name": "traits.albinism.name",
     "description": "traits.albinism.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 62,
@@ -1607,7 +1668,8 @@
     ],
     "name": "traits.gigantism.name",
     "description": "traits.gigantism.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 63,
@@ -1632,7 +1694,8 @@
     ],
     "name": "traits.dwarfism.name",
     "description": "traits.dwarfism.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 64,
@@ -1657,7 +1720,8 @@
     ],
     "name": "traits.hemophilia.name",
     "description": "traits.hemophilia.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 65,
@@ -1681,7 +1745,8 @@
     ],
     "name": "traits.marfan_syndrome.name",
     "description": "traits.marfan_syndrome.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 66,
@@ -1705,7 +1770,8 @@
     "incompatible": [],
     "name": "traits.hypermobility.name",
     "description": "traits.hypermobility.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 19,
@@ -1728,7 +1794,8 @@
     "incompatible": [],
     "name": "traits.polydactyly.name",
     "description": "traits.polydactyly.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 68,
@@ -1750,7 +1817,8 @@
     "incompatible": [],
     "name": "traits.hypertrichosis.name",
     "description": "traits.hypertrichosis.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 69,
@@ -1775,7 +1843,8 @@
     ],
     "name": "traits.thalassemia.name",
     "description": "traits.thalassemia.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 70,
@@ -1798,7 +1867,8 @@
     ],
     "name": "traits.heterochromia.name",
     "description": "traits.heterochromia.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 71,
@@ -1824,7 +1894,8 @@
     ],
     "name": "traits.sensitive.name",
     "description": "traits.sensitive.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Magical"
   },
   {
     "id": 72,
@@ -1849,7 +1920,8 @@
     ],
     "name": "traits.sickle_cell_trait.name",
     "description": "traits.sickle_cell_trait.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 73,
@@ -1872,7 +1944,8 @@
     ],
     "name": "traits.ehlers-danlos.name",
     "description": "traits.ehlers-danlos.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 74,
@@ -1899,7 +1972,8 @@
     ],
     "name": "traits.congenital_analgesia.name",
     "description": "traits.congenital_analgesia.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 75,
@@ -1924,7 +1998,8 @@
     "incompatible": [],
     "name": "traits.savant_syndrome.name",
     "description": "traits.savant_syndrome.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 76,
@@ -1949,7 +2024,8 @@
     ],
     "name": "traits.asthmatic.name",
     "description": "traits.asthmatic.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 77,
@@ -1976,7 +2052,8 @@
     ],
     "name": "traits.adhd.name",
     "description": "traits.adhd.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 78,
@@ -2004,7 +2081,8 @@
     ],
     "name": "traits.ocd.name",
     "description": "traits.ocd.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 79,
@@ -2029,7 +2107,8 @@
     ],
     "name": "traits.dyslexic.name",
     "description": "traits.dyslexic.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 80,
@@ -2053,7 +2132,8 @@
     ],
     "name": "traits.dyscalculic.name",
     "description": "traits.dyscalculic.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 81,
@@ -2079,7 +2159,8 @@
     ],
     "name": "traits.charismatic.name",
     "description": "traits.charismatic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 82,
@@ -2105,7 +2186,8 @@
     ],
     "name": "traits.extrovert.name",
     "description": "traits.extrovert.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 83,
@@ -2131,7 +2213,8 @@
     ],
     "name": "traits.introvert.name",
     "description": "traits.introvert.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 84,
@@ -2157,7 +2240,8 @@
     ],
     "name": "traits.chronic_pain.name",
     "description": "traits.chronic_pain.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 85,
@@ -2181,7 +2265,8 @@
     ],
     "name": "traits.ambitious.name",
     "description": "traits.ambitious.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 86,
@@ -2207,7 +2292,8 @@
     ],
     "name": "traits.slothful.name",
     "description": "traits.slothful.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 87,
@@ -2234,7 +2320,8 @@
     ],
     "name": "traits.greedy.name",
     "description": "traits.greedy.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 88,
@@ -2249,9 +2336,7 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [
-      13
-    ],
+    "skills": [],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2260,7 +2345,8 @@
     ],
     "name": "traits.generous.name",
     "description": "traits.generous.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 89,
@@ -2287,7 +2373,8 @@
     ],
     "name": "traits.loyal.name",
     "description": "traits.loyal.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 90,
@@ -2314,7 +2401,8 @@
     ],
     "name": "traits.treacherous.name",
     "description": "traits.treacherous.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 91,
@@ -2339,7 +2427,8 @@
     ],
     "name": "traits.proud.name",
     "description": "traits.proud.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 92,
@@ -2364,7 +2453,8 @@
     ],
     "name": "traits.humble.name",
     "description": "traits.humble.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 93,
@@ -2393,7 +2483,8 @@
     ],
     "name": "traits.gluttonous.name",
     "description": "traits.gluttonous.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 94,
@@ -2421,7 +2512,8 @@
     ],
     "name": "traits.hedonist.name",
     "description": "traits.hedonist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 95,
@@ -2448,7 +2540,8 @@
     ],
     "name": "traits.stoic.name",
     "description": "traits.stoic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 96,
@@ -2475,7 +2568,8 @@
     ],
     "name": "traits.tracker.name",
     "description": "traits.tracker.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 97,
@@ -2499,7 +2593,8 @@
     "incompatible": [],
     "name": "traits.survivalist.name",
     "description": "traits.survivalist.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 98,
@@ -2527,7 +2622,8 @@
     ],
     "name": "traits.tactician.name",
     "description": "traits.tactician.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 99,
@@ -2554,7 +2650,8 @@
     ],
     "name": "traits.cursed.name",
     "description": "traits.cursed.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 100,
@@ -2581,7 +2678,8 @@
     ],
     "name": "traits.blessed.name",
     "description": "traits.blessed.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 101,
@@ -2610,7 +2708,8 @@
     ],
     "name": "traits.caffeine_dependent.name",
     "description": "traits.caffeine_dependent.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 102,
@@ -2640,7 +2739,8 @@
     ],
     "name": "traits.nicotine_addict.name",
     "description": "traits.nicotine_addict.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 103,
@@ -2671,7 +2771,8 @@
     ],
     "name": "traits.gambling_addict.name",
     "description": "traits.gambling_addict.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 104,
@@ -2700,7 +2801,8 @@
     ],
     "name": "traits.drug_dependent.name",
     "description": "traits.drug_dependent.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 105,
@@ -2727,7 +2829,8 @@
     ],
     "name": "traits.restrictive_eating.name",
     "description": "traits.restrictive_eating.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 106,
@@ -2754,7 +2857,8 @@
     ],
     "name": "traits.binge_eating.name",
     "description": "traits.binge_eating.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 107,
@@ -2779,7 +2883,8 @@
     ],
     "name": "traits.nyctophobic.name",
     "description": "traits.nyctophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 108,
@@ -2804,7 +2909,8 @@
     ],
     "name": "traits.thanatophobic.name",
     "description": "traits.thanatophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 109,
@@ -2826,7 +2932,8 @@
     "incompatible": [],
     "name": "traits.entomophobic.name",
     "description": "traits.entomophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 110,
@@ -2847,7 +2954,8 @@
     "incompatible": [],
     "name": "traits.ophidiophobic.name",
     "description": "traits.ophidiophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 111,
@@ -2869,7 +2977,8 @@
     "incompatible": [],
     "name": "traits.cynophobic.name",
     "description": "traits.cynophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 112,
@@ -2893,7 +3002,8 @@
     ],
     "name": "traits.pyrophobic.name",
     "description": "traits.pyrophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 113,
@@ -2915,7 +3025,8 @@
     "incompatible": [],
     "name": "traits.trypophobic.name",
     "description": "traits.trypophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 114,
@@ -2940,7 +3051,8 @@
     ],
     "name": "traits.atychiphobic.name",
     "description": "traits.atychiphobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 115,
@@ -2964,7 +3076,8 @@
     ],
     "name": "traits.autophobic.name",
     "description": "traits.autophobic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 116,
@@ -2994,7 +3107,8 @@
     ],
     "name": "traits.devout.name",
     "description": "traits.devout.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 117,
@@ -3019,7 +3133,8 @@
     ],
     "name": "traits.atheist.name",
     "description": "traits.atheist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 118,
@@ -3049,7 +3164,8 @@
     ],
     "name": "traits.heretic.name",
     "description": "traits.heretic.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 119,
@@ -3078,7 +3194,8 @@
     ],
     "name": "traits.pilgrim.name",
     "description": "traits.pilgrim.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 120,
@@ -3105,7 +3222,8 @@
     ],
     "name": "traits.excommunicated.name",
     "description": "traits.excommunicated.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 121,
@@ -3132,7 +3250,8 @@
     ],
     "name": "traits.monk-trained.name",
     "description": "traits.monk-trained.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 122,
@@ -3159,7 +3278,8 @@
     ],
     "name": "traits.prophetic.name",
     "description": "traits.prophetic.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 123,
@@ -3187,7 +3307,8 @@
     ],
     "name": "traits.noble.name",
     "description": "traits.noble.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 124,
@@ -3217,7 +3338,8 @@
     ],
     "name": "traits.street_urchin.name",
     "description": "traits.street_urchin.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 125,
@@ -3244,7 +3366,8 @@
     ],
     "name": "traits.orphan.name",
     "description": "traits.orphan.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 126,
@@ -3268,7 +3391,8 @@
     ],
     "name": "traits.bastard.name",
     "description": "traits.bastard.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 127,
@@ -3295,7 +3419,8 @@
     ],
     "name": "traits.heir.name",
     "description": "traits.heir.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 128,
@@ -3320,7 +3445,8 @@
     ],
     "name": "traits.twin.name",
     "description": "traits.twin.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 129,
@@ -3343,7 +3469,8 @@
     "incompatible": [],
     "name": "traits.exiled.name",
     "description": "traits.exiled.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 130,
@@ -3368,7 +3495,8 @@
     ],
     "name": "traits.slave-born.name",
     "description": "traits.slave-born.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 131,
@@ -3395,7 +3523,8 @@
     ],
     "name": "traits.wealthy.name",
     "description": "traits.wealthy.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 132,
@@ -3425,7 +3554,8 @@
     ],
     "name": "traits.scholar.name",
     "description": "traits.scholar.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 133,
@@ -3451,7 +3581,8 @@
     "incompatible": [],
     "name": "traits.merchant.name",
     "description": "traits.merchant.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 134,
@@ -3481,7 +3612,8 @@
     ],
     "name": "traits.criminal.name",
     "description": "traits.criminal.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 135,
@@ -3508,7 +3640,8 @@
     ],
     "name": "traits.illiterate.name",
     "description": "traits.illiterate.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 136,
@@ -3538,7 +3671,8 @@
     ],
     "name": "traits.veteran.name",
     "description": "traits.veteran.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 137,
@@ -3566,7 +3700,8 @@
     ],
     "name": "traits.farmer.name",
     "description": "traits.farmer.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 138,
@@ -3587,14 +3722,16 @@
       990
     ],
     "items": [
-      229
+      229,
+      390
     ],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.herbalist.name",
     "description": "traits.herbalist.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 139,
@@ -3615,7 +3752,8 @@
     ],
     "items": [
       238,
-      884
+      884,
+      390
     ],
     "equipment": [],
     "switches": [],
@@ -3624,7 +3762,8 @@
     ],
     "name": "traits.alchemist.name",
     "description": "traits.alchemist.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 140,
@@ -3652,7 +3791,8 @@
     "incompatible": [],
     "name": "traits.navigator.name",
     "description": "traits.navigator.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 141,
@@ -3679,7 +3819,8 @@
     "incompatible": [],
     "name": "traits.blacksmith.name",
     "description": "traits.blacksmith.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 142,
@@ -3710,7 +3851,8 @@
     ],
     "name": "traits.thief.name",
     "description": "traits.thief.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 143,
@@ -3738,7 +3880,8 @@
     "incompatible": [],
     "name": "traits.bard.name",
     "description": "traits.bard.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 144,
@@ -3763,7 +3906,8 @@
     ],
     "name": "traits.beautiful.name",
     "description": "traits.beautiful.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 145,
@@ -3786,7 +3930,8 @@
     ],
     "name": "traits.scarred.name",
     "description": "traits.scarred.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 146,
@@ -3811,7 +3956,8 @@
     ],
     "name": "traits.tall.name",
     "description": "traits.tall.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 147,
@@ -3835,7 +3981,8 @@
     ],
     "name": "traits.short.name",
     "description": "traits.short.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 148,
@@ -3862,7 +4009,8 @@
     ],
     "name": "traits.muscular.name",
     "description": "traits.muscular.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 149,
@@ -3887,7 +4035,8 @@
     ],
     "name": "traits.frail.name",
     "description": "traits.frail.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 150,
@@ -3911,7 +4060,8 @@
     ],
     "name": "traits.left-handed.name",
     "description": "traits.left-handed.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 151,
@@ -3936,7 +4086,8 @@
     ],
     "name": "traits.quick_reflexes.name",
     "description": "traits.quick_reflexes.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 152,
@@ -3962,7 +4113,8 @@
     ],
     "name": "traits.duelist.name",
     "description": "traits.duelist.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 153,
@@ -3990,7 +4142,8 @@
     ],
     "name": "traits.brawler.name",
     "description": "traits.brawler.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 154,
@@ -4016,7 +4169,8 @@
     ],
     "name": "traits.archer.name",
     "description": "traits.archer.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 155,
@@ -4042,7 +4196,8 @@
     ],
     "name": "traits.shield_master.name",
     "description": "traits.shield_master.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 156,
@@ -4070,7 +4225,8 @@
     ],
     "name": "traits.assassin.name",
     "description": "traits.assassin.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 157,
@@ -4099,7 +4255,8 @@
     ],
     "name": "traits.berserker_rage.name",
     "description": "traits.berserker_rage.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 158,
@@ -4125,7 +4282,8 @@
     ],
     "name": "traits.mounted_combat.name",
     "description": "traits.mounted_combat.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 159,
@@ -4149,7 +4307,8 @@
     "incompatible": [],
     "name": "traits.martial_artist.name",
     "description": "traits.martial_artist.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 160,
@@ -4175,7 +4334,8 @@
     ],
     "name": "traits.optimist.name",
     "description": "traits.optimist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 161,
@@ -4199,7 +4359,8 @@
     ],
     "name": "traits.pessimist.name",
     "description": "traits.pessimist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 162,
@@ -4226,7 +4387,8 @@
     ],
     "name": "traits.nihilist.name",
     "description": "traits.nihilist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 163,
@@ -4251,7 +4413,8 @@
     ],
     "name": "traits.idealist.name",
     "description": "traits.idealist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 164,
@@ -4275,7 +4438,8 @@
     ],
     "name": "traits.pragmatist.name",
     "description": "traits.pragmatist.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 165,
@@ -4300,7 +4464,8 @@
     ],
     "name": "traits.romantic.name",
     "description": "traits.romantic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 166,
@@ -4324,7 +4489,8 @@
     ],
     "name": "traits.cynic.name",
     "description": "traits.cynic.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 167,
@@ -4350,7 +4516,8 @@
     ],
     "name": "traits.vengeful.name",
     "description": "traits.vengeful.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 168,
@@ -4374,7 +4541,8 @@
     ],
     "name": "traits.forgiving.name",
     "description": "traits.forgiving.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 169,
@@ -4398,7 +4566,8 @@
     ],
     "name": "traits.jealous.name",
     "description": "traits.jealous.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 170,
@@ -4423,7 +4592,8 @@
     ],
     "name": "traits.spiteful.name",
     "description": "traits.spiteful.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 171,
@@ -4450,7 +4620,8 @@
     ],
     "name": "traits.honest.name",
     "description": "traits.honest.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 172,
@@ -4475,7 +4646,8 @@
     ],
     "name": "traits.blunt.name",
     "description": "traits.blunt.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 173,
@@ -4503,7 +4675,8 @@
     ],
     "name": "traits.famous.name",
     "description": "traits.famous.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 174,
@@ -4528,7 +4701,8 @@
     ],
     "name": "traits.infamous.name",
     "description": "traits.infamous.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 175,
@@ -4553,7 +4727,8 @@
     ],
     "name": "traits.anonymous.name",
     "description": "traits.anonymous.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 176,
@@ -4578,7 +4753,8 @@
     ],
     "name": "traits.wanted.name",
     "description": "traits.wanted.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 177,
@@ -4607,7 +4783,8 @@
     ],
     "name": "traits.hero.name",
     "description": "traits.hero.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 178,
@@ -4631,7 +4808,8 @@
     ],
     "name": "traits.disgraced.name",
     "description": "traits.disgraced.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 179,
@@ -4656,7 +4834,8 @@
     ],
     "name": "traits.cold-blooded.name",
     "description": "traits.cold-blooded.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 180,
@@ -4679,7 +4858,8 @@
     ],
     "name": "traits.heat-adapted.name",
     "description": "traits.heat-adapted.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 181,
@@ -4704,7 +4884,8 @@
     ],
     "name": "traits.mountain-born.name",
     "description": "traits.mountain-born.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 182,
@@ -4729,7 +4910,8 @@
     ],
     "name": "traits.island-raised.name",
     "description": "traits.island-raised.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 183,
@@ -4754,7 +4936,8 @@
     ],
     "name": "traits.desert_dweller.name",
     "description": "traits.desert_dweller.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 184,
@@ -4782,7 +4965,8 @@
     ],
     "name": "traits.cave_dweller.name",
     "description": "traits.cave_dweller.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 185,
@@ -4808,7 +4992,8 @@
     ],
     "name": "traits.animal_handler.name",
     "description": "traits.animal_handler.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   },
   {
     "id": 186,
@@ -4833,7 +5018,8 @@
     "incompatible": [],
     "name": "traits.beast_whisperer.name",
     "description": "traits.beast_whisperer.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 187,
@@ -4857,7 +5043,8 @@
     ],
     "name": "traits.nature_attuned.name",
     "description": "traits.nature_attuned.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 188,
@@ -4885,7 +5072,8 @@
     ],
     "name": "traits.urban_native.name",
     "description": "traits.urban_native.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 189,
@@ -4915,7 +5103,8 @@
     ],
     "name": "traits.feral.name",
     "description": "traits.feral.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 190,
@@ -4942,7 +5131,8 @@
     ],
     "name": "traits.magically_gifted.name",
     "description": "traits.magically_gifted.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 191,
@@ -4970,7 +5160,8 @@
     ],
     "name": "traits.mana-starved.name",
     "description": "traits.mana-starved.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 192,
@@ -4992,7 +5183,8 @@
     "incompatible": [],
     "name": "traits.spell-scarred.name",
     "description": "traits.spell-scarred.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 193,
@@ -5018,22 +5210,14 @@
     ],
     "name": "traits.witch-marked.name",
     "description": "traits.witch-marked.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 194,
     "icon": 71,
-    "positive": {
-      "mat": 4,
-      "atk": 3,
-      "mp": 5
-    },
-    "negative": {
-      "mdf": -4,
-      "def": -2,
-      "luk": -3,
-      "hp": -15
-    },
+    "positive": {},
+    "negative": {},
     "skills": [
       668
     ],
@@ -5045,22 +5229,15 @@
     ],
     "name": "traits.possessed.name",
     "description": "traits.possessed.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical",
+    "disease": "possession"
   },
   {
     "id": 195,
     "icon": 105,
-    "positive": {
-      "atk": 4,
-      "agi": 3,
-      "hp": 25
-    },
-    "negative": {
-      "mat": -2,
-      "mp": -3,
-      "mdf": -2,
-      "luk": -2
-    },
+    "positive": {},
+    "negative": {},
     "skills": [
       313,
       309
@@ -5073,7 +5250,9 @@
     ],
     "name": "traits.lycanthrope.name",
     "description": "traits.lycanthrope.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical",
+    "disease": "lycanthropy"
   },
   {
     "id": 196,
@@ -5102,7 +5281,8 @@
     ],
     "name": "traits.clairvoyant.name",
     "description": "traits.clairvoyant.description",
-    "category": "magical"
+    "category": "magical",
+    "nature": "Magical"
   },
   {
     "id": 197,
@@ -5128,7 +5308,8 @@
     ],
     "name": "traits.booming_voice.name",
     "description": "traits.booming_voice.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 198,
@@ -5153,7 +5334,8 @@
     ],
     "name": "traits.soft-spoken.name",
     "description": "traits.soft-spoken.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 199,
@@ -5180,7 +5362,8 @@
     ],
     "name": "traits.mute.name",
     "description": "traits.mute.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 200,
@@ -5207,7 +5390,8 @@
     ],
     "name": "traits.polyglot.name",
     "description": "traits.polyglot.description",
-    "category": "mental"
+    "category": "mental",
+    "nature": "Mundane"
   },
   {
     "id": 201,
@@ -5229,7 +5413,8 @@
     "incompatible": [],
     "name": "traits.prosopometamorphopsia.name",
     "description": "traits.prosopometamorphopsia.description",
-    "category": "genetic"
+    "category": "genetic",
+    "nature": "Mundane"
   },
   {
     "id": 202,
@@ -5255,6 +5440,7 @@
     ],
     "name": "traits.gun_fu.name",
     "description": "traits.gun_fu.description",
-    "category": "physical"
+    "category": "physical",
+    "nature": "Mundane"
   }
 ]

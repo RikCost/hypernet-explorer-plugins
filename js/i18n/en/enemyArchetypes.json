@@ -249,6 +249,10 @@
       "head": {
         "name": "Head"
       },
+      "mouth": {
+        "name": "Mouth",
+        "msg": "Jaws broken!"
+      },
       "body": {
         "name": "Body",
         "msg": "Body crushed!"

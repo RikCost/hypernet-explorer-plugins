@@ -17,7 +17,6 @@
   "insufficientFunds": "\\C[18]Insufficient funds!\\C[0]",
   "ui": {
     "fuelStation": "FUEL STATION",
-    "hint": "↑↓ navigate · OK confirm · Esc back",
     "noVehicles": "No refuelable vehicles owned",
     "fuelOverview": "Fuel Overview",
     "vehicleFuel": "{name} Fuel",

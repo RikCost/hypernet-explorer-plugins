@@ -1,0 +1,21 @@
+{
+  "title": "TELEFONO PUBBLICO",
+  "credits": "Crediti",
+  "dialPrompt": "Componi un numero",
+  "listHint": "Premi LISTA per i contatti",
+  "exitHint": "Premi FINE per uscire",
+  "dialNumber": "COMPONI NUMERO",
+  "enterNumberAnd": "Inserisci numero e",
+  "pressCallButton": "premi CHIAMA",
+  "deleteAndCancel": "*: Cancella  FINE: Annulla",
+  "contacts": "CONTATTI",
+  "noContacts": "Nessun contatto disponibile",
+  "callAndBack": "CHIAMA: Componi  FINE: Indietro",
+  "calling": "CHIAMATA...",
+  "connecting": "Connessione...",
+  "cost": "Costo",
+  "pressToHangUp": "Premi FINE per chiudere",
+  "callButton": "CHIAMA",
+  "listButton": "LISTA",
+  "endButton": "FINE"
+}

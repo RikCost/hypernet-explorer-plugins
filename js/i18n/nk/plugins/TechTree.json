@@ -1,0 +1,286 @@
+{
+  "selectNodeHint": "SELECT A NODE WIT DA ARROW KEYS!",
+  "nobelWorthy": "NOBEL-WORTHY",
+  "fringe": "DISPUTED / FRINGE",
+  "speculative": "SPECULATIVE",
+  "researched": "RESEARCHED",
+  "knownAtFounding": "KNOWN AT DA WORLD'S FOUNDIN'",
+  "discoveredBy": "DISCOVERED BY ",
+  "prereqIncomplete": "PREREQUISITES INCOMPLETE",
+  "activeProject": "ACTIVE RESEARCH PROJECT",
+  "day": "DAY",
+  "materialsRequired": "MATERIALS REQUIRED",
+  "requires": "REQUIRES",
+  "permanentBuffs": "PERMANENT PARTY BUFFS",
+  "yieldLabel": "YIELD",
+  "exp": "EXP",
+  "gold": "GOLD",
+  "complete": "COMPLETE",
+  "locked": "LOCKED",
+  "research": "RESEARCH",
+  "clearProject": "CLEAR ACTIVE PROJECT",
+  "setProject": "SET AS ACTIVE PROJECT",
+  "discovered": "DISCOVERED: ",
+  "recoveredMaterials": "RECOVERED MATERIALS:",
+  "menuName": "RESEARCH",
+  "back": "BACK",
+  "disciplines": "DISCIPLINES",
+  "procName": "DA {a} {b} {c}",
+  "procDesc": "A LINE OF WORK DAT CLOSED ELSEWHERE AN' STAYED OPEN HERE. DA RESULT REPRODUCES ON DIS WORLD'S APPARATUS; NO DERIVATION FOR IT HAB EVER BEEN PUBLISHED!",
+  "unknownDiscoverer": "UNKNOWN",
+  "progressCleared": "\\C[3]RESEARCH PROGRESS CLEARED.\\C[0]",
+  "theme": {
+    "Physics": {
+      "a": [
+        "ANOMALOUS",
+        "COHERENT",
+        "RESONANT",
+        "VACUUM",
+        "ENTANGLED",
+        "NONLOCAL",
+        "CASIMIR",
+        "CHIRAL"
+      ],
+      "b": [
+        "FIELD",
+        "LATTICE",
+        "PHONON",
+        "BOSON",
+        "SYMMETRY",
+        "VORTEX",
+        "PLASMA",
+        "INTERFEROMETER"
+      ],
+      "c": [
+        "COUPLIN'",
+        "CONDENSATE",
+        "EFFECT",
+        "REGIME",
+        "THRESHOLD",
+        "RESONANCE"
+      ]
+    },
+    "Astronomy": {
+      "a": [
+        "OCCULTED",
+        "ROGUE",
+        "TRANS-NEPTUNIAN",
+        "CIRCUMBINARY",
+        "RELIC",
+        "HYPERVELOCITY",
+        "DARK"
+      ],
+      "b": [
+        "COMPANION",
+        "HALO",
+        "AURORA",
+        "TRANSIT",
+        "NEBULA",
+        "MICROLENS",
+        "RINGLET"
+      ],
+      "c": [
+        "SURVEY",
+        "CATALOGUE",
+        "EPHEMERIS",
+        "PARALLAX",
+        "OCCULTATION"
+      ]
+    },
+    "Mathematics": {
+      "a": [
+        "SPARSE",
+        "NONLINEAR",
+        "RECURSIVE",
+        "ERGODIC",
+        "MODULAR",
+        "SPECTRAL",
+        "ABELIAN"
+      ],
+      "b": [
+        "SIEVE",
+        "LEMMA",
+        "MANIFOLD",
+        "AUTOMATON",
+        "PARTITION",
+        "FUNCTOR",
+        "BOUND"
+      ],
+      "c": [
+        "CONJECTURE",
+        "IDENTITY",
+        "THEOREM",
+        "CRITERION",
+        "DUALITY"
+      ]
+    },
+    "Alchemistry": {
+      "a": [
+        "CATALYTIC",
+        "ENANTIOPURE",
+        "SUPRAMOLECULAR",
+        "PHOTOACTIVE",
+        "AQUEOUS",
+        "REDUCTIVE"
+      ],
+      "b": [
+        "LIGAND",
+        "ISOMER",
+        "REAGENT",
+        "POLYMER",
+        "COMPLEX",
+        "SUBSTRATE",
+        "ENZYME"
+      ],
+      "c": [
+        "SYNTHESIS",
+        "CASCADE",
+        "PATHWAY",
+        "ASSAY",
+        "REACTION"
+      ]
+    },
+    "SocialSciences": {
+      "a": [
+        "NETWORKED",
+        "BEHAVIOURAL",
+        "EMERGENT",
+        "REFLEXIVE",
+        "DISTRIBUTED",
+        "INFORMAL"
+      ],
+      "b": [
+        "CASCADE",
+        "COMMONS",
+        "NORM",
+        "SIGNAL",
+        "COHORT",
+        "CONTAGION",
+        "INSTITUTION"
+      ],
+      "c": [
+        "THEORY",
+        "MODEL",
+        "STUDY",
+        "FRAMEWORK",
+        "HYPOTHESIS"
+      ]
+    },
+    "Arcane": {
+      "a": [
+        "SUNDERED",
+        "WHISPERED",
+        "WANIN'",
+        "SEALED",
+        "HOLLOW",
+        "NINEFOLD",
+        "UMBRAL"
+      ],
+      "b": [
+        "SIGIL",
+        "WARD",
+        "RITE",
+        "CONJURIN'",
+        "VEIL",
+        "CIRCLE",
+        "LITANY"
+      ],
+      "c": [
+        "WORKIN'",
+        "ASCENDANCE",
+        "BINDIN'",
+        "RECOLLECTION",
+        "AWAKENIN'"
+      ]
+    },
+    "Technomagica": {
+      "a": [
+        "WIRED",
+        "COMPILED",
+        "SANCTIFIED",
+        "OVERCLOCKED",
+        "FORKED",
+        "CACHED",
+        "THAUMIC"
+      ],
+      "b": [
+        "DAEMON",
+        "KERNEL",
+        "SIGIL-CHIP",
+        "RUNTIME",
+        "BUFFER",
+        "PROTOCOL",
+        "CODEPATH"
+      ],
+      "c": [
+        "ENGINE",
+        "FRAMEWORK",
+        "BUILD",
+        "DEPLOYMENT",
+        "COMPILER"
+      ]
+    },
+    "Theotecnical": {
+      "a": [
+        "CONSECRATED",
+        "PROMULGATED",
+        "ARMOURED",
+        "CANONICAL",
+        "ORDAINED",
+        "ANOINTED",
+        "AIRBORNE"
+      ],
+      "b": [
+        "COIL",
+        "RELIQUARY",
+        "CHOKER",
+        "PULPIT",
+        "BULL",
+        "BUTTRESS",
+        "SACRAMENT"
+      ],
+      "c": [
+        "DOCTRINE",
+        "BATTERY",
+        "MISSION",
+        "RITE",
+        "SCHEMA",
+        "ENCYCLICAL"
+      ]
+    }
+  },
+  "phase": {
+    "Platform": "PLATFORM",
+    "Rediscovery": "REDISCOVERY",
+    "High Ritual": "HIGH RITUAL",
+    "False Lead": "FALSE LEAD",
+    "Vaporware": "VAPORWARE",
+    "Foundation": "FOUNDATION",
+    "First Working": "FIRST WORKIN'",
+    "Sympathy": "SYMPATHY",
+    "Sublimation": "SUBLIMATION",
+    "Prototype": "PROTOTYPE",
+    "Toolchain": "TOOLCHAIN",
+    "Power": "POWER",
+    "Classified": "CLASSIFIED",
+    "Deployment": "DEPLOYMENT",
+    "Speculative": "SPECULATIVE",
+    "Ascension": "ASCENSION",
+    "Ordnance": "ORDNANCE",
+    "Bulwark": "BULWARK",
+    "Mission": "MISSION",
+    "Doctrine": "DOCTRINE",
+    "Apostasy": "APOSTASY",
+    "Apotheosis": "APOTHEOSIS"
+  },
+  "news": {
+    "fringe": "FOLK IZ PEDDLIN' {name} AGAIN",
+    "procedural": "A STRANGE NEW SCIENCE DEY CALL {name} HAB SURFACED",
+    "arcane": "DA LOST ART OF {name} HAB BEEN RELEARNED",
+    "technomagica": "ESOTERIC HEAVY INDUSTRIES HAB UNVEILED {name}",
+    "generic": "{name} WAZ FINALLY DISCOVERED",
+    "nobelSuffix": "AN' DERE IZ TALK OF A NOBEL PRIZE",
+    "credit": " WORD CREDITS {who} AN' DEY CIRCLE!",
+    "theotecnical": "DA HOLY VATICAN EMPIRE HAB PROMULGATED {name}"
+  }
+}

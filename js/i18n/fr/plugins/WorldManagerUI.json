@@ -16,7 +16,6 @@
   "nextYear": "",
   "seed": "Graine",
   "randomizeSeed": "",
-  "worldHistory19002000Is": "",
   "createActivate": "",
   "back": "Retour",
   "dossier": "",
@@ -55,5 +54,8 @@
     "",
     ""
   ],
-  "confirmDelete": ""
+  "confirmDelete": "",
+  "enemyFloor": "L'Écrasement dure depuis un moment : ici les ennemis errants commencent au niveau {level}, quel que soit le mode d'apparition.",
+  "enemyFloorOpen": "La faune est incontrôlable : tout, du niveau 1 au niveau {level}, rôde dans le monde entier.",
+  "enemyFloorCollapse": "Le paradoxe s'est accompli : plus rien sous le niveau {level}, et aucune limite supérieure."
 }

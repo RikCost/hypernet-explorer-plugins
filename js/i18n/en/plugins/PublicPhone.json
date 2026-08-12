@@ -1,0 +1,21 @@
+{
+  "title": "PUBLIC PHONE",
+  "credits": "Credits",
+  "dialPrompt": "Dial a number",
+  "listHint": "Press LIST for contacts",
+  "exitHint": "Press END to exit",
+  "dialNumber": "DIAL NUMBER",
+  "enterNumberAnd": "Enter number and",
+  "pressCallButton": "press CALL button",
+  "deleteAndCancel": "*: Delete  END: Cancel",
+  "contacts": "CONTACTS",
+  "noContacts": "No contacts available",
+  "callAndBack": "CALL: Dial  END: Back",
+  "calling": "CALLING...",
+  "connecting": "Connecting...",
+  "cost": "Cost",
+  "pressToHangUp": "Press END to hang up",
+  "callButton": "CALL",
+  "listButton": "LIST",
+  "endButton": "END"
+}

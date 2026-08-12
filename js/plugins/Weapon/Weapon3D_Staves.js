@@ -94,6 +94,7 @@
       322: 'createStaffOfEternityModel',              // Staff of Eternity
       323: 'createPetroleumOmniscienceModel',         // EHI Petroleum Omniscience
       324: 'createUniversalForceStaffModel',          // Universal Force Staff
+      325: 'createBastoneInfernaleModel',             // Il bastone infernale
     },
     models: {
       // Type 6: Staff
@@ -2346,6 +2347,121 @@
           cord.userData.sway = { axis: 'z', amp: 0.2, freq: 1.1, phase: i };
           group.add(cord);
         }
+        return group;
+      },
+
+      // ---- 325: Il bastone infernale ------------------------------------------
+      // A gentleman's cane with a skull grip, and a scabbard for a shaft. The
+      // blade lives inside it and is the only part of the weapon that moves:
+      // it is tagged `cane` so tickCane (WeaponSystemProcedural) can run it out
+      // of the mouth on the HiddenBlade animation and seat it again afterwards.
+      // Everything else is the stick everyone is meant to see.
+      createBastoneInfernaleModel(weapon, rand) {
+        const group = new THREE.Group();
+        const shaftMat = this._mat(this.getRandomColor(rand, [0x14100E, 0x1E1814, 0x241A12]), { roughness: 0.28, metalness: 0.2 });
+        const bone = this._mat(0xE0D6BE, { roughness: 0.55, metalness: 0.08 });
+        const pewter = this._mat(0x9AA0A6, { roughness: 0.3, metalness: 0.9 });
+        const socket = this._mat(0x120E0C, { roughness: 0.95, metalness: 0.05 });
+        const ember = this._glow(0xFF5A14, 0.9);
+        const steel = this._steel(0xD2D8DE, 0.14);
+        const rubber = this._mat(0x1A1A1C, { roughness: 0.95, metalness: 0.02 });
+
+        // ---- The stick ---------------------------------------------------
+        // Held low, so the shaft runs up the view and the blade has somewhere
+        // to go. The shaft is hollow in the only sense that matters: it is
+        // opaque, and wide enough to swallow the blade at rest.
+        const shaftLen = 0.50;
+        const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.019, 0.021, shaftLen, this.seg(12, 7)), shaftMat);
+        shaft.position.y = 0.19;
+        group.add(shaft);
+        const mouth = new THREE.Mesh(new THREE.CylinderGeometry(0.023, 0.021, 0.022, this.seg(12, 7)), pewter);
+        mouth.position.y = 0.432;
+        group.add(mouth);
+        const ferrule = new THREE.Mesh(new THREE.CylinderGeometry(0.021, 0.017, 0.024, this.seg(10, 6)), rubber);
+        ferrule.position.y = -0.072;
+        group.add(ferrule);
+        for (let i = 0; i < (this.isLowDetail() ? 1 : 3); i++) {
+          const band = new THREE.Mesh(new THREE.TorusGeometry(0.021, 0.0035, this.seg(4, 3), this.seg(12, 7)), pewter);
+          band.rotation.x = Math.PI / 2;
+          band.position.y = 0.02 + i * 0.11;
+          group.add(band);
+        }
+
+        // ---- The grip ----------------------------------------------------
+        // A skull over a cascade of fluted bone, which is what is actually
+        // gripped: the shape of the photographed cane, and the reason nobody
+        // asks what the rest of it is for.
+        const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.023, 0.021, 0.016, this.seg(11, 7)), pewter);
+        collar.position.y = -0.052;
+        group.add(collar);
+        const flutes = this.isLowDetail() ? 5 : 10;
+        for (let i = 0; i < flutes; i++) {
+          const a = (i / flutes) * Math.PI * 2;
+          const strand = new THREE.Mesh(new THREE.CylinderGeometry(0.0055, 0.0075, 0.075, this.seg(6, 4)), bone);
+          strand.position.set(Math.cos(a) * 0.017, -0.098, Math.sin(a) * 0.017);
+          strand.rotation.set(Math.cos(a) * 0.14, 0, -Math.sin(a) * 0.14);
+          group.add(strand);
+        }
+        const cranium = new THREE.Mesh(new THREE.SphereGeometry(0.030, this.seg(14, 8), this.seg(11, 6)), bone);
+        cranium.scale.set(1, 0.92, 1.05);
+        cranium.position.y = -0.158;
+        group.add(cranium);
+        const brow = new THREE.Mesh(new THREE.BoxGeometry(0.050, 0.010, 0.016), bone);
+        brow.position.set(0, -0.150, 0.026);
+        group.add(brow);
+        for (const side of [-1, 1]) {
+          const eye = new THREE.Mesh(new THREE.SphereGeometry(0.010, this.seg(9, 6), this.seg(7, 4)), socket);
+          eye.position.set(side * 0.012, -0.161, 0.024);
+          group.add(eye);
+          const lit = new THREE.Mesh(new THREE.SphereGeometry(0.005, this.seg(7, 4), this.seg(5, 3)), ember);
+          lit.position.set(side * 0.012, -0.161, 0.028);
+          lit.userData.pulse = { min: 0.25, max: 1.3, freq: 0.8, phase: side > 0 ? 0 : 0.7 };
+          group.add(lit);
+        }
+        const jaw = new THREE.Mesh(new THREE.BoxGeometry(0.040, 0.018, 0.030), bone);
+        jaw.position.set(0, -0.186, 0.010);
+        group.add(jaw);
+        if (this.wantsTrim()) {
+          const teeth = this.isLowDetail() ? 3 : 6;
+          for (let i = 0; i < teeth; i++) {
+            const t = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.009, 0.005), bone);
+            t.position.set(-0.014 + i * 0.0056, -0.179, 0.024);
+            group.add(t);
+          }
+        }
+
+        // ---- The blade ---------------------------------------------------
+        // Built base-upward so its own origin is the point it slides from, and
+        // parked far enough down the shaft that none of it shows at rest. The
+        // travel is what tickCane adds to that rest position.
+        const blade = new THREE.Group();
+        const len = 0.40;
+        const steelBlade = this._plate(
+          this._bladeOutline(len, 0.030, 0, 7, 1, { taperPow: 3.2 }), 0.006, steel);
+        blade.add(steelBlade);
+        const fuller = new THREE.Mesh(new THREE.BoxGeometry(0.005, len * 0.78, 0.008), ember);
+        fuller.position.set(0, len * 0.40, 0);
+        fuller.userData.pulse = { min: 0.15, max: 1.1, freq: 1.3 };
+        blade.add(fuller);
+        const tang = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.016, 0.03, this.seg(10, 6)), pewter);
+        tang.position.y = -0.014;
+        blade.add(tang);
+        blade.position.y = 0.0;
+        blade.userData.cane = 'blade';
+        blade.userData.caneTravel = 0.40;
+        group.add(blade);
+
+        // The flare at the mouth as it comes out, shown by tickCane only while
+        // the blade is travelling.
+        const flash = new THREE.Mesh(new THREE.SphereGeometry(0.026, this.seg(10, 6), this.seg(8, 5)),
+          this._mat(0xFF7A22, {
+            roughness: 0.2, metalness: 0.1, emissive: 0xFF7A22, emissiveIntensity: 1.4,
+            transparent: true, opacity: 0
+          }));
+        flash.position.y = 0.442;
+        flash.visible = false;
+        flash.userData.cane = 'flash';
+        group.add(flash);
         return group;
       }
 

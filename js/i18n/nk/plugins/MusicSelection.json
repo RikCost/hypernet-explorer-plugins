@@ -1,0 +1,14 @@
+{
+  "trackNone": "NONE",
+  "trackMap": "CONTINUE MAP MUSIC",
+  "battleMusic": "BATTLE MUSIC",
+  "noMusic": "NO MUSIC DURIN' BATTLES.",
+  "continueMap": "CONTINUE PLAYIN' DA CURRENT MAP BGM!",
+  "playingAsBattle": "PLAYIN' AS BATTLE BACKGROUND MUSIC!",
+  "composer": "COMPOSER",
+  "currentSelection": "✓ CURRENT SELECTION",
+  "hint": "↑↓ PREVIEW · OK SELECT · ESC CANCEL",
+  "ui": {
+    "pressOkHint": "PRESS OK TA SET AS BATTLE MUSIC"
+  }
+}

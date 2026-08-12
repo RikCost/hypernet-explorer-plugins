@@ -1699,14 +1699,6 @@
                 24, 18, 400, 28, 'left'
             );
 
-            // Controls, bottom.
-            const hint = this._complete
-                ? T('ScratchingCard.pressOkOrEscTo')
-                : (this._padSeen ? T('ScratchingCard.controlsPad') : T('ScratchingCard.controlsMouse'));
-            bmp.fontSize = 17;
-            bmp.textColor = t.winText;
-            bmp.drawText(hint, 0, Graphics.height - 44, Graphics.width, 28, 'center');
-
             if (this._complete) this.drawResult(bmp);
         }
 
@@ -2427,6 +2419,7 @@
             H.decoRule(bmp, 10, y + L.infoH - 7, w - 20, D.goldLo);
         }
 
+        // The footer strip is the rack's bottom rule; it carries no text.
         drawControls(bmp) {
             const H = window.PSXHud;
             const D = H.DECO;
@@ -2434,7 +2427,6 @@
             const y = this._hud.h - RACK_HUD.stripH;
             bmp.fillRect(0, y, w, RACK_HUD.stripH, D.black);
             bmp.fillRect(0, y, w, 1, D.goldLo);
-            this.text(T('ScratchingCard.select.controls'), 5, y + 1, w - 10, 'left', D.dim, 8);
         }
 
         drawBanner(bmp) {

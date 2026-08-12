@@ -1,0 +1,957 @@
+{
+  "venues": [
+    "il {novantunesimo|sessantaquattresimo|trentatreesimo|dodicesimo} piano della Torre Omega, {dove la moquette è ancora bagnata|che tecnicamente è tre piani insieme|affittato a ore dalla Fondazione Archivio}",
+    "un {grande magazzino|radura di giungla sotterranea|galleria di reattori} dentro la Torre che nessuno ha {finito di|cominciato a|ammesso di} riconvertire",
+    "la Sala del Terreno Neutrale della Torre, {un corridoio di tende da campeggio|un ex centro ristoro|una stanza che si misura diversa ogni volta che la si misura}",
+    "la Camera {Grande|Provvisoria|d'Emergenza}, {rimontata dopo che l'ultima è andata alla deriva|appesa fra due piani con dei cavi|che sa ancora della giungla da cui è stata ritagliata}",
+    "una {sala conferenze|sala da ballo|banchina di carico} al quarantaquattresimo piano della Torre, {illuminata da un solo neon funzionante|aperta sul vano ascensore da un lato|dove la gravità è un suggerimento}",
+    "la sala di lettura della Fondazione Archivio, {sgomberata degli scaffali per l'occasione|con gli scaffali lasciati esattamente dov'erano|sotto un soffitto di schede catalografiche}"
+  ],
+  "chairs": [
+    "il Capo Bibliotecario Silenzio della Fondazione Archivio",
+    "un presidente {a rotazione|provvisorio|profondamente riluttante} della Fondazione Archivio",
+    "il Curatore Magnus, {che presiede|che batte il martelletto|che legge da un cartoncino}",
+    "l'Archivista Vera, che {sta anche verbalizzando|sta verbalizzando tutto, questo compreso|sta registrando l'aula per la pubblicazione}",
+    "il Custode Silas della Fondazione Archivio, {che presiede sotto protesta|che presiede per la nona settimana di fila}",
+    "il Presidente, {il cui nome è sull'ordine del giorno ma non sul cartellino|che non ha dato un nome}"
+  ],
+  "openings": [
+    "La seduta si apre in {venue}. {chair} richiama l'aula all'ordine. {name} prende il posto riservato a {power}.",
+    "{chair} batte due volte {sul tavolo|il martelletto|sul tubo più vicino}. L'aula, {venue}, si assesta. {name} si siede dietro il cartello che dice {power}.",
+    "{venue}. Ventuno seggi, {diciannove dei quali occupati|quasi tutti occupati|tutti occupati, uno da qualcosa che non è seduto}. {chair} apre la seduta. {name} è qui per {power}.",
+    "Le delegazioni entrano in fila. {chair} assume la presidenza. {name} trova il banco con la targa {power} e {si siede|non si siede ancora|sposta la targa di un quarto di giro}.",
+    "{chair} legge ad alta voce la convenzione permanente: la Torre è terreno neutrale, {e alla Torre non importa|qualunque cosa ci si sia portati dentro|e tutto ciò che si dice qui è verbalizzato e pubblicato}. {name} risponde per {power}. L'aula è {venue}."
+  ],
+  "ambience": [
+    "Da qualche parte più in basso, {un reattore cambia nota|si sta annaffiando il fondo della giungla|un grande magazzino annuncia una svendita di chiusura}.",
+    "Il canale di traduzione {è indietro di quattro secondi|rende una parola su tre in MarkovSpeak|ha rinunciato del tutto a due delle lingue}.",
+    "Un {Camionista|Guardia Svizzera|impiegato} in fondo {dorme|mangia|tiene in mano un piccione viaggiatore}.",
+    "L'aria {sa vagamente di petrolio|sta facendo qualcosa di sbagliato vicino al soffitto|ha quella immobilità che precede un anello}.",
+    "Il {telefono Anoki|cercapersone|piccione} di qualcuno suona. Nessuno lo ammette.",
+    "Le luci calano {una volta|due volte|per esattamente ottanta secondi} e tornano {identiche|un po' più calde|visibilmente più vecchie}.",
+    "Un usciere attraversa tutta l'aula portando {un unico foglio|un tubo sigillato|un vassoio di biscotti che nessuno tocca}."
+  ],
+  "interruptions": [
+    "{power} viene {zittita dal martelletto|invitata a concludere|richiamata al limite dei quattro minuti}.",
+    "Due delegazioni {si accavallano|si alzano insieme|depositano lo stesso emendamento}. Il presidente {attende|non attende|fa ripartire il cronometro}.",
+    "Qualcuno in fondo grida {una mozione d'ordine|un numero|qualcosa in goblin}. Viene verbalizzato alla lettera.",
+    "Il microfono dell'aula {si spegne|va in Larsen|comincia a trasmettere tutt'altra seduta} per undici secondi.",
+    "Un {impiegato|usciere|guardia} porge un biglietto a {power}. {power} lo legge e lo mette a faccia in giù.",
+    "La delegazione di {power} {esce dall'aula|minaccia di uscire dall'aula|si alza, ci ripensa, si risiede}.",
+    "Qualcuno propone una sospensione. Viene {respinta|ignorata|approvata e poi dimenticata}."
+  ],
+  "motion": {
+    "alliance": {
+      "tag": "il trattato",
+      "title": "Mozione di {sponsor}: un trattato di mutua difesa con {target}",
+      "text": [
+        "{sponsor} propone un trattato di mutua difesa con {target}. {leader} lo ha già firmato, {cosa che il presidente osserva non essere la procedura|con inchiostro ancora fresco|in tre copie, una delle quali risulta mancante}.",
+        "La mozione di {sponsor}: {target} e {sponsor} unite {contro chiunque|in caso di accelerazione dello Schiacciamento|per un periodo di novantadue anni}. {leader} la definisce {tardiva|inevitabile|una formalità}.",
+        "{sponsor} chiede all'assemblea di riconoscere un patto difensivo con {target}. Il testo è di {quattro pagine|una pagina|quattrocento pagine}, e {due sono bianche|l'ultima clausola è in una lingua che nessuno dei presenti legge|la clausola nove rimanda a una clausola dieci che non esiste}."
+      ]
+    },
+    "trade": {
+      "tag": "il patto commerciale",
+      "title": "Mozione di {sponsor}: aprire i corridoi a {target}",
+      "text": [
+        "{sponsor} propone che i corridoi {merci|di linea tellurica|liminali} siano aperti a {target} {senza dazio|con un dazio dell'uno per cento|con il dazio che il mercato deciderà giorno per giorno}.",
+        "Un patto di libero transito fra {sponsor} e {target}. {leader} fa notare che le merci si muovono già così, {e che il voto è una formalità|e che il voto lo renderebbe soltanto legale|e che l'unica differenza sarebbe la burocrazia}.",
+        "{sponsor} deposita una tabella di {dazi|quote|esenzioni} su {acqua pulita|ricordi|nerofanta|piccioni viaggiatori} fra sé e {target}. {leader} definisce l'assetto attuale {un furto|una carità|un incidente della geografia}."
+      ]
+    },
+    "war": {
+      "tag": "la dichiarazione",
+      "title": "Mozione di {sponsor}: dichiarazione di guerra a {target}",
+      "text": [
+        "{sponsor} propone una formale dichiarazione di guerra a {target}. {leader} legge il casus belli ad alta voce. Richiede {quattro minuti|quaranta secondi|quasi un'ora} e cita {un confine|un ponte|un carico di niente in particolare} {undici|tre|ottanta} volte.",
+        "Guerra. {sponsor} contro {target}. {leader} pronuncia la parola senza giri e poi {si siede|non si siede|si scusa per la nudità della parola}. Il presidente chiede che sia messa a verbale esattamente come detta.",
+        "{sponsor} chiede all'assemblea di riconoscere lo stato di guerra con {target}, {retroattivo alla primavera scorsa|con effetto da mezzanotte|con effetto da quando il Consiglio smetterà di litigare}. {leader} ha portato {mappe|un avvocato|nulla}."
+      ]
+    },
+    "censure": {
+      "tag": "la censura",
+      "title": "Mozione di {sponsor}: censura di {target}",
+      "text": [
+        "{sponsor} propone la censura di {target} per {condotta sconveniente|violazione di una convenzione che nessuno legge dal 1971|quello che è successo in corridoio la settimana scorsa}. {leader} desidera che sia verbalizzato.",
+        "Una mozione di censura contro {target}, presentata da {sponsor}. Non comporta {alcuna sanzione|alcuna sanzione né scadenza|una sanzione che è stata cancellata in commissione}, e secondo {leader} è proprio questo il punto.",
+        "{sponsor} chiede all'aula di dichiarare, formalmente e per iscritto, che {target} ha {esagerato|esagerato di poco|esagerato ininterrottamente dal 1992}."
+      ]
+    },
+    "territory": {
+      "tag": "la rivendicazione",
+      "title": "Mozione di {sponsor}: riconoscimento della sua rivendicazione contro {target}",
+      "text": [
+        "{sponsor} rivendica {un corridoio|una costa|quattrocento chilometri quadrati di un posto che continua a resettarsi} oggi amministrati da {target}. {leader} esibisce {una mappa|un atto|una fotografia} come prova.",
+        "La rivendicazione di {sponsor}: territori tenuti da {target} che secondo {sponsor} non furono {mai ceduti|ceduti sotto costrizione|ceduti a uno Stato che non esiste più}. {leader} è disposto ad aspettare una pronuncia. {leader} non è disposto ad aspettare a lungo.",
+        "{sponsor} chiede il riconoscimento di un confine che {target} non riconosce. Entrambe le delegazioni hanno portato {la stessa mappa|mappe diverse dello stesso posto|mappe disegnate dopo lo Schiacciamento, che il presidente dichiara inammissibili}."
+      ]
+    },
+    "incident": {
+      "tag": "l'incidente",
+      "title": "Mozione di {sponsor}: un'inchiesta sull'incidente alla frontiera di {target}",
+      "text": [
+        "Un'{inchiesta|indagine|missione conoscitiva} su quel che è successo alla frontiera di {target}. {sponsor} sostiene che {si è aperta una bolla dove non dovrebbero aprirsene|un convoglio è entrato a ottantuno e non è più uscito|il cielo ha fatto qualcosa che non aveva mai fatto}.",
+        "{sponsor} propone un'inchiesta. I fatti, per quanto se ne sa: {si è spezzata una linea tellurica|una città si è resettata due volte in un giorno|trecento persone sono tornate da un anello in cui nessuno le aveva mandate} dal lato di {target}. {leader} vuole che ci guardi qualcuno di neutrale.",
+        "L'incidente. {sponsor} ha {fotografie|un sopravvissuto|una registrazione che ogni volta suona diversa} e chiede all'assemblea di mandare osservatori nel territorio di {target}. {leader} ammette che è chiedere molto."
+      ]
+    },
+    "plague": {
+      "tag": "l'epidemia",
+      "title": "Mozione di {sponsor}: una risposta coordinata all'epidemia",
+      "text": [
+        "{sponsor} propone una risposta coordinata all'epidemia: {cordoni sanitari|scorte comuni|frontiere aperte ai medici e a nient'altro}. {leader} legge i dati di mortalità e poi {smette di leggerli|li rilegge|posa il foglio}.",
+        "L'epidemia ha varcato {tre|cinque|nove} frontiere. {sponsor} chiede {un cordone congiunto|un registro comune dei malati|la sospensione della quarantena perché il cibo possa muoversi}. {leader} dice che l'alternativa è aritmetica.",
+        "{sponsor} deposita una risposta al morbo che attraversa il continente. {target} è già dentro il cordone. {leader} sta attento a non dire di chi sia la colpa, {due volte|a lungo|e poi lo dice}."
+      ]
+    },
+    "admission": {
+      "tag": "l'ammissione",
+      "title": "Mozione di {sponsor}: l'ammissione di una nuova delegazione",
+      "text": [
+        "{sponsor} propone che si porti dentro un ventiduesimo seggio e vi si faccia sedere {una nuova delegazione|una delegazione che nessuno ha mai incontrato|qualcosa che ha chiesto con garbo}. {leader} garantisce per loro.",
+        "Un seggio nuovo. {sponsor} dice che il mondo è cambiato e l'aula no. {leader} fa notare che {due delle potenze qui presenti non esistono più|una delle sedie è vuota e vota lo stesso|l'ultima ammissione risale al 1971}.",
+        "La questione dell'ammissione. {sponsor} ha portato il candidato {dentro l'edificio|fino al corridoio|in un contenitore sigillato}. {target} si oppone {sulla procedura|per principio|prima che la frase sia finita}."
+      ]
+    },
+    "ruleof80": {
+      "tag": "la Regola dell'80",
+      "title": "Mozione di {sponsor}: uno standard comune per la Regola dell'80",
+      "text": [
+        "{sponsor} propone uno standard comune per segnare le bolle sulle carte stradali: {un simbolo|un colore|un registro tenuto da qualcuno di neutrale}. {leader} osserva che oggi ce ne sono {dodici|nove|tanti quanti sono i cartografi}.",
+        "La Regola dell'80. {sponsor} chiede che ogni potenza pubblichi il proprio censimento delle bolle {ogni mese|onestamente|e basta}. {leader} dice che gli autisti muoiono per un problema di archiviazione.",
+        "{sponsor} deposita uno standard di omologazione dei motori liminali, {perché quelli economici ammazzano la gente|perché quelli costosi ammazzano la gente più lentamente|cosa che {target} definisce un ostacolo al commercio}."
+      ]
+    },
+    "artifact": {
+      "tag": "l'artefatto",
+      "title": "Mozione di {sponsor}: custodia dell'artefatto",
+      "text": [
+        "Custodia di {un artefatto di rilievo esoterico|qualcosa raschiato dalla Torre|un osso intagliato a corno}. {sponsor} dice che è suo. {target} dice di no. {leader} dice che in ogni caso è pericoloso.",
+        "{sponsor} propone che l'assemblea riconosca la sua custodia dell'artefatto recuperato {da una tomba libica|dal Deserto Bianco|dal relitto di un satellite}. {leader} rifiuta di dire a cosa serva, {cosa che il presidente annota|cosa su cui nessuno insiste|cosa che tutti notano}.",
+        "La questione dell'artefatto. Sette di questi consumati in una notte fanno un ordigno teonucleare, {cosa che tutti in aula sanno|cosa che in aula sanno in due|cosa che nessuno dice ad alta voce}. {sponsor} vuole registrarlo. {target} vuole distruggerlo."
+      ]
+    },
+    "kessler": {
+      "tag": "i detriti",
+      "title": "Mozione di {sponsor}: un programma congiunto per ripulire l'orbita terrestre",
+      "text": [
+        "{sponsor} propone un programma congiunto per ripulire i detriti. {leader} stima la sopravvivenza ai lanci {sotto il dieci per cento|a quanto era il mese scorso|a un numero che il presidente chiede di ripetere}.",
+        "L'orbita terrestre. {sponsor} chiede a ogni potenza di contribuire con {denaro|piastre di corazza|volontari} allo sgombero. {leader} osserva che i volontari sono l'unica cosa che non scarseggia.",
+        "La questione Kessler, {per la quarta volta|di nuovo|per l'ultima volta prima che smetta di contare}. {sponsor} dice che il cielo si è chiuso in un anno e non si riaprirà da solo. {target} dice che lo spazio è sempre stato un problema di qualcun altro."
+      ]
+    },
+    "theonuclear": {
+      "tag": "il disarmo",
+      "title": "Mozione di {sponsor}: divieto degli ordigni teonucleari",
+      "text": [
+        "{sponsor} propone il divieto assoluto degli ordigni teonucleari. {leader} ricorda all'aula che cosa lasciano dietro: {gli edifici|i corpi|tutto tranne l'anima}.",
+        "Divieto. {sponsor} chiede a ogni potenza di dichiarare le proprie scorte {entro novanta giorni|onestamente|e basta}. {leader} non guarda {target} mentre lo dice, {il che è già una dichiarazione|cosa che tutti notano|cosa che il verbalizzante annota}.",
+        "La mozione sul disarmo. {sponsor} l'ha redatta {in modo stretto|così largamente da vietare il rituale stesso|per coprire ordigni, catalizzatori e chiunque abbia letto il metodo}. {leader} indica New York come argomento."
+      ]
+    },
+    "goblinquestion": {
+      "tag": "la questione goblin",
+      "title": "Mozione di {sponsor}: lo status dei Naguka",
+      "text": [
+        "{sponsor} interviene sullo status dei Naguka: {riconoscimento|contenimento|una commissione di confine e nient'altro}. {leader} sceglie le parole con cura, {perché l'inconscio collettivo ascolta|perché ferirne uno significa ferirli tutti|e a metà smette di sceglierle con cura}.",
+        "La questione goblin. {sponsor} dice che il pozzo di Kola andava {riempito|sorvegliato|lasciato stare}. {leader} osserva che qualunque cosa decida l'assemblea, {i Naguka la sentiranno|il Vaticano ha già aperto relazioni|i Mahyem la metteranno in musica}.",
+        "{sponsor} chiede all'assemblea di stabilire cosa siano i Naguka: {un popolo|un'invasione|una specie con una sola mente e qualche milione di corpi}. {target} si oppone a tutte e tre le formulazioni."
+      ]
+    },
+    "reparations": {
+      "tag": "le riparazioni",
+      "title": "Mozione di {sponsor}: riparazioni per lo Schiacciamento",
+      "text": [
+        "{sponsor} propone che le potenze risparmiate dallo Schiacciamento paghino a quelle che non lo sono state. {leader} cita {Canadafrica|i Campi Verdi|la dimensione settantasette} come caso esemplare.",
+        "Riparazioni. {sponsor} dice che il paradosso non si è distribuito equamente e nemmeno il conto dovrebbe. {target} dice che il paradosso non ha autore e quindi non ha debitore. {leader} dice che un autore ce l'ha e tutti ne conoscono il nome.",
+        "{sponsor} deposita un prelievo {sulla vendita di motori liminali|su ogni transito della Strada Onnicomprensiva|sul commercio di armi arcane}, da versare alle comunità che vivono dentro gli anelli. {leader} lo chiama affitto."
+      ]
+    },
+    "budget": {
+      "tag": "il bilancio",
+      "title": "Mozione di {sponsor}: il bilancio annuale dell'assemblea",
+      "text": [
+        "Il bilancio. {sponsor} presenta i conti dell'assemblea per l'anno: {la traduzione|i piccioni|l'edificio}. {leader} si scusa in anticipo per quanto ci vorrà.",
+        "{sponsor} presenta le previsioni. Tre quarti della somma sono {il servizio piccioni viaggiatori|la verbalizzazione della Fondazione Archivio|l'affitto a una Torre che non ha padrone}. {leader} invita chiunque a trovare un modo più economico.",
+        "Denaro. {sponsor} deposita i conti. {target} contesta {la voce undici|il tasso di cambio usato|l'esistenza stessa della voce undici}. {leader} suggerisce di risolverla prima della fine della frase."
+      ]
+    },
+    "tower": {
+      "tag": "la Torre",
+      "title": "Mozione di {sponsor}: la convenzione permanente sulla Torre Omega",
+      "text": [
+        "{sponsor} propone di riaffermare che la Torre è terreno neutrale, {e di dire cosa significhi|per la prima volta per iscritto|con l'elenco di ciò che non significa}. {leader} definisce l'assetto attuale {una cortesia|un incidente|una bandierina che tiene insieme un panino}.",
+        "La Torre. {sponsor} chiede che gli uffici di ogni potenza al suo interno siano {registrati|limitati|aperti a ispezione}. {target} ne ha {nove piani|più piani di quanti ne abbia dichiarati|un piano che non compare su nessuna pianta}.",
+        "{sponsor} propone che l'assemblea riconosca la Torre come l'unica cosa che impedisce alle novantadue dimensioni di collassare l'una nell'altra, {e agisca di conseguenza|e la finanzi di conseguenza|cosa che {target} definisce teologia, non procedura}."
+      ]
+    }
+  },
+  "voice": {
+    "common": {
+      "open": [
+        "La delegazione di {power} {si alza|ha la parola|prende la parola}.",
+        "{power} {chiede di essere ascoltata|fa cenno|viene chiamata}. Parla {leader}.",
+        "{leader}, per {power}, {si alza|si sporge sul microfono|non si alza}."
+      ],
+      "for": [
+        "{power} sostiene la mozione.",
+        "{power} voterà a favore di {topic}.",
+        "\"Ci va bene {topic}\", dice {leader}."
+      ],
+      "against": [
+        "{power} si oppone alla mozione.",
+        "{power} voterà contro {topic}.",
+        "\"Non possiamo accettare {topic}\", dice {leader}."
+      ],
+      "odd": [
+        "{power} dice qualcosa che non riguarda {topic} e si siede.",
+        "{leader} parla per quattro minuti senza arrivare a un verbo.",
+        "{power} si astiene prima che il voto sia indetto, cosa proceduralmente impossibile."
+      ]
+    },
+    "vatican": {
+      "open": [
+        "Ha la parola il Sacro Impero Vaticano. {leader} {si alza|prima si fa il segno della croce|attende che l'aula taccia}.",
+        "{leader}, per la Santa Sede, esordisce {in latino|con una benedizione che nessuno ha chiesto|leggendo ad alta voce la data}.",
+        "La delegazione di {power} si alza come un sol uomo. {leader} parla {da un testo preparato|senza appunti|a memoria, che è peggio}."
+      ],
+      "for": [
+        "\"{topic} è {conforme all'|non ripugnante all'|santificata dall'} ordine delle cose. Le diamo la nostra voce, {e le nostre preghiere|e nulla di più|liberamente}.\"",
+        "\"Roma ha valutato {topic} {a lungo|da martedì|da prima che questa aula esistesse}. Roma è soddisfatta. {Così sia|Fiat|Non ci opporremo}.\"",
+        "\"Lo sostenemmo quando era {impopolare|eresia|proposto dai nostri nemici}. Lo sosteniamo adesso, {senza piacere|con piacere|per dovere}.\"",
+        "\"La Cittadella fluttua a ottocento metri sopra Roma e vede {topic} con chiarezza. È {buona cosa|lecita|non peccato}.\""
+      ],
+      "against": [
+        "\"{topic} è {un abominio|un errore|una tentazione travestita da calendario}. Ci opponiamo {in modo assoluto|con dolore|e lo ripeteremo la settimana prossima}.\"",
+        "\"Abbiamo mandato al rogo per meno di {topic}, {e lo rifaremmo|benché ci sia stato detto di non dirlo|il che è agli atti}.\"",
+        "\"Dalla morte del Padre {i nostri miracoli non rispondono più|gli incantesimi sacri sono ammutoliti|ci tocca pensare da soli}. Non aggiungeremo {topic}.\"",
+        "\"Roma dice no. {Roma ha già detto no|Sappiamo che è impopolare|Il voto proceda comunque}.\""
+      ],
+      "odd": [
+        "{leader} legge un elenco di santi per novanta secondi e poi dichiara che l'Impero si accontenta di ciò che deciderà il presidente.",
+        "\"L'Umbra Excidii ci informa che {topic} è di origine arcana. Ci informa inoltre di non averlo detto.\"",
+        "\"Sua Santità Pietro II {non ha opinioni|ha tutte le opinioni|ha un'opinione non ancora tradotta}. Voteremo quando arriverà.\"",
+        "{leader} spende i suoi quattro minuti su Jenna di Northpoint, che non è all'ordine del giorno."
+      ]
+    },
+    "britannia": {
+      "open": [
+        "Ha la parola Britannia. {leader} {si alza|non si alza|si sistema un polsino}.",
+        "{leader}, per Britannia, {esordisce|dice che sarà breve|dice che sarà breve e non lo è}.",
+        "La delegazione britannica {fa cenno|alza una matita|fa cenno da un po'}."
+      ],
+      "for": [
+        "\"Il Governo di Sua Maestà trova {topic} {nel complesso accettabile|non discutibile|accettabile, fermo restando che l'abbiamo redatta quasi tutta noi}.\"",
+        "\"Siamo propensi a sostenere {topic}. {La preferiremmo per iscritto|Preferiremmo una sala più piccola|Abbiamo naturalmente letto gli allegati}.\"",
+        "\"Britannia voterà a favore. {Registriamo le nostre riserve al paragrafo nove|Registriamo di avere riserve e non le elencheremo|Ci riserviamo il diritto di esserne stati contrari in seguito}.\"",
+        "\"Sì. {Punto successivo|Se il presidente volesse procedere|Siamo soddisfatti}.\""
+      ],
+      "against": [
+        "\"Il Governo di Sua Maestà {non può|non è propenso a|con rammarico non può} sostenere {topic}. {Non aggiungeremo altro|Non diremo di più|Le nostre ragioni sono nell'allegato, che è riservato}.\"",
+        "\"Ricordiamo all'assemblea che Okeanus è stato dimostrato {in televisione|su una flotta|una volta sola}. {topic} non è necessaria.\"",
+        "\"No. {Ci abbiamo guardato|L'abbiamo fatta guardare|Qualcuno a Cheltenham ci ha guardato e la risposta è no}.\"",
+        "\"Britannia si oppone. {Non è una minaccia|Ci dispiacerebbe che fosse letta come una minaccia|Il Protettorato Atlantico concorda, essendo stato interpellato}.\""
+      ],
+      "odd": [
+        "\"Britannia non ha una posizione su {topic}. Britannia ha una posizione su chi l'ha depositata, e se la tiene.\"",
+        "{leader} fa una battuta. Il canale di traduzione la rende come un numero. Tre delegazioni ridono lo stesso.",
+        "\"Richiamiamo l'attenzione del presidente sul fatto che il nostro seggio è due centimetri più vicino alla porta della settimana scorsa.\"",
+        "\"Q porge i suoi saluti a chiunque abbia letto la valigia diplomatica.\""
+      ]
+    },
+    "soviet": {
+      "open": [
+        "Ha la parola l'Unione Sovietica. {leader} {si alza|si alza con dei fogli|si alza senza fogli, ed è più pericoloso}.",
+        "{leader}, per l'Unione, apre {con delle cifre|con una correzione al verbale|respingendo l'impostazione della domanda}.",
+        "La delegazione sovietica {si alza|era già in piedi|si è alzata da un pezzo e non è stata chiamata}."
+      ],
+      "for": [
+        "\"L'Unione sostiene {topic}. {L'aritmetica non è complicata|Le cifre sono nell'allegato, e l'allegato è corretto|Compagni, è semplicemente vero sul piano materiale}.\"",
+        "\"Abbiamo passato {topic} nel modello del Gosplan. La produzione sale del {quattro|undici|di un margine che il presidente può verificare} per cento. Votiamo sì.\"",
+        "\"La storia va in una sola direzione e {topic} va con lei. {Non la ostacoleremo|L'Unione non ostacola la storia|L'ostruzione è del seggio di fronte}.\"",
+        "\"Da. E si dia atto a verbale che l'abbiamo detto prima del seggio di fronte.\""
+      ],
+      "against": [
+        "\"L'Unione respinge {topic}. {È una questione di classe travestita da procedura|È un dazio con addosso un trattato|È la mozione del Collettivo con la firma di un altro}.\"",
+        "\"Una volta abbiamo scavato troppo a fondo e la superficie paga da 1970. Non voteremo un'altra {topic}.\"",
+        "\"Njet. {Le cifre sono nell'allegato|Non ci ripeteremo|La delegazione del Collettivo può sedersi}.\"",
+        "\"Compagni, {topic} è un meccanismo per trasferire {acqua|memoria|il futuro} da chi lavora a chi fattura. L'Unione si oppone.\""
+      ],
+      "odd": [
+        "{leader} legge i dati di produzione dei trattori del quarto trimestre. Sono eccellenti. Non c'entrano nulla con {topic}.",
+        "\"L'Unione osserva che la delegazione degli Dei è presente e che ciò resta, a nostro avviso, un'impossibilità scientifica.\"",
+        "\"Non abbiamo posizione su {topic} e una posizione lunghissima sul verbale dell'undicesima seduta, che ora leggeremo.\"",
+        "\"Il Maresciallo Zhukov avrebbe votato. È tutto quello che la delegazione desidera dire.\""
+      ]
+    },
+    "ottoman": {
+      "open": [
+        "Ha la parola la Sublime Porta. {leader} {si alza|china il capo|attende che l'aula sia del tutto silenziosa}.",
+        "{leader}, per l'Impero Ottomano, esordisce {con i convenevoli|con i convenevoli, a lungo|ringraziando ogni delegazione una per una}.",
+        "La delegazione ottomana {fa cenno|viene chiamata|ha depositato le proprie osservazioni per iscritto e le legge lo stesso}."
+      ],
+      "for": [
+        "\"La Porta trova {topic} {ben fatta|accettabile nella sostanza e nella forma|gradevole, il che è più raro}. Le diamo la nostra voce.\"",
+        "\"È passata per {tre|nove|undici} dipartimenti del Tanzimat ed è uscita {intatta|migliorata|con una sola clausola mancante}. La sosteniamo.\"",
+        "\"L'Impero ha governato luoghi che non capiva per seicento anni. {topic} non è difficile, al confronto. Sì.\"",
+        "\"Siamo soddisfatti, {e grati al proponente|e chiediamo soltanto che la formulazione della clausola quattro sia conservata esattamente|con i ringraziamenti al presidente}.\""
+      ],
+      "against": [
+        "\"La Porta non può sostenere {topic} {come redatta|in questa forma|prima che passi in commissione, il che richiederà fino a primavera}.\"",
+        "\"Per questo esiste una procedura. {topic} non lo è. {Saremmo lieti di illustrarla|La procedura è esposta in nove volumi|Abbiamo portato i volumi}.\"",
+        "\"Con ogni cortesia verso il proponente: no. {La cortesia è sincera|Anche il no è sincero|Ripeteremo entrambi quanto necessario}.\"",
+        "\"L'Impero si oppone. Ci siamo opposti a cose più grandi di {topic} e siamo sopravvissuti loro.\""
+      ],
+      "odd": [
+        "{leader} pronuncia sei minuti di convenevoli impeccabili e nessuna posizione. Il presidente lo ringrazia.",
+        "\"La Porta desidera che a verbale risulti che la nostra delegazione è stata seduta sotto l'Unione Sovietica, e che ce ne siamo accorti.\"",
+        "\"Rinviamo l'assemblea a un firmano del 1876 che risolve la questione. Non l'abbiamo portato. Ci dicono sia bellissimo.\"",
+        "\"La Guardia Giannizzera chiede se {topic} possa risolversi in duello. La delegazione si scusa per la Guardia Giannizzera.\""
+      ]
+    },
+    "horde": {
+      "open": [
+        "Ha la parola l'Orda dei Goblin. La delegazione è {quattro goblin in corpse paint|una batteria e due goblin|un goblin in piedi su un altro goblin}.",
+        "{leader} prende la parola. Da qualche parte nella delegazione, {si accorda una chitarra|una chitarra non si accorda|parte un Larsen che non finisce}.",
+        "La delegazione dell'Orda {ulula una volta per l'ordine|è già in piedi|sta in piedi sul tavolo da quando la seduta è aperta}."
+      ],
+      "for": [
+        "\"MAHYEM DICE SÌ!\" grida {leader}. \"{topic} È VERO! È NERO! È FREDDO! VOTIAMO!\"",
+        "\"Gli dèi del metallo guardano {topic} e sono contenti. {Siamo contenti|L'Orda è contenta|Varg è contento, il che è più raro}.\"",
+        "\"Prendiamo {topic}. La prendiamo come abbiamo preso il pozzo di Kola. {SU|VERSO L'ALTO|SU E FUORI}.\"",
+        "\"SÌ. E i tamburi dicono sì. E i tamburi non sbagliano.\""
+      ],
+      "against": [
+        "\"NO!\" dice {leader}. \"{topic} È {TIEPIDA|MOLLE|FATTA DI CARTA}! L'ORDA SPUTA!\"",
+        "\"Mahyem ha sentito {topic} e Mahyem ha spento l'amplificatore. Non era mai successo. Votiamo no.\"",
+        "\"Ci avete sepolti per dieci milioni di anni e adesso ci scrivete {topic}? {NO|L'Orda dice no|Ripetilo in faccia, in corridoio}.\"",
+        "\"L'Orda si oppone. L'Orda spiegherà l'opposizione {fuori|dopo|con gli strumenti}.\""
+      ],
+      "odd": [
+        "La delegazione dell'Orda esegue undici secondi di una canzone. Il presidente chiede di smettere. Smettono dopo quaranta.",
+        "\"DOV'È IL CIBO\", dice {leader}, e il punto non viene ritirato.",
+        "\"L'Orda si è dipinta la faccia per questo e desidera che sia annotato prima del voto.\"",
+        "{leader} chiede se la Torre si possa scalare dall'interno. Il presidente dichiara la domanda fuori tema. L'Orda se la scrive lo stesso."
+      ]
+    },
+    "midwest": {
+      "open": [
+        "Hanno la parola gli Stati Liberi del Midwest. {leader} {si alza|si alza lentamente|prima guarda l'orologio}.",
+        "{leader}, per il Midwest, {esordisce|dice che sarà breve|dice di aver fatto molta strada per questo}.",
+        "La delegazione del Midwest {viene chiamata|alza una mano|non si aspettava di essere chiamata}."
+      ],
+      "for": [
+        "\"Gli Stati Liberi possono convivere con {topic}. {Non è entusiasmo|Più in là non andiamo|Prendetelo per un sì}.\"",
+        "\"Abbiamo fatto seimila chilometri per sedere qui. Non ci sediamo per votare contro {topic}.\"",
+        "\"Il Presidente Lincoln XIII ci ha istruiti a sostenere qualunque cosa tenga aperti i corridoi. {topic} lo fa. Sì.\"",
+        "\"Favorevoli. {Con riserve di cui non annoieremo l'aula|E chiediamo all'aula di ricordarlo|Ed è tutto}.\""
+      ],
+      "against": [
+        "\"Gli Stati Liberi respingono {topic}. {Non siamo stati consultati|Siamo stati consultati dopo la stesura, che non è consultazione|Nessuno qui è mai stato nel Midwest}.\"",
+        "\"Ognuna di queste mozioni sposta qualcosa a est oltre l'oceano e niente a ovest. No.\"",
+        "\"Abbiamo tre Americhe e nessuna è indipendente. {topic} non lo cambia, quindi non ci interessa.\"",
+        "\"Contrari. {E stavolta vorremmo che fosse scritto giusto|E lo spiegheremo al proponente in privato|Punto successivo}.\""
+      ],
+      "odd": [
+        "\"Vota il Protettorato Atlantico, o vota Britannia due volte? La delegazione lo chiede in buona fede.\"",
+        "{leader} spende i suoi quattro minuti a descrivere un fiume. Non è chiaro quale né perché.",
+        "\"Gli Stati Liberi non hanno posizione. Gli Stati Liberi hanno moltissimo da dire e nessuna posizione.\"",
+        "\"Bill Clinton porge i suoi saluti a una delegazione che si rifiuta di nominare.\""
+      ]
+    },
+    "cascadia": {
+      "open": [
+        "Ha la parola il Protettorato di Cascadia. {leader} {si alza|volta una pagina|prima posa un piccolo apparecchio che ronza}.",
+        "{leader}, per Cascadia, {esordisce con i dati|esordisce scusandosi per i dati|distribuisce una sintesi che nessuno leggerà}.",
+        "La delegazione cascadiana {viene chiamata|aveva già cominciato|fa cenno con una luce}."
+      ],
+      "for": [
+        "\"Cascadia sostiene {topic}. {Il modello è chiaro|Il modello è nelle vostre cartelle|Il modello ha impiegato nove secondi e l'abbiamo girato undicimila volte}.\"",
+        "\"L'ufficio del Taumo-Direttore Tesla trova {topic} {trattabile|elegante|la meno cattiva delle quattro opzioni modellate}. Sì.\"",
+        "\"Finanzieremo noi una parte di {topic}. {Preferiamo che sia fatta bene piuttosto che equamente|Sappiamo come suona|L'offerta vale fino a venerdì}.\"",
+        "\"Favorevoli. E chiediamo all'assemblea di lasciarcela strumentare.\""
+      ],
+      "against": [
+        "\"Cascadia si oppone a {topic}. {I numeri non tornano|I numeri tornano e la fisica no|L'abbiamo modellata e finisce male in undici casi su dodici}.\"",
+        "\"Abbiamo costruito metà degli strumenti su cui questa assemblea conta. Non chiedeteci di certificare {topic}.\"",
+        "\"No. {Richiedetecelo quando ci saranno gli effetti del secondo ordine|Richiedetecelo fra un anno|Chiedetecelo in privato}.\"",
+        "\"Il Protettorato declina. Preferiamo essere la delegazione che ha detto no per tempo che quella che ha detto scusate troppo tardi.\""
+      ],
+      "odd": [
+        "\"Cascadia vorrebbe sapere se durante l'ultimo voto gli orologi di qualcun altro si sono scostati di quattro secondi. I nostri sì.\"",
+        "{leader} presenta un grafico. Il grafico è bellissimo. Riguarda le precipitazioni.",
+        "\"Non abbiamo posizione su {topic}. Abbiamo una posizione fortissima su quanto male sia stata misurata.\"",
+        "\"Il Protettorato osserva che quest'aula non è, a rigore, una sola stanza, e ha regolato i microfoni di conseguenza.\""
+      ]
+    },
+    "seaboard": {
+      "open": [
+        "Ha la parola la Costa Orientale. {leader} {si alza|viene sollecitato ad alzarsi|legge da un cartoncino}.",
+        "{leader}, per la Costa, parla {brevemente|troppo brevemente|come aspettandosi di essere interrotto}.",
+        "La delegazione della Costa {viene chiamata|viene chiamata due volte|viene trovata in fondo}."
+      ],
+      "for": [
+        "\"Il Protettorato sostiene {topic}, {come da istruzioni|previa consultazione|cosa che ci è consentito dire}.\"",
+        "\"Sì. {Non abbiamo emendamenti|Raramente abbiamo emendamenti|Nemmeno l'Amministrazione Coloniale ne ha}.\"",
+        "\"La Costa vota con la mozione, {e preferirebbe non doverne spiegare il perché|per ragioni sue|e ringrazia il proponente}.\"",
+        "\"Favorevoli, e chiediamo al presidente di procedere spedito.\""
+      ],
+      "against": [
+        "\"La Costa si oppone a {topic}. {Sappiamo quanto poco pesi|Ci è stato detto di farlo|Avremmo preferito non essere interpellati}.\"",
+        "\"No. {Il Protettorato è governato da altrove dal 1783|Siamo una costa, non un Paese, e la costa dice no|Non aggiungeremo altro}.\"",
+        "\"Respingiamo la mozione. Il Guardiano Arnold ha {delle opinioni|delle istruzioni|un elenco}.\"",
+        "\"Contrari, {a malincuore|senza astio|e la delegazione desidera che sia annotato}.\""
+      ],
+      "odd": [
+        "\"La Costa vorrebbe sapere quando la sua delegazione è stata citata a verbale l'ultima volta. La delegazione sospetta: mai.\"",
+        "{leader} comincia una frase sull'indipendenza e non la finisce.",
+        "\"Ci asteniamo. Ci asteniamo su tutto da marzo e vorremmo un motivo per smettere.\"",
+        "\"Qualcuno ha di nuovo spostato la nostra targa.\""
+      ]
+    },
+    "guild": {
+      "open": [
+        "Ha la parola la Gilda dei Maghi. {leader} si alza. {Si alza anche un secondo delegato della Gilda|Si alzano anche altri due delegati della Gilda|Le tre sedie della Gilda sono tutte occupate e tutte in disaccordo}.",
+        "{leader}, per la Gilda, {esordisce|viene interrotto dalla sua stessa delegazione|parla sopra la sua stessa delegazione}.",
+        "La delegazione della Gilda {viene chiamata|discute brevemente al proprio interno|si accorda su chi parla}."
+      ],
+      "for": [
+        "\"La Gilda sostiene {topic}. {È la posizione del presente|Sir Aleister non obietta|L'ufficio di Lady Margaret ha dato il via libera}.\"",
+        "\"Tre pilastri. Passato, presente e futuro. {Due sostengono {topic}|Tutti e tre sostengono {topic}, cosa che non accadeva dal 1982|Uno non risponde, quindi bastano due}.\"",
+        "\"La sosteniamo, e chiediamo al presidente di cassare la formulazione del proponente alla clausola due: {è scritta a parole separate|così com'è scritta è una trascendentale|qualcuno la leggerà ad alta voce e ci rimetterà le corde vocali}.\"",
+        "\"Sì, e la Gilda la appoggerà sotto il suo nome corretto, in CamelCase, come impone la legge.\""
+      ],
+      "against": [
+        "\"La Gilda si oppone a {topic}. {È scritta male|È scritta male in un modo che si propaga|Un grimorio con una clausola così si mangia i libri accanto}.\"",
+        "\"Siamo stati fondati nel 950 a.C. e rifondati nel 1900 e {topic} l'abbiamo già vista, {due volte|sotto un altro nome|e abbiamo bruciato gli appunti}.\"",
+        "\"No. {Chiedete agli Dei perché|Chiedete agli Dei, sono seduti lì|La delegazione degli Dei sa benissimo perché}.\"",
+        "\"La Gilda non può sostenerla. {Servirebbe un rituale per disfarla|I rituali sono difficili da disfare e questo è un rituale con una voce di bilancio|Non è una metafora}.\""
+      ],
+      "odd": [
+        "La delegazione della Gilda spende i suoi quattro minuti a discutere con se stessa se abbia una posizione.",
+        "\"La Gilda ricorda all'assemblea che gli incantesimi vanno pronunciati in CamelCase. Vale anche per le mozioni. Scherziamo solo a metà.\"",
+        "\"Sir Aleister tiene il suo seggio dal 1900 e ha delle opinioni sulla disposizione dei posti.\"",
+        "\"La Gilda sta attualmente cercando una persona precisa su questo pianeta e gradirebbe che l'aula restasse seduta.\""
+      ]
+    },
+    "archive": {
+      "open": [
+        "Ha la parola la Fondazione Archivio. {leader} {si alza|si alza, continuando a scrivere|non smette di scrivere}.",
+        "{leader}, per la Fondazione, {esordisce|prima corregge il verbale|prima corregge il verbale di una seduta del 1997}.",
+        "La delegazione della Fondazione {viene chiamata|sta verbalizzando dall'aula|solleva una mozione d'ordine prima di essere chiamata}."
+      ],
+      "for": [
+        "\"La Fondazione sostiene {topic}, a una condizione: {che sia pubblicata|che siano pubblicati gli allegati|che sia pubblicato il voto, astensioni comprese}.\"",
+        "\"Abbiamo catalogato {quattro|nove|undici} tentativi precedenti di {topic}. {Tutti falliti per lo stesso motivo|Questa stesura evita quel motivo|Il motivo è a pagina undici}. Sì.\"",
+        "\"Favorevoli, e la Fondazione si offre di tenere il registro {gratuitamente|a costo|in perpetuo}.\"",
+        "\"Sì. {Il verbale lo attesterà|Il verbale lo attesta già|L'abbiamo iscritto prima del voto, il che ammettiamo fosse prematuro}.\""
+      ],
+      "against": [
+        "\"La Fondazione si oppone a {topic}. {La clausola sei crea un segreto|Non votiamo segreti|Un allegato sigillato è una bugia con un numero di protocollo}.\"",
+        "\"No, e la Fondazione pubblicherà le sue ragioni {stanotte|entro un'ora|prima che il presidente finisca di contare}.\"",
+        "\"Fermiamo la gente ai posti di blocco per pubblicare i messaggi sui loro telefoni. Potete immaginare cosa pensiamo di {topic}.\"",
+        "\"Contrari. {Il Collettivo la sostiene, e tanto basta|Il Collettivo l'ha redatta, e basta più che a sufficienza|Abbiamo letto chi l'ha redatta}.\""
+      ],
+      "odd": [
+        "\"Mozione d'ordine: il presidente ha detto sessantaquattro piani e la Torre non ha mai avuto sessantaquattro piani di martedì.\"",
+        "{leader} legge ad alta voce l'elenco dei presenti, per intero, comprese le due delegazioni assenti.",
+        "\"La Fondazione non ha posizione su {topic} e quarantuno pagine sulla procedura con cui è arrivata a non averne.\"",
+        "\"Tutto ciò che si dice in quest'aula viene pubblicato. La delegazione lo ricorda ogni settimana e ogni settimana qualcuno se ne dimentica.\""
+      ]
+    },
+    "capital": {
+      "open": [
+        "Ha la parola il Collettivo Ipercapitalista. {leader} {si alza|è già in piedi|non si alza, ed è il microfono ad andare da lui}.",
+        "{leader}, per il Collettivo, apre {con un numero|con un prezzo|chiedendo quanto valga il tempo dell'assemblea}.",
+        "La delegazione del Collettivo {viene chiamata|ha comprato lo slot di parola precedente|fa cenno con una penna}."
+      ],
+      "for": [
+        "\"Il Collettivo sostiene {topic}. {L'abbiamo prezzata|L'abbiamo prezzata a quattro|La stiamo già vendendo, quindi il voto è una formalità}.\"",
+        "\"Sì. {topic} {apre un mercato|elimina un'inefficienza|converte un problema in un prodotto}. {Ringraziamo il proponente|Ringrazieremo il proponente in privato|Il proponente sarà soddisfatto}.\"",
+        "\"La sosteniamo e vorremmo la concessione. {È la stessa frase|Sono due frasi e un voto|Il presidente può trattarle separatamente}.\"",
+        "\"Favorevoli. E il Collettivo offre all'assemblea una linea di credito al quindici per cento sull'attuazione.\""
+      ],
+      "against": [
+        "\"Il Collettivo si oppone a {topic}. {È un ostacolo al commercio|Prezza qualcosa che ha già un prezzo|È un sussidio con una morale attaccata}.\"",
+        "\"No. {Deteniamo l'unica acqua pulita del continente|Tutto il resto è tagliato con LSD, ed è dichiarato in etichetta|Leggete l'etichetta}.\"",
+        "\"{topic} costerebbe al Collettivo {quattrocento milioni|un quarto|nulla, e ci opponiamo per principio}. Votiamo contro.\"",
+        "\"Contrari. Il Collettivo commercia ricordi, emozioni e la fuga da un anello, e non si farà dire quale delle tre sia legittima.\""
+      ],
+      "odd": [
+        "\"Il Collettivo vorrebbe comprare la mozione. Non l'esito. La mozione.\"",
+        "{leader} non batte ciglio per tutti e quattro i minuti. La delegazione dietro di lui non si muove dal 1996.",
+        "\"I nostri sono stati sopra gli ottanta così a lungo che l'anello ha smesso di valere per noi anche da fermi. Non è rilevante per {topic}. Lo diciamo comunque.\"",
+        "\"Il Collettivo si astiene e venderà la propria astensione alla prima delegazione che la chiede.\""
+      ]
+    },
+    "gods": {
+      "open": [
+        "Ha la parola la delegazione degli Dei. {leader} {sta già parlando|parla da prima che la seduta si aprisse|arriva al leggio senza attraversare l'aula}.",
+        "{leader}, per gli Dei, {si alza|non si alza|è su due sedie insieme, cosa che il presidente dichiara essere una sola delegazione}.",
+        "La delegazione degli Dei {viene chiamata|era già stata chiamata|viene chiamata e risponde da una direzione diversa da quella attesa}."
+      ],
+      "for": [
+        "\"Ah, {topic}? Sì. {Sì, assolutamente|Sì, ovviamente|Sì, e finirà male, e sì}.\"",
+        "\"Gli Dei sostengono {topic} perché {fa ridere|qualcuno se ne pentirà|l'alternativa è peggio e noi il peggio lo preferiamo, ma non oggi}.\"",
+        "\"Eris è soddisfatta. {È tutta la posizione|Non chiedete di cosa|Lo era già prima che la mozione fosse depositata}.\"",
+        "\"Votiamo a favore. {Abbiamo già votato a favore|Abbiamo votato a favore nel 2012|Il voto è sempre stato a favore}.\""
+      ],
+      "against": [
+        "\"No. {No, e no|No, e la delegazione non elaborerà|No, e qualcuno in quest'aula sa già perché}.\"",
+        "\"{topic} sa di Gilda. Gli Dei sono in guerra con la Gilda. {Non è complicato|Il voto segue|Fate voi il conto}.\"",
+        "\"Un dio vive del numero di persone disposte a crederci. {topic} rende quel numero più piccolo. Contrari.\"",
+        "\"Gli Dei si oppongono. {Il trono è occupato|Il trono è occupato e nessuno ha avuto il coraggio di dire no|Chiedete chi ci siede sopra e poi richiedete della mozione}.\""
+      ],
+      "odd": [
+        "{leader} risponde alla mozione precedente. Quella mozione si è chiusa undici minuti fa e la risposta è ancora corretta.",
+        "\"La delegazione degli Dei desidera informare l'assemblea che la dea della giustizia è sepolta quattrocento chilometri sotto questo edificio e non ha commenti.\"",
+        "\"C'è un corpo in orbita che a domande come questa rispondeva. Lo stanno colpendo dei satelliti. Punto successivo.\"",
+        "\"Non abbiamo posizione. Abbiamo una scommessa. La delegazione rifiuta di dire su cosa.\""
+      ]
+    },
+    "union": {
+      "open": [
+        "Ha la parola l'Unione Continentale. {leader} {si alza|si alza con una cartella|prima distribuisce la cartella}.",
+        "{leader}, per l'Unione, {esordisce|esordisce ringraziando il presidente per l'ordine dei lavori|segnala una questione procedurale}.",
+        "La delegazione dell'Unione {viene chiamata|viene chiamata nell'ordine corretto, e lo apprezza|attendeva pazientemente}."
+      ],
+      "for": [
+        "\"L'Unione sostiene {topic}. {È proporzionata|È proporzionata e sussidiaria|Rispetta le competenze delle parti}.\"",
+        "\"Sì, {previo un breve allegato tecnico|con clausola di revisione biennale|e l'Unione redigerà il regolamento attuativo a titolo gratuito}.\"",
+        "\"L'Unione è favorevole. {La procedura è stata seguita|La procedura è stata seguita alla lettera|L'avremmo sostenuta anche altrimenti, ma con meno calore}.\"",
+        "\"Favorevoli. {L'Unione chiede solo che il calendario sia rispettato|E l'Unione ringrazia il proponente per averla depositata in tempo|Punto successivo, presidente}.\""
+      ],
+      "against": [
+        "\"L'Unione non può sostenere {topic} {come depositata|senza una base giuridica|prima della valutazione d'impatto}.\"",
+        "\"No. {La competenza non è dell'assemblea|La competenza è altrove e diremo dove|Questo appartiene alla commissione, e la commissione si riunisce a marzo}.\"",
+        "\"L'Unione si oppone sulla procedura. {La sostanza può anche essere valida|Non prendiamo posizione sulla sostanza|La sostanza non è all'ordine del giorno}.\"",
+        "\"Contrari, {salvo un testo riformulato|e saremmo lieti di aiutare a riformularlo|e abbiamo già cominciato a riformularlo}.\""
+      ],
+      "odd": [
+        "{leader} solleva una mozione d'ordine sulla numerazione dell'ordine del giorno e tiene la parola per quattro minuti.",
+        "\"L'Unione osserva di essere l'unica delegazione ad aver depositato le proprie osservazioni in anticipo, in tutte le lingue di lavoro, e che nessuno le ha lette.\"",
+        "\"Non abbiamo posizione in attesa di una decisione di un organo che si riunirà dopo la fine di questa seduta.\"",
+        "\"L'Unione desidera che a verbale risulti che questa è l'undicesima seduta consecutiva a sforare.\""
+      ]
+    },
+    "naguka": {
+      "open": [
+        "Hanno la parola i Naguka. Il loro delegato {sta in piedi sulla sedia|sta in piedi sul tavolo|sta in piedi su qualcuno}.",
+        "{leader} dei Naguka {grida|indica|morde il microfono e poi ci parla dentro}.",
+        "Il delegato naguka {viene davanti|viene davanti troppo in fretta|era già davanti, a mangiare}."
+      ],
+      "for": [
+        "\"SÌ! {leader} dice sì! {topic} buono! Buono come {carne|buio|posto profondo}! Naguka dice SÌ!\"",
+        "\"Piace! {topic} è {lucido|caldo|grosso}! Naguka vuole! Naguka vota VUOLE!\"",
+        "\"{leader} annusa {topic}. Odore buono. {Non odore di bugia|Non odore di carta|Odore di quando tunnel va su}. SÌ.\"",
+        "\"Tutti noi diciamo sì. TUTTI. {Sai quanti siamo|Contaci. Non puoi|Ognuno, dappertutto, tutti insieme}. Sì!\""
+      ],
+      "against": [
+        "\"NO! {topic} è {cattivo|trucco|carta}! {leader} lo butta! Naguka lo butta!\"",
+        "\"Fate ancora parola per noi. Sempre parola. Parola non è cibo. {NO|Naguka dice no|Noi mordiamo la parola}.\"",
+        "\"{leader} dice: fai male a uno, fai male a TUTTI. {topic} fa male a uno. Quindi. {No|NO|Lo sai già, dentro testa, lo sai}.\"",
+        "\"Cattivo! Cattivo e freddo e sottile! Naguka non prende! {Riprendetelo|Riprendetelo o venite a prenderlo|Ricorderemo la faccia che l'ha fatto}.\""
+      ],
+      "odd": [
+        "\"Dov'è cibo?\" dice {leader}. Il presidente dichiara la domanda fuori tema. {leader} la ripete più forte.",
+        "Il delegato naguka si dipinge la faccia durante il dibattito. Nessuno gli chiede di smettere e lui non si offre.",
+        "\"{leader} non capisce questa. {leader} vota lo stesso. Va bene. È quello che fanno tutti.\"",
+        "\"Musica!\" grida {leader}. \"Musica dice cosa fare! Dov'è musica!\" Non c'è musica. Il delegato non si consola.",
+        "\"Buco va SU\", dice {leader}, senza motivo. \"Tanto tempo. Poi SU. Tutto qui. Adesso siediti.\""
+      ]
+    },
+    "verden": {
+      "open": [
+        "Hanno la parola i Verden. Il loro delegato {si alza|si alza lentamente|tocca il tavolo prima di parlare, che da loro è una cortesia}.",
+        "{leader}, per i Verden, {esordisce|esordisce in un MarkovSpeak impeccabile|si scusa per la lunghezza di ciò che segue e non mente}.",
+        "La delegazione verden {viene chiamata|viene chiamata e ringrazia il presidente per nome|si inclina, azzurra e senza fretta}."
+      ],
+      "for": [
+        "\"I Verden sostengono {topic}. {È un buon assetto|È un assetto paziente|Sarà un buon assetto anche fra quattrocento anni, ed è così che leggiamo una mozione}.\"",
+        "\"Una volta abbiamo gettato le nostre macchine dentro una stella e ci abbiamo messo tremila anni a esserne certi. {topic} è una decisione più piccola di quella. Sì.\"",
+        "\"Siamo favorevoli, {e vorremmo vedere come viene costruita|e vorremmo osservarne l'ingegneria|e, se l'assemblea permette, toccare la macchina}.\"",
+        "\"Sì. {I Campi Verdi non ci sono più|Abbiamo perso una dimensione per la fretta|Non abbiamo fretta, e diciamo sì}.\""
+      ],
+      "against": [
+        "\"I Verden non possono sostenere {topic}. {È scritta di fretta|Sa di fretta|La fretta è ciò di cui è morto il settantasette}.\"",
+        "\"No. {Abbiamo letto i Naguka su questo|Abbiamo letto l'inconscio collettivo su questo, cosa che possiamo fare e che loro non possono impedire|Sappiamo cosa faranno prima che lo facciano, e {topic} peggiora le cose}.\"",
+        "\"Ci opponiamo, {con garbo|e saremmo lieti di essere dissuasi|e ci opporremo con lo stesso garbo la settimana prossima}.\"",
+        "\"I Verden votano contro. {Un nostro arto, reciso e piantato, diventa un altro di noi|Mettiamo radici dove ci mettono|Non metteteci qui}.\""
+      ],
+      "odd": [
+        "\"I Verden si complimentano con chi ha progettato l'illuminazione di quest'aula. È la settima volta che lo chiediamo e nessuno lo sa.\"",
+        "{leader} spende due dei suoi quattro minuti ad ammirare l'orologio da polso del delegato accanto.",
+        "\"Non abbiamo posizione su {topic}. Abbiamo una domanda sul soffitto a cui il presidente ha già rifiutato due volte di rispondere.\"",
+        "\"I nostri cugini stanno gridando di nuovo. Lo sentiamo che ascoltiamo o no. La delegazione si scusa per la distrazione e non smette di sentirlo.\""
+      ]
+    },
+    "truckers": {
+      "open": [
+        "Ha la parola la Società dei Camionisti. {leader} {si alza|si appoggia al banco|prima posa sul tavolo un telefono vecchissimo}.",
+        "{leader}, per la Società, {esordisce|si schiarisce la voce in un microfono che non ne ha bisogno|dice di avere undici ore alle spalle e che sarà rapido}.",
+        "Il delegato della Società {viene chiamato|viene chiamato e si prende un attimo|arriva al microfono dal lato sbagliato dell'aula}."
+      ],
+      "for": [
+        "\"La Società è a favore. {La strada dice sì|Qualunque cosa tenga aperta la strada, ci sta bene|Abbiamo chiesto alla rete, la rete ha risposto sì}.\"",
+        "\"Sì. {Portiamo roba fra le bolle per gente che non può telefonarsi|Siamo l'unico motivo per cui metà di queste comunità sa che anno è|{topic} lo rende più facile, quindi sì}.\"",
+        "\"Ricevuto, presidente. La Società vota a favore. {E la trasportiamo noi se va trasportata|E il primo viaggio lo facciamo a costo|Qualcuno dovrà pur muoverla e saremo noi}.\"",
+        "\"A favore. {Nessuna osservazione|Nessun emendamento|Solo non mettetela per iscritto così lunga che non possiamo caricarla}.\""
+      ],
+      "against": [
+        "\"Negativo. {topic} l'ha scritta gente che non l'ha mai guidata. {No|La Società vota no|Venite fuori sulla strada e ne parliamo}.\"",
+        "\"No. {Ogni clausola lì dentro aggiunge un posto di blocco|I posti di blocco sono il modo in cui muoiono gli autisti|Voi volete un modulo, noi vogliamo una strada}.\"",
+        "\"La Società è contraria. {La Regola dell'80 se ne infischia del vostro allegato|Ottanta è ottanta|La fisica non accetta emendamenti}.\"",
+        "\"Contrari, {e ve lo dico gratis perché|e preferirei non dire perché qui|e ve lo dico in corridoio}.\""
+      ],
+      "odd": [
+        "\"Qualcuno in quest'aula c'è mai stato dentro una bolla? Alzi la mano.\" Si alzano due mani. Una è quella del Collettivo.",
+        "{leader} tira fuori dalla giacca un telefono Anoki, lo guarda e lo rimette dentro. Lo fa tre volte durante il dibattito.",
+        "\"La Società non ha posizione su {topic}. La Società ha un piccione fuori con una chiavetta USB alla zampa e sta lì da un'ora.\"",
+        "\"Zephyr bara a carte. Non è all'ordine del giorno. Lo dico lo stesso.\""
+      ]
+    },
+    "industries": {
+      "open": [
+        "Ha la parola Esoteric Heavy Industries. {La sedia riservata è vuota|La sedia del delegato è vuota e il microfono è acceso|Dal seggio della delegazione arriva una voce}.",
+        "Il seggio con la targa Esoteric Heavy Industries {è occupato|non è occupato|è occupato nel senso che conta}. Parla {leader}.",
+        "Esoteric Heavy Industries {risponde|risponde prima di essere chiamata|risponde, e dopo nessuno riesce a mettersi d'accordo su chi abbia parlato}."
+      ],
+      "for": [
+        "\"Esoteric Heavy Industries è favorevole a {topic}. {Non si aggiunge altro|Il voto è registrato|L'ordine sarà evaso}.\"",
+        "\"Concordiamo. {L'attrezzatura esiste|L'attrezzatura esiste da tempo|Le prime unità sono già in magazzino}.\"",
+        "\"Sì. {I nostri oggetti non si resettano|I nostri funzioneranno dentro un anello, come sempre|È tutto il nostro contributo ed è sufficiente}.\"",
+        "\"Favorevoli. Consegna in {sei settimane|zero settimane|nel modo consueto}.\""
+      ],
+      "against": [
+        "\"Esoteric Heavy Industries non è favorevole. {Non si fornisce una ragione|Una ragione non viene fornita|La delegazione ha detto quel che intendeva dire}.\"",
+        "\"No. {topic} {richiede divulgazione|richiederebbe ispezioni|contiene la parola stabilimenti}. Decliniamo.\"",
+        "\"Contrari. {L'assemblea è invitata a visitare le nostre fabbriche|Non abbiamo mai rivelato dove siano|Nessuno ha mai visto i nostri operai, e non cambierà per questo}.\"",
+        "\"Respinta. {Il presidente proceda|Punto successivo|Riforniremo comunque l'assemblea, il che non equivale ad acconsentire}.\""
+      ],
+      "odd": [
+        "La delegazione non dice assolutamente nulla per tutti e quattro i minuti. Il verbalizzante annota quattro minuti di nulla, con precisione.",
+        "\"Esoteric Heavy Industries non ha posizione. Esoteric Heavy Industries ha una fattura.\"",
+        "\"Una scopa volante e un reattore a fusione sono lo stesso problema a scale diverse. La delegazione lo offre senza ulteriori spiegazioni.\"",
+        "\"La merce compare in magazzino quando nessuno guarda. Alla delegazione è stato chiesto undici volte e ha risposto undici volte.\""
+      ]
+    },
+    "northpoint": {
+      "open": [
+        "Ha la parola l'Esercito di North Point. {leader} {si alza|scatta sull'attenti|poi non si risiede}.",
+        "{leader}, per North Point, {esordisce|esordisce con il nome di Jenna|attende, perché mezza aula ha cominciato a mormorare}.",
+        "La delegazione di North Point {viene chiamata|viene chiamata nonostante l'obiezione del Vaticano|prende la parola mentre la delegazione vaticana gira le sedie}."
+      ],
+      "for": [
+        "\"North Point sostiene {topic}. {Jenna l'ha letta|Jenna l'ha letta e la trova pulita|È stata letta ad alta voce al nord e nulla ha obiettato}.\"",
+        "\"Sì. {Ci chiama Anticristo un uomo che fa levitare la sua città sopra Roma|Ci hanno chiamati di peggio|Il nome non cambia il voto}.\"",
+        "\"L'Esercito è favorevole. {Terremo la linea per questo|Abbiamo già tenuto una linea per meno|Chiedete all'Impero quanto valgono le nostre linee}.\"",
+        "\"A favore. {E invitiamo la Santa Sede a dire altrettanto|E la Santa Sede voterà contro solo per questo|Guardate}.\""
+      ],
+      "against": [
+        "\"North Point si oppone a {topic}. {È stata redatta a Roma|Sa di Roma|Le impronte di Roma sono sulla clausola quattro e le vedono tutti}.\"",
+        "\"No. {Ci hanno dichiarato guerra per il fatto di esistere|Siamo in guerra con una teocrazia che ci crede una profezia|Non votiamo le profezie dei nostri nemici}.\"",
+        "\"Contrari. {Jenna dice no|Jenna non dice nulla, e l'Esercito dice no|All'Esercito non serve che glielo dicano}.\"",
+        "\"La respingiamo. {L'Impero lo chiamerà blasfemia|Tutto è blasfemia|Che lo facciano}.\""
+      ],
+      "odd": [
+        "{leader} fissa la delegazione vaticana per tutti e quattro i minuti senza dire nulla.",
+        "\"North Point desidera che a verbale risulti quali delegazioni hanno girato la sedia quando siamo stati chiamati.\"",
+        "\"Non abbiamo posizione su {topic}. Abbiamo moltissimo da dire sull'essere un punto all'ordine del giorno di qualcun altro.\"",
+        "\"Pietro II ha dichiarato guerra a una persona. La delegazione vorrebbe sapere quale sia la procedura e le è stato detto che non esiste.\""
+      ]
+    },
+    "citadel": {
+      "open": [
+        "Ha la parola la Cittadella Invertita. Il suo delegato {si alza|si alza da una sedia che pare troppo profonda|non lo si è visto arrivare}.",
+        "{leader}, per la Cittadella, {parla|parla piano e l'aula tace per sentirlo|parla e il suono arriva con un attimo di ritardo}.",
+        "La delegazione della Cittadella {viene chiamata|viene chiamata, e alza lo sguardo|risponde da più lontano di dove è seduta}."
+      ],
+      "for": [
+        "\"La Cittadella acconsente a {topic}. {È una cosa piccola|Quasi tutte lo sono|Abbiamo visto cose più grandi di {topic} posarsi e passare}.\"",
+        "\"Sì. {La città fu costruita da gente che non lasciò scritti|Abbiamo ereditato una città vuota e sappiamo quanto costa il vuoto|Preferiamo che quest'aula resti piena}.\"",
+        "\"Acconsentiamo. {Il nucleo è caldo e il guscio tiene|Il guscio tiene da più tempo di quanto la superficie abbia un calendario|È il nostro argomento}.\"",
+        "\"Favorevoli, {e a bassa voce|e senza discorsi|e non ce lo faremo chiedere due volte}.\""
+      ],
+      "against": [
+        "\"La Cittadella respinge {topic}. {Va verso il basso|Non gradiamo ciò che va verso il basso|L'ultima cosa che è andata verso il basso è stata una trivella sovietica}.\"",
+        "\"No. {La superficie decide e la profondità paga|L'avete già fatto|Ce lo ricordiamo, ed è tutta la nostra obiezione}.\"",
+        "\"Contrari. {Sotto la nostra città c'è qualcosa che dorme|Prende una persona per volta|{topic} gliene darebbe di più, e noi diciamo no}.\"",
+        "\"Rifiutiamo. {Da noi si guarda in alto e si vede il resto della città|È ciò che intendiamo per conseguenza|Consideratelo}.\""
+      ],
+      "odd": [
+        "\"La Cittadella vorrebbe sapere se qualcuno in quest'aula abbia fatto di recente qualcosa che non sa spiegarsi. Non è una domanda retorica.\"",
+        "{leader} descrive la luce del nucleo per tre minuti. Due delegazioni si commuovono visibilmente e non saprebbero dire perché.",
+        "\"Non abbiamo posizione su {topic}. Abbiamo una posizione antichissima sul fatto di essere interpellati.\"",
+        "\"Qualcosa scavò la Strada Serpentina prima che ci fosse qualcuno per cui scavarla. La delegazione lo cita senza collegarlo alla mozione.\""
+      ]
+    },
+    "petrodemons": {
+      "open": [
+        "Hanno la parola i Petrodemoni. {leader} {si alza|più che alzarsi arriva a essere in piedi|lascia un segno sul banco}.",
+        "{leader}, per i Petrodemoni, {parla|parla, e il microfono si scalda|esordisce chiedendo chi detenga la linea tellurica sotto questo pavimento}.",
+        "La delegazione petrodemone {viene chiamata|viene chiamata e le luci calano un poco|risponde con una voce che è più voci}."
+      ],
+      "for": [
+        "\"Contrattiamo per {topic}. {I termini sono accettabili|I termini sono accettabili e vincolanti|Un contratto con noi vincola in modi che i vostri avvocati non hanno modellato}.\"",
+        "\"Sì. {Le linee la porteranno|La porteremo noi, e le linee porteranno noi|La redirezione è ciò per cui esistiamo}.\"",
+        "\"D'accordo. {Il nostro prezzo è nell'allegato|Il nostro prezzo non è denaro|Troverete il nostro prezzo ragionevole e vi spiacerà pagarlo}.\"",
+        "\"Acconsentiamo a {topic}. {Scritto, testimoniato e firmato|Firmato nel mezzo consueto|Non chiedete cosa sia l'inchiostro}.\""
+      ],
+      "against": [
+        "\"No. {topic} {spezza una linea|spezza una linea tellurica|propone di spezzare una linea tellurica, cioè di ucciderci lentamente}. Rifiutiamo.\"",
+        "\"Decliniamo. {Un tempo fummo dinosauri, in un certo senso|Ciò che avevano dentro è rimasto nel petrolio|State votando sui nostri antenati}.\"",
+        "\"Contrari. {Vicino a una linea siamo quasi indistruttibili|Lontani da una siamo soltanto formidabili|Non provate a scoprire cosa sia quest'aula}.\"",
+        "\"La delegazione rifiuta. {Mattei tentò qualcosa di simile|Andò male|Il suo aereo cadde nel 1962 e la pergamena non fu mai trovata}.\""
+      ],
+      "odd": [
+        "\"C'è una linea tellurica undici metri sotto i piedi del presidente. La delegazione lo segnala a ogni seduta e non viene mai verbalizzato.\"",
+        "{leader} parla per quattro minuti e la trascrizione risulta poi più corta di quanto dovrebbe.",
+        "\"Non abbiamo posizione. Abbiamo un'offerta permanente, ed è permanente dal 1962.\"",
+        "\"Porfirina\", dice {leader}, \"è il filo. Sangue, petrolio, linea. La delegazione non aggiungerà altro.\""
+      ]
+    },
+    "tourists": {
+      "open": [
+        "Hanno la parola i Turisti. Il loro delegato {si alza|si alza, con in mano una macchina fotografica|sta fotografando l'aula e va sollecitato}.",
+        "{leader}, per i Turisti, {esordisce|esordisce chiedendo quale seduta sia questa|chiede al presidente di ripetere la domanda}.",
+        "La delegazione dei Turisti {viene chiamata|viene chiamata due volte|si scopre essere seduta nel posto sbagliato, di nuovo}."
+      ],
+      "for": [
+        "\"Siamo favorevoli! {topic} sembra {adorabile|meravigliosa|estremamente fotogenica}.\"",
+        "\"Sì! {Non l'abbiamo seguita del tutto|L'abbiamo seguita quasi tutta|Abbiamo seguito la prima parte e poi la traduzione ha fatto qualcosa}, ma sì!\"",
+        "\"A favore! {Sono stati tutti così gentili|Ci stiamo divertendo un mondo|Vorremmo una copia del verbale come ricordo}.\"",
+        "\"Favorevoli! E qualcuno potrebbe firmarci l'ordine del giorno dopo?\""
+      ],
+      "against": [
+        "\"Contrari, purtroppo. {Sembra pericolosa|Qualcuno ha detto che è pericolosa|Quella simpatica delegazione in blu ha detto che è pericolosa}.\"",
+        "\"No grazie. {Siamo venuti per la Torre|Abbiamo fatto tantissima strada per la Torre|Preferiremmo che alla Torre non succedesse nulla}.\"",
+        "\"Votiamo no. {È un peccato|Niente di personale|La bandiera del proponente però ci piace}.\"",
+        "\"Contrari. {A marzo siamo rimasti dentro un anello|Dieci settimane, sempre martedì|Ormai votiamo d'istinto}.\""
+      ],
+      "odd": [
+        "\"Ma questo piano è vero? Qualcuno ha detto che questo piano c'è solo nelle settimane dispari.\"",
+        "{leader} fotografa il tabellone del voto. Quattro delegazioni obiettano simultaneamente.",
+        "\"Non abbiamo posizione e sinceramente nemmeno un'idea. Ci stiamo divertendo moltissimo.\"",
+        "\"Chi di voi è la dea? Ci hanno detto che una di voi è la dea.\""
+      ]
+    }
+  },
+  "observer": {
+    "common": {
+      "floor": [
+        "{power} non ha voto e parla lo stesso. {leader} e breve e compiaciuto.",
+        "Il seggio osservatore di {power} ha la parola. {leader} dice qualcosa di caloroso e inutile.",
+        "{leader}, in osservazione per {power}, offre un commento che nessuno aveva chiesto."
+      ],
+      "carried": [
+        "{power} applaude. Non ne ha diritto, e lo fa comunque.",
+        "Il seggio osservatore di {power} annota il risultato con cura."
+      ],
+      "failed": [
+        "{power} sembra deliziato lo stesso.",
+        "Il seggio osservatore di {power} prende un appunto e lo sottolinea due volte."
+      ]
+    },
+    "tourists": {
+      "floor": [
+        "\"Non abbiamo voto, quindi diciamo solo: {siete tutti bravissimi|questa è la migliore finora|vi adoriamo}.\"",
+        "\"Solo osservatori! Ma {topic} e {la nostra preferita|il motivo per cui siamo venuti|roba da album}.\"",
+        "\"{sponsor} ha argomentato {benissimo|con tanto sentimento|così a lungo}. Ce lo siamo segnati.\"",
+        "\"Continuate pure. {Non possiamo aiutare|Non possiamo votare|Abbiamo promesso ai Sorveglianti di limitarci a guardare}, e sinceramente così è più divertente.\"",
+        "\"{leader} per i Turisti. Nessun voto. {Solo affetto|Solo ammirazione|Solo tre macchine fotografiche}.\"",
+        "\"Una specie che litiga su {topic} per {quaranta minuti|un'ora|un pomeriggio intero} e una specie che vale {un vuoto attraversato|il viaggio|ogni anno luce}.\"",
+        "\"Voteremmo se potessimo. {Voteremmo male|Voteremmo per chi ha parlato per ultimo|Voteremmo due volte}, ed e per questo che non ci lasciano.\"",
+        "\"{sponsor} e {target} urlano di nuovo. {Meraviglioso|Non smettete|Ci mancava}.\"",
+        "\"Nessuna posizione. {Entusiasmo enorme|Benevolenza sconfinata|Ignoranza totale e piacere assoluto}, però.\""
+      ],
+      "carried": [
+        "\"Approvata! {Siamo felici per voi|Ma guardatevi|Bravi tutti}.\"",
+        "\"{Non abbiamo votato|Non potevamo votare|Non ci è permesso}, ma vorremmo mettere a verbale che eravamo {emozionatissimi|col fiato sospeso|a filmare}.\"",
+        "\"E questa la parte in cui vi stringete la mano? {Adoriamo questa parte|Aspettavamo questa parte}.\"",
+        "\"Mozione approvata per {forCount} a {againstCount}. {Abbiamo scritto i numeri su una cartolina|Ci teniamo i numeri}.\""
+      ],
+      "failed": [
+        "\"Respinta! {Che peccato|Pazienza|Ci riuscirete la prossima volta}. Siete stati tutti {bravissimi|appassionati|magnifici}.\"",
+        "\"{Avremmo votato a favore|Avremmo votato contro|Ci saremmo astenuti magnificamente} se qualcuno ce lo avesse lasciato fare.\"",
+        "\"E cade. {Rifatelo la settimana prossima|Torniamo per la rivincita|La settimana prossima siamo liberi}.\"",
+        "\"Non succede niente, e sono tutti furiosi. {E il nostro esito preferito|Adoriamo questa specie}.\""
+      ]
+    }
+  },
+  "choice": {
+    "support": [
+      "Parla a favore di {topic}. Metti la voce di {power} dietro la mozione, senza giri.",
+      "Sostieni la mozione a nome di {power}, {senza riserve|e dillo prima di chiunque altro|e sfida l'aula a seguirti}.",
+      "Alzati per {topic}. {power} è favorevole e tanto vale che l'aula lo sappia adesso.",
+      "Appoggia {sponsor}. Di' che {power} non vede motivo di ostacolare {topic}."
+    ],
+    "oppose": [
+      "Parla contro {topic}. {power} dice no, e lo dice subito.",
+      "Opponiti alla mozione. {Elenca le ragioni|Dai una ragione sola e tieniti le altre|Non dare alcuna ragione}.",
+      "Alzati contro {topic}. Che {sponsor} lo senta da {power} direttamente.",
+      "Respingila a nome di {power}, {con cortesia|con freddezza|a lungo}."
+    ],
+    "amend": [
+      "Proponi un emendamento. Restringi {topic} finché {power} non riesce a conviverci.",
+      "Chiedi di emendare. Togli {i denti|i soldi|il calendario} a {topic} e restituiscila a {sponsor}.",
+      "Dividi la differenza: sostieni {topic} in linea di principio, e manda il dettaglio in commissione.",
+      "Emendala. {Mezza mozione approvata batte una intera persa|La commissione è dove le mozioni vanno a diventare sopravvivibili|{power} preferisce una frazione a una rissa}."
+    ],
+    "filibuster": [
+      "Parla. Continua a parlare. Non lasciare a {topic} lo spazio per essere votata pulitamente.",
+      "Tieni la parola finché all'aula di {topic} non importerà più.",
+      "Fai ostruzionismo. {Leggi ad alta voce gli allegati|Leggi ad alta voce l'elenco dei presenti|Leggi ad alta voce qualunque cosa}.",
+      "Annoia {topic} a morte. {Ha già funzionato|Nessuno te ne ringrazierà|Nemmeno {power} te ne ringrazierà}."
+    ],
+    "wild": [
+      "Di' la cosa che su {topic} nessuno dice ad alta voce, {e guarda cosa succede|e lascia che se la veda l'aula|a verbale}.",
+      "Rivolgiti all'aula dandole del tu, una delegazione per volta, {cominciando da {sponsor}|e finisci sulla sedia vuota|finché qualcuno non ti ferma}.",
+      "Leggi ad alta voce cosa vuole davvero {power}, {non cosa dice il mandato|parola per parola|come stava scritto a margine}.",
+      "Fai qualcosa che darà del filo da torcere al verbalizzante.",
+      "Chiedi all'assemblea a cosa serva tutto questo. Sul serio."
+    ],
+    "sg": {
+      "amend": [
+        "Riformula la mozione dalla presidenza finché entrambe le parti non possono votarla.",
+        "Media. Togli la clausola tagliente da {topic} e ricomponi l'aula attorno a ciò che resta.",
+        "Offri una formulazione. {Un presidente che redige è un presidente che decide|Nessuno obietta a un presidente che vuole solo aiutare|Nessuna delle due parti se ne accorgerà prima del verbale}."
+      ],
+      "support": [
+        "Di' dalla presidenza che {topic} merita di passare, e che sia inteso per quello che è.",
+        "Metti il peso della presidenza dietro {sponsor}, {apertamente|nell'impostazione più che nelle parole|una volta}.",
+        "Imposta il voto in modo che il sì suoni come la risposta ragionevole."
+      ],
+      "oppose": [
+        "Di' dalla presidenza che {topic} non deve passare, e accetta quel che costa.",
+        "Imposta il voto in modo che il no suoni come la risposta prudente.",
+        "Metti la presidenza contro {sponsor}. {Verrà ricordato|Non è a questo che serve una presidenza|Fallo lo stesso}."
+      ],
+      "abstain": [
+        "Limitati a presiedere. Lascia che l'aula decida {topic} senza aiuti.",
+        "Restane fuori. {Anche il silenzio del presidente è una posizione|Non dire nulla e fatti vedere non dire nulla|Che discutano}.",
+        "Non prendere posizione. Indici il voto."
+      ],
+      "wild": [
+        "Sospendi la seduta nel mezzo di {topic} e guarda chi parla con chi in corridoio.",
+        "Metti in lista d'intervento una delegazione che nessuno si aspettava di sentire.",
+        "Rileggi la mozione all'aula con le parole che il proponente stesso usò in una seduta che nessuno ricorda."
+      ]
+    }
+  },
+  "reactions": {
+    "normal": [
+      "{power} si siede. L'aula {assorbe|non reagisce|reagisce, brevemente, e viene zittita dal martelletto}.",
+      "C'è {una pausa|quella particolare pausa che segue una presa di posizione|movimento su tre file di banchi}.",
+      "Due delegazioni {confabulano|confabulano senza fingere di non farlo|scrivono un biglietto nello stesso istante}.",
+      "La penna del verbalizzante {recupera|non recupera|si ferma un secondo e poi recupera}."
+    ],
+    "wild": [
+      "L'aula {si azzittisce del tutto|non si azzittisce affatto|produce un suono che non aveva mai fatto}.",
+      "L'intervento di {power} viene messo a verbale {alla lettera|alla lettera, due volte|con una nota della Fondazione Archivio}.",
+      "Da qualche parte dietro le delegazioni, {qualcuno ride|qualcuno si alza|cade una sedia}.",
+      "Il presidente {lo dichiara ammissibile|lo dichiara inammissibile e lo lascia agli atti|si rifiuta di pronunciarsi}."
+    ]
+  },
+  "ballot": {
+    "public": [
+      "{chair} indice la votazione. Il tabellone si accende seggio per seggio, e su ognuno c'è un nome.",
+      "Per alzata di mano, poi il tabellone. {chair} legge i seggi in ordine. A nessuno è risparmiata la lettura.",
+      "Il voto è palese. {chair} comincia dal fondo e procede, e l'aula guarda ogni singola luce."
+    ],
+    "secret": [
+      "{chair} dispone lo scrutinio segreto. Le targhe si spengono. Il tabellone viene mescolato prima di essere mostrato.",
+      "Voto sigillato. I seggi sono senza nome, l'ordine è rimescolato, e il conteggio è l'unica cosa onesta sul tabellone.",
+      "{chair} indice una votazione segreta. Ventuno luci, nessun nome, e dopo nessuno può dimostrare niente."
+    ]
+  },
+  "council": {
+    "opening": [
+      "{chair} rimette la mozione al Consiglio di Sicurezza. Quattro delegazioni restano sedute mentre il resto dell'aula si volta a guardare.",
+      "Questa va al Consiglio. {chair} nomina i quattro membri permanenti e interpella ciascuno a turno.",
+      "La gravità della mozione la manda verso l'alto. {chair} chiama Britannia, l'Unione, Roma e la Porta."
+    ],
+    "approve": [
+      "\"{power} approva.\" {leader} {lo dice piatto|non elabora|lo fa suonare come una concessione}.",
+      "{power}: approvazione. {leader} {annuisce una volta|firma la scheda|tiene la scheda alzata abbastanza a lungo da essere fotografato}.",
+      "\"Approvata\", dice {leader}. \"{Con riserve|Senza entusiasmo|E si dia atto di chi ce l'ha chiesto}.\""
+    ],
+    "veto": [
+      "\"{power} pone il veto.\" {leader} {lo dice senza alzare la voce|lo dice due volte|lo dice come se non costasse nulla}.",
+      "{power}: veto. {leader} {non spiega|spiega a lungo e non spiega nulla|posa la scheda a faccia in su}.",
+      "\"Veto\", dice {leader}. \"{Non siamo tenuti a motivarlo|Il motivo è ovvio|Il motivo è in una cartella che nessuno qui leggerà}.\""
+    ],
+    "noTiebreaker": [
+      "Due e due. Non c'è un Segretario Generale a sciogliere la parità, e la mozione muore sul pareggio.",
+      "Il Consiglio si spacca a metà. Il presidente guarda il posto vuoto dove siederebbe un Segretario Generale, e dichiara la mozione respinta.",
+      "Due voti per parte e nessuno con l'autorità di decidere. La mozione cade, e tutti sapevano che sarebbe caduta dall'istante in cui è comparsa la spaccatura."
+    ],
+    "tiebreak": {
+      "approve": [
+        "\"Due e due\", dice {name}. \"Allora tocca a me. {L'aula ha parlato e il Consiglio no|Ho ascoltato entrambe le metà di quest'aula|Mi metto dalla parte dell'assemblea}. Approvata.\"",
+        "{name} lascia correre il silenzio un attimo più del comodo. \"L'aula la voleva. Il Consiglio non è riuscito a mettersi d'accordo per fermarla. Passa.\"",
+        "\"Non sono qui a rappresentare nessuno\", dice {name}, \"ed è l'unico motivo per cui questo funziona. Approvata.\""
+      ],
+      "veto": [
+        "\"Due e due\", dice {name}. \"Allora tocca a me, e non me la assumo. {Nemmeno l'aula era convinta|Metà di questo Consiglio è dubbio a sufficienza|Veto}.\"",
+        "{name} rilegge il conteggio due volte prima di parlare. \"Quando il Consiglio si divide in parti uguali su una cosa così grande, la risposta è no. Veto.\"",
+        "\"Preferisco essere quello che l'ha fermata\", dice {name}, \"piuttosto che quello che l'ha fatta passare a testa o croce. Veto.\""
+      ]
+    }
+  },
+  "outcome": {
+    "carried": [
+      "La mozione passa, {forCount} a {againstCount}. \"{title}\" entra a verbale.",
+      "Approvata: {forCount} favorevoli, {againstCount} contrari. Il presidente registra \"{title}\" come adottata e passa oltre {subito|prima che qualcuno la riapra|con visibile sollievo}.",
+      "{forCount} a {againstCount}. Passa. {Da qualche parte un trattato acquisisce un numero|La Fondazione Archivio comincia a pubblicare prima che cali il martelletto|Tre delegazioni cominciano a redigere obiezioni per la settimana prossima}."
+    ],
+    "failed": [
+      "La mozione cade, {forCount} a {againstCount}. \"{title}\" non va oltre.",
+      "Respinta: {forCount} favorevoli, {againstCount} contrari. Il presidente registra \"{title}\" come caduta e {passa oltre|aspetta che il rumore finisca|chiama il punto successivo sopra il rumore}.",
+      "{forCount} a {againstCount}. Cade. {Il proponente sta già riscrivendo|Il proponente non sembra sorpreso|Nessuno sembra sorpreso}."
+    ]
+  },
+  "closings": [
+    "{chair} chiude la seduta. {carried} mozioni approvate su {total}. Le delegazioni {escono in fila|non escono in fila|restano sedute a discutere per un'altra ora}.",
+    "Cala il martelletto. {carried} approvate su {total}. {La Fondazione Archivio sta già pubblicando|I piccioni sono già partiti|Qualcuno ha preso i biscotti}.",
+    "Seduta chiusa. {carried} su {total}. {chair} ringrazia l'assemblea {senza convinzione|con le stesse parole della settimana scorsa|e non lo si sente sopra lo stridere delle sedie}."
+  ],
+  "lobby": {
+    "intro": [
+      "Il banco delle credenziali sta fuori dall'aula: {venue}. {Un impiegato attende|Due impiegati attendono, uno dei quali dorme|Un impiegato attende con un registro più vecchio dell'assemblea}.",
+      "Fuori dall'aula, a {venue}, il registro è aperto e il caffè è {freddo|gratis|nessuna delle due}.",
+      "L'anticamera dell'assemblea. {venue}, e una fila di nessuno."
+    ],
+    "presiding": [
+      "{name} assume la presidenza. Da questo momento {name} non rappresenta più nessuno, ed è tutta la carica.",
+      "Il martelletto cambia mano. {name} è Segretario Generale, e la prima cosa che la carica si prende è il seggio che la precedeva.",
+      "{name} posa la targa di qualunque potenza fosse e raccoglie quella che non ha bandiera."
+    ],
+    "resigned": [
+      "{name} restituisce le credenziali di {power}. L'impiegato le timbra {senza commenti|due volte|e alza lo sguardo, una volta}.",
+      "{name} si dimette dal seggio di {power}. Ci vogliono {quattro minuti|una firma|meno tempo di quanto ce ne sia voluto a ottenerlo}.",
+      "La targa che dice {power} torna nel cassetto. {name} esce passando davanti all'aula senza guardarci dentro."
+    ]
+  },
+  "joining": {
+    "intro": [
+      "L'impiegato delle credenziali gira il registro. \"Quale, allora?\" {La lista è più corta di quel che sembra|Non tutte le potenze ti vogliono|Alcuni di questi nomi non hanno mai preso un esterno}. {name} legge.",
+      "\"L'accreditamento\", dice l'impiegato, \"è questione di chi garantisce per te.\" Viene esibita una lista. Il nome di {name} è in cima a una pagina bianca.",
+      "Ci sono ventuno seggi e una lista molto più corta di potenze disposte a farci sedere {name}."
+    ],
+    "refused": [
+      "L'impiegato gira il registro ed è vuoto. Nessuno garantisce per {name}. {Non questa settimana|Non ancora|Non finché il registro dice quel che dice}.",
+      "\"Nessuno\", dice l'impiegato, senza cattiveria. \"Prima devi rammendare qualcosa.\" {name} non è accreditato.",
+      "Non c'è potenza nel registro disposta a mettere il nome di {name} su un seggio."
+    ],
+    "declined": [
+      "{name} chiude il registro. L'impiegato {fa spallucce|prende nota|se lo aspettava}.",
+      "\"Un'altra settimana, allora\", dice l'impiegato, e rigira il registro. {name} non prende nulla.",
+      "{name} lascia il banco senza accreditamento, {che è anch'essa una decisione|cosa che l'impiegato registra come una decisione|e l'impiegato scrive esattamente questo}."
+    ],
+    "accepted": [
+      "\"{name}. Accreditato presso {power}.\" L'impiegato timbra. \"{leader} sarà informato. {leader} viene informato di tutto.\"",
+      "La targa viene stampata mentre {name} guarda: {power}, e sotto in caratteri più piccoli, {name}. \"{leader} l'ha approvato {stamattina|in anticipo|senza leggerlo}.\"",
+      "\"Benvenuto nella delegazione di {power}\", dice l'impiegato, con la voce di chi l'ha detto quattrocento volte. \"{leader} non manda nulla. {leader} non lo fa mai.\""
+    ]
+  }
+}

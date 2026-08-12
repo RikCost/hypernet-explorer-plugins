@@ -1,4 +1,123 @@
 {
   "optionName": "Auto Idle Explorer",
-  "badge": "AUTO P2"
+  "badge": "AUTO P2",
+  "formation": {
+    "label": "Party Formation",
+    "states": ["Close", "Loose"]
+  },
+  "loose": {
+    "thought": [
+      "A good spot to catch my breath.",
+      "My feet have opinions about this road.",
+      "I wonder what is over that ridge.",
+      "We should have packed more food.",
+      "Still no idea where we are going.",
+      "Quiet. Almost too quiet.",
+      "I could sleep standing up.",
+      "That cloud looks like a bad omen.",
+      "Counting my coins again. Same answer.",
+      "Someone has to keep watch. Might as well be me.",
+      "This place smells older than it looks.",
+      "One day I will be paid for this."
+    ],
+    "greet": [
+      "Evening. Seen anything strange around here?",
+      "We are only passing through.",
+      "Is there anywhere warm to eat nearby?",
+      "You live here? What is that like?",
+      "Any news worth hearing?",
+      "Careful out there. It bites.",
+      "Which way is the nearest road?"
+    ],
+    "reply": [
+      "Depends who is asking.",
+      "Nothing worth telling.",
+      "Strange is all we get here.",
+      "Keep to the road and you will be fine.",
+      "You are not from around here.",
+      "Mind yourself after dark.",
+      "I have said too much already."
+    ],
+    "partyGreet": [
+      "Do you ever think about going home?",
+      "You have been quiet all day.",
+      "Tell me again why we took this road.",
+      "I would not have made it this far alone.",
+      "How is that wound of yours holding up?",
+      "If we get paid, I am buying the first round.",
+      "Do you trust the people we met back there?",
+      "I had a dream about this place. Do not ask.",
+      "You carry too much. Give me half.",
+      "One of these days we should stop for a whole week."
+    ],
+    "partyReply": [
+      "Home is wherever the packs are.",
+      "I was thinking. It happens.",
+      "Because you asked, and I said yes. Fool that I am.",
+      "Nor I. Do not let it go to your head.",
+      "It has stopped bleeding, which is something.",
+      "You said that in the last three towns.",
+      "I trust nobody I cannot outrun.",
+      "You always dream about the wrong things.",
+      "I can manage. Ask me again on the hill.",
+      "A week. Listen to us."
+    ],
+    "look": [
+      "Huh. That has been here a while.",
+      "Someone made this by hand.",
+      "Best not to touch it.",
+      "Worth something, maybe.",
+      "Now that is odd.",
+      "I have seen one of these before."
+    ],
+    "recall": [
+      "Wait for me!",
+      "Where are we going now?",
+      "Right behind you.",
+      "Slow down!",
+      "Coming!"
+    ],
+    "rest": [
+      "Five minutes. That is all I ask.",
+      "My feet have earned this.",
+      "Do not tell the others I sat down.",
+      "Just resting my eyes.",
+      "This is the best seat in the country."
+    ],
+    "need": {
+      "hunger": [
+        "I was starting to chew my own strap.",
+        "That will hold me until evening.",
+        "Cold, but it is food.",
+        "Do not look at me like that. I was hungry."
+      ],
+      "sleep": [
+        "A bed. An actual bed.",
+        "Wake me if the world ends.",
+        "I could sleep for a week.",
+        "Somewhere flat will do."
+      ],
+      "hygiene": [
+        "I had forgotten what my own hands looked like.",
+        "Three days of road, off at last.",
+        "Now I am fit to stand near people.",
+        "That water was colder than the grave."
+      ],
+      "social": [
+        "Good to hear another voice.",
+        "People. I had missed people.",
+        "That is the most I have said all week."
+      ],
+      "leisure": [
+        "One more go. Just one.",
+        "I needed that more than I knew.",
+        "Nobody tell the party how much I lost.",
+        "For a moment there I forgot the road."
+      ]
+    },
+    "toastRent": "{name} rented a room for {price}",
+    "toastEat": "{name} ate {item}",
+    "toastOpinion": "{npc} thinks of {name}: {delta}",
+    "toastPartyTalk": "{name} and {other} talked ({other}: {delta}, {name}: {back})"
+  }
 }

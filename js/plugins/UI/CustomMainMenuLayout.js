@@ -53,6 +53,16 @@
         return window.CharacterPresets?.emLabel?.(key, label) ?? label;
     }
 
+    // Both travel entries that offer the world map are one row doing two jobs:
+    // on Earth it goes back to map 315, on another planet's surface there is no
+    // world map to go back to and the press opens the landing-site picker
+    // instead (WorldMapReturn's commandWorldMap decides, this only names it).
+    function worldMapReturnLabel() {
+        const onAlienSurface = !!(window.GalaxySim?.isAlienSurface?.());
+        return T(onAlienSurface ? 'MainMenu.cmd.chooseLandingSite'
+                                : 'MainMenu.cmd.returnToWorldMap');
+    }
+
     // The Hypernet command is only usable while the party carries a device able
     // to reach the Hypernet. The plain Hexphone Communicator (160) deliberately
     // does NOT count, it has no Hypernet uplink. Edit this list to add/remove
@@ -75,6 +85,17 @@
             const item = $dataItems[id];
             return item && $gameParty.hasItem(item);
         });
+    }
+
+    // The Alchemistry bench is a thing you carry, not a place: the tile is only
+    // usable while the party holds the portable kit, and is greyed out (rather
+    // than hidden) the way the Hypernet tile is when no device is carried.
+    const ALCHEMISTRY_KIT_ITEM_ID = 390;
+
+    function isAlchemistryAvailable() {
+        if (typeof $gameParty === "undefined" || !$gameParty || typeof $dataItems === "undefined") return false;
+        const kit = $dataItems[ALCHEMISTRY_KIT_ITEM_ID];
+        return !!(kit && $gameParty.hasItem(kit));
     }
 
     // =========================================================================
@@ -143,14 +164,18 @@
         cooking: 219,
         thinker: 359,
         blacksmithing: 108,
+        alchemistry: 180,
         build: 390,
         quest_log: 191,
+        diary: 189,
         training: 189,
         research: 79,
         bestiary: 267,
+        cards: 416,
         world_map: 190,
         factions: 132,
         biologics: 84,
+        augments: 223,
         help: 186,
         options: 83,
         tools: 252,
@@ -901,9 +926,10 @@
     };
 
     // =========================================================================
-    // Party Dynamics page: a hub of three sub-pages
-    //   roster  , promote a leader, bench a member (retiring them into a
-    //             character-creation dossier for this world)
+    // Party Dynamics page: a hub of four sub-pages
+    //   roster    , promote a leader, bench a member (retiring them into a
+    //               character-creation dossier for this world)
+    //   turnorder , the order the party acts in, member 1 first
     //   wiki    , the Empathize encyclopedia opened on its Party section
     //   history , every member who ever travelled along, with the date they
     //             left and, when it applies, their date of death
@@ -934,28 +960,14 @@
         this.refreshUIMenuDOM(false);
     };
 
-    // Turn order is a party-only override of the DEX ranking; the first nudge
-    // pins the ranking the player is looking at, so nothing jumps about.
+    // Turn order is the party's own marching order; the first nudge pins the
+    // order the player is looking at, so nothing jumps about.
     Scene_Menu.prototype.moveUITurnOrder = function (actorId, delta) {
         if (!window.BattleTurnOrder?.move?.(actorId, delta)) {
             SoundManager.playBuzzer();
             return;
         }
         SoundManager.playCursor();
-        this.refreshUIMenuDOM(false);
-    };
-
-    Scene_Menu.prototype.resetUITurnOrder = function () {
-        if (!window.BattleTurnOrder?.isPinned?.()) {
-            SoundManager.playBuzzer();
-            return;
-        }
-        window.BattleTurnOrder.clear();
-        SoundManager.playOk();
-        window.ParchmentToast?.show?.(
-            T('MainMenu.dynamics.turnOrderCleared', { stat: TextManager.param(6) }),
-            { severity: 'info', duration: 200 }
-        );
         this.refreshUIMenuDOM(false);
     };
 
@@ -1031,13 +1043,11 @@
         const view = this._dynamicsView || 'hub';
         if (view === 'roster') return this.generateUIDynamicsRosterHTML();
         if (view === 'history') return this.generateUIDynamicsHistoryHTML();
-        if (view === 'leader') return this.generateUIDynamicsLeaderHTML();
         if (view === 'turnorder') return this.generateUIDynamicsTurnOrderHTML();
 
         const partySize = $gameParty.members().length;
         const pastCount = (window.PartyRoster?.history?.() ?? []).filter(e => e.status !== 'active').length;
         const wikiEnabled = !!window.NPCEmpathize?.openWiki;
-        const leaderName = $gameParty.leader() ? $gameParty.leader().name() : '';
         const turnOrderEnabled = !!window.BattleTurnOrder;
         const firstToAct = turnOrderEnabled ? (window.BattleTurnOrder.members()[0] ?? null) : null;
 
@@ -1062,9 +1072,6 @@
                     <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
                         ${tile(T('MainMenu.dynamics.roster'), T('MainMenu.dynamics.rosterSub', { count: partySize }), COMMAND_ICONS.dynamics,
                             "SceneManager._scene?.setDynamicsView?.('roster')", true)}
-                        ${tile(T('MainMenu.dynamics.leader'),
-                            leaderName ? T('MainMenu.dynamics.leaderSub', { name: escapeHtml(leaderName) }) : T('MainMenu.dynamics.leaderHint'),
-                            145, "SceneManager._scene?.setDynamicsView?.('leader')", partySize > 0)}
                         ${tile(T('MainMenu.dynamics.turnOrder'),
                             firstToAct ? T('MainMenu.dynamics.turnOrderSub', { name: escapeHtml(firstToAct.name()) }) : T('MainMenu.dynamics.turnOrderHint'),
                             220, "SceneManager._scene?.setDynamicsView?.('turnorder')", turnOrderEnabled && partySize > 0)}
@@ -1190,59 +1197,12 @@
                     ${benchNote ? `<div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-top:4px;">${benchNote}</div>` : ''}`;
     };
 
-    // Set party leader: the same promotion the roster offers, on a page of its
-    // own, because who holds the party is what the map, the menus and every
-    // leader() reader follow.
-    Scene_Menu.prototype.generateUIDynamicsLeaderHTML = function () {
-        const members = $gameParty.members();
-        let memberRows = '';
-
-        members.forEach((mem, idx) => {
-            const actorId  = mem.actorId();
-            const isLeader = (idx === 0);
-            const button = isLeader
-                ? `<div class="command-item" style="flex:1;opacity:0.6;pointer-events:none;">${T('MainMenu.roster.leader')}</div>`
-                : `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.promoteUIPartyLeader?.(${actorId})">${T('MainMenu.roster.makeLeader')}</div>`;
-
-            memberRows += `
-                    <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
-                        <div class="portrait-frame" style="flex-shrink:0;">
-                            <canvas id="roster-canvas-${actorId}" width="48" height="48"></canvas>
-                        </div>
-                        <div style="flex:1;">
-                            <div style="font-family:'Lora',serif;font-size:1.05em;color:#58180D;font-weight:bold;margin-bottom:6px;">
-                                ${escapeHtml(mem.name())}
-                                <span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${escapeHtml(mem.currentClass() ? mem.currentClass().name : '')} ${T('MainMenu.roster.levelAbbr')}${mem.level}</span>
-                            </div>
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                ${button}
-                            </div>
-                        </div>
-                    </div>`;
-        });
-
-        if (!members.length) {
-            memberRows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.dynamics.noMembers')}</div>`;
-        }
-
-        return `
-                <div class="tools-pockets">
-                    <div class="page-header-bar">
-                        <div class="back-button" onclick="SceneManager._scene?.setDynamicsView?.('hub')">${T('MainMenu.dynamics.back')}</div>
-                        <h2 class="tools-title">${T('MainMenu.dynamics.leaderTitle')}</h2>
-                    </div>
-                    ${memberRows}
-                    <div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-top:4px;">${T('MainMenu.dynamics.leaderNote')}</div>
-                </div>`;
-    };
-
-    // Turn order: a fight is normally opened by whoever has the most DEX, and
-    // this page overrules that for the party (window.BattleTurnOrder, in
-    // BattleSystem/IndividualBattleTurns.js). The troop is still ranked by the
-    // speed formula, so this decides the order among members, not against them.
+    // Turn order: the party acts in this order, member 1 first, whatever their
+    // DEX says (window.BattleTurnOrder, in BattleSystem/IndividualBattleTurns.js).
+    // The troop is still ranked by the speed formula, so DEX decides when the
+    // monsters get to answer, not the order among the party.
     Scene_Menu.prototype.generateUIDynamicsTurnOrderHTML = function () {
         const order = window.BattleTurnOrder?.members?.() ?? [];
-        const pinned = !!window.BattleTurnOrder?.isPinned?.();
         // $dataSystem.terms is localised in place (Core/Hendrix_Localization.js),
         // so the param term is already the label the rest of the sheet prints.
         const dexLabel = escapeHtml(TextManager.param(6));
@@ -1279,10 +1239,6 @@
             rows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.dynamics.noMembers')}</div>`;
         }
 
-        const resetBtn = pinned
-            ? `<div class="command-item focusable" style="width:100%;margin-top:8px;" onclick="SceneManager._scene?.resetUITurnOrder?.()">${T('MainMenu.dynamics.turnOrderReset')}</div>`
-            : '';
-
         return `
                 <div class="tools-pockets">
                     <div class="page-header-bar">
@@ -1290,8 +1246,7 @@
                         <h2 class="tools-title">${T('MainMenu.dynamics.turnOrderTitle')}</h2>
                     </div>
                     ${rows}
-                    ${resetBtn}
-                    <div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-top:8px;">${pinned ? T('MainMenu.dynamics.turnOrderPinned', { stat: dexLabel }) : T('MainMenu.dynamics.turnOrderBySpeed', { stat: dexLabel })}</div>
+                    <div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-top:8px;">${T('MainMenu.dynamics.turnOrderNote', { stat: dexLabel })}</div>
                 </div>`;
     };
 
@@ -1445,11 +1400,22 @@
                     </div>`;
         }
 
-        // Bounty
+        // Bounty, and how badly the police want the party for it: the heat is
+        // what the officer events read, so it is printed where the bounty is.
         const bountyValue = $gameVariables.value(66) || 0;
         let formattedBounty = T('MainMenu.roster.none');
         if (bountyValue > 0) {
             formattedBounty = (bountyValue / 100).toFixed(2) + " " + currencyUnit;
+        }
+        let wantedHTML = "";
+        const heatPercent = window.CrimeSystem ? window.CrimeSystem.heatPercent() : 0;
+        if (heatPercent > 0) {
+            const chasing = window.CrimeSystem.isWanted();
+            wantedHTML = `
+                    <div class="clock-row">
+                        <span class="clock-label">${T('MainMenu.label.wantedHeat')}</span>
+                        <span class="clock-value ${chasing ? 'bounty-highlight' : ''}">${heatPercent}%</span>
+                    </div>`;
         }
 
         // Date/Time
@@ -1571,13 +1537,14 @@
                     <div class="commands-grid" style="display: flex; flex-direction: column; gap: 15px; flex-grow: 1;">
             `;
 
-            // 1. Return to World Map
+            // 1. Return to World Map — planetside the same row opens the
+            // landing-site picker instead (see WorldMapReturn's commandWorldMap).
             const canReturn = $gameMap.mapId() !== 315; // only if not already on world map
             if (canReturn) {
                 leftPageHTML += `
                     <div class="command-item focusable" data-symbol="travel_return" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('return')">
                         <span class="icon" style="background: url('img/system/IconSet.png') -${(310 % 16) * 32}px -${Math.floor(310 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
-                        <span>${T('MainMenu.cmd.returnToWorldMap')}</span>
+                        <span>${worldMapReturnLabel()}</span>
                     </div>
                 `;
             }
@@ -1772,6 +1739,12 @@
                 const spawnBtn = canSpawn
                     ? `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.spawnUIVehicle?.('${v.key}')">${T('MainMenu.vehicles.spawn')}</div>`
                     : `<div class="command-item is-disabled" style="flex:1;" title="${escapeHtml(T('MainMenu.vehicles.spawnIndoors'))}">${T('MainMenu.vehicles.spawn')}</div>`;
+                // Where it was left standing: the place and the exact tile, so a
+                // camper parked outside Ghent station can be walked back to as
+                // well as summoned.
+                const parkedLine = v.parkedAt
+                    ? `<div style="font-family:'Lora',serif;font-size:0.8em;color:#7a5c3a;margin-bottom:6px;">${T('MainMenu.vehicles.parkedAt')} ${escapeHtml(v.parkedAt)}</div>`
+                    : '';
                 vehicleRows += `
                     <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
                         <div class="portrait-frame" style="flex-shrink:0;">
@@ -1781,6 +1754,7 @@
                             <div style="font-family:'Lora',serif;font-size:1.05em;color:#58180D;font-weight:bold;margin-bottom:4px;">
                                 ${escapeHtml(v.name)}${fuelLine}
                             </div>
+                            ${parkedLine}
                             <div style="display:flex;gap:10px;flex-wrap:wrap;">
                                 ${spawnBtn}
                                 ${repairBtn}
@@ -1811,7 +1785,7 @@
             const procReturnHTML = ($gameMap.mapId() === 636) ? `
                     <div class="command-item focusable" data-symbol="travel_return" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('return')">
                         <span class="icon" style="background: url('img/system/IconSet.png') -${(310 % 16) * 32}px -${Math.floor(310 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
-                        <span>${T('MainMenu.cmd.returnToWorldMap')}</span>
+                        <span>${worldMapReturnLabel()}</span>
                     </div>
             ` : "";
 
@@ -1853,6 +1827,7 @@
                     this.generateUICommandItemHTML(T('MainMenu.cmd.status'), "status1"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.specializations'), "specializations"),
                     this.generateUICommandItemHTML(emLabel("menuBiologics", T('MainMenu.cmd.biologics')), "biologics"),
+                    this.generateUICommandItemHTML(T('MainMenu.cmd.augments'), "augments"),
                 ],
                 // Party: the people and creatures travelling with you
                 [
@@ -1875,6 +1850,7 @@
                     // ahead of the anvil it shares its recipes with.
                     this.generateUICommandItemHTML(emLabel("menuThinker", T('MainMenu.cmd.thinker')), "thinker"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.blacksmithing'), "blacksmithing"),
+                    this.generateUICommandItemHTML(T('MainMenu.cmd.alchemistry'), "alchemistry"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.build'), "build"),
                     this.generateUICommandItemHTML(emLabel("menuTraining", T('MainMenu.cmd.training')), "training"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.research'), "research"),
@@ -1882,7 +1858,9 @@
                 // Records & standing: the pockets you consult
                 [
                     this.generateUICommandItemHTML(T('MainMenu.cmd.questLog'), "quest_log"),
+                    this.generateUICommandItemHTML(T('MainMenu.cmd.diary'), "diary"),
                     this.generateUICommandItemHTML(emLabel("menuBestiary", T('MainMenu.cmd.bestiary')), "bestiary"),
+                    this.generateUICommandItemHTML(T('MainMenu.cmd.cards'), "cards"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.archive'), "help"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.factions'), "factions"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.assets'), "assets"),
@@ -2002,7 +1980,7 @@
                     <div class="clock-row">
                         <span class="clock-label">${T('MainMenu.label.currentBounty')}</span>
                         <span class="clock-value bounty-highlight">${formattedBounty}</span>
-                    </div>
+                    </div>${wantedHTML}
                 </div>
             `;
         }
@@ -2116,6 +2094,7 @@
         if (symbol === "build") enabled = window.FurnitureSystem?.canBuildOnCurrentMap?.() ?? ($gameMap.mapId() !== 315);
         if (symbol === "sandbox") enabled = sandboxTester || sandboxActive;
         if (symbol === "hypernet") enabled = isHypernetAvailable();
+        if (symbol === "alchemistry") enabled = isAlchemistryAvailable();
 
         const opacity = enabled ? 1 : 0.45;
         const pointerEvents = enabled ? "auto" : "none";
@@ -2179,9 +2158,9 @@
     // Dynamics -> Roster renders its own portraits on the left page, keyed by
     // actor id so a leader swap doesn't shuffle the sprites.
     Scene_Menu.prototype.drawAllRosterPortraits = function () {
-        // Leader and Turn Order draw the same member rows, under the same canvas
-        // ids; only Roster carries the bench underneath them.
-        const PORTRAIT_VIEWS = ['roster', 'leader', 'turnorder'];
+        // Turn Order draws the same member rows, under the same canvas ids;
+        // only Roster carries the bench underneath them.
+        const PORTRAIT_VIEWS = ['roster', 'turnorder'];
         if (!this._isDynamicsPage || !PORTRAIT_VIEWS.includes(this._dynamicsView)) return;
         $gameParty.members().forEach(mem => {
             this.drawUIActorPortrait(mem, `roster-canvas-${mem.actorId()}`);
@@ -2319,6 +2298,13 @@
                 case "cooking":
                     SceneManager.push(Scene_Cooking);
                     break;
+                case "alchemistry":
+                    if (typeof window.Scene_Alchemistry !== "undefined") {
+                        SceneManager.push(window.Scene_Alchemistry);
+                    } else {
+                        console.warn("Scene_Alchemistry is not defined!");
+                    }
+                    break;
                 case "help":
                     SceneManager.push(Scene_Help);
                     break;
@@ -2338,6 +2324,13 @@
                     break;
                 case "dynamics":
                     this.showDynamicsPage();
+                    break;
+                case "diary":
+                    if (window.Scene_Diary) {
+                        SceneManager.push(window.Scene_Diary);
+                    } else {
+                        console.warn("Scene_Diary is not defined!");
+                    }
                     break;
                 case "pets":
                     this.showPetsPage();
@@ -2363,6 +2356,15 @@
                         console.warn("Scene_CDCollection is not defined!");
                     }
                     break;
+                case "cards":
+                    if (typeof Scene_CardCollection !== "undefined") {
+                        SceneManager.push(Scene_CardCollection);
+                    } else if (typeof window.Scene_CardCollection !== "undefined") {
+                        SceneManager.push(window.Scene_CardCollection);
+                    } else {
+                        console.warn("Scene_CardCollection is not defined!");
+                    }
+                    break;
                 case "factions":
                     if (typeof Scene_FactionStatus !== "undefined") {
                         SceneManager.push(Scene_FactionStatus);
@@ -2375,6 +2377,13 @@
                         SceneManager.push(Scene_BiologicSimulation);
                     } else {
                         console.warn("Scene_BiologicSimulation is not defined!");
+                    }
+                    break;
+                case "augments":
+                    if (typeof Scene_PartyAugments !== "undefined") {
+                        SceneManager.push(Scene_PartyAugments);
+                    } else {
+                        console.warn("Scene_PartyAugments is not defined!");
                     }
                     break;
                 case "sandbox":
@@ -2570,6 +2579,7 @@
         bestiary:   () => pushMapScene(typeof Scene_CDCollection !== "undefined" && Scene_CDCollection),
         factions:   () => pushMapScene(typeof Scene_FactionStatus !== "undefined" && Scene_FactionStatus),
         biologics:  () => pushMapScene(typeof Scene_BiologicSimulation !== "undefined" && Scene_BiologicSimulation),
+        augments:   () => pushMapScene(typeof Scene_PartyAugments !== "undefined" && Scene_PartyAugments),
         assets:     () => pushMapScene(typeof Scene_AssetsMenu !== "undefined" && Scene_AssetsMenu),
         options:    () => pushMapScene(typeof Scene_Options !== "undefined" && Scene_Options),
         sandbox:    () => {

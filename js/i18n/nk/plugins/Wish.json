@@ -1,0 +1,9 @@
+{
+  "granted": {
+    "title": "WISH GRANTED",
+    "whispered": "YOU WHISPERED:",
+    "manifested": "WHAT ANSWERED: {outcome}",
+    "spent": "DA ORB GOES DARK. ONE WISH, ONCE!",
+    "close": "PRESS ANY KEY TA CLOSE"
+  }
+}

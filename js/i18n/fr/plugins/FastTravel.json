@@ -32,9 +32,9 @@
     "dimensional": ""
   },
   "defaultDestination": "Anvers",
-  "trainStationTitle": "Gare",
-  "stationBadge": "",
-  "stationLabel": "",
+  "hubTitle": "",
+  "hubBadge": "",
+  "hubLabel": "",
   "fuelRate": "",
   "rateMultiplier": "",
   "editing": "",

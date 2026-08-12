@@ -1,0 +1,19 @@
+{
+  "needDivingSuit": "YOU NEED A DIVIN' SUIT",
+  "returnToWorldMap": "RETURN TA WORLD MAP",
+  "chooseLandingSite": "CHOOSE LANDIN' SITE",
+  "goToSurface": "GO TA DA SURFACE",
+  "goUnderground": "GO UNDERGROUND",
+  "toggleWorldMap": "TOGGLE WORLD MAP",
+  "openWorldMap": "OPEN WORLD MAP",
+  "cancel": "CANCEL",
+  "visit": "VISIT {place}",
+  "makeCamp": "MAKE A CAMP",
+  "icebushBlocked": "DA FIELDS AROUND ICEBUSH IZ INFESTED WIT PETRODEMONS AN' NEUROFOG, WHY NO YOU TAKE DA HYPERMETRO LIKE ANY SANE HUMAN BEING",
+  "stop": "STOP",
+  "worldMapMenu": "WORLD MAP",
+  "wilderness": "WILDERNESS",
+  "mapNumbered": "MAP {id}",
+  "underground": "UNDERGROUND LEVEL {depth}",
+  "atTile": "AT {x},{y}"
+}

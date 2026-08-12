@@ -125,5 +125,6 @@
   "interviewRecordedIn": "Interview recorded in ",
   "interviewComplete": "Interview complete: ",
   "debugQuestAccepted": "Debug quest accepted: ",
-  "theBoardIsBareNobodyIsPostingToday": "The board is bare. Nobody is posting today."
+  "theBoardIsBareNobodyIsPostingToday": "The board is bare. Nobody is posting today.",
+  "giverIsDead": "Impossible to complete: the quest giver is dead."
 }

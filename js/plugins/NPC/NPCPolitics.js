@@ -131,6 +131,14 @@
   //   myst: -100 rationalist   … +100 mystic
   const AXES = ["econ", "auth", "trad", "mil", "myst"];
 
+  // How much of a person's political identity is the creed their society
+  // profile names (Ideology.json `axes`) against the cultural baseline of the
+  // power they live under, and how far their own opinions wander from it. A
+  // creed is most of what somebody is, so it leads; without one the identity
+  // falls back to the baseline and the old, wider spread.
+  const CREED_WEIGHT = 0.62;
+  const CREED_SPREAD = 30;
+
   // Per-day national event rates (scaled by power state at runtime)
   const RATES = {
     scandal:       1 / 120,
@@ -167,6 +175,196 @@
   // written into the saved world state, so they are proper nouns like any
   // other. Every one of these that reaches the screen is resolved through
   // powerLabel() below, from js/i18n/<lang>/plugins/Politics.json.
+
+  // ==========================================================================
+  // REAL_PARTIES, historical party rosters for the seven hyperpowers that hold
+  // real European ground (Countries.json `faction`/`controller`). Every entry
+  // is a real party active somewhere between 1984 and 2005 (a handful older,
+  // kept because they were still standing through that window; a handful
+  // "founded" exactly 2001+ on purpose, so a fresh world can seat a party that
+  // did not exist yet). `ideologyId` points at js/db/WorldGen/Ideology.json;
+  // makeParty() reads the creed's own axes for the platform instead of
+  // jittering blindly off the power's baseline, so a party's politics are its
+  // real ones. `founded` is the real founding year where confidently known;
+  // left off where not, so the old random offset stands rather than assert a
+  // wrong date. One name is deliberately not the real one: Forza Italia was a
+  // litigated commercial trademark (Fininvest/Mediaset), so the Berlusconi-era
+  // media-liberal slot is played by a fictionalized "Forza Nazione" instead.
+  // Every other name here is the real, historical one; short political-party
+  // names are not creative works and are used here as the historical record
+  // they are, exactly as in any work of alternate history.
+  //
+  // At most `arch.partyCount` of a hyperpower's list is ever live on any one
+  // world (bootstrapPower shuffles the list per world seed and takes the
+  // first partyCount), so a big roster like Italy's is a pool a world draws
+  // from, not a claim that all of them govern at once.
+  const REAL_PARTIES = {
+    "Holy Vatican Empire": [
+      // Italy, First Republic (closed parties, still real and still played)
+      { name: "Democrazia Cristiana", country: "Italy", ideologyId: "christian_democratic", founded: 1943 },
+      { name: "Partito Comunista Italiano", country: "Italy", ideologyId: "reform_communist", founded: 1921 },
+      { name: "Partito Socialista Italiano", country: "Italy", ideologyId: "social_democrat", founded: 1892 },
+      { name: "Movimento Sociale Italiano", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1946 },
+      { name: "Partito Liberale Italiano", country: "Italy", ideologyId: "classical_liberal", founded: 1922 },
+      { name: "Partito Repubblicano Italiano", country: "Italy", ideologyId: "civic_republican", founded: 1895 },
+      { name: "Partito Socialista Democratico Italiano", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1947 },
+      { name: "Partito Radicale", country: "Italy", ideologyId: "classical_liberal", founded: 1955 },
+      { name: "Democrazia Proletaria", country: "Italy", ideologyId: "orthodox_communist", founded: 1978 },
+      { name: "Partito Comunista dei Lavoratori", country: "Italy", ideologyId: "orthodox_communist" },
+      // Italy, Second Republic and new-in-2001 arrivals
+      { name: "Alleanza Nazionale", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1995 },
+      { name: "Lega Nord", country: "Italy", ideologyId: "regionalist_separatist", founded: 1991 },
+      { name: "Rifondazione Comunista", country: "Italy", ideologyId: "orthodox_communist", founded: 1991 },
+      { name: "Partito Democratico della Sinistra", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1991 },
+      { name: "Democratici di Sinistra", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1998 },
+      { name: "Partito Popolare Italiano", country: "Italy", ideologyId: "christian_democratic", founded: 1994 },
+      { name: "La Rete", country: "Italy", ideologyId: "civic_republican", founded: 1991 },
+      { name: "Democrazia è Libertà - La Margherita", country: "Italy", ideologyId: "christian_democratic", founded: 2001 },
+      { name: "Italia dei Valori", country: "Italy", ideologyId: "law_and_order_populist", founded: 1998 },
+      { name: "Partito dei Comunisti Italiani", country: "Italy", ideologyId: "orthodox_communist", founded: 1998 },
+      { name: "Centro Cristiano Democratico", country: "Italy", ideologyId: "christian_democratic", founded: 1994 },
+      { name: "Cristiani Democratici Uniti", country: "Italy", ideologyId: "christian_democratic", founded: 1995 },
+      { name: "Unione Democratici per l'Europa", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1999 },
+      { name: "Rinnovamento Italiano", country: "Italy", ideologyId: "technocratic_liberal", founded: 1996 },
+      { name: "Movimento Sociale - Fiamma Tricolore", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1995 },
+      { name: "Forza Nuova", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1997 },
+      { name: "Radicali Italiani", country: "Italy", ideologyId: "classical_liberal", founded: 2001 },
+      { name: "Democrazia Europea", country: "Italy", ideologyId: "christian_democratic", founded: 2001 },
+      { name: "Nuovo PSI", country: "Italy", ideologyId: "social_democrat", founded: 2001 },
+      { name: "Forza Nazione", country: "Italy", ideologyId: "media_theocrat", founded: 1994 },
+      { name: "Federazione dei Verdi", country: "Italy", ideologyId: "green_ecologist", founded: 1990 },
+      { name: "Südtiroler Volkspartei", country: "Italy", ideologyId: "regionalist_separatist", founded: 1945 },
+      // Germany
+      { name: "Christlich Demokratische Union", country: "Germany", ideologyId: "christian_democrat", founded: 1945 },
+      { name: "Christlich-Soziale Union", country: "Germany", ideologyId: "christian_democrat", founded: 1945 },
+      { name: "Sozialdemokratische Partei Deutschlands", country: "Germany", ideologyId: "social_democrat", founded: 1863 },
+      { name: "Freie Demokratische Partei", country: "Germany", ideologyId: "classical_liberal", founded: 1948 },
+      { name: "Bündnis 90/Die Grünen", country: "Germany", ideologyId: "green_ecologist", founded: 1993 },
+      { name: "Partei des Demokratischen Sozialismus", country: "Germany", ideologyId: "reform_communist", founded: 1990 },
+      { name: "Die Republikaner", country: "Germany", ideologyId: "post_fascist_revivalist", founded: 1983 },
+      // Malta
+      { name: "Partit Nazzjonalista", country: "Malta", ideologyId: "christian_democrat", founded: 1880 },
+      { name: "Malta Labour Party", country: "Malta", ideologyId: "social_democrat", founded: 1920 },
+      // Portugal
+      { name: "Partido Social Democrata", country: "Portugal", ideologyId: "liberal_conservative", founded: 1974 },
+      { name: "Partido Socialista", country: "Portugal", ideologyId: "social_democrat", founded: 1973 },
+      { name: "Centro Democrático e Social - Partido Popular", country: "Portugal", ideologyId: "christian_democrat", founded: 1974 },
+      { name: "Partido Comunista Português", country: "Portugal", ideologyId: "orthodox_communist", founded: 1921 },
+      // Spain
+      { name: "Partido Popular", country: "Spain", ideologyId: "liberal_conservative", founded: 1989 },
+      { name: "Partido Socialista Obrero Español", country: "Spain", ideologyId: "social_democrat", founded: 1879 },
+      { name: "Izquierda Unida", country: "Spain", ideologyId: "orthodox_communist", founded: 1986 },
+      { name: "Convergència i Unió", country: "Spain", ideologyId: "regionalist_separatist", founded: 1978 },
+      { name: "Partido Nacionalista Vasco", country: "Spain", ideologyId: "regionalist_separatist", founded: 1895 },
+    ],
+    "USSR": [
+      // Russia
+      { name: "Коммунистическая партия Российской Федерации", country: "Russia", ideologyId: "orthodox_communist", founded: 1993 },
+      { name: "Либерально-демократическая партия России", country: "Russia", ideologyId: "post_fascist_revivalist", founded: 1989 },
+      { name: "Единая Россия", country: "Russia", ideologyId: "managed_democrat", founded: 2001 },
+      { name: "Яблоко", country: "Russia", ideologyId: "social_liberal", founded: 1993 },
+      { name: "Союз правых сил", country: "Russia", ideologyId: "classical_liberal", founded: 1999 },
+      { name: "Наш дом - Россия", country: "Russia", ideologyId: "liberal_clientelist", founded: 1995 },
+      { name: "Коммунистическая партия Советского Союза", country: "Russia", ideologyId: "totalitarian_communist", founded: 1898 },
+      // Serbia
+      { name: "Socijalistička partija Srbije", country: "Serbia", ideologyId: "welfare_chauvinist", founded: 1990 },
+      { name: "Srpska radikalna stranka", country: "Serbia", ideologyId: "post_fascist_revivalist", founded: 1991 },
+      { name: "Demokratska stranka", country: "Serbia", ideologyId: "civic_republican", founded: 1990 },
+      { name: "Demokratska stranka Srbije", country: "Serbia", ideologyId: "conservative_democrat", founded: 1992 },
+      { name: "Srpski pokret obnove", country: "Serbia", ideologyId: "conservative_democrat", founded: 1990 },
+      // Slovakia
+      { name: "Hnutie za demokratické Slovensko", country: "Slovakia", ideologyId: "welfare_chauvinist", founded: 1991 },
+      { name: "Strana demokratickej ľavice", country: "Slovakia", ideologyId: "reform_socialist", founded: 1991 },
+      { name: "Slovenská národná strana", country: "Slovakia", ideologyId: "post_fascist_revivalist", founded: 1989 },
+      { name: "Smer - sociálna demokracia", country: "Slovakia", ideologyId: "social_democrat", founded: 1999 },
+      { name: "Komunistická strana Slovenska", country: "Slovakia", ideologyId: "orthodox_communist", founded: 1992 },
+      // Slovenia
+      { name: "Liberalna demokracija Slovenije", country: "Slovenia", ideologyId: "social_liberal", founded: 1994 },
+      { name: "Združena lista socialnih demokratov", country: "Slovenia", ideologyId: "reform_socialist", founded: 1993 },
+      { name: "Slovenska demokratska stranka", country: "Slovenia", ideologyId: "conservative_democrat", founded: 1989 },
+      { name: "Slovenska ljudska stranka", country: "Slovenia", ideologyId: "agrarian_centrist", founded: 1988 },
+      // Ukraine
+      { name: "Комуністична партія України", country: "Ukraine", ideologyId: "orthodox_communist", founded: 1993 },
+      { name: "Народний рух України", country: "Ukraine", ideologyId: "civic_republican", founded: 1989 },
+      { name: "Партія регіонів", country: "Ukraine", ideologyId: "liberal_clientelist", founded: 2001 },
+      { name: "Наша Україна", country: "Ukraine", ideologyId: "classical_liberal", founded: 2001 },
+      { name: "Соціалістична партія України", country: "Ukraine", ideologyId: "reform_socialist", founded: 1991 },
+    ],
+    "Britannia": [
+      // United Kingdom / Scotland
+      { name: "Conservative Party", country: "UK", ideologyId: "conservative", founded: 1834 },
+      { name: "Labour Party", country: "UK", ideologyId: "new_labour", founded: 1900 },
+      { name: "Liberal Democrats", country: "UK", ideologyId: "social_liberal", founded: 1988 },
+      { name: "UK Independence Party", country: "UK", ideologyId: "liberal_conservative", founded: 1993 },
+      { name: "Scottish National Party", country: "Scotland", ideologyId: "regionalist_separatist", founded: 1934 },
+      { name: "British National Party", country: "UK", ideologyId: "post_fascist_revivalist", founded: 1982 },
+      { name: "Plaid Cymru", country: "UK", ideologyId: "regionalist_separatist", founded: 1925 },
+      { name: "Referendum Party", country: "UK", ideologyId: "constitutionalist", founded: 1994 },
+      { name: "Official Monster Raving Loony Party", country: "UK", ideologyId: "civic_republican", founded: 1983 },
+      { name: "Scottish Socialist Party", country: "Scotland", ideologyId: "trade_unionist", founded: 1998 },
+      { name: "Green Party (England and Wales)", country: "UK", ideologyId: "green_ecologist", founded: 1990 },
+      // France
+      { name: "Rassemblement pour la République", country: "France", ideologyId: "conservative_democrat", founded: 1976 },
+      { name: "Union pour la Démocratie Française", country: "France", ideologyId: "liberal_conservative", founded: 1978 },
+      { name: "Parti Socialiste", country: "France", ideologyId: "social_democrat", founded: 1969 },
+      { name: "Parti Communiste Français", country: "France", ideologyId: "reform_communist", founded: 1920 },
+      { name: "Front National", country: "France", ideologyId: "welfare_chauvinist", founded: 1972 },
+      { name: "Les Verts", country: "France", ideologyId: "green_ecologist", founded: 1984 },
+      { name: "Union pour un Mouvement Populaire", country: "France", ideologyId: "liberal_conservative", founded: 2002 },
+      { name: "Mouvement des Citoyens", country: "France", ideologyId: "civic_republican", founded: 1993 },
+    ],
+    "Archive Foundation": [
+      // Luxembourg
+      { name: "Chrëschtlech Sozial Vollekspartei", country: "Luxembourg", ideologyId: "christian_democrat", founded: 1944 },
+      { name: "Lëtzebuerger Sozialistesch Aarbechterpartei", country: "Luxembourg", ideologyId: "social_democrat", founded: 1902 },
+      { name: "Demokratesch Partei", country: "Luxembourg", ideologyId: "classical_liberal", founded: 1945 },
+      { name: "Déi Gréng", country: "Luxembourg", ideologyId: "green_ecologist", founded: 1983 },
+      { name: "Kommunistesch Partei Lëtzebuerg", country: "Luxembourg", ideologyId: "orthodox_communist", founded: 1921 },
+      { name: "Alternativ Demokratesch Reformpartei", country: "Luxembourg", ideologyId: "agrarian_centrist", founded: 1987 },
+    ],
+    "Ottoman Empire": [
+      // Turkey
+      { name: "Anavatan Partisi", country: "Turkey", ideologyId: "liberal_conservative", founded: 1983 },
+      { name: "Doğru Yol Partisi", country: "Turkey", ideologyId: "liberal_conservative", founded: 1983 },
+      { name: "Refah Partisi", country: "Turkey", ideologyId: "islamist", founded: 1983 },
+      { name: "Fazilet Partisi", country: "Turkey", ideologyId: "moderate_islamist", founded: 1997 },
+      { name: "Adalet ve Kalkınma Partisi", country: "Turkey", ideologyId: "moderate_islamist", founded: 2001 },
+      { name: "Saadet Partisi", country: "Turkey", ideologyId: "islamist", founded: 2001 },
+      { name: "Milliyetçi Hareket Partisi", country: "Turkey", ideologyId: "young_turk_nationalist", founded: 1985 },
+      { name: "Cumhuriyet Halk Partisi", country: "Turkey", ideologyId: "kemalist", founded: 1923 },
+      { name: "Demokratik Sol Parti", country: "Turkey", ideologyId: "kemalist", founded: 1985 },
+      // Morocco
+      { name: "Hizb al-Istiqlal", country: "Morocco", ideologyId: "conservative_democrat", founded: 1944 },
+      { name: "Union Socialiste des Forces Populaires", country: "Morocco", ideologyId: "social_democrat", founded: 1975 },
+      { name: "Parti de la Justice et du Développement", country: "Morocco", ideologyId: "moderate_islamist", founded: 1998 },
+      { name: "Rassemblement National des Indépendants", country: "Morocco", ideologyId: "liberal_conservative", founded: 1978 },
+      { name: "Mouvement Populaire", country: "Morocco", ideologyId: "agrarian_centrist", founded: 1957 },
+      // Tunisia
+      { name: "Rassemblement Constitutionnel Démocratique", country: "Tunisia", ideologyId: "managed_democrat", founded: 1988 },
+      { name: "Mouvement des Démocrates Socialistes", country: "Tunisia", ideologyId: "social_democrat", founded: 1978 },
+      { name: "Mouvement Ennahdha", country: "Tunisia", ideologyId: "islamist", founded: 1981 },
+      { name: "Union Démocratique Unioniste", country: "Tunisia", ideologyId: "civic_republican", founded: 1988 },
+    ],
+    "San Marino Republic": [
+      { name: "Partito Democratico Cristiano Sammarinese", country: "San Marino", ideologyId: "christian_democratic", founded: 1948 },
+      { name: "Partito Socialista Sammarinese", country: "San Marino", ideologyId: "social_democrat", founded: 1892 },
+      { name: "Partito Progressista Democratico Sammarinese", country: "San Marino", ideologyId: "reform_communist", founded: 1990 },
+      { name: "Alleanza Popolare Sammarinese", country: "San Marino", ideologyId: "liberal_conservative", founded: 1993 },
+      { name: "Sinistra Unita Sammarinese", country: "San Marino", ideologyId: "reform_socialist", founded: 1993 },
+      { name: "Rifondazione Comunista Sammarinese", country: "San Marino", ideologyId: "orthodox_communist", founded: 1992 },
+    ],
+    "Hypercapitalist Collective": [
+      // Netherlands
+      { name: "Volkspartij voor Vrijheid en Democratie", country: "Netherlands", ideologyId: "classical_liberal", founded: 1948 },
+      { name: "Democraten 66", country: "Netherlands", ideologyId: "social_liberal", founded: 1966 },
+      { name: "Christen-Democratisch Appèl", country: "Netherlands", ideologyId: "christian_democrat", founded: 1980 },
+      { name: "Partij van de Arbeid", country: "Netherlands", ideologyId: "social_democrat", founded: 1946 },
+      { name: "Lijst Pim Fortuyn", country: "Netherlands", ideologyId: "welfare_chauvinist", founded: 2002 },
+      { name: "Socialistische Partij", country: "Netherlands", ideologyId: "trade_unionist", founded: 1971 },
+      { name: "GroenLinks", country: "Netherlands", ideologyId: "green_ecologist", founded: 1990 },
+    ],
+  };
+
   const ARCHETYPES = {
     "Holy Vatican Empire": {
       govType: "theocracy", system: "conclave", headTitle: "Supreme Pontifex",
@@ -175,8 +373,7 @@
       baseline: { econ: 10, auth: 55, trad: 85, mil: 20, myst: 90 },
       partyCount: 4, rigging: 0.2, coupSusceptibility: 0.4, scandalSensitivity: 1.4,
       nameFlavor: "clerical",
-      partyBank: { pre: ["Order of the", "Brotherhood of the", "Congregation of the", "Sisters of the", "Synod of the"],
-                   post: ["Radiant Key", "Unbroken Litany", "Silent Censer", "Burning Page", "Seventh Seal", "Holy Reliquary", "Eternal Vigil", "Gilded Thurible"] },
+      partyBank: { real: REAL_PARTIES["Holy Vatican Empire"] },
     },
     "USSR": {
       govType: "single-party state", system: "plenum", headTitle: "General Secretary",
@@ -185,8 +382,7 @@
       baseline: { econ: -85, auth: 70, trad: -20, mil: 55, myst: -80 },
       partyCount: 3, rigging: 0.85, coupSusceptibility: 1.2, scandalSensitivity: 0.5,
       nameFlavor: "soviet",
-      partyBank: { pre: ["Iron", "Red", "October", "Vanguard", "People's", "Tractor"],
-                   post: ["Course Faction", "Dawn Bloc", "Path Committee", "Standard Wing", "Hammer Circle", "Banner Group"] },
+      partyBank: { real: REAL_PARTIES["USSR"] },
     },
     "Britannia": {
       govType: "parliamentary monarchy", system: "parliamentary", headTitle: "Prime Minister",
@@ -194,8 +390,7 @@
       baseline: { econ: 35, auth: 10, trad: 40, mil: 25, myst: -30 },
       partyCount: 4, rigging: 0, coupSusceptibility: 0.2, scandalSensitivity: 1.2,
       nameFlavor: "british",
-      partyBank: { pre: ["Royal", "New", "United", "Free", "Old"],
-                   post: ["Crown Party", "Commonwealth Party", "Fog League", "Tea Compact", "Albion Front", "Lion Party"] },
+      partyBank: { real: REAL_PARTIES["Britannia"] },
     },
     "Archive Foundation": {
       govType: "technocracy", system: "examination", headTitle: "First Archivist",
@@ -203,8 +398,7 @@
       baseline: { econ: 0, auth: 35, trad: -40, mil: -20, myst: 25 },
       partyCount: 3, rigging: 0.1, coupSusceptibility: 0.3, scandalSensitivity: 1.0,
       nameFlavor: "archivist",
-      partyBank: { pre: ["School of", "Doctrine of", "Circle of", "Method of"],
-                   post: ["Total Recall", "the Closed Stack", "Open Catalogues", "the Marginal Note", "Deep Storage", "the Errata"] },
+      partyBank: { real: REAL_PARTIES["Archive Foundation"] },
     },
     "Ottoman Empire": {
       govType: "sultanate", system: "succession", headTitle: "Sultan",
@@ -212,8 +406,7 @@
       baseline: { econ: 20, auth: 65, trad: 70, mil: 50, myst: 45 },
       partyCount: 3, rigging: 0.6, coupSusceptibility: 0.9, scandalSensitivity: 0.7,
       nameFlavor: "ottoman",
-      partyBank: { pre: ["Faction of the", "Circle of the", "House of the"],
-                   post: ["Golden Horn", "Crescent Blade", "Silk Ledger", "Tulip Garden", "Janissary Drum", "Velvet Divan"] },
+      partyBank: { real: REAL_PARTIES["Ottoman Empire"] },
     },
     "The Gods": {
       govType: "divine pantheon", system: "tournament", headTitle: "Prime Deity",
@@ -230,8 +423,7 @@
       baseline: { econ: 25, auth: -25, trad: 30, mil: -40, myst: 0 },
       partyCount: 5, rigging: 0, coupSusceptibility: 0.1, scandalSensitivity: 1.1,
       nameFlavor: "sammarinese",
-      partyBank: { pre: ["Partito", "Unione", "Movimento", "Lista"],
-                   post: ["della Serenissima", "del Monte", "dei Balestrieri", "delle Tre Torri", "della Pioggia", "del Titano"] },
+      partyBank: { real: REAL_PARTIES["San Marino Republic"] },
     },
     "Hypercapitalist Collective": {
       govType: "corporatocracy", system: "shareholder", headTitle: "Chief Executive Sovereign",
@@ -239,8 +431,26 @@
       baseline: { econ: 95, auth: 30, trad: -30, mil: 10, myst: -60 },
       partyCount: 4, rigging: 0.15, coupSusceptibility: 0.5, scandalSensitivity: 0.8,
       nameFlavor: "corporate",
-      partyBank: { pre: ["Omni", "Hyper", "Mega", "Synergy", "Vertical"],
-                   post: ["Holdings Bloc", "Growth Consortium", "Yield Group", "Acquisitions Caucus", "Liquidity Cartel", "Dividend Alliance"] },
+      partyBank: { real: REAL_PARTIES["Hypercapitalist Collective"] },
+    },
+    "The Tourists": {
+      govType: "caste hierarchy", system: "conclave", headTitle: "Tour Director",
+      legislature: "The Itinerary", partyKind: "caste", seats: 33, termDays: 730,
+      electorCount: 15, electorTitle: "Overseer",
+      baseline: { econ: 20, auth: 45, trad: -60, mil: 30, myst: 40 },
+      partyCount: 3, rigging: 0.35, coupSusceptibility: 0.3, scandalSensitivity: 0.6,
+      nameFlavor: "zeta",
+      partyBank: { pre: ["Caste of the", "Excursion of the", "Delegation of the", "Party of the"],
+                   post: ["Open Shutter", "Red Scalpel", "Folded Mind", "Long Weekend", "Kind Regard", "Quiet Probe"] },
+    },
+    "The Dargos": {
+      govType: "practical joke", system: "moot", headTitle: "First Dargos",
+      legislature: "The Bit", partyKind: "routine", seats: 9, termDays: 400,
+      baseline: { econ: 0, auth: -20, trad: -40, mil: 10, myst: 70 },
+      partyCount: 3, rigging: 0.5, coupSusceptibility: 1.1, scandalSensitivity: 0.1,
+      nameFlavor: "dargos",
+      partyBank: { pre: ["The", "The Very", "The Alleged", "The Second"],
+                   post: ["Long Con", "Straight Face", "Callback", "Slow Burn", "Running Gag", "Punchline"] },
     },
     "Goblin Horde": {
       govType: "warband confederacy", system: "moot", headTitle: "Big Boss",
@@ -266,6 +476,17 @@
 
   // Some Countries.json entries spell the same power differently.
   const FACTION_ALIASES = { "Soviet Union": "USSR" };
+
+  // Powers that hold no ground on this planet. Every other hyperpower is
+  // discovered from Countries.json, which is a map of Earth and can therefore
+  // never name one of these: they are registered here instead, with the worlds
+  // they hold standing in for member countries, so a government, an electorate,
+  // a run of elections and a wiki article are built for them exactly as for
+  // Britannia. The names are the keys of js/db/WorldGen/Hyperpowers.json.
+  const OFFWORLD_POWERS = {
+    "The Tourists": ["Zeta Reticuli A", "Zeta Reticuli B"],
+    "The Dargos":   ["Titania"],
+  };
   // i18n-ignore-end
 
   // ==========================================================================
@@ -321,6 +542,16 @@
       first: ["Grik", "Snaga", "Zog", "Mok", "Urgha", "Skab", "Nazgit", "Throk", "Grubna", "Wort", "Izzik", "Bogrot"],
       last:  ["Skullsplitta", "da Biter", "Three-Teef", "Wolfpig-Rida", "da Sneaky", "Ironchewa", "Mudfist", "da Loud", "Squigbreff", "Stabba"],
     },
+    zeta: {
+      title: ["Overseer", "Analyzer", "Warper", "Guide", "Ambassador"],
+      first: ["Zyx-7", "Qel-9", "Vrax-3", "Klix-5", "Hlee-2", "Omm-4", "Vess-1", "Thruun-8", "Iisha-6", "Nuu-11", "Sset-13", "Ilka-17", "Praa-19", "Oxx-23"],
+      last:  ["of the Open Shutter", "of the Red Scalpel", "of the Folded Mind", "of the Long Weekend", "of the Quiet Probe", "of the Kind Regard", "of the Second Landing", "of the Third Reticulum"],
+    },
+    dargos: {
+      title: ["Regent", "Clerk", "Marshal", "Envoy", ""],
+      first: ["Obb", "Wodwod", "Ssein", "Grunnu", "Habb", "Ilfo", "Nnok", "Purr", "Tebbe", "Ulgu"],
+      last:  ["the Unserious", "of the Long Con", "who Waits", "the Straight-Faced", "of Titania", "the Callback", "who Means It", "of the Acid Shore"],
+    },
     generic: {
       title: ["Hon.", "Senator", "Deputy", "Minister"],
       first: ["Adrian", "Bianca", "Casimir", "Daria", "Emil", "Franka", "Gustave", "Helena", "Ivo", "Jana", "Karl", "Lena"],
@@ -334,7 +565,7 @@
   // SHARED UTILITIES (see NPCShared.js)
   // ==========================================================================
 
-  const { nameHash, Rng: PolRng, worldSeed, sampleCount, clamp } = window.NPCShared;
+  const { nameHash, Rng: PolRng, worldSeed, sampleCount, clamp, ideologyById, seededShuffle } = window.NPCShared;
 
   // ==========================================================================
   // DISPLAY TEXT
@@ -520,7 +751,34 @@
     return power.politicians[id];
   }
 
-  function makeParty(power, rng, nowMinute, index) {
+  // `realEntry`, when given, is one of REAL_PARTIES' curated { name, country,
+  // ideologyId, founded } records: a real historical party stands in place of
+  // the old procedurally-composed name, and its platform is read off the
+  // creed it actually held (Ideology.json) rather than jittered blindly off
+  // the power's own baseline, so an opposition party can genuinely oppose.
+  function makeParty(power, rng, nowMinute, index, realEntry) {
+    if (realEntry) {
+      const creed = ideologyById(realEntry.ideologyId);
+      const platform = jitterIdeology(creed ? creed.axes : power.baseline, rng, 12);
+      const id = `party_${power.name.replace(/[^A-Za-z0-9]/g, "")}_${index}`; // i18n-ignore: record id
+      const foundedYear = realEntry.founded != null
+        ? Math.min(realEntry.founded, yearOf(nowMinute))
+        : yearOf(nowMinute) - rng.int(3, 60);
+      const party = {
+        id, name: realEntry.name, platform,
+        country: realEntry.country || null,
+        ideologyId: realEntry.ideologyId || null,
+        leaderId: null,
+        foundedYear,
+        momentum: 0,
+        seats: 0,
+        lastShare: 0,
+        funds: rng.int(100_000_000, 5_000_000_000),
+      };
+      party.leaderId = makePolitician(power, rng, nowMinute, { ideology: platform, spread: 15, partyId: id }).id;
+      return party;
+    }
+
     const bank = power.partyBank;
     const name = `${bank.pre[index % bank.pre.length]} ${rng.pick(bank.post)}`;
     const id = `party_${power.name.replace(/[^A-Za-z0-9]/g, "")}_${index}`; // i18n-ignore: record id
@@ -540,6 +798,19 @@
 
   function politicianAge(pol, nowMinute) {
     return Math.max(0, Math.floor(yearFloatOf(nowMinute) - pol.birthYearFloat));
+  }
+
+  // A political class is never only its parties: some of the sharpest players
+  // in every one of these systems answer to no faction at all. Rolled once
+  // per election, at INDEPENDENT_CHANCE, into whichever engine below draws its
+  // candidates from `power.parties`; `partyId: null` is already what a real
+  // party-affiliated candidate holds the moment the game classes them as one,
+  // so nothing downstream needs to special-case an independent (partyById,
+  // the wiki, the coalition math all already read a null partyId as "none").
+  const INDEPENDENT_CHANCE = 0.22;
+
+  function spawnIndependent(power, rng, minute, spread = 45) {
+    return makePolitician(power, rng, minute, { spread, partyId: null });
   }
 
   // Single place every politician death goes through, so the wiki can always
@@ -588,10 +859,14 @@
         if (f && f !== "Neutral") found.add(f);
       }
     }
+    for (const name of Object.keys(OFFWORLD_POWERS)) found.add(name);
     return [...found].sort();
   }
 
   function memberCountriesOf(powerName) {
+    // An offworld power's "countries" are its worlds, and no conquest on Earth
+    // moves them, so they are answered before the map is consulted at all.
+    if (OFFWORLD_POWERS[powerName]) return OFFWORLD_POWERS[powerName].slice();
     // Prefer the history simulation's final map: conquests/liberations during
     // world generation reassign nations between hyperpowers.
     const simStates = window.HistoryManager?.getNationsState?.() || null;
@@ -649,7 +924,15 @@
       headHistory: [],
     };
 
-    for (let i = 0; i < arch.partyCount; i++) power.parties.push(makeParty(power, rng, nowMinute, i));
+    // A real-party archetype is dealt a shuffle of its own historical roster
+    // (seeded per world, so two worlds can seat different governing parties),
+    // and only the first partyCount are ever live at once.
+    const realPool = arch.partyBank && Array.isArray(arch.partyBank.real) && arch.partyBank.real.length
+      ? seededShuffle(arch.partyBank.real, rng)
+      : null;
+    for (let i = 0; i < arch.partyCount; i++) {
+      power.parties.push(makeParty(power, rng, nowMinute, i, realPool ? realPool[i % realPool.length] : null));
+    }
 
     // Elite electorate for conclave/plenum systems
     for (let i = 0; i < power.electorCount; i++) {
@@ -801,8 +1084,18 @@
 
     // --- Elite electors, multiple ballots, life-flavored term ---------------
     conclave(state, power, minute, rng, record) {
-      const candidates = power.parties.map(p => power.politicians[p.leaderId]).filter(p => p && p.alive);
+      let candidates = power.parties.map(p => power.politicians[p.leaderId]).filter(p => p && p.alive);
       const electors = power.electors.map(id => power.politicians[id]).filter(p => p && p.alive);
+      // Electors are already independent (no order/brotherhood behind them,
+      // see bootstrapPower); one may stand as papabile in their own right
+      // rather than behind a party's own nominee. An elector's ideology
+      // clusters close to every other elector's by construction, which is
+      // exactly the compromise-candidate advantage a real conclave gives an
+      // outsider, so this is deliberately a real chance and not a token one.
+      if (electors.length && rng.next() < INDEPENDENT_CHANCE) {
+        const outsider = rng.pick(electors);
+        if (!candidates.includes(outsider)) candidates = candidates.concat([outsider]);
+      }
       const support = {};
       for (const c of candidates) support[c.id] = 0;
       let ballotCount = 0, winnerPol = null;
@@ -901,6 +1194,9 @@
     // --- Strength contest; losing finalist may be eaten ----------------------
     moot(state, power, minute, rng, record) {
       const champions = power.parties.map(p => power.politicians[p.leaderId]).filter(p => p && p.alive);
+      // A lone challenger who answers to no clan at all: strength speaks for
+      // itself at a moot, so nobody needs a banner behind them to enter.
+      if (rng.next() < INDEPENDENT_CHANCE) champions.push(spawnIndependent(power, rng, minute, 40));
       const scored = champions
         .map(c => ({ c, s: c.strength * 1.2 + c.cunning * 0.6 + rng.next() * 30 }))
         .sort((a, b) => b.s - a.s);
@@ -921,6 +1217,8 @@
     // --- Divine ascension tournament -----------------------------------------
     tournament(state, power, minute, rng, record) {
       const aspirants = power.parties.map(p => power.politicians[p.leaderId]).filter(p => p && p.alive);
+      // A godling with no house behind them, ascending on raw divinity alone.
+      if (rng.next() < INDEPENDENT_CHANCE) aspirants.push(spawnIndependent(power, rng, minute, 40));
       const scored = aspirants
         .map(c => ({ c, s: c.divinity * 1.3 + c.charisma * 0.5 + rng.next() * 25 }))
         .sort((a, b) => b.s - a.s);
@@ -935,7 +1233,10 @@
       const heirs = [];
       const heirCount = rng.int(3, 5);
       for (let i = 0; i < heirCount; i++) {
-        heirs.push(makePolitician(power, rng, minute, { age: rng.int(19, 45), spread: 30, partyId: rng.pick(power.parties).id }));
+        // A claimant born outside every faction's patronage, backed by
+        // nothing but their own blood claim.
+        const partyId = rng.next() < INDEPENDENT_CHANCE ? null : rng.pick(power.parties).id;
+        heirs.push(makePolitician(power, rng, minute, { age: rng.int(19, 45), spread: 30, partyId }));
       }
       const scored = heirs
         .map(c => ({ c, s: c.cunning * 1.1 + c.ambition * 0.6 + c.charisma * 0.4 + rng.next() * 25 }))
@@ -957,6 +1258,9 @@
     // --- The Great Examination -------------------------------------------------
     examination(state, power, minute, rng, record) {
       const candidates = power.parties.map(p => power.politicians[p.leaderId]).filter(p => p && p.alive);
+      // An independent scholar, sponsored by no school, sitting the paper on
+      // their own reading alone.
+      if (rng.next() < INDEPENDENT_CHANCE) candidates.push(spawnIndependent(power, rng, minute, 40));
       const scored = candidates
         .map(c => ({ c, s: c.intellect * 1.5 + c.integrity * 0.5 + rng.next() * 10 }))
         .sort((a, b) => b.s - a.s);
@@ -1278,8 +1582,12 @@
       }
     }
     let powerName = country ? canonicalFaction(controller !== "Neutral" ? controller : faction) : "Neutral";
-    if ((powerName === "Neutral" || !state.powers[powerName]) && powers.length) {
-      powerName = powers[rng.int(0, powers.length - 1)]; // sympathy allegiance
+    if (powerName === "Neutral" || !state.powers[powerName]) {
+      // Sympathy allegiance, drawn from the powers of this world only: nobody
+      // living in a neutral country drifts into a caste on another star.
+      const earthly = powers.filter(n => !OFFWORLD_POWERS[n]);
+      const pool = earthly.length ? earthly : powers;
+      if (pool.length) powerName = pool[rng.int(0, pool.length - 1)];
     }
     return { country: country?.country ?? null, power: powerName };
   }
@@ -1287,13 +1595,35 @@
   function ensureIdentity(state, npcName, groupName, nowMinute) {
     if (state.identities[npcName]) return state.identities[npcName];
     const rng = new PolRng(worldSeed() ^ nameHash("identity:" + npcName));
-    const polity = resolveGroupPolity(state, groupName);
-    const power = state.powers[polity.power];
     const profile = getProfile(npcName);
+    // Somebody who is not from this world answers to the power that sent them,
+    // not to whichever nation the town they are standing in belongs to. They
+    // hold no citizenship here, so the country stays null.
+    const alien = window.AlienOrigins?.identify?.(profile?.spriteKey, npcName) || null;
+    const polity = (alien && state.powers[alien.power])
+      ? { country: null, power: alien.power }
+      : resolveGroupPolity(state, groupName);
+    const power = state.powers[polity.power];
 
-    // Personal ideology: the power's cultural baseline, a personal spread,
-    // then nudges from the live society profile when one exists.
-    const ideology = jitterIdeology(power ? power.baseline : { econ: 0, auth: 0, trad: 0, mil: 0, myst: 0 }, rng, 50);
+    // Personal ideology: what they BELIEVE first, where they LIVE second. The
+    // creed on the society profile (Ideology.json) carries its own position on
+    // these five axes, so a Trade Unionist reads as one wherever they were
+    // born; the power's cultural baseline is what is left over, and pulls them
+    // toward the local consensus without erasing the creed. Somebody with no
+    // creed on file is still the baseline plus a wide personal spread, which is
+    // all this used to be. Then nudges from the rest of the profile.
+    const creed = window.NPCShared.ideologyFor(profile);
+    const baseline = power ? power.baseline : { econ: 0, auth: 0, trad: 0, mil: 0, myst: 0 };
+    let center = baseline, spread = 50;
+    if (creed && creed.axes) {
+      const creedAxes = window.NPCShared.ideologyAxes(creed);
+      center = {};
+      for (const ax of AXES) {
+        center[ax] = creedAxes[ax] * CREED_WEIGHT + (baseline[ax] ?? 0) * (1 - CREED_WEIGHT);
+      }
+      spread = CREED_SPREAD;
+    }
+    const ideology = jitterIdeology(center, rng, spread);
     if (profile) {
       if (typeof profile.moralityScore === "number") ideology.auth = clamp(Math.round(ideology.auth - profile.moralityScore * 0.15), -100, 100);
       if (typeof profile.wealthTierBase === "number") ideology.econ = clamp(Math.round(ideology.econ + (profile.wealthTierBase - 2) * 12), -100, 100);
@@ -1310,7 +1640,7 @@
 
     const identity = {
       power: polity.power, country: polity.country, group: groupName ?? null,
-      ideology, partyId,
+      ideology, partyId, creedId: creed?.id ?? null,
       engagement: Math.round(Math.pow(rng.next(), 1.6) * 100), // most people are mostly apathetic
       charisma: rng.int(5, 95),
       votedLast: null,
@@ -1484,8 +1814,18 @@
 
   let _catchUpRunning = false;
 
+
+  // True in a world created with populationMode "empty" (WorldManager).
+  function isEmptyWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+  }
+
   function catchUp(nowMinute) {
     if (_catchUpRunning) return;
+    // No electorate, no candidates, no coups: political time does not pass in
+    // an empty world. See WorldManager.populationMode.
+    if (isEmptyWorld()) return;
     const state = getState();
     if (!state) return;
     _catchUpRunning = true;
@@ -1779,6 +2119,27 @@
     getPartyOf(powerName, partyId) {
       const power = this.getPower(powerName);
       return power ? (power.parties.find(p => p.id === partyId) || null) : null;
+    },
+    // Exact-id search across every power's parties, for the wiki's party page
+    // (a party id already carries its own power, but the wiki only has the id).
+    findParty(partyId) {
+      const state = $gameSystem?._npcPolitics;
+      if (!state || !partyId) return null;
+      for (const power of Object.values(state.powers || {})) {
+        const party = power.parties.find(p => p.id === partyId);
+        if (party) return { power, party };
+      }
+      return null;
+    },
+    // Every party currently seated anywhere, power attached, for the wiki's
+    // party index and the ideology page's "held by" list.
+    listAllParties() {
+      const state = $gameSystem?._npcPolitics;
+      const out = [];
+      for (const power of Object.values(state?.powers || {})) {
+        for (const party of power.parties) out.push({ party, powerName: power.name });
+      }
+      return out;
     },
     listSettlements() { return $gameSystem?._npcPolitics?.settlements || {}; },
     listIdentities() { return $gameSystem?._npcPolitics?.identities || {}; },

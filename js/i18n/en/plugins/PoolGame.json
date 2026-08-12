@@ -1,11 +1,26 @@
 {
   "player1": "Player 1",
   "player2": "Player 2",
-  "player2Cpu": "Player 2 (CPU)",
-  "controlsP1": "Arrow Keys: Aim | Hold Space: Charge Power | Release: Shoot",
-  "controlsP2": "A/D or Numpad 4/6: Aim | Hold E or Numpad 5/0: Charge Power",
-  "cpuThinking": "CPU is thinking...",
-  "power": "Power: {pct}%",
-  "youWin": "You Win!",
-  "cpuWins": "CPU Wins!"
+  "player2Cpu": "CPU",
+  "noThree": "THREE.JS IS NOT LOADED - POOL UNAVAILABLE",
+  "aimPrompt": "{player}: LINE UP THE SHOT",
+  "powerPrompt": "{player}: SET THE POWER",
+  "englishPrompt": "{player}: SET THE ENGLISH",
+  "liningUp": "{player} IS LINING UP...",
+  "potted": "DOWN: {count}",
+  "nothingDown": "NOTHING DOWN",
+  "scratch": "SCRATCH - THE CUE BALL GOES BACK ON THE SPOT",
+  "eightGood": "THE EIGHT DROPS - THE FRAME IS OVER",
+  "eightEarly": "THE EIGHT WENT DOWN EARLY",
+  "victory": "VICTORY!",
+  "defeat": "DEFEAT",
+  "draw": "DRAW",
+  "finalScore": "{player} {playerScore}   {opponent} {opponentScore}",
+  "pressAnyKey": "PRESS OK TO LEAVE THE TABLE",
+  "hud": {
+    "title": "POOL",
+    "power": "POWER",
+    "english": "ENGLISH",
+    "onTable": "ON TABLE {count}"
+  }
 }

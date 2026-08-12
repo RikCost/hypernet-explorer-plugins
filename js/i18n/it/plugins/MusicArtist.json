@@ -1,0 +1,19 @@
+{
+  "optionName": "Mostra artista della musica",
+  "mode": {
+    "firstTime": "Prima volta",
+    "cassette": "Ogni volta",
+    "minimal": "Minimale",
+    "off": "No"
+  },
+  "byLine": "di {artist}",
+  "artist": {
+    "custom": "La tua cassetta",
+    "procedural": "Generata sul momento",
+    "unknown": "Artista sconosciuto"
+  },
+  "cassette": {
+    "sideA": "LATO A",
+    "stereo": "STEREO"
+  }
+}

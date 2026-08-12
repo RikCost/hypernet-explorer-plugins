@@ -1,0 +1,349 @@
+{
+  "passive": {
+    "1": {
+      "name": "JACK OF ALL TRADES",
+      "desc": "YOU GET A FLAT BONUS TA EVERY JOB, NEVER HARD-FAIL A STAT CHECK AN' LEARN A RANDOM SKILL ON LEVEL UP!"
+    },
+    "2": {
+      "name": "BREWMISTRESS",
+      "desc": "YA POTIONS COME OUT ONE QUALITY TIER HIGHER AN' YOU CAN BREW BATTLE HEXES!"
+    },
+    "3": {
+      "name": "BENEDICTION",
+      "desc": "WHILE YOU LIVE, DA PARTY HEALS A LITTLE AT DA END OF EVERY TURN!"
+    },
+    "4": {
+      "name": "GUARDIAN'S VOW",
+      "desc": "WHILE YOU LIVE ABOVE 25% HP, YA OTHER PARTY MEMBERS TAKE 15% LESS DAMAGE AN' DA REDIRECTED PORTION IZ DEALT TA YOU!"
+    },
+    "5": {
+      "name": "GRAPPLE CHAIN",
+      "desc": "CONSECUTIVE BASIC ATTACKS ON DA SAME ENEMY BUILD A PIN; AT 3 DA ENEMY IZ STUNNED!"
+    },
+    "6": {
+      "name": "CAPITAL",
+      "desc": "MARKETS AN' LOANS FAVOR YOU, SHOPS YOU RUN PRODUCE FASTER, AN' YOU BUY AT A DISCOUNT!"
+    },
+    "7": {
+      "name": "SANGUINE",
+      "desc": "YOU STEAL 30% OF MELEE DAMAGE AS HP, BUT SUNLIGHT BURNS YOU AN' YOU FEED INSTEAD OF EATIN'!"
+    },
+    "8": {
+      "name": "DEVOTEE",
+      "desc": "DURIN' NIGHT HOURS YOU DEAL +15% DAMAGE AN' TAKE 10% LESS; YA TRIAL PENALTIES IZ REDUCED!"
+    },
+    "9": {
+      "name": "TRIAGE",
+      "desc": "HEALIN' AN ALLY BELOW 25% HP ALSO GRANTS DEM AN ADRENALINE ATTACK BOOST!"
+    },
+    "10": {
+      "name": "ATTUNEMENT",
+      "desc": "AT BATTLE START YOU ATTUNE TA DA WEATHER, GAININ' +25% TA DA MATCHIN' ELEMENT!"
+    },
+    "11": {
+      "name": "CHI FLOW",
+      "desc": "EVERY 3RD ACTION REFUNDS ITS AP AN' GRANTS A SURGE OF EXTRA ENERGY!"
+    },
+    "12": {
+      "name": "RUNESMITH",
+      "desc": "YOU CAN IMBUE EQUIPMENT WIT AN EXTRA AFFIX AT NO MATERIAL COST ONCE PER ITEM!"
+    },
+    "13": {
+      "name": "BLOODRAGE",
+      "desc": "YA ATTACK GROWS AS YA HP DROPS (UP TA +40% AT 10% HP), BUT HEALIN' YOU RECEIVE IZ HALVED!"
+    },
+    "14": {
+      "name": "FREERUNNER",
+      "desc": "YA AGILITY IZ GREATLY HEIGHTENED (+30%), SO YOU ACT SOONER, AN' YOU SHRUG OFF FALL DAMAGE!"
+    },
+    "15": {
+      "name": "ASCETIC",
+      "desc": "HUNGER AN' SLEEP DRAIN 30% SLOWER AN' RESTIN' RESTORES MORE ENERGY!"
+    },
+    "16": {
+      "name": "STREET FIGHTER",
+      "desc": "WHILE UNARMED YOU DEAL +25% DAMAGE AN' COUNTER A SHARE OF MELEE HITS!"
+    },
+    "17": {
+      "name": "FOOTWORK",
+      "desc": "HIGH EVASION LETS YOU SLIP PUNCHES; EACH DODGE BUILDS A COMBO STACK (MAX 5) DAT ADDS +8% DAMAGE PER STACK TA YA NEXT HIT!"
+    },
+    "18": {
+      "name": "KAYFABE",
+      "desc": "YOU PLAY TA DA CROWD, OPENIN' EVERY BATTLE WIT A SURGE OF BONUS AP!"
+    },
+    "19": {
+      "name": "COMBUSTION",
+      "desc": "YA FIRE DEALS +30% DAMAGE AN' YOU IZ IMMUNE TA BURN!"
+    },
+    "20": {
+      "name": "DEEP FREEZE",
+      "desc": "YA ICE DEALS +30% DAMAGE AN' SLOWS DA ENEMIES IT STRIKES!"
+    },
+    "21": {
+      "name": "AMBUSH",
+      "desc": "YOU HAB A HIGH CRITICAL RATE AN' DEAL +25% DAMAGE TA ENEMIES STILL AT FULL HP!"
+    },
+    "22": {
+      "name": "CONSECRATION",
+      "desc": "SACRED DAMAGE YOU DEAL ALSO HEALS YOU FOR 20% OF DA DAMAGE!"
+    },
+    "23": {
+      "name": "PACT",
+      "desc": "YOU CAN BURN YA OWN HP AS SPELL FUEL AN' DARK-FACTION STANDIN' STRENGTHENS YA CURSES!"
+    },
+    "24": {
+      "name": "MARKSMAN",
+      "desc": "YA BOW AN' GUN ATTACKS DEAL +25% DAMAGE AN' NEVER SUFFER DA MELEE-RANGE PENALTY!"
+    },
+    "25": {
+      "name": "DIVINE FAVOR",
+      "desc": "OVERHEALIN' YOU DELIVER IZ CONVERTED INTO A PROTECTIVE BARRIER RATHER DEN WASTED!"
+    },
+    "26": {
+      "name": "IAIDO STANCE",
+      "desc": "YA FIRST ACTION EACH BATTLE DEALS DOUBLE DAMAGE AN' NO CAN MISS!"
+    },
+    "27": {
+      "name": "ARCANE MASTERY",
+      "desc": "ALL YA SPELL MP COSTS IZ REDUCED BY 20%!"
+    },
+    "28": {
+      "name": "PATHFINDER",
+      "desc": "YOU SPOT DANGER EARLY: BATTLES YOU ENTER IZ FAR MORE LIKELY TA BE A PREEMPTIVE STRIKE, AN' ENEMIES RARELY AMBUSH YOU!"
+    },
+    "29": {
+      "name": "FORESIGHT",
+      "desc": "YOU FORESEE EACH ENEMY'S NEXT ACTION, SHOWN ON DA BATTLE HUD!"
+    },
+    "30": {
+      "name": "CROWD FAVORITE",
+      "desc": "ARENA WIN STREAKS GRANT PERMANENT ATTACK AN' RICHER ARENA LOOT ROLLS!"
+    },
+    "31": {
+      "name": "GRAVE HARVEST",
+      "desc": "EVERY ENEMY DAT DIES LEAVES A SOUL CHARGE DAT FUELS YA SUMMONS!"
+    },
+    "32": {
+      "name": "FIELD MARSHAL",
+      "desc": "WHILE YOU LIVE, ALL ALLIES GAIN +10% HIT; TROOPS YOU RECRUIT COST LESS AN' DESERT LESS!"
+    },
+    "33": {
+      "name": "AEGIS WARD",
+      "desc": "WHILE YOU LIVE, DA WHOLE PARTY TAKES LESS PHYSICAL AN' MAGICAL DAMAGE, SCALED BY YA CURRENT HP (A FULL-HP GUARDIAN WARDS 25%). MULTIPLE GUARDIANS STACK, UP TA 50%!"
+    },
+    "34": {
+      "name": "SPELL EDGE",
+      "desc": "YA BASIC ATTACKS CARRY DA ELEMENT OF DA LAST SPELL YOU CAST!"
+    },
+    "35": {
+      "name": "SONGWEAVER",
+      "desc": "EACH TURN A ROTATIN' SONG PULSES A BUFF TA DA WHOLE PARTY!"
+    },
+    "36": {
+      "name": "MIRROR IMAGE",
+      "desc": "YOU START EACH BATTLE WIT DECOY IMAGES DAT ABSORB DA FIRST HITS AIMED AT YOU!"
+    },
+    "37": {
+      "name": "WAR CASTER",
+      "desc": "YOU CAST FROM DA FRONT LINE WITHOUT PENALTY AN' SPELLS DRAW ON AP WHEN YA MP RUNS DRY!"
+    },
+    "38": {
+      "name": "CONTRACTOR",
+      "desc": "YOU EARN A GOLD BOUNTY FOR EACH ENEMY YOU DEFEAT, AN' COMBAT JOBS PAY YOU MORE!"
+    },
+    "39": {
+      "name": "ENLIGHTENED",
+      "desc": "YOU GAIN BONUS SKILL-TRAININ' PROGRESS AN' READ EXTRA LORE FROM EVERY BOOK!"
+    },
+    "40": {
+      "name": "THICK HIDE",
+      "desc": "ELEMENTAL WEAKNESSES AGAINST YOU IZ CAPPED AT X1.5 INSTEAD OF X2, AN' COLD NO CAN HARM YOU!"
+    },
+    "41": {
+      "name": "PHYSICIAN",
+      "desc": "YA LIMB AN' ORGAN INJURIES HEAL FASTER AN' YOU CAN PERFORM FIELD SURGERY!"
+    },
+    "42": {
+      "name": "METHOD",
+      "desc": "YA CRAFTIN' AN' ALCHEMY YIELD AN EXTRA OUTPUT AN' YOU CAN ANALYZE UNKNOWN ITEMS!"
+    },
+    "43": {
+      "name": "FIREPROOF",
+      "desc": "YOU IZ IMMUNE TA BURN AN' FIRE DAMAGE AN' CAN PUT OUT ENVIRONMENTAL BLAZES!"
+    },
+    "44": {
+      "name": "LAW",
+      "desc": "YOU ACCRUE LESS BOUNTY, GET TRIAL LENIENCY AN' CAN ARREST WEAKENED HUMANOID FOES!"
+    },
+    "45": {
+      "name": "GOURMET",
+      "desc": "YA COOKIN' GIVES MORE NUTRITION, GRANTS A WELL-FED BUFF AN' NEVER CAUSES OVEREATIN'!"
+    },
+    "46": {
+      "name": "PRESS PASS",
+      "desc": "YOU COVER EVERY FIGHT FOR A SMALL GOLD SCOOP PER ENEMY DEFEATED, AN' NPCS REVEAL MORE TA YOU!"
+    },
+    "47": {
+      "name": "BUILDER",
+      "desc": "YA BUILDIN' IZ FREE-FORM, CRAFTIN' COSTS LESS MATERIAL AN' STRUCTURES CAN BE REINFORCED!"
+    },
+    "48": {
+      "name": "TENURE",
+      "desc": "YOU LEARN FAST: +25% BATTLE EXPERIENCE, AN' READ FULL BESTIARY ENTRIES AT ONCE!"
+    },
+    "49": {
+      "name": "INSIGHT",
+      "desc": "YA COMPOSURE MAKES YOU IMMUNE TA FEAR, CONFUSION AN' CHARM; YOU ALSO READ ENEMY MORALE AN' NPC MINDS!"
+    },
+    "50": {
+      "name": "EXCAVATOR",
+      "desc": "YA DIGGIN' AN' TREASURE ROLLS IMPROVE AN' ARTIFACTS IZ MORE LIKELY IDENTIFIED!"
+    },
+    "51": {
+      "name": "BEDSIDE MANNER",
+      "desc": "EVERY POTION AN' HEALIN' ITEM YOU USE RESTORES 30% MORE!"
+    },
+    "52": {
+      "name": "FORAGER",
+      "desc": "YOU PASSIVELY GATHER WILD FOOD AN' MATERIALS AN' HARVEST MORE FROM PLANTS AN' SPOILS!"
+    },
+    "53": {
+      "name": "KINEMATICS",
+      "desc": "YA THUNDER AN' PHYSICAL CRITS SPLASH BASED ON ENEMY SPEED AN' YA SHIP BURNS LESS FUEL!"
+    },
+    "54": {
+      "name": "GEARHEAD",
+      "desc": "VEHICLE REPAIRS COST HALF AN' DISMANTLIN' FURNITURE RETURNS FULL MATERIALS!"
+    },
+    "55": {
+      "name": "MERCHANT",
+      "desc": "YOU BUY CHEAPER AN' SELL DEARER EVERYWHERE, AN' DAILY STOCK RESTOCKS WIT BETTER ITEMS!"
+    },
+    "56": {
+      "name": "GREEN THUMB",
+      "desc": "YA CROPS GROW 25% FASTER AN' YIELD MORE, AN' ANIMALS MATURE AN' PRODUCE FASTER!"
+    },
+    "57": {
+      "name": "TIMBERMAN",
+      "desc": "YOU GATHER EXTRA WOOD AN' SWING AXES WIT BONUS DAMAGE AN' A CHANCE TA FELL LARGE FOES!"
+    },
+    "58": {
+      "name": "FORECASTER",
+      "desc": "YOU ALWAYS FORESEE CURRENT AN' UPCOMIN' WEATHER AN' ITS EFFECT ON CROPS AN' BEES!"
+    },
+    "59": {
+      "name": "SERMON",
+      "desc": "YOU DEAL BONUS SACRED DAMAGE TA CURSED FOES AN' BLESS ALLIES WIT LINGERIN' REGEN!"
+    },
+    "60": {
+      "name": "SHOWTIME",
+      "desc": "YOU EARN GOLD AN' GOODWILL PERFORMIN', AN' DA PARTY GAINS MORALE AFTER ANY MINIGAME WIN!"
+    },
+    "61": {
+      "name": "DIVINE BLOOD",
+      "desc": "YOU IZ IMMUNE TA INSTANT DEATH; ONCE PER BATTLE A LETHAL HIT REVIVES YOU AT 30% HP!"
+    },
+    "62": {
+      "name": "DESPERATION",
+      "desc": "DA LESS GOLD YOU CARRY, DA HIGHER YA CRITICAL AN' EVASION; YOU FEAR NOTHIN'!"
+    },
+    "63": {
+      "name": "FERAL",
+      "desc": "YA NATURAL WEAPONS HIT HARD, YOU REGENERATE QUICKLY AN' YOU INTIMIDATE WEAK FOES ON SIGHT!"
+    },
+    "64": {
+      "name": "SHAPESHIFT",
+      "desc": "YOU STAY DISGUISED SO ENEMIES TARGET YOU LAST, AN' YOU COPY A DEFEATED FOE'S SKILL!"
+    },
+    "65": {
+      "name": "APEX",
+      "desc": "YOU FEED ON DEFEATED ENEMIES TA HEAL AN' GROW STRONGER WIT EACH KILL!"
+    },
+    "66": {
+      "name": "AUGMENTED",
+      "desc": "YOU IZ IMMUNE TA POISON, DISEASE AN' BLEED, RUN ON POWER INSTEAD OF HUNGER, AN' CARRY A REGENERATIN' ENERGY SHIELD!"
+    }
+  },
+  "trait": {
+    "31": {
+      "name": "PAIN FEEDS",
+      "desc": "DAMAGE YOU TAKE CHARGES YA ENERGY INSTEAD OF ONLY HURTIN' YOU!"
+    },
+    "41": {
+      "name": "TOTAL RECALL",
+      "desc": "YOU REMEMBER EVERY ENEMY YOU HAB FOUGHT, REVEALIN' DEY RESISTANCES ON SIGHT!"
+    },
+    "43": {
+      "name": "DUAL GRIP",
+      "desc": "YOU HANDLE A WEAPON IN EACH HAND WITHOUT DA OFF-HAND PENALTY!"
+    },
+    "74": {
+      "name": "FEEL NOTHIN'",
+      "desc": "PAIN NEVER STAGGERS YOU: WOUNDS DO NOT REDUCE YA ACCURACY OR SPEED!"
+    },
+    "99": {
+      "name": "ILL FATE",
+      "desc": "MISFORTUNE FOLLOWS YOU, BUT CURSES CAST AT YOU REBOUND ON DEY CASTER!"
+    },
+    "152": {
+      "name": "RIPOSTE",
+      "desc": "WHEN A SINGLE ENEMY FACES YOU ALONE, YOU ANSWER ITS MISSES WIT A COUNTER!"
+    },
+    "155": {
+      "name": "BULWARK",
+      "desc": "A RAISED SHIELD ALSO PROTECTS DA ALLY STANDIN' BESIDE YOU!"
+    },
+    "156": {
+      "name": "FIRST BLOOD",
+      "desc": "YA OPENIN' STRIKE OF A BATTLE ALWAYS CRITICALLY HITS AN UNAWARE FOE!"
+    },
+    "190": {
+      "name": "MANA WELLSPRIN'",
+      "desc": "YA MAGIC RESERVES REFILL ON DEY OWN BETWEEN BATTLES!"
+    },
+    "195": {
+      "name": "MOONCHANGE",
+      "desc": "UNDER A FULL MOON YOU SHIFT FORM AN' FIGHT WIT A BEAST'S STRENGTH!"
+    },
+    "202": {
+      "name": "GUN-FU",
+      "desc": "WHILE WIELDIN' A GUN, PROJECTILE WEAPON OR BOW, EVERY MARTIAL ARTS SKILL YOU USE IZ FOLLOWED BY A FREE NORMAL ATTACK ON DA SAME ENEMY!"
+    }
+  },
+  "elem": {
+    "1": "PHYS",
+    "2": "FIRE",
+    "3": "ICE",
+    "4": "THUNDER",
+    "5": "WATER",
+    "6": "PETRO",
+    "7": "WIND",
+    "8": "SACRED",
+    "9": "CURSED"
+  },
+  "log": {
+    "pinStunned": "{target} IZ PINNED AN' STUNNED!",
+    "chiFlows": "{actor}'S CHI FLOWS!",
+    "mirrorShatters": "A MIRROR IMAGE OF {actor} SHATTERS!",
+    "gunFuFollowThrough": "{actor} FOLLOWS THROUGH - GUN-FU!",
+    "divineBloodSurges": "{target}'S DIVINE BLOOD SURGES!",
+    "comboSlip": "{target} SLIPS DA BLOW! COMBO X{combo}"
+  },
+  "chip": {
+    "next": "NEXT",
+    "pin": "PIN {count}/3",
+    "chi": "CHI {count}/3",
+    "combo": "COMBO X{count}",
+    "decoys": "DECOYS {count}",
+    "iaido": "IAIDO",
+    "edge": "EDGE: {elem}",
+    "attuned": "ATTUNED: {elem}",
+    "souls": "SOULS {count}",
+    "divineBlood": "DIVINE BLOOD",
+    "rage": "RAGE +{bonus}%",
+    "aegis": "AEGIS {pct}%",
+    "night": "NIGHT +15%",
+    "gunFu": "GUN-FU"
+  }
+}

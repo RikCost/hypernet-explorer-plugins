@@ -4,8 +4,6 @@
     "past": "Past",
     "present": "Present",
     "future": "Future",
-    "instruction": "Click on a card to reveal its meaning",
-    "complete": "Your reading is complete. Press ESC to exit.",
     "upright": "Upright",
     "reversed": "Reversed",
     "npcTitle": "Reading Tarot for {name}",
@@ -14,8 +12,9 @@
     "layout": "THE LAYOUT",
     "readingDone": "THE READING IS DONE",
     "faceDown": "[ face down ]",
-    "readingDonePrompt": "The reading is done. Press OK.",
-    "unclearNumbered": "The meaning is unclear... ({n})"
+    "unclearNumbered": "The meaning is unclear... ({n})",
+    "chooseSpread": "CHOOSE A SPREAD",
+    "readingComplete": "READING COMPLETE"
   },
   "cards": {
     "The Fool": {

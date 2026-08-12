@@ -1,0 +1,19 @@
+{
+  "optionName": "SHOW MUSIC ARTIST",
+  "mode": {
+    "firstTime": "FIRST TIME",
+    "cassette": "EVERY TIME",
+    "minimal": "MINIMAL",
+    "off": "OFF"
+  },
+  "byLine": "BY {artist}",
+  "artist": {
+    "custom": "YA OWN TAPE",
+    "procedural": "GENERATED ON DA SPOT",
+    "unknown": "ARTIST UNKNOWN"
+  },
+  "cassette": {
+    "sideA": "SIDE A",
+    "stereo": "STEREO"
+  }
+}

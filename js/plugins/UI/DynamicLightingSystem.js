@@ -162,6 +162,38 @@
     };
     // i18n-ignore-end
 
+    // ── Which tiles are a lamp post ─────────────────────────────────────────
+    // The tileset already says. Every one of them declares its street lighting
+    // as a <Streetlight:> terrain feature, and that declaration is what the
+    // procedural generators place the posts from, so reading the same thing here
+    // is the only way the two can agree.
+    //
+    // It used to be a hand-written table of tile ids in Map636TileEvents.json,
+    // and it had drifted: its tileset 303 entry named 595 and 889 while the City
+    // sheet draws its lamps with 999/1007/1015/1023, so every lamp post in every
+    // city stood dark all night. Tileset 300's entry was stale the same way, and
+    // 304 and 305 declare lamps but had no entry at all. That table is gone now
+    // rather than corrected, because a second list of the same fact is what let
+    // it drift in the first place. Memoised per tileset: the answer is static.
+    const _streetlightIdCache = {};
+    function streetlightTileIdsFor(tilesetId) {
+        if (!tilesetId) return null;
+        if (_streetlightIdCache[tilesetId]) return _streetlightIdCache[tilesetId];
+        const ids = new Set();
+        const U = window.ProcGenUtils;
+        if (U && U.Cache && typeof U.Cache.getTilesetFeatures === 'function') {
+            const features = U.Cache.getTilesetFeatures(tilesetId) || {};
+            for (const variant of features[LightTypes.STREET] || []) {
+                if (variant.type === 'single' && variant.tileId) ids.add(variant.tileId);
+                else if (variant.grid) {
+                    for (const row of variant.grid) for (const t of row) if (t) ids.add(t);
+                }
+            }
+        }
+        _streetlightIdCache[tilesetId] = ids;
+        return ids;
+    }
+
     // Plugin Commands
     PluginManager.registerCommand(pluginName, 'refreshLights', args => {
         if ($gameLighting) {
@@ -725,76 +757,54 @@
             }
         }
 
+        // The lamp posts standing on the map. There is no biome test any more:
+        // the old one read $gameSystem._procGenData.currentBiomeName, a property
+        // nothing ever writes (the generators write `currentBiome`), so it was
+        // always null and the gate never ran. Correcting the name would have
+        // made it start refusing every biome outside its four-word list, which
+        // is the wrong question anyway - a lamp post that has been placed is a
+        // lamp post, whether the generator put it on a city street or a prefab
+        // dropped it on a farm track. The tiles decide.
         createTileLights() {
-
-            if (!window.WorldGen || !window.WorldGen.Map636TileEvents) {
-                return;
-            }
-
-            // Check if current biome should have streetlights
-            const currentBiome = $gameSystem._procGenData ? $gameSystem._procGenData.currentBiomeName : null;
-            if (currentBiome) {
-                const biomeLower = currentBiome.toLowerCase();
-                const shouldHaveLights = biomeLower.includes('road') ||
-                    biomeLower.includes('city') ||
-                    biomeLower.includes('village') ||
-                    biomeLower.includes('burg');
-
-                if (!shouldHaveLights) {
-                    console.log(`[DynamicLighting] Biome "${currentBiome}" does not require streetlights - skipping`);
-                    return;
-                }
-
-                console.log(`[DynamicLighting] Biome "${currentBiome}" requires streetlights - creating lights`);
-            }
-
-            const streetlightConfig = window.WorldGen.Map636TileEvents['Streetlight'];  // i18n-ignore  data key
-            if (!streetlightConfig || !streetlightConfig.tilesets) {
-                return;
-            }
-
             const currentTileset = $gameMap.tileset();
             const tilesetId = currentTileset ? currentTileset.id : 0;
-            console.log('[DynamicLighting] Current tileset ID:', tilesetId);
-
-            // Find the tileset configuration for streetlights
-            const tilesetConfig = streetlightConfig.tilesets.find(
-                config => config.tilesetId === tilesetId
-            );
-
-            if (!tilesetConfig || !tilesetConfig.tileIds || tilesetConfig.tileIds.length === 0) {
+            const streetlightTileIds = streetlightTileIdsFor(tilesetId);
+            if (!streetlightTileIds || !streetlightTileIds.size) {
                 return;
             }
-
-            const streetlightTileIds = tilesetConfig.tileIds;
 
             const width = $gameMap.width();
             const height = $gameMap.height();
-            let lightsCreated = 0;
+            const isLamp = (x, y) => {
+                if (x < 0 || y < 0 || x >= width || y >= height) return false;
+                // Highest layer wins, exactly as the old scan did.
+                for (const layer of [4, 3, 2]) {
+                    const tileId = $gameMap.tileId(x, y, layer);
+                    if (tileId !== 0) return streetlightTileIds.has(tileId);
+                }
+                return false;
+            };
 
-            // Scan all map tiles (check layers 2, 3, 4 with priority order)
+            // A lamp post is drawn as a COLUMN of tiles (tileset 303 declares
+            // <Streetlight: [E232],[E240],[E248],[E256]>, four tiles tall), and
+            // the light hangs from the head at the top of it. Lighting every
+            // matching tile stacked four lamps inside one post and put most of
+            // the glow on the pole rather than on the street, so only the top of
+            // each run is lit and the rest of the column is skipped.
+            let lightsCreated = 0;
             for (let x = 0; x < width; x++) {
                 for (let y = 0; y < height; y++) {
-                    const layersToCheck = [4, 3, 2];
-
-                    for (const layer of layersToCheck) {
-                        const tileId = $gameMap.tileId(x, y, layer);
-
-                        if (tileId !== 0 && streetlightTileIds.includes(tileId)) {
-                            // Create a tile light at this position
-                            const tileLight = new Sprite_TileLight(x, y, tileId);
-                            this._lightSprites.push(tileLight);
-                            this.addChild(tileLight);
-                            lightsCreated++;
-
-
-                            break; // Only use the highest layer tile
-                        }
-                    }
+                    if (!isLamp(x, y) || isLamp(x, y - 1)) continue;
+                    const tileLight = new Sprite_TileLight(x, y, $gameMap.tileId(x, y, 2));
+                    this._lightSprites.push(tileLight);
+                    this.addChild(tileLight);
+                    lightsCreated++;
                 }
             }
 
-
+            if (enableDebug) {
+                console.log(`[DynamicLighting] ${lightsCreated} streetlight(s) lit on tileset ${tilesetId}`);
+            }
         }
 
         // Player-toggled lights (Torch/Candle terrain features, see

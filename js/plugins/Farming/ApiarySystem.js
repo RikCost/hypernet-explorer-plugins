@@ -879,6 +879,10 @@
                 // in how much of it survives extraction into actual jars.
                 const jars = Math.floor(harvestable * beekeepingBonus() / 10);
                 $gameParty.gainItem($dataItems[HONEY_ITEM_ID], jars);
+                // What came off the hives, in the party's diary (Diary.js).
+                if (window.Diary) {
+                    window.Diary.onHiveHarvest($dataItems[HONEY_ITEM_ID].name, jars);
+                }
                 return harvestable;
             }
             return 0;

@@ -98,8 +98,53 @@
   const addictionReliefOf = (item) =>
     safe("getAddictionRelief", () => (utils.getAddictionRelief ? utils.getAddictionRelief(item) : []), []) || [];
 
+  // Whether the thing works by magic or by ordinary means (<Nature:> in the
+  // notebox, written by tools/nature/gen_nature_tags.js). Printed on every
+  // item, weapon and armour card, in every world: it is a property of the
+  // object, not of the world's magic level, and a player who has been told a
+  // severed world sells no charms needs to be able to see which is which.
+  // Blank for an untagged entry rather than guessed at.
+  const natureLabelOf = (item) => {
+    const MN = window.MagicNature;
+    if (!MN || !MN.natureOf) return "";
+    const nature = MN.natureOf(item);
+    if (!nature) return "";
+    return nature === "magical" ? T('Shop.natureMagical') : T('Shop.natureMundane');
+  };
+
   const loreOf = (item) =>
     safe("loreFor", () => (utils.loreFor ? utils.loreFor(item) : ""), "") || "";
+
+  // What an item is medicine for. Null for everything that is not: a healing
+  // potion restores HP and cures nothing.
+  const medicineOf = (item) =>
+    safe("getMedicineInfo", () => (utils.getMedicineInfo ? utils.getMedicineInfo(item) : null), null);
+
+  // The illnesses one drug answers, capped so a panacea does not print a
+  // hundred and fifty lines into a shop card.
+  const medicineLines = (info, limit) => {
+    const rows = [];
+    if (!info) return rows;
+    const cures = info.cures.slice(0, limit);
+    if (cures.length) {
+      rows.push({
+        label: T('Shop.medicineCures'),
+        value: cures.map((c) => T('Shop.medicineCureLine', { disease: c.name, days: c.days })).join(", ") +
+          (info.cures.length > cures.length
+            ? " " + T('Shop.medicineMore', { count: info.cures.length - cures.length }) : ""),
+      });
+    }
+    const treats = info.treats.slice(0, limit);
+    if (treats.length) {
+      rows.push({
+        label: T('Shop.medicineTreats'),
+        value: treats.map((t) => t.name).join(", ") +
+          (info.treats.length > treats.length
+            ? " " + T('Shop.medicineMore', { count: info.treats.length - treats.length }) : ""),
+      });
+    }
+    return rows;
+  };
 
   const translate = (text) =>
     safe("translateText", () => {
@@ -150,13 +195,37 @@
     return (forMap && forMap[s._shopEventId]) || null;
   };
 
-  // Categories priced off the SOUL index rather than the oil index.
-  const SOUL_CATEGORIES = ["jungle", "magic", "plants", "monsters"];  // i18n-ignore  <category:> tag values
+  // Which index a thing is quoted against is what the thing IS, not what shelf
+  // it sits on: anything carrying `<Nature: Magical>` is priced off the SOUL
+  // index and anything `<Nature: Mundane>` off the price of oil, because in
+  // this world the ordinary economy genuinely runs on crude. Every real entry
+  // of Items, Weapons and Armors carries the tag (tools/nature/gen_nature_tags.js)
+  // and window.MagicNature is the one reader of it.
+  //
+  // The category list survives only as the fallback for an entry with no tag
+  // (a plugin-made item, a third-party database), so nothing is left unpriced.
+  const SOUL_CATEGORIES = ["jungle", "magic", "plants", "monsters",
+                           "bodypart", "collectibles", "alchemistry",
+                           "homeopathy", "books"];  // i18n-ignore  <category:> tag values
+
+  // How far the two indices are allowed to move a price: half off at worst,
+  // three times at best.
+  const MARKET_FLOOR = 0.5;
+  const MARKET_CEIL = 3.0;
+
+  // True when the item is quoted against souls, false when against oil.
+  const isSoulPriced = (item) => {
+    const MN = window.MagicNature;
+    const nature = MN && typeof MN.natureOf === "function"
+      ? safe("natureOf", () => MN.natureOf(item), null)
+      : null;
+    if (nature) return nature === "magical";
+    return SOUL_CATEGORIES.includes(categoryOf(item).toLowerCase());
+  };
 
   const marketFactor = (shopData, item) => {
     if (!shopData) return 1.0;
-    const cat = categoryOf(item).toLowerCase();
-    const raw = SOUL_CATEGORIES.includes(cat) ? shopData.soulFactor : shopData.oilFactor;
+    const raw = isSoulPriced(item) ? shopData.soulFactor : shopData.oilFactor;
     const factor = Number(raw);
     return Number.isFinite(factor) && factor > 0 ? factor : 1.0;
   };
@@ -290,6 +359,11 @@
     const weight = weightOf(item);
     this.drawKeyValue(T('Shop.weight'), formatWeight(weight), 0, currentY);
     currentY += lineHeight;
+    const nature = natureLabelOf(item);
+    if (nature) {
+      this.drawKeyValue(T('Shop.nature'), nature, 0, currentY);
+      currentY += lineHeight;
+    }
 
     const isFood = safe("isFoodItem", () => utils.isFoodItem(item), false);
     if (isFood) {
@@ -380,6 +454,16 @@
       this.drawKeyValue(r.label, "-" + r.amount + "%", 0, currentY);
       currentY += lineHeight;
     }
+
+    const medicine = medicineOf(item);
+    if (medicine) {
+      this.drawKeyValue(T('Shop.medicineClass'), medicine.label, 0, currentY);
+      currentY += lineHeight;
+      for (const row of medicineLines(medicine, 4)) {
+        this.drawKeyValue(row.label, row.value, 0, currentY);
+        currentY += lineHeight;
+      }
+    }
   };
 
   Window_ItemDetail.prototype.drawWeaponStats = function (item, y) {
@@ -409,6 +493,11 @@
     const weight = weightOf(item);
     this.drawKeyValue(T('Shop.weight'), formatWeight(weight), 0, currentY);
     currentY += lineHeight;
+    const nature = natureLabelOf(item);
+    if (nature) {
+      this.drawKeyValue(T('Shop.nature'), nature, 0, currentY);
+      currentY += lineHeight;
+    }
 
     currentY = this.drawMarketPriceInfo(item, currentY);
     currentY = this.drawEquipCompatibility(item, currentY);
@@ -468,6 +557,11 @@
     const weight = weightOf(item);
     this.drawKeyValue(T('Shop.weight'), formatWeight(weight), 0, currentY);
     currentY += lineHeight;
+    const nature = natureLabelOf(item);
+    if (nature) {
+      this.drawKeyValue(T('Shop.nature'), nature, 0, currentY);
+      currentY += lineHeight;
+    }
 
     currentY = this.drawMarketPriceInfo(item, currentY);
     currentY = this.drawEquipCompatibility(item, currentY);
@@ -931,6 +1025,10 @@
     _Scene_Shop_create.call(this);
     this.createItemDetailWindow();
     this.initStock();
+    // The buy list was built while the engine created its windows, before
+    // today's stock was rolled, so a shelf filtered against yesterday's numbers
+    // is rebuilt now that the record is current.
+    if (this._buyWindow) this._buyWindow.refresh();
     this.initUIShopDOM();
 
     // Both sides of the counter are skills: what the party pays and what it
@@ -1024,6 +1122,7 @@
     if (!Array.isArray(this._shopGoods)) return;
 
     const shopData = currentShopData();
+    const scene = SceneManager._scene;
     const items = [];
 
     // One malformed goods entry must not empty the whole shelf, so each is
@@ -1031,6 +1130,16 @@
     for (const goods of this._shopGoods) {
       const item = safe("goodsToItem", () => this.goodsToItem(goods), null);
       if (!item) continue;
+      // Nothing of the wrong nature is ever on a shelf: a severed world sells
+      // no charms and an unbound one sells nothing ordinary
+      // (window.MagicNature). The line simply is not stocked, rather than
+      // being listed and refused at the till.
+      if (window.MagicNature && !window.MagicNature.allowsData(item)) continue;
+      // A sold-out line leaves the shelf rather than sitting there greyed out.
+      // The record is only consulted for a shop that keeps one, so a plugin
+      // shop or an eventless counter still lists everything.
+      const stock = (scene instanceof Scene_Shop) ? scene.getStock(item) : UNLIMITED_STOCK;
+      if (stock <= 0) continue;
       const listed = goods[2] === 0 ? item.price : goods[3];
       let price = Number.isFinite(listed) ? listed : 0;
       if (shopData) price = Math.floor(price * marketFactor(shopData, item));
@@ -1082,6 +1191,20 @@
         this.switchToBuy();
         return;
       }
+    }
+
+    // Shift puts the highlighted line on the counter, or takes it back off: the
+    // keyboard's half of the multi-select the sell cards do on a click.
+    if (Input.isTriggered('shift') && !this._numberWindow.active &&
+      this._sellWindow.active && !this._sellCategoryFocus) {
+      const item = this._sellWindow.item();
+      if (item && this.toggleSellSelection(item)) {
+        SoundManager.playOk();
+        this.refreshUIShop();
+      } else {
+        SoundManager.playBuzzer();
+      }
+      return;
     }
 
     // Guard against double handling: the active buy/sell window's native cancel
@@ -1159,25 +1282,26 @@
     container.innerHTML = `
         <div class="shop-spread" style="display: flex; width: 100%; height: 100%; box-sizing: border-box;">
             <div class="shop-left" style="flex: 3; padding: 10px 20px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; height: 100%;">
-                <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px;">
-                    <div class="back-button focusable" id="shop-close-btn" style="position: absolute; left: 0; font-family: 'Lora', serif; font-size: 0.8rem; background: #8b5a2b; color: #ecdcb9; padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid #4a2711; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: fit-content; line-height: normal; user-select: none;">
+                <div class="shop-page-head">
+                    <div class="back-button focusable" id="shop-close-btn">
                         ${T('Shop.back')}
                     </div>
                     <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${T('Shop.shop')}</h2>
                 </div>
-                <div id="shop-funds" style="font-size: 17px; font-family: 'Lora', serif; text-align: center; margin-top: -10px; margin-bottom: 12px; font-weight: bold; color: #5e2f17; letter-spacing: 0.5px;">
-                    ${T('Shop.availableFunds')} <span style="color: #27ae60;">0.00 €</span>
+                <div id="shop-funds" class="shop-funds">
+                    ${T('Shop.availableFunds')} <span class="shop-funds-value">0.00 €</span>
                 </div>
                 <div class="shop-tabs">
                     <div class="shop-tab" id="tab-buy">${T('Shop.acquireGoods')}</div>
                     <div class="shop-tab" id="tab-sell">${T('Shop.liquidateAssets')}</div>
                 </div>
                 <div id="shop-categories-container"></div>
+                <div id="shop-selection-bar"></div>
                 <div class="catalog-viewport" style="flex: 1; overflow-y: auto; padding-right: 4px;"></div>
             </div>
             
             <div class="shop-right" style="flex: 2; padding: 10px 20px 10px 30px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; height: 100%;">
-                <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px;">
+                <div class="shop-page-head">
                     <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${T('Shop.description')}</h2>
                 </div>
                 <div id="detail-viewport" style="flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden;"></div>
@@ -1275,7 +1399,8 @@
     const ownedHash = sellData.map(item => $gameParty.numItems(item) + (worn.get(item) || 0)).join(",");
 
     const sellCatFocus = this._sellCategoryFocus || false;
-    return `${isBuyMode}_${isSellMode}_${buyIdx}_${sellIdx}_${catIdx}_${numActive}_${numVal}_${numMax}_${partyGold}_${buyData.length}_${sellData.length}_${stockHash}_${ownedHash}_${sellCatFocus}`;
+    const selHash = this.sellSelectionHash();
+    return `${isBuyMode}_${isSellMode}_${buyIdx}_${sellIdx}_${catIdx}_${numActive}_${numVal}_${numMax}_${partyGold}_${buyData.length}_${sellData.length}_${stockHash}_${ownedHash}_${sellCatFocus}_${selHash}`;
   };
 
   Scene_Shop.prototype.syncUIShopState = function () {
@@ -1322,7 +1447,7 @@
     const fundsNode = container.querySelector("#shop-funds");
     if (this._renderedGold !== currentGold && fundsNode) {
       this._renderedGold = currentGold;
-      fundsNode.innerHTML = `${esc(T('Shop.availableFunds'))}<span style="color: #27ae60;">${money(currentGold)} €</span>`;
+      fundsNode.innerHTML = `${esc(T('Shop.availableFunds'))} <span class="shop-funds-value">${money(currentGold)} €</span>`;
     }
 
     // 2. Update Tabs active state & Category Buttons
@@ -1340,7 +1465,10 @@
       const catContainer = container.querySelector("#shop-categories-container");
       if (catContainer && isSellMode) {
         const catIdx = this._categoryWindow.index();
-        const labels = T.list('Shop.sellCategories');
+        // Only the tabs the native category window actually registered: the key
+        // item tab is gone, and a game whose System.json disables a category
+        // must not be offered it either.
+        const labels = T.list('Shop.sellCategories').slice(0, this._categoryWindow.maxItems());
 
         let categoriesHTML = `<div class="shop-categories" style="display: flex; gap: 6px; margin-bottom: 12px;">`;
         labels.forEach((lbl, idx) => {
@@ -1410,15 +1538,25 @@
     const stockHash = this.buyData().map(item => this.getStock(item)).join(",");
     const ownedHash = this.sellData().map(item => $gameParty.numItems(item) + (worn.get(item) || 0)).join(",");
 
+    const selHash = this.sellSelectionHash();
+
     if (
       this._renderedListLength !== listLength ||
       this._renderedStockHash !== stockHash ||
-      this._renderedOwnedHash !== ownedHash
+      this._renderedOwnedHash !== ownedHash ||
+      this._renderedSelHash !== selHash
     ) {
       this._renderedListLength = listLength;
       this._renderedStockHash = stockHash;
       this._renderedOwnedHash = ownedHash;
+      this._renderedSelHash = selHash;
       forceListRedraw = true;
+    }
+
+    // 4b. The counter: what is on the pile, and the one press that sells it.
+    const selectionBar = container.querySelector("#shop-selection-bar");
+    if (selectionBar && forceListRedraw) {
+      this.renderSellSelectionBar(selectionBar, isBuyMode);
     }
 
     // 5. Redraw Item Cards List if forced
@@ -1461,6 +1599,7 @@
         if (sellData.length === 0) {
           itemsHTML = `<div style="text-align:center; color:#8c7667; margin-top:40px; font-style:italic;">${esc(T('Shop.inventoryEmpty'))}</div>`;
         } else {
+          const selection = this.sellSelection();
           sellData.forEach((item, idx) => {
             if (!item) return;
             const focusedClass = activeIndex === idx && this._sellWindow.active ? 'focused' : '';
@@ -1469,15 +1608,29 @@
             const price = baseSellPrice(item);
             const wornHere = worn.get(item) || 0;
             const owned = $gameParty.numItems(item) + wornHere;
-            const stock = this.getStock(item);
-            const stockValText = stock === UNLIMITED_STOCK ? "∞" : stock;
-            let stockDisplay = T('Shop.ownedStock', { owned: owned, stock: stockValText });
+            // What the shop happens to keep on its own shelves says nothing
+            // about a sale, so the sell line counts the party's copies only.
+            let stockDisplay = T('Shop.ownedCount', { owned: owned });
             // Gear on someone's back is sellable too, but say so: the sale
             // takes it off them.
             if (wornHere > 0) stockDisplay += ` ${T('Shop.wornCount', { count: wornHere })}`;
 
+            // An item on the counter carries its own quantity and subtotal, so a
+            // pile of several lines can still be trimmed line by line.
+            const pickedQty = selection.get(item) || 0;
+            const isPicked = pickedQty > 0;
+            const qtyHTML = isPicked
+              ? `
+                      <div class="sell-qty">
+                          <span class="sell-qty-step" data-idx="${idx}" data-step="-1">－</span>
+                          <span class="sell-qty-val">${pickedQty}</span>
+                          <span class="sell-qty-step" data-idx="${idx}" data-step="1">＋</span>
+                          <span class="sell-qty-total">${money(pickedQty * finalSellPrice(item))} €</span>
+                      </div>`
+              : "";
+
             itemsHTML += `
-              <div class="item-card ${focusedClass}" data-idx="${idx}" data-mode="sell" style="border-left: 4px solid ${rarityColor(item)};">
+              <div class="item-card ${focusedClass} ${isPicked ? 'selected' : ''}" data-idx="${idx}" data-mode="sell" style="border-left: 4px solid ${rarityColor(item)};">
                   <div class="item-card-left">
                       <div class="item-card-icon" style="${this.getIconStyle(item.iconIndex)}"></div>
                       <div class="item-card-info">
@@ -1487,7 +1640,7 @@
                   </div>
                   <div class="item-card-right">
                       <span class="item-card-price">${money(price)} €</span>
-                      <span class="item-card-stock" style="font-size: 12px; opacity: 0.95; margin-top: 2px;">${esc(stockDisplay)}</span>
+                      <span class="item-card-stock" style="font-size: 12px; opacity: 0.95; margin-top: 2px;">${esc(stockDisplay)}</span>${qtyHTML}
                   </div>
               </div>
             `;
@@ -1506,6 +1659,18 @@
             if (!Number.isFinite(idx)) return;
             const mode = card.getAttribute("data-mode");
             const win = mode === "buy" ? this._buyWindow : this._sellWindow;
+            // Selling is multi-select: a click puts the item on the counter (or
+            // takes it back off) rather than opening the quantity modal, so
+            // several lines can be picked one after another and sold together.
+            if (mode === "sell") {
+              this._sellCategoryFocus = false;
+              win.select(idx);
+              const item = this.sellData()[idx];
+              if (this.toggleSellSelection(item)) SoundManager.playOk();
+              else SoundManager.playBuzzer();
+              this.refreshUIShop();
+              return;
+            }
             if (win.index() !== idx) {
               win.select(idx);
               SoundManager.playCursor();
@@ -1513,6 +1678,25 @@
             } else {
               win.processOk();
             }
+          }, null);
+        });
+      });
+
+      // The per-line quantity steppers on a picked card. They sit inside the
+      // card, so each stops the click before the card's own toggle sees it.
+      viewport.querySelectorAll(".sell-qty-step").forEach(step => {
+        step.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (SceneManager._scene !== this || !this.isShopReady()) return;
+          safe("sell qty step", () => {
+            const idx = parseInt(step.getAttribute("data-idx"), 10);
+            const delta = parseInt(step.getAttribute("data-step"), 10);
+            if (!Number.isFinite(idx) || !Number.isFinite(delta)) return;
+            const item = this.sellData()[idx];
+            if (!item) return;
+            this.changeSellSelectionQty(item, delta);
+            SoundManager.playCursor();
+            this.refreshUIShop();
           }, null);
         });
       });
@@ -1568,6 +1752,13 @@
           `;
         }
 
+        // With a pile on the counter the page's own button sells the pile, not
+        // the one item the cursor happens to be on.
+        const bulkSale = !isBuyMode && this.sellSelection().size > 0;
+        const actionLabel = isBuyMode
+          ? T('Shop.buy')
+          : (bulkSale ? T('Shop.sellSelected', { lines: this.sellSelection().size }) : T('Shop.sell'));
+
         let descHTML = "";
         if (selectedItem.description) {
           descHTML = `<div class="detail-desc">${esc(translate(selectedItem.description))}</div>`;
@@ -1575,7 +1766,7 @@
 
         // Procedural lore (resolves {nation}/{leader}/... tokens) shown below the description.
         const loreText = loreOf(selectedItem);
-        if (loreText) descHTML += `<div class="detail-lore" style="font-style:italic;opacity:0.75;margin-top:4px;">${esc(loreText)}</div>`;
+        if (loreText) descHTML += `<div class="detail-lore">${esc(loreText)}</div>`;
 
         // Params
         let paramsHTML = "";
@@ -1700,6 +1891,26 @@
             `;
         }
 
+        // What it is medicine for, and how long a course of it runs. Only a
+        // tagged drug prints this; a healing potion has nothing to say here.
+        const medicine = medicineOf(selectedItem);
+        if (medicine) {
+          const rows = medicineLines(medicine, 10)
+            .map(r => `
+              <div class="gauge-row">
+                  <span style="font-weight:500; width:70px;">${esc(r.label)}</span>
+                  <span style="flex:1 1 auto; text-align:right; font-size:11px;">${esc(r.value)}</span>
+              </div>`).join("");
+          needsSectionHTML += `
+              <div class="gauges-section">
+                  <div class="card-lbl" style="border-bottom: 1px dashed rgba(94,47,23,0.15); padding-bottom:4px; margin-bottom:10px; font-weight:bold; font-size:12px;">
+                      ${T('Shop.medicineClass')}: ${esc(medicine.label)}
+                  </div>
+                  ${rows}
+              </div>
+            `;
+        }
+
         // Cravings fed (nicotine, drink, caffeine, narcotics, a bet)
         const cravingRelief = addictionReliefOf(selectedItem);
         if (cravingRelief.length) {
@@ -1721,39 +1932,37 @@
             `;
         }
 
-        // Effects / Traits
-        let effectsHTML = "";
-        let hasEffects = false;
+        // Effects / Traits. A cure-all item carries two dozen of these, so they
+        // are laid out as inline chips that wrap rather than one line each.
+        const effectLines = [];
 
         const detail = this._itemDetailWindow;
         if (detail && Array.isArray(selectedItem.effects)) {
           selectedItem.effects.forEach(eff => {
             const effStr = safe("getEffectDescription", () => detail.getEffectDescription(eff), null);
-            if (effStr) {
-              hasEffects = true;
-              effectsHTML += `<div style="margin-bottom:6px; font-size:13px; color:#5c4033;">✦ ${esc(effStr)}</div>`;
-            }
+            if (effStr) effectLines.push(effStr);
           });
         }
 
         if (detail && Array.isArray(selectedItem.traits)) {
           selectedItem.traits.forEach(tr => {
             const trStr = safe("getTraitDescription", () => detail.getTraitDescription(tr), null);
-            if (trStr) {
-              hasEffects = true;
-              effectsHTML += `<div style="margin-bottom:6px; font-size:13px; color:#5c4033;">✦ ${esc(trStr)}</div>`;
-            }
+            if (trStr) effectLines.push(trStr);
           });
         }
 
+        const effectsHTML = effectLines
+          .map(line => `<span class="detail-effect-chip">${esc(line)}</span>`)
+          .join("");
+
         let effectsSectionHTML = "";
-        if (hasEffects) {
+        if (effectLines.length) {
           effectsSectionHTML = `
             <div style="margin-bottom:18px;">
                 <div class="card-lbl" style="border-bottom: 1px dashed rgba(94,47,23,0.15); padding-bottom:4px; margin-bottom:10px; font-weight:bold; font-size:12px;">
                     ${T('Shop.signalsChemicalProperties')}
                 </div>
-                <div style="background:rgba(0,0,0,0.015); border:1px solid rgba(94,47,23,0.06); border-radius:4px; padding:10px 14px;">
+                <div class="detail-effect-chips" style="background:rgba(0,0,0,0.015); border:1px solid rgba(94,47,23,0.06); border-radius:4px; padding:10px 14px;">
                     ${effectsHTML}
                 </div>
             </div>
@@ -1818,10 +2027,10 @@
               ${needsSectionHTML}
               ${effectsSectionHTML}
               ${compatibilityHTML}
-              
-              <div class="action-btn confirm" id="right-action-btn" style="margin-top: auto; font-size: 16px; padding: 12px 6px; flex-shrink: 0; flex: none;">
-                  ${esc(isBuyMode ? T('Shop.buy') : T('Shop.sell'))}
-              </div>
+          </div>
+
+          <div class="action-btn confirm" id="right-action-btn" style="margin-top: 10px; font-size: 16px; padding: 12px 6px; flex-shrink: 0; flex: none;">
+              ${esc(actionLabel)}
           </div>
         `;
 
@@ -1832,6 +2041,10 @@
             e.stopPropagation();
             if (SceneManager._scene !== this || !this.isShopReady()) return;
             safe("action button", () => {
+              if (bulkSale) {
+                this.sellSelectedItems();
+                return;
+              }
               const win = isBuyMode ? this._buyWindow : this._sellWindow;
               win.processOk();
             }, null);
@@ -1961,6 +2174,50 @@
     }
   };
 
+  // The strip above the sell list: nothing while buying, a hint while the
+  // counter is empty, and the pile plus the one press that sells it otherwise.
+  Scene_Shop.prototype.renderSellSelectionBar = function (bar, isBuyMode) {
+    if (isBuyMode) {
+      bar.innerHTML = "";
+      return;
+    }
+    const totals = this.sellSelectionTotals();
+    if (totals.lines === 0) {
+      bar.innerHTML = `<div class="shop-sell-hint">${esc(T('Shop.sellHint'))}</div>`;
+      return;
+    }
+
+    bar.innerHTML = `
+      <div class="shop-selection-bar">
+          <div class="selection-summary">
+              <span class="selection-count">${esc(T('Shop.selectionCount', { lines: totals.lines, units: totals.units }))}</span>
+              <span class="selection-value">${money(totals.value)} €</span>
+          </div>
+          <div class="selection-actions">
+              <div class="action-btn confirm" id="sell-selected-btn">${esc(T('Shop.sellSelected', { lines: totals.lines }))}</div>
+              <div class="action-btn cancel" id="clear-selection-btn">${esc(T('Shop.clearSelection'))}</div>
+          </div>
+      </div>
+    `;
+
+    const onBarClick = (selector, handler) => {
+      const node = bar.querySelector(selector);
+      if (!node) return;
+      node.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (SceneManager._scene !== this || !this.isShopReady()) return;
+        safe("click " + selector, () => handler(), null);
+      });
+    };
+
+    onBarClick("#sell-selected-btn", () => this.sellSelectedItems());
+    onBarClick("#clear-selection-btn", () => {
+      this.clearSellSelection();
+      SoundManager.playCancel();
+      this.refreshUIShop();
+    });
+  };
+
   Scene_Shop.prototype.refreshUIShop = function () {
     this._lastShopStateHash = null;
     this._renderedIsBuyMode = null;
@@ -1970,6 +2227,7 @@
     this._renderedListLength = null;
     this._renderedStockHash = null;
     this._renderedOwnedHash = null;
+    this._renderedSelHash = null;
     this._renderedSelectedIndex = null;
     this._renderedDetailItem = null;
     this._renderedQuantityActive = null;
@@ -2061,11 +2319,14 @@
 
   // The engine's category window only ever registers the "Items" command: its
   // makeCommandList checks just the first table slot and adds a single entry.
-  // The DOM overlay draws all four sell tabs (Items / Weapons / Armors / Key
-  // Items) and lets the player pick one, but the native window underneath kept
-  // only one command, so every tab still filtered through "item" and gear never
-  // reached the sell list. Register all four commands while a shop is open so
-  // currentSymbol() returns the tab the player actually chose.
+  // The DOM overlay draws the sell tabs and lets the player pick one, but the
+  // native window underneath kept only one command, so every tab still filtered
+  // through "item" and gear never reached the sell list. Register the sellable
+  // categories while a shop is open so currentSymbol() returns the tab the
+  // player actually chose. Key items are NOT one of them: a shop never buys
+  // them, so the tab would only ever draw an empty list.
+  const SELL_CATEGORY_SYMBOLS = ["item", "weapon", "armor"];  // i18n-ignore  Window_ItemCategory symbols
+
   const _Window_ItemCategory_makeCommandList = Window_ItemCategory.prototype.makeCommandList;
   Window_ItemCategory.prototype.makeCommandList = function () {
     if (!(SceneManager._scene instanceof Scene_Shop)) {
@@ -2081,23 +2342,22 @@
     if (this.needsCommand("armor")) {
       this.addCommand(TextManager.armor, "armor");
     }
-    if (this.needsCommand("keyItem")) {
-      this.addCommand(TextManager.keyItem, "keyItem");
-    }
   };
 
-  // Key items cannot be sold. Override isEnabled so they are greyed out and
-  // cannot be selected for sale in the shop window, and override includes to
-  // remove them from the sell list entirely.
+  // A key item is never merchandise: it is quest property. It is kept out of
+  // the sell list entirely (includes) and refused if anything else manages to
+  // put it in front of the till (isEnabled, sellSelection, doSell).
+  const isKeyItem = (item) => !!(item && DataManager.isItem(item) && item.itypeId === 2);
+
   const _Window_ShopSell_isEnabled = Window_ShopSell.prototype.isEnabled;
   Window_ShopSell.prototype.isEnabled = function (item) {
-    if (item && DataManager.isItem(item) && item.itypeId === 2) return false;
+    if (isKeyItem(item)) return false;
     return _Window_ShopSell_isEnabled.call(this, item);
   };
 
   const _Window_ShopSell_includes = Window_ShopSell.prototype.includes;
   Window_ShopSell.prototype.includes = function (item) {
-    if (item && DataManager.isItem(item) && item.itypeId === 2) return false;
+    if (isKeyItem(item)) return false;
     return _Window_ShopSell_includes.call(this, item);
   };
 
@@ -2354,6 +2614,11 @@
   // A shop that keeps no stock record sells without limit.
   const UNLIMITED_STOCK = 999;
 
+  // What is left of a normal day's run once nobody outside is left to supply
+  // it. The shelf still turns over on the same daily key as any other world
+  // (see getShopDateKey), there is just far less on it each time it does.
+  const ZOMBIE_STOCK_FACTOR = 0.2;
+
   const getStockKey = (item) => {
     if (!item) return null;
     if (DataManager.isItem(item)) return "i_" + item.id;
@@ -2362,7 +2627,16 @@
     return "u_" + item.id;
   };
 
+  // Stock is re-rolled whenever this key changes, which is once a day. An
+  // empty world answers a constant instead: nobody is left to order more, so a
+  // counter is stocked with whatever was on it the day everyone went and is
+  // never restocked again. What is taken off it (bought, or stolen through
+  // StealingSystem) is gone for good.
   const getShopDateKey = () => {
+    const WM = window.WorldManager;
+    if (WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld()) {
+      return "EMPTYWORLD";
+    }
     // Var 113 may hold a number; coerce to string before substring or it throws.
     const dateStr = String($gameVariables.value(113) || "");
     return dateStr.substring(0, 11);
@@ -2409,8 +2683,11 @@
           } else {
             oilFactor = 1.0 - ((initOil - currentOil) / (initOil - minOil)) * 0.5;
           }
-          newShopData.oilFactor = Math.max(0.5, Math.min(3.0, oilFactor));
-          newShopData.soulFactor = Math.max(0.5, Math.min(3.0, currentSoul / initSoul));
+          // A crash takes half off the sticker price and a squeeze trebles it.
+          // The floor is deliberate: goods really do go to 50% off in a world
+          // where the price of oil has collapsed.
+          newShopData.oilFactor = Math.max(MARKET_FLOOR, Math.min(MARKET_CEIL, oilFactor));
+          newShopData.soulFactor = Math.max(MARKET_FLOOR, Math.min(MARKET_CEIL, currentSoul / initSoul));
         }, null);
       }
 
@@ -2431,12 +2708,21 @@
 
   Scene_Shop.prototype.generateRandomStock = function (item) {
     const price = (item && Number.isFinite(item.price)) ? item.price : 0;
+    // A course of medicine is taken once a day for a week or more, so a shelf
+    // holding two of them is a shelf holding none. Anything carrying the
+    // disease system's <Medicine:> note is stocked several deep.
+    const isMedicine = !!(item && item.note && /<Medicine:\s*[\w-]+\s*>/i.test(item.note));
     let base = 20;
     if (price >= 1000) base = 12;
     if (price >= 5000) base = 8;
     if (price >= 20000) base = 4;
     if (price >= 50000) base = 2;
     if (price >= 100000) base = 1;
+    if (isMedicine) base = Math.max(base, Math.min(30, Math.round(base * 3) + 6));
+    const WM = window.WorldManager;
+    if (WM && typeof WM.isZombieWorld === "function" && WM.isZombieWorld()) {
+      base = Math.max(1, Math.round(base * ZOMBIE_STOCK_FACTOR));
+    }
     return Math.floor(Math.random() * base) + 1;
   };
 
@@ -2495,14 +2781,21 @@
 
   Scene_Shop.prototype.sellingPrice = function () {
     if (!this._item) return 0;
-    return Math.max(1, Math.floor(baseSellPrice(this._item) * appraiseFactor()));
+    // A shop buys at what the market says the thing is worth today, not at
+    // what it was worth when it was written into the database.
+    const market = marketFactor(currentShopData(this), this._item);
+    return Math.max(1, Math.floor(baseSellPrice(this._item) * appraiseFactor() * market));
   };
 
   const _Scene_Shop_buyingPrice = Scene_Shop.prototype.buyingPrice;
   Scene_Shop.prototype.buyingPrice = function () {
     const base = safe("buyingPrice", () => _Scene_Shop_buyingPrice.call(this), 0);
     if (!Number.isFinite(base)) return 1;
-    return Math.max(1, Math.floor(base * haggleFactor()));
+    // The shelf has been printing a market-moved price for a while and the
+    // till was charging the flat one, so a shop with oil at half price quoted
+    // the discount and then took full money for it. One factor, both numbers.
+    const market = marketFactor(currentShopData(this), this._item);
+    return Math.max(1, Math.floor(base * haggleFactor() * market));
   };
 
   const _Scene_Shop_terminate_npcTrade = Scene_Shop.prototype.terminate;
@@ -2532,7 +2825,13 @@
     const spent = number * this.buyingPrice();
     _Scene_Shop_doBuy.call(this, number);
     this.reduceStock(this._item, number);
-    if (this._buyWindow) this._buyWindow.refresh();
+    // Buying the last copy takes the line off the shelf, so the cursor may now
+    // be past the end of a shorter list.
+    if (this._buyWindow) {
+      this._buyWindow.refresh();
+      const last = this._buyWindow.maxItems() - 1;
+      if (this._buyWindow.index() > last) this._buyWindow.select(Math.max(0, last));
+    }
     awardTradeXp('Haggling', spent);  // i18n-ignore  Specialization.json id
   };
 
@@ -2626,6 +2925,174 @@
     const sellable = Math.min(number, inBag + takenOff);
     if (sellable <= 0) return;
     _Scene_Shop_doSell_equipped.call(this, sellable);
+  };
+
+  //=============================================================================
+  // Selling several lines in one go
+  //=============================================================================
+  // Emptying a bag one quantity modal at a time was the slowest thing in the
+  // shop, so the sell list is multi-select: a click (or Shift on the highlighted
+  // line) puts an item on the counter with every copy the party can part with,
+  // the card keeps its own -/+ to trim that back, and one press sells the whole
+  // pile. An empty counter leaves the old single-item modal exactly as it was.
+
+  const isSellableItem = (item) => {
+    if (!item || isKeyItem(item)) return false;
+    const price = Number.isFinite(item.price) ? item.price : 0;
+    return price > 0 && sellableCount(item) > 0;
+  };
+
+  // What the till pays for one copy, the party's Appraising included, so the
+  // pile's total is the gold that actually arrives.
+  const finalSellPrice = (item) =>
+    Math.max(1, Math.floor(baseSellPrice(item) * appraiseFactor()));
+
+  // The pile is reconciled against the party every time it is read: an item that
+  // left the bag between two clicks (or a stack that shrank) must not stay on it.
+  Scene_Shop.prototype.sellSelection = function () {
+    if (!(this._sellSelection instanceof Map)) this._sellSelection = new Map();
+    const selection = this._sellSelection;
+    for (const item of Array.from(selection.keys())) {
+      if (!isSellableItem(item)) {
+        selection.delete(item);
+        continue;
+      }
+      const qty = selection.get(item);
+      const clamped = Math.max(1, Math.min(Number.isFinite(qty) ? qty : 1, sellableCount(item)));
+      if (clamped !== qty) selection.set(item, clamped);
+    }
+    return selection;
+  };
+
+  // Picking a line up takes every copy of it: the point of a bulk sale is
+  // clearing the bag, and the card's own steppers trim it back.
+  Scene_Shop.prototype.toggleSellSelection = function (item) {
+    if (!isSellableItem(item)) return false;
+    const selection = this.sellSelection();
+    if (selection.has(item)) selection.delete(item);
+    else selection.set(item, sellableCount(item));
+    return true;
+  };
+
+  Scene_Shop.prototype.changeSellSelectionQty = function (item, delta) {
+    const selection = this.sellSelection();
+    if (!selection.has(item)) return;
+    const next = selection.get(item) + delta;
+    // Stepping below one copy is how a line leaves the counter.
+    if (next < 1) selection.delete(item);
+    else selection.set(item, Math.min(next, sellableCount(item)));
+  };
+
+  Scene_Shop.prototype.clearSellSelection = function () {
+    this.sellSelection().clear();
+  };
+
+  Scene_Shop.prototype.sellSelectionTotals = function () {
+    let units = 0;
+    let value = 0;
+    for (const [item, qty] of this.sellSelection()) {
+      units += qty;
+      value += qty * finalSellPrice(item);
+    }
+    return { lines: this.sellSelection().size, units: units, value: value };
+  };
+
+  // A signature of the pile, so the overlay knows when to redraw.
+  Scene_Shop.prototype.sellSelectionHash = function () {
+    const parts = [];
+    for (const [item, qty] of this.sellSelection()) parts.push(getStockKey(item) + ":" + qty);
+    return parts.join("|");
+  };
+
+  Scene_Shop.prototype.sellSelectedItems = function () {
+    const selection = this.sellSelection();
+    if (selection.size === 0) return;
+
+    let sold = 0;
+    for (const [item, qty] of Array.from(selection)) {
+      const amount = Math.min(qty, sellableCount(item));
+      if (amount <= 0) continue;
+      // doSell is the whole chain: it unequips whatever it has to, pays the
+      // party and trains Appraising, all against this._item.
+      this._item = item;
+      safe("bulk sell", () => this.doSell(amount), null);
+      sold += amount;
+    }
+    selection.clear();
+    this._item = null;
+    if (sold > 0) SoundManager.playShop();
+
+    if (this._sellWindow) {
+      this._sellWindow.refresh();
+      const last = this._sellWindow.maxItems() - 1;
+      if (last < 0 || this._sellCategoryFocus) this._sellWindow.select(-1);
+      else this._sellWindow.select(Math.min(Math.max(0, this._sellWindow.index()), last));
+      this._sellWindow.activate();
+    }
+    if (this._statusWindow) this._statusWindow.refresh();
+    this.refreshUIShop();
+  };
+
+  // Confirming with a pile on the counter sells the pile. The engine asks the
+  // window whether the line under the cursor may be confirmed, and while a pile
+  // is waiting the answer is yes whatever that line is: the sale is not about it.
+  const _Window_ShopSell_isCurrentItemEnabled = Window_ShopSell.prototype.isCurrentItemEnabled;
+  Window_ShopSell.prototype.isCurrentItemEnabled = function () {
+    const scene = SceneManager._scene;
+    if (scene instanceof Scene_Shop && typeof scene.sellSelection === "function") {
+      if (scene.sellSelection().size > 0) return true;
+    }
+    return _Window_ShopSell_isCurrentItemEnabled.call(this);
+  };
+
+  const _Scene_Shop_onSellOk = Scene_Shop.prototype.onSellOk;
+  Scene_Shop.prototype.onSellOk = function () {
+    if (this.sellSelection().size > 0) {
+      this.sellSelectedItems();
+      return;
+    }
+    _Scene_Shop_onSellOk.call(this);
+  };
+
+  // Cancelling clears the counter before it leaves the shop, so a pile picked by
+  // mistake costs one press rather than a trip back through the door. The frame
+  // is recorded because the same press also reaches cancelShopAction (the sell
+  // window's own handler runs first, from the engine's update): without it the
+  // clear and the exit would both happen on that one press.
+  Scene_Shop.prototype.onSellCancel = function () {
+    if (this.sellSelection().size > 0) {
+      this.clearSellSelection();
+      this._sellCancelFrame = Graphics.frameCount;
+      SoundManager.playCancel();
+      this.refreshUIShop();
+      return;
+    }
+    this.closeShop();
+  };
+
+  const _Scene_Shop_cancelShopAction = Scene_Shop.prototype.cancelShopAction;
+  Scene_Shop.prototype.cancelShopAction = function () {
+    // One press clears the counter and no more: a cancel reaches this method
+    // from the key listener, the right-click listener AND the update loop, and
+    // the second arrival would find an empty counter and leave the shop.
+    if (this._sellCancelFrame === Graphics.frameCount) return;
+    if (this.isShopReady() && !this._numberWindow.active &&
+      this.isShopSellMode() && this.sellSelection().size > 0) {
+      this.clearSellSelection();
+      this._sellCancelFrame = Graphics.frameCount;
+      SoundManager.playCancel();
+      this.refreshUIShop();
+      return;
+    }
+    _Scene_Shop_cancelShopAction.call(this);
+  };
+
+  // Leaving the sell side puts the counter back: the pile is only ever drawn
+  // there, and a hidden one would be sold by the next confirm.
+  const _Scene_Shop_switchToBuy = Scene_Shop.prototype.switchToBuy;
+  Scene_Shop.prototype.switchToBuy = function () {
+    this.clearSellSelection();
+    _Scene_Shop_switchToBuy.call(this);
   };
 
   Window_ShopNumber.prototype.max = function () {

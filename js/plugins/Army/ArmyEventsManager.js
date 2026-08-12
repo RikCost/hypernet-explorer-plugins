@@ -369,8 +369,7 @@ Game_AIArmy.prototype.getFactionName = function () {
 
   const faction = $gameFactions.getFaction(this._factionId);
   if (faction) {
-    const useItalian = ConfigManager.language === 'it';
-    return useItalian && faction.name_it ? faction.name_it : faction.name;
+    return (typeof armyT === "function") ? armyT(faction.name) : faction.name;
   }
 
   return T('ArmyEvents.unknownCountry');
@@ -401,6 +400,12 @@ Game_AIArmies.prototype.initialize = function () {
 
 Game_AIArmies.prototype.initializeArmies = function () {
   if (this._initialized) return;
+
+  // An army is a faction's people under arms, and there are no people and no
+  // factions left in an empty world: nothing marches on the world map.
+  // See WorldManager.populationMode.
+  const WM = window.WorldManager;
+  if (WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld()) return;
 
   // Find all Army events on world map
   if ($gameMap.mapId() !== ArmyEventsManager.Params.worldMapId) return;

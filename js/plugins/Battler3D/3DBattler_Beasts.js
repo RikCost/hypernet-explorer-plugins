@@ -25,7 +25,9 @@
  *   bear     - bulky ursine, short thick legs, rounded ears (bears, ursids, yeti)
  *   wolf     - lean canine, long snout, hackles, bushy tail (wolves, coyote, fox,
  *              hyena, jackal)
- *   bigcat   - sleek crouched feline, long curling tail (cat, panther, tiger,
+ *   bigcat   - soft round-headed feline: plump barrel body, oversized skull on
+ *              a short muzzle, big catchlit eyes, pink inner ears and toe
+ *              beans, whiskers, fluffy upright tail (cat, panther, tiger,
  *              lion, lynx, sabertooth, ...)
  *   boar     - low front-heavy suid, shoulder hump, tusks, bristles (boar, pig,
  *              hog, razorback)
@@ -40,6 +42,14 @@
  *
  * Each reuses the shared base: per-event id colour/shape/texture variation,
  * part-losing dismemberment, hit-flash, and the base action gestures.
+ *
+ * EVERY feline in the file (bigcat, the lynxes, the saber-cats and all twelve
+ * bespoke bst_* cats) is built by _felineBase, so the whole species reads as
+ * one thing. Its options are sizeBody, slim (<1 = gaunt), mane/maneMat, fangs,
+ * ear ('tuft'|'round'), eyeGlow, legLen, tail ('bob'), ribs and scar. It also
+ * publishes _catEars / _catEyes (twitched and blinked in animatePose) and
+ * _catDrop, the crouch a short-legged cat takes; a bespoke builder adding its
+ * own trimmings at absolute heights must subtract _catDrop from them.
  *
  * MUST load AFTER BattleSystem/3DBattlerSystem AND 3DBattler_Quadruped.
  */
@@ -253,18 +263,98 @@
             const e = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 8), this._mat(accent || 0x111111, 1.0, 0.2, glow ? accent : 0));
             e.position.set(x, y, z); parent.add(e); return e;
         }
-        // A hip-pivoted leg that swings in the gait. foot: 'paw' | 'hoof' | 'pad'.
-        _leg(mat, x, z, hipY, len, foot) {
+        // A big round cat eye: coloured iris, a soft slit pupil and a white
+        // catchlight. The catchlight is what reads as "alive" rather than
+        // "glass bead", so it always sits up and inboard of the pupil.
+        _catEye(parent, x, y, z, r, iris, glow) {
             const g = new THREE.Group();
-            const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.09, len * 0.55, 8), mat);
-            thigh.position.y = -len * 0.27; g.add(thigh);
-            const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, len * 0.45, 8), mat);
-            shin.position.y = -len * 0.72; g.add(shin);
+            const ball = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 12), this._mat(iris || 0x9be000, 1.0, 0.15, glow ? iris : 0));
+            g.add(ball);
+            const pupil = new THREE.Mesh(new THREE.SphereGeometry(r * 0.58, 10, 10), this._mat(0x14101a, 1.0, 0.1));
+            pupil.scale.set(0.58, 1.0, 0.55); pupil.position.z = r * 0.58; g.add(pupil);
+            const glint = new THREE.Mesh(new THREE.SphereGeometry(r * 0.22, 8, 8), this._mat(0xffffff, 0.95, 0.05, 0xffffff));
+            glint.position.set(-r * 0.3, r * 0.34, r * 0.74); g.add(glint);
+            g.position.set(x, y, z); parent.add(g); return g;
+        }
+        // Claws on the front of a foot: small cones raked forward and down, in
+        // the horn colour rather than the fur colour so they read at a distance.
+        // Shared by every paw and pad, which is what gives the whole family a
+        // silhouette that ends in something dangerous.
+        _claws(parent, count, len, w, color) {
+            const m = this._mat(color || 0x1d1712, 1.0, 0.35);
+            const n = count || 3;
+            for (let i = 0; i < n; i++) {
+                const cx = (i - (n - 1) / 2) * 0.052 * w;
+                const c = new THREE.Mesh(new THREE.ConeGeometry(0.018 * w, len, 4), m);
+                c.position.set(cx, -0.035 * w, 0.13 * w);
+                c.rotation.set(1.75, 0, 0);
+                parent.add(c);
+            }
+        }
+
+        // A hip-pivoted leg that swings in the gait.
+        // foot: 'paw' | 'hoof' | 'pad' | 'catpaw'. thick scales the limb girth.
+        //
+        // The limb is jointed rather than a straight stack of two cylinders: an
+        // animal's shin sits back under the hip and the ankle steps forward
+        // again, and a knee ball at the break stops the two segments reading as
+        // one telescoping tube. Every foot ends in toes or horn, never in a
+        // bare box, since the feet are what sell the species at battle distance.
+        _leg(mat, x, z, hipY, len, foot, thick) {
+            const g = new THREE.Group();
+            const w = thick || 1.0;
+            const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.13 * w, 0.09 * w, len * 0.55, 10), mat);
+            thigh.position.set(0, -len * 0.27, 0.012 * len); thigh.rotation.x = -0.05; g.add(thigh);
+            const knee = new THREE.Mesh(new THREE.SphereGeometry(0.085 * w, 8, 6), mat);
+            knee.position.set(0, -len * 0.52, -0.01 * len); g.add(knee);
+            const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.075 * w, 0.055 * w, len * 0.45, 10), mat);
+            shin.position.set(0, -len * 0.73, -0.02 * len); shin.rotation.x = 0.07; g.add(shin);
+
             let f;
-            if (foot === 'hoof') f = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.12, 8), this._mat(0x241b14, 1.0, 0.5));
-            else if (foot === 'paw') f = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.1, 0.26), mat);
-            else f = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), mat);
-            f.position.y = -len * 0.95; g.add(f);
+            if (foot === 'hoof') {
+                // A hoof is cloven and has a pastern above it: one plain
+                // cylinder read as a peg leg.
+                f = new THREE.Group();
+                const hornMat = this._mat(0x241b14, 1.0, 0.4);
+                const pastern = new THREE.Mesh(new THREE.CylinderGeometry(0.052 * w, 0.062 * w, 0.09, 8), mat);
+                pastern.position.y = 0.07; f.add(pastern);
+                for (const hx of [-0.032, 0.032]) {
+                    const half = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.052, 0.13, 8), hornMat);
+                    half.position.set(hx * w, 0, 0.012); half.rotation.z = hx > 0 ? -0.1 : 0.1; f.add(half);
+                }
+            } else if (foot === 'paw') {
+                // A broad plantigrade paw: a rounded sole, four toes and claws.
+                f = new THREE.Group();
+                const sole = new THREE.Mesh(new THREE.SphereGeometry(0.115 * w, 12, 10), mat);
+                sole.scale.set(1.15, 0.6, 1.5); f.add(sole);
+                for (const tx of [-0.072, -0.024, 0.024, 0.072]) {
+                    const toe = new THREE.Mesh(new THREE.SphereGeometry(0.036 * w, 6, 4), mat);
+                    toe.position.set(tx * w, -0.012, 0.135 * w); f.add(toe);
+                }
+                this._claws(f, 4, 0.11, w, 0x17120e);
+            } else if (foot === 'catpaw') {
+                // A soft rounded mitten with three toes, not a shoe box.
+                f = new THREE.Group();
+                const pad = new THREE.Mesh(new THREE.SphereGeometry(0.11 * w, 12, 10), mat);
+                pad.scale.set(1.0, 0.72, 1.25); f.add(pad);
+                const toeMat = this._mat(0xe8a0ae, 1.0, 0.5);
+                for (const tx of [-0.05, 0, 0.05]) {
+                    const toe = new THREE.Mesh(new THREE.SphereGeometry(0.028 * w, 6, 4), toeMat);
+                    toe.position.set(tx * w, -0.03, 0.11 * w); f.add(toe);
+                }
+                this._claws(f, 3, 0.06, w, 0xd8cdba);
+            } else {
+                // 'pad': a digitigrade foot, toes forward and a short claw each.
+                f = new THREE.Group();
+                const pad = new THREE.Mesh(new THREE.SphereGeometry(0.093 * w, 10, 8), mat);
+                pad.scale.set(1.0, 0.8, 1.35); f.add(pad);
+                for (const tx of [-0.05, 0, 0.05]) {
+                    const toe = new THREE.Mesh(new THREE.SphereGeometry(0.03 * w, 6, 4), mat);
+                    toe.position.set(tx * w, -0.014, 0.105 * w); f.add(toe);
+                }
+                this._claws(f, 3, 0.075, w, 0x1d1712);
+            }
+            f.position.set(0, -len * 0.95, -0.02 * len); g.add(f);
             g.position.set(x, hipY, z); this.bodyGroup.add(g); return g;
         }
         // A drooping segmented tail (curls forward if droopZ > 0).
@@ -282,14 +372,18 @@
         // back, sweeps vertical, then hooks forward at the tip, so the arc
         // clears the haunches and the hind legs instead of dangling between
         // them. Base goes just inside the rump so the root reads as attached.
-        _felineTail(mat, baseY, baseZ, segs, taper) {
+        // fluff (default 1) fattens the segments and rounds the tip off into a
+        // soft pom, which is what makes the tail read as fur and not as beads.
+        _felineTail(mat, baseY, baseZ, segs, taper, fluff) {
             const g = new THREE.Group();
-            let py = 0, pz = 0, r = 0.12;
+            const f = fluff || 1.0;
+            let py = 0, pz = 0, r = 0.12 * f;
             for (let i = 0; i < segs; i++) {
-                const s = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 8), mat);
+                const s = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), mat);
                 s.position.set(0, py, pz); g.add(s);
                 const a = -0.55 + (i / (segs - 1)) * 1.25;   // lean: back -> forward
                 py += Math.cos(a) * 0.13; pz += Math.sin(a) * 0.13; r *= taper;
+                if (i === segs - 1) { const tip = new THREE.Mesh(new THREE.SphereGeometry(r * 1.5, 10, 8), mat); tip.position.set(0, py, pz); g.add(tip); }
             }
             g.position.set(0, baseY, baseZ); this.bodyGroup.add(g); return g;
         }
@@ -297,6 +391,42 @@
             const g = new THREE.Group();
             g.add(new THREE.Mesh(new THREE.SphereGeometry(r, 8, 8), mat));
             g.position.set(x, y, z); this.bodyGroup.add(g); return g;
+        }
+
+        // The wedge of muscle that joins a head to a set of shoulders. Several
+        // of these rigs parked the head in mid air a hand's width off the
+        // torso, which is the single thing that most made them read as parts in
+        // a bag rather than as an animal. It is added to the HEAD group, so it
+        // travels with the head when the head turns and vanishes with it when
+        // the head is taken off. dropY/dropZ say where the shoulders are,
+        // measured in the head group's own space.
+        _neck(mat, dropY, dropZ, rTop, rBase, tiltX) {
+            const g = new THREE.Group();
+            const dy = -dropY, dz = -dropZ;
+            const len = Math.max(0.08, Math.hypot(dy, dz));
+            const col = new THREE.Mesh(new THREE.CylinderGeometry(rTop, rBase, len * 1.12, 10), mat);
+            col.position.set(0, dy / 2, dz / 2);
+            col.rotation.x = Math.atan2(dz, dy) + (tiltX || 0);
+            g.add(col);
+            // A collar ball at each end so the joins are not visible seams.
+            const top = new THREE.Mesh(new THREE.SphereGeometry(rTop * 1.05, 10, 8), mat);
+            g.add(top);
+            const base = new THREE.Mesh(new THREE.SphereGeometry(rBase * 1.05, 10, 8), mat);
+            base.position.set(0, dy, dz); g.add(base);
+            return g;
+        }
+
+        // A ruff or mane: a ring of fur cones around the base of the neck.
+        _ruff(parent, r, y, z, count, len, mat, spread) {
+            const n = count || 12;
+            const s = spread === undefined ? 1 : spread;
+            for (let i = 0; i < n; i++) {
+                const a = (i / n) * Math.PI * 2;
+                const tuft = new THREE.Mesh(new THREE.ConeGeometry(len * 0.34, len, 5), mat);
+                tuft.position.set(Math.cos(a) * r, y + Math.sin(a) * r * s, z);
+                tuft.rotation.set(Math.PI / 2 * 0.55, 0, -a + Math.PI / 2);
+                parent.add(tuft);
+            }
         }
 
         // Common four-leg part map + dismemberment cascade.
@@ -470,26 +600,49 @@
         }
 
         // ── Bear: bulky ursine on short thick legs ───────────────────────────
+        // A bear is read from three things: the shoulder hump standing higher
+        // than the rump, the long dished muzzle, and the sheer barrel of it.
+        // The old rig had none of those and hung its head in mid air.
         _buildBear(fur) {
             const p = this.profile;
             this.body = new THREE.Group();
-            const torso = new THREE.Mesh(new THREE.SphereGeometry(0.5, 14, 12), fur); torso.scale.set(1.0, 0.95, 1.55); this.body.add(torso);
-            const shoulders = new THREE.Mesh(new THREE.SphereGeometry(0.46, 12, 12), fur); shoulders.position.set(0, 0.14, 0.45); this.body.add(shoulders);
+            const torso = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 14), fur); torso.scale.set(1.05, 0.95, 1.55); this.body.add(torso);
+            // The hump over the shoulders: the highest point on a bear, and the
+            // reason its back slopes down toward the tail.
+            const hump = new THREE.Mesh(new THREE.SphereGeometry(0.4, 14, 12), fur);
+            hump.scale.set(1.05, 0.85, 1.0); hump.position.set(0, 0.24, 0.34); this.body.add(hump);
+            const shoulders = new THREE.Mesh(new THREE.SphereGeometry(0.47, 14, 12), fur); shoulders.scale.set(1.1, 1.0, 0.9); shoulders.position.set(0, 0.1, 0.46); this.body.add(shoulders);
+            const rump = new THREE.Mesh(new THREE.SphereGeometry(0.42, 14, 12), fur); rump.scale.set(1.0, 0.95, 0.95); rump.position.set(0, -0.06, -0.5); this.body.add(rump);
+            const belly = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 10), fur); belly.scale.set(0.95, 0.7, 1.35); belly.position.set(0, -0.22, -0.02); this.body.add(belly);
             this.body.position.set(0, 1.05, 0); this.bodyGroup.add(this.body);
 
             this.head = new THREE.Group();
-            this.head.add(new THREE.Mesh(new THREE.SphereGeometry(0.3, 14, 12), fur));
-            const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.28, 10), fur); snout.rotation.x = Math.PI / 2; snout.position.set(0, -0.05, 0.3); this.head.add(snout);
-            const nose = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), this._mat(0x140d0a, 1.0, 0.4)); nose.position.set(0, -0.03, 0.46); this.head.add(nose);
-            for (const ex of [-0.2, 0.2]) { const ear = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 10), fur); ear.position.set(ex, 0.28, -0.02); ear.scale.z = 0.5; this.head.add(ear); }
-            this._eye(this.head, -0.13, 0.07, 0.24, 0.05, p.accent, false);
-            this._eye(this.head, 0.13, 0.07, 0.24, 0.05, p.accent, false);
-            this.head.position.set(0, 1.46, 0.6); this.bodyGroup.add(this.head);
+            // The head sits forward and low of the hump, so the neck runs back
+            // and down into the shoulders rather than straight down.
+            this.head.add(this._neck(fur, 0.32, -0.3, 0.2, 0.3, 0));
+            const skull = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 14), fur); skull.scale.set(1.0, 0.98, 1.05); this.head.add(skull);
+            const brow = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 10), fur); brow.scale.set(1.15, 0.55, 0.8); brow.position.set(0, 0.13, 0.16); this.head.add(brow);
+            // A bear muzzle is long and tapers, and the bridge dishes down
+            // between the eyes: two tapered sections rather than one tube.
+            const bridge = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.17, 0.2, 12), fur); bridge.rotation.x = Math.PI / 2; bridge.position.set(0, -0.02, 0.24); this.head.add(bridge);
+            const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.15, 0.24, 12), fur); snout.rotation.x = Math.PI / 2; snout.position.set(0, -0.06, 0.42); this.head.add(snout);
+            const jaw = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 8), fur); jaw.scale.set(1.0, 0.6, 1.5); jaw.position.set(0, -0.14, 0.36); this.head.add(jaw);
+            const nose = new THREE.Mesh(new THREE.SphereGeometry(0.085, 10, 10), this._mat(0x140d0a, 1.0, 0.35)); nose.scale.set(1.2, 0.85, 0.8); nose.position.set(0, -0.03, 0.53); this.head.add(nose);
+            for (const nx of [-0.035, 0.035]) { const n = new THREE.Mesh(new THREE.SphereGeometry(0.022, 5, 4), this._mat(0x070505, 1.0, 0.3)); n.position.set(nx, -0.04, 0.59); this.head.add(n); }
+            // Small round ears, set wide and back, with a paler inner cup.
+            const innerMat = this._mat(0x6b4a3a, 1.0, 0.8);
+            for (const ex of [-0.21, 0.21]) {
+                const ear = new THREE.Mesh(new THREE.SphereGeometry(0.105, 12, 12), fur); ear.position.set(ex, 0.28, -0.04); ear.scale.set(1, 1, 0.45); this.head.add(ear);
+                const inner = new THREE.Mesh(new THREE.SphereGeometry(0.062, 10, 10), innerMat); inner.position.set(ex * 0.94, 0.28, 0.02); inner.scale.set(1, 1, 0.3); this.head.add(inner);
+            }
+            this._eye(this.head, -0.13, 0.09, 0.245, 0.048, p.accent, false);
+            this._eye(this.head, 0.13, 0.09, 0.245, 0.048, p.accent, false);
+            this.head.position.set(0, 1.37, 0.6); this.bodyGroup.add(this.head);
 
-            this.frontLeft  = this._leg(fur, -0.32, 0.42, 0.92, 0.95, 'paw');
-            this.frontRight = this._leg(fur, 0.32, 0.42, 0.92, 0.95, 'paw');
-            this.rearLeft   = this._leg(fur, -0.32, -0.42, 0.92, 0.95, 'paw');
-            this.rearRight  = this._leg(fur, 0.32, -0.42, 0.92, 0.95, 'paw');
+            this.frontLeft  = this._leg(fur, -0.32, 0.42, 0.92, 0.95, 'paw', 1.25);
+            this.frontRight = this._leg(fur, 0.32, 0.42, 0.92, 0.95, 'paw', 1.25);
+            this.rearLeft   = this._leg(fur, -0.32, -0.42, 0.92, 0.95, 'paw', 1.35);
+            this.rearRight  = this._leg(fur, 0.32, -0.42, 0.92, 0.95, 'paw', 1.35);
             this.tail = this._nub(fur, 0, 1.0, -0.74, 0.09);
             this._wireQuad({ body: this.body, head: this.head, fl: this.frontLeft, fr: this.frontRight, rl: this.rearLeft, rr: this.rearRight, tail: this.tail });
         }
@@ -498,17 +651,43 @@
         _buildWolf(fur) {
             const p = this.profile;
             this.body = new THREE.Group();
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 1.05, 12), fur); torso.rotation.x = Math.PI / 2; this.body.add(torso);
-            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 12), fur); chest.position.z = 0.48; this.body.add(chest);
-            const rump = new THREE.Mesh(new THREE.SphereGeometry(0.26, 12, 12), fur); rump.position.z = -0.52; this.body.add(rump);
-            for (let i = 0; i < 5; i++) { const sp = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.18, 5), fur); sp.position.set(0, 0.26, 0.4 - i * 0.2); this.body.add(sp); }
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.23, 1.05, 14), fur); torso.rotation.x = Math.PI / 2; this.body.add(torso);
+            // A canine is deep through the chest and tucked at the waist: the
+            // straight tube it used to be read as a sausage on legs.
+            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.29, 14, 12), fur); chest.scale.set(0.92, 1.15, 1.0); chest.position.set(0, -0.02, 0.46); this.body.add(chest);
+            const waist = new THREE.Mesh(new THREE.SphereGeometry(0.21, 12, 10), fur); waist.scale.set(0.9, 0.85, 1.1); waist.position.set(0, -0.03, -0.14); this.body.add(waist);
+            const rump = new THREE.Mesh(new THREE.SphereGeometry(0.26, 14, 12), fur); rump.scale.set(1.0, 1.0, 0.95); rump.position.set(0, 0.02, -0.52); this.body.add(rump);
+            // Hackles: a raised ridge along the spine, tallest at the withers.
+            for (let i = 0; i < 7; i++) {
+                const t = i / 6;
+                const sp = new THREE.Mesh(new THREE.ConeGeometry(0.048, 0.22 - t * 0.1, 5), fur);
+                sp.position.set(0, 0.26 - t * 0.03, 0.44 - i * 0.16); sp.rotation.x = -0.2; this.body.add(sp);
+            }
             this.body.position.set(0, 1.05, 0); this.bodyGroup.add(this.body);
 
             this.head = new THREE.Group();
-            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.4, 10), fur); neck.rotation.x = 0.7; neck.position.set(0, 0.02, -0.06); this.head.add(neck);
-            const skull = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 12), fur); skull.scale.set(0.9, 0.85, 1.1); skull.position.set(0, 0.24, 0.18); this.head.add(skull);
-            const snout = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.42, 8), fur); snout.rotation.x = Math.PI / 2; snout.position.set(0, 0.2, 0.44); this.head.add(snout);
-            for (const ex of [-0.1, 0.1]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.22, 5), fur); ear.position.set(ex, 0.46, 0.08); this.head.add(ear); }
+            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.21, 0.42, 12), fur); neck.rotation.x = 0.7; neck.position.set(0, 0.02, -0.06); this.head.add(neck);
+            // The thick ruff of fur around the neck, the thing that makes a
+            // wolf look heavier at the shoulders than it really is.
+            this._ruff(this.head, 0.2, 0.06, -0.02, 11, 0.2, fur, 1);
+            const skull = new THREE.Mesh(new THREE.SphereGeometry(0.2, 14, 12), fur); skull.scale.set(0.92, 0.85, 1.12); skull.position.set(0, 0.24, 0.18); this.head.add(skull);
+            // Cheek ruffs and a brow, so the head is not a bare ball.
+            for (const cx of [-0.19, 0.19]) { const c = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), fur); c.scale.set(0.8, 1.1, 0.9); c.position.set(cx, 0.2, 0.14); this.head.add(c); }
+            const brow = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 10), fur); brow.scale.set(1.1, 0.5, 0.7); brow.position.set(0, 0.33, 0.22); this.head.add(brow);
+            // A long muzzle that tapers rather than a cone stuck on the face,
+            // with a lower jaw and a black nose leather at the end of it.
+            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.13, 0.38, 10), fur); muzzle.rotation.x = Math.PI / 2; muzzle.position.set(0, 0.2, 0.42); this.head.add(muzzle);
+            const jaw = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 8), fur); jaw.scale.set(0.95, 0.6, 1.9); jaw.position.set(0, 0.13, 0.4); this.head.add(jaw);
+            const nose = new THREE.Mesh(new THREE.SphereGeometry(0.058, 10, 10), this._mat(0x100b09, 1.0, 0.3)); nose.scale.set(1.2, 0.9, 0.85); nose.position.set(0, 0.21, 0.61); this.head.add(nose);
+            // Fangs, just visible at the lip line.
+            const fangMat = this._mat(0xf0e8d4, 1.0, 0.3);
+            for (const fx of [-0.05, 0.05]) { const f = new THREE.Mesh(new THREE.ConeGeometry(0.019, 0.075, 5), fangMat); f.position.set(fx, 0.145, 0.53); f.rotation.x = Math.PI; this.head.add(f); }
+            // Tall pricked ears with a paler inner cup.
+            const innerMat = this._mat(0x6a5748, 1.0, 0.85);
+            for (const ex of [-0.11, 0.11]) {
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.075, 0.24, 6), fur); ear.position.set(ex, 0.47, 0.07); ear.rotation.z = ex > 0 ? -0.14 : 0.14; this.head.add(ear);
+                const inner = new THREE.Mesh(new THREE.ConeGeometry(0.042, 0.16, 6), innerMat); inner.position.set(ex, 0.46, 0.12); inner.rotation.z = ex > 0 ? -0.14 : 0.14; this.head.add(inner);
+            }
             this._eye(this.head, -0.1, 0.27, 0.3, 0.045, p.accent, true);
             this._eye(this.head, 0.1, 0.27, 0.3, 0.045, p.accent, true);
             this.head.position.set(0, 1.2, 0.55); this.bodyGroup.add(this.head);
@@ -521,56 +700,82 @@
             this._wireQuad({ body: this.body, head: this.head, fl: this.frontLeft, fr: this.frontRight, rl: this.rearLeft, rr: this.rearRight, tail: this.tail });
         }
 
-        // ── Big cat: sleek crouched feline with a long curling tail ──────────
-        _buildBigcat(fur) {
-            const p = this.profile;
-            this.body = new THREE.Group();
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.24, 1.15, 12), fur); torso.rotation.x = Math.PI / 2; this.body.add(torso);
-            const haunch = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 12), fur); haunch.position.set(0, 0.06, -0.5); this.body.add(haunch);
-            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.24, 12, 12), fur); chest.position.z = 0.5; this.body.add(chest);
-            this.body.position.set(0, 0.95, 0); this.bodyGroup.add(this.body);
-
-            this.head = new THREE.Group();
-            this.head.add(new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 12), fur));
-            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.16, 8), fur); muzzle.rotation.x = Math.PI / 2; muzzle.position.set(0, -0.05, 0.2); this.head.add(muzzle);
-            for (const ex of [-0.13, 0.13]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.14, 6), fur); ear.position.set(ex, 0.2, 0); this.head.add(ear); }
-            this._eye(this.head, -0.1, 0.04, 0.17, 0.045, p.accent, true);
-            this._eye(this.head, 0.1, 0.04, 0.17, 0.045, p.accent, true);
-            this.head.position.set(0, 1.02, 0.6); this.bodyGroup.add(this.head);
-
-            this.frontLeft  = this._leg(fur, -0.2, 0.42, 0.82, 0.85, 'pad');
-            this.frontRight = this._leg(fur, 0.2, 0.42, 0.82, 0.85, 'pad');
-            this.rearLeft   = this._leg(fur, -0.2, -0.44, 0.82, 0.85, 'pad');
-            this.rearRight  = this._leg(fur, 0.2, -0.44, 0.82, 0.85, 'pad');
-            this.tail = this._felineTail(fur, 0.98, -0.68, 7, 0.9);
-            this._wireQuad({ body: this.body, head: this.head, fl: this.frontLeft, fr: this.frontRight, rl: this.rearLeft, rr: this.rearRight, tail: this.tail });
-        }
+        // ── Big cat: the shared cuddly feline, nothing added ─────────────────
+        _buildBigcat(fur) { this._felineBase(fur, { eyeGlow: true }); }
 
         // ── Boar: low front-heavy suid with hump, tusks and bristles ─────────
+        // A pig has no neck to speak of: the head is set straight into the
+        // shoulders, and the whole animal is a wedge that is tallest and
+        // heaviest at the front and tapers away to a small rump. Getting that
+        // wedge right is what separates a boar from a generic quadruped.
         _buildBoar(fur) {
             const p = this.profile;
             this.body = new THREE.Group();
-            const torso = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 12), fur); torso.scale.set(1.0, 0.85, 1.55); this.body.add(torso);
-            const hump = new THREE.Mesh(new THREE.SphereGeometry(0.34, 12, 12), fur); hump.position.set(0, 0.2, 0.4); this.body.add(hump);
-            for (let i = 0; i < 6; i++) { const b = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.22, 4), this._mat(0x140d0a, 1.0, 0.9)); b.position.set(0, 0.28, 0.45 - i * 0.17); this.body.add(b); }
+            const torso = new THREE.Mesh(new THREE.SphereGeometry(0.4, 14, 12), fur); torso.scale.set(1.0, 0.88, 1.5); this.body.add(torso);
+            // Front-heavy: a deep chest and a high withers hump, then a rump
+            // noticeably narrower and lower than the shoulders.
+            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.38, 14, 12), fur); chest.scale.set(1.12, 1.05, 0.95); chest.position.set(0, 0.0, 0.36); this.body.add(chest);
+            const hump = new THREE.Mesh(new THREE.SphereGeometry(0.32, 12, 12), fur); hump.scale.set(1.0, 0.9, 1.1); hump.position.set(0, 0.22, 0.34); this.body.add(hump);
+            const rump = new THREE.Mesh(new THREE.SphereGeometry(0.29, 12, 12), fur); rump.scale.set(0.9, 0.9, 0.95); rump.position.set(0, -0.06, -0.52); this.body.add(rump);
+            const belly = new THREE.Mesh(new THREE.SphereGeometry(0.33, 12, 10), fur); belly.scale.set(0.98, 0.7, 1.25); belly.position.set(0, -0.19, -0.04); this.body.add(belly);
+            // The dorsal bristle crest, taller over the shoulders where a boar
+            // raises it, thinning out toward the tail.
+            const bristle = this._mat(0x140d0a, 1.0, 0.9);
+            for (let i = 0; i < 9; i++) {
+                const t = i / 8;
+                const h = 0.26 - t * 0.16;
+                const b = new THREE.Mesh(new THREE.ConeGeometry(0.036, h, 4), bristle);
+                b.position.set(0, 0.3 - t * 0.16, 0.5 - i * 0.13); b.rotation.x = -0.25;
+                this.body.add(b);
+            }
             this.body.position.set(0, 0.9, 0); this.bodyGroup.add(this.body);
 
             this.head = new THREE.Group();
-            const skull = new THREE.Mesh(new THREE.SphereGeometry(0.24, 12, 12), fur); skull.scale.set(0.9, 0.9, 1.2); this.head.add(skull);
-            const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 0.3, 10), fur); snout.rotation.x = Math.PI / 2; snout.position.set(0, -0.06, 0.28); this.head.add(snout);
-            const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.04, 10), this._mat(0x3a2a22, 1.0, 0.5)); disc.rotation.x = Math.PI / 2; disc.position.set(0, -0.06, 0.44); this.head.add(disc);
-            const tuskMat = this._mat(0xe8dcc0, 1.0, 0.4);
-            for (const tx of [-0.1, 0.1]) { const tk = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.26, 6), tuskMat); tk.position.set(tx, -0.1, 0.36); tk.rotation.set(-0.7, 0, tx > 0 ? 0.3 : -0.3); this.head.add(tk); }
-            for (const ex of [-0.16, 0.16]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.16, 5), fur); ear.position.set(ex, 0.22, 0); this.head.add(ear); }
-            this._eye(this.head, -0.13, 0.06, 0.18, 0.04, p.accent, false);
-            this._eye(this.head, 0.13, 0.06, 0.18, 0.04, p.accent, false);
-            this.head.position.set(0, 0.92, 0.62); this.bodyGroup.add(this.head);
+            // Almost no neck: a short thick wedge straight into the shoulders.
+            this.head.add(this._neck(fur, 0.1, -0.24, 0.22, 0.28, 0));
+            const skull = new THREE.Mesh(new THREE.SphereGeometry(0.25, 14, 12), fur); skull.scale.set(0.92, 0.92, 1.15); this.head.add(skull);
+            const cheek = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 10), fur); cheek.scale.set(1.1, 0.9, 0.9); cheek.position.set(0, -0.05, -0.02); this.head.add(cheek);
+            // A long straight snout ending in the flat disc of the rooting
+            // nose, with the two nostrils actually cut into it.
+            const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.125, 0.16, 0.34, 12), fur); snout.rotation.x = Math.PI / 2; snout.position.set(0, -0.07, 0.3); this.head.add(snout);
+            const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.135, 0.135, 0.05, 12), this._mat(0xa87a72, 1.0, 0.45)); disc.rotation.x = Math.PI / 2; disc.position.set(0, -0.07, 0.48); this.head.add(disc);
+            for (const nx of [-0.05, 0.05]) { const n = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.03, 8), this._mat(0x2a1c18, 1.0, 0.4)); n.rotation.x = Math.PI / 2; n.position.set(nx, -0.07, 0.51); this.head.add(n); }
+            const jaw = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 8), fur); jaw.scale.set(0.95, 0.6, 1.5); jaw.position.set(0, -0.17, 0.24); this.head.add(jaw);
+            // Four tusks: the big upward-curving lowers and the smaller uppers
+            // that hone against them. One pair alone never reads as a boar.
+            const tuskMat = this._mat(0xe8dcc0, 1.0, 0.35);
+            for (const tx of [-0.105, 0.105]) {
+                const lower = new THREE.Mesh(new THREE.ConeGeometry(0.038, 0.3, 6), tuskMat);
+                lower.position.set(tx, -0.14, 0.34); lower.rotation.set(-0.95, 0, tx > 0 ? 0.34 : -0.34); this.head.add(lower);
+                const upper = new THREE.Mesh(new THREE.ConeGeometry(0.026, 0.16, 6), tuskMat);
+                upper.position.set(tx * 1.05, -0.04, 0.38); upper.rotation.set(-2.1, 0, tx > 0 ? 0.28 : -0.28); this.head.add(upper);
+            }
+            // Ears set high and folded forward, with a paler inner surface.
+            const innerMat = this._mat(0x9c7060, 1.0, 0.8);
+            for (const ex of [-0.17, 0.17]) {
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.085, 0.2, 6), fur);
+                ear.position.set(ex, 0.24, -0.01); ear.rotation.set(0.4, 0, ex > 0 ? -0.35 : 0.35); this.head.add(ear);
+                const inner = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.13, 6), innerMat);
+                inner.position.set(ex, 0.23, 0.04); inner.rotation.set(0.4, 0, ex > 0 ? -0.35 : 0.35); this.head.add(inner);
+            }
+            this._eye(this.head, -0.15, 0.08, 0.16, 0.038, p.accent, false);
+            this._eye(this.head, 0.15, 0.08, 0.16, 0.038, p.accent, false);
+            this.head.position.set(0, 0.95, 0.58); this.bodyGroup.add(this.head);
 
-            this.frontLeft  = this._leg(fur, -0.26, 0.38, 0.78, 0.78, 'hoof');
-            this.frontRight = this._leg(fur, 0.26, 0.38, 0.78, 0.78, 'hoof');
-            this.rearLeft   = this._leg(fur, -0.26, -0.4, 0.78, 0.78, 'hoof');
-            this.rearRight  = this._leg(fur, 0.26, -0.4, 0.78, 0.78, 'hoof');
-            this.tail = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.3, 5), fur); this.tail.position.set(0, 0.9, -0.62); this.bodyGroup.add(this.tail);
+            // Short stout legs, the front pair carrying the weight.
+            this.frontLeft  = this._leg(fur, -0.26, 0.38, 0.78, 0.74, 'hoof', 1.15);
+            this.frontRight = this._leg(fur, 0.26, 0.38, 0.78, 0.74, 'hoof', 1.15);
+            this.rearLeft   = this._leg(fur, -0.24, -0.4, 0.78, 0.78, 'hoof', 1.0);
+            this.rearRight  = this._leg(fur, 0.24, -0.4, 0.78, 0.78, 'hoof', 1.0);
+            // A curled tail rather than a straight rod.
+            this.tail = new THREE.Group();
+            let ty = 0, tz = 0, tr = 0.035;
+            for (let i = 0; i < 6; i++) {
+                const s = new THREE.Mesh(new THREE.SphereGeometry(tr, 6, 4), fur);
+                s.position.set(Math.sin(i * 1.15) * 0.07, ty, tz); this.tail.add(s);
+                ty += 0.035; tz -= 0.05; tr *= 0.9;
+            }
+            this.tail.position.set(0, 0.92, -0.6); this.bodyGroup.add(this.tail);
             this._wireQuad({ body: this.body, head: this.head, fl: this.frontLeft, fr: this.frontRight, rl: this.rearLeft, rr: this.rearRight, tail: this.tail });
         }
 
@@ -586,18 +791,60 @@
             const muzzle = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 10), fur); muzzle.position.set(0, -0.06, 0.2); this.head.add(muzzle);
             const nose = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), this._mat(p.accent, 1.0, 0.4)); nose.position.set(0, -0.08, 0.32); this.head.add(nose);
             for (const ix of [-0.045, 0.045]) { const t = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.1, 0.03), this._mat(0xfff4d0, 1.0, 0.4)); t.position.set(ix, -0.14, 0.27); this.head.add(t); }
-            for (const ex of [-0.18, 0.18]) { const ear = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), fur); ear.position.set(ex, 0.22, 0); ear.scale.set(1, 1, 0.3); this.head.add(ear); }
+            // Round ears with a pink inner cup, and whiskers: a rodent's face
+            // is mostly whiskers, and without them the head is a bare bean.
+            const innerMat = this._mat(0xd79a9a, 1.0, 0.75);
+            for (const ex of [-0.18, 0.18]) {
+                const ear = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), fur); ear.position.set(ex, 0.22, 0); ear.scale.set(1, 1, 0.3); this.head.add(ear);
+                const inner = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 10), innerMat); inner.position.set(ex * 0.93, 0.22, 0.035); inner.scale.set(1, 1, 0.22); this.head.add(inner);
+            }
+            const whiskerMat = this._mat(0xd8d0c2, 0.75, 0.3);
+            for (const sx of [-1, 1]) {
+                for (let i = 0; i < 3; i++) {
+                    const wk = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.002, 0.26, 3), whiskerMat);
+                    wk.position.set(sx * 0.19, -0.05 + i * 0.035, 0.25);
+                    wk.rotation.set(0.1, 0, sx * (1.15 + i * 0.16));
+                    this.head.add(wk);
+                }
+            }
             this._eye(this.head, -0.12, 0.06, 0.2, 0.05, 0x120c08, false);
             this._eye(this.head, 0.12, 0.06, 0.2, 0.05, 0x120c08, false);
             this.head.position.set(0, 1.08, 0.06); this.bodyGroup.add(this.head);
 
-            // Tiny held-up front paws + folded haunch feet.
-            this.frontLeft  = this._nub(fur, -0.15, 0.66, 0.24, 0.08);
-            this.frontRight = this._nub(fur, 0.15, 0.66, 0.24, 0.08);
-            this.rearLeft   = this._nub(fur, -0.22, 0.34, 0.06, 0.12);
-            this.rearRight  = this._nub(fur, 0.22, 0.34, 0.06, 0.12);
+            // Tiny held-up front paws with fingers, and folded haunch feet.
+            this.frontLeft  = this._rodentPaw(fur, -0.15, 0.66, 0.24, 0.08);
+            this.frontRight = this._rodentPaw(fur, 0.15, 0.66, 0.24, 0.08);
+            this.rearLeft   = this._rodentFoot(fur, -0.22, 0.34, 0.06, 0.12);
+            this.rearRight  = this._rodentFoot(fur, 0.22, 0.34, 0.06, 0.12);
             this.tail = this._tail(fur, 0.58, -0.3, 6, 0.86, 0.6);
             this._wireQuad({ body: this.body, head: this.head, fl: this.frontLeft, fr: this.frontRight, rl: this.rearLeft, rr: this.rearRight, tail: this.tail });
+        }
+
+        // A held-up rodent forepaw: a small pad with four fingers curled in
+        // front of the chest, which is the pose everyone pictures for a rat.
+        _rodentPaw(mat, x, y, z, r) {
+            const g = new THREE.Group();
+            const pad = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), mat); pad.scale.set(0.9, 1.0, 1.1); g.add(pad);
+            const nailMat = this._mat(0xe6dccb, 1.0, 0.4);
+            for (let i = 0; i < 4; i++) {
+                const f = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.17, r * 0.13, r * 0.9, 4), mat);
+                f.position.set((i - 1.5) * r * 0.42, -r * 0.35, r * 0.72);
+                f.rotation.x = 1.15; g.add(f);
+                const n = new THREE.Mesh(new THREE.ConeGeometry(r * 0.11, r * 0.34, 3), nailMat);
+                n.position.set((i - 1.5) * r * 0.42, -r * 0.62, r * 1.05);
+                n.rotation.x = 1.6; g.add(n);
+            }
+            g.position.set(x, y, z); this.bodyGroup.add(g); return g;
+        }
+        // A folded haunch foot: a long sole flat on the ground with toes.
+        _rodentFoot(mat, x, y, z, r) {
+            const g = new THREE.Group();
+            const sole = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), mat); sole.scale.set(0.8, 0.6, 1.7); g.add(sole);
+            for (let i = 0; i < 4; i++) {
+                const t = new THREE.Mesh(new THREE.SphereGeometry(r * 0.24, 6, 4), mat);
+                t.position.set((i - 1.5) * r * 0.4, -r * 0.14, r * 1.55); g.add(t);
+            }
+            g.position.set(x, y, z); this.bodyGroup.add(g); return g;
         }
 
         // ── Parameterised rodent core, reused by the bespoke rodent one-offs ──
@@ -631,7 +878,26 @@
                 for (const ex of [-0.14, 0.14]) { const e = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.18, 6), fur); e.position.set(ex, 0.27, 0); this.head.add(e); }
             } else if (ear !== 'none') {
                 const er = ear === 'big' ? 0.17 : (ear === 'tiny' ? 0.06 : 0.12);
-                for (const ex of [-0.18, 0.18]) { const e = new THREE.Mesh(new THREE.SphereGeometry(er, 10, 10), fur); e.position.set(ex, ear === 'big' ? 0.26 : 0.22, 0); e.scale.set(1, 1, 0.3); this.head.add(e); }
+                // A paler inner cup, so a round ear is a cup and not a coin.
+                const innerMat = this._mat(o.earInner || 0xd79a9a, 1.0, 0.75);
+                for (const ex of [-0.18, 0.18]) {
+                    const ey = ear === 'big' ? 0.26 : 0.22;
+                    const e = new THREE.Mesh(new THREE.SphereGeometry(er, 12, 12), fur); e.position.set(ex, ey, 0); e.scale.set(1, 1, 0.3); this.head.add(e);
+                    const inner = new THREE.Mesh(new THREE.SphereGeometry(er * 0.62, 10, 10), innerMat); inner.position.set(ex * 0.93, ey, 0.035); inner.scale.set(1, 1, 0.22); this.head.add(inner);
+                }
+            }
+            // Whiskers. A rodent's face is mostly whiskers; without them the
+            // head reads as a bean with eyes stuck on.
+            if (o.whiskers !== false) {
+                const whiskerMat = this._mat(o.whiskerColor || 0xd8d0c2, 0.75, 0.3);
+                for (const sx2 of [-1, 1]) {
+                    for (let i = 0; i < 3; i++) {
+                        const wk = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.002, hr * 1.0, 3), whiskerMat);
+                        wk.position.set(sx2 * hr * 0.73, -0.05 + i * 0.035, hr * 0.96);
+                        wk.rotation.set(0.1, 0, sx2 * (1.15 + i * 0.16));
+                        this.head.add(wk);
+                    }
+                }
             }
             this._eye(this.head, -0.12, 0.06, 0.2, 0.05, o.eye || 0x120c08, !!o.eyeGlow);
             this._eye(this.head, 0.12, 0.06, 0.2, 0.05, o.eye || 0x120c08, !!o.eyeGlow);
@@ -646,10 +912,10 @@
                 this.rearLeft   = this._leg(fur, -lx, -lz, by, len, 'paw');
                 this.rearRight  = this._leg(fur, lx, -lz, by, len, 'paw');
             } else {
-                this.frontLeft  = this._nub(fur, -0.15, by, 0.24, 0.08);
-                this.frontRight = this._nub(fur, 0.15, by, 0.24, 0.08);
-                this.rearLeft   = this._nub(fur, -0.22, 0.34, 0.06, 0.12);
-                this.rearRight  = this._nub(fur, 0.22, 0.34, 0.06, 0.12);
+                this.frontLeft  = this._rodentPaw(fur, -0.15, by, 0.24, 0.08);
+                this.frontRight = this._rodentPaw(fur, 0.15, by, 0.24, 0.08);
+                this.rearLeft   = this._rodentFoot(fur, -0.22, 0.34, 0.06, 0.12);
+                this.rearRight  = this._rodentFoot(fur, 0.22, 0.34, 0.06, 0.12);
             }
 
             const tt = o.tail || 'long';
@@ -844,15 +1110,34 @@
         _buildUngulate(fur) {
             const p = this.profile;
             this.body = new THREE.Group();
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 1.0, 12), fur); torso.rotation.x = Math.PI / 2; this.body.add(torso);
-            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 12), fur); chest.position.z = 0.45; this.body.add(chest);
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.26, 1.0, 14), fur); torso.rotation.x = Math.PI / 2; this.body.add(torso);
+            // A grazer carries a deep barrel of a ribcage and a high croup over
+            // the hips, with the belly slung between them.
+            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.31, 14, 12), fur); chest.scale.set(0.95, 1.15, 1.0); chest.position.set(0, -0.02, 0.44); this.body.add(chest);
+            const barrel = new THREE.Mesh(new THREE.SphereGeometry(0.29, 14, 12), fur); barrel.scale.set(1.0, 1.05, 1.3); barrel.position.set(0, -0.06, 0.0); this.body.add(barrel);
+            const croup = new THREE.Mesh(new THREE.SphereGeometry(0.28, 14, 12), fur); croup.scale.set(1.05, 1.0, 0.9); croup.position.set(0, 0.05, -0.46); this.body.add(croup);
+            const withers = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 10), fur); withers.scale.set(0.8, 0.8, 1.2); withers.position.set(0, 0.22, 0.34); this.body.add(withers);
             this.body.position.set(0, 1.15, 0); this.bodyGroup.add(this.body);
 
             this.head = new THREE.Group();
-            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.2, 0.55, 10), fur); neck.rotation.x = 0.4; neck.position.set(0, 0.2, 0.0); this.head.add(neck);
-            const skull = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), fur); skull.scale.set(0.85, 0.9, 1.25); skull.position.set(0, 0.5, 0.18); this.head.add(skull);
-            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, 0.18, 8), fur); muzzle.rotation.x = Math.PI / 2; muzzle.position.set(0, 0.46, 0.38); this.head.add(muzzle);
-            for (const ex of [-0.1, 0.1]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.18, 5), fur); ear.position.set(ex, 0.62, 0.05); ear.rotation.z = ex > 0 ? -0.5 : 0.5; this.head.add(ear); }
+            const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.21, 0.58, 12), fur); neck.rotation.x = 0.4; neck.position.set(0, 0.2, 0.0); this.head.add(neck);
+            // The dewlap under the throat, and a crest of mane along the top of
+            // the neck: a bare cylinder read as a length of pipe.
+            const dewlap = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 8), fur); dewlap.scale.set(0.75, 1.5, 0.75); dewlap.position.set(0, 0.16, 0.16); this.head.add(dewlap);
+            for (let i = 0; i < 5; i++) { const m = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.14, 5), fur); m.position.set(0, 0.08 + i * 0.11, -0.16 + i * 0.05); m.rotation.x = -0.5; this.head.add(m); }
+            const skull = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 12), fur); skull.scale.set(0.85, 0.9, 1.25); skull.position.set(0, 0.5, 0.18); this.head.add(skull);
+            // A long tapering muzzle with a broad grazing lip and dark nostrils.
+            const bridge = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.13, 0.2, 10), fur); bridge.rotation.x = Math.PI / 2; bridge.position.set(0, 0.48, 0.32); this.head.add(bridge);
+            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.09, 0.16, 10), fur); muzzle.rotation.x = Math.PI / 2; muzzle.position.set(0, 0.45, 0.47); this.head.add(muzzle);
+            const lip = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), this._mat(0x2b211c, 1.0, 0.5)); lip.scale.set(1.05, 0.8, 0.5); lip.position.set(0, 0.44, 0.54); this.head.add(lip);
+            for (const nx of [-0.045, 0.045]) { const n = new THREE.Mesh(new THREE.SphereGeometry(0.022, 5, 4), this._mat(0x0d0908, 1.0, 0.4)); n.position.set(nx, 0.47, 0.55); this.head.add(n); }
+            const jaw = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), fur); jaw.scale.set(0.9, 0.7, 1.5); jaw.position.set(0, 0.39, 0.32); this.head.add(jaw);
+            // Big mobile ears, cupped and swept out to the sides.
+            const innerMat = this._mat(0x8a7360, 1.0, 0.85);
+            for (const ex of [-0.11, 0.11]) {
+                const ear = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.2, 6), fur); ear.position.set(ex, 0.62, 0.05); ear.rotation.set(0.2, 0, ex > 0 ? -0.7 : 0.7); this.head.add(ear);
+                const inner = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.13, 6), innerMat); inner.position.set(ex * 1.15, 0.62, 0.08); inner.rotation.set(0.2, 0, ex > 0 ? -0.7 : 0.7); this.head.add(inner);
+            }
             const boneMat = this._mat(0xe8dcc0, 1.0, 0.5);
             if (this.idRand() < 0.5) { // curved horns
                 for (const hx of [-0.1, 0.1]) { const h = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.03, 6, 12, Math.PI * 1.1), boneMat); h.position.set(hx, 0.66, 0.08); h.rotation.set(0.4, hx > 0 ? -0.4 : 0.4, hx > 0 ? 0.6 : -0.6); this.head.add(h); }
@@ -877,12 +1162,32 @@
         // ── Ape: upright primate with long knuckling arms ────────────────────
         _buildApe(fur) {
             const p = this.profile;
-            this.body = new THREE.Mesh(new THREE.SphereGeometry(0.45, 14, 12), fur); this.body.scale.set(1.0, 1.2, 0.85); this.body.position.set(0, 1.15, 0); this.bodyGroup.add(this.body);
+            // An ape is a triangle: enormous across the shoulders, narrow at
+            // the hips. One egg for a torso gave it neither, so the barrel is
+            // built from a chest, a gut and a pair of deltoid masses.
+            this.body = new THREE.Group();
+            const trunk = new THREE.Mesh(new THREE.SphereGeometry(0.45, 16, 14), fur); trunk.scale.set(1.0, 1.2, 0.85); this.body.add(trunk);
+            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.4, 14, 12), fur); chest.scale.set(1.2, 0.8, 0.85); chest.position.set(0, 0.28, 0.04); this.body.add(chest);
+            for (const sx of [-0.4, 0.4]) { const delt = new THREE.Mesh(new THREE.SphereGeometry(0.19, 12, 10), fur); delt.position.set(sx, 0.34, 0.02); this.body.add(delt); }
+            const gut = new THREE.Mesh(new THREE.SphereGeometry(0.38, 14, 12), fur); gut.scale.set(0.95, 0.85, 0.9); gut.position.set(0, -0.3, 0.03); this.body.add(gut);
+            const pecMat = this._mat(p.accent, 1.0, 0.7);
+            for (const px of [-0.17, 0.17]) { const pec = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 8), pecMat); pec.scale.set(1.0, 0.7, 0.4); pec.position.set(px, 0.24, 0.36); this.body.add(pec); }
+            this.body.position.set(0, 1.15, 0); this.bodyGroup.add(this.body);
 
             this.head = new THREE.Group();
-            this.head.add(new THREE.Mesh(new THREE.SphereGeometry(0.26, 14, 12), fur));
-            const face = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), this._mat(p.accent, 1.0, 0.6)); face.scale.set(1, 1.1, 0.6); face.position.set(0, -0.04, 0.18); this.head.add(face);
+            // The head is sunk between the shoulders on almost no neck, which
+            // is most of what makes an ape read as an ape.
+            this.head.add(this._neck(fur, 0.24, 0.02, 0.19, 0.24, 0));
+            const skull = new THREE.Mesh(new THREE.SphereGeometry(0.26, 16, 14), fur); this.head.add(skull);
+            // A sagittal crest along the top of the skull.
+            const crest = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), fur); crest.scale.set(0.5, 1.0, 1.9); crest.position.set(0, 0.24, -0.02); this.head.add(crest);
+            const face = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 12), this._mat(p.accent, 1.0, 0.6)); face.scale.set(1, 1.1, 0.6); face.position.set(0, -0.04, 0.18); this.head.add(face);
             const brow = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.07, 0.1), fur); brow.position.set(0, 0.08, 0.22); this.head.add(brow);
+            // A prognathic muzzle with nostrils and a heavy jaw.
+            const muzzle = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 10), this._mat(p.accent, 1.0, 0.6)); muzzle.scale.set(1.0, 0.75, 0.85); muzzle.position.set(0, -0.11, 0.26); this.head.add(muzzle);
+            for (const nx of [-0.04, 0.04]) { const n = new THREE.Mesh(new THREE.SphereGeometry(0.021, 5, 4), this._mat(0x120c08, 1.0, 0.4)); n.position.set(nx, -0.08, 0.35); this.head.add(n); }
+            const jaw = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 10), fur); jaw.scale.set(1.0, 0.65, 0.9); jaw.position.set(0, -0.2, 0.14); this.head.add(jaw);
+            for (const ex of [-0.26, 0.26]) { const ear = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 8), fur); ear.scale.set(0.35, 1.0, 0.9); ear.position.set(ex, 0.02, 0.0); this.head.add(ear); }
             this._eye(this.head, -0.08, 0.0, 0.23, 0.04, 0x120c08, false);
             this._eye(this.head, 0.08, 0.0, 0.23, 0.04, 0x120c08, false);
             this.head.position.set(0, 1.85, 0.05); this.bodyGroup.add(this.head);
@@ -895,16 +1200,38 @@
         }
         _apeArm(mat, side) {
             const g = new THREE.Group();
-            const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.1, 0.6, 8), mat); upper.position.y = -0.3; g.add(upper);
-            const fore = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.08, 0.55, 8), mat); fore.position.y = -0.82; g.add(fore);
-            const fist = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 10), mat); fist.position.y = -1.1; g.add(fist);
+            const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 10), mat); g.add(shoulder);
+            const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.6, 10), mat); upper.position.y = -0.3; g.add(upper);
+            const elbow = new THREE.Mesh(new THREE.SphereGeometry(0.105, 10, 8), mat); elbow.position.y = -0.58; g.add(elbow);
+            const fore = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.075, 0.55, 10), mat); fore.position.y = -0.85; g.add(fore);
+            // A knuckling hand: a flat back, four folded fingers taking the
+            // weight, and a thumb off to the inside.
+            const hand = new THREE.Group();
+            const back = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 10), mat); back.scale.set(1.0, 0.75, 1.15); hand.add(back);
+            for (let i = 0; i < 4; i++) {
+                const k = new THREE.Mesh(new THREE.SphereGeometry(0.043, 6, 5), mat);
+                k.position.set((i - 1.5) * 0.055, -0.055, 0.1); hand.add(k);
+            }
+            const thumb = new THREE.Mesh(new THREE.SphereGeometry(0.045, 6, 5), mat);
+            thumb.position.set(-side * 0.11, -0.02, 0.03); hand.add(thumb);
+            hand.position.y = -1.15; g.add(hand);
             g.position.set(side * 0.5, 1.5, 0.05); g.rotation.z = side * 0.12; g._side = side; this.bodyGroup.add(g); return g;
         }
         _apeLeg(mat, x) {
             const g = new THREE.Group();
-            const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.11, 0.5, 8), mat); thigh.position.y = -0.25; g.add(thigh);
-            const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.08, 0.4, 8), mat); shin.position.y = -0.65; g.add(shin);
-            const foot = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.1, 0.3), mat); foot.position.set(0, -0.88, 0.06); g.add(foot);
+            const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.11, 0.5, 10), mat); thigh.position.y = -0.25; g.add(thigh);
+            const knee = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), mat); knee.position.y = -0.48; g.add(knee);
+            const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.08, 0.4, 10), mat); shin.position.y = -0.68; g.add(shin);
+            // A grasping foot: a sole, four toes and an opposed big toe.
+            const foot = new THREE.Group();
+            const sole = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 10), mat); sole.scale.set(1.0, 0.55, 1.5); foot.add(sole);
+            for (let i = 0; i < 4; i++) {
+                const t = new THREE.Mesh(new THREE.SphereGeometry(0.033, 6, 5), mat);
+                t.position.set((i - 1.5) * 0.048, -0.01, 0.15); foot.add(t);
+            }
+            const big = new THREE.Mesh(new THREE.SphereGeometry(0.045, 6, 5), mat);
+            big.position.set(x > 0 ? -0.1 : 0.1, -0.01, 0.05); foot.add(big);
+            foot.position.set(0, -0.9, 0.06); g.add(foot);
             g.position.set(x, 0.78, 0); this.bodyGroup.add(g); return g;
         }
 
@@ -955,35 +1282,104 @@
             this._wireQuad({ body: this.body, head: this.head, fl: this.frontLeft, fr: this.frontRight, rl: this.rearLeft, rr: this.rearRight, tail: this.tail });
         }
 
-        // ── Feline core: sleek cat body with long curling tail ───────────────
-        //   sizeBody · mane · fangs (saber) · ear ('tuft'|'round') · eyeGlow
+        // ── Feline core: a soft, round-headed cat ────────────────────────────
+        // Cats are built for charm, not for anatomy: a plump barrel body, an
+        // oversized round skull on a short muzzle, big catchlit eyes, pink
+        // inner ears and toe beans, whiskers, and a fluffy upright tail. Every
+        // feline in the file goes through here so none of them reads as a
+        // cylinder with cones stuck on it.
+        //   sizeBody · slim (<1 = gaunt) · mane · fangs (saber) · ear
+        //   ('tuft'|'round') · eyeGlow · legLen · tail ('bob') · ribs · scar
         _felineBase(fur, o) {
             o = o || {};
             const p = this.profile;
             const b = o.sizeBody || 1.0;
+            const sl = o.slim || 1.0;
+            // Cats sit low and chunky, so every feline gives up a little leg
+            // (CROUCH) against the old lanky build. Shorter legs crouch the
+            // whole animal rather than leaving it hovering: everything above
+            // the hips drops by exactly what the legs lost, and the bespoke
+            // builders offset their own trimmings by the same _catDrop.
+            const CROUCH = 0.87;
+            const len = (o.legLen || 0.85) * CROUCH;
+            const drop = this._catDrop = Math.max(0, 0.85 - len) * 0.95;
+
             this.body = new THREE.Group();
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.22 * b, 0.24 * b, 1.15 * b, 12), fur); torso.rotation.x = Math.PI / 2; this.body.add(torso);
-            const haunch = new THREE.Mesh(new THREE.SphereGeometry(0.3 * b, 12, 12), fur); haunch.position.set(0, 0.06, -0.5 * b); this.body.add(haunch);
-            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.24 * b, 12, 12), fur); chest.position.z = 0.5 * b; this.body.add(chest);
-            this.body.position.set(0, 0.95, 0); this.bodyGroup.add(this.body);
+            const torso = new THREE.Mesh(new THREE.SphereGeometry(0.3 * b, 16, 12), fur);
+            torso.scale.set(0.94 * sl, 0.94, 2.0); this.body.add(torso);
+            const haunch = new THREE.Mesh(new THREE.SphereGeometry(0.31 * b, 14, 12), fur);
+            haunch.scale.set(1.0 * sl, 1.0, 0.94); haunch.position.set(0, 0.05, -0.48 * b); this.body.add(haunch);
+            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.27 * b, 14, 12), fur);
+            chest.scale.set(1.0 * sl, 1.0, 0.95); chest.position.set(0, -0.02, 0.47 * b); this.body.add(chest);
+            // Cream bib down the throat.
+            const bib = new THREE.Mesh(new THREE.SphereGeometry(0.17 * b, 12, 10), this._mat(o.bibColor || 0xf2e6cf, 1.0, 0.9));
+            bib.scale.set(0.78, 1.1, 0.55); bib.position.set(0, -0.14 * b, 0.58 * b); this.body.add(bib);
+            if (o.ribs) for (let i = 0; i < 4; i++) {
+                const rib = new THREE.Mesh(new THREE.TorusGeometry(0.2 * b * sl, 0.02, 6, 14), this._mat(o.ribColor || 0xd8c8a0, 1.0, 0.5));
+                rib.rotation.y = Math.PI / 2; rib.position.set(0, 0, 0.3 * b - i * 0.16); this.body.add(rib);
+            }
+            if (o.scar) { const scar = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.3), this._mat(0xc04030, 1.0, 0.5)); scar.position.set(0.2 * b, 0.1, 0.1); scar.rotation.z = 0.5; this.body.add(scar); }
+            // Neck: carries the head clear of the shoulders so the face is not
+            // half-buried in the chest. Stays with the body when the head goes.
+            const neck = new THREE.Mesh(new THREE.SphereGeometry(0.17 * b, 12, 10), fur);
+            neck.scale.set(0.95, 1.05, 0.9); neck.position.set(0, 0.17 * b, 0.55 * b); this.body.add(neck);
+            this.body.position.set(0, 0.95 - drop, 0); this.bodyGroup.add(this.body);
 
+            // Head: big, round and set high, the way a kitten's is.
+            const hr = 0.24 * b;
             this.head = new THREE.Group();
-            this.head.add(new THREE.Mesh(new THREE.SphereGeometry(0.2 * b, 12, 12), fur));
-            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.16, 8), fur); muzzle.rotation.x = Math.PI / 2; muzzle.position.set(0, -0.05, 0.2); this.head.add(muzzle);
-            const er = o.ear === 'round' ? 0.07 : 0.08, eh = o.ear === 'round' ? 0.1 : 0.14;
-            for (const ex of [-0.13, 0.13]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(er, eh, 6), fur); ear.position.set(ex, 0.2, 0); this.head.add(ear); if (o.ear === 'tuft') { const t = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.1, 4), fur); t.position.set(ex, 0.3, 0); this.head.add(t); } }
-            if (o.fangs) { const fm = this._mat(o.fangColor || 0xfff4dc, 1.0, 0.3); for (const fx of [-0.07, 0.07]) { const f = new THREE.Mesh(new THREE.ConeGeometry(0.03, o.fangs, 6), fm); f.position.set(fx, -0.16, 0.24); f.rotation.x = Math.PI; this.head.add(f); } }
-            if (o.mane) for (let i = 0; i < 14; i++) { const a = (i / 14) * Math.PI * 2; const sp = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.3, 5), o.maneMat || this._mat(p.accent, 1.0, 0.7)); sp.position.set(Math.cos(a) * 0.28, 0.02 + Math.sin(a) * 0.28, -0.12); sp.rotation.set(0, 0, -a + Math.PI / 2); this.head.add(sp); }
-            this._eye(this.head, -0.1, 0.04, 0.17, 0.045, p.accent, o.eyeGlow !== false);
-            this._eye(this.head, 0.1, 0.04, 0.17, 0.045, p.accent, o.eyeGlow !== false);
-            this.head.position.set(0, 1.02, 0.6); this.bodyGroup.add(this.head);
+            const skull = new THREE.Mesh(new THREE.SphereGeometry(hr, 16, 14), fur); skull.scale.set(1.06, 1.0, 0.94); this.head.add(skull);
+            for (const ex of [-1, 1]) {
+                const cheek = new THREE.Mesh(new THREE.SphereGeometry(hr * 0.44, 12, 10), fur);
+                cheek.scale.set(0.82, 0.9, 0.68); cheek.position.set(ex * hr * 0.8, -hr * 0.28, hr * 0.34); this.head.add(cheek);
+            }
+            const muzzle = new THREE.Mesh(new THREE.SphereGeometry(hr * 0.5, 12, 10), fur);
+            muzzle.scale.set(1.06, 0.72, 0.82); muzzle.position.set(0, -hr * 0.4, hr * 0.72); this.head.add(muzzle);
+            const nose = new THREE.Mesh(new THREE.SphereGeometry(hr * 0.15, 8, 8), this._mat(o.noseColor || 0xe98aa0, 1.0, 0.35));
+            nose.scale.set(1.25, 0.85, 0.9); nose.position.set(0, -hr * 0.28, hr * 1.02); this.head.add(nose);
 
-            const len = o.legLen || 0.85;
-            this.frontLeft  = this._leg(fur, -0.2, 0.42, 0.82, len, 'pad');
-            this.frontRight = this._leg(fur, 0.2, 0.42, 0.82, len, 'pad');
-            this.rearLeft   = this._leg(fur, -0.2, -0.44, 0.82, len, 'pad');
-            this.rearRight  = this._leg(fur, 0.2, -0.44, 0.82, len, 'pad');
-            this.tail = this._felineTail(fur, 0.98, -0.62 * b - 0.06, 7, 0.9);
+            // Ears are groups (shell + pink inner + optional lynx tuft) so the
+            // whole ear can be twitched, or notched, as one thing.
+            const earW = o.ear === 'round' ? hr * 0.52 : hr * 0.44;
+            const earH = o.ear === 'round' ? hr * 0.7 : hr * 1.05;
+            this._catEars = [];
+            for (const ex of [-1, 1]) {
+                const g = new THREE.Group();
+                g.add(new THREE.Mesh(new THREE.ConeGeometry(earW, earH, 6), fur));
+                const inner = new THREE.Mesh(new THREE.ConeGeometry(earW * 0.6, earH * 0.72, 6), this._mat(o.innerEar || 0xf0a8b8, 1.0, 0.6));
+                inner.position.set(0, -earH * 0.06, hr * 0.1); g.add(inner);
+                if (o.ear === 'tuft') { const t = new THREE.Mesh(new THREE.ConeGeometry(hr * 0.07, hr * 0.44, 4), o.tuftMat || fur); t.position.y = earH * 0.6; g.add(t); }
+                g.position.set(ex * hr * 0.58, hr * 0.84, -hr * 0.04); g.rotation.z = -ex * 0.16;
+                this.head.add(g); this._catEars.push(g);
+            }
+            if (o.fangs) { const fm = this._mat(o.fangColor || 0xfff4dc, 1.0, 0.3); for (const fx of [-1, 1]) { const f = new THREE.Mesh(new THREE.ConeGeometry(0.03, o.fangs, 6), fm); f.position.set(fx * hr * 0.3, -hr * 0.62, hr * 0.86); f.rotation.x = Math.PI; this.head.add(f); } }
+            if (o.mane) for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; const sp = new THREE.Mesh(new THREE.ConeGeometry(hr * 0.26, hr * 1.2, 5), o.maneMat || this._mat(p.accent, 1.0, 0.7)); sp.position.set(Math.cos(a) * hr * 1.2, 0.02 + Math.sin(a) * hr * 1.2, -hr * 0.5); sp.rotation.set(0, 0, -a + Math.PI / 2); this.head.add(sp); }
+
+            const er = hr * 0.28;
+            this._catEyes = [
+                this._catEye(this.head, -hr * 0.42, hr * 0.14, hr * 0.66, er, p.accent, o.eyeGlow !== false),
+                this._catEye(this.head, hr * 0.42, hr * 0.14, hr * 0.66, er, p.accent, o.eyeGlow !== false)
+            ];
+            const wMat = this._mat(0xf6f2e8, 0.8, 0.3);
+            for (const side of [-1, 1]) for (let k = 0; k < 3; k++) {
+                const w = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, hr * 1.3, 4), wMat);
+                w.position.set(side * hr * 0.86, -hr * 0.34 + k * hr * 0.14, hr * 0.76);
+                w.rotation.z = Math.PI / 2; w.rotation.y = side * (0.35 - k * 0.12);
+                this.head.add(w);
+            }
+            this.head.position.set(0, 1.06 + 0.16 * b - drop, 0.6 + 0.08 * b); this.bodyGroup.add(this.head);
+
+            const hipY = 0.82 - drop;
+            this.frontLeft  = this._leg(fur, -0.2, 0.42, hipY, len, 'catpaw', 1.15);
+            this.frontRight = this._leg(fur, 0.2, 0.42, hipY, len, 'catpaw', 1.15);
+            this.rearLeft   = this._leg(fur, -0.2, -0.44, hipY, len, 'catpaw', 1.15);
+            this.rearRight  = this._leg(fur, 0.2, -0.44, hipY, len, 'catpaw', 1.15);
+            if (o.tail === 'bob') {
+                this.tail = this._nub(fur, 0, 1.0 - drop, -0.6 * b - 0.04, 0.13 * b);
+                const puff = new THREE.Mesh(new THREE.SphereGeometry(0.1 * b, 10, 8), fur); puff.position.set(0, 0.08, -0.06); this.tail.add(puff);
+            } else {
+                this.tail = this._felineTail(fur, 0.98 - drop, -0.62 * b - 0.06, 7, 0.86, 1.05);
+            }
             this._wireQuad({ body: this.body, head: this.head, fl: this.frontLeft, fr: this.frontRight, rl: this.rearLeft, rr: this.rearRight, tail: this.tail });
         }
 
@@ -1146,28 +1542,33 @@
         _buildBstLazycat(fur)          { this._felineBase(fur, { sizeBody: 0.7, ear: 'round', eyeGlow: false, legLen: 0.7 }); }
         _buildBstBlackpanther(fur)     { this._felineBase(fur, { sizeBody: 1.0, eyeGlow: true, legLen: 0.9 }); }
         _buildBstReflectivetiger(fur)  { this._felineBase(fur, { sizeBody: 1.0, eyeGlow: false, legLen: 0.88 });
-            // Snow-glint stripes.
-            const st = this._mat(this.profile.accent, 1.0, 0.4); for (let i = 0; i < 5; i++) { const s = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.03, 0.05), st); s.position.set(0, 1.06, 0.3 - i * 0.18); this._deco(s); } }
+            // Snow-glint stripes, banded down the flanks where a tiger's are.
+            const d = this._catDrop || 0;
+            const st = this._mat(this.profile.accent, 1.0, 0.4); for (let i = 0; i < 5; i++) { const s = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.22, 0.05), st); s.position.set(0, 0.97 - d, 0.3 - i * 0.18); this._deco(s); } }
         _buildBstSabercat(fur)         { this._felineBase(fur, { sizeBody: 1.05, fangs: 0.28, ear: 'round', eyeGlow: true, legLen: 0.9 }); }
         _buildBstWildcat(fur)          { this._felineBase(fur, { sizeBody: 0.8, ear: 'tuft', eyeGlow: false, legLen: 0.78 }); }
         // Street tomcat: small, half-starved, one ear torn off in a fight and
         // a patchy coat of raised hackles down the spine.
         _buildBstFeralalleycat(fur)    { this._felineBase(fur, { sizeBody: 0.68, ear: 'tuft', eyeGlow: true, legLen: 0.72 });
-            // Notch the left ear (first ear cone added to the head group).
-            if (this.head) { const ear = this.head.children.find(c => c.geometry && c.geometry.type === 'ConeGeometry'); if (ear) { ear.scale.set(0.9, 0.55, 0.9); ear.rotation.z = -0.4; } }
+            // Notch the left ear (a torn-off tip, folded over).
+            if (this._catEars && this._catEars[0]) { const ear = this._catEars[0]; ear.scale.set(0.9, 0.55, 0.9); ear.rotation.z = -0.5; }
             // Ribs showing through a scruffy coat, and bristling hackles.
+            const d = this._catDrop || 0;
             const scruff = this._mat(this.profile.bodyColor, 1.0, 0.95);
-            for (let i = 0; i < 5; i++) { const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.13, 4), scruff); tuft.position.set((i % 2 ? 0.03 : -0.03), 1.12, 0.26 - i * 0.14); tuft.rotation.x = -0.4; this._deco(tuft); }
+            for (let i = 0; i < 5; i++) { const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.13, 4), scruff); tuft.position.set((i % 2 ? 0.03 : -0.03), 1.12 - d, 0.26 - i * 0.14); tuft.rotation.x = -0.4; this._deco(tuft); }
             const rib = this._mat(this.profile.accent, 0.35, 0.8);
-            for (let i = 0; i < 3; i++) { const r = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.02, 0.03), rib); r.position.set(0, 0.86, 0.28 - i * 0.12); this._deco(r); } }
+            for (let i = 0; i < 3; i++) { const r = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.02, 0.03), rib); r.position.set(0, 0.86 - d, 0.28 - i * 0.12); this._deco(r); } }
         _buildBstGoldenlion(fur)       { this._felineBase(fur, { sizeBody: 1.1, mane: true, maneMat: this._mat(0x6a3a10, 1.0, 0.8), eyeGlow: false, legLen: 0.92 }); }
         _buildBstStripedtiger(fur)     { this._felineBase(fur, { sizeBody: 1.05, eyeGlow: false, legLen: 0.9 });
-            const st = this._mat(this.profile.accent, 1.0, 0.6); for (let i = 0; i < 6; i++) { const s = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.03, 0.06), st); s.position.set(0, 1.06, 0.36 - i * 0.16); this._deco(s); } }
+            const d = this._catDrop || 0;
+            const st = this._mat(this.profile.accent, 1.0, 0.6); for (let i = 0; i < 6; i++) { const s = new THREE.Mesh(new THREE.BoxGeometry(0.63, 0.24, 0.06), st); s.position.set(0, 0.98 - d, 0.36 - i * 0.16); this._deco(s); } }
         _buildBstUmbrapanthera(fur)    { this._felineBase(fur, { sizeBody: 1.0, eyeGlow: true, legLen: 0.9 });
             // Wispy shadow trails off the raised tail tip.
-            const sh = this._mat(this.profile.accent, 0.4, 0.2, this.profile.accent); for (let i = 0; i < 3; i++) { const s = new THREE.Mesh(new THREE.SphereGeometry(0.1 - i * 0.02, 8, 8), sh); s.position.set(0, 1.66 + i * 0.16, -0.72 - i * 0.04); this._deco(s); } }
+            const d = this._catDrop || 0;
+            const sh = this._mat(this.profile.accent, 0.4, 0.2, this.profile.accent); for (let i = 0; i < 3; i++) { const s = new THREE.Mesh(new THREE.SphereGeometry(0.1 - i * 0.02, 8, 8), sh); s.position.set(0, 1.6 - d + i * 0.16, -0.72 - i * 0.04); this._deco(s); } }
         _buildBstMysticpanther(fur)    { this._felineBase(fur, { sizeBody: 1.0, eyeGlow: true, legLen: 0.9 });
-            const glow = this._mat(this.profile.accent, 0.6, 0.3, this.profile.accent); for (let i = 0; i < 4; i++) { const r = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.015, 6, 10), glow); r.position.set(-0.12 + i * 0.08, 1.05, 0.2 - i * 0.12); r.rotation.x = Math.PI / 2; this._deco(r); } }
+            const d = this._catDrop || 0;
+            const glow = this._mat(this.profile.accent, 0.6, 0.3, this.profile.accent); for (let i = 0; i < 4; i++) { const r = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.015, 6, 10), glow); r.position.set(-0.12 + i * 0.08, 1.13 - d, 0.2 - i * 0.12); r.rotation.x = Math.PI / 2; this._deco(r); } }
         _buildBstSabertoothalpha(fur)  { this._felineBase(fur, { sizeBody: 1.15, fangs: 0.38, ear: 'tuft', eyeGlow: true, legLen: 0.95 }); }
         _buildBstDiresabertoothalpha(fur){ this._felineBase(fur, { sizeBody: 1.25, fangs: 0.44, ear: 'tuft', eyeGlow: true, legLen: 1.0, fangColor: 0xeaf4ff }); }
 
@@ -1481,7 +1882,7 @@
         // ── Rhinobeetle: chitin carapace, head horn, mandibles, six legs ─────
         _buildRhinobeetle(fur) {
             const p = this.profile;
-            const chitin = this._skinMat(p.bodyColor, 0.35);
+            const chitin = this.applySkin(this._mat(p.bodyColor, 1.0, 0.35));
             this.body = new THREE.Group();
             // Rounded carapace shell.
             const carapace = new THREE.Mesh(new THREE.SphereGeometry(0.5, 14, 12), chitin); carapace.scale.set(1.0, 0.7, 1.5); this.body.add(carapace);
@@ -1780,31 +2181,9 @@
         }
 
         // ── Starving Saber-Cat: gaunt sabertooth, ribs showing, huge fangs ───
+        // Still a cat: half-starved and pleading rather than skeletal.
         _buildStarvingsabercat(fur) {
-            const p = this.profile;
-            this.body = new THREE.Group();
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 1.2, 12), fur); torso.rotation.x = Math.PI / 2; this.body.add(torso);
-            const haunch = new THREE.Mesh(new THREE.SphereGeometry(0.26, 12, 12), fur); haunch.scale.set(0.9, 0.85, 1.0); haunch.position.set(0, 0.04, -0.5); this.body.add(haunch);
-            // Starved ribcage rings showing through.
-            for (let i = 0; i < 4; i++) { const rib = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.022, 6, 12), this._mat(0xd8c8a0, 1.0, 0.5)); rib.rotation.y = Math.PI / 2; rib.position.set(0, 0, 0.32 - i * 0.16); this.body.add(rib); }
-            this.body.position.set(0, 0.95, 0); this.bodyGroup.add(this.body);
-
-            this.head = new THREE.Group();
-            const skull = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 12), fur); skull.scale.set(0.85, 0.85, 1.05); this.head.add(skull);
-            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.13, 0.18, 8), fur); muzzle.rotation.x = Math.PI / 2; muzzle.position.set(0, -0.06, 0.2); this.head.add(muzzle);
-            // Oversized iron-tinged sabre fangs.
-            for (const fx of [-0.07, 0.07]) { const fang = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.42, 6), this._mat(0xe8e0c8, 1.0, 0.3)); fang.position.set(fx, -0.24, 0.28); fang.rotation.x = Math.PI; this.head.add(fang); }
-            for (const ex of [-0.13, 0.13]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.14, 6), fur); ear.position.set(ex, 0.2, 0); this.head.add(ear); }
-            this._eye(this.head, -0.1, 0.04, 0.18, 0.045, p.accent, true);
-            this._eye(this.head, 0.1, 0.04, 0.18, 0.045, p.accent, true);
-            this.head.position.set(0, 1.0, 0.62); this.bodyGroup.add(this.head);
-
-            this.frontLeft  = this._leg(fur, -0.2, 0.44, 0.86, 0.92, 'pad');
-            this.frontRight = this._leg(fur, 0.2, 0.44, 0.86, 0.92, 'pad');
-            this.rearLeft   = this._leg(fur, -0.2, -0.46, 0.86, 0.92, 'pad');
-            this.rearRight  = this._leg(fur, 0.2, -0.46, 0.86, 0.92, 'pad');
-            this.tail = this._felineTail(fur, 0.98, -0.66, 7, 0.88);
-            this._wireQuad({ body: this.body, head: this.head, fl: this.frontLeft, fr: this.frontRight, rl: this.rearLeft, rr: this.rearRight, tail: this.tail });
+            this._felineBase(fur, { sizeBody: 0.95, slim: 0.82, fangs: 0.34, fangColor: 0xe8e0c8, ear: 'tuft', eyeGlow: true, legLen: 0.92, ribs: true });
         }
 
         // ── Ashen Prowler: ash-grey feral canine, slung-low stalking gait ────
@@ -1893,32 +2272,7 @@
 
         // ── Feral Lynx: compact scarred cat, tufted ears, bobbed tail ────────
         _buildFerallynx(fur) {
-            const p = this.profile;
-            this.body = new THREE.Group();
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.24, 0.9, 12), fur); torso.rotation.x = Math.PI / 2; this.body.add(torso);
-            const haunch = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 12), fur); haunch.position.set(0, 0.06, -0.42); this.body.add(haunch);
-            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.25, 12, 12), fur); chest.position.z = 0.42; this.body.add(chest);
-            // A jagged scar gash across the flank.
-            const scar = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.3), this._mat(0xc04030, 1.0, 0.5)); scar.position.set(0.2, 0.1, 0.1); scar.rotation.z = 0.5; this.body.add(scar);
-            this.body.position.set(0, 0.92, 0); this.bodyGroup.add(this.body);
-
-            this.head = new THREE.Group();
-            const face = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 12), fur); face.scale.set(1.1, 1.0, 0.95); this.head.add(face);
-            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.14, 8), fur); muzzle.rotation.x = Math.PI / 2; muzzle.position.set(0, -0.06, 0.18); this.head.add(muzzle);
-            // Ruff cheek-fur + tufted (black-tipped) ears.
-            for (const ex of [-0.18, 0.18]) { const ruff = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.16, 6), fur); ruff.position.set(ex, -0.06, 0.04); ruff.rotation.z = ex > 0 ? -0.6 : 0.6; this.head.add(ruff); }
-            for (const ex of [-0.13, 0.13]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.16, 6), fur); ear.position.set(ex, 0.22, 0); this.head.add(ear); const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.12, 4), this._mat(0x140d0a, 1.0, 0.9)); tuft.position.set(ex, 0.34, 0); this.head.add(tuft); }
-            this._eye(this.head, -0.1, 0.04, 0.18, 0.05, p.accent, true);
-            this._eye(this.head, 0.1, 0.04, 0.18, 0.05, p.accent, true);
-            this.head.position.set(0, 1.0, 0.56); this.bodyGroup.add(this.head);
-
-            this.frontLeft  = this._leg(fur, -0.2, 0.4, 0.84, 0.88, 'pad');
-            this.frontRight = this._leg(fur, 0.2, 0.4, 0.84, 0.88, 'pad');
-            this.rearLeft   = this._leg(fur, -0.2, -0.42, 0.84, 0.88, 'pad');
-            this.rearRight  = this._leg(fur, 0.2, -0.42, 0.84, 0.88, 'pad');
-            // Stubby bobbed tail.
-            this.tail = this._nub(fur, 0, 0.92, -0.56, 0.11);
-            this._wireQuad({ body: this.body, head: this.head, fl: this.frontLeft, fr: this.frontRight, rl: this.rearLeft, rr: this.rearRight, tail: this.tail });
+            this._felineBase(fur, { sizeBody: 0.9, ear: 'tuft', tuftMat: this._mat(0x140d0a, 1.0, 0.9), eyeGlow: true, legLen: 0.88, tail: 'bob', scar: true });
         }
 
         // ── Dire Gnasher: pack predator with a huge teeth-crammed gnashing jaw ─
@@ -2012,30 +2366,7 @@
 
         // ── Gaunt Lynx: emaciated bobcat, visible ribs, tufted ears, bob tail ─
         _buildGauntlynx(fur) {
-            const p = this.profile;
-            this.body = new THREE.Group();
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.2, 0.85, 12), fur); torso.rotation.x = Math.PI / 2; this.body.add(torso);
-            const haunch = new THREE.Mesh(new THREE.SphereGeometry(0.24, 12, 12), fur); haunch.position.set(0, 0.04, -0.4); this.body.add(haunch);
-            // Starvation ribs showing through the flank.
-            for (let i = 0; i < 4; i++) { const rib = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.018, 6, 12), this._mat(0xc8c0a8, 1.0, 0.5)); rib.rotation.y = Math.PI / 2; rib.position.set(0, 0, 0.28 - i * 0.16); this.body.add(rib); }
-            this.body.position.set(0, 0.9, 0); this.bodyGroup.add(this.body);
-
-            this.head = new THREE.Group();
-            const face = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), fur); face.scale.set(1.1, 0.95, 0.9); this.head.add(face);
-            const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, 0.13, 8), fur); muzzle.rotation.x = Math.PI / 2; muzzle.position.set(0, -0.06, 0.16); this.head.add(muzzle);
-            // Cheek ruff + black-tipped tufted ears.
-            for (const ex of [-0.16, 0.16]) { const ruff = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.15, 6), fur); ruff.position.set(ex, -0.06, 0.02); ruff.rotation.z = ex > 0 ? -0.6 : 0.6; this.head.add(ruff); }
-            for (const ex of [-0.12, 0.12]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.16, 6), fur); ear.position.set(ex, 0.2, 0); this.head.add(ear); const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.016, 0.13, 4), this._mat(0x140d0a, 1.0, 0.9)); tuft.position.set(ex, 0.33, 0); this.head.add(tuft); }
-            this._eye(this.head, -0.09, 0.04, 0.16, 0.05, p.accent, true);
-            this._eye(this.head, 0.09, 0.04, 0.16, 0.05, p.accent, true);
-            this.head.position.set(0, 0.96, 0.54); this.bodyGroup.add(this.head);
-
-            this.frontLeft  = this._leg(fur, -0.18, 0.38, 0.82, 0.88, 'pad');
-            this.frontRight = this._leg(fur, 0.18, 0.38, 0.82, 0.88, 'pad');
-            this.rearLeft   = this._leg(fur, -0.18, -0.4, 0.82, 0.88, 'pad');
-            this.rearRight  = this._leg(fur, 0.18, -0.4, 0.82, 0.88, 'pad');
-            this.tail = this._nub(fur, 0, 0.9, -0.52, 0.1);
-            this._wireQuad({ body: this.body, head: this.head, fl: this.frontLeft, fr: this.frontRight, rl: this.rearLeft, rr: this.rearRight, tail: this.tail });
+            this._felineBase(fur, { sizeBody: 0.82, slim: 0.86, ear: 'tuft', tuftMat: this._mat(0x140d0a, 1.0, 0.9), eyeGlow: true, legLen: 0.88, tail: 'bob', ribs: true, ribColor: 0xc8c0a8 });
         }
 
         // ── Feral Badger: low stocky three-tailed digger, striped face, big claws ─
@@ -2151,6 +2482,23 @@
             this.model.rotation.z = hitJolt;
             if (this.tail && this.tail.visible) this.tail.rotation.z = Math.sin(t * 3) * 0.25;
             if (this.head && this.head.visible) this.head.rotation.x = Math.sin(t * 1.6) * 0.05;
+
+            // Felines: ears swivel and flick, eyes blink. Small idle motions,
+            // but they are most of what makes a cat read as a cat.
+            if (this._catEars) {
+                const flick = Math.max(0, Math.sin(t * 0.8) - 0.9) * 6;
+                this._catEars.forEach((ear, i) => {
+                    if (!ear.visible) return;
+                    const s = i ? 1 : -1;
+                    ear.rotation.z = -s * 0.16 - s * (Math.sin(t * 1.7 + i) * 0.06 + flick * 0.5);
+                    ear.rotation.x = (fast ? -0.35 : 0.0) + Math.sin(t * 2.3 + i * 1.4) * 0.05;
+                });
+            }
+            if (this._catEyes) {
+                const ph = (t * 0.42) % 1;
+                const blink = ph > 0.965 ? 0.12 : 1.0;
+                this._catEyes.forEach(e => { if (e.visible) e.scale.y = blink; });
+            }
 
             // Per-variant flavour (kept off model.rotation.x, which the base owns).
             switch (this.variant) {

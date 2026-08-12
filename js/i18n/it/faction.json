@@ -1248,7 +1248,7 @@
           "name": "Inquisitore Interno"
         },
         "scientist": {
-          "name": "Analista di Conformita'"
+          "name": "Analista di Conformità"
         }
       },
       "leaders": {
@@ -2406,6 +2406,75 @@
         },
         "professorfaradayv": {
           "name": "Professor Faraday V"
+        }
+      }
+    },
+    "greywanderers": {
+      "name": "Vagabondi Grigi",
+      "description": "La casta oziosa di Zeta Reticuli: sono venuti per guardare, e guardano ancora. Fotografano tutto, non ne capiscono quasi nulla, e adorano le persone che fotografano.",
+      "troops": {
+        "snapshottourist": {
+          "name": "Turista con Macchina"
+        },
+        "itineraryguide": {
+          "name": "Guida d'Itinerario"
+        },
+        "souvenirhunter": {
+          "name": "Cacciatore di Souvenir"
+        },
+        "shutterwarden": {
+          "name": "Custode dell'Otturatore"
+        }
+      }
+    },
+    "crimsonanalyzers": {
+      "name": "Analizzatori Cremisi",
+      "description": "La casta scientifica, per cui nulla è compreso finché non è stato aperto. Portano katane perché il bisturi è lento e l'universo è grande.",
+      "troops": {
+        "fieldsampler": {
+          "name": "Campionatore da Campo"
+        },
+        "katanasurgeon": {
+          "name": "Chirurgo con Katana"
+        },
+        "specimenwarden": {
+          "name": "Custode dei Campioni"
+        },
+        "chiefvivisector": {
+          "name": "Capo Vivisettore"
+        }
+      }
+    },
+    "palewarpers": {
+      "name": "Distorsori Pallidi",
+      "description": "La casta psionica, che piega le menti e le distanze invece di attraversarle. Parlano di rado, e mai con la bocca.",
+      "troops": {
+        "psinovice": {
+          "name": "Novizio PSI"
+        },
+        "mindfolder": {
+          "name": "Piegamenti"
+        },
+        "spacefolder": {
+          "name": "Piegaspazio"
+        },
+        "warpchoir": {
+          "name": "Coro della Distorsione"
+        }
+      }
+    },
+    "dargosembassy": {
+      "name": "Ambasciata Dargos",
+      "description": "L'intero apparato diplomatico di Titania, gestito come un unico lungo scherzo alle spalle dell'umanità. Non partecipa ad assemblee e non risponde a convocazioni, il che fa parte della gag.",
+      "troops": {
+        "embassyclerk": {
+          "name": "Impiegato d'Ambasciata"
+        },
+        "pranksman": {
+          "name": "Burlone"
+        },
+        "punchlineregent": {
+          "name": "Reggente della Battuta"
         }
       }
     }

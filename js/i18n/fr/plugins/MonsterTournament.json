@@ -17,11 +17,7 @@
   "skillAttack": "Attaquer",
   "skillFinish": "",
   "ui": {
-    "hintCycle": "",
     "bet": "",
-    "hintBet": "",
-    "hintConfirm": "",
-    "keepCurrentBet": "",
-    "hintChoose": ""
+    "keepCurrentBet": ""
   }
 }

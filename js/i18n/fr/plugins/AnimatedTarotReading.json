@@ -4,8 +4,6 @@
     "past": "Passé",
     "present": "Présent",
     "future": "Futur",
-    "instruction": "Clique sur une carte pour révéler sa signification",
-    "complete": "Ta lecture est terminée. Appuie sur ÉCHAP pour quitter.",
     "upright": "À l'endroit",
     "reversed": "À l'envers",
     "npcTitle": "Lecture de tarot pour {name}",
@@ -14,7 +12,6 @@
     "layout": "LE TIRAGE",
     "readingDone": "LA LECTURE EST TERMINÉE",
     "faceDown": "[ face cachée ]",
-    "readingDonePrompt": "La lecture est terminée. Appuie sur OK.",
     "unclearNumbered": "La signification reste obscure... ({n})"
   },
   "cards": {

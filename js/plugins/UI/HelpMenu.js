@@ -60,6 +60,10 @@
 
     const getLocalizedTitle = (topic) => {
         if (!topic) return "";
+        // A chronicle entry is already written in the reader's language (the
+        // Archive rebuilds every record on read), and its title is a date, so
+        // it must never be run through the codex key resolver.
+        if (topic.raw) return topic.title || "";
         const key = topic.title || "";
         if (key && key.includes('.')) {
             const val = _hi18n(key);
@@ -70,6 +74,7 @@
 
     const getLocalizedDescription = (topic) => {
         if (!topic) return "";
+        if (topic.raw) return topic.description || "";
         const key = topic.description || "";
         if (key && key.includes('.')) {
             const val = _hi18n(key);
@@ -230,7 +235,67 @@
         Scene_MenuBase.prototype.terminate.call(this);
     };
 
+    // The world's own timeline, newest first: the century that was generated
+    // before the world was played AND everything that has happened in it
+    // since. It lives in the world folder (history.json), so every savegame of
+    // the world reads the same story, whichever of them wrote a given day.
+    const HISTORY_PAGE_MAX = 500;
+
+    function historyTopics() {
+        const hm = window.HistoryManager;
+        if (!hm || typeof hm.getEvents !== "function") return [];
+        let events = [];
+        try { events = hm.getEvents() || []; } catch (e) { return []; }
+        const sortKey = (rec) => {
+            const parts = String(rec && rec.date || "").split("-");
+            const year = Number(parts[0]) || 0;
+            const month = Number(parts[1]) || 0;
+            const day = Number(parts[2]) || 0;
+            return year * 10000 + month * 100 + day;
+        };
+        return events
+            .filter((rec) => rec && (rec.description || rec.descKey))
+            .slice()
+            .sort((a, b) => sortKey(b) - sortKey(a))
+            .slice(0, HISTORY_PAGE_MAX)
+            .map((rec) => ({
+                raw: true,
+                type: "history",
+                title: String(rec.date || ""),
+                description: (typeof hm.describeRecord === "function"
+                    ? hm.describeRecord(rec)
+                    : String(rec.description || "")),
+                category: rec.category || "",
+            }));
+    }
+
+    // Every disease the world knows how to generate, the same library the
+    // character-creation Archive keeps on its Diseases shelf
+    // (window.DiseaseSystem.all(), Health_DiseaseSystem.js), reachable here
+    // too since this Codex is the only Archive the main menu opens.
+    function diseaseTopics() {
+        const api = window.DiseaseSystem;
+        if (!api || typeof api.all !== "function") return [];
+        let rows = [];
+        try { rows = api.all() || []; } catch (e) { return []; }
+        return rows
+            .filter((d) => d && d.name)
+            .slice()
+            .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+            .map((d) => ({
+                raw: true,
+                type: "disease",
+                title: d.name,
+                description: (typeof api.diseaseDossierHTML === "function"
+                    ? api.diseaseDossierHTML(d.id)
+                    : ""),
+                category: d.category || "",
+            }));
+    }
+
     Scene_Help.prototype.getFilteredTopics = function (category) {
+        if (category === "diseases") return diseaseTopics();
+        if (category === "history") return historyTopics();
         const all = getHelpTopics();
         let filtered = [];
         if (category === "general") {
@@ -260,7 +325,7 @@
         const lang = ConfigManager.language || 'en';
         const useTranslation = lang === 'it';
 
-        const categories = ["general", "lore", "state", "element", "hints"];
+        const categories = ["general", "lore", "state", "element", "diseases", "history", "hints"];
         const activeCategory = categories[this._tabIndex];
         const topics = this.getFilteredTopics(activeCategory);
 
@@ -278,6 +343,8 @@
         const tLore =T('HelpMenu.lore');
         const tStates =T('HelpMenu.states');
         const tElements =T('HelpMenu.elements');
+        const tDiseases =T('HelpMenu.diseases');
+        const tHistory =T('HelpMenu.history');
         const tHints =T('HelpMenu.hints');
         const tSelectTopic =T('HelpMenu.selectATopicToStart');
         const backBtnText =T('HelpMenu.back');
@@ -368,7 +435,9 @@
         if (needsRightPageRedraw) {
             let tabsHTML = "";
             categories.forEach((cat, idx) => {
-                const label = cat === "general" ? tGeneral : cat === "lore" ? tLore : cat === "state" ? tStates : cat === "element" ? tElements : tHints;
+                const label = cat === "general" ? tGeneral : cat === "lore" ? tLore : cat === "state" ? tStates
+                    : cat === "element" ? tElements : cat === "diseases" ? tDiseases
+                    : cat === "history" ? tHistory : tHints;
                 tabsHTML += `<div class="tab" data-idx="${idx}">${label}</div>`;
             });
 
@@ -477,7 +546,7 @@
     };
 
     Scene_Help.prototype.updateUIHelpInput = function () {
-        const categories = ["general", "lore", "state", "element", "hints"];
+        const categories = ["general", "lore", "state", "element", "diseases", "history", "hints"];
         const activeCategory = categories[this._tabIndex];
         const topics = this.getFilteredTopics(activeCategory);
 

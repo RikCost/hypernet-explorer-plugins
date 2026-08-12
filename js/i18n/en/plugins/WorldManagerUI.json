@@ -16,10 +16,8 @@
   "nextYear": "Next year",
   "seed": "Seed",
   "randomizeSeed": "Randomize seed",
-  "worldHistory19002000Is": "World history (1900-2000) is always simulated. NPC backstories and the world clock are advanced to the chosen starting date. The seed makes history, maps and NPCs reproducible.",
   "betaSprites": "Beta sprites",
   "betaSpritesEnable": "Use beta character sprites",
-  "betaSpritesHelp": "Beta sprites are the character sheets outside the original set. They can always be picked by hand in the character grid; enabling them here lets this world hand them to its own people too. This is decided now and cannot be changed later.",
   "betaSpritesOn": "Enabled",
   "betaSpritesOff": "Disabled",
   "createActivate": "CREATE & ACTIVATE",
@@ -60,5 +58,46 @@
     "November",
     "December"
   ],
-  "confirmDelete": "Delete world \"{name}\" and all of its history, NPCs and savegames? This cannot be undone."
+  "confirmDelete": "Delete world \"{name}\" and all of its history, NPCs and savegames? This cannot be undone.",
+  "enemyFloor": "The Squishing has run for a while: roaming enemies start at level {level} here, whatever spawn mode you play on.",
+  "enemyFloorOpen": "The fauna is out of hand: anything from level 1 to {level} roams the whole world.",
+  "enemyFloorCollapse": "The paradox has completed: nothing below level {level} is left, and there is no upper limit at all.",
+  "earthLost": "There is no Earth. Nibiru struck it on 21 December 2012 and the world map went with it: what stands in its orbit is the Omega Tower, and everything that would have taken you out onto the surface takes you there instead.",
+  "startingLevel": "Starting level",
+  "lowerLevel": "Lower level",
+  "raiseLevel": "Raise level",
+  "populationMode": "Alternate timeline",
+  "previousPopulation": "Previous population",
+  "nextPopulation": "Next population",
+  "populationModes": {
+    "normal": "Normal",
+    "goblin": "Goblin mode",
+    "monster": "Monster world",
+    "empty": "Empty world",
+    "zombie": "Zombie apocalypse",
+    "death": "Death world"
+  },
+  "populationNotes": {
+    "normal": "History as it happened. Everyone is who they are and the world is populated as it was written.",
+    "goblin": "Everyone is a goblin. Only goblin faces, busts and archetypes exist, every character you build is one, and goblins are far the commonest thing roaming the map.",
+    "monster": "Nothing human walks here. People, elves and goblins are gone from the crowd, from the wardrobe and from the fauna; the world is populated from every other archetype there is.",
+    "empty": "Nobody is left. No people, no shopkeepers, no news, no plagues, no law and no work; history stops on 1 January 2000, property is worth nothing, and the cities are going back to green.",
+    "zombie": "The dead got up. Nine people in ten are not people any more: where somebody would have been standing there is an undead thing instead, and it is still standing where they were.",
+    "death": "Nobody, and nothing, is left. Everything an empty world already lacks is gone here too, and on top of it every roaming creature is gone as well: no monster, no beast, nothing waiting in a dungeon, on a procedural map or on a hand-built one alike. Whatever wildlife once stood there is silence now."
+  },
+  "populationLocked": "Chosen once, at creation: a world cannot be repopulated later.",
+  "magicalLevel": "Magic",
+  "previousMagic": "Previous magic level",
+  "nextMagic": "Next magic level",
+  "magicalLevels": {
+    "normal": "Normal",
+    "severed": "Severed magic",
+    "unbound": "Unbound magic"
+  },
+  "magicalNotes": {
+    "normal": "",
+    "severed": "On the night of 31 December 2000 the three pillars of the Mages' Guild performed the Ritual of Solomon, and Thatcher's traditionalists carried the vote: the source code of magic was rewritten to keep the whole of it inside the Guild, and outside those few halls it simply never happened. Nothing magical exists anywhere: no spell, no charm, no enchanted blade, no creature that runs on it, no face that only a spell could wear. Shops do not stock it, crates do not hold it, and there is no MP bar because there is nothing to spend it on. What your party is given at creation is theirs regardless.",
+    "unbound": "On the night of 31 December 2000 the three pillars of the Mages' Guild performed the Ritual of Solomon, and Crowley's side carried it: rather than narrow the flow they opened it all the way, unstoppering every leyline at once until nothing at all was left ordinary. Every weapon is enchanted, every illness is a curse, and every creature that walks is a thing that should not. Shops sell nothing mundane and no plain steel is ever found. What your party is given at creation is theirs regardless."
+  },
+  "magicalLocked": "Chosen once, at creation, and independent of the timeline: any combination of the two is a world you can make."
 }

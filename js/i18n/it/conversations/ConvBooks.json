@@ -1518,7 +1518,17 @@
     "studio cartografico",
     "digest cospirazionista",
     "rifacimento popolare",
-    "album commemorativo"
+    "album commemorativo",
+    "cronaca",
+    "monografia",
+    "resoconto di un testimone oculare",
+    "rapporto sul campo",
+    "storia orale",
+    "trascrizione censurata",
+    "confutazione accademica",
+    "polemica messa al bando",
+    "raccolta di interviste",
+    "perizia militare"
   ],
   "historyBookNotes": [
     "rilegato in cuoio screpolato",
@@ -1544,7 +1554,9 @@
     "ancora proibito in tre nazioni",
     "ultima copia superstite",
     "ristampato dopo l'apertura degli archivi",
-    "con i margini pieni di correzioni"
+    "con i margini pieni di correzioni",
+    "stampato senza marchio editoriale",
+    "con l'indice deliberatamente sbagliato"
   ],
   "historyBookTitleTemplates": [
     "Le Cronache del {year}",

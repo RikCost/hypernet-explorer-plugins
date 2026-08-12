@@ -419,6 +419,40 @@
     return _worldTileRoadIndex.get(progressiveId) || null;
   }
 
+  // ===== BIOSIGN FEATURES (alien biomes) =====
+  //
+  // An alien biome declares its tentacles, tentacled rock and crystal tentacles
+  // with a `lifeSign` on the feature (js/db/WorldGen/AlienBiomes.json). They are
+  // not scenery every world of that type carries: they are the thing a scan
+  // reads as a WEAK life sign, so they only grow where the planet the party
+  // landed on actually shows one (GalaxySim.currentAlienGrowsBiosigns; a world
+  // with a full biosphere counts). Every consumer of a biome's features goes
+  // through getBiomeByName, so stripping them here is the whole rule: the
+  // scatter passes, the adjacent-biome blending and the borrowed-terrain
+  // fallbacks all see the same list.
+  //
+  // The stripped copy is memoised on the biome record itself rather than in
+  // biomeNameCache, because which of the two lists is right changes with the
+  // planet under the party's feet and not with the biome's name.
+  function _biosignsAllowed() {
+    const GS = window.GalaxySim;
+    if (!GS || typeof GS.currentAlienGrowsBiosigns !== "function") return true;
+    return GS.currentAlienGrowsBiosigns();
+  }
+
+  const _biosignFreeBiomes = new WeakMap();
+  function _withoutBiosigns(biome) {
+    if (!biome || !Array.isArray(biome.features)) return biome;
+    if (!_biosignFreeBiomes.has(biome)) {
+      const kept = biome.features.filter((f) => !(f && typeof f === "object" && f.lifeSign));
+      // Nothing to strip: the biome is already its own barren version.
+      _biosignFreeBiomes.set(biome, kept.length === biome.features.length
+        ? biome
+        : Object.assign({}, biome, { features: kept }));
+    }
+    return _biosignFreeBiomes.get(biome);
+  }
+
   /**
    * Get biome object by name (with caching)
    */
@@ -427,7 +461,9 @@
       Cache.biomeNameCache[biomeName] =
         Biomes.find((b) => b.name === biomeName) || null;
     }
-    return Cache.biomeNameCache[biomeName];
+    const biome = Cache.biomeNameCache[biomeName];
+    if (!biome || _biosignsAllowed()) return biome;
+    return _withoutBiosigns(biome);
   }
 
   // ===== TERRAIN FEATURE PARSING =====
@@ -1762,6 +1798,16 @@
     // Track which positions have mountain ceilings for wall placement
     const mountainPositions = [];
 
+    // Authoritative "is this cell mountain" record, kept separately from the
+    // tile ids painted onto it. The Ceiling tile is commonly 0 for a
+    // tileset that never declared one (bare void), so any code downstream
+    // that wants to know "is this mountain" can't just compare against
+    // mountainCeilingTile/mountainWallTile - a 0 id would also match every
+    // untouched/blank cell that has nothing to do with the mountain pass.
+    // This mask is set true only where the pass below actually places
+    // ceiling or wall, so it stays correct however those tiles are numbered.
+    const mountainMask = new Array(width * height).fill(false);
+
     // First pass: place mountain ceilings (INVERT the cellular automata result)
     // CA walls (false) become mountains (ceiling), CA floors (true) become valleys (base terrain)
     for (let y = 0; y < height; y++) {
@@ -1770,6 +1816,7 @@
         if (!grid[y][x]) {
           const idx = calculateIndex(x, y, 0, width, height);
           mapData[idx] = mountainCeilingTile;
+          mountainMask[y * width + x] = true;
           mountainPositions.push({ x, y });
         }
       }
@@ -1856,6 +1903,7 @@
             // Walls can overwrite base terrain to ensure ceiling always has support
             if (currentTile !== mountainCeilingTile) {
               mapData[idx] = mountainWallTile;
+              mountainMask[wallY * width + pos.x] = true;
               wallPlaced = true;
             }
           }
@@ -1882,6 +1930,7 @@
           const idx = calculateIndex(pos.x, wallY, 0, width, height);
           if (mapData[idx] !== mountainCeilingTile) {
             mapData[idx] = mountainWallTile;
+            mountainMask[wallY * width + pos.x] = true;
           }
         }
       }
@@ -1925,6 +1974,11 @@
         }
       }
     }
+
+    // Expose the authoritative mountain/ceiling record so callers (feature
+    // scattering, prefab placement) can test "is this cell mountain" by
+    // position instead of by tile id.
+    mapData.mountainMask = mountainMask;
 
     return mapData;
   }

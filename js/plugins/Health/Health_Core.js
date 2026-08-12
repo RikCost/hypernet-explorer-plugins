@@ -130,7 +130,7 @@
   let i18nLoaded = false;
 
   const loadAllI18n = async () => {
-    const categories = ["enemyArchetypes", "equip"];
+    const categories = ["enemyArchetypes", "objectArchetypes", "equip"];
     const lang = ConfigManager.language || "en";
     
     const loadPromises = categories.map(async (category) => {
@@ -161,6 +161,12 @@
     
     if (i18nData.enemyArchetypes) {
       const localized = resolveI18nPath(key, i18nData.enemyArchetypes);
+      if (localized) return localized;
+    }
+    // Object archetypes are a separate list with its own i18n file, but their
+    // parts are named through the same keys, so one resolver answers for both.
+    if (i18nData.objectArchetypes) {
+      const localized = resolveI18nPath(key, i18nData.objectArchetypes);
       if (localized) return localized;
     }
     return key;
@@ -323,6 +329,129 @@
     for (const actor of $gameParty.members()) ensureBodyPartSkills(actor);
   }
 
+  // Every skill the actor owes to their anatomy: what their body parts grant
+  // plus what their installed augments grant. Damaged parts count, because a
+  // broken limb is still attached and its skill is still known; only a part
+  // that leaves the body (blood and oil) takes its skill with it.
+  function anatomySkillIds(actor) {
+    const ids = new Set();
+    if (!actor || !actor._bodyParts) return ids;
+    for (const partKey in actor._bodyParts) {
+      for (const id of getPartSkillIds(actor._bodyParts[partKey], partKey)) ids.add(id);
+    }
+    const ProstheticTypes = window.Health ? window.Health.ProstheticTypes : null;
+    if (ProstheticTypes && actor._prosthetics) {
+      for (const partKey in actor._prosthetics) {
+        const prosthetic = ProstheticTypes[actor._prosthetics[partKey]];
+        if (prosthetic) for (const id of normalizeSkillIds(prosthetic.skill)) ids.add(id);
+      }
+    }
+    return ids;
+  }
+
+  //---------------------------------------------------------------------------
+  // Augments that change how fast a need drains
+  //---------------------------------------------------------------------------
+  // An augment may carry a `needs` block in ProstheticTypes.json, one entry per
+  // need (hunger / sleep / hygiene / social / leisure), whose value multiplies
+  // that need's drain: 1 is untouched, 0.6 is a slower burn, 0 never depletes
+  // at all, and a NEGATIVE value turns the drain around so the need refills
+  // (a skin that cleans itself). Several augments multiply together, and a
+  // regenerating one wins the sign, so a self-cleaning dermis still works with
+  // a scrubber fitted alongside it.
+  function needDrainMultiplier(actor, needKey) {
+    const ProstheticTypes = window.Health ? window.Health.ProstheticTypes : null;
+    if (!ProstheticTypes || !actor || !actor._prosthetics) return 1;
+    let mult = 1;
+    for (const partKey in actor._prosthetics) {
+      const prosthetic = ProstheticTypes[actor._prosthetics[partKey]];
+      const value = prosthetic && prosthetic.needs ? prosthetic.needs[needKey] : undefined;
+      if (typeof value === "number") mult *= value;
+    }
+    return mult;
+  }
+
+  //---------------------------------------------------------------------------
+  // Which augments a socket takes (name matching)
+  //---------------------------------------------------------------------------
+  // ProstheticCompatibility.json cannot name all 221 part keys the archetypes
+  // grow, and should not have to: a wing is a wing whether the body calls it
+  // LEFT_WING, WINGS or RIGHT_PROP. A part key is split into tokens and every
+  // general part those tokens name contributes its list, so ARM_CANNON takes
+  // both arm implants and gun mounts and TAIL_FIN takes both tail and fin ones.
+  // An exact entry for the key itself (LEFT_EYE, TORSO, ...) is merged on top.
+  // i18n-ignore-start: part-key tokens, matched against data, never shown
+  const PART_FAMILY_TOKENS = {
+    HEAD: ["HEAD", "SKULL", "CROWN", "FACE", "HELMET", "HAT", "CAP", "VISAGE"],
+    BRAIN: ["BRAIN", "CEREBRUM", "MIND"],
+    EYE: ["EYE", "EYES", "OCULUS", "OPTICS", "SIGHT"],
+    EAR: ["EAR", "EARS"],
+    NOSE: ["NOSE", "SNOUT", "NARES", "TRUNK"],
+    MOUTH: ["MOUTH", "MAW", "BEAK", "TONGUE", "JAW", "JAWS", "MANDIBLE", "MANDIBLES", "LIPS", "VOCAL", "PROBOSCIS"],
+    TEETH: ["TEETH", "TOOTH", "FANG", "FANGS", "TUSK", "TUSKS"],
+    NECK: ["NECK", "COLLAR", "THROAT"],
+    TORSO: ["TORSO", "BODY", "CHEST", "CHASSIS", "THORAX", "ABDOMEN", "CEPHALOTHORAX", "MASS", "FORM", "SEGMENT", "PILE", "BASE", "TRUNK", "HULL", "FRAME"],
+    SHELL: ["SHELL", "CARAPACE", "PLATE", "PLATES", "PLATING", "CHESTPLATE", "PAULDRON", "GREAVES", "ARMOR", "MANTLE", "MEMBRANE", "RIBCAGE", "SPINE", "PELVIS", "SCALE", "SCALES", "HIDE", "ROBE", "LID", "SHIELD"],
+    HEART: ["HEART"],
+    LUNG: ["LUNG", "LUNGS", "GILL", "GILLS", "BELLOWS"],
+    VISCERA: ["LIVER", "STOMACH", "SPLEEN", "INTESTINE", "INTESTINES", "KIDNEY", "KIDNEYS", "PANCREAS", "GUT", "BOWEL", "VEINS", "ENTRAILS"],
+    GLAND: ["GLAND", "GLANDS", "SAC", "SACS", "BLADDER", "POUCH", "ORGAN", "RESERVOIR"],
+    ARM: ["ARM", "ARMS", "FOREARM", "APPENDAGE", "LIMB", "LIMBS", "PSEUDOPOD", "SHOULDER", "ELBOW"],
+    HAND: ["HAND", "HANDS", "FINGER", "FINGERS", "CLAW", "CLAWS", "PINCER", "PINCERS", "TALON", "TALONS", "DIGIT", "DIGITS", "GRIP"],
+    LEG: ["LEG", "LEGS", "THIGH", "SHIN", "PAW", "PAWS", "HAUNCH", "JOINT", "JOINTS", "KNEE"],
+    FOOT: ["FOOT", "FEET", "TOE", "TOES", "HOOF", "HOOVES", "SOLE", "SOLES"],
+    WING: ["WING", "WINGS", "PINION", "PINIONS", "FEATHER", "FEATHERS", "PROP", "ROTOR"],
+    TAIL: ["TAIL", "STINGER", "STINGERS", "FLAGELLUM", "SPINNERET", "SPINNERETS", "RUDDER"],
+    TENTACLE: ["TENTACLE", "TENTACLES", "TENDRIL", "TENDRILS", "VINE", "VINES", "BRANCH", "ROOT", "ROOTS", "STALK", "STEM", "FEELER"],
+    HORN: ["HORN", "HORNS", "SPIKE", "SPIKES", "SPINES", "SPIRE", "ANTLER", "ANTLERS", "THORN", "THORNS", "CREST", "BARB"],
+    FIN: ["FIN", "FINS", "FLIPPER", "FLIPPERS", "FLUKE"],
+    CORE: ["CORE", "NUCLEUS", "GEM", "CRYSTAL", "CRYSTALS", "HALO", "WISP", "FOCUS", "REACTOR", "ENGINE", "DRIVE", "DRIVES", "BATTERY", "CELL", "STITCH", "POWER"],
+    WEAPON_MOUNT: ["CANNON", "BARREL", "GUN", "AMMO", "TURRET", "BOW", "LAUNCHER", "MUZZLE"],
+    WHEEL: ["WHEEL", "WHEELS", "TREAD", "TREADS", "TRACK", "TRACKS", "ROTATION", "MECH", "GEAR", "GEARS", "AXLE"],
+    SENSOR: ["SENSOR", "SENSORS", "ANTENNA", "ANTENNAE", "ARRAY", "RADAR", "SCANNER", "DISH", "WHISKERS"],
+    HAIR: ["HAIR", "BEARD", "MANE", "FUR", "FRILL", "FLOWER", "PETAL", "PETALS", "BLOOM", "MOSS"],
+    GENITALS: ["GENITALS", "GENITAL", "OVIPOSITOR", "CLOACA"]
+  };
+  // i18n-ignore-end
+
+  let _familyByToken = null;
+  function familyByToken() {
+    if (_familyByToken) return _familyByToken;
+    _familyByToken = {};
+    for (const family in PART_FAMILY_TOKENS) {
+      for (const token of PART_FAMILY_TOKENS[family]) {
+        if (!_familyByToken[token]) _familyByToken[token] = [];
+        _familyByToken[token].push(family);
+      }
+    }
+    return _familyByToken;
+  }
+
+  // The general parts a concrete part key names, e.g. MID_REAR_LEFT_LEG -> LEG.
+  function partFamilies(partKey) {
+    const map = familyByToken();
+    const out = [];
+    for (const token of String(partKey || "").toUpperCase().split(/[^A-Z]+/)) {
+      for (const family of (map[token] || [])) {
+        if (!out.includes(family)) out.push(family);
+      }
+    }
+    return out;
+  }
+
+  // Every augment key this socket accepts: its own entry plus its families'.
+  function implantsForPart(partKey) {
+    const table = window.Health ? window.Health.ProstheticCompatibility : null;
+    if (!table) return [];
+    const out = [];
+    const add = (list) => {
+      for (const key of (list || [])) if (key && !out.includes(key)) out.push(key);
+    };
+    add(table[String(partKey || "").toUpperCase()]);
+    for (const family of partFamilies(partKey)) add(table[family]);
+    return out;
+  }
+
   //---------------------------------------------------------------------------
   // Archetype identity and gestation
   //---------------------------------------------------------------------------
@@ -353,6 +482,34 @@
     if (!key) return "";
     const text = getArchetypeText(
       "enemyArchetypes." + String(key).toLowerCase() + ".name"
+    );
+    return text && !text.includes(".") ? text : String(key);
+  }
+
+  //---------------------------------------------------------------------------
+  // Object archetypes
+  //---------------------------------------------------------------------------
+  // ObjectArchetypes.json is a SEPARATE list from EnemyArchetypes.json and is
+  // deliberately never merged into it: a chair has no class, no creature class,
+  // no gestation and no anatomy skills, so it is never offered by the creature
+  // archetype selector nor dealt to anything that breeds. Its parts carry HP
+  // alone; whatever the object can do belongs to the archetype's own `skills`.
+  function getObjectArchetypes() {
+    return (window.Health && window.Health.ObjectArchetypes) || {};
+  }
+
+  function getObjectArchetypeKeys() {
+    return Object.keys(getObjectArchetypes());
+  }
+
+  function getObjectArchetype(key) {
+    return getObjectArchetypes()[key] || null;
+  }
+
+  function getObjectArchetypeDisplayName(key) {
+    if (!key) return "";
+    const text = getArchetypeText(
+      "objectArchetypes." + String(key).toLowerCase() + ".name"
     );
     return text && !text.includes(".") ? text : String(key);
   }
@@ -532,6 +689,30 @@
     return selected;
   }
 
+  // Take the augment installed on a part off with the part. Returns the name of
+  // what was lost, so the caller can report it, or "" when the socket was bare.
+  function removeImplantWithPart(actor, partKey) {
+    if (!actor._prosthetics || !actor._prosthetics[partKey]) return "";
+    const prostheticKey = actor._prosthetics[partKey];
+    const ProstheticTypes = window.Health ? window.Health.ProstheticTypes : null;
+    const prosthetic = ProstheticTypes ? ProstheticTypes[prostheticKey] : null;
+    let name = "";
+    if (prosthetic) {
+      name = ConfigManager.language === "it" ? prosthetic.name_it : prosthetic.name_en;
+      if (prosthetic.effects) {
+        for (const paramId in prosthetic.effects) {
+          if (actor._prostheticEffects && actor._prostheticEffects[paramId]) {
+            actor._prostheticEffects[paramId] -= prosthetic.effects[paramId];
+            if (actor._prostheticEffects[paramId] === 0) delete actor._prostheticEffects[paramId];
+          }
+        }
+      }
+      for (const sid of normalizeSkillIds(prosthetic.skill)) actor.forgetSkill(sid);
+    }
+    delete actor._prosthetics[partKey];
+    return name || "";
+  }
+
   // Remove a body part entirely from the actor and apply a permanent stat debuff
   function removeBodyPartOnZeroHp(actor, partKey) {
     var part = actor._bodyParts[partKey];
@@ -596,24 +777,11 @@
       actor.forgetSkill(sid);
     }
 
-    // Remove any installed implant (prosthetic) on this part
-    if (actor._prosthetics && actor._prosthetics[partKey]) {
-      const prostheticKey = actor._prosthetics[partKey];
-      const ProstheticTypes = window.Health ? window.Health.ProstheticTypes : null;
-      const prosthetic = ProstheticTypes ? ProstheticTypes[prostheticKey] : null;
-      if (prosthetic) {
-        if (prosthetic.effects) {
-          for (const paramId in prosthetic.effects) {
-            if (actor._prostheticEffects && actor._prostheticEffects[paramId]) {
-              actor._prostheticEffects[paramId] -= prosthetic.effects[paramId];
-              if (actor._prostheticEffects[paramId] === 0) delete actor._prostheticEffects[paramId];
-            }
-          }
-        }
-        if (prosthetic.skill) actor.forgetSkill(prosthetic.skill);
-      }
-      delete actor._prosthetics[partKey];
-    }
+    // An augment goes with the part it was installed on: the limb is off the
+    // body (blood and oil), so its stat bonus, its skills and the record itself
+    // all leave with it. A merely broken part keeps everything, which is why
+    // this lives here and not in handleDamagedBodyPart.
+    var lostImplant = removeImplantWithPart(actor, partKey);
 
     // Delete the body part from the actor's body parts map
     delete actor._bodyParts[partKey];
@@ -622,6 +790,18 @@
     // Display a message that the limb/organ was destroyed/removed
     var purplePartName2 = "\\c[25]" + part.name + "\\c[0]";
     var msg = T('HealthCore.partDestroyed', { actor: actor.name(), part: purplePartName2 });
+    reportPartLoss(msg);
+    if (lostImplant) {
+      reportPartLoss(T('HealthCore.augmentLost', {
+        actor: actor.name(),
+        augment: "\\c[25]" + lostImplant + "\\c[0]"
+      }));
+    }
+  }
+
+  // Losing a part is announced in the battle log mid-fight and in a message box
+  // otherwise; an augment torn off with it is announced the same way.
+  function reportPartLoss(msg) {
     if ($gameParty.inBattle() && BattleManager._logWindow) {
       BattleManager._logWindow.push("addText", msg);
     } else {
@@ -683,6 +863,32 @@
 
       return appliedDamage;
     }
+  }
+
+  // A wound dealt outside a fight: a field surgery that went wrong. Unlike a
+  // blow in battle it is not blunted by the "hold limbs at 1 HP while the body
+  // is above 60% health" rule, since the knife is already inside. What happens
+  // when the part reaches zero is still Blood and Oil's decision: on every
+  // other difficulty it is ruined but attached, and keeps its augment.
+  // Returns the damage actually dealt.
+  function injureBodyPart(actor, partKey, amount) {
+    const part = actor && actor._bodyParts ? actor._bodyParts[partKey] : null;
+    if (!part || part.damaged) return 0;
+    const applied = Math.max(0, Math.min(part.currentHp, Math.round(amount || 0)));
+    if (applied <= 0) return 0;
+    part.currentHp -= applied;
+    if (part.currentHp > 0) {
+      actor.refresh();
+      return applied;
+    }
+    part.damaged = true;
+    handleDamagedBodyPart(actor, partKey);
+    if ($gameSystem && $gameSystem._bloodAndOilMode) {
+      // Severs the part (with its augment), or kills outright on a vital one.
+      removeBodyPartOnZeroHp(actor, partKey);
+    }
+    actor.refresh();
+    return applied;
   }
 
   // Apply stat effect for a fully damaged part
@@ -1676,10 +1882,26 @@
   window.HealthCore.getPartSkillIds = getPartSkillIds;
   window.HealthCore.ensureBodyPartSkills = ensureBodyPartSkills;
   window.HealthCore.ensureAllPartyBodyPartSkills = ensureAllPartyBodyPartSkills;
+  // Every skill the anatomy owes: read by CategorizedBattleSkills, which never
+  // benches one (a body does not put its own claws in storage).
+  window.HealthCore.anatomySkillIds = anatomySkillIds;
+  // Socket matching by part name, read by the prosthetic shop.
+  window.HealthCore.partFamilies = partFamilies;
+  window.HealthCore.implantsForPart = implantsForPart;
+  window.HealthCore.removeImplantWithPart = removeImplantWithPart;
+  // Wounds dealt outside battle (field surgery).
+  window.HealthCore.injureBodyPart = injureBodyPart;
+  // How fast a need drains with what is fitted (TimeDateSystem reads it).
+  window.HealthCore.needDrainMultiplier = needDrainMultiplier;
   // Archetype identity + gestation, read by the biologic simulation and the
   // status screen.
   window.HealthCore.getActorArchetypeKeys = getActorArchetypeKeys;
   window.HealthCore.getArchetypeDisplayName = getArchetypeDisplayName;
+  // The inanimate list, kept apart from the creature one on purpose.
+  window.HealthCore.getObjectArchetypes = getObjectArchetypes;
+  window.HealthCore.getObjectArchetypeKeys = getObjectArchetypeKeys;
+  window.HealthCore.getObjectArchetype = getObjectArchetype;
+  window.HealthCore.getObjectArchetypeDisplayName = getObjectArchetypeDisplayName;
   window.HealthCore.getArchetypePregnancyDuration = getArchetypePregnancyDuration;
   window.HealthCore.getPregnancyDuration = getPregnancyDuration;
 

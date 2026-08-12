@@ -1775,9 +1775,7 @@
                 this._world.fireGates();
                 this._se('Buzzer1', 70, 60);
             }
-            this._status = this._interior
-                ? 'MACHINE ARMED - TURN AND PADDLE (W) WHEN IT COMES'
-                : 'SET APPROACHING - TURN AND PADDLE (W)';
+            this._status = this._interior ? 'MACHINE ARMED' : 'SET APPROACHING';
             this.showBanner(`WAVE ${this._waveNo} / ${WAVES_PER_HEAT}`, '#fff2c6', 1.4);
         }
 
@@ -1958,9 +1956,8 @@
                 this._se('Water3', 120, 55);
             }
             this._status = ready
-                ? 'NOW! PRESS SPACE TO POP UP'
-                : (this._interior ? 'MACHINE ARMED - PADDLE (W) WHEN IT COMES'
-                                  : 'SET APPROACHING - PADDLE (W)');
+                ? 'NOW!'
+                : (this._interior ? 'MACHINE ARMED' : 'SET APPROACHING');
 
             if (Input.isTriggered('ok')) this.popUp();
             else if (d < -6) this._missWave('THE WAVE WENT WITHOUT YOU');
@@ -2218,7 +2215,6 @@
             this._hudText(bmp, `TOTAL ${this._score}`, cx, cy + 34, cw, 'center', D.ink, 8);
             this._hudText(bmp, `BEST WAVE ${this._best}   PAR ${PAR_PER_WAVE * WAVES_PER_HEAT}`,
                 cx, cy + 44, cw, 'center', D.dim, 8);
-            this._hudText(bmp, 'PRESS OK TO PADDLE IN', cx, cy + 58, cw, 'center', D.dim, 8);
         }
 
         //--- ASCII ------------------------------------------------------------

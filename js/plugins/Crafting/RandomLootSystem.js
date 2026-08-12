@@ -103,11 +103,19 @@
         };
     }
 
-    // Maximum dungeon floor reached (also feeds the rarity equation)
+    // How far into the Omega Tower the party has been, counted in floors. The
+    // shaft runs both ways from the ground: a hundred floors climbed and
+    // ninety-two descended are the same kind of achievement, so the deepest
+    // lower floor reached (window.DungeonFloors) is added to the highest upper
+    // one and the pair feeds the rarity equation together.
     function getMaxDungeonFloor() {
-        return (typeof $gameVariables !== 'undefined' && $gameVariables)
+        const climbed = (typeof $gameVariables !== 'undefined' && $gameVariables)
             ? ($gameVariables.value(MAX_FLOOR_VARIABLE_ID) || 0)
             : 0;
+        const descended = (window.DungeonFloors && typeof window.DungeonFloors.depthReached === 'function')
+            ? (window.DungeonFloors.depthReached() || 0)
+            : 0;
+        return climbed + descended;
     }
 
     // 10-level brackets: Lv 1-10 -> 0, 11-20 -> 1, ... Higher brackets unlock rarer tiers
@@ -203,10 +211,17 @@
 
         // Allow optional whitespace inside the tag (e.g. "<category: BodyPart >")
         // so spaced notes cannot bypass the exclusion.
-        const EXCLUDED = [/<category:\s*BodyPart\s*>/i, /<category:\s*Alchemistry\s*>/i, /<category:\s*Crafting\s*>/i];
+        // A sealed vial of rabies is contraband somebody bottled on purpose,
+        // not something a barrel coughs up, so the Diseases shelf is out of
+        // the loot pool with the reagents and the offal.
+        const EXCLUDED = [/<category:\s*BodyPart\s*>/i, /<category:\s*Alchemistry\s*>/i, /<category:\s*Crafting\s*>/i, /<category:\s*Diseases\s*>/i];
         const validItems = itemList.filter(item =>
             item &&
             isSelectableLootItem(item) &&
+            // Nothing of the wrong nature is ever found either: a severed
+            // world turns up no charms in a crate and an unbound one turns up
+            // nothing ordinary (window.MagicNature).
+            (!window.MagicNature || window.MagicNature.allowsData(item)) &&
             !(item.note && EXCLUDED.some(re => re.test(item.note))));
         if (validItems.length === 0) return null;
 

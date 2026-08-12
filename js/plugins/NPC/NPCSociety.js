@@ -535,12 +535,91 @@
         if (wealthRoll < this._wealthCumulative[i]) { wealthTierBase = i; break; }
       }
 
-      // 3. Ideology (picked early to bias trait selection)
-      const ideologyIndex = rng.nextInt(0, ideologies.length);
-      const ideology = ideologies[ideologyIndex];
+      // 3. Seed-driven visual identity + class assignment from NPCs.json
+      //     Only applies when the world seed differs from the canon default (19002001).
+      let spriteKey = null;
+      let bustIndex = 0;
+      let npcGender = 0;
+      let npcArchetype = "Humanoid"; // i18n-ignore: EnemyArchetypes.json id
+      let assignedClassId = classId;   // default: keep the class from the event note
+      if (worldSeed !== 19002001 && DataLoader.npcData) {
+        // The face is dealt through the catalogue rather than out of a flat
+        // list: an alien sheet is never in the ordinary pool and is drawn on a
+        // share of the same seeded float, so who is walking about depends on
+        // where this is (a town street, a train carriage, another world).
+        const rngV = new SeededRng(nameToSeed(eventName + "_vis" + worldSeed));
+        spriteKey = window.SpriteCatalog
+          ? window.SpriteCatalog.pickNpcKey(rngV.next())
+          : null;
+        if (!spriteKey) {
+          const fallback = Object.keys(DataLoader.npcData).filter(k => DataLoader.npcData[k].npc === true);
+          spriteKey = fallback.length ? fallback[rngV.nextInt(0, fallback.length)] : null;
+        }
+        if (spriteKey) {
+          const entry = DataLoader.npcData[spriteKey];
+          bustIndex = rngV.nextInt(0, (entry.busts || ["7"]).length);
+          npcGender = entry.Gender || 0;
+          npcArchetype = entry.Archetype || "Humanoid"; // i18n-ignore: EnemyArchetypes.json id
+
+          // Assign class from the entry's classes[] pool
+          const classPool = Array.isArray(entry.classes) ? entry.classes : [];
+          if (classPool.length > 0) {
+            // Pick a deterministic random class from the pool
+            assignedClassId = classPool[rngV.nextInt(0, classPool.length)];
+          }
+          // If classPool is empty, assignedClassId stays as the event-note classId
+        }
+      }
+
+      // 4. Ideology (picked early to bias trait selection). An alien is only
+      //    ever dealt an alien creed and a citizen is never dealt one, which is
+      //    what the `alien` flag in Ideology.json is there to say. Which alien
+      //    creed is mostly settled by the caste: a Crimson Analyzer believes in
+      //    vivisection because that is what a Crimson Analyzer is. A quarter of
+      //    Zeta Reticulans hold one of the other off-world creeds instead, and a
+      //    Dargos always, without exception, is here to troll humans.
+      const alienIdentity = window.AlienOrigins
+        ? window.AlienOrigins.identify(spriteKey, eventName) : null;
+      const isAlien = !!alienIdentity;
+      const ideologyPool = ideologies
+        .map((ideo, index) => ({ ideo, index }))
+        .filter(({ ideo }) => !!ideo.alien === isAlien);
+      let ideologyPick = null;
+      if (alienIdentity && (alienIdentity.caste === "dargos" || rng.next() >= 0.25)) {
+        ideologyPick = ideologyPool.find(({ ideo }) => ideo.id === alienIdentity.ideologyId) || null;
+      }
+      // A creed is not drawn flat out of the roster: the `axes` block each one
+      // carries says where it stands on money (econ, -100 collectivist ..
+      // +100 free-market), and somebody who has none rarely holds the creed of
+      // somebody who has everything. The wealth tier rolled in step 2 becomes a
+      // position on that axis and every creed is weighted by how far it sits
+      // from it, gently (a destitute financier is unlikely, not impossible).
+      // The other four axes stay free, so the roster's range is untouched.
+      if (!ideologyPick) {
+        if (!ideologyPool.length) {
+          ideologyPick = { ideo: ideologies[0], index: 0 };
+        } else {
+          const wealthEcon = (wealthTierBase - 2) * 35; // tier 0..4 -> -70..+70
+          let total = 0;
+          const weights = ideologyPool.map(({ ideo }) => {
+            const econ = ideo.axes ? (ideo.axes.econ ?? 0) : 0;
+            const w = 1 / (1 + Math.abs(econ - wealthEcon) / 70);
+            total += w;
+            return w;
+          });
+          let roll = rng.next() * total;
+          ideologyPick = ideologyPool[ideologyPool.length - 1];
+          for (let i = 0; i < ideologyPool.length; i++) {
+            roll -= weights[i];
+            if (roll <= 0) { ideologyPick = ideologyPool[i]; break; }
+          }
+        }
+      }
+      const ideologyIndex = ideologyPick.index;
+      const ideology = ideologyPick.ideo;
       const ideologyTraitIds = (ideology && Array.isArray(ideology.traits)) ? ideology.traits : [];
 
-      // 4. Traits (exactly 4: up to 2 from ideology pool, rest from general pool, incompatible[] respected)
+      // 5. Traits (exactly 4: up to 2 from ideology pool, rest from general pool, incompatible[] respected)
       const traitIds = [];
       const _compatible = (id) => {
         const trait = traits.find(t => t.id === id);
@@ -570,7 +649,7 @@
         }
       }
 
-      // 4. Skills (exactly 4, outside class learning list, no Basic, balanced by MP/TP cost to party level)
+      // 6. Skills (exactly 4, outside class learning list, no Basic, balanced by MP/TP cost to party level)
       const preferredCats = DataLoader.getClassSkillCategories(classId) || [];
       const classLearnings = _getClassLearnings(classId);
       const partyLevel = (function() {
@@ -594,7 +673,7 @@
       scoredSkills.sort((a, b) => b.score - a.score);
       const skillIds = scoredSkills.slice(0, 4).map(x => x.id);
 
-      // 5. Items (2–5, wealth-biased categories)
+      // 7. Items (2–5, wealth-biased categories)
       const numItems = rng.nextInt(0, 4) + 2;
       const itemCats = this._wealthItemCats[Math.min(wealthTierBase, 4)].map(c => c.toLowerCase());
       const scoredItems = _getValidItems().map(i => {
@@ -604,11 +683,17 @@
       scoredItems.sort((a, b) => b.score - a.score);
       const itemIds = scoredItems.slice(0, numItems).map(x => x.id);
 
-      // 6. Faction (~4% chance)
-      const factionIndex = (rng.next() < SocConfig.FACTION_CHANCE && factions.length > 0)
-        ? rng.nextInt(0, factions.length) : -1;
+      // 8. Faction (~4% chance). An alien belongs to their own caste's faction
+      //    outright: the castes ARE the factions out there, so there is nothing
+      //    to roll and no Earth banner they could be standing under.
+      const alienFactionIndex = alienIdentity
+        ? factions.findIndex(f => f && f.id === alienIdentity.factionId) : -1;
+      const factionIndex = alienFactionIndex >= 0
+        ? alienFactionIndex
+        : ((rng.next() < SocConfig.FACTION_CHANCE && factions.length > 0)
+          ? rng.nextInt(0, factions.length) : -1);
 
-      // 7. Morality score derived from trait names (-100 to +100)
+      // 9. Morality score derived from trait names (-100 to +100)
       const POSITIVE_KEYWORDS = ["honest", "loyal", "kind", "brave", "generous", "compassion", "noble", "justice"];
       const NEGATIVE_KEYWORDS = ["thief", "greedy", "cruel", "anarchist", "deceptive", "ruthless", "corrupt", "violent"];
       let moralityScore = 0;
@@ -620,12 +705,12 @@
       }
       moralityScore = Math.max(-100, Math.min(100, moralityScore));
 
-      // 8. Work schedule derived from personality (shift hours)
+      // 10. Work schedule derived from personality (shift hours)
       const workShifts = [[7,15],[8,16],[9,17],[10,18],[14,22],[20,4]];
       const shiftIdx = rng.nextInt(0, workShifts.length);
       const [workStart, workEnd] = workShifts[shiftIdx];
 
-      // 9. Starting money based on wealth tier
+      // 11. Starting money based on wealth tier
       const wealthGoldBase = [5000, 50000, 500000, 5000000, 50000000];
       const money = Math.floor(wealthGoldBase[wealthTierBase] * (0.5 + rng.next()));
 
@@ -647,37 +732,7 @@
       const stealth      = rng.nextInt(0, maxCustom + 1);
       const intimidation = rng.nextInt(0, maxCustom + 1);
 
-      // 10. Seed-driven visual identity + class assignment from NPCs.json
-      //     Only applies when the world seed differs from the canon default (19002001).
-      let spriteKey = null;
-      let bustIndex = 0;
-      let npcGender = 0;
-      let npcArchetype = "Humanoid"; // i18n-ignore: EnemyArchetypes.json id
-      let assignedClassId = classId;   // default: keep the class from the event note
-      if (worldSeed !== 19002001 && DataLoader.npcData) {
-        const npcKeys = window.SpriteCatalog
-          ? window.SpriteCatalog.npcKeys()
-          : Object.keys(DataLoader.npcData).filter(k => DataLoader.npcData[k].npc === true);
-        if (npcKeys.length > 0) {
-          const rngV = new SeededRng(nameToSeed(eventName + "_vis" + worldSeed));
-          const keyIdx = rngV.nextInt(0, npcKeys.length);
-          spriteKey = npcKeys[keyIdx];
-          const entry = DataLoader.npcData[spriteKey];
-          bustIndex = rngV.nextInt(0, (entry.busts || ["7"]).length);
-          npcGender = entry.Gender || 0;
-          npcArchetype = entry.Archetype || "Humanoid"; // i18n-ignore: EnemyArchetypes.json id
-
-          // Assign class from the entry's classes[] pool
-          const classPool = Array.isArray(entry.classes) ? entry.classes : [];
-          if (classPool.length > 0) {
-            // Pick a deterministic random class from the pool
-            assignedClassId = classPool[rngV.nextInt(0, classPool.length)];
-          }
-          // If classPool is empty, assignedClassId stays as the event-note classId
-        }
-      }
-
-      // 11. Home assignment (deterministic from name hash + world coords)
+      // 12. Home assignment (deterministic from name hash + world coords)
       const worldX = $gameVariables ? $gameVariables.value(43) : 1;
       const worldY = $gameVariables ? $gameVariables.value(44) : 1;
       const npcHash = nameToSeed(eventName) ^ worldSeed;
@@ -709,6 +764,9 @@
 
       return {
         personalityIndex, wealthTierBase, traitIds, skillIds, itemIds, factionIndex, ideologyIndex,
+        // The creed by name as well as by slot, so a roster that grows can
+        // never hand an existing person somebody else's beliefs.
+        ideologyId: ideology?.id ?? null,
         // Visual identity
         spriteKey, bustIndex, gender: npcGender, archetype: npcArchetype,
         // Class (null = use event-note classId; set when seed ≠ 19002001 and classes[] non-empty)

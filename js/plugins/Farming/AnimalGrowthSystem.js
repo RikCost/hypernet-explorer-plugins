@@ -721,6 +721,147 @@
     return null;
   }
 
+  // ============================================================
+  //  FARMSTEAD LIVESTOCK (procedural maps)
+  // ============================================================
+  //
+  // Somebody works this field. A procedural square carrying tilled soil - a
+  // Farm biome, a village with crops behind it, a lone smallholding on a
+  // Plains tile - is a farm, and a farm that has been ploughed but keeps no
+  // animals reads as abandoned. Every such square is dealt 0 to 3 head of
+  // livestock, ONCE, the first time the party ever walks onto it.
+  //
+  // They are the farm's, not the party's: the record carries `wild: true`, so
+  // they never turn up in the Assets portfolio and cannot be sold, but they
+  // graze, grow, produce and can be petted like any other animal, because they
+  // go through the very same placement record every bought animal does.
+  //
+  // The roll is seeded on the square's own composite key (biome + world
+  // coordinate + depth), so which animals a farm keeps is the same in every
+  // savegame of the world and the same on every visit; and it is dealt once
+  // and stored, so clearing a farm out does not repopulate it on the next load.
+  const FARMSTEAD_MAX = 3;          // head of livestock a square can be dealt
+  const FARMSTEAD_RING = 2;         // how far from the soil they are put down
+  const PROC_MAP_ID_AGS = 636;
+
+  // Only the procedural map grows crops procedurally; an authored farm map is
+  // hand-populated and must not have livestock invented on top of it.
+  function isProceduralMap() {
+    return !!$gameMap && $gameMap.mapId() === PROC_MAP_ID_AGS;
+  }
+
+  function farmsteadDealt() {
+    if (!$gameSystem._animalFarmsteads) $gameSystem._animalFarmsteads = {};
+    return $gameSystem._animalFarmsteads;
+  }
+
+  // Every tile id the current tileset draws tilled soil with. Read from the
+  // tileset's own <TilledSoil:> declaration, which is what the biome generator
+  // stamps the fields from (ProceduralMapBiomeGenerator.placeTilledFields), so
+  // the two can never disagree about what a ploughed tile is.
+  function tilledSoilTileIds() {
+    const U = window.ProcGenUtils;
+    const tileset = $gameMap && $gameMap.tileset();
+    if (!U || !U.Cache || !tileset) return null;
+    const features = U.Cache.getTilesetFeatures(tileset.id) || {};
+    const ids = new Set();
+    for (const v of features["TilledSoil"] || []) {  // i18n-ignore  Features.json id
+      if (v.type === "single" && v.tileId) ids.add(v.tileId);
+      else if (v.grid) for (const row of v.grid) for (const t of row) if (t) ids.add(t);
+    }
+    return ids.size ? ids : null;
+  }
+
+  // Where livestock may stand: NEAR the crop, never in it. An animal dropped on
+  // a sown tile stands in the middle of the plants and hides the crop event, so
+  // the pasture is the ring of open ground around the field rather than the
+  // field itself.
+  function farmsteadPastureTiles() {
+    const soilIds = tilledSoilTileIds();
+    if (!soilIds) return [];
+    const w = $gameMap.width();
+    const h = $gameMap.height();
+    const isSoil = (x, y) => {
+      if (x < 0 || y < 0 || x >= w || y >= h) return false;
+      for (const z of [1, 2, 3]) if (soilIds.has($gameMap.tileId(x, y, z))) return true;
+      return false;
+    };
+
+    const soil = [];
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) if (isSoil(x, y)) soil.push({ x, y });
+    }
+    if (!soil.length) return [];
+
+    const seen = new Set();
+    const pasture = [];
+    for (const s of soil) {
+      for (let dy = -FARMSTEAD_RING; dy <= FARMSTEAD_RING; dy++) {
+        for (let dx = -FARMSTEAD_RING; dx <= FARMSTEAD_RING; dx++) {
+          const x = s.x + dx, y = s.y + dy;
+          const key = `${x},${y}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          if (isSoil(x, y)) continue;            // the crop is not a pasture
+          if (!canPlaceAnimalAt(x, y)) continue;
+          pasture.push({ x, y });
+        }
+      }
+    }
+    return pasture;
+  }
+
+  // A stream of the square's own identity, so a farm keeps the same animals in
+  // every savegame of the world and on every visit.
+  function farmsteadRng(mapKey) {
+    const U = window.ProcGenUtils;
+    let h = 0x9e3779b1;
+    const s = String(mapKey);
+    for (let i = 0; i < s.length; i++) h = (Math.imul(h, 31) + s.charCodeAt(i)) | 0;
+    if (U && typeof U.getWorldSeed === "function") h = (h ^ (U.getWorldSeed() >>> 0)) | 0;
+    if (U && typeof U.createSeededRandom === "function") return U.createSeededRandom(h >>> 0);
+    return Math.random;
+  }
+
+  function spawnFarmsteadAnimals() {
+    if (!isProceduralMap() || !$dataMap || !$gameMap) return;
+    const key = currentMapKey();
+    const dealt = farmsteadDealt();
+    if (dealt[key]) return;                      // this square has had its turn
+
+    const pasture = farmsteadPastureTiles();
+    // No tilled soil (or nowhere to stand): not a farm, and not marked either,
+    // because a square can be ploughed later and should be dealt its stock then.
+    if (!pasture.length) return;
+
+    dealt[key] = true;
+    const rng = farmsteadRng(key);
+    const count = Math.floor(rng() * (FARMSTEAD_MAX + 1));   // 0-3
+    if (count === 0) return;
+
+    const breeds = Object.keys(ANIMAL_DB);
+    const list = placementsAt(key);
+    for (let i = 0; i < count && pasture.length; i++) {
+      const spot = pasture.splice(Math.floor(rng() * pasture.length), 1)[0];
+      // Re-checked: an earlier animal in this same pass may have taken the tile.
+      if (!canPlaceAnimalAt(spot.x, spot.y)) continue;
+      const animalId = breeds[Math.floor(rng() * breeds.length)];
+      const def = ANIMAL_DB[animalId];
+      // A working farm keeps grown stock and the odd young one.
+      const stage = (def.hasBaby && rng() < 0.25) ? "baby" : "adult";
+      const rec = newRecord(animalId, stage);
+      if (!rec) continue;
+      rec.uid = nextPlacementUid();
+      rec.x = spot.x;
+      rec.y = spot.y;
+      rec.mapId = $gameMap.mapId();
+      rec.mapName = mapDisplayName(key);
+      rec.wild = true;        // the farm's, never the party's
+      rec.paid = 0;
+      list.push(rec);
+    }
+  }
+
   // Rebuilds every animal owned at the current map key. Called before the
   // spriteset builds its character sprites so the animals are drawn with it.
   function spawnPlacedAnimals() {
@@ -826,6 +967,9 @@
     const now = gameMinutes();
     const out = [];
     for (const { rec, mapKey } of allPlacements()) {
+      // A farm's own stock is not the party's property, so it never appears in
+      // the portfolio. It still grows and produces; it is just not an asset.
+      if (rec.wild) continue;
       const def = ANIMAL_DB[rec.animalId];
       if (!def) continue;
       const stage = rec.stage || "adult";
@@ -879,6 +1023,10 @@
   function sellPlacement(uid) {
     const found = findPlacement(uid);
     if (!found) return null;
+    // Nobody sells an animal they never bought. A farm's own stock is not on
+    // the portfolio in the first place, so this is a backstop rather than a
+    // path the player can reach.
+    if (found.rec.wild) return null;
     const def = ANIMAL_DB[found.rec.animalId];
     const value = sellValueOf(found.rec, def);
     removePlacement(uid);
@@ -921,6 +1069,10 @@
   // character sprites, exactly like FurnitureSystem's placed house doors.
   const _Spriteset_Map_createLowerLayer = Spriteset_Map.prototype.createLowerLayer;
   Spriteset_Map.prototype.createLowerLayer = function () {
+    // The farm's own stock is dealt first, so a square being walked onto for
+    // the first time has its livestock in the placement list before the spawn
+    // pass below turns that list into events.
+    spawnFarmsteadAnimals();
     spawnPlacedAnimals();
     _Spriteset_Map_createLowerLayer.call(this);
   };

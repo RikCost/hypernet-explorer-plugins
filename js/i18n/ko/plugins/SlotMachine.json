@@ -1,7 +1,8 @@
 {
-  "pullToSpin": "",
+  "noThree": "",
   "noTokens": "토큰이 없습니다.",
   "notEnoughTokens": "",
+  "spinning": "",
   "jackpot": "",
   "pair": "",
   "noMatch": "",
@@ -12,7 +13,6 @@
     "tokens": "",
     "bet": "",
     "lastWin": "",
-    "spin": "자전",
-    "hint": ""
+    "payouts": ""
   }
 }

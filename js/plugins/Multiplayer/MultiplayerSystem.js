@@ -104,7 +104,14 @@
 (() => {
     'use strict';
 
-    const PLUGIN_NAME = 'MultiplayerSystem_Unified';
+    // RMMZ keys both the parameter set and the plugin commands by the FILE name
+    // (Utils.extractFileName over the plugins.js entry), so asking under the old
+    // "_Unified" working title read an empty parameter set: showPlayerNames came
+    // back undefined and nameplates were off however the entry was configured.
+    // The file name is the one name that answers; the working title stays on as
+    // a command alias.
+    const PLUGIN_NAME = 'MultiplayerSystem';
+    const LEGACY_PLUGIN_NAME = 'MultiplayerSystem_Unified';
     const params = PluginManager.parameters(PLUGIN_NAME);
 
     let NetworkMode = params.networkMode || 'WebSocket';
@@ -2530,8 +2537,10 @@
     // ============================================================================
     // With networked play greyed out, events that ask for the connections terminal land on
     // the mode picker instead, where Steam/Online read as unavailable.
-    PluginManager.registerCommand(PLUGIN_NAME, 'openConnectionsMenu',
-        () => SceneManager.push(NETWORK_PLAY_ENABLED ? Scene_Multiplayer : Scene_MultiplayerTypeSelection));
+    for (const key of [PLUGIN_NAME, LEGACY_PLUGIN_NAME]) {
+        PluginManager.registerCommand(key, 'openConnectionsMenu',
+            () => SceneManager.push(NETWORK_PLAY_ENABLED ? Scene_Multiplayer : Scene_MultiplayerTypeSelection));
+    }
 
     const _SceneManager_updateMain = SceneManager.updateMain;
     SceneManager.updateMain = function () {

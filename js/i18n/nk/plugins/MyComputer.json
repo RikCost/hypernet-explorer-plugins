@@ -1,0 +1,14 @@
+{
+  "myComputer": "ME COMPUTER",
+  "myDocuments": "ME DOCUMENTS",
+  "desktop": "DESKTOP",
+  "back": "BACK",
+  "address": "ADDRESS:",
+  "go": "GO",
+  "systemTasks": "SYSTEM TASKS",
+  "vfsError": "VFS ERROR: FILESYSTEM UNAVAILABLE",
+  "dirInvalid": "DIRECTORY \"{path}\" IZ INVALID OR EMPTY!",
+  "cannotOpen": "FILE EXPLORER: UNABLE TA OPEN \"{file}\". NOTEPAD IZ MISSIN'!",
+  "unsupportedType": "FILE EXPLORER: FILE TYPE NOT SUPPORTED!",
+  "dirNotFound": "ADDRESS BAR: DIRECTORY \"{path}\" NOT FOUND!"
+}

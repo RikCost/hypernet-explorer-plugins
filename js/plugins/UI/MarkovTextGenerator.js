@@ -441,7 +441,7 @@
 
         buildModel(text) {
             // Clean and tokenize the text
-            const words = text
+            const words = (text || '')
                 .split(/\s+/)
                 .filter(word => word.length > 0);
 
@@ -473,7 +473,10 @@
 
         generateText(minLength = 10, maxLength = 50) {
 
-
+            // No usable source text (e.g. missing translation for this database) — nothing to generate.
+            if (this.startSequences.length === 0) {
+                return '';
+            }
 
             // Start with a random starting sequence
             let currentSequence = this.startSequences[Math.floor(Math.random() * this.startSequences.length)];

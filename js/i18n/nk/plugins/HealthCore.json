@@ -1,0 +1,19 @@
+{
+  "biologics": "BIOLOGICS",
+  "damaged": "DAMAGED",
+  "switchPlayer": "← → SWITCH PLAYER",
+  "statFallback": "STAT",
+  "paramNames": [
+    "MAX HP",
+    "MAX MP",
+    "STR",
+    "HIT RATE",
+    "INT",
+    "COS",
+    "DEX",
+    "PSI"
+  ],
+  "vitalOrganDestroyed": "{actor}'S VITAL ORGAN ({part}) WAZ DESTROYED! DEY DIED INSTANTLY AN' WAZ REMOVED FROM DA PARTY!",
+  "partDestroyed": "{actor}'S {part} WAZ DESTROYED AN' REMOVED!",
+  "augmentLost": "DA AUGMENT INSTALLED DERE ({augment}) WAZ TORN OFF WIT IT!"
+}

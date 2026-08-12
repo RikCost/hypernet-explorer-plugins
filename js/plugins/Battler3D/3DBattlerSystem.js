@@ -71,6 +71,36 @@
  *   idle / attack / specialAttack / hit / death / spawn  (+ numbered variants)
  *
  * ============================================================================
+ * What a battle costs, and what it does not
+ * ============================================================================
+ *
+ * ONE WebGL context for the whole session (acquireBattleRenderer). A renderer
+ * used to be built and thrown away per battle, so every fight paid again for a
+ * fresh context, a fresh compile of every shader variant and a fresh upload of
+ * every texture: that was most of what "loading the 3D enemies" meant. Kept
+ * alive, three's program cache and the texture uploads survive between fights,
+ * and the browser's live-context cap (the reason the old code handed the
+ * context back) settles for good, since there is only ever one. Scenes are
+ * still per battle; only the context is not.
+ *
+ * ONE pass, at ONE size. The canvas is sized by the perf knob (renderScale)
+ * TIMES the retro downsample, and the scene is drawn straight into it; the
+ * PIXI sprite scales it back up with nearest sampling. PSXShader.render's own
+ * render-target-and-blit is not used here because it would only repeat that
+ * reduction at the cost of a whole extra full-screen pass a frame, and it left
+ * the canvas (and so the per-frame upload into the PIXI texture) at full size.
+ * The vertex snapping and the colour banding are in the patched materials, not
+ * in that pass, so the picture is the same.
+ *
+ * SOLID MATERIALS RENDER SOLID. Families build with `transparent: true` so the
+ * death fade and the dismemberment fade can drive opacity later; armFadeOnDemand
+ * puts the ones that are actually opaque back in the opaque queue and turns
+ * `opacity` into an accessor that re-arms transparency the first time anything
+ * drives it under 1. Nothing in a family has to change: a fade still just
+ * writes `mat.opacity`. Do not read `mat.transparent` to mean "this is a body
+ * material"; iterate the family's own `_materials` instead.
+ *
+ * ============================================================================
  *
  * @param actorModels
  * @text Actor 3D Models
@@ -130,7 +160,7 @@
  *
  * @param renderScale
  * @text Render Scale
- * @desc Internal 3D resolution multiplier. 0 = auto (0.5 on a software/no-GPU renderer, 1 on a real GPU). Lower = faster, blockier.
+ * @desc Internal 3D resolution multiplier, multiplied by the retro downsample. 0 = auto (0.5 on a software/no-GPU renderer, 1 on a real GPU). Lower = faster, blockier.
  * @type number
  * @decimals 2
  * @min 0
@@ -849,12 +879,45 @@
 
         // Apply this.scale plus the per-id non-uniform body proportions to the
         // model. Used by the physics-free families (humanoid keeps uniform scale
-        // so its ragdoll stays aligned).
+        // so its ragdoll stays aligned). The model is always at full size: every
+        // family's animatePose still passes a 0..1 `growth` for the spawn window,
+        // but growing a whole troop from nothing every fight used to write a new
+        // scale vector on every battler every frame for the first second of every
+        // battle. It is read as a fade now instead (see _applySpawnFade), which
+        // is both the cheaper op (a handful of `opacity` writes, armed for the
+        // fast opaque path the same way the death fade already is) and a plainer
+        // entrance than a body inflating from a point.
         applyModelScale(growth = 1) {
             if (!this.model) return;
             if (this._fitClamp === undefined) this._computeFitClamp();
-            const s = this.scale * this._fitClamp, g = growth, sh = this.shapeXYZ;
-            this.model.scale.set(s * g * sh.x, s * g * sh.y, s * g * sh.z);
+            const s = this.scale * this._fitClamp, sh = this.shapeXYZ;
+            this.model.scale.set(s * sh.x, s * sh.y, s * sh.z);
+            if (growth < 1) this._applySpawnFade(growth);
+            else if (this._spawnFadeMats) this._clearSpawnFade();
+        }
+
+        // Lazily cache every material once (mirrors applyDeathFade's own cache)
+        // then just write `opacity` on that flat list each frame while the spawn
+        // fade is running. armModelFades already armed each material's opacity
+        // accessor at add-time, so this never forces the transparent/blended
+        // render path except for the short window it is actually fading.
+        _applySpawnFade(growth) {
+            if (!this.model) return;
+            if (!this._spawnFadeMats) {
+                this._spawnFadeMats = [];
+                this.model.traverse(o => {
+                    if (!o.material) return;
+                    const arr = Array.isArray(o.material) ? o.material : [o.material];
+                    for (const m of arr) this._spawnFadeMats.push(m);
+                });
+            }
+            const op = growth < 0 ? 0 : growth;
+            for (const m of this._spawnFadeMats) m.opacity = op;
+        }
+
+        _clearSpawnFade() {
+            for (const m of this._spawnFadeMats) m.opacity = 1;
+            this._spawnFadeMats = null;
         }
 
         // Clamp (computed once) so a model can never render larger than the battle
@@ -1230,7 +1293,19 @@
             obj.traverse(o => {
                 if (!o.material) return;
                 const src = Array.isArray(o.material) ? o.material : [o.material];
-                const cloned = src.map(m => { const c = m.clone(); c.transparent = true; return c; });
+                // A clone carries userData across but NOT onBeforeCompile or
+                // customProgramCacheKey, so it would land in the renderer as an
+                // unknown material: a fresh shader compile in the middle of a
+                // fight, and a severed limb rendered without the retro pass the
+                // rest of the body has. Clear the marker and patch it again so it
+                // shares the program every other battler material is already on.
+                const cloned = src.map(m => {
+                    const c = m.clone();
+                    c.transparent = true;
+                    if (c.userData) c.userData._psx = false;
+                    if (window.PSXShader) window.PSXShader.applyToMaterial(c);
+                    return c;
+                });
                 o.material = Array.isArray(o.material) ? cloned : cloned[0];
                 for (const c of cloned) mats.push(c);
             });
@@ -1543,6 +1618,117 @@
         });
     }
 
+    // A battler is a solid object, but every family builds its materials with
+    // `transparent: true` because the death fade and the dismemberment fade drive
+    // opacity later on. A material that merely MIGHT fade one day still pays the
+    // whole price of being transparent every frame it is drawn: it is taken out of
+    // the opaque queue (so it is never depth-sorted front to back and never gets
+    // early-z rejection, which is expensive on a model built from thirty
+    // interpenetrating primitives), sorted back to front instead, and blended per
+    // fragment. Over the real database that is 35,500 of 42,900 materials standing
+    // in the transparent queue at full opacity, i.e. for nothing.
+    //
+    // So a solid material is put back in the opaque queue and the fade is armed
+    // instead: `opacity` becomes an accessor that flips `transparent` back on the
+    // first time anything drives it below 1, and off again if it returns. Nothing
+    // in a family changes; a fade still just writes `mat.opacity`.
+    function armFadeOnDemand(mat) {
+        if (!mat || !mat.transparent || mat._b3dOpaque) return;
+        if (!(mat.opacity >= 1)) return;                     // genuinely translucent
+        if (mat.depthWrite === false) return;                // a glow / overlay pass
+        if (mat.blending !== undefined && mat.blending !== THREE.NormalBlending) return;
+        if (mat.alphaMap || mat.alphaTest) return;           // cut-out, needs the queue
+        mat._b3dOpaque = true;
+        mat.transparent = false;
+        let value = mat.opacity;
+        Object.defineProperty(mat, 'opacity', {
+            configurable: true,
+            enumerable: true,
+            get() { return value; },
+            set(v) {
+                value = v;
+                const want = v < 1;
+                if (this.transparent !== want) this.transparent = want;
+            }
+        });
+    }
+
+    function armModelFades(root) {
+        if (!root || typeof root.traverse !== 'function') return;
+        root.traverse(obj => {
+            const mat = obj.material;
+            if (!mat) return;
+            if (Array.isArray(mat)) mat.forEach(armFadeOnDemand);
+            else armFadeOnDemand(mat);
+        });
+    }
+
+    // ONE WebGL context for every battle of the session.
+    //
+    // A renderer used to be built and thrown away per battle, which meant a fresh
+    // context (tens of ms), a fresh shader compile of every material variant and a
+    // fresh upload of every texture at the start of each fight: the whole cost of
+    // "loading the 3D enemies" was paid again for a creature the party had just
+    // fought. Kept alive across battles, the context, three's own program cache
+    // and the texture uploads all survive, so the second and every later battle
+    // starts with almost nothing left to build. It also settles the browser's
+    // live-context cap for good (the reason the old code had to hand the context
+    // back at all): there is only ever one.
+    let _sharedRenderer = null;
+
+    function acquireBattleRenderer() {
+        if (_sharedRenderer) {
+            // A context can still be lost (driver reset, tab eviction). A lost one
+            // renders nothing, so drop it and build a replacement.
+            let lost = false;
+            try {
+                const gl = _sharedRenderer.getContext();
+                lost = !gl || (gl.isContextLost && gl.isContextLost());
+            } catch (e) { lost = true; }
+            if (!lost) return _sharedRenderer;
+            try { _sharedRenderer.dispose(); } catch (e) { /* already gone */ }
+            _sharedRenderer = null;
+        }
+        // Antialias defaults OFF: MSAA is one of the most expensive things a
+        // software rasterizer does, and the game already targets a low-fi
+        // (PSXShader) look, so it costs a lot for little benefit here.
+        _sharedRenderer = new THREE.WebGLRenderer({
+            alpha: true,
+            antialias: config.antialias,
+            powerPreference: 'high-performance'
+        });
+        _sharedRenderer.setPixelRatio(1); // composited into a PIXI texture at game res
+        _sharedRenderer.setClearColor(0x000000, 0);
+        return _sharedRenderer;
+    }
+
+    // How many pixels the battle layer actually rasterises, as a share of the
+    // screen. Two factors, folded into ONE canvas size rather than two passes:
+    //   renderScale  the perf knob (auto: half resolution on a software renderer)
+    //   retro        PSXShader's own downsample
+    // PSXShader.render() reaches the second by drawing the scene into a low-res
+    // render target and blitting it back up over a full-size canvas, which costs
+    // a whole extra full-screen pass every frame AND leaves the canvas (and so
+    // the per-frame upload into the PIXI texture) at full size for no gain. The
+    // vertex snapping and the colour banding live in the patched materials, not
+    // in that pass, so rendering straight into a smaller canvas and letting the
+    // PIXI sprite scale it up with nearest sampling is the same picture, one
+    // pass and a smaller upload cheaper.
+    function battleRenderScale(renderer) {
+        // The perf half never moves, and asking it costs a WEBGL_debug_renderer_info
+        // lookup, so it is answered once per context; only the retro half is live.
+        if (renderer._b3dBaseScale === undefined) {
+            const rs = config.renderScale;
+            renderer._b3dBaseScale = (!rs || rs <= 0)
+                ? (detectSoftwareRenderer(renderer) ? 0.5 : 1)
+                : rs;
+        }
+        let scale = renderer._b3dBaseScale;
+        const psx = window.PSXShader;
+        if (psx && psx.enabled && psx.downscale > 0 && psx.downscale < 0.999) scale *= psx.downscale;
+        return Math.max(0.1, Math.min(1, scale));
+    }
+
     class Battle3DScene {
         constructor() {
             this.scene = null;
@@ -1566,27 +1752,16 @@
             this.camera.position.set(0, config.cameraHeight, config.cameraDistance);
             this.camera.lookAt(0, 1, 0);
 
-            // Renderer. Antialias defaults OFF: MSAA is one of the most expensive
-            // things a software rasterizer does, and the game already targets a
-            // low-fi (PSXShader) look, so it costs a lot for little benefit here.
-            this.renderer = new THREE.WebGLRenderer({
-                alpha: true,
-                antialias: config.antialias,
-                powerPreference: 'high-performance'
-            });
-            this.renderer.setPixelRatio(1); // composited into a PIXI texture at game res
+            this.renderer = acquireBattleRenderer();
+            this._viewW = width;
+            this._viewH = height;
 
             // Resolution scaling: rendering fewer pixels is the single biggest win
-            // without a GPU (software rasterizers are fill-rate bound). Auto-detect
-            // a software renderer and halve the internal resolution; a real GPU
-            // renders full res. The PIXI sprite upscales the smaller canvas back to
-            // full screen (see create3DSprite), so nothing else needs to change.
-            let rs = config.renderScale;
-            if (!rs || rs <= 0) rs = detectSoftwareRenderer(this.renderer) ? 0.5 : 1;
-            rs = Math.max(0.1, Math.min(1, rs));
-            this._renderScale = rs;
-            this.renderer.setSize(Math.max(1, Math.round(width * rs)), Math.max(1, Math.round(height * rs)), false);
-            this.renderer.setClearColor(0x000000, 0);
+            // without a GPU (software rasterizers are fill-rate bound). The PIXI
+            // sprite upscales the smaller canvas back to full screen (see
+            // create3DSprite), so nothing else needs to change.
+            this._renderScale = battleRenderScale(this.renderer);
+            this._applyRenderSize();
 
             // Frame pacing: only redraw the (fill-rate-heavy) 3D pass up to maxFps.
             // animTime still advances by real elapsed time via the clock delta, so
@@ -1619,6 +1794,27 @@
             this.physicsWorld = null;
         }
 
+        // Size the shared canvas for this scene's own view + scale. The renderer
+        // outlives the battle, so the size is re-stated here rather than assumed.
+        _applyRenderSize() {
+            const w = Math.max(1, Math.round(this._viewW * this._renderScale));
+            const h = Math.max(1, Math.round(this._viewH * this._renderScale));
+            const el = this.renderer.domElement;
+            if (el.width !== w || el.height !== h) this.renderer.setSize(w, h, false);
+        }
+
+        // The retro downsample is a live setting (Options -> Shader), and it is
+        // folded into the canvas size rather than run as its own pass, so a change
+        // has to be picked up here. Cheap: one comparison a frame, a resize only
+        // when the player actually moved the slider.
+        _syncRenderScale() {
+            const rs = battleRenderScale(this.renderer);
+            if (Math.abs(rs - this._renderScale) < 0.001) return false;
+            this._renderScale = rs;
+            this._applyRenderSize();
+            return true;
+        }
+
         async addModel(key, battlerModel, x, y, z) {
             debugLog(`Adding model: ${key} at position (${x}, ${y}, ${z})`);
 
@@ -1645,6 +1841,7 @@
 
                 battlerModel.model.position.set(x, actualY, z);
                 if (window.PSXShader) window.PSXShader.applyToObject(battlerModel.model);
+                armModelFades(battlerModel.model);
                 this.scene.add(battlerModel.model);
                 this.models.set(key, battlerModel);
 
@@ -1683,8 +1880,13 @@
 
         update() {
             const delta = this.clock.getDelta();
-            // No physics step: all battlers animate kinematically.
+            // No physics step: all battlers animate kinematically. A model that is
+            // no longer on the field (its death fade finished and hid the root, or
+            // it was talked round and walked off) has nothing left to animate, so
+            // it is stepped over rather than posed for the rest of the fight.
             this.models.forEach(model => {
+                const root = model && model.model;
+                if (root && root.visible === false) return;
                 model.update(delta);
             });
         }
@@ -1704,12 +1906,12 @@
                 if (this._lastRenderMs && (now - this._lastRenderMs) < this._minFrameMs) return;
                 this._lastRenderMs = now;
             }
+            this._syncRenderScale();
             this.update();
-            if (window.PSXShader) {
-                window.PSXShader.render(this.renderer, this.scene, this.camera);
-            } else {
-                this.renderer.render(this.scene, this.camera);
-            }
+            // Straight to the canvas: the retro downsample is already in the canvas
+            // size (see battleRenderScale), so PSXShader.render's render-target pass
+            // would only re-do the same reduction and blit it back at a cost.
+            this.renderer.render(this.scene, this.camera);
             this._lastDrew = true;
         }
 
@@ -1723,21 +1925,15 @@
                 }
             });
             this.models.clear();
+            // The renderer is deliberately NOT disposed: it is the session's one
+            // battle context (see acquireBattleRenderer), and handing it back would
+            // throw away the shader programs and texture uploads the next battle is
+            // about to ask for again. Clear it so the fight just ended is not left
+            // sitting on the canvas for the next one to open on.
             if (this.renderer) {
-                // Release PSXShader's cached downsample target/material/geometry
-                // hung on this renderer before tearing the renderer down.
-                if (window.PSXShader && window.PSXShader.disposeContext) {
-                    window.PSXShader.disposeContext(this.renderer);
-                }
-                // dispose() leaves the WebGL context itself alive. The browser
-                // caps live contexts and force-loses the OLDEST past the cap,
-                // which is the game's own canvas: PIXI then silently stops
-                // rendering and the picture freezes until the game is
-                // restarted. Every battle builds a fresh renderer, so the
-                // context has to be handed back here too.
-                this.renderer.dispose();
                 try {
-                    if (this.renderer.forceContextLoss) this.renderer.forceContextLoss();
+                    this.renderer.setRenderTarget(null);
+                    this.renderer.clear(true, true, true);
                 } catch (e) { /* context already gone */ }
             }
             this._disposed = true;
@@ -2220,9 +2416,21 @@
 
         debugLog('Creating 3D sprite container');
 
-        // Create a PIXI sprite from the Three.js canvas
+        // Create a PIXI sprite from the Three.js canvas. The canvas belongs to the
+        // session-wide battle renderer, so PIXI.Texture.from returns the SAME
+        // texture every battle (keyed on the canvas) and the upload survives with
+        // it; only its declared size has to be restated when the render scale or
+        // the game resolution moved between fights.
         const canvas = this._battle3DScene.renderer.domElement;
         const texture = PIXI.Texture.from(canvas);
+        const base = texture.baseTexture;
+        // Nearest sampling: the canvas is rendered at the retro/perf scale and the
+        // sprite blows it back up, which is exactly the upscale PSXShader's own
+        // blit used to do. Smoothing it here would sand the pixels back off.
+        base.scaleMode = PIXI.SCALE_MODES.NEAREST;
+        if (base.realWidth !== canvas.width || base.realHeight !== canvas.height) {
+            base.setRealSize(canvas.width, canvas.height);
+        }
         this._battle3DSprite = new PIXI.Sprite(texture);
 
         // The canvas is full-resolution (Graphics.width x Graphics.height), but
@@ -2238,6 +2446,7 @@
         // screen-projection math (getBattlerPartPosition) is unaffected since it
         // works in full Graphics.width/height space plus this sprite offset.
         const rs = this._battle3DScene._renderScale || 1;
+        this._battle3DSpriteScale = rs;
         if (rs !== 1) this._battle3DSprite.scale.set(1 / rs, 1 / rs);
 
         // Add to the battleback layer so it renders in the correct order
@@ -2249,13 +2458,17 @@
     const _Spriteset_Battle_createEnemies = Spriteset_Battle.prototype.createEnemies;
     Spriteset_Battle.prototype.createEnemies = function() {
         _Spriteset_Battle_createEnemies.call(this);
-        // Delay 3D creation to ensure sprites are ready. Track the timer so a
-        // fast scene change can cancel it (see destroy) before it fires against
-        // a disposed scene.
+        // Built on the next tick rather than a tenth of a second later. The delay
+        // was there to be sure the 2D sprites had been positioned, but
+        // Sprite_Enemy#setBattler already calls setHome (which positions them) as
+        // it is created, so everything create3DEnemies reads is standing by the
+        // time createEnemies returns; waiting six frames only held the monsters
+        // off the field. Still a timer, so a fast scene change can cancel it (see
+        // destroy) before it fires against a disposed scene.
         this._create3DEnemiesTimer = setTimeout(() => {
             this._create3DEnemiesTimer = null;
             this.create3DEnemies();
-        }, 100);
+        }, 0);
     };
 
     // A pack is drawn slightly smaller than the same creature met alone. Three
@@ -2278,11 +2491,10 @@
     Spriteset_Battle.prototype.create3DEnemies = function() {
         // Scene may have been disposed/nulled between the setTimeout and now.
         if (!this._battle3DScene || this._battle3DScene._disposed) return;
-        // A 2D field never moves after it is built, so it counts as settled.
+        // A sprite field never moves after it is built, so it counts as settled.
         this._3dEnemyLayoutSettled = false;
-        // Only render 3D enemy models when the Enemy Battlers option is set to 3D
-        // (1). In 2D (0) or Sprites (2) mode, leave the 2D sprite / char sprite up
-        // so procedural archetypes (goblins etc.) are never forced into 2D mode.
+        // Only render 3D enemy models when the Enemy Battlers option is set to
+        // 3D (1). In Sprites (2) mode, leave the enemy's own <Char:> sprite up.
         if (typeof ConfigManager !== 'undefined' &&
             ConfigManager.enemyBattlers !== undefined &&
             ConfigManager.enemyBattlers !== 1) {
@@ -2410,6 +2622,7 @@
     const ENEMY_SPREAD_GAP = 1.6;   // clear air between two neighbours
     const ENEMY_SPREAD_HALF_SPAN = 5.6;
     const ENEMY_SPREAD_FALLBACK_W = 2.2; // for a model that measures as nothing
+    let _spreadBoxScratch = null;        // one box, reused (the pass runs twice)
 
     Spriteset_Battle.prototype.spreadEnemyModels = function() {
         const scene3d = this._battle3DScene;
@@ -2418,6 +2631,7 @@
         const enemies = $gameTroop.members();
         const row = [];
         let zSlot = 0;
+        const box = _spreadBoxScratch || (_spreadBoxScratch = new THREE.Box3());
         for (let i = 0; i < enemies.length; i++) {
             // Enemies placed from their 2D slot (authored GLB models) keep the
             // troop layout they were given; only the procedural row is spread.
@@ -2425,7 +2639,7 @@
             const battlerModel = scene3d.getModel(`enemy_${i}`);
             const root = battlerModel && battlerModel.model;
             if (!root) continue;
-            const box = new THREE.Box3().setFromObject(root);
+            box.setFromObject(root);
             const measured = box.isEmpty() ? 0 : box.max.x - box.min.x;
             const width = isFinite(measured) && measured > 0.05 ? measured : ENEMY_SPREAD_FALLBACK_W;
             // A model whose geometry is not centred on its root would drift when
@@ -2468,8 +2682,10 @@
     const _Spriteset_Battle_createActors = Spriteset_Battle.prototype.createActors;
     Spriteset_Battle.prototype.createActors = function() {
         _Spriteset_Battle_createActors.call(this);
-        // Delay 3D creation to ensure sprites are ready. Tracked so destroy can
-        // cancel it before it fires against a disposed scene.
+        // Actors keep the delay the enemies no longer need: createActors builds
+        // the sprites with no battler at all (updateActors hands them one on the
+        // first update), so unlike an enemy sprite they are not positioned yet.
+        // Tracked so destroy can cancel it before it fires against a disposed scene.
         this._create3DActorsTimer = setTimeout(() => {
             this._create3DActorsTimer = null;
             this.create3DActors();
@@ -2526,8 +2742,25 @@
             // Re-upload the PIXI texture only on frames the 3D layer actually drew
             // (skips the costly full-canvas GPU upload on frame-capped/idle frames).
             if (this._battle3DScene._lastDrew && this._battle3DSprite && this._battle3DSprite.texture) {
+                this.sync3DSpriteScale();
                 this._battle3DSprite.texture.update();
             }
+        }
+    };
+
+    // The 3D canvas is rendered at a fraction of the screen and the sprite blows
+    // it back up. That fraction can move while the fight is on (the retro
+    // downsample is an Options slider), so the sprite and the texture's declared
+    // size follow it. One comparison a drawn frame; nothing happens until it does.
+    Spriteset_Battle.prototype.sync3DSpriteScale = function() {
+        const rs = this._battle3DScene._renderScale || 1;
+        if (this._battle3DSpriteScale === rs) return;
+        this._battle3DSpriteScale = rs;
+        this._battle3DSprite.scale.set(1 / rs, 1 / rs);
+        const canvas = this._battle3DScene.renderer.domElement;
+        const base = this._battle3DSprite.texture.baseTexture;
+        if (base.realWidth !== canvas.width || base.realHeight !== canvas.height) {
+            base.setRealSize(canvas.width, canvas.height);
         }
     };
 
@@ -2541,8 +2774,12 @@
             if (this._battle3DSprite.parent) {
                 this._battle3DSprite.parent.removeChild(this._battle3DSprite);
             }
+            // Sprite only: the texture is the shared battle canvas's and the next
+            // battle picks it straight back up (PIXI.Texture.from keys on the
+            // canvas), so destroying it would throw away an upload we want.
             this._battle3DSprite.destroy();
             this._battle3DSprite = null;
+            this._battle3DSpriteScale = null;
             debugLog('3D sprite destroyed');
         }
         if (this._battle3DScene) {
@@ -2801,8 +3038,8 @@
     //=========================================================================
     // F2 Hotkey: toggle enemy 3D battlers on the fly (merged from the former
     // standalone Battle3DHotkey plugin). Flips ConfigManager.enemyBattlers
-    // between 2D (0) and 3D (1) anywhere, including mid-battle. Only the 3D
-    // battlers are affected here; the 3D weapon option is left untouched.
+    // between 3D (1) and Sprites (2) anywhere, including mid-battle. Only the
+    // 3D battlers are affected here; the 3D weapon option is left untouched.
     //=========================================================================
 
     // Is the 3D battler path currently active? (1 = 3D)
@@ -2833,9 +3070,9 @@
             if (ss.create3DEnemies) ss.create3DEnemies();
             if (ss.create3DActors) ss.create3DActors();
         } else {
-            // Reveal the 2D sprites the models had hidden. show() clears the
-            // _hidden flag; per-frame updateVisibility still re-hides dead or
-            // otherwise non-visible battlers, so this is safe to call on all.
+            // Reveal the sprite battlers the models had hidden. show() clears
+            // the _hidden flag; per-frame updateVisibility still re-hides dead
+            // or otherwise non-visible battlers, so this is safe on all.
             (ss._enemySprites || []).forEach(s => { if (s) s.show(); });
             (ss._actorSprites || []).forEach(s => { if (s) s.show(); });
         }
@@ -2852,18 +3089,17 @@
     function toggle3DBattlers() {
         const turnOn = !is3DActive();
 
-        // enemyBattlers: 0 = 2D, 1 = 3D (2 = Sprites is intentionally collapsed
-        // to plain 2D when toggling off here). charBasedSprites mirrors "== 2".
-        ConfigManager.enemyBattlers = turnOn ? 1 : 0;
-        ConfigManager.charBasedSprites = false;
+        // The only two modes left: 1 = 3D models, 2 = the enemy's <Char:>
+        // sprite. charBasedSprites mirrors "== 2" for older readers.
+        ConfigManager.enemyBattlers = turnOn ? 1 : 2;
+        ConfigManager.charBasedSprites = !turnOn;
         ConfigManager.save();
 
         try { applyToBattle(turnOn); } catch (e) { console.error('[3DBattlerSystem][F2]', e); }
 
-        const it = ConfigManager.language === 'it';
-        showToast(turnOn
-            ? (it ? '3D attivato (nemici)' : '3D enabled (enemies)')
-            : (it ? '2D attivato (nemici)' : '2D enabled (enemies)'));
+        showToast(window.T(turnOn
+            ? 'GameOptions.enemyBattlerToast.model3d'
+            : 'GameOptions.enemyBattlerToast.sprites'));
     }
 
     document.addEventListener('keydown', (event) => {

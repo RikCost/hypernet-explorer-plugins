@@ -36,14 +36,14 @@
     "stolenFrom": "Stolen from {target}"
   },
   "statNames": [
-    "Max HP",
-    "Max MP",
-    "Attack",
-    "Defense",
-    "Magic",
-    "Magic Def",
-    "Agility",
-    "Luck"
+    "HP",
+    "MP",
+    "STR",
+    "CON",
+    "INT",
+    "WIS",
+    "DEX",
+    "PSI"
   ],
   "statFallback": "Stat",
   "inInventory": "In Inventory ({count})",

@@ -1,0 +1,1128 @@
+{
+  "name": {
+    "dungeon": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "Il {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Sotterraneo",
+        "Fortilizio",
+        "Cripta Bassa",
+        "Presidio",
+        "Cunicoli",
+        "Profondi",
+        "Gallerie",
+        "Sottolivello",
+        "Ridotta",
+        "Labirinto"
+      ],
+      "adj": [
+        "Sommerso",
+        "Dimenticato",
+        "Ferrigno",
+        "Silenzioso",
+        "Storto",
+        "Piangente",
+        "Inferiore",
+        "Cieco",
+        "Cavo",
+        "Senza Nome"
+      ],
+      "of": [
+        "le Nove Serrature",
+        "il Magistrato",
+        "San Ulrico",
+        "la Campana Annegata",
+        "il Lungo Inverno",
+        "lo Scrivano Impiccato",
+        "Cenere Fredda",
+        "il Giuramento Rotto",
+        "la Guardia Insonne",
+        "l'Ultimo Custode"
+      ]
+    },
+    "crypt": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Cripta",
+        "Sepolcro",
+        "Ossario",
+        "Carnaio",
+        "Mausoleo",
+        "Tomba",
+        "Reliquiario",
+        "Volta d'Ossa",
+        "Casa dei Morti",
+        "Sottocripta"
+      ],
+      "adj": [
+        "Fredda",
+        "Sussurrante",
+        "Sigillata",
+        "Pallida",
+        "Quieta",
+        "Seconda",
+        "Più Profonda",
+        "di Marmo",
+        "Ammutolita",
+        "Senza Luce"
+      ],
+      "of": [
+        "la Quinta Famiglia",
+        "Madre Agnese",
+        "il Coro Annegato",
+        "gli Innominati",
+        "l'Abate Grigio",
+        "Nove Sorelle",
+        "i Morti d'Inverno",
+        "il Voto Mantenuto",
+        "l'Anno della Peste",
+        "il Sangue Antico"
+      ]
+    },
+    "cellar": {
+      "pattern": [
+        "{noun} {adj}",
+        "la {noun} di {of}",
+        "{noun} di {of}",
+        "La {noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Cantina",
+        "Deposito",
+        "Nascondiglio",
+        "Dispensa",
+        "Sottoscala",
+        "Camera Blindata",
+        "Credenza",
+        "Riserva",
+        "Cella Fredda",
+        "Rifugio"
+      ],
+      "adj": [
+        "in Mattoni",
+        "Acida",
+        "Polverosa",
+        "Umida",
+        "Lucchettata",
+        "Dimenticata",
+        "Piccola",
+        "Bassa",
+        "Ammuffita",
+        "Raccolta"
+      ],
+      "of": [
+        "l'Oste",
+        "uno Zio Morto",
+        "la Vedova",
+        "il Contasoldi",
+        "il Vecchio Marek",
+        "il Fornaio",
+        "un Notaio Scomparso",
+        "un Ladro Allegro",
+        "un Cattivo Raccolto",
+        "il Padrone Assente"
+      ]
+    },
+    "den": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj}"
+      ],
+      "noun": [
+        "Tana",
+        "Covo",
+        "Cavita",
+        "Cunicolo",
+        "Nido",
+        "Posatoio",
+        "Giaciglio",
+        "Rifugio",
+        "Buca",
+        "Fossa"
+      ],
+      "adj": [
+        "Fetida",
+        "Calda",
+        "Piena d'Ossa",
+        "Bassa",
+        "Profonda",
+        "Rosicchiata",
+        "Rancida",
+        "Squarciata",
+        "Intricata",
+        "Angusta"
+      ],
+      "of": [
+        "Qualcosa di Grosso",
+        "la Cosa che Scava",
+        "la Madre",
+        "i Nove Cuccioli",
+        "il Rosicchiatore",
+        "il Vecchio Maschio",
+        "Cio che si Nutre",
+        "il Branco",
+        "il Dormiente d'Inverno",
+        "la Bestia Marchiata"
+      ]
+    },
+    "temple": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "Il {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Tempio",
+        "Sancta",
+        "Basilica",
+        "Ipogeo",
+        "Navata",
+        "Cappella",
+        "Chiostro",
+        "Reliquiario",
+        "Santuario",
+        "Salone"
+      ],
+      "adj": [
+        "Sepolto",
+        "dalle Nove Porte",
+        "Dorato",
+        "Ammutolito",
+        "Sommerso",
+        "Marmoreo",
+        "Antico",
+        "Incompiuto",
+        "Senza Finestre",
+        "Sigillato"
+      ],
+      "of": [
+        "un Dio senza Bocca",
+        "il Nome Nonuplo",
+        "Santa Perpetua",
+        "l'Ora Non Fatta",
+        "la Ruota che Gira",
+        "il Coro Muto",
+        "l'Undicesimo Angelo",
+        "il Lungo Digiuno",
+        "la Fiamma Custodita",
+        "la Prima Parola"
+      ]
+    },
+    "sewer": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} {adj} di {of}",
+        "{noun} di {of}"
+      ],
+      "noun": [
+        "Fogna",
+        "Scarico",
+        "Sbocco",
+        "Collettore",
+        "Intercettore",
+        "Chiavica",
+        "Canali",
+        "Chiusa",
+        "Troppopieno",
+        "Condotto"
+      ],
+      "adj": [
+        "Municipale",
+        "Traboccante",
+        "Ostruita",
+        "Grigia",
+        "Puzzolente",
+        "Dismessa",
+        "Settentrionale",
+        "Inferiore",
+        "Condannata",
+        "in Mattoni"
+      ],
+      "of": [
+        "la Città Vecchia",
+        "il Foro Boario",
+        "il Quartiere del Pesce",
+        "l'Acquedotto Civico",
+        "la Borsa del Grano",
+        "il Sesto Rione",
+        "il Chiostro del Duomo",
+        "la Conceria",
+        "il Quartiere Povero",
+        "il Taglio Nuovo"
+      ]
+    },
+    "vault": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "Il {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Caveau",
+        "Tesoro",
+        "Erario",
+        "Camera Blindata",
+        "Deposito",
+        "Riserva",
+        "Forziere",
+        "Bottino",
+        "Archivio",
+        "Presidio"
+      ],
+      "adj": [
+        "Sigillato",
+        "Privato",
+        "Numerato",
+        "Profondo",
+        "Anonimo",
+        "Dorato",
+        "Silenzioso",
+        "Non Registrato",
+        "Vincolato",
+        "di Ferro"
+      ],
+      "of": [
+        "un Uomo Prudente",
+        "il Nono Conto",
+        "il Socio Silenzioso",
+        "una Lunga Assenza",
+        "il Non Dichiarato",
+        "il Defunto Proprietario",
+        "l'Ordine Permanente",
+        "il Registro Grigio",
+        "Nessuno",
+        "il Fondo Dormiente"
+      ]
+    },
+    "catacombs": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "Le {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Catacombe",
+        "Ossario",
+        "Gallerie d'Ossa",
+        "Nicchie",
+        "Loculi",
+        "Necropoli",
+        "Campi d'Ossa",
+        "Vie dei Morti",
+        "Corridoi",
+        "Sale"
+      ],
+      "adj": [
+        "Infinite",
+        "Polverizzate",
+        "Accatastate",
+        "a Lume",
+        "Senza Nome",
+        "Municipali",
+        "Stracolme",
+        "Più Antiche",
+        "Numerate",
+        "Segnate a Gesso"
+      ],
+      "of": [
+        "Trentamila",
+        "l'Anno del Colera",
+        "San Biagio",
+        "i Poveri della Parrocchia",
+        "la Seconda Peste",
+        "i Non Reclamati",
+        "la Gilda del Carnaio",
+        "Fra Anselmo",
+        "il Cimitero Spianato",
+        "i Morti Traslati"
+      ]
+    },
+    "mine": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "{noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Miniera",
+        "Pozzo",
+        "Scavi",
+        "Galleria",
+        "Cunicolo",
+        "Filone",
+        "Cava",
+        "Livello",
+        "Traversa",
+        "Escavazioni"
+      ],
+      "adj": [
+        "Allagata",
+        "Abbandonata",
+        "Profonda",
+        "Acida",
+        "Franata",
+        "della Società",
+        "Silenziosa",
+        "Esaurita",
+        "Inferiore",
+        "Vecchia"
+      ],
+      "of": [
+        "il Vedovaio",
+        "il Consorzio",
+        "Santa Barbara",
+        "gli Ottantuno",
+        "il Lungo Sciopero",
+        "il Ferro Freddo",
+        "l'Aria Cattiva",
+        "il Filone Profondo",
+        "l'Ultimo Turno",
+        "la Squadra Sepolta"
+      ]
+    },
+    "frozenCave": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj}"
+      ],
+      "noun": [
+        "Grotta",
+        "Antro",
+        "Cavita",
+        "Ghiacciaia",
+        "Grotta Glaciale",
+        "Camera Fredda",
+        "Cavo di Brina",
+        "Profondo",
+        "Caverna",
+        "Camino"
+      ],
+      "adj": [
+        "Ghiacciata",
+        "Brinata",
+        "Azzurra",
+        "Silenziosa",
+        "Imbiancata",
+        "di Vetro",
+        "Perennemente Gelata",
+        "Senza Fiato",
+        "Cristallina",
+        "Immobile"
+      ],
+      "of": [
+        "il Lungo Inverno",
+        "la Linea del Gelo",
+        "l'Acqua Ferma",
+        "l'Anno Bianco",
+        "il Santo Freddo",
+        "Nove Gradi",
+        "il Lento Disgelo",
+        "la Mandria Sepolta",
+        "la Fiera del Ghiaccio",
+        "l'Ora Azzurra"
+      ]
+    },
+    "cistern": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Cisterna",
+        "Serbatoio",
+        "Vasche",
+        "Acquedotto",
+        "Pozzo Nero",
+        "Bacino",
+        "Sala Sommersa",
+        "Terme",
+        "Casa dell'Acqua",
+        "Condotta"
+      ],
+      "adj": [
+        "Allagata",
+        "Municipale",
+        "Annegata",
+        "a Volte",
+        "Immobile",
+        "Verde",
+        "Traboccante",
+        "Silenziosa",
+        "Inferiore",
+        "Salmastra"
+      ],
+      "of": [
+        "Quattrocento Colonne",
+        "l'Anno Secco",
+        "la Febbre",
+        "il Consorzio Idrico",
+        "il Vecchio Acquedotto",
+        "l'Acqua Ferma",
+        "l'Ingegnere Annegato",
+        "la Fornitura Pulita",
+        "la Campana Sommersa",
+        "i Pesci Ciechi"
+      ]
+    },
+    "fungal": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj}"
+      ],
+      "noun": [
+        "Tana",
+        "Letti",
+        "Fioritura",
+        "Sottobosco",
+        "Micelio",
+        "Cappelle",
+        "Cavita",
+        "Giardino",
+        "Germoglio",
+        "Sale delle Spore"
+      ],
+      "adj": [
+        "Fungina",
+        "Sporifera",
+        "Umida",
+        "Luminescente",
+        "Respirante",
+        "Molle",
+        "Pallida",
+        "Fruttificante",
+        "Invasa",
+        "Strisciante"
+      ],
+      "of": [
+        "la Lenta Fioritura",
+        "un Solo Organismo",
+        "il Frutteto Sepolto",
+        "il Cappello Grigio",
+        "l'Anno Umido",
+        "la Cosa che si Diffonde",
+        "il Marciume Dolce",
+        "il Quinto Germoglio",
+        "la Rete di Radici",
+        "la Madre Molle"
+      ]
+    },
+    "crystal": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj}"
+      ],
+      "noun": [
+        "Caverna",
+        "Geode",
+        "Sale di Cristallo",
+        "Cavita",
+        "Reticolo",
+        "Camera",
+        "Cattedrale",
+        "Sacca",
+        "Prismi",
+        "Profondo"
+      ],
+      "adj": [
+        "Cantante",
+        "di Vetro",
+        "Sfaccettata",
+        "Fredda",
+        "Luminosa",
+        "Azzurra",
+        "Non Mappata",
+        "Vibrante",
+        "Crescente",
+        "Tagliente"
+      ],
+      "of": [
+        "la Lunga Pressione",
+        "un Suono di Campane",
+        "la Bussola Rotta",
+        "la Nona Faccia",
+        "il Minerale Lento",
+        "il Cercatore Cieco",
+        "la Pietra Tagliata",
+        "la Vena Bianca",
+        "l'Acqua Paziente",
+        "la Luce Rinchiusa"
+      ]
+    },
+    "oubliette": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Segreta",
+        "Celle",
+        "Prigione",
+        "Custodia",
+        "Gabbie",
+        "Fossa a Bottiglia",
+        "Camerotto",
+        "Recinto",
+        "Sotterranei",
+        "Fossa"
+      ],
+      "adj": [
+        "Dimenticata",
+        "dei Debitori",
+        "Inferiore",
+        "Militare",
+        "Politica",
+        "Umida",
+        "Non Registrata",
+        "Silenziosa",
+        "Numerata",
+        "Provvisoria"
+      ],
+      "of": [
+        "l'Emergenza",
+        "Nessuna Accusa",
+        "il Fascicolo Perduto",
+        "il Terzo Regime",
+        "l'Arresto Silenzioso",
+        "il Nono Reparto",
+        "i Non Condannati",
+        "la Lunga Custodia",
+        "la Lista Grigia",
+        "il Giudice Assente"
+      ]
+    },
+    "library": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Biblioteca",
+        "Scaffali",
+        "Archivio",
+        "Sale di Lettura",
+        "Raccolta",
+        "Deposito",
+        "Bibliotheca",
+        "Riserva",
+        "Scriptorium",
+        "Indice"
+      ],
+      "adj": [
+        "Sommersa",
+        "Sigillata",
+        "Non Catalogata",
+        "Silenziosa",
+        "Bruciata",
+        "Privata",
+        "Proibita",
+        "Annegata",
+        "Chiusa",
+        "Senza Luce"
+      ],
+      "of": [
+        "Libri che Nessuno ha Scritto",
+        "i Ritirati",
+        "il Nono Scaffale",
+        "una Società Estinta",
+        "i Non Letti",
+        "il Lungo Prestito",
+        "il Copista",
+        "il Volume Mancante",
+        "le Postille",
+        "l'Ultimo Lettore"
+      ]
+    },
+    "forge": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Fucina",
+        "Fonderia",
+        "Officina",
+        "Forno",
+        "Bottega del Fabbro",
+        "Ferriera",
+        "Sala di Colata",
+        "Bassofuoco",
+        "Crogiolo",
+        "Calore"
+      ],
+      "adj": [
+        "Sotterranea",
+        "Coperta",
+        "Ruggente",
+        "Fredda",
+        "della Società",
+        "Profonda",
+        "Fusa",
+        "Annerita",
+        "Inattiva",
+        "Inferiore"
+      ],
+      "of": [
+        "un Fuoco Paziente",
+        "la Gilda del Ferro",
+        "Sant'Eligio",
+        "l'Ultima Colata",
+        "lo Stampo Rotto",
+        "il Turno di Notte",
+        "il Calore Costante",
+        "il Non Spento",
+        "il Martello Sepolto",
+        "l'Ora Rossa"
+      ]
+    },
+    "bunker": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "{noun} {adj} di {of}",
+        "{noun} {num}"
+      ],
+      "noun": [
+        "Bunker",
+        "Rifugio",
+        "Installazione",
+        "Struttura",
+        "Complesso",
+        "Postazione",
+        "Ridotta",
+        "Stazione",
+        "Deposito",
+        "Sito"
+      ],
+      "adj": [
+        "Blindato",
+        "Dismesso",
+        "Dimenticato",
+        "Grigio",
+        "Sigillato",
+        "Governativo",
+        "Regionale",
+        "Non Registrato",
+        "in Riserva",
+        "Profondo"
+      ],
+      "of": [
+        "una Guerra che Attese",
+        "la Contingenza Nove",
+        "la Busta Grigia",
+        "l'Ordine Permanente",
+        "la Difesa Civile",
+        "il Fascicolo Blu",
+        "l'Ultima Esercitazione",
+        "il Ministero Silenzioso",
+        "l'Ala Non Elencata",
+        "il Lungo Allarme"
+      ],
+      "num": [
+        "Quattordici",
+        "Nove",
+        "Ventidue",
+        "Sei",
+        "Trentuno",
+        "Quattro",
+        "Diciassette",
+        "Otto",
+        "Dodici",
+        "Quaranta"
+      ]
+    },
+    "lab": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "{noun} {adj} di {of}",
+        "{noun} {num}"
+      ],
+      "noun": [
+        "Laboratorio",
+        "Struttura",
+        "Ala",
+        "Istituto",
+        "Stazione",
+        "Annesso",
+        "Officina",
+        "Sezione",
+        "Reparto",
+        "Programma"
+      ],
+      "adj": [
+        "Sepolto",
+        "Dismesso",
+        "Sterile",
+        "Sigillato",
+        "Privato",
+        "Grigio",
+        "Non Registrato",
+        "Chiuso",
+        "Profondo",
+        "Provvisorio"
+      ],
+      "of": [
+        "un Programma Annullato",
+        "la Nona Prova",
+        "l'Istituto Grigio",
+        "Nessun Comitato Etico",
+        "il Finanziamento Silenzioso",
+        "il Soggetto Quattordici",
+        "i Risultati Sepolti",
+        "il Secondo Protocollo",
+        "la Coorte Scomparsa",
+        "gli Inediti"
+      ],
+      "num": [
+        "Quattordici",
+        "Nove",
+        "Ventidue",
+        "Sei",
+        "Trentuno",
+        "Quattro",
+        "Diciassette",
+        "Otto",
+        "Dodici",
+        "Quaranta"
+      ]
+    },
+    "shrine": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "Il {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Santuario",
+        "Sancta",
+        "Cerchio",
+        "Altare",
+        "Cappella",
+        "Sacrario",
+        "Rotonda",
+        "Anello",
+        "Seggio",
+        "Navata"
+      ],
+      "adj": [
+        "Profano",
+        "Sconsacrato",
+        "a Nove Lati",
+        "Sanguinante",
+        "Silenzioso",
+        "Rovesciato",
+        "a Lume di Candela",
+        "Sigillato",
+        "Invertito",
+        "in Attesa"
+      ],
+      "of": [
+        "un Nome da Non Dire",
+        "la Bocca Nonupla",
+        "la Croce Rovesciata",
+        "la Lunga Pazienza",
+        "il Piede Caprino",
+        "il Coro Cavo",
+        "il Secondo Patto",
+        "Cio che Risponde",
+        "l'Ora Venduta",
+        "la Cosa di Sotto"
+      ]
+    },
+    "smuggler": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "{noun} {adj} di {of}",
+        "{noun} di {of}"
+      ],
+      "noun": [
+        "Passaggio",
+        "Tunnel",
+        "Cunicolo",
+        "Taglio",
+        "Rotta",
+        "Rifugio",
+        "Via",
+        "Strisciata",
+        "Linea",
+        "Consegna"
+      ],
+      "adj": [
+        "dei Contrabbandieri",
+        "Silenzioso",
+        "Non Autorizzato",
+        "Esentasse",
+        "Notturno",
+        "Storto",
+        "Non Tassato",
+        "Nascosto",
+        "di Servizio",
+        "Discreto"
+      ],
+      "of": [
+        "il Commercio del Sale",
+        "il Brandy Non Tassato",
+        "il Carico Notturno",
+        "un Accordo Silenzioso",
+        "il Doganiere",
+        "l'Anno di Confine",
+        "un Favore Dovuto",
+        "la Guardia Cieca",
+        "il Secondo Registro",
+        "la Sentinella Addormentata"
+      ]
+    },
+    "grotto": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj}"
+      ],
+      "noun": [
+        "Grotta",
+        "Grotta Marina",
+        "Cavita",
+        "Grotta di Marea",
+        "Vasca",
+        "Camera",
+        "Stretto",
+        "Insenatura",
+        "Sottogrotta",
+        "Sfiatatoio"
+      ],
+      "adj": [
+        "di Marea",
+        "Annegata",
+        "Salata",
+        "Rimbombante",
+        "Verde",
+        "Sommersa",
+        "Azzurra",
+        "Coperta d'Alghe",
+        "Semiallagata",
+        "Cantante"
+      ],
+      "of": [
+        "la Marea che Gira",
+        "l'Equipaggio Annegato",
+        "la Linea del Sale",
+        "la Quadratura",
+        "la Barca Perduta",
+        "le Foche Grigie",
+        "la Lunga Onda",
+        "la Catena Sommersa",
+        "il Voto del Pescatore",
+        "il Richiamo della Luna"
+      ]
+    },
+    "lavaTube": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "Il {noun} di {of}",
+        "{noun} {adj}"
+      ],
+      "noun": [
+        "Tubo",
+        "Colata",
+        "Sfiato",
+        "Condotto",
+        "Canna",
+        "Gola",
+        "Canale",
+        "Camino",
+        "Galleria",
+        "Percorso"
+      ],
+      "adj": [
+        "Vulcanico",
+        "Fuso",
+        "Incandescente",
+        "di Basalto",
+        "Respirante",
+        "Rosso",
+        "in Raffreddamento",
+        "Profondo",
+        "Sulfureo",
+        "Instabile"
+      ],
+      "of": [
+        "l'Ultima Eruzione",
+        "la Gola della Montagna",
+        "l'Anno Rosso",
+        "il Fuoco Costante",
+        "il Villaggio Sepolto",
+        "il Lento Raffreddamento",
+        "il Fuoco di Sotto",
+        "il Santo dello Zolfo",
+        "la Crosta Rotta",
+        "la Pioggia di Cenere"
+      ]
+    },
+    "barrow": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "Il {noun} di {of}",
+        "{noun} {adj} di {of}"
+      ],
+      "noun": [
+        "Tumulo",
+        "Montagnola",
+        "Poggio",
+        "Tumulo Antico",
+        "Tumulo Lungo",
+        "Cairn",
+        "Colle Funerario",
+        "Tomba a Corridoio",
+        "Anello",
+        "Collina"
+      ],
+      "adj": [
+        "Lungo",
+        "Regale",
+        "Erboso",
+        "Più Antico",
+        "Aperto",
+        "Mai Aperto",
+        "a Nove Camere",
+        "Silenzioso",
+        "Ancestrale",
+        "Cerchiato"
+      ],
+      "of": [
+        "un Re che Nessuno Nomina",
+        "il Cavallo e il Cavaliere",
+        "gli Anni del Bronzo",
+        "il Nono Capo",
+        "l'Oro sotto l'Erba",
+        "la Corona di Corna",
+        "il Primo Popolo",
+        "l'Offerta Bruciata",
+        "le Pietre Erette",
+        "il Capo Inquieto"
+      ]
+    },
+    "metro": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "{noun} {adj} di {of}",
+        "{noun} di {of}"
+      ],
+      "noun": [
+        "Stazione",
+        "Banchina",
+        "Fermata",
+        "Capolinea",
+        "Interscambio",
+        "Bivio",
+        "Scalo",
+        "Atrio",
+        "Deposito",
+        "Gallerie"
+      ],
+      "adj": [
+        "Dismessa",
+        "Fantasma",
+        "Chiusa",
+        "Inferiore",
+        "Mai Aperta",
+        "di Guerra",
+        "Abbandonata",
+        "a Grande Profondita",
+        "Sbarrata",
+        "Settentrionale"
+      ],
+      "of": [
+        "la Linea Annullata",
+        "gli Anni del Rifugio",
+        "la Fermata Scomparsa",
+        "l'Ultimo Treno",
+        "l'Orario Grigio",
+        "il Secondo Prolungamento",
+        "la Banchina Murata",
+        "il Servizio Notturno",
+        "il Ramo Chiuso",
+        "il Biglietto Invenduto"
+      ]
+    },
+    "salt": {
+      "pattern": [
+        "{noun} {adj}",
+        "{noun} di {of}",
+        "La {noun} di {of}",
+        "{noun} {adj}"
+      ],
+      "noun": [
+        "Salina",
+        "Miniera di Sale",
+        "Gallerie",
+        "Vasche",
+        "Scavi",
+        "Camere",
+        "Sale del Sale",
+        "Escavazioni",
+        "Livelli",
+        "Giacimento"
+      ],
+      "adj": [
+        "Bianca",
+        "Regia",
+        "Accecante",
+        "Asciutta",
+        "Profonda",
+        "Conservata",
+        "della Società",
+        "Amara",
+        "Cristallina",
+        "Lavorata"
+      ],
+      "of": [
+        "la Via del Sale",
+        "i Conservati",
+        "la Tassa Amara",
+        "l'Anno Bianco",
+        "Santa Cunegonda",
+        "la Lunga Siccita",
+        "il Livello Sigillato",
+        "la Cattedrale di Sale",
+        "il Mare Asciutto",
+        "il Vecchio Monopolio"
+      ]
+    }
+  }
+}

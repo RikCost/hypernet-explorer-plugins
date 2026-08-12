@@ -370,6 +370,16 @@ body {
     color: var(--text-success-active);
     font-weight: 700;
 }
+#map-info-hud .mih-eta {
+    padding-bottom: 6px;
+}
+#map-info-hud .mih-eta .mih-region-lbl {
+    color: var(--text-primary-hover);
+}
+#map-info-hud .mih-eta .mih-region-val {
+    color: var(--text-primary-hover);
+    font-weight: 700;
+}
 #map-info-hud .mih-temp .mih-region-val {
     font-weight: 700;
 }
@@ -378,6 +388,14 @@ body {
 #map-info-hud .mih-temp-mild { color: var(--text-primary-hover); }
 #map-info-hud .mih-temp-warm { color: #ffb74d; }
 #map-info-hud .mih-temp-hot  { color: var(--text-blood-red); }
+/* How long the party has gone without sleeping, drawn only once the sleep
+   meter is empty (see MapInfoHUD._insomnia). Reads as a warning, then as a
+   wound: past two days awake the mind starts giving way. */
+#map-info-hud .mih-insomnia .mih-region-val {
+    font-weight: 700;
+}
+#map-info-hud .mih-insomnia-warn { color: #ffb74d; }
+#map-info-hud .mih-insomnia-bad  { color: var(--text-blood-red); }
 #map-info-hud .mih-temp-drain {
     font-size: 12px;
     font-weight: 600;
@@ -431,3 +449,181 @@ body {
 #map-info-hud .mih-fuel   { background: #d4a017; }
 #map-info-hud .mih-amber  { background: var(--text-primary-hover); }
 #map-info-hud .mih-red    { background: var(--text-blood-red); }
+
+/* ==========================================================================
+   Party HUD (js/plugins/UI/PartyHud.js)
+   One row per party member in the top-left corner: the bordered card carries
+   name, state icons, HP and MP, and the urgent-need chips stand to the right
+   of it, outside the box. Position and card width are written inline by the
+   plugin from its parameters (the width as --phud-card-w). Never use the
+   `inset` shorthand here: the game runtime does not honour it (see the bar
+   fills below).
+   ========================================================================== */
+#party-hud {
+    position: fixed;
+    z-index: 200;
+    pointer-events: none;
+    font-family: 'Lora', serif;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+}
+#party-hud.phud-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+#party-hud .phud-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+#party-hud .phud-card {
+    width: var(--phud-card-w, 224px);
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    background: var(--bg-secondary-hover);
+    border: 2px solid var(--text-primary-hover);
+    border-radius: 5px;
+    box-shadow: 0 6px 18px var(--shadow-black-translucent-55);
+    padding: 5px 8px 6px;
+}
+#party-hud .phud-card.phud-down {
+    filter: grayscale(0.7);
+    border-color: var(--text-blood-red);
+}
+#party-hud .phud-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+#party-hud .phud-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary-hover);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#party-hud .phud-card.phud-down .phud-name {
+    color: var(--text-blood-red);
+}
+#party-hud .phud-states {
+    display: flex;
+    flex-shrink: 0;
+    gap: 2px;
+}
+#party-hud .phud-state-icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+}
+#party-hud .phud-bar {
+    position: relative;
+    height: 14px;
+    margin-top: 3px;
+    border: 1px solid var(--shadow-black-translucent-55);
+    border-radius: 3px;
+    background: var(--shadow-black-translucent-55);
+    overflow: hidden;
+}
+#party-hud .phud-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    transition: width 0.2s ease-out;
+}
+#party-hud .phud-hp .phud-fill {
+    background: linear-gradient(to right, #7a1420, #d94a4a);
+}
+#party-hud .phud-mp .phud-fill {
+    background: linear-gradient(to right, #16386e, #4a86d9);
+}
+#party-hud .phud-bar-low .phud-fill {
+    background: linear-gradient(to right, #7a4a10, #e0a63a);
+}
+#party-hud .phud-bar-critical .phud-fill {
+    background: linear-gradient(to right, #7a1420, #ff5a5a);
+    animation: phud-pulse 0.9s ease-in-out infinite;
+}
+@keyframes phud-pulse {
+    0%, 100% { filter: brightness(1); }
+    50%      { filter: brightness(1.7); }
+}
+#party-hud .phud-flash {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    background: #ffffff;
+}
+#party-hud .phud-flash-hit {
+    animation: phud-flash 0.42s ease-out;
+}
+#party-hud .phud-flash-heal {
+    background: #8cff9a;
+    animation: phud-flash 0.42s ease-out;
+}
+@keyframes phud-flash {
+    0%   { opacity: 0.55; }
+    100% { opacity: 0; }
+}
+#party-hud .phud-bar-lbl,
+#party-hud .phud-bar-val {
+    position: absolute;
+    top: 0;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 14px;
+    color: #f4ecd8;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.85);
+}
+#party-hud .phud-bar-lbl {
+    left: 5px;
+    color: var(--text-primary-hover);
+}
+#party-hud .phud-bar-val {
+    right: 5px;
+}
+#party-hud .phud-alerts {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    max-width: 200px;
+    padding-top: 4px;
+}
+#party-hud .phud-alerts.phud-alerts-empty {
+    display: none;
+}
+#party-hud .phud-alert {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    white-space: nowrap;
+    color: #1a1206;
+    background: var(--text-primary-hover);
+    box-shadow: 0 2px 6px var(--shadow-black-translucent-55);
+}
+#party-hud .phud-alert-critical {
+    color: #ffe9e9;
+    background: var(--text-blood-red);
+    animation: phud-chip 1.1s ease-in-out infinite;
+}
+@keyframes phud-chip {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.55; }
+}

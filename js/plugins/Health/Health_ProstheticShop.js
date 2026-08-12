@@ -9,8 +9,9 @@
  * 2. Command menu (Install bodypart / Remove bodypart / Replace bodypart /
  *    Install implant / Cancel)
  * 3a. [Install bodypart]  → Archetype select → Part list → confirm purchase
- * 3b. [Remove bodypart]   → Actor part list → (if implant) confirm warning
- * 3c. [Install implant]  → Body part grid → Prosthetic list
+ * 3b. [Install from pack] → Body part items the party is already carrying
+ * 3c. [Remove bodypart]   → Actor part list → (if implant) confirm warning
+ * 3d. [Install implant]  → Body part grid → Prosthetic list
  *
  * Body part install price  : hpPercent * 1000 gold
  * Body part removal price  : hpPercent * 100  gold
@@ -18,8 +19,28 @@
  * Installing a body part grants the abs(statEffect.amount) bonus to that param.
  * Removing a body part reverts that bonus.
  *
+ * ---------------------------------------------------------------------------
+ * Field surgery (the FieldSurgery command)
+ * ---------------------------------------------------------------------------
+ * The same theatre carried in a rucksack. The party picks a patient AND a
+ * surgeon, and nothing is bought: only body parts already in the pack can be
+ * fitted, an augment can be taken out but never seated, and no fee is charged.
+ *
+ * Every operation is a roll, reported before it is taken:
+ *   the surgeon's Surgery specialization  35 / 50 / 65 / 78 / 90 by tier
+ *   under a roof +10, in a cave -5, in the open -10
+ *   rain -15, a storm -25, snow +5 (cold slows the bleeding)
+ *   operating on yourself -15
+ * A failure wounds the patient somewhere else. A vital organ is only ever at
+ * risk in Blood and Oil, and only there does a part taken to 0 HP leave the
+ * body, carrying its augment with it.
+ *
  * @command OpenProstheticShop
  * @desc Opens the prosthetic shop.
+ *
+ * @command FieldSurgery
+ * @text Field surgery
+ * @desc Operate in the field: pick a patient and a surgeon, fit parts from the pack, or take an augment out.
  *
  */
 (function () {
@@ -61,7 +82,7 @@
       "TELESCOPIC", "SONIC", "SENSOR", "FILTRATION", "FILTER", "PURIFIER",
       "EXTRACTOR", "SYNTHESIZER", "IRON", "REINFORCEMENT", "ADAMANTINE",
       "NEEDLES", "SPIKES", "CONDUCTOR", "PROCESSOR", "ABSORBERS", "PADS",
-      "SOLES", "COILS", "BOILER", "RIBCAGE", "FURNACE"
+      "SOLES", "COILS", "BOILER", "RIBCAGE", "FURNACE", "INJECTOR"
     ]],
     // Anything worked in mana, spirit or rune.
     ["Runecrafting", [
@@ -72,7 +93,7 @@
     ["Biomancy", [
       "BEAST", "VAMPIRIC", "VENOM", "AQUATIC", "LIVING", "TREE", "SPORE",
       "MITOSIS", "TESTES", "UTERUS", "OVIDUCT", "DRAGON", "HAWK", "ELVEN",
-      "SCENT", "SILVER_TONGUE", "FANGS", "TEETH", "CLAWS", "GLANDS", "GILLS",
+      "SCENT", "SILVER_TONGUE", "FANGS", "TEETH", "CLAWS", "GLAND", "GILLS",
       "FINS", "VINES", "GOLEM", "TITAN", "LIMB", "ARM"
     ]]
   ];
@@ -220,6 +241,131 @@
   const getBodyParts = () => window.Health ? window.Health.BodyParts : null;
   const getProstheticTypes = () => window.Health ? window.Health.ProstheticTypes : null;
   const getProstheticCompatibility = () => window.Health ? window.Health.ProstheticCompatibility : null;
+
+  // What a socket takes. Health_Core resolves a part key by name (LEFT_WING and
+  // RIGHT_PROP are both wings), so a creature's own anatomy is offered implants
+  // even though ProstheticCompatibility.json never names its part keys. Falls
+  // back to the flat table when the core plugin is absent.
+  function implantsForPart(partKey) {
+    if (window.HealthCore && window.HealthCore.implantsForPart) {
+      return window.HealthCore.implantsForPart(partKey);
+    }
+    const table = getProstheticCompatibility();
+    return (table && table[partKey]) ? table[partKey].filter(Boolean) : [];
+  }
+
+  // "STR +6" for every parameter, then the skill the implant teaches. What a
+  // buyer is really paying for is often the skill, so it is never left out.
+  function implantEffectText(prosthetic) {
+    const parts = [];
+    for (const paramId in (prosthetic.effects || {})) {
+      const value = prosthetic.effects[paramId];
+      parts.push(`${getParamName(parseInt(paramId, 10))} ${value >= 0 ? "+" : ""}${value}`);
+    }
+    for (const sid of skillIdList(prosthetic.skill)) {
+      const skill = $dataSkills && $dataSkills[sid];
+      if (skill && skill.name) parts.push(T('Prosthetics.grantsSkill', { skill: skill.name }));
+    }
+    return parts;
+  }
+
+  // ===========================================================================
+  // Field surgery
+  // ---------------------------------------------------------------------------
+  // The same theatre, carried in a rucksack. One party member cuts, another is
+  // cut, and nothing is bought: only what is already in the pack can be fitted,
+  // and an augment can be taken out but never put in (there is no sterile bench
+  // to seat one on). Whether the operation works at all is a roll.
+  // ===========================================================================
+  const SURGERY_SPEC = "Surgery";  // i18n-ignore  Specialization.json name
+
+  // Base odds by the surgeon's Surgery tier (Untrained .. Master).
+  const SURGERY_BASE_BY_LEVEL = [0, 35, 50, 65, 78, 90];
+  const SURGERY_SELF_PENALTY = -15;  // operating on yourself, one-handed
+  // Where it happens. A roof and a table beat a wet field; a cave is in between.
+  const SURGERY_VENUE = { interior: 10, cavern: -5, exterior: -10 };
+  // Rain gets into the wound. Snow is cold, and cold is the one thing a field
+  // surgeon can use: it slows the bleeding.
+  const SURGERY_WEATHER = { rain: -15, storm: -25, snow: 5, none: 0 };
+  const SURGERY_MIN_CHANCE = 5;
+  const SURGERY_MAX_CHANCE = 97;
+
+  // A cave and a tiled room are both under cover, but only one of them is a
+  // theatre. An explicit <Exterior> beats everything, the way it does for the
+  // minigames' venue check.
+  function surgeryVenue() {
+    const note = (window.$dataMap && $dataMap.note) || "";
+    if (/<Exterior>/i.test(note)) return "exterior";
+    try {
+      if (typeof window.isProceduralInteriorMap === "function" && window.isProceduralInteriorMap()) {
+        return "cavern";
+      }
+    } catch (e) { /* procedural stack not loaded */ }
+    if (/<Interior>/i.test(note)) return "interior";
+    return "exterior";
+  }
+
+  function surgeryWeather() {
+    const type = (window.$gameWeather && $gameWeather.currentWeatherType) || "none";
+    return Object.prototype.hasOwnProperty.call(SURGERY_WEATHER, type) ? type : "none";
+  }
+
+  // Everything that decides whether the knife goes where it was meant to. The
+  // surgeon-select page shows this breakdown before anybody is opened up.
+  function surgeryOdds(surgeon, patient) {
+    const level = (window.SpecializationXP && surgeon)
+      ? window.SpecializationXP.levelOf(surgeon, SURGERY_SPEC) : 1;
+    const venue = surgeryVenue();
+    const weather = surgeryWeather();
+    const self = !!(surgeon && patient && surgeon === patient);
+    const base = SURGERY_BASE_BY_LEVEL[level] || SURGERY_BASE_BY_LEVEL[1];
+    const venueMod = SURGERY_VENUE[venue] || 0;
+    const weatherMod = SURGERY_WEATHER[weather] || 0;
+    const selfMod = self ? SURGERY_SELF_PENALTY : 0;
+    const chance = Math.max(SURGERY_MIN_CHANCE,
+      Math.min(SURGERY_MAX_CHANCE, base + venueMod + weatherMod + selfMod));
+    return { chance, level, base, venue, venueMod, weather, weatherMod, self, selfMod };
+  }
+
+  // Where a slip lands. A vital organ is only ever on the table in Blood and
+  // Oil; on every other difficulty the knife finds something survivable.
+  function pickSlipPart(patient) {
+    if (!patient || !patient._bodyParts) return null;
+    const bloodAndOil = !!(window.$gameSystem && $gameSystem._bloodAndOilMode);
+    const candidates = Object.keys(patient._bodyParts).filter((key) => {
+      const part = patient._bodyParts[key];
+      if (!part || part.damaged) return false;
+      return bloodAndOil || !isPartVital(patient, key, part);
+    });
+    if (!candidates.length) return null;
+    return candidates[Math.floor(Math.random() * candidates.length)];
+  }
+
+  // The wound a failed operation leaves. Returns what was hurt, for the report.
+  function applySurgicalSlip(patient, margin) {
+    const partKey = pickSlipPart(patient);
+    if (!partKey) return null;
+    const part = patient._bodyParts[partKey];
+    // A near miss nicks; a botched one opens the part up. margin is how far
+    // past the odds the roll landed, 0..100.
+    const share = 0.3 + Math.min(0.6, Math.max(0, margin) / 100);
+    const amount = Math.max(1, Math.round((part.maxHp || 10) * share));
+    const dealt = (window.HealthCore && window.HealthCore.injureBodyPart)
+      ? window.HealthCore.injureBodyPart(patient, partKey, amount) : 0;
+    return { partKey, partName: part.name || partKey, dealt, lost: !patient._bodyParts[partKey] };
+  }
+
+  window.FieldSurgery = {
+    odds: surgeryOdds,
+    venue: surgeryVenue,
+    weather: surgeryWeather
+  };
+
+  // Sockets on this body that any implant fits, in the body's own part order.
+  function implantablePartKeys(actor) {
+    if (!actor || !actor._bodyParts) return [];
+    return Object.keys(actor._bodyParts).filter((k) => implantsForPart(k).length > 0);
+  }
   const getEnemyArchetypes = () => window.Health ? window.Health.EnemyArchetypes : null;
 
   // --- Utility constants & functions ---
@@ -1162,13 +1308,7 @@
   Window_BodyPartSelect.prototype.setupBodyParts = function () {
     if (!this._actor) { this._bodyPartKeys = []; return; }
     if (!this._actor._bodyParts) initializeBodyParts(this._actor);
-    this._bodyPartKeys = [];
-    const ProstheticCompatibility = getProstheticCompatibility();
-    if (ProstheticCompatibility) {
-      for (var partKey in ProstheticCompatibility) {
-        if (this._actor._bodyParts[partKey]) this._bodyPartKeys.push(partKey);
-      }
-    }
+    this._bodyPartKeys = implantablePartKeys(this._actor);
   };
 
   Window_BodyPartSelect.prototype.drawItem = function (index) {
@@ -1265,9 +1405,8 @@
       currentProsthetic: currentProstheticKey,
     });
 
-    const ProstheticCompatibility = getProstheticCompatibility();
     const ProstheticTypes = getProstheticTypes();
-    const compatibleProsthetics = ProstheticCompatibility ? ProstheticCompatibility[this._partKey] || [] : [];
+    const compatibleProsthetics = implantsForPart(this._partKey);
     for (var i = 0; i < compatibleProsthetics.length; i++) {
       const prostheticKey = compatibleProsthetics[i];
       const prosthetic = ProstheticTypes ? ProstheticTypes[prostheticKey] : null;
@@ -1325,13 +1464,8 @@
         this.drawText(formatPriceInEuros(item.cost), x + width - 100, rect.y, 100, "right");
       }
 
-      if (item.prosthetic.effects) {
-        let effectText = "";
-        for (const paramId in item.prosthetic.effects) {
-          effectText += getParamName(parseInt(paramId)) + " +" + item.prosthetic.effects[paramId] + " ";
-        }
-        this.drawText(effectText, x, rect.y + this.lineHeight(), width);
-      }
+      const effectText = implantEffectText(item.prosthetic).join("  ");
+      if (effectText) this.drawText(effectText, x, rect.y + this.lineHeight(), width);
 
       this.contents.paintOpacity = 255;
       this.resetTextColor();
@@ -1375,7 +1509,7 @@
       }
     }
 
-    if (prosthetic.skill) actor.learnSkill(prosthetic.skill);
+    skillIdList(prosthetic.skill).forEach((sid) => { if ($dataSkills[sid]) actor.learnSkill(sid); });
 
     const reproVarId = getReproductionVariableId(actor);
     if (prostheticKey === "UTERUS") $gameVariables.setValue(reproVarId, 1);
@@ -1404,7 +1538,7 @@
       }
     }
 
-    if (prosthetic.skill) actor.forgetSkill(prosthetic.skill);
+    skillIdList(prosthetic.skill).forEach((sid) => actor.forgetSkill(sid));
 
     const reproVarId = getReproductionVariableId(actor);
     if (["UTERUS", "OVIDUCT", "SPORE_GLAND", "MITOSIS_GLAND"].includes(currentProstheticKey)) {
@@ -1699,7 +1833,7 @@
       }
     }
 
-    if (prosthetic.skill) actor.learnSkill(prosthetic.skill);
+    skillIdList(prosthetic.skill).forEach((sid) => { if ($dataSkills[sid]) actor.learnSkill(sid); });
 
     const reproVarId = getReproductionVariableId(actor);
     if (prostheticKey === "UTERUS") $gameVariables.setValue(reproVarId, 1);
@@ -1728,7 +1862,7 @@
       }
     }
 
-    if (prosthetic.skill) actor.forgetSkill(prosthetic.skill);
+    skillIdList(prosthetic.skill).forEach((sid) => actor.forgetSkill(sid));
 
     const reproVarId = getReproductionVariableId(actor);
     if (["UTERUS", "OVIDUCT", "SPORE_GLAND", "MITOSIS_GLAND"].includes(currentProstheticKey)) {
@@ -1738,6 +1872,15 @@
     delete actor._prosthetics[partKey];
     actor.refresh();
   }
+
+  // Fitting and pulling an augment, for the callers that are not this shop:
+  // the augmented origin fits the party's starting hardware through it, so a
+  // stat bonus, a learned skill and a reproduction change are all applied the
+  // one way rather than reimplemented per caller.
+  window.ProstheticShop = window.ProstheticShop || {};
+  window.ProstheticShop.installImplant = installProstheticImmediate;
+  window.ProstheticShop.removeImplant = removeProstheticImmediate;
+  window.ProstheticShop.inventoryBodyParts = getInventoryBodyParts;
 
   function getGenderName(actor) {
     const idx = $gameParty.members().indexOf(actor);
@@ -1766,13 +1909,24 @@
     this._selectedArchetypeKey = null;
     this._selectedPartKey = null;
     this._removalFee = 0;
-    this._viewState = 'party'; // 'party', 'command', 'install_archetype', 'install_part', 'remove_part', 'replace_part', 'replace_archetype', 'implant_select_part', 'implant_select_prosthetic'
+    this._viewState = 'party'; // 'party', 'command', 'install_archetype', 'install_part', 'remove_part', 'replace_part', 'replace_archetype', 'implant_select_part', 'implant_select_prosthetic', 'surgeon_select'
     this._activeListItems = [];
     this._notification = null;
     this._notificationTimeout = null;
     this._lastDrawnActor = null;
     this._forceRightPageRedraw = false;
     this._dailyArchetypes = null;
+    // Field surgery: the plugin command sets the flag, and the scene keeps it
+    // for its whole life. Nothing is bought here and no augment goes in.
+    this._fieldMode = !!(window.$gameTemp && $gameTemp._fieldSurgeryMode);
+    if (window.$gameTemp) $gameTemp._fieldSurgeryMode = false;
+    this._surgeon = null;
+  };
+
+  // In the field nothing is paid for: the party is spending its own supplies
+  // and somebody's steady hand, not a clinic's time.
+  Scene_ProstheticShop.prototype.priceOf = function (cost) {
+    return this._fieldMode ? 0 : (cost || 0);
   };
 
   Scene_ProstheticShop.prototype.create = function () {
@@ -1897,38 +2051,68 @@
       });
       leftPageHTML += '</div>';
 
-    } else if (this._viewState === 'command') {
-      leftTitle = T('Prosthetics.biologicLaboratory');
-      leftDesc = T('Prosthetics.performHeavyIndustryLimbConfigurationsOrMicr', { p1: this._selectedActor ? this._selectedActor.name() : "" });
+    } else if (this._viewState === 'surgeon_select') {
+      leftTitle = T('Prosthetics.chooseSurgeon');
+      leftDesc = T('Prosthetics.chooseSurgeonDesc', { p1: this._selectedActor ? this._selectedActor.name() : "" });
 
-      const installLabel = T('Prosthetics.installBodypart');
-      const removeLabel = T('Prosthetics.removeBodypart');
-      const replaceLabel = T('Prosthetics.replaceBodypart');
-      const implantLabel = T('Prosthetics.installImplant');
-      const cancelLabel = T('Prosthetics.cancel');
+      this._activeListItems = [];
+      leftPageHTML += '<div class="shop-scroll">';
+      $gameParty.members().forEach((actor, idx) => {
+        const odds = surgeryOdds(actor, this._selectedActor);
+        const levelName = window.Specializations && window.Specializations.ready
+          ? window.Specializations.levelName(odds.level) : String(odds.level);
+        this._activeListItems.push({ isSurgeon: true, actor, odds });
+        leftPageHTML += `
+          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectSurgeon(${idx})">
+              <div style="flex-grow:1;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${actor.name()}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                      ${T('Prosthetics.surgerySpec', { level: levelName })}${odds.self ? ` | ${T('Prosthetics.operatingOnSelf')}` : ""}
+                  </p>
+              </div>
+              <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
+                  ${odds.chance}%
+              </div>
+          </div>
+        `;
+      });
+      leftPageHTML += '</div>';
+
+    } else if (this._viewState === 'command') {
+      leftTitle = this._fieldMode ? T('Prosthetics.fieldTheatre') : T('Prosthetics.biologicLaboratory');
+      leftDesc = this._fieldMode
+        ? T('Prosthetics.fieldTheatreDesc', {
+            p1: this._selectedActor ? this._selectedActor.name() : "",
+            p2: this._surgeon ? this._surgeon.name() : "",
+            p3: this.currentOdds().chance
+          })
+        : T('Prosthetics.performHeavyIndustryLimbConfigurationsOrMicr', { p1: this._selectedActor ? this._selectedActor.name() : "" });
+
+      // In the field only what is already in the pack can be fitted, an augment
+      // may be taken out but never seated, and nothing is for sale.
+      const commands = this._fieldMode
+        ? [
+            { cmd: 'inventory', icon: 176, label: T('Prosthetics.installFromInventory') },
+            { cmd: 'remove', icon: 196, label: T('Prosthetics.removeBodypart') },
+            { cmd: 'implant', icon: 128, label: T('Prosthetics.removeAugment') },
+            { cmd: 'cancel', icon: 16, label: T('Prosthetics.cancel') }
+          ]
+        : [
+            { cmd: 'install', icon: 189, label: T('Prosthetics.installBodypart') },
+            { cmd: 'inventory', icon: 176, label: T('Prosthetics.installFromInventory') },
+            { cmd: 'remove', icon: 196, label: T('Prosthetics.removeBodypart') },
+            { cmd: 'replace', icon: 180, label: T('Prosthetics.replaceBodypart') },
+            { cmd: 'implant', icon: 128, label: T('Prosthetics.installImplant') },
+            { cmd: 'cancel', icon: 16, label: T('Prosthetics.cancel') }
+          ];
 
       leftPageHTML += `
         <div class="shop-scroll" style="display:flex; flex-direction:column; gap:10px;">
-            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('install')">
-                <span class="icon" style="background: url('img/system/IconSet.png') -${(189 % 16) * 32}px -${Math.floor(189 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
-                <span>${installLabel}</span>
-            </div>
-            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('remove')">
-                <span class="icon" style="background: url('img/system/IconSet.png') -${(196 % 16) * 32}px -${Math.floor(196 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
-                <span>${removeLabel}</span>
-            </div>
-            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('replace')">
-                <span class="icon" style="background: url('img/system/IconSet.png') -${(180 % 16) * 32}px -${Math.floor(180 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
-                <span>${replaceLabel}</span>
-            </div>
-            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('implant')">
-                <span class="icon" style="background: url('img/system/IconSet.png') -${(128 % 16) * 32}px -${Math.floor(128 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
-                <span>${implantLabel}</span>
-            </div>
-            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('cancel')">
-                <span class="icon" style="background: url('img/system/IconSet.png') -${(16 % 16) * 32}px -${Math.floor(16 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
-                <span>${cancelLabel}</span>
-            </div>
+            ${commands.map(c => `
+            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('${c.cmd}')">
+                <span class="icon" style="background: url('img/system/IconSet.png') -${(c.icon % 16) * 32}px -${Math.floor(c.icon / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
+                <span>${c.label}</span>
+            </div>`).join("")}
         </div>
       `;
 
@@ -2229,20 +2413,15 @@
       leftDesc = T('Prosthetics.chooseAnImplantCompatibleBiologicalOrCyberne');
 
       this._activeListItems = [];
-      const ProstheticCompatibility = getProstheticCompatibility();
-      if (this._selectedActor && this._selectedActor._bodyParts && ProstheticCompatibility) {
-        for (const partKey in ProstheticCompatibility) {
-          if (this._selectedActor._bodyParts[partKey]) {
-            const part = this._selectedActor._bodyParts[partKey];
-            const currentProstheticKey = this._selectedActor._prosthetics ? this._selectedActor._prosthetics[partKey] : null;
+      for (const partKey of implantablePartKeys(this._selectedActor)) {
+        const part = this._selectedActor._bodyParts[partKey];
+        const currentProstheticKey = this._selectedActor._prosthetics ? this._selectedActor._prosthetics[partKey] : null;
 
-            this._activeListItems.push({
-              partKey,
-              name: part.name,
-              currentProstheticKey
-            });
-          }
-        }
+        this._activeListItems.push({
+          partKey,
+          name: part.name,
+          currentProstheticKey
+        });
       }
 
       leftPageHTML += '<div class="shop-scroll">';
@@ -2267,8 +2446,10 @@
       leftPageHTML += '</div>';
 
     } else if (this._viewState === 'implant_select_prosthetic') {
-      leftTitle = T('Prosthetics.prostheticsList');
-      leftDesc = T('Prosthetics.selectAnAdvancedMicroChipOrProstheticImplant', { p1: this._selectedPartKey || "" });
+      leftTitle = this._fieldMode ? T('Prosthetics.removeAugment') : T('Prosthetics.prostheticsList');
+      leftDesc = this._fieldMode
+        ? T('Prosthetics.fieldAugmentRemovalDesc')
+        : T('Prosthetics.selectAnAdvancedMicroChipOrProstheticImplant', { p1: this._selectedPartKey || "" });
 
       this._activeListItems = [];
       if (this._selectedPartKey && this._selectedActor) {
@@ -2281,9 +2462,10 @@
           currentProsthetic: currentProstheticKey
         });
 
-        const ProstheticCompatibility = getProstheticCompatibility();
         const ProstheticTypes = getProstheticTypes();
-        const compatibleProsthetics = ProstheticCompatibility ? ProstheticCompatibility[this._selectedPartKey] || [] : [];
+        // Nothing new goes in out here: a field kit can take an augment out,
+        // but seating one needs a bench nobody is carrying.
+        const compatibleProsthetics = this._fieldMode ? [] : implantsForPart(this._selectedPartKey);
         for (var i = 0; i < compatibleProsthetics.length; i++) {
           const prostheticKey = compatibleProsthetics[i];
           const prosthetic = ProstheticTypes ? ProstheticTypes[prostheticKey] : null;
@@ -2309,7 +2491,7 @@
                   <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
                   <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
                       ${item.isRemoveOption ? (item.currentProsthetic ? T('Prosthetics.uninstallActiveDevice') : T('Prosthetics.limbHasOriginalPart')) : ""}
-                      ${item.isProsthetic && item.prosthetic.effects ? Object.entries(item.prosthetic.effects).map(([paramId, val]) => `${getParamName(parseInt(paramId))} +${val}`).join(" | ") : ""}
+                      ${item.isProsthetic ? implantEffectText(item.prosthetic).join(" | ") : ""}
                   </p>
               </div>
               <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
@@ -2485,6 +2667,34 @@
     this.refreshRightPageSurgeryPreview(focusIndex);
   };
 
+  // What this pair of hands is worth, spelled out before anybody is opened up.
+  Scene_ProstheticShop.prototype.surgeonBriefingHTML = function (item) {
+    if (!item || !item.isSurgeon) return "";
+    const odds = item.odds;
+    const levelName = window.Specializations && window.Specializations.ready
+      ? window.Specializations.levelName(odds.level) : String(odds.level);
+    const signed = (n) => (n >= 0 ? "+" + n : String(n));
+    const rows = [
+      [T('Prosthetics.surgerySpecShort'), `${levelName} (${odds.base}%)`],
+      [T('Prosthetics.venueLabel'), `${T('Prosthetics.venue.' + odds.venue)} ${signed(odds.venueMod)}`],
+      [T('Prosthetics.weatherLabel'), `${T('Prosthetics.weather.' + odds.weather)} ${signed(odds.weatherMod)}`]
+    ];
+    if (odds.self) rows.push([T('Prosthetics.operatingOnSelf'), signed(odds.selfMod)]);
+    return `
+      <div class="surgery-blueprint" style="font-family:'Lora', serif;">
+          <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.1em; margin:0 0 4px 0; border-bottom: 1px dashed rgba(88,24,13,0.15); padding-bottom:4px;">${item.actor.name()}</h4>
+          ${rows.map(([label, value]) => `
+          <div style="display:flex; justify-content:space-between; font-size:0.85em; color:#5d483b; padding:2px 0;">
+              <span>${label}</span><span>${value}</span>
+          </div>`).join("")}
+          <div style="display:flex; justify-content:space-between; font-size:0.95em; font-weight:bold; color:#58180D; border-top:1px dotted rgba(88,24,13,0.12); margin-top:4px; padding-top:4px;">
+              <span>${T('Prosthetics.successChance')}</span><span>${odds.chance}%</span>
+          </div>
+          <p style="margin:6px 0 0; font-size:0.78em; line-height:1.4; color:#5d483b;">${T('Prosthetics.failureWarning')}</p>
+      </div>
+    `;
+  };
+
   Scene_ProstheticShop.prototype.refreshRightPageSurgeryPreview = function (focusIndex) {
     const previewContainer = this._dndContainer.querySelector(".surgery-briefing-container");
     if (!previewContainer) return;
@@ -2495,8 +2705,16 @@
       return;
     }
 
+    // Picking a surgeon is not an operation: the facing page reads as their
+    // dossier, and there is nothing on it to press.
+    if (this._viewState === 'surgeon_select') {
+      previewContainer.innerHTML = this.surgeonBriefingHTML(item);
+      UIShopInputManager.actionElements = [];
+      return;
+    }
+
     const actor = this._selectedActor;
-    const isAffordable = $gameParty.gold() >= (item.cost || 0);
+    const isAffordable = $gameParty.gold() >= this.priceOf(item.cost);
     const costColor = isAffordable ? "#2e7d32" : "#c62828";
 
     let title = "";
@@ -2551,15 +2769,24 @@
     if ((this._viewState === 'install_part' || this._viewState === 'install_inventory') && item.alreadyOwned) isOkEnabled = false;
     if (!isAffordable && actionSymbol !== "remove_implant" && !(this._viewState === 'implant_select_prosthetic' && item.isRemoveOption)) isOkEnabled = false;
 
+    const ledgerHTML = this._fieldMode
+      ? `<div style="font-family:'Lora', serif; font-size:0.9em; margin-top:6px; border-top:1px dotted rgba(88,24,13,0.12); padding-top:4px;">
+              <div style="display:flex; justify-content:space-between;">
+                  <span>${T('Prosthetics.successChance')}</span>
+                  <strong style="color:#58180D;">${this.currentOdds().chance}%</strong>
+              </div>
+              <div style="font-size:0.82em; color:#5d483b; margin-top:2px;">${this.oddsBreakdownText()}</div>
+          </div>`
+      : `<div style="display:flex; justify-content:space-between; align-items:center; font-family:'Lora', serif; font-size:0.9em; margin-top:6px; border-top:1px dotted rgba(88,24,13,0.12); padding-top:4px;">
+              <span>${T('Prosthetics.surgeryFee')} <strong style="color:${costColor};">${costText}</strong></span>
+              <span>${T('Prosthetics.availableFunds')} <strong style="color:#2e7d32;">${formatPriceInEuros($gameParty.gold())}</strong></span>
+          </div>`;
+
     previewContainer.innerHTML = `
       <div class="surgery-blueprint" style="font-family:'Lora', serif;">
           <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.1em; margin:0 0 4px 0; border-bottom: 1px dashed rgba(88,24,13,0.15); padding-bottom:4px; letter-spacing:0.5px;">${title}</h4>
           <p style="margin:4px 0; font-size:0.8em; line-height:1.4; color:#5d483b;">${descText}</p>
-          
-          <div style="display:flex; justify-content:space-between; align-items:center; font-family:'Lora', serif; font-size:0.9em; margin-top:6px; border-top:1px dotted rgba(88,24,13,0.12); padding-top:4px;">
-              <span>${T('Prosthetics.surgeryFee')} <strong style="color:${costColor};">${costText}</strong></span>
-              <span>${T('Prosthetics.availableFunds')} <strong style="color:#2e7d32;">${formatPriceInEuros($gameParty.gold())}</strong></span>
-          </div>
+          ${ledgerHTML}
           
           <div style="display:flex; gap:8px; margin-top:8px;">
               <button class="action-btn action-focusable ${!isOkEnabled ? 'disabled' : ''}" style="flex:1; padding:4px 8px; font-size:0.9em;" onclick="SceneManager._scene.executeSurgeryAction('${actionSymbol}')">${actionBtnLabel}</button>
@@ -2576,8 +2803,11 @@
   Scene_ProstheticShop.prototype.onUICancel = function () {
     if (this._viewState === 'party') {
       this.popScene();
-    } else if (this._viewState === 'command') {
+    } else if (this._viewState === 'surgeon_select') {
       this._viewState = 'party';
+      this.refreshUIShopDOM();
+    } else if (this._viewState === 'command') {
+      this._viewState = this._fieldMode ? 'surgeon_select' : 'party';
       this.refreshUIShopDOM();
     } else if (this._viewState === 'install_archetype') {
       this._viewState = 'command';
@@ -2586,7 +2816,7 @@
       this._viewState = 'install_archetype';
       this.refreshUIShopDOM();
     } else if (this._viewState === 'install_inventory') {
-      this._viewState = 'install_archetype';
+      this._viewState = this._fieldMode ? 'command' : 'install_archetype';
       this.refreshUIShopDOM();
     } else if (this._viewState === 'remove_part') {
       this._viewState = 'command';
@@ -2610,9 +2840,72 @@
     const members = $gameParty.members();
     if (members[idx]) {
       this._selectedActor = members[idx];
-      this._viewState = 'command';
+      // In the field somebody has to hold the knife, and who it is decides the
+      // odds, so the patient is followed by the surgeon rather than the menu.
+      this._viewState = this._fieldMode ? 'surgeon_select' : 'command';
       this.refreshUIShopDOM();
     }
+  };
+
+  Scene_ProstheticShop.prototype.selectSurgeon = function (idx) {
+    const members = $gameParty.members();
+    if (!members[idx]) return;
+    this._surgeon = members[idx];
+    SoundManager.playOk();
+    this._viewState = 'command';
+    this.refreshUIShopDOM();
+  };
+
+  // The odds this operation runs at, as the surgeon-select page reported them.
+  Scene_ProstheticShop.prototype.currentOdds = function () {
+    return surgeryOdds(this._surgeon || this._selectedActor, this._selectedActor);
+  };
+
+  // Why the odds are what they are, in one line: the hands, the roof and the
+  // weather, each named with what it is worth.
+  Scene_ProstheticShop.prototype.oddsBreakdownText = function () {
+    const odds = this.currentOdds();
+    const signed = (n) => (n >= 0 ? "+" + n : String(n));
+    const levelName = window.Specializations && window.Specializations.ready
+      ? window.Specializations.levelName(odds.level) : String(odds.level);
+    const parts = [
+      T('Prosthetics.oddsSurgery', { level: levelName, value: odds.base }),
+      T('Prosthetics.oddsVenue', { venue: T('Prosthetics.venue.' + odds.venue), value: signed(odds.venueMod) })
+    ];
+    if (odds.weatherMod !== 0) {
+      parts.push(T('Prosthetics.oddsWeather', {
+        weather: T('Prosthetics.weather.' + odds.weather), value: signed(odds.weatherMod)
+      }));
+    }
+    if (odds.self) {
+      parts.push(T('Prosthetics.oddsSelf', { value: signed(odds.selfMod) }));
+    }
+    return parts.join(" · ");
+  };
+
+  // One operation, rolled. Returns true when the hands were steady; a failure
+  // wounds the patient somewhere else and reports what it cost.
+  Scene_ProstheticShop.prototype.rollSurgery = function () {
+    if (!this._fieldMode) return true;
+    const odds = this.currentOdds();
+    const roll = Math.floor(Math.random() * 100) + 1;
+    const surgeon = this._surgeon || this._selectedActor;
+    if (window.SpecializationXP) {
+      window.SpecializationXP.awardCapped(SURGERY_SPEC, roll <= odds.chance ? 3 : 1, { actor: surgeon, soloist: true });
+    }
+    if (roll <= odds.chance) return true;
+    const slip = applySurgicalSlip(this._selectedActor, roll - odds.chance);
+    SoundManager.playBuzzer();
+    if (slip && slip.lost) {
+      this.showClinicNotification(T('Prosthetics.surgeryFailedPartLost', { part: slip.partName }));
+    } else if (slip) {
+      this.showClinicNotification(T('Prosthetics.surgeryFailedWound', { part: slip.partName, damage: slip.dealt }));
+    } else {
+      this.showClinicNotification(T('Prosthetics.surgeryFailed'));
+    }
+    this._forceRightPageRedraw = true;
+    this.refreshUIShopDOM();
+    return false;
   };
 
   Scene_ProstheticShop.prototype.switchSelectedActor = function (idx) {
@@ -2620,7 +2913,9 @@
     if (members[idx]) {
       this._selectedActor = members[idx];
       SoundManager.playOk();
-      this._viewState = 'command';
+      // A new patient in the field means the odds are a different question, so
+      // the surgeon is chosen again rather than carried over silently.
+      this._viewState = this._fieldMode ? 'surgeon_select' : 'command';
       this.refreshUIShopDOM();
     }
   };
@@ -2638,6 +2933,12 @@
   Scene_ProstheticShop.prototype.chooseCommand = function (cmd) {
     if (cmd === 'install') {
       this._viewState = 'install_archetype';
+      this.refreshUIShopDOM();
+    } else if (cmd === 'inventory') {
+      // Parts already in the pack: the only ones a field kit can fit, and a
+      // first-class entry in the clinic too rather than a row buried in the
+      // archetype catalogue.
+      this._viewState = 'install_inventory';
       this.refreshUIShopDOM();
     } else if (cmd === 'remove') {
       this._viewState = 'remove_part';
@@ -2696,12 +2997,16 @@
     const actor = this._selectedActor;
     this._forceRightPageRedraw = true;
 
+    // A field operation is rolled first: a failure costs the patient a wound
+    // and nothing changes hands, not even the part that was going to go in.
+    if (this._fieldMode && !this.rollSurgery()) return;
+
     if (action === "install") {
       if (item.isInventoryPart) {
-        $gameParty.loseGold(INSTALLATION_FEE);
+        $gameParty.loseGold(this.priceOf(INSTALLATION_FEE));
         if (item.itemId && $dataItems[item.itemId]) $gameParty.loseItem($dataItems[item.itemId], 1);
       } else {
-        $gameParty.loseGold(item.cost);
+        $gameParty.loseGold(this.priceOf(item.cost));
       }
 
       const archPart = item.archPart;
@@ -2716,7 +3021,7 @@
       this.refreshUIShopDOM();
 
     } else if (action === "remove") {
-      $gameParty.loseGold(item.cost);
+      $gameParty.loseGold(this.priceOf(item.cost));
 
       if (item.hasImplant && actor._prosthetics && actor._prosthetics[item.partKey]) {
         removeProstheticImmediate(actor, item.partKey);
@@ -2747,7 +3052,7 @@
       this.refreshUIShopDOM();
 
     } else if (action === "replace") {
-      $gameParty.loseGold(item.cost);
+      $gameParty.loseGold(this.priceOf(item.cost));
 
       const partKey = item.partKey;
       const archPart = item.archPart;
@@ -2782,7 +3087,7 @@
       this.refreshUIShopDOM();
 
     } else if (action === "install_implant") {
-      $gameParty.loseGold(item.cost);
+      $gameParty.loseGold(this.priceOf(item.cost));
       installProstheticImmediate(actor, item.partKey, item.prostheticKey);
       SoundManager.playShop();
       this.showClinicNotification(T('Prosthetics.prostheticInstalledSuccessfully'));
@@ -2904,4 +3209,20 @@
       SceneManager.push(Scene_ProstheticShop);
     });
   }
+
+  // The same theatre with nobody to pay and nobody qualified: one member cuts,
+  // another is cut, and only what is already in the pack can be fitted.
+  const openFieldSurgery = () => {
+    $gameSystem.autoAssignProsthetic();
+    $gameTemp._fieldSurgeryMode = true;
+    SceneManager.push(Scene_ProstheticShop);
+  };
+  PluginManager.registerCommand("Health/Health_ProstheticShop", "FieldSurgery", openFieldSurgery);
+  PluginManager.registerCommand("Health_ProstheticShop", "FieldSurgery", openFieldSurgery);
+
+  const _Game_Interpreter_pluginCommand_fieldSurgery = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    _Game_Interpreter_pluginCommand_fieldSurgery.call(this, command, args);
+    if (command === "FieldSurgery") openFieldSurgery();
+  };
 })();

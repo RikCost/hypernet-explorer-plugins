@@ -12,6 +12,9 @@
     "burglary": {
       "name": "Burglary"
     },
+    "graverobbing": {
+      "name": "Grave Robbing"
+    },
     "robbery": {
       "name": "Robbery"
     },
@@ -245,6 +248,9 @@
     },
     "terrorism": {
       "name": "Terrorism"
+    },
+    "bioterrorism": {
+      "name": "Bioterrorism"
     },
     "treason": {
       "name": "Treason"

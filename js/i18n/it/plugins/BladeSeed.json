@@ -41,14 +41,14 @@
   "lp": "{points} PA",
   "expLine": "{exp} / {next} EXP",
   "stat": {
-    "mhp": "PV max",
-    "mmp": "PM max",
-    "atk": "Attacco",
-    "def": "Difesa",
-    "mat": "Att. mag.",
-    "mdf": "Dif. mag.",
-    "agi": "Agilità",
-    "luk": "Fortuna"
+    "mhp": "HP",
+    "mmp": "MP",
+    "atk": "FRZ",
+    "def": "COS",
+    "mat": "INT",
+    "mdf": "SAG",
+    "agi": "DES",
+    "luk": "PSI"
   },
   "defaultSpirit": "Spirito predefinito",
   "weaponSkillNumbered": "Abilità arma {id}",

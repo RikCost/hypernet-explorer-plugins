@@ -17,7 +17,6 @@
   "inProgress": "In Progress",
   "done": "Done",
   "noQuests": "No quests",
-  "colShiftMoveCardOk": "↑↓ · ←→ col · Shift+←→ move card · OK details · Esc close",
   "back": "Back",
   "questLog": "Quest Log",
   "appName": "Task Master",
@@ -30,6 +29,7 @@
     "Failed"
   ],
   "showOnMapAt": "Show on map ({x}, {y}) · Shift",
+  "mapMarker": "Map marker",
   "notify": {
     "newQuest": "New Quest: {title}",
     "newQuestUnknown": "New Quest: ???",

@@ -1,10 +1,10 @@
 {
   "1": {
     "name": "Morto",
-    "message1": "%1 è cadut*!",
-    "message2": "%1 è stat* uccis*!",
+    "message1": "%1 è caduto!",
+    "message2": "%1 è stato ucciso!",
     "message3": "",
-    "message4": "%1 è stat* rianimat*!"
+    "message4": "%1 è stato rianimato!"
   },
   "2": {
     "name": "Guardia",
@@ -22,45 +22,45 @@
   },
   "4": {
     "name": "Veleno",
-    "message1": "%1 è avvelenat*!",
-    "message2": "%1 è avvelenat*!",
+    "message1": "%1 è avvelenato!",
+    "message2": "%1 è avvelenato!",
     "message3": "",
-    "message4": "%1 non è più avvelenat*!"
+    "message4": "%1 non è più avvelenato!"
   },
   "5": {
     "name": "Acceca",
-    "message1": "%1 è accecat*!",
-    "message2": "%1 è accecat*!",
+    "message1": "%1 è accecato!",
+    "message2": "%1 è accecato!",
     "message3": "",
-    "message4": "%1 non è più ciec*!"
+    "message4": "%1 non è più cieco!"
   },
   "6": {
     "name": "Silenzio",
-    "message1": "%1 è silenziat*!",
-    "message2": "%1 è silenziat*!",
+    "message1": "%1 è silenziato!",
+    "message2": "%1 è silenziato!",
     "message3": "",
-    "message4": "%1 non è più silenziat*!"
+    "message4": "%1 non è più silenziato!"
   },
   "7": {
     "name": "Rabbia",
-    "message1": "%1 è infuriat*!",
-    "message2": "%1 è infuriat*!",
+    "message1": "%1 è infuriato!",
+    "message2": "%1 è infuriato!",
     "message3": "",
-    "message4": "%1 non è più infuriat*!"
+    "message4": "%1 non è più infuriato!"
   },
   "8": {
     "name": "Confusione",
-    "message1": "%1 è confus*!",
-    "message2": "%1 è confus*!",
+    "message1": "%1 è confuso!",
+    "message2": "%1 è confuso!",
     "message3": "",
-    "message4": "%1 non è più confus*!"
+    "message4": "%1 non è più confuso!"
   },
   "9": {
     "name": "Fascino",
-    "message1": "%1 è affascinat*!",
-    "message2": "%1 è affascinat*!",
+    "message1": "%1 è affascinato!",
+    "message2": "%1 è affascinato!",
     "message3": "",
-    "message4": "%1 non è più ammaliat*!"
+    "message4": "%1 non è più ammaliato!"
   },
   "10": {
     "name": "Sonno",
@@ -71,30 +71,30 @@
   },
   "11": {
     "name": "Congelare",
-    "message1": "%1 è completamente congelat* e non può muoversi!",
-    "message2": "%1 è completamente congelat*!",
-    "message3": "%1 è bloccat* e non può muoversi!",
-    "message4": "%1 non è più bloccat*!"
+    "message1": "%1 è completamente congelato e non può muoversi!",
+    "message2": "%1 è completamente congelato!",
+    "message3": "%1 è bloccato e non può muoversi!",
+    "message4": "%1 non è più bloccato!"
   },
   "12": {
     "name": "Paralisi",
-    "message1": "%1 è paralizzat* e non può muoversi!",
-    "message2": "%1 è paralizzat*!",
-    "message3": "%1 è paralizzat* e non può muoversi!",
-    "message4": "%1 non è più paralizzat*!"
+    "message1": "%1 è paralizzato e non può muoversi!",
+    "message2": "%1 è paralizzato!",
+    "message3": "%1 è paralizzato e non può muoversi!",
+    "message4": "%1 non è più paralizzato!"
   },
   "13": {
     "name": "Stordire",
-    "message1": "%1 viene sbilanciat*!",
-    "message2": "%1 viene sbilanciat*!",
-    "message3": "%1 è ancora sbilanciat*…",
+    "message1": "%1 viene sbilanciato!",
+    "message2": "%1 viene sbilanciato!",
+    "message3": "%1 è ancora sbilanciato…",
     "message4": "%1 ha ritrovato l'equilibrio!"
   },
   "14": {
-    "name": "Bloccat* su",
-    "message1": "%1 è bloccat*!",
+    "name": "Bloccato su",
+    "message1": "%1 è bloccato!",
     "message2": "%1 è bloccato su",
-    "message3": "%1 è bloccat*!",
+    "message3": "%1 è bloccato!",
     "message4": "La concentrazione di %1 diminuisce!"
   },
   "15": {
@@ -162,38 +162,38 @@
   },
   "24": {
     "name": "Ispirato",
-    "message1": "%1 ora è ispirat*!",
+    "message1": "%1 ora è ispirato!",
     "message2": "",
     "message3": "",
-    "message4": "%1 non è più ispirat*!"
+    "message4": "%1 non è più ispirato!"
   },
   "25": {
     "name": "Caldo",
-    "message1": "%1 è ora avvolt* da un'aura di fuoco.",
-    "message2": "%1 è ora avvolt* da un'aura di fuoco.",
+    "message1": "%1 è ora avvolto da un'aura di fuoco.",
+    "message2": "%1 è ora avvolto da un'aura di fuoco.",
     "message3": "",
     "message4": ""
   },
   "26": {
     "name": "Freddo",
-    "message1": "%1 è ora avvolt* da un'aura gelida.",
-    "message2": "%1 è ora avvolt* da un'aura gelida.",
+    "message1": "%1 è ora avvolto da un'aura gelida.",
+    "message2": "%1 è ora avvolto da un'aura gelida.",
     "message3": "",
     "message4": ""
   },
   "27": {
     "name": "Statico",
-    "message1": "%1 è ora avvolt* da un'aura statica.",
-    "message2": "%1 è ora avvolt* da un'aura statica.",
+    "message1": "%1 è ora avvolto da un'aura statica.",
+    "message2": "%1 è ora avvolto da un'aura statica.",
     "message3": "",
     "message4": "%1 è ora a terra."
   },
   "28": {
     "name": "Bagnato",
-    "message1": "%1 è ora bagnat*.",
-    "message2": "%1 è ora bagnat*.",
+    "message1": "%1 è ora bagnato.",
+    "message2": "%1 è ora bagnato.",
     "message3": "",
-    "message4": "%1 è asciutt*."
+    "message4": "%1 è asciutto."
   },
   "29": {
     "name": "Incontri a metà",
@@ -213,20 +213,20 @@
     "name": "Berserk",
     "message1": "%1 è furioso!",
     "message2": "%1 è furioso!",
-    "message3": "%1 è consumat* dalla sete di sangue!",
+    "message3": "%1 è consumato dalla sete di sangue!",
     "message4": "La sete di sangue di %1 si placa!"
   },
   "32": {
     "name": "Scudo Divino",
-    "message1": "%1 è benedett* dalla protezione divina!",
-    "message2": "%1 è benedett* dalla protezione divina!",
+    "message1": "%1 è benedetto dalla protezione divina!",
+    "message2": "%1 è benedetto dalla protezione divina!",
     "message3": "",
     "message4": "La protezione divina attorno a %1 svanisce."
   },
   "33": {
     "name": "Marchio della morte",
-    "message1": "%1 è contrassegnat* per la morte!",
-    "message2": "%1 è contrassegnat* per la morte!",
+    "message1": "%1 è contrassegnato per la morte!",
+    "message2": "%1 è contrassegnato per la morte!",
     "message3": "Il segno della morte persiste su %1...",
     "message4": "Il segno della morte su %1 scompare."
   },
@@ -260,15 +260,15 @@
   },
   "38": {
     "name": "Sbilanciato",
-    "message1": "%1 è sbilanciat*!",
-    "message2": "%1 è sbilanciat*!",
+    "message1": "%1 è sbilanciato!",
+    "message2": "%1 è sbilanciato!",
     "message3": "%1 fa fatica a mantenere l'equilibrio...",
     "message4": "%1 riacquista il corretto equilibrio."
   },
   "39": {
     "name": "Collegamento di vita",
-    "message1": "%1 è collegat* alla forza vitale del party!",
-    "message2": "%1 è collegat* alla forza vitale del party!",
+    "message1": "%1 è collegato alla forza vitale del party!",
+    "message2": "%1 è collegato alla forza vitale del party!",
     "message3": "%1 mantiene il collegamento vitale...",
     "message4": "Il legame vitale con %1 è reciso."
   },
@@ -281,29 +281,29 @@
   },
   "41": {
     "name": "Nausea",
-    "message1": "%1 è nauseat*!",
-    "message2": "%1 è nauseat*!",
+    "message1": "%1 è nauseato!",
+    "message2": "%1 è nauseato!",
     "message3": "",
-    "message4": "%1 non è più nauseat*!"
+    "message4": "%1 non è più nauseato!"
   },
   "42": {
     "name": "Ubriaco",
-    "message1": "%1 è ubriac*!",
-    "message2": "%1 è ubriac*!",
+    "message1": "%1 è ubriaco!",
+    "message2": "%1 è ubriaco!",
     "message3": "",
-    "message4": "%1 è tornat* sobri*!"
+    "message4": "%1 è tornato sobrio!"
   },
   "43": {
     "name": "Bruciato",
-    "message1": "%1 è bruciat*!",
-    "message2": "%1 è bruciat*!",
+    "message1": "%1 è bruciato!",
+    "message2": "%1 è bruciato!",
     "message3": "",
-    "message4": "%1 non è più avvelenat*!"
+    "message4": "%1 non è più avvelenato!"
   },
   "44": {
     "name": "Infetto",
-    "message1": "%1 è infett*!",
-    "message2": "%1 è infett*!",
+    "message1": "%1 è infetto!",
+    "message2": "%1 è infetto!",
     "message3": "",
     "message4": "%1 non è più infetto!"
   },
@@ -323,8 +323,8 @@
   },
   "47": {
     "name": "oleoso",
-    "message1": "%1 è ora copert* di petrolio",
-    "message2": "%1 è ora copert* dal petrolio",
+    "message1": "%1 è ora coperto di petrolio",
+    "message2": "%1 è ora coperto dal petrolio",
     "message3": "",
     "message4": ""
   },
@@ -348,5 +348,75 @@
     "message2": "%1 è in astinenza!",
     "message3": "",
     "message4": "%1 non è più in astinenza!"
+  },
+  "51": {
+    "name": "In Presa",
+    "message1": "%1 è bloccato in una presa!",
+    "message2": "%1 è bloccato in una presa!",
+    "message3": "%1 si dimena nella presa...",
+    "message4": "%1 si libera dalla presa!"
+  },
+  "52": {
+    "name": "Immobilizzato",
+    "message1": "%1 è immobilizzato a terra!",
+    "message2": "%1 è immobilizzato a terra!",
+    "message3": "%1 non riesce a rialzarsi...",
+    "message4": "%1 torna in piedi!"
+  },
+  "53": {
+    "name": "Guardia Rotta",
+    "message1": "La guardia di %1 è rotta!",
+    "message2": "La guardia di %1 è rotta!",
+    "message3": "%1 combatte senza alcuna guardia...",
+    "message4": "%1 ritrova la guardia."
+  },
+  "54": {
+    "name": "Senza Fiato",
+    "message1": "%1 è senza fiato!",
+    "message2": "%1 è senza fiato!",
+    "message3": "%1 boccheggia in cerca d'aria...",
+    "message4": "%1 riprende fiato."
+  },
+  "55": {
+    "name": "Combo Pronta",
+    "message1": "%1 vede l'apertura!",
+    "message2": "%1 vede l'apertura!",
+    "message3": "%1 attende il colpo successivo...",
+    "message4": "%1 perde l'apertura."
+  },
+  "56": {
+    "name": "Punto Vitale Esposto",
+    "message1": "I punti vitali di %1 sono esposti!",
+    "message2": "I punti vitali di %1 sono esposti!",
+    "message3": "%1 non riesce a coprire l'apertura...",
+    "message4": "%1 richiude la guardia."
+  },
+  "57": {
+    "name": "Posizione Radicata",
+    "message1": "%1 pianta la sua posizione!",
+    "message2": "%1 pianta la sua posizione!",
+    "message3": "%1 tiene la posizione...",
+    "message4": "%1 abbandona la posizione."
+  },
+  "58": {
+    "name": "Stato di Flusso",
+    "message1": "%1 entra nel flusso!",
+    "message2": "%1 entra nel flusso!",
+    "message3": "%1 si muove con l'attacco...",
+    "message4": "%1 esce dal flusso."
+  },
+  "59": {
+    "name": "Chi Bruciato",
+    "message1": "%1 ha bruciato il proprio chi!",
+    "message2": "%1 ha bruciato il proprio chi!",
+    "message3": "%1 soffre per lo sforzo...",
+    "message4": "Il chi di %1 si ristabilisce."
+  },
+  "60": {
+    "name": "Commozione Cerebrale",
+    "message1": "%1 ha una commozione cerebrale!",
+    "message2": "%1 ha una commozione cerebrale!",
+    "message3": "%1 ha ancora la testa che rimbomba...",
+    "message4": "%1 riprende lucidità."
   }
 }

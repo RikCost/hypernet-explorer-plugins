@@ -1,0 +1,391 @@
+{
+  "scale": {
+    "system": "SYSTEM",
+    "galaxy": "GALAXY",
+    "localGroup": "LOCAL GROUP",
+    "supercluster": "VIRGO SUPERCLUSTER",
+    "filaments": "COSMIC WEB",
+    "observable": "OBSERVABLE UNIVERSE",
+    "universe": "UNIVERSE",
+    "unknown": "UNKNOWN",
+    "planet": "PLANET",
+    "cluster": "GALAXY CLUSTER",
+    "web": "COSMIC WEB",
+    "webNode": "COSMIC WEB NODE",
+    "unnamedGalaxy": "UNNAMED GALAXY",
+    "proceduralGalaxy": "PROCEDURAL GALAXY",
+    "starSystem": "STAR SYSTEM",
+    "milkyWay": "MILKY WAY GALAXY",
+    "near": "NEAR {name}"
+  },
+  "sky": {
+    "european": "EUROPEAN",
+    "chinese": "CHINESE",
+    "hint": "ARROWS OR WASD PAN · Q/E ZOOM · SHIFT SWITCHES DA SKY · ESC CLOSES",
+    "hintPad": "LS PAN · LB/RB ZOOM · X SWITCHES DA SKY · B CLOSES"
+  },
+  "cluster": {
+    "virgo": "VIRGO CLUSTER",
+    "hydra": "HYDRA SUPERCLUSTER",
+    "centaurus": "CENTAURUS SUPERCLUSTER",
+    "pavoIndus": "PAVO-INDUS SUPERCLUSTER"
+  },
+  "travel": {
+    "yourDestination": "YA DESTINATION",
+    "arrivedAt": "YOU HAB ARRIVED AT {place}",
+    "timeToArrival": "TIME TA ARRIVAL",
+    "lyRemaining": "{ly} LY REMAININ'"
+  },
+  "bodyType": {
+    "Dark + emission nebula": "DARK + EMISSION NEBULA",
+    "Dark nebula": "DARK NEBULA",
+    "Dark nebula (Bok globule)": "DARK NEBULA (BOK GLOBULE)",
+    "Dark nebula silhouette": "DARK NEBULA SILHOUETTE",
+    "Emission + reflection nebula": "EMISSION + REFLECTION NEBULA",
+    "Emission nebula": "EMISSION NEBULA",
+    "Emission nebula (Pillars of Creation)": "EMISSION NEBULA (PILLARS OF CREATION)",
+    "Emission nebula (SNR-like arc)": "EMISSION NEBULA (SNR-LIKE ARC)",
+    "Emission/reflection nebula (H II region)": "EMISSION/REFLECTION NEBULA (H II REGION)",
+    "Planetary nebula": "PLANETARY NEBULA",
+    "Reflection nebula": "REFLECTION NEBULA",
+    "Supernova remnant": "SUPERNOVA REMNANT",
+    "barred spiral galaxy": "BARRED SPIRAL GALAXY",
+    "cosmological horizon": "COSMOLOGICAL HORIZON",
+    "dwarf irregular galaxy": "DWARF IRREGULAR GALAXY",
+    "galaxy cluster": "GALAXY CLUSTER",
+    "galaxy group": "GALAXY GROUP",
+    "gravitational anomaly": "GRAVITATIONAL ANOMALY",
+    "higher-dimensional anomaly": "HIGHER-DIMENSIONAL ANOMALY",
+    "spiral galaxy": "SPIRAL GALAXY",
+    "rich galaxy cluster": "RICH GALAXY CLUSTER",
+    "elliptical galaxy": "ELLIPTICAL GALAXY"
+  },
+  "row": {
+    "type": "TYPE",
+    "diameter": "DIAMETER",
+    "members": "MEMBERS",
+    "stars": "STARS",
+    "distance": "DISTANCE",
+    "currentLocation": "CURRENT LOCATION",
+    "starType": "STAR TYPE",
+    "starClass": "{type} CLASS",
+    "mass": "MASS",
+    "radius": "RADIUS",
+    "temperature": "TEMPERATURE",
+    "planets": "PLANETS",
+    "memberOf": "MEMBER OF",
+    "companions": "COMPANIONS",
+    "feedingOn": "FEEDIN' ON",
+    "chartedFor": "CHARTED FOR",
+    "megastructure": "MEGASTRUCTURE",
+    "dyson": "DYSON SPHERE",
+    "dysonAbandoned": "ABANDONED DYSON SPHERE",
+    "orbit": "ORBIT",
+    "period": "PERIOD",
+    "atmosphere": "ATMOSPHERE",
+    "yes": "YAH!",
+    "no": "NAH!",
+    "breathableAir": "BREATHABLE AIR",
+    "life": "LIFE",
+    "detected": "DETECTED",
+    "moons": "MOONS",
+    "oreBody": "ORE BODY",
+    "units": "{remaining} / {capacity} UNITS",
+    "condition": "CONDITION",
+    "weakSigns": "WEAK SIGNS"
+  },
+  "nibiru": {
+    "impactRow": "EARTH IMPACT",
+    "countdownYears": "{years} Y {days} D {hh}:{mm}",
+    "countdownDays": "{days} D {hh}:{mm}",
+    "countdownNow": "ANY MOMENT NOW",
+    "noteFar": "A WORLD WIT NO SUN, FALLIN' IN OUT OF DA DARK ON A COURSE NOBODY PLOTTED AN' NOBODY CAN BEND. DA EPHEMERIDES PUT IT OVER EARTH ON DA TWENTY-FIRST OF DECEMBER, 2012!",
+    "noteNear": "INSIDE DA SYSTEM NOW, AN' NO LONGER SLOWIN'. IT HOLDS EARTH'S OWN ANGLE EXACTLY, WHICH IZ ANOTHER WAY OF SAYIN' IT IZ NOT GOING TA MISS!",
+    "saturnNote": "NIBIRU WENT INTO DA GIANT INSTEAD, AN' DA GIANT CAUGHT. SATURN BURNS NOW: NOT ENOUGH TA BE A STAR, FAR TOO MUCH TA STILL BE A PLANET. DA RINGS WENT FIRST!",
+    "towerNote": "WHERE EARTH STOOD DERE IZ A BLACK LANCE TWELVE KILOMETRES TALL, GOLD AT EVERY EDGE, TURNIN' IN DA ORBIT ITS WORLD LEFT BEHIND. NOTHIN' ON IT ANSWERS, AN' ONE DOOR IZ OPEN!",
+    "towerLanding": "OMEGA TOWER SPIRE",
+    "entered": "NIBIRU HAB CROSSED INTO DA SOLAR SYSTEM!",
+    "hitSaturn": "NIBIRU HAB STRUCK SATURN. DA GIANT IZ BURNIN'!",
+    "hitEarth": "NIBIRU HAB STRUCK DA EARTH. BOTH IZ GONE!"
+  },
+  "unnamedGalaxy": "UNNAMED GALAXY",
+  "unit": {
+    "mly": "{n} MLY",
+    "thousandLy": "{n},000 LY",
+    "billionStars": "~{n} BILLION",
+    "galaxies": "~{n} GALAXIES"
+  },
+  "hud": {
+    "centreTheViewOnYour": "CENTRE DA VIEW ON YA SHIP, WHEREVER IT IZ",
+    "sweepEverySystemWithin500": "SWEEP EVERY SYSTEM WITHIN 500 LY FOR LIFE",
+    "quantumBridgeToTheSelected": "QUANTUM-BRIDGE TA DA SELECTED SYSTEM (COSTS 1 SCHRÖDINGERITE)",
+    "plotACourseHomeMilky": "PLOT A COURSE HOME (MILKY WAY ONLY, WHILE NOT ALREADY ORBITIN' EARTH)",
+    "quantumBridgeStraightHomeCosts": "QUANTUM-BRIDGE STRAIGHT HOME (COSTS 1 SCHRÖDINGERITE)",
+    "plotACourseToThis": "PLOT A COURSE TA DIS SYSTEM",
+    "quantumBridgeStraightIntoOrbit": "QUANTUM-BRIDGE STRAIGHT INTO ORBIT (COSTS 1 SCHRÖDINGERITE)",
+    "cutTheBodyApartWith": "CUT DA BODY APART WIT DA SHIP'S LASERS (BURNS HYPERFLUX)",
+    "openTheServicingBay": "OPEN DA SERVICIN' BAY",
+    "zoomTo": "ZOOM TA",
+    "starSystem": "STAR SYSTEM",
+    "catalog": "CATALOG",
+    "home": "HOME",
+    "returnToEarth": "RETURN TA EARTH",
+    "ebBridge": "EB BRIDGE",
+    "engines": "ENGINES",
+    "warpSpeed": "WARP SPEED",
+    "hyperfluxBurn": "HYPERFLUX BURN",
+    "stop": "STOP",
+    "fuel": "FUEL",
+    "hyperfluxReserve": "HYPERFLUX RESERVE",
+    "hyperflux": "HYPERFLUX",
+    "schrD": "SCHRÖD.",
+    "mapFuel": "MAP FUEL",
+    "refuel": "REFUEL",
+    "orbit": "ORBIT",
+    "chooseLandingSite": "CHOOSE LANDIN' SITE",
+    "cancel": "CANCEL",
+    "servicingBay": "SERVICIN' BAY",
+    "stripMining": "STRIP MININ'",
+    "cutLasers": "CUT LASERS",
+    "zoom": "ZOOM",
+    "enterSystem": "ENTER SYSTEM",
+    "travelHere": "TRAVEL HERE",
+    "currentLocation": "CURRENT LOCATION",
+    "parkedInOrbit": "PARKED IN ORBIT",
+    "openSchrDingerBohrBridge": "OPEN SCHRÖDINGER BOHR BRIDGE",
+    "flyHere": "FLY HERE",
+    "landHere": "LAND HERE",
+    "stripMine": "STRIP ME",
+    "serviceTelescope": "SERVICE TELESCOPE",
+    "serviced": "SERVICED",
+    "repair": "REPAIR",
+    "close": "CLOSE",
+    "landingGridHelp": "CLICK A SQUARE, OR MOVE WIT ARROW KEYS AN' CONFIRM WIT ENTER/OK. ESC CANCELS!",
+    "refuelTooltip": "REFUEL HERE, OR PLOT A COURSE TA DA NEAREST STAR DAT CAN REFUEL DA SHIP",
+    "orbitHint": "DRAG ROTATE · WHEEL ZOOM · CLICK SELECT · ESC EXIT",
+    "nothingCatalogued": "NOTHIN' CATALOGUED.",
+    "rechargesIn": "RECHARGES IN",
+    "nominal": "NOMINAL",
+    "mineProgress": "{mined} / {capacity} UNITS · ~{eta}S TA DEPLETION",
+    "ship": "SHIP",
+    "scanForBiosignatures": "SCAN FOR BIOSIGNATURES",
+    "sbBridge": "SB-BRIDGE",
+    "setCourse": "SET COURSE",
+    "parkInOrbit": "PARK IN ORBIT",
+    "stopRefuel": "STOP REFUEL",
+    "harvestSchrDingerite": "HARVEST SCHRÖDINGERITE",
+    "serviceEverythingAffordable": "SERVICE EVERYTHIN' AFFORDABLE",
+    "critical": "CRITICAL",
+    "bookmarkAdd": "BOOKMARK DIS",
+    "bookmarkRemove": "REMOVE BOOKMARK",
+    "bookmarked": "BOOKMARKED",
+    "bookmark": "BOOKMARK"
+  },
+  "hubblePart": {
+    "DF-224 Computer": {
+      "label": "DF-224 COMPUTER",
+      "note": "DA ONBOARD COMPUTER. 48 KILOBYTES, THREE REDUNDANT PROCESSORS, ONE LEFT!"
+    },
+    "Thermal Blanket": {
+      "label": "THERMAL BLANKET",
+      "note": "MULTI-LAYER INSULATION, CRACKED AN' PEELIN' AFTER A DECADE OF RAW SUNLIGHT!"
+    },
+    "Aperture Door": {
+      "label": "APERTURE DOOR",
+      "note": "SHUTS IF DA SUN COMES WITHIN 20 DEGREES OF DA AXIS. IT HAB STUCK BEFORE!"
+    },
+    "High-Gain Antenna": {
+      "label": "HIGH-GAIN ANTENNA",
+      "note": "DA DOWNLINK. EVERYTHIN' DA TELESCOPE HAB EVER SEEN CAME THROUGH HERE!"
+    },
+    "Battery Bank": {
+      "label": "BATTERY BANK",
+      "note": "SIX NICKEL-HYDROGEN BATTERIES CARRYIN' DA NIGHT SIDE OF EVERY ORBIT!"
+    },
+    "Solar Array (Starboard)": {
+      "label": "SOLAR ARRAY (STARBOARD)",
+      "note": "ITS TWIN. SAME FAULT, OPPOSITE SIDE!"
+    },
+    "Solar Array (Port)": {
+      "label": "SOLAR ARRAY (PORT)",
+      "note": "TWENTY-FIVE SQUARE METRES OF CELLS. WARPS EVERY TIME IT CROSSES DA TERMINATOR!"
+    },
+    "Reaction Wheels": {
+      "label": "REACTION WHEELS",
+      "note": "FOUR WHEELS DAT TURN DA WHOLE OBSERVATORY BY TURNIN' THEMSELVES!"
+    },
+    "Gyroscope Assembly": {
+      "label": "GYROSCOPE ASSEMBLY",
+      "note": "SIX RATE GYROS, THREE NEEDED TA POINT. DEY FAIL ON A SCHEDULE!"
+    },
+    "Fine Guidance Sensor": {
+      "label": "FINE GUIDANCE SENSOR",
+      "note": "LOCKS ONTO GUIDE STARS. WITHOUT IT DA TELESCOPE NO CAN HOLD STILL!"
+    },
+    "NICMOS Cooler": {
+      "label": "NICMOS COOLER",
+      "note": "KEEPS DA INFRARED DETECTORS AT 60 K. DA SOLID NITROGEN RAN OUT!"
+    },
+    "STIS Spectrograph": {
+      "label": "STIS SPECTROGRAPH",
+      "note": "SPLITS STARLIGHT INTO ITS LINES. POWER SUPPLY IZ MARGINAL!"
+    },
+    "WFPC2 Camera": {
+      "label": "WFPC2 CAMERA",
+      "note": "WIDE FIELD AN' PLANETARY CAMERA. DA ONE DAT TAKES DA PICTURES!"
+    },
+    "Corrective Optics (COSTAR)": {
+      "label": "CORRECTIVE OPTICS (COSTAR)",
+      "note": "DA SPECTACLES FITTED IN 1993 TA UNDO DA MIRROR'S ERROR!"
+    },
+    "Secondary Mirror": {
+      "label": "SECONDARY MIRROR",
+      "note": "HOLDS DA FOCUS. MICROMETEOROID PITTIN' ACROSS DA COATIN'!"
+    },
+    "Primary Mirror": {
+      "label": "PRIMARY MIRROR",
+      "note": "2.4 M, GROUND TA DA WRONG PRESCRIPTION IN 1981. SPHERICAL ABERRATION!"
+    }
+  },
+  "hubbleQuest": {
+    "title": "REFIT OF DA HUBBLE SPACE TELESCOPE",
+    "giver": "STARSHIP MAINTENANCE LOG",
+    "body": "DA OLD OBSERVATORY IZ STILL UP DERE, HOLDIN' ITS ONE ASTRONOMICAL UNIT ORBIT AN' POINTIN' AT NOTHIN'. HALF ITS ASSEMBLIES IZ DEAD, DA REST IZ RUNNIN' ON DEY MARGINS, AN' DA DOWNLINK HAB BEEN QUIET FOR YEARS. BRING DA SHIP ALONGSIDE, OPEN DA SERVICIN' BAY AN' PUT DA TELESCOPE BACK TA WORK ONE ASSEMBLY AT A TIME!",
+    "objectives": "RESTORE EVERY ASSEMBLY OF DA HUBBLE SPACE TELESCOPE FROM DA SHIP'S SERVICIN' BAY!",
+    "terms": [
+      "DA BAY ONLY OPENS WHILE DA SHIP HOLDS STATION IN DA TELESCOPE'S ORBIT, IN DA SOL SYSTEM!",
+      "EVERY REPAIR IZ PAID FOR IN CRAFTIN' MATERIALS, AN' A WORSE FAULT COSTS MORE!",
+      "NOTHIN' HERE IZ TIMED: A HALF-SERVICED TELESCOPE STAYS HALF-SERVICED!"
+    ],
+    "reward": "DEEP FIELD IMAGIN': DOUBLE RANGE ON DA BIOSIGNATURE SWEEP",
+    "log": {
+      "opened": "STANDIN' ORDER POSTED ABOARD: DA TELESCOPE IN DA 1 AU ORBIT IZ A WRECK, AN' IT IZ OURS TA PUT RIGHT!",
+      "serviced": "{name} RESTORED. {done} OF {total} ASSEMBLIES NOW SIT WITHIN DEY SERVICE LIMITS!",
+      "servicedMany": "{count} ASSEMBLIES RESTORED. {done} OF {total} NOW SIT WITHIN DEY SERVICE LIMITS!",
+      "complete": "EVERY ASSEMBLY IZ WITHIN ITS LIMITS. DA APERTURE DOOR IZ OPEN, DA DOWNLINK IZ LIVE AN' DA DEEP FIELD SURVEY IZ RUNNIN': DA BIOSIGNATURE SWEEP NOW REACHES TWICE AS FAR!"
+    }
+  },
+  "core": {
+    "noSpaceports": "NO SPACEPORTS IN DIS PLANET",
+    "cancel": "CANCEL",
+    "theStar": "DA STAR",
+    "refuellingFrom": "REFUELLIN' FROM {star}.",
+    "distanceLy": " ({ly} LY)",
+    "coursePlotted": "COURSE PLOTTED TA {star}{distance}. REFUELLIN' ON ARRIVAL!",
+    "mayRunOut": "HYPERFLUX MAY RUN OUT BEFORE ARRIVAL!",
+    "alreadyRefuelling": "ALREADY REFUELLIN' FROM {star}.",
+    "tankFull": "HYPERFLUX TANK IZ ALREADY FULL!",
+    "noStarInRange": "NO STAR ABLE TA REFUEL DA SHIP WITHIN RANGE!"
+  },
+  "hint": {
+    "cockpit": "<b>COCKPIT</b> &nbsp;·&nbsp; WASD THRUST · SPACE/C UP·DOWN · SHIFT BOOST · MOUSE LOOK · F ORBIT · ESC EXIT",
+    "planet": "CLICK DA STAR OR ZOOM OUT TA LEAVE",
+    "system": "CLICK A PLANET TA ZOOM IN · CLICK IT AGAIN TA CLOSE IN",
+    "galaxy": "CLICK A STAR TA TARGET IT · CLICK IT AGAIN TA ZOOM TA IT",
+    "galaxyFocus": "ZOOM OUT TA LEAVE",
+    "cluster": "CLICK A GALAXY TA TARGET IT · CLICK IT AGAIN TA ENTER IT",
+    "web": "CLICK ANY NODE · CLICK IT AGAIN TA ZOOM INTO ITS CLUSTER",
+    "outer": "CLICK A GALAXY TA TARGET IT · CLICK IT AGAIN TA ENTER IT",
+    "modeLine": "<b>{scale}</b> &nbsp;·&nbsp; DRAG ROTATE · WHEEL ZOOM · TAB PICK · {tail} · SPACE ZOOM TA TARGET · F COCKPIT · ESC EXIT"
+  },
+  "hintPad": {
+    "cockpit": "<b>COCKPIT</b> &nbsp;·&nbsp; [LS] THRUST · [RS] LOOK · [RT]/[LT] CLIMB·DIVE · [X] BOOST · [B] EXIT",
+    "planet": "[B] OR ZOOM OUT TA LEAVE",
+    "system": "[LB]/[RB] PICK A BODY · ZOOM IN ON IT TA MOVE IN",
+    "galaxy": "[LB]/[RB] PICK A STAR · ZOOM IN ON IT TA ENTER",
+    "galaxyFocus": "ZOOM OUT TA LEAVE",
+    "cluster": "[LB]/[RB] PICK A GALAXY · ZOOM IN ON IT TA ENTER",
+    "web": "[LB]/[RB] PICK A NODE · ZOOM IN ON IT TA ENTER ITS CLUSTER",
+    "outer": "[LB]/[RB] PICK A GALAXY · ZOOM IN ON IT TA ENTER",
+    "modeLine": "<b>{scale}</b> &nbsp;·&nbsp; [RS] ROTATE · [LT]/[RT] ZOOM · {tail} · [A] ZOOM TA TARGET · [Y] CATALOG · [X] COCKPIT · [B] EXIT"
+  },
+  "service": {
+    "hubbleName": "HUBBLE SPACE TELESCOPE",
+    "bayTitle": "SERVICIN' BAY · {name}",
+    "footer": "A FULLY SERVICED TELESCOPE DOUBLES DA RANGE OF DA BIOSIGNATURE SWEEP!",
+    "operational": "OPERATIONAL · DEEP FIELD IMAGIN' ONLINE",
+    "belowLimit": {
+      "one": "{count} ASSEMBLY BELOW SERVICE LIMIT",
+      "other": "{count} ASSEMBLIES BELOW SERVICE LIMIT"
+    },
+    "condition": "OVERALL CONDITION {pct}% · {state}",
+    "partRestored": "{name} RESTORED.",
+    "notEnoughMaterials": "NOT ENOUGH MATERIALS FOR DAT ASSEMBLY!",
+    "serviced": {
+      "one": "SERVICED {count} ASSEMBLY.",
+      "other": "SERVICED {count} ASSEMBLIES."
+    },
+    "nothingSpared": "NOTHIN' ABOARD CAN BE SPARED FOR A REPAIR!"
+  },
+  "mining": {
+    "lasersCut": "LASERS CUT.",
+    "nothingLeft": "NOTHIN' LEFT IN DAT BODY WORTH CUTTIN'!",
+    "lasersHot": "LASERS HOT. CUTTIN'.",
+    "leftBody": "LEFT DA BODY; LASERS COLD!",
+    "fuelOut": "HYPERFLUX EXHAUSTED; LASERS COLD!",
+    "bodyStripped": "BODY STRIPPED.",
+    "strippedToBedrock": "{name} STRIPPED TA BEDROCK."
+  },
+  "catalog": {
+    "starSub": "{type} CLASS · {planets} PLANETS",
+    "star": "{type} CLASS · STAR",
+    "companion": "{type} CLASS · COMPANION",
+    "donor": "{type} CLASS · DONOR",
+    "life": " · LIFE",
+    "moonOf": "{type} · MOON OF {planet}",
+    "weakLife": " · WEAK SIGNS"
+  },
+  "tab": {
+    "current": "CURRENT SYSTEM",
+    "currentEmpty": "NOTHIN' CATALOGUED IN DIS SYSTEM!",
+    "systemBodies": "{name} BODIES",
+    "objects": "OBJECTS",
+    "objectsEmpty": "NOTHIN' CATALOGUED.",
+    "galaxies": "GALAXIES",
+    "clusters": "CLUSTERS & STRUCTURES",
+    "anomalies": "HIGHER-DIMENSIONAL ANOMALIES",
+    "nebulae": "NEBULAE",
+    "starSystems": "STAR SYSTEMS",
+    "farSystems": "SYSTEMS IN OTHER GALAXIES",
+    "bookmarks": "BOOKMARKS",
+    "bookmarksEmpty": "NOTHIN' BOOKMARKED YET - USE DA BOOKMARK BUTTON ON ANY SELECTION!",
+    "bookmarkedBodies": "BOOKMARKED BODIES",
+    "biosignatures": "BIOSIGNATURES",
+    "biosignaturesEmpty": "NO BIOSIGNATURES LOGGED. RUN A SCAN!",
+    "lifeBearing": "LIFE-BEARIN' WORLDS",
+    "spaceports": "SPACEPORTS",
+    "spaceportsEmpty": "NO SPACEPORTS CATALOGUED.",
+    "landingSites": "LANDIN' SITES",
+    "patrons": "PATRONS",
+    "patronsEmpty": "NO PATRON WORLDS ON FILE.",
+    "patronWorlds": "PATRON WORLDS",
+    "weakSignatures": "WEAK SIGNATURES"
+  },
+  "scan": {
+    "worldsFound": {
+      "one": "<b>BIOSIGNATURE SCAN</b> &nbsp;·&nbsp; {count} LIFE-BEARIN' WORLD WITHIN {radius} LY",
+      "other": "<b>BIOSIGNATURE SCAN</b> &nbsp;·&nbsp; {count} LIFE-BEARIN' WORLDS WITHIN {radius} LY"
+    },
+    "hubbleOnline": " (HUBBLE ONLINE)",
+    "newCount": " · {count} NEW",
+    "loggedInCatalog": " · LOGGED IN DA CATALOG",
+    "weakCount": {
+      "one": " · {count} WEAK READIN'",
+      "other": " · {count} WEAK READINGS"
+    }
+  },
+  "refuel": {
+    "refuel": "REFUEL",
+    "stop": "STOP REFUEL",
+    "refuelling": "REFUELLIN'",
+    "onArrival": "REFUELLIN' ON ARRIVAL",
+    "courseSet": "COURSE SET: {target}",
+    "drawingFrom": "DRAWIN' FROM {star}",
+    "tankFull": "TANK FULL",
+    "docked": "DOCKED AT A FUSIN' STAR",
+    "inSystem": "FUEL STAR IN DIS SYSTEM",
+    "nearest": "NEAREST FUEL STAR",
+    "mayBeOutOfRange": "NEAREST FUEL STAR MAY BE OUT OF RANGE",
+    "noneInRange": "NO FUSIN' STAR IN RANGE"
+  }
+}

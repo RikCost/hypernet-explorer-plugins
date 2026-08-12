@@ -32,9 +32,9 @@
     "dimensional": "Dimensional Gateway"
   },
   "defaultDestination": "Antwerpen",
-  "trainStationTitle": "Train station",
-  "stationBadge": "Station",
-  "stationLabel": "{place}, Train station",
+  "hubTitle": "Served by the transport network",
+  "hubBadge": "Hub",
+  "hubLabel": "{place}, transport hub",
   "fuelRate": "Fuel Rate: {rate} L/tile",
   "rateMultiplier": "Rate Multiplier: {multiplier}x",
   "editing": "Editing",

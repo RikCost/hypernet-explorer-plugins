@@ -52,7 +52,8 @@
         style.id = 'arena-ui-styles';
         style.textContent = `
         #arena-ui-container {
-            position: fixed; inset: 0; display: flex; justify-content: center;
+            position: fixed; top: 0; right: 0; bottom: 0; left: 0;
+            display: flex; justify-content: center;
             align-items: center; z-index: 1000; box-sizing: border-box; padding: 24px;
             background: var(--gradient-33); user-select: none; -webkit-user-select: none;
         }
@@ -722,37 +723,65 @@
     //=========================================================================
     // Kicks only the FIRST bout (when a starter is queued); every later return
     // here between bouts is a brief lull while the victory handler queues the next
-    // fight. It reads no input, so it can never double-start a fight. The dark
-    // backdrop is intentionally theme-independent (it sits behind battle fades).
+    // fight. It reads no input, so it can never double-start a fight. The backdrop
+    // reads the live theme (--bg-panel/--text-primary-hover), so it goes black on
+    // Omega Tower and parchment on Archive Foundation like every other Arena screen.
     function Scene_ArenaStage() { this.initialize(...arguments); }
     Scene_ArenaStage.prototype = Object.create(Scene_Base.prototype);
     Scene_ArenaStage.prototype.constructor = Scene_ArenaStage;
 
+    const themeVar = (name, fallback) => {
+        try {
+            const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+            return v || fallback;
+        } catch (e) { return fallback; }
+    };
+
     Scene_ArenaStage.prototype.create = function () {
         Scene_Base.prototype.create.call(this);
+        const bgColor = themeVar('--bg-panel', '#120a08');
+        const textColor = themeVar('--text-primary-hover', '#d4a64e');
+
         this._backgroundSprite = new Sprite();
         this._backgroundSprite.bitmap = new Bitmap(Graphics.width, Graphics.height);
-        this._backgroundSprite.bitmap.fillAll('#120a08');
+        this._backgroundSprite.bitmap.fillAll(bgColor);
         this.addChild(this._backgroundSprite);
 
         const sprite = new Sprite();
-        sprite.bitmap = new Bitmap(Graphics.width, 80);
+        sprite.bitmap = new Bitmap(Graphics.width, 120);
         sprite.bitmap.fontFace = 'Lora';
-        sprite.bitmap.fontSize = 28;
-        sprite.bitmap.textColor = '#d4a64e';
+        sprite.bitmap.fontSize = 44;
+        sprite.bitmap.textColor = textColor;
         sprite.bitmap.drawText(
             T('Arena.theArenaAwaitsTheNext'),
-            0, 0, Graphics.width, 80, 'center'
+            0, 0, Graphics.width, 120, 'center'
         );
-        sprite.y = Math.floor((Graphics.height - 80) / 2);
+        sprite.y = Math.floor((Graphics.height - 120) / 2);
         this.addChild(sprite);
     };
 
     Scene_ArenaStage.prototype.start = function () {
         Scene_Base.prototype.start.call(this);
         this.startFadeIn(this.fadeSpeed(), false);
+        this._watchdogFrames = 0;
         const starter = ABH.consumeArenaStageStarter();
         if (starter) starter();
+    };
+
+    // Safety net: the normal handoff between bouts is a short setTimeout queued
+    // by processGauntletVictory/processBiomeTrialVictory (ArenaBattleHandler.js),
+    // guarded on the scene still being "active" at the moment it fires. A message
+    // popup (e.g. the bracket-advance congratulations) can hold Scene_Battle busy
+    // long enough to desync that guard, which drops the queued bout for good and
+    // strands the player on this screen forever. If nothing has moved this scene
+    // along after a couple of seconds, resume the run directly.
+    Scene_ArenaStage.prototype.update = function () {
+        Scene_Base.prototype.update.call(this);
+        if (SceneManager._scene !== this || SceneManager.isSceneChanging()) return;
+        this._watchdogFrames = (this._watchdogFrames || 0) + 1;
+        if (this._watchdogFrames === 150 && ABH.resumeStrandedSession) {
+            ABH.resumeStrandedSession();
+        }
     };
 
     //=========================================================================

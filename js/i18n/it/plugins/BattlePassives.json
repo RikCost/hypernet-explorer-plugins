@@ -42,7 +42,7 @@
     },
     "11": {
       "name": "Flusso di Chi",
-      "desc": "Ogni terza azione rimborsa il TP e concede un'ondata di energia extra."
+      "desc": "Ogni terza azione rimborsa gli AP e concede un'ondata di energia extra."
     },
     "15": {
       "name": "Asceta",
@@ -102,7 +102,7 @@
     },
     "37": {
       "name": "Mago da Guerra",
-      "desc": "Lanci in prima linea senza penalita e gli incantesimi attingono al TP quando finisci gli MP."
+      "desc": "Lanci in prima linea senza penalita e gli incantesimi attingono agli AP quando finisci gli MP."
     },
     "23": {
       "name": "Patto",
@@ -166,7 +166,7 @@
     },
     "42": {
       "name": "Metodo",
-      "desc": "Il tuo artigianato e alchimia rendono un prodotto extra e puoi analizzare oggetti sconosciuti."
+      "desc": "Il tuo artigianato e alchimica rendono un prodotto extra e puoi analizzare oggetti sconosciuti."
     },
     "48": {
       "name": "Cattedra",

@@ -1,0 +1,16 @@
+{
+  "title": "MOD MANAGER",
+  "back": "BACK",
+  "noMods": "NO MODS FOUND IN DA MODS/ FOLDER!",
+  "source": "SOURCE",
+  "path": "PATH",
+  "toggle": "TOGGLE ON / OFF",
+  "moveUp": "MOVE UP ↑ (HIGHER PRIORITY)",
+  "moveDown": "MOVE DOWN ↓ (LOWER PRIORITY)",
+  "local": "LOCAL",
+  "workshop": "STEAM WORKSHOP",
+  "priority": "PRIORITY",
+  "active": "ACTIVE",
+  "inactive": "INACTIVE",
+  "hint": "L1 / R1, REORDER · ← →, SWITCH PANEL · OK, TOGGLE"
+}

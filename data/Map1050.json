@@ -7271,296 +7271,8 @@
       "x": 6,
       "y": 15
     },
-    {
-      "id": 5,
-      "name": "Adventurer",
-      "note": "",
-      "pages": [
-        {
-          "conditions": {
-            "actorId": 1,
-            "actorValid": false,
-            "itemId": 1,
-            "itemValid": false,
-            "selfSwitchCh": "A",
-            "selfSwitchValid": false,
-            "switch1Id": 1,
-            "switch1Valid": false,
-            "switch2Id": 1,
-            "switch2Valid": false,
-            "variableId": 1,
-            "variableValid": false,
-            "variableValue": 0
-          },
-          "directionFix": false,
-          "image": {
-            "tileId": 0,
-            "characterName": "Skab/!$ElvenSwordsman",
-            "direction": 2,
-            "pattern": 1,
-            "characterIndex": 0
-          },
-          "list": [
-            {
-              "code": 357,
-              "indent": 0,
-              "parameters": [
-                "UI/VisualNovelBustSystem",
-                "showBust",
-                "Show Character Bust",
-                {}
-              ]
-            },
-            {
-              "code": 357,
-              "indent": 0,
-              "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateText",
-                "Generate Markov Text",
-                {
-                  "databaseId": "npc",
-                  "chainOrder": "1",
-                  "minLength": "10",
-                  "maxLength": "50",
-                  "faceIndex": "-1",
-                  "faceName": "",
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Database ID = npc"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Chain Order = 3"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Minimum Length = 10"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Maximum Length = 50"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Face Index = -1"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Face Name = "
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Position = 2"
-              ]
-            },
-            {
-              "code": 0,
-              "indent": 0,
-              "parameters": []
-            }
-          ],
-          "moveFrequency": 3,
-          "moveRoute": {
-            "list": [
-              {
-                "code": 0,
-                "parameters": []
-              }
-            ],
-            "repeat": true,
-            "skippable": false,
-            "wait": false
-          },
-          "moveSpeed": 3,
-          "moveType": 1,
-          "priorityType": 1,
-          "stepAnime": false,
-          "through": false,
-          "trigger": 0,
-          "walkAnime": true
-        }
-      ],
-      "x": 5,
-      "y": 12
-    },
-    {
-      "id": 6,
-      "name": "Maid",
-      "note": "AI 0",
-      "pages": [
-        {
-          "conditions": {
-            "actorId": 1,
-            "actorValid": false,
-            "itemId": 1,
-            "itemValid": false,
-            "selfSwitchCh": "A",
-            "selfSwitchValid": false,
-            "switch1Id": 1,
-            "switch1Valid": false,
-            "switch2Id": 1,
-            "switch2Valid": false,
-            "variableId": 1,
-            "variableValid": false,
-            "variableValue": 0
-          },
-          "directionFix": false,
-          "image": {
-            "tileId": 0,
-            "characterName": "NPCs02Color",
-            "direction": 2,
-            "pattern": 1,
-            "characterIndex": 6
-          },
-          "list": [
-            {
-              "code": 357,
-              "indent": 0,
-              "parameters": [
-                "UI/VisualNovelBustSystem",
-                "showBust",
-                "Show Character Bust",
-                {}
-              ]
-            },
-            {
-              "code": 357,
-              "indent": 0,
-              "parameters": [
-                "UI/MarkovTextGenerator",
-                "generateText",
-                "Generate Markov Text",
-                {
-                  "databaseId": "maid",
-                  "chainOrder": "1",
-                  "minLength": "10",
-                  "maxLength": "50",
-                  "faceIndex": "-1",
-                  "faceName": "",
-                  "background": "0",
-                  "position": "2"
-                }
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Database ID = maid"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Chain Order = 3"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Minimum Length = 10"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Maximum Length = 50"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Face Index = -1"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Face Name = "
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Background = 0"
-              ]
-            },
-            {
-              "code": 657,
-              "indent": 0,
-              "parameters": [
-                "Position = 2"
-              ]
-            },
-            {
-              "code": 0,
-              "indent": 0,
-              "parameters": []
-            }
-          ],
-          "moveFrequency": 3,
-          "moveRoute": {
-            "list": [
-              {
-                "code": 0,
-                "parameters": []
-              }
-            ],
-            "repeat": true,
-            "skippable": false,
-            "wait": false
-          },
-          "moveSpeed": 3,
-          "moveType": 0,
-          "priorityType": 1,
-          "stepAnime": false,
-          "through": false,
-          "trigger": 0,
-          "walkAnime": true
-        }
-      ],
-      "x": 6,
-      "y": 13
-    },
+    {"id":5,"name":"Adventurer","note":"","pages":[{"conditions":{"actorId":1,"actorValid":false,"itemId":1,"itemValid":false,"selfSwitchCh":"A","selfSwitchValid":false,"switch1Id":1,"switch1Valid":false,"switch2Id":1,"switch2Valid":false,"variableId":1,"variableValid":false,"variableValue":0},"directionFix":false,"image":{"tileId":0,"characterName":"Skab/!$ElvenSwordsman","direction":2,"pattern":1,"characterIndex":0},"list":[{"code":102,"indent":0,"parameters":[["Talk","Empathize","Cancel"],3,0,2,0]},{"code":402,"indent":0,"parameters":[0,"Talk"]},{"code":357,"indent":1,"parameters":["UI/VisualNovelBustSystem","showBust","Show Character Bust",{}]},{"code":357,"indent":1,"parameters":["UI/MarkovTextGenerator","generateText","Generate Markov Text",{"databaseId":"npc","chainOrder":"1","minLength":"10","maxLength":"50","faceIndex":"-1","faceName":"","background":"0","position":"2"}]},{"code":657,"indent":1,"parameters":["Database ID = npc"]},{"code":657,"indent":1,"parameters":["Chain Order = 3"]},{"code":657,"indent":1,"parameters":["Minimum Length = 10"]},{"code":657,"indent":1,"parameters":["Maximum Length = 50"]},{"code":657,"indent":1,"parameters":["Face Index = -1"]},{"code":657,"indent":1,"parameters":["Face Name = "]},{"code":657,"indent":1,"parameters":["Background = 0"]},{"code":657,"indent":1,"parameters":["Position = 2"]},{"code":0,"indent":1,"parameters":[]},{"code":402,"indent":0,"parameters":[1,"Empathize"]},{"code":357,"indent":1,"parameters":["NPC/NPCEmpathize","Open","Open",{"eventName":""}]},{"code":657,"indent":1,"parameters":["NPC Event Name = "]},{"code":0,"indent":1,"parameters":[]},{"code":402,"indent":0,"parameters":[2,"Cancel"]},{"code":0,"indent":1,"parameters":[]},{"code":404,"indent":0,"parameters":[]},{"code":0,"indent":0,"parameters":[]}],"moveFrequency":3,"moveRoute":{"list":[{"code":0,"parameters":[]}],"repeat":true,"skippable":false,"wait":false},"moveSpeed":3,"moveType":1,"priorityType":1,"stepAnime":false,"through":false,"trigger":0,"walkAnime":true},{"conditions":{"actorId":1,"actorValid":false,"itemId":1,"itemValid":false,"selfSwitchCh":"A","selfSwitchValid":true,"switch1Id":1,"switch1Valid":false,"switch2Id":1,"switch2Valid":false,"variableId":1,"variableValid":false,"variableValue":0},"directionFix":false,"image":{"characterIndex":0,"characterName":"","direction":2,"pattern":0,"tileId":0},"list":[{"code":0,"indent":0,"parameters":[]}],"moveFrequency":3,"moveRoute":{"list":[{"code":0,"parameters":[]}],"repeat":true,"skippable":false,"wait":false},"moveSpeed":3,"moveType":0,"priorityType":0,"stepAnime":false,"through":false,"trigger":0,"walkAnime":true}],"x":5,"y":12},
+    {"id":6,"name":"Maid","note":"AI 0","pages":[{"conditions":{"actorId":1,"actorValid":false,"itemId":1,"itemValid":false,"selfSwitchCh":"A","selfSwitchValid":false,"switch1Id":1,"switch1Valid":false,"switch2Id":1,"switch2Valid":false,"variableId":1,"variableValid":false,"variableValue":0},"directionFix":false,"image":{"tileId":0,"characterName":"NPCs/!$Maid2","direction":2,"pattern":1,"characterIndex":0},"list":[{"code":102,"indent":0,"parameters":[["Talk","Empathize","Cancel"],3,0,2,0]},{"code":402,"indent":0,"parameters":[0,"Talk"]},{"code":357,"indent":1,"parameters":["UI/VisualNovelBustSystem","showBust","Show Character Bust",{}]},{"code":357,"indent":1,"parameters":["UI/MarkovTextGenerator","generateText","Generate Markov Text",{"databaseId":"maid","chainOrder":"1","minLength":"10","maxLength":"50","faceIndex":"-1","faceName":"","background":"0","position":"2"}]},{"code":657,"indent":1,"parameters":["Database ID = maid"]},{"code":657,"indent":1,"parameters":["Chain Order = 3"]},{"code":657,"indent":1,"parameters":["Minimum Length = 10"]},{"code":657,"indent":1,"parameters":["Maximum Length = 50"]},{"code":657,"indent":1,"parameters":["Face Index = -1"]},{"code":657,"indent":1,"parameters":["Face Name = "]},{"code":657,"indent":1,"parameters":["Background = 0"]},{"code":657,"indent":1,"parameters":["Position = 2"]},{"code":0,"indent":1,"parameters":[]},{"code":402,"indent":0,"parameters":[1,"Empathize"]},{"code":357,"indent":1,"parameters":["NPC/NPCEmpathize","Open","Open",{"eventName":""}]},{"code":657,"indent":1,"parameters":["NPC Event Name = "]},{"code":0,"indent":1,"parameters":[]},{"code":402,"indent":0,"parameters":[2,"Cancel"]},{"code":0,"indent":1,"parameters":[]},{"code":404,"indent":0,"parameters":[]},{"code":0,"indent":0,"parameters":[]}],"moveFrequency":3,"moveRoute":{"list":[{"code":0,"parameters":[]}],"repeat":true,"skippable":false,"wait":false},"moveSpeed":3,"moveType":0,"priorityType":1,"stepAnime":false,"through":false,"trigger":0,"walkAnime":true},{"conditions":{"actorId":1,"actorValid":false,"itemId":1,"itemValid":false,"selfSwitchCh":"A","selfSwitchValid":true,"switch1Id":1,"switch1Valid":false,"switch2Id":1,"switch2Valid":false,"variableId":1,"variableValid":false,"variableValue":0},"directionFix":false,"image":{"characterIndex":0,"characterName":"","direction":2,"pattern":0,"tileId":0},"list":[{"code":0,"indent":0,"parameters":[]}],"moveFrequency":3,"moveRoute":{"list":[{"code":0,"parameters":[]}],"repeat":true,"skippable":false,"wait":false},"moveSpeed":3,"moveType":0,"priorityType":0,"stepAnime":false,"through":false,"trigger":0,"walkAnime":true}],"x":6,"y":13},
     {
       "id": 7,
       "name": "Transfer (1050 - Police station)",
@@ -8531,74 +8243,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
-            "direction": 2,
-            "pattern": 1,
-            "characterIndex": 3
-          },
-          "list": [
-            {
-              "code": 117,
-              "indent": 0,
-              "parameters": [
-                130
-              ]
-            },
-            {
-              "code": 0,
-              "indent": 0,
-              "parameters": []
-            }
-          ],
-          "moveFrequency": 5,
-          "moveRoute": {
-            "list": [
-              {
-                "code": 0,
-                "parameters": []
-              }
-            ],
-            "repeat": true,
-            "skippable": false,
-            "wait": false
-          },
-          "moveSpeed": 3,
-          "moveType": 1,
-          "priorityType": 1,
-          "stepAnime": false,
-          "through": false,
-          "trigger": 0,
-          "walkAnime": true
-        }
-      ],
-      "x": 6,
-      "y": 9
-    },
-    {
-      "id": 16,
-      "name": "Officer Gria",
-      "note": "",
-      "pages": [
-        {
-          "conditions": {
-            "actorId": 1,
-            "actorValid": false,
-            "itemId": 1,
-            "itemValid": false,
-            "selfSwitchCh": "A",
-            "selfSwitchValid": false,
-            "switch1Id": 1,
-            "switch1Valid": false,
-            "switch2Id": 1,
-            "switch2Valid": false,
-            "variableId": 66,
-            "variableValid": false,
-            "variableValue": 1000
-          },
-          "directionFix": false,
-          "image": {
-            "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$OttomanGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -8649,14 +8294,14 @@
             "switch1Valid": false,
             "switch2Id": 1,
             "switch2Valid": false,
-            "variableId": 66,
+            "variableId": 131,
             "variableValid": true,
-            "variableValue": 10000
+            "variableValue": 50
           },
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$OttomanGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -8694,7 +8339,16 @@
           "through": false,
           "trigger": 2,
           "walkAnime": true
-        },
+        }
+      ],
+      "x": 6,
+      "y": 9
+    },
+    {
+      "id": 16,
+      "name": "Officer Gria",
+      "note": "",
+      "pages": [
         {
           "conditions": {
             "actorId": 1,
@@ -8708,13 +8362,71 @@
             "switch2Id": 1,
             "switch2Valid": false,
             "variableId": 66,
-            "variableValid": true,
-            "variableValue": 100000
+            "variableValid": false,
+            "variableValue": 1000
           },
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
+            "direction": 2,
+            "pattern": 1,
+            "characterIndex": 0
+          },
+          "list": [
+            {
+              "code": 117,
+              "indent": 0,
+              "parameters": [
+                130
+              ]
+            },
+            {
+              "code": 0,
+              "indent": 0,
+              "parameters": []
+            }
+          ],
+          "moveFrequency": 5,
+          "moveRoute": {
+            "list": [
+              {
+                "code": 0,
+                "parameters": []
+              }
+            ],
+            "repeat": true,
+            "skippable": false,
+            "wait": false
+          },
+          "moveSpeed": 3,
+          "moveType": 1,
+          "priorityType": 1,
+          "stepAnime": false,
+          "through": false,
+          "trigger": 0,
+          "walkAnime": true
+        },
+        {
+          "conditions": {
+            "actorId": 1,
+            "actorValid": false,
+            "itemId": 1,
+            "itemValid": false,
+            "selfSwitchCh": "A",
+            "selfSwitchValid": false,
+            "switch1Id": 1,
+            "switch1Valid": false,
+            "switch2Id": 1,
+            "switch2Valid": false,
+            "variableId": 131,
+            "variableValid": true,
+            "variableValue": 50
+          },
+          "directionFix": false,
+          "image": {
+            "tileId": 0,
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -8745,7 +8457,7 @@
             "skippable": false,
             "wait": false
           },
-          "moveSpeed": 5,
+          "moveSpeed": 4,
           "moveType": 2,
           "priorityType": 1,
           "stepAnime": false,
@@ -8781,7 +8493,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -8832,14 +8544,14 @@
             "switch1Valid": false,
             "switch2Id": 1,
             "switch2Valid": false,
-            "variableId": 66,
+            "variableId": 131,
             "variableValid": true,
-            "variableValue": 10000
+            "variableValue": 50
           },
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -8871,64 +8583,6 @@
             "wait": false
           },
           "moveSpeed": 4,
-          "moveType": 2,
-          "priorityType": 1,
-          "stepAnime": false,
-          "through": false,
-          "trigger": 2,
-          "walkAnime": true
-        },
-        {
-          "conditions": {
-            "actorId": 1,
-            "actorValid": false,
-            "itemId": 1,
-            "itemValid": false,
-            "selfSwitchCh": "A",
-            "selfSwitchValid": false,
-            "switch1Id": 1,
-            "switch1Valid": false,
-            "switch2Id": 1,
-            "switch2Valid": false,
-            "variableId": 66,
-            "variableValid": true,
-            "variableValue": 100000
-          },
-          "directionFix": false,
-          "image": {
-            "tileId": 0,
-            "characterName": "Police",
-            "direction": 2,
-            "pattern": 1,
-            "characterIndex": 0
-          },
-          "list": [
-            {
-              "code": 117,
-              "indent": 0,
-              "parameters": [
-                124
-              ]
-            },
-            {
-              "code": 0,
-              "indent": 0,
-              "parameters": []
-            }
-          ],
-          "moveFrequency": 5,
-          "moveRoute": {
-            "list": [
-              {
-                "code": 0,
-                "parameters": []
-              }
-            ],
-            "repeat": true,
-            "skippable": false,
-            "wait": false
-          },
-          "moveSpeed": 5,
           "moveType": 2,
           "priorityType": 1,
           "stepAnime": false,
@@ -8964,7 +8618,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -9015,14 +8669,14 @@
             "switch1Valid": false,
             "switch2Id": 1,
             "switch2Valid": false,
-            "variableId": 66,
+            "variableId": 131,
             "variableValid": true,
-            "variableValue": 10000
+            "variableValue": 50
           },
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -9054,64 +8708,6 @@
             "wait": false
           },
           "moveSpeed": 4,
-          "moveType": 2,
-          "priorityType": 1,
-          "stepAnime": false,
-          "through": false,
-          "trigger": 2,
-          "walkAnime": true
-        },
-        {
-          "conditions": {
-            "actorId": 1,
-            "actorValid": false,
-            "itemId": 1,
-            "itemValid": false,
-            "selfSwitchCh": "A",
-            "selfSwitchValid": false,
-            "switch1Id": 1,
-            "switch1Valid": false,
-            "switch2Id": 1,
-            "switch2Valid": false,
-            "variableId": 66,
-            "variableValid": true,
-            "variableValue": 100000
-          },
-          "directionFix": false,
-          "image": {
-            "tileId": 0,
-            "characterName": "Police",
-            "direction": 2,
-            "pattern": 1,
-            "characterIndex": 0
-          },
-          "list": [
-            {
-              "code": 117,
-              "indent": 0,
-              "parameters": [
-                124
-              ]
-            },
-            {
-              "code": 0,
-              "indent": 0,
-              "parameters": []
-            }
-          ],
-          "moveFrequency": 5,
-          "moveRoute": {
-            "list": [
-              {
-                "code": 0,
-                "parameters": []
-              }
-            ],
-            "repeat": true,
-            "skippable": false,
-            "wait": false
-          },
-          "moveSpeed": 5,
           "moveType": 2,
           "priorityType": 1,
           "stepAnime": false,
@@ -9147,7 +8743,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -9198,14 +8794,14 @@
             "switch1Valid": false,
             "switch2Id": 1,
             "switch2Valid": false,
-            "variableId": 66,
+            "variableId": 131,
             "variableValid": true,
-            "variableValue": 10000
+            "variableValue": 50
           },
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Police",
+            "characterName": "NPCs/!$RoyalGuard1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -9237,64 +8833,6 @@
             "wait": false
           },
           "moveSpeed": 4,
-          "moveType": 2,
-          "priorityType": 1,
-          "stepAnime": false,
-          "through": false,
-          "trigger": 2,
-          "walkAnime": true
-        },
-        {
-          "conditions": {
-            "actorId": 1,
-            "actorValid": false,
-            "itemId": 1,
-            "itemValid": false,
-            "selfSwitchCh": "A",
-            "selfSwitchValid": false,
-            "switch1Id": 1,
-            "switch1Valid": false,
-            "switch2Id": 1,
-            "switch2Valid": false,
-            "variableId": 66,
-            "variableValid": true,
-            "variableValue": 100000
-          },
-          "directionFix": false,
-          "image": {
-            "tileId": 0,
-            "characterName": "Police",
-            "direction": 2,
-            "pattern": 1,
-            "characterIndex": 0
-          },
-          "list": [
-            {
-              "code": 117,
-              "indent": 0,
-              "parameters": [
-                124
-              ]
-            },
-            {
-              "code": 0,
-              "indent": 0,
-              "parameters": []
-            }
-          ],
-          "moveFrequency": 5,
-          "moveRoute": {
-            "list": [
-              {
-                "code": 0,
-                "parameters": []
-              }
-            ],
-            "repeat": true,
-            "skippable": false,
-            "wait": false
-          },
-          "moveSpeed": 5,
           "moveType": 2,
           "priorityType": 1,
           "stepAnime": false,

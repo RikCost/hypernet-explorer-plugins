@@ -1,0 +1,19 @@
+{
+  "caste": {
+    "grey": "GREY",
+    "crimson": "CRIMSON ANALYZER",
+    "pale": "PALE WARPER",
+    "dargos": "DARGOS"
+  },
+  "casteDesc": {
+    "grey": "CAME TA LOOK. STILL LOOKIN'. PHOTOGRAPHS EVERYTHIN' AN' UNDERSTANDS ALMOST NONE OF IT!",
+    "crimson": "HOLDS DAT NOTHIN' IZ UNDERSTOOD UNTIL IT HAB BEEN OPENED, AN' CARRIES A KATANA BECAUSE A SCALPEL IZ SLOW!",
+    "pale": "FOLDS MINDS AN' DISTANCES RATHER DEN CROSSIN' DEM. SPEAKS RARELY, AN' NEVER WIT DA MOUTH!",
+    "dargos": "FROM TITANIA, WHERE DA ENTIRE DIPLOMATIC APPARATUS IZ ONE LONG JOKE AT HUMANITY'S EXPENSE!"
+  },
+  "origin": {
+    "zetareticulia": "ZETA RETICULI A",
+    "zetareticulib": "ZETA RETICULI B",
+    "titania": "TITANIA"
+  }
+}

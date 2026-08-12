@@ -222,6 +222,11 @@
     const TIER_POINTS = [0, 1, 2, 3, 5, 8];
     const BOTCH_POINTS = 1;
     const SALVAGE_POINTS = 1;
+    // A hand that knows the trade wastes less of it: the chance each unit of a
+    // reagent is handed back off a finished assembly, by the level of the trade
+    // the recipe belongs to (1 Untrained to 5 Master). Read off the trade, not
+    // off Fabrication: knowing where a bench is does not save you leather.
+    const RECLAIM_BY_LEVEL = [0, 0, 0.10, 0.20, 0.32, 0.45];
 
     function isSandbox() {
         return !!($gameSystem && $gameSystem._isSandboxMode);
@@ -281,11 +286,125 @@
         return Math.min(FAIL_CAP, base * (1 + TIER_RISK * (recipeTier(item) - 1)));
     }
 
+    // ------------------------------------------------------------------------
+    // What the bench can already read
+    // ------------------------------------------------------------------------
+    // A blueprint used to be legible only once it had been built, so the book
+    // was a record of what the party had done rather than of what they know how
+    // to do, and a trained smith opened it on a page of question marks.
+    // Training reads it too: every crafting category is one trade, and someone
+    // who has trained that trade recognises its work on sight. No two
+    // categories answer to the same trade, so a cook reads the food page and
+    // nothing else, and how much of their own page they read is their level in
+    // it against each recipe's tier: a Beginner recognises tier 1 work, an
+    // Intermediate tier 2, a Master the whole page. Training therefore opens
+    // the book gradually, exactly as it opens the bench.
+    //
+    // The names are specialization ids from js/db/Skills/Specialization.json;
+    // a category with no entry of its own falls back to Misc's, and weapons and
+    // armor answer to the forge whatever category they were filed under.
+    // i18n-ignore-start
+    const CATEGORY_SPECS = {
+        Arctic: 'Igloo Building',
+        Armor: 'Armor Smithing',
+        Artisan: 'Woodcarving',
+        Books: 'Bookbinding',
+        Collectibles: 'Antique Restoration',
+        Combat: 'Improvised Explosives',
+        Counterfeits: 'Counterfeiting',
+        Enhancers: 'Alchemy',
+        Espionage: 'Electronics',
+        Essentials: 'Fabrication',
+        Farming: 'Farming',
+        Food: 'Cooking',
+        Homeopathy: 'Naturopathy',
+        Jungle: 'Foraging',
+        Lifestyle: 'Carpentry',
+        Magic: 'Runecrafting',
+        Medical: 'Pharmacology',
+        Monsters: 'Taxidermy',
+        Plants: 'Herbalism',
+        Recovery: 'First Aid',
+        Survival: 'Survival',
+        Tools: 'Metalworking',
+        Trash: 'Maintenance',
+        Vehicles: 'Mechanics',
+        Weapons: 'Weaponsmithing',
+        Misc: 'Manual Tooling'
+    };
+    const WEAPON_SPEC = 'Weaponsmithing';
+    const ARMOR_SPEC = 'Armor Smithing';
+    // i18n-ignore-end
+
+    // A category page asks for hundreds of rows and every ask walks the
+    // member's class and traits, so levels are read once per redraw.
+    let _readCache = new Map();
+    function clearRecipeKnowledgeCache() {
+        _readCache = new Map();
+    }
+
+    function readLevel(specName) {
+        if (!window.SpecializationXP) return 1;
+        if (_readCache.has(specName)) return _readCache.get(specName);
+        const level = window.SpecializationXP.levelOf(benchActor(), specName) || 1;
+        _readCache.set(specName, level);
+        return level;
+    }
+
+    // The one trade a recipe belongs to.
+    function recipeSpec(item) {
+        if (DataManager.isWeapon(item)) return WEAPON_SPEC;
+        if (DataManager.isArmor(item)) return ARMOR_SPEC;
+        return CATEGORY_SPECS[parseCategory(item)] || CATEGORY_SPECS.Misc;
+    }
+
+    // The trade the member reads this recipe with and how far along in it they
+    // are, whether or not that is far enough to make anything of the page.
+    function readingSpec(item) {
+        const name = recipeSpec(item);
+        return { name, level: readLevel(name) };
+    }
+
+    // The training that puts this recipe on the page, or null when it does not
+    // reach that far.
+    function revealingSpec(item) {
+        const trade = readingSpec(item);
+        return trade.level >= recipeTier(item) ? trade : null;
+    }
+
+    // Whether the blueprint reads at all: built once before, or recognised off
+    // the trade it belongs to.
+    function knowsRecipe(item) {
+        if (isSandbox()) return true;
+        if ($gameSystem && $gameSystem.hasCrafted(item.id)) return true;
+        return !!revealingSpec(item);
+    }
+
+    // A specialization's name as the player reads it.
+    function specLabel(name) {
+        return (typeof window.translateText === 'function') ? window.translateText(name) : name;
+    }
+
+    function levelLabel(level) {
+        const db = window.Specializations;
+        return (db && db.levelName) ? db.levelName(level) : String(level);
+    }
+
+    // The chance each unit of a reagent survives the assembly and is handed
+    // back. Sandbox spends nothing in the first place, so it never applies.
+    function reclaimChance(item) {
+        if (isSandbox()) return 0;
+        return RECLAIM_BY_LEVEL[Math.max(1, Math.min(5, readingSpec(item).level))] || 0;
+    }
+
     // How many pieces come back off a teardown: a practised hand takes a thing
-    // apart without ruining half of it.
-    function salvageYield() {
-        const level = fabLevel();
-        return 1 + Math.floor(Math.random() * 2) + Math.floor((level - 1) / 2);
+    // apart without ruining half of it, and knowing the trade it was made in
+    // is worth as much again as knowing the bench.
+    function salvageYield(item) {
+        const trade = item ? readingSpec(item).level : 1;
+        return 1 + Math.floor(Math.random() * 2)
+            + Math.floor((fabLevel() - 1) / 2)
+            + Math.floor((trade - 1) / 2);
     }
 
     // Safe item rarity helper
@@ -304,11 +423,20 @@
         // i18n-ignore-end
     }
 
-    // Get all available categories with craftable counts
-    function getAvailableCategories() {
+    // Whether an entry belongs on the page the player is reading: the Learned
+    // book holds only what this member can read, the All book holds everything.
+    function passesFilter(item, filter) {
+        return filter === 'all' || knowsRecipe(item);
+    }
+
+    // Get all available categories with craftable counts, under the filter the
+    // book is open at. A category nobody in the party can read yet is left off
+    // the Learned page entirely rather than opening onto an empty one.
+    function getAvailableCategories(filter) {
         const categories = {};
         for (const item of allCraftableEntries()) {
             if (!parseRecipe(item) || isUncraftable(item)) continue;
+            if (!passesFilter(item, filter)) continue;
 
             const category = parseCategory(item);
             if (!categories[category]) {
@@ -404,8 +532,19 @@
             this._successOverlayTimer = 0;
             this._successOverlayData = null;
 
+            // Which book is open: 'learned' (only what this member can read)
+            // or 'all' (every recipe in the game, unread ones included). A
+            // party that has neither built nor trained anything would open on a
+            // blank page, so the first look is the whole book.
+            this._recipeFilter = 'learned';
+            clearRecipeKnowledgeCache();
+            if (!Object.keys(getAvailableCategories('learned')).length) {
+                this._recipeFilter = 'all';
+            }
+
             this._lastRenderedMode = null;
             this._lastRenderedCategory = null;
+            this._lastRenderedFilter = null;
             this._forceListRebuild = true;
 
             this._fabActorIndex = 0;
@@ -448,6 +587,24 @@
             this.selectFabActor((this._fabActorIndex || 0) + dir);
         }
 
+        // Which of the two books is open. Changing it re-counts the categories
+        // and re-cuts the list, so both caches go with it.
+        setRecipeFilter(filter) {
+            if (filter === this._recipeFilter) return;
+            this._recipeFilter = filter;
+            this._selectedItem = null;
+            this._itemIndex = 0;
+            this._categoryIndex = 0;
+            SoundManager.playCursor();
+            this._forceListRebuild = true;
+            this._thinkerItemsDirty = true;
+            this.refreshUIThinker();
+        }
+
+        toggleRecipeFilter() {
+            this.setRecipeFilter(this._recipeFilter === 'learned' ? 'all' : 'learned');
+        }
+
         update() {
             this.updateUIThinkerInput();
             super.update();
@@ -472,6 +629,11 @@
         refreshUIThinker() {
             const container = document.getElementById("thinker-container");
             if (!container) return;
+
+            // A page asks for hundreds of levels and a level walks the member's
+            // class and traits; they cannot change inside one redraw, so they
+            // are read once for it.
+            clearRecipeKnowledgeCache();
 
             const t = thinkerText();
 
@@ -519,6 +681,13 @@
                         SoundManager.playCancel();
                         this._forceListRebuild = true;
                         this.refreshUIThinker();
+                        return;
+                    }
+
+                    // Learned / All books (checked first: they are tab buttons too)
+                    const filterBtn = e.target.closest(".filter-btn");
+                    if (filterBtn) {
+                        this.setRecipeFilter(filterBtn.getAttribute("data-filter"));
                         return;
                     }
 
@@ -602,11 +771,22 @@
 
             const tabsContainer = spread.querySelector("#tabs-container");
             if (tabsContainer) {
+                // The second row is the book itself: the recipes this member
+                // can read, or every recipe there is. It heads the assemble
+                // side only - a teardown is of a thing already in the pack, so
+                // there is nothing there to have read about first.
+                const filterRow = this._mode === 'assemble' ? `
+                    <div class="mode-tabs filter-tabs">
+                        <div class="tab-btn filter-btn ${this._recipeFilter === 'learned' ? 'active' : ''}" data-filter="learned">${T('Thinker.filterLearned')}</div>
+                        <div class="tab-btn filter-btn ${this._recipeFilter === 'all' ? 'active' : ''}" data-filter="all">${T('Thinker.filterAll')}</div>
+                    </div>
+                ` : '';
                 tabsContainer.innerHTML = `
                     <div class="mode-tabs">
                         <div class="tab-btn ${this._mode === 'assemble' ? 'active' : ''} ${this._activeArea === 'modes' && this._modeIndex === 0 ? 'focused' : ''}" data-idx="0">${t.assemble}</div>
                         <div class="tab-btn ${this._mode === 'disassemble' ? 'active' : ''} ${this._activeArea === 'modes' && this._modeIndex === 1 ? 'focused' : ''}" data-idx="1">${t.disassemble}</div>
                     </div>
+                    ${filterRow}
                 `;
             }
 
@@ -658,11 +838,13 @@
             if (listViewport) {
                 const needsRebuild = this._lastRenderedMode !== this._mode ||
                     this._lastRenderedCategory !== this._selectedCategory ||
+                    this._lastRenderedFilter !== this._recipeFilter ||
                     this._forceListRebuild;
 
                 if (needsRebuild) {
                     this._lastRenderedMode = this._mode;
                     this._lastRenderedCategory = this._selectedCategory;
+                    this._lastRenderedFilter = this._recipeFilter;
                     this._forceListRebuild = false;
 
                     let leftListHTML = "";
@@ -676,7 +858,7 @@
                                 </div>
                             `;
 
-                            const categories = getAvailableCategories();
+                            const categories = getAvailableCategories(this._recipeFilter);
                             const sortedCategories = Object.keys(categories).sort();
 
                             if (sortedCategories.length === 0) {
@@ -692,12 +874,22 @@
                                         background: url('img/system/IconSet.png') -${(iconIdx % 16) * 24}px -${Math.floor(iconIdx / 16) * 24}px no-repeat;
                                         background-size: 384px auto;
                                     `;
+                                    // The trade this shelf is written in, and how
+                                    // far along in it these hands are: the whole
+                                    // answer to why half the page is question marks.
+                                    const trade = CATEGORY_SPECS[cat] || CATEGORY_SPECS.Misc;
+                                    const tradeLine = T('Thinker.tradeLabel', {
+                                        spec: specLabel(trade),
+                                        level: levelLabel(readLevel(trade))
+                                    });
 
                                     leftListHTML += `
                                         <div class="category-row ${isFocused ? 'focused' : ''}" data-cat="${cat}" data-idx="${idx}">
                                             <div class="category-meta-left">
                                                 <div class="category-icon" style="${iconStyle}"></div>
-                                                <span class="category-name">${categoryLabel(cat)}</span>
+                                                <span class="category-name">${categoryLabel(cat)}
+                                                    <span class="category-trade">${tradeLine}</span>
+                                                </span>
                                             </div>
                                             <span class="category-count">${data.craftable} / ${data.total}</span>
                                         </div>
@@ -713,18 +905,10 @@
                                 </div>
                             `;
 
-                            const categoryItems = allCraftableEntries().filter(item => {
-                                if (!parseRecipe(item) || isUncraftable(item)) return false;
-                                return parseCategory(item) === this._selectedCategory;
-                            });
-
-                            categoryItems.sort((a, b) => {
-                                const canA = canCraft(parseRecipe(a));
-                                const canB = canCraft(parseRecipe(b));
-                                if (canA && !canB) return -1;
-                                if (!canA && canB) return 1;
-                                return 0;
-                            });
+                            // One list for the page and for the cursor: they are
+                            // indexed against each other, so they cannot be cut
+                            // or sorted twice.
+                            const categoryItems = this.thinkerItemsList();
 
                             if (categoryItems.length === 0) {
                                 leftListHTML += `<div class="workbench-empty">${T('Thinker.noRecipes')}</div>`;
@@ -739,10 +923,10 @@
                                     if (isFocused) rowClasses += " focused";
                                     if (isSelected) rowClasses += " active";
 
-                                    const hasCrafted = $gameSystem.hasCrafted(item.id);
+                                    const known = knowsRecipe(item);
 
                                     let itemMetaHTML = "";
-                                    if (hasCrafted) {
+                                    if (known) {
                                         const iconIdx = item.iconIndex;
                                         const iconStyle = `
                                             background: url('img/system/IconSet.png') -${(iconIdx % 16) * 32}px -${Math.floor(iconIdx / 16) * 32}px no-repeat;
@@ -783,10 +967,7 @@
                             </div>
                         `;
 
-                        const salvageItems = allCraftableEntries().filter(item => {
-                            if (isUncraftable(item) || !parseRecipe(item)) return false;
-                            return $gameParty.numItems(item) > 0;
-                        });
+                        const salvageItems = this.thinkerItemsList();
 
                         if (salvageItems.length === 0) {
                             leftListHTML += `<div class="workbench-empty" style="margin-top: 24px;">${t.noOwned}</div>`;
@@ -882,16 +1063,24 @@
                 } else {
                     const item = this._selectedItem;
                     const recipe = parseRecipe(item);
-                    const hasCrafted = $gameSystem.hasCrafted(item.id);
+                    const known = knowsRecipe(item);
+                    const trade = readingSpec(item);
                     const sandboxBadge = ($gameSystem && $gameSystem._isSandboxMode) ? `<div class="sandbox-badge">${t.sandboxMode}</div>` : "";
 
                     let nameHTML = "";
                     let descHTML = "";
 
-                    if (this._mode === 'assemble' && !hasCrafted) {
+                    if (this._mode === 'assemble' && !known) {
                         nameHTML = `<span class="workbench-item-name" style="color: #7f7360;">??? (${t.blueprintLocked})</span>`;
+                        // Say what would read it: the trade it is written in and
+                        // how far along that trade these hands would have to be.
                         const lockedDesc = T('Thinker.lockedRecipeHint');
-                        descHTML = `<p class="workbench-desc">${lockedDesc}</p>`;
+                        const revealHint = T('Thinker.revealHint', {
+                            spec: specLabel(trade.name),
+                            level: levelLabel(recipeTier(item))
+                        });
+                        descHTML = `<p class="workbench-desc">${lockedDesc}</p>
+                            <p class="workbench-desc">${revealHint}</p>`;
                     } else {
                         const rarity = getItemRarity(item);
                         const iconIdx = item.iconIndex;
@@ -990,18 +1179,32 @@
 
                     // What the workbench itself thinks of the job: which tier it
                     // is, whether the party is trained to it, and how likely the
-                    // whole thing is to come apart in their hands.
+                    // whole thing is to come apart in their hands. Under it, the
+                    // trade the recipe belongs to and what being good at it buys
+                    // on this side of the bench.
                     let skillNotice = "";
                     if (recipe && this._mode === 'assemble') {
                         const trained = tierMet(item);
                         const risk = Math.round(botchChance(item) * 100);
+                        const reclaim = Math.round(reclaimChance(item) * 100);
                         skillNotice = `<div class="workbench-skill ${trained ? '' : 'locked'}">
                             <span>${T('Thinker.tierLabel', { tier: recipeTier(item), level: tierLevelName(item) })}</span>
                             ${trained && risk > 0 ? `<span class="workbench-risk">${T('Thinker.botchRisk', { pct: risk })}</span>` : ''}
                         </div>`;
+                        skillNotice += `<div class="workbench-skill">
+                            <span>${T('Thinker.tradeLabel', { spec: specLabel(trade.name), level: levelLabel(trade.level) })}</span>
+                            ${reclaim > 0 ? `<span class="workbench-reclaim">${T('Thinker.reclaimChance', { pct: reclaim })}</span>` : ''}
+                        </div>`;
+                        if (known && !$gameSystem.hasCrafted(item.id) && !isSandbox()) {
+                            skillNotice += `<div class="workbench-skill"><span>${T('Thinker.knownBySkill', { spec: specLabel(trade.name), level: levelLabel(trade.level) })}</span></div>`;
+                        }
                         if (!trained) {
                             skillNotice += `<div class="sandbox-badge" style="background:rgba(160,40,40,0.18); border-color:#a02828; color:#a02828;">${T('Thinker.needFabrication', { level: tierLevelName(item) })}</div>`;
                         }
+                    } else if (recipe) {
+                        skillNotice = `<div class="workbench-skill">
+                            <span>${T('Thinker.tradeLabel', { spec: specLabel(trade.name), level: levelLabel(trade.level) })}</span>
+                        </div>`;
                     }
 
                     let btnText = "";
@@ -1061,11 +1264,25 @@
 
                 // Consume reagents if not in sandbox. A botch eats half of them
                 // (rounded up, so a single-unit reagent is always lost) rather
-                // than the lot.
+                // than the lot. A hand that knows the trade hands units back off
+                // a clean job: cut-offs, the second nail out of a pair, the
+                // measure of solder that was never needed.
+                const reclaimed = [];
                 if (!isSandbox()) {
+                    const saveOdds = botched ? 0 : reclaimChance(item);
                     for (const [ingId, qty] of Object.entries(recipe)) {
+                        const reagent = $dataItems[parseInt(ingId)];
                         const spent = botched ? Math.ceil(qty / 2) : qty;
-                        $gameParty.loseItem($dataItems[parseInt(ingId)], spent);
+                        $gameParty.loseItem(reagent, spent);
+                        if (!saveOdds || !reagent) continue;
+                        let saved = 0;
+                        for (let i = 0; i < spent; i++) {
+                            if (Math.random() < saveOdds) saved++;
+                        }
+                        if (saved > 0) {
+                            $gameParty.gainItem(reagent, saved);
+                            reclaimed.push({ item: reagent, count: saved });
+                        }
                     }
                 }
 
@@ -1090,8 +1307,16 @@
 
                     SoundManager.playUseItem();
                     if (window.SpecializationXP) {
-                        window.SpecializationXP.award(FAB_SPEC, TIER_POINTS[recipeTier(item)] || 1,
-                            { actor: benchActor() });
+                        const points = TIER_POINTS[recipeTier(item)] || 1;
+                        // The bench and the trade both learn from the job: the
+                        // trade is what put the recipe on the page in the first
+                        // place, so working it is what opens the rest of it.
+                        window.SpecializationXP.award(FAB_SPEC, points, { actor: benchActor() });
+                        window.SpecializationXP.award(recipeSpec(item), points, { actor: benchActor() });
+                    }
+                    if (reclaimed.length && window.ParchmentToast) {
+                        const list = reclaimed.map(r => `${r.item.name} x${r.count}`).join(', ');
+                        window.ParchmentToast.show(T('Thinker.reclaimed', { items: list }));
                     }
                 }
 
@@ -1109,15 +1334,20 @@
                 $gameParty.loseItem(item, 1);
 
                 // Reclaim random reagents. How many come back is what training
-                // buys on this side of the workbench: 1-2 pieces untrained, up
-                // to 4 for a party that knows where the seams are.
+                // buys on this side of the workbench: 1-2 pieces untrained, and
+                // up to 6 for someone who knows both the bench and the trade the
+                // thing was made in. A teardown can never hand back more than
+                // went into it, so the recipe's own unit count is the ceiling
+                // rather than its number of distinct materials.
                 const materials = Object.keys(recipe);
-                const numReturned = salvageYield();
+                const totalUnits = materials.reduce((sum, id) => sum + (recipe[id] || 1), 0);
+                const numReturned = Math.min(salvageYield(item), totalUnits);
                 const returnedList = [];
 
-                for (let i = 0; i < numReturned && i < materials.length; i++) {
+                for (let i = 0; i < numReturned; i++) {
                     const matId = materials[Math.floor(Math.random() * materials.length)];
                     const matItem = $dataItems[parseInt(matId)];
+                    if (!matItem) continue;
                     $gameParty.gainItem(matItem, 1);
                     returnedList.push(matItem);
                 }
@@ -1127,7 +1357,10 @@
                 this._successOverlayTimer = 110;
 
                 SoundManager.playUseItem();
-                if (window.SpecializationXP) window.SpecializationXP.award(FAB_SPEC, SALVAGE_POINTS, { actor: benchActor() });
+                if (window.SpecializationXP) {
+                    window.SpecializationXP.award(FAB_SPEC, SALVAGE_POINTS, { actor: benchActor() });
+                    window.SpecializationXP.award(recipeSpec(item), SALVAGE_POINTS, { actor: benchActor() });
+                }
                 this._forceListRebuild = true;
                 this._thinkerItemsDirty = true;
 
@@ -1144,7 +1377,7 @@
         // Cached items-pane list: rebuilt only when the mode/category changes or the
         // inventory changes (crafting/salvaging), instead of every frame.
         thinkerItemsList() {
-            const key = this._mode + '|' + (this._selectedCategory || '');
+            const key = this._mode + '|' + (this._selectedCategory || '') + '|' + this._recipeFilter;
             if (!this._thinkerItemsDirty && this._thinkerItemsList && this._thinkerItemsKey === key) {
                 return this._thinkerItemsList;
             }
@@ -1152,7 +1385,8 @@
             if (this._mode === 'assemble') {
                 itemsList = allCraftableEntries().filter(item => {
                     if (!parseRecipe(item) || isUncraftable(item)) return false;
-                    return parseCategory(item) === this._selectedCategory;
+                    if (parseCategory(item) !== this._selectedCategory) return false;
+                    return passesFilter(item, this._recipeFilter);
                 });
                 const craftable = new Map();
                 for (const item of itemsList) {
@@ -1205,6 +1439,13 @@
             if (Input.isTriggered('pagedown')) { this.cycleFabActor(1); return; }
             if (Input.isTriggered('pageup')) { this.cycleFabActor(-1); return; }
 
+            // Shift turns the assemble side between the two books, wherever the
+            // cursor is standing.
+            if (this._mode === 'assemble' && Input.isTriggered('shift')) {
+                this.toggleRecipeFilter();
+                return;
+            }
+
             // Right-click (TouchInput) counts as cancel just like keyboard cancel
             const cancelTriggered = Input.isTriggered('cancel') || TouchInput.isCancelled();
 
@@ -1244,8 +1485,17 @@
                     SoundManager.playCancel();
                 }
             } else if (this._activeArea === 'categories') {
-                const categories = getAvailableCategories();
+                const categories = getAvailableCategories(this._recipeFilter);
                 const sortedCategories = Object.keys(categories).sort();
+
+                if (!sortedCategories.length) {
+                    if (cancelTriggered) {
+                        this._activeArea = 'modes';
+                        SoundManager.playCancel();
+                        this.refreshUIThinker();
+                    }
+                    return;
+                }
 
                 if (Input.isRepeated('down')) {
                     this._categoryIndex = (this._categoryIndex + 1) % sortedCategories.length;
@@ -1278,6 +1528,26 @@
                 }
             } else if (this._activeArea === 'items') {
                 const itemsList = this.thinkerItemsList();
+
+                // An empty shelf (a category with nothing legible in the
+                // Learned book, or nothing owned to tear down) still has to let
+                // the cursor back out.
+                if (!itemsList.length) {
+                    if (Input.isRepeated('up') || cancelTriggered) {
+                        if (this._mode === 'assemble') {
+                            this._selectedCategory = null;
+                            this._selectedItem = null;
+                            this._activeArea = 'categories';
+                        } else {
+                            this._selectedItem = null;
+                            this._activeArea = 'modes';
+                        }
+                        SoundManager.playCancel();
+                        this._forceListRebuild = true;
+                        this.refreshUIThinker();
+                    }
+                    return;
+                }
 
                 if (Input.isRepeated('down')) {
                     this._itemIndex = (this._itemIndex + 1) % itemsList.length;

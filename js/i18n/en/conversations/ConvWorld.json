@@ -52,6 +52,218 @@
         "Sold my shares before they're worth nothing. Market's rotten.",
         "Don't put your savings in the market right now. Trust me."
       ]
+    },
+    "earthDestroyed": {
+      "Nervous": [
+        "We're really the last ones? All of us, floating in this tower, and that's it?",
+        "I can't stop looking out the window. There's nothing out there. Nothing at all."
+      ],
+      "Calm": [
+        "The world ended and somehow we're still here. I've made my peace with the tower.",
+        "Nothing outside these walls but stars now. I've stopped needing more than that."
+      ],
+      "Aggressive": [
+        "A rock did what nothing else could. Makes me want to hit something.",
+        "Earth's gone and I'm still breathing. Whatever's left, I'll fight for it."
+      ],
+      "Melancholic": [
+        "Everything I ever knew is dust somewhere out there. I still dream of it some nights.",
+        "There's no home to miss anymore. Just this tower, and the dark where home used to be."
+      ],
+      "Sanguine": [
+        "We're alive! That's not nothing, not after what happened to the rest of it.",
+        "Every morning I wake up in this tower is a morning I didn't expect to get."
+      ],
+      "Cautious": [
+        "Air recyclers, water reclaimers, backups on the backups. This tower is nothing we get to be careless with.",
+        "I keep a list of everyone still alive. It gets shorter than I'd like."
+      ],
+      "Impulsive": [
+        "Let's just go LOOK outside. What's the worst that happens now, really?",
+        "Earth's gone, so what, I'm not sitting still waiting for the tower to run out of air too."
+      ],
+      "Stoic": [
+        "The planet is gone. The tower stands. I attend to what stands.",
+        "Grief will not refill the water tanks. Work does."
+      ],
+      "Paranoid": [
+        "Someone in this tower knew this was coming and didn't say. I'd bet on it.",
+        "Every closed door in this place hides a decision nobody's told us about."
+      ],
+      "Empathetic": [
+        "Everyone in this tower lost everyone else they ever knew. I try to sit with whoever needs it.",
+        "We're all we have left. I make sure nobody grieves alone in here."
+      ],
+      "Authoritative": [
+        "Panic doesn't keep the lights on. Rosters, rations, watches. That's how we last.",
+        "Every soul left alive answers to someone now. Better that than chaos in a floating tower."
+      ],
+      "Scholarly": [
+        "An impactor that size should have vaporized the tower along with everything else. I want to know why it didn't.",
+        "I'm cataloguing everything we remember of Earth before the memories start slipping."
+      ],
+      "Artistic": [
+        "I'm painting it from memory before I forget the color of a real sky.",
+        "The tower has no horizon left to paint. Just the dark, and us in it."
+      ],
+      "Adventurous": [
+        "Somewhere out past that window is every direction there ever was. I mean to see some of them.",
+        "The whole planet's gone and somehow I still want to know what's past the next hallway."
+      ],
+      "Nurturing": [
+        "The children born in this tower will never know what grass smells like. I tell them anyway.",
+        "Everyone here is somebody's family now, whether they wanted it or not."
+      ],
+      "Mischievous": [
+        "Last people alive and we're STILL arguing about whose turn it is to clean the recyclers.",
+        "End of the world, and I'm still the one who hid the captain's mug. Priorities."
+      ],
+      "Cynical": [
+        "Figures. The planet finally got what was coming to it, and we're the ones stuck cleaning up after.",
+        "Last survivors of humanity. Bet somebody's already trying to charge rent for a bunk."
+      ],
+      "Disciplined": [
+        "The routine doesn't stop because the planet did. Shift starts on time.",
+        "Drills, rotations, maintenance. Structure is the only thing keeping this tower a home and not a coffin."
+      ],
+      "Fatalistic": [
+        "The rock was always coming. We just happened to be the ones still standing when it arrived.",
+        "Earth had its turn. Now this tower has its turn. Everything ends somewhere."
+      ],
+      "Grumpy": [
+        "End of the world and I STILL can't get a hot meal around here.",
+        "Whole planet gone and somehow the recyclers are what finally breaks. Of course."
+      ],
+      "Loyal": [
+        "I lost my whole world, but I've still got the people standing next to me in this tower.",
+        "Whatever's left of humanity, I'm sticking by every one of them."
+      ],
+      "Brave": [
+        "The planet's gone. Fine. We're not, and I intend to make something of what's left.",
+        "Somebody has to hold this tower together. Might as well be me."
+      ],
+      "Timid": [
+        "I don't like looking out the window anymore. There's just... nothing out there.",
+        "I keep to the inner corridors now. Less to be afraid of, in here."
+      ],
+      "Hedonistic": [
+        "World's over, so I figure we might as well enjoy whatever's left in the stores.",
+        "No more Earth, no more rules about what's proper. I'm having the good rations tonight."
+      ],
+      "Apathetic": [
+        "Earth's gone. Tower's still here. So am I, apparently.",
+        "Last of humanity, huh. Doesn't really change my day much."
+      ],
+      "default": [
+        "Earth is gone. This tower is all that's left of it, and all that's left of us.",
+        "We're the last of humanity now, floating in what used to be home's orbit."
+      ]
+    },
+    "earthSaved": {
+      "Nervous": [
+        "It missed us. It actually missed us. I won't stop shaking for a week.",
+        "There's a new light in the sky now and I still flinch every time I see it."
+      ],
+      "Calm": [
+        "The sky has a new star in it, and Earth is still turning under my feet. I'll take it.",
+        "Saturn burns now instead of us. I try not to think too hard about how close that was."
+      ],
+      "Aggressive": [
+        "That thing wanted us and got Saturn instead. Good. Let it burn.",
+        "We're still standing. Whatever knocked that rock off course, I owe them a drink."
+      ],
+      "Melancholic": [
+        "We were saved, and somehow I still can't shake the cold I felt waiting for the end.",
+        "Everyone celebrates the new star. I just remember how close we came to not seeing it."
+      ],
+      "Sanguine": [
+        "Look up! There's a whole new star in the sky and we get to keep living under it!",
+        "Earth's still here! Every single day from now on feels like a gift!"
+      ],
+      "Cautious": [
+        "Saved once doesn't mean safe forever. I'm keeping the supplies packed regardless.",
+        "I watch that new star every night. Just in case something else decides to fall."
+      ],
+      "Impulsive": [
+        "The world didn't end! Let's actually go DO something with the time we didn't lose!",
+        "New star in the sky and I'm the first one climbing the tower roof to see it up close."
+      ],
+      "Stoic": [
+        "The threat passed. Life resumes. That is all there is to say.",
+        "Saturn burns so that we did not have to. I acknowledge it and go back to work."
+      ],
+      "Paranoid": [
+        "Somebody up in that tower made this happen. I want to know exactly who, and why.",
+        "A close call like that doesn't just resolve itself. Somebody's hiding how they did it."
+      ],
+      "Empathetic": [
+        "I hugged every neighbor I have the day the sky lit up over Saturn instead of us.",
+        "So many people were terrified. I'm just glad we get to comfort each other instead of mourn."
+      ],
+      "Authoritative": [
+        "The crisis passed because people held their posts. Remember that, the next time one comes.",
+        "Order held while the sky nearly fell. That's not luck, that's discipline. Keep it up."
+      ],
+      "Scholarly": [
+        "A planet just became a star. I have never had more questions in my life.",
+        "The orbital mechanics of that near miss alone will keep me occupied for years."
+      ],
+      "Artistic": [
+        "There's a whole new color in the night sky now. I have to paint it before I get used to it.",
+        "Saturn burning like that, it's horrifying and it's the most beautiful thing I've ever seen."
+      ],
+      "Adventurous": [
+        "A brand new star just showed up over our heads. I want to see it from every angle there is.",
+        "The world nearly ended and instead we got a new landmark in the sky. I'm not wasting that."
+      ],
+      "Nurturing": [
+        "I held the little ones tight the night the sky changed. Now I get to watch them grow up under it.",
+        "Every child born after this will grow up under that new star. I want them to know what it cost."
+      ],
+      "Mischievous": [
+        "New star, new shadows, new places nobody's thought to check yet. I like our odds.",
+        "The world got a reprieve and somehow I'm still the first suspect when something goes missing."
+      ],
+      "Cynical": [
+        "We got lucky. Don't let anyone tell you it was more than that.",
+        "Saturn takes the hit for us and people act like the universe owed us one. It didn't."
+      ],
+      "Disciplined": [
+        "Crisis or not, the schedule holds. That's exactly how we got through it.",
+        "Drills paid off. We keep drilling, new star in the sky or not."
+      ],
+      "Fatalistic": [
+        "It was always going to land somewhere. This time, mercifully, not on us.",
+        "Saturn's turn came instead of ours. I don't ask why. I just keep living the days I have."
+      ],
+      "Grumpy": [
+        "World nearly ended and I still had to do the same chores after. Typical.",
+        "Everyone's staring at the new star. Somebody still has to fix the fence."
+      ],
+      "Loyal": [
+        "I spent that whole night with the people who matter to me. I'd do it again gladly.",
+        "We made it through together. That's the only reason I care that we made it through at all."
+      ],
+      "Brave": [
+        "Faced the end of everything and it didn't take us. Nothing scares me quite the same after that.",
+        "We stared down the sky itself and it blinked first. I'll take that fight any day."
+      ],
+      "Timid": [
+        "I hid the whole night it happened. I'm glad I still have somewhere to hide.",
+        "The new star is beautiful, from very far away, through a very closed window."
+      ],
+      "Hedonistic": [
+        "We didn't die! I'm celebrating properly, starting tonight.",
+        "Nothing makes you appreciate a good meal like almost not getting to eat another one."
+      ],
+      "Apathetic": [
+        "Huh. We didn't die. Guess I'll keep doing what I was doing.",
+        "New star, old life. Doesn't change much for me either way."
+      ],
+      "default": [
+        "Nibiru struck Saturn instead of us. Earth survived, and there's a new star burning in the night sky to prove it.",
+        "We were spared. Saturn burns now where Nibiru would have taken Earth."
+      ]
     }
   },
   "fallback": {

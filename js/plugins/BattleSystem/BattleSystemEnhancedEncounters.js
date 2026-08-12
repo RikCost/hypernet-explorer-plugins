@@ -22,20 +22,83 @@
  * Enemy spawn modes (Options -> Enemy Spawn, ConfigManager.enemySpawnMode)
  * ----------------------------------------------------------------------------
  *   Balanced (0, default)
- *     Roaming enemies stay at or below the party's median level. Exactly one
- *     high-level encounter is placed per world map tile: a boss much stronger
- *     than the party (party+10 or party*1.5, whichever is higher) and never
- *     above level 100.
+ *     Roaming enemies come out of a band that opens upward from the party's
+ *     own median level: a party of median level L meets levels L to
+ *     L + 7 + floor(L / 10). A level 1 party meets levels 1-8, a level 10
+ *     party 10-18, a level 50 party 50-62, so the spread widens as the party
+ *     grows instead of staying a flat eight levels forever. Exactly one
+ *     high-level encounter is placed per world map tile: a boss above the top
+ *     of that band and never over level 100.
  *
  *   Realistic (1)
- *     Party level is ignored. The spawnable level band is derived from the
- *     biome's danger tier (safe / wild / hostile / deadly) and the world map
- *     distance to the Omega Tower: the further from the tower, the higher the
- *     levels, reaching the ceiling around 200 tiles out. No per-tile boss.
+ *     Everything the biome holds is on the table, whatever its level: a wood
+ *     holds fawns and it holds the thing that eats them, and the party does not
+ *     decide which of the two is at home. The party level decides only what is
+ *     LIKELY - a creature near their own level is by far the commonest sight,
+ *     and distance from it thins a creature out without ever ruling it out. The
+ *     roster is seeded on the nation AND the biome together, so one country's
+ *     Fields hold a different set of animals from the next country's. Places
+ *     the same per-tile boss Balanced does.
  *
- * Both modes keep the nation-seeded distribution intact: the country the player
- * is in still decides which enemies of the biome are absent, rare, normal or
- * common, and the mode only restricts the level range of that weighted pool.
+ *   Tower Distance (2)
+ *     Party level is ignored, and so is the biome. The only term is the world
+ *     map distance to the Omega Tower: the further from the tower, the higher
+ *     the levels, reaching the ceiling around 200 tiles out. No per-tile boss.
+ *
+ *   Chaos (3)
+ *     Nothing is held back and nothing is remembered. The pool is the whole
+ *     fauna table, flat random, level 1 to 110, and every entrance to a
+ *     procedural map re-deals its monsters from scratch.
+ *
+ * Every mode keeps the nation-seeded distribution intact: the country the player
+ * is in still decides which enemies are absent, rare, normal or common there,
+ * and the mode decides which slice of that weighted pool is on the table.
+ *
+ * ----------------------------------------------------------------------------
+ * The calendar (the one rule above every mode)
+ * ----------------------------------------------------------------------------
+ * The year moves every mode's band and cannot be argued with:
+ *
+ *   2001         the mode's own band, untouched
+ *   2002 - 2009  the whole band climbs 10 levels a year, so a level 1 party
+ *                meets 1-8 in 2001, 11-18 in 2002, 21-28 in 2003 ...
+ *   2010 - 2011  the band is thrown away: anything from level 1 to 110 roams
+ *   2012 onward  nothing below level 80 is left, and there is no ceiling
+ *
+ * ----------------------------------------------------------------------------
+ * Special biomes (section 4a)
+ * ----------------------------------------------------------------------------
+ * Some creatures live in one rolled biome variant (Biomes.json specialBiomes:
+ * SpiritWoods, Crystals) and nowhere else. They carry <Special> beside a
+ * <Biome:> tag naming only that biome, they are kept out of every other roster,
+ * and a special-biome map always places at least one of them - in every mode,
+ * and whatever the calendar has done to the level band.
+ *
+ * ----------------------------------------------------------------------------
+ * Whose rules apply where
+ * ----------------------------------------------------------------------------
+ *   Hand-made map with its own encounter list  -> exactly that list, untouched.
+ *   Procedural map (636)                       -> always the algorithm above.
+ *   Alien surface (GalaxySim landing)          -> its own rules entirely
+ *                                                 (section 16), none of this.
+ *
+ * ----------------------------------------------------------------------------
+ * Movement personalities (<Movement: X> on the enemy note)
+ * ----------------------------------------------------------------------------
+ * A roaming monster is not a moving trap. Every enemy carries a movement
+ * personality that decides three separate things: what it does when nothing is
+ * happening (its idle), how it notices the party (sight range, facing cone,
+ * line of sight) and what it does once it has (chase, ambush, swoop, charge,
+ * stalk, flee, ...). See section 6b for the full table; the keys are
+ *
+ *   Fixed Random Approach Fleeing Skittish Grazer Sentry Guard Patrol
+ *   Territorial Ambusher Lurker Mimic Swooper Stalker Hunter Charger Pack
+ *   Erratic Drifter Orbiter Scavenger Coward
+ *
+ * An enemy with no (or an unknown) tag falls back to a personality derived
+ * from its ecology role and archetype, so nothing is left without one.
+ * Peaceful mode pacifies every personality: the idle survives, the reaction
+ * to the party does not.
  *
  * ----------------------------------------------------------------------------
  * Spawn era (in-game year, applies to both modes and to the sandbox)
@@ -333,10 +396,21 @@
 
     // Current in-game year as a fractional number, derived from Variable 114
     // (total game minutes since the Jan 1 2001 epoch used by TimeDateSystem).
+    // Read off the calendar itself rather than off an average year length: the
+    // world clock is leap-year exact and a world may be created in any year
+    // (WorldManager writes the starting date into the same variable), so an
+    // averaged 365.25 slowly walks the era boundaries off the 1st of January.
+    // The bands move the moment the year does, whichever way time passed:
+    // walking, waiting, working a shift, fast travel or the cryogenic pod.
     BSE.Helpers.getCurrentGameYear = function() {
-        const totalMinutes = $gameVariables.value(114) || 0;
-        const minutesPerYear = 365.25 * 24 * 60;
-        return SPAWN_START_YEAR + (totalMinutes / minutesPerYear);
+        const totalMinutes = ($gameVariables && $gameVariables.value(114)) || 0;
+        const date = new Date(2001, 0, 1, 10, 0, 0);
+        date.setMinutes(date.getMinutes() + totalMinutes);
+        const year = date.getFullYear();
+        const yearStart = Date.UTC(year, 0, 1);
+        const yearEnd = Date.UTC(year + 1, 0, 1);
+        const at = Date.UTC(year, date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
+        return year + (at - yearStart) / (yearEnd - yearStart);
     };
 
     // The spawn era of the current in-game year:
@@ -357,8 +431,8 @@
             era = { key: 'collapse', cap: Infinity, eliteMin: 100,
                     eliteMax: Infinity, eliteShare: ERA_COLLAPSE_SHARE };
         } else if (year >= ERA_HIGH_LEVEL_YEAR) {
-            era = { key: 'highLevel', cap: 100, eliteMin: 80,
-                    eliteMax: 100, eliteShare: ERA_HIGH_LEVEL_SHARE };
+            era = { key: 'highLevel', cap: ERA_OPEN_CEILING, eliteMin: 80,
+                    eliteMax: ERA_OPEN_CEILING, eliteShare: ERA_HIGH_LEVEL_SHARE };
         } else {
             era = { key: 'early', cap: 100, eliteMin: 0,
                     eliteMax: 0, eliteShare: 0 };
@@ -373,6 +447,61 @@
     // Highest spawnable enemy level right now (see getSpawnEra).
     BSE.Helpers.getSpawnLevelCap = function() {
         return BSE.Helpers.getSpawnEra().cap;
+    };
+
+    // ------------------------------------------------------------------
+    // The Squishing: what the calendar does to every spawn mode
+    // ------------------------------------------------------------------
+    // The year is the one term that overrides all four spawn modes. It does not
+    // narrow their bands, it MOVES them, so a party that stands still while the
+    // years run watches the world get away from it:
+    //
+    //   2001         the world as written; the mode's own band, untouched
+    //   2002 - 2009  the whole band shifts up by 10 levels a year, so a level 1
+    //                party meets 1-8 in 2001, 11-18 in 2002, 21-28 in 2003 ...
+    //   2010 - 2011  the band is thrown away: anything from level 1 to 110 roams
+    //   2012 onward  the paradox completes; nothing below level 80 is left, and
+    //                there is no ceiling at all
+    //
+    // The ONE exception is a <Special> creature (section 4a): a special biome's
+    // exclusive residents are placed by the guarantee whatever the year says.
+    const ERA_YEAR_STEP    = 10;  // levels the band climbs per year to 2010
+    const ERA_OPEN_CEILING = 110; // 2010-2011: the whole table is loose
+    const ERA_COLLAPSE_FLOOR = 80; // 2012+: nothing weaker than this is left
+
+    // Levels the mode's own band is pushed up by, before 2010.
+    BSE.Helpers.getYearLevelShift = function() {
+        const year = Math.floor(BSE.Helpers.getCurrentGameYear());
+        if (year >= ERA_HIGH_LEVEL_YEAR) return 0;
+        return Math.max(0, year - SPAWN_START_YEAR) * ERA_YEAR_STEP;
+    };
+
+    // The lowest level anything spawns at right now, whatever the mode says.
+    BSE.Helpers.getYearLevelFloor = function() {
+        const year = Math.floor(BSE.Helpers.getCurrentGameYear());
+        if (year >= ERA_COLLAPSE_YEAR) return ERA_COLLAPSE_FLOOR;
+        if (year >= ERA_HIGH_LEVEL_YEAR) return 1;
+        return BSE.Helpers.getYearLevelShift();
+    };
+
+    // Put a mode's raw level band through the calendar. Every band any mode
+    // produces goes through here, which is what makes the rule universal.
+    BSE.Helpers.applyEraToBand = function(band) {
+        const era = BSE.Helpers.getSpawnEra();
+        const sandbox = !!($gameSystem && $gameSystem._isSandboxMode);
+        if (!sandbox && era.key === 'collapse') {
+            return { min: ERA_COLLAPSE_FLOOR, max: Infinity,
+                     center: ERA_COLLAPSE_FLOOR * 1.6 };
+        }
+        if (!sandbox && era.key === 'highLevel') {
+            return { min: 1, max: ERA_OPEN_CEILING, center: ERA_OPEN_CEILING / 2 };
+        }
+        const shift = BSE.Helpers.getYearLevelShift();
+        const cap = era.cap;
+        const clamp = v => Math.max(1, Math.min(cap, v));
+        const min = clamp(band.min + shift);
+        const max = Math.max(min, clamp(band.max + shift));
+        return { min: min, max: max, center: (min + max) / 2 };
     };
 
     // Current nation id: the country the player is standing in (Variable 86).
@@ -404,6 +533,33 @@
         return nationFrequencyWeight(nationEnemyHash(BSE.Helpers.getNationId(), enemyId));
     };
 
+    // Stable small integer for a biome name, so a biome can take part in a hash
+    // the way a nation id does.
+    BSE.Helpers.getBiomeSeed = function(biomeName) {
+        const s = String(biomeName || '').toLowerCase().trim();
+        let h = 2166136261 >>> 0;
+        for (let i = 0; i < s.length; i++) {
+            h = Math.imul(h ^ s.charCodeAt(i), 16777619) >>> 0;
+        }
+        return h >>> 0;
+    };
+
+    // Realistic mode draws from the WHOLE fauna table, so the nation alone is
+    // not enough to keep one place feeling different from the next: without the
+    // biome in the seed every Fields, Forest and Badlands tile of a country
+    // would hold the same animals. Nation AND biome together mean a country has
+    // its own fauna and each of its habitats its own slice of it.
+    BSE.Helpers.getNationBiomeEnemyWeight = function(enemyId, biomeName) {
+        const nation = BSE.Helpers.getNationId();
+        const biome = BSE.Helpers.getBiomeSeed(biomeName);
+        let h = (Math.imul(nation | 0, 73856093) ^
+                 Math.imul(enemyId | 0, 19349663) ^
+                 Math.imul(biome | 0, 83492791)) >>> 0;
+        h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0;
+        h ^= h >>> 16;
+        return nationFrequencyWeight((h >>> 0) / 4294967296);
+    };
+
     // Max enemy level in a troop (0 if none / invalid).
     BSE.Helpers.getTroopMaxLevel = function(troopId) {
         const troop = $dataTroops[troopId];
@@ -428,7 +584,15 @@
         // The reinforced-battle scratch slot (section 5b) is not a fauna entry.
         if (troop._bseReinforced) return 0;
         if (!BSE.Helpers.troopWithinLevelCap(troopId)) return 0;
-        return BSE.Helpers.getNationEnemyWeight(troop.members[0].enemyId);
+        // A <Special> creature lives in one special biome and nowhere else
+        // (section 4a). Anywhere else its weight is zero, which drops it out of
+        // every list built from this one.
+        if (!BSE.Helpers.troopAllowedInBiome(troopId, BSE.Helpers.getMapBiome())) return 0;
+        // The world's own answer rides on top of the nation weight, so a
+        // goblin world is overrun with goblins without any of the level-band,
+        // biome or boss rules having to know about it.
+        return BSE.Helpers.getNationEnemyWeight(troop.members[0].enemyId) *
+               BSE.Helpers.populationSpawnBoost(troopId);
     };
 
     // The nations where an enemy is most likely to be encountered (for the
@@ -533,6 +697,7 @@
                 return BSE.Helpers.getEnemyLevel(enemyData.note) >= 70;
             });
             if (!hasHighLevel) continue;
+            if (!BSE.Helpers.troopAllowedInBiome(i, targetBiome)) continue;
             if (targetBiome && !BSE.Helpers.troopMatchesBiome(i, targetBiome)) continue;
             if (!BSE.Helpers.troopWithinLevelCap(i)) continue; // respect level cap
             bossTroops.push(i);
@@ -585,6 +750,9 @@
             if (lvl < era.eliteMin || lvl > era.eliteMax) continue;
             const lead = $dataEnemies[troop.members[0].enemyId];
             if (!lead || !lead.note || !/<Biome:/i.test(lead.note)) continue;
+            // The `anyFauna` fallback below reaches the whole table, so the
+            // special-biome residents have to be turned away here (section 4a).
+            if (!BSE.Helpers.troopAllowedInBiome(i, targetBiome)) continue;
             const entry = {
                 troopId: i,
                 weight: Math.max(0.25, BSE.Helpers.getNationEnemyWeight(troop.members[0].enemyId)),
@@ -599,25 +767,254 @@
     };
 
     // ========================================================================
+    // 4a. SPECIAL BIOMES AND THE CREATURES THAT LIVE NOWHERE ELSE
+    // ========================================================================
+    // A special biome is a rare variant an ordinary world tile can roll into
+    // (Biomes.json `specialBiomes`: Forest -> SpiritWoods, Snow / Tundra /
+    // Permafrost -> Crystals). A handful of creatures are native to one of them
+    // and to nothing else: they carry <Special> beside a <Biome:> tag naming
+    // only the special biome they belong to.
+    //
+    // Two rules follow, and they are the whole feature:
+    //
+    //   1. a <Special> creature is kept out of every other biome's roster,
+    //      including the relaxed fallbacks (era elites, the boss pools, the
+    //      "nothing matched the biome" catch-all) that otherwise reach across
+    //      the whole fauna table;
+    //   2. a special-biome map ALWAYS places at least one of its own residents,
+    //      in either spawn mode and whatever that mode's level band says.
+    //
+    // Which biomes are special is read from Biomes.json rather than listed
+    // here, so declaring a new variant there is all it takes. Alien surfaces are
+    // left out of the reading: a GalaxySim landing carries its own fauna.
+    let _specialBiomeSet = null;
+    BSE.Helpers.getSpecialBiomeNames = function() {
+        if (_specialBiomeSet) return _specialBiomeSet;
+        const set = new Set();
+        const biomes = (window.WorldGen && window.WorldGen.Biomes) || [];
+        for (const b of biomes) {
+            if (!b || !b.name || /^Alien/i.test(b.name)) continue;
+            if (!Array.isArray(b.specialBiomes)) continue;
+            for (const s of b.specialBiomes) {
+                if (typeof s === 'string' && s) set.add(s.toLowerCase().trim());
+            }
+        }
+        // Only cache once the biome table has actually loaded, so an early call
+        // does not freeze an empty set for the session.
+        if (set.size > 0) _specialBiomeSet = set;
+        return set;
+    };
+
+    BSE.Helpers.isSpecialBiome = function(biomeName) {
+        if (!biomeName) return false;
+        const key = String(BSE.Helpers.normalizeBiomeName(biomeName)).toLowerCase().trim();
+        return BSE.Helpers.getSpecialBiomeNames().has(key);
+    };
+
+    // <Special>: native to a special biome, and to nothing else.
+    BSE.Helpers.isSpecialEnemyData = function(enemyData) {
+        return !!(enemyData && enemyData.note && /<Special>/i.test(enemyData.note));
+    };
+
+    BSE.Helpers.isSpecialTroop = function(troopId) {
+        const troop = $dataTroops[troopId];
+        if (!troop || !troop.members.length) return false;
+        return troop.members.some(m => BSE.Helpers.isSpecialEnemyData($dataEnemies[m.enemyId]));
+    };
+
+    // ------------------------------------------------------------------
+    // Who the world is populated with (WorldManager.populationMode). The
+    // fauna answers to it exactly as the crowd does:
+    //
+    //   monster , nothing that reads as a person roams the map either, so a
+    //             troop holding a Humanoid, DoubleHeadedHumanoid, Elven or
+    //             Goblin creature is not spawnable anywhere.
+    //   empty   , a <Talk> creature is one that can be spoken to and recruited
+    //             (EnemyTalkSystem), which makes it a person as far as an empty
+    //             world is concerned: there is nobody left to talk to, so none
+    //             of them is placed. Everything mute still roams.
+    //   goblin  , nothing is forbidden, but goblins are what this world is
+    //             made of, so they are weighted far above everything else
+    //             (see populationSpawnBoost).
+    // ------------------------------------------------------------------
+    BSE.Helpers.getPopulationMode = function() {
+        const WM = window.WorldManager;
+        return (WM && typeof WM.populationMode === "function")
+            ? WM.populationMode() : "normal";
+    };
+
+    // Whether a creature reads as a person. Kept as one list, shared with the
+    // sprite wardrobe and the creature-creation board (SpriteCatalog).
+    BSE.Helpers.isPeopleArchetype = function(archetype) {
+        const people = (window.SpriteCatalog && window.SpriteCatalog.PEOPLE_ARCHETYPES) ||
+            ["Humanoid", "DoubleHeadedHumanoid", "Elven", "Goblin"];
+        return people.includes(archetype);
+    };
+
+    BSE.Helpers.isGoblinEnemyData = function(data) {
+        return !!data && BSE.Helpers.getEnemyArchetype(data) === "Goblin";
+    };
+
+    // Can this troop be placed at all in the world being played? Taken on the
+    // troop DATA, because isSpawnableTroopData (which every candidate scan in
+    // this file starts from, including the ones that never reach the biome
+    // rule) is handed the object rather than the id.
+    BSE.Helpers.troopDataAllowedInPopulation = function(troop) {
+        const mode = BSE.Helpers.getPopulationMode();
+        if (mode !== "monster" && mode !== "empty") return true;
+        if (!troop || !troop.members || !troop.members.length) return true;
+        // One disallowed member disqualifies the troop: a troop is spawned
+        // whole, so there is no way to place "most" of it.
+        return !troop.members.some(m => {
+            const data = $dataEnemies[m.enemyId];
+            if (!data) return false;
+            if (mode === "empty") return String(data.note || "").includes("<Talk>");
+            return BSE.Helpers.isPeopleArchetype(BSE.Helpers.getEnemyArchetype(data));
+        });
+    };
+
+    BSE.Helpers.troopAllowedInPopulation = function(troopId) {
+        return BSE.Helpers.troopDataAllowedInPopulation($dataTroops[troopId]);
+    };
+
+    // How much likelier this troop is than its nation weight alone would make
+    // it. A goblin world is overrun with goblins: they are not the only thing
+    // that roams, but they are far the commonest sight.
+    const GOBLIN_WORLD_BOOST = 12;
+    BSE.Helpers.populationSpawnBoost = function(troopId) {
+        if (BSE.Helpers.getPopulationMode() !== "goblin") return 1;
+        const troop = $dataTroops[troopId];
+        if (!troop || !troop.members || !troop.members.length) return 1;
+        return troop.members.some(m => BSE.Helpers.isGoblinEnemyData($dataEnemies[m.enemyId]))
+            ? GOBLIN_WORLD_BOOST : 1;
+    };
+
+    // Rule 1. Every candidate scan runs through this: a special troop is
+    // spawnable only on a special-biome map its own <Biome:> tag names. An
+    // ordinary troop is never affected. The population rule rides here too, so
+    // every scan in the file is covered by the one gate.
+    BSE.Helpers.troopAllowedInBiome = function(troopId, biomeName) {
+        if (!BSE.Helpers.troopAllowedInPopulation(troopId)) return false;
+        if (!BSE.Helpers.isSpecialTroop(troopId)) return true;
+        return BSE.Helpers.isSpecialBiome(biomeName) &&
+            BSE.Helpers.troopMatchesBiome(troopId, biomeName);
+    };
+
+    // Rule 2. The exclusive residents of one special biome, as weighted
+    // {troopId, weight} entries ready for the same weighted pick the encounter
+    // list uses. The nation frequency survives as a soft weight with a floor
+    // (as it does for the era elites): these are the biome's own fauna, and a
+    // nation must not be able to empty it.
+    BSE.Helpers.getSpecialBiomeTroops = function(biomeName) {
+        if (!BSE.Helpers.isSpecialBiome(biomeName)) return [];
+        const out = [];
+        for (let i = 1; i < $dataTroops.length; i++) {
+            const troop = $dataTroops[i];
+            if (!BSE.Helpers.isSpawnableTroopData(troop)) continue;
+            if (!BSE.Helpers.isSpecialTroop(i)) continue;
+            if (!BSE.Helpers.troopMatchesBiome(i, biomeName)) continue;
+            // A special biome's guaranteed resident is still subject to who
+            // the world is populated with: this scan does not go through
+            // troopAllowedInBiome (it IS the biome rule), so it asks here.
+            if (!BSE.Helpers.troopAllowedInPopulation(i)) continue;
+            out.push({
+                troopId: i,
+                weight: Math.max(0.25, BSE.Helpers.getNationEnemyWeight(troop.members[0].enemyId)) *
+                        BSE.Helpers.populationSpawnBoost(i),
+                regionId: 0
+            });
+        }
+        return out;
+    };
+
+    // ========================================================================
     // 4b. SPAWN MODE (level selection on top of the nation-weighted pool)
     // ========================================================================
     // Spawn mode (ConfigManager.enemySpawnMode): 0 = Balanced (default),
-    // 1 = Realistic.
+    // 1 = Realistic, 2 = Tower Distance, 3 = Chaos.
     //
-    //   Balanced  - roaming enemies stay at or below the party's level and a
-    //               single much-higher boss (capped at level 100) is placed
-    //               once per world map tile.
-    //   Realistic - the party level is ignored entirely. The level band comes
-    //               from the biome's danger tier and the world-map distance to
-    //               the Omega Tower: the further out, the deadlier the fauna.
+    //   Balanced  - the biome's own fauna, out of a band opening upward from
+    //               the party's own median level (see getBalancedLevelBand),
+    //               plus a single boss above that band once per world map tile.
+    //   Realistic - EVERYTHING the biome holds is on the table, whatever its
+    //               level: a wood holds fawns and it holds the thing that eats
+    //               them, and the party's level does not decide which of them
+    //               is at home. The party level only decides what is LIKELY -
+    //               a creature near their own level is far the commonest sight
+    //               and the distance from it thins a creature out without ever
+    //               ruling it out - and the same occasional boss balanced
+    //               places is placed here too. What keeps a place a place is
+    //               the seed: the roster is drawn from the nation AND the biome
+    //               together, so a Fields tile in one country holds a different
+    //               set of animals from a Fields tile in the next.
+    //   Tower     - the party level is ignored entirely, and so is the biome.
+    //   Distance    The level comes from the world-map distance to the Omega
+    //               Tower and from nothing else: the further out, the deadlier.
+    //   Chaos     - nothing is held back and nothing is remembered. Every
+    //               entrance to a procedural map re-deals its monsters, flat
+    //               random out of the whole table, level 1 to 110.
     //
-    // Both modes keep the nation-seeded per-biome distribution: the country the
-    // player is in still decides which enemies are absent / rare / common, and
-    // the mode only narrows the level range of that weighted pool.
+    // Every mode keeps the nation-seeded distribution: the country the player is
+    // in decides which enemies are absent / rare / common there, and the mode
+    // decides which slice of that weighted pool is on the table. Every mode is
+    // then put through the calendar (applyEraToBand), and the special-biome
+    // guarantee (section 4a) sits above all four.
     // ------------------------------------------------------------------
+    const SPAWN_MODES = ['balanced', 'realistic', 'towerdistance', 'chaos'];
+
+    // The modes that hide one encounter far above the band on each world tile.
+    // Tower Distance deliberately does not: there, the distance from the tower
+    // is the whole statement about how dangerous a place is, and a boss over
+    // the top of it would contradict the mode. Chaos needs no help.
+    const BOSS_MODES = ['balanced', 'realistic'];
+
     BSE.Helpers.getSpawnMode = function() {
-        return (window.ConfigManager && ConfigManager.enemySpawnMode === 1)
-            ? 'realistic' : 'balanced';
+        const v = window.ConfigManager ? ConfigManager.enemySpawnMode : 0;
+        return SPAWN_MODES[v | 0] || SPAWN_MODES[0];
+    };
+
+    // The level window the current mode draws from, calendar already applied.
+    BSE.Helpers.getSpawnBand = function(mode, refLevel) {
+        switch (mode) {
+            case 'towerdistance':
+                return BSE.Helpers.getTowerDistanceLevelBand();
+            case 'realistic':
+                return BSE.Helpers.getRealisticLevelBand(refLevel);
+            case 'chaos':
+                return BSE.Helpers.getChaosLevelBand();
+            default:
+                return BSE.Helpers.getBalancedLevelBand(refLevel);
+        }
+    };
+
+    // Narrow a candidate list to the mode's band. Every branch ends in a
+    // nearest-level fallback, so a list is never emptied.
+    //
+    // Realistic is the mode with no ceiling: it cuts nothing off the top, and
+    // the only cut it makes at all is the calendar's floor, which is the one
+    // rule that outranks every mode. What it does instead of filtering is
+    // weight (see levelAffinityWeight), applied when the list is built.
+    BSE.Helpers.filterTroopsForMode = function(encList, mode, band) {
+        if (mode === 'realistic') {
+            if (!encList || !encList.length || !band || band.min <= 1) return encList;
+            const above = encList.filter(enc =>
+                BSE.Helpers.getTroopMaxLevel(enc.troopId) >= band.min);
+            return above.length > 0 ? above : encList;
+        }
+        if (mode === 'towerdistance' || mode === 'chaos') {
+            return BSE.Helpers.filterTroopsInLevelBand(encList, band);
+        }
+        return BSE.Helpers.filterTroopsInBalancedBand(encList, band);
+    };
+
+    // How likely a creature of `troopLevel` is to be the one met by a party of
+    // `refLevel`. Never zero: in realistic mode every resident of the biome
+    // stays possible, the far-off ones just turn rare.
+    const REALISTIC_FALLOFF = 12; // levels of slack before a creature thins out
+
+    BSE.Helpers.levelAffinityWeight = function(troopLevel, refLevel) {
+        const d = Math.abs((troopLevel || 1) - (refLevel || 1)) / REALISTIC_FALLOFF;
+        return 1 / (1 + d * d);
     };
 
     // Median party level (>= 1) used as the balanced-mode reference level.
@@ -627,21 +1024,65 @@
         return Math.max(1, Math.round(BSE.Helpers.getMedianLevel(party)));
     };
 
-    // Balanced mode: from an encounter list, keep only troops at or below the
-    // reference level. If none qualify, fall back to the lowest-level troops
-    // available so a map is never left without spawnable enemies.
-    BSE.Helpers.filterTroopsAtOrBelowLevel = function(encList, maxLevel) {
-        if (!encList || !encList.length) return encList;
-        const atOrBelow = encList.filter(enc =>
-            BSE.Helpers.getTroopMaxLevel(enc.troopId) <= maxLevel);
-        if (atOrBelow.length > 0) return atOrBelow;
-        // None at/below the cap: keep the ones closest from above (lowest level).
-        let minLvl = Infinity;
-        encList.forEach(enc => {
-            const lvl = BSE.Helpers.getTroopMaxLevel(enc.troopId);
-            if (lvl < minLvl) minLvl = lvl;
-        });
-        return encList.filter(enc => BSE.Helpers.getTroopMaxLevel(enc.troopId) === minLvl);
+    // Balanced mode: the level window a party of median level L meets.
+    //
+    //   L =  1  ->   1 -  8      L = 10  ->  10 - 18
+    //   L = 25  ->  25 - 34      L = 50  ->  50 - 62
+    //
+    // The floor is the party's own level - a level 40 party has no business
+    // being sent rats - and the ceiling opens by one more level for every ten
+    // the party has, so the spread grows with them instead of staying a flat
+    // eight levels forever. The era cap still applies on top.
+    const BALANCED_SPREAD = 7;      // levels above the party at level 1
+    const BALANCED_WIDEN  = 10;     // +1 level of spread per this many levels
+
+    BSE.Helpers.getBalancedLevelBand = function(refLevel) {
+        const lvl = Math.max(1, Math.round(refLevel || 1));
+        const max = lvl + BALANCED_SPREAD + Math.floor(lvl / BALANCED_WIDEN);
+        return BSE.Helpers.applyEraToBand({ min: lvl, max: Math.max(lvl, max) });
+    };
+
+    // Realistic mode has no band in the sense the others do: everything the
+    // biome holds is spawnable. What comes back is the calendar's floor alone
+    // (`min`), with no ceiling, so the only thing ever cut is what the year has
+    // left behind. `center` is where the level-affinity weighting is aimed.
+    BSE.Helpers.getRealisticLevelBand = function(refLevel) {
+        const lvl = Math.max(1, Math.round(refLevel || 1));
+        const floor = BSE.Helpers.getYearLevelFloor();
+        const center = Math.max(floor, lvl + BSE.Helpers.getYearLevelShift());
+        return { min: Math.max(1, floor), max: Infinity, center: center };
+    };
+
+    // Chaos mode: the whole ladder, every time. The era cap does not apply
+    // (that is the mode), only the calendar's floor and the 2012 collapse do.
+    BSE.Helpers.getChaosLevelBand = function() {
+        const era = BSE.Helpers.getSpawnEra();
+        if (era.key === 'collapse') {
+            return { min: ERA_COLLAPSE_FLOOR, max: Infinity, center: ERA_COLLAPSE_FLOOR * 1.6 };
+        }
+        const min = Math.max(1, BSE.Helpers.getYearLevelFloor());
+        const max = Math.max(min, ERA_OPEN_CEILING);
+        return { min: min, max: max, center: (min + max) / 2 };
+    };
+
+    // Balanced mode: from an encounter list, keep only the troops inside that
+    // band. A band with nothing in it falls back DOWNWARD first - being sent
+    // something too weak is a far gentler failure than something far too
+    // strong - and only reaches above the band when there is nothing below it,
+    // so a map is never left without spawnable enemies.
+    BSE.Helpers.filterTroopsInBalancedBand = function(encList, band) {
+        if (!encList || !encList.length || !band) return encList;
+        const levels = encList.map(enc => BSE.Helpers.getTroopMaxLevel(enc.troopId));
+        const inBand = encList.filter((enc, i) =>
+            levels[i] >= band.min && levels[i] <= band.max);
+        if (inBand.length > 0) return inBand;
+        const belowIdx = levels.filter(lvl => lvl < band.min);
+        if (belowIdx.length > 0) {
+            const best = Math.max(...belowIdx);
+            return encList.filter((enc, i) => levels[i] === best);
+        }
+        const lowest = Math.min(...levels);
+        return encList.filter((enc, i) => levels[i] === lowest);
     };
 
     // TempleInside structure biome: keep only troops far above the party's
@@ -664,14 +1105,74 @@
         return encList;
     };
 
-    // Balanced mode: the single boss for a proc map — a troop "much higher"
-    // than the party level, capped at level 100. Seeded on the world tile so
-    // the boss is stable for a given procedural map.
+    // ------------------------------------------------------------------
+    // The structure catalogue, read at spawn time
+    // ------------------------------------------------------------------
+    // ProceduralMapStructureGenerator owns the list of generated structures and
+    // what lives in each. This plugin loads before it, so the catalogue is read
+    // when a map is populated rather than at load time.
+    BSE.Helpers.getStructure = function(biomeName) {
+        const D = window.ProcGenDungeon;
+        return (D && typeof D.structure === 'function') ? D.structure(biomeName) : null;
+    };
+
+    // A troop belongs here if ANY of its members carries ANY of these <Biome:>
+    // tags. A structure borrows several rosters, not one: an underground
+    // station is Metro and City and Abandoned, and reading it as a single
+    // biome name threw two thirds of its inhabitants away.
+    BSE.Helpers.troopMatchesAnyBiome = function(troopId, biomes) {
+        if (!biomes || !biomes.length) return false;
+        for (const b of biomes) if (BSE.Helpers.troopMatchesBiome(troopId, b)) return true;
+        return false;
+    };
+
+    // ...and it is at home here if any member's <Archetype:> is one the place
+    // is known for. This is what makes an ossuary undead and a bunker robotic
+    // when both borrow rosters that hold a bit of everything.
+    BSE.Helpers.troopMatchesArchetypes = function(troopId, archetypes) {
+        if (!archetypes || !archetypes.length) return false;
+        const troop = $dataTroops[troopId];
+        if (!troop || !troop.members.length) return false;
+        for (const member of troop.members) {
+            const data = $dataEnemies[member.enemyId];
+            if (!data) continue;
+            const arch = BSE.Helpers.getEnemyArchetype(data);
+            if (arch && archetypes.indexOf(arch) >= 0) return true;
+        }
+        return false;
+    };
+
+    // The danger ladder. A structure sits on one rung of it and that rung
+    // decides what it spawns relative to the party:
+    //   safe      below the party's own band - a cellar, a smuggler's cache
+    //   ordinary  the band the spawn mode would give anywhere else
+    //   hostile   the band, shifted up: a forge, a bunker, a frozen cave
+    //   deadly    far above the party, the rule the temple has always used
+    // Returns the reference level to build the band from; `deadly` is handled
+    // by the caller, which swaps the filter outright.
+    BSE.Helpers.dangerRefLevel = function(danger, refLevel) {
+        const lvl = Math.max(1, Math.round(refLevel || 1));
+        switch (danger) {
+            case 'safe':    return Math.max(1, Math.round(lvl * 0.8) - 1);
+            case 'hostile': return lvl + 4 + Math.floor(lvl / 12);
+            default:        return lvl;
+        }
+    };
+
+    // Balanced mode: the single boss for a proc map — a troop above the top of
+    // the roaming band, capped at level 100. Seeded on the world tile so the
+    // boss is stable for a given procedural map.
     BSE.Helpers.getBalancedBossTroop = function(targetBiome, partyLevel) {
-        const HARD_CAP = 100; // bosses never exceed level 100 in balanced mode
-        // "Much higher" than the party: at least +10 levels or 1.5x, capped.
-        const minBoss = Math.min(HARD_CAP,
-            Math.max(partyLevel + 10, Math.ceil(partyLevel * 1.5)));
+        // Bosses stop at level 100 while the world is still holding together;
+        // once the calendar has taken the ceiling off, so does the boss.
+        const band = BSE.Helpers.getBalancedLevelBand(partyLevel);
+        const yearFloor = BSE.Helpers.getYearLevelFloor();
+        const HARD_CAP = band.max === Infinity ? Infinity : Math.max(100, band.max);
+        // Above everything else roaming this map, and well above the party:
+        // the band already reaches party+8, so a flat party+10 boss would read
+        // as one more ordinary encounter. Never below what the year has left.
+        const minBoss = Math.min(HARD_CAP, Math.max(
+            yearFloor, band.max + 3, partyLevel + 10, Math.ceil(partyLevel * 1.5)));
 
         const collect = (minLvl, requireBiome) => {
             const out = [];
@@ -680,6 +1181,8 @@
                 if (!troop || !troop.members.length || troop._bseReinforced) continue;
                 const lvl = BSE.Helpers.getTroopMaxLevel(i);
                 if (lvl < minLvl || lvl > HARD_CAP) continue;
+                // Holds through the relaxed passes too (section 4a).
+                if (!BSE.Helpers.troopAllowedInBiome(i, targetBiome)) continue;
                 if (requireBiome && targetBiome &&
                     !BSE.Helpers.troopMatchesBiome(i, targetBiome)) continue;
                 out.push(i);
@@ -689,23 +1192,29 @@
 
         // Prefer biome-matched bosses above the threshold, then relax the biome
         // requirement, then relax the "much higher" threshold to any troop
-        // above the party level, before giving up.
+        // above the party level, before giving up. The relaxed passes still
+        // never dip under the year's floor: the calendar outranks the boss rule
+        // the same way it outranks the bands.
         let candidates = collect(minBoss, true);
         if (!candidates.length) candidates = collect(minBoss, false);
-        if (!candidates.length) candidates = collect(partyLevel + 1, false);
+        if (!candidates.length) {
+            candidates = collect(Math.max(yearFloor, partyLevel + 1), false);
+        }
         return BSE.Helpers.pickSeededTroop(candidates);
     };
 
     // ------------------------------------------------------------------
-    // Realistic mode: biome danger + distance from the Omega Tower
+    // Tower Distance mode: distance from the Omega Tower, and nothing else
     // ------------------------------------------------------------------
     // The Omega Tower is the safe heart of the world map. Enemy levels scale
-    // with the straight-line world-map distance from it, then get pushed up or
-    // down by how hostile the local biome is. Party level plays no part.
+    // with the straight-line world-map distance from it and with no other
+    // term: neither the party level nor the local biome is consulted, so the
+    // same ring of the world is exactly as dangerous whether it is a meadow or
+    // a crypt, and a player reads the map by how far out they have walked.
 
     const OMEGA_TOWER_FALLBACK = { x: 79, y: 125 }; // world map (315) tile
-    const REALISTIC_FULL_RANGE = 200;  // tiles from the tower at which the ceiling is reached
-    const REALISTIC_CURVE      = 1.2;  // >1 keeps the tower's neighbourhood gentle
+    const TOWER_FULL_RANGE = 200;  // tiles from the tower at which the ceiling is reached
+    const TOWER_CURVE      = 1.2;  // >1 keeps the tower's neighbourhood gentle
 
     // Top of the gradient: the highest level any biome-tagged enemy reaches.
     // Read from the database rather than hardcoded so retuning enemy levels
@@ -760,75 +1269,55 @@
         return Math.sqrt(Math.pow(here.x - tower.x, 2) + Math.pow(here.y - tower.y, 2));
     };
 
-    // Biome danger tiers. `mult` scales the distance-derived level, `floor` is
-    // the lowest level the biome ever produces (a crypt is never trivial, even
-    // in the tower's back yard). Anything unlisted is "wild" (the default).
-    const BIOME_DANGER_TIERS = {
-        safe:    { mult: 0.45, floor: 1 },
-        wild:    { mult: 1.00, floor: 2 },
-        hostile: { mult: 1.35, floor: 6 },
-        deadly:  { mult: 1.80, floor: 12 }
-    };
-
-    const BIOME_TIER_BY_NAME = {};
-    const assignTier = (tier, names) => names.forEach(n => {
-        BIOME_TIER_BY_NAME[n.toLowerCase()] = tier;
-    });
-    // Settled, patrolled or paved: the tamest fauna in the world.
-    assignTier('safe', [
-        'Beach', 'Bridge', 'Burg', 'BurgDesert', 'BurgIce', 'ChurchInside',
-        'City', 'CityDesert', 'CityIce', 'Docks', 'Farm', 'Fields', 'Highway',
-        'Houses', 'HousesInside', 'Meadows', 'Metro', 'Office', 'Park', 'Road',
-        'Train',
-        'Villa', 'Village', 'VillageDesert', 'VillageIce', 'VillageMountain',
-        'VillageRiver', 'VillageSea',
-        'LootCellar', 'PatronVault'
-    ]);
-    // Wilderness that bites back: rough terrain, ruins, worked-out industry.
-    assignTier('hostile', [
-        'Abandoned', 'AbandonedInside', 'Arena', 'Badlands', 'Canyon', 'Castle',
-        'CastleInside', 'Cave', 'CaveFlooded', 'CaveIce', 'Factory',
-        'FactoryInside', 'Graveyard', 'Jungle', 'Laboratory', 'Landfill',
-        'Mines', 'Mountain', 'MountainDesert', 'MountainIce', 'Ruins', 'Sewer',
-        'Swamp', 'Temple', 'TempleShinto', 'CaveDen'
-    ]);
-    // Outright lethal: the deep underworld, the otherworlds, the anomalies.
-    assignTier('deadly', [
-        'Abstract', 'AlienPlanet', 'Crypt', 'Crystals', 'Digital', 'Dreamscape',
-        'Dungeon', 'Eldritch', 'Fairy', 'Heaven', 'Hell', 'Lair', 'Limbo',
-        'OmegaTower', 'SeaBed', 'Space', 'SpiritWoods', 'Underdark', 'Volcano',
-        'TempleInside'
-    ]);
-
-    // Danger tier of a biome name. Road / River variants ("Road cross",
-    // "River vertical", ...) resolve through their leading token.
-    BSE.Helpers.getBiomeDanger = function(biome) {
-        if (!biome) return BIOME_DANGER_TIERS.wild;
-        const key = String(biome).toLowerCase().trim();
-        let tier = BIOME_TIER_BY_NAME[key];
-        if (!tier) {
-            const head = key.split(/[\s-]/)[0];
-            tier = BIOME_TIER_BY_NAME[head];
-        }
-        return BIOME_DANGER_TIERS[tier] || BIOME_DANGER_TIERS.wild;
-    };
-
-    // The level window realistic mode spawns from at the current location.
-    BSE.Helpers.getRealisticLevelBand = function(biome) {
+    // The level window Tower Distance mode spawns from at the current location.
+    // The only input is how far the world tile the party is standing on lies
+    // from the Omega Tower; the band around that centre is what gives a ring of
+    // the world its variety.
+    BSE.Helpers.getTowerDistanceLevelBand = function() {
         const ceiling = Math.min(BSE.Helpers.getSpawnLevelCap(), biomeRosterCeiling());
         const dist = BSE.Helpers.getOmegaTowerDistance();
-        const t = Math.max(0, Math.min(1, dist / REALISTIC_FULL_RANGE));
-        const base = 1 + Math.pow(t, REALISTIC_CURVE) * (ceiling - 1);
-        const danger = BSE.Helpers.getBiomeDanger(biome);
-        const center = Math.max(danger.floor, Math.min(ceiling, base * danger.mult));
-        return {
-            center: center,
+        const t = Math.max(0, Math.min(1, dist / TOWER_FULL_RANGE));
+        const center = Math.max(1, Math.min(ceiling,
+            1 + Math.pow(t, TOWER_CURVE) * (ceiling - 1)));
+        // The calendar sits on top of the gradient like it sits on every other
+        // mode: the ring of the world the party is standing in still decides the
+        // shape of the band, the year decides where that band sits.
+        return BSE.Helpers.applyEraToBand({
             min: Math.max(1, Math.floor(center * 0.55)),
             max: Math.min(ceiling, Math.ceil(center * 1.35) + 3)
+        });
+    };
+
+    // ------------------------------------------------------------------
+    // THE LOWER TOWER
+    // ------------------------------------------------------------------
+    // The ninety-two floors under the Omega Tower (DungeonFloorSystem) answer
+    // to none of the four spawn modes and to none of the biome rosters: what a
+    // creature down there weighs is the DEPTH and nothing else, climbing from
+    // about level 40 on the first floor to 222 on the last. The party's own
+    // level has no say, so a floor is as dangerous the day it is first opened
+    // as it is a hundred hours later, and the whole troop table is on the table
+    // because a shaft cut through the world holds whatever fell into it.
+    //
+    // This is also the one place the calendar does NOT outrank the mode. A
+    // floor's level IS its statement about itself; shifting it by the year
+    // would say the depth means something different in 2003 from what it meant
+    // in 2001, which is exactly what the ladder is there to deny.
+    BSE.Helpers.getTowerFloorLevel = function() {
+        const api = window.DungeonFloors;
+        return (api && typeof api.currentFloorLevel === 'function') ? (api.currentFloorLevel() || 0) : 0;
+    };
+
+    BSE.Helpers.getTowerFloorBand = function(level) {
+        const lvl = Math.max(1, Math.round(level));
+        return {
+            min: Math.max(1, Math.round(lvl * 0.8)),
+            max: Math.round(lvl * 1.2),
+            center: lvl
         };
     };
 
-    // Realistic mode: keep only the troops whose level falls inside the band.
+    // Tower Distance / Chaos: keep only the troops whose level falls in the band.
     // The band widens if the (nation-weighted, biome-matched) pool has nothing
     // in range, and finally falls back to whatever sits closest to its centre,
     // so a map is never left without spawnable enemies.
@@ -838,7 +1327,13 @@
         for (let pass = 0; pass < 3; pass++) {
             const grow = 1 + pass * 0.5;
             const lo = Math.max(1, band.center - (band.center - band.min) * grow);
-            const hi = band.max + (band.max - band.center) * pass;
+            // An open-ended band (the 2012 collapse) has no top to widen, and
+            // Infinity * 0 is NaN, which would silently reject every candidate
+            // on the first pass and then let the widened floor undercut the
+            // year's own minimum.
+            const hi = band.max === Infinity
+                ? Infinity
+                : band.max + (band.max - band.center) * pass;
             const inBand = encList.filter((enc, i) => levels[i] >= lo && levels[i] <= hi);
             if (inBand.length > 0) return inBand;
         }
@@ -891,6 +1386,26 @@
         return true;
     };
 
+    // Did a designer write this map's encounter list, or is it the template's?
+    //
+    // A map that declares its own encounters outranks everything the algorithm
+    // would do, so the question has to be answered exactly. 154 of the game's
+    // hand-made maps carry a single entry that is byte-for-byte the editor's
+    // copy-pasted default - the same one map 636's procedural template holds -
+    // and reading that as a statement about the map's fauna would leave every
+    // one of them spawning one troop for ever. A lone placeholder is not a
+    // list; two or more entries, or one that is anything else, is.
+    const PLACEHOLDER_TROOP_ID = 113;
+    const PLACEHOLDER_WEIGHT   = 5;
+
+    BSE.Helpers.isAuthoredEncounterList = function(list) {
+        if (!list || !list.length) return false;
+        if (list.length > 1) return true;
+        const only = list[0];
+        return !(only && only.troopId === PLACEHOLDER_TROOP_ID &&
+                 only.weight === PLACEHOLDER_WEIGHT);
+    };
+
     /**
      * Ensure troops array with weighted distribution
      */
@@ -928,12 +1443,18 @@
     // procedural map the player ever loads would freeze that tile's fauna in
     // place for the whole world, and neither the biome roster nor the spawn
     // mode's level band would ever be consulted again.
+    //
+    // Chaos mode is the exception and re-deals on every entrance: the visit
+    // counter Game_Map#setup bumps rides in the key, so walking back onto a tile
+    // you have already cleared finds different monsters on it.
     BSE.Helpers.syncProcGenEnemyCache = function() {
         if ($gameMap.mapId() !== 636) return;
         const wc = BSE.Helpers.getWorldCoordinates() || { x: 0, y: 0 };
         const stack = $gameSystem._procGenData && $gameSystem._procGenData.biomeLayerStack;
         const depth = stack ? stack.length : 0;
-        const key = `${wc.x},${wc.y},${depth},${BSE.Helpers.getMapBiome() || ''}`;
+        const visit = BSE.Helpers.getSpawnMode() === 'chaos'
+            ? (',' + ($gameSystem._chaosSpawnVisit || 0)) : '';
+        const key = `${wc.x},${wc.y},${depth},${BSE.Helpers.getMapBiome() || ''}${visit}`;
         if ($gameSystem._procGenEnemyCacheKey === key) return;
         $gameSystem._procGenEnemyCacheKey = key;
         $gameSystem._procGenEnemyTroops = {};
@@ -941,16 +1462,42 @@
         $gameSystem._procGenDefeatedEnemies = [];
     };
 
+    // Chaos mode re-deals a procedural map's monsters on every entrance, so it
+    // needs to know when an entrance happened. Game_Map#setup runs on every
+    // transfer and on every procedural rebuild, which is exactly that.
+    const _BSE_Game_Map_setup = Game_Map.prototype.setup;
+    Game_Map.prototype.setup = function(mapId) {
+        _BSE_Game_Map_setup.call(this, mapId);
+        if ($gameSystem) {
+            $gameSystem._chaosSpawnVisit = (($gameSystem._chaosSpawnVisit || 0) + 1) % 1000000;
+        }
+    };
+
     Scene_Map.prototype.spawnEnemiesFromEncounters = function() {
         BSE.Helpers.syncProcGenEnemyCache();
 
-        let encounterList = $gameMap.encounterList();
-        if (!encounterList || !encounterList.length) {
-            const fallbackIds = [];
-            const party = $gameParty.members();
-            BSE.Helpers.ensureTroops(fallbackIds, party, $dataEnemies);
-            encounterList = fallbackIds.map(id => ({ troopId: id, weight: 1 }));
-        }
+        // Whose rules apply here.
+        //
+        //   - A HAND-MADE map that declares its own encounters in the editor is
+        //     answered with exactly those: an authored list is a statement about
+        //     what lives there and it outranks the biome roster, the spawn mode
+        //     and the level bands alike.
+        //   - A PROCEDURAL map (636) is generated, and so is its fauna: the
+        //     placeholder encounter its template carries says nothing about the
+        //     world tile being built, so the algorithm always decides.
+        //   - An ALIEN surface is a procedural map too, but it has rules of its
+        //     own (section 16: the planet's own species roster, or nothing at
+        //     all on a barren world). None of the Earth machinery below - the
+        //     spawn modes, the calendar, the special biomes - is applied to it.
+        const isProcGenMap = $gameMap.mapId() === 636;
+        const onAlienSurface = !!alienSurfaceState();
+        const authored = $gameMap.encounterList() || [];
+        const useAuthoredList = onAlienSurface ||
+            (!isProcGenMap && BSE.Helpers.isAuthoredEncounterList(authored));
+
+        // The algorithm fills this in below; ensureTroops is the last resort if
+        // it comes back with nothing at all.
+        let encounterList = useAuthoredList ? authored : [];
 
         const allEnemyEvents = $gameMap.events().filter(ev => {
             const eventData = ev.event();
@@ -958,7 +1505,7 @@
         });
 
         let enemyEvents = allEnemyEvents;
-        if ($gameMap.mapId() === 636) {
+        if (isProcGenMap) {
             if ($gameSystem._procGenDefeatedEnemies) {
                 enemyEvents = allEnemyEvents.filter(ev =>
                     !$gameSystem._procGenDefeatedEnemies.includes(ev.eventId())
@@ -982,94 +1529,164 @@
         // "Enemy" events; some biomes should stay sparsely populated:
         //   - Urban / Road (tight, event-dense): 2
         //   - Cave (exploration, rare loot):      3
-        //   - Dungeon / Crypt / Sewer:            4
-        //   - LootCellar: at most 1 lurking guard; TempleInside: 4 guardians;
-        //     CaveDen: packed with its resident species (8).
+        //   - a generated structure: whatever its catalogue entry says (a
+        //     cellar 0-1 lurker, a temple 4 guardians, a den 8 of one species)
         const currentBiome = BSE.Helpers.getMapBiome();
         const lowerBiomeName = (currentBiome || '').toLowerCase();
-        // Structure biomes (entered through terrain features) have no enemies
-        // tagged with their own biome name, so they borrow a fitting roster.
-        const STRUCTURE_ENEMY_BIOME = { lootcellar: 'Sewer', templeinside: 'Crypt', caveden: 'Cave', patronvault: 'Sewer' };
-        const isLootCellar = lowerBiomeName === 'lootcellar';
-        // A patron's vault is a hoard, not a dungeon: two keepers, no boss.
-        const isPatronVault = lowerBiomeName === 'patronvault';
-        const isTempleVault = lowerBiomeName === 'templeinside';
-        const isCaveDen = lowerBiomeName === 'caveden';
-        const encounterBiome = STRUCTURE_ENEMY_BIOME[lowerBiomeName] || currentBiome;
+        // A generated structure declares who lives in it, how many of them and
+        // how dangerous they are, in the catalogue in
+        // ProceduralMapStructureGenerator. This used to be four hardcoded
+        // special cases (loot cellar, patron's vault, cave den, temple) plus an
+        // alias table pointing each at ONE existing biome's roster; with two
+        // dozen structures in the world it has to be data.
+        const struct = BSE.Helpers.getStructure(currentBiome);
+        const structEnemy = (struct && struct.enemy) || null;
+        // Structure biomes have no enemies tagged with their own name, so they
+        // borrow the rosters of the biomes their inhabitants really live in.
+        const encounterBiomes = (structEnemy && structEnemy.biomes && structEnemy.biomes.length)
+            ? structEnemy.biomes.slice() : (currentBiome ? [currentBiome] : []);
+        // Everything downstream that still wants a single biome name (the era
+        // elite pool, the boss roll) takes the first of them.
+        const encounterBiome = encounterBiomes[0] || currentBiome;
+        const structDanger = struct ? struct.danger : null;
+        const uniformSpecies = !!(structEnemy && structEnemy.uniform);
+        const structBossAllowed = !structEnemy || structEnemy.boss !== false;
         if (currentBiome) {
             const lowerBiome = lowerBiomeName;
             let enemyCap = -1;
-            if (isLootCellar) {
-                // A cellar CAN hold a single lurking guard - seeded coin flip
-                // per world tile + cellar layout, so a given cellar is always
-                // either guarded or safe.
-                const wc = BSE.Helpers.getWorldCoordinates() || { x: 0, y: 0 };
-                const genData = $gameSystem._procGenData && $gameSystem._procGenData.generatedMapData;
-                const sx = (genData && genData.spawnX) || 0;
-                const sy = (genData && genData.spawnY) || 0;
-                const srng = BSE.Helpers.createSeededRandom(wc.x * 7349 + wc.y * 131 + sx * 97 + sy + 17);
-                enemyCap = srng() < 0.55 ? 1 : 0;
-            } else if (isPatronVault) {
-                enemyCap = 2;
-            } else if (isCaveDen) {
-                enemyCap = 8;
-            } else if (isTempleVault) {
-                enemyCap = 4;
+            if (structEnemy && structEnemy.cap != null) {
+                if (Array.isArray(structEnemy.cap)) {
+                    // A range is rolled per structure, seeded on the world tile
+                    // and the layout, so a given place is always as busy (or as
+                    // empty) as it was the first time - this is how a loot
+                    // cellar is either guarded or safe, and stays that way.
+                    const wc = BSE.Helpers.getWorldCoordinates() || { x: 0, y: 0 };
+                    const genData = $gameSystem._procGenData && $gameSystem._procGenData.generatedMapData;
+                    const sx = (genData && genData.spawnX) || 0;
+                    const sy = (genData && genData.spawnY) || 0;
+                    const srng = BSE.Helpers.createSeededRandom(wc.x * 7349 + wc.y * 131 + sx * 97 + sy + 17);
+                    const lo = structEnemy.cap[0], hi = structEnemy.cap[1];
+                    enemyCap = lo + Math.floor(srng() * (hi - lo + 1));
+                } else {
+                    enemyCap = structEnemy.cap;
+                }
             } else if (lowerBiome.includes('city') || lowerBiome.includes('burg') ||
                 lowerBiome.includes('village') || lowerBiome.includes('road')) {
                 enemyCap = 2;
             } else if (lowerBiome.includes('cave')) {
                 enemyCap = 3;
-            } else if (lowerBiome.startsWith('dungeon') || lowerBiome.startsWith('crypt') ||
-                lowerBiome.startsWith('sewer')) {
-                enemyCap = 4;
             }
+            // The Bunker origin's own cellar (CharacterCreation.startBunkerOrigin,
+            // WorldMapReturn's 'bunker' dungeon session) is a guaranteed-safe wake-up
+            // point, not a LootCellar rolled for the ordinary [0,1] chance of a
+            // lurker: no monster ever stands in it, on the initial spawn or on any
+            // later trip back down through the hatch.
+            const bunkerSession = $gameSystem._procGenData && $gameSystem._procGenData._dungeonSession;
+            if (bunkerSession && bunkerSession.type === 'bunker') enemyCap = 0;
             if (enemyCap >= 0 && enemyEvents.length > enemyCap) {
                 const excessEvents = enemyEvents.splice(enemyCap);
                 excessEvents.forEach(ev => ev.erase());
             }
         }
 
-        // If map has only 1 encounter and has enemy events, generate random encounter list
-        if (encounterList.length === 1 && enemyEvents.length > 0) {
-            const party = $gameParty.members();
-            if (party.length > 0) {
-                // Structure biomes match troops against their borrowed roster
-                // (LootCellar -> Sewer, TempleInside -> Crypt, CaveDen -> Cave).
-                const mapBiome = encounterBiome;
-                const biomeTroops = [];
-                const nonBiomeTroops = [];
-                for (let i = 1; i < $dataTroops.length; i++) {
-                    const troop = $dataTroops[i];
-                    if (!BSE.Helpers.isSpawnableTroopData(troop)) continue;
-                    if (mapBiome && BSE.Helpers.troopMatchesBiome(i, mapBiome)) {
-                        biomeTroops.push(i);
-                    } else {
-                        nonBiomeTroops.push(i);
-                    }
-                }
-
-                // Build the encounter list from the candidate troops, weighting
-                // each by the current nation's per-enemy frequency and dropping
-                // troops the nation never spawns or that exceed the level cap.
-                const buildFromTroops = candidateIds => {
-                    const list = [];
-                    candidateIds.forEach(id => {
-                        const weight = BSE.Helpers.getTroopSpawnWeight(id);
-                        if (weight > 0) list.push({ troopId: id, weight, regionId: 0 });
-                    });
-                    return list;
-                };
-
-                if (mapBiome && biomeTroops.length > 0) {
-                    const list = buildFromTroops(biomeTroops);
-                    if (list.length > 0) encounterList = list;
-                } else if (!mapBiome && nonBiomeTroops.length > 0) {
-                    const list = buildFromTroops(nonBiomeTroops);
-                    if (list.length > 0) encounterList = list;
+        // Build the candidate pool. A procedural map always lands here (its
+        // template's single placeholder encounter is not an authored list); a
+        // hand-made map only when it declared none of its own.
+        // A floor of the lower tower deals from the whole table, flat, exactly
+        // as Chaos does; what makes it a floor rather than chaos is the band,
+        // which is the depth's own (see getTowerFloorBand).
+        const towerFloorLevel = BSE.Helpers.getTowerFloorLevel();
+        const spawnModeForPool = towerFloorLevel ? 'chaos' : BSE.Helpers.getSpawnMode();
+        const poolRefLevel = towerFloorLevel || BSE.Helpers.getPartyReferenceLevel();
+        if (!useAuthoredList && $gameParty.members().length > 0) {
+            // Structure biomes match troops against the borrowed rosters their
+            // catalogue entry names (a mine draws on Mines and Underdark, a
+            // grotto on CaveFlooded, SeaBed, Beach and Ocean), then narrow that
+            // to the archetypes the place is home to, if it named any. A filter
+            // that would empty the list is dropped rather than obeyed, so no
+            // structure is ever left with nothing to spawn.
+            const biomeTroops = [];
+            const nonBiomeTroops = [];
+            const everyTroop = [];
+            for (let i = 1; i < $dataTroops.length; i++) {
+                const troop = $dataTroops[i];
+                if (!BSE.Helpers.isSpawnableTroopData(troop)) continue;
+                everyTroop.push(i);
+                if (encounterBiomes.length && BSE.Helpers.troopMatchesAnyBiome(i, encounterBiomes)) {
+                    biomeTroops.push(i);
+                } else {
+                    nonBiomeTroops.push(i);
                 }
             }
+            if (structEnemy && structEnemy.archetypes && structEnemy.archetypes.length && biomeTroops.length) {
+                const themed = biomeTroops.filter(i =>
+                    BSE.Helpers.troopMatchesArchetypes(i, structEnemy.archetypes));
+                if (themed.length >= 3) {
+                    for (const id of biomeTroops) if (themed.indexOf(id) < 0) nonBiomeTroops.push(id);
+                    biomeTroops.length = 0;
+                    biomeTroops.push(...themed);
+                }
+            }
+
+            // Build the encounter list from the candidate troops. The weight is
+            // the mode's:
+            //   balanced / tower distance - the nation's per-enemy frequency,
+            //     dropping what the nation never spawns or the era caps out;
+            //   realistic - nation AND biome seeded, times how near the creature
+            //     stands to the party's own level, so the whole roster is
+            //     reachable and the fitting part of it is what is usually met;
+            //   chaos - flat, because that is the mode.
+            const buildFromTroops = candidateIds => {
+                const list = [];
+                candidateIds.forEach(id => {
+                    let weight;
+                    if (spawnModeForPool === 'chaos') {
+                        weight = 1;
+                    } else if (spawnModeForPool === 'realistic') {
+                        // No level cap here on purpose: realistic cuts nothing
+                        // off the top, it only makes the far-off rare.
+                        weight = BSE.Helpers.getNationBiomeEnemyWeight(
+                            $dataTroops[id].members[0].enemyId, encounterBiome) *
+                            BSE.Helpers.levelAffinityWeight(
+                                BSE.Helpers.getTroopMaxLevel(id), poolRefLevel);
+                    } else {
+                        weight = BSE.Helpers.getTroopSpawnWeight(id);
+                    }
+                    if (weight > 0) list.push({ troopId: id, weight, regionId: 0 });
+                });
+                return list;
+            };
+
+            // Chaos ignores the biome entirely; every other mode is local fauna.
+            let candidates = null;
+            if (spawnModeForPool === 'chaos') {
+                candidates = everyTroop;
+            } else if (encounterBiome && biomeTroops.length > 0) {
+                candidates = biomeTroops;
+            } else if (!encounterBiome && nonBiomeTroops.length > 0) {
+                candidates = nonBiomeTroops;
+            }
+            if (candidates) {
+                const list = buildFromTroops(candidates);
+                if (list.length > 0) encounterList = list;
+            }
         }
+
+        // Nothing matched at all (a biome with no fauna of its own, or a nation
+        // that suppresses every one of them): fall back to the old weighted
+        // draw rather than leave the map empty.
+        if (!encounterList.length && !onAlienSurface) {
+            const fallbackIds = [];
+            BSE.Helpers.ensureTroops(fallbackIds, $gameParty.members(), $dataEnemies);
+            encounterList = fallbackIds.map(id => ({ troopId: id, weight: 1 }));
+        }
+
+        // Rule 1 (section 4a) as a last gate. Everything above is generated and
+        // has already been through troopAllowedInBiome, but a static map's own
+        // encounter list is authored, so nothing has necessarily looked at it.
+        const allowedHere = encounterList.filter(enc =>
+            BSE.Helpers.troopAllowedInBiome(enc.troopId, currentBiome));
+        if (allowedHere.length > 0) encounterList = allowedHere;
 
         // Apply time-based filtering
         encounterList = BSE.Helpers.filterEncountersByTime(encounterList);
@@ -1140,33 +1757,53 @@
         };
 
         let isFirstEnemyEvent = true;
-        // CaveDen: the whole den is inhabited by ONE species, resolved once
-        // (seeded on the world tile) and reused for every enemy event.
+        // A structure whose catalogue entry sets `uniform` (a cave den) is
+        // inhabited by ONE species, resolved once (seeded on the world tile)
+        // and reused for every enemy event on the map.
         let denTroopId = null;
 
-        // Enemy spawn mode (see BSE.Helpers.getSpawnMode). Balanced holds
-        // roaming enemies at or below the party's level and places a single
-        // much-higher boss (capped at 100) as the first enemy event of the
-        // world tile. Realistic ignores the party and draws from a level band
-        // set by the biome's danger tier and the distance to the Omega Tower.
-        const spawnMode = BSE.Helpers.getSpawnMode();
-        const partyRefLevel = BSE.Helpers.getPartyReferenceLevel();
-        const realisticBand = spawnMode === 'realistic'
-            ? BSE.Helpers.getRealisticLevelBand(currentBiome)
-            : null;
+        // Enemy spawn mode (see section 4b). An alien surface answers to none of
+        // it: its species roster is the encounter list and no band, boss, elite
+        // or special-biome rule is laid over it.
+        const spawnMode = onAlienSurface ? null : spawnModeForPool;
+        const partyRefLevel = poolRefLevel;
+        // A structure sits on a rung of the danger ladder, and that is a shift
+        // of the level the band is built around: a smuggler's cache spawns
+        // below the party, a bunker or an under-forge above them. `deadly` is
+        // not a shift but a different filter, applied where the band is used.
+        // A tower floor keeps its own level whichever structure was dealt to it:
+        // the depth is the danger, and the rung the borrowed layout sits on has
+        // nothing to say about it.
+        const spawnRefLevel = towerFloorLevel || BSE.Helpers.dangerRefLevel(structDanger, partyRefLevel);
+        const levelBand = towerFloorLevel
+            ? BSE.Helpers.getTowerFloorBand(towerFloorLevel)
+            : (spawnMode ? BSE.Helpers.getSpawnBand(spawnMode, spawnRefLevel) : null);
 
-        // The era's high-level fauna (level 80-100 from 2010, 100+ from 2012)
+        // The era's high-level fauna (level 80-110 from 2010, 100+ from 2012)
         // rides on top of whichever mode is selected: a share of the roaming
         // enemies is drawn from this pool instead of from the mode's own level
-        // logic, so both modes end up mixing them in with normal spawns.
+        // logic, so every mode ends up mixing them in with normal spawns.
         const spawnEra = BSE.Helpers.getSpawnEra();
-        const eraElitePool = spawnEra.eliteShare > 0
+        // Not in the tower: the calendar's elites would break a ladder whose
+        // whole point is that the floor decides what stands on it.
+        const eraElitePool = (spawnMode && !towerFloorLevel && spawnEra.eliteShare > 0)
             ? BSE.Helpers.getEraElitePool(encounterBiome, spawnEra)
             : [];
 
-        for (const ev of enemyEvents) {
+        // Rule 2 (section 4a): a Crystals field or a SpiritWoods grove always
+        // holds at least one of its own exclusive residents, in every spawn
+        // mode and whatever the calendar has done to the level band. The
+        // guarantee yields the first enemy event to the boss while there is
+        // another event left to take, and takes the last one outright rather
+        // than go unplaced. The structure biomes borrow a roster instead of
+        // using their own, so they are read on `currentBiome` and never qualify.
+        const specialPool = spawnMode ? BSE.Helpers.getSpecialBiomeTroops(currentBiome) : [];
+        let specialPlaced = false;
+
+        for (let evIdx = 0; evIdx < enemyEvents.length; evIdx++) {
+            const ev = enemyEvents[evIdx];
+            const isLastEnemyEvent = evIdx === enemyEvents.length - 1;
             if (spawnTiles.length) {
-                const isProcGenMap = $gameMap.mapId() === 636;
                 let loc;
                 let idx = -1;
                 if (isProcGenMap) {
@@ -1177,12 +1814,12 @@
                 if (idx !== -1) {
                     loc = spawnTiles.splice(idx, 1)[0];
                 } else {
-                    // The boss (first enemy event, Balanced mode) is biased into
-                    // the room farthest from the dungeon entrance when the
-                    // current layout provides one (Dungeon/Crypt/Sewer BSP/room
-                    // layouts); every other roaming enemy stays purely random.
+                    // The boss (first enemy event, the modes that place one) is
+                    // biased into the room farthest from the dungeon entrance
+                    // when the current layout provides one (Dungeon/Crypt/Sewer
+                    // BSP/room layouts); every other roaming enemy stays random.
                     let pickIdx = Math.floor(Math.random() * spawnTiles.length);
-                    if (isProcGenMap && spawnMode === 'balanced' && isFirstEnemyEvent) {
+                    if (isProcGenMap && BOSS_MODES.includes(spawnMode) && isFirstEnemyEvent) {
                         const genData = $gameSystem._procGenData && $gameSystem._procGenData.generatedMapData;
                         const hint = genData && genData.bossRoomHint;
                         if (hint) {
@@ -1214,15 +1851,40 @@
                 }
 
                 if (chosenTroopId === null) {
-                    if (spawnMode === 'balanced' && isProcGenMap &&
-                        isFirstEnemyEvent && currentRegion !== 99 &&
-                        !isLootCellar && !isCaveDen && !isPatronVault) {
-                        // Balanced mode only: the single high-level encounter of
-                        // this world map tile, much higher than the party and
-                        // capped at 100. Realistic mode has no such exception,
-                        // every enemy comes out of the location's level band.
-                        // LootCellar (single median-level guard) and CaveDen
-                        // (uniform resident species) never get a boss.
+                    // A structure says whether anything in it is worth calling a
+                    // boss: a cellar holds a lurker, a den holds one species,
+                    // a hoard holds keepers, and none of them gets one.
+                    const bossDue = BOSS_MODES.includes(spawnMode) && isProcGenMap &&
+                        isFirstEnemyEvent && currentRegion !== 99 && structBossAllowed;
+
+                    // The special-biome resident, placed before anything else
+                    // can claim the event so neither the level band, the boss
+                    // roll nor the era elites can crowd it out.
+                    if (!specialPlaced && specialPool.length > 0 &&
+                        (!bossDue || isLastEnemyEvent)) {
+                        const specialHere = specialPool.filter(enc =>
+                            BSE.Helpers.canTroopSpawnInRegion(enc.troopId, currentRegion, loc.x, loc.y));
+                        if (specialHere.length > 0) {
+                            // Whichever resident sits nearest the mode's own
+                            // band, so the creature the party meets still fits
+                            // where they are: the filters fall back to the
+                            // closest level when the band holds none of them,
+                            // which is what makes the guarantee unconditional.
+                            const inBand = BSE.Helpers.filterTroopsForMode(
+                                specialHere, spawnMode, levelBand);
+                            chosenTroopId = selectWeightedRandom(
+                                inBand.length > 0 ? inBand : specialHere).troopId;
+                        }
+                    }
+
+                    if (chosenTroopId === null && bossDue) {
+                        // Balanced and Realistic: the single high-level
+                        // encounter of this world map tile, much higher than the
+                        // party and capped at 100. Tower Distance has no such
+                        // exception (every enemy comes out of the location's own
+                        // band) and Chaos needs none. A structure that says
+                        // it holds no boss (a cellar, a den, a hoard) never
+                        // gets one.
                         const bossTroopId = BSE.Helpers.getBalancedBossTroop(encounterBiome, partyRefLevel);
                         if (bossTroopId !== null) chosenTroopId = bossTroopId;
                     }
@@ -1230,10 +1892,11 @@
                     // Era high-level spawn: from 2010 a quarter of the roaming
                     // enemies (and from 2012 two fifths of them) come out of the
                     // era band regardless of the spawn mode, the party level and
-                    // the distance from the Omega Tower. CaveDen is exempt, its
-                    // whole population is one resident species by design.
+                    // the distance from the Omega Tower. A one-species
+                    // structure is exempt: its whole population is that
+                    // species by design.
                     if (chosenTroopId === null && eraElitePool.length > 0 &&
-                        !isCaveDen && Math.random() < spawnEra.eliteShare) {
+                        !uniformSpecies && Math.random() < spawnEra.eliteShare) {
                         const eliteHere = eraElitePool.filter(enc =>
                             BSE.Helpers.canTroopSpawnInRegion(enc.troopId, currentRegion, loc.x, loc.y)
                         );
@@ -1247,23 +1910,23 @@
                             if (currentRegion === 99) { ev.erase(); continue; }
                             else validTroops = encounterList;
                         }
-                        // Narrow the (already nation-weighted) candidates to the
-                        // mode's level range: at or below the party in Balanced,
-                        // inside the biome/Omega-distance band in Realistic.
-                        // TempleInside overrides both modes: its guardians are
-                        // always far above the party's median level.
+                        // Narrow the (already weighted) candidates to the mode's
+                        // level range: the party band in Balanced, the calendar
+                        // floor alone in Realistic, the Omega-distance band in
+                        // Tower Distance, the whole ladder in Chaos.
+                        // A `deadly` structure overrides every mode: its
+                        // guardians are always far above the party's median
+                        // level, which is the rule the temple has always used
+                        // and the shrine, the library and the lava tube now
+                        // share. An alien surface is filtered by none of it.
                         let pickList = validTroops;
-                        if (pickList.length > 0) {
-                            if (isTempleVault) {
-                                pickList = BSE.Helpers.filterTroopsWellAboveLevel(pickList, partyRefLevel);
-                            } else {
-                                pickList = spawnMode === 'balanced'
-                                    ? BSE.Helpers.filterTroopsAtOrBelowLevel(pickList, partyRefLevel)
-                                    : BSE.Helpers.filterTroopsInLevelBand(pickList, realisticBand);
-                            }
+                        if (pickList.length > 0 && spawnMode) {
+                            pickList = (structDanger === 'deadly' && !towerFloorLevel)
+                                ? BSE.Helpers.filterTroopsWellAboveLevel(pickList, partyRefLevel)
+                                : BSE.Helpers.filterTroopsForMode(pickList, spawnMode, levelBand);
                         }
                         if (pickList.length > 0) {
-                            if (isCaveDen) {
+                            if (uniformSpecies) {
                                 // One species per den: seeded pick, then reused
                                 // for every other enemy event on this map.
                                 if (denTroopId === null ||
@@ -1286,30 +1949,20 @@
                     }
                 }
                 isFirstEnemyEvent = false;
+                // Read outside the "choose one" block so a troop restored from
+                // the per-tile cache satisfies the guarantee too.
+                if (chosenTroopId !== null && BSE.Helpers.isSpecialTroop(chosenTroopId)) {
+                    specialPlaced = true;
+                }
 
                 if (chosenTroopId !== null) {
                     ev._fixedTroopId = chosenTroopId;
                     ev._isAquaticEnemy = undefined;
                     ev._isAmphibiousEnemy = undefined;
-                    const troop = $dataTroops[chosenTroopId];
-                    if (troop && troop.members.length > 0) {
-                        const firstEnemy = $dataEnemies[troop.members[0].enemyId];
-                        if (firstEnemy && firstEnemy.note) {
-                            const note = firstEnemy.note;
-                            const speedMatch = note.match(/<Speed:\s*([1-6])>/i);
-                            if (speedMatch) ev.setMoveSpeed(Number(speedMatch[1]));
-                            const moveMatch = note.match(/<Movement:\s*(Approach|Random|Fixed|Fleeing)>/i);
-                            if (moveMatch) {
-                                const type = moveMatch[1].toLowerCase();
-                                // Peaceful mode: roaming enemies never chase the player.
-                                // An "approach" (follow) note is downgraded to random wandering.
-                                const peaceful = $gameSystem && $gameSystem._peacefulMode;
-                                if (type === 'fixed') ev._moveType = 0;
-                                else if (type === 'random') ev._moveType = 1;
-                                else if (type === 'approach') ev._moveType = peaceful ? 1 : 2;
-                            }
-                        }
-                    }
+                    // Bind the personality AFTER locate(), so the creature's
+                    // home post (the tile a guard returns to, the perch a bird
+                    // swoops back onto) is where it actually stands.
+                    BSE.Helpers.applyEnemyMovement(ev);
                     ev.updateCharacterSprite();
                     ev.setOpacity(255);
                     ev.setThrough(false);
@@ -1355,10 +2008,31 @@
         return _reinforcedSlot;
     }
 
-    // The scratch slot is a battle fixture, never a spawnable troop: it must be
-    // skipped by every candidate scan that walks $dataTroops.
+    // The scratch slots are battle fixtures, never spawnable troops: they must
+    // be skipped by every candidate scan that walks $dataTroops.
+    // Every candidate scan in this file starts here, which is why the world's
+    // population answer is folded in: a monster world's people and an empty
+    // world's <Talk> creatures are then unreachable through the biome rosters,
+    // the era elites, both boss pools, the structure lists, the no-biome
+    // fallback and the random alien list alike, with no scan of its own to
+    // teach. See troopDataAllowedInPopulation.
     BSE.Helpers.isSpawnableTroopData = function(troop) {
-        return !!(troop && troop.members && troop.members.length && !troop._bseReinforced);
+        return !!(troop && troop.members && troop.members.length &&
+            !troop._bseReinforced && !troop._bsePetrodemon &&
+            BSE.Helpers.troopDataAllowedInPopulation(troop) &&
+            BSE.Helpers.troopDataAllowedInMagic(troop));
+    };
+
+    // The magic level's half of the same gate (window.MagicNature), a separate
+    // axis from the alternate timeline: a severed world is roamed by nothing
+    // that works by magic and an unbound one by nothing else. Every creature
+    // carries <Nature:> in its notebox. One disallowed member disqualifies the
+    // troop, exactly as the population rule does: a troop is spawned whole.
+    BSE.Helpers.troopDataAllowedInMagic = function(troop) {
+        const MN = window.MagicNature;
+        if (!MN || !MN.isFiltering()) return true;
+        if (!troop || !troop.members || !troop.members.length) return true;
+        return troop.members.every(m => MN.allowsEnemyId(m.enemyId));
     };
 
     // The enemy events that join a battle started against `triggerEventId`.
@@ -1519,6 +2193,15 @@
         this._movementLockTimer = 0;
         this._fleeingMovement = false;
         this._isAquaticEnemy = false;
+        // Movement personality state (section 6b). The home post is filled in
+        // on the first AI tick, since a roaming monster is placed after this.
+        this._aiState = 'idle';
+        this._aiTimer = 0;
+        this._aiScan = 0;
+        this._aiRoused = 0;
+        this._aiHome = null;
+        this._aiLast = null;
+        this._aiDashDir = 0;
         this.updateCharacterSprite();
     };
 
@@ -1552,24 +2235,10 @@
             }
         }
         if (this._fixedTroopId > 0) {
-            // _fixedTroopId is a troop id; the <Movement:...> tag lives on the
-            // troop's first enemy member, not on an enemy with that same id.
-            const troop = $dataTroops[this._fixedTroopId];
-            const enemyData = (troop && troop.members.length > 0)
-                ? $dataEnemies[troop.members[0].enemyId]
-                : null;
-            if (enemyData && enemyData.note) {
-                const moveMatch = enemyData.note.match(/<Movement:\s*(Approach|Random|Fixed|Fleeing)>/i);
-                if (moveMatch) {
-                    const type = moveMatch[1].toLowerCase();
-                    // Peaceful mode: an "approach" (follow) note becomes random wandering
-                    // so roaming enemies never chase the player.
-                    const peaceful = $gameSystem && $gameSystem._peacefulMode;
-                    if (type === 'fixed') this._moveType = 0;
-                    else if (type === 'random') this._moveType = 1;
-                    else if (type === 'approach') this._moveType = peaceful ? 1 : 2;
-                }
-            }
+            // _fixedTroopId is a troop id; the <Movement:...> and <Speed:> tags
+            // live on the troop's first enemy member, not on an enemy with that
+            // same id.
+            BSE.Helpers.applyEnemyMovement(this);
             const persistentId = `${this._mapId}_${this._eventId}`;
             if (!BSE.State.persistentEnemyData[persistentId]) {
                 BSE.State.persistentEnemyData[persistentId] = {
@@ -1578,6 +2247,839 @@
                 };
             }
         }
+    };
+
+    // ========================================================================
+    // 6b. MOVEMENT PERSONALITIES (sight, alertness, chases)
+    // ========================================================================
+    // A roaming monster used to be a moving trap: it either stood still, drifted
+    // at random or walked straight at the party from across the map, with no
+    // reason to do either and nothing the player could read. A personality
+    // answers three separate questions instead:
+    //
+    //   idle    what the creature does when nothing is happening
+    //   senses  how it notices the party (sight range, facing cone, whether a
+    //           wall stops it) and how long it remembers
+    //   react   what it does once it HAS noticed
+    //
+    // and drives one small state machine per map event:
+    //
+    //   idle -> alert -> commit -> search -> return -> idle
+    //
+    // `alert` is the telegraph: the creature stops, turns to face the party and
+    // shows an exclamation before it commits, which is what makes the whole
+    // thing playable. A player who can see the moment they were spotted can
+    // break line of sight, kite the thing round a rock, lead it into a hazard
+    // or another monster's territory, or simply walk out of its leash.
+    //
+    // Fields of a personality (all optional but `idle`):
+    //   idle        still | perch | wander | graze | dart | drift | patrol |
+    //               scan | territory | scavenge
+    //   react       null (never reacts) | chase | track | flee | coward |
+    //               stalk | ambush | swoop | charge | pack | circle
+    //   sight       tiles it can notice the party at (0 = blind to the party)
+    //   cone        degrees of the facing arc it watches (360 = all round)
+    //   los         a wall between the two hides the party
+    //   leash       distance at which it gives the chase up
+    //   memory      frames it keeps hunting after losing sight
+    //   alert       frames of telegraph before it commits
+    //   chaseSpeed  move speed added while committed
+    //   band        [near, far] distance it prefers to hold (stalk/circle/...)
+    //   home        it walks back to where it started when it disengages
+    //   homeRadius  how far from home it will roam / defend
+    //   freq        move frequency (1 lethargic .. 5 restless)
+    //   relentless  never gives up, never flees, cannot be startled
+
+    const MOVE_BEHAVIORS = {
+        // --- the four legacy tags, kept working and given senses -------------
+        fixed:       { idle: 'still',     react: null,      sight: 0 },
+        random:      { idle: 'wander',    react: null,      sight: 0 },
+        approach:    { idle: 'wander',    react: 'chase',   sight: 7,  cone: 360, los: true,  leash: 12, memory: 150, alert: 20, chaseSpeed: 0.5 },
+        fleeing:     { idle: 'wander',    react: 'flee',    sight: 8,  cone: 360, los: false, leash: 10, memory: 60,  alert: 0,  chaseSpeed: 1 },
+
+        // --- prey ------------------------------------------------------------
+        // Grazes with its head down, bolts the moment it looks up and sees you.
+        skittish:    { idle: 'graze',     react: 'flee',    sight: 6,  cone: 360, los: true,  leash: 9,  memory: 45,  alert: 0,  chaseSpeed: 1.5, freq: 3 },
+        // Too big or too stupid to care until you are almost on top of it.
+        grazer:      { idle: 'graze',     react: 'flee',    sight: 3,  cone: 200, los: false, leash: 6,  memory: 30,  alert: 0,  chaseSpeed: 1,   freq: 2 },
+        // Runs while you are close, trails you at a distance once you are not.
+        coward:      { idle: 'wander',    react: 'coward',  sight: 8,  cone: 360, los: true,  leash: 13, memory: 120, alert: 0,  chaseSpeed: 1,   band: [5, 9] },
+        // Works the corpses, gives the living a wide berth.
+        scavenger:   { idle: 'scavenge',  react: 'coward',  sight: 7,  cone: 360, los: true,  leash: 10, memory: 60,  alert: 0,  chaseSpeed: 1,   band: [4, 8] },
+
+        // --- posted -----------------------------------------------------------
+        // Stands its post and sweeps its gaze; sees a long way, but only ahead.
+        sentry:      { idle: 'scan',      react: 'chase',   sight: 10, cone: 110, los: true,  leash: 11, memory: 180, alert: 30, chaseSpeed: 0.5, home: true, homeRadius: 10 },
+        // Never leaves the door it is standing in front of for long.
+        guard:       { idle: 'still',     react: 'chase',   sight: 6,  cone: 360, los: true,  leash: 7,  memory: 90,  alert: 20, chaseSpeed: 0.5, home: true, homeRadius: 6 },
+        // Walks a beat and watches the way it is walking.
+        patrol:      { idle: 'patrol',    react: 'chase',   sight: 8,  cone: 150, los: true,  leash: 13, memory: 180, alert: 25, chaseSpeed: 0.5, home: true, homeRadius: 14 },
+        // Owns a patch of ground. Step off it and it stops caring about you.
+        territorial: { idle: 'territory', react: 'chase',   sight: 8,  cone: 360, los: true,  leash: 14, memory: 120, alert: 20, chaseSpeed: 1,   home: true, homeRadius: 7, territory: true },
+
+        // --- ambush -----------------------------------------------------------
+        // Looks like part of the scenery until you are close enough.
+        ambusher:    { idle: 'still',     react: 'ambush',  sight: 3,  cone: 360, los: false, leash: 9,  memory: 70,  alert: 36, chaseSpeed: 2,   home: true, homeRadius: 9 },
+        // The same, but it barely leaves the hole it came out of.
+        lurker:      { idle: 'still',     react: 'ambush',  sight: 2,  cone: 360, los: false, leash: 5,  memory: 40,  alert: 30, chaseSpeed: 1.5, home: true, homeRadius: 5 },
+        // Furniture. Touch it once and it follows you to the end of the map.
+        mimic:       { idle: 'still',     react: 'ambush',  sight: 1,  cone: 360, los: false, leash: 999, memory: 99999, alert: 45, chaseSpeed: 1, relentless: true },
+        // Perches, waits, drops on you in a straight line, climbs back up.
+        swooper:     { idle: 'perch',     react: 'swoop',   sight: 10, cone: 360, los: false, leash: 12, memory: 90,  alert: 30, chaseSpeed: 2.5, home: true, homeRadius: 12 },
+        // Paws the ground until it shares a row with you, then it does not stop.
+        charger:     { idle: 'wander',    react: 'charge',  sight: 9,  cone: 240, los: true,  leash: 12, memory: 120, alert: 30, chaseSpeed: 2.5 },
+
+        // --- hunters ----------------------------------------------------------
+        // Keeps its distance, closes only while your back is turned.
+        stalker:     { idle: 'wander',    react: 'stalk',   sight: 12, cone: 360, los: true,  leash: 18, memory: 300, alert: 0,  chaseSpeed: 0,   band: [4, 7] },
+        // Does not need to see you, does not lose you, does not give up.
+        hunter:      { idle: 'wander',    react: 'track',   sight: 14, cone: 360, los: false, leash: 30, memory: 600, alert: 40, chaseSpeed: 0,   relentless: true },
+        // Holds off alone and calls; commits the moment the pack is with it.
+        pack:        { idle: 'wander',    react: 'pack',    sight: 10, cone: 360, los: true,  leash: 15, memory: 180, alert: 20, chaseSpeed: 1,   band: [3, 6] },
+        // Circles just out of reach and darts in.
+        orbiter:     { idle: 'wander',    react: 'circle',  sight: 9,  cone: 360, los: false, leash: 12, memory: 150, alert: 0,  chaseSpeed: 1,   band: [4, 5] },
+
+        // --- mindless ---------------------------------------------------------
+        // Darts, stops, darts somewhere else. Only notices what it bumps into.
+        erratic:     { idle: 'dart',      react: 'chase',   sight: 4,  cone: 360, los: false, leash: 6,  memory: 30,  alert: 0,  chaseSpeed: 1.5, freq: 5 },
+        // Carried along by whatever carries it. You are not part of its world.
+        drifter:     { idle: 'drift',     react: null,      sight: 0,  freq: 2 }
+    };
+
+    // Spellings that used to be written, or that read naturally in a note.
+    const MOVE_ALIASES = {
+        follow: 'approach', chase: 'approach', approaching: 'approach',
+        flee: 'fleeing', afraid: 'fleeing', still: 'fixed', none: 'fixed',
+        stationary: 'fixed', wander: 'random', roam: 'random',
+        ambush: 'ambusher', stalk: 'stalker', swoop: 'swooper',
+        charge: 'charger', orbit: 'orbiter', drift: 'drifter',
+        graze: 'grazer', scavenge: 'scavenger', sentinel: 'sentry',
+        pack_hunter: 'pack', packhunter: 'pack', shy: 'skittish'
+    };
+
+    BSE.Data.MOVEMENT_BEHAVIORS = MOVE_BEHAVIORS;
+
+    // Idles that move the creature around on their own. Everything else stands
+    // where it is until its reaction says otherwise, which is what tells the
+    // engine's own move type apart from ours.
+    const IDLE_WANDERS = {
+        wander: true, graze: true, dart: true, drift: true,
+        patrol: true, territory: true, scavenge: true
+    };
+
+    // Personality of last resort, for an enemy carrying no <Movement:> tag (or
+    // one nobody has heard of). Ecology first, since that is the role the
+    // creature already plays in the food web, then the archetype's own nature.
+    const ARCHETYPE_FALLBACK = {
+        Bird: 'swooper', Bat: 'swooper', Phoenix: 'swooper',
+        Insectoid: 'erratic', InsectSwarm: 'erratic', Spider: 'ambusher',
+        Scorpion: 'ambusher', Snail: 'grazer', Rabbit: 'skittish',
+        Plant: 'lurker', Mushroom: 'lurker', Tree: 'territorial',
+        Totem: 'sentry', Turret: 'sentry', RoboticDefender: 'guard',
+        ChestMimic: 'mimic', Slime: 'drifter', Ghost: 'stalker',
+        Elemental: 'drifter', Jellyfish: 'drifter',
+        Golem: 'guard', ArmoredKnight: 'patrol', Skeleton: 'patrol',
+        Undead: 'hunter', ConstructedUndead: 'hunter', Voidspawn: 'stalker',
+        Goblin: 'pack', Hellhound: 'pack', Beast: 'pack',
+        Dragon: 'territorial', Serpent: 'ambusher', Hydra: 'territorial',
+        TentacledCreature: 'lurker', Octopus: 'lurker', Crustacean: 'territorial',
+        Turtle: 'grazer', Frog: 'ambusher', Amphibian: 'skittish',
+        Robot: 'sentry', Drone: 'orbiter', Fairy: 'orbiter',
+        Bacterial: 'erratic', TrashCreature: 'scavenger'
+    };
+    const ECOLOGY_FALLBACK = {
+        Hunter: 'hunter', Predator: 'territorial', Prey: 'skittish', Neutral: 'random'
+    };
+
+    function defaultBehaviorKey(enemyData) {
+        const arch = BSE.Helpers.getEnemyArchetype(enemyData);
+        if (arch && ARCHETYPE_FALLBACK[arch]) return ARCHETYPE_FALLBACK[arch];
+        const eco = BSE.Helpers.getEnemyEcology(enemyData);
+        return ECOLOGY_FALLBACK[eco] || 'random';
+    }
+
+    // The personality key of an enemy, cached on the shared $dataEnemies entry
+    // (notes never change at runtime and this is read from movement code).
+    BSE.Helpers.getEnemyMovementKey = function(enemyData) {
+        if (!enemyData) return 'random';
+        if (enemyData._bseMoveKey !== undefined) return enemyData._bseMoveKey;
+        let key = null;
+        if (enemyData.note) {
+            const m = enemyData.note.match(/<Movement:\s*([A-Za-z_]+)\s*>/i);
+            if (m) {
+                const k = m[1].toLowerCase();
+                key = MOVE_BEHAVIORS[k] ? k : (MOVE_ALIASES[k] || null);
+            }
+        }
+        enemyData._bseMoveKey = key || defaultBehaviorKey(enemyData);
+        return enemyData._bseMoveKey;
+    };
+
+    BSE.Helpers.getMovementBehavior = function(key) {
+        return MOVE_BEHAVIORS[key] || MOVE_BEHAVIORS.random;
+    };
+
+    // Peaceful mode keeps every creature's idle - a bird still perches, a
+    // sentry still sweeps its post - and takes away only the reaction to the
+    // party. Pacified twins are built once and cached on the table.
+    const _pacified = {};
+    function pacify(key, beh) {
+        if (!_pacified[key]) {
+            _pacified[key] = Object.assign({}, beh, {
+                react: null, sight: 0, relentless: false, chaseSpeed: 0
+            });
+        }
+        return _pacified[key];
+    }
+
+    // The personality an event is actually running, cached on the event and
+    // keyed on its troop so a re-fixed event re-derives it.
+    BSE.Helpers.getEventBehavior = function(event) {
+        if (!event || !event._fixedTroopId) return null;
+        const peaceful = !!($gameSystem && $gameSystem._peacefulMode);
+        if (event._bseBehTroop === event._fixedTroopId &&
+            event._bseBehPeace === peaceful) return event._bseBeh;
+        const troop = $dataTroops[event._fixedTroopId];
+        const enemyData = (troop && troop.members.length)
+            ? $dataEnemies[troop.members[0].enemyId] : null;
+        const key = BSE.Helpers.getEnemyMovementKey(enemyData);
+        const beh = BSE.Helpers.getMovementBehavior(key);
+        event._bseBehTroop = event._fixedTroopId;
+        event._bseBehPeace = peaceful;
+        event._bseBehKey = key;
+        event._bseBeh = peaceful ? pacify(key, beh) : beh;
+        return event._bseBeh;
+    };
+
+    // Bind an event to its enemy's movement personality: base speed, the engine
+    // move type its idle needs, its home post, and a clean AI state. Called
+    // wherever an event is fixed to a troop, and always AFTER it has been
+    // placed, so the home post is the tile it is standing on.
+    BSE.Helpers.applyEnemyMovement = function(event) {
+        if (!event || !event._fixedTroopId) return;
+        const troop = $dataTroops[event._fixedTroopId];
+        const enemyData = (troop && troop.members.length)
+            ? $dataEnemies[troop.members[0].enemyId] : null;
+        if (enemyData && enemyData.note) {
+            const speedMatch = enemyData.note.match(/<Speed:\s*([1-6](?:\.\d+)?)>/i);
+            if (speedMatch) event.setMoveSpeed(Number(speedMatch[1]));
+        }
+        event._bseBehTroop = -1; // force a re-derive on the next read
+        const beh = BSE.Helpers.getEventBehavior(event);
+        if (!beh) return;
+        event._aiBaseSpeed = event._moveSpeed;
+        event._moveType = IDLE_WANDERS[beh.idle] ? 1 : 0;
+        if (beh.freq) event.setMoveFrequency(beh.freq);
+        event._aiState = 'idle';
+        event._aiTimer = 0;
+        event._aiSeen = false;
+        event._aiLast = null;
+        event._aiRoused = 0;
+        event._aiHome = { x: event.x, y: event.y };
+        event._aiPatrolDir = 0;
+        event._aiDriftDir = 0;
+        event._aiStuck = 0;
+    };
+
+    // ------------------------------------------------------------------------
+    // Senses
+    // ------------------------------------------------------------------------
+
+    // Tiles that stop sight: a tile nothing can walk into from any side (a
+    // wall, a cliff face, the side of a building). Water, props and furniture
+    // are all see-through.
+    function blocksSight(x, y) {
+        if (!$gameMap.isValid(x, y)) return true;
+        return !$gameMap.isPassable(x, y, 2) && !$gameMap.isPassable(x, y, 8) &&
+               !$gameMap.isPassable(x, y, 4) && !$gameMap.isPassable(x, y, 6);
+    }
+
+    // Bresenham walk between two tiles, both ends excluded.
+    BSE.Helpers.hasLineOfSight = function(x0, y0, x1, y1) {
+        const dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
+        const sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+        let err = dx - dy, x = x0, y = y0;
+        for (let guard = 0; guard < 64; guard++) {
+            if (x === x1 && y === y1) return true;
+            const e2 = err * 2;
+            if (e2 > -dy) { err -= dy; x += sx; }
+            if (e2 < dx)  { err += dx; y += sy; }
+            if (x === x1 && y === y1) return true;
+            if (blocksSight(x, y)) return false;
+        }
+        return true;
+    };
+
+    // Is (tx, ty) inside this creature's facing arc? 360 watches all round.
+    function inSightCone(ev, tx, ty, cone) {
+        if (!cone || cone >= 360) return true;
+        const dx = tx - ev.x, dy = ty - ev.y;
+        let along, perp;
+        switch (ev.direction()) {
+            case 2: along =  dy; perp = Math.abs(dx); break;
+            case 8: along = -dy; perp = Math.abs(dx); break;
+            case 6: along =  dx; perp = Math.abs(dy); break;
+            case 4: along = -dx; perp = Math.abs(dy); break;
+            default: return true;
+        }
+        if (along <= 0) return false;
+        return perp <= along * Math.tan((cone / 2) * Math.PI / 180);
+    }
+
+    // Who the wildlife is watching: the party leader, plus player 2's avatar
+    // while the screen is split. Nearest wins.
+    function nearestQuarry(ev) {
+        let best = $gamePlayer, bestD = Infinity;
+        if ($gamePlayer) {
+            bestD = Math.abs($gamePlayer.x - ev.x) + Math.abs($gamePlayer.y - ev.y);
+        }
+        const ss = window.$gameSplitScreen;
+        const p2 = ss && ss.active ? ss.p2Event : null;
+        if (p2 && !p2._erased) {
+            const d = Math.abs(p2.x - ev.x) + Math.abs(p2.y - ev.y);
+            if (d < bestD) { best = p2; bestD = d; }
+        }
+        return best;
+    }
+
+    // Is the quarry looking somewhere else? A stalker only closes on a back.
+    function quarryFacesAway(ev, target) {
+        if (!target || !target.direction) return false;
+        const dx = ev.x - target.x, dy = ev.y - target.y;
+        switch (target.direction()) {
+            case 2: return dy < 0;
+            case 8: return dy > 0;
+            case 6: return dx < 0;
+            case 4: return dx > 0;
+        }
+        return false;
+    }
+
+    // ------------------------------------------------------------------------
+    // Steps
+    // ------------------------------------------------------------------------
+
+    function aiStepToward(ev, x, y) {
+        const sx = ev.deltaXFrom(x), sy = ev.deltaYFrom(y);
+        if (Math.abs(sx) > Math.abs(sy)) {
+            ev.moveStraight(sx > 0 ? 4 : 6);
+            if (!ev.isMovementSucceeded() && sy !== 0) ev.moveStraight(sy > 0 ? 8 : 2);
+        } else if (sy !== 0) {
+            ev.moveStraight(sy > 0 ? 8 : 2);
+            if (!ev.isMovementSucceeded() && sx !== 0) ev.moveStraight(sx > 0 ? 4 : 6);
+        }
+        // A monster that cannot get round a corner is a monster the player
+        // stops fearing: sidestep once rather than grinding into the wall.
+        if (!ev.isMovementSucceeded()) {
+            ev._aiStuck = (ev._aiStuck || 0) + 1;
+            if (ev._aiStuck >= 2) { ev.moveRandom(); ev._aiStuck = 0; }
+        } else {
+            ev._aiStuck = 0;
+        }
+    }
+
+    function aiStepAway(ev, x, y) {
+        const sx = ev.deltaXFrom(x), sy = ev.deltaYFrom(y);
+        if (Math.abs(sx) > Math.abs(sy)) {
+            ev.moveStraight(sx > 0 ? 6 : 4);
+            if (!ev.isMovementSucceeded() && sy !== 0) ev.moveStraight(sy > 0 ? 2 : 8);
+        } else if (sy !== 0) {
+            ev.moveStraight(sy > 0 ? 2 : 8);
+            if (!ev.isMovementSucceeded() && sx !== 0) ev.moveStraight(sx > 0 ? 6 : 4);
+        }
+        // Cornered: anywhere is better than here.
+        if (!ev.isMovementSucceeded()) ev.moveRandom();
+    }
+
+    // Sidestep, so a circler goes round its quarry instead of into it.
+    function aiStepAround(ev, x, y, clockwise) {
+        const sx = ev.deltaXFrom(x), sy = ev.deltaYFrom(y);
+        let d;
+        if (Math.abs(sx) > Math.abs(sy)) d = (sx > 0) === !!clockwise ? 8 : 2;
+        else d = (sy > 0) === !!clockwise ? 4 : 6;
+        ev.moveStraight(d);
+        if (!ev.isMovementSucceeded()) aiStepToward(ev, x, y);
+    }
+
+    function aiHomeDist(ev) {
+        const h = ev._aiHome;
+        if (!h) return 0;
+        return Math.abs(ev.x - h.x) + Math.abs(ev.y - h.y);
+    }
+
+    function clampSpeed(v) {
+        return Math.max(1, Math.min(6, v));
+    }
+
+    // ------------------------------------------------------------------------
+    // The state machine
+    // ------------------------------------------------------------------------
+
+    const AI_SCAN_INTERVAL = 8;    // frames between detection sweeps
+    const AI_PACK_RANGE    = 8;    // tiles a pack member counts as "with me"
+    const AI_ROUSE_FRAMES  = 240;  // how long a creature stays roused by a call
+    const AI_RETURN_TIME   = 900;  // longest a creature spends walking home
+
+    Game_Event.prototype.aiEnter = function(state, timer) {
+        const was = this._aiState;
+        this._aiState = state;
+        this._aiTimer = Math.max(0, Math.min(99999, timer || 0));
+        if (was === state) return;
+        const beh = this._bseBeh;
+        if (state === 'commit' && beh && beh.chaseSpeed && this._moveSpeed > 0) {
+            this.setMoveSpeed(clampSpeed((this._aiBaseSpeed || this._moveSpeed) + beh.chaseSpeed));
+        } else if (was === 'commit') {
+            // A dive or a charge belongs to the run it was started on: leaving
+            // the chase for any reason has to put the creature back on its feet.
+            this._aiDashDir = 0;
+            this._aiDashLeft = 0;
+            if (this._aiBaseSpeed) this.setMoveSpeed(this._aiBaseSpeed);
+        }
+        if (!this.isNearTheScreen() || !$gameTemp) return;
+        // The two moments the player has to be able to read: being noticed, and
+        // being lost. Everything the AI does in between follows from them.
+        if (state === 'alert') $gameTemp.requestBalloon(this, 1);
+        else if (state === 'search' && was === 'commit') $gameTemp.requestBalloon(this, 2);
+    };
+
+    // Rouse this creature: a packmate's call, or a brawl next door. It commits
+    // without needing to have seen anything itself.
+    Game_Event.prototype.aiRouse = function(x, y) {
+        this._aiRoused = AI_ROUSE_FRAMES;
+        if (x !== undefined) this._aiLast = { x: x, y: y };
+    };
+
+    // Per-frame half: timers, and the throttled sweep that decides the state.
+    // Lives on update() rather than on updateSelfMovement(), which the engine
+    // only calls while a character stands still - a chase would otherwise stop
+    // counting down the moment it started moving.
+    Game_Event.prototype.updateEnemyAI = function() {
+        if (!(this._fixedTroopId > 0)) return;
+        if (this._aiTimer > 0) this._aiTimer--;
+        if (this._aiRoused > 0) this._aiRoused--;
+        this._aiScan = (this._aiScan || 0) + 1;
+        if (this._aiScan < AI_SCAN_INTERVAL) return;
+        this._aiScan = 0;
+        if (!isLiveEnemyEvent(this) || !this.isNearTheScreen()) return;
+        const beh = BSE.Helpers.getEventBehavior(this);
+        if (!beh) return;
+        if (!this._aiHome) this._aiHome = { x: this.x, y: this.y };
+        this.scanEnemyAI(beh);
+    };
+
+    Game_Event.prototype.scanEnemyAI = function(beh) {
+        // --- the party ------------------------------------------------------
+        const target = nearestQuarry(this);
+        let seen = false, dist = Infinity;
+        if (target && beh.sight > 0) {
+            const dx = target.x - this.x, dy = target.y - this.y;
+            dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist <= beh.sight && inSightCone(this, target.x, target.y, beh.cone)) {
+                seen = !beh.los || BSE.Helpers.hasLineOfSight(this.x, this.y, target.x, target.y);
+            }
+            // Walking into something is noticed whatever it was looking at: a
+            // facing cone and a wall are no defence at arm's length.
+            if (!seen && dist <= 1.5) seen = true;
+        }
+        this._aiTarget = target;
+        this._aiSeen = seen;
+        this._aiDist = dist;
+        // A relentless thing does not need to see you once it has hold of you:
+        // that is what makes a mimic a mimic. Everyone else only ever knows
+        // where the party WAS, which is what leaves a corner to break away at.
+        if (seen || (beh.relentless && target && this._aiState === 'commit')) {
+            this._aiLast = { x: target.x, y: target.y };
+        }
+
+        // --- the neighbours (the food web, section 1a) ----------------------
+        this.scanEcologyAI();
+
+        // --- transitions ----------------------------------------------------
+        const engaged = seen && beh.react && this.aiWillEngage(beh, dist);
+        switch (this._aiState) {
+            case 'alert':
+                if (engaged || beh.relentless) {
+                    if (this._aiTimer <= 0) this.aiEnter('commit', beh.memory);
+                } else if (!seen) {
+                    this.aiEnter('idle', 0);
+                }
+                break;
+            case 'commit':
+                if (engaged) this._aiTimer = beh.memory;
+                // A creature with a post walks straight back to it the moment
+                // the chase has carried it off its own ground - it does not
+                // stand there casting about halfway across the map first.
+                if (this.aiStrayedOffPost(beh)) this.aiEnter('return', AI_RETURN_TIME);
+                else if (dist > beh.leash || this._aiTimer <= 0) this.aiEnter('search', 120);
+                break;
+            case 'search':
+                if (this.aiStrayedOffPost(beh)) this.aiEnter('return', AI_RETURN_TIME);
+                else if (engaged && dist <= beh.leash) this.aiEnter('commit', beh.memory);
+                else if (this._aiTimer <= 0) this.aiEnter(beh.home ? 'return' : 'idle', AI_RETURN_TIME);
+                break;
+            case 'recover':
+                if (this._aiTimer <= 0) this.aiEnter(beh.home ? 'return' : 'idle', AI_RETURN_TIME);
+                break;
+            case 'return':
+                // Once it has turned for home it goes home. Re-engaging half
+                // way leaves a sentry pacing back and forth on the end of its
+                // leash for ever, barking at a party that has already left.
+                // The timer is the way out for a post that has become
+                // unreachable, so nothing walks into a wall for the rest of
+                // the session trying to get back to it.
+                if (aiHomeDist(this) <= 0 || this._aiTimer <= 0) this.aiEnter('idle', 0);
+                break;
+            default: // idle
+                if (engaged) this.aiEnter('alert', beh.alert);
+                else if (this._aiRoused > 0 && beh.react) this.aiEnter('commit', beh.memory);
+                break;
+        }
+    };
+
+    // Has the chase carried a posted creature off the ground it holds? The
+    // guard's real leash is its door, not the distance to the party, and
+    // without this a search that drifts outward re-acquires the party a tile
+    // further out every time and walks the sentry off the end of the map.
+    Game_Event.prototype.aiStrayedOffPost = function(beh) {
+        if (!beh.home || !beh.homeRadius || !this._aiHome) return false;
+        return aiHomeDist(this) > beh.homeRadius + 3;
+    };
+
+    // Some personalities pick their fights. A territorial creature only cares
+    // while you are on its ground; a mimic only wakes for something in reach.
+    Game_Event.prototype.aiWillEngage = function(beh, dist) {
+        if (this.aiStrayedOffPost(beh)) return false;
+        if (beh.territory && beh.homeRadius && this._aiTarget && this._aiHome) {
+            const d = Math.abs(this._aiTarget.x - this._aiHome.x) +
+                      Math.abs(this._aiTarget.y - this._aiHome.y);
+            return d <= beh.homeRadius + 3;
+        }
+        return dist <= beh.sight + 0.5;
+    };
+
+    // ------------------------------------------------------------------------
+    // Acting (called from updateSelfMovement, i.e. only while standing still)
+    // ------------------------------------------------------------------------
+
+    Game_Event.prototype.actEnemyAI = function(beh) {
+        // Something bigger is coming. A creature that lives by running away
+        // runs from it whatever else it was doing; a hunter shrugs it off.
+        const preyMinded = !beh.react || beh.react === 'flee' || beh.react === 'coward';
+        if (this._aiThreat && !beh.relentless &&
+            (preyMinded || this._aiState !== 'commit')) {
+            aiStepAway(this, this._aiThreat.x, this._aiThreat.y);
+            this.resetStopCount();
+            return true;
+        }
+        switch (this._aiState) {
+            case 'alert':   return this.aiActAlert(beh);
+            case 'commit':  return this.aiActCommit(beh);
+            case 'search':  return this.aiActSearch(beh);
+            case 'return':  return this.aiActReturn(beh);
+            case 'recover': return true; // stand still and get its breath back
+            default:        return this.aiActIdle(beh);
+        }
+    };
+
+    // The telegraph: rooted to the spot, staring straight at the party.
+    Game_Event.prototype.aiActAlert = function() {
+        const t = this._aiTarget;
+        if (t) this.turnTowardCharacter(t);
+        this.resetStopCount();
+        return true;
+    };
+
+    Game_Event.prototype.aiActCommit = function(beh) {
+        const t = this._aiTarget;
+        const known = this._aiLast;
+        const seen = this._aiSeen && t;
+        const tx = seen ? t.x : (known ? known.x : this.x);
+        const ty = seen ? t.y : (known ? known.y : this.y);
+        const dist = this._aiDist;
+        this.resetStopCount();
+
+        switch (beh.react) {
+            case 'flee':
+                aiStepAway(this, tx, ty);
+                return true;
+
+            case 'coward': {
+                // Wants you gone, wants to know where you went.
+                const band = beh.band || [5, 9];
+                if (dist < band[0]) aiStepAway(this, tx, ty);
+                else if (dist > band[1]) aiStepToward(this, tx, ty);
+                else if (t) this.turnTowardCharacter(t);
+                return true;
+            }
+
+            case 'stalk': {
+                // Holds the gap. Closes only on a back, freezes on a face.
+                const band = beh.band || [4, 7];
+                if (dist > band[1]) aiStepToward(this, tx, ty);
+                else if (dist < band[0]) aiStepAway(this, tx, ty);
+                else if (seen && quarryFacesAway(this, t)) aiStepToward(this, tx, ty);
+                else if (t) this.turnTowardCharacter(t);
+                return true;
+            }
+
+            case 'circle': {
+                // Round and round, in on the beat.
+                const band = beh.band || [4, 5];
+                if (this._aiOrbit === undefined) this._aiOrbit = Math.random() < 0.5;
+                this._aiOrbitTick = (this._aiOrbitTick || 0) + 1;
+                if (this._aiOrbitTick % 7 === 0) aiStepToward(this, tx, ty);
+                else if (dist > band[1]) aiStepToward(this, tx, ty);
+                else if (dist < band[0]) aiStepAway(this, tx, ty);
+                else aiStepAround(this, tx, ty, this._aiOrbit);
+                return true;
+            }
+
+            case 'pack': {
+                // Alone it holds off and calls; with the pack it comes in.
+                const mates = this.aiPackMatesNear();
+                if (mates > 0 || dist <= 1.5) {
+                    aiStepToward(this, tx, ty);
+                } else {
+                    const band = beh.band || [3, 6];
+                    if (dist > band[1]) aiStepToward(this, tx, ty);
+                    else if (dist < band[0]) aiStepAway(this, tx, ty);
+                    else if (t) this.turnTowardCharacter(t);
+                    this.aiCallPack();
+                }
+                return true;
+            }
+
+            case 'swoop': {
+                // One straight dive, then back up to the perch. The dive reads
+                // the gap tile by tile rather than off the last sweep: a bird
+                // that only checked eight frames ago sails past the party and
+                // keeps going to the edge of the map.
+                if (!this._aiDashDir) {
+                    this._aiDashDir = this.aiDashDirection(tx, ty);
+                    this._aiDashLeft = Math.max(2, Math.round(dist) + 1);
+                }
+                const gapBefore = Math.abs(tx - this.x) + Math.abs(ty - this.y);
+                this.moveStraight(this._aiDashDir);
+                const gapAfter = Math.abs(tx - this.x) + Math.abs(ty - this.y);
+                if (!this.isMovementSucceeded() || gapAfter <= 1 ||
+                    gapAfter >= gapBefore || --this._aiDashLeft <= 0) {
+                    this._aiDashDir = 0;
+                    this.aiEnter('recover', 45);
+                }
+                return true;
+            }
+
+            case 'charge': {
+                // Lines itself up, then runs the whole row at you - and a few
+                // tiles past, which is the whole point: a charge is something
+                // to be sidestepped, and something to be baited into a wall.
+                if (this._aiDashDir) {
+                    this.moveStraight(this._aiDashDir);
+                    if (!this.isMovementSucceeded() || --this._aiDashLeft <= 0) {
+                        this._aiDashDir = 0;
+                        this.aiEnter('recover', 60);
+                    }
+                    return true;
+                }
+                const dx = tx - this.x, dy = ty - this.y;
+                if (dx === 0 || dy === 0) {
+                    this._aiDashDir = this.aiDashDirection(tx, ty);
+                    this._aiDashLeft = Math.abs(dx) + Math.abs(dy) + 3;
+                    return true;
+                }
+                // Not aligned yet: close the smaller gap first, which is what
+                // walks it onto the quarry's own row or column.
+                if (Math.abs(dx) < Math.abs(dy)) this.moveStraight(dx > 0 ? 6 : 4);
+                else this.moveStraight(dy > 0 ? 2 : 8);
+                if (!this.isMovementSucceeded()) aiStepToward(this, tx, ty);
+                return true;
+            }
+
+            case 'ambush':
+            case 'track':
+            case 'chase':
+            default:
+                aiStepToward(this, tx, ty);
+                return true;
+        }
+    };
+
+    // The straight line a dive or a charge runs along.
+    Game_Event.prototype.aiDashDirection = function(tx, ty) {
+        const dx = tx - this.x, dy = ty - this.y;
+        if (Math.abs(dx) >= Math.abs(dy)) return dx >= 0 ? 6 : 4;
+        return dy >= 0 ? 2 : 8;
+    };
+
+    // Same-species company within earshot.
+    Game_Event.prototype.aiPackMatesNear = function() {
+        const troop = $dataTroops[this._fixedTroopId];
+        if (!troop || !troop.members.length) return 0;
+        const mine = troop.members[0].enemyId;
+        let n = 0;
+        for (const ev of $gameMap.events()) {
+            if (ev === this || !isLiveEnemyEvent(ev)) continue;
+            const t = $dataTroops[ev._fixedTroopId];
+            if (!t || !t.members.length || t.members[0].enemyId !== mine) continue;
+            if (Math.abs(ev.x - this.x) + Math.abs(ev.y - this.y) <= AI_PACK_RANGE) n++;
+        }
+        return n;
+    };
+
+    // A call brings the rest of the pack to where the caller is looking.
+    Game_Event.prototype.aiCallPack = function() {
+        if (this._aiCalled > 0) { this._aiCalled--; return; }
+        this._aiCalled = 90;
+        const troop = $dataTroops[this._fixedTroopId];
+        if (!troop || !troop.members.length) return;
+        const mine = troop.members[0].enemyId;
+        const spot = this._aiLast;
+        if (this.isNearTheScreen() && $gameTemp) $gameTemp.requestBalloon(this, 1);
+        for (const ev of $gameMap.events()) {
+            if (ev === this || !isLiveEnemyEvent(ev)) continue;
+            const t = $dataTroops[ev._fixedTroopId];
+            if (!t || !t.members.length || t.members[0].enemyId !== mine) continue;
+            if (Math.abs(ev.x - this.x) + Math.abs(ev.y - this.y) > AI_PACK_RANGE) continue;
+            ev.aiRouse(spot ? spot.x : this.x, spot ? spot.y : this.y);
+        }
+    };
+
+    // Casting about where the party was last seen.
+    Game_Event.prototype.aiActSearch = function() {
+        const known = this._aiLast;
+        this.resetStopCount();
+        if (known && (Math.abs(this.x - known.x) + Math.abs(this.y - known.y)) > 0) {
+            aiStepToward(this, known.x, known.y);
+        } else if (this.checkStop(20)) {
+            this.moveRandom();
+        }
+        return true;
+    };
+
+    // Back to the post / the perch / the den.
+    Game_Event.prototype.aiActReturn = function() {
+        const home = this._aiHome;
+        this.resetStopCount();
+        if (home && aiHomeDist(this) > 0) aiStepToward(this, home.x, home.y);
+        return true;
+    };
+
+    Game_Event.prototype.aiActIdle = function(beh) {
+        // Nothing to do about the party: go and eat something instead.
+        if (this._aiPrey) {
+            aiStepToward(this, this._aiPrey.x, this._aiPrey.y);
+            this.resetStopCount();
+            return true;
+        }
+        const threshold = this.stopCountThreshold();
+        switch (beh.idle) {
+            case 'still':
+                return true;
+
+            case 'perch':
+                // Sits and looks about, so the swoop is never quite expected.
+                if (this.checkStop(threshold * 2)) {
+                    this.setDirection([2, 4, 6, 8][Math.floor(Math.random() * 4)]);
+                    this.resetStopCount();
+                }
+                return true;
+
+            case 'scan':
+                // A post is only as good as the sweep: turn a quarter and wait.
+                if (this.checkStop(90)) {
+                    this.turnRight90();
+                    this.resetStopCount();
+                }
+                return true;
+
+            case 'graze':
+                // Head down for a long while, then a step, then head down.
+                if (!this.checkStop(threshold + 90)) return true;
+                this.moveRandom();
+                this.resetStopCount();
+                return true;
+
+            case 'dart':
+                // Two or three tiles at once, then nothing at all.
+                if (!this.checkStop(24)) return true;
+                this.moveRandom();
+                if (this.isMovementSucceeded() && Math.random() < 0.5) {
+                    this.moveStraight(this.direction());
+                }
+                this.resetStopCount();
+                return true;
+
+            case 'drift': {
+                // Carried along, and only rarely by something new.
+                if (!this.checkStop(threshold)) return true;
+                if (!this._aiDriftDir || Math.random() < 0.08) {
+                    this._aiDriftDir = [2, 4, 6, 8][Math.floor(Math.random() * 4)];
+                }
+                this.moveStraight(this._aiDriftDir);
+                if (!this.isMovementSucceeded()) this._aiDriftDir = 0;
+                this.resetStopCount();
+                return true;
+            }
+
+            case 'patrol': {
+                // Up and down the beat, turning at the ends of it.
+                if (!this.checkStop(threshold)) return true;
+                if (!this._aiPatrolDir) {
+                    this._aiPatrolDir = [2, 4, 6, 8][Math.floor(Math.random() * 4)];
+                }
+                const reach = beh.homeRadius || 10;
+                if (aiHomeDist(this) >= reach) {
+                    this._aiPatrolDir = this.reverseDir(this._aiPatrolDir);
+                }
+                this.moveStraight(this._aiPatrolDir);
+                if (!this.isMovementSucceeded()) {
+                    this._aiPatrolDir = this.reverseDir(this._aiPatrolDir);
+                }
+                this.resetStopCount();
+                return true;
+            }
+
+            case 'territory': {
+                // Wanders its patch and never walks off the edge of it.
+                if (!this.checkStop(threshold)) return true;
+                const radius = beh.homeRadius || 7;
+                if (this._aiHome && aiHomeDist(this) > radius) {
+                    aiStepToward(this, this._aiHome.x, this._aiHome.y);
+                } else {
+                    this.moveRandom();
+                }
+                this.resetStopCount();
+                return true;
+            }
+
+            case 'scavenge': {
+                // Follows its nose to the nearest body.
+                if (!this.checkStop(threshold)) return true;
+                const corpse = this.aiNearestCorpse(10);
+                if (corpse) aiStepToward(this, corpse.x, corpse.y);
+                else this.moveRandom();
+                this.resetStopCount();
+                return true;
+            }
+
+            case 'wander':
+            default:
+                // The engine's own random walk is exactly this, so let it run.
+                return false;
+        }
+    };
+
+    Game_Event.prototype.aiNearestCorpse = function(range) {
+        const corpses = BSE.State.mapCorpses;
+        if (!corpses || !corpses.length) return null;
+        const mapId = $gameMap.mapId();
+        let best = null, bestD = range;
+        for (const c of corpses) {
+            if (c.mapId !== mapId) continue;
+            const d = Math.abs(c.x - this.x) + Math.abs(c.y - this.y);
+            if (d < bestD) { bestD = d; best = c; }
+        }
+        return best;
     };
 
     // ========================================================================
@@ -1788,49 +3290,58 @@
     const _Game_Event_updateSelfMovement = Game_Event.prototype.updateSelfMovement;
     Game_Event.prototype.updateSelfMovement = function() {
         if (this._movementLocked) return;
-        if (this.updateEcologyMovement()) return;
+        if (this.updateEnemyAIMovement()) return;
         _Game_Event_updateSelfMovement.call(this);
     };
 
-    // Hunters / predators chase nearby targets at their own speed; prey and
-    // neutral creatures flee from anything hunting them. Returns true when this
-    // override took over movement for the frame.
-    Game_Event.prototype.updateEcologyMovement = function() {
-        if ((this._ecoTick = ((this._ecoTick || 0) + 1) % 10) !== 0) return false;
-        if (!isLiveEnemyEvent(this)) return false;
-        if (this.isMoving() || !this.isNearTheScreen()) return false;
+    // The acting half of section 6b: called only while the creature is standing
+    // still, and only for a live roaming monster. Returns true when the
+    // personality took the frame, so the engine's own move type never runs on
+    // top of it. `wander` deliberately returns false: the engine's random walk
+    // IS that idle, so there is no reason to write it twice.
+    Game_Event.prototype.updateEnemyAIMovement = function() {
+        if (!(this._fixedTroopId > 0)) return false;
+        if (!isLiveEnemyEvent(this) || !this.isNearTheScreen()) return false;
+        // A stunned monster is held in place by having its speed taken away
+        // (Hotkeys.js). Take the frame and do nothing with it, so a personality
+        // never walks a creature out of a stun the player has just landed.
+        if (!(this._moveSpeed > 0)) return true;
+        const beh = BSE.Helpers.getEventBehavior(this);
+        if (!beh) return false;
+        if (!this._aiHome) this._aiHome = { x: this.x, y: this.y };
+        return this.actEnemyAI(beh);
+    };
+
+    // The food web (section 1a), read as two facts about the neighbourhood:
+    // the nearest creature I hunt, and the nearest one that hunts me. The
+    // personality decides what to do with them - prey drops everything and
+    // runs, a hunter ignores the whole question, everyone else goes hunting
+    // only when the party has given it nothing better to do.
+    Game_Event.prototype.scanEcologyAI = function() {
+        this._aiPrey = null;
+        this._aiThreat = null;
         const myEco = BSE.Helpers.getEventEcology(this);
-        if (!myEco) return false;
+        if (!myEco) return;
 
         const range = BSE.Data.ECOLOGY_AWARENESS;
-        let prey = null, preyDist = Infinity;     // nearest thing I hunt
-        let threat = null, threatDist = Infinity; // nearest hunter I cannot fight back
-
-        const events = $gameMap.events();
-        for (const ev of events) {
+        let preyDist = Infinity, threatDist = Infinity;
+        for (const ev of $gameMap.events()) {
             if (ev === this || !isLiveEnemyEvent(ev)) continue;
             const dist = Math.abs(ev.x - this.x) + Math.abs(ev.y - this.y);
             if (dist > range) continue;
             const otherEco = BSE.Helpers.getEventEcology(ev);
             if (BSE.Helpers.ecologyChases(myEco, otherEco)) {
-                if (dist < preyDist) { prey = ev; preyDist = dist; }
+                if (dist < preyDist) { this._aiPrey = ev; preyDist = dist; }
             } else if (BSE.Helpers.ecologyChases(otherEco, myEco)) {
-                // only flee when I don't hunt it back (pure prey/neutral reaction)
-                if (dist < threatDist) { threat = ev; threatDist = dist; }
+                // only flee what I don't hunt back (pure prey/neutral reaction)
+                if (dist < threatDist) { this._aiThreat = ev; threatDist = dist; }
             }
         }
+    };
 
-        if (prey) {
-            this.moveTowardCharacter(prey);
-            this.resetStopCount();
-            return true;
-        }
-        if (threat) {
-            this.moveAwayFromCharacter(threat);
-            this.resetStopCount();
-            return true;
-        }
-        return false;
+    // Kept as the name the rest of the codebase knows this behaviour by.
+    Game_Event.prototype.updateEcologyMovement = function() {
+        return this.updateEnemyAIMovement();
     };
 
     Game_Event.prototype.updateMovementLock = function() {
@@ -1848,6 +3359,7 @@
     Game_Event.prototype.update = function() {
         _Game_Event_update.call(this);
         this.updateMovementLock();
+        this.updateEnemyAI();
         if (window.$gameSplitScreen && window.$gameSplitScreen.active) {
             if (window.$gameSplitScreen.p2EventName !== _p2EventNameRaw) {
                 _p2EventNameRaw = window.$gameSplitScreen.p2EventName;
@@ -2170,11 +3682,423 @@
         return _BSE_Game_Enemy_originalName.call(this);
     };
 
-    // Barren alien world -> erase every roaming "Enemy" event so nothing spawns.
+    // ========================================================================
+    // 17. Petrodemons
+    // ------------------------------------------------------------------------
+    // A petrodemon is not in the database. It is generated on the spot, one per
+    // fight, and written into a single scratch enemy slot (the same trick the
+    // reinforced troop uses): a hulking mass of crude wearing whatever body
+    // parts the well swallowed, with its own name, its own numbers and its own
+    // handful of the nastiest workings in the book.
+    //
+    // What decides how hard it is:
+    //   easy      below the party's own level, a demonstration rather than a fight
+    //   normal    a little above it
+    //   difficult / brutal / hellish   progressively further above
+    //
+    // Its numbers are read off the real enemy table rather than invented: the
+    // median ordinary creature of the level it is pitched at, multiplied by what
+    // being a petrodemon is worth. That keeps it on the same curve every other
+    // creature in the game was scaled onto (tools/enemies/gen_enemy_scale.js).
+    //
+    // Felling one pays in crude: oil flasks by the crate and OIL options on top
+    // (variable 51, which is the holdings' public face and what the market
+    // re-syncs from). The 3D look is the `petrodemon` rig, which rolls its heap,
+    // its sheen and its grafts from the <PetroSeed:> written here, so no two are
+    // the same creature.
+    // ========================================================================
+    const PETRO = {
+        easy:      { level: -6,  hp: 1.9, dmg: 0.75, def: 0.90, skill: 0.30, skills: 3, oil: [8, 14],   crude: [0, 0],  shares: [1, 3] },
+        normal:    { level: 2,   hp: 2.6, dmg: 1.00, def: 1.00, skill: 0.52, skills: 4, oil: [14, 22],  crude: [0, 2],  shares: [2, 5] },
+        difficult: { level: 9,   hp: 3.4, dmg: 1.25, def: 1.08, skill: 0.70, skills: 5, oil: [24, 36],  crude: [2, 5],  shares: [4, 9] },
+        brutal:    { level: 18,  hp: 4.4, dmg: 1.55, def: 1.16, skill: 0.86, skills: 6, oil: [40, 60],  crude: [5, 9],  shares: [8, 16] },
+        hellish:   { level: 30,  hp: 6.0, dmg: 1.95, def: 1.24, skill: 1.00, skills: 7, oil: [70, 110], crude: [9, 16], shares: [15, 30] }
+    };
+    BSE.Data.PETRO_DIFFICULTIES = Object.keys(PETRO);
+    const PETRO_OIL_FLASK = 870;    // Oil Flask (the crafting material)
+    const PETRO_CRUDE_OIL = 909;    // Crude Oil
+    const PETRO_OIL_SHARES_VAR = 51;
+    // Above this the enemy table stops being a level ladder and becomes the
+    // item-gated tier, so it is never read as "what a creature of level N weighs".
+    const PETRO_REF_MAX_LEVEL = 110;
+
+    const petroRoll = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+    const petroPick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+    function petroMedian(values) {
+        const v = values.filter(n => Number.isFinite(n)).sort((a, b) => a - b);
+        if (!v.length) return 0;
+        const mid = v.length >> 1;
+        return v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2;
+    }
+
+    // Every ordinary creature the table declares a level for, sorted by it.
+    // Bosses are left out: a band is what an ORDINARY creature of that level
+    // weighs, and the petrodemon's own boss multiple is applied on top.
+    let _petroLevelled = null;
+    function petroLevelledEnemies() {
+        if (_petroLevelled && _petroLevelled.length) return _petroLevelled;
+        _petroLevelled = [];
+        for (let i = 1; i < $dataEnemies.length; i++) {
+            const e = $dataEnemies[i];
+            if (!e || !e.name || !e.params || e._bsePetrodemon) continue;
+            if (/<Boss>/i.test(e.note || '')) continue;
+            const lv = BSE.Helpers.getEnemyLevel(e.note);
+            if (lv < 1 || lv > PETRO_REF_MAX_LEVEL) continue;
+            _petroLevelled.push({ lv: lv, e: e });
+        }
+        _petroLevelled.sort((a, b) => a.lv - b.lv);
+        return _petroLevelled;
+    }
+
+    // What a creature of this level is worth, as the real table has it: a
+    // windowed median that widens until it holds a real sample. Past the table's
+    // own ceiling the ladder is continued at the growth the top of it runs at,
+    // rather than clamped (a hellish demon over a level 99 party is level 129).
+    function petroReference(level) {
+        const all = petroLevelledEnemies();
+        if (!all.length) return null;
+        const cap = Math.min(level, PETRO_REF_MAX_LEVEL);
+        let sample = [];
+        for (let w = 3; w <= 45 && sample.length < 12; w += 3) {
+            sample = all.filter(r => Math.abs(r.lv - cap) <= w);
+        }
+        if (!sample.length) sample = all.slice(-12);
+        const params = [];
+        for (let i = 0; i < 8; i++) params.push(petroMedian(sample.map(r => r.e.params[i] || 0)));
+        const ref = {
+            params: params,
+            exp: petroMedian(sample.map(r => r.e.exp || 0)),
+            gold: petroMedian(sample.map(r => r.e.gold || 0))
+        };
+        if (level > PETRO_REF_MAX_LEVEL) {
+            const over = level - PETRO_REF_MAX_LEVEL;
+            const pg = Math.pow(1.055, over), rg = Math.pow(1.07, over);
+            ref.params = ref.params.map(v => v * pg);
+            ref.exp *= rg;
+            ref.gold *= rg;
+        }
+        return ref;
+    }
+
+    // The nastiest workings in the book, ordered by how much harm they do.
+    // A skill only counts if it is pointed at somebody else and an ENEMY can
+    // actually cast it: a formula written for an actor (a.level) evaluates to
+    // nothing on a creature, and a TP price is not something a creature can
+    // promise to pay (a battler opens a fight on a scrap of TP and only earns
+    // more by being hit), so the repertoire is drawn from what MP buys, which
+    // is what the demon is given a deep pool of.
+    const PETRO_ACTOR_FORMULA = /\b(a\.level|a\.actorId|a\.isActor|a\.currentClass)\b/;
+    let _petroSkills = null;
+    function petroSkillPool() {
+        if (_petroSkills && _petroSkills.length) return _petroSkills;
+        const pool = [];
+        for (let i = 1; i < $dataSkills.length; i++) {
+            const s = $dataSkills[i];
+            if (!s || !s.name || !s.damage) continue;
+            if (s.occasion === 2 || s.occasion === 3) continue;   // menu-only / never
+            if ([1, 2, 3, 4, 5, 6].indexOf(s.scope) < 0) continue; // aimed at the other side
+            if (s.tpCost > 0) continue;
+            const formula = String(s.damage.formula || '');
+            const hurts = s.damage.type === 1 || s.damage.type === 5;
+            const states = (s.effects || []).filter(e => e.code === 21 && e.value1 >= 0.4).length;
+            if (!hurts && !states) continue;
+            if (hurts && (!formula || PETRO_ACTOR_FORMULA.test(formula))) continue;
+            let reach = (formula.match(/a\.(atk|mat|agi|luk|def|mdf|mhp|hp)/g) || []).length * 9;
+            const flat = (formula.match(/\d+(\.\d+)?/g) || []).map(Number);
+            if (flat.length) reach += Math.min(200, Math.max.apply(null, flat));
+            reach += states * 28;
+            if (s.scope === 2 || s.scope === 4 || s.scope === 6) reach += 30; // the whole party at once
+            pool.push({ id: i, score: reach + (s.mpCost || 0) + (s.tpCost || 0) * 4 });
+        }
+        pool.sort((a, b) => a.score - b.score);
+        _petroSkills = pool;
+        return pool;
+    }
+
+    // `frac` is where in that order this demon reads: 0 the bottom of the book,
+    // 1 the working nothing survives. Drawn from a window rather than a point so
+    // two demons of one difficulty never come with the same repertoire.
+    function petroSkillIds(frac, count) {
+        const pool = petroSkillPool();
+        if (!pool.length) return [];
+        const centre = Math.round(frac * (pool.length - 1));
+        const half = Math.max(5, Math.round(pool.length * 0.035));
+        const lo = Math.max(0, centre - half), hi = Math.min(pool.length - 1, centre + half);
+        const window = pool.slice(lo, hi + 1);
+        const ids = [];
+        for (let i = 0; i < count * 4 && ids.length < count; i++) {
+            const pickId = petroPick(window).id;
+            if (ids.indexOf(pickId) < 0) ids.push(pickId);
+        }
+        return ids;
+    }
+
+    // A name nobody else carries: two halves of a name and the thing it is
+    // known for. The banks are i18n, so a demon reads as one in every language.
+    function petroName() {
+        const first = BSE.Helpers.bi18nList('petrodemon.first') || ['Petro'];
+        const second = BSE.Helpers.bi18nList('petrodemon.second') || ['demon'];
+        const epithet = BSE.Helpers.bi18nList('petrodemon.epithet') || [''];
+        return T('Battle.petrodemon.name', {
+            first: petroPick(first), second: petroPick(second), epithet: petroPick(epithet)
+        });
+    }
+
+    // What the bestiary page reads out. Composed here rather than templated in
+    // the note, because a petrodemon is gone from the database the moment the
+    // next one is raised: the sentence has to travel with the codex entry.
+    function petroDescription() {
+        const body = BSE.Helpers.bi18nList('petrodemon.body');
+        const grafts = BSE.Helpers.bi18nList('petrodemon.grafts');
+        const origin = BSE.Helpers.bi18nList('petrodemon.origin');
+        if (!body || !grafts || !origin) return '';
+        return T('Battle.petrodemon.desc', {
+            body: petroPick(body), grafts: petroPick(grafts), origin: petroPick(origin)
+        });
+    }
+
+    // The 2D portrait is only ever the fallback (a battle without the 3D
+    // battlers), so it borrows the sheet of whatever ooze the database already
+    // has rather than shipping one of its own.
+    function petroBattlerName() {
+        let fallback = '';
+        for (let i = 1; i < $dataEnemies.length; i++) {
+            const e = $dataEnemies[i];
+            if (!e || !e.battlerName) continue;
+            if (/slime|ooze|sludge|tar|oil|blob/i.test(e.name || '')) return e.battlerName;
+            if (!fallback) fallback = e.battlerName;
+        }
+        return fallback;
+    }
+
+    // One scratch enemy slot and one scratch troop slot, reused by every
+    // petrodemon this session. $dataEnemies / $dataTroops are rebuilt from disk
+    // on every load, so the marker doubles as "is my slot still mine".
+    let _petroEnemySlot = 0, _petroTroopSlot = 0;
+    function petroEnemySlot() {
+        const held = $dataEnemies[_petroEnemySlot];
+        if (_petroEnemySlot > 0 && held && held._bsePetrodemon) return _petroEnemySlot;
+        _petroEnemySlot = $dataEnemies.length;
+        $dataEnemies.push({ id: _petroEnemySlot, _bsePetrodemon: true, name: '', note: '', meta: {},
+            params: [1, 1, 1, 1, 1, 1, 1, 1], actions: [], traits: [], dropItems: [],
+            battlerName: '', battlerHue: 0, exp: 0, gold: 0 });
+        return _petroEnemySlot;
+    }
+    function petroTroopSlot() {
+        const held = $dataTroops[_petroTroopSlot];
+        if (_petroTroopSlot > 0 && held && held._bsePetrodemon) return _petroTroopSlot;
+        // Half the game reads "troop id N holds enemy id N alone" as the mark of
+        // a creature that can be fought on its own (the arena roster, the quest
+        // bounty roster). The two scratch slots are allocated out of two
+        // different arrays, so they must never land on the same number, or the
+        // petrodemon would read as an ordinary creature to all of them.
+        if ($dataTroops.length === petroEnemySlot()) {
+            $dataTroops.push({ id: $dataTroops.length, name: '', members: [], pages: [], _bsePetrodemon: true });
+        }
+        _petroTroopSlot = $dataTroops.length;
+        $dataTroops.push({ id: _petroTroopSlot, name: '', members: [], pages: [], _bsePetrodemon: true });
+        return _petroTroopSlot;
+    }
+
+    BSE.Functions.isPetrodemonDifficulty = function(key) {
+        return !!PETRO[String(key || '').toLowerCase()];
+    };
+
+    /**
+     * Generate one petrodemon and the troop holding it. Returns the record the
+     * spoils and the history entry are paid out from, or null when the database
+     * is not loaded yet.
+     */
+    BSE.Functions.generatePetrodemon = function(difficultyKey) {
+        const key = String(difficultyKey || 'normal').toLowerCase();
+        const d = PETRO[key] || PETRO.normal;
+        if (typeof $dataEnemies === 'undefined' || !$dataEnemies) return null;
+
+        const party = $gameParty.members();
+        const median = party.length ? BSE.Helpers.getMedianLevel(party) : 1;
+        const level = Math.max(1, Math.min(140, Math.round(median + d.level)));
+        const ref = petroReference(level);
+        if (!ref) return null;
+
+        // Its own numbers: the band, times what being a petrodemon is worth,
+        // times a per-demon jitter so no two of one difficulty weigh the same.
+        const jitter = () => 0.88 + Math.random() * 0.26;
+        const skillIds = petroSkillIds(d.skill, d.skills);
+        const priciest = skillIds.reduce((m, id) => {
+            const s = $dataSkills[id];
+            return Math.max(m, s ? (s.mpCost || 0) : 0);
+        }, 0);
+        const params = [
+            Math.round(ref.params[0] * d.hp * jitter()),
+            Math.max(Math.round(ref.params[1] * 3 * jitter()), priciest * 4 + 50),
+            Math.round(ref.params[2] * d.dmg * jitter()),
+            Math.round(ref.params[3] * d.def * jitter()),
+            Math.round(ref.params[4] * d.dmg * jitter()),
+            Math.round(ref.params[5] * d.def * jitter()),
+            Math.round(ref.params[6] * (0.9 + d.dmg * 0.15) * jitter()),
+            Math.round(ref.params[7] * jitter())
+        ].map(v => Math.max(1, v));
+
+        const seed = 1 + Math.floor(Math.random() * 0x7ffffffe);
+        const name = petroName();
+        const description = petroDescription();
+        const enemyId = petroEnemySlot();
+        const enemy = $dataEnemies[enemyId];
+        enemy.name = name;
+        // <NoRecruit>: a petrodemon is a force, not a person. It never talks,
+        // never surrenders, and can be neither pet, follower nor companion
+        // (EnemyTalkSystem's isUnrecruitable, which also reads the marker below).
+        enemy.note = `<Boss>\n<NoRecruit>\n<Level: ${level}>\n<Archetype: Slime>\n` +
+            `<Model3D: petrodemon>\n<PetroSeed: ${seed}>` +
+            (description ? `\n<En: ${description}>` : '');
+        enemy.params = params;
+        enemy.exp = Math.max(1, Math.round(ref.exp * (1.5 + d.hp * 0.6)));
+        enemy.gold = Math.max(1, Math.round(ref.gold * (1.5 + d.hp * 0.6)));
+        enemy.battlerName = petroBattlerName();
+        enemy.battlerHue = 0;
+        enemy.dropItems = [];
+        // Crude burns, and nothing else touches it much: it drinks petro whole,
+        // shrugs off the cold and the sea, and goes up under a torch.
+        enemy.traits = [
+            { code: 11, dataId: 2, value: 1.65 },   // Fire
+            { code: 11, dataId: 6, value: 0 },      // Petro
+            { code: 11, dataId: 1, value: 0.80 },   // Physical
+            { code: 11, dataId: 3, value: 0.55 },   // Ice
+            { code: 11, dataId: 5, value: 0.45 },   // Water
+            { code: 11, dataId: 9, value: 0.65 }    // Cursed
+        ];
+        enemy.actions = skillIds.map((id, i) => ({
+            conditionParam1: 0, conditionParam2: 0, conditionType: 0,
+            rating: Math.max(1, 6 - i), skillId: id
+        }));
+        enemy.actions.push({ conditionParam1: 0, conditionParam2: 0, conditionType: 0, rating: 3, skillId: 1 });
+        DataManager.extractMetadata(enemy);
+
+        const troopId = petroTroopSlot();
+        const troop = $dataTroops[troopId];
+        troop.name = name;
+        troop.members = [{ enemyId: enemyId, x: 400, y: 300, hidden: false }];
+        troop.pages = [];
+
+        return {
+            troopId: troopId, enemyId: enemyId, name: name, level: level, difficulty: key,
+            description: description,
+            oil: petroRoll(d.oil[0], d.oil[1]),
+            crude: petroRoll(d.crude[0], d.crude[1]),
+            shares: petroRoll(d.shares[0], d.shares[1]),
+            paid: false
+        };
+    };
+
+    /**
+     * Raise a petrodemon and fight it here and now. `difficultyKey` is one of
+     * easy/normal/difficult/brutal/hellish; anything else is read as normal.
+     */
+    BSE.Functions.startPetrodemonBattle = function(difficultyKey) {
+        if ($gameParty.inBattle() || $gameParty.isAllDead()) return false;
+        const record = BSE.Functions.generatePetrodemon(difficultyKey);
+        if (!record) return false;
+
+        BSE.State.petrodemon = record;
+        // Not a map monster: nothing is deleted, locked or respawned afterwards,
+        // so the persistent-battle bookkeeping is deliberately left empty.
+        BSE.State.currentBattleEventId = null;
+        BSE.State.currentEventId = null;
+        BSE.State.currentMapId = null;
+        BSE.State.reinforcement = null;
+        $gameSystem._p1PreBattlePos = {
+            mapId: $gameMap.mapId(), x: $gamePlayer.x, y: $gamePlayer.y, d: $gamePlayer.direction()
+        };
+        $gameSystem._p2PreBattlePos = null;
+
+        if (window.isMapBattleMode && window.isMapBattleMode() && window.MapBattleMode) {
+            window.MapBattleMode.begin(record.troopId, null, 0, $gameMap.mapId());
+            return true;
+        }
+        BattleManager.setup(record.troopId, true, false);
+        SceneManager.push(Scene_Battle);
+        return true;
+    };
+
+    /**
+     * The record for the petrodemon being fought right now, or null. Read
+     * through here rather than off BSE.State: the record outlives its battle,
+     * and an arena fight afterwards must not inherit its spoils.
+     */
+    BSE.Helpers.getPetrodemonFight = function() {
+        const r = BSE.State.petrodemon;
+        if (r && $gameTroop && $gameTroop._troopId === r.troopId) return r;
+        return null;
+    };
+
+    // Every petrodemon felled keeps its page. The scratch enemy slot is rewritten
+    // by the next one, so the codex holds a COPY of the creature's own record
+    // (its numbers, its note, and the <PetroSeed:> its look was rolled from),
+    // which is everything the bestiary needs to draw it again.
+    Game_System.prototype.petrodemonCodex = function() {
+        if (!this._petrodemonCodex) this._petrodemonCodex = [];
+        return this._petrodemonCodex;
+    };
+    Game_System.prototype.recordPetrodemon = function(entry) {
+        const codex = this.petrodemonCodex();
+        if (!entry || codex.some(e => e && e.seed === entry.seed)) return;
+        codex.push(entry);
+        if (codex.length > 200) codex.shift();
+    };
+
+    function petroCodexEntry(record) {
+        const enemy = $dataEnemies[record.enemyId];
+        if (!enemy) return null;
+        const copy = JSON.parse(JSON.stringify(enemy));
+        copy.meta = Object.assign({}, enemy.meta);
+        copy._bsePetrodemonCodex = true;
+        delete copy._bsePetrodemon;      // not the live scratch slot any more
+        return {
+            seed: String(copy.meta.PetroSeed || record.name),
+            name: record.name,
+            level: record.level,
+            difficulty: record.difficulty,
+            description: record.description || '',
+            enemy: copy
+        };
+    }
+
+    /** What one petrodemon kill pays, once. Returns null if already paid. */
+    BSE.Functions.payPetrodemonSpoils = function() {
+        const r = BSE.Helpers.getPetrodemonFight();
+        if (!r || r.paid) return null;
+        r.paid = true;
+        $gameSystem.recordPetrodemon(petroCodexEntry(r));
+        const entries = [];
+        const grant = (itemId, qty) => {
+            const item = $dataItems[itemId];
+            if (!item || qty <= 0) return;
+            $gameParty.gainItem(item, qty);
+            entries.push({ obj: item, qty: qty });
+        };
+        grant(PETRO_OIL_FLASK, r.oil);
+        grant(PETRO_CRUDE_OIL, r.crude);
+        // Variables 51/52 are the holdings' public face and the market re-syncs
+        // from them (StockMarketSystem), so options are handed over as a write.
+        if (r.shares > 0 && $gameVariables) {
+            const held = Math.max(0, Number($gameVariables.value(PETRO_OIL_SHARES_VAR)) || 0);
+            $gameVariables.setValue(PETRO_OIL_SHARES_VAR, held + r.shares);
+        }
+        return { record: r, entries: entries, shares: r.shares };
+    };
+
+    // Barren alien world, or a "death" world (WorldManager.populationMode) ->
+    // erase every roaming "Enemy" event so nothing spawns, procedural map or
+    // authored one alike. A death world is an empty world (isEmptyWorld() is
+    // true for it too) with the fauna gone on top: nobody is left to fight
+    // any more than they are left to talk to.
     const _BSE_spawnEnemiesFromEncounters = Scene_Map.prototype.spawnEnemiesFromEncounters;
     Scene_Map.prototype.spawnEnemiesFromEncounters = function () {
         const st = alienSurfaceState();
-        if (st && !st.hasLife) {
+        const WM = window.WorldManager;
+        const deathWorld = !!(WM && typeof WM.isDeathWorld === "function" && WM.isDeathWorld());
+        if ((st && !st.hasLife) || deathWorld) {
             $gameMap.events().forEach((ev) => {
                 const ed = ev.event();
                 if (ed && ed.name === 'Enemy') ev.erase();

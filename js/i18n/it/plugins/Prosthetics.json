@@ -117,5 +117,38 @@
     "psi": "PSI"
   },
   "surgeryFee": "COSTO OPERAZIONE:",
-  "availableFunds": "FONDI DISPONIBILI:"
+  "availableFunds": "FONDI DISPONIBILI:",
+  "grantsSkill": "Concede {skill}",
+  "chooseSurgeon": "Chi tiene il bisturi",
+  "chooseSurgeonDesc": "Scegli chi opera {p1}. La sua Chirurgia, il tetto sopra di voi e il tempo decidono se riuscirà.",
+  "surgerySpec": "Chirurgia: {level}",
+  "surgerySpecShort": "Chirurgia",
+  "operatingOnSelf": "opera su se stesso",
+  "venueLabel": "Dove",
+  "weatherLabel": "Tempo",
+  "venue": {
+    "interior": "Al coperto",
+    "cavern": "Sottoterra",
+    "exterior": "All'aperto"
+  },
+  "weather": {
+    "none": "Sereno",
+    "rain": "Pioggia",
+    "storm": "Tempesta",
+    "snow": "Neve"
+  },
+  "successChance": "Probabilità di riuscita",
+  "failureWarning": "Un'operazione fallita non cambia nulla e ferisce il paziente da un'altra parte.",
+  "fieldTheatre": "Sala da campo",
+  "fieldTheatreDesc": "{p2} opera {p1}, al {p3}%. Si può installare solo ciò che è già nello zaino, e un innesto si può togliere ma non montare.",
+  "installFromInventory": "Installa dallo zaino",
+  "removeAugment": "Rimuovi un innesto",
+  "fieldAugmentRemovalDesc": "Qui fuori un innesto si può asportare, ma non se ne può montare uno nuovo al suo posto.",
+  "oddsSurgery": "Chirurgia {level} {value}%",
+  "oddsVenue": "{venue} {value}",
+  "oddsWeather": "{weather} {value}",
+  "oddsSelf": "mani proprie {value}",
+  "surgeryFailed": "L'operazione è fallita.",
+  "surgeryFailedWound": "Il bisturi è scivolato: {part} ha subito {damage} danni.",
+  "surgeryFailedPartLost": "Il bisturi è scivolato, e {part} è andata perduta."
 }

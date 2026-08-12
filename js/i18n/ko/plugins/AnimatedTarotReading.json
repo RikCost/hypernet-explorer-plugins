@@ -4,8 +4,6 @@
     "past": "과거",
     "present": "현재",
     "future": "미래",
-    "instruction": "카드를 클릭하면 그 의미가 드러납니다",
-    "complete": "리딩이 끝났습니다. ESC를 눌러 나가세요.",
     "upright": "정방향",
     "reversed": "역방향",
     "npcTitle": "{name}의 타로 리딩",
@@ -14,7 +12,6 @@
     "layout": "배열",
     "readingDone": "리딩이 끝났습니다",
     "faceDown": "[ 뒤집힌 카드 ]",
-    "readingDonePrompt": "리딩이 끝났습니다. OK를 누르세요.",
     "unclearNumbered": "의미가 분명하지 않습니다... ({n})"
   },
   "cards": {

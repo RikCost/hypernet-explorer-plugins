@@ -1772,7 +1772,7 @@
   {
     "name": "Hatch",
     "layer": 2,
-    "ascii": "▥"
+    "ascii": "\u25a5"
   },
   {
     "name": "StairsUp",
@@ -1783,5 +1783,226 @@
     "name": "Cave",
     "layer": 2,
     "ascii": "O"
+  },
+  {
+    "name": "Pavement",
+    "terrain": true,
+    "layer": 0,
+    "ascii": "="
+  },
+  {
+    "name": "ParkingDrawing",
+    "layer": 1,
+    "ascii": "p"
+  },
+  {
+    "name": "Drain",
+    "layer": 1,
+    "ascii": "o"
+  },
+  {
+    "name": "Grate",
+    "layer": 2,
+    "ascii": "#"
+  },
+  {
+    "name": "Manhole",
+    "layer": 2,
+    "ascii": "0"
+  },
+  {
+    "name": "Streetlight",
+    "layer": 2,
+    "ascii": "|"
+  },
+  {
+    "name": "Trashcan",
+    "layer": 2,
+    "ascii": "u"
+  },
+  {
+    "name": "Trash",
+    "layer": 2,
+    "ascii": "%"
+  },
+  {
+    "name": "Hydrant",
+    "layer": 2,
+    "ascii": "h"
+  },
+  {
+    "name": "Mailbox",
+    "layer": 2,
+    "ascii": "m"
+  },
+  {
+    "name": "PublicPhone",
+    "layer": 2,
+    "ascii": "\u260e"
+  },
+  {
+    "name": "PottedPlant",
+    "layer": 2,
+    "ascii": "\u2663"
+  },
+  {
+    "name": "TreeStreet",
+    "layer": 2,
+    "ascii": "\u2648"
+  },
+  {
+    "name": "PicnicTable",
+    "layer": 2,
+    "ascii": "\u2261"
+  },
+  {
+    "name": "FoldableChair",
+    "layer": 2,
+    "ascii": "h"
+  },
+  {
+    "name": "SleepingBag",
+    "layer": 2,
+    "ascii": "z"
+  },
+  {
+    "name": "Backpack",
+    "layer": 2,
+    "ascii": "b"
+  },
+  {
+    "name": "FoodCart",
+    "layer": 2,
+    "ascii": "\u2691"
+  },
+  {
+    "name": "BusStop",
+    "layer": 2,
+    "ascii": "B"
+  },
+  {
+    "name": "Clothes",
+    "layer": 2,
+    "ascii": "\u2510"
+  },
+  {
+    "name": "Poster",
+    "layer": 2,
+    "ascii": "\u25a4"
+  },
+  {
+    "name": "Graffiti",
+    "layer": 2,
+    "ascii": "\u25a5"
+  },
+  {
+    "name": "BasketballPole",
+    "layer": 2,
+    "ascii": "\u2191"
+  },
+  {
+    "name": "BasketBall",
+    "layer": 2,
+    "ascii": "o"
+  },
+  {
+    "name": "DirtExcavation",
+    "layer": 2,
+    "ascii": "x"
+  },
+  {
+    "name": "RoadPole",
+    "layer": 2,
+    "ascii": "\u00b7"
+  },
+  {
+    "name": "RoadBarrier",
+    "layer": 2,
+    "ascii": "\u2500"
+  },
+  {
+    "name": "TrafficCone",
+    "layer": 2,
+    "ascii": "\u25b2"
+  },
+  {
+    "name": "SignBus",
+    "layer": 2,
+    "ascii": "!"
+  },
+  {
+    "name": "SignPark",
+    "layer": 2,
+    "ascii": "!"
+  },
+  {
+    "name": "SignStop",
+    "layer": 2,
+    "ascii": "!"
+  },
+  {
+    "name": "SignDanger",
+    "layer": 2,
+    "ascii": "!"
+  },
+  {
+    "name": "SignShop",
+    "layer": 2,
+    "ascii": "!"
+  },
+  {
+    "name": "SignHelicopter",
+    "layer": 2,
+    "ascii": "!"
+  },
+  {
+    "name": "DoorShop",
+    "layer": 2,
+    "ascii": "+"
+  },
+  {
+    "name": "DoorClinic",
+    "layer": 2,
+    "ascii": "+"
+  },
+  {
+    "name": "DoorPoliceStation",
+    "layer": 2,
+    "ascii": "+"
+  },
+  {
+    "name": "DoorWeaponStore",
+    "layer": 2,
+    "ascii": "+"
+  },
+  {
+    "name": "DoorGym",
+    "layer": 2,
+    "ascii": "+"
+  },
+  {
+    "name": "DoorHardwareStore",
+    "layer": 2,
+    "ascii": "+"
+  },
+  {
+    "name": "DoorIceCream",
+    "layer": 2,
+    "ascii": "+"
+  },
+  {
+    "name": "DoorMusicStore",
+    "layer": 2,
+    "ascii": "+"
+  },
+  {
+    "name": "DoorSewers",
+    "layer": 2,
+    "ascii": "+"
+  },
+  {
+    "name": "GarageDoor",
+    "layer": 2,
+    "ascii": "+"
   }
 ]

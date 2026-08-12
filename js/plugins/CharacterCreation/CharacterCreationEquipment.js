@@ -280,7 +280,7 @@
   //=============================================================================
 
   // Thematic starting-item loadout per class, keyed by class name (matched
-  // against $dataClasses like getQuickArchetypes() in CharacterCreation.js).
+  // against $dataClasses).
   // Every entry is { id, qty } into $dataItems.
   //
   // A loadout is judged by PRICE, not by what its items do: the whole kit must
@@ -291,15 +291,15 @@
   // i18n-ignore-start: keys are $dataClasses names, matched not shown
   const CLASS_STARTING_ITEMS = {
     "Freelancer": [{ id: 814, qty: 1 }, { id: 1441, qty: 1 }],          // Multi-tool, Vocation Skill Book
-    "Witch": [{ id: 262, qty: 1 }, { id: 1402, qty: 1 }],               // Empty Spellbook, Void Magic Grimoire
+    "Witch": [{ id: 262, qty: 1 }, { id: 1402, qty: 1 }, { id: 168, qty: 1 }], // Empty Spellbook, Void Magic Grimoire, Flying broom
     "Nun": [{ id: 1401, qty: 1 }, { id: 604, qty: 2 }],                 // Holy Magic Grimoire, Minimum Vitality Tincture
     "Knight": [{ id: 1422, qty: 1 }, { id: 811, qty: 1 }],              // Swordsmanship Skill Book, Whetstone
-    "Wrestler": [{ id: 319, qty: 1 }, { id: 315, qty: 2 }],             // Corner Cutman Kit, Grip Powder
+    "Convoker": [{ id: 1411, qty: 1 }, { id: 680, qty: 1 }],            // Convokation Grimoire, Fae Bell of Summoning
     "CEO": [{ id: 191, qty: 1 }, { id: 379, qty: 1 }],                  // Career Package, Negotiator's Manual
     "Vampire": [{ id: 652, qty: 1 }, { id: 751, qty: 1 }],              // Vial of Miasma, Zombie Hand
     "Cultist": [{ id: 1404, qty: 1 }, { id: 359, qty: 1 }],             // Forbidden Magic Grimoire, Empty Demon Container
     "Combat Medic": [{ id: 19, qty: 2 }, { id: 33, qty: 1 }],           // Medical Spray, Endurance Injection
-    "Elementalist": [{ id: 1400, qty: 1 }, { id: 649, qty: 1 }],        // Elemental Grimoire, Thunder Crystal
+    "Elementalist": [{ id: 1435, qty: 1 }, { id: 649, qty: 1 }],        // Electromancy Grimoire, Thunder Crystal
     "Martial Artist": [{ id: 1421, qty: 1 }, { id: 81, qty: 1 }],       // Martial Arts Skill Book, Karate Combo EP:
     "Enchanter": [{ id: 1406, qty: 1 }, { id: 647, qty: 1 }],           // Arcanism Grimoire, Enchanted Quill
     "Berserker": [{ id: 87, qty: 1 }, { id: 88, qty: 1 }],              // Berserker Amulet, Guard Breaker
@@ -308,8 +308,8 @@
     "Brawler": [{ id: 723, qty: 1 }, { id: 832, qty: 1 }],              // Fighter's Focus, Used Hand Wraps
     "Boxer": [{ id: 833, qty: 1 }, { id: 834, qty: 1 }],                // Cracked Mouthguard, Torn Gloves
     "Pro Wrestler": [{ id: 320, qty: 1 }, { id: 313, qty: 1 }],         // Wooden Chair, Vintage Fight Poster
-    "Fire Mage": [{ id: 1400, qty: 1 }, { id: 658, qty: 1 }],           // Elemental Grimoire, Fireball Scroll
-    "Ice Mage": [{ id: 1400, qty: 1 }, { id: 655, qty: 1 }],            // Elemental Grimoire, Frost Bomb
+    "Fire Mage": [{ id: 1400, qty: 1 }, { id: 658, qty: 1 }],           // Pyromancy Grimoire, Fireball Scroll
+    "Ice Mage": [{ id: 1418, qty: 1 }, { id: 655, qty: 1 }],            // Cryomancy Grimoire, Frost Bomb
     "Rogue": [{ id: 1431, qty: 1 }, { id: 374, qty: 1 }],               // Roguery Skill Book, Lockpick
     "Paladin": [{ id: 1401, qty: 1 }, { id: 662, qty: 1 }],             // Holy Magic Grimoire, Shield Scroll
     "Warlock": [{ id: 1404, qty: 1 }, { id: 666, qty: 1 }],             // Forbidden Magic Grimoire, Scroll of Destruction
@@ -323,16 +323,19 @@
     "Necromancer": [{ id: 1403, qty: 1 }, { id: 724, qty: 1 }],         // Necromancy Grimoire, Floating skull
     "Commander": [{ id: 1429, qty: 1 }, { id: 234, qty: 1 }],           // Leadership Skill Book, Navigator's Compass
     "Guardian": [{ id: 662, qty: 1 }, { id: 656, qty: 1 }],             // Shield Scroll, Dragon Scale Barrier
-    "Spellblade": [{ id: 1400, qty: 1 }, { id: 1422, qty: 1 }],         // Elemental Grimoire, Swordsmanship Skill Book
+    "Spellblade": [{ id: 1435, qty: 1 }, { id: 1422, qty: 1 }],         // Electromancy Grimoire, Swordsmanship Skill Book
     "Bard": [{ id: 1428, qty: 1 }, { id: 236, qty: 1 }],                // Performance Skill Book, Magician's Flute
     "Illusionist": [{ id: 1415, qty: 1 }, { id: 663, qty: 1 }],         // Illusion Grimoire, Invisibility Scroll
-    "Battlemage": [{ id: 1418, qty: 1 }, { id: 661, qty: 1 }],          // Tempest Grimoire, Lightning Bolt Scroll
+    "Battlemage": [{ id: 1400, qty: 1 }, { id: 661, qty: 1 }],          // Pyromancy Grimoire, Lightning Bolt Scroll
     "Mercenary": [{ id: 385, qty: 1 }, { id: 73, qty: 1 }],             // Secure Transport Case, Molotov Cocktail
     "Sage": [{ id: 1407, qty: 1 }, { id: 34, qty: 1 }],                 // Meta Magic Grimoire, Wisdom Elixir
     "Barbarian": [{ id: 79, qty: 1 }, { id: 653, qty: 1 }],             // Throwing Axe, Giant's Potion
-    "Doctor": [{ id: 244, qty: 1 }, { id: 19, qty: 1 }],                // Surgical Tools, Medical Spray
-    "Scientist": [{ id: 1425, qty: 1 }, { id: 944, qty: 1 }],           // Chemical Arts Skill Book, Silver Nitrate
-    "Firefighter": [{ id: 808, qty: 1 }, { id: 813, qty: 1 }],          // Escape kit, Climbing Rope
+    // The lab classes all carry the portable Alchemistry Kit (390): it is what
+    // opens the Alchemistry bench from the main menu, so a character whose
+    // trade is a laboratory starts able to use one.
+    "Doctor": [{ id: 244, qty: 1 }, { id: 19, qty: 1 }, { id: 390, qty: 1 }],   // Surgical Tools, Medical Spray, Alchemistry Kit
+    "Scientist": [{ id: 1425, qty: 1 }, { id: 944, qty: 1 }, { id: 390, qty: 1 }], // Alchemistry Skill Book, Silver Nitrate, Alchemistry Kit
+    "Firefighter": [{ id: 1438, qty: 1 }, { id: 813, qty: 1 }],         // Idromancy Grimoire, Climbing Rope
     "Police Officer": [{ id: 143, qty: 1 }, { id: 76, qty: 1 }],        // Pocket Video Recorder, Caltrops
     "Chef": [{ id: 1427, qty: 1 }, { id: 232, qty: 1 }],                // Cooking Skill Book, Chef's Spice Blend
     "Journalist": [{ id: 144, qty: 1 }, { id: 711, qty: 1 }],           // Digital Camera, Newspaper
@@ -340,14 +343,14 @@
     "Academic": [{ id: 299, qty: 1 }, { id: 127, qty: 1 }],             // Scholar's Legal Tome, Pocket Notebook
     "Psychologist": [{ id: 722, qty: 1 }, { id: 378, qty: 1 }],         // Mental Focus Training, Truth-Revealing Solution
     "Archaeologist": [{ id: 354, qty: 1 }, { id: 121, qty: 1 }],        // Fake Treasure Map, Lantern
-    "Nurse": [{ id: 19, qty: 1 }, { id: 17, qty: 2 }],                  // Medical Spray, Electrolyte Powder
+    "Nurse": [{ id: 19, qty: 1 }, { id: 17, qty: 2 }, { id: 390, qty: 1 }], // Medical Spray, Electrolyte Powder, Alchemistry Kit
     "Hunter-Gatherer": [{ id: 1423, qty: 1 }, { id: 806, qty: 1 }],     // Bestial Skill Book, Walking Stick
-    "Physicist": [{ id: 139, qty: 1 }, { id: 140, qty: 1 }],            // Resonance Scanner, Raman probe
+    "Physicist": [{ id: 139, qty: 1 }, { id: 140, qty: 1 }, { id: 390, qty: 1 }], // Resonance Scanner, Raman probe, Alchemistry Kit
     "Mechanic": [{ id: 146, qty: 1 }, { id: 814, qty: 1 }],             // Fuel tank, Multi-tool
     "Shopkeeper": [{ id: 1437, qty: 1 }, { id: 721, qty: 1 }],          // Economy Skill Book, Massive Storage Drive
     "Farmer": [{ id: 1433, qty: 1 }, { id: 240, qty: 1 }],              // Pastoral Skill Book, Botanist's Seed Collection
     "Lumberjack": [{ id: 151, qty: 1 }, { id: 814, qty: 1 }],           // Craftsman's Backpack, Multi-tool
-    "Meteorologist": [{ id: 150, qty: 1 }, { id: 117, qty: 1 }],        // Telescope, Umbrella
+    "Meteorologist": [{ id: 1439, qty: 1 }, { id: 117, qty: 1 }],       // Aeromancy Grimoire, Umbrella
     "Priest": [{ id: 1401, qty: 1 }, { id: 264, qty: 1 }],              // Holy Magic Grimoire, 92 Days of Solomon
     "Entertainer": [{ id: 1428, qty: 1 }, { id: 186, qty: 1 }],         // Performance Skill Book, Pocket Sound System
     "Demigod": [{ id: 1405, qty: 1 }, { id: 646, qty: 1 }],             // Astral Magic Grimoire, Elven Waybread

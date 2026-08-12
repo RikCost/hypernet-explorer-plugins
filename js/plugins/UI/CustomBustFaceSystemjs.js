@@ -490,14 +490,16 @@
 
 
 
-    // Handle character graphic changes
+    // Handle character graphic changes.
+    // The base setter already writes _characterName / _characterIndex, so the
+    // stored values need no second assignment here, and writing the raw
+    // arguments back over them is not harmless: DataService repoints a sheet
+    // retired by the single-character split before it stores it, and this
+    // plugin loads after it, so re-stamping the arguments put the dead joined
+    // sheet back on the actor.
     const _Game_Actor_setCharacterImage = Game_Actor.prototype.setCharacterImage;
     Game_Actor.prototype.setCharacterImage = function (characterName, characterIndex) {
         _Game_Actor_setCharacterImage.call(this, characterName, characterIndex);
-
-        // Update our stored values
-        this._characterName = characterName;
-        this._characterIndex = characterIndex;
     };
 
     // ==========================================================================

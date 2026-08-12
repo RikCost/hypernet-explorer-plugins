@@ -1,0 +1,31 @@
+{
+  "need": {
+    "hunger": "HUNGER",
+    "sleep": "SLEEP",
+    "hygiene": "HYGIENE",
+    "social": "SOCIAL",
+    "leisure": "FUN"
+  },
+  "category": {
+    "materials": "MATERIALS",
+    "item": "ITEM",
+    "food": "FOOD",
+    "tools": "TOOLS"
+  },
+  "rarity": {
+    "Common": "COMMON",
+    "Uncommon": "UNCOMMON",
+    "Rare": "RARE",
+    "Epic": "EPIC",
+    "Legendary": "LEGENDARY"
+  },
+  "encumbrance": {
+    "title": "OVERENCUMBERED",
+    "load": "{load} CARRIED, MOVEMENT SLOWED"
+  },
+  "addiction": {
+    "all": "EVERY CRAVIN'",
+    "label": "CRAVIN'",
+    "feeds": "FEEDS"
+  }
+}

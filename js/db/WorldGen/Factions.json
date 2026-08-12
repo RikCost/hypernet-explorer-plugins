@@ -20,8 +20,8 @@
         "luk": 12,
         "hiringCost": 7000,
         "weeklyCost": 1400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -37,8 +37,8 @@
         "luk": 15,
         "hiringCost": 16800,
         "weeklyCost": 3500,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -54,8 +54,8 @@
         "luk": 16,
         "hiringCost": 28000,
         "weeklyCost": 5600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -71,8 +71,8 @@
         "luk": 18,
         "hiringCost": 35000,
         "weeklyCost": 7000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -88,8 +88,8 @@
         "luk": 20,
         "hiringCost": 44800,
         "weeklyCost": 8960,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -105,8 +105,8 @@
         "luk": 20,
         "hiringCost": 49000,
         "weeklyCost": 9800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -122,8 +122,8 @@
         "luk": 25,
         "hiringCost": 53200,
         "weeklyCost": 10640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -139,8 +139,8 @@
         "luk": 22,
         "hiringCost": 70000,
         "weeklyCost": 14000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -156,8 +156,8 @@
         "luk": 25,
         "hiringCost": 98000,
         "weeklyCost": 19600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -173,8 +173,8 @@
         "luk": 28,
         "hiringCost": 112000,
         "weeklyCost": 22400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -190,8 +190,8 @@
         "luk": 32,
         "hiringCost": 133000,
         "weeklyCost": 26600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -207,8 +207,8 @@
         "luk": 35,
         "hiringCost": 210000,
         "weeklyCost": 42000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -224,8 +224,8 @@
         "luk": 23,
         "hiringCost": 6300,
         "weeklyCost": 1260,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -263,8 +263,8 @@
         "luk": 18,
         "hiringCost": 8400,
         "weeklyCost": 1680,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -280,8 +280,8 @@
         "luk": 20,
         "hiringCost": 19600,
         "weeklyCost": 3920,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -297,8 +297,8 @@
         "luk": 18,
         "hiringCost": 30800,
         "weeklyCost": 6160,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -314,8 +314,8 @@
         "luk": 25,
         "hiringCost": 39200,
         "weeklyCost": 7840,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -331,8 +331,8 @@
         "luk": 22,
         "hiringCost": 47600,
         "weeklyCost": 9520,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -348,8 +348,8 @@
         "luk": 20,
         "hiringCost": 56000,
         "weeklyCost": 11200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -365,8 +365,8 @@
         "luk": 30,
         "hiringCost": 77000,
         "weeklyCost": 15400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -382,8 +382,8 @@
         "luk": 24,
         "hiringCost": 100800,
         "weeklyCost": 20160,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -399,8 +399,8 @@
         "luk": 35,
         "hiringCost": 112000,
         "weeklyCost": 22400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -416,8 +416,8 @@
         "luk": 35,
         "hiringCost": 126000,
         "weeklyCost": 25200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -433,8 +433,8 @@
         "luk": 26,
         "hiringCost": 7560,
         "weeklyCost": 1510,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -473,8 +473,8 @@
         "luk": 25,
         "hiringCost": 11200,
         "weeklyCost": 2240,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -490,8 +490,8 @@
         "luk": 20,
         "hiringCost": 28000,
         "weeklyCost": 5600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -507,8 +507,8 @@
         "luk": 28,
         "hiringCost": 36400,
         "weeklyCost": 7280,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -524,8 +524,8 @@
         "luk": 22,
         "hiringCost": 44800,
         "weeklyCost": 8960,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -541,8 +541,8 @@
         "luk": 35,
         "hiringCost": 53200,
         "weeklyCost": 10640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -558,8 +558,8 @@
         "luk": 25,
         "hiringCost": 70000,
         "weeklyCost": 14000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -575,8 +575,8 @@
         "luk": 40,
         "hiringCost": 91000,
         "weeklyCost": 18200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -592,8 +592,8 @@
         "luk": 30,
         "hiringCost": 105000,
         "weeklyCost": 21000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -609,8 +609,8 @@
         "luk": 38,
         "hiringCost": 126000,
         "weeklyCost": 25200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -626,8 +626,8 @@
         "luk": 45,
         "hiringCost": 168000,
         "weeklyCost": 33600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -643,8 +643,8 @@
         "luk": 32,
         "hiringCost": 10080,
         "weeklyCost": 2020,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -680,8 +680,8 @@
         "luk": 14,
         "hiringCost": 8400,
         "weeklyCost": 1680,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -697,8 +697,8 @@
         "luk": 18,
         "hiringCost": 25200,
         "weeklyCost": 5040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -714,8 +714,8 @@
         "luk": 20,
         "hiringCost": 49000,
         "weeklyCost": 9800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -731,8 +731,8 @@
         "luk": 18,
         "hiringCost": 67200,
         "weeklyCost": 13440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -748,8 +748,8 @@
         "luk": 28,
         "hiringCost": 98000,
         "weeklyCost": 19600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -765,8 +765,8 @@
         "luk": 21,
         "hiringCost": 7560,
         "weeklyCost": 1510,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -802,8 +802,8 @@
         "luk": 16,
         "hiringCost": 9800,
         "weeklyCost": 1960,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -819,8 +819,8 @@
         "luk": 20,
         "hiringCost": 28000,
         "weeklyCost": 5600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -836,8 +836,8 @@
         "luk": 18,
         "hiringCost": 39200,
         "weeklyCost": 7840,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -853,8 +853,8 @@
         "luk": 25,
         "hiringCost": 56000,
         "weeklyCost": 11200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -870,8 +870,8 @@
         "luk": 32,
         "hiringCost": 119000,
         "weeklyCost": 23800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -887,8 +887,8 @@
         "luk": 23,
         "hiringCost": 8820,
         "weeklyCost": 1760,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -924,8 +924,8 @@
         "luk": 18,
         "hiringCost": 12600,
         "weeklyCost": 2520,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -941,8 +941,8 @@
         "luk": 20,
         "hiringCost": 30800,
         "weeklyCost": 6160,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -958,8 +958,8 @@
         "luk": 18,
         "hiringCost": 47600,
         "weeklyCost": 9520,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -975,8 +975,8 @@
         "luk": 22,
         "hiringCost": 58800,
         "weeklyCost": 11760,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -992,8 +992,8 @@
         "luk": 25,
         "hiringCost": 81200,
         "weeklyCost": 16240,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1009,8 +1009,8 @@
         "luk": 28,
         "hiringCost": 112000,
         "weeklyCost": 22400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -1026,8 +1026,8 @@
         "luk": 23,
         "hiringCost": 11340,
         "weeklyCost": 2270,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -1063,8 +1063,8 @@
         "luk": 20,
         "hiringCost": 10500,
         "weeklyCost": 2100,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -1080,8 +1080,8 @@
         "luk": 24,
         "hiringCost": 29400,
         "weeklyCost": 5880,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -1097,8 +1097,8 @@
         "luk": 22,
         "hiringCost": 44800,
         "weeklyCost": 8960,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1114,8 +1114,8 @@
         "luk": 28,
         "hiringCost": 63000,
         "weeklyCost": 12600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -1131,8 +1131,8 @@
         "luk": 35,
         "hiringCost": 133000,
         "weeklyCost": 26600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -1148,8 +1148,8 @@
         "luk": 27,
         "hiringCost": 9450,
         "weeklyCost": 1890,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -1187,8 +1187,8 @@
         "luk": 40,
         "hiringCost": 9800,
         "weeklyCost": 1960,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1204,8 +1204,8 @@
         "luk": 45,
         "hiringCost": 21000,
         "weeklyCost": 4200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1221,8 +1221,8 @@
         "luk": 50,
         "hiringCost": 26600,
         "weeklyCost": 5320,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1238,8 +1238,8 @@
         "luk": 60,
         "hiringCost": 53200,
         "weeklyCost": 10640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -1255,8 +1255,8 @@
         "luk": 65,
         "hiringCost": 72800,
         "weeklyCost": 14560,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1272,8 +1272,8 @@
         "luk": 80,
         "hiringCost": 105000,
         "weeklyCost": 21000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -1289,8 +1289,8 @@
         "luk": 60,
         "hiringCost": 8820,
         "weeklyCost": 1760,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -1323,8 +1323,8 @@
         "luk": 18,
         "hiringCost": 7700,
         "weeklyCost": 1540,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1340,8 +1340,8 @@
         "luk": 22,
         "hiringCost": 15400,
         "weeklyCost": 3080,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1357,8 +1357,8 @@
         "luk": 20,
         "hiringCost": 21000,
         "weeklyCost": 4200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1374,8 +1374,8 @@
         "luk": 28,
         "hiringCost": 33600,
         "weeklyCost": 6720,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1391,8 +1391,8 @@
         "luk": 22,
         "hiringCost": 44800,
         "weeklyCost": 8960,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1408,8 +1408,8 @@
         "luk": 35,
         "hiringCost": 77000,
         "weeklyCost": 15400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -1425,8 +1425,8 @@
         "luk": 25,
         "hiringCost": 6930,
         "weeklyCost": 1390,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -1461,8 +1461,8 @@
         "luk": 25,
         "hiringCost": 7000,
         "weeklyCost": 1400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1478,8 +1478,8 @@
         "luk": 20,
         "hiringCost": 13300,
         "weeklyCost": 2660,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1495,8 +1495,8 @@
         "luk": 30,
         "hiringCost": 19600,
         "weeklyCost": 3920,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1512,8 +1512,8 @@
         "luk": 35,
         "hiringCost": 39200,
         "weeklyCost": 7840,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1529,8 +1529,8 @@
         "luk": 32,
         "hiringCost": 58800,
         "weeklyCost": 11760,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1546,8 +1546,8 @@
         "luk": 45,
         "hiringCost": 77000,
         "weeklyCost": 15400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1563,8 +1563,8 @@
         "luk": 33,
         "hiringCost": 6300,
         "weeklyCost": 1260,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -1601,8 +1601,8 @@
         "luk": 22,
         "hiringCost": 9800,
         "weeklyCost": 1960,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1618,8 +1618,8 @@
         "luk": 28,
         "hiringCost": 18200,
         "weeklyCost": 3640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1635,8 +1635,8 @@
         "luk": 25,
         "hiringCost": 25200,
         "weeklyCost": 5040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1652,8 +1652,8 @@
         "luk": 35,
         "hiringCost": 39200,
         "weeklyCost": 7840,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1669,8 +1669,8 @@
         "luk": 30,
         "hiringCost": 49000,
         "weeklyCost": 9800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1686,8 +1686,8 @@
         "luk": 35,
         "hiringCost": 67200,
         "weeklyCost": 13440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -1703,8 +1703,8 @@
         "luk": 38,
         "hiringCost": 91000,
         "weeklyCost": 18200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1720,8 +1720,8 @@
         "luk": 32,
         "hiringCost": 8820,
         "weeklyCost": 1760,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -1756,8 +1756,8 @@
         "luk": 15,
         "hiringCost": 9100,
         "weeklyCost": 1820,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1773,8 +1773,8 @@
         "luk": 18,
         "hiringCost": 23800,
         "weeklyCost": 4760,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1790,8 +1790,8 @@
         "luk": 22,
         "hiringCost": 36400,
         "weeklyCost": 7280,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1807,8 +1807,8 @@
         "luk": 20,
         "hiringCost": 47600,
         "weeklyCost": 9520,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1824,8 +1824,8 @@
         "luk": 28,
         "hiringCost": 67200,
         "weeklyCost": 13440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -1841,8 +1841,8 @@
         "luk": 22,
         "hiringCost": 86800,
         "weeklyCost": 17360,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1858,8 +1858,8 @@
         "luk": 25,
         "hiringCost": 98000,
         "weeklyCost": 19600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1875,8 +1875,8 @@
         "luk": 35,
         "hiringCost": 133000,
         "weeklyCost": 26600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1892,8 +1892,8 @@
         "luk": 30,
         "hiringCost": 182000,
         "weeklyCost": 36400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1909,8 +1909,8 @@
         "luk": 25,
         "hiringCost": 8190,
         "weeklyCost": 1640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -1945,8 +1945,8 @@
         "luk": 15,
         "hiringCost": 8400,
         "weeklyCost": 1680,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1962,8 +1962,8 @@
         "luk": 18,
         "hiringCost": 21000,
         "weeklyCost": 4200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -1979,8 +1979,8 @@
         "luk": 20,
         "hiringCost": 30800,
         "weeklyCost": 6160,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -1996,8 +1996,8 @@
         "luk": 22,
         "hiringCost": 42000,
         "weeklyCost": 8400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -2013,8 +2013,8 @@
         "luk": 30,
         "hiringCost": 56000,
         "weeklyCost": 11200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2030,8 +2030,8 @@
         "luk": 25,
         "hiringCost": 70000,
         "weeklyCost": 14000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2047,8 +2047,8 @@
         "luk": 28,
         "hiringCost": 95200,
         "weeklyCost": 19040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -2064,8 +2064,8 @@
         "luk": 30,
         "hiringCost": 119000,
         "weeklyCost": 23800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2081,8 +2081,8 @@
         "luk": 40,
         "hiringCost": 154000,
         "weeklyCost": 30800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2098,8 +2098,8 @@
         "luk": 35,
         "hiringCost": 196000,
         "weeklyCost": 39200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2115,8 +2115,8 @@
         "luk": 28,
         "hiringCost": 7560,
         "weeklyCost": 1510,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -2151,8 +2151,8 @@
         "luk": 20,
         "hiringCost": 7700,
         "weeklyCost": 1540,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2168,8 +2168,8 @@
         "luk": 25,
         "hiringCost": 15400,
         "weeklyCost": 3080,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -2185,8 +2185,8 @@
         "luk": 25,
         "hiringCost": 20300,
         "weeklyCost": 4060,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2202,8 +2202,8 @@
         "luk": 28,
         "hiringCost": 35000,
         "weeklyCost": 7000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2219,8 +2219,8 @@
         "luk": 30,
         "hiringCost": 42000,
         "weeklyCost": 8400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2236,8 +2236,8 @@
         "luk": 35,
         "hiringCost": 67200,
         "weeklyCost": 13440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -2253,8 +2253,8 @@
         "luk": 35,
         "hiringCost": 84000,
         "weeklyCost": 16800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2270,8 +2270,8 @@
         "luk": 38,
         "hiringCost": 126000,
         "weeklyCost": 25200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2287,8 +2287,8 @@
         "luk": 42,
         "hiringCost": 154000,
         "weeklyCost": 30800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2304,8 +2304,8 @@
         "luk": 32,
         "hiringCost": 6930,
         "weeklyCost": 1390,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -2339,8 +2339,8 @@
         "luk": 28,
         "hiringCost": 11200,
         "weeklyCost": 2240,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2356,8 +2356,8 @@
         "luk": 32,
         "hiringCost": 21000,
         "weeklyCost": 4200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -2373,8 +2373,8 @@
         "luk": 32,
         "hiringCost": 28000,
         "weeklyCost": 5600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2390,8 +2390,8 @@
         "luk": 38,
         "hiringCost": 56000,
         "weeklyCost": 11200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2407,8 +2407,8 @@
         "luk": 42,
         "hiringCost": 81200,
         "weeklyCost": 16240,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -2424,8 +2424,8 @@
         "luk": 45,
         "hiringCost": 105000,
         "weeklyCost": 21000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2441,8 +2441,8 @@
         "luk": 40,
         "hiringCost": 147000,
         "weeklyCost": 29400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2458,8 +2458,8 @@
         "luk": 55,
         "hiringCost": 182000,
         "weeklyCost": 36400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -2475,8 +2475,8 @@
         "luk": 55,
         "hiringCost": 210000,
         "weeklyCost": 42000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2492,8 +2492,8 @@
         "luk": 43,
         "hiringCost": 10080,
         "weeklyCost": 2020,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -2584,7 +2584,7 @@
         "luk": 41,
         "hiringCost": 11340,
         "weeklyCost": 2270,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -2676,7 +2676,7 @@
         "luk": 49,
         "hiringCost": 10710,
         "weeklyCost": 2140,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -2768,7 +2768,7 @@
         "luk": 40,
         "hiringCost": 22680,
         "weeklyCost": 4540,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -2804,8 +2804,8 @@
         "luk": 70,
         "hiringCost": 42000,
         "weeklyCost": 8400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2821,8 +2821,8 @@
         "luk": 75,
         "hiringCost": 70000,
         "weeklyCost": 14000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -2838,8 +2838,8 @@
         "luk": 80,
         "hiringCost": 91000,
         "weeklyCost": 18200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2855,8 +2855,8 @@
         "luk": 85,
         "hiringCost": 133000,
         "weeklyCost": 26600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2872,8 +2872,8 @@
         "luk": 90,
         "hiringCost": 168000,
         "weeklyCost": 33600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2889,8 +2889,8 @@
         "luk": 95,
         "hiringCost": 238000,
         "weeklyCost": 47600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -2906,8 +2906,8 @@
         "luk": 100,
         "hiringCost": 294000,
         "weeklyCost": 58800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -2923,8 +2923,8 @@
         "luk": 100,
         "hiringCost": 350000,
         "weeklyCost": 70000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -2940,8 +2940,8 @@
         "luk": 91,
         "hiringCost": 37800,
         "weeklyCost": 7560,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -3019,7 +3019,7 @@
         "luk": 41,
         "hiringCost": 18900,
         "weeklyCost": 3780,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -3092,7 +3092,7 @@
         "luk": 49,
         "hiringCost": 20160,
         "weeklyCost": 4030,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -3165,7 +3165,7 @@
         "luk": 35,
         "hiringCost": 17640,
         "weeklyCost": 3530,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -3238,7 +3238,7 @@
         "luk": 58,
         "hiringCost": 16380,
         "weeklyCost": 3280,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -3311,7 +3311,7 @@
         "luk": 37,
         "hiringCost": 21420,
         "weeklyCost": 4280,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -3385,7 +3385,7 @@
         "luk": 81,
         "hiringCost": 35280,
         "weeklyCost": 7060,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -3417,8 +3417,8 @@
         "luk": 40,
         "hiringCost": 12600,
         "weeklyCost": 2520,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -3434,8 +3434,8 @@
         "luk": 45,
         "hiringCost": 23800,
         "weeklyCost": 4760,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -3451,8 +3451,8 @@
         "luk": 50,
         "hiringCost": 30800,
         "weeklyCost": 6160,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -3468,8 +3468,8 @@
         "luk": 52,
         "hiringCost": 47600,
         "weeklyCost": 9520,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -3485,8 +3485,8 @@
         "luk": 65,
         "hiringCost": 67200,
         "weeklyCost": 13440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -3502,8 +3502,8 @@
         "luk": 70,
         "hiringCost": 100800,
         "weeklyCost": 20160,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -3519,8 +3519,8 @@
         "luk": 85,
         "hiringCost": 133000,
         "weeklyCost": 26600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -3536,8 +3536,8 @@
         "luk": 61,
         "hiringCost": 11340,
         "weeklyCost": 2270,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -3554,6 +3554,8 @@
     "noStartingTroops": true,
     "description": "factions.thetourists.description",
     "iconIndex": 158,
+    "parentFaction": 13,
+    "hyperpowerHead": true,
     "troops": [
       {
         "name": "factions.thetourists.troops.observerdrone.name",
@@ -3568,8 +3570,8 @@
         "luk": 50,
         "hiringCost": 28000,
         "weeklyCost": 5600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -3585,8 +3587,8 @@
         "luk": 58,
         "hiringCost": 49000,
         "weeklyCost": 9800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -3602,8 +3604,8 @@
         "luk": 65,
         "hiringCost": 63000,
         "weeklyCost": 12600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -3619,8 +3621,8 @@
         "luk": 75,
         "hiringCost": 95200,
         "weeklyCost": 19040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -3636,8 +3638,8 @@
         "luk": 80,
         "hiringCost": 126000,
         "weeklyCost": 25200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -3653,8 +3655,8 @@
         "luk": 85,
         "hiringCost": 189000,
         "weeklyCost": 37800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -3670,8 +3672,8 @@
         "luk": 95,
         "hiringCost": 231000,
         "weeklyCost": 46200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -3687,8 +3689,8 @@
         "luk": 100,
         "hiringCost": 252000,
         "weeklyCost": 50400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -3704,8 +3706,8 @@
         "luk": 80,
         "hiringCost": 25200,
         "weeklyCost": 5040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -3735,8 +3737,8 @@
         "luk": 25,
         "hiringCost": 9100,
         "weeklyCost": 1820,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -3752,8 +3754,8 @@
         "luk": 30,
         "hiringCost": 25200,
         "weeklyCost": 5040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -3769,8 +3771,8 @@
         "luk": 32,
         "hiringCost": 39200,
         "weeklyCost": 7840,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -3786,8 +3788,8 @@
         "luk": 38,
         "hiringCost": 56000,
         "weeklyCost": 11200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -3803,8 +3805,8 @@
         "luk": 42,
         "hiringCost": 81200,
         "weeklyCost": 16240,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -3820,8 +3822,8 @@
         "luk": 48,
         "hiringCost": 112000,
         "weeklyCost": 22400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -3837,8 +3839,8 @@
         "luk": 58,
         "hiringCost": 147000,
         "weeklyCost": 29400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -3854,8 +3856,8 @@
         "luk": 55,
         "hiringCost": 182000,
         "weeklyCost": 36400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -3871,8 +3873,8 @@
         "luk": 60,
         "hiringCost": 210000,
         "weeklyCost": 42000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -3888,8 +3890,8 @@
         "luk": 45,
         "hiringCost": 8190,
         "weeklyCost": 1640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -3976,7 +3978,7 @@
         "luk": 52,
         "hiringCost": 22680,
         "weeklyCost": 4540,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -4064,7 +4066,7 @@
         "luk": 71,
         "hiringCost": 15120,
         "weeklyCost": 3020,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -4151,7 +4153,7 @@
         "luk": 41,
         "hiringCost": 17640,
         "weeklyCost": 3530,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -4238,7 +4240,7 @@
         "luk": 54,
         "hiringCost": 20160,
         "weeklyCost": 4030,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -4312,7 +4314,7 @@
         "luk": 65,
         "hiringCost": 16380,
         "weeklyCost": 3280,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -4399,7 +4401,7 @@
         "luk": 50,
         "hiringCost": 18900,
         "weeklyCost": 3780,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -4486,7 +4488,7 @@
         "luk": 42,
         "hiringCost": 22680,
         "weeklyCost": 4540,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -4517,8 +4519,8 @@
         "luk": 18,
         "hiringCost": 9800,
         "weeklyCost": 1960,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -4534,8 +4536,8 @@
         "luk": 20,
         "hiringCost": 18200,
         "weeklyCost": 3640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -4551,8 +4553,8 @@
         "luk": 30,
         "hiringCost": 25200,
         "weeklyCost": 5040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -4568,8 +4570,8 @@
         "luk": 25,
         "hiringCost": 39200,
         "weeklyCost": 7840,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -4585,8 +4587,8 @@
         "luk": 32,
         "hiringCost": 50400,
         "weeklyCost": 10080,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -4602,8 +4604,8 @@
         "luk": 35,
         "hiringCost": 67200,
         "weeklyCost": 13440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -4619,8 +4621,8 @@
         "luk": 30,
         "hiringCost": 95200,
         "weeklyCost": 19040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -4636,8 +4638,8 @@
         "luk": 40,
         "hiringCost": 140000,
         "weeklyCost": 28000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -4653,8 +4655,8 @@
         "luk": 30,
         "hiringCost": 8820,
         "weeklyCost": 1760,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -4690,8 +4692,8 @@
         "luk": 28,
         "hiringCost": 28000,
         "weeklyCost": 5600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -4707,8 +4709,8 @@
         "luk": 32,
         "hiringCost": 50400,
         "weeklyCost": 10080,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -4724,8 +4726,8 @@
         "luk": 38,
         "hiringCost": 67200,
         "weeklyCost": 13440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -4741,8 +4743,8 @@
         "luk": 40,
         "hiringCost": 89600,
         "weeklyCost": 17920,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -4758,8 +4760,8 @@
         "luk": 35,
         "hiringCost": 123200,
         "weeklyCost": 24640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -4775,8 +4777,8 @@
         "luk": 48,
         "hiringCost": 168000,
         "weeklyCost": 33600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -4792,8 +4794,8 @@
         "luk": 39,
         "hiringCost": 25200,
         "weeklyCost": 5040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -4829,8 +4831,8 @@
         "luk": 25,
         "hiringCost": 30800,
         "weeklyCost": 6160,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -4846,8 +4848,8 @@
         "luk": 28,
         "hiringCost": 56000,
         "weeklyCost": 11200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -4863,8 +4865,8 @@
         "luk": 35,
         "hiringCost": 78400,
         "weeklyCost": 15680,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -4880,8 +4882,8 @@
         "luk": 30,
         "hiringCost": 112000,
         "weeklyCost": 22400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -4897,8 +4899,8 @@
         "luk": 38,
         "hiringCost": 151200,
         "weeklyCost": 30240,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -4914,8 +4916,8 @@
         "luk": 42,
         "hiringCost": 196000,
         "weeklyCost": 39200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -4931,8 +4933,8 @@
         "luk": 35,
         "hiringCost": 27720,
         "weeklyCost": 5540,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -4968,8 +4970,8 @@
         "luk": 22,
         "hiringCost": 16800,
         "weeklyCost": 3360,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -4985,8 +4987,8 @@
         "luk": 25,
         "hiringCost": 33600,
         "weeklyCost": 6720,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5002,8 +5004,8 @@
         "luk": 30,
         "hiringCost": 50400,
         "weeklyCost": 10080,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5019,8 +5021,8 @@
         "luk": 35,
         "hiringCost": 67200,
         "weeklyCost": 13440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5036,8 +5038,8 @@
         "luk": 38,
         "hiringCost": 95200,
         "weeklyCost": 19040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5053,8 +5055,8 @@
         "luk": 42,
         "hiringCost": 134400,
         "weeklyCost": 26880,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5070,8 +5072,8 @@
         "luk": 34,
         "hiringCost": 15120,
         "weeklyCost": 3020,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -5107,8 +5109,8 @@
         "luk": 32,
         "hiringCost": 36400,
         "weeklyCost": 7280,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5124,8 +5126,8 @@
         "luk": 35,
         "hiringCost": 61600,
         "weeklyCost": 12320,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5141,8 +5143,8 @@
         "luk": 40,
         "hiringCost": 84000,
         "weeklyCost": 16800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5158,8 +5160,8 @@
         "luk": 45,
         "hiringCost": 117600,
         "weeklyCost": 23520,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5175,8 +5177,8 @@
         "luk": 48,
         "hiringCost": 162400,
         "weeklyCost": 32480,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5192,8 +5194,8 @@
         "luk": 52,
         "hiringCost": 224000,
         "weeklyCost": 44800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5209,8 +5211,8 @@
         "luk": 44,
         "hiringCost": 32760,
         "weeklyCost": 6550,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -5246,8 +5248,8 @@
         "luk": 25,
         "hiringCost": 28000,
         "weeklyCost": 5600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5263,8 +5265,8 @@
         "luk": 28,
         "hiringCost": 50400,
         "weeklyCost": 10080,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5280,8 +5282,8 @@
         "luk": 32,
         "hiringCost": 75600,
         "weeklyCost": 15120,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5297,8 +5299,8 @@
         "luk": 40,
         "hiringCost": 84000,
         "weeklyCost": 16800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5314,8 +5316,8 @@
         "luk": 38,
         "hiringCost": 123200,
         "weeklyCost": 24640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5331,8 +5333,8 @@
         "luk": 42,
         "hiringCost": 184800,
         "weeklyCost": 36960,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5348,8 +5350,8 @@
         "luk": 36,
         "hiringCost": 25200,
         "weeklyCost": 5040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -5385,8 +5387,8 @@
         "luk": 25,
         "hiringCost": 18900,
         "weeklyCost": 3780,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5402,8 +5404,8 @@
         "luk": 30,
         "hiringCost": 32200,
         "weeklyCost": 6440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5419,8 +5421,8 @@
         "luk": 35,
         "hiringCost": 45500,
         "weeklyCost": 9100,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5436,8 +5438,8 @@
         "luk": 40,
         "hiringCost": 67200,
         "weeklyCost": 13440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5453,8 +5455,8 @@
         "luk": 28,
         "hiringCost": 88200,
         "weeklyCost": 17640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5470,8 +5472,8 @@
         "luk": 50,
         "hiringCost": 115500,
         "weeklyCost": 23100,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5487,8 +5489,8 @@
         "luk": 45,
         "hiringCost": 147000,
         "weeklyCost": 29400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5504,8 +5506,8 @@
         "luk": 55,
         "hiringCost": 210000,
         "weeklyCost": 42000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5521,8 +5523,8 @@
         "luk": 40,
         "hiringCost": 17010,
         "weeklyCost": 3400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -5610,7 +5612,7 @@
         "luk": 66,
         "hiringCost": 13230,
         "weeklyCost": 2650,
-        "spritename": "Actor1",
+        "spritename": "NPCs/!$WarSniper1",
         "spriteindex": 0,
         "role": "roles.scientist"
       }
@@ -5641,8 +5643,8 @@
         "luk": 38,
         "hiringCost": 28000,
         "weeklyCost": 5600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5658,8 +5660,8 @@
         "luk": 50,
         "hiringCost": 50400,
         "weeklyCost": 10080,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5675,8 +5677,8 @@
         "luk": 45,
         "hiringCost": 81200,
         "weeklyCost": 16240,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5692,8 +5694,8 @@
         "luk": 60,
         "hiringCost": 134400,
         "weeklyCost": 26880,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5709,8 +5711,8 @@
         "luk": 51,
         "hiringCost": 25200,
         "weeklyCost": 5040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -5738,8 +5740,8 @@
         "luk": 60,
         "hiringCost": 16800,
         "weeklyCost": 3360,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5755,8 +5757,8 @@
         "luk": 75,
         "hiringCost": 53200,
         "weeklyCost": 10640,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5772,8 +5774,8 @@
         "luk": 90,
         "hiringCost": 100800,
         "weeklyCost": 20160,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5789,8 +5791,8 @@
         "luk": 105,
         "hiringCost": 175000,
         "weeklyCost": 35000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5806,8 +5808,8 @@
         "luk": 87,
         "hiringCost": 15120,
         "weeklyCost": 3020,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -5837,8 +5839,8 @@
         "luk": 35,
         "hiringCost": 44800,
         "weeklyCost": 8960,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5854,8 +5856,8 @@
         "luk": 40,
         "hiringCost": 89600,
         "weeklyCost": 17920,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5871,8 +5873,8 @@
         "luk": 48,
         "hiringCost": 168000,
         "weeklyCost": 33600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5888,8 +5890,8 @@
         "luk": 55,
         "hiringCost": 280000,
         "weeklyCost": 56000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5905,8 +5907,8 @@
         "luk": 47,
         "hiringCost": 40320,
         "weeklyCost": 8060,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -5936,8 +5938,8 @@
         "luk": 22,
         "hiringCost": 11200,
         "weeklyCost": 2240,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -5953,8 +5955,8 @@
         "luk": 28,
         "hiringCost": 28000,
         "weeklyCost": 5600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -5970,8 +5972,8 @@
         "luk": 35,
         "hiringCost": 39200,
         "weeklyCost": 7840,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -5987,8 +5989,8 @@
         "luk": 30,
         "hiringCost": 56000,
         "weeklyCost": 11200,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -6004,8 +6006,8 @@
         "luk": 38,
         "hiringCost": 72800,
         "weeklyCost": 14560,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -6021,8 +6023,8 @@
         "luk": 45,
         "hiringCost": 98000,
         "weeklyCost": 19600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -6038,8 +6040,8 @@
         "luk": 40,
         "hiringCost": 134400,
         "weeklyCost": 26880,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -6055,8 +6057,8 @@
         "luk": 52,
         "hiringCost": 182000,
         "weeklyCost": 36400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -6072,8 +6074,8 @@
         "luk": 38,
         "hiringCost": 10080,
         "weeklyCost": 2020,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -6105,8 +6107,8 @@
         "luk": 25,
         "hiringCost": 25200,
         "weeklyCost": 5040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -6122,8 +6124,8 @@
         "luk": 30,
         "hiringCost": 47600,
         "weeklyCost": 9520,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -6139,8 +6141,8 @@
         "luk": 40,
         "hiringCost": 67200,
         "weeklyCost": 13440,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -6156,8 +6158,8 @@
         "luk": 35,
         "hiringCost": 100800,
         "weeklyCost": 20160,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -6173,8 +6175,8 @@
         "luk": 50,
         "hiringCost": 154000,
         "weeklyCost": 30800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -6190,8 +6192,8 @@
         "luk": 38,
         "hiringCost": 22680,
         "weeklyCost": 4540,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -6221,8 +6223,8 @@
         "luk": 65,
         "hiringCost": 42000,
         "weeklyCost": 8400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -6238,8 +6240,8 @@
         "luk": 70,
         "hiringCost": 77000,
         "weeklyCost": 15400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -6255,8 +6257,8 @@
         "luk": 75,
         "hiringCost": 119000,
         "weeklyCost": 23800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -6272,8 +6274,8 @@
         "luk": 85,
         "hiringCost": 182000,
         "weeklyCost": 36400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -6289,8 +6291,8 @@
         "luk": 77,
         "hiringCost": 37800,
         "weeklyCost": 7560,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -6321,8 +6323,8 @@
         "luk": 60,
         "hiringCost": 28000,
         "weeklyCost": 5600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -6338,8 +6340,8 @@
         "luk": 75,
         "hiringCost": 63000,
         "weeklyCost": 12600,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -6355,8 +6357,8 @@
         "luk": 90,
         "hiringCost": 112000,
         "weeklyCost": 22400,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -6372,8 +6374,8 @@
         "luk": 100,
         "hiringCost": 175000,
         "weeklyCost": 35000,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -6389,8 +6391,8 @@
         "luk": 85,
         "hiringCost": 25200,
         "weeklyCost": 5040,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -6420,8 +6422,8 @@
         "luk": 45,
         "hiringCost": 22400,
         "weeklyCost": 4480,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.support"
       },
       {
@@ -6437,8 +6439,8 @@
         "luk": 55,
         "hiringCost": 61600,
         "weeklyCost": 12320,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -6454,8 +6456,8 @@
         "luk": 40,
         "hiringCost": 119000,
         "weeklyCost": 23800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.closequarters"
       },
       {
@@ -6471,8 +6473,8 @@
         "luk": 65,
         "hiringCost": 189000,
         "weeklyCost": 37800,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.ranged"
       },
       {
@@ -6488,8 +6490,8 @@
         "luk": 54,
         "hiringCost": 20160,
         "weeklyCost": 4030,
-        "spritename": "Actor1",
-        "spriteindex": 1,
+        "spritename": "NPCs/!$UniversityStudent1",
+        "spriteindex": 0,
         "role": "roles.scientist"
       }
     ],
@@ -6498,6 +6500,324 @@
       "chief_engineer_tesla_iv",
       "general_turing",
       "professor_faraday_v"
+    ]
+  },
+  {
+    "id": 51,
+    "name": "factions.greywanderers.name",
+    "description": "factions.greywanderers.description",
+    "parentFaction": 13,
+    "noStartingTroops": true,
+    "iconIndex": 158,
+    "troops": [
+      {
+        "name": "factions.greywanderers.troops.snapshottourist.name",
+        "formation": "formations.scattered",
+        "hp": 130,
+        "mp": 120,
+        "atk": 34,
+        "def": 46,
+        "mat": 62,
+        "mdf": 66,
+        "agi": 58,
+        "luk": 78,
+        "hiringCost": 26600,
+        "weeklyCost": 5320,
+        "spritename": "Skab/!$AlienGrey",
+        "spriteindex": 0,
+        "role": "roles.support"
+      },
+      {
+        "name": "factions.greywanderers.troops.itineraryguide.name",
+        "formation": "formations.line",
+        "hp": 150,
+        "mp": 140,
+        "atk": 42,
+        "def": 58,
+        "mat": 74,
+        "mdf": 78,
+        "agi": 62,
+        "luk": 82,
+        "hiringCost": 47600,
+        "weeklyCost": 9520,
+        "spritename": "Skab/!$AlienGrey",
+        "spriteindex": 0,
+        "role": "roles.support"
+      },
+      {
+        "name": "factions.greywanderers.troops.souvenirhunter.name",
+        "formation": "formations.scattered",
+        "hp": 165,
+        "mp": 130,
+        "atk": 58,
+        "def": 62,
+        "mat": 70,
+        "mdf": 74,
+        "agi": 84,
+        "luk": 96,
+        "hiringCost": 72800,
+        "weeklyCost": 14560,
+        "spritename": "Skab/!$AlienGrey",
+        "spriteindex": 0,
+        "role": "roles.ranged"
+      },
+      {
+        "name": "factions.greywanderers.troops.shutterwarden.name",
+        "formation": "formations.circle",
+        "hp": 205,
+        "mp": 175,
+        "atk": 66,
+        "def": 88,
+        "mat": 98,
+        "mdf": 104,
+        "agi": 76,
+        "luk": 105,
+        "hiringCost": 128800,
+        "weeklyCost": 25760,
+        "spritename": "Skab/!$AlienGrey",
+        "spriteindex": 0,
+        "role": "roles.support"
+      }
+    ],
+    "leaders": [
+      "ambassador_zyx_7",
+      "tourist_director_vrax_3",
+      "shutter_warden_hlee_2",
+      "itinerary_grey_omm_4"
+    ]
+  },
+  {
+    "id": 52,
+    "name": "factions.crimsonanalyzers.name",
+    "description": "factions.crimsonanalyzers.description",
+    "parentFaction": 13,
+    "noStartingTroops": true,
+    "iconIndex": 79,
+    "troops": [
+      {
+        "name": "factions.crimsonanalyzers.troops.fieldsampler.name",
+        "formation": "formations.box",
+        "hp": 140,
+        "mp": 130,
+        "atk": 62,
+        "def": 52,
+        "mat": 78,
+        "mdf": 68,
+        "agi": 66,
+        "luk": 52,
+        "hiringCost": 30800,
+        "weeklyCost": 6160,
+        "spritename": "Skab/!$AlienXori",
+        "spriteindex": 0,
+        "role": "roles.scientist"
+      },
+      {
+        "name": "factions.crimsonanalyzers.troops.katanasurgeon.name",
+        "formation": "formations.wedge",
+        "hp": 175,
+        "mp": 145,
+        "atk": 96,
+        "def": 62,
+        "mat": 92,
+        "mdf": 76,
+        "agi": 92,
+        "luk": 58,
+        "hiringCost": 63000,
+        "weeklyCost": 12600,
+        "spritename": "Skab/!$AlienXori",
+        "spriteindex": 0,
+        "role": "roles.closequarters"
+      },
+      {
+        "name": "factions.crimsonanalyzers.troops.specimenwarden.name",
+        "formation": "formations.phalanx",
+        "hp": 235,
+        "mp": 160,
+        "atk": 88,
+        "def": 108,
+        "mat": 96,
+        "mdf": 98,
+        "agi": 68,
+        "luk": 62,
+        "hiringCost": 117600,
+        "weeklyCost": 23520,
+        "spritename": "Skab/!$AlienXori",
+        "spriteindex": 0,
+        "role": "roles.closequarters"
+      },
+      {
+        "name": "factions.crimsonanalyzers.troops.chiefvivisector.name",
+        "formation": "formations.circle",
+        "hp": 250,
+        "mp": 250,
+        "atk": 112,
+        "def": 92,
+        "mat": 148,
+        "mdf": 128,
+        "agi": 88,
+        "luk": 74,
+        "hiringCost": 218400,
+        "weeklyCost": 43680,
+        "spritename": "Skab/!$AlienXori",
+        "spriteindex": 0,
+        "role": "roles.scientist"
+      }
+    ],
+    "leaders": [
+      "overseer_qel_9",
+      "chief_analyzer_vess_1",
+      "scalpel_primarch_thruun"
+    ]
+  },
+  {
+    "id": 53,
+    "name": "factions.palewarpers.name",
+    "description": "factions.palewarpers.description",
+    "parentFaction": 13,
+    "noStartingTroops": true,
+    "iconIndex": 118,
+    "troops": [
+      {
+        "name": "factions.palewarpers.troops.psinovice.name",
+        "formation": "formations.circle",
+        "hp": 120,
+        "mp": 190,
+        "atk": 28,
+        "def": 44,
+        "mat": 96,
+        "mdf": 92,
+        "agi": 60,
+        "luk": 84,
+        "hiringCost": 33600,
+        "weeklyCost": 6720,
+        "spritename": "Skab/!$AlienMindmaster",
+        "spriteindex": 0,
+        "role": "roles.support"
+      },
+      {
+        "name": "factions.palewarpers.troops.mindfolder.name",
+        "formation": "formations.crescent",
+        "hp": 145,
+        "mp": 235,
+        "atk": 34,
+        "def": 52,
+        "mat": 122,
+        "mdf": 116,
+        "agi": 68,
+        "luk": 92,
+        "hiringCost": 69300,
+        "weeklyCost": 13860,
+        "spritename": "Skab/!$AlienMindmaster",
+        "spriteindex": 0,
+        "role": "roles.support"
+      },
+      {
+        "name": "factions.palewarpers.troops.spacefolder.name",
+        "formation": "formations.scattered",
+        "hp": 165,
+        "mp": 275,
+        "atk": 42,
+        "def": 58,
+        "mat": 148,
+        "mdf": 138,
+        "agi": 112,
+        "luk": 104,
+        "hiringCost": 134400,
+        "weeklyCost": 26880,
+        "spritename": "Skab/!$AlienMindmaster",
+        "spriteindex": 0,
+        "role": "roles.ranged"
+      },
+      {
+        "name": "factions.palewarpers.troops.warpchoir.name",
+        "formation": "formations.circle",
+        "hp": 210,
+        "mp": 340,
+        "atk": 48,
+        "def": 78,
+        "mat": 182,
+        "mdf": 170,
+        "agi": 96,
+        "luk": 122,
+        "hiringCost": 243600,
+        "weeklyCost": 48720,
+        "spritename": "Skab/!$AlienMindmaster",
+        "spriteindex": 0,
+        "role": "roles.support"
+      }
+    ],
+    "leaders": [
+      "observer_prime_klix_5",
+      "warp_choir_mother_iisha",
+      "pale_archon_nuu_6"
+    ]
+  },
+  {
+    "id": 54,
+    "name": "factions.dargosembassy.name",
+    "description": "factions.dargosembassy.description",
+    "parentFaction": 14,
+    "noStartingTroops": true,
+    "iconIndex": 182,
+    "hyperpowerHead": true,
+    "troops": [
+      {
+        "name": "factions.dargosembassy.troops.embassyclerk.name",
+        "formation": "formations.box",
+        "hp": 135,
+        "mp": 165,
+        "atk": 40,
+        "def": 58,
+        "mat": 92,
+        "mdf": 96,
+        "agi": 64,
+        "luk": 118,
+        "hiringCost": 35000,
+        "weeklyCost": 7000,
+        "spritename": "Skab/!$AlienDargos",
+        "spriteindex": 0,
+        "role": "roles.support"
+      },
+      {
+        "name": "factions.dargosembassy.troops.pranksman.name",
+        "formation": "formations.scattered",
+        "hp": 158,
+        "mp": 185,
+        "atk": 66,
+        "def": 62,
+        "mat": 108,
+        "mdf": 102,
+        "agi": 108,
+        "luk": 140,
+        "hiringCost": 71400,
+        "weeklyCost": 14280,
+        "spritename": "Skab/!$AlienDargos",
+        "spriteindex": 0,
+        "role": "roles.ranged"
+      },
+      {
+        "name": "factions.dargosembassy.troops.punchlineregent.name",
+        "formation": "formations.crescent",
+        "hp": 220,
+        "mp": 260,
+        "atk": 82,
+        "def": 96,
+        "mat": 152,
+        "mdf": 148,
+        "agi": 92,
+        "luk": 165,
+        "hiringCost": 176400,
+        "weeklyCost": 35280,
+        "spritename": "Skab/!$AlienDargos",
+        "spriteindex": 0,
+        "role": "roles.support"
+      }
+    ],
+    "leaders": [
+      "dargos_the_first",
+      "punchline_regent_obb",
+      "embassy_clerk_wodwod",
+      "prank_marshal_ssein"
     ]
   }
 ]

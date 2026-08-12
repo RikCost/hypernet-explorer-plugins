@@ -1,0 +1,2564 @@
+{
+  "_comment": "Italian layer for the js/db/Skills/Lore.json grammar (ItemSystemUtils.grammar overlays it). The db keeps the structure and the English words. Slots recombine freely, so nothing here may depend on another slot's gender: the era slot is written as a prepositional or relative phrase, the mechanism slot as a gerund, and a token line never uses a pronoun standing for the art slot. The era slot is also never placed sentence-initially, because an invariant 'che si ...' clause cannot open an Italian sentence.",
+  "tokenBanks": {
+    "worldly": [
+      "{faction} vi si addestra ancora nei pressi di {city}",
+      "{leader} di {faction} paga bene chi ne è maestro a {city}",
+      "i {title} di {faction} dimostrano il proprio grado con questo in tutta {nation}",
+      "{nation} custodisce le forme antiche sotto {leader}",
+      "{faction} tiene a {city} un maestro navigato di quest'arte",
+      "{leader} scommette {nation} su chi ne sa fare uso",
+      "i {title} di {nation} ne portano la pratica fin dentro {city}",
+      "la gente errante di {nation} ne porta la pratica ben oltre {city}",
+      "{faction} ingaggia i migliori praticanti che escono da {city}",
+      "{leader} governa {city} quasi soltanto grazie a questo",
+      "{govType} di {nation} impone un pedaggio ai posti di blocco a ogni maestro che esce da {city}",
+      "{leader} ne tiene un'intera caserma che {govType} non potrebbe mai permettersi",
+      "le bancarelle di {city} ne vendono imitazioni, mentre {faction} conserva le esercitazioni vere",
+      "nessun convoglio di camionisti lascia {city} senza un {title} di {faction} che se ne intenda",
+      "{leader} ha barattato mezza strada di {nation} per un solo maestro di quest'arte",
+      "i {title} di {govType} ne impongono il rispetto ai confini di {city}",
+      "{faction} e i suoi rivali si sanguinano per questo nei vicoli di {city}",
+      "{leader} di {faction} ne ha proibito l'insegnamento ovunque tranne che a {city}",
+      "oltre l'ultimo posto di blocco di {nation} solo {faction} vi si addestra ancora",
+      "le bancarelle lungo la strada vicino a {city} ne vendono l'insegnamento a chiunque porti monete di {faction}",
+      "{govType} finge che non abbia mai contato nulla, eppure {leader} ne accumula i maestri a {city}",
+      "i {title} di {faction} seppelliscono i propri morti vicino a {city} con questo inciso sulla pietra",
+      "{nation} ci mette una tassa, {faction} ne fa contrabbando, e {city} paga al buio",
+      "{leader} ha appreso quest'arte prima delle mura di {city} e non l'ha più lasciata",
+      "i corrieri dei convogli che partono da {city} giurano che nessun {title} di {faction} si muova senza",
+      "i {title} che tengono {city} per conto di {govType} ne sono stati tutti istruiti",
+      "{faction} ha lasciato i suoi vecchi maestri bloccati oltre i posti di blocco di {nation}",
+      "{leader} baratterebbe {city} prima dell'ultimo praticante di quest'arte",
+      "le guardie carovaniere di {nation} ne portano la pratica dove la legge di {govType} non arriva",
+      "perfino i mendicanti alle porte di {city} nominano {faction} e {leader} quando ne parlano"
+    ],
+    "arcane": [
+      "{faction} celebra ancora il rito nei pressi di {city}",
+      "{leader} di {faction} ne custodisce i grimori a {city}",
+      "i {title} di {faction} ne mandano a memoria le formule in {nation}",
+      "in {nation} se ne sussurra ancora nel nome di {deity}",
+      "{faction} è la sola che osi insegnarne il rito sotto {city}",
+      "i veggenti di {faction} vi giurano sopra davanti a {deity}",
+      "{leader} di {faction} ne accumula i segreti a {city}",
+      "i fedeli di {deity} dentro {faction} ne conservano ogni parola",
+      "{nation} brucia chi ne ruba i testi, eppure {faction} ne tiene i registri",
+      "gli adepti di {faction} ne portano il rito fuori da {city} per conto di {leader}",
+      "le linee di ley sotto {city} rispondono soltanto ai {title} di {faction}",
+      "{leader} di {faction} ne tiene i nomi in CamelCase sigillati lontano da {nation}",
+      "{govType} di {nation} ne vieta il rito, così {faction} lo pratica sotto {city}",
+      "i {title} di {faction} ne incidono i sigilli sulle pietre miliari fuori da {city}",
+      "si dice che {deity} ne abbia insegnato il rito a {leader} prima ancora che {faction} esistesse",
+      "le cantine dei grimori di {city} custodiscono ciò che {leader} di {faction} non vuole nominare",
+      "in {nation} si grida all'eresia, eppure i {title} di {faction} ne salmodiano le formule davanti a {deity}",
+      "nessun rito del genere può essere venduto a {city} se prima {faction} non lo ha ricopiato",
+      "{leader} ha legato {nation} a {deity} con la forma più antica del rito",
+      "gli scrivani di ley di {faction} ne portano i rotoli oltre le protezioni di {city}",
+      "{govType} ne tiene una copia incatenata, ma {faction} tiene quella che funziona",
+      "i {title} di {faction} dicono che {deity} ne ascolti ancora le formule sopra {city}",
+      "oltre le porte di ley di {nation} solo {leader} di {faction} può praticarlo",
+      "il nome di {deity} viene pronunciato tre volte su ogni sua esecuzione a {city}",
+      "{faction} ha bruciato le copie di {nation} e ha tenuto le proprie a {city}",
+      "gli adepti di {faction} ne barattano le strofe in cambio di passaggio sicuro per {nation}",
+      "{leader} di {faction} ha pagato una strada nel sangue per l'ultimo grimorio rimasto a {city}",
+      "i {title} di {govType} danno la caccia a chi ne pratica il rito, e {faction} ne nasconde i testi nelle cantine di {city}",
+      "{nation} giura che {deity} ne abbia deposto il seme nelle linee di ley sotto {city}",
+      "le streghe di ley di {faction} ne sussurrano le formule a {leader} e a nessun altro a {city}"
+    ]
+  },
+  "families": {
+    "primordial": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Una magia {era}. {Attrib} per primi cantarono {art}, e {token}.",
+        "La prima magia di tutte: {art}, {mechanism}; {token}.",
+        "{Attrib} non lasciarono {art} a nessuno, eppure {mechanism}; {token}.",
+        "{Art} del mondo profondo, {era}, {mechanism}. {Token}."
+      ]
+    },
+    "ancient": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Un'arte {era}: {attrib} diedero forma per primi a {art}, e {token}.",
+        "Più antica di qualsiasi regno, {art} resiste, {mechanism}; {token}.",
+        "{Attrib} accesero {art} agli albori del mondo; {token}.",
+        "Un mestiere primigenio, {era}. {Mechanism_cap}, e così {token}."
+      ]
+    },
+    "wild": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Un'arte {era}, di quando {attrib} vestirono per primi la pelliccia e presero il corno; {token}.",
+        "{Attrib} cantarono {art} alle terre selvagge molto prima che sorgessero le mura, e {token}.",
+        "Un'arte selvatica, {era}, {mechanism}; {token}.",
+        "{Art} delle terre selvagge, {mechanism}. {Token}."
+      ]
+    },
+    "greek": {
+      "templates": [
+        "{Art}, {mechanism}. {Token}. Viene da lì: {attrib}.",
+        "Un'arte {era}: alta stregoneria, {mechanism}; {token}. Viene da lì: {attrib}.",
+        "{Art} dei vecchi grimori; {token}. A metterne ordine: {attrib}.",
+        "Arcani cerimoniali, {era}, {mechanism}. {Token}.",
+        "{Attrib} misero per iscritto {art} nelle carte degli incantesimi, e {token}."
+      ]
+    },
+    "holy": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Una grazia, {era}; {token}. A santificarla: {attrib}.",
+        "{Attrib} accesero per primi {art}, e {token}.",
+        "{Art} del tempio e della cattedrale, {mechanism}; {token}.",
+        "Luce divina, {era}. {Token}. A benedirla: {attrib}."
+      ]
+    },
+    "dream": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Attrib} vi camminarono per primi, setacciando la notte; {token}.",
+        "Arte del sonno, {era}, {mechanism}; {token}.",
+        "Un'arte {era}: {attrib} lessero in sogno i desideri dell'anima, e {token}.",
+        "{Art} tratta dalla ricerca visionaria, {mechanism}. {Token}."
+      ]
+    },
+    "modern": {
+      "templates": [
+        "Di stesura recente: {art}, {era}, {mechanism}. {Token}.",
+        "Una scuola {era}. {Attrib} sposarono {art} al proprio tempo, e {token}.",
+        "{Art}, non più antica dell'era dei satelliti, {mechanism}; {token}.",
+        "La più giovane delle scuole, {art} nacque {era}; {token}.",
+        "{Attrib} forgiarono {art} dal mondo spezzato, {mechanism}. {Token}."
+      ]
+    },
+    "forbidden": {
+      "templates": [
+        "Un'opera proscritta: {art}, {mechanism}, condannata in ogni epoca. {Token}.",
+        "{Art}, fuorilegge da quando {attrib} osarono per primi, {mechanism}; {token}.",
+        "Stregoneria nera, {era}, {mechanism}. {Token}.",
+        "{Attrib} si passarono {art} di nascosto, e {token}.",
+        "Un rito interdetto: {art} deforma le linee di ley; {mechanism}, e {token}."
+      ]
+    },
+    "martial": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Un mestiere {era}: {attrib} si esercitarono in {art}, e {token}.",
+        "{Art}, affilata in ogni guerra da allora, {mechanism}; {token}.",
+        "{Attrib} codificarono {art} nelle scuole di guerra; {token}.",
+        "Un mestiere da soldati, {era}, {mechanism}. {Token}."
+      ]
+    },
+    "trade": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Un mestiere {era}: {attrib} esercitarono {art}, e {token}.",
+        "{Art}, tramandata lungo le linee di gilda, {mechanism}; {token}.",
+        "{Attrib} impararono {art} per la via lunga; {token}.",
+        "Un mestiere di tutti i giorni, {era}, {mechanism}. {Token}."
+      ]
+    },
+    "fusion": {
+      "templates": [
+        "Un'opera congiunta: due arti intrecciate in una sola, {mechanism}. {Token}.",
+        "Un'opera {era}, di quando lo Squishing permise a incantesimi separati di fondersi; {mechanism}, e {token}.",
+        "Un rito composito, {mechanism}; {token}.",
+        "{Attrib} saldarono per primi questi due fili, e {token}.",
+        "Due discipline fatte una, {mechanism}. {Token}."
+      ]
+    },
+    "wayfaring": {
+      "templates": [
+        "Arte della strada, {era}, {mechanism}. {Token}.",
+        "{Attrib} tengono aperte le rotte, {mechanism}; {token}.",
+        "{Art} della Strada Avvolgente, {mechanism}; {token}.",
+        "Un'arte {era}: tieni il passo o vieni azzerato; {attrib} impararono a piegarlo, e {token}.",
+        "Magia da viaggio, {era}, {mechanism}. {Token}."
+      ]
+    },
+    "generic": {
+      "templates": [
+        "Un vecchio mestiere di origine incerta, {mechanism}. {Token}.",
+        "Un sapere {era}: chi lo praticò per primo è dimenticato, eppure {token}.",
+        "{Art}, passata di maestro in allievo attraverso le epoche; {token}.",
+        "Sapere di lunga data, {mechanism}; {token}.",
+        "{Attrib} portarono {art} attraverso gli anni, e {token}."
+      ]
+    },
+    "forged": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Un lavoro {era}: {attrib} martellarono {art}, e {token}.",
+        "{Attrib} batterono {art} sull'incudine, {mechanism}; {token}.",
+        "{Art} delle città-fucina, {mechanism}. {Token}.",
+        "Lavoro da fabbro, {era}, {mechanism}; {token}.",
+        "Arte dell'acciaio più antica di gran parte delle mura: {art}, {mechanism}. {Token}."
+      ]
+    },
+    "primitive": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Una cosa {era}: {attrib} ricavarono {art} da quel che riuscirono a trovare, e {token}.",
+        "{Attrib} recuperarono {art} dalle rovine, {mechanism}; {token}.",
+        "{Art} dei mucchi di rottami, {mechanism}. {Token}.",
+        "Una cosa rozza, {era}, {mechanism}; {token}.",
+        "Lavoro da età della pietra in un'età spezzata: {art}, {mechanism}. {Token}."
+      ]
+    },
+    "firearm": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Un pezzo {era}: {attrib} alesarono e rigarono {art}, e {token}.",
+        "{Attrib} lavorarono {art} alla macchina nelle armerie, {mechanism}; {token}.",
+        "{Art} della trincea e della catena di montaggio, {mechanism}. {Token}.",
+        "Un pezzo da armaiolo, {era}, {mechanism}; {token}.",
+        "Lavoro di polvere e acciaio: {art}, {mechanism}. {Token}."
+      ]
+    },
+    "marketed": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Merce {era}: {attrib} produssero {art} a stampo, a migliaia, e {token}.",
+        "{Attrib} spedirono {art} direttamente dal catalogo, {mechanism}; {token}.",
+        "{Art} uscita dalle linee a prova di anello, {mechanism}. {Token}.",
+        "Merce di fabbrica, {era}, {mechanism}; {token}.",
+        "Prodotta in serie e mai due volte uguale: {art}, {mechanism}. {Token}."
+      ]
+    },
+    "relic": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Una cosa {era}: {attrib} portarono per primi {art}, e {token}.",
+        "{Attrib} portarono {art} attraverso le vecchie guerre, {mechanism}; {token}.",
+        "{Art} della linea di ley e del passato profondo, {mechanism}. {Token}.",
+        "Una cosa che ha un nome, {era}, {mechanism}; {token}.",
+        "Più antica dello Squishing, e più strana per questo: {art}, {mechanism}. {Token}."
+      ]
+    },
+    "warding": {
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "Un riparo {era}: {attrib} alzarono {art} contro l'assalto, e {token}.",
+        "{Attrib} portarono {art} sulle linee d'assedio, {mechanism}; {token}.",
+        "{Art} del muro di scudi, {mechanism}. {Token}.",
+        "Un riparo, {era}, {mechanism}; {token}.",
+        "Fatta per deviare un colpo e tenere una linea: {art}, {mechanism}. {Token}."
+      ]
+    }
+  },
+  "fallbackArchetype": {
+    "art": [
+      "il vecchio mestiere",
+      "l'arte tramandata",
+      "la perizia conservata a lungo",
+      "la disciplina più antica"
+    ],
+    "era": [
+      "di origine incerta",
+      "col suo primo giorno dimenticato",
+      "di lunga data",
+      "più antica dei registri"
+    ],
+    "mechanism": [
+      "passando di maestro in allievo attraverso le epoche",
+      "tenendosi in vita contro ogni dimenticanza",
+      "tramandandosi dove più serviva",
+      "attraversando gli anni in silenzio"
+    ],
+    "attrib": [
+      "i primi praticanti dimenticati",
+      "i maestri che la tennero in vita",
+      "coloro che ne ebbero bisogno nei tempi duri",
+      "gli allievi che la portarono avanti"
+    ]
+  },
+  "archetypes": {
+    "Geomancy": {
+      "art": [
+        "la petromanzia",
+        "l'arte della pietra profonda",
+        "il canto della terra",
+        "il rito del midollo",
+        "il richiamo delle pozze di catrame",
+        "la divinazione del greggio",
+        "l'evocazione del basamento roccioso"
+      ],
+      "era": [
+        "di un'epoca anteriore all'umanità",
+        "all'origine di tutte le stregonerie",
+        "da prima che il primo mammifero traesse fiato",
+        "che nacque nel profondo del Mesozoico",
+        "che si ricorda da prima che i continenti si separassero",
+        "dell'età in cui il petrolio si raccolse per la prima volta nel buio",
+        "che si canta nella lingua rettile delle paludi profonde"
+      ],
+      "mechanism": [
+        "attingendo ai petrodemoni addormentati nel greggio",
+        "legando sangue, olio e linea di ley attraverso fili di Porfirina",
+        "traendo potere dal midollo stesso della Terra",
+        "rispondendo all'olio nero e senziente delle profondità",
+        "ascoltando la pressione del mare di petrolio sepolto",
+        "leggendo l'odore di rame della Porfirina rimestata",
+        "risvegliando gli strati che dormivano dal grande calore"
+      ],
+      "attrib": [
+        "gli sciamani saurici delle paludi mesozoiche",
+        "i sacerdoti rettili delle pozze di catrame primordiali",
+        "gli uomini di Enrico Mattei (1906-1962), che ne copiarono il rito da un rotolo tombale libico",
+        "i petrodemoni, che non la insegnarono a nessuno",
+        "gli sciamani delle trivelle che corteggiano i petrodemoni",
+        "i copisti di rotoli tombali delle sabbie libiche",
+        "gli ascoltatori della terra profonda che non vedono mai il sole"
+      ]
+    },
+    "Bestial": {
+      "art": [
+        "il sapere delle bestie",
+        "il rito della pelliccia e del corno",
+        "la magia bestiale primordiale",
+        "la parentela selvatica"
+      ],
+      "era": [
+        "dalla profonda età della pietra",
+        "di un'epoca anteriore a qualsiasi città",
+        "che si canta fin dalle cacce dell'era glaciale",
+        "che risale tanto indietro quanto il camminare con le mandrie"
+      ],
+      "mechanism": [
+        "prendendo in prestito la forza e la furia delle bestie",
+        "assumendo artiglio, pelliccia e istinto selvaggio",
+        "parlando con gli animali come si parla ai parenti",
+        "vestendo in battaglia la forma del totem"
+      ],
+      "attrib": [
+        "gli sciamani dell'era glaciale che per primi indossarono la pelliccia",
+        "i druidi più antichi di qualsiasi città",
+        "le genti selvatiche che camminavano con le mandrie",
+        "i cacciatori coronati di corna delle terre selvagge antiche"
+      ]
+    },
+    "Hunting": {
+      "art": [
+        "il mestiere del cacciatore",
+        "il sapere della traccia",
+        "l'appostamento e l'abbattimento",
+        "l'arte della pista"
+      ],
+      "era": [
+        "all'origine di tutte le abilità umane",
+        "che si esercita fin dal Paleolitico",
+        "di un'epoca anteriore all'agricoltura stessa",
+        "la prima abilità che la nostra specie abbia mai padroneggiato"
+      ],
+      "mechanism": [
+        "leggendo le tracce e stancando la preda",
+        "lasciando partire il colpo mortale all'ultimo respiro",
+        "combattendo al fianco di una bestia fedele",
+        "sfamando un intero campo partendo da una pista fredda"
+      ],
+      "attrib": [
+        "i tracciatori del Paleolitico",
+        "i primi cacciatori che alimentarono il fuoco",
+        "i maestri di pista delle antiche distese fredde",
+        "i cacciatori di bestie della tundra antica"
+      ]
+    },
+    "Pastoral": {
+      "art": [
+        "l'arte verde",
+        "le parole che fanno crescere",
+        "il sapere del seme e della mandria",
+        "il rito pastorale"
+      ],
+      "era": [
+        "che risale tanto indietro quanto l'agricoltura stessa",
+        "che affonda diecimila anni",
+        "dagli albori dell'aratro",
+        "che nacque con il primo villaggio neolitico"
+      ],
+      "mechanism": [
+        "convincendo radice, vite e bestia a obbedire",
+        "sussurrando al seme e alla mandria perché ingrassino",
+        "facendo rinverdire solchi sterili",
+        "legando il gregge a una sola voce"
+      ],
+      "attrib": [
+        "i sacerdoti del grano dei primi villaggi",
+        "le genti stanziali del Neolitico",
+        "i guaritori popolari che cantavano alla semina",
+        "i mandriani che per primi misero radici"
+      ]
+    },
+    "Arcanism": {
+      "art": [
+        "l'arte arcana",
+        "l'alta magia cerimoniale",
+        "la stregoneria strutturata",
+        "gli arcani puri",
+        "il lavoro di figura e formula",
+        "l'arte dei sigilli incisi",
+        "la magia dei diagrammi"
+      ],
+      "era": [
+        "di un'epoca anteriore a Roma",
+        "dalle carte d'incantesimi dell'Egitto greco-romano",
+        "che si codificò di nuovo nel 1888",
+        "della tradizione ermetica",
+        "che si mise per iscritto nelle carte d'incantesimi alessandrine",
+        "che si riportò in vita nelle logge da salotto del 1888",
+        "della mano accurata del revival ermetico"
+      ],
+      "mechanism": [
+        "incanalando il potere magico grezzo attraverso figure apprese",
+        "modellando l'energia arcana pura a memoria e per diagramma",
+        "legando sigillo e parola in un effetto",
+        "traendo struttura dal caos",
+        "tracciando linee nette finché il caos non prendeva forma",
+        "recitando i nomi barbari nell'ordine esatto",
+        "legando una figura così precisa che nulla potesse trapelare"
+      ],
+      "attrib": [
+        "gli scribi dei Papiri Magici Greci",
+        "Agrippa (1486-1535) e John Dee (1527-1608)",
+        "gli adepti dell'Ordine Ermetico dell'Alba Dorata",
+        "i copisti del Sefer Raziel e del Picatrix",
+        "gli adepti di loggia che misuravano ogni sigillo",
+        "i copisti alessandrini delle carte d'incantesimi",
+        "i maestri di diagrammi dell'Alba Dorata"
+      ]
+    },
+    "StatusMagic": {
+      "art": [
+        "il mestiere delle fatture",
+        "la magia dell'afflizione",
+        "le maledizioni vincolanti",
+        "i katadesmoi"
+      ],
+      "era": [
+        "dalle tavolette di maledizione classiche",
+        "di profonda antichità",
+        "dalle tombe dei morti greci e romani",
+        "delle streghe di tempio"
+      ],
+      "mechanism": [
+        "legando sonno, malattia e paura addosso a un avversario",
+        "incidendo una maledizione per fissare il destino di un rivale",
+        "scatenando o revocando una dozzina di afflizioni",
+        "rivoltando contro un corpo i suoi stessi stati"
+      ],
+      "attrib": [
+        "gli scribi di maledizioni delle defixiones",
+        "le streghe di tempio che seppellivano le tavolette di piombo",
+        "gli scrittori di fatture dei Papiri Magici Greci",
+        "gli antichi fabbricanti di katadesmoi delle tombe"
+      ]
+    },
+    "Illusion": {
+      "art": [
+        "il sapere dell'incantamento",
+        "l'arte dell'illusione",
+        "l'arte dell'ingannatore",
+        "la tessitura di fantasmi",
+        "l'incantamento che inganna i sensi",
+        "il mestiere del falso apparire",
+        "la trama fantasmatica"
+      ],
+      "era": [
+        "dai culti misterici classici",
+        "che si tesse fin dall'antichità",
+        "degli illusionisti templari",
+        "che risale tanto indietro quanto il primo inganno dell'occhio",
+        "che si mostrò per la prima volta negli antichi riti misterici",
+        "che si tesse fin dal primo gioco di prestigio",
+        "degli illusionisti di santuario che ingannavano i pellegrini"
+      ],
+      "mechanism": [
+        "facendo sembrare reale a qualunque occhio ciò che non lo è",
+        "ingannando ogni senso di un avversario",
+        "avvolgendo un'intera compagnia in un'apparenza",
+        "evocando fantasmi che sanguinano e mordono",
+        "stendendo un'apparenza su tutta una compagnia in una volta",
+        "convincendo ogni senso che una cosa fosse davvero lì",
+        "evocando un fantasma abbastanza solido da far uscire il sangue"
+      ],
+      "attrib": [
+        "i sacerdoti degli antichi culti misterici",
+        "gli illusionisti templari dell'antichità",
+        "i tessitori d'incantamenti dei santuari più antichi",
+        "gli ingannatori che ingannarono dei re",
+        "i sacerdoti misterici che inscenavano il ritorno del dio",
+        "gli incantatori di santuario che stupivano i creduloni",
+        "gli ingannatori capaci di gabbare perfino un re guardingo"
+      ]
+    },
+    "HolyMagic": {
+      "art": [
+        "il fuoco sacro",
+        "la grazia santa",
+        "la luce divina",
+        "il mestiere della benedizione",
+        "la litania della luce",
+        "la grazia che percuote",
+        "il fuoco che monda"
+      ],
+      "era": [
+        "che si plasmò nei templi greci e nelle basiliche romane",
+        "che i santi cristiani ereditarono",
+        "dei misteri classici non meno che della Chiesa",
+        "di un'epoca anteriore alle cattedrali",
+        "che si porta avanti dopo che il Padre fu ucciso",
+        "dei cori di basilica e degli oracoli templari",
+        "di un fuoco tenuto acceso per tutta l'età della cenere"
+      ],
+      "mechanism": [
+        "purificando con la luce sacra",
+        "percuotendo i malvagi con potenza giusta",
+        "chiamando la grazia sui fedeli",
+        "bruciando la corruzione dalla carne e dall'anima",
+        "cantando i malvagi fino a ridurli in cenere con una nota pulita",
+        "posando la grazia su una compagnia come acqua fresca",
+        "bruciando ciò che la linea di ley aveva fatto marcire in un'anima"
+      ],
+      "attrib": [
+        "i soldati di Giovanna d'Arco (1412-1431) sui campi di Francia",
+        "gli oracoli di Grecia e gli auguri di Roma",
+        "i martiri della Chiesa antica",
+        "i santi che la santificarono di nuovo",
+        "i chierici di guerra che benedicono prima della carica",
+        "i santi cantori delle basiliche superstiti",
+        "i martiri la cui fede sopravvisse ai propri dei"
+      ]
+    },
+    "Healing": {
+      "art": [
+        "l'arte del risanare",
+        "la magia riparatrice",
+        "i riti di guarigione",
+        "il sapere degli impiastri",
+        "il rito dell'imposizione delle mani",
+        "l'arte che tira fuori la febbre",
+        "il mestiere che risalda le ossa"
+      ],
+      "era": [
+        "dalla medicina templare dell'antichità",
+        "che risale tanto indietro quanto il primo impiastro",
+        "che si santificò nei templi greci della guarigione",
+        "delle antiche case di cura",
+        "dei templi del sonno dove i malati giacevano in visione",
+        "che risale tanto indietro quanto la prima benda pulita",
+        "che si tramanda senza interruzioni nelle case dei guaritori"
+      ],
+      "mechanism": [
+        "risaldando ferita e osso fino a farli interi",
+        "estraendo la malattia dai vivi",
+        "restituendo vigore con una mano posata",
+        "respingendo indietro una ferita mortale",
+        "tirando fuori la febbre attraverso un palmo posato",
+        "convincendo la carne lacerata a ricordare la propria forma",
+        "sigillando una ferita mortale prima che il respiro potesse andarsene"
+      ],
+      "attrib": [
+        "i sacerdoti guaritori degli antichi templi",
+        "le monache di Ildegarda di Bingen (1098-1179)",
+        "i medici dei misteri classici",
+        "le badesse guaritrici visionarie",
+        "i guaritori onirici dei templi del sonno",
+        "le badesse medico che annotavano ogni rimedio",
+        "i rammendatori da campo che lavorano a lume di lampada"
+      ]
+    },
+    "Augury": {
+      "art": [
+        "l'arte divinatoria",
+        "il mestiere dei presagi",
+        "la lettura del cielo",
+        "la profezia"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il computo dei giorni maya",
+        "degli aruspici etruschi",
+        "che si legge fin dai sacerdoti del calendario",
+        "che si affinò nel XVI secolo"
+      ],
+      "mechanism": [
+        "leggendo il destino nel conto tzolk'in dei giorni",
+        "scrutando oltre il velo del futuro",
+        "traendo i segni degli uccelli prima di ogni marcia",
+        "fissando un destino a partire dal suo giorno di nascita"
+      ],
+      "attrib": [
+        "i custodi dei giorni maya",
+        "gli aruspici etruschi e gli auguri romani",
+        "i lettori di Nostradamus (1503-1566)",
+        "i sacerdoti del calendario azteco del tonalpohualli"
+      ]
+    },
+    "Oneiromancy": {
+      "art": [
+        "la magia del sogno",
+        "la stregoneria del sonno",
+        "il mestiere delle visioni",
+        "il camminare nei sogni"
+      ],
+      "era": [
+        "delle capanne del sogno dei nativi americani",
+        "che si rifece dallo Squishing del 2003",
+        "che si setacciò attraverso il primo acchiappasogni",
+        "della ricerca visionaria delle Pianure"
+      ],
+      "mechanism": [
+        "scegliendo dentro un sogno gli incantesimi di ogni giorno",
+        "camminando nella mente addormentata e plasmandola",
+        "leggendo i desideri nascosti dell'anima",
+        "traendo potere dal paese del sonno"
+      ],
+      "attrib": [
+        "gli Ojibwe che intrecciarono i primi acchiappasogni",
+        "gli Irochesi che praticavano l'Ondinnonk",
+        "le capanne del sogno delle nazioni delle Pianure",
+        "i cercatori di visioni che digiunavano per ottenere la vista"
+      ]
+    },
+    "Technomagical": {
+      "art": [
+        "la taumatecnica",
+        "la stregoneria dei circuiti",
+        "la magia dei congegni",
+        "gli arcani cablati",
+        "il lavoro di circuito rituale",
+        "il microchip santificato",
+        "il grimorio cablato"
+      ],
+      "era": [
+        "di un'epoca non anteriore all'era dei satelliti",
+        "che si abbozzò dopo la guerra delle Falkland del 1982",
+        "che nacque nelle officine invisibili di un'industria nuova",
+        "la più giovane di tutte le scuole",
+        "che si brevettò nelle officine del dopo-Falkland",
+        "di un'epoca non anteriore al satellite che quell'età mise in orbita",
+        "che si abbozzò dove il silicio incontrò per la prima volta il sigillo"
+      ],
+      "mechanism": [
+        "facendo condividere a incantesimo e silicio una sola corrente",
+        "trasformando un microchip in arma attraverso il rito",
+        "convertendo i grimori in hardware",
+        "fondendo gli arcani alla macchina",
+        "incidendo un incantesimo in una fetta di vetro drogato",
+        "facendo portare a una corrente un'opera lungo un filo",
+        "compilando un grimorio finché non girava come hardware"
+      ],
+      "attrib": [
+        "i tecnici della Esoteric Heavy Industries",
+        "i reparti di ricerca e sviluppo del mondo nuovo",
+        "i tauma-ingegneri che brevettano ogni prototipo",
+        "i tecnomanti dell'età successiva al 1982",
+        "i tauma-ingegneri della Esoteric Heavy Industries",
+        "i titolari dei brevetti dei laboratori del dopo-1982",
+        "i maghi dei circuiti che saldano seguendo un rito"
+      ]
+    },
+    "Economy": {
+      "art": [
+        "la magia del denaro",
+        "gli arcani mercantili",
+        "il rito del profitto",
+        "la stregoneria del mercato"
+      ],
+      "era": [
+        "giovane quanto i mercati del mondo nuovo",
+        "che nacque dopo lo Squishing del 2003",
+        "dell'età che monetizza gli anelli",
+        "di un'epoca non anteriore all'ultimo crollo"
+      ],
+      "mechanism": [
+        "monetizzando gli anelli temporali stessi",
+        "trasformando l'oro in fortuna maggiore",
+        "commerciando in ricordi e in ore come fossero valuta",
+        "accaparrandosi un mercato con mezzi innaturali"
+      ],
+      "attrib": [
+        "gli uomini del Collettivo Ipercapitalista",
+        "i mediatori che vendono fughe dagli anelli",
+        "i maghi contabili della nuova economia",
+        "gli adepti mercanti del Collettivo"
+      ]
+    },
+    "Mutation": {
+      "art": [
+        "la modellazione della carne",
+        "il mestiere della mutazione",
+        "il bio-rito",
+        "l'arte del riplasmare"
+      ],
+      "era": [
+        "impossibile prima del 2003",
+        "dei bio-laboratori post-Squishing",
+        "giovane quanto la Regola degli 80",
+        "che nacque quando la velocità divenne un modo di vivere"
+      ],
+      "mechanism": [
+        "facendo crescere ruote e braccia in più per prosperare sulla velocità",
+        "riplasmando a pagamento la carne consenziente",
+        "riscrivendo un corpo contro la sua natura",
+        "trasformando la carne al comando di una parola"
+      ],
+      "attrib": [
+        "i bio-laboratori del Collettivo Ipercapitalista",
+        "i mutilatori del post-Squishing",
+        "i chirurghi della carne del mondo nuovo",
+        "i trasformatori che resero vivibile la Regola degli 80"
+      ]
+    },
+    "Chronomancy": {
+      "art": [
+        "la magia del tempo",
+        "il mestiere degli anelli",
+        "la cronomanzia",
+        "l'arte che piega le ore",
+        "l'arte dei minuti rubati",
+        "il mestiere che piega gli anelli",
+        "il rito che tiene il passo"
+      ],
+      "era": [
+        "che nacque dagli orologi rotti dopo il 1999",
+        "dell'età degli anelli",
+        "impossibile prima che il Millennio bruciasse la tecnologia",
+        "che si cartografò da quando le ore divennero negoziabili",
+        "che si cartografò da quando il Millennio bruciò la tecnologia",
+        "dei mediatori dell'età degli anelli",
+        "di un'epoca non anteriore all'ora negoziabile"
+      ],
+      "mechanism": [
+        "accelerando gli alleati e rallentando gli avversari",
+        "piegando l'anello quotidiano della Regola degli 80",
+        "vendendo vie di fuga dagli anelli temporali",
+        "rubando minuti al flusso stesso",
+        "sfilando un minuto dalla giornata di un altro",
+        "tenendo il passo perché l'azzeramento non attecchisse",
+        "rallentando un avversario finché il suo colpo non arrivava troppo tardi"
+      ],
+      "attrib": [
+        "i maghi degli anelli della fine del Millennio",
+        "i rompiorologi del 1999",
+        "gli uomini del Collettivo, che ne bramano il segreto sopra ogni cosa",
+        "i cronomanti che commerciano in ore rubate",
+        "i rompiorologi che aggirarono la Regola degli 80",
+        "i mediatori di ore dei mercati dell'età degli anelli",
+        "i cronomanti del Collettivo che ne accaparrano il commercio"
+      ]
+    },
+    "PsychicAbilities": {
+      "art": [
+        "il potere della mente",
+        "l'arte psichica",
+        "il mestiere della volontà",
+        "la telepatia"
+      ],
+      "era": [
+        "che si studiò soltanto nel XX secolo",
+        "dei laboratori dell'era delle MTP",
+        "una scienza moderna della mente",
+        "giovane quanto la ricerca del mondo nuovo"
+      ],
+      "mechanism": [
+        "leggendo i pensieri e piegando le volontà",
+        "manipolando menti ed emozioni",
+        "colpendo un avversario attraverso il solo cranio",
+        "schermando una mente contro ogni intrusione"
+      ],
+      "attrib": [
+        "i laboratori che diedero il nome alle Malattie Trasmesse dal Pensiero",
+        "i ricercatori della mente del mondo nuovo",
+        "gli esaminatori che testano le reclute per il talento",
+        "gli adepti schermati di stagnola dell'età moderna"
+      ]
+    },
+    "AstralMagic": {
+      "art": [
+        "il viaggio fra stelle e vuoto",
+        "la stregoneria astrale",
+        "l'arte cosmica",
+        "la cavalcata delle linee di ley"
+      ],
+      "era": [
+        "che si cartografò solo dopo lo Squishing del 2003",
+        "impossibile prima del collasso dimensionale",
+        "di un'epoca non anteriore al cielo spezzato",
+        "del nuovo cosmo"
+      ],
+      "mechanism": [
+        "cartografando i Frammenti del Creato",
+        "cavalcando le linee di ley fra i mondi",
+        "percorrendo le strade astrali messe a nudo dal collasso",
+        "traendo potere dallo spazio fra le stelle"
+      ],
+      "attrib": [
+        "i viandanti che cavalcano le linee di ley",
+        "i veggenti mandati lungo le strade astrali",
+        "i cartografi di stelle del cielo spezzato",
+        "gli adepti cosmici del mondo nuovo"
+      ]
+    },
+    "VoidMagic": {
+      "art": [
+        "il mestiere del vuoto",
+        "l'arte della negazione",
+        "la stregoneria dell'abisso",
+        "il rito vacante"
+      ],
+      "era": [
+        "ignota finché lo Squishing non mise a nudo l'Abisso",
+        "dei luoghi vuoti",
+        "giovane quanto il collasso dimensionale",
+        "che si pescò dal vuoto post-Squishing"
+      ],
+      "mechanism": [
+        "attingendo al nulla ribollente fra i Frammenti",
+        "disfacendo un avversario con pura negazione",
+        "aprendo l'Abisso dove la fisica cede",
+        "rispondendo al vuoto con il vuoto"
+      ],
+      "attrib": [
+        "gli evocatori del vuoto che sfidano l'Abisso",
+        "i negatori dei luoghi vuoti",
+        "i pochi disposti anche solo a insegnarla",
+        "gli adepti dell'abisso del mondo spezzato"
+      ]
+    },
+    "ForbiddenMagic": {
+      "art": [
+        "l'opera proibita",
+        "la stregoneria nera",
+        "il rito proscritto",
+        "l'arte interdetta",
+        "l'opera sigillata",
+        "il rito che deforma le linee di ley",
+        "la stregoneria che si paga"
+      ],
+      "era": [
+        "sotto condanna in ogni epoca",
+        "fuorilegge dai tempi di Salomone",
+        "di una pericolosità che nessuna gilda vuole insegnare",
+        "che si brucia ovunque la si trovi",
+        "che si cancellò col fuoco da ogni registro in cui compare",
+        "sotto proscrizione da quando la prima gilda si diede delle regole",
+        "di un costo che nessuna epoca ha voluto sostenere apertamente"
+      ],
+      "mechanism": [
+        "deformando le linee di ley attorno a chi la pratica",
+        "comprando potere a un prezzo terribile",
+        "torcendo la realtà oltre quanto dovrebbe essere permesso",
+        "liberando ciò che sarebbe dovuto restare sigillato",
+        "aprendo uno squarcio dove le linee di ley avrebbero dovuto tenere",
+        "pagando con qualcosa che chi la pratica non può riavere",
+        "liberando una cosa che l'ultimo che la vincolò giurò sigillata"
+      ],
+      "attrib": [
+        "gli eredi di Aleister Crowley",
+        "i disperati che la cercano ancora",
+        "i maghi fuorilegge che ne negano l'esistenza",
+        "coloro che la Gilda dei Maghi bruciò per questo",
+        "gli adepti fuorilegge che te la negano in faccia",
+        "i pochi rovinati che ne pagarono il prezzo e sopravvissero",
+        "coloro cui la Gilda dei Maghi dà la caccia fra le righe"
+      ]
+    },
+    "Necromancy": {
+      "art": [
+        "la magia delle tombe",
+        "la stregoneria della morte",
+        "il rito mortuario",
+        "l'arte del risollevare",
+        "il sussurro del sepolcro",
+        "l'arte dell'ultimo respiro",
+        "il mestiere che schiera i cadaveri"
+      ],
+      "era": [
+        "che risale tanto indietro quanto la sepoltura stessa",
+        "degli antichi culti della morte",
+        "che si praticava prima di Roma",
+        "sotto condanna in ogni epoca e in uso in ogni epoca",
+        "che si praticava prima che la prima città cingesse di mura i propri morti",
+        "dei culti tumulari che lo Squishing ha ridestato",
+        "che risale tanto indietro quanto la paura di un corpo insepolto"
+      ],
+      "mechanism": [
+        "risollevando i morti e vincolandoli al servizio",
+        "traendo potere dalla strada per l'oltretomba",
+        "rubando l'ultimo respiro ai morenti",
+        "percorrendo a ritroso la strada dai nove strati",
+        "risalendo controcorrente la strada dai nove strati",
+        "afferrando l'ultimo respiro prima che potesse salire",
+        "legando carne fredda a una volontà calda e presa in prestito"
+      ],
+      "attrib": [
+        "gli eredi della strega di Endor",
+        "gli allievi della strega tessala Erictho",
+        "i culti mortuari della profonda antichità",
+        "i sacerdoti della morte del Mictlan azteco",
+        "le streghe dei tumuli che trafficano con i sepolti",
+        "i sacerdoti della morte del Mictlan, quelli della strada invertita",
+        "gli evocatori di tombe che non rispondono a nessun padrone vivo"
+      ]
+    },
+    "Convokation": {
+      "art": [
+        "l'arte dell'evocatore",
+        "la congiurazione",
+        "il rito di convocazione",
+        "il mestiere del richiamo"
+      ],
+      "era": [
+        "che si fa risalire a Salomone (c.960 a.C.)",
+        "che si riforgiò nello Squishing del 2003",
+        "della Piccola Chiave e del collasso dimensionale",
+        "che si fece carne soltanto dopo il 2003"
+      ],
+      "mechanism": [
+        "legando i settantadue spiriti con un anello sigillato",
+        "chiamando fuori in carne e ossa le cose vincolate",
+        "convocando alleati dalle dimensioni schiacciate",
+        "tracciando un cerchio di gesso per evocare carne e respiro"
+      ],
+      "attrib": [
+        "re Salomone e il suo vaso di bronzo",
+        "i congiuratori che rielaborarono il rito dopo lo Squishing",
+        "i tracciatori di cerchi del mondo nuovo",
+        "coloro che chiamarono Varlenia dal nulla"
+      ]
+    },
+    "MetaMagic": {
+      "art": [
+        "la metamagia",
+        "l'incantesimo sugli incantesimi",
+        "l'arte della scissione dell'anima",
+        "l'opera superiore"
+      ],
+      "era": [
+        "di un'epoca posteriore al nuovo millennio",
+        "in mano a pochi fin dallo Squishing",
+        "che nacque dal rituale di separazione dell'anima",
+        "di un'epoca non anteriore al 2003"
+      ],
+      "mechanism": [
+        "sostituendo ogni componente fisica con pura immaginazione",
+        "moltiplicando meta-proprietà in opere del tutto nuove",
+        "riplasmando un incantesimo mentre lo si lancia",
+        "piegando le regole cui ogni altra magia deve obbedire"
+      ],
+      "attrib": [
+        "gli eredi di Aleister Crowley",
+        "i pochi che sopportarono il rito della scissione dell'anima",
+        "i meta-maghi dell'età post-Squishing",
+        "coloro che separarono l'anima dal corpo e sopravvissero"
+      ]
+    },
+    "MartialArts": {
+      "art": [
+        "l'arte della mano nuda",
+        "gli stili di presa",
+        "il combattimento disarmato",
+        "le forme di combattimento",
+        "le forme di proiezione e leva",
+        "l'esercizio a mano nuda",
+        "l'arte del corpo a corpo stretto"
+      ],
+      "era": [
+        "la più antica arte disarmata dell'umanità",
+        "che si scolpì nelle tombe di Beni Hasan già nel 2000 a.C.",
+        "di un'epoca anteriore all'acciaio",
+        "che si esercita fin dall'età del bronzo",
+        "che si scolpì sulle pareti tombali prima della prima spada",
+        "che si esercita nei monasteri guerrieri di ogni epoca",
+        "di un'epoca anteriore agli eserciti che l'hanno presa in prestito"
+      ],
+      "mechanism": [
+        "colpendo con precisione e forma disciplinate",
+        "proiettando un avversario con le prese più antiche che si conoscano",
+        "rompendo una guardia a mani nude",
+        "rispondendo a una lama con la mano vuota",
+        "trasformando il peso stesso dell'avversario nella sua caduta",
+        "entrando dentro la portata di una lama per chiuderla a mani nude",
+        "spezzando una presa che avrebbe dovuto spezzare il braccio"
+      ],
+      "attrib": [
+        "i lottatori di Sumer e d'Egitto",
+        "i pancraziasti delle Olimpiadi del 648 a.C.",
+        "i monaci guerrieri che conservarono le forme",
+        "i maestri che classificavano gli allievi su questo soltanto",
+        "i combattenti di tempio che si classificavano solo sulle forme",
+        "gli scultori di tombe che lasciarono le prese nella pietra",
+        "i lottatori da arena dei vecchi giochi di festa"
+      ]
+    },
+    "Swordsmanship": {
+      "art": [
+        "il lavoro di lama",
+        "il mestiere della spada",
+        "la scherma",
+        "la via della lama",
+        "il lavoro di mezza spada",
+        "il mestiere della guardia avvolgente",
+        "la disciplina del passaggio unico"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il bronzo",
+        "dalle prime vere spade del 3300 a.C. circa",
+        "che si codificò nei fechtbücher del XIV secolo",
+        "che si esercita in ogni esercito da allora",
+        "che si mise per iscritto nei manuali di scherma medievali",
+        "che risale tanto indietro quanto la prima lama di bronzo fuso",
+        "che si affinò in ogni duello dai tempi delle scuole di guerra"
+      ],
+      "mechanism": [
+        "colpendo con le guardie e i fendenti più raffinati",
+        "deviando una lama per un margine di un capello",
+        "leggendo un duello con tre mosse di anticipo",
+        "chiudendo uno scontro in un solo passaggio",
+        "leggendo l'apertura tre mosse prima che si mostri",
+        "insinuando la punta oltre una guardia più forte",
+        "chiudendo il passaggio prima che l'avversario si fosse impegnato"
+      ],
+      "attrib": [
+        "i fabbri di Arslantepe che forgiarono le prime spade",
+        "i duellanti dell'età del bronzo",
+        "i maestri di scherma medievali",
+        "i maestri di scherma che la misero nei libri",
+        "i maestri di scherma che inchiostrarono le tavole delle guardie",
+        "i duellanti dell'età del bronzo delle prime vere spade",
+        "le scuole di scherma che la esercitano dall'alba al tramonto"
+      ]
+    },
+    "Tactical": {
+      "art": [
+        "il mestiere del campo di battaglia",
+        "l'arte del generale",
+        "la tattica di guerra",
+        "il comando sul campo"
+      ],
+      "era": [
+        "che risale tanto indietro quanto la guerra organizzata",
+        "che si affinò in ogni campagna dall'età del bronzo",
+        "che si tramanda dalle scuole di guerra classiche",
+        "che si affilò in ogni stato maggiore da allora"
+      ],
+      "mechanism": [
+        "rivolgendo terreno e tempismo contro un nemico",
+        "leggendo una battaglia prima che sia ingaggiata",
+        "strappando la vittoria a una linea più debole",
+        "legando una compagnia in un'unica arma in movimento"
+      ],
+      "attrib": [
+        "i capitani di falange dell'antichità",
+        "le scuole di guerra classiche",
+        "i marescialli che ci scommisero dei regni",
+        "gli ufficiali di stato maggiore che la esercitano ancora"
+      ]
+    },
+    "Leadership": {
+      "art": [
+        "l'arte del comando",
+        "il mestiere del capitano",
+        "l'arte di radunare le truppe",
+        "la disciplina di chi guida"
+      ],
+      "era": [
+        "che risale tanto indietro quanto la prima banda di guerra",
+        "che risale tanto indietro quanto la regalità",
+        "che si affinò in ogni epoca da allora",
+        "che passa di signore della guerra in signore della guerra"
+      ],
+      "mechanism": [
+        "radunando gli alleati per una carica disperata",
+        "legando un esercito a un solo vessillo",
+        "tenendo ferma una linea che sarebbe dovuta cedere",
+        "traendo dai soldati più di quanto possiedano"
+      ],
+      "attrib": [
+        "i primi capi di guerra",
+        "i capitani che legarono nazioni a un vessillo",
+        "gli ufficiali che venivano misurati su questo",
+        "i signori della guerra che governarono con questo soltanto"
+      ]
+    },
+    "Dominion": {
+      "art": [
+        "la scienza del dominio",
+        "il mestiere del conquistatore",
+        "l'arte del governare e sottomettere",
+        "la padronanza dei troni"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il primo impero",
+        "che risale a non prima dell'ultimo colpo di stato",
+        "che si apprende da ogni trono rovesciato",
+        "di un'antichità spietata"
+      ],
+      "mechanism": [
+        "schiacciando un popolo intero sotto una sola volontà",
+        "piegando la società a una sola influenza",
+        "tenendo una nazione con la paura e col favore",
+        "rivoltando una corte contro se stessa"
+      ],
+      "attrib": [
+        "i primi costruttori di imperi",
+        "i tiranni di ogni trono caduto",
+        "i cospiratori che fanno cadere i re",
+        "coloro che tennero le nazioni sotto il tallone"
+      ]
+    },
+    "Firearms": {
+      "art": [
+        "il mestiere delle armi da fuoco",
+        "polvere e pallottola",
+        "il tiro di precisione",
+        "l'esercizio con la lancia da fuoco",
+        "l'esercizio con la bombarda a mano",
+        "l'arte del fumo e del colpo",
+        "il lavoro di canna precisa"
+      ],
+      "era": [
+        "che si schierò per la prima volta nella Cina Song del X secolo",
+        "che giunse in Europa entro il XIV secolo",
+        "al comando del campo dall'Ottocento",
+        "che risale tanto indietro quanto la polvere da sparo",
+        "che si scocca per la prima volta nella Cina della dinastia Song",
+        "al comando del campo fin dall'età della polvere",
+        "che si porta a occidente dai bombardieri a mano"
+      ],
+      "mechanism": [
+        "colpendo da lontano con precisione letale",
+        "scoccando lance da fuoco e bombarde a mano",
+        "tenendo dritta una canna attraverso il fumo",
+        "piazzando un colpo dove l'occhio arriva a malapena",
+        "tenendo dritta la canna attraverso il fumo nero",
+        "piazzando una palla dove l'occhio riesce a stento a fermarsi",
+        "dosando la carica perché la lancia da fuoco non si sporcasse mai"
+      ],
+      "attrib": [
+        "gli artiglieri della dinastia Song",
+        "i bombardieri a mano dell'Europa medievale",
+        "i tiratori scelti pagati in argento",
+        "gli armaioli che tengono affilate le esercitazioni",
+        "gli artiglieri Song che per primi fecero parlare la polvere",
+        "i tiratori a pagamento che sparano per argento",
+        "gli armaioli che tengono oneste le vecchie esercitazioni"
+      ]
+    },
+    "Roguery": {
+      "art": [
+        "il mestiere del ladro",
+        "la furfanteria",
+        "l'arte dell'ombra",
+        "l'arte del tagliaborse",
+        "il lavoro dal secondo piano",
+        "il mestiere del ricettatore",
+        "l'arte dell'uscita silenziosa"
+      ],
+      "era": [
+        "che risale tanto indietro quanto la prima porta chiusa a chiave",
+        "che si sussurra nei vicoli di ogni epoca",
+        "che risale tanto indietro quanto la ricchezza che vale la pena rubare",
+        "del gergo dei ladri",
+        "che risale tanto indietro quanto la prima cosa che valesse la pena chiudere a chiave",
+        "che si sussurra nel gergo di ogni età disonesta",
+        "che si tiene in vita ovunque la ricchezza superi le proprie guardie"
+      ],
+      "mechanism": [
+        "colpendo dall'ombra con astuzia",
+        "ingannando, rubando e pugnalando alle spalle",
+        "forzando una serratura non meno di una tasca",
+        "svanendo prima che scatti l'allarme",
+        "forzando una serratura nel tempo di un battito di ciglia di una guardia",
+        "leggendo le tasche di un bersaglio prima che ne senta la mancanza",
+        "svanendo in un vicolo prima che si levi il grido"
+      ],
+      "attrib": [
+        "i tagliaborse delle vecchie città",
+        "le gilde dell'ombra di ogni epoca",
+        "i ricettatori che sussurrano il gergo",
+        "i maestri ladri pagati per insegnare",
+        "i maestri ladri che si fanno assumere per insegnare",
+        "i ricettatori che tengono il gergo e i libri contabili",
+        "le gilde dell'ombra dei quartieri storti"
+      ]
+    },
+    "Performance": {
+      "art": [
+        "il mestiere del bardo",
+        "l'arte dell'interprete",
+        "l'arte della scena",
+        "l'abilità del trovatore"
+      ],
+      "era": [
+        "dalle corti medievali",
+        "che risale tanto indietro quanto il primo racconto attorno al fuoco",
+        "che si tramanda dai commedianti girovaghi",
+        "che si canta in ogni corte e in ogni taverna"
+      ],
+      "mechanism": [
+        "smuovendo folle e re allo stesso modo",
+        "conquistando un'intera sala con una voce",
+        "avvincendo e influenzando attraverso l'arte",
+        "rivoltando un umore con un solo verso"
+      ],
+      "attrib": [
+        "i menestrelli delle corti medievali",
+        "i commedianti girovaghi di un tempo",
+        "i trovatori che si nutrivano di applausi",
+        "i maestri di scena che smuovevano le città"
+      ]
+    },
+    "Vocation": {
+      "art": [
+        "un mestiere",
+        "l'onesta vocazione",
+        "la padronanza di tutti i giorni",
+        "il mestiere di gilda"
+      ],
+      "era": [
+        "dell'età delle gilde",
+        "che si insegna da maestro ad apprendista",
+        "che si tramanda lungo le linee di gilda",
+        "che si apprende per la via lunga, negli anni"
+      ],
+      "mechanism": [
+        "applicando il mestiere tanto alla battaglia quanto al lavoro",
+        "padroneggiando i mestieri della vita quotidiana",
+        "trasformando materia grezza in lavoro finito",
+        "tenendo una bottega fedele agli antichi contratti"
+      ],
+      "attrib": [
+        "i maestri di gilda dei mestieri medievali",
+        "gli apprendisti che si guadagnarono gli attrezzi",
+        "gli artigiani delle vecchie botteghe",
+        "coloro che onorano gli antichi contratti"
+      ]
+    },
+    "Cooking": {
+      "art": [
+        "il mestiere del focolare",
+        "l'arte del cuoco",
+        "il sapere di cucina",
+        "la magia del pasto"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il fuoco da cucina",
+        "che si perfezionò in diecimila cene",
+        "dai primi focolari stanziali",
+        "che si tramanda nelle cucine delle epoche"
+      ],
+      "mechanism": [
+        "combinando ingredienti per un effetto benefico",
+        "restituendo corpo e spirito a tavola",
+        "cavando virtù da un cibo semplice",
+        "infondendo forza in chi è stremato"
+      ],
+      "attrib": [
+        "i cuochi da focolare dei primi insediamenti",
+        "i maestri di cucina delle antiche sale",
+        "i cuochi che sfamarono intere città",
+        "coloro che conservarono le vecchie ricette"
+      ]
+    },
+    "Fusion": {
+      "art": [
+        "l'opera fusa",
+        "l'arte intrecciata",
+        "il rito composito",
+        "l'incantesimo congiunto"
+      ],
+      "era": [
+        "che soltanto lo Squishing rese possibile",
+        "della mescolanza successiva al 2003",
+        "che nacque quando incantesimi separati poterono unirsi",
+        "giovane quanto il mondo spezzato"
+      ],
+      "mechanism": [
+        "intrecciando due discipline in un solo gesto",
+        "lasciando che un'arte porti le proprietà di un'altra",
+        "saldando filo su filo in un intero nuovo",
+        "moltiplicando due effetti in un terzo"
+      ],
+      "attrib": [
+        "i meta-maghi che per primi saldarono insieme delle arti",
+        "i fusori del post-Squishing",
+        "coloro che intrecciarono i fili",
+        "gli adepti che di due incantesimi ne fecero uno"
+      ]
+    },
+    "WpLight": {
+      "art": [
+        "il coltello da combattimento",
+        "il lavoro di stiletto",
+        "il pugnale da lancio",
+        "la lama da stivale",
+        "il pugnale da parata",
+        "la lama corta e rapida"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il primo filo di selce",
+        "che si porta da quando l'uomo imparò a diffidare del prossimo",
+        "un mestiere che lo Squishing non ha toccato",
+        "non più giovane dei traffici di vicolo",
+        "che si tramanda in ogni età di lotta al coltello",
+        "che si sguainò per la prima volta nelle guerre goblin"
+      ],
+      "mechanism": [
+        "affilandosi a punta d'ago e non smussandosi due volte",
+        "ripiegandosi sottile su un fuoco di carbone basso per avere elasticità",
+        "bilanciandosi per stare giusta nella mano che lancia",
+        "affilandosi su una cote consumata fino a scavarsi",
+        "ribattendosi attraverso il codolo per la rissa, non per la mostra",
+        "affilandosi finché non tagliava in due un capello in caduta"
+      ],
+      "attrib": [
+        "i coltellinai di vicolo delle città-fornace",
+        "i tagliagole che vivevano di estrazione rapida",
+        "i corrieri che ne tenevano uno nello stivale",
+        "i coltellinai di gilda che punzonano le lame piccole",
+        "i duellanti che non si fidarono mai di una portata maggiore",
+        "le genti della strada che non portavano molto altro"
+      ]
+    },
+    "WpSword": {
+      "art": [
+        "la sciabola da duello",
+        "la spada d'arme",
+        "la sciabola d'arrembaggio",
+        "lo stocco da punta",
+        "il lavoro di lama lunga",
+        "la lama da cavalleria"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il bronzo stesso",
+        "che si esercita nelle scuole di guerra prima che le mura cadessero",
+        "un mestiere di un'epoca anteriore alle città-fornace",
+        "che si brandì per la prima volta nelle guerre goblin",
+        "che si tramanda a ogni esercito dall'età del bronzo",
+        "non più giovane del primo vero filo tagliente"
+      ],
+      "mechanism": [
+        "ripiegandosi sul fuoco di carbone finché il filo non tenne",
+        "temprandosi in olio e rinvenendosi a un grado giusto",
+        "martellandosi piatta e sgusciandosi per un fendente più leggero",
+        "ribattendosi al guardamano da mani che l'avevano fatto mille volte",
+        "rastremandosi verso la punta perché fosse questa a guidare il taglio",
+        "provandosi contro il palo prima di lasciare la fucina"
+      ],
+      "attrib": [
+        "le gilde delle armi delle città-fornace",
+        "gli spadai che firmavano il ricasso",
+        "i duellanti che ne vivevano",
+        "le scuole di guerra che classificavano un allievo dalla lama",
+        "gli artefici di lame delle vecchie vie dei fabbri",
+        "gli ufficiali che la portavano come distintivo di grado"
+      ]
+    },
+    "WpHeavy": {
+      "art": [
+        "il maglio da guerra",
+        "la mazza ferrata a lame",
+        "il martello che frantuma",
+        "la clava cerchiata di ferro",
+        "il piccone da cavaliere",
+        "il lavoro con le armi contundenti"
+      ],
+      "era": [
+        "di un'epoca anteriore al primo bronzo fuso",
+        "che si brandì da quando le armature resero inutili i fili taglienti",
+        "un mestiere che lo Squishing ha lasciato in pace",
+        "non più giovane dei campi d'assedio",
+        "che si tramanda in ogni età di armature pesanti",
+        "che si alzò per la prima volta nelle guerre goblin"
+      ],
+      "mechanism": [
+        "colandosi piena e spinandosi a un manico stagionato",
+        "forgiandosi con lame capaci di mordere attraverso la maglia",
+        "appesantendosi in testa perché fosse il colpo a fare il lavoro",
+        "cerchiandosi di ferro dove un legno più scarso si sarebbe spaccato",
+        "bilanciandosi per cadere dritta sotto la propria massa",
+        "indurendosi sulla faccia di percussione e restando dolce all'interno"
+      ],
+      "attrib": [
+        "le gilde delle armi che colano le teste pesanti",
+        "gli equipaggi d'assedio che non avevano bisogno di alcun filo",
+        "i fabbri delle fonderie delle città-fornace",
+        "i guastatori che sfondavano porte e crani allo stesso modo",
+        "le truppe pesanti che disprezzavano la finezza",
+        "i fabbricanti che vendevano il peso a libbra"
+      ]
+    },
+    "WpAxe": {
+      "art": [
+        "l'ascia d'arrembaggio",
+        "l'ascia da guerra barbuta",
+        "l'accetta da una mano",
+        "la grande mannaia",
+        "l'ascia da lancio",
+        "la lama da abbattimento"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il primo ceppo spaccato",
+        "che si porta da quando l'ascia era insieme attrezzo e arma",
+        "un mestiere di un'epoca anteriore a qualsiasi cinta muraria",
+        "non più giovane dei campi dei boscaioli",
+        "che si tramanda lungo la strada fin dalle guerre goblin",
+        "che si lancia per la prima volta nelle foreste profonde"
+      ],
+      "mechanism": [
+        "saldandosi a forgia con un tagliente d'acciaio duro incastrato nel ferro dolce",
+        "portando la barba bassa per agganciare e tirare via uno scudo",
+        "calzandosi su un manico a fibra dritta e bloccandosi a cuneo",
+        "affilandosi a filo convesso che non si scheggiasse",
+        "bilanciandosi perché la testa guidasse il lancio giro dopo giro",
+        "temprandosi al tagliente e restando tenace all'occhio"
+      ],
+      "attrib": [
+        "i fabbri d'asce delle strade del legname",
+        "gli equipaggi d'arrembaggio del commercio fluviale",
+        "le gilde delle armi che saldano a forgia i taglienti",
+        "i taglialegna che combattevano con la lama da abbattimento",
+        "i predoni che lanciavano prima di venire al corpo a corpo",
+        "le genti della strada che non viaggiano mai senza"
+      ]
+    },
+    "WpWhip": {
+      "art": [
+        "la frusta intrecciata",
+        "il lavoro con catena e mazzafrusto",
+        "la catena a meteora",
+        "lo scudiscio del mandriano",
+        "il mazzafrusto zavorrato",
+        "la sferza che si avvolge"
+      ],
+      "era": [
+        "che risale tanto indietro quanto le mandrie che l'uomo conduceva",
+        "che si esercita da quando i mandriani impararono a colpire da lontano",
+        "un mestiere di un'epoca anteriore alle città-fornace",
+        "che si tramanda lungo ogni strada dalle guerre goblin",
+        "non più giovane delle piste del bestiame",
+        "che si affinò in ogni guerra a cui mancava una portata maggiore"
+      ],
+      "mechanism": [
+        "intrecciandosi da cuoio conciato attorno a un'anima rastremata",
+        "appesantendosi in punta perché lo schiocco arrivasse giusto",
+        "concatenandosi anello su anello e girando su una ralla all'impugnatura",
+        "esercitandosi nel polso finché la spira non obbediva",
+        "annodandosi attraverso un manico d'osso da una mano paziente",
+        "roteando in una figura che rendeva illeggibile il colpo"
+      ],
+      "attrib": [
+        "i mandriani che colpivano bestiame e uomini allo stesso modo",
+        "i maestri di mazzafrusto delle scuole di guerra",
+        "le genti della strada che tenevano onesta la distanza",
+        "gli intrecciatori di fruste delle città lungo le piste",
+        "i combattenti da fossa che preferivano avvolgere e tirare",
+        "le genti erranti che insegnavano la spira per denaro"
+      ]
+    },
+    "WpStaff": {
+      "art": [
+        "il bastone incanalatore",
+        "la verga del mago",
+        "la bacchetta di ley",
+        "lo scettro d'ufficio",
+        "il bordone focalizzatore",
+        "la verga incisa"
+      ],
+      "era": [
+        "di un'epoca anteriore al primo incantesimo scritto",
+        "che si conserva da quando il potere ebbe bisogno di una forma in cui scorrere",
+        "un mestiere che lo Squishing non ha fatto che affinare",
+        "non più giovane delle scuole delle linee di ley",
+        "che si tramanda dalle antiche sale dei grimori",
+        "che si porta per la prima volta prima delle mura di qualsiasi città"
+      ],
+      "mechanism": [
+        "portando al centro un filo di rame per condurre la corrente di ley",
+        "terminando in una pietra capace di trattenere una carica",
+        "incidendosi lungo la fibra con figure che correvano dritte",
+        "stagionandosi per anni prima di incanalare alcunché",
+        "cerchiandosi d'argento al puntale per scaricare a terra il flusso",
+        "intagliandosi da un albero colpito che aveva bevuto la ley"
+      ],
+      "attrib": [
+        "gli artefici di verghe delle antiche sale dei grimori",
+        "gli adepti delle linee di ley che firmavano ogni bordone",
+        "i maghi di gilda che insegnavano l'incanalamento",
+        "i fabbricanti che leggevano il legno per posarvi il filo",
+        "i veggenti che lo portavano come segno del proprio mestiere",
+        "i custodi di reliquie che rimontano le vecchie pietre"
+      ]
+    },
+    "WpBow": {
+      "art": [
+        "l'arco lungo",
+        "l'arco di corno e tendine",
+        "la balestra da caccia",
+        "l'arco ricurvo",
+        "la fionda da guerra",
+        "l'arco da appostamento"
+      ],
+      "era": [
+        "all'origine di tutte le armi da lontano",
+        "che si scocca da quando i primi cacciatori alimentarono il fuoco",
+        "un mestiere di un'epoca anteriore all'aratro",
+        "non più giovane delle cacce nella foresta profonda",
+        "che si tramanda da quando l'uomo uccide a distanza",
+        "che si esercita in ogni età selvaggia dal tempo dei ghiacci"
+      ],
+      "mechanism": [
+        "rinforzandola di tendine sul dorso e di corno sul ventre per la trazione",
+        "sgrossandola lentamente perché entrambi i flettenti piegassero uguali",
+        "incordandola con filo cerato che non si allungasse",
+        "stagionando per anni un fusto diritto di tasso",
+        "caricandola a cricchetto e bloccandola perché anche un braccio debole reggesse la piena trazione",
+        "impennando e incoccando con mani che cacciavano per mangiare"
+      ],
+      "attrib": [
+        "gli arcai dei campi della foresta profonda",
+        "i cacciatori che leggevano le tracce e stancavano la preda",
+        "le genti selvatiche che scoccavano prima di essere viste",
+        "gli impennatori che tenevano dritte le aste",
+        "i maestri di pista che sfamavano con questo un intero campo",
+        "i cacciatori di palude che richiamavano gli uccelli con un fischio"
+      ]
+    },
+    "WpProjectile": {
+      "art": [
+        "il ferrovecchio da lancio",
+        "il lavoro di fionda e pietra",
+        "l'ordigno improvvisato",
+        "il rottame scagliato",
+        "il tubo e bullone",
+        "il peso lanciato"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il primo sasso scagliato",
+        "che si porta da quando l'uomo non aveva di meglio da lanciare",
+        "un mestiere che lo Squishing ha riempito di rottami nuovi",
+        "non più giovane dei raccoglitori di macerie",
+        "che si tramanda ovunque finissero le armi vere",
+        "che si scaglia per la prima volta nelle guerre goblin"
+      ],
+      "mechanism": [
+        "legandosi insieme con rottami di strada capitati a tiro",
+        "appesantendosi a un'estremità per volare di punta",
+        "riempiendosi e innescandosi da una mano nervosa ma esperta",
+        "avvolgendosi di filo finché non reggeva per un buon lancio",
+        "bilanciandosi a sensazione contro un muro",
+        "scagliandosi da una fionda ricavata da un nastro trasportatore morto"
+      ],
+      "attrib": [
+        "i raccoglitori di macerie che si armavano coi relitti",
+        "i lanciatori di rottami dei campi lungo la strada",
+        "i goblin che tornarono alla pietra e alla fionda",
+        "i disperati che combattevano con quel che c'era intorno",
+        "gli stagnini che innescavano una bomba a pagamento",
+        "le genti della strada, cui le macerie non finivano mai"
+      ]
+    },
+    "WpGun": {
+      "art": [
+        "il lavoro col fucile da trincea",
+        "la pistola d'ordinanza",
+        "il fucile a otturatore",
+        "la carabina di recupero",
+        "il calibro a canne mozze",
+        "polvere e pallottola"
+      ],
+      "era": [
+        "di un'epoca non anteriore alle città-fornace",
+        "che si schierò da quando la polvere dominò il campo aperto",
+        "un mestiere che lo Squishing ha soffocato di fabbriche morte",
+        "non più giovane dell'ultima catena di montaggio funzionante",
+        "che si tramanda lungo la strada dai campi di guerra",
+        "giovane accanto alla lama che ha sostituito"
+      ],
+      "mechanism": [
+        "fresandosi su una catena di montaggio morta e senza mai un collaudo",
+        "rialesandosi a mano e regolandosi a sensazione",
+        "alesandosi dritta e brunendosi contro l'umidità della strada",
+        "raffazzonandosi da tre armi rotte in una che sparava",
+        "caricandosi con pallottole colate in uno stampo lungo la strada",
+        "tenendosi in funzione con saliva, filo e fede testarda"
+      ],
+      "attrib": [
+        "gli armaioli di vicolo",
+        "gli equipaggi da trincea che con questo svuotavano una stanza",
+        "i convogli della strada che si fidavano del piombo più che dell'acciaio",
+        "gli armaioli che saccheggiano le fabbriche morte",
+        "i tiratori pagati in argento e munizioni",
+        "i fabbricanti che si colano le palle dai contrappesi delle ruote"
+      ]
+    },
+    "WpClaw": {
+      "art": [
+        "gli artigli di latta",
+        "l'artiglio di bestia",
+        "l'uncino da nocche",
+        "l'artiglio di tigre",
+        "il rampone dello sciacallo",
+        "la lama che squarcia"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il primo osso appuntito",
+        "che si indossa da quando l'uomo scimmiottò le bestie che lo uccidevano",
+        "un mestiere che lo Squishing ha rivestito di rottami freschi",
+        "non più giovane dei combattimenti da fossa",
+        "che si tramanda dove una lama costava troppo",
+        "che si usa per la prima volta nelle terre selvagge profonde"
+      ],
+      "mechanism": [
+        "ritagliandosi dal metallo delle lattine e legandosi alle nocche",
+        "calzandosi sulle dita perché fosse il pugno a spingere",
+        "affilandosi dall'artiglio stesso di una bestia e legandosi addosso",
+        "ribattendosi a un bracciale di cuoio da un teppista paziente",
+        "curvandosi per agganciare e lacerare nel ritrarsi",
+        "assottigliandosi per scivolare fra le costole"
+      ],
+      "attrib": [
+        "i combattenti da fossa che lottavano come animali",
+        "i raccattarottami che armavano la mano nuda",
+        "i culti delle bestie che portavano l'artiglio come parentela",
+        "i teppisti dei vicoli delle città lungo le piste",
+        "gli sciacalli che di una lattina facevano un'arma",
+        "le genti selvatiche che conservarono le antiche forme del graffio"
+      ]
+    },
+    "WpGlove": {
+      "art": [
+        "il tirapugni",
+        "il guanto d'arme",
+        "il lavoro con le fasce alle mani",
+        "il guanto zavorrato",
+        "il ferro da pugno",
+        "il cesto da percussione"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il pugno chiuso",
+        "che si esercita fin dai primi ring a mani nude",
+        "un mestiere di un'epoca anteriore a qualsiasi lama forgiata",
+        "non più giovane delle fosse dei combattimenti",
+        "che si tramanda in ogni età disarmata dal tempo dei ghiacci",
+        "che si scolpì sulle vecchie pareti tombali insieme ai lottatori"
+      ],
+      "mechanism": [
+        "colandosi su misura del pugno e arrotondandosi nei punti d'usura",
+        "fasciandosi stretto sulle nocche da una mano esperta",
+        "piastrandosi sul dorso per deviare una lama e piazzare un colpo",
+        "appesantendosi nel palmo per raddoppiare il colpo",
+        "cucendosi con cordino e armandosi di una barra nascosta",
+        "esercitandosi nel polso finché la guardia non diventava seconda natura"
+      ],
+      "attrib": [
+        "i maestri a mani nude delle fosse dei combattimenti",
+        "i maestri delle scuole di guerra della mano vuota",
+        "i picchiatori che avvolgevano il ferro in un guanto",
+        "i fabbri di guanti d'arme delle gilde delle armi",
+        "i combattenti da ring che vivevano di pugni",
+        "i duri di strada che tenevano il tirapugni in tasca"
+      ]
+    },
+    "WpSpear": {
+      "art": [
+        "la lancia da guerra",
+        "la picca del fante",
+        "la lancia da cavalleria",
+        "lo spiedo da cinghiale",
+        "il lavoro con l'arma inastata",
+        "la giavellina da punta"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il bastone appuntito",
+        "che si esercita da quando il primo muro di scudi tenne",
+        "un mestiere di un'epoca anteriore alle città-fornace",
+        "non più giovane dei quadrati di picche",
+        "che si tramanda a ogni esercito dall'età del bronzo",
+        "che si abbassò per la prima volta nelle guerre goblin"
+      ],
+      "mechanism": [
+        "forgiandosi con una gorbia e ribattendosi a un'asta stagionata",
+        "portando alette sotto la punta per fermare una bestia in carica",
+        "affilandosi a lunga punta da spinta che non si piegasse",
+        "innestandosi a fondo nella gorbia perché la punta stesse dritta in affondo",
+        "cerchiandosi lungo l'asta contro un colpo di taglio",
+        "bilanciandosi perché un intero quadrato potesse abbassarla come un uomo solo"
+      ],
+      "attrib": [
+        "i fabbri di lance delle fucine delle città-fornace",
+        "i quadrati di picche che spezzarono ogni carica di cavalleria",
+        "gli equipaggi del muro di scudi che tenevano grazie alla portata",
+        "le gilde delle armi che innestavano le punte nelle gorbie",
+        "i cacciatori di cinghiali che fermavano la carica con le alette",
+        "i maestri d'arme che insegnavano al quadrato a muoversi come uno"
+      ]
+    },
+    "WpToy": {
+      "art": [
+        "la spada di gommapiuma",
+        "la pistola a freccette di plastica",
+        "la lama d'allenamento di legno",
+        "la mazza di novità",
+        "il martelletto che cigola",
+        "l'ascia da bomboniera"
+      ],
+      "era": [
+        "di un'epoca non anteriore all'ultima fiera del giocattolo",
+        "che si spedì da quando qualcuno decise che la guerra dovesse vendere",
+        "una cosa che lo Squishing non è riuscito a prendere sul serio",
+        "non più giovane del cesto delle liquidazioni",
+        "che si distribuì a ogni sagra dal collasso in poi",
+        "giovane quanto la cosa più economica sullo scaffale"
+      ],
+      "mechanism": [
+        "stampandosi a iniezione in un colore che nessun'arma dovrebbe avere",
+        "imbottendosi di gommapiuma e ricoprendosi di adesivi di avvertenza",
+        "incollandosi in un modo che non sopravviverà a un fendente",
+        "portando stampata una mascotte e un prezzo fatto per vendere",
+        "assemblandosi con pezzi che sferragliano se la scuoti",
+        "vendendosi in tre per blister e valendo assai meno"
+      ],
+      "attrib": [
+        "i venditori di giocattoli delle bancarelle di mercato",
+        "i produttori in serie che non ne hanno mai impugnata una vera",
+        "gli organizzatori di sagre che armarono i bambini",
+        "i venditori a sconto degli scaffali dell'era del collasso",
+        "i burloni che ne comprarono una cassa per ridere",
+        "i bottegai che giurano sia un vero affare"
+      ]
+    },
+    "WpHoly": {
+      "art": [
+        "la lama benedetta",
+        "l'arma consacrata",
+        "l'arma santificata",
+        "la spada reliquiario",
+        "la mazza turibolo",
+        "l'acciaio unto d'olio"
+      ],
+      "era": [
+        "che si consacrò prima che sorgessero le cattedrali",
+        "che si porta da quando i santi presero le armi",
+        "una grazia che lo Squishing non poté profanare",
+        "non più giovane della prima lama ordinata",
+        "che si tramanda dalle antiche fucine templari",
+        "che si benedisse in ogni epoca giusta da allora"
+      ],
+      "mechanism": [
+        "temprandola in acqua santa e pregandoci sopra all'incudine",
+        "incidendo un salmo lungo la sguscia",
+        "ungendola d'olio e incastonandovi una scheggia di reliquia",
+        "benedicendola con una mano posata prima che facesse sangue",
+        "forgiandola in giorno di festa e votandola a nessun uso impuro",
+        "consacrandola finché la corruzione non ne sopportò più il filo"
+      ],
+      "attrib": [
+        "i fabbri templari che forgiano nei giorni di festa",
+        "gli ordinati che la portano contro il buio",
+        "i santi che la santificarono di nuovo",
+        "i custodi dei reliquiari degli antichi santuari",
+        "gli armaioli di chiesa che benedicono ogni lama",
+        "i fedeli che si affidano alla grazia nell'acciaio"
+      ]
+    },
+    "WpCursed": {
+      "art": [
+        "la lama maledetta",
+        "l'arma corrosa dal vuoto",
+        "l'arma necrotica",
+        "l'acciaio forgiato dai demoni",
+        "il filo affamato",
+        "il ferro corrotto"
+      ],
+      "era": [
+        "fuorilegge dalla prima mano che ha rovinato",
+        "che si porta di nascosto attraverso ogni epoca che l'ha condannata",
+        "una cosa che lo Squishing ha lasciato filtrare",
+        "non più giovane dell'abisso da cui ha bevuto",
+        "che si brucia ovunque le gilde riuscissero a trovarla",
+        "di un'antichità e di una storture che nessun registro accoglie"
+      ],
+      "mechanism": [
+        "temprandosi nel sangue e restando a bere da chi la porta",
+        "portando inciso un nome che nessun fabbro pronuncerebbe ad alta voce",
+        "forgiandosi dove le linee di ley correvano nere e storte",
+        "legandosi a una fame che sopravvive a chi la impugna",
+        "temprandosi nel vuoto perché il filo non si smussi e non perdoni",
+        "sigillandosi con un rito che le gilde brucerebbero un paese per impedire"
+      ],
+      "attrib": [
+        "i fabbri fuorilegge che negano l'esistenza di quest'arte",
+        "gli evocatori del vuoto che la nutrirono dall'Abisso",
+        "i disperati che raccolsero ciò che non avrebbero dovuto",
+        "gli eredi di una fucina proscritta",
+        "i pochi che la Gilda dei Maghi bruciò per averla fatta",
+        "i culti dei petrodemoni che la benedicono al contrario"
+      ]
+    },
+    "WpFlame": {
+      "art": [
+        "la lama dalla lingua di fiamma",
+        "l'arma dal nucleo fuso",
+        "l'acciaio forgiato sulla brace",
+        "il tizzone ardente",
+        "il filo che ustiona",
+        "l'arma temprata nel fuoco"
+      ],
+      "era": [
+        "che si forgiò al focolare più caldo delle città-fornace",
+        "che si porta da quando l'uomo sposò la lama al fuoco",
+        "un mestiere che lo Squishing ha riacceso",
+        "non più giovane delle grandi fonderie",
+        "che si tramanda dai fabbri della brace",
+        "che si accese per la prima volta nelle guerre goblin"
+      ],
+      "mechanism": [
+        "temprandosi ancora incandescente perché un filo di calore non lasciasse mai l'acciaio",
+        "portando al centro un carbone che non si spegne",
+        "portando incise canalette che catturano e trattengono una fiamma",
+        "martellandosi a un calore bianco che pochi fabbri osano raggiungere",
+        "covando una brace che si desta quando si fa sangue",
+        "rinvenendosi nel fuoco d'olio perché il filo resti tiepido al tocco"
+      ],
+      "attrib": [
+        "i fabbri della brace delle grandi fonderie",
+        "i custodi del fuoco delle fucine delle città-fornace",
+        "i fabbricanti che temprano a un calore che uccide",
+        "le gilde delle armi che tengono il focolare più caldo",
+        "i fabbri di strada che covano un carbone in ogni lama",
+        "gli artefici della fiamma che firmano il proprio lavoro nella fuliggine"
+      ]
+    },
+    "WpFrost": {
+      "art": [
+        "la lama morsa dal gelo",
+        "l'arma glaciale",
+        "l'acciaio dal filo di brina",
+        "l'arma temprata nel ghiaccio",
+        "il tizzone d'inverno",
+        "il filo forgiato a freddo"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il ghiaccio che l'ha plasmata",
+        "che si porta fin dalle prime fucine d'inverno",
+        "un mestiere di un'epoca anteriore al riscaldarsi delle città-fornace",
+        "non più giovane dei campi sui ghiacciai",
+        "che si tramanda dai fabbri del freddo profondo",
+        "di un'epoca anteriore a qualsiasi disgelo raccontato"
+      ],
+      "mechanism": [
+        "temprandosi in acqua di disgelo finché l'acciaio non correva di un blu freddo",
+        "portando incise figure di brina che non si sciolgono mai del tutto",
+        "forgiandosi in un freddo così profondo che il metallo cedeva a stento",
+        "portando al centro un gelo che appanna l'aria vicino al filo",
+        "rinvenendosi sotto il ghiacciaio perché il suo freddo sopravviva al fabbro",
+        "martellandosi lentamente nel gelo micidiale dei campi profondi"
+      ],
+      "attrib": [
+        "i fabbri d'inverno dei campi sui ghiacciai",
+        "i maestri della fucina di ghiaccio del freddo profondo",
+        "i fabbricanti che temprano nell'acqua di ghiacciaio",
+        "gli antichi artefici del freddo di prima delle fornaci",
+        "i cacciatori del gelo che la portarono attraverso i ghiacci",
+        "i fabbri della brina che firmano in blu"
+      ]
+    },
+    "WpPetro": {
+      "art": [
+        "la lama imbrattata di catrame",
+        "l'arma forgiata nel petrolio",
+        "l'acciaio temprato nell'olio",
+        "il filo di porfirina",
+        "l'arma unta di greggio",
+        "il marchio del petrodemone"
+      ],
+      "era": [
+        "che si forgiò dove sangue, olio e linea di ley si incontrano",
+        "che si porta da quando il catrame istruì per la prima volta l'acciaio",
+        "una cosa che lo Squishing ha pompato su dal basso",
+        "non più giovane dei pozzi di petrolio profondo",
+        "che si tramanda lungo le strade delle torri nere",
+        "che risale tanto indietro quanto le cose che dormono nel greggio"
+      ],
+      "mechanism": [
+        "temprandosi in greggio nero che odora di monete di rame",
+        "portando incisi i fili di porfirina che legano l'olio al sangue",
+        "forgiandosi su una fiamma di pozzo che il fabbro nutriva di tributi",
+        "ungendosi di un catrame che dal filo non va più via",
+        "legandosi ai petrodemoni addormentati nelle profondità",
+        "temprandosi in un olio che rispose quando fu versato"
+      ],
+      "attrib": [
+        "i fabbri delle torri di trivellazione delle strade del petrolio nero",
+        "gli eredi di Enrico Mattei e del suo rotolo tombale",
+        "i culti dei petrodemoni che benedicono il greggio",
+        "gli adepti della porfirina che intrecciano olio e sangue",
+        "i sacerdoti dei pozzi che alimentano la fiamma della fucina",
+        "i fabbricanti fuorilegge che le gilde non vogliono nominare"
+      ]
+    },
+    "WpThunder": {
+      "art": [
+        "la lama dal filo ad arco",
+        "l'arma al plasma",
+        "l'arma che chiama la tempesta",
+        "la lancia a scarica",
+        "il tizzone sotto tensione",
+        "l'acciaio caricato"
+      ],
+      "era": [
+        "di un'epoca non anteriore all'era dei satelliti",
+        "che si cablò da quando la prima corrente passò per un'elsa",
+        "un mestiere nato dalle reti morte del mondo spezzato",
+        "non più giovane dell'ultima linea elettrica funzionante",
+        "che si abbozzò dopo che il Millennio bruciò la tecnologia",
+        "giovane quanto la macchina cui è saldata"
+      ],
+      "mechanism": [
+        "portando al centro un condensatore che scarica al contatto",
+        "cablandosi a un arco che salta l'ultimo pollice fino alla carne",
+        "saldandosi da una lama e da un pacco batterie di recupero",
+        "isolandosi all'impugnatura e restando in tensione ovunque altrove",
+        "raffazzonandosi con rottami di rete e senza mai una certificazione",
+        "regolandosi per sputare plasma nell'istante in cui il circuito si chiude"
+      ],
+      "attrib": [
+        "la Esoteric Heavy Industries e le sue officine senza insegna",
+        "i tauma-ingegneri che brevettano ogni prototipo",
+        "gli sciacalli delle reti che rimettono in tensione le linee morte",
+        "i tecnomanti dell'età post-collasso",
+        "gli armaioli che sposano l'acciaio al silicio",
+        "gli elettricisti di strada che caricano una lama per denaro"
+      ]
+    },
+    "WpLegendary": {
+      "art": [
+        "la lama che ha un nome",
+        "l'arma mitica",
+        "l'arma dell'eroe",
+        "l'acciaio unico nel suo genere",
+        "il tizzone delle storie",
+        "il filo coronato"
+      ],
+      "era": [
+        "di un'epoca anteriore alla storia che se ne racconta",
+        "che si porta da allora da ogni mano che sia contata",
+        "una reliquia che lo Squishing non ha potuto disfare",
+        "non più giovane dell'impresa da cui prende il nome",
+        "che si tramanda di re in re e di ladro in ladro",
+        "che si canta molto prima di essere sguainata l'ultima volta"
+      ],
+      "mechanism": [
+        "forgiandosi una sola volta e non venendo mai eguagliata da alcun fabbro",
+        "portando inciso il nome che si guadagnò in una sola battaglia",
+        "conservandosi intera lungo le epoche contro ogni dimenticanza",
+        "rinvenendosi per mano di chi si portò il segreto nella tomba",
+        "attraversando una dozzina di leggende senza smussarsi in nessuna",
+        "lavorandosi così finemente che l'acciaio minore vi si spezza contro"
+      ],
+      "attrib": [
+        "i custodi di reliquie che vegliano sulle armi che hanno un nome",
+        "gli eroi ricordati soltanto per ciò che portavano",
+        "gli archivisti che la seguono di mondo in mondo",
+        "i collezionisti che rovinerebbero una nazione per averla",
+        "i maestri perduti che ne ebbero il segreto",
+        "coloro che morirono per tenerla lontana dalla mano sbagliata"
+      ]
+    },
+    "ArClothes": {
+      "art": [
+        "gli stracci a strati",
+        "gli abiti da lavoro dei convogli",
+        "il farsetto imbottito",
+        "gli indumenti di strada ricuciti",
+        "il soprabito rattoppato",
+        "il mantello di telone"
+      ],
+      "era": [
+        "di un tessuto logoro fino alla trama dall'ultimo inverno",
+        "che si tagliò negli anni successivi allo Squishing",
+        "delle rastrelliere dei centri commerciali morti",
+        "di un'epoca non anteriore all'ultima stagione dei convogli",
+        "di almeno tre proprietari prima di questo",
+        "che si recuperò dai guardaroba dei morti negli anelli"
+      ],
+      "mechanism": [
+        "stratificandosi con qualunque stoffa sia sopravvissuta ai saccheggi",
+        "trapuntandosi spessa contro il freddo e il randello",
+        "cucendosi da un telone da convoglio nell'arco di una settimana lenta",
+        "rattoppandosi di nuovo ogni volta che una cucitura cedeva",
+        "cingendosi stretta perché l'imbottitura deviasse un colpo di striscio",
+        "rinforzandosi con il cartone dove la lana finiva"
+      ],
+      "attrib": [
+        "i sarti che lavorano a candela nelle file del mercato",
+        "i poveri della strada che si corazzano con il bucato",
+        "i rammendatori delle vie commerciali in rovina",
+        "i bancarellai che vendono il caldo a strati",
+        "gli sciacalli che si vestono negli armadi altrui",
+        "le sarte dei porticati dei centri commerciali morti"
+      ]
+    },
+    "ArRobe": {
+      "art": [
+        "la veste lavorata a sigilli",
+        "il paramento grigio",
+        "il manto dai molti orli",
+        "la tonaca di cenere",
+        "il manto cucito lungo le linee di ley",
+        "la sopravveste del diacono"
+      ],
+      "era": [
+        "che si tesse molto prima che le dimensioni si fondessero",
+        "di un ordine che non tiene più il proprio capitolo",
+        "di un'epoca anteriore alla gilda che la venera",
+        "riposta piegata fin dall'ultimo vero conclave",
+        "dai guardaroba di un monastero bruciato",
+        "di un rito che lo Squishing ha lasciato ricordato a metà"
+      ],
+      "mechanism": [
+        "ricamandosi con figure che deviano una maledizione",
+        "tingendosi nella cenere di un fuoco consacrato",
+        "adornandosi di amuleti che chi la porta non comprende più",
+        "cucendosi perché ogni orlo porti una parola di protezione",
+        "tessendosi con filo tirato lungo una linea di ley viva",
+        "benedicendosi una sola volta e non lavandosi più per paura di perderla"
+      ],
+      "attrib": [
+        "i tessitori di paramenti degli antichi ordini",
+        "gli adepti in veste della Gilda dei Maghi",
+        "i sarti di chiostro le cui case sono cenere",
+        "i veggenti che non si fanno vedere senza",
+        "i custodi di reliquie che razionano ogni manto superstite",
+        "i diaconi che hanno ereditato più stoffa che dottrina"
+      ]
+    },
+    "ArLight": {
+      "art": [
+        "la corazza di cuoio bollito",
+        "la piastra di recupero sopra l'imbottitura",
+        "il farsetto borchiato",
+        "i cuoiami da strada ribattuti",
+        "la brigantina a strati",
+        "il gilè di scaglie di rottame"
+      ],
+      "era": [
+        "che si mise insieme dall'ultima razzia",
+        "di un'epoca non anteriore all'ultimo assedio",
+        "delle officine del post-collasso",
+        "che si ritagliò da qualcosa di più grande e più antico",
+        "che si assemblò nell'arco di una sola stagione dura",
+        "che si recuperò dalle piastre lasciate dai morti"
+      ],
+      "mechanism": [
+        "bollendosi e modellandosi per deviare un filo di striscio",
+        "ribattendosi da latta e piastre di recupero sopra l'imbottitura",
+        "allacciandosi stretta per muoversi con la spalla",
+        "stratificandosi con lamine di metallo cucite fra i cuoi",
+        "conciandosi dura su fuoco basso per una settimana",
+        "rattoppandosi con qualunque rottame accettasse un ribattino"
+      ],
+      "attrib": [
+        "i lavoratori del cuoio dei quartieri del mercato",
+        "i guardiani della strada che sopravvissero ai propri convogli",
+        "gli armaioli di rottami che aggiustano a occhio",
+        "le guardie carovaniere che si armano a poco prezzo",
+        "i conciatori che fanno gli armaioli di secondo lavoro",
+        "gli sciacalli che ritagliano le piastre a misura"
+      ]
+    },
+    "ArHeavy": {
+      "art": [
+        "la bardatura ribattuta",
+        "l'armatura di piastre completa",
+        "la torre di maglia",
+        "la corazza scanalata",
+        "la grande bardatura",
+        "la piastra nera di fornace"
+      ],
+      "era": [
+        "che si martellò nelle città-fornace",
+        "di un'epoca non anteriore all'ultimo assedio",
+        "delle profonde sale della fucina",
+        "che si colò in una fonderia che lavora ancora giorno e notte",
+        "che si plasmò negli anni in cui la guerra non finiva mai",
+        "che si temprò nelle grandi officine prima che il combustibile scarseggiasse"
+      ],
+      "mechanism": [
+        "ribattendosi da piastre di recupero nel corso di un inverno",
+        "martellandosi sul carbone finché non suonava giusta",
+        "articolandosi perché un uomo intero potesse ancora correrci dentro",
+        "temprandosi dura e rinvenendosi morbida per reggere un colpo di taglio",
+        "adattandosi piastra su piastra a un solo corpo",
+        "saldandosi e affibbiandosi dove i vecchi snodi avevano ceduto"
+      ],
+      "attrib": [
+        "gli armaioli delle città-fornace",
+        "le gilde della forgia che imprimono il proprio marchio nell'acciaio",
+        "i fabbri che lavorano il ferro della Esoteric Heavy Industries",
+        "gli aggiustatori di piastre pagati in combustibile e argento",
+        "gli armaioli pesanti dei quartieri delle fonderie",
+        "i maestri fabbri che sopravvivono ai propri apprendisti"
+      ]
+    },
+    "ArEquipment": {
+      "art": [
+        "la cintura multiuso",
+        "l'attrezzatura da camionista",
+        "la bardatura imbottita porta-kit",
+        "il finimento carico di amuleti",
+        "la cintura porta-attrezzi certificata per gli anelli",
+        "la fettuccia industriale"
+      ],
+      "era": [
+        "appena uscita da una linea della Esoteric Heavy Industries",
+        "di un'epoca non anteriore all'ultimo richiamo di prodotto",
+        "del catalogo in corso",
+        "ancora coperta dalla garanzia stampata",
+        "che si spedì dopo l'ultimo riordino dei convogli",
+        "che si punzonò col numero di modello di questa stagione"
+      ],
+      "mechanism": [
+        "agganciandosi insieme da pezzi venduti in confezioni blister",
+        "caricandosi di amuleti e kit certificati per l'anello",
+        "affibbiandosi sul petto a portata di mano di chi guida",
+        "assemblandosi da una lista di accessori approvati",
+        "montandosi con tasche pubblicizzate esattamente per questa paura",
+        "allacciandosi sopra i vestiti e vendendosi come protezione"
+      ],
+      "attrib": [
+        "i rappresentanti di commercio della Esoteric Heavy Industries",
+        "i soci della Società dei Camionisti, che si equipaggiano secondo il manuale",
+        "i compratori da catalogo del commercio dei convogli",
+        "gli appassionati che si fidano della certificazione stampata",
+        "i fornitori che smerciano la merce a bancali",
+        "gli equipaggi della strada che si armano nella corsia degli accessori"
+      ]
+    },
+    "ArShield": {
+      "art": [
+        "lo scudo a torre",
+        "il brocchiero ammaccato",
+        "la porta fatta egida",
+        "lo scudo di cartello stradale",
+        "l'umbone e la tavola",
+        "la barriera di piastre di rottame"
+      ],
+      "era": [
+        "che si porta dall'ultimo inverno duro",
+        "di un'epoca non anteriore all'ultimo assedio",
+        "degli anni delle barricate",
+        "che si ritagliò da qualcosa che era stato un muro",
+        "che si rifece dopo che il vecchio si era schiantato",
+        "che si recuperò dal relitto di un convoglio"
+      ],
+      "mechanism": [
+        "intavolandosi e cerchiandosi per fermare di netto una carica",
+        "martellandosi da un segnale di stop in un pomeriggio libero",
+        "rivestendosi di piastra perché un filo vi scivolasse via",
+        "impugnandosi e puntellandosi per reggere il peso di un colpo",
+        "cerchiandosi al bordo con cinghia e ribattino contro le spaccature",
+        "rinforzandosi sul retro con un umbone ricavato da un mozzo di camion"
+      ],
+      "attrib": [
+        "gli artefici di scudi dei quartieri delle barricate",
+        "i guardiani della strada che tengono la linea",
+        "i fabbri di rottami che sbalzano brocchieri su ordinazione",
+        "le guardie dei convogli che stanno in testa alla colonna",
+        "i custodi delle mura che si armano fra le rovine",
+        "i maestri d'arme che insegnano ancora il muro di scudi"
+      ]
+    },
+    "ArToy": {
+      "art": [
+        "il corsaletto del cavaliere di gommapiuma",
+        "il casco antisommossa di plastica",
+        "il costume gonfiabile da sumo",
+        "la cotta di maglia da negozio di costumi",
+        "la corazza di pluriball",
+        "l'elmetto da cantiere di novità"
+      ],
+      "era": [
+        "ancora nel suo cellophane dal reparto giocattoli",
+        "di un'epoca non anteriore alle scorte di Halloween dell'anno scorso",
+        "dei cesti di liquidazione dei centri commerciali morti",
+        "oltre l'età consigliata di otto anni in su",
+        "di una festa che non si è mai tenuta",
+        "col prezzo ribassato due volte e ancora invenduta"
+      ],
+      "mechanism": [
+        "stampandosi in plastica sgargiante che cigola quando la colpisci",
+        "gonfiandosi a bocca prima di ogni scontro serio",
+        "tenendosi insieme con i laccetti originali",
+        "portando stampato un supereroe che un colpo lo reggerebbe davvero",
+        "imbottendosi di gommapiuma che ricorda per sempre ogni ammaccatura",
+        "assemblandosi secondo le istruzioni a pittogrammi, più o meno"
+      ],
+      "attrib": [
+        "gli acquirenti da liquidazione che si corazzano a poco prezzo",
+        "i saccheggiatori di negozi di festa dei centri commerciali morti",
+        "i disperati che si affidano a un costume per fermare l'acciaio",
+        "i figli dell'anello che non ne sono mai usciti",
+        "i cacciatori di occasioni dell'apocalisse del reparto giocattoli",
+        "i buffoni che vanno in guerra vestiti per un compleanno"
+      ]
+    },
+    "ArHoly": {
+      "art": [
+        "l'usbergo benedetto",
+        "il manto consacrato",
+        "la corazza del santo",
+        "la piastra unta d'olio",
+        "la veste segnata da protezioni",
+        "la bardatura del pellegrino"
+      ],
+      "era": [
+        "che si santificò prima che il Padre fosse ucciso",
+        "delle antiche volte cattedrali",
+        "che si benedisse di nuovo dopo lo Squishing",
+        "di un'epoca anteriore alla parrocchia che ancora la custodisce",
+        "che si tiene sull'altare fra una guerra e l'altra",
+        "che si consacrò in un rito che pochi sanno ancora celebrare"
+      ],
+      "mechanism": [
+        "ungendola con l'olio e segnandola con una croce di protezione",
+        "benedicendola sull'altare la notte prima di indossarla",
+        "cucendo la scrittura lungo ogni cucitura",
+        "consacrandola perché la corruzione non vi si attaccasse",
+        "incensandola nel fumo sacro finché l'acciaio non ne prese l'odore",
+        "sigillandola con una reliquia di santo cucita sotto il petto"
+      ],
+      "attrib": [
+        "i sacerdoti armaioli delle cattedrali superstiti",
+        "i chierici di guerra che benedicono prima di allacciare",
+        "gli ordini dei martiri che ancora forgiano per i fedeli",
+        "i diaconi che custodiscono l'olio dell'unzione",
+        "i cavalieri pellegrini che si armano all'altare",
+        "i consacratori che santificano ciò che i fabbri producono"
+      ]
+    },
+    "ArCursed": {
+      "art": [
+        "la maglia necrotica",
+        "la corazza toccata dal vuoto",
+        "la bardatura fredda di tomba",
+        "la piastra saldata alla carne",
+        "la veste che sussurra",
+        "lo scudo segnato dall'abisso"
+      ],
+      "era": [
+        "che si dissepolse da un tumulo che nessuno vuole nominare",
+        "sotto condanna in ogni epoca in cui è riaffiorata",
+        "dei culti della morte che lo Squishing ha liberato",
+        "di un tempo anteriore alla maledizione che le fu imposta",
+        "che si è sepolta e dissepolta più volte di quanto dovrebbe",
+        "sotto sigillo finché qualcuno non rompe sempre il sigillo"
+      ],
+      "mechanism": [
+        "fondendosi a chi la indossa così da non staccarsi di buon grado",
+        "raffreddandosi con ciò che ha bevuto dall'ultimo proprietario",
+        "portando sigilli che dolgono contro le linee di ley",
+        "cucendosi attraverso la carne a un prezzo terribile",
+        "temprandosi una volta nel sangue e non venendo più ripulita",
+        "vincolandosi con un patto che chi la porta non ricorda del tutto"
+      ],
+      "attrib": [
+        "i profanatori di tombe che vendono ciò che avrebbero dovuto lasciare",
+        "i negromanti che ne corazzano i propri servi",
+        "gli evocatori del vuoto che ne barattano la protezione",
+        "i disperati che la indossano conoscendone il prezzo",
+        "i fabbri fuorilegge che le gilde bruciarono per averla fatta",
+        "coloro che la Strada ricorda dai segni che lascia"
+      ]
+    },
+    "ArLegendary": {
+      "art": [
+        "la bardatura che ha un nome",
+        "la piastra di famiglia",
+        "la corazza mai infranta della leggenda",
+        "la maglia del campione",
+        "l'egida delle storie",
+        "l'armatura coronata"
+      ],
+      "era": [
+        "che si forgiò in un'epoca che i registri ricordano solo a metà",
+        "di un tempo anteriore alla guerra per cui è famosa",
+        "di un fabbro il cui nome è sopravvissuto al mondo",
+        "che si tramanda da prima che le dimensioni si fondessero",
+        "che si conserva intera attraverso catastrofi che hanno spezzato tutto il resto",
+        "di una fattura che nessuna mano vivente sa eguagliare"
+      ],
+      "mechanism": [
+        "martellandosi una sola volta e non venendo più migliorata",
+        "adattandosi così perfettamente da non aver mai avuto bisogno di essere riforgiata",
+        "lavorandosi con un'arte che le città-fornace hanno perduto",
+        "temprandosi in un rito che l'ultimo maestro si portò nella tomba",
+        "intarsiandosi con le imprese di tutti quelli che l'hanno indossata",
+        "conservandosi intatta attraverso ciò che avrebbe dovuto distruggerla"
+      ],
+      "attrib": [
+        "i maestri perduti i cui marchi vengono ancora copiati",
+        "i campioni che ciascuno aggiunse qualcosa alla sua leggenda",
+        "i custodi di reliquie che la vegliano fra un proprietario e l'altro",
+        "gli eredi che la rivendicano e di rado la tengono a lungo",
+        "i cronisti che discutono su chi l'abbia forgiata",
+        "coloro che il mondo ricorda solo per averla indossata"
+      ]
+    },
+    "Pyromancy": {
+      "art": [
+        "la piromanzia",
+        "il rito del focolare",
+        "la lettura della fiamma",
+        "l'arte della brace",
+        "il mestiere dell'esca",
+        "il richiamo della salamandra",
+        "il rito della cenere e del tizzone"
+      ],
+      "era": [
+        "che si accese al primo focolare dell'età della pietra",
+        "che risale tanto indietro quanto l'addomesticamento del fuoco",
+        "dagli albori del tizzone ardente",
+        "di un'epoca anteriore alla parola stessa per calore",
+        "dell'età in cui il fuoco era ancora un segreto",
+        "che si ricorda dal primo bosco che bruciò",
+        "di un tempo anteriore a qualsiasi fucina"
+      ],
+      "mechanism": [
+        "cavando una fiamma dal nulla, con la sola intenzione",
+        "leggendo un futuro nel modo in cui il fuoco si piega",
+        "nutrendo la fiamma di chi la evoca e non di combustibile",
+        "tenendo il fuoco a palmo nudo senza ustionarsi",
+        "lasciando uscire tutto in una volta il calore da una cosa",
+        "chiamando la salamandra che vive in ogni brace",
+        "mutando in fiamma l'aria fredda fra due parole"
+      ],
+      "attrib": [
+        "i custodi del focolare che vegliavano sull'unica fiamma",
+        "i guardiani della brace delle caverne profonde",
+        "i primi sciamani che lessero il fumo",
+        "i mangiafuoco delle vecchie fiere lungo la strada",
+        "i sacerdoti della fucina che non la lasciarono mai spegnere",
+        "i lettori di ceneri dei villaggi bruciati",
+        "coloro che la impararono da un albero colpito dal fulmine"
+      ]
+    },
+    "Cryomancy": {
+      "art": [
+        "la criomanzia",
+        "l'arte del lungo buio",
+        "il vincolo del gelo",
+        "il rito dell'acqua immobile",
+        "il mestiere del freddo nel midollo",
+        "il richiamo dell'inverno",
+        "il lavoro della brina"
+      ],
+      "era": [
+        "che si ricorda dal lungo buio dell'ultima era glaciale",
+        "di un tempo anteriore alle parole per caldo e freddo",
+        "dall'età dei grandi ghiacciai",
+        "che risale tanto indietro quanto il primo inverno che non finì",
+        "di un'epoca anteriore a qualsiasi lingua parlata",
+        "dei secoli trascorsi sotto il ghiaccio",
+        "da prima del disgelo"
+      ],
+      "mechanism": [
+        "estraendo la brina dal midollo dell'aria invernale",
+        "togliendo il calore da una cosa senza lasciargli dove andare",
+        "fermando l'acqua nel sangue prima che possa muoversi",
+        "lasciando entrare il freddo attraverso un nome detto lentamente",
+        "trattenendo un corpo nell'istante che precede il brivido",
+        "facendo crescere il ghiaccio verso l'interno da un solo respiro trattenuto",
+        "facendo ricordare all'aria il ghiacciaio che l'ha generata"
+      ],
+      "attrib": [
+        "i cacciatori delle distese gelate, timorosi della tempesta",
+        "gli sciamani dell'era glaciale che sopravvissero al disgelo",
+        "i custodi del silenzio del nord",
+        "i lettori di ghiacciai degli alti valichi",
+        "coloro che seppellirono i propri morti nel ghiaccio",
+        "le mogli d'inverno del lungo buio",
+        "i cantori del gelo che nessuno sentiva arrivare"
+      ]
+    },
+    "Electromancy": {
+      "art": [
+        "l'elettromanzia",
+        "il mestiere della carica",
+        "la disciplina dell'arco",
+        "la stregoneria galvanica",
+        "il rito della bobina",
+        "il richiamo del fulmine",
+        "l'arte del potenziale"
+      ],
+      "era": [
+        "che risale sì e no a due secoli fa",
+        "dall'età della bobina di rame",
+        "che si mise per iscritto per la prima volta negli anni Novanta del Settecento",
+        "di un'epoca posteriore alla macchina a vapore",
+        "del secolo che imparò a immagazzinare una scintilla",
+        "dal primo laboratorio che uccise un uomo per sbaglio",
+        "di un'epoca non anteriore al telegrafo"
+      ],
+      "mechanism": [
+        "accumulando carica in chi la pratica e lasciandola cadere",
+        "chiudendo un circuito che passa per l'aria e per un corpo",
+        "leggendo il potenziale fra due cose che non dovrebbero toccarsi",
+        "colpendo più in fretta di quanto un nervo porti la notizia",
+        "tenendo aperto un arco con la sola volontà",
+        "lasciando che la differenza si risolva tutta in una volta",
+        "conducendo una corrente lungo un percorso che solo chi la pratica vede"
+      ],
+      "attrib": [
+        "gli avvolgitori di bobine dei primi laboratori",
+        "i colpiti dal fulmine che sopravvissero",
+        "le società galvaniche del secolo scorso",
+        "Nikola Tesla (1856-1943) e gli uomini che ne copiarono gli appunti",
+        "i telegrafisti che impararono ad ascoltare",
+        "i medici che tentarono di risuscitare i morti con questo",
+        "i cacciatori di tempeste delle terre pianeggianti"
+      ]
+    },
+    "Idromancy": {
+      "art": [
+        "l'idromanzia",
+        "l'arte del bacino immobile",
+        "la disciplina delle maree",
+        "la lettura dell'acqua",
+        "il rito della corrente",
+        "l'arte annegata",
+        "il richiamo della pioggia"
+      ],
+      "era": [
+        "che si mise per iscritto nei manuali greci",
+        "dall'età delle sorgenti templari",
+        "che risale tanto indietro quanto il primo pozzo",
+        "dei secoli in cui gli oracoli lavoravano con l'acqua",
+        "di un tempo anteriore agli acquedotti",
+        "dai porti del mare interno",
+        "che si fissò prima della prima mappa di una costa"
+      ],
+      "mechanism": [
+        "leggendo ciò che affiora in un bacino immobile",
+        "voltando una massa d'acqua verso una riva a cui non era diretta",
+        "chiamando giù la pioggia nominando la nube che la porta",
+        "estraendo l'acqua da una cosa che ne ha bisogno",
+        "trattenendo un'onda al culmine della sua salita",
+        "spostando una corrente senza spostare il letto del fiume",
+        "lasciando che il mare risponda a una domanda posta con garbo"
+      ],
+      "attrib": [
+        "gli oracoli delle sorgenti dei vecchi templi",
+        "i sacerdoti dei pozzi che facevano pagare una risposta",
+        "le streghe di porto del mare interno",
+        "coloro che leggevano i bacini a Delfi",
+        "i rabdomanti che non sbagliavano mai",
+        "i marinai annegati che tornarono sapendola",
+        "i chiamapioggia che i villaggi tenevano ben nutriti"
+      ]
+    },
+    "Aeromancy": {
+      "art": [
+        "l'aeromanzia",
+        "la lettura del cielo",
+        "il richiamo dell'aria cruda",
+        "il rito della tempesta",
+        "il rivolgimento del tempo",
+        "la disciplina delle nubi",
+        "l'arte del cielo aperto"
+      ],
+      "era": [
+        "che risale tanto indietro quanto il primo orizzonte osservato",
+        "dall'età in cui una tempesta era una persona",
+        "di un'epoca anteriore a qualsiasi lingua parlata",
+        "dei secoli precedenti il barometro",
+        "da prima che esistessero le parole per i venti",
+        "che si ricorda dall'anno in cui il cielo non si schiarì",
+        "di un tempo anteriore alla vela"
+      ],
+      "mechanism": [
+        "strizzando tempesta e brace dall'aria cruda",
+        "leggendo il domani nel modo in cui gli uccelli virano",
+        "muovendo l'aria e tutto ciò che vi viaggia sopra",
+        "chiamando un vento nominando il luogo da cui viene",
+        "tenendo insieme una nuvola oltre l'ora in cui si sarebbe rotta",
+        "voltando il tempo sopra una valle come si volta una pagina",
+        "facendo cadere la pressione ovunque guardi chi la pratica"
+      ],
+      "attrib": [
+        "i primi cacciatori che temevano e corteggiavano la tempesta",
+        "gli osservatori del cielo delle terre pianeggianti",
+        "coloro che i villaggi pagavano perché non chiamassero la pioggia",
+        "i pastori che leggevano le nubi alte",
+        "i velai che trattavano con il vento",
+        "i cacciatori delle pianure aperte, timorosi della tempesta",
+        "le mogli del tempo, che di solito ci azzeccavano"
+      ]
+    },
+    "ChaosMagic": {
+      "art": [
+        "la magia del caos",
+        "l'arte dei soli risultati",
+        "la disciplina dei sigilli",
+        "il rito insensato",
+        "il mestiere volubile",
+        "l'arte del giocatore d'azzardo",
+        "l'opera senza vincoli"
+      ],
+      "era": [
+        "appena più antica della fotocopiatrice",
+        "dalle stanze sul retro degli anni Settanta",
+        "che si mise insieme con quel che c'era in giro",
+        "di un'epoca posteriore alla maggior parte di chi la pratica",
+        "dell'età in cui la credenza divenne uno strumento",
+        "che si descrisse per la prima volta in una fanzine che nessuno ha conservato",
+        "di un'epoca non anteriore allo scaffale occulto in edizione economica"
+      ],
+      "mechanism": [
+        "credendo a qualcosa di assurdo con tanta forza da farlo reggere",
+        "scoccando un sigillo e poi rifiutandosi di pensarci",
+        "trattando la fortuna come una risorsa e spendendola",
+        "facendo sussultare il mondo con lo sbagliare apposta",
+        "prendendo in prestito la forma di un rito e nulla della sua fede",
+        "affidando l'intera opera al lancio di una sola moneta",
+        "confondendo la domanda finché non si risponde da sola"
+      ],
+      "attrib": [
+        "gli autori di fanzine che se la inventavano strada facendo",
+        "gli ordini da retrobottega che non furono mai d'accordo su nulla",
+        "Austin Osman Spare (1886-1956) e tutti quelli che lo fraintesero",
+        "i prestigiatori di strada che scoprirono che funzionava",
+        "i giocatori d'azzardo che notarono lo schema",
+        "quelli che la fecero per ridere e non riuscirono più a smettere",
+        "i praticanti che non lasciarono alcun resoconto coerente"
+      ]
+    },
+    "Alchemistry": {
+      "art": [
+        "l'arte del chimico",
+        "il sapere della trasmutazione",
+        "il mestiere delle reazioni",
+        "l'alchimica"
+      ],
+      "era": [
+        "che discende da Jabir ibn Hayyan (VIII secolo)",
+        "che si affinò da Paracelso (1493-1541)",
+        "che si travasò dai crogioli medievali alle storte moderne",
+        "dei vecchi alchimisti"
+      ],
+      "mechanism": [
+        "preparando pozioni e reazioni chimiche",
+        "trasmutando materia vile in pozioni potenti",
+        "distillando la virtù dal reagente grezzo",
+        "scatenando una reazione dove non dovrebbe avvenirne alcuna"
+      ],
+      "attrib": [
+        "i discepoli di Jabir ibn Hayyan, nell'VIII secolo",
+        "i seguaci di Paracelso (1493-1541)",
+        "gli emuli di Nicolas Flamel (c.1330-1418)",
+        "gli alchimisti che alimentarono i laboratori moderni"
+      ]
+    }
+  }
+}

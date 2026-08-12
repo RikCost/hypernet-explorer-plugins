@@ -186,7 +186,10 @@
     shop: [115, 179],              // candle, batteries
     tavern: TAVERN_FIXED_IDS,
     library: [262, 128],           // blank spellbook, travel journal
-    pharmacy: [1, 3, 19],          // sanitizer, paracetamol, medical spray
+    // A pharmacy is never out of the four things a pharmacy is for: a kit, an
+    // antibiotic course, rehydration salts and a multivitamin, on top of the
+    // three over-the-counter staples it always had.
+    pharmacy: [1, 3, 19, 1443, 1446, 1464, 1465],
     magic: [648, 651],             // health potion, mana potion
     luxury: [543, 535],            // gourmet chocolate, aged wine
     adventurer: [648, 125, 121],   // health potion, bedroll, lantern
@@ -229,7 +232,7 @@
   // One shelf: the staples first, then the location's random draw.
   function stockWithFixed(shopKey, pool, seed) {
     const shuffled = seededShuffle(withoutFixed(shopKey, pool), seed);
-    return [...fixedItemsFor(shopKey), ...shuffled.slice(0, pickShopItemCount(seed))];
+    return [...fixedItemsFor(shopKey), ...shuffled.slice(0, pickShopItemCount(seed, shopKey))];
   }
 
   // Parse game date from variable 113
@@ -324,8 +327,15 @@
   }
 
   // How many items a shop stocks: fixed per-location, drawn once from 6-12.
-  function pickShopItemCount(seed) {
+  // A pharmacy is the exception. It is the one shop the disease system sends
+  // the player to by name, and a six-slot shelf could not carry a tenth of the
+  // pharmacopoeia, so it draws several times as deep.
+  const SHELF_DEPTH = { pharmacy: [26, 40] };
+
+  function pickShopItemCount(seed, shopKey) {
     seed = (seed * 9301 + 49297) % 233280;
+    const band = SHELF_DEPTH[shopKey];
+    if (band) return band[0] + Math.floor((seed / 233280) * (band[1] - band[0] + 1));
     return 6 + Math.floor((seed / 233280) * 7);
   }
 
@@ -334,6 +344,12 @@
     if (!item || !item.note) return false;
     return item.note.toLowerCase().includes('<category: food>') ||
            item.note.toLowerCase().includes('<category:food>');
+  }
+
+  // A real drug, as opposed to a bandage or a tonic: it carries the note the
+  // disease system reads, which is the same test the item panels use.
+  function isMedicineItem(item) {
+    return !!(item && item.note && /<Medicine:\s*[\w-]+\s*>/i.test(item.note));
   }
 
   function isMedicalItem(item) {
@@ -646,9 +662,20 @@
     const locKey = `${mapId}_${x}_${y}`;
 
     if (!pharmacyCache[locKey]) {
-      const medicalItems = getMedicalItems();
       const seed = generateLocationSeed(mapId, x, y, 'pharmacy');
-      pharmacyCache[locKey] = stockWithFixed('pharmacy', medicalItems, seed);
+      // Real drugs first, sundries after: two thirds of the shelf is drawn
+      // from what carries a <Medicine:> tag, so a pharmacy stocked at random
+      // out of the whole medical category cannot come out holding nothing but
+      // cough drops on the morning somebody needs an antibiotic.
+      const medicalItems = getMedicalItems();
+      const drugs = medicalItems.filter(isMedicineItem);
+      const sundries = medicalItems.filter(item => !isMedicineItem(item));
+      const drugCount = Math.ceil(pickShopItemCount(seed, 'pharmacy') * 0.7);
+      const shelf = [
+        ...seededShuffle(withoutFixed('pharmacy', drugs), seed).slice(0, drugCount),
+        ...seededShuffle(withoutFixed('pharmacy', sundries), seed ^ 0x5bf03635),
+      ];
+      pharmacyCache[locKey] = stockWithFixed('pharmacy', shelf, seed);
     }
 
     return pharmacyCache[locKey];
@@ -1381,7 +1408,7 @@
     travelAgency: {
       get label() { return T('DailyShop.shopType.travelAgency'); },
       ids: [159, 161, 163, 155, 137, 135, 128, 129, 130, 152, 142, 164, 131,
-            166, 668, 696, 234, 1442, 162, 120],
+            166, 668, 696, 234, 162, 120],
       fixed: [159, 161],        // routes map, local map
     },
     garage: {
@@ -1404,7 +1431,7 @@
     },
     bettingParlor: {
       get label() { return T('DailyShop.shopType.bettingParlor'); },
-      ids: [181, 182, 183, 187, 124, 311, 313, 323, 1437, 1440, 178, 544, 568,
+      ids: [181, 182, 183, 187, 124, 311, 313, 323, 1437, 178, 544, 568,
             26, 346, 312, 322, 445],
       fixed: [181, 182, 183],   // the three scratch cards
     },
@@ -1429,14 +1456,15 @@
     academy: {
       get label() { return T('DailyShop.shopType.academy'); },
       ids: [1421, 1422, 1423, 1424, 1425, 1426, 1427, 1428, 1429, 1430, 1431,
-            1433, 1435, 1436, 1437, 1438, 1440, 1441, 1442, 1443, 145, 147],
+            1433, 1436, 1437, 1441, 145, 147],
       fixed: [113, 127],        // pen, notebook
     },
     grimoire: {
       get label() { return T('DailyShop.shopType.grimoire'); },
       ids: [1400, 1401, 1402, 1403, 1404, 1405, 1406, 1407, 1409, 1410, 1411,
-            1412, 1413, 1414, 1415, 1416, 1417, 1418, 1419, 1420, 262],
-      fixed: [262, 1400],       // empty spellbook, elemental grimoire
+            1412, 1413, 1414, 1415, 1416, 1417, 1418, 1419, 1420, 1434, 1435,
+            1438, 1439, 262],
+      fixed: [262, 1400],       // empty spellbook, pyromancy grimoire
     }
   };
 
@@ -1910,13 +1938,15 @@
         const locked = reason ? "locked" : "";
         const forb = (s.meta && s.meta.Forbidden)
           ? `<span class="teach-forbidden">✦ ${T('DailyShop.ui.forbidden')}</span>` : "";
-        const cost = (s.mpCost ? `${s.mpCost} MP` : "") +
+        const cost = (s.mpCost ? `${s.mpCost} ${TextManager.mpA}` : "") +
                      (s.mpCost && s.tpCost ? " · " : "") +
-                     (s.tpCost ? `${s.tpCost} TP` : "");
+                     (s.tpCost ? `${s.tpCost} ${TextManager.tpA}` : "");
+        const magicSys = (s.meta && s.meta.MagicSystem)
+          ? ` · ${T('SkillsMenu.magicSystem.' + s.meta.MagicSystem) || s.meta.MagicSystem}` : "";
         const desc = (s.description || "").replace(/\n/g, " ");
         cardsHTML += `<div class="teach-card focusable ${sel} ${taught} ${locked}" onclick="SceneManager._scene.buyOffer(${idx})">
             <div class="teach-name"><span>${s.name}</span><span class="teach-price">${teachingPrice(s)}G</span></div>
-            <div class="teach-meta">${prettifySchool(skillSchool(s))}${cost ? " · " + cost : ""} ${forb}</div>
+            <div class="teach-meta">${prettifySchool(skillSchool(s))}${cost ? " · " + cost : ""}${magicSys} ${forb}</div>
             <div class="teach-desc">${desc}</div>
             ${reason ? `<div class="teach-meta" style="color:#a01818;">${reason}</div>` : ""}
           </div>`;

@@ -1,0 +1,29 @@
+{
+  "commands": "COMMANDS",
+  "keyboard": "KEYBOARD",
+  "gamepad": "GAMEPAD",
+  "pressKey": "PRESS A KEY...",
+  "pressButton": "PRESS A BUTTON...",
+  "selectCommand": "SELECT A COMMAND TA REMAP. PRESS ESC TA GO BACK!",
+  "selectCommandGamepad": "SELECT A COMMAND TA REMAP. PRESS B TA GO BACK!",
+  "resetToDefault": "RESET TA DEFAULT",
+  "keysReset": "KEY MAPPINGS HAB BEEN RESET TA DEFAULT!",
+  "gamepadReset": "GAMEPAD MAPPINGS HAB BEEN RESET TA DEFAULT!",
+  "commandNames": {
+    "ok": "OK/CONFIRM",
+    "cancel": "CANCEL",
+    "shift": "DASH/SPECIAL",
+    "menu": "MENU",
+    "pageup": "PAGE UP",
+    "pagedown": "PAGE DOWN",
+    "up": "MOVE UP",
+    "down": "MOVE DOWN",
+    "left": "MOVE LEFT",
+    "right": "MOVE RIGHT",
+    "zoomIn": "ZOOM IN",
+    "zoomOut": "ZOOM OUT",
+    "kick": "KICK",
+    "run": "RUN"
+  },
+  "unassigned": "UNASSIGNED"
+}

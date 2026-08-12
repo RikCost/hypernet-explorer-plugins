@@ -11,6 +11,7 @@
   "primary": "Primary:",
   "secondary": "Secondary:",
   "elementHeading": "Element:",
+  "magicSystemHeading": "Magic System:",
   "element": {
     "1": "Physical",
     "2": "Fire",
@@ -25,7 +26,9 @@
   "noSkillsAtLevel1": "No skills at level 1",
   "selectYourClass": "Select your class",
   "ui": {
-    "covenantStamp": "COVENANT"
+    "covenantStamp": "COVENANT",
+    "nonSentient": "Non Sentient",
+    "sentient": "Sentient"
   },
   "vocation": "Vocation"
 }

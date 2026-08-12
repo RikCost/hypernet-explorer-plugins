@@ -32,9 +32,9 @@
     "dimensional": ""
   },
   "defaultDestination": "Антверпен",
-  "trainStationTitle": "Вокзал",
-  "stationBadge": "",
-  "stationLabel": "",
+  "hubTitle": "",
+  "hubBadge": "",
+  "hubLabel": "",
   "fuelRate": "",
   "rateMultiplier": "",
   "editing": "",

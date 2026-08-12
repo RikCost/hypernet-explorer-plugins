@@ -22,7 +22,7 @@
   "toBrowse": "▲ / ▼ per scorrere",
   "l1R1SwitchTabs2": "L1 / R1 cambiano scheda",
   "label": {
-    "gameplay": "Giocabilita",
+    "gameplay": "Giocabilità",
     "video": "Video",
     "audio": "Audio",
     "shader": "Shader",
@@ -38,12 +38,13 @@
     "showFps": "Mostra Contatore FPS",
     "activeTheme": "Tema Attivo",
     "cardCombat": "Combattimento a Carte",
+    "cardBoard3D": "Grafica 3D del gioco di carte",
     "mapBattle": "Battaglia sulla Mappa",
     "retroShader": "Shader Retro",
     "renderResolution": "Risoluzione di Render",
     "dithering": "Dithering",
     "colorLevels": "Livelli di Colore",
-    "vertexSnap": "Aggancio Vertici",
+    "vertexSnap": "Snapping Vertici",
     "uiScaling": "Scala Interfaccia",
     "fontScaling": "Scala Caratteri",
     "titleBackground": "Sfondo del Titolo",
@@ -54,9 +55,9 @@
     "sprites": "Sprite"
   },
   "warn": {
-    "language": "⚠ Lavori in corso: solo l'inglese è tradotto per intero. Ogni altra lingua lascia gran parte del gioco non tradotta.",
-    "cardCombat": "⚠ Sostituisce la scena di battaglia standard. Attivandolo, Battaglia sulla Mappa si disattiva.",
-    "mapBattleMode": "⚠ Sostituisce la scena di battaglia standard. Attivandolo, Combattimento a Carte si disattiva."
+    "language": "⚠ In lavorazione: solo l'inglese è tradotto per intero. Le altre lingue hanno ancora parti del gioco non tradotte.",
+    "cardCombat": "⚠ Sostituisce la battaglia standard e disattiva Battaglia sulla Mappa.",
+    "mapBattleMode": "⚠ Sostituisce la battaglia standard e disattiva Combattimento a Carte."
   },
   "titleBackground": [
     "Casuale",
@@ -71,23 +72,44 @@
   ],
   "enemySpawn": [
     "Bilanciato",
-    "Realistico"
+    "Realistico",
+    "Distanza dalla Torre",
+    "Caos"
   ],
   "enemyBattler": [
-    "2D",
     "3D",
     "Sprite"
   ],
+  "enemyBattlerToast": {
+    "model3d": "3D attivato (nemici)",
+    "sprites": "Sprite attivati (nemici)"
+  },
   "languageProgress": "{name} tradotto all'1%",
   "settingsInSection": "{count} impostazioni in questa sezione.",
   "desc": {
-    "enemySpawnMode": "Decide quanto sono forti i nemici che vagano per il mondo.",
-    "weatherVolume": "Regola l'ambiente esterno: pioggia, temporali, vento, il coro notturno e il tappeto sonoro del bioma in cui ti trovi. Si applica sopra al volume BGS e non tocca gli interni né i suoni propri di una mappa."
+    "cardBoard3D": "Mostra creature 3D al posto degli sprite nel gioco di carte: modelli sul tabellone 3x3 e la creatura che ruota nella carta. Ogni copia dello stesso mostro ha un aspetto diverso. Più pesante da renderizzare; si cambia con il pulsante nel piede del duello.",
+    "enemySpawnMode": "Decide quanto sono forti i nemici nel mondo. L'anno di gioco alza comunque tutti i livelli: +10 all'anno fino al 2010, poi libero fino al 110, e dal 2012 nessun nemico sotto livello 80.",
+    "weatherVolume": "Regola i suoni ambientali esterni: pioggia, temporali, vento e i rumori del bioma. Non tocca gli interni né i suoni specifici di una mappa.",
+    "partyHud": "Mostra una scheda per ogni membro del gruppo in alto a sinistra: HP, MP, stati attivi e le urgenze (salute, fame, sonno, igiene, socialità, svago, astinenza).",
+    "partyFormation": "Come il resto del gruppo cammina dietro al capogruppo sulla mappa.",
+    "musicArtistDisplay": "Se mostrare titolo e autore della musica in riproduzione."
   },
   "descState": {
+    "partyFormation": [
+      "Stretta: il gruppo cammina in fila, un passo dietro il capogruppo, senza mai fermarsi.",
+      "Libera: i compagni si muovono liberamente, esplorano, mangiano, chiacchierano con la gente del posto o camminano con te. Corri per due secondi per farli riformare in fila. Si radunano dopo una battaglia o un cambio mappa. Guardali e premi OK per parlargli."
+    ],
     "enemySpawnMode": [
-      "Bilanciato: i nemici seguono il gruppo. I vaganti restano al tuo livello o sotto, e ogni casella del mondo nasconde un boss ben più forte.",
-      "Realistico: il tuo livello viene ignorato. Il pericolo dipende dal luogo, dai biomi più selvaggi e dalla distanza dalla Torre Omega, quindi le terre lontane possono essere letali fin da subito."
+      "Bilanciato: i nemici restano al tuo livello o sotto, con un boss più forte nascosto in ogni casella.",
+      "Realistico: incontri tutta la fauna del bioma, più spesso vicino al tuo livello. Ogni nazione e bioma ha la propria fauna; un boss è sempre nascosto.",
+      "Distanza dalla Torre: il livello dei nemici dipende solo dalla distanza dalla Torre Omega, non dal tuo.",
+      "Caos: nemici di qualsiasi livello (1-110) ovunque, ridistribuiti a ogni ingresso in una mappa procedurale."
+    ],
+    "musicArtistDisplay": [
+      "Prima volta: annuncia un brano solo la prima volta che lo senti.",
+      "Ogni volta: mostra la cassetta ogni volta che la musica cambia (mai in combattimento, mai due volte in 5 minuti).",
+      "Minimale: titolo e artista nella solita notifica d'angolo.",
+      "No: nessun annuncio."
     ]
   }
 }

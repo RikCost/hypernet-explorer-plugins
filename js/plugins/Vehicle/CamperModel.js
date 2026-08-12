@@ -32,6 +32,10 @@
     const BY = 6;     // fallback body centre Y
     const REAR  = -HL + 1.5;
     const TARGET_LEN = 2 * HL;   // GLB scaled so its longest horizontal axis = this
+    // Full scale of the cockpit speedometer. Sits just above the camper's natural
+    // top speed, so ordinary driving sweeps the dial and only the turbo pegs it.
+    // Read by both the painted dial face and the live needle: change it once.
+    const SPEEDO_MAX_KMH = 400;
 
     // Selectable exterior paintjobs applied to the GLB's body panels (the light,
     // exterior shell materials; interior/tyres/glass are left alone). Each carries
@@ -444,7 +448,7 @@
                 ctx.font = 'bold 13px monospace';
                 ctx.fillText(label, cx, cy + r * 0.55);
             };
-            dial(128, 118, 96, 16, 4, 160, T('Camper.speedDial'));
+            dial(128, 118, 96, 16, 4, SPEEDO_MAX_KMH, T('Camper.speedDial'));
             dial(384, 118, 96, 8, 2, 8, T('Camper.rpmDial'));
 
             // Small fuel dial: just E and F.
@@ -468,7 +472,7 @@
         // (value 0, lower-left) down to -135 deg (full scale, lower-right).
         updateDash(kmh, rpm01, fuel01, brakeOn) {
             const ang = (f) => 2.356 - Math.max(0, Math.min(1, f)) * 4.712;
-            if (this._speedNeedle) this._speedNeedle.rotation.z = ang((kmh || 0) / 160);
+            if (this._speedNeedle) this._speedNeedle.rotation.z = ang((kmh || 0) / SPEEDO_MAX_KMH);
             if (this._rpmNeedle)   this._rpmNeedle.rotation.z   = ang(rpm01 || 0);
             if (this._fuelNeedle)  this._fuelNeedle.rotation.z  = ang(fuel01 || 0);
             if (this._brakeMat)    this._brakeMat.emissiveIntensity = brakeOn ? 1.5 : 0.15;

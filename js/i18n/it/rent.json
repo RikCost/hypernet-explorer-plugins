@@ -5,6 +5,7 @@
     "already_rented": "Hai già affittato questa camera",
     "for_24h_rent": "per affitto 24h",
     "cancel": "Annulla",
+    "bash": "Sfonda la porta",
     "free_access_granted": "Accesso gratuito concesso a",
     "access_restored": "Accesso ripristinato a",
     "rented_for_24h": "Buona permanenza!",
@@ -16,6 +17,7 @@
     "available_rooms": "Stanze Disponibili",
     "hours_remaining": "ore rimanenti",
     "rent_now": "Affitta Ora",
-    "no_rooms": "Nessuna stanza disponibile"
+    "no_rooms": "Nessuna stanza disponibile",
+    "empty_world": "La porta e gia aperta e il registro e vuoto. Non e rimasto nessuno da cui affittare."
   }
 }
