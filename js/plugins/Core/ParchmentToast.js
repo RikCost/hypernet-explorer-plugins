@@ -150,6 +150,37 @@
     ));
   }
 
+  // While a battle is running, a transient notification is written into the
+  // battle log (purple background) instead of floating over the HUD, where
+  // it used to sit on top of the enemy bars and party portraits. A standing
+  // notification (persist/sticky) is excluded: it needs to stay in place and
+  // be redrawn, which a scrolling log line cannot do.
+  function activeBattleLogWindow() {
+    if (typeof $gameParty === "undefined" || !$gameParty || !$gameParty.inBattle()) return null;
+    const mbm = window.MapBattleMode;
+    if (mbm && typeof mbm.isActive === "function" && mbm.isActive() && mbm._logWindow) {
+      return mbm._logWindow;
+    }
+    if (typeof BattleManager !== "undefined" && BattleManager._logWindow) {
+      return BattleManager._logWindow;
+    }
+    return null;
+  }
+
+  function stripHtml(html) {
+    return String(html)
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function toLogText(text, opts) {
+    const body = opts.html ? stripHtml(text) : String(text);
+    return opts.title ? `${opts.title}: ${body}` : body;
+  }
+
   function localized(name) {
     if (!name) return "";
     try {
@@ -220,6 +251,15 @@
     if (text === null || text === undefined || text === "") return;
     const severity = opts.severity || "info";
     const persist = !!opts.persist;
+
+    if (!persist) {
+      const log = activeBattleLogWindow();
+      if (log && typeof log.addToast === "function") {
+        log.addToast(toLogText(text, opts));
+        return;
+      }
+    }
+
     const durationMs = (opts.duration || 180) * FRAME_MS;
     const key = String(opts.key != null ? opts.key : text);
     const hideAt = persist ? Infinity : Date.now() + durationMs;

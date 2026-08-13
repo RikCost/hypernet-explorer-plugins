@@ -78,8 +78,9 @@
  *   4. Only once every file is downloaded and verified are they moved into
  *      place. The replaced files are copied to save/updater/backup/<time>
  *      first, and the three most recent backups are kept.
- *   5. The game must be restarted for the new files to load. The updater
- *      offers to do it.
+ *   5. The game must be closed and reopened for the new files to load. The
+ *      updater warns the player and closes it for them; it never reloads in
+ *      place, since that leaves some replaced files loaded from the old copy.
  *
  *   A build that turns out to hold nothing this copy lacks stops after step 2
  *   and says so, and "Check this build" still compares a build without touching
@@ -1160,20 +1161,25 @@
             }
         },
 
+        // Closes the game outright rather than reloading it in place. A reload
+        // picks up the replaced asset files but leaves anything node's own
+        // module loader had already cached (a required plugin file among them)
+        // reading from the old copy, so the only way every replaced file is
+        // guaranteed to load is a real close, with the player reopening it.
         restart() {
             try {
-                if (typeof nw !== 'undefined' && nw.Window && nw.Window.get()) {
-                    nw.Window.get().reload();
+                if (typeof nw !== 'undefined' && nw.App && typeof nw.App.quit === 'function') {
+                    nw.App.quit();
                     return;
                 }
             } catch (e) { /* fall through */ }
             try {
-                if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.reload) {
-                    chrome.runtime.reload();
+                if (typeof SceneManager !== 'undefined' && typeof SceneManager.exit === 'function') {
+                    SceneManager.exit();
                     return;
                 }
             } catch (e) { /* fall through */ }
-            window.location.reload();
+            try { window.close(); } catch (e) { /* fall through */ }
         }
     };
 
@@ -1527,7 +1533,9 @@
             }
             if (key === 'restart') {
                 SoundManager.playOk();
-                GameUpdater.restart();
+                this._pushLog(T.logClosing);
+                this._refreshDOM();
+                setTimeout(() => GameUpdater.restart(), 1400);
                 return;
             }
             // The player says they have downloaded the game again, which is the

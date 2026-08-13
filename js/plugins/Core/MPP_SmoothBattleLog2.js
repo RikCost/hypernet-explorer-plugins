@@ -688,16 +688,27 @@
         const yOffset = Math.floor((Graphics.height - Graphics.boxHeight) / 2);
         const pad = this.padding || 12;
 
+        // The battle hotbar (BattleSystemEnhancedHUD.js) sits in the same
+        // column, just under the log; room for it is reserved here so the
+        // two never overlap.
+        const hotbarReserve = (window.BattleHotbar && window.BattleHotbar.reservedHeight) || 90;
+
         // Position at center-bottom of the screen
-        const customY = Graphics.height - customHeight - 20 - yOffset - pad;
+        const customY = Graphics.height - customHeight - 20 - hotbarReserve - yOffset - pad;
 
         const customRect = new Rectangle(customX, customY, customWidth, customHeight);
     
         _Window_BattleLog_initialize.call(this, customRect);
-    
+
         // --- MODIFICATIONS START ---
         this.frameVisible = false; // This line hides the window border.
         // --- MODIFICATIONS END ---
+
+        // Parallel to _lines: which pushed lines are toast-style (a purple
+        // background), i.e. a notification redirected here instead of a
+        // floating ParchmentToast while in battle. Kept in lockstep with
+        // _lines at every push/shift/clear site below.
+        this._lineToast = [];
 
         this._clearDuration = 0;
         this._logScrollYDuration = 0;
@@ -827,6 +838,7 @@ Window_BattleLog.prototype.drawLineText = function(index) {
     const sprite = this._logSprites[index + 1];
     if (sprite) {
         let text = this._lines[index];
+        sprite._isToast = !!(this._lineToast && this._lineToast[index]);
         sprite._htmlText = parseBattleLogTextToHtml(text);
     }
 };
@@ -838,7 +850,7 @@ Window_BattleLog.prototype.resetFontSettings = function() {
 };
 
     // Core functionality for log line management
-    Window_BattleLog.prototype.addText = function(text) {
+    Window_BattleLog.prototype.addText = function(text, isToast) {
         // Apply translation here if translateText is available globally
 
         if (typeof translateText === 'function') {
@@ -846,22 +858,31 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         }
         const coloredText = this.colorCharacterNames(text);
         const indentText = this.indentText(coloredText);
-        
+
         this._lines.push(indentText);
+        if (!this._lineToast) this._lineToast = [];
+        this._lineToast.push(!!isToast);
         if (this.numLines() > this.maxLines()) this.shiftLine();
-        
+
         $gameTemp.addBattleLog(indentText);
         const index = this.numLines() - 1;
         this._logSprites[index + 1].popup();
         this.drawLineText(index);
-        
+
         // Start scale in if window is hidden
         if (this._animationState === 'hidden' || this._animationState === 'scaling-out') {
             this.startScaleIn();
         }
-        
+
         this.wait();
         this._clearDuration = 0;
+    };
+
+    // A transient notification (ParchmentToast and friends, redirected here
+    // while in battle instead of floating over the HUD) drawn with a purple
+    // background so it still reads as a popup rather than a combat line.
+    Window_BattleLog.prototype.addToast = function(text) {
+        this.addText(text, true);
     };
 
     Window_BattleLog.prototype.appendToActionLine = function(text) {
@@ -882,6 +903,7 @@ Window_BattleLog.prototype.resetFontSettings = function() {
 
     Window_BattleLog.prototype.shiftLine = function() {
         this._lines.shift();
+        if (this._lineToast) this._lineToast.shift();
         const sprite = this._logSprites.shift();
         sprite.bitmap.clear();
         sprite._htmlText = '';
@@ -1095,6 +1117,22 @@ Window_BattleLog.prototype.resetFontSettings = function() {
                     el._sblCachedHeight = null;
                 }
 
+                // A notification redirected here from ParchmentToast wears a
+                // purple background so it still reads as a popup, not a
+                // combat line. Padding changes the measured height, so an
+                // actual flip invalidates the cache like a font-size change.
+                const isToast = !!sprite._isToast;
+                if (el._sblIsToast !== isToast) {
+                    el._sblIsToast = isToast;
+                    el._sblCachedHeight = null;
+                }
+                // rgba mirrors the theme's --border-purple-medium (#6a3aa0);
+                // an inline style can't resolve a CSS custom property reliably
+                // across every host page this window is drawn over.
+                _setStyleIfChanged(el, 'background', isToast ? 'rgba(106, 58, 160, 0.55)' : 'transparent');
+                _setStyleIfChanged(el, 'borderRadius', isToast ? '4px' : '0');
+                _setStyleIfChanged(el, 'padding', isToast ? '2px 6px' : '0');
+
                 // Update position and opacity matching the sprite (only on change)
                 _setStyleIfChanged(el, 'left', (sprite.x * sc.sx) + 'px');
                 _setStyleIfChanged(el, 'top', currentTop + 'px');
@@ -1179,6 +1217,7 @@ Window_BattleLog.prototype.resetFontSettings = function() {
     
     Window_BattleLog.prototype.clearSmoothBattleLog = function() {
         _Window_BattleLog_clear.call(this);
+        this._lineToast = [];
         for (const sprite of this._logSprites) {
             sprite.bitmap.clear();
             sprite._htmlText = '';
@@ -1190,6 +1229,7 @@ Window_BattleLog.prototype.resetFontSettings = function() {
     // Called at the start of each battler's action to replace the previous turn's log
     Window_BattleLog.prototype.clearForNewAction = function() {
         this._lines = [];
+        this._lineToast = [];
         if (this._baseLineStack) this._baseLineStack = [];
         for (const sprite of this._logSprites) {
             sprite.bitmap.clear();
@@ -1290,7 +1330,7 @@ Window_BattleLog.prototype.resetFontSettings = function() {
     }
 
     const _Window_BattleLog_addText = Window_BattleLog.prototype.addText;
-    Window_BattleLog.prototype.addText = function(text) {
+    Window_BattleLog.prototype.addText = function(text, isToast) {
       // Resolve embedded i18n dot-key paths before translating the full string
       // e.g. "enemyArchetypes.frog.tongue.msg" → "Tongue severed!" (player-hit part names)
       text = text.replace(/\benemyArchetypes(?:\.\w+)+/g, resolveArchetypeKey);
@@ -1298,7 +1338,7 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         text = translateText(text);
       }
       text = _replaceStars(text, this._currentSubject);
-      return _Window_BattleLog_addText.call(this, text);
+      return _Window_BattleLog_addText.call(this, text, isToast);
     };
     
     // Damage display with colored names

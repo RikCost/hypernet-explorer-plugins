@@ -6062,8 +6062,9 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         };
 
         // A build fetched and swapped in by an earlier visit to this screen (or
-        // by the updater itself) only wants the game restarted onto it. If it
-        // was a major update, the restart is not the end of it.
+        // by the updater itself) only wants the game closed so it reads the new
+        // files on the next launch. If it was a major update, closing is not
+        // the end of it.
         if (updaterCall('needsRestart')) {
             this._updateAction = 'restart';
             setUpdateLabel(btn, T('Titlescreen.update.restartReady'),
@@ -6139,20 +6140,23 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     };
 
     // Pressing the notice installs the build there and then: the newest commit
-    // is fetched, swapped in and the game restarted onto it, with the button
-    // itself reporting every step. The updater screen is still there under the
-    // menu for anyone who wants to read a build before taking it, or to go back
-    // to an older one, but the ordinary case never has to open it.
+    // is fetched, swapped in and the game closed so it comes back up onto it,
+    // with the button itself reporting every step. The updater screen is still
+    // there under the menu for anyone who wants to read a build before taking
+    // it, or to go back to an older one, but the ordinary case never has to
+    // open it.
     Scene_Title.prototype.startUpdateDownload = function () {
         if (this._updateBusy) return;
         const api = updaterApi();
         if (!api) return;
-        // Already fetched, waiting only on the restart.
+        // Already fetched, waiting only on the close. The label change is the
+        // player's warning that the game is about to shut down on its own;
+        // the delay holds it on screen long enough to be read before it does.
         if (updaterCall('needsRestart')) {
             SoundManager.playOk();
             this._updateBusy = true;
             if (this._updateButton) this._updateButton.textContent = T('Titlescreen.update.restarting');
-            setTimeout(() => updaterCall('restart'), 400);
+            setTimeout(() => updaterCall('restart'), 1600);
             return;
         }
         // The updater is working for somebody else (a check left running, or an
@@ -6229,9 +6233,12 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             return api.install(sha, onProgress);
         }).then((done) => {
             if (!done) return;
-            // A major update is not finished by the restart: the copy is patched
+            // A major update is not finished by closing: the copy is patched
             // but not whole, so say it here and hold the notice long enough to
-            // be read. It stands under the flags after the reload as well.
+            // be read. It stands under the flags on the next launch as well.
+            // Either way the label change IS the warning that the game is
+            // about to close on its own and has to be reopened by hand; the
+            // delay only holds it on screen long enough to actually be read.
             const major = !!updaterCall('majorInstalled');
             if (major) {
                 setUpdateLabel(btn, T('Titlescreen.update.restarting'), majorTakenLine());
@@ -6245,7 +6252,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             } else {
                 say(T('Titlescreen.update.restarting'));
             }
-            setTimeout(() => updaterCall('restart'), major ? 2600 : 700);
+            setTimeout(() => updaterCall('restart'), major ? 3000 : 1600);
         }).catch((err) => {
             console.warn('Titlescreen: the update could not be installed', err);
             release(T('Titlescreen.update.failed'), false);

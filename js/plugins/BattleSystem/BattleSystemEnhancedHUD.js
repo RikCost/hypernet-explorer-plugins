@@ -4298,6 +4298,296 @@
       }
     }
   };
+
+  //=============================================================================
+  // Battle Hotbar , Daggerfall-style quickbar of the acting member's first
+  // nine synced (carried) skills. Numbers 1-9 cast instantly; the bar itself
+  // can take keyboard/gamepad focus away from the actor command window with
+  // Left/Right, since that vertical list never uses horizontal input of its
+  // own (Window_ActorCommand.maxCols() is 1, so cursorLeft/cursorRight are
+  // already no-ops there). See window.BattleHotbar.
+  //=============================================================================
+  const HOTBAR_SLOTS = 9;
+  const HOTBAR_SLOT_PX = 52;
+  const HOTBAR_GAP_PX = 6;
+  const HOTBAR_ICON_PX = 32;
+  const HOTBAR_MARGIN_BOTTOM = 12; // how close the bar itself sits to the bottom edge
+  const HOTBAR_LOG_GAP = 56; // extra clearance kept between the log's own reserve and the bar
+
+  // MPP_SmoothBattleLog2.js reads this to keep the log clear of the bar.
+  window.BattleHotbar = window.BattleHotbar || {};
+  window.BattleHotbar.reservedHeight = HOTBAR_SLOT_PX + HOTBAR_MARGIN_BOTTOM + HOTBAR_LOG_GAP;
+
+  let _hotbarActive = false; // true once the bar, rather than the command list, owns direction input
+  let _hotbarIndex = 0;
+  let _hotbarActor = null;
+  // Window_ActorCommand.processCursorMove hands off focus on the same Left/
+  // Right press that updateBattleHotbar (later in the very same frame) would
+  // otherwise also read as a repeat and step again; this eats that one frame.
+  let _hotbarJustActivated = false;
+
+  function _hotbarSkills(actor) {
+    if (!actor || !window.BattleLoadout) return [];
+    return window.BattleLoadout.ids(actor)
+      .slice(0, HOTBAR_SLOTS)
+      .map(id => $dataSkills[id])
+      .filter(Boolean);
+  }
+
+  function _hotbarRoot() {
+    let root = document.getElementById('html-hotbar-overlay');
+    if (!root) {
+      root = document.createElement('div');
+      root.id = 'html-hotbar-overlay';
+      root.style.cssText =
+        'position:fixed;display:none;z-index:352;pointer-events:auto;' +
+        'flex-direction:row;transform-origin:top left;';
+      document.body.appendChild(root);
+
+      // RPG Maker's TouchInput listens on `document` itself and only checks
+      // page coordinates, never the DOM target, so a click anywhere over the
+      // bar (which sits on top of the game canvas) would otherwise still
+      // register as a canvas click and fall through to whatever the actor
+      // command window currently has highlighted (MouseControls.js). Stopping
+      // it here, before it bubbles past the bar, is what keeps a hotbar click
+      // from also re-triggering Attack or the selected command.
+      const swallow = (e) => e.stopPropagation();
+      for (const type of ['mousedown', 'mouseup', 'touchstart', 'touchend']) {
+        root.addEventListener(type, swallow);
+      }
+    }
+    return root;
+  }
+
+  function _hotbarTooltipEl() {
+    let el = document.getElementById('html-hotbar-tooltip');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'html-hotbar-tooltip';
+      el.className = 'hotbar-tooltip';
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+
+  // The tooltip shows the skill's name and its cost only, nothing else.
+  function _hotbarShowTooltip(actor, skill, slotEl) {
+    const tip = _hotbarTooltipEl();
+    let costText = '';
+    if (actor.skillTpCost(skill) > 0) {
+      costText = `${actor.skillTpCost(skill)} ${TextManager.tp}`;
+    } else if (actor.skillMpCost(skill) > 0) {
+      costText = `${actor.skillMpCost(skill)} ${TextManager.mp}`;
+    }
+    tip.textContent = costText ? `${skill.name} — ${costText}` : skill.name;
+    const r = slotEl.getBoundingClientRect();
+    tip.style.left = (r.left + r.width / 2) + 'px';
+    tip.style.top = r.top + 'px';
+    tip.style.display = 'block';
+  }
+
+  function _hotbarHideTooltip() {
+    const tip = document.getElementById('html-hotbar-tooltip');
+    if (tip) tip.style.display = 'none';
+  }
+
+  // Casts exactly the way choosing the skill from the ordinary skill list
+  // and confirming it would (Scene_Battle.prototype.onSkillOk): the skill
+  // and item windows are stood down first since either may be sitting open
+  // underneath the bar.
+  function _hotbarUseSkill(actor, skill) {
+    const scene = SceneManager._scene;
+    if (!(scene instanceof Scene_Battle)) return false;
+    if (!BattleManager.isInputting() || BattleManager.actor() !== actor) return false;
+    const action = BattleManager.inputtingAction();
+    if (!action) return false;
+    if (!actor.canUse(skill)) {
+      SoundManager.playBuzzer();
+      return false;
+    }
+    if (scene._skillWindow) { scene._skillWindow.deactivate(); scene._skillWindow.hide(); }
+    if (scene._itemWindow) { scene._itemWindow.deactivate(); scene._itemWindow.hide(); }
+    _hotbarActive = false;
+    action.setSkill(skill.id);
+    actor.setLastBattleSkill(skill);
+    SoundManager.playOk();
+    scene.onSelectAction();
+    return true;
+  }
+
+  function _buildHotbarSlots(actor, skills) {
+    const root = _hotbarRoot();
+    root.innerHTML = '';
+    for (let i = 0; i < HOTBAR_SLOTS; i++) {
+      const skill = skills[i];
+      const usable = skill && actor.canUse(skill);
+      const slot = document.createElement('div');
+      slot.className = 'hotbar-slot' +
+        (!skill ? ' empty' : (usable ? '' : ' disabled')) +
+        (_hotbarActive && i === _hotbarIndex ? ' selected' : '');
+      slot.style.width = HOTBAR_SLOT_PX + 'px';
+      slot.style.height = HOTBAR_SLOT_PX + 'px';
+
+      const num = document.createElement('div');
+      num.className = 'hotbar-num';
+      num.textContent = String(i + 1);
+      slot.appendChild(num);
+
+      if (skill) {
+        const icon = document.createElement('div');
+        icon.className = 'hotbar-icon';
+        icon.style.width = HOTBAR_ICON_PX + 'px';
+        icon.style.height = HOTBAR_ICON_PX + 'px';
+        const col = skill.iconIndex % 16;
+        const row = Math.floor(skill.iconIndex / 16);
+        icon.style.backgroundPosition = `${-col * HOTBAR_ICON_PX}px ${-row * HOTBAR_ICON_PX}px`;
+        slot.appendChild(icon);
+
+        slot.style.cursor = 'pointer';
+        slot.addEventListener('mouseenter', () => _hotbarShowTooltip(actor, skill, slot));
+        slot.addEventListener('mouseleave', _hotbarHideTooltip);
+        slot.addEventListener('pointerup', (e) => {
+          if (e.button !== undefined && e.button !== 0) return;
+          _hotbarUseSkill(actor, skill);
+        });
+      }
+
+      root.appendChild(slot);
+    }
+  }
+
+  function _updateHotbarPosition(actor, skills) {
+    const root = _hotbarRoot();
+    const width = HOTBAR_SLOTS * HOTBAR_SLOT_PX + (HOTBAR_SLOTS - 1) * HOTBAR_GAP_PX;
+    // Centered on the whole screen, not just the (off-center) log column, and
+    // held well clear of the log above it (see HOTBAR_LOG_GAP).
+    const x = (Graphics.width - width) / 2;
+    const yOffset = Math.floor((Graphics.height - Graphics.boxHeight) / 2);
+    const y = Graphics.height - HOTBAR_SLOT_PX - HOTBAR_MARGIN_BOTTOM - yOffset;
+
+    const key = actor.actorId() + ':' + skills.map(s => s.id + (actor.canUse(s) ? 'u' : 'd')).join(',') +
+      ':' + _hotbarActive + ':' + _hotbarIndex;
+    if (root.dataset.key !== key) {
+      root.dataset.key = key;
+      _buildHotbarSlots(actor, skills);
+    }
+    const sc = _hudGetScale();
+    root.style.display = 'flex';
+    root.style.gap = HOTBAR_GAP_PX + 'px';
+    root.style.left = (sc.ox + x * sc.sx) + 'px';
+    root.style.top = (sc.oy + y * sc.sy) + 'px';
+    root.style.transform = `scale(${sc.sx}, ${sc.sy})`;
+
+    // Dim the command list while the bar holds direction focus, so it never
+    // reads as two things arguing over which is selected.
+    const cmdRoot = document.getElementById('html-actorcmd-overlay');
+    if (cmdRoot) cmdRoot.style.opacity = _hotbarActive ? '0.55' : '';
+  }
+
+  function _hideHotbar() {
+    const root = document.getElementById('html-hotbar-overlay');
+    if (root) root.style.display = 'none';
+    _hotbarHideTooltip();
+    const cmdRoot = document.getElementById('html-actorcmd-overlay');
+    if (cmdRoot) cmdRoot.style.opacity = '';
+  }
+
+  const _Scene_Battle_update_hotbar = Scene_Battle.prototype.update;
+  Scene_Battle.prototype.update = function () {
+    _Scene_Battle_update_hotbar.call(this);
+    this.updateBattleHotbar();
+  };
+
+  Scene_Battle.prototype.updateBattleHotbar = function () {
+    // The card battle layer (RoguelikeCardSystem.js) plays skills as a hand
+    // of cards instead, so the two never share the screen.
+    if (window.isCardCombatMode && window.isCardCombatMode()) {
+      _hideHotbar();
+      return;
+    }
+    const actor = BattleManager.actor();
+    const inputting = !!actor && BattleManager.isInputting() && !$gameMessage.isBusy();
+    if (!inputting) {
+      if (_hotbarActor) { _hotbarActive = false; _hotbarActor = null; }
+      _hideHotbar();
+      return;
+    }
+    if (actor !== _hotbarActor) {
+      _hotbarActor = actor;
+      _hotbarActive = false;
+      _hotbarIndex = 0;
+    }
+    const skills = _hotbarSkills(actor);
+    if (skills.length === 0) {
+      _hideHotbar();
+      return;
+    }
+
+    // Instant-cast hotkeys work whether or not the bar itself has focus.
+    for (let i = 0; i < HOTBAR_SLOTS; i++) {
+      if (skills[i] && Input.isTriggered(String(i + 1))) {
+        _hotbarUseSkill(actor, skills[i]);
+        return;
+      }
+    }
+
+    if (_hotbarActive) {
+      if (_hotbarJustActivated) {
+        // The keypress that handed focus over was already consumed by
+        // Window_ActorCommand.processCursorMove this same frame.
+        _hotbarJustActivated = false;
+      } else if (Input.isTriggered('cancel') || Input.isTriggered('up')) {
+        _hotbarActive = false;
+        SoundManager.playCancel();
+      } else if (Input.isRepeated('left')) {
+        _hotbarIndex = (_hotbarIndex - 1 + skills.length) % skills.length;
+        SoundManager.playCursor();
+      } else if (Input.isRepeated('right')) {
+        _hotbarIndex = (_hotbarIndex + 1) % skills.length;
+        SoundManager.playCursor();
+      } else if (Input.isTriggered('ok')) {
+        _hotbarUseSkill(actor, skills[_hotbarIndex]);
+      }
+    }
+
+    _updateHotbarPosition(actor, skills);
+  };
+
+  const _Scene_Battle_terminate_hotbar = Scene_Battle.prototype.terminate;
+  Scene_Battle.prototype.terminate = function () {
+    _hotbarActive = false;
+    _hotbarActor = null;
+    _hideHotbar();
+    _Scene_Battle_terminate_hotbar.call(this);
+  };
+
+  // Left/Right hand focus to the bar from the actor command list, entering
+  // on its last carried skill or its first respectively; every other key
+  // (up/down/ok/cancel) is untouched. While the bar holds focus the list's
+  // own cursor movement and OK/Cancel are suspended so the two never fight
+  // over the same key press.
+  const _Window_ActorCommand_processCursorMove_hotbar = Window_ActorCommand.prototype.processCursorMove;
+  Window_ActorCommand.prototype.processCursorMove = function () {
+    if (_hotbarActive) return;
+    const cardMode = window.isCardCombatMode && window.isCardCombatMode();
+    if (!cardMode && this.isCursorMovable() && (Input.isTriggered('left') || Input.isTriggered('right'))) {
+      const skills = _hotbarSkills(this._actor);
+      if (skills.length > 0) {
+        _hotbarActive = true;
+        _hotbarJustActivated = true;
+        _hotbarIndex = Input.isTriggered('left') ? skills.length - 1 : 0;
+        SoundManager.playCursor();
+        return;
+      }
+    }
+    _Window_ActorCommand_processCursorMove_hotbar.call(this);
+  };
+
+  const _Window_ActorCommand_processHandling_hotbar = Window_ActorCommand.prototype.processHandling;
+  Window_ActorCommand.prototype.processHandling = function () {
+    if (_hotbarActive) return;
+    _Window_ActorCommand_processHandling_hotbar.call(this);
+  };
 })();
 
 //=============================================================================

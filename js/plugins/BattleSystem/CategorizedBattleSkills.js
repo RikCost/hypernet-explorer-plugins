@@ -1065,7 +1065,18 @@
     const _Window_BattleSkill_refresh = Window_BattleSkill.prototype.refresh;
     Window_BattleSkill.prototype.refresh = function () {
         _Window_BattleSkill_refresh.call(this);
-        if (this._htmlSkillRoot) {
+        if (!this._htmlSkillRoot) return;
+        // An MP/TP tick (Window_SkillList's own watcher, inherited into this
+        // window's update loop) calls refresh() on whatever timer fires it,
+        // including while an ally-scoped skill has handed this panel over to
+        // _buildActorTargetItems. Rebuilding the ordinary skill list here threw
+        // that hand-over away mid-pick: _actorTargetWindow went null, so the
+        // delegated click handler fell back to this (inactive) window and every
+        // mouse click on a party row silently did nothing, while OK/gamepad
+        // input kept working because it talks to Window_BattleActor directly.
+        if (this._actorTargetWindow && this._actorTargetWindow.active) {
+            this._buildActorTargetItems(this._actorTargetWindow);
+        } else {
             this._buildSkillItems();
         }
     };

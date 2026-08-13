@@ -38,66 +38,11 @@
         Input.keyMapper[52] = "4"; // 4 key
         Input.keyMapper[53] = "5"; // 5 key
     };    // Add number key handler function
-    Scene_Battle.prototype.handleNumberKeys = function() {
-        // Check for number keys 1-5
-        for (let i = 1; i <= 5; i++) {
-            if (Input.isTriggered(i.toString())) {
-                this.processNumberKeyCommand(i - 1); // Convert to 0-based index
-            }
-        }
-    };
-    
-    // Process the command selected by number key
-    Scene_Battle.prototype.processNumberKeyCommand = function(index) {
-        // In actor command window (Attack, Magic, etc.)
-        if (this._actorCommandWindow.active) {
-            if (index < this._actorCommandWindow.maxItems()) {
-                this._actorCommandWindow.select(index);
-                this._actorCommandWindow.processOk();
-                SoundManager.playOk();
-            }
-        }
-        // In skill window
-        else if (this._skillWindow && this._skillWindow.active) {
-            if (index < this._skillWindow.maxItems()) {
-                this._skillWindow.select(index);
-                this._skillWindow.processOk();
-                SoundManager.playOk();
-            }
-        }
-        // In item window
-        else if (this._itemWindow && this._itemWindow.active) {
-            if (index < this._itemWindow.maxItems()) {
-                this._itemWindow.select(index);
-                this._itemWindow.processOk();
-                SoundManager.playOk();
-            }
-        }
-        // In enemy selection window
-        else if (this._enemyWindow && this._enemyWindow.active) {
-            if (index < this._enemyWindow.maxItems()) {
-                this._enemyWindow.select(index);
-                this._enemyWindow.processOk();
-                SoundManager.playOk();
-            }
-        }
-        // In actor selection window
-        else if (this._actorWindow && this._actorWindow.active) {
-            if (index < this._actorWindow.maxItems()) {
-                this._actorWindow.select(index);
-                this._actorWindow.processOk();
-                SoundManager.playOk();
-            }
-        }
-        // In party command window
-        else if (this._partyCommandWindow.active) {
-            if (index < this._partyCommandWindow.maxItems()) {
-                this._partyCommandWindow.select(index);
-                this._partyCommandWindow.processOk();
-                SoundManager.playOk();
-            }
-        }
-    };
+    // Superseded by the battle hotbar (BattleSystemEnhancedHUD.js), which
+    // casts the acting member's synced skills directly off 1-9. Leaving this
+    // active would double-fire: it used to select+confirm whatever row sat
+    // at that index in the currently active window, on the same keypress.
+    Scene_Battle.prototype.handleNumberKeys = function() {};
 
     //=============================================================================
     // Mouse Input Extension
