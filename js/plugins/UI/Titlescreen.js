@@ -48,7 +48,7 @@
 * @text Version Text
 * @desc Build label shown in the top-left corner of the title screen. Leave empty to hide the badge.
 * @type string
-* @default 0.0.1a - experimental
+* @default 0.2.0a - experimental
 *
 * @help
 * -----------------------------------------------------------------------------

@@ -595,7 +595,7 @@
         },
 
         // Writes the build number into the third field of a version string
-        // ("0.0.1a - experimental" -> "0.0.42a - experimental"). A copy with no
+        // ("0.2.0a - experimental" -> "0.0.42a - experimental"). A copy with no
         // build number keeps the string exactly as it was written.
         applyBuildNumber(text) {
             const build = this.buildNumber();
@@ -608,7 +608,7 @@
         // A build whose commit message is itself a version ("0.0.3a", "v1.2.0")
         // already names the build outright. Returns that version, so the badge
         // can show it alone instead of hanging it off the shipped number as a
-        // second version ("0.0.1a - 0.0.3a").
+        // second version ("0.2.0a - 0.0.3a").
         _versionName(name) {
             const m = String(name || '').trim().match(/^v?(\d+\.\d+\.\d+[A-Za-z]*)$/);
             return m ? m[1] : null;
