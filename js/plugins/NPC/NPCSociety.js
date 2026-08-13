@@ -914,7 +914,11 @@
       const norm = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
       const target = norm(hometown);
       let matched = !!groupName && norm(groupName) === target;
-      if (!matched && typeof $gameMap !== "undefined" && $gameMap && $gameMap.displayName) {
+      // $gameMap.displayName() reads $dataMap, which is not loaded yet during
+      // Game_System.onAfterLoad (this runs before the map JSON is fetched), so
+      // that has to be checked too or the call throws.
+      if (!matched && typeof $gameMap !== "undefined" && $gameMap && $gameMap.displayName &&
+          typeof $dataMap !== "undefined" && $dataMap) {
         // Strip the " Lv. N" / "[Tileset: ...]" suffixes MapLevelDisplay.js
         // appends to displayName() so only the place name itself is compared.
         const mapName = String($gameMap.displayName() || "")

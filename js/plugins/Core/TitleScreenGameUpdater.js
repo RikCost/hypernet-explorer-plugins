@@ -2048,19 +2048,22 @@
 
         // Titlescreen.js draws its own DOM list from getTitleCommandText and maps
         // the clicked index straight onto the command window, so the entry has to
-        // be spliced into BOTH lists at the very same place or a click fires the
-        // wrong handler. Whether that method exists yet depends on the order the
-        // two plugins are listed in, so the patch is installed when the title
-        // screen is built rather than when this file is read. A build with no
-        // such overlay (Titlescreen turned off) simply has one list to patch.
-        let overlayPatched = false;
-        const patchOverlayList = function () {
-            if (overlayPatched) return;
-            const proto = Scene_Title.prototype;
-            if (typeof proto.getTitleCommandText !== 'function') return;
-            overlayPatched = true;
-            const _getTitleCommandText = proto.getTitleCommandText;
-            proto.getTitleCommandText = function () {
+        // be spliced into BOTH lists at the very same relative place, i.e. this
+        // wrap has to sit in the same position in the getTitleCommandText chain
+        // that the makeCommandList wrap above sits in that chain. That means
+        // patching here immediately, at load time, exactly like the
+        // makeCommandList wrap does: a deferred patch (installed on first
+        // createCommandWindow) used to run AFTER a later-loaded plugin
+        // (TitleMenuCreditsSettings) had already wrapped getTitleCommandText,
+        // which put Credits before Updates in the DOM overlay while
+        // makeCommandList still had Updates before Credits in the real command
+        // list - the overlay's click index then landed on the other entry's
+        // handler. Titlescreen.js is guaranteed to have already defined the
+        // base getTitleCommandText by the time this file runs (it loads
+        // earlier in plugins.js), so the method is already there to wrap.
+        if (typeof Scene_Title.prototype.getTitleCommandText === 'function') {
+            const _getTitleCommandText = Scene_Title.prototype.getTitleCommandText;
+            Scene_Title.prototype.getTitleCommandText = function () {
                 const commands = _getTitleCommandText.call(this);
                 const at = commands.findIndex(c => c.symbol === 'exitGame');
                 const entry = { text: getT().menu, symbol: 'gameUpdater' };
@@ -2068,11 +2071,10 @@
                 else commands.push(entry);
                 return commands;
             };
-        };
+        }
 
         const _createCommandWindow = Scene_Title.prototype.createCommandWindow;
         Scene_Title.prototype.createCommandWindow = function () {
-            patchOverlayList();
             _createCommandWindow.call(this);
             this._commandWindow.setHandler('gameUpdater', this.commandGameUpdater.bind(this));
         };

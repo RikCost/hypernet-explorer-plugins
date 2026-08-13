@@ -3259,6 +3259,23 @@
     // ========================================================================
     // Party formation hooks
     // ========================================================================
+    // 0) Map 315 (the world map) draws the party as a single dot, whatever the
+    //    formation: a marching Close column or a scattered Loose one would both
+    //    show human-scale sprites on a screen where one tile is a whole region.
+    //    Followers are hidden by opacity rather than by blanking their image
+    //    (Game_Follower.refresh only reruns on specific triggers, so an
+    //    isVisible()-driven approach would not react to a plain map transfer),
+    //    the same trick SplitScreenMultiplayer.js uses to hide Player 2's.
+    const _Game_Followers_update_worldMap = Game_Followers.prototype.update;
+    Game_Followers.prototype.update = function () {
+        const onWorldMap = $gameMap && $gameMap.mapId() === 315;
+        const targetOpacity = onWorldMap ? 0 : 255;
+        for (const follower of this._data) {
+            if (follower.opacity() !== targetOpacity) follower.setOpacity(targetOpacity);
+        }
+        _Game_Followers_update_worldMap.call(this);
+    };
+
     // 1) The chase itself. In Loose the rope is cut, except while the party is
     //    being called in (a running leader, or an event's Gather Party).
     const _Game_Followers_updateMove_loose = Game_Followers.prototype.updateMove;

@@ -749,6 +749,54 @@
     return sprite;
   }
 
+  // A dedicated look for the Milky Way's own Local Group billboard: the same
+  // bright-core-plus-halo glow every galaxy sprite gets, but with a warm
+  // bar and a few faint logarithmic-spiral arm streaks drawn over it, so our
+  // own galaxy reads as a barred spiral at a glance instead of the same
+  // featureless blob every other billboard in the view is.
+  function milkyWayBillboardTexture() {
+    const s = 160;
+    const cv = document.createElement("canvas");
+    cv.width = cv.height = s;
+    const ctx = cv.getContext("2d");
+    const cx = s / 2, cy = s / 2;
+    radialFill(ctx, cx, cy, s * 0.5, [
+      [0, "rgba(255,255,255,1)"], [0.14, "rgba(255,244,214,0.9)"],
+      [0.4, "rgba(150,180,255,0.32)"], [1, "rgba(0,0,0,0)"],
+    ]);
+    ctx.filter = "blur(2.5px)";
+    const arms = 3;
+    for (let a = 0; a < arms; a++) {
+      ctx.strokeStyle = a % 2 === 0 ? "rgba(190,210,255,0.42)" : "rgba(255,235,205,0.32)";
+      ctx.lineWidth = s * 0.05;
+      ctx.beginPath();
+      const base = (a / arms) * Math.PI * 2;
+      for (let t = 0, first = true; t <= 1; t += 0.08) {
+        const ang = base + t * 2.6;
+        const r = s * 0.06 + t * s * 0.4;
+        const x = cx + Math.cos(ang) * r, y = cy + Math.sin(ang) * r * 0.55;
+        if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ctx.filter = "none";
+    // Warm bar across the core.
+    radialFill(ctx, cx, cy, s * 0.16, [
+      [0, "rgba(255,248,224,0.95)"], [0.6, "rgba(255,222,170,0.5)"], [1, "rgba(0,0,0,0)"],
+    ]);
+    return new THREE.CanvasTexture(cv);
+  }
+
+  function milkyWayLocalGroupBillboard(sx, sy) {
+    const mat = new THREE.SpriteMaterial({
+      map: milkyWayBillboardTexture(), transparent: true, depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    const sprite = new THREE.Sprite(mat);
+    sprite.scale.set(sx, sy, 1);
+    return sprite;
+  }
+
   function pointCloud(positions, colors, size, opacity, crisp) {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -817,6 +865,85 @@
       { name: "Small Magellanic Cloud", type: "dwarf irregular galaxy",
         diameter: "18,900 ly", stars: "~3 billion", distance: "199 kly" },
     ],
+    // The rest of the Local Group: real named dwarf satellites, in place of
+    // what used to be unlabeled procedural filler (see buildLocalGroup).
+    // `assoc` is a placement hint, not display copy: "mw" scatters around
+    // the Milky Way's own billboard by real Sun-distance, "m31" clusters
+    // tightly around Andromeda's billboard instead (real Sun-distances for
+    // Andromeda's satellites differ from Andromeda's own by only a fraction
+    // of what this view's scale would resolve, so what actually reads right
+    // is "near M31", not the noise in exactly how near), and "iso" scatters
+    // by Sun-distance like the Milky Way's own satellites. A number of the
+    // faintest recently catalogued dwarfs are left out rather than guessed
+    // at; distances are approximate, from the Sun, in thousand light-years.
+    localGroupDwarfs: [
+      { name: "Sagittarius Dwarf Spheroidal", type: "dwarf spheroidal galaxy", assoc: "mw", distKly: 70,
+        diameter: "~3,000 ly", stars: "~tens of millions", distance: "70 kly" },
+      { name: "Ursa Minor Dwarf", type: "dwarf spheroidal galaxy", assoc: "mw", distKly: 200,
+        diameter: "~1,300 ly", stars: "~a few million", distance: "200 kly" },
+      { name: "Draco Dwarf", type: "dwarf spheroidal galaxy", assoc: "mw", distKly: 250,
+        diameter: "~1,100 ly", stars: "~a few million", distance: "250 kly" },
+      { name: "Sculptor Dwarf", type: "dwarf spheroidal galaxy", assoc: "mw", distKly: 290,
+        diameter: "~1,700 ly", stars: "~a few million", distance: "290 kly" },
+      { name: "Sextans Dwarf", type: "dwarf spheroidal galaxy", assoc: "mw", distKly: 290,
+        diameter: "~3,500 ly", stars: "~a few million", distance: "290 kly" },
+      { name: "Carina Dwarf", type: "dwarf spheroidal galaxy", assoc: "mw", distKly: 330,
+        diameter: "~1,600 ly", stars: "~a few million", distance: "330 kly" },
+      { name: "Fornax Dwarf", type: "dwarf spheroidal galaxy", assoc: "mw", distKly: 460,
+        diameter: "~3,000 ly", stars: "~tens of millions", distance: "460 kly" },
+      { name: "Leo II", type: "dwarf spheroidal galaxy", assoc: "mw", distKly: 700,
+        diameter: "~1,700 ly", stars: "~a few million", distance: "700 kly" },
+      { name: "Leo I", type: "dwarf spheroidal galaxy", assoc: "mw", distKly: 820,
+        diameter: "~2,000 ly", stars: "~tens of millions", distance: "820 kly" },
+      { name: "Phoenix Dwarf", type: "dwarf irregular galaxy", assoc: "mw", distKly: 860,
+        diameter: "~2,000 ly", stars: "~a few million", distance: "860 kly" },
+      { name: "Antlia Dwarf", type: "dwarf spheroidal galaxy", assoc: "iso", distKly: 1290,
+        diameter: "~1,300 ly", stars: "~a few million", distance: "1,290 kly" },
+      { name: "NGC 6822 (Barnard's Galaxy)", type: "dwarf irregular galaxy", assoc: "iso", distKly: 1630,
+        diameter: "~7,000 ly", stars: "~billions", distance: "1,630 kly" },
+      { name: "Cetus Dwarf", type: "dwarf spheroidal galaxy", assoc: "iso", distKly: 2460,
+        diameter: "~1,400 ly", stars: "~a few million", distance: "2.46 Mly" },
+      { name: "Leo A", type: "dwarf irregular galaxy", assoc: "iso", distKly: 2600,
+        diameter: "~2,500 ly", stars: "~tens of millions", distance: "2.6 Mly" },
+      { name: "Tucana Dwarf", type: "dwarf spheroidal galaxy", assoc: "iso", distKly: 2870,
+        diameter: "~1,600 ly", stars: "~a few million", distance: "2.87 Mly" },
+      { name: "WLM (Wolf-Lundmark-Melotte)", type: "dwarf irregular galaxy", assoc: "iso", distKly: 3000,
+        diameter: "~8,000 ly", stars: "~hundreds of millions", distance: "3 Mly" },
+      { name: "Pegasus Dwarf Irregular", type: "dwarf irregular galaxy", assoc: "iso", distKly: 3000,
+        diameter: "~3,000 ly", stars: "~tens of millions", distance: "3 Mly" },
+      { name: "Aquarius Dwarf", type: "dwarf irregular galaxy", assoc: "iso", distKly: 3250,
+        diameter: "~3,500 ly", stars: "~a few million", distance: "3.25 Mly" },
+      { name: "Sagittarius Dwarf Irregular", type: "dwarf irregular galaxy", assoc: "iso", distKly: 3530,
+        diameter: "~2,000 ly", stars: "~a few million", distance: "3.53 Mly" },
+      { name: "NGC 3109", type: "dwarf irregular galaxy", assoc: "iso", distKly: 4340,
+        diameter: "~19,000 ly", stars: "~hundreds of millions", distance: "4.34 Mly" },
+      { name: "Sextans A", type: "dwarf irregular galaxy", assoc: "iso", distKly: 4300,
+        diameter: "~5,000 ly", stars: "~tens of millions", distance: "4.3 Mly" },
+      { name: "Sextans B", type: "dwarf irregular galaxy", assoc: "iso", distKly: 4520,
+        diameter: "~5,700 ly", stars: "~tens of millions", distance: "4.52 Mly" },
+      { name: "M32 (NGC 221)", type: "compact elliptical galaxy", assoc: "m31", distKly: 2490,
+        diameter: "~6,500 ly", stars: "~a few billion", distance: "2.49 Mly" },
+      { name: "M110 (NGC 205)", type: "dwarf elliptical galaxy", assoc: "m31", distKly: 2490,
+        diameter: "~17,000 ly", stars: "~tens of billions", distance: "2.49 Mly" },
+      { name: "NGC 147", type: "dwarf spheroidal galaxy", assoc: "m31", distKly: 2530,
+        diameter: "~10,000 ly", stars: "~hundreds of millions", distance: "2.53 Mly" },
+      { name: "NGC 185", type: "dwarf spheroidal galaxy", assoc: "m31", distKly: 2080,
+        diameter: "~8,000 ly", stars: "~hundreds of millions", distance: "2.08 Mly" },
+      { name: "IC 10", type: "dwarf irregular (starburst) galaxy", assoc: "m31", distKly: 2200,
+        diameter: "~5,000 ly", stars: "~hundreds of millions", distance: "2.2 Mly" },
+      { name: "IC 1613", type: "dwarf irregular galaxy", assoc: "m31", distKly: 2380,
+        diameter: "~10,000 ly", stars: "~hundreds of millions", distance: "2.38 Mly" },
+      { name: "Andromeda I", type: "dwarf spheroidal galaxy", assoc: "m31", distKly: 2400,
+        diameter: "~2,000 ly", stars: "~a few million", distance: "2.4 Mly" },
+      { name: "Andromeda II", type: "dwarf spheroidal galaxy", assoc: "m31", distKly: 1750,
+        diameter: "~2,300 ly", stars: "~tens of millions", distance: "1.75 Mly" },
+      { name: "Andromeda III", type: "dwarf spheroidal galaxy", assoc: "m31", distKly: 2440,
+        diameter: "~1,600 ly", stars: "~a few million", distance: "2.44 Mly" },
+      { name: "Andromeda VI (Pegasus Dwarf Spheroidal)", type: "dwarf spheroidal galaxy", assoc: "m31", distKly: 2280,
+        diameter: "~1,600 ly", stars: "~a few million", distance: "2.28 Mly" },
+      { name: "Andromeda VII (Cassiopeia Dwarf)", type: "dwarf spheroidal galaxy", assoc: "m31", distKly: 2320,
+        diameter: "~3,000 ly", stars: "~tens of millions", distance: "2.32 Mly" },
+    ],
     supercluster: [
       { name: "Local Group", type: "galaxy group", kind: "cluster", home: true,
         diameter: "10 Mly", members: "~80 galaxies", distance: "0 (home)" },
@@ -855,6 +982,7 @@
       list.forEach((data) => out.push({ scale, kind: data.kind || "galaxy", data }));
     };
     push(M.SCALE_LOCAL_GROUP, CAT.localGroup);
+    push(M.SCALE_LOCAL_GROUP, CAT.localGroupDwarfs);
     push(M.SCALE_SUPERCLUSTER, CAT.supercluster);
     push(M.SCALE_OBSERVABLE, CAT.observable);
     push(M.SCALE_UNIVERSE_SPHERE, CAT.universe);
@@ -872,7 +1000,11 @@
     const pickables = [];
 
     // Milky Way (home) at the origin + Andromeda + Triangulum + Magellanic.
-    const mw = galaxyBillboard("rgba(255,245,220,0.95)", "rgba(150,180,255,0.4)", 220, 130);
+    // Our own galaxy gets a dedicated look (see milkyWayLocalGroupBillboard)
+    // rather than the plain radial-gradient blob every other galaxy sprite
+    // uses, so it reads as itself - a barred spiral with real arm structure
+    // - at a glance instead of blending into the crowd.
+    const mw = milkyWayLocalGroupBillboard(220, 130);
     group.add(mw);
     addPickable(pickables, mw, 110, CAT.localGroup[0]);
     const andromeda = galaxyBillboard("rgba(255,240,210,0.95)", "rgba(160,190,255,0.4)", 300, 170);
@@ -891,8 +1023,35 @@
       addPickable(pickables, lmc, 25 - i * 7, CAT.localGroup[3 + i]);
     });
 
-    // ~55 dwarf galaxies + an intergalactic point haze.
-    scatterGalaxies(group, 55, 900, rnd, GAL_PALETTE, [16, 46]);
+    // The rest of the Local Group: real named dwarf satellites (see
+    // CAT.localGroupDwarfs) in place of what used to be 55 unlabeled
+    // procedural filler galaxies. Andromeda's own satellites cluster tightly
+    // around its billboard; the Milky Way's satellites and the isolated
+    // members scatter around the origin by their real Sun-distance instead
+    // (see the comment on CAT.localGroupDwarfs for why the two are placed
+    // differently).
+    const KLY_SCALE = 0.18;
+    CAT.localGroupDwarfs.forEach((d) => {
+      const sz = 10 + rnd() * 16;
+      const pal = GAL_PALETTE[(rnd() * GAL_PALETTE.length) | 0];
+      const gb = galaxyBillboard(pal[0], pal[1], sz, sz * (0.6 + rnd() * 0.4));
+      gb.material.rotation = rnd() * Math.PI;
+      const u = rnd() * 2 - 1, th = rnd() * Math.PI * 2, s = Math.sqrt(1 - u * u);
+      if (d.assoc === "m31") {
+        const r = 45 + rnd() * 170;
+        gb.position.set(
+          andromeda.position.x + Math.cos(th) * s * r,
+          andromeda.position.y + u * r * 0.6,
+          andromeda.position.z + Math.sin(th) * s * r);
+      } else {
+        const r = Math.max(20, d.distKly * KLY_SCALE);
+        gb.position.set(Math.cos(th) * s * r, u * r * 0.7, Math.sin(th) * s * r);
+      }
+      group.add(gb);
+      addPickable(pickables, gb, Math.max(sz * 0.6, 9), d);
+    });
+
+    // An intergalactic point haze - ambient dust, not a galaxy of its own.
     {
       const n = 2200;
       const pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
@@ -1236,10 +1395,23 @@
       group.add(neb.group);
       nebulae.push(neb);
     }
+    // Nucleus glow: reads as a soft bloom when the whole galaxy is in frame,
+    // but a sprite this size sits far closer than its edge once the camera
+    // enters the bulge, which used to whiteout the screen. Fade it out toward
+    // the centre exactly like buildMilkyWay's own bloom (same NEAR/FAR ratio
+    // to disk radius), so it dims rather than blinds on the way in.
+    let glowFade = null;
     {
       const glow = makeHighlightSprite("rgba(255,238,196,0.9)");
       glow.sprite.scale.set(Rbulge * 1.7, Rbulge * 1.7, 1);
       group.add(glow.sprite);
+      const GLOW_NEAR = Rdisk * 0.85, GLOW_FAR = Rdisk * 1.8;
+      glowFade = (d) => {
+        const t = Math.max(0, Math.min(1, (d - GLOW_NEAR) / (GLOW_FAR - GLOW_NEAR)));
+        glow.mat.opacity = t;
+        glow.sprite.visible = t > 0.01;
+      };
+      glowFade(0);
     }
     // The central hole. Only the radio-loud minority of galaxies get a beam,
     // decided by this galaxy's own seed, and it stays short so it punctuates the
@@ -1303,6 +1475,7 @@
       dispose: () => disposeObject3D(group),
       radius: Rdisk * 1.35,
       arms, barred,
+      setZoomDistance: (d) => { if (glowFade) glowFade(d); },
     };
   }
 
@@ -1948,6 +2121,69 @@
     return { tick };
   }
 
+  // Screen-space gravitational lensing pass, shared with the title screen's
+  // Hyperverse background (Titlescreen.js), which pioneered it: the sky behind
+  // a black hole that sits dead centre in frame is rendered on its own, this
+  // shader bends it, and the hole is drawn crisp on top afterwards. Only the
+  // background is warped, so the modelled disk/photon-ring/jets keep their
+  // shape while the starfield genuinely curves around them. See
+  // Scene3D._renderLensed for the render-target choreography that drives it.
+  const LENS_VERT = `
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `;
+  const LENS_FRAG = `
+        uniform sampler2D tDiffuse;
+        uniform float uAspect;    // canvas width / height
+        uniform float uHorizon;   // event-horizon radius, screen units (height = 1)
+        uniform float uEinstein;  // Einstein radius in the same units: carries the mass
+        uniform float uSpin;      // dimensionless a*
+        varying vec2 vUv;
+
+        void main() {
+            // Aspect-corrected offset from the hole, which is always centred.
+            vec2 d = vec2((vUv.x - 0.5) * uAspect, vUv.y - 0.5);
+            float r = length(d);
+            float rc = max(r, uHorizon * 0.5);
+
+            // Point-mass thin lens: a ray seen at radius r left its source at
+            // r * (1 - thetaE^2 / r^2), so the sky is pushed outward from the
+            // hole by an offset that falls off as 1/r across the field.
+            float k = (uEinstein * uEinstein) / (rc * rc);
+
+            // Kerr frame dragging: a fast-spinning hole also winds the image
+            // around its axis, hardest right against the horizon.
+            float tw = uSpin * 0.6 * k;
+            float cs = cos(tw), sn = sin(tw);
+            vec2 src = vec2(d.x * cs - d.y * sn, d.x * sn + d.y * cs) * (1.0 - k);
+
+            vec4 col = texture2D(tDiffuse, vec2(src.x / uAspect, src.y) + 0.5);
+
+            // Magnification mu = 1 / (1 - (thetaE/theta)^4), which piles light
+            // up on the Einstein ring the way a real lens does.
+            float x = uEinstein / rc;
+            float mu = 1.0 / max(abs(1.0 - x * x * x * x), 0.14);
+            col.rgb *= clamp(mu, 0.55, 3.2);
+
+            // Photon capture: nothing gets out from just above the horizon, so
+            // the bent field is cut to a dark halo the hole is then drawn into.
+            col *= smoothstep(uHorizon, uHorizon * 1.5, r);
+
+            gl_FragColor = col;
+        }
+    `;
+  // Same log-mapped mass -> lens-strength curve as the title screen: real
+  // Einstein radii grow as sqrt(M), which across the many decades a black
+  // hole's mass (in solar masses) can span is far too wide to put on screen
+  // directly, so it is compressed logarithmically instead.
+  function lensMassK(massSuns) {
+    return Math.max(0.25, Math.min(7,
+      0.55 + 0.5 * Math.log10(Math.max(1, massSuns || 10))));
+  }
+
   // A black hole: dark horizon + bright photon ring + tilted accretion disk
   // (+ optional polar jets). `radius` is the event-horizon radius in units.
   // Options: seed, tilt, diskColor, jets (true/false, else a seeded coin flip
@@ -2213,12 +2449,16 @@
       ctx.fillStyle = "rgba(8,5,8,0.7)";
       ctx.fillRect(s * 0.04, s * 0.74, s * 0.92, s * 0.14);
       ctx.filter = "none";
+      // A real horse-head-in-profile silhouette, facing left: arched neck
+      // and mane rising into the poll, a pointed ear, a browed forehead
+      // dropping down the nose bridge to a projecting muzzle with a
+      // notched nostril, then back along the mouth, jaw and throat.
       const pts = [
-        [0.46, 0.86], [0.44, 0.70], [0.40, 0.55], [0.38, 0.42],
-        [0.41, 0.34], [0.47, 0.30], [0.50, 0.34], [0.49, 0.40],
-        [0.55, 0.38], [0.61, 0.40], [0.66, 0.46], [0.68, 0.53],
-        [0.65, 0.58], [0.60, 0.60], [0.62, 0.64], [0.58, 0.67],
-        [0.54, 0.68], [0.52, 0.78], [0.50, 0.86],
+        [0.64, 0.90], [0.61, 0.76], [0.56, 0.60], [0.50, 0.49],
+        [0.44, 0.41], [0.40, 0.35], [0.365, 0.305], [0.35, 0.345],
+        [0.365, 0.395], [0.335, 0.455], [0.295, 0.515], [0.235, 0.575],
+        [0.20, 0.63], [0.235, 0.665], [0.28, 0.665], [0.305, 0.70],
+        [0.345, 0.715], [0.40, 0.725], [0.465, 0.765], [0.545, 0.825],
       ];
       ctx.filter = "blur(1.5px)";
       ctx.beginPath();
@@ -2646,7 +2886,11 @@
   // the rest of the sim's glow sprites.
   function buildFamousNebulaSprite(spec) {
     const rnd = lcg(hashSeed(spec.name));
-    const s = 256;
+    // Bumped from 256: these are the one-off hand-shaped silhouettes (the
+    // Horsehead's profile, the Pillars, ...), drawn once and reused for the
+    // life of the view, so the extra resolution costs nothing per frame and
+    // buys back real crispness on the curved/blurred paths.
+    const s = 384;
     const cv = document.createElement("canvas");
     cv.width = cv.height = s;
     const ctx = cv.getContext("2d");
@@ -3832,6 +4076,9 @@
     CAT,
     catalogEntries,
     buildBlackHole,
+    LENS_VERT,
+    LENS_FRAG,
+    lensMassK,
     buildNebula,
     FAMOUS_NEBULAE,
     galLB,

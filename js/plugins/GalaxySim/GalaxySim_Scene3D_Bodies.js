@@ -64,20 +64,29 @@
     const au = orbitRadiusAu || 0;
     return starR * 1.8 + Math.pow(au, 0.85) * 1.6;
   }
-  // Kepler's third law: angular speed goes as sqrt(M)*a^-3/2, normalised so a
-  // 1 AU orbit around a Sun-mass star takes ~9 minutes of real time - a drift
-  // you notice while reading a system rather than a spinning clock.
-  // Floored so the outer giants still visibly drift instead of appearing
-  // frozen. The sqrt(mass) term matters most for low-mass red dwarfs (e.g.
-  // TRAPPIST-1, 0.089 M_sun): without it, their tightly-packed planets spun
-  // ~3x too fast because only the orbital radius was accounted for.
-  // Every orbiting body in every system - procedural or hand-authored - is
-  // timed from here, so this factor slows the whole sim uniformly.
-  const ORBIT_SLOWDOWN = 3;
-  function orbitSpeed(orbitRadiusAu, starMassSuns) {
+  // Kepler's third law: T(years) = sqrt(a(AU)^3 / M(solar masses)). A planet's
+  // position on its orbit is a pure function of the shared game clock
+  // (TimeDateSystem's Variable 114, in game-minutes - see the `t` argument
+  // to animate() no longer meaning "real seconds since this view was built"
+  // for orbital position), not of how long the view has happened to be open:
+  // leaving a system for a while and coming back moves every orbit exactly
+  // as far as the game clock actually advanced, and a system left running at
+  // the far side of a scale change is genuinely frozen, not still turning
+  // off-screen. Floored so a 0-AU/0-mass record never divides out to
+  // infinity or zero.
+  const MINUTES_PER_YEAR = 365.25 * 24 * 60;
+  function orbitPeriodMinutes(orbitRadiusAu, starMassSuns) {
     const au = Math.max(0.02, orbitRadiusAu || 0.1);
     const mass = Math.max(0.05, starMassSuns || 1);
-    return Math.max(0.002, (0.035 * Math.sqrt(mass)) / Math.pow(au, 1.5)) / ORBIT_SLOWDOWN;
+    const years = Math.sqrt(Math.pow(au, 3) / mass);
+    return Math.max(1, years * MINUTES_PER_YEAR);
+  }
+  // The live game clock (world-shared, TimeDateSystem.js), read fresh each
+  // frame rather than cached: it can jump by days or years in one step (fast
+  // travel, sleep, cryo), and every orbit must land exactly where that jump
+  // puts it on the very next frame.
+  function gameClockMinutes() {
+    return (typeof $gameVariables !== "undefined" && $gameVariables.value(114)) || 0;
   }
   // Deterministic per-body jitter in [0,1) from its name; used for orbital
   // inclination and axial tilt so systems look like real systems (slightly
@@ -162,10 +171,14 @@
     return { sprite: sp, tex, mat };
   }
 
-  // Overall length of the player ship in system/galaxy world units. The
-  // procedural model is authored at length ~1, so it is scaled down to sit at
-  // roughly the footprint the old placeholder hull occupied.
-  const SHIP_WORLD_LENGTH = 0.3;
+  // Overall length of the player ship in system/galaxy world units. The old
+  // placeholder-hull footprint (0.3, a sizeable fraction of Earth's own 0.15
+  // visual diameter - see compressRadius) made the ship read as comparable to
+  // a planet rather than the ~1 km craft it is; shrunk by an order of
+  // magnitude so a planet actually looms over it, while staying well clear of
+  // the system-scale camera near plane (0.01, see GalaxySim_World3D's clip
+  // table) so the hull can still be framed close up without clipping.
+  const SHIP_WORLD_LENGTH = 0.03;
 
   /**
    * Fallback craft used when GalaxySim_ShipModel failed to load: the original
@@ -324,8 +337,14 @@
     }
     // Scale the beacon (halo/ring/label) so it keeps a roughly constant apparent
     // size as the camera pulls out to the whole galaxy. No-op without a beacon.
+    // `s <= 0` hides it outright - used at system scale, where the marker
+    // should disappear entirely once the camera is close enough to read the
+    // (now tiny) hull instead of just shrinking below its clamped floor.
     function setBeaconScale(s) {
-      if (beaconGroup) beaconGroup.scale.setScalar(Math.max(0.001, s || 1));
+      if (!beaconGroup) return;
+      if (!s || s <= 0) { beaconGroup.visible = false; return; }
+      beaconGroup.visible = true;
+      beaconGroup.scale.setScalar(Math.max(0.001, s));
     }
     function dispose() {
       if (body.dispose) body.dispose();
@@ -403,6 +422,7 @@
     const Cosmos = GS.Scene3DCosmos;
     let starGroup = null;
     let blackHole = null;
+    let lensInfo = null;   // set below when this system's centre is a black hole
     let exoticStar = null;  // custom-built central body (Cosmos.buildExoticStar)
     let rogueGroup = null;  // ROGUE_PLANET systems: the dark world itself
     // The central light adopts the star's character (a magnetar glows violet,
@@ -445,6 +465,17 @@
       pickables.push({ object: blackHole.group, radius: starR * 0.9, kind: "star", data: systemData, system: systemData });
       lightColor = 0xffd9b0;
       lightIntensity = 1.1;
+      // Real gravitational lensing (see Cosmos.LENS_FRAG): Scene3D only ever
+      // engages it while the camera is looking straight at this hole (the
+      // shader assumes the lensed body sits dead centre in frame, exactly the
+      // way the title screen's own Hyperverse background does), so this is
+      // just the physical inputs - the framing check happens in Scene3D.
+      lensInfo = {
+        object: blackHole.group,
+        horizonR: starR * 0.9,
+        massK: Cosmos.lensMassK ? Cosmos.lensMassK(systemData.mass) : 1,
+        spin: hash01(systemData.name, 1123),
+      };
     } else if (isRogue && R3D && R3D.buildPlanetGroup) {
       // A planet with no star: rendered as a real textured world, but with the
       // central light killed it shows only as a silhouette faintly touched by
@@ -632,7 +663,7 @@
         orbit: orbitWorld,
         inc,
         node,
-        speed: orbitSpeed(planet.orbitRadius, systemData.mass),
+        periodMin: orbitPeriodMinutes(planet.orbitRadius, systemData.mass),
         phase: planet.phase || 0,
         moons: moonStates,
         _focused: false,
@@ -666,8 +697,10 @@
       if (!built) return;
       root.add(built.mesh);
       extras.push(built.mesh);
-      // Slow prograde drift, slower the wider the belt sits.
-      beltMeshes.push({ mesh: built.mesh, speed: orbitSpeed(belt.innerAu, systemData.mass) * 0.6 });
+      // Slow prograde drift, slower the wider the belt sits (a belt has no
+      // single body to phase-lock, so it just carries a period like any
+      // other orbit and starts at phase 0).
+      beltMeshes.push({ mesh: built.mesh, periodMin: orbitPeriodMinutes(belt.innerAu, systemData.mass) });
       outerRadius = Math.max(outerRadius, outer + 1);
     });
 
@@ -752,9 +785,11 @@
       companionUnits.push({
         holder, group: cGroup, obj: cObj, stream,
         orbit: orbitWorld,
-        // A donor is locked to the thing eating it, and the pair turns slowly:
-        // fast enough to see over a while spent watching, never a carousel.
-        speed: entry.feeding ? 0.02 : orbitSpeed(c.orbitRadius || 20, systemData.mass) * 1.2,
+        // Real Kepler period even for a feeding donor: a mass-transfer binary
+        // is tight in reality, so its own short orbitRadius already gives it
+        // a fast, physically honest period rather than the fixed "slow
+        // enough to watch" rate this used to be pinned to.
+        periodMin: orbitPeriodMinutes(c.orbitRadius || 20, systemData.mass),
         phase: hash01(c.name, 17) * Math.PI * 2,
       });
     });
@@ -763,7 +798,11 @@
     const baseScalableCount = scalables.length;
 
     // --- Player ship (positioned each frame by updateShip) -----------------
-    const ship = buildShip();
+    // Carries its own beacon (see buildShip): the hull is now tiny (1 km-scale,
+    // SHIP_WORLD_LENGTH), so once the camera pulls back to frame a whole
+    // system it is otherwise imperceptible - Scene3D fades the beacon in with
+    // distance the same way the galaxy-scale ship already does.
+    const ship = buildShip({ beacon: true });
     ship.group.position.set(0, 0.4, starR + 1.2);
     root.add(ship.group);
     const shipTmp = new THREE.Vector3();
@@ -847,6 +886,15 @@
     // up every boost falls back to 1 and the true relative sizes are what you
     // see. `fovK` is (viewportHeight / 2) / tan(fov / 2): screen radius in
     // pixels = worldRadius * fovK / distance.
+    // The boost used to aim `px * boost` exactly AT minPx (boost = minPx/px),
+    // which makes every undersized body land on the SAME apparent size once
+    // boosted - at a whole-system framing distance, most of a system's moons
+    // are undersized at once, so they all read as identical grey dots with no
+    // trace of their real size difference. BOOST_SOFTNESS raises that ratio
+    // to a fractional power instead, so a body further below the floor still
+    // grows more than one just under it (staying readable), but the two never
+    // land on the same pixel size - real smallness still reads as smaller.
+    const BOOST_SOFTNESS = 0.6;
     const _apparentTmp = new THREE.Vector3();
     // Reused by animate() when aiming comet tails away from the star.
     const _tailFrom = new THREE.Vector3();
@@ -859,7 +907,8 @@
         const dist = cameraPos.distanceTo(_apparentTmp);
         if (dist <= 0) continue;
         const px = (s.baseR * fovK) / dist;
-        const boost = px >= s.minPx ? 1 : clamp(s.minPx / px, 1, s.maxBoost);
+        const boost = px >= s.minPx ? 1
+          : clamp(Math.pow(s.minPx / px, BOOST_SOFTNESS), 1, s.maxBoost);
         const r = s.baseR * boost;
         if (s.group.scale.x !== r) s.group.scale.setScalar(r);
         if (s.pick) s.pick.radius = r; // keep click targets in sync with what's drawn
@@ -875,15 +924,25 @@
       }
     }
 
-    // --- Per-frame animation (t = elapsed seconds) -------------------------
+    // --- Per-frame animation ------------------------------------------------
+    // `t` (elapsed real seconds since this view was built) still drives pure
+    // flavour animation - axial spin, pulses, jets, tails - none of which
+    // carries information the player could act on. Orbital POSITION is
+    // different: it is read fresh off the shared game clock every frame (see
+    // orbitPeriodMinutes/gameClockMinutes above), so it is wherever that
+    // clock says it should be, never "wherever it drifted to while this view
+    // happened to be open" - leaving for the galaxy view and coming back (or
+    // sleeping, fast-travelling, cryo-jumping) moves every orbit by exactly
+    // as much game time as actually passed, no more and no less.
     function animate(t) {
+      const gameMin = gameClockMinutes();
       if (starGroup && starGroup._body) starGroup._body.rotation.y = t * 0.05;
       if (blackHole) blackHole.animate(t);
       if (exoticStar) exoticStar.animate(t);
       if (dyson) dyson.animate(t);
       if (rogueGroup && rogueGroup._body) rogueGroup._body.rotation.y = t * 0.02;
       for (const cu of companionUnits) {
-        const a = cu.phase + t * cu.speed;
+        const a = cu.phase + (gameMin / cu.periodMin) * Math.PI * 2;
         cu.holder.position.set(Math.cos(a) * cu.orbit, 0, Math.sin(a) * cu.orbit);
         if (cu.obj) cu.obj.animate(t);
         else if (cu.group && cu.group._body) cu.group._body.rotation.y = t * 0.07;
@@ -896,7 +955,7 @@
           cu.stream.animate(t);
         }
       }
-      for (const b of beltMeshes) b.mesh.rotation.y = t * b.speed;
+      for (const b of beltMeshes) b.mesh.rotation.y = (gameMin / b.periodMin) * Math.PI * 2;
       // A burning world does not shine steadily: the halo breathes on two
       // beats that never quite line up.
       for (const g of ignitedGlows) {
@@ -915,7 +974,7 @@
         }
       }
       for (const o of orbiters) {
-        const a = o.phase + t * o.speed;
+        const a = o.phase + (gameMin / o.periodMin) * Math.PI * 2;
         const px = Math.cos(a) * o.orbit, pz = Math.sin(a) * o.orbit;
         if (o.inc) {
           // Rx(inc) then Ry(node) - matching the guide line's XYZ Euler exactly,
@@ -1037,6 +1096,12 @@
       outerRadius, planetHolders, starHolders, focusPlanet, clearPlanetFocus,
       // The live ship node, so the camera can centre on it wherever it is.
       shipGroup: ship.group,
+      // Distance-driven wayfinding marker (see setBeaconScale) - the tiny hull
+      // alone is imperceptible once the whole system is framed.
+      setShipBeaconScale: ship.setBeaconScale,
+      // Non-null only when the system's centre is a black hole (see
+      // Cosmos.LENS_FRAG / Scene3D._renderLensed).
+      lensInfo,
     };
   }
 
@@ -1053,5 +1118,6 @@
     disposeObject3D,
     starVisualRadius,
     planetVisualRadius,
+    SHIP_WORLD_LENGTH,
   };
 })();

@@ -290,6 +290,10 @@
     // Scale management (SYSTEM <-> GALAXY; further scales added in M6)
     // ----------------------------------------------------------------------
     _enterScale(scale, focusSystem) {
+      // Captured before teardown/reassignment below overwrite it - lets
+      // _buildCosmicScale tell a genuine zoom-OUT (e.g. leaving the galaxy we
+      // were just in) apart from a fresh/unrelated entry into the scale.
+      const priorScale = this._scale;
       // Remember which procedural galaxy (if any) this system belongs to
       // BEFORE teardown clears _galaxyFocus, so zooming back out of it steps
       // back into that galaxy's own cosmic view instead of the scale ladder's
@@ -333,7 +337,7 @@
       } else if (scale === SCALE_GALAXY) {
         this._buildGalaxyView();
       } else {
-        this._buildCosmicScale(scale);
+        this._buildCosmicScale(scale, priorScale);
       }
       this._updateModeHint();
       // The target outlives the scale swap: re-acquire it in the content we
@@ -357,7 +361,7 @@
       this._webPickCache = null;
     }
 
-    _buildCosmicScale(scale) {
+    _buildCosmicScale(scale, priorScale) {
       const fn = COSMIC_BUILDERS[scale];
       const builder = fn && GS.Scene3DCosmos[fn];
       if (!builder) return;
@@ -371,10 +375,30 @@
       const r = this._cosmicView.radius || 1500;
       this._rig.minDistance = r * 0.12;
       this._rig.maxDistance = r * 6;
-      this._rig.snapTo(new THREE.Vector3(0, 0, 0), r * 1.4);
+      // Zooming OUT of the galaxy scale into the Local Group used to snap
+      // straight to a framing of the WHOLE group (r*1.4, ~1400 units), which
+      // yanked the camera far away from the Milky Way marker the player was
+      // just looking at. Landing here that way instead parks close to the
+      // home galaxy's own marker (flagged `home` in Scene3DCosmos' catalogue,
+      // always the Milky Way at this scale) and leaves pulling back further
+      // to the player.
       // Zoom bands for the ladder (see _checkScaleTransition).
       this._inDist = r * 0.42;
       this._outDist = scale === MAX_SCALE ? Infinity : r * 3.4;
+
+      let focus = new THREE.Vector3(0, 0, 0), dist = r * 1.4;
+      if (scale === SCALE_LOCAL_GROUP && priorScale === SCALE_GALAXY) {
+        const home = (this._pickTargets || []).find((p) => p.data && p.data.home);
+        if (home && home.object) {
+          home.object.getWorldPosition(focus);
+          // Clear of _inDist with real margin, or the ladder's own zoom-in
+          // step (a fresh arrival sits still at exactly this distance, so an
+          // unmargined value fires the moment the cooldown below lapses)
+          // would immediately snap straight back into the galaxy we just left.
+          dist = Math.max((home.radius || 40) * 3.2, this._inDist * 1.4);
+        }
+      }
+      this._rig.snapTo(focus, dist);
 
       if (this._overlayUI) {
         this._overlayUI.setScale(this._world.name(scale), "");
@@ -952,6 +976,7 @@
       const buzz = () => { if (window.SoundManager) SoundManager.playBuzzer(); };
       if (!t) return buzz();
       this._followShipCam = false; // an explicit target wins over ship-follow
+      this._restoreSystemMinDistance();
 
       // 1. Get to the scale (and, inside the web, the cluster) that owns it.
       const wantCluster = t.clusterIndex;
@@ -986,6 +1011,16 @@
         if (t.name === "Milky Way") this._enterScale(SCALE_GALAXY, this._focusSystem);   // i18n-ignore: galaxy id
         else this._enterGalaxyFocus(t.name);
         return;
+      }
+
+      // 3b. A star at the scale that already owns it (the Milky Way galaxy
+      //     view, or a procedural galaxy's own cosmic view before diving into
+      //     one of its systems) is a doorway too: Zoom is meant to reach the
+      //     system, not just re-frame the star's point among the others,
+      //     which used to leave a second Zoom/click to actually enter it.
+      if (pick.kind === "star" && (this._scale === SCALE_GALAXY || this._galaxyFocus)) {
+        const sys = pick.system || pick.data;
+        if (sys) { this._enterScale(SCALE_SYSTEM, sys); return; }
       }
 
       this._showInfoFor(pick, true);
@@ -1157,6 +1192,7 @@
         return;
       }
       this._followShipCam = false;
+      this._restoreSystemMinDistance();
       this._rig.setTargetFocus(p);
       // Pull in a little if the target is barely visible, but never past the
       // band that would trip the scale ladder.
@@ -1306,7 +1342,13 @@
         ov.showBody(pick.data, pick.system, {
           kind: pick.kind,
           parentPlanet: pick.planet,
-          canTravelTo: pick.kind === "planet" && sameSystem && !isMoving && !orbitingThis,
+          // Always offered for any body of the CURRENT system (planet or
+          // moon) - including a moon (which used to have no travel option at
+          // all), while already en route elsewhere (redirects the course:
+          // startTravelToPlanet just re-plots from wherever the ship is
+          // now), and even already parked at the exact body (a same-spot
+          // "trip" resolves as an instant arrival, see updateShipPosition).
+          canTravelTo: (pick.kind === "planet" || pick.kind === "moon") && sameSystem,
           // Artificial objects (probes, the teapot, the monolith) have no
           // surface to put a landing party on.
           canLand: !!orbitingThis && !pick.data.noLanding,
@@ -1833,7 +1875,12 @@
         .sort((a, b) => String(a.name).localeCompare(String(b.name)))
         .forEach((s) => {
           const id = "s" + entries.length;
-          entries.push({ id, scale: SCALE_GALAXY, kind: "star", name: s.name, data: s, system: s });
+          // SCALE_SYSTEM (not SCALE_GALAXY) so Zoom drops straight into the
+          // system the way it already does for the Far Systems / Patrons /
+          // Bookmarks / Biosignatures groups below, instead of only flying to
+          // the star's galaxy-scale point and leaving a second Zoom to
+          // actually enter it.
+          entries.push({ id, scale: SCALE_SYSTEM, kind: "star", name: s.name, data: s, system: s });
           stars.push({
             id, name: s.name,
             sub: T('Galaxy.catalog.starSub', {
@@ -2267,6 +2314,7 @@
       const sys = this._currentSystem();
       if (!sys) { if (window.SoundManager) SoundManager.playBuzzer(); return; }
       this._followShipCam = false;
+      this._restoreSystemMinDistance();
       if (this._scale === SCALE_SYSTEM && this._system && this._system.name === sys.name) {
         // Already here: pull back out to the whole system rather than rebuild.
         if (this._planetFocus) {
@@ -2360,6 +2408,7 @@
          Input.isPressed("up") || Input.isPressed("down"));
       if (this._mode !== "orbit" || panning || (this._orbit && this._orbit.dragging)) {
         this._followShipCam = false;
+        this._restoreSystemMinDistance();
         return;
       }
       if (!this._shipCamScratch) this._shipCamScratch = new THREE.Vector3();
@@ -2369,12 +2418,30 @@
       if (this._frameShipCam) {
         this._frameShipCam = false;
         // Close enough to read the hull, but never past the band edges that
-        // would trip the scale ladder on arrival.
-        const want = this._scale === SCALE_GALAXY
-          ? 12 : Math.max(this._rig.minDistance * 1.6, 1);
+        // would trip the scale ladder on arrival. The system-scale hull is
+        // now 1 km-tiny (SHIP_WORLD_LENGTH), so the old fixed "at least 1
+        // world unit" floor left it an invisible speck; frame proportional to
+        // its own size instead, and let the orbit's minDistance follow it in
+        // (restored to the system-wide floor wherever ship-cam ends).
+        let want;
+        if (this._scale === SCALE_GALAXY) {
+          want = 12;
+        } else {
+          const shipLen = (GS.Scene3DBodies && GS.Scene3DBodies.SHIP_WORLD_LENGTH) || 0.3;
+          this._rig.minDistance = Math.max(0.02, shipLen * 0.6);
+          want = shipLen * 3.2;
+        }
         this._rig.setTargetDistance(this._clampFramingDistance(want));
         this._boostCamera();
       }
+    }
+
+    // Ship-cam framing at system scale temporarily shrinks the orbit's
+    // minDistance so the camera can approach the (now tiny) hull; restore the
+    // system-wide floor wherever that framing ends, unless a planet focus has
+    // meanwhile claimed its own override (which manages minDistance itself).
+    _restoreSystemMinDistance() {
+      if (this._scale === SCALE_SYSTEM && !this._planetFocus) this._rig.minDistance = 0.3;
     }
 
     /** The star system currently selected/targeted, if any (for SB-Bridge).
@@ -2682,6 +2749,21 @@
       }
       const p = this._selectedPick;
       if (p && p.kind === "star") return p.system || p.data || null;
+      // Nothing explicitly targeted or selected: zooming in used to just
+      // clamp here, even when the camera had drawn in right on top of the
+      // ship's own current system - the natural "go home" outcome of
+      // zooming toward your own position, not a wall. Only fires when the
+      // orbit focus itself is actually near that system (not wherever the
+      // camera happens to be pointed), so panning off to empty space and
+      // zooming in there still just clamps as before.
+      const cur = this._currentSystem();
+      if (!cur || !cur.position) return null;
+      if (!this._scratchSysEnter) this._scratchSysEnter = new THREE.Vector3();
+      const wp = this._galaxyFocus
+        ? this._scratchSysEnter.copy(cur.position)
+        : (this._galaxyView && this._galaxyView.worldOf
+          ? this._galaxyView.worldOf(cur, this._scratchSysEnter) : null);
+      if (wp && this._rig.focus.distanceTo(wp) < this._inDist) return cur;
       return null;
     }
 
@@ -2720,8 +2802,13 @@
     _travelToPlanet(sel) {
       if (!sel || !sel.data) return;
       const sysName = (sel.system && sel.system.name) || this._system.name;
+      // A moon has no orbit of its own outside planet focus (the same rule
+      // the catalog's Spaceports list follows), so "Fly Here" on one really
+      // means orbiting the planet it belongs to - startTravelToPlanet only
+      // knows planet names.
+      const targetName = (sel.kind === "moon" && sel.planet) ? sel.planet.name : sel.data.name;
       if (this.dataManager.startTravelToPlanet) {
-        this.dataManager.startTravelToPlanet(sysName, sel.data.name);
+        this.dataManager.startTravelToPlanet(sysName, targetName);
       }
       if (window.SoundManager) SoundManager.playOk();
       this._awardSpec("Spacecraft Piloting", 1);   // i18n-ignore: specialization id
@@ -2906,6 +2993,27 @@
           state = { mode: "hidden" };
         }
         this._systemView.updateShip(state, this._elapsed);
+        // The hull is 1 km-tiny (SHIP_WORLD_LENGTH), so framing the whole
+        // system (or a planet) leaves it a sub-pixel speck; fade in the same
+        // distance-scaled beacon the galaxy-scale ship already uses once the
+        // camera (wherever it is actually looking) is far from the SHIP
+        // itself, hidden again once it's close enough to read the hull.
+        // NOTE: no lower clamp on `s` - beaconGroup.scale.setScalar(s) makes
+        // the marker's WORLD size proportional to d, so its apparent SCREEN
+        // size (worldSize/d) stays constant at any distance past beaconNear.
+        // The previous Math.max(1, ...) floor pinned the world size instead,
+        // which made the apparent size blow up as 1/d on approach - the ring
+        // ballooning to dwarf whatever the camera was actually looking at
+        // once it drifted within a beaconRef or so of the ship.
+        if (this._systemView.setShipBeaconScale && state.mode !== "hidden") {
+          if (!this._shipBeaconScratch) this._shipBeaconScratch = new THREE.Vector3();
+          this._systemView.shipGroup.getWorldPosition(this._shipBeaconScratch);
+          const d = this._camera.position.distanceTo(this._shipBeaconScratch);
+          const shipLen = (GS.Scene3DBodies && GS.Scene3DBodies.SHIP_WORLD_LENGTH) || 0.3;
+          const beaconNear = shipLen * 8, beaconRef = 70;
+          const s = d <= beaconNear ? 0 : Math.min(160, d / beaconRef);
+          this._systemView.setShipBeaconScale(s);
+        }
       }
 
       if (this._scale === SCALE_GALAXY && this._galaxyView && this._galaxyShip) {
@@ -2937,11 +3045,22 @@
         }
         if (pos) this._galaxyShip.group.position.copy(pos);
         this._galaxyShip.update(this._elapsed);
-        // Grow the beacon with camera distance so the ship stays findable from a
-        // whole-galaxy zoom-out down to a close pass (constant-ish apparent size).
+        // Grow the beacon with camera distance so the ship stays findable from
+        // a whole-galaxy zoom-out down to a close pass: scaling its WORLD size
+        // by distance/beaconRef (no lower clamp) keeps its apparent SCREEN
+        // size constant at any distance past beaconNear, rather than the
+        // previous floor of "at least base size", which blew the apparent
+        // size up as 1/distance and could balloon to swallow whatever the
+        // camera was actually looking at once it drifted near the ship.
+        // Measured off the real camera-to-ship distance (not the orbit rig's
+        // distance to whatever else might be focused/selected), so a star
+        // targeted elsewhere in the galaxy never leaves the marker oversized.
         if (this._galaxyShip.setBeaconScale) {
-          const beaconRef = 70; // distance at which the beacon sits at base size
-          const s = Math.max(1, Math.min(160, (this._rig.distance || beaconRef) / beaconRef));
+          if (!this._galaxyBeaconScratch) this._galaxyBeaconScratch = new THREE.Vector3();
+          this._galaxyShip.group.getWorldPosition(this._galaxyBeaconScratch);
+          const d = this._camera.position.distanceTo(this._galaxyBeaconScratch);
+          const beaconRef = 70, beaconNear = 4;
+          const s = d <= beaconNear ? 0 : Math.min(160, d / beaconRef);
           this._galaxyShip.setBeaconScale(s);
         }
 
@@ -3221,9 +3340,194 @@
       // Never render on a lost GL context; the loop keeps running so it resumes
       // automatically once the context is restored.
       if (this._contextLost) return;
+      // A black hole system, looked at straight on, takes the gravitational
+      // lensing path instead of the plain render (see _activeLens).
+      const lens = this._activeLens();
+      if (lens) {
+        try { this._renderLensed(lens); return; }
+        catch (e) {
+          // One failure retires the pass for the rest of the session rather
+          // than throwing (and rebuilding the render targets) every frame.
+          console.warn("[GalaxySim3D] lensing pass disabled:", e);
+          this._lensFailed = true;
+          this._disposeLens();
+        }
+      }
       // The galaxy scene renders clean (no PSX post-processing) so the star map
       // and planets stay crisp.
       this._renderer.render(this._scene, this._camera);
+    }
+
+    // ----------------------------------------------------------------------
+    // Gravitational lensing (ported from Titlescreen.js's Hyperverse
+    // background - see GalaxySim_Scene3D_Cosmos.LENS_VERT/LENS_FRAG for the
+    // shader itself and the reasoning behind it).
+    // ----------------------------------------------------------------------
+
+    // Only while a black-hole system's own hole sits (as good as) dead centre
+    // in frame: the shader has no notion of where the hole is on screen, it
+    // always bends the exact middle, so this is the one framing the whole
+    // technique depends on - not "which mode is the camera in" (orbit, ship
+    // follow, planet focus...), which is why it is checked directly off the
+    // hole's own projected screen position rather than off any of those.
+    _activeLens() {
+      if (this._lensFailed) return null;
+      if (this._scale !== SCALE_SYSTEM || !this._systemView) return null;
+      const info = this._systemView.lensInfo;
+      if (!info || !info.object) return null;
+      if (!this._lensScratch) this._lensScratch = new THREE.Vector3();
+      const p = this._lensScratch;
+      info.object.getWorldPosition(p);
+      const dist = this._camera.position.distanceTo(p);
+      if (dist <= 0) return null;
+      p.project(this._camera);
+      // Behind the camera, or off-centre by more than ~3% of the frame:
+      // fall back to the plain render rather than bending the wrong patch
+      // of sky.
+      if (p.z > 1 || Math.abs(p.x) > 0.03 || Math.abs(p.y) > 0.03) return null;
+      const vFovHalf = (this._camera.fov * Math.PI) / 360;
+      const screenR = info.horizonR / (2 * dist * Math.tan(vFovHalf));
+      if (!(screenR > 0)) return null;
+      return { screenR, massK: info.massK, spin: info.spin || 0 };
+    }
+
+    // Lazily build (and resize) the two render targets and the fullscreen
+    // quad the lensing pass needs. One quad and one scene are shared: the
+    // material is swapped between the lens shader and the final blit.
+    _lensCtx(w, h) {
+      const Cosmos = GS.Scene3DCosmos;
+      let L = this._lens;
+      if (!L) {
+        const lensMat = new THREE.ShaderMaterial({
+          uniforms: {
+            tDiffuse: { value: null },
+            uAspect: { value: 1 },
+            uHorizon: { value: 0.1 },
+            uEinstein: { value: 0.1 },
+            uSpin: { value: 0 },
+          },
+          vertexShader: Cosmos.LENS_VERT,
+          fragmentShader: Cosmos.LENS_FRAG,
+          depthTest: false, depthWrite: false, transparent: false,
+        });
+        lensMat.blending = THREE.NoBlending;
+        const blitMat = new THREE.MeshBasicMaterial({
+          map: null, depthTest: false, depthWrite: false, transparent: false,
+        });
+        blitMat.blending = THREE.NoBlending;
+        const geo = new THREE.PlaneGeometry(2, 2);
+        const quad = new THREE.Mesh(geo, lensMat);
+        quad.frustumCulled = false;
+        const scene = new THREE.Scene();
+        scene.add(quad);
+        const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 2);
+        cam.position.z = 1;
+        L = this._lens = { geo, quad, scene, cam, lensMat, blitMat, sky: null, comp: null, w: 0, h: 0 };
+      }
+      if (L.w !== w || L.h !== h) {
+        if (L.sky) L.sky.dispose();
+        if (L.comp) L.comp.dispose();
+        L.sky = new THREE.WebGLRenderTarget(w, h, {
+          minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
+          format: THREE.RGBAFormat, depthBuffer: true, stencilBuffer: false,
+        });
+        L.comp = new THREE.WebGLRenderTarget(w, h, {
+          minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
+          format: THREE.RGBAFormat, depthBuffer: true, stencilBuffer: false,
+        });
+        L.lensMat.uniforms.tDiffuse.value = L.sky.texture;
+        L.blitMat.map = L.comp.texture;
+        L.blitMat.needsUpdate = true;
+        L.w = w; L.h = h;
+      }
+      return L;
+    }
+
+    // Three passes: sky alone -> bent sky -> hole (and everything else) on
+    // top -> present. Every model in the scene except the lensed hole itself
+    // is drawn into the "sky" pass, so a planet or another ship crossing
+    // behind the hole is bent along with the starfield, not left floating
+    // over it.
+    _renderLensed(lens) {
+      const r = this._renderer;
+      const info = this._systemView.lensInfo;
+      const holeGroup = info && info.object;
+      const cw = r.domElement.width, ch = r.domElement.height;
+      const L = this._lensCtx(Math.max(1, cw), Math.max(1, ch));
+
+      const u = L.lensMat.uniforms;
+      u.uAspect.value = ch ? cw / ch : 1;
+      u.uHorizon.value = lens.screenR;
+      u.uEinstein.value = lens.screenR * Math.sqrt(lens.massK);
+      u.uSpin.value = lens.spin || 0;
+
+      // Sibling state step 3 hides and step 3 restores - hoisted so the
+      // `finally` below can put everything back even if a render call
+      // throws partway through, rather than leaving bodies stuck invisible
+      // for the rest of the session.
+      const rootGroup = this._systemView.group;
+      const hidden = [];
+      const bgVisible = !!(this._background && this._background.visible);
+      try {
+        // 1. Everything except the hole itself, on its own.
+        if (holeGroup) holeGroup.visible = false;
+        r.setRenderTarget(L.sky);
+        r.clear();
+        r.render(this._scene, this._camera);
+        if (holeGroup) holeGroup.visible = true;
+
+        // 2. Bend it into the composite target.
+        L.quad.material = L.lensMat;
+        r.setRenderTarget(L.comp);
+        r.clear();
+        r.render(L.scene, L.cam);
+
+        // 3. The hole alone, unwarped, over the bent sky - every sibling
+        //    inside the system (planets, orbit lines, the ship...) and the
+        //    background starfield are already in there, lensed, from step 2,
+        //    so hide them for this pass rather than draw them twice. The
+        //    hole itself sits one level down (root.add(blackHole.group)),
+        //    which is why this walks the system root's children rather than
+        //    the scene's own (those would hide the whole system, hole
+        //    included, since it is nested inside that one child).
+        if (rootGroup) {
+          rootGroup.children.forEach((c) => {
+            if (c !== holeGroup && c.visible) { hidden.push(c); c.visible = false; }
+          });
+        }
+        if (this._background) this._background.visible = false;
+        r.autoClearColor = false;
+        r.render(this._scene, this._camera);
+        r.autoClearColor = true;
+        hidden.forEach((c) => { c.visible = true; });
+        hidden.length = 0;
+        if (this._background) this._background.visible = bgVisible;
+
+        // 4. Present.
+        r.setRenderTarget(null);
+        L.quad.material = L.blitMat;
+        r.render(L.scene, L.cam);
+      } finally {
+        if (holeGroup) holeGroup.visible = true;
+        hidden.forEach((c) => { c.visible = true; });
+        if (this._background) this._background.visible = bgVisible;
+        r.autoClearColor = true;
+        r.setRenderTarget(null);
+        L.quad.material = L.blitMat;
+      }
+    }
+
+    _disposeLens() {
+      const L = this._lens;
+      if (!L) return;
+      this._lens = null;
+      try {
+        if (L.sky) L.sky.dispose();
+        if (L.comp) L.comp.dispose();
+        if (L.geo) L.geo.dispose();
+        if (L.lensMat) L.lensMat.dispose();
+        if (L.blitMat) L.blitMat.dispose();
+      } catch (e) { /* ignore */ }
     }
 
     _updateFrame(delta) {
@@ -3257,7 +3561,14 @@
         }
       }
       if (this._lazyField) this._lazyField.update(this._rig.focus, this._rig.distance);
-      if (this._cosmicView) this._cosmicView.animate(this._elapsed);
+      if (this._cosmicView) {
+        this._cosmicView.animate(this._elapsed);
+        // Procedural galaxies fade their nucleus bloom on approach, same as
+        // the home galaxy's own bloom (see buildProceduralGalaxy).
+        if (this._cosmicView.setZoomDistance) {
+          this._cosmicView.setZoomDistance(this._rig.distance);
+        }
+      }
       this._updatePlanetFocus();
       this._updateShipAndTravel(delta);
       this._updateStripMining(delta);
@@ -3452,6 +3763,7 @@
       // geometry owned by the offscreen Renderer3D singleton (ShipBackground
       // depends on it), so they must be released via their own dispose().
       this._teardownScaleContent();
+      this._disposeLens();
       if (this._background && GS.Scene3DCosmos) {
         GS.Scene3DCosmos.disposeObject3D(this._background);
       }

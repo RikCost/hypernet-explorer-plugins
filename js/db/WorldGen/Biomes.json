@@ -13089,19 +13089,19 @@
       },
       {
         "name": "StoneBlock",
-        "density": 1.5
+        "density": 0.7
       },
       {
         "name": "Column",
-        "density": 0.6
-      },
-      {
-        "name": "Statue",
         "density": 0.3
       },
       {
+        "name": "Statue",
+        "density": 0.15
+      },
+      {
         "name": "Vine",
-        "density": 0.4
+        "density": 0.2
       }
     ]
   },

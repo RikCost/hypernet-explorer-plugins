@@ -89,6 +89,18 @@
   // Hyperflux/second gained while parked in orbit of a main-sequence star and
   // actively refuelling - about 5 minutes real time for a full empty tank.
   const REFUEL_RATE_PER_SEC = 300;
+  // Schrodingerite/second gained while parked at a black hole and actively
+  // refuelling, on the same ~5-minute-for-an-empty-tank curve as Hyperflux
+  // (SCHRODINGERITE_MAX over the same real-time window REFUEL_RATE_PER_SEC
+  // implies for HYPERFLUX_MAX). See canRefuel/tickRefuel.
+  const SCHRODINGERITE_REFUEL_RATE_PER_SEC = SCHRODINGERITE_MAX / (HYPERFLUX_MAX / REFUEL_RATE_PER_SEC);
+  // The warp-speed slider (Variable 94) is calibrated for crossing light-years
+  // between stars; applied unmodified to a hop between two planets a handful
+  // of AU apart it made every intra-system trip read as instantaneous
+  // regardless of the actual distance. In-system moves run on sublight
+  // engines instead, capped well below the interstellar drive (see
+  // updateShipPosition's isIntraSystem branch).
+  const INTRA_SYSTEM_SPEED_CAP = 2;
   // The seven Morgan-Keenan main-sequence classes (see StarTypes.json). With
   // the exotic star roster (remnants, brown dwarfs, protostars, theoretical
   // objects, rogue planets...) this is now a whitelist: only an ordinary
@@ -599,7 +611,15 @@
         return;
       }
 
-      const speedMultiplier = $gameVariables.value(94) || 1;
+      const sliderSpeed = $gameVariables.value(94) || 1;
+      // A hop between two bodies of the SAME system is flown on sublight
+      // engines, capped well under the interstellar warp slider - otherwise
+      // cranking that slider for a light-year crossing also made the next
+      // planet a fraction of a second away, however many AU it actually was.
+      const isIntraSystem = !!this.playerShip.targetSystem &&
+        this.playerShip.targetSystem === this.playerShip.currentSystem;
+      const speedMultiplier = isIntraSystem
+        ? Math.min(sliderSpeed, INTRA_SYSTEM_SPEED_CAP) : sliderSpeed;
       const currentTime = Date.now();
       const elapsedSeconds = (currentTime - this.playerShip.departureTime) / 1000;
 
@@ -767,10 +787,12 @@
     }
 
     // ------------------------------------------------------------------------
-    // Refuelling: only while parked in orbit of a main-sequence star (O, B, A,
-    // F, G, K, M - the seven ordinary stellar classes). White dwarfs, neutron
-    // stars and both black-hole types are exotic remnants the ship can't draw
-    // Hyperflux from.
+    // Refuelling: parked in orbit of a main-sequence star (O, B, A, F, G, K, M
+    // - the seven ordinary stellar classes) tops up Hyperflux. White dwarfs
+    // and neutron stars are exotic remnants the ship can't draw Hyperflux
+    // from, but a black hole is its own fuel stop: parked there, the same
+    // pumps draw Schrodingerite instead (see tickRefuel), so a hole is a
+    // second kind of filling station rather than a once-a-week harvest.
     // ------------------------------------------------------------------------
     isMainSequenceStar(sys) {
       return !!sys && MAIN_SEQUENCE_TYPES.has(sys.type);
@@ -778,7 +800,11 @@
 
     canRefuel() {
       const ship = this.playerShip;
-      if (!ship || ship.isMoving || !ship.parkedBody || ship.parkedBody.kind !== "star") return false;
+      if (!ship || ship.isMoving || !ship.parkedBody) return false;
+      if (ship.parkedBody.kind === "blackhole") {
+        return this.getSchrodingerite() < SCHRODINGERITE_MAX;
+      }
+      if (ship.parkedBody.kind !== "star") return false;
       if (this.getHyperflux() >= HYPERFLUX_MAX) return false;
       // parkedBody.system is set when parked at a companion/donor star of an
       // N-ary system; older saves (and primary parks) fall back to the name.
@@ -799,12 +825,27 @@
 
     // Called once per frame from the scene loop with the real-time delta
     // (seconds) - a no-op unless actively refuelling under still-valid
-    // conditions (still parked at the same main-sequence star, not moving).
+    // conditions (still parked at the same fuel-giving body, not moving).
+    // Schrodingerite is stored as a whole-unit integer (see setSchrodingerite),
+    // so a per-frame fractional gain is banked on the ship until it rounds up
+    // to a whole charge, rather than being floored away every tick.
     tickRefuel(deltaSeconds) {
       const ship = this.playerShip;
       if (!ship || !ship.isRefueling) return;
       if (!this.canRefuel()) { ship.isRefueling = false; return; }
-      this.setHyperflux(this.getHyperflux() + REFUEL_RATE_PER_SEC * Math.max(0, deltaSeconds || 0));
+      const dt = Math.max(0, deltaSeconds || 0);
+      if (ship.parkedBody.kind === "blackhole") {
+        ship._schrodingeriteAccum = (ship._schrodingeriteAccum || 0) +
+          SCHRODINGERITE_REFUEL_RATE_PER_SEC * dt;
+        const whole = Math.floor(ship._schrodingeriteAccum);
+        if (whole > 0) {
+          ship._schrodingeriteAccum -= whole;
+          this.setSchrodingerite(this.getSchrodingerite() + whole);
+        }
+        if (this.getSchrodingerite() >= SCHRODINGERITE_MAX) ship.isRefueling = false;
+        return;
+      }
+      this.setHyperflux(this.getHyperflux() + REFUEL_RATE_PER_SEC * dt);
       if (this.getHyperflux() >= HYPERFLUX_MAX) ship.isRefueling = false;
     }
 
