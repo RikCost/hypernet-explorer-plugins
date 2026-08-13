@@ -503,7 +503,9 @@
         `${T('Galaxy.hud.setCourse')}</span>` +
         `<span class="gx-btn gx-sb focusable" tabindex="0" data-action="return-earth-eb" ` +
         `data-role="return-earth-eb-btn" style="display:none" ` +
-        `title="${T('Galaxy.hud.quantumBridgeStraightHomeCosts')}">${T('Galaxy.hud.ebBridge')}</span>`;
+        `title="${T('Galaxy.hud.quantumBridgeStraightHomeCosts')}">${T('Galaxy.hud.ebBridge')}</span>` +
+        `<span class="gx-btn focusable" tabindex="0" data-action="close-map" ` +
+        `data-role="close-map-btn" title="${T('Galaxy.hud.closeMapTooltip')}">${T('Galaxy.hud.closeMap')}</span>`;
 
       const catalog = document.createElement("div");
       catalog.id = "gx-catalog";
@@ -522,10 +524,12 @@
         `<span class="gx-v" data-role="speed-val">×1</span></div>` +
         `<div class="gx-slider-row">` +
         `<input type="range" class="gx-slider" data-role="speed-slider" ` +
-        `min="1" max="20" step="1" value="1" aria-label="${T('Galaxy.hud.warpSpeed')}">` +
+        `min="1" max="100" step="1" value="1" aria-label="${T('Galaxy.hud.warpSpeed')}">` +
         `</div>` +
         `<div class="gx-row"><span class="gx-k gx-muted">${T('Galaxy.hud.hyperfluxBurn')}</span>` +
         `<span class="gx-v gx-muted" data-role="burn-val">0.01/s</span></div>` +
+        `<div class="gx-row"><span class="gx-k gx-muted">${T('Galaxy.hud.eta')}</span>` +
+        `<span class="gx-v gx-muted" data-role="eta-val">—</span></div>` +
         `<div class="gx-actions">` +
         `<span class="gx-btn gx-step focusable" tabindex="0" data-action="speed-down">−</span>` +
         `<span class="gx-btn gx-step focusable" tabindex="0" data-action="speed-up">+</span>` +
@@ -656,6 +660,7 @@
       this.els.speed = speed;
       this.els.speedVal = speed.querySelector('[data-role="speed-val"]');
       this.els.burnVal = speed.querySelector('[data-role="burn-val"]');
+      this.els.etaVal = speed.querySelector('[data-role="eta-val"]');
       this.els.speedSlider = speed.querySelector('[data-role="speed-slider"]');
       this.els.fuel = fuel;
       this.els.hfFill = fuel.querySelector('[data-role="hf-fill"]');
@@ -876,7 +881,10 @@
     }
 
     // ---- Speed / engine panel (shown while travelling) --------------------
-    showSpeed(speed) {
+    // etaSeconds is the time left on the current leg (see Scene3D's
+    // _travelEta, mirroring ShipBackground.travelEta's real-time maths), or
+    // null/undefined while there is nothing to count down.
+    showSpeed(speed, etaSeconds) {
       const s = speed || 1;
       const text = "×" + s;
       if (this.els.speedVal && text !== this._speedText) {
@@ -885,6 +893,17 @@
         // Quadratic Hyperflux burn, mirrored from DataManager.updateShipPosition.
         if (this.els.burnVal) {
           this.els.burnVal.textContent = (s * s * 0.01).toFixed(2) + "/s";
+        }
+      }
+      if (this.els.etaVal) {
+        const secs = (typeof etaSeconds === "number" && isFinite(etaSeconds) && etaSeconds >= 0)
+          ? Math.ceil(etaSeconds) : null;
+        const text = secs != null
+          ? String(Math.floor(secs / 60)).padStart(2, "0") + ":" + String(secs % 60).padStart(2, "0")
+          : "—";
+        if (text !== this._etaText) {
+          this._etaText = text;
+          this.els.etaVal.textContent = text;
         }
       }
       // Keep the slider in step unless the player is actively dragging it.
@@ -1612,6 +1631,8 @@
         const i = parseInt(btn.getAttribute("data-loc"), 10);
         const locs = this._selection && this._selection.landingLocations;
         if (locs && locs[i]) cb.onTeleportLocation(locs[i]);
+      } else if (action === "close-map" && cb.onCloseMap) {
+        cb.onCloseMap();
       } else if (action === "sb-bohr" && cb.onBohrBridge) {
         cb.onBohrBridge(this._selection);
       } else if (action === "park-orbit" && cb.onParkOrbit) {

@@ -97,7 +97,10 @@
                 troop = $dataTroops[troopId];
             } else {
                 const wins = $gameVariables.value(arenaWinsVarId);
-                troop = this.selectTroop(wins);
+                const streak = this.getArenaStreak();
+                troop = streak >= this.GROUP_STREAK_THRESHOLD
+                    ? this.selectGroupTroop(wins)
+                    : this.selectTroop(wins);
             }
             if (troop) {
                 this._ensureBattleMapReady();
@@ -112,7 +115,7 @@
         },
 
         selectTroop(wins) {
-            const troops = $dataTroops.filter(t => t && t.members.length > 0);
+            const troops = $dataTroops.filter(t => t && t.members.length > 0 && !t._arenaGroupScratch);
             const troopStats = troops.map(troop => {
                 const totalStats = troop.members.reduce((sum, member) => {
                     const enemy = $dataEnemies[member.enemyId];
@@ -427,6 +430,75 @@
     };
     ArenaBattleHandler.setArenaStreak = function (value) {
         if ($gameSystem) $gameSystem._arenaWinStreak = value;
+    };
+
+    //=========================================================================
+    // Arena group battles: once the win streak reaches GROUP_STREAK_THRESHOLD,
+    // a battle pits the party against several bracket-mates at once instead of
+    // a single authored troop. Group size is read live off the current streak
+    // (2 enemies for the next 10 battles, then capped at 3), so a lost run
+    // (streak reset to 0) drops straight back to single-enemy fights.
+    //=========================================================================
+    ArenaBattleHandler.GROUP_STREAK_THRESHOLD = 10;
+    ArenaBattleHandler.GROUP_SIZE_STEP = 10;
+    ArenaBattleHandler.GROUP_MIN_SIZE = 2;
+    ArenaBattleHandler.GROUP_MAX_SIZE = 3;
+
+    ArenaBattleHandler.groupSizeForStreak = function (streak) {
+        const tier = Math.floor((streak - this.GROUP_STREAK_THRESHOLD) / this.GROUP_SIZE_STEP);
+        return Math.min(this.GROUP_MAX_SIZE, this.GROUP_MIN_SIZE + Math.max(0, tier));
+    };
+
+    function bracketForLevel(level) {
+        for (const b of BRACKETS) {
+            if (level >= b.min && level <= b.max) return b;
+        }
+        return level < BRACKETS[0].min ? BRACKETS[0] : BRACKETS[BRACKETS.length - 1];
+    }
+
+    // One scratch $dataTroops slot, reused for every arena group battle (the
+    // same trick BattleSystemEnhanced uses for reinforced troops / petrodemons).
+    let _arenaGroupTroopId = null;
+    function ensureArenaGroupTroopSlot() {
+        if (_arenaGroupTroopId && $dataTroops[_arenaGroupTroopId]) return _arenaGroupTroopId;
+        _arenaGroupTroopId = $dataTroops.length;
+        $dataTroops[_arenaGroupTroopId] = {
+            id: _arenaGroupTroopId, name: "ArenaGroup", members: [], pages: [],
+            _arenaGroupScratch: true
+        };
+        return _arenaGroupTroopId;
+    }
+
+    // Builds a scratch troop of several enemies pulled from the same level
+    // bracket the ordinary single-enemy pick (selectTroop) would have used.
+    ArenaBattleHandler.selectGroupTroop = function (wins) {
+        const baseTroop = this.selectTroop(wins);
+        if (!baseTroop) return null;
+        const baseMember = baseTroop.members[0];
+        const baseEnemy = baseMember ? $dataEnemies[baseMember.enemyId] : null;
+        const baseLevel = baseEnemy ? (Number(this.parseEnemyNotes(baseEnemy).level) || 1) : 1;
+        const bracket = bracketForLevel(baseLevel);
+
+        const candidates = this.getTroopsInLevelBracket(bracket.min, bracket.max);
+        if (candidates.length === 0) return baseTroop;
+
+        const size = this.groupSizeForStreak(this.getArenaStreak());
+        const members = [];
+        for (let i = 0; i < size; i++) {
+            const pick = candidates[Math.floor(Math.random() * candidates.length)];
+            members.push({
+                enemyId: pick.members[0].enemyId,
+                x: 400 + (i % 4) * 150,
+                y: 250 + Math.floor(i / 4) * 120,
+                hidden: false
+            });
+        }
+
+        const troopId = ensureArenaGroupTroopSlot();
+        const troop = $dataTroops[troopId];
+        troop.members = members;
+        troop.pages = baseTroop.pages || [];
+        return troop;
     };
 
     ArenaBattleHandler._buildStreakItemPool = function () {

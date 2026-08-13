@@ -48,7 +48,7 @@
     // exterior shell materials; interior/tyres/glass are left alone). Each carries
     // a physically-plausible metalness/roughness so painted panels catch the light.
     const PAINTS = {
-        classic: { color: 0xece9e1, metalness: 0.15, roughness: 0.55 },
+        classic: { color: 0xffffff, metalness: 0.15, roughness: 0.45 },
         crimson: { color: 0x922327, metalness: 0.35, roughness: 0.35 },
         forest:  { color: 0x28492f, metalness: 0.30, roughness: 0.40 },
         ocean:   { color: 0x21406b, metalness: 0.40, roughness: 0.33 },
@@ -241,18 +241,20 @@
             return lum > 0.45;
         }
 
-        // Repaint every exterior panel in the chosen colour, adding a subtle
-        // brushed-panel detail map. Safe to call on the live model at any time.
+        // Repaint every exterior panel in the chosen colour. No detail map is
+        // laid over it: a photographed concrete texture used to be multiplied
+        // into every panel here, which drags any colour toward mid-grey and
+        // left "classic" reading as a dirty grey instead of clean paint (most
+        // visibly on white). A flat coat is what a painted body panel is.
         applyPaint(name) {
             const p = PAINTS[name] || PAINTS.classic;
             this._paint = PAINTS[name] ? name : 'classic';
-            if (!this._paintTex) this._paintTex = loadTex('grey_concrete.jpg', 3);
             for (const mm of this._bodyMats) {
                 if (!mm) continue;
                 if (mm.color) mm.color.setHex(p.color);
                 if (mm.metalness !== undefined) mm.metalness = p.metalness;
                 if (mm.roughness !== undefined) mm.roughness = p.roughness;
-                if (this._paintTex && !mm.map) mm.map = this._paintTex;
+                if (mm.map) mm.map = null;
                 if (mm.emissive) mm.emissive.setHex(0x000000);
                 mm.needsUpdate = true;
             }

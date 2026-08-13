@@ -207,7 +207,8 @@
     "plugins/WorldManager.json",
     "plugins/WorldManagerUI.json",
     "plugins/WorldMapReturn.json",
-    "plugins/WorldWeb.json"
+    "plugins/WorldWeb.json",
+    "plugins/constellation.json"
   ],
   "fr": [
     "conversations/ConvBooks.json",
@@ -402,7 +403,8 @@
     "plugins/WorldManager.json",
     "plugins/WorldManagerUI.json",
     "plugins/WorldMapReturn.json",
-    "plugins/WorldWeb.json"
+    "plugins/WorldWeb.json",
+    "plugins/constellation.json"
   ],
   "it": [
     "conversations/ConvBooks.json",
@@ -612,7 +614,8 @@
     "plugins/WorldManager.json",
     "plugins/WorldManagerUI.json",
     "plugins/WorldMapReturn.json",
-    "plugins/WorldWeb.json"
+    "plugins/WorldWeb.json",
+    "plugins/constellation.json"
   ],
   "ko": [
     "conversations/ConvBooks.json",
@@ -807,7 +810,8 @@
     "plugins/WorldManager.json",
     "plugins/WorldManagerUI.json",
     "plugins/WorldMapReturn.json",
-    "plugins/WorldWeb.json"
+    "plugins/WorldWeb.json",
+    "plugins/constellation.json"
   ],
   "nk": [
     "plugins/Alchemistry.json",
@@ -1181,6 +1185,7 @@
     "plugins/WorldManager.json",
     "plugins/WorldManagerUI.json",
     "plugins/WorldMapReturn.json",
-    "plugins/WorldWeb.json"
+    "plugins/WorldWeb.json",
+    "plugins/constellation.json"
   ]
 }

@@ -246,78 +246,105 @@
       // thumb locked diagonally across the top the way a real fist closes.
       createUnarmedHumanoidModel(weapon, rand) {
         const group = new THREE.Group();
-        const skin = this._mat(this.getRandomColor(rand, [0xC9A08A, 0x8A6248, 0xE0B89A, 0x6B4630]),
-          { roughness: 0.85, metalness: 0.02 });
-        // Back of the hand and wrist cuff, built directly rather than
-        // through the shared _fist() so the curled fingers below are not
-        // duplicating its own straight ones.
-        const back = new THREE.Mesh(new THREE.BoxGeometry(0.084, 0.085, 0.05), skin);
-        back.position.y = 0.02;
+        const skinColor = this.getRandomColor(rand, [0xC9A08A, 0x8A6248, 0xE0B89A, 0x6B4630]);
+        // Skin reads with a bit of sheen rather than flat matte, or it photographs
+        // like sanded wood; a clearly darker, ruddier tone at the knuckles and
+        // joints (skin pulled tight over bone) keeps the hand from reading as
+        // one uniformly painted lump, and a near-black crease tone gives the
+        // gaps between fingers a real line even under flat lighting.
+        const skin = this._mat(skinColor, { roughness: 0.58, metalness: 0.02 });
+        const knuckleTone = new THREE.Color(skinColor).offsetHSL(0, 0.08, -0.16).getHex();
+        const knuckleSkin = this._mat(knuckleTone, { roughness: 0.52, metalness: 0.02 });
+        const creaseTone = new THREE.Color(skinColor).offsetHSL(0, 0.04, -0.32).getHex();
+        const crease = this._mat(creaseTone, { roughness: 0.8, metalness: 0.0 });
+
+        // Back of the hand: a flattened, deliberately WIDE and SHORT capsule -
+        // a plate, not a ball - so it sits well clear of the knuckle row
+        // rather than swallowing it. The knuckles and curled fingers, built
+        // below, are what should read as the top of the fist; the palm is
+        // only their base.
+        const back = new THREE.Mesh(
+          new THREE.CapsuleGeometry(0.028, 0.006, this.seg(8, 5), this.seg(18, 10)), skin);
+        back.scale.set(1.65, 0.72, 0.75);
+        back.position.set(0, 0.02, 0.014);
         group.add(back);
-        const wrist = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.032, 0.05, this.seg(11, 7)), skin);
-        wrist.position.y = -0.05;
+        const wrist = new THREE.Mesh(new THREE.CapsuleGeometry(0.027, 0.018, this.seg(8, 5), this.seg(14, 8)), skin);
+        wrist.position.y = -0.018;
         wrist.scale.z = 0.72;
         group.add(wrist);
-        // A dome laid over the back plate so the silhouette reads as a
-        // rounded knuckle ridge rather than a flat slab.
-        const dome = new THREE.Mesh(new THREE.SphereGeometry(0.046, this.seg(12, 7), this.seg(8, 5)), skin);
-        dome.scale.set(1.0, 0.82, 0.78);
-        dome.position.set(0, 0.032, 0.006);
-        group.add(dome);
-        // Four fingers, each curled fully in against the palm: a knuckle, a
-        // proximal segment leaving the ridge, and a distal segment curling
-        // back under - the distal segment is the one that flexes, so a
-        // clenched fist reads as gripping rather than frozen.
-        const xs = [-0.028, -0.00933, 0.00933, 0.028];
+
+        // Four fingers, spaced with a real gap between each so they read as
+        // distinct digits rather than a fused ridge: a knuckle standing proud
+        // of the palm, a proximal segment leaving it, a mid joint, and a
+        // distal segment curling back under toward the base of the palm -
+        // the distal segment is the one that flexes, so a clenched fist reads
+        // as gripping rather than frozen. Built from capsules rather than
+        // cylinders so every joint is rounded rather than capped flat.
+        const xs = [-0.036, -0.012, 0.012, 0.036];
         for (let i = 0; i < xs.length; i++) {
           const x = xs[i];
-          const knuckle = new THREE.Mesh(new THREE.SphereGeometry(0.0125, this.seg(9, 6), this.seg(7, 5)), skin);
-          knuckle.position.set(x, 0.06, 0.012);
+          // The knuckle sits low enough to bed into the palm's own surface
+          // (its bottom half embedded rather than floating above it), so the
+          // finger reads as growing out of the hand instead of hovering over it.
+          const knuckle = new THREE.Mesh(new THREE.SphereGeometry(0.0105, this.seg(10, 7), this.seg(8, 5)), knuckleSkin);
+          knuckle.position.set(x, 0.048, 0.022);
           knuckle.scale.z = 0.85;
           group.add(knuckle);
 
           const proximal = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.0112, 0.0105, 0.032, this.seg(8, 5)), skin);
-          proximal.position.set(x, 0.048, 0.036);
+            new THREE.CapsuleGeometry(0.0092, 0.014, this.seg(6, 4), this.seg(10, 6)), skin);
+          proximal.position.set(x, 0.036, 0.042);
           proximal.rotation.x = Math.PI / 2 - 0.3;
           group.add(proximal);
 
-          const joint = new THREE.Mesh(new THREE.SphereGeometry(0.009, this.seg(8, 5), this.seg(6, 4)), skin);
-          joint.position.set(x, 0.0473, 0.0513);
+          const joint = new THREE.Mesh(new THREE.SphereGeometry(0.0076, this.seg(9, 6), this.seg(7, 5)), knuckleSkin);
+          joint.position.set(x, 0.0353, 0.0565);
           group.add(joint);
 
           const distal = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.0085, 0.008, 0.022, this.seg(7, 5)), skin);
-          distal.position.set(x, 0.0416, 0.0607);
+            new THREE.CapsuleGeometry(0.0068, 0.007, this.seg(6, 4), this.seg(9, 5)), skin);
+          distal.position.set(x, 0.029, 0.0655);
           distal.rotation.x = Math.PI / 2 - 0.3 + 0.85;
           distal.userData.sway = { axis: 'x', amp: 0.05, freq: 0.5 + i * 0.06, phase: i * 1.4 };
           group.add(distal);
 
-          const pad = new THREE.Mesh(new THREE.SphereGeometry(0.0072, this.seg(8, 5), this.seg(6, 4)), skin);
-          pad.position.set(x, 0.0359, 0.0701);
+          const pad = new THREE.Mesh(new THREE.SphereGeometry(0.006, this.seg(9, 6), this.seg(7, 5)), skin);
+          pad.position.set(x, 0.023, 0.0735);
           group.add(pad);
+
+          // The valley between this finger and the next, a thin dark sliver
+          // cut into the knuckle row so the gap reads even when the fingers'
+          // own rounding almost touches.
+          if (i < xs.length - 1) {
+            const groove = new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.022, 0.014), crease);
+            groove.position.set((x + xs[i + 1]) / 2, 0.043, 0.026);
+            group.add(groove);
+          }
         }
-        // The thumb, wrapped across the front of the curled fingers.
-        const thumbBase = new THREE.Mesh(new THREE.SphereGeometry(0.015, this.seg(9, 6), this.seg(7, 5)), skin);
-        thumbBase.position.set(0.036, 0.012, 0.014);
+        // The thumb, wrapped across the front of the curled fingers, held
+        // apart from the palm by its own base knuckle so it does not fuse
+        // into the back of the hand.
+        const thumbBase = new THREE.Mesh(new THREE.SphereGeometry(0.0135, this.seg(10, 7), this.seg(8, 5)), knuckleSkin);
+        thumbBase.position.set(0.033, 0.008, 0.022);
         group.add(thumbBase);
-        const thumb = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.016, 0.05, this.seg(9, 6)), skin);
-        thumb.position.set(0.046, 0.028, 0.018);
+        const thumb = new THREE.Mesh(new THREE.CapsuleGeometry(0.0115, 0.02, this.seg(8, 5), this.seg(11, 6)), skin);
+        thumb.position.set(0.042, 0.024, 0.026);
         thumb.rotation.set(0.5, 0, -0.9);
         group.add(thumb);
-        const thumbTip = new THREE.Mesh(new THREE.SphereGeometry(0.0105, this.seg(8, 5), this.seg(6, 4)), skin);
-        thumbTip.position.set(0.008, 0.046, 0.044);
+        const thumbTip = new THREE.Mesh(new THREE.SphereGeometry(0.0092, this.seg(9, 6), this.seg(7, 5)), skin);
+        thumbTip.position.set(0.006, 0.041, 0.048);
         thumbTip.userData.sway = { axis: 'z', amp: 0.06, freq: 0.55, phase: 2.1 };
         group.add(thumbTip);
-        // The tendons standing out on the back of a closed hand.
+        // The tendons standing out on the back of a closed hand, and the
+        // wristbone knob where the hand meets the forearm.
         for (let i = 0; i < 3; i++) {
-          const tendon = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.004, 0.05, this.seg(6, 4)), skin);
-          tendon.position.set(-0.02 + i * 0.02, 0.026, 0.026);
+          const tendon = new THREE.Mesh(new THREE.CapsuleGeometry(0.0024, 0.026, this.seg(4, 3), this.seg(6, 4)), skin);
+          tendon.position.set(-0.018 + i * 0.018, 0.02, 0.032);
           tendon.rotation.x = 0.15;
           group.add(tendon);
         }
-        const wristBone = new THREE.Mesh(new THREE.SphereGeometry(0.009, this.seg(8, 5), this.seg(6, 4)), skin);
-        wristBone.position.set(0.03, -0.05, 0.012);
+        const wristBone = new THREE.Mesh(new THREE.SphereGeometry(0.0078, this.seg(9, 6), this.seg(7, 5)), knuckleSkin);
+        wristBone.position.set(0.026, -0.018, 0.022);
         group.add(wristBone);
         return group;
       },

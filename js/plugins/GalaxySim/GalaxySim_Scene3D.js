@@ -1090,9 +1090,17 @@
         }
         this._showInfoFor(this._hovered);
         if (this._scale === SCALE_SYSTEM) {
-          // Click a planet -> zoom in on it (and reveal its full moon system);
-          // click the star -> zoom back out to the whole system.
-          if (this._hovered.kind === "planet") this._focusPlanet(this._hovered);
+          // A first click on a planet only selects and gently re-centres the
+          // camera toward it (_focusSelection): the tight, moon-revealing
+          // lock-in (_focusPlanet) now fires either from a second click on
+          // the already-targeted planet (handled above by _isTargeted, the
+          // same "click again to fly in" gesture a star/galaxy/web-node
+          // already uses - effectively a double-click once the player is
+          // quick about it) or, gradually, from the zoom ladder once the
+          // camera actually gets in close (_checkScaleTransition /
+          // _selectionEntry). A single click used to jump straight into
+          // that close framing instead of easing toward it.
+          if (this._hovered.kind === "planet") this._focusSelection(this._hovered);
           else if (this._hovered.kind === "star") this._clearPlanetFocus();
         } else {
           // Galaxy / cosmic scales: selecting also makes the object the camera
@@ -1350,8 +1358,10 @@
           // "trip" resolves as an instant arrival, see updateShipPosition).
           canTravelTo: (pick.kind === "planet" || pick.kind === "moon") && sameSystem,
           // Artificial objects (probes, the teapot, the monolith) have no
-          // surface to put a landing party on.
-          canLand: !!orbitingThis && !pick.data.noLanding,
+          // surface to put a landing party on. A moon has no orbit of its
+          // own (see orbitingParent above), so its landing unlocks while the
+          // ship orbits the moon's parent planet instead.
+          canLand: !!(pick.kind === "moon" ? orbitingParent : orbitingThis) && !pick.data.noLanding,
           canStripMine: !!orbitingThis && mineable && mineInfo.remaining > 0 && !this._mining,
           mining: mineInfo,
           canService: !!orbitingThis && isHubble,
@@ -1390,7 +1400,7 @@
         onEnterSystem: (name) => this._enterSystemByName(name),
         onTravelSystem: (name) => this._travelToSystem(name),
         onTravelPlanet: (sel) => this._travelToPlanet(sel),
-        onLand: () => this._landOnCurrentPlanet(),
+        onLand: (sel) => this._landOnCurrentPlanet(sel),
         onTeleportLocation: (loc) => this._teleportToLocation(loc),
         onBohrBridge: (sel) => this._bohrBridge(sel),
         onParkOrbit: (sel) => this._parkAtStar(sel),
@@ -1410,6 +1420,7 @@
         onReturnEarthToggle: () => this._toggleReturnEarth(),
         onReturnEarthCourse: () => this._setCourseEarth(),
         onReturnEarthEb: () => this._ebBridge(),
+        onCloseMap: () => this.popScene(),
         onCatalogToggle: () => this._toggleCatalog(),
         onCatalogZoom: (id) => this._catalogAction(id, "zoom"),
         onCatalogCourse: (id) => this._catalogAction(id, "course"),
@@ -2874,16 +2885,17 @@
     // Warp-speed slider / +- buttons. Higher speed shortens the trip but the
     // Hyperflux burn rises quadratically (see DataManager.updateShipPosition).
     _setSpeed(value, playSound) {
-      const v = Math.max(1, Math.min(20, Math.round(value) || 1));
+      const v = Math.max(1, Math.min(100, Math.round(value) || 1));
+      const ship = this.dataManager.playerShip;
       if (v === ($gameVariables.value(94) || 1)) {
-        if (this._overlayUI) this._overlayUI.showSpeed(v);
+        if (this._overlayUI) this._overlayUI.showSpeed(v, this._travelEta(ship));
         return;
       }
       $gameVariables.setValue(94, v);
       if (this.dataManager.recalculateDepartureOnSpeedChange) {
         this.dataManager.recalculateDepartureOnSpeedChange();
       }
-      if (this._overlayUI) this._overlayUI.showSpeed(v);
+      if (this._overlayUI) this._overlayUI.showSpeed(v, this._travelEta(ship));
       if (playSound && window.SoundManager) SoundManager.playCursor();
     }
 
@@ -2895,15 +2907,26 @@
     // Ported from the legacy Scene_AdvancedStarMap.landOnPlanet, now routed
     // through the landing-grid picker (unwrapped planet texture, clickable
     // squares) instead of touching down at a fixed coordinate.
-    _landOnCurrentPlanet() {
+    // sel is the overlay's live selection ({ kind, data, planet, ... }, see
+    // Overlay#showBody). A moon lands on itself even though the ship's own
+    // orbit is around its parent planet (canLand allows it via orbitingParent
+    // in _showInfoFor); anything else lands on wherever the ship is actually
+    // parked, ignoring sel so a stale selection can never redirect it.
+    _landOnCurrentPlanet(sel) {
       const dm = this.dataManager;
       const ship = dm.playerShip;
       const buzz = () => { if (window.SoundManager) SoundManager.playBuzzer(); };
-      const planetName = ship && ship.currentPlanet;
-      if (!planetName) return buzz();
-      const system = dm.getSystem(ship.currentSystem);
-      if (!system || !system.planets || !system.planets.length) return buzz();
-      const planet = system.planets.find((p) => p.name === planetName);
+      let planet = null;
+      if (sel && sel.kind === "moon" && sel.data && sel.planet &&
+          ship && !ship.isMoving && ship.currentPlanet === sel.planet.name) {
+        planet = sel.data;
+      } else {
+        const planetName = ship && ship.currentPlanet;
+        if (!planetName) return buzz();
+        const system = dm.getSystem(ship.currentSystem);
+        if (!system || !system.planets || !system.planets.length) return buzz();
+        planet = system.planets.find((p) => p.name === planetName);
+      }
       if (!planet || !planet.type) return buzz();
       if (!this._overlayUI || !this._overlayUI.showLandingGrid) return buzz();
 
@@ -3085,8 +3108,9 @@
       // read its live position.
       this._updateShipCamFollow();
 
-      if (ship.isMoving) this._overlayUI.showSpeed($gameVariables.value(94) || 1);
-      else this._overlayUI.hideSpeed();
+      if (ship.isMoving) {
+        this._overlayUI.showSpeed($gameVariables.value(94) || 1, this._travelEta(ship));
+      } else this._overlayUI.hideSpeed();
 
       const statusKey = (ship.isMoving ? 1 : 0) + "|" + (ship.currentPlanet || "") + "|" +
         (ship.currentSystem || "") + "|" + ((ship.parkedBody && ship.parkedBody.name) || "");
@@ -3128,6 +3152,18 @@
           (infinite || (dm.getSchrodingerite ? dm.getSchrodingerite() >= 1 : false));
         this._overlayUI.setReturnEarthOptions(canCourse, canEb);
       }
+    }
+
+    // Seconds left on the current leg, mirroring ShipBackground.travelEta's
+    // real-time maths (same warp-speed variable, same 95%-of-route arrival
+    // rule in DataManager.updateShipPosition) so the Engines panel's ETA
+    // agrees with the walk-around ship's own travel countdown.
+    _travelEta(ship) {
+      if (!ship || !ship.isMoving) return null;
+      const speed = Math.max(1, $gameVariables.value(94) || 1);
+      const total = ship.travelDistance > 0 ? (ship.travelDistance * 0.95) / speed : 0;
+      const elapsed = ship.departureTime ? (Date.now() - ship.departureTime) / 1000 : 0;
+      return Math.max(0, total - elapsed);
     }
 
     // Where along the plotted route the craft is drawn, 0..1. Measured from the
@@ -3233,9 +3269,23 @@
         }
       }
       // While focused on a planet, zooming out far enough exits focus back to
-      // the whole-system view instead of stepping up to the galaxy scale.
+      // the whole-system view instead of stepping up to the galaxy scale. The
+      // player is already gliding the camera outward when this fires, so drop
+      // the tracking state only (restoreFraming: false) rather than snapping
+      // the target distance to the standard whole-system framing - that jump
+      // used to cut the gradual zoom-out short with a sudden re-frame.
       if (this._planetFocus) {
-        if (td > this._planetFocus.outDist) this._clearPlanetFocus();
+        if (td > this._planetFocus.outDist) {
+          this._clearPlanetFocus(false);
+          // Without a cooldown, the just-cleared distance (barely past the
+          // planet's own small outDist) is still well inside the system-wide
+          // entry band _selectionEnterDist() computes next frame, so while
+          // the planet stayed targeted the enter-ladder above would fire
+          // again after one LADDER_DWELL and snap straight back into focus -
+          // the exit could never actually get past a mid zoom level.
+          this._ladderHold = 0;
+          this._ladderCooldown = LADDER_COOLDOWN;
+        }
         return;
       }
       // Inside a procedural galaxy, zooming out returns to whatever view we

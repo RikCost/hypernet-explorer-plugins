@@ -202,7 +202,62 @@
                 return specs;
             };
 
-            const damageSpecsOf = (skill) => {
+            // Ordinary (non-boss) enemies with a <Level:> tag, the same reference
+            // tools/classes/skill_model.js swings the class balance tables against.
+            // Built once and cached: the tags never change at runtime.
+            let _enemyLevelIndex = null;
+            const enemyLevelIndex = () => {
+                if (_enemyLevelIndex) return _enemyLevelIndex;
+                _enemyLevelIndex = [];
+                for (const e of $dataEnemies) {
+                    if (!e || !e.note) continue;
+                    if (/<Boss>/i.test(e.note)) continue;
+                    const m = e.note.match(/<Level:\s*(\d+)\s*>/i);
+                    if (!m) continue;
+                    _enemyLevelIndex.push({ id: e.id, level: parseInt(m[1], 10) });
+                }
+                return _enemyLevelIndex;
+            };
+
+            // The formula reads as jargon; a number the caster would actually deal
+            // does not. Evaluated with the REAL engine formula evaluator against the
+            // windowed median of ordinary creatures nearest the caster's own level,
+            // so two skills on the sheet are directly comparable numbers.
+            const medianDamageFor = (skill, actor) => {
+                if (!actor || !skill || !skill.damage || !(skill.damage.type > 0)) return null;
+                const formula = skill.damage.formula ? skill.damage.formula.trim() : "";
+                if (!formula || formula === "0" || formula === "0.0") return null;
+                const index = enemyLevelIndex();
+                if (!index.length) return null;
+                const level = actor.level || 1;
+                const nearest = index.slice()
+                    .sort((a, b) => Math.abs(a.level - level) - Math.abs(b.level - level))
+                    .slice(0, 9);
+                let action;
+                try {
+                    action = new Game_Action(actor);
+                    action.setSkill(skill.id);
+                } catch (err) { return null; }
+                const results = [];
+                for (const entry of nearest) {
+                    try {
+                        const enemy = new Game_Enemy(entry.id, 0, 0);
+                        enemy.recoverAll();
+                        if (enemy.initTp) enemy.initTp();
+                        const value = action.evalDamageFormula(enemy);
+                        if (isFinite(value)) results.push(value);
+                    } catch (err) { /* a formula reaching for something this dummy target lacks */ }
+                }
+                if (!results.length) return null;
+                results.sort((a, b) => a - b);
+                const mid = Math.floor(results.length / 2);
+                const median = results.length % 2
+                    ? results[mid]
+                    : (results[mid - 1] + results[mid]) / 2;
+                return Math.round(median);
+            };
+
+            const damageSpecsOf = (skill, actor) => {
                 const specs = [];
                 if (!skill || !skill.damage || !(skill.damage.type > 0)) return specs;
                 specs.push({ label: T("Inventory.spec.label.damageType"), val: damageTypeName(skill.damage.type) });
@@ -210,7 +265,14 @@
                     specs.push({ label: T("Inventory.spec.label.attackElement"), val: ($dataSystem.elements || [])[skill.damage.elementId] || T("Inventory.spec.none") });
                 }
                 const formula = skill.damage.formula ? skill.damage.formula.trim() : "";
-                if (formula && formula !== "0" && formula !== "0.0") specs.push({ label: T("Inventory.spec.label.formula"), val: translateFormula(formula) });
+                if (formula && formula !== "0" && formula !== "0.0") {
+                    const median = medianDamageFor(skill, actor);
+                    if (median !== null) {
+                        specs.push({ label: T("SkillsMenu.spec.label.damage"), val: String(median) });
+                    } else {
+                        specs.push({ label: T("Inventory.spec.label.formula"), val: translateFormula(formula) });
+                    }
+                }
                 if (skill.damage.variance > 0) specs.push({ label: T("Inventory.spec.label.variance"), val: skill.damage.variance + "%" });
                 if (skill.damage.critical) specs.push({ label: T("Inventory.spec.label.canCritical"), val: T("Inventory.spec.yes") });
                 return specs;
@@ -350,7 +412,7 @@
             function build(skill, actor) {
                 if (!skill) return "";
                 const combat = combatSpecsOf(skill);
-                const damage = damageSpecsOf(skill);
+                const damage = damageSpecsOf(skill, actor);
                 const effects = effectsOf(skill);
                 const noteTags = noteTagsOf(skill);
                 const training = specRowsOf(skill, actor);

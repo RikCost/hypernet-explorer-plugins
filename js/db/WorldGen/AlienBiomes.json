@@ -130,27 +130,27 @@
       },
       {
         "name": "RockDesert",
-        "density": 2
+        "density": 0.4
       },
       {
         "name": "Pebble",
-        "density": 1.5
-      },
-      {
-        "name": "Crater",
-        "density": 0.6
-      },
-      {
-        "name": "Crack",
-        "density": 1.2
-      },
-      {
-        "name": "Stain",
         "density": 0.3
       },
       {
+        "name": "Crater",
+        "density": 0.12
+      },
+      {
+        "name": "Crack",
+        "density": 0.24
+      },
+      {
+        "name": "Stain",
+        "density": 0.06
+      },
+      {
         "name": "RockTentacle",
-        "density": 0.35,
+        "density": 0.07,
         "lifeSign": "weak"
       }
     ]
@@ -284,31 +284,31 @@
       },
       {
         "name": "Rock",
-        "density": 2.2
+        "density": 0.44
       },
       {
         "name": "RockPath",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "Crater",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Pebble",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "Mineral",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "CaveEntrance",
-        "density": 0.004
+        "density": 0.0008
       },
       {
         "name": "RockTentacle",
-        "density": 0.4,
+        "density": 0.08,
         "lifeSign": "weak"
       }
     ]
@@ -478,36 +478,36 @@
       },
       {
         "name": "TreeDead",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Rock",
-        "density": 2
+        "density": 0.4
       },
       {
         "name": "Branches",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Stalagmite",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Puddle",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Pebble",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Tentacle",
-        "density": 0.5,
+        "density": 0.1,
         "lifeSign": "weak"
       },
       {
         "name": "RockTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -788,35 +788,35 @@
       },
       {
         "name": "Tree",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "TreeStump",
-        "density": 0.25
+        "density": 0.05
       },
       {
         "name": "Branches",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "Bush",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Flower",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Weed",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "Fruit",
-        "density": 0.15
+        "density": 0.03
       },
       {
         "name": "Tentacle",
-        "density": 0.45,
+        "density": 0.09,
         "lifeSign": "weak"
       }
     ]
@@ -955,40 +955,40 @@
       },
       {
         "name": "Tree",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "TreeDead",
-        "density": 0.2
+        "density": 0.04
       },
       {
         "name": "Bush",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Rock",
-        "density": 1.5
-      },
-      {
-        "name": "Cliff",
-        "density": 1
-      },
-      {
-        "name": "StoneBlock",
         "density": 0.3
       },
       {
+        "name": "Cliff",
+        "density": 0.2
+      },
+      {
+        "name": "StoneBlock",
+        "density": 0.06
+      },
+      {
         "name": "Pebble",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "Tentacle",
-        "density": 0.4,
+        "density": 0.08,
         "lifeSign": "weak"
       },
       {
         "name": "RockTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -1178,36 +1178,36 @@
       },
       {
         "name": "PebbleIce",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "RockIce",
-        "density": 0.9
+        "density": 0.18
       },
       {
         "name": "PlantIce",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "WeedIce",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "IcePool",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "SpringIce",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "Tentacle",
-        "density": 0.4,
+        "density": 0.08,
         "lifeSign": "weak"
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -1398,31 +1398,31 @@
       },
       {
         "name": "PebbleIce",
-        "density": 1.5
-      },
-      {
-        "name": "RockIce",
-        "density": 1
-      },
-      {
-        "name": "SnowPile",
-        "density": 0.8
-      },
-      {
-        "name": "IcePool",
-        "density": 0.5
-      },
-      {
-        "name": "WeedIce",
-        "density": 0.4
-      },
-      {
-        "name": "PlantIce",
         "density": 0.3
       },
       {
+        "name": "RockIce",
+        "density": 0.2
+      },
+      {
+        "name": "SnowPile",
+        "density": 0.16
+      },
+      {
+        "name": "IcePool",
+        "density": 0.1
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.08
+      },
+      {
+        "name": "PlantIce",
+        "density": 0.06
+      },
+      {
         "name": "CrystalTentacle",
-        "density": 0.5,
+        "density": 0.1,
         "lifeSign": "weak"
       }
     ]
@@ -1602,31 +1602,31 @@
       },
       {
         "name": "Water",
-        "density": 4
-      },
-      {
-        "name": "Palm",
-        "density": 0.5
-      },
-      {
-        "name": "Reed",
-        "density": 0.6
-      },
-      {
-        "name": "SeaPlant",
-        "density": 0.6
-      },
-      {
-        "name": "Seashell",
-        "density": 0.5
-      },
-      {
-        "name": "WaterRock",
         "density": 0.8
       },
       {
+        "name": "Palm",
+        "density": 0.1
+      },
+      {
+        "name": "Reed",
+        "density": 0.12
+      },
+      {
+        "name": "SeaPlant",
+        "density": 0.12
+      },
+      {
+        "name": "Seashell",
+        "density": 0.1
+      },
+      {
+        "name": "WaterRock",
+        "density": 0.16
+      },
+      {
         "name": "Tentacle",
-        "density": 0.6,
+        "density": 0.12,
         "lifeSign": "weak"
       }
     ]
@@ -1787,31 +1787,31 @@
       },
       {
         "name": "Rock",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Crater",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Crack",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "Debris",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "Oil",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Bones",
-        "density": 0.15
+        "density": 0.03
       },
       {
         "name": "RockTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -1972,31 +1972,31 @@
       },
       {
         "name": "RockDesert",
-        "density": 3
+        "density": 0.6
       },
       {
         "name": "Cactus",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "Pebble",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Bones",
-        "density": 0.25
+        "density": 0.05
       },
       {
         "name": "Skull",
-        "density": 0.06
+        "density": 0.012
       },
       {
         "name": "Pyramid",
-        "density": 0.02
+        "density": 0.004
       },
       {
         "name": "RockTentacle",
-        "density": 0.4,
+        "density": 0.08,
         "lifeSign": "weak"
       }
     ]
@@ -2137,35 +2137,35 @@
       },
       {
         "name": "Tree",
-        "density": 2
+        "density": 0.4
       },
       {
         "name": "Palm",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Vine",
-        "density": 1.5
+        "density": 0.3
       },
       {
         "name": "JungleBush",
-        "density": 0.9
+        "density": 0.18
       },
       {
         "name": "JungleRock",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Plant",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "Mushroom",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Tentacle",
-        "density": 0.6,
+        "density": 0.12,
         "lifeSign": "weak"
       }
     ]
@@ -2305,35 +2305,35 @@
       },
       {
         "name": "RockIce",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "TreIce",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "TreeIce",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "LogIce",
-        "density": 0.35
+        "density": 0.07
       },
       {
         "name": "WeedIce",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "MushroomIce",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "PebbleIce",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.4,
+        "density": 0.08,
         "lifeSign": "weak"
       }
     ]
@@ -2487,39 +2487,39 @@
       },
       {
         "name": "TreeSwamp",
-        "density": 2
-      },
-      {
-        "name": "Lilypad",
-        "density": 1
-      },
-      {
-        "name": "Vine",
-        "density": 1
-      },
-      {
-        "name": "WeedSwamp",
-        "density": 0.8
-      },
-      {
-        "name": "Moor",
-        "density": 0.9
-      },
-      {
-        "name": "Mushroom",
-        "density": 1
-      },
-      {
-        "name": "Skull",
         "density": 0.4
       },
       {
+        "name": "Lilypad",
+        "density": 0.2
+      },
+      {
+        "name": "Vine",
+        "density": 0.2
+      },
+      {
+        "name": "WeedSwamp",
+        "density": 0.16
+      },
+      {
+        "name": "Moor",
+        "density": 0.18
+      },
+      {
+        "name": "Mushroom",
+        "density": 0.2
+      },
+      {
+        "name": "Skull",
+        "density": 0.08
+      },
+      {
         "name": "ToxicBarrel",
-        "density": 0.25
+        "density": 0.05
       },
       {
         "name": "Tentacle",
-        "density": 0.7,
+        "density": 0.14,
         "lifeSign": "weak"
       }
     ]
@@ -2709,27 +2709,27 @@
       },
       {
         "name": "RockIce",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "WeedIce",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "PlantIce",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "MushroomIce",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "SpringIce",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "Tentacle",
-        "density": 0.5,
+        "density": 0.1,
         "lifeSign": "weak"
       }
     ]
@@ -2890,31 +2890,31 @@
       },
       {
         "name": "Rock",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Crater",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Crack",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "Debris",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "Oil",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Stain",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Tentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -3104,31 +3104,31 @@
       },
       {
         "name": "PlantIce",
-        "density": 0.7
+        "density": 0.14
       },
       {
         "name": "WeedIce",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "MushroomIce",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "LeavesIce",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "PebbleIce",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Puddle",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Tentacle",
-        "density": 0.55,
+        "density": 0.11,
         "lifeSign": "weak"
       }
     ]
@@ -3319,31 +3319,31 @@
       },
       {
         "name": "RockIce",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "PebbleIce",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "LeavesIce",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "WeedIce",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "MushroomIce",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "PlantIce",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.4,
+        "density": 0.08,
         "lifeSign": "weak"
       }
     ]
@@ -3534,31 +3534,31 @@
       },
       {
         "name": "RockIce",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "PebbleIce",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Crystal",
-        "density": 0.7
+        "density": 0.14
       },
       {
         "name": "SpringIce",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "SnowPile",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "LeavesIce",
-        "density": 0.25
+        "density": 0.05
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.55,
+        "density": 0.11,
         "lifeSign": "weak"
       }
     ]
@@ -3748,27 +3748,27 @@
       },
       {
         "name": "Crystal",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "RockIce",
-        "density": 0.9
+        "density": 0.18
       },
       {
         "name": "PebbleIce",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Mineral",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "IcePool",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.5,
+        "density": 0.1,
         "lifeSign": "weak"
       }
     ]
@@ -3958,27 +3958,27 @@
       },
       {
         "name": "WeedIce",
-        "density": 0.7
+        "density": 0.14
       },
       {
         "name": "PlantIce",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Reed",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "IcePool",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "PebbleIce",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Tentacle",
-        "density": 0.6,
+        "density": 0.12,
         "lifeSign": "weak"
       }
     ]
@@ -4139,36 +4139,36 @@
       },
       {
         "name": "Rock",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "MetalScrap",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Crater",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "Crack",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "Debris",
-        "density": 0.9
+        "density": 0.18
       },
       {
         "name": "Mineral",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Tentacle",
-        "density": 0.4,
+        "density": 0.08,
         "lifeSign": "weak"
       },
       {
         "name": "RockTentacle",
-        "density": 0.35,
+        "density": 0.07,
         "lifeSign": "weak"
       }
     ]
@@ -4302,43 +4302,43 @@
       },
       {
         "name": "Rail",
-        "density": 0.9
+        "density": 0.18
       },
       {
         "name": "RailLeft",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "RailRight",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "MetalScrap",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "Crate",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Ladder",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Lamp",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Cart",
-        "density": 0.15
+        "density": 0.03
       },
       {
         "name": "Gold",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "RockTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -4468,35 +4468,35 @@
       },
       {
         "name": "TreeDead",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Debris",
-        "density": 2.2
+        "density": 0.44
       },
       {
         "name": "Trash",
-        "density": 1.5
-      },
-      {
-        "name": "MetalScrap",
-        "density": 1
-      },
-      {
-        "name": "Oil",
-        "density": 0.5
-      },
-      {
-        "name": "Gear",
-        "density": 0.4
-      },
-      {
-        "name": "ToxicBarrel",
         "density": 0.3
       },
       {
+        "name": "MetalScrap",
+        "density": 0.2
+      },
+      {
+        "name": "Oil",
+        "density": 0.1
+      },
+      {
+        "name": "Gear",
+        "density": 0.08
+      },
+      {
+        "name": "ToxicBarrel",
+        "density": 0.06
+      },
+      {
         "name": "RockTentacle",
-        "density": 0.35,
+        "density": 0.07,
         "lifeSign": "weak"
       }
     ]
@@ -4626,31 +4626,31 @@
       },
       {
         "name": "Crystal",
-        "density": 3
-      },
-      {
-        "name": "Mineral",
-        "density": 1
-      },
-      {
-        "name": "Stalagmite",
         "density": 0.6
       },
       {
+        "name": "Mineral",
+        "density": 0.2
+      },
+      {
+        "name": "Stalagmite",
+        "density": 0.12
+      },
+      {
         "name": "Stalattite",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "Orb",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Rock",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.6,
+        "density": 0.12,
         "lifeSign": "weak"
       }
     ]
@@ -4811,36 +4811,36 @@
       },
       {
         "name": "Rock",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Stalagmite",
-        "density": 0.7
+        "density": 0.14
       },
       {
         "name": "Stalattite",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "Crack",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "Crater",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Oil",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Tentacle",
-        "density": 0.35,
+        "density": 0.07,
         "lifeSign": "weak"
       },
       {
         "name": "RockTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -4976,40 +4976,40 @@
       },
       {
         "name": "Orb",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "Torch",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Brazier",
-        "density": 0.2
+        "density": 0.04
       },
       {
         "name": "Crystal",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Pentagram",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "Skull",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Blood",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Tentacle",
-        "density": 0.7,
+        "density": 0.14,
         "lifeSign": "weak"
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -5145,36 +5145,36 @@
       },
       {
         "name": "Tech",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Capsule",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Spike",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Crystal",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Orb",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Blood",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "Tentacle",
-        "density": 0.5,
+        "density": 0.1,
         "lifeSign": "weak"
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.35,
+        "density": 0.07,
         "lifeSign": "weak"
       }
     ]
@@ -5310,40 +5310,40 @@
       },
       {
         "name": "Capsule",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "ColumnTech",
-        "density": 0.5
-      },
-      {
-        "name": "Tech",
-        "density": 0.7
-      },
-      {
-        "name": "Orb",
-        "density": 0.6
-      },
-      {
-        "name": "Generator",
-        "density": 0.2
-      },
-      {
-        "name": "Clock",
         "density": 0.1
       },
       {
+        "name": "Tech",
+        "density": 0.14
+      },
+      {
+        "name": "Orb",
+        "density": 0.12
+      },
+      {
+        "name": "Generator",
+        "density": 0.04
+      },
+      {
+        "name": "Clock",
+        "density": 0.02
+      },
+      {
         "name": "Globe",
-        "density": 0.06
+        "density": 0.012
       },
       {
         "name": "Tentacle",
-        "density": 0.5,
+        "density": 0.1,
         "lifeSign": "weak"
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.4,
+        "density": 0.08,
         "lifeSign": "weak"
       }
     ]
@@ -5478,40 +5478,40 @@
       },
       {
         "name": "TreeDead",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "ColumnBroken",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Statue",
-        "density": 0.2
+        "density": 0.04
       },
       {
         "name": "Grave",
-        "density": 0.2
+        "density": 0.04
       },
       {
         "name": "Cobweb",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Debris",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Crystal",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Tentacle",
-        "density": 0.4,
+        "density": 0.08,
         "lifeSign": "weak"
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -5665,35 +5665,35 @@
       },
       {
         "name": "Tree",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "TreeTrunk",
-        "density": 0.2
+        "density": 0.04
       },
       {
         "name": "Bush",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Leaves",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "Flower",
-        "density": 1.5
+        "density": 0.3
       },
       {
         "name": "Plant",
-        "density": 0.8
+        "density": 0.16
       },
       {
         "name": "Fruit",
-        "density": 0.2
+        "density": 0.04
       },
       {
         "name": "Tentacle",
-        "density": 0.5,
+        "density": 0.1,
         "lifeSign": "weak"
       }
     ]
@@ -5884,32 +5884,32 @@
       },
       {
         "name": "RockIce",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "PebbleIce",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "SnowPile",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Mineral",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Stalagmite",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "RockTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -6100,27 +6100,27 @@
       },
       {
         "name": "RockIce",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "PebbleIce",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Stalagmite",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Debris",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "IcePool",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "RockTentacle",
-        "density": 0.35,
+        "density": 0.07,
         "lifeSign": "weak"
       }
     ]
@@ -6310,27 +6310,27 @@
       },
       {
         "name": "RockIce",
-        "density": 1.4
+        "density": 0.28
       },
       {
         "name": "PebbleIce",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "Stalagmite",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Mineral",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Debris",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "RockTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -6463,31 +6463,31 @@
       },
       {
         "name": "RockDesert",
-        "density": 2
-      },
-      {
-        "name": "Pebble",
-        "density": 1.5
-      },
-      {
-        "name": "Crater",
-        "density": 1
-      },
-      {
-        "name": "Crack",
-        "density": 1
-      },
-      {
-        "name": "Oil",
-        "density": 0.3
-      },
-      {
-        "name": "Stain",
         "density": 0.4
       },
       {
+        "name": "Pebble",
+        "density": 0.3
+      },
+      {
+        "name": "Crater",
+        "density": 0.2
+      },
+      {
+        "name": "Crack",
+        "density": 0.2
+      },
+      {
+        "name": "Oil",
+        "density": 0.06
+      },
+      {
+        "name": "Stain",
+        "density": 0.08
+      },
+      {
         "name": "RockTentacle",
-        "density": 0.35,
+        "density": 0.07,
         "lifeSign": "weak"
       }
     ]
@@ -6617,35 +6617,35 @@
       },
       {
         "name": "Rock",
-        "density": 2.2
+        "density": 0.44
       },
       {
         "name": "RockDesert",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Pebble",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "Crater",
-        "density": 0.9
+        "density": 0.18
       },
       {
         "name": "Cliff",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Mineral",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "CaveEntrance",
-        "density": 0.004
+        "density": 0.0008
       },
       {
         "name": "RockTentacle",
-        "density": 0.35,
+        "density": 0.07,
         "lifeSign": "weak"
       }
     ]
@@ -6779,39 +6779,39 @@
       },
       {
         "name": "MetalScrap",
-        "density": 1.4
+        "density": 0.28
       },
       {
         "name": "Mineral",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Rail",
-        "density": 0.6
+        "density": 0.12
       },
       {
         "name": "Crate",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Ladder",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Torch",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Sack",
-        "density": 0.15
+        "density": 0.03
       },
       {
         "name": "Gold",
-        "density": 0.35
+        "density": 0.07
       },
       {
         "name": "RockTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -6944,31 +6944,31 @@
       },
       {
         "name": "RockDesert",
-        "density": 1.8
+        "density": 0.36
       },
       {
         "name": "Pebble",
-        "density": 1.4
+        "density": 0.28
       },
       {
         "name": "Crater",
-        "density": 1.1
+        "density": 0.22
       },
       {
         "name": "Crack",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Stalagmite",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "Debris",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "RockTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -7159,27 +7159,27 @@
       },
       {
         "name": "PebbleIce",
-        "density": 1.6
+        "density": 0.32
       },
       {
         "name": "RockIce",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "IcePool",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "SpringIce",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "SnowPile",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.35,
+        "density": 0.07,
         "lifeSign": "weak"
       }
     ]
@@ -7370,27 +7370,27 @@
       },
       {
         "name": "RockIce",
-        "density": 1.4
+        "density": 0.28
       },
       {
         "name": "PebbleIce",
-        "density": 1.2
+        "density": 0.24
       },
       {
         "name": "SnowPile",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "Debris",
-        "density": 0.4
+        "density": 0.08
       },
       {
         "name": "IcePool",
-        "density": 0.3
+        "density": 0.06
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.3,
+        "density": 0.06,
         "lifeSign": "weak"
       }
     ]
@@ -7581,31 +7581,31 @@
       },
       {
         "name": "PebbleIce",
-        "density": 1.4
+        "density": 0.28
       },
       {
         "name": "RockIce",
-        "density": 1
+        "density": 0.2
       },
       {
         "name": "Crystal",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "SnowPile",
-        "density": 0.5
+        "density": 0.1
       },
       {
         "name": "CrateIce",
-        "density": 0.08
+        "density": 0.016
       },
       {
         "name": "CampfireIce",
-        "density": 0.05
+        "density": 0.01
       },
       {
         "name": "CrystalTentacle",
-        "density": 0.45,
+        "density": 0.09,
         "lifeSign": "weak"
       }
     ]

@@ -80,11 +80,13 @@
     --bg-success-green-15: rgba(42, 110, 74, 0.15);
     --bg-crime-dark-10: rgba(140, 20, 20, 0.10);
     --bg-dark-warm-translucent-96: rgba(30, 18, 8, 0.96);
+    --bg-black-translucent-96: rgba(0, 0, 0, 0.96);
     --bg-settings-row: rgba(55, 40, 18, 0.42);
     --bg-settings-row-active: rgba(140, 98, 32, 0.58);
     --bg-dark-panel: rgba(20, 24, 33, 0.96);
     --bg-darker-panel: rgba(13, 16, 23, 0.97);
     --bg-dark-overlay-78: rgba(10, 10, 18, 0.78);
+    --bg-dark-overlay-90: rgba(10, 10, 18, 0.90);
     --bg-gold-panel-92: rgba(60, 48, 0, 0.92);
     --bg-gold-panel-95: rgba(80, 62, 0, 0.95);
     --bg-brown-vignette-10: rgba(78, 38, 12, 0.10);

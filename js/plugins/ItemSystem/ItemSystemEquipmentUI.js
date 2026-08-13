@@ -710,6 +710,15 @@
                 mainContentHTML += `<div class="placeholder-message">${useItalian ? 'Nessun equipaggiamento disponibile...' : 'No matching equipment available...'}</div>`;
             } else {
                 mainContentHTML += '<div class="inventory-grid">';
+                const paramNames = [t.hp, t.mp, t.str, t.con, t.int, t.wis, t.dex, t.psi];
+                const getParams  = a => [a.mhp, a.mmp, a.atk, a.def, a.mat, a.mdf, a.agi, a.luk];
+                const beforeParams = getParams(actor);
+                // Mutate _equips directly rather than through changeEquip/forceChangeEquip:
+                // param() already reads traits (including PARAM-rate modifiers like the
+                // percentage boosts/penalties some weapons carry) straight off the
+                // battler's live equips, and going through the change hooks would also
+                // fire saveCustomStatsToVariables for every row in the list.
+                const diffActor = JsonEx.makeDeepCopy(actor);
                 itemList.forEach((item, idx) => {
                     const focused = idx === this._inventoryIndex ? 'focused' : '';
                     if (item.isRemoveOption) {
@@ -724,12 +733,14 @@
                         const iconIdx   = item.iconIndex;
                         const iconStyle = `background:url('img/system/IconSet.png') -${(iconIdx%16)*32}px -${Math.floor(iconIdx/16)*32}px no-repeat;`;
                         const rarity    = window.ItemSystemUtils.getItemRarity(item);
-                        const paramNames = [t.hp, t.mp, t.str, t.con, t.int, t.wis, t.dex, t.psi];
+                        const gi = new Game_Item();
+                        gi.setObject(item);
+                        diffActor._equips[this._slotIndex] = gi;
+                        const afterParams = getParams(diffActor);
                         const paramDesc  = [];
-                        if (item.params) {
-                            for (let p = 0; p < 8; p++) {
-                                if (item.params[p] !== 0) paramDesc.push(`${paramNames[p]} ${item.params[p]>0?'+':''}${item.params[p]}`);
-                            }
+                        for (let p = 0; p < 8; p++) {
+                            const delta = afterParams[p] - beforeParams[p];
+                            if (delta !== 0) paramDesc.push(`${paramNames[p]} ${delta>0?'+':''}${delta}`);
                         }
                         // Weapons below Intermediate proficiency fight at reduced
                         // stats; flag the tier the character is actually at.

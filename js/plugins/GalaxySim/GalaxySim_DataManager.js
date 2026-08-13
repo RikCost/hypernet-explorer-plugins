@@ -94,6 +94,12 @@
   // (SCHRODINGERITE_MAX over the same real-time window REFUEL_RATE_PER_SEC
   // implies for HYPERFLUX_MAX). See canRefuel/tickRefuel.
   const SCHRODINGERITE_REFUEL_RATE_PER_SEC = SCHRODINGERITE_MAX / (HYPERFLUX_MAX / REFUEL_RATE_PER_SEC);
+  // Variable 95 ("fuel") is the classic RPG-world-map tank (see the header
+  // note above); a Hyperflux refuel tops it up too, on the same real-time
+  // curve as Hyperflux itself, so parking at a star fills both tanks at once
+  // instead of leaving the party stranded on the world map with a full ship.
+  const MAP_FUEL_MAX = 10000;
+  const MAP_FUEL_REFUEL_RATE_PER_SEC = MAP_FUEL_MAX / (HYPERFLUX_MAX / REFUEL_RATE_PER_SEC);
   // The warp-speed slider (Variable 94) is calibrated for crossing light-years
   // between stars; applied unmodified to a hop between two planets a handful
   // of AU apart it made every intra-system trip read as instantaneous
@@ -713,6 +719,14 @@
         Math.max(0, Math.min(SCHRODINGERITE_MAX, Math.floor(v || 0)));
       return this.playerShip.schrodingerite;
     }
+    getMapFuel() {
+      return ($gameVariables && $gameVariables.value(95)) || 0;
+    }
+    setMapFuel(v) {
+      const clamped = Math.max(0, Math.min(MAP_FUEL_MAX, v || 0));
+      if ($gameVariables) $gameVariables.setValue(95, clamped);
+      return clamped;
+    }
 
     // Instantly relocate the ship to a target system (SB-Bridge warp). Consumes
     // no fuel itself -- the caller checks/decrements Schrodingerite -- and works
@@ -805,7 +819,7 @@
         return this.getSchrodingerite() < SCHRODINGERITE_MAX;
       }
       if (ship.parkedBody.kind !== "star") return false;
-      if (this.getHyperflux() >= HYPERFLUX_MAX) return false;
+      if (this.getHyperflux() >= HYPERFLUX_MAX && this.getMapFuel() >= MAP_FUEL_MAX) return false;
       // parkedBody.system is set when parked at a companion/donor star of an
       // N-ary system; older saves (and primary parks) fall back to the name.
       const rec = this.getStarInSystem(
@@ -846,7 +860,10 @@
         return;
       }
       this.setHyperflux(this.getHyperflux() + REFUEL_RATE_PER_SEC * dt);
-      if (this.getHyperflux() >= HYPERFLUX_MAX) ship.isRefueling = false;
+      this.setMapFuel(this.getMapFuel() + MAP_FUEL_REFUEL_RATE_PER_SEC * dt);
+      if (this.getHyperflux() >= HYPERFLUX_MAX && this.getMapFuel() >= MAP_FUEL_MAX) {
+        ship.isRefueling = false;
+      }
     }
 
     // ------------------------------------------------------------------------
@@ -965,7 +982,9 @@
           systemName: ship.currentSystem || null,
         };
       }
-      if (this.getHyperflux() >= HYPERFLUX_MAX) return { ...none, status: "full" };
+      if (this.getHyperflux() >= HYPERFLUX_MAX && this.getMapFuel() >= MAP_FUEL_MAX) {
+        return { ...none, status: "full" };
+      }
 
       // Already parked at a fusing star: nothing to plot.
       if (this.canRefuel()) {

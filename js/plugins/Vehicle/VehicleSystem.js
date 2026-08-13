@@ -288,9 +288,9 @@
       fuelRate: 0.8,
       interior: {
         mapId: 721,
-        x: 25,
-        y: 48,
-        direction: 6  // Facing right (6 = right, 2 = down, 4 = left, 8 = up)
+        x: 28,
+        y: 10,
+        direction: 8  // Facing right (6 = right, 2 = down, 4 = left, 8 = up)
       },
       sprites: {
         normal: { name: 'Vehicles/!$Airship', index: 0 },  // i18n-ignore  sprite asset path
@@ -1940,7 +1940,7 @@
         if (this.isShip()) {
           if (![0, 1, 2, 5, 6].includes(terrainTag)) return false;
         } else {
-          if (![1, 5, 2, 7].includes(terrainTag)) return false;
+          if (![1, 5, 2, 6, 7].includes(terrainTag)) return false;
         }
       }
 

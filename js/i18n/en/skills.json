@@ -414,9 +414,9 @@
     "message2": ""
   },
   "79": {
-    "name": "DDT",
+    "name": "Faceplant Drop",
     "description": "A head driven into the floor. Brief, final, and\nstunning.",
-    "message1": "%1 performs a DDT!",
+    "message1": "%1 delivers a Faceplant Drop!",
     "message2": ""
   },
   "80": {
@@ -492,15 +492,15 @@
     "message2": ""
   },
   "92": {
-    "name": "German Suplex Combo",
+    "name": "Triple Bridge Throw",
     "description": "Three suplexes without letting go once in\nbetween them.",
-    "message1": "%1 performs a series of suplexes!",
+    "message1": "%1 performs a series of bridge throws!",
     "message2": ""
   },
   "93": {
-    "name": "Figure-Four Leg Lock",
+    "name": "Crossed Leg Lock",
     "description": "The legs are folded into a shape legs do not\nfold into.",
-    "message1": "%1 applies a figure-four leg lock!",
+    "message1": "%1 applies a crossed leg lock!",
     "message2": ""
   },
   "94": {
@@ -510,9 +510,9 @@
     "message2": ""
   },
   "95": {
-    "name": "Powerbomb",
+    "name": "Overhead Slam",
     "description": "Lifted overhead and driven down. Nobody gets up\nfrom it quickly.",
-    "message1": "%1 performs a powerbomb!",
+    "message1": "%1 performs an overhead slam!",
     "message2": ""
   },
   "96": {
@@ -774,9 +774,9 @@
     "message2": ""
   },
   "139": {
-    "name": "Stunner",
+    "name": "Jawbreaker Drop",
     "description": "The jaw goes onto the shoulder on the way down.\nLights out.",
-    "message1": "%1 performs a Stunner!",
+    "message1": "%1 performs a Jawbreaker Drop!",
     "message2": ""
   },
   "140": {
@@ -870,21 +870,21 @@
     "message2": ""
   },
   "155": {
-    "name": "Sharpshooter",
+    "name": "Scorpion Lock",
     "description": "Both legs crossed and turned over. Nobody\nescapes this one.",
     "message1": "%1 applies a submission hold!",
     "message2": ""
   },
   "156": {
-    "name": "T-Bone Suplex",
+    "name": "T-Bone Bridge Throw",
     "description": "A belly-to-belly throw that finishes behind the\nuser.",
-    "message1": "%1 performs a T-Bone Suplex!",
+    "message1": "%1 performs a T-Bone Bridge Throw!",
     "message2": ""
   },
   "157": {
     "name": "Lineage Crusher",
     "description": "A blow saved for the wounded, and wasted on\nanybody else.",
-    "message1": "%1 delivers a Pedigree!",
+    "message1": "%1 delivers a Lineage Crusher!",
     "message2": ""
   },
   "158": {
@@ -906,9 +906,9 @@
     "message2": ""
   },
   "161": {
-    "name": "Karate Chop",
+    "name": "Blade-Hand Chop",
     "description": "The edge of the hand into the side of the neck.\nNothing moves after.",
-    "message1": "%1 delivers a karate chop!",
+    "message1": "%1 delivers a blade-hand chop!",
     "message2": ""
   },
   "162": {
@@ -942,9 +942,9 @@
     "message2": ""
   },
   "167": {
-    "name": "Spinebuster",
+    "name": "Spine Splitter",
     "description": "Lifted at the waist and driven back down spine\nfirst.",
-    "message1": "%1 delivers a Spinebuster!",
+    "message1": "%1 delivers a Spine Splitter!",
     "message2": ""
   },
   "168": {
@@ -954,9 +954,9 @@
     "message2": ""
   },
   "169": {
-    "name": "Frog Splash",
+    "name": "Leap Splash",
     "description": "Off the top rope, flat, onto somebody who cannot\nroll away.",
-    "message1": "%1 performs a Frog Splash!",
+    "message1": "%1 performs a Leap Splash!",
     "message2": ""
   },
   "170": {
@@ -984,9 +984,9 @@
     "message2": ""
   },
   "174": {
-    "name": "Suplex",
+    "name": "Bridge Throw",
     "description": "Bridge backward, and the mat handles the rest of\nit.",
-    "message1": "%1 performs a suplex!",
+    "message1": "%1 performs a bridge throw!",
     "message2": ""
   },
   "175": {
@@ -1074,9 +1074,9 @@
     "message2": ""
   },
   "189": {
-    "name": "Skull-Crushing Finale",
+    "name": "Cranial Finale",
     "description": "The last thing a losing opponent hears before\nthe ringing.",
-    "message1": "%1 executes a Skull-Crushing Finale!",
+    "message1": "%1 executes a Cranial Finale!",
     "message2": ""
   },
   "190": {
@@ -1110,9 +1110,9 @@
     "message2": ""
   },
   "195": {
-    "name": "Piledriver",
+    "name": "Driving Spike",
     "description": "Head down, straight into the mat, and it stays\ndown there.",
-    "message1": "%1 performs a piledriver!",
+    "message1": "%1 performs a driving spike!",
     "message2": ""
   },
   "196": {
@@ -4646,7 +4646,7 @@
   "895": {
     "name": "Vampire Seed",
     "description": "The seed takes root in something warm.",
-    "message1": "%1 injects a leech seed!",
+    "message1": "%1 injects a vampire seed!",
     "message2": ""
   },
   "896": {
@@ -5586,15 +5586,15 @@
     "message2": ""
   },
   "1112": {
-    "name": "World Heavyweight Suplex",
+    "name": "World Heavyweight Bridge Throw",
     "description": "The move they put on the poster, performed\nproperly.",
-    "message1": "%1 uses World Heavyweight Suplex!",
+    "message1": "%1 uses World Heavyweight Bridge Throw!",
     "message2": ""
   },
   "1113": {
-    "name": "Moonsault",
+    "name": "Lunar Flip",
     "description": "A backflip onto somebody who has not landed yet.",
-    "message1": "%1 uses Moonsault!",
+    "message1": "%1 uses Lunar Flip!",
     "message2": ""
   },
   "1114": {
@@ -6230,7 +6230,7 @@
   "1239": {
     "name": "Hyper Ray",
     "description": "A beam held on somebody who is already coming\napart.",
-    "message1": "%1 fires a hyper beam!",
+    "message1": "%1 fires a hyper ray!",
     "message2": ""
   },
   "1240": {

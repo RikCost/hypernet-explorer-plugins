@@ -15816,10 +15816,16 @@ body, canvas {
     background: var(--bg-dark-overlay-78);
     border-radius: 2px;
 }
+.actorcmd-item.unsel .actorcmd-darkbase {
+    background: var(--bg-dark-overlay-90);
+}
 .actorcmd-gradient {
     position: absolute;
     top: 3px; right: 3px; bottom: 3px; left: 3px;
     border-radius: 2px;
+}
+.actorcmd-item.unsel .actorcmd-gradient {
+    filter: brightness(0.7);
 }
 .actorcmd-stripe {
     position: absolute;

@@ -342,7 +342,7 @@
 
       // Outer item container
       const item = document.createElement('div');
-      item.className = 'actorcmd-item';
+      item.className = 'actorcmd-item' + (isSel ? '' : ' unsel');
       item.style.width  = rowW + 'px';
       item.style.height = ROW_HEIGHT + 'px';
 

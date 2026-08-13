@@ -21,8 +21,10 @@
   "sky": {
     "european": "European",
     "chinese": "Chinese",
-    "hint": "arrows or WASD pan · Q/E zoom · Shift switches the sky · Esc closes",
-    "hintPad": "LS pan · LB/RB zoom · X switches the sky · B closes"
+    "center": "Center",
+    "zodiac": "Zodiac",
+    "hint": "drag or WASD/arrows to pan · wheel or Q/E to zoom · OK centers view · Tab switches the sky · Esc closes",
+    "hintPad": "LS pan · LB/RB zoom · A centers view · X switches the sky · B closes"
   },
   "cluster": {
     "virgo": "Virgo Cluster",
@@ -131,9 +133,12 @@
     "home": "Home",
     "returnToEarth": "Return to Earth",
     "ebBridge": "EB Bridge",
+    "closeMap": "Close Map",
+    "closeMapTooltip": "Close the star map",
     "engines": "Engines",
     "warpSpeed": "Warp speed",
     "hyperfluxBurn": "Hyperflux burn",
+    "eta": "Time to arrival",
     "stop": "Stop",
     "fuel": "Fuel",
     "hyperfluxReserve": "Hyperflux reserve",

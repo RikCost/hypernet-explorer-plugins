@@ -3616,9 +3616,12 @@
         return list;
     }
 
-    // Session-local synthetic troops, one per procedural alien species. Each is a
-    // 1-3 pack of the species' base enemy id (its 3D look) tagged with the species
-    // key; rebuilt on demand because $dataTroops is transient across save/load.
+    // Session-local synthetic troops, one per procedural alien species: the
+    // species' base enemy id (its 3D look) alone, tagged with the species key;
+    // rebuilt on demand because $dataTroops is transient across save/load.
+    // Exactly one member, same as every authored troop in data/Troops.json -
+    // a lone roaming alien event must fight alone unless the ordinary
+    // proximity reinforcement (section 5b) pulls in other nearby events.
     const _alienTroopCache = {}; // speciesKey -> troopId (valid for this session)
     function speciesTroopId(sp) {
         const cached = _alienTroopCache[sp.key];
@@ -3626,11 +3629,7 @@
             return cached;
         }
         const troopId = $dataTroops.length;
-        const nMembers = 1 + Math.floor(Math.random() * 3);
-        const members = [];
-        for (let m = 0; m < nMembers; m++) {
-            members.push({ enemyId: sp.enemyId, x: 320 + m * 180, y: 300, hidden: false });
-        }
+        const members = [{ enemyId: sp.enemyId, x: 320, y: 300, hidden: false }];
         $dataTroops.push({ id: troopId, members, name: sp.name, pages: [], _alienSpeciesKey: sp.key });
         _alienTroopCache[sp.key] = troopId;
         return troopId;

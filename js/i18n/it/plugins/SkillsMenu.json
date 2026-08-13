@@ -78,7 +78,10 @@
   },
   "spec": {
     "trains": "Allena",
-    "bonus": "Bonus abilità"
+    "bonus": "Bonus abilità",
+    "label": {
+      "damage": "Danno"
+    }
   },
   "loadout": {
     "skills": "Abilità",

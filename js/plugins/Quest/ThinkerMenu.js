@@ -131,7 +131,8 @@
         return /<Uncraftable>/i.test(item.note);
     }
 
-    // ---- Database-spanning helpers (items + weapons + armors are all craftable) ----
+    // ---- Database-spanning helpers (items + weapons are craftable here; armor
+    // is Blacksmithing's alone) ----
     function isRealEntry(x) {
         return x && x.name && x.name.trim() && !x.name.includes('-->');
     }
@@ -156,7 +157,6 @@
         const out = [];
         for (const x of $dataItems) if (isRealEntry(x)) out.push(x);
         for (const x of $dataWeapons) if (isRealEntry(x)) out.push(x);
-        for (const x of $dataArmors) if (isRealEntry(x)) out.push(x);
         _allEntriesCache = out;
         _allEntriesSource = $dataItems;
         return out;

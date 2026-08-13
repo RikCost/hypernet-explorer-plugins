@@ -161,10 +161,10 @@
               <h2 class="title">${T('Augments.ui.title')}</h2>
             </div>
             <div id="aug-tab-row" style="display:flex; flex-wrap:wrap; gap:5px; padding:6px 0 10px;"></div>
-            <div id="aug-list-content" style="display:flex; flex-direction:column; height:100%; overflow-y:auto;"></div>
+            <div id="aug-list-content" style="display:flex; flex-direction:column; height:100%; overflow-y:auto; color:var(--text-card-medium);"></div>
           </div>
           <div class="right-page" style="position:relative;">
-            <div id="aug-detail-content" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto;"></div>
+            <div id="aug-detail-content" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto; color:var(--text-card-medium);"></div>
           </div>
         </div>
       `;
@@ -335,13 +335,13 @@
       const sockets = socketsFor(row.key);
       const socketsHTML = sockets.length
         ? `<div style="display:flex; flex-wrap:wrap; gap:4px;">` + sockets.map((s) =>
-            `<span style="padding:1px 6px; border-radius:9px; font-size:0.72rem; border:1px solid var(--border-secondary-hover-translucent-15);">${escapeHtml(s)}</span>`
+            `<span style="padding:1px 6px; border-radius:9px; font-size:0.72rem; color:var(--text-card-medium); border:1px solid var(--border-secondary-hover-translucent-15);">${escapeHtml(s)}</span>`
           ).join("") + `</div>`
         : `<div style="opacity:0.7;">${T('Augments.ui.noSocket')}</div>`;
 
       const fittedHTML = row.actor
         ? `<div style="margin-top:18px;">
-             <div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.fittedTo')}</div>
+             <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.fittedTo')}</div>
              <div style="display:flex; justify-content:space-between; padding:2px 0;">
                <span>${escapeHtml(row.actor.name())}</span><span>${escapeHtml(row.partName)}</span>
              </div>
@@ -355,15 +355,15 @@
           <h2 style="color:var(--text-secondary-active); margin:0 0 4px;">${escapeHtml(name)}</h2>
           <div style="opacity:0.7;">${escapeHtml(typeLabel)} &middot; ${escapeHtml(priceLabel(p.cost))}</div>
           <div style="margin-top:18px;">
-            <div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.effects')}</div>
+            <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.effects')}</div>
             ${effectsHTML}
           </div>
           ${skillHTML ? `<div style="margin-top:18px;">
-            <div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.grantedSkill')}</div>
+            <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.grantedSkill')}</div>
             ${skillHTML}
           </div>` : ""}
           <div style="margin-top:18px;">
-            <div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.sockets')}</div>
+            <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.sockets')}</div>
             ${socketsHTML}
           </div>
           ${fittedHTML}

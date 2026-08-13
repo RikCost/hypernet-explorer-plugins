@@ -414,9 +414,9 @@
     "message2": ""
   },
   "79": {
-    "name": "DDT",
+    "name": "Schianto Frontale",
     "description": "Una testa piantata nel pavimento. Breve,\ndefinitivo e stordente.",
-    "message1": "%1 esegue un DDT!",
+    "message1": "%1 esegue uno Schianto Frontale!",
     "message2": ""
   },
   "80": {
@@ -492,15 +492,15 @@
     "message2": ""
   },
   "92": {
-    "name": "Combo Suplex Tedesco",
+    "name": "Tripla Proiezione a Ponte",
     "description": "Tre suplex senza mollare la presa nemmeno una\nvolta.",
-    "message1": "%1 esegue una serie di suplex!",
+    "message1": "%1 esegue una serie di proiezioni a ponte!",
     "message2": ""
   },
   "93": {
     "name": "Leva a Quattro",
     "description": "Le gambe vengono piegate in una forma in cui le\ngambe non si piegano.",
-    "message1": "%1 applica un figure-four leg lock!",
+    "message1": "%1 applica una leva a quattro!",
     "message2": ""
   },
   "94": {
@@ -510,9 +510,9 @@
     "message2": ""
   },
   "95": {
-    "name": "Powerbomb",
+    "name": "Schianto in Verticale",
     "description": "Sollevato sopra la testa e piantato giù. Da lì\nnon ci si rialza in fretta.",
-    "message1": "%1 esegue una powerbomb!",
+    "message1": "%1 esegue uno schianto in verticale!",
     "message2": ""
   },
   "96": {
@@ -774,9 +774,9 @@
     "message2": ""
   },
   "139": {
-    "name": "Stunner",
+    "name": "Colpo Rompimascella",
     "description": "La mascella finisce sulla spalla mentre scende.\nLuci spente.",
-    "message1": "%1 esegue una Stunner!",
+    "message1": "%1 esegue un Colpo Rompimascella!",
     "message2": ""
   },
   "140": {
@@ -870,21 +870,21 @@
     "message2": ""
   },
   "155": {
-    "name": "Sharpshooter",
+    "name": "Presa a Scorpione",
     "description": "Entrambe le gambe incrociate e ribaltate. Da\nquesta non si scappa.",
     "message1": "%1 applica un blocco di invio!",
     "message2": ""
   },
   "156": {
-    "name": "Suplex T-Bone",
+    "name": "Proiezione a Ponte T-Bone",
     "description": "Una proiezione pancia contro pancia che finisce\ndietro l'utilizzatore.",
-    "message1": "%1 esegue un T-Bone Suplex!",
+    "message1": "%1 esegue una Proiezione a Ponte T-Bone!",
     "message2": ""
   },
   "157": {
     "name": "Spezzastirpe",
     "description": "Un colpo riservato ai feriti, e sprecato su\nchiunque altro.",
-    "message1": "%1 esegue un Pedigree!",
+    "message1": "%1 esegue uno Spezzastirpe!",
     "message2": ""
   },
   "158": {
@@ -908,7 +908,7 @@
   "161": {
     "name": "Colpo di Taglio",
     "description": "Il taglio della mano nel lato del collo. Dopo\nnon si muove più niente.",
-    "message1": "%1 esegue un colpo di karate!",
+    "message1": "%1 esegue un colpo di taglio!",
     "message2": ""
   },
   "162": {
@@ -942,9 +942,9 @@
     "message2": ""
   },
   "167": {
-    "name": "Spinebuster",
+    "name": "Spacca Schiena",
     "description": "Sollevato in vita e ripiantato giù di schiena.",
-    "message1": "%1 esegue uno Spinebuster!",
+    "message1": "%1 esegue uno Spacca Schiena!",
     "message2": ""
   },
   "168": {
@@ -954,9 +954,9 @@
     "message2": ""
   },
   "169": {
-    "name": "Frog Splash",
+    "name": "Tuffo in Volo",
     "description": "Dalla terza corda, di piatto, su qualcuno che\nnon può rotolare via.",
-    "message1": "%1 esegue uno Frog Splash!",
+    "message1": "%1 esegue un Tuffo in Volo!",
     "message2": ""
   },
   "170": {
@@ -984,9 +984,9 @@
     "message2": ""
   },
   "174": {
-    "name": "Suplex",
+    "name": "Proiezione a Ponte",
     "description": "Ponte all'indietro, e al resto ci pensa il\ntappeto.",
-    "message1": "%1 esegue una suplex!",
+    "message1": "%1 esegue una proiezione a ponte!",
     "message2": ""
   },
   "175": {
@@ -1076,7 +1076,7 @@
   "189": {
     "name": "Finale Spaccacranio",
     "description": "L'ultima cosa che un avversario in perdita sente\nprima del ronzio.",
-    "message1": "%1 esegue un colpo finale schiacciante!",
+    "message1": "%1 esegue un Finale Spaccacranio!",
     "message2": ""
   },
   "190": {
@@ -1110,9 +1110,9 @@
     "message2": ""
   },
   "195": {
-    "name": "Piledriver",
+    "name": "Trivella al Suolo",
     "description": "Testa in giù, dritto nel tappeto, e lì rimane.",
-    "message1": "%1 esegue un piledriver!",
+    "message1": "%1 esegue una Trivella al Suolo!",
     "message2": ""
   },
   "196": {
@@ -4646,7 +4646,7 @@
   "895": {
     "name": "Seme Vampiro",
     "description": "Il seme mette radice in qualcosa di caldo.",
-    "message1": "%1 inietta un seme di sanguisuga!",
+    "message1": "%1 inietta un seme vampiro!",
     "message2": ""
   },
   "896": {
@@ -5586,15 +5586,15 @@
     "message2": ""
   },
   "1112": {
-    "name": "Suplex dei Massimi",
+    "name": "Proiezione a Ponte dei Massimi",
     "description": "La mossa messa sul manifesto, eseguita come si\ndeve.",
-    "message1": "%1 usa Suplex dei Massimi!",
+    "message1": "%1 usa Proiezione a Ponte dei Massimi!",
     "message2": ""
   },
   "1113": {
-    "name": "Moonsault",
+    "name": "Salto Lunare",
     "description": "Un salto mortale all'indietro su qualcuno che\nnon è ancora atterrato.",
-    "message1": "%1 usa Moonsault!",
+    "message1": "%1 usa Salto Lunare!",
     "message2": ""
   },
   "1114": {
@@ -6230,7 +6230,7 @@
   "1239": {
     "name": "Iperraggio",
     "description": "Un raggio tenuto su qualcuno che si sta già\ndisfacendo.",
-    "message1": "%1 blasta un raggio!",
+    "message1": "%1 spara un iperraggio!",
     "message2": ""
   },
   "1240": {

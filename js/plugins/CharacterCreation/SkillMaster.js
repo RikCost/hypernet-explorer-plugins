@@ -576,7 +576,7 @@
     // fight, MP runs to thousands and is carried into it), so it weighs more.
     const KP_TP_WEIGHT = 4;
     const KP_RESOURCE_SOFT = 12;  // MP a skill may ask before the price notices
-    const KP_RESOURCE_WEIGHT = 0.55;
+    const KP_RESOURCE_WEIGHT = 0.35; // lower = less KP asked per point of MP or AP cost
 
     // Stats a damage formula can scale off, biggest multiplier wins. Compiled
     // once: a grid prices every node it draws.
@@ -1619,16 +1619,13 @@
             return { circles: [circle], width: width, height: height };
         },
 
-        // The plate's edge, and nothing else. Every line drawn across this page
-        // is a link between two skills: tier rings, lane guides and the figure
-        // at the heart were decoration, and decoration crossing the graph reads
-        // as part of it.
+        // Nothing is drawn here any more but the links themselves: a plate
+        // border used to be framed in with two rings, and a ring that happens
+        // to pass close by a whole tier of nodes reads, at a glance, as one
+        // more connection between them, which it never was. Every line on the
+        // page is now an actual <Link:> between two skills, and nothing else.
         glyph: function (circle) {
-            const cx = circle.cx.toFixed(1), cy = circle.cy.toFixed(1);
-            const ring = (r, w, op) =>
-                `<circle cx="${cx}" cy="${cy}" r="${Math.max(1, r).toFixed(1)}" fill="none" stroke-width="${w}" stroke-opacity="${op}" />`;
-            return `<g class="sg-circle" data-circle="${circle.category}" fill="none" stroke="currentColor">`
-                + ring(circle.outer, 2.2, 0.85) + ring(circle.outer - 10, 1.1, 0.5) + `</g>`;
+            return "";
         }
     };
 
@@ -2796,13 +2793,19 @@
             travelled = false;
             fromX = e.clientX; fromY = e.clientY;
             scrollX = box.scrollLeft; scrollY = box.scrollTop;
-            box.setPointerCapture(e.pointerId);
+            // Capture is NOT taken here: capturing on a plain press retargets the
+            // click event that follows to the box itself (Chromium redirects the
+            // whole pointer's event sequence, click included, to the capturing
+            // element), so a click on a node would never reach the node's own
+            // onclick. It is taken only once the press has actually become a
+            // drag, below.
         });
         box.addEventListener('pointermove', (e) => {
             if (!dragging) return;
             const dx = e.clientX - fromX;
             const dy = e.clientY - fromY;
             if (!travelled && Math.abs(dx) + Math.abs(dy) < DEAD) return;
+            if (!travelled) box.setPointerCapture(e.pointerId);
             travelled = true;
             box.scrollLeft = scrollX - dx;
             box.scrollTop = scrollY - dy;
@@ -2961,7 +2964,17 @@
                 let dash = '';
                 if (knownA && knownB) { stroke = 'var(--text-forest-complete)'; opacity = 0.95; dash = ''; }
                 else if (knownA || knownB) { stroke = 'var(--text-secondary-active)'; opacity = 0.9; dash = ''; }
-                sealEdges += `<line x1="${a.ax.toFixed(1)}" y1="${a.ay.toFixed(1)}" x2="${b.ax.toFixed(1)}" y2="${b.ay.toFixed(1)}" stroke="${stroke}" stroke-width="${knownA && knownB ? 3 : (knownA || knownB ? 2.4 : 1.6)}" stroke-opacity="${opacity}"${dash ? ` stroke-dasharray="${dash}"` : ''} stroke-linecap="round" />`;
+                // A gentle arc rather than a straight chord: the control point
+                // bows out from the circle's own centre, so the whole seal
+                // reads as a set of curved rays rather than a ruled diagram.
+                const mx = (a.ax + b.ax) / 2, my = (a.ay + b.ay) / 2;
+                let ux = mx - circle.cx, uy = my - circle.cy;
+                const ulen = Math.hypot(ux, uy) || 1;
+                ux /= ulen; uy /= ulen;
+                const edgeLen = Math.hypot(b.ax - a.ax, b.ay - a.ay);
+                const bow = Math.max(5, Math.min(34, edgeLen * 0.16));
+                const qx = mx + ux * bow, qy = my + uy * bow;
+                sealEdges += `<path d="M ${a.ax.toFixed(1)} ${a.ay.toFixed(1)} Q ${qx.toFixed(1)} ${qy.toFixed(1)} ${b.ax.toFixed(1)} ${b.ay.toFixed(1)}" fill="none" stroke="${stroke}" stroke-width="${knownA && knownB ? 3 : (knownA || knownB ? 2.4 : 1.6)}" stroke-opacity="${opacity}"${dash ? ` stroke-dasharray="${dash}"` : ''} stroke-linecap="round" />`;
             }
             edgesHTML += `<g class="sg-edges" data-circle="${circle.category}">${sealEdges}</g>`;
 
@@ -3319,7 +3332,7 @@
             this._dndContainer.appendChild(overlay);
         }
         overlay.innerHTML = `
-            <div id="skill-detail-bar" onclick="event.stopPropagation()" style="pointer-events:auto; width:min(30vw, 460px); min-width:340px; height:100%; display:flex; flex-direction:column; overflow-y:auto; padding:18px 20px; box-sizing:border-box; background:var(--bg-dark-warm-translucent-96); border-left:1.5px solid var(--border-focus-hover); box-shadow:-10px 0 30px var(--shadow-black-translucent-75);">
+            <div id="skill-detail-bar" onclick="event.stopPropagation()" style="pointer-events:auto; width:min(30vw, 460px); min-width:340px; height:100%; display:flex; flex-direction:column; overflow-y:auto; padding:18px 20px; box-sizing:border-box; background:var(--bg-black-translucent-96); border-left:1.5px solid var(--border-focus-hover); box-shadow:-10px 0 30px var(--shadow-black-translucent-75);">
                 ${cardHTML}
             </div>`;
         this._lastPopupKey = key;
@@ -3417,7 +3430,7 @@
                     if (actorCategoryManager.isPrimary(cat)) {
                         bonusBadge = `<span style="font-family:'Lora', serif; font-size:0.65rem; background:var(--text-secondary-active); color:var(--text-pure-black); border-radius:3px; padding:1px 5px; font-weight:bold; letter-spacing:0.5px;">${T('SkillMaster.kpMultiplier3x')}</span>`;
                     } else if (actorCategoryManager.isSecondary(cat)) {
-                        bonusBadge = `<span style="font-family:'Lora', serif; font-size:0.65rem; background:var(--accent-gold-2); color:var(--bg-bg-alt-25-translucent-8); border-radius:3px; padding:1px 5px; font-weight:bold; letter-spacing:0.5px;">${T('SkillMaster.kpMultiplier15x')}</span>`;
+                        bonusBadge = `<span style="font-family:'Lora', serif; font-size:0.65rem; background:var(--text-secondary-active); color:var(--text-pure-black); border-radius:3px; padding:1px 5px; font-weight:bold; letter-spacing:0.5px;">${T('SkillMaster.kpMultiplier15x')}</span>`;
                     } else if (actorCategoryManager.isForeign(cat)) {
                         bonusBadge = `<span style="font-family:'Lora', serif; font-size:0.65rem; background:transparent; color:var(--text-card-medium); border:1px solid var(--border-secondary-hover-translucent-15); border-radius:3px; padding:1px 5px; font-weight:bold; letter-spacing:0.5px; font-style:italic;">${T('SkillMaster.foreignSchool')}</span>`;
                     }

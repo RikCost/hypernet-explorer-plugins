@@ -1,0 +1,265 @@
+{
+  "constellation": {
+    "andromeda": {
+      "name": "Andromeda"
+    },
+    "aquarius": {
+      "name": "Acquario"
+    },
+    "aquila": {
+      "name": "Aquila"
+    },
+    "aries": {
+      "name": "Ariete"
+    },
+    "auriga": {
+      "name": "Auriga"
+    },
+    "bootes": {
+      "name": "Boote"
+    },
+    "canis_major": {
+      "name": "Cane Maggiore"
+    },
+    "canis_minor": {
+      "name": "Cane Minore"
+    },
+    "capricornus": {
+      "name": "Capricorno"
+    },
+    "cassiopeia": {
+      "name": "Cassiopea"
+    },
+    "cepheus": {
+      "name": "Cefeo"
+    },
+    "cetus": {
+      "name": "Balena"
+    },
+    "corona_borealis": {
+      "name": "Corona Boreale"
+    },
+    "corvus": {
+      "name": "Corvo"
+    },
+    "crater": {
+      "name": "Cratere"
+    },
+    "cygnus": {
+      "name": "Cigno"
+    },
+    "delphinus": {
+      "name": "Delfino"
+    },
+    "draco": {
+      "name": "Dragone"
+    },
+    "equuleus": {
+      "name": "Cavallino"
+    },
+    "eridanus": {
+      "name": "Eridano"
+    },
+    "gemini": {
+      "name": "Gemelli"
+    },
+    "hercules": {
+      "name": "Ercole"
+    },
+    "hydra": {
+      "name": "Idra"
+    },
+    "lacerta": {
+      "name": "Lucertola"
+    },
+    "leo": {
+      "name": "Leone"
+    },
+    "leo_minor": {
+      "name": "Leone Minore"
+    },
+    "lepus": {
+      "name": "Lepre"
+    },
+    "libra": {
+      "name": "Bilancia"
+    },
+    "lynx": {
+      "name": "Lince"
+    },
+    "lyra": {
+      "name": "Lira"
+    },
+    "monoceros": {
+      "name": "Unicorno"
+    },
+    "ophiuchus": {
+      "name": "Ofiuco"
+    },
+    "orion": {
+      "name": "Orione"
+    },
+    "pegasus": {
+      "name": "Pegaso"
+    },
+    "perseus": {
+      "name": "Perseo"
+    },
+    "pisces": {
+      "name": "Pesci"
+    },
+    "piscis_austrinus": {
+      "name": "Pesce Australe"
+    },
+    "sagitta": {
+      "name": "Freccia"
+    },
+    "sagittarius": {
+      "name": "Sagittario"
+    },
+    "scorpius": {
+      "name": "Scorpione"
+    },
+    "scutum": {
+      "name": "Scudo"
+    },
+    "serpens": {
+      "name": "Serpente"
+    },
+    "taurus": {
+      "name": "Toro"
+    },
+    "triangulum": {
+      "name": "Triangolo"
+    },
+    "ursa_major": {
+      "name": "Orsa Maggiore"
+    },
+    "ursa_minor": {
+      "name": "Orsa Minore"
+    },
+    "virgo": {
+      "name": "Vergine"
+    },
+    "vulpecula": {
+      "name": "Volpetta"
+    },
+    "antlia": {
+      "name": "Macchina Pneumatica"
+    },
+    "apus": {
+      "name": "Uccello del Paradiso"
+    },
+    "ara": {
+      "name": "Altare"
+    },
+    "caelum": {
+      "name": "Bulino"
+    },
+    "camelopardalis": {
+      "name": "Giraffa"
+    },
+    "cancer": {
+      "name": "Cancro"
+    },
+    "canes_venatici": {
+      "name": "Cani da Caccia"
+    },
+    "carina": {
+      "name": "Carena"
+    },
+    "centaurus": {
+      "name": "Centauro"
+    },
+    "chamaeleon": {
+      "name": "Camaleonte"
+    },
+    "circinus": {
+      "name": "Compasso"
+    },
+    "columba": {
+      "name": "Colomba"
+    },
+    "coma_berenices": {
+      "name": "Chioma di Berenice"
+    },
+    "corona_australis": {
+      "name": "Corona Australe"
+    },
+    "crux": {
+      "name": "Croce del Sud"
+    },
+    "dorado": {
+      "name": "Dorado"
+    },
+    "fornax": {
+      "name": "Fornace"
+    },
+    "grus": {
+      "name": "Gru"
+    },
+    "horologium": {
+      "name": "Orologio"
+    },
+    "hydrus": {
+      "name": "Idra Maschio"
+    },
+    "indus": {
+      "name": "Indiano"
+    },
+    "mensa": {
+      "name": "Mensa"
+    },
+    "microscopium": {
+      "name": "Microscopio"
+    },
+    "musca": {
+      "name": "Mosca"
+    },
+    "norma": {
+      "name": "Regolo"
+    },
+    "octans": {
+      "name": "Ottante"
+    },
+    "pavo": {
+      "name": "Pavone"
+    },
+    "phoenix": {
+      "name": "Fenice"
+    },
+    "pictor": {
+      "name": "Pittore"
+    },
+    "puppis": {
+      "name": "Poppa"
+    },
+    "pyxis": {
+      "name": "Bussola"
+    },
+    "reticulum": {
+      "name": "Reticolo"
+    },
+    "sculptor": {
+      "name": "Scultore"
+    },
+    "sextans": {
+      "name": "Sestante"
+    },
+    "telescopium": {
+      "name": "Telescopio"
+    },
+    "triangulum_australe": {
+      "name": "Triangolo Australe"
+    },
+    "tucana": {
+      "name": "Tucano"
+    },
+    "vela": {
+      "name": "Vele"
+    },
+    "volans": {
+      "name": "Pesce Volante"
+    }
+  }
+}

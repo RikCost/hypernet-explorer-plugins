@@ -210,7 +210,7 @@
         gate:  se('gateSe', 'Items/metalLatch', 75),
         bell:  se('bellSe', 'Bell1', 80),
         hoof:  se('hoofSe', 'StepSound/gravel', 34),
-        whip:  se('whipSe', 'Whip1', 62),
+        whip:  se('whipSe', 'Weapons/Whip1', 62),
         neigh: se('neighSe', 'Horse', 70),
         post:  se('postSe', 'Bell3', 85),
         cheer: se('cheerSe', 'Applause1', 90),

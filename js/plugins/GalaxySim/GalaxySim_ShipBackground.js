@@ -103,14 +103,21 @@
     return stars;
   }
 
-  // A frozen clock value for renderer.renderPlanet, whose spin is
-  // `rotation.y = time * 0.12 + phase`. Mapping the planet's seed onto one
-  // full revolution (2*PI / 0.12) gives every world a stable random facing
-  // instead of a live spin.
-  function fixedSpin(seed) {
-    const n = Math.abs(Math.floor(seed) || 0) % 997;
-    return (n / 997) * ((Math.PI * 2) / 0.12);
-  }
+  // renderer.renderPlanet/renderStar spin the body as `rotation.y = time *
+  // rate (+ phase)`, so a random start angle is rolled once per arrival (see
+  // the `stateChanged` block below, `_shipBgSpinAngle`) and mapped onto each
+  // renderer's own rate to give a genuinely random initial facing instead of
+  // always the same one. ORBIT_SPIN_RATE then turns an orbited planet's
+  // rotation slowly over time on top of that, so it drifts the way the
+  // ship's own orbit would carry it rather than spinning live at the
+  // renderer's normal 0.12 rad/s, which would read as absurdly fast this
+  // close.
+  const PLANET_SPIN_RATE = 0.12;
+  const STAR_SPIN_RATE = 0.05;
+
+  // Full revolution roughly every 10-11 minutes: slow enough to read as an
+  // orbit rather than the planet itself spinning.
+  const ORBIT_SPIN_RATE = 0.01;
 
   function getStars() {
     if (!_stars) _stars = buildStars();
@@ -181,6 +188,9 @@
     if (stateChanged) {
       this._shipBgStateKey = stateKey;
       this._shipBgBodyRenderedFrame = -1e9; // force the body cache to re-render
+      // Fresh random starting facing every time the ship settles on a new
+      // body (or first boards), instead of the same pose every time.
+      this._shipBgSpinAngle = Math.random() * Math.PI * 2;
     }
     this._shipBgFrame = (this._shipBgFrame || 0) + 1;
     if (!stateChanged && this._shipBgFrame % 3 !== 0) return;
@@ -250,9 +260,9 @@
     if (moving) return;
 
     // The body is an offscreen WebGL render (planet/star) that is expensive to
-    // regenerate. It barely changes frame-to-frame, so render it into a cached
-    // canvas only every ~30 frames and just blit that cache over the starfield
-    // on every repaint.
+    // regenerate. Both a star and an orbited planet drift slowly frame to
+    // frame, so render it into a cached canvas only every ~30 frames and just
+    // blit that cache over the starfield on every repaint.
     let cache = this._shipBgBodyCanvas;
     if (!cache || cache.width !== w || cache.height !== h) {
       cache = this._shipBgBodyCanvas = document.createElement("canvas");
@@ -262,22 +272,11 @@
     }
     const frame = this._shipBgFrame || 0;
     const last = this._shipBgBodyRenderedFrame == null ? -1e9 : this._shipBgBodyRenderedFrame;
-    // An orbited planet is drawn at a fixed rotation (see drawShipBody), so its
-    // render never changes: draw it once per state instead of every ~30 frames.
-    // Stars still pulse, so they keep the periodic refresh.
-    const needsBody = this._shipBgBodyStatic ? last < 0 : frame - last >= 30;
-    if (needsBody) {
+    if (frame - last >= 30) {
       this._shipBgBodyRenderedFrame = frame;
       const cctx = cache.getContext("2d");
       cctx.clearRect(0, 0, w, h);
-      const drewStatic = this.drawShipBody(cctx, w, h, dm, ship, time);
-      // A Solar-System planet wears a real surface map that decodes
-      // asynchronously; freezing the cache before it lands would keep the
-      // untextured (black, invisible) first render forever. Only latch the
-      // static shortcut once nothing is still loading.
-      const r3d = window.GalaxySim.Renderer3D;
-      const pending = !!(r3d && r3d.hasPendingTextures && r3d.hasPendingTextures());
-      this._shipBgBodyStatic = drewStatic && !pending;
+      this.drawShipBody(cctx, w, h, dm, ship, time);
     }
     ctx.drawImage(cache, 0, 0);
   };
@@ -285,14 +284,12 @@
   // Renders the current celestial body (planet or star) into the given context
   // via the shared 3D renderer, falling back to a flat disc. Kept separate so
   // the result can be cached (see drawShipBackground).
-  // Returns true when what it drew is static (an orbited planet), so the caller
-  // can stop refreshing the cache.
   Spriteset_Map.prototype.drawShipBody = function (ctx, w, h, dm, ship, time) {
     const renderer = window.GalaxySim.Renderer3D;
     const has3D = renderer && renderer.available && renderer.available();
 
     const system = dm.getSystem(ship.currentSystem);
-    if (!system) return false;
+    if (!system) return;
 
     // Body anchored toward the right so it frames nicely behind ship windows.
     const bodyX = w * 0.72;
@@ -306,30 +303,30 @@
           const seed = String(planet.name || "p")
             .split("")
             .reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-          // The orbited planet hangs still outside the windows: instead of the
-          // live clock, feed the renderer a fixed clock derived from the
-          // planet's own seed so each world shows its own random face.
+          // The ship's own orbit slowly carries the view around the planet, on
+          // top of a starting face rolled fresh each time this orbit began.
+          const rotation = (this._shipBgSpinAngle || 0) / PLANET_SPIN_RATE + time * ORBIT_SPIN_RATE;
           const ok = renderer.renderPlanet(
-            ctx, bodyX, bodyY, radius, planet, seed, fixedSpin(seed),
+            ctx, bodyX, bodyY, radius, planet, seed, rotation,
             { x: bodyX - radius, y: bodyY - radius }
           );
           if (!ok) this.drawFallbackBody(ctx, bodyX, bodyY, radius, planet.color || "#5b8fd6");
         } else {
           this.drawFallbackBody(ctx, bodyX, bodyY, radius, planet.color || "#5b8fd6");
         }
-        return true;
+        return;
       }
     }
 
     // Not orbiting a planet -> show the current system's star.
     const starR = h * 0.22;
     if (has3D) {
-      const ok = renderer.renderStar(ctx, bodyX, bodyY, starR, system, time);
+      const starTime = time + (this._shipBgSpinAngle || 0) / STAR_SPIN_RATE;
+      const ok = renderer.renderStar(ctx, bodyX, bodyY, starR, system, starTime);
       if (!ok) this.drawFallbackBody(ctx, bodyX, bodyY, starR, system.color || "#ffd27f", true);
     } else {
       this.drawFallbackBody(ctx, bodyX, bodyY, starR, system.color || "#ffd27f", true);
     }
-    return false;
   };
 
   // ==========================================================================

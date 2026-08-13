@@ -294,6 +294,7 @@
     --accent-red-warmth: #b03a2e;
 
     /* --- Backgrounds --- */
+    --bg-black-translucent-96: rgba(0, 0, 0, 0.96);
     --bg-brown-vignette-10: rgba(78, 38, 12, 0.10);
     --bg-crime-dark-10: rgba(140, 20, 20, 0.10);
     --bg-danger-dark: #8b1a1a;
@@ -302,6 +303,7 @@
     --bg-danger-translucent-5: rgba(192, 57, 43, 0.05);
     --bg-dark-night: #120804;
     --bg-dark-overlay-78: rgba(10, 10, 18, 0.78);
+    --bg-dark-overlay-90: rgba(10, 10, 18, 0.90);
     --bg-dark-panel: rgba(20, 24, 33, 0.96);
     --bg-dark-warm-translucent-96: rgba(30, 18, 8, 0.96);
     --bg-darker-panel: rgba(13, 16, 23, 0.97);

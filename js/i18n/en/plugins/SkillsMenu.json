@@ -78,7 +78,10 @@
   },
   "spec": {
     "trains": "Trains",
-    "bonus": "Skill bonus"
+    "bonus": "Skill bonus",
+    "label": {
+      "damage": "Damage"
+    }
   },
   "loadout": {
     "skills": "Skills",

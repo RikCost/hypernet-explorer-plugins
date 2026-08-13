@@ -21,8 +21,10 @@
   "sky": {
     "european": "Europeo",
     "chinese": "Cinese",
-    "hint": "frecce o WASD per scorrere · Q/E per lo zoom · Shift cambia il cielo · Esc chiude",
-    "hintPad": "LS scorri · LB/RB zoom · X cambia il cielo · B chiude"
+    "center": "Centra",
+    "zodiac": "Zodiaco",
+    "hint": "trascina o WASD/frecce per scorrere · rotella o Q/E per lo zoom · OK centra la vista · Tab cambia il cielo · Esc chiude",
+    "hintPad": "LS scorri · LB/RB zoom · A centra la vista · X cambia il cielo · B chiude"
   },
   "cluster": {
     "virgo": "Ammasso della Vergine",
@@ -131,9 +133,12 @@
     "home": "Casa",
     "returnToEarth": "Torna sulla Terra",
     "ebBridge": "Ponte EB",
+    "closeMap": "Chiudi Mappa",
+    "closeMapTooltip": "Chiudi la mappa stellare",
     "engines": "Motori",
     "warpSpeed": "Velocità di curvatura",
     "hyperfluxBurn": "Consumo di Hyperflux",
+    "eta": "Tempo all'arrivo",
     "stop": "Ferma",
     "fuel": "Carburante",
     "hyperfluxReserve": "Riserva di Hyperflux",
