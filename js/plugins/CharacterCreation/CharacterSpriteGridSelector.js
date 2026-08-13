@@ -1287,6 +1287,28 @@
       this._confirmEl.addEventListener("click", () => this.onBustConfirm());
       this._buttonsEl.appendChild(this._confirmEl);
       this._confirmEl.style.display = "none";
+
+      // Always present, never gated on the gallery having loaded: if the
+      // img/busts scan comes back empty (or is still running) the species
+      // list and grid stay bare, and Confirm has nothing to pick. Random
+      // draws from availableBustNames(), which falls back to its own
+      // synchronous folder read rather than waiting on BustCatalogue's scan.
+      this._randomEl = document.createElement("button");
+      this._randomEl.className = "cc-btn-treaty";
+      this._randomEl.textContent = T("CharCreate.randomBust");
+      this._randomEl.addEventListener("click", () => this.onBustRandom());
+      this._buttonsEl.appendChild(this._randomEl);
+    }
+
+    // The id a random pick's bust name would file under, mirroring
+    // BustCatalogue._categorize so the Bot/Goblin reproduction-type quirk in
+    // finishWithBust reads the same whether the pick came off the gallery or
+    // off this shortcut.
+    categoryForBustName(name) {
+      const id = BUST_CATEGORIES.find(
+        (cat) => cat !== BUST_FALLBACK_CATEGORY && name.startsWith(cat),
+      );
+      return id || BUST_FALLBACK_CATEGORY;
     }
 
     //-- data -----------------------------------------------------------------
@@ -1690,9 +1712,10 @@
 
     //-- leaving --------------------------------------------------------------
 
-    onBustConfirm() {
-      const bustName = this.selectedBust();
-      if (!bustName) return;
+    // The actor-side effects of settling on a bust, shared by the ordinary
+    // gallery Confirm and by the Random shortcut: which bust, and which
+    // category it reads as for the Bot/Goblin reproduction-type quirk.
+    finishWithBust(bustName, category) {
       // The bust belongs to the actor this selector was opened for, not always
       // the first party member.
       const actorId = this._actorId || 1;
@@ -1705,9 +1728,9 @@
       // Reproduction type variable: 87 for actor 1, 115 / 116 for 2 / 3.
       const reproductiveVar = actorId === 2 ? 115 : actorId === 3 ? 116 : 87;
       // i18n-ignore-start: bust folder ids
-      if (this._openCategory === "Bot") {
+      if (category === "Bot") {
         $gameVariables.setValue(reproductiveVar, -1);
-      } else if (this._openCategory === "Goblin" && actor.gender() === 1) {
+      } else if (category === "Goblin" && actor.gender() === 1) {
         // i18n-ignore-end
         $gameVariables.setValue(reproductiveVar, 2);
       }
@@ -1726,6 +1749,23 @@
       const pops = Scene_BustSelector._confirmPops || 2;
       Scene_BustSelector._confirmPops = 0;
       for (let i = 0; i < pops; i++) SceneManager.pop();
+    }
+
+    onBustConfirm() {
+      const bustName = this.selectedBust();
+      if (!bustName) return;
+      this.finishWithBust(bustName, this._openCategory);
+    }
+
+    // Always clickable, whatever state the gallery's own scan is in.
+    // availableBustNames() (module scope, below) prefers BustCatalogue's
+    // scan but falls back to its own synchronous folder read, so this works
+    // even when the species list never populated.
+    onBustRandom() {
+      const names = availableBustNames();
+      if (!names || !names.length) return;
+      const bustName = names[Math.floor(Math.random() * names.length)];
+      this.finishWithBust(bustName, this.categoryForBustName(bustName));
     }
 
     onBustCancel() {

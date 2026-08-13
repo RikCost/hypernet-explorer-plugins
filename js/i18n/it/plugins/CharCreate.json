@@ -471,6 +471,7 @@
     "teal": "Verde Acqua"
   },
   "confirmBust": "Conferma Busto",
+  "randomBust": "Casuale",
   "startAsClass": "Inizia come {name}.",
   "slotVacant": "SLOT {slot}: VUOTO",
   "heightMetres": "{m}m {cm}cm",

@@ -1505,6 +1505,12 @@ var WeaponSystemProcedural = {
     if (!weapon) return 0.60;
     if (weapon.isWhip) return 0.74;
     if (weapon.isFlail) return 0.70;
+    // An unarmed fist is measured with its forearm attached (Weapon3D_Unarmed
+    // _uArm), so its widest extent is roughly 3-4x a bare hand's: fitted this
+    // large, the fist itself lands at about the size a held Glove weapon
+    // reads at while the forearm runs on past the bottom edge of the screen,
+    // rather than a held weapon's grip simply floating at the anchor.
+    if (weapon.unarmedArchetype) return 1.55;
     switch (weapon.wtypeId) {
       case 1:  return 0.46; // Light (dagger)
       case 2:  return 0.66; // Sword
@@ -1536,6 +1542,11 @@ var WeaponSystemProcedural = {
     if (weapon.model3dRotation) return weapon.model3dRotation;
     if (weapon.isWhip) return { x: 0, y: 0, z: -15 };
     if (weapon.isFlail) return { x: 0, y: 0, z: -10 };
+    // An unarmed fist carries its own forearm (Weapon3D_Unarmed's _uArm) and
+    // is meant to read as a raised guard rather than a grip held level, which
+    // is what separates it from a held Glove weapon (boxing gloves, knuckle
+    // dusters, ...) sharing the same wtypeId.
+    if (weapon.unarmedArchetype) return { x: 12, y: -10, z: -8 };
     switch (weapon.wtypeId || 1) {
       case 1: return { x: 0, y: 0, z: -20 };   // Light (dagger)
       case 2: return { x: 0, y: 0, z: -15 };   // Sword
@@ -1641,6 +1652,14 @@ var WeaponSystemProcedural = {
       return { x: 40, y: 20 - screenH * this.screenFractionFor(weapon) * 0.16 };
     }
     if (weapon.model3d) return { x: 0, y: 0 };
+    // An unarmed fist is built around its wrist, not its own centre (the
+    // forearm hangs below it rather than the model growing symmetrically
+    // both ways), so it does not need the grip-lift the generic melee
+    // formula below applies - that formula would push a whole extra
+    // forearm-length off the top of the frame instead of keeping the fist in
+    // place. A small fixed nudge is enough to seat it where a held weapon's
+    // working end would be.
+    if (weapon.unarmedArchetype) return { x: 30, y: -30 };
     // A melee weapon is carried, not floated: its grip runs off the bottom edge
     // and only the working end rises into the lower frame. A procedural model
     // grows about its own centre, so how far down it is pushed is a share of

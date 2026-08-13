@@ -239,6 +239,47 @@
         return group;
       },
 
+      /**
+       * The forearm an unarmed strike is attached to. This is what separates
+       * the unarmed fist from every held Glove weapon sharing its wtypeId
+       * (boxing gloves, knuckle dusters, ...): those end at the wrist because
+       * a grip is all there is to show, but a bare fist has no weapon to hide
+       * the rest of the arm behind, so the arm has to actually be there. Runs
+       * from the wrist down and slightly back, out past the bottom of the
+       * frame (WeaponSystemProcedural's unarmedArchetype fit/anchor is sized
+       * for exactly this), and ends in a rolled sleeve cuff rather than a bare
+       * cut stump.
+       */
+      _uArm(group, skinMat, sleeveMat, opts) {
+        const o = opts || {};
+        const len = o.length === undefined ? 0.34 : o.length;
+        const arm = new THREE.Group();
+        arm.position.set(0, o.topY === undefined ? -0.05 : o.topY, o.z === undefined ? 0.012 : o.z);
+        arm.rotation.x = o.tilt === undefined ? 0.15 : o.tilt;
+        group.add(arm);
+
+        const topR = o.topR || 0.028;
+        const botR = o.botR || 0.038;
+        const forearm = new THREE.Mesh(
+          new THREE.CylinderGeometry(topR, botR, len, this.seg(12, 7)), skinMat);
+        forearm.position.y = -len / 2;
+        arm.add(forearm);
+
+        // A rolled sleeve cuff pushed up out of the way of the fist, right at
+        // the far end (CylinderGeometry caps its own ends, so nothing more is
+        // needed to close it off).
+        const rolls = this.isLowDetail() ? 2 : 3;
+        for (let i = 0; i < rolls; i++) {
+          const roll = new THREE.Mesh(
+            new THREE.TorusGeometry(botR * (1.12 - i * 0.05), botR * 0.32, this.seg(6, 4), this.seg(16, 9)),
+            sleeveMat);
+          roll.position.y = -len + i * botR * 0.55;
+          roll.rotation.x = Math.PI / 2;
+          arm.add(roll);
+        }
+        return arm;
+      },
+
       // ---- Humanoid ------------------------------------------------------
       // The baseline every other archetype is a departure from: a closed
       // fist, knuckles forward, the fingers actually curled in against the
@@ -257,6 +298,8 @@
         const knuckleSkin = this._mat(knuckleTone, { roughness: 0.52, metalness: 0.02 });
         const creaseTone = new THREE.Color(skinColor).offsetHSL(0, 0.04, -0.32).getHex();
         const crease = this._mat(creaseTone, { roughness: 0.8, metalness: 0.0 });
+        const sleeveColor = this.getRandomColor(rand, [0x3A3A3E, 0x5A4A38, 0x2E3A2A, 0x4A2A2A, 0x27333E]);
+        const sleeve = this._mat(sleeveColor, { roughness: 0.92, metalness: 0.0 });
 
         // Back of the hand: a flattened, deliberately WIDE and SHORT capsule -
         // a plate, not a ball - so it sits well clear of the knuckle row
@@ -272,6 +315,11 @@
         wrist.position.y = -0.018;
         wrist.scale.z = 0.72;
         group.add(wrist);
+        // The forearm: this is what makes an empty hand read as a
+        // first-person arm reaching up into frame rather than a weapon
+        // floating on its own (see WeaponSystemProcedural's unarmedArchetype
+        // handling, which fits and anchors the whole assembly around it).
+        this._uArm(group, skin, sleeve, { length: 0.34, topY: -0.05, topR: 0.028, botR: 0.038, tilt: 0.15 });
 
         // Four fingers, spaced with a real gap between each so they read as
         // distinct digits rather than a fused ridge: a knuckle standing proud

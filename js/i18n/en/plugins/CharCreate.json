@@ -471,6 +471,7 @@
     "teal": "Teal"
   },
   "confirmBust": "Confirm Bust",
+  "randomBust": "Random",
   "startAsClass": "Start as a {name}.",
   "slotVacant": "SLOT {slot}: VACANT",
   "heightMetres": "{m}m {cm}cm",
