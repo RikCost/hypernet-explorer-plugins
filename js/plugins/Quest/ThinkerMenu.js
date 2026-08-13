@@ -148,10 +148,6 @@
         return $dataItems[id];
     }
 
-    function isEquipment(item) {
-        return DataManager.isWeapon(item) || DataManager.isArmor(item);
-    }
-
     let _allEntriesCache = null;
     let _allEntriesSource = null;
     function allCraftableEntries() {
@@ -164,24 +160,6 @@
         _allEntriesCache = out;
         _allEntriesSource = $dataItems;
         return out;
-    }
-
-    // Crafting / salvaging weapons & armor requires a Blacksmith (trait 141) in the party
-    const BLACKSMITH_TRAIT_ID = 141;
-    function partyHasBlacksmith() {
-        if ($gameSystem && $gameSystem._isSandboxMode) return true;
-        const members = ($gameParty && $gameParty.allMembers) ? $gameParty.allMembers() : [];
-        return members.some(actor => {
-            const ts = actor && actor._selectedTraits;
-            if (!Array.isArray(ts)) return false;
-            return ts.some(tr => (typeof tr === 'number' ? tr : (tr && tr.id)) === BLACKSMITH_TRAIT_ID);
-        });
-    }
-
-    // Whether the player may assemble/disassemble this entry right now
-    function canWorkEntry(item) {
-        if (!isEquipment(item)) return true;
-        return partyHasBlacksmith();
     }
 
     // Check if player has materials for recipe
@@ -1171,12 +1149,6 @@
                         reagentsHTML += `</div>`;
                     }
 
-                    // Weapons & armor need a Blacksmith (trait 141) in the party
-                    const blacksmithOK = canWorkEntry(item);
-                    const blacksmithNotice = !blacksmithOK
-                        ? `<div class="sandbox-badge" style="background:rgba(160,40,40,0.18); border-color:#a02828; color:#a02828;">${t.needBlacksmith}</div>`
-                        : "";
-
                     // What the workbench itself thinks of the job: which tier it
                     // is, whether the party is trained to it, and how likely the
                     // whole thing is to come apart in their hands. Under it, the
@@ -1212,10 +1184,10 @@
 
                     if (this._mode === 'assemble') {
                         btnText = t.transmute;
-                        btnEnabled = satisfiesAll && blacksmithOK && tierMet(item);
+                        btnEnabled = satisfiesAll && tierMet(item);
                     } else {
                         btnText = t.salvage;
-                        btnEnabled = $gameParty.numItems(item) > 0 && blacksmithOK;
+                        btnEnabled = $gameParty.numItems(item) > 0;
                     }
 
                     const btnClasses = `transmute-btn ${btnEnabled ? 'enabled' : 'disabled'} ${this._activeArea === 'workbench' ? 'focused' : ''}`;
@@ -1229,7 +1201,6 @@
                             ${descHTML}
                             ${reagentsHTML}
                             ${skillNotice}
-                            ${blacksmithNotice}
                             <div class="${btnClasses}" id="transmute-action">${btnText}</div>
                         </div>
                     `;
@@ -1244,12 +1215,6 @@
 
             const item = this._selectedItem;
             const recipe = parseRecipe(item);
-
-            // Weapons & armor require a Blacksmith (trait 141) in the party
-            if (isEquipment(item) && !partyHasBlacksmith()) {
-                SoundManager.playBuzzer();
-                return;
-            }
 
             if (this._mode === 'assemble') {
                 if (!recipe || !canCraft(recipe) || !tierMet(item)) {
@@ -1590,9 +1555,9 @@
                         const recipe = parseRecipe(item);
                         let craftPossible = false;
                         if (this._mode === 'assemble') {
-                            craftPossible = canCraft(recipe) && canWorkEntry(item);
+                            craftPossible = canCraft(recipe);
                         } else {
-                            craftPossible = $gameParty.numItems(item) > 0 && canWorkEntry(item);
+                            craftPossible = $gameParty.numItems(item) > 0;
                         }
 
                         if (craftPossible) {

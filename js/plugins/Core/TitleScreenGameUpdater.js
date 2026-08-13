@@ -536,10 +536,12 @@
             return null;
         },
 
-        // Whether this copy reached the build it runs through a major update and
-        // has not been downloaded whole since. Sticky on purpose: patching more
-        // files on top does not make the copy whole, so the notice stands until
-        // the player says they have downloaded the game again.
+        // Whether the build this copy is running right now is the one that
+        // crossed a major update. Not sticky past it: the moment a later build
+        // is installed, even an ordinary one, this copy is running something
+        // more recent than the build the notice was about, and the notice has
+        // nothing left to say (`_markInstalled` only sets `major` again when
+        // that install itself crosses another one).
         majorInstalled() {
             const info = this.installedInfo();
             return !!(info && info.major);
@@ -672,14 +674,14 @@
 
         // The one place the installed build is recorded, so its number is always
         // filled in from whatever the cache already knows. `major` is the build
-        // whose major update this install crossed, when it crossed one.
+        // whose major update THIS install crossed, when it crossed one; it is
+        // not carried over from the previous record, so a build installed on
+        // top of a major one (whether or not it is itself major) leaves this
+        // copy running something more recent than the major build and the
+        // notice has nothing left to say.
         _markInstalled(sha, date, name, major) {
             const st = this.state();
             const known = this.commitInfo(sha);
-            const prev = st.installed;
-            // A copy that has already crossed a major update stays flagged until
-            // it is downloaded whole, so later patches never clear it.
-            const carried = !!(prev && prev.major);
             st.installed = {
                 sha: sha,
                 date: date || null,
@@ -687,9 +689,8 @@
                 build: this.knownBuildNumber(sha),
                 // The commit message names the build on the version badge.
                 name: name || (known ? known.message : null) || null,
-                major: !!major || carried,
-                majorName: major ? (major.message || null)
-                    : (carried && prev.majorName ? prev.majorName : null)
+                major: !!major,
+                majorName: major ? (major.message || null) : null
             };
             this.saveState();
         },
