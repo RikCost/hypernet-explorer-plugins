@@ -995,7 +995,15 @@
             const win = this._actorTargetWindow || this;
             if (!win.active) return;
             const i = rowIdxFromEvent(e);
-            if (i >= 0 && typeof win.select === 'function') win.select(i);
+            // Only select on an actual index change. 'mouseover' bubbles and
+            // re-fires on every child boundary crossed inside the same row (the
+            // name span, the HP span, the row itself), and while the ally-target
+            // hand-over is active, select() rebuilds the whole row list
+            // (_buildActorTargetItems). Rebuilding on every micro-movement tore
+            // the row out from under the pointer mid-hover, so a click landing
+            // right after a rebuild could miss: the element the gesture started
+            // on was gone before pointerup re-hit-tested.
+            if (i >= 0 && win.index() !== i && typeof win.select === 'function') win.select(i);
         });
         root.addEventListener('pointerup', (e) => {
             if (e.button !== undefined && e.button !== 0) return; // left button only

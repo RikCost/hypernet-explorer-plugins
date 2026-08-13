@@ -309,7 +309,70 @@
     // Scene_Battle
     //-----------------------------------------------------------------------------
 
+    // With more than one monster standing, which one is being addressed is a
+    // choice, not a guess: hand it to the ordinary battle target window
+    // (the same one a single-target skill uses), exactly the way Health_Monsters'
+    // Check/Aim and the card system's target step already borrow it, so the
+    // target chevron marker comes with it for free. A lone enemy, or no
+    // enemy window to borrow (should not happen in Scene_Battle), opens the
+    // panel straight away.
     Scene_Battle.prototype.openTalkMenu = function () {
+        const alive = $gameTroop.aliveMembers();
+        if (alive.length > 1 && this._enemyWindow) {
+            this._selectTalkTarget();
+            return;
+        }
+        this._openTalkPanel();
+    };
+
+    Scene_Battle.prototype._selectTalkTarget = function () {
+        this._actorCommandWindow.deactivate();
+        this._actorCommandWindow.hide();
+        this._partyCommandWindow.deactivate();
+        this._partyCommandWindow.hide();
+
+        this._enemyWindow.refresh();
+        this._enemyWindow.show();
+        this._enemyWindow.setHandler('ok', this._onTalkTargetOk.bind(this));
+        this._enemyWindow.setHandler('cancel', this._onTalkTargetCancel.bind(this));
+        this._enemyWindow.select(0);
+        this._enemyWindow.activate();
+    };
+
+    // Hands the enemy window back to the vanilla single-target action flow
+    // it belongs to the rest of the time.
+    Scene_Battle.prototype._restoreEnemyWindowHandlers = function () {
+        if (!this._enemyWindow) return;
+        this._enemyWindow.setHandler('ok', this.onEnemyOk.bind(this));
+        this._enemyWindow.setHandler('cancel', this.onEnemyCancel.bind(this));
+    };
+
+    Scene_Battle.prototype._onTalkTargetOk = function () {
+        const enemy = this._enemyWindow.enemy();
+        this._enemyWindow.hide();
+        this._enemyWindow.deactivate();
+        this._restoreEnemyWindowHandlers();
+        this._talkEnemyRef = enemy || null;
+        // Consumed once by _buildTalkOptions, so the hand-picked target isn't
+        // immediately overwritten by the automatic resolver the panel it
+        // opens would otherwise re-pin.
+        this._talkTargetManuallyPicked = !!enemy;
+        this._openTalkPanel();
+    };
+
+    Scene_Battle.prototype._onTalkTargetCancel = function () {
+        this._enemyWindow.hide();
+        this._enemyWindow.deactivate();
+        this._restoreEnemyWindowHandlers();
+        this._actorCommandWindow.show();
+        this._actorCommandWindow.activate();
+        if (this._talkInterpreter && this._talkInterpreter._waitMode === 'talk') {
+            this._talkInterpreter.setWaitMode('');
+            this._talkInterpreter = null;
+        }
+    };
+
+    Scene_Battle.prototype._openTalkPanel = function () {
         this._actorCommandWindow.deactivate();
         this._actorCommandWindow.hide();
         this._partyCommandWindow.deactivate();
@@ -361,8 +424,15 @@
     Scene_Battle.prototype._buildTalkOptions = function () {
         const choices = getChoices();
         // Opening the panel re-pins the monster being addressed, so a second
-        // Talk in the same fight can pick a different one.
-        this._talkEnemyRef = resolveTalkEnemy();
+        // Talk in the same fight can pick a different one - UNLESS the panel
+        // is opening on a target the player just chose by hand (the
+        // front-view multi-enemy picker in openTalkMenu above), which must
+        // not be stomped the instant the panel it asked for opens.
+        if (this._talkTargetManuallyPicked) {
+            this._talkTargetManuallyPicked = false;
+        } else {
+            this._talkEnemyRef = resolveTalkEnemy();
+        }
         const enemy   = this._talkEnemy();
         if (!enemy) {
             return [

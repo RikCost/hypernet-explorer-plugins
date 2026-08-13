@@ -1576,16 +1576,12 @@
                           SceneManager._scene._actorWindow.active &&
                           this._battler.isSelected());
 
-      // Pulse the gold selection band while this member is a candidate target.
-      if (this._selectionHighlight) {
-        if (isTargeted) {
-          this._selectionHighlight.visible = true;
-          const pulse = 0.7 + 0.3 * Math.sin(Graphics.frameCount * 0.16);
-          this._selectionHighlight.opacity = Math.floor(255 * pulse);
-        } else if (this._selectionHighlight.visible) {
-          this._selectionHighlight.visible = false;
-          this._selectionHighlight.opacity = 0;
-        }
+      // The gold selection band on the party card is dropped: targeting is
+      // read from the ally-target list instead, and the pulsing band on the
+      // card doubled it up.
+      if (this._selectionHighlight && this._selectionHighlight.visible) {
+        this._selectionHighlight.visible = false;
+        this._selectionHighlight.opacity = 0;
       }
 
       // Player box stays at its assigned column position
