@@ -609,6 +609,26 @@
           "\"Trova qualcuno che voglia una vita interessante,\" dice {name}. \"Io ne ho avuta una. Era orribile.\""
         ]
       }
+    },
+    "propose": {
+      "player": [
+        "\"Voglio qualcosa di vero con te, {name}. {style}, se vuoi.\"",
+        "\"Ci penso da un po'. {style}, con te. È qualcosa che vorresti anche tu?\"",
+        "\"{name}, te lo chiedo apertamente. {style}, noi due.\"",
+        "Fai un respiro. \"{style}, {name}. Dico sul serio.\""
+      ],
+      "accept": [
+        "{name} resta in silenzio un momento, poi sorride. \"Sì. {style}. Facciamolo.\"",
+        "\"Speravo me lo chiedessi,\" dice {name}. \"{style} mi sembra perfetto.\"",
+        "{name} ti prende la mano. \"Sì. Lo voglio anch'io.\"",
+        "\"Ci hai messo abbastanza,\" dice {name}, sorridendo. \"Sì.\""
+      ],
+      "reject": [
+        "{name} distoglie lo sguardo. \"Non così. Mi dispiace.\"",
+        "\"Non credo di essere pronto/a per questo,\" dice {name} a bassa voce.",
+        "{name} scuote la testa lentamente. \"Non è questo che voglio. Non con te, non così.\"",
+        "\"Chiedimelo un'altra volta,\" dice {name}, anche se non suona come un sì rimandato."
+      ]
     }
   },
   "performances": {

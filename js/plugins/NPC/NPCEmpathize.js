@@ -253,6 +253,7 @@
       if (over.romance) {
         _mergeById(db.romance && db.romance.actions, over.romance.actions);
         if (db.romance) _mergeLines(db.romance.rejection, over.romance.rejection);
+        if (db.romance) _mergeLines(db.romance.propose, over.romance.propose);
       }
       ['performances', 'jokes', 'em', 'bubba'].forEach(s => _mergeLines(db[s], over[s]));
     }
@@ -1191,6 +1192,54 @@
     }));
   }
 
+  // ── Per-actor romantic attraction ────────────────────────────────────────
+  // How drawn this NPC is to a given party member, tracked apart from general
+  // disposition: liking someone and wanting them are not the same number.
+  // Ordinary conversation, gifts, trade and every other exchange still move
+  // opinion alone; only a Court move (and a Propose) touches this ledger,
+  // keyed the same way opinion is (profile.attraction[key], see _opinionKey).
+  // There is no player-wide baseline to fall back on the way opinion has
+  // profile.playerOpinion: attraction starts at 0 and is earned or lost.
+  function _npcBaseAttraction(profile, actorId) {
+    if (!profile) return 0;
+    const map = profile.attraction;
+    if (map) {
+      const key = _opinionKey(actorId);
+      if (key != null && map[key] != null) return map[key];
+      if (map[actorId] != null) return map[actorId];
+    }
+    return 0;
+  }
+  function _setNpcBaseAttraction(profile, actorId, value) {
+    if (!profile || actorId == null) return 0;
+    const v = Math.max(-100, Math.min(100, Math.round(value)));
+    const key = _opinionKey(actorId);
+    (profile.attraction ??= {})[key] = v;
+    if (key !== String(actorId) && profile.attraction[actorId] != null) {
+      delete profile.attraction[actorId];
+    }
+    return v;
+  }
+  function _addNpcAttraction(profile, actorId, delta) {
+    _gainSocialFromOpinion(actorId, delta, profile);
+    return _setNpcBaseAttraction(profile, actorId, _npcBaseAttraction(profile, actorId) + delta);
+  }
+  // What the NPC actually feels. Attraction carries none of opinion's trait
+  // compatibility or hygiene terms of its own, courting already applies both
+  // of those to the CHANCE a move lands (NPCEmpathizeUI.js, _romanceChance),
+  // so folding them in here a second time would double-count them.
+  function _npcEffectiveAttraction(profile, actor) {
+    if (!actor) return 0;
+    return Math.max(-100, Math.min(100, _npcBaseAttraction(profile, actor.actorId())));
+  }
+
+  function _computePartyAttraction(profile) {
+    return ($gameParty?.members() ?? []).map(actor => ({
+      actor,
+      score: _npcEffectiveAttraction(profile, actor),
+    }));
+  }
+
   // Retained for API compatibility; interaction logic now targets the focused
   // actor's own reputation instead of a party-wide median.
   function _medianScore(preds) {
@@ -1556,13 +1605,23 @@
 
     // L2/R2 scroll the open tab's pane, the controller's mouse wheel. MZ's
     // gamepadMapper does not cover the analog triggers (buttons 6/7), so they
-    // are read raw through the shared AnalogStickInput helper.
+    // are read raw through the shared AnalogStickInput helper. On the Social
+    // Web the same pull zooms the graph instead (R2 in, L2 out), since there
+    // is no text to scroll there and the wheel over the graph already zooms.
     _updateTriggerScroll(scene) {
       const pads = window.AnalogStickInput;
       if (!pads || typeof pads.leftTrigger !== 'function') return;
       const pull   = v => (v > TRIGGER_DEADZONE ? (v - TRIGGER_DEADZONE) / (1 - TRIGGER_DEADZONE) : 0);
       const amount = (pull(pads.rightTrigger()) - pull(pads.leftTrigger())) * TRIGGER_SPEED;
-      if (amount) scene._scrollActivePane?.(amount);
+      if (!amount) return;
+      if (scene._activeTab === 'web' && typeof scene.setWebZoom === 'function') {
+        // amount tops out at TRIGGER_SPEED (26); this rate roughly doubles the
+        // zoom over one second at a fully pulled trigger, the pixel-scroll
+        // constant above being tuned for text, not for a multiplicative zoom.
+        scene.setWebZoom(scene.webZoom() * (1 + amount * 0.0005));
+        return;
+      }
+      scene._scrollActivePane?.(amount);
     },
 
     update() {
@@ -1766,6 +1825,7 @@
       this._infectItems        = [];
       this._socialMode         = false;
       this._romanceMode        = false;
+      this._proposeMode        = false;
       this._directionsMode     = false;
       this._directionList      = [];
       this._focusActorIndex    = 0; // which party member is interacting
@@ -1876,7 +1936,7 @@
     // not Em talking (see _emContext). Everything Em-specific hangs off this.
     _emCtx() {
       if (this._entity || this._actorId) return null; // wiki page / party member
-      const npcName = _getNPCName(this._eventId) || this._npcName;
+      const npcName = this._targetName();
       if (!npcName) return null;
       return _emContext(
         _getProfile(npcName), npcName, $gameMap?.event(this._eventId), this._focusActor()
@@ -1889,7 +1949,7 @@
     // so the first impression is what it displays. Both halves are idempotent.
     _prepareEmMeeting() {
       if (this._entity || this._actorId) return;
-      const npcName = _getNPCName(this._eventId) || this._npcName;
+      const npcName = this._targetName();
       if (!npcName || !_emPlaythrough()) return;
       _emSeedFirstImpression(_getProfile(npcName), npcName, $gameMap?.event(this._eventId));
       this._sayEmGreeting();
@@ -1905,7 +1965,7 @@
       const line = _rand(ctx.data.greeting);
       if (!line) return;
       this._emGreeted = true;
-      const npcName = _getNPCName(this._eventId) || this._npcName;
+      const npcName = this._targetName();
       this._chatHistory.push({ role: 'npc', text: String(line).replace(/\{name\}/g, npcName) });
       if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
     }
@@ -1915,7 +1975,7 @@
     // talking. Everything Bubba-specific hangs off this, exactly like _emCtx.
     _bubbaCtx() {
       if (this._entity || this._actorId) return null; // wiki page / party member
-      const npcName = _getNPCName(this._eventId) || this._npcName;
+      const npcName = this._targetName();
       if (!npcName) return null;
       return _bubbaContext(this._focusActor());
     }
@@ -1926,7 +1986,7 @@
     // are different party members doing the talking).
     _prepareBubbaMeeting() {
       if (this._entity || this._actorId) return;
-      const npcName = _getNPCName(this._eventId) || this._npcName;
+      const npcName = this._targetName();
       if (!npcName) return;
       const actor = this._focusActor();
       if (!_isBubbaActor(actor)) return;
@@ -1941,7 +2001,7 @@
       const line = _rand(ctx.data.greeting);
       if (!line) return;
       this._bubbaGreeted = true;
-      const npcName = _getNPCName(this._eventId) || this._npcName;
+      const npcName = this._targetName();
       this._chatHistory.push({ role: 'npc', text: String(line).replace(/\{name\}/g, npcName) });
       if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
     }
@@ -2015,7 +2075,7 @@
     // Is the person this panel is open on somebody else's party member?
     _isVisitorTarget() {
       if (this._entity || this._actorId != null) return false;
-      const name = _getNPCName(this._eventId) || this._npcName;
+      const name = this._targetName();
       return !!name && !!window.PartyPresence?.isVisitorName?.(name);
     }
 
@@ -2033,6 +2093,7 @@
       this._infectMode        = false;
       this._socialMode        = false;
       this._romanceMode       = false;
+      this._proposeMode       = false;
       this._directionsMode    = false;
       this._moreSubView       = null;
       this._wikiCategory      = null;
@@ -2334,6 +2395,7 @@
       this._transmitConfirm   = null;
       this._socialMode        = false;
       this._romanceMode       = false;
+      this._proposeMode       = false;
       this._directionsMode    = false;
       this._activeTab         = 'chat';
       this._menuIndex         = 0;
@@ -2342,7 +2404,7 @@
       this._joinMessage = this._actorId != null ? null : {
         type: 'reject',
         text: T.infectPrompt(
-          _getNPCName(this._eventId) || this._npcName || '',
+          this._targetName() || '',
           _infectChance(this._focusActor())
         ),
       };
@@ -2453,6 +2515,20 @@
     _focusOpinion(profile) {
       return _npcEffectiveOpinion(profile, this._focusActor());
     }
+    _focusAttraction(profile) {
+      return _npcEffectiveAttraction(profile, this._focusActor());
+    }
+    // Who the panel is actually about, whichever of the three ways it was
+    // opened: a map event (NPC mode), a real party member (actorMode, no
+    // event to read a name off), or a name alone (remoteMode, a visiting
+    // party's member saved somewhere else). Every handler used to read the
+    // event name or the remote name only, which is the first and third of
+    // those; this is the one that covers all three.
+    _targetName() {
+      return _getNPCName(this._eventId)
+        || (this._actorId != null ? ($gameActors.actor(this._actorId)?.name() ?? '') : '')
+        || this._npcName || '';
+    }
     _selectFocusActor(index) {
       const n = $gameParty?.members()?.length ?? 1;
       if (index < 0 || index >= n || index === this._focusIndex()) return;
@@ -2476,6 +2552,7 @@
       this._infectMode        = false;
       this._socialMode        = false;
       this._romanceMode       = false;
+      this._proposeMode       = false;
       this._directionsMode    = false;
       this._joinMessage       = null;
       this._menuIndex         = 0;
@@ -2499,7 +2576,7 @@
       const def = FERAL_ACTIONS.find(a => a.id === id);
       if (!def) return;
       const T       = _getT();
-      const npcName = _getNPCName(this._eventId) || this._npcName || '';
+      const npcName = this._targetName() || '';
       const profile = npcName ? _getProfile(npcName) : null;
       const actor   = this._focusActor();
       const kind    = _feralKind(actor);
@@ -2546,7 +2623,7 @@
       if (this._feralGreeted) return;
       const actor = this._focusActor();
       if (!_isNonSentientActor(actor)) return;
-      const npcName = _getNPCName(this._eventId) || this._npcName;
+      const npcName = this._targetName();
       if (!npcName) return;
       const line = _feralLine(
         'feralGreet', this._focusOpinion(_getProfile(npcName)), npcName, _feralKind(actor)
@@ -2561,6 +2638,7 @@
     _socialize() {
       this._socialMode        = true;
       this._romanceMode       = false;
+      this._proposeMode       = false;
       this._directionsMode    = false;
       this._giftMode          = false;
       this._bribeMode         = false;
@@ -2579,6 +2657,7 @@
     // NPCEmpathizeUI.js, next to the orientation data the Romance tab reads.
     _romance() {
       this._romanceMode       = true;
+      this._proposeMode       = false;
       this._socialMode        = false;
       this._directionsMode    = false;
       this._giftMode          = false;
@@ -2599,6 +2678,7 @@
     _askDirections() {
       this._directionsMode    = true;
       this._romanceMode       = false;
+      this._proposeMode       = false;
       this._socialMode        = false;
       this._giftMode          = false;
       this._bribeMode         = false;
@@ -2632,7 +2712,7 @@
     }
 
     _socialInteract(id) {
-      const npcName = _getNPCName(this._eventId);
+      const npcName = this._targetName();
       const profile = _getProfile(npcName);
       const actor   = this._focusActor();
       const actorId = actor && actor.actorId();
@@ -3061,6 +3141,7 @@
       this._transmitConfirm   = null;
       this._socialMode        = false;
       this._romanceMode       = false;
+      this._proposeMode       = false;
       this._directionsMode    = false;
       this._cardMode          = null;
       this._stealAttempted    = {};
@@ -3203,7 +3284,7 @@
     _cancelSubModeQuiet() {
       this._giftMode = this._bribeMode = this._stealMode = false;
       this._pickpocketConfirm = this._attackConfirm = false;
-      this._socialMode = this._romanceMode = this._directionsMode = false;
+      this._socialMode = this._romanceMode = this._proposeMode = this._directionsMode = false;
       this._infectMode = false;
       this._transmitConfirm = null;
       this._joinMessage = null;
@@ -3811,6 +3892,12 @@
     scene._infectMode        = false;
     scene._infectItems       = [];
     scene._webList       = null;
+    // A fresh subject means a differently-shaped web; carrying the last one's
+    // zoom/pan over would land the new graph scrolled somewhere meaningless.
+    scene._webZoom       = null;
+    scene._webScrollX    = 0;
+    scene._webScrollY    = 0;
+    scene._webBaseSize   = null;
     // A new subject has not met whoever is doing the talking yet, so every
     // one-shot greeting is re-armed.
     scene._emGreeted     = false;
@@ -4397,6 +4484,10 @@
       // paid the company for this exchange and only wants the number moved
       // (AutoIdleExplorer's two-sided party conversations).
       _npcBaseOpinion, _setNpcBaseOpinion,
+      // Romantic attraction: a ledger of its own, moved only by Court and
+      // Propose, read by the UI layer's romance chance math and its own bar.
+      _addNpcAttraction, _npcEffectiveAttraction, _npcBaseAttraction,
+      _setNpcBaseAttraction, _computePartyAttraction,
       _traitCompatBonus, _personalitySocialMult, _hygienePenalty, _hygieneReadout,
       // Em (Switch 48): stance resolution, shared with the UI layer so it can
       // hide what she is not allowed to do and label what she is walking into.

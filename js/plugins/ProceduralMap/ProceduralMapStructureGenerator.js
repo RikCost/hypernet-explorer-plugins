@@ -1053,9 +1053,9 @@
    *                      area above the wall faces. The dead mass further out is
    *                      left as empty tiles (black), so the plan reads as rooms
    *                      drawn on a void instead of drowning in tiled rubble.
-   *   - DungeonWall   -> a single random 3-tall vertical strip drawn on the walls,
-   *                      plus a 1-tile impassable ring so the passable Ceiling can
-   *                      never be walked onto
+   *   - DungeonWall   -> a single random 3-tall vertical strip drawn on the north
+   *                      face of every room and corridor only; south, east and
+   *                      west stay open onto the passable Ceiling rim
    *   - Biome features -> decorations placed pathing-safely: floor props on
    *                      fully-enclosed interior tiles, wall fixtures (torches,
    *                      chains, drains, ...) hung on the impassable wall faces.
@@ -1852,15 +1852,15 @@
     // The dead mass between the rooms is NOT paved wall to wall with the
     // Ceiling tile: repeating one rubble tile over five sixths of the map is
     // pure noise and buries the plan in it. Only a rim of ROCK_RIM tiles around
-    // the carved space keeps the Ceiling, which is exactly what the wall ring
-    // (1 tile), the 3-tall north faces of step 4 and the wall-mounted fixtures
-    // of step 6 ever draw on; everything deeper is left as an empty tile, so
-    // the interior reads as rooms and corridors on an unlit void. The rim only
-    // needs that depth to the NORTH, where it backs the tall wall face and
-    // holds its fixtures: south, east and west never draw anything past the
-    // 1-tile wall ring itself, so a wider band there was nothing but a visible
-    // decorative border. Those three sides get just enough rim to back that
-    // one ring tile, and fall to void (black) immediately beyond it.
+    // the carved space keeps the Ceiling, which is exactly what the 3-tall
+    // north faces of step 4 and the wall-mounted fixtures of step 6 ever draw
+    // on; everything deeper is left as an empty tile, so the interior reads as
+    // rooms and corridors on an unlit void. The rim only needs that depth to
+    // the NORTH, where it backs the tall wall face and holds its fixtures:
+    // south, east and west draw no wall at all any more, so a wider band there
+    // was nothing but a visible decorative border. Those three sides get just
+    // enough rim to back the passable Ceiling tile, and fall to void (black)
+    // immediately beyond it.
     const ROCK_RIM = 2;
     const ROCK_RIM_SIDE = 1;
     const nearFloor = Array.from({ length: height }, () => new Array(width).fill(false));
@@ -1910,21 +1910,17 @@
       paintPattern(setFloorTile, r, pal.main, accent, kind, rng);
     }
 
-    // --- 4. Walls: enclosing ring + 3-tall north faces ----------------------
-    // The ring is drawn on all four sides because it has to be: the Ceiling
-    // rim beyond it is passable, so a floor tile with no wall on its south,
-    // east or west edge would open straight into it. But `wall.bot` is the
-    // FOOT of the column - the piece whose art carries the base/floor lip
-    // that only reads correctly directly under `wall.mid` - so stamped alone
-    // as a standalone side cap it looks like a stray inner tile rather than a
-    // wall. `wall.mid` is the segment built to repeat with nothing above or
-    // below it, so the ring uses that instead everywhere except where the
-    // second pass below is about to lay a full 3-tall north face over it.
+    // --- 4. Walls: north faces only ------------------------------------------
+    // Only the north edge of the carved space is ever walled: south, east and
+    // west stay open onto the Ceiling rim (and the void beyond it), which is
+    // the look every structure now shares. `wall.mid` is the 1-tile ring tile
+    // stamped directly above a floor tile's north edge before the second pass
+    // below lays a full 3-tall north face over it.
     const isFloor = (x, y) => x >= 0 && x < width && y >= 0 && y < height && carved[y][x];
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         if (carved[y][x]) continue;
-        if (isFloor(x - 1, y) || isFloor(x + 1, y) || isFloor(x, y - 1) || isFloor(x, y + 1)) {
+        if (isFloor(x, y + 1)) {
           mapData[calculateIndex(x, y, 0, width, height)] = wall.mid;
         }
       }

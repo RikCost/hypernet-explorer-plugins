@@ -3,13 +3,14 @@
 // Loads the original Camper.glb as the camper body, then attaches the
 // procedural, animated upgrade hardware around it: rolling/retractable wheels
 // and the bolt-on modules (flight rotors, water pontoons, submarine propeller +
-// periscope). No custom interior. Exposes window.HypernetCamper.CamperModel.
-// Load BEFORE Vehicle/CamperDrivingSystem.
+// periscope). The GLB's own rear door ("CamperBackDoor") is rigged onto a real
+// hinge pivot and exposed as the one interactable. Exposes
+// window.HypernetCamper.CamperModel. Load BEFORE Vehicle/CamperDrivingSystem.
 //=============================================================================
 
 /*:
  * @target MZ
- * @plugindesc Modular Camper v2.1.0 (Camper.glb body + cockpit dash, animated steering wheel, wheels & upgrade modules)
+ * @plugindesc Modular Camper v2.2.0 (Camper.glb body + cockpit dash, animated steering wheel, wheels, hinged rear door & upgrade modules)
  * @author Omni-Lex
  *
  * @help
@@ -20,7 +21,8 @@
  *
  * API (window.HypernetCamper.CamperModel):
  *   m.group / m.applyMotion(spd,steer,dt,roll,pitch,bounce) / m.setEnv(env)
- *   m.update(dt) / m.seats (empty) / m.getInteractables() (empty) / m.dispose()
+ *   m.update(dt) / m.seats (empty) / m.getInteractables() (the rear door, once
+ *   rigged) / m.setDoorOpen(bool) / m.isDoorOpen() / m.toggleDoor() / m.dispose()
  */
 
 (() => {
@@ -33,9 +35,14 @@
     const REAR  = -HL + 1.5;
     const TARGET_LEN = 2 * HL;   // GLB scaled so its longest horizontal axis = this
     // Full scale of the cockpit speedometer. Sits just above the camper's natural
-    // top speed, so ordinary driving sweeps the dial and only the turbo pegs it.
+    // top speed (400 km/h, CamperDrivingSystem's NATURAL_TOP), so ordinary
+    // driving sweeps the dial and only the turbo pegs it.
     // Read by both the painted dial face and the live needle: change it once.
-    const SPEEDO_MAX_KMH = 400;
+    const SPEEDO_MAX_KMH = 480;
+    // How far the rear door swings open, and how fast it eases toward its
+    // target (closed <-> open) each time proximity flips it.
+    const DOOR_OPEN_RAD  = 100 * Math.PI / 180;
+    const DOOR_ANIM_RATE = 5;
 
     // Selectable exterior paintjobs applied to the GLB's body panels (the light,
     // exterior shell materials; interior/tyres/glass are left alone). Each carries
@@ -91,6 +98,13 @@
             this._paint       = (window.HypernetCamper && PAINTS[window.HypernetCamper.paint])
                 ? window.HypernetCamper.paint : 'classic';
             this.seats = [];                  // no custom interior -> no seats
+
+            // Rear door, rigged (once the GLB loads) onto a real hinge pivot.
+            this._doorPivot     = null;
+            this._doorLocalPos  = null;
+            this._doorClosedY   = 0;
+            this._doorOpenY     = 0;
+            this._doorTargetOpen = false;
 
             // Register as the live camper so window.HypernetCamper.setPaint can
             // repaint it on the fly (cleared in dispose()).
@@ -187,6 +201,7 @@
                     this._body.add(model);
                     this.applyPaint(this._paint);   // skin the exterior panels
                     this._alignWheelsToBody();   // re-seat wheels under the real body
+                    this._rigDoor(model);         // hinge the rear door for open/close
                 },
                 undefined,
                 (err) => { console.error('[CamperModel] Camper.glb load failed:', err); this._buildBodyFallback(); }
@@ -310,6 +325,45 @@
                 p.downY = axleY;
                 p.upY = axleY + 5;
             }
+        }
+
+        // Hinge the rear door (glTF node "CamperBackDoor") on a real pivot. The
+        // GLB carries no authored pivot of its own - every node shares the same
+        // single origin as the whole model - so a pivot is built at the edge of
+        // the door's own bounding box nearest the body centreline and the door
+        // mesh is re-parented under it without moving it, giving it something
+        // real to swing open on instead of spinning around the model's origin.
+        _rigDoor(model) {
+            const doorMesh = model.getObjectByName('CamperBackDoor');
+            if (!doorMesh) return;
+            this._body.updateMatrixWorld(true);
+            const box = new THREE.Box3().setFromObject(doorMesh);
+            if (box.isEmpty()) return;
+            box.applyMatrix4(new THREE.Matrix4().copy(this._body.matrixWorld).invert());
+            const center = box.getCenter(new THREE.Vector3());
+            const hingeX = Math.abs(box.min.x) < Math.abs(box.max.x) ? box.min.x : box.max.x;
+
+            const pivot = new THREE.Group();
+            pivot.position.set(hingeX, center.y, center.z);
+            this._body.add(pivot);
+
+            const wp = new THREE.Vector3(), wq = new THREE.Quaternion(), ws = new THREE.Vector3();
+            doorMesh.getWorldPosition(wp);
+            doorMesh.getWorldQuaternion(wq);
+            doorMesh.getWorldScale(ws);
+            doorMesh.parent.remove(doorMesh);
+            pivot.add(doorMesh);
+            pivot.updateMatrixWorld(true);
+            const local = new THREE.Matrix4()
+                .compose(wp, wq, ws)
+                .premultiply(new THREE.Matrix4().copy(pivot.matrixWorld).invert());
+            local.decompose(doorMesh.position, doorMesh.quaternion, doorMesh.scale);
+
+            this._doorPivot    = pivot;
+            this._doorLocalPos = pivot.position.clone();   // for getInteractables()
+            this._doorClosedY  = pivot.rotation.y;
+            // Swing outward from the hinge, away from the centreline it sits closest to.
+            this._doorOpenY    = this._doorClosedY + (hingeX <= 0 ? -1 : 1) * DOOR_OPEN_RAD;
         }
 
         // ---- cockpit: dash, backlit gauges, animated steering wheel ------------
@@ -543,9 +597,22 @@
         }
         getEnv() { return this._env; }
 
-        getInteractables() { return []; }   // no custom interior
-        toggleDoor() {}
-        setDoor() {}
+        // The only interactable this model exposes is the rear door, once rigged.
+        getInteractables() {
+            if (!this._doorPivot) return [];
+            return [{ kind: 'door', name: 'CamperBackDoor', pos: this._doorLocalPos }];
+        }
+        // Proximity-driven open/close (see setDoorOpen); toggleDoor flips whatever
+        // the door's current target is, for callers that just want it to react.
+        setDoorOpen(open) { this._doorTargetOpen = !!open; }
+        isDoorOpen() { return !!this._doorTargetOpen; }
+        toggleDoor() { this.setDoorOpen(!this._doorTargetOpen); }
+        // World-space position of the door's hinge, for proximity checks. Null
+        // while the GLB is still loading (before the door has been rigged).
+        getDoorWorldPosition(target) {
+            if (!this._doorPivot) return null;
+            return this._doorPivot.getWorldPosition(target || new THREE.Vector3());
+        }
 
         // ---- per-frame --------------------------------------------------------
         applyMotion(speedUnits, steer, delta, roll, pitch, bounce) {
@@ -578,6 +645,11 @@
             const spd = this._speedAbs || 0;
             if (this._modFlight.visible) { const w = (28 + spd * 0.4) * delta; for (const r of this._rotors) r.rotation.y += w; }
             if (this._modSub.visible)    { const w = (6 + spd * 0.3) * delta;  for (const p of this._props)  p.rotation.z += w; }
+
+            if (this._doorPivot) {
+                const targetY = this._doorTargetOpen ? this._doorOpenY : this._doorClosedY;
+                this._doorPivot.rotation.y += (targetY - this._doorPivot.rotation.y) * Math.min(1, delta * DOOR_ANIM_RATE);
+            }
         }
 
         dispose() {

@@ -227,6 +227,15 @@
     // that reason about fuel per km; the drive scene itself burns per world unit.
     // WORLD_TILE_SIZE scales up while FUEL_PER_UNIT scales down, so this is unchanged.
     const FUEL_PER_KM      = FUEL_PER_UNIT * (WORLD_TILE_SIZE / 5);
+    // Liminal (fast-travel) drive covers its apparent map distance in a
+    // handful of real seconds, so burning fuel by distance moved (the rule
+    // for ordinary driving, above) would drain the tank for a trip that isn't
+    // really being driven. It burns instead at a flat rate per REAL second,
+    // independent of the warp speed, and deliberately tiny - orders of
+    // magnitude below what covering the same apparent distance would cost at
+    // the wheel, so a long warp trip still only sips the tank.
+    const LIMINAL_FUEL_PER_SEC    = 0.00003;
+    const LIMINAL_BOOST_FUEL_MULT = 6;   // still costs more to boost through it, just not steeply
     const ZOOM_MAX         = 32000 * WORLD_SCALE;
 
     // -------------------------------------------------------------------------
@@ -335,8 +344,8 @@
     const DRIVER_SEAT = { x: 1.2, y: 6.4, z: 8.0 };
 
     // On-foot exploration (player detached from the parked camper). Speeds are in
-    // world units/sec; FOOT_LEASH is the tether radius from the camper (~100 m).
-    const FOOT_LEASH        = 420;    // max distance from the parked camper
+    // world units/sec. There is no tether: the player can walk as far from the
+    // parked camper as they like and simply walks back to climb in again.
     const FOOT_WALK         = 46;     // brisk walk speed
     const FOOT_SPRINT_MULT  = 1.85;   // hold sprint to move this much faster
     const FOOT_GRAVITY      = 230;    // downward accel (snappier arc than the old floaty jump)
@@ -348,6 +357,9 @@
     // walk through. Sized to the ~9 x 24 CamperModel footprint.
     const FOOT_VAN_HALF_LEN = 10;
     const FOOT_VAN_RADIUS   = 8;
+    // How close (world units) the player has to stand to the rear door's hinge,
+    // inside or outside, before it swings open on its own.
+    const DOOR_AUTO_OPEN_RANGE = 70;
 
     // Speed bookkeeping. The physics runs in km/h space (fwd speed, GEARS,
     // engine/brake accels are all km/h), and KMH_TO_UNITS converts that to world
@@ -362,16 +374,18 @@
     const KMH_TO_UNITS      = 1;      // world units/sec per km/h (base, unscaled)
     // Liminal drive (auto fast-travel): cruise speed and the ramp-up time to
     // reach it, so the camper eases into warp speed instead of snapping to it.
-    const LIMINAL_TOP_KMH   = 6666;
-    const LIMINAL_ACCEL_SEC = 15;
+    // Ease-out ramp (see the rampT*(2-rampT) curve below) reaches full cruise
+    // exactly at LIMINAL_ACCEL_SEC, so this clears 10,000 km/h at 20s.
+    const LIMINAL_TOP_KMH   = 12000;
+    const LIMINAL_ACCEL_SEC = 20;
     // Terrain streaming normally keeps up with driving (radius 5, 6 chunk
     // builds/frame - see WorldTerrainRenderer), but liminal drive crosses
-    // roughly 25+ tiles/sec at LIMINAL_TOP_KMH, far outrunning that budget and
+    // roughly 45+ tiles/sec at LIMINAL_TOP_KMH, far outrunning that budget and
     // leaving gaps where the always-present WaterPlane shows through and new
     // chunks never finish building. Both are widened only while the autopilot
     // is actually driving (see _isFastTravelActive() gating below).
-    const LIMINAL_TERRAIN_RADIUS = 12;
-    const LIMINAL_BUILD_BUDGET   = 60;
+    const LIMINAL_TERRAIN_RADIUS = 22;
+    const LIMINAL_BUILD_BUDGET   = 110;
 
     // Driving physics: forward force through a 5-speed automatic gearbox,
     // quadratic air drag, surface-dependent rolling resistance and lateral
@@ -385,7 +399,7 @@
     // force is high, the gearbox is spaced wide and air drag is light, so it
     // reaches its natural top (see NATURAL_TOP) in a handful of seconds rather
     // than a slow minute-long climb.
-    const ENGINE_ACCEL      = 62;     // peak engine force (units/s^2) in top gear
+    const ENGINE_ACCEL      = 89.6;   // peak engine force (units/s^2) in top gear
     const GEARS             = [40, 82, 138, 208, 292];      // shift-up speeds (km/h)
     const GEAR_FORCE        = [1.9, 1.5, 1.25, 1.0, 0.85];  // per-gear torque mult
     const SHIFT_TIME        = 0.16;   // torque-cut pause on a gear change
@@ -419,7 +433,7 @@
     // never moved.
     const WARP_START_KMH    = 180;
     const LAT_SCRUB         = 0.35;   // forward speed lost to lateral tyre scrub
-    const NATURAL_TOP       = Math.sqrt(ENGINE_ACCEL / DRAG_K); // ~333 km/h on asphalt
+    const NATURAL_TOP       = Math.sqrt(ENGINE_ACCEL / DRAG_K); // ~400 km/h on asphalt
 
     // Per-surface handling. grip = lateral slip decay per second; roll =
     // rolling resistance (units/s^2); dragMul scales drag off the asphalt;
@@ -2127,11 +2141,10 @@
             this.allowPointerLock = true;
             this.inputSource = null;   // () => {forward,back,left,right,sprint}
 
-            // On-foot world mode: detached from the camper, free to roam within a
-            // tether, with terrain following, sprint and jump.
+            // On-foot world mode: detached from the camper, free to roam with no
+            // distance limit, with terrain following, sprint and jump.
             this.worldMode = false;
-            this.anchor    = { x: 0, z: 0 };   // parked camper position (leash centre)
-            this.leash     = FOOT_LEASH;
+            this.anchor    = { x: 0, z: 0 };   // parked camper position (solid-body centre)
             this.getGroundY = null;            // (worldX, worldZ) => terrain Y
             this.vy        = 0;                // vertical velocity (jump / gravity)
             this.onGround  = true;
@@ -2281,15 +2294,6 @@
                 this.yaw.position.z = ccz + oz * f;
             }
 
-            // Tether: never stray more than the leash radius from the parked camper.
-            const dx = this.yaw.position.x - this.anchor.x;
-            const dz = this.yaw.position.z - this.anchor.z;
-            const dist = Math.hypot(dx, dz);
-            if (dist > this.leash) {
-                this.yaw.position.x = this.anchor.x + (dx / dist) * this.leash;
-                this.yaw.position.z = this.anchor.z + (dz / dist) * this.leash;
-            }
-
             // Gravity + jump, with the ground sampled from the terrain.
             const groundY = (this.getGroundY ? this.getGroundY(this.yaw.position.x, this.yaw.position.z) : 0) + FOOT_EYE;
             if (this._jumpQueued) {
@@ -2352,7 +2356,10 @@
         setEnv() {}
         update() {}
         toggleDoor() {}
+        setDoorOpen() {}
+        isDoorOpen() { return false; }
         getInteractables() { return []; }
+        getDoorWorldPosition() { return null; }
         dispose() { this.group.traverse(o => { if (o.geometry) o.geometry.dispose(); }); this._scene.remove(this.group); }
     }
 
@@ -2379,7 +2386,12 @@
         getEnv()           { return this._impl.getEnv ? this._impl.getEnv() : 'road'; }
         update(dt)         { if (this._impl.update) this._impl.update(dt); }
         toggleDoor(which)  { if (this._impl.toggleDoor) this._impl.toggleDoor(which); }
+        setDoorOpen(open)  { if (this._impl.setDoorOpen) this._impl.setDoorOpen(open); }
+        isDoorOpen()       { return this._impl.isDoorOpen ? this._impl.isDoorOpen() : false; }
         getInteractables() { return this._impl.getInteractables ? this._impl.getInteractables() : []; }
+        getDoorWorldPosition(target) {
+            return this._impl.getDoorWorldPosition ? this._impl.getDoorWorldPosition(target) : null;
+        }
         get seats()        { return this._impl.seats || []; }
         dispose()          { this._impl.dispose(); }
     }
@@ -2481,13 +2493,31 @@
                 font-family:'Lora',serif; font-size:13px; pointer-events:auto;
                 cursor:pointer;
             `;
+            // A short, stacked list of only the commands a player needs at a
+            // glance (not every key the scene answers to): each row is a key
+            // badge plus a short label, one per line, easier to scan than the
+            // old run-on paragraph.
+            const CMD_ROWS = [
+                ['WASD', T('CamperDrive.hud.cmdDrive')],
+                ['SHIFT', T('CamperDrive.hud.cmdTurbo')],
+                ['E', T('CamperDrive.hud.cmdDoor')],
+                ['TAB', T('CamperDrive.hud.cmdView')],
+                ['ESC', T('CamperDrive.hud.cmdExit')]
+            ];
+            const cmdRowHTML = ([key, label]) => `
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="min-width:36px;text-align:center;background:rgba(139,90,43,0.35);
+                        border:1px solid rgba(161,104,13,0.8);border-radius:4px;padding:2px 6px;
+                        font-size:11px;font-weight:bold;color:#ffe8b0;letter-spacing:0.5px;">${key}</span>
+                    <span style="font-size:12px;color:#ecdcb9;">${label}</span>
+                </div>`;
             this._modePanel.innerHTML = `
                 <div id="cds-mode-btn">${T('CamperDrive.hud.view')} <span id="cds-mode-label" style="color:#4caf50;">${T('CamperDrive.viewMode.fpdrive')}</span> [TAB]</div>
                 <div style="margin-top:4px;">${T('CamperDrive.hud.mode')} <span id="cds-env-label" style="color:#7fd0ff;">${T('CamperDrive.envMode.road')}</span></div>
-                <div style="margin-top:6px;font-size:11px;color:#a1680d;line-height:1.45;">
-                    ${T('CamperDrive.hud.controls')}
+                <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;">
+                    ${CMD_ROWS.map(cmdRowHTML).join('')}
                 </div>
-                <div id="cds-controller-hint" style="margin-top:6px;font-size:11px;color:#7fd0ff;line-height:1.45;display:none;">
+                <div id="cds-controller-hint" style="margin-top:8px;font-size:11px;color:#7fd0ff;line-height:1.45;display:none;">
                     ${T('CamperDrive.hud.controllerHint')}
                 </div>`;
             this._modePanel.onclick = () => {
@@ -5121,14 +5151,12 @@
             if (prev === 'fpdrive') this._fpc.setDriving(false);
             // Leaving on-foot: re-stow the rig back inside the camper (every mode
             // change away from 'foot' puts the player back in the cabin) and shut
-            // the door that was cracked open for the dismount.
+            // the door; proximity (see _updateDoorAutoOpen) keeps it that way once
+            // the player has stepped back from it.
             if (prev === 'foot') {
                 this._fpc.setWorldMode(false);
                 this._attachRigToVan();
-                if (this._van.getInteractables && this._van.toggleDoor) {
-                    const door = this._van.getInteractables().find(it => it.kind === 'door');
-                    if (door) this._van.toggleDoor(door.name);
-                }
+                if (this._van.setDoorOpen) this._van.setDoorOpen(false);
             }
 
             // Setup new mode. The single camper (this._van) is always visible;
@@ -5253,11 +5281,26 @@
             this._fpc.setWorldMode(true,
                 { x: this._vanX, z: this._vanZ, angle: this._van.group.rotation.y }, groundFn);
 
-            // Crack a door open for the dismount (whichever door the model exposes).
-            if (this._van.getInteractables && this._van.toggleDoor) {
-                const door = this._van.getInteractables().find(it => it.kind === 'door');
-                if (door) this._van.toggleDoor(door.name);
-            }
+            // Open the door for the dismount; proximity (_updateDoorAutoOpen) takes
+            // over on the very next frame and keeps it open while standing near it.
+            if (this._van.setDoorOpen) this._van.setDoorOpen(true);
+        }
+
+        // Swing the rear door open whenever the player (on foot outside, or
+        // walking the cabin toward it) is close enough, and shut otherwise. Runs
+        // every frame in first-person cabin/foot modes, so there is no explicit
+        // "open" or "close" command left for the player to press.
+        _updateDoorAutoOpen() {
+            if (this._viewMode !== 'fp' && this._viewMode !== 'foot') return;
+            if (!this._van.getDoorWorldPosition) return;
+            const doorPos = this._van.getDoorWorldPosition(this._tmpDoorPos || (this._tmpDoorPos = new THREE.Vector3()));
+            if (!doorPos) return;
+            const rig = this._fpc.getRig();
+            const p = this._tmpRigPos || (this._tmpRigPos = new THREE.Vector3());
+            rig.getWorldPosition(p);
+            const dx = p.x - doorPos.x, dy = p.y - doorPos.y, dz = p.z - doorPos.z;
+            const near = (dx * dx + dy * dy + dz * dz) <= DOOR_AUTO_OPEN_RANGE * DOOR_AUTO_OPEN_RANGE;
+            this._van.setDoorOpen(near);
         }
 
         _cycleViewMode() {
@@ -5296,6 +5339,10 @@
         // First-person interaction (E / gamepad). On foot, walk up to the camper
         // and interact to climb back in. In the cabin, interacting with a door
         // steps you outside; the wheel/driver seat grabs the wheel; other seats sit.
+        // At the wheel (third-person 'car' or seated 'fpdrive'), E gets you away
+        // from driving without going through the options menu: third-person
+        // steps straight out onto the ground, first-person just lets go of the
+        // wheel and leaves you standing in the cabin so you can walk to the door.
         _interact() {
             // On foot: climb back into the camper when close enough.
             if (this._viewMode === 'foot') {
@@ -5308,6 +5355,22 @@
                 } else if (typeof SoundManager !== 'undefined') {
                     SoundManager.playBuzzer();
                 }
+                return;
+            }
+
+            // Third-person chase camera: step straight out of the camper.
+            if (this._viewMode === 'car') {
+                if (typeof SoundManager !== 'undefined') SoundManager.playOk();
+                this._setMode('foot');
+                return;
+            }
+
+            // Seated first-person driving: let go of the wheel and stand up in
+            // the cabin (still parked at the driver's seat), rather than
+            // stepping outside directly.
+            if (this._viewMode === 'fpdrive') {
+                if (typeof SoundManager !== 'undefined') SoundManager.playOk();
+                this._setMode('fp');
                 return;
             }
 
@@ -5867,7 +5930,16 @@
             } else {
                 this._fpc.update(delta);
                 if (this._titleMode) this._updateTitleLook(delta);
-                this._terrain.update(this._vanX, this._vanZ);
+                // On foot the player is free to walk any distance from the parked
+                // camper (no tether), so terrain streaming has to follow the
+                // player rather than staying centred on the stationary van, or
+                // a long walk would run off the edge of the built ground.
+                if (this._viewMode === 'foot') {
+                    const p = this._fpc.getRig().position;
+                    this._terrain.update(p.x, p.z);
+                } else {
+                    this._terrain.update(this._vanX, this._vanZ);
+                }
             }
 
             // Drive the procedural camper: wheels spin/steer, body roll/pitch/
@@ -5880,6 +5952,7 @@
                 fpInside ? 0 : this._bodyRoll,
                 fpInside ? 0 : this._bodyPitch,
                 fpInside ? 0 : this._bodyBounce);
+            this._updateDoorAutoOpen();
             this._van.update(delta);
 
             this._updateFuel(delta);
@@ -6934,42 +7007,49 @@
 
         _updateFuel(delta) {
             if (this._titleMode) return;   // background drive: never burns the save's fuel
+
+            // Track position regardless of branch below, so a mode switch never
+            // reads a stale last-position as a huge one-frame "moved" distance.
+            const hadLast = this._fuelLastX !== undefined;
+            const lastX = this._fuelLastX, lastZ = this._fuelLastZ;
+            this._fuelLastX = this._vanX;
+            this._fuelLastZ = this._vanZ;
+
+            const ftActive = this._isFastTravelActive();
+            if (ftActive) {
+                // Liminal (fast-travel) drive: burn a flat, tiny rate per REAL
+                // second, never by the (fictional) warp distance covered - see
+                // the constants' own comment for why.
+                const boostMul = this._boostActive ? LIMINAL_BOOST_FUEL_MULT : 1;
+                camperFuelConsume(LIMINAL_FUEL_PER_SEC * boostMul * delta);
+                return;
+            }
+
+            if (!hadLast) return;
             // Fuel burn is ALWAYS proportional to the ACTUAL distance the camper
             // moved this frame, measured from its real world position (not from a
             // speed value, which a physics glitch or NaN could inflate) and never
             // from elapsed time. This is inherently frame-rate independent: standing
             // still costs nothing, a metre always costs the same, and a teleport /
             // bad frame cannot spike the burn (see the per-frame cap below).
-            if (this._fuelLastX === undefined) {
-                this._fuelLastX = this._vanX;
-                this._fuelLastZ = this._vanZ;
-                return;
-            }
-            const dxp = this._vanX - this._fuelLastX;
-            const dzp = this._vanZ - this._fuelLastZ;
-            this._fuelLastX = this._vanX;
-            this._fuelLastZ = this._vanZ;
+            const dxp = this._vanX - lastX;
+            const dzp = this._vanZ - lastZ;
             const moved = Math.sqrt(dxp * dxp + dzp * dzp);
             if (!isFinite(moved) || moved <= 0) return;
 
             // Gentle efficiency penalty when pushing well past cruise (up to ~1.8x
             // at 999 km/h). The per-unit rate is minuscule to suit the large world
-            // scale, so a full tank comfortably covers very long journeys. The
-            // liminal (auto fast-travel) drive is exempt: its huge reported km/h is
-            // a travel-time artifact, not real engine strain, and it burns at a
-            // steep discount so a warp-speed trip sips fuel rather than draining it.
-            const ftActive  = this._isFastTravelActive();
+            // scale, so a full tank comfortably covers very long journeys.
             const spd       = isFinite(this._speedKmh) ? this._speedKmh : 0;
-            const surcharge = ftActive ? 1 : 1 + Math.max(0, spd - CRUISE_KMH) * 0.0009;
-            const liminalDiscount = ftActive ? 0.25 : 1;
-            // The liminal boost (holding Shift) drinks fuel far faster: propelling
-            // the camper for kilometres in a burst has a steep cost at the pump.
+            const surcharge = 1 + Math.max(0, spd - CRUISE_KMH) * 0.0009;
+            // Boosting (turbo) drinks fuel far faster: propelling the camper for
+            // kilometres in a burst has a steep cost at the pump.
             const boostMul  = this._boostActive ? BOOST_FUEL_MULT : 1;
             // Hard ceiling per frame: a legitimate cruise burn is ~0.01 L. Boosting
             // burns far more, so the cap is lifted while boosting yet still guards
             // against a single teleport / bad frame draining the whole tank.
             const cap  = this._boostActive ? 0.6 : 0.05;
-            const burn = Math.min(moved * FUEL_PER_UNIT * surcharge * boostMul * liminalDiscount, cap);
+            const burn = Math.min(moved * FUEL_PER_UNIT * surcharge * boostMul, cap);
 
             if (!(burn > 0)) return;
             // Burn from the camper's own tank in the per-vehicle store (never a

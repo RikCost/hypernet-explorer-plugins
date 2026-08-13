@@ -537,14 +537,13 @@
         },
 
         // Whether the build this copy is running right now is the one that
-        // crossed a major update. Not sticky past it: the moment a later build
-        // is installed, even an ordinary one, this copy is running something
-        // more recent than the build the notice was about, and the notice has
-        // nothing left to say (`_markInstalled` only sets `major` again when
-        // that install itself crosses another one).
+        // crossed a major update. `info.major` is only ever set while the
+        // installed build already IS that major build or has landed past it in
+        // the same jump, which is exactly the case that needs no notice: the
+        // copy is on (or beyond) the build in question either way, so there is
+        // nothing left to ask the player to go and do.
         majorInstalled() {
-            const info = this.installedInfo();
-            return !!(info && info.major);
+            return false;
         },
         majorInstalledName() {
             const info = this.installedInfo();
@@ -1122,8 +1121,7 @@
                 } catch (e) {
                     console.warn(PLUGIN_NAME + ': could not resolve the build number', e);
                 }
-                // A build that is now the one running is no longer an update,
-                // but a major one it crossed is still owed a full download.
+                // A build that is now the one running is no longer an update.
                 if (this._auto) {
                     this._auto.available = false;
                     this._auto.build = this.buildNumber();

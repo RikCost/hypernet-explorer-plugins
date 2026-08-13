@@ -240,13 +240,75 @@
       },
 
       // ---- Humanoid ------------------------------------------------------
-      // The baseline every other archetype is a departure from: a bare fist,
-      // knuckles forward, nothing on it.
+      // The baseline every other archetype is a departure from: a closed
+      // fist, knuckles forward, the fingers actually curled in against the
+      // palm rather than one straight bar standing in for all four, and the
+      // thumb locked diagonally across the top the way a real fist closes.
       createUnarmedHumanoidModel(weapon, rand) {
         const group = new THREE.Group();
         const skin = this._mat(this.getRandomColor(rand, [0xC9A08A, 0x8A6248, 0xE0B89A, 0x6B4630]),
           { roughness: 0.85, metalness: 0.02 });
-        this._fist(group, skin, { width: 0.084, knuckleR: 0.014, cuff: 0.05 });
+        // Back of the hand and wrist cuff, built directly rather than
+        // through the shared _fist() so the curled fingers below are not
+        // duplicating its own straight ones.
+        const back = new THREE.Mesh(new THREE.BoxGeometry(0.084, 0.085, 0.05), skin);
+        back.position.y = 0.02;
+        group.add(back);
+        const wrist = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.032, 0.05, this.seg(11, 7)), skin);
+        wrist.position.y = -0.05;
+        wrist.scale.z = 0.72;
+        group.add(wrist);
+        // A dome laid over the back plate so the silhouette reads as a
+        // rounded knuckle ridge rather than a flat slab.
+        const dome = new THREE.Mesh(new THREE.SphereGeometry(0.046, this.seg(12, 7), this.seg(8, 5)), skin);
+        dome.scale.set(1.0, 0.82, 0.78);
+        dome.position.set(0, 0.032, 0.006);
+        group.add(dome);
+        // Four fingers, each curled fully in against the palm: a knuckle, a
+        // proximal segment leaving the ridge, and a distal segment curling
+        // back under - the distal segment is the one that flexes, so a
+        // clenched fist reads as gripping rather than frozen.
+        const xs = [-0.028, -0.00933, 0.00933, 0.028];
+        for (let i = 0; i < xs.length; i++) {
+          const x = xs[i];
+          const knuckle = new THREE.Mesh(new THREE.SphereGeometry(0.0125, this.seg(9, 6), this.seg(7, 5)), skin);
+          knuckle.position.set(x, 0.06, 0.012);
+          knuckle.scale.z = 0.85;
+          group.add(knuckle);
+
+          const proximal = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.0112, 0.0105, 0.032, this.seg(8, 5)), skin);
+          proximal.position.set(x, 0.048, 0.036);
+          proximal.rotation.x = Math.PI / 2 - 0.3;
+          group.add(proximal);
+
+          const joint = new THREE.Mesh(new THREE.SphereGeometry(0.009, this.seg(8, 5), this.seg(6, 4)), skin);
+          joint.position.set(x, 0.0473, 0.0513);
+          group.add(joint);
+
+          const distal = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.0085, 0.008, 0.022, this.seg(7, 5)), skin);
+          distal.position.set(x, 0.0416, 0.0607);
+          distal.rotation.x = Math.PI / 2 - 0.3 + 0.85;
+          distal.userData.sway = { axis: 'x', amp: 0.05, freq: 0.5 + i * 0.06, phase: i * 1.4 };
+          group.add(distal);
+
+          const pad = new THREE.Mesh(new THREE.SphereGeometry(0.0072, this.seg(8, 5), this.seg(6, 4)), skin);
+          pad.position.set(x, 0.0359, 0.0701);
+          group.add(pad);
+        }
+        // The thumb, wrapped across the front of the curled fingers.
+        const thumbBase = new THREE.Mesh(new THREE.SphereGeometry(0.015, this.seg(9, 6), this.seg(7, 5)), skin);
+        thumbBase.position.set(0.036, 0.012, 0.014);
+        group.add(thumbBase);
+        const thumb = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.016, 0.05, this.seg(9, 6)), skin);
+        thumb.position.set(0.046, 0.028, 0.018);
+        thumb.rotation.set(0.5, 0, -0.9);
+        group.add(thumb);
+        const thumbTip = new THREE.Mesh(new THREE.SphereGeometry(0.0105, this.seg(8, 5), this.seg(6, 4)), skin);
+        thumbTip.position.set(0.008, 0.046, 0.044);
+        thumbTip.userData.sway = { axis: 'z', amp: 0.06, freq: 0.55, phase: 2.1 };
+        group.add(thumbTip);
         // The tendons standing out on the back of a closed hand.
         for (let i = 0; i < 3; i++) {
           const tendon = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.004, 0.05, this.seg(6, 4)), skin);

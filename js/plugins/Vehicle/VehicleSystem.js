@@ -1057,15 +1057,36 @@
   }
 
   /**
+   * True when the world-map (315) tile at (x, y) is a river: either the biome
+   * tile itself is a river marker ("River horizontal/vertical/cross", with no
+   * land underneath) or a river is painted as an overlay over a land biome at
+   * that column (see ProcGenUtils.classifyWorldColumn / the river-overlay
+   * system). Rivers are the Boat's alone; every other vehicle is blocked from
+   * them regardless of what their own terrain-tag/region rules would otherwise
+   * allow.
+   */
+  function isWorldRiverTile(x, y) {
+    if ($gameMap.mapId() !== 315) return false;
+    if (!$gameMap.isValid(x, y)) return false;
+    const utils = window.ProcGenUtils;
+    if (!utils || !utils.classifyWorldColumn) return false;
+    const cls = utils.classifyWorldColumn((z) => $gameMap.tileId(x, y, z));
+    if (cls.riverTileId) return true;
+    return typeof cls.biome === 'string' && cls.biome.toLowerCase().indexOf('river') === 0;
+  }
+
+  /**
    * True when the tile is navigable by the Boat (inflatable dinghy).
    * The boat is water-only: it may sit on open-water terrain (tag 3) but ONLY on
-   * the world map (315) and the procedural map (636), and on region 99 water on
-   * ANY map. Every other tile (dry land, blocked water region 10, etc.) is off-limits.
+   * the world map (315) and the procedural map (636), on region 99 water on
+   * ANY map, or on a world-map river tile. Every other tile (dry land, blocked
+   * water region 10, etc.) is off-limits.
    */
   function isBoatPassableTile(x, y) {
     if (!$gameMap.isValid(x, y)) return false;
     if ($gameMap.regionId(x, y) === 10) return false;
     if ($gameMap.regionId(x, y) === 99) return true;
+    if (isWorldRiverTile(x, y)) return true;
     const mapId = $gameMap.mapId();
     if ((mapId === 315 || mapId === proceduralMapId()) && $gameMap.terrainTag(x, y) === 3) return true;
     return false;
@@ -1659,6 +1680,8 @@
       }
       if (character.isShip() || character.isBoat()) {
         if (isVehicleBlockedTile(x, y, $gameMap.mapId())) return false;
+        // World-map rivers are the Boat's alone; Car/Bike/Camper never park there.
+        if (isWorldRiverTile(x, y)) return false;
         if ($gameMap.regionId(x, y) === 4) return true;
         if ($gameMap.terrainTag(x, y) === 3) return false;
         return $gameMap.isPassable(x, y, 0);
@@ -1898,8 +1921,13 @@
       if (this.isAirship()) return true;
 
       // The Boat (dinghy) is water-only: passability is fully defined by
-      // isBoatPassableTile (terrain 3 on the world/procedural maps, region 99 anywhere).
+      // isBoatPassableTile (terrain 3 on the world/procedural maps, region 99
+      // anywhere, or a world-map river tile).
       if (isBoatSubType(this)) return isBoatPassableTile(x2, y2);
+
+      // World-map rivers are the Boat's alone: every other non-flying vehicle
+      // (Car, Bike, Camper) is refused, whatever else the tile would allow.
+      if (isWorldRiverTile(x2, y2)) return false;
 
       // Camper enters aquatic mode automatically: open water is passable for it
       // (region 10 stays blocked, handled inside isWaterTileForVehicle).

@@ -862,6 +862,27 @@
           "\"Find somebody who wants an interesting life,\" {name} says. \"I had one. It was awful.\""
         ]
       }
+    },
+    "propose": {
+      "_comment": "The Propose flow (NPCEmpathizeUI.js, Court -> Propose): naming an actual relationship style out loud rather than letting an attraction sit there unspent. {style} is the chosen entry from Relationships.json, localized; fill() substitutes it the same way {name} is substituted.",
+      "player": [
+        "\"I want something real with you, {name}. {style}, if you'll have it.\"",
+        "\"I've been thinking about this. {style}, with you. Is that something you'd want?\"",
+        "\"{name}, I'm asking outright. {style}, the two of us.\"",
+        "You take a breath. \"{style}, {name}. I mean it.\""
+      ],
+      "accept": [
+        "{name} goes quiet for a moment, then smiles. \"Yes. {style}. Let's do that.\"",
+        "\"I was hoping you'd ask,\" {name} says. \"{style} sounds exactly right.\"",
+        "{name} takes your hand. \"Yes. I want that too.\"",
+        "\"Took you long enough,\" {name} says, grinning. \"Yes.\""
+      ],
+      "reject": [
+        "{name} looks away. \"Not like this. I'm sorry.\"",
+        "\"I don't think I'm ready for that,\" {name} says quietly.",
+        "{name} shakes their head slowly. \"That's not what I want. Not with you, not like this.\"",
+        "\"Ask me again another time,\" {name} says, though it doesn't sound like a yes deferred."
+      ]
     }
   },
   "em": {

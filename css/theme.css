@@ -13197,16 +13197,31 @@
     /* ── Social web (inline SVG graph + roster) ────────── */
     /* The stage has a fixed height rather than an aspect ratio so the graph
        never depends on the width its container happens to resolve to; the SVG
-       viewBox already fits the whole web into whatever box it is given. */
+       viewBox already fits the whole web at the default zoom. Zooming in grows
+       the sizer past the stage, which is what makes scrollLeft/scrollTop (i.e.
+       dragging, the wheel, or L2/R2) a real pan; see NPCEmpathizeUI.js. */
     .npc-web-stage {
       height: 380px; max-height: 46vh; width: 100%;
       border: 2px solid var(--border-primary-hover-translucent-15);
       border-radius: 4px;
       background: var(--bg-primary-hover-translucent-35);
       box-shadow: inset 0 0 10px var(--shadow-primary-hover-translucent-5);
-      overflow: hidden;
+      overflow: auto;
+      cursor: grab;
+      scrollbar-width: thin; scrollbar-color: var(--border-focus-hover) transparent;
+      overscroll-behavior: contain;
     }
-    .npc-web-svg { display: block; width: 100%; height: 100%; }
+    .npc-web-stage--dragging { cursor: grabbing; }
+    .npc-web-sizer { position: relative; margin: auto; }
+    .npc-web-svg { display: block; transform-origin: 0 0; }
+    .npc-web-zoom-controls { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+    .npc-web-zoom-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 4px; cursor: pointer;
+      border: 1px solid var(--border-primary-hover-translucent-15);
+      color: var(--text-text-alt-4); font-weight: bold; user-select: none;
+    }
+    .npc-web-zoom-btn:hover { border-color: var(--border-focus-hover); color: var(--text-primary-hover); }
     .npc-web-node { cursor: pointer; }
     .npc-web-node--center { cursor: default; }
     .npc-web-disc { fill: var(--bg-secondary-hover); }

@@ -54,8 +54,19 @@
   function planetVisualRadius(planet) {
     return compressRadius(planet && planet.radius ? planet.radius : 1);
   }
-  function moonVisualRadius(moon) {
-    return clamp(compressRadius(moon && moon.radius ? moon.radius : 0.27), 0.018, 0.14);
+  // The shared power-law compressor flattens the 5-order-of-magnitude range
+  // it has to cover, which inflates a moon's radius relative to its planet's
+  // far past the real ratio (Luna/Earth is 0.27; the bare compressor put it
+  // near 0.48). MOON_SHRINK pulls the compressed radius back down, and the
+  // result is additionally capped to a fraction of the parent planet's own
+  // visual radius so a moon can never read as large as - or larger than -
+  // the world it orbits, however big it truly is.
+  const MOON_SHRINK = 0.55;
+  const MOON_MAX_VS_PLANET = 0.5;
+  function moonVisualRadius(moon, planetVisR) {
+    let r = clamp(compressRadius(moon && moon.radius ? moon.radius : 0.27) * MOON_SHRINK, 0.012, 0.09);
+    if (planetVisR) r = Math.min(r, planetVisR * MOON_MAX_VS_PLANET);
+    return r;
   }
   // Orbits stay near-linear in AU (the physically honest layout) with only a
   // mild inner-system stretch so Mercury/Venus/Earth don't collapse onto the
@@ -80,6 +91,16 @@
     const mass = Math.max(0.05, starMassSuns || 1);
     const years = Math.sqrt(Math.pow(au, 3) / mass);
     return Math.max(1, years * MINUTES_PER_YEAR);
+  }
+  // A moon's own Kepler period about its planet, already computed in days by
+  // GalaxySim_DataManager (moon.period, from moon.orbitRadius and the
+  // planet's mass) and carried straight through onto the same game clock
+  // every other orbit reads, instead of the flat per-index animation speed
+  // this used to run on.
+  const MINUTES_PER_DAY = 24 * 60;
+  function moonPeriodMinutes(periodDays) {
+    const days = Math.max(0.02, Math.abs(periodDays) || 0.5);
+    return Math.max(1, days * MINUTES_PER_DAY);
   }
   // The live game clock (world-shared, TimeDateSystem.js), read fresh each
   // frame rather than cached: it can jump by days or years in one step (fast
@@ -381,7 +402,7 @@
   // (e.g. Jupiter, 83) reveal the rest only when the planet is clicked/focused.
   const SYSTEM_MOON_CAP = 4;
   // Compact visual size for the cheap "extra" moonlets revealed on focus.
-  const extraMoonRadius = (moon) => clamp(moonVisualRadius(moon) * 0.8, 0.012, 0.09);
+  const extraMoonRadius = (moon, planetVisR) => clamp(moonVisualRadius(moon, planetVisR) * 0.8, 0.008, 0.07);
 
   // True-scale bodies are sub-pixel at system framing distances, so each body
   // is allowed to grow (never shrink) until it covers at least this many pixels
@@ -626,7 +647,7 @@
         allMoons.slice(0, SYSTEM_MOON_CAP).forEach((moon, mi) => {
           const mg = R3D.buildPlanetGroup(moon);
           if (!mg) return;
-          const mVisR = moonVisualRadius(moon);
+          const mVisR = moonVisualRadius(moon, pVisR);
           mg.scale.setScalar(mVisR);
           const moonHolder = new THREE.Group();
           holder.add(moonHolder);
@@ -644,8 +665,8 @@
           const moonOrbit = pVisR * (2.6 + mi * 1.5) + 0.02;
           moonStates.push({
             holder: moonHolder, group: mg, orbit: moonOrbit,
-            // Kepler again, this time about the planet.
-            speed: 0.3 / Math.pow(1 + mi * 0.6, 1.5),
+            // Kepler again, this time about the planet (moon.period, in days).
+            periodMin: moonPeriodMinutes(moon.period),
             phase: moon.phase || 0,
             inc: (hash01(moon.name, 5 + mi) - 0.5) * 0.35,
             node: hash01(moon.name, 91 + mi) * Math.PI * 2,
@@ -825,7 +846,7 @@
           const startR = o.planetVisR * 8;
           const span = o.planetVisR * 14;
           extra.forEach((moon, j) => {
-            const mVisR = extraMoonRadius(moon);
+            const mVisR = extraMoonRadius(moon, o.planetVisR);
             const mat = new THREE.MeshPhongMaterial({
               color: new THREE.Color(moon.color || "#9aa0aa"),
               shininess: 6, emissive: 0x05070b,
@@ -840,7 +861,7 @@
             o.moons.push({
               holder: moonHolder, group: mesh,
               orbit: startR + Math.sqrt(frac) * span,
-              speed: 0.17 + (1 - frac) * 0.17,
+              periodMin: moonPeriodMinutes(moon.period),
               phase: moon.phase || (j * 2.399),
               inc: (((j * 47) % 100) / 100 - 0.5) * 0.9,
               node: (j * 2.399) % (Math.PI * 2),
@@ -1001,7 +1022,7 @@
           }
         }
         for (const m of o.moons) {
-          const ma = m.phase + t * m.speed;
+          const ma = m.phase + (gameMin / m.periodMin) * Math.PI * 2;
           const ox = Math.cos(ma) * m.orbit, oz = Math.sin(ma) * m.orbit;
           if (m.inc) {
             // Tilt the orbit plane (inclination about X, node about Y) so the

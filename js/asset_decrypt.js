@@ -282,8 +282,52 @@
         "cursor",
         "src"
     ];
+
+    // Only cssText is a real accessor on CSSStyleDeclaration.prototype. Every
+    // camel-cased CSS property is served by a named-property interceptor on the
+    // declaration itself, so there is no descriptor to wrap and patchSetter
+    // walks away from all ten of the others: "el.style.backgroundImage =
+    // url('img/x.png')" reached the engine untouched and asked for a file that
+    // no longer exists under that name. An accessor defined here is consulted
+    // ahead of the interceptor (the interceptor stands down for a name the
+    // prototype chain already answers), so the property behaves exactly as it
+    // did, through the same setProperty/getPropertyValue pair Blink itself
+    // uses, with the url rewritten on the way past.
+    var cssPropertyName = function (prop) {
+        var name = prop.replace(/([A-Z])/g, "-$1").toLowerCase();
+        return name.indexOf("webkit-") === 0 ? "-" + name : name;
+    };
+
+    var patchStyleProp = function (prop) {
+        var desc = Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, prop);
+        if (desc && desc.set) {
+            patchSetter(CSSStyleDeclaration.prototype, prop, asDocUrl);
+            return;
+        }
+        var css = cssPropertyName(prop);
+        Object.defineProperty(CSSStyleDeclaration.prototype, prop, {
+            configurable: true,
+            enumerable: false,
+            get: function () {
+                return this.getPropertyValue(css);
+            },
+            set: function (value) {
+                var text = asDocUrl(value === null || value === undefined ? "" : String(value));
+                var priority = "";
+                // setProperty takes the priority apart from the value, where
+                // the camel-cased setter takes it inside one string.
+                var important = /^([\s\S]*?)\s*!\s*important\s*$/i.exec(text);
+                if (important) {
+                    text = important[1];
+                    priority = "important";
+                }
+                this.setProperty(css, text, priority);
+            }
+        });
+    };
+
     for (var s = 0; s < STYLE_PROPS.length; s++) {
-        patchSetter(CSSStyleDeclaration.prototype, STYLE_PROPS[s], asDocUrl);
+        patchStyleProp(STYLE_PROPS[s]);
     }
 
     var setProperty = CSSStyleDeclaration.prototype.setProperty;

@@ -28,6 +28,7 @@
     _diseaseVialItems, _diseaseVialId, _infectChance,
     _socialLines, _rand, _addNpcOpinion, _personalitySocialMult,
     _hygienePenalty, _hygieneReadout,
+    _addNpcAttraction, _npcEffectiveAttraction, _computePartyAttraction,
     _emPlaythrough, _isEmActor, _isBubbaNpc, _emContext, _emStanceKey, _emStanceData,
     _bubbaPlaythrough, _isBubbaActor, _bubbaContext, _bubbaDb,
     _isNonSentientActor, FERAL_ACTIONS,
@@ -586,6 +587,20 @@
       if (!root || e._npcWheelDone) return;
       e._npcWheelDone = true;
       e.stopPropagation();
+      // Over the Social Web the wheel zooms the graph about the pointer,
+      // ahead of the ordinary scroll-the-nearest-pane routing below.
+      const webStage = this._activeTab === 'web' && root.contains(e.target)
+        ? e.target.closest('#npc-web-stage') : null;
+      if (webStage) {
+        e.preventDefault();
+        const rect = webStage.getBoundingClientRect();
+        this.setWebZoom(
+          this.webZoom() * (e.deltaY > 0 ? 1 / _WEB_WHEEL_STEP : _WEB_WHEEL_STEP),
+          webStage.scrollLeft + (e.clientX - rect.left),
+          webStage.scrollTop + (e.clientY - rect.top)
+        );
+        return;
+      }
       const box = (root.contains(e.target) ? _scrollableUnder(e.target, root) : null)
         ?? _scrollableAtPoint(root, e.clientX, e.clientY)
         ?? this._activeScrollPane();
@@ -670,7 +685,7 @@
   Scene_NPCEmpathize.prototype._inListSubMode = function () {
     return !!(this._directionsMode || this._giftMode || this._stealMode ||
               this._bribeMode || this._socialMode || this._romanceMode ||
-              this._cardMode || this._infectMode);
+              this._proposeMode || this._cardMode || this._infectMode);
   };
 
   Scene_NPCEmpathize.prototype._activeScrollPane = function () {
@@ -838,6 +853,9 @@
     this._prepareFeralMeeting?.();
 
     const predispositions = _computePartyPredisposition(profile);
+    // Tracked apart from disposition: how drawn this NPC is to each party
+    // member, moved only by courting, never by an ordinary conversation.
+    const attractions      = _computePartyAttraction(profile);
     // Reputation is now per party member; use the focused (interacting) actor's
     // standing rather than a party-wide median.
     const opinion         = this._focusOpinion(profile);
@@ -889,12 +907,24 @@
       ? { id: 'infect', label: T.infectLabel, disabled: !vialCount }
       : { id: 'infect', label: `${T.infectLabel} (~${infectChance}%)`, disabled: !vialCount };
 
+    // A fellow party member (Dynamics -> Roster -> Empathize, or walking up to
+    // a follower in Loose formation) is talked to like anybody else, minus
+    // whatever would move money or items out of the party's own pack and minus
+    // the option to come to blows with them: everything left is conversation.
+    // Cough/Spit/Bite and Treat Wounds are left off too, not for carrying a
+    // cost themselves (they mostly do not) but for what they are wired to:
+    // the first three file an assault charge and a bounty exactly as they
+    // would against a stranger, which reads as a bug rather than a joke when
+    // the "stranger" is a travelling companion, and Treat Wounds bills gold
+    // outright once the target's opinion drops under +20.
     this._chatActions = remoteMode
       ? []
       : actorMode
       ? [
-          { id: 'freeChat', label: T.freeChatLabel },
-          { id: 'gift',  label: T.gift },
+          { id: 'freeChat',   label: T.freeChatLabel },
+          { id: 'socialize',  label: T.socializeLabel },
+          { id: 'romance',    label: T.courtLabel },
+          { id: 'directions', label: T.directionsLabel },
           infectAction,
         ]
       : [
@@ -1000,6 +1030,7 @@
         _courtRefused(profile, this._focusActor?.()?.actorId(), opinion)) {
       this._chatActions = this._chatActions.filter(a => a.id !== 'romance');
       this._romanceMode = false;
+      this._proposeMode = false;
     }
     this._menuItems = this._chatActions;
     if (this._menuIndex >= this._menuItems.length) this._menuIndex = 0;
@@ -1024,7 +1055,7 @@
       className,
       age: npcAge,
     };
-    const leftHTML = this._buildLeftPanelHTML(bustPath, profile, predispositions, T, leftIdent);
+    const leftHTML = this._buildLeftPanelHTML(bustPath, profile, predispositions, T, leftIdent, attractions);
 
     const showingChatUI = this._activeTab === 'chat';
 
@@ -1073,6 +1104,19 @@
       this._rightEl.style.flexDirection = '';
     }
     this._rightEl.innerHTML = rightHTML;
+
+    // The Social Web's pan is the stage's own scrollLeft/scrollTop, which a
+    // fresh innerHTML always resets to 0; put back wherever the player had it
+    // panned to, and (re-)arm the drag listeners on the element that just
+    // replaced the one they were bound to.
+    if (this._activeTab === 'web') {
+      const webStage = this._webStageEl?.();
+      if (webStage) {
+        this._bindWebStagePointer(webStage);
+        webStage.scrollLeft = this._webScrollX || 0;
+        webStage.scrollTop  = this._webScrollY || 0;
+      }
+    }
 
     requestAnimationFrame(() => {
       // The log always ends on its newest message. Nothing tries to preserve
@@ -1218,7 +1262,7 @@
     return html;
   }
 
-  Scene_NPCEmpathize.prototype._buildLeftPanelHTML = function (bustPath, profile, predispositions, T, ident) {
+  Scene_NPCEmpathize.prototype._buildLeftPanelHTML = function (bustPath, profile, predispositions, T, ident, attractions) {
     let hpmpHTML = '';
     if (profile?.mhp !== undefined || profile?.mmp !== undefined) {
       const mhp    = profile.mhp ?? 0;
@@ -1280,10 +1324,31 @@
           </div>`;
       });
     }
+
+    // A second, separate bar per party member: how drawn this NPC is to them,
+    // moved only by courting (never by an ordinary conversation, a gift or a
+    // trade), so it reads apart from Predisposition rather than inside it.
+    let attrHTML = '';
+    if (attractions?.length) {
+      attrHTML = `<div class="npc-sec-hdr" style="margin-top:6px;">${T.attractionLbl}</div>`;
+      attractions.forEach(({ actor, score }, idx) => {
+        const pct   = Math.round((score + 100) / 2);
+        const color = score < -30 ? '#c02020' : score > 30 ? '#8a2f5a' : '#b8860b';
+        const sign  = score >= 0 ? '+' : '';
+        const on    = idx === focusIdx && isNpcMode;
+        attrHTML += `
+          <div class="npc-pred-row${on ? ' npc-pred-focus' : ''}" onmousedown="event.stopPropagation();SceneManager._scene._selectFocusActor(${idx})"
+               style="cursor:pointer;${on ? 'background:rgba(43,29,14,0.10);border-radius:4px;' : ''}">
+            <span class="npc-pred-name">${on ? '▸ ' : ''}${_escapeHtml(actor.name())}</span>
+            <div class="npc-pred-track"><div class="npc-pred-fill" style="width:${pct}%;background:${color};"></div></div>
+            <span class="npc-pred-val" style="color:${color};">${sign}${score}</span>
+          </div>`;
+      });
+    }
     const statsHTML = _buildStatsGridHTML(profile, T);
 
-    const topInfoHTML = (hpmpHTML || statsHTML || predHTML)
-      ? `${hpmpHTML}${statsHTML}${predHTML}<hr class="npc-r-sep">`
+    const topInfoHTML = (hpmpHTML || statsHTML || predHTML || attrHTML)
+      ? `${hpmpHTML}${statsHTML}${predHTML}${attrHTML}<hr class="npc-r-sep">`
       : '';
 
     let vitalsHTML = '';
@@ -1493,6 +1558,8 @@
       actionsHTML = this._buildInlineSocialActions(T);
     } else if (this._romanceMode) {
       actionsHTML = this._buildInlineRomanceActions(T);
+    } else if (this._proposeMode) {
+      actionsHTML = this._buildInlineProposeActions(T);
     } else if (this._directionsMode) {
       actionsHTML = this._buildInlineDirectionActions(T);
     } else if (this._stealMode) {
@@ -2104,7 +2171,15 @@
   // part of the same innerHTML as the rest of the tab, so it is simply correct
   // on every render: nothing to schedule, nothing to clear, nothing to redraw
   // when an image finishes loading. The viewBox is sized to the finished
-  // layout, so the whole web is always on screen and nothing needs panning.
+  // layout at 1:1, so the whole web fits at the default zoom and there is
+  // nothing to pan by default — but a crowded roster earns its rings back via
+  // the same zoom/pan the SkillMaster atlas uses (SkillMaster.js): the SVG's
+  // own pixel size (not its viewBox) is scaled by `webZoom()`, sitting inside
+  // a `.npc-web-sizer` box whose CSS size drives `.npc-web-stage`'s native
+  // scrollLeft/scrollTop, so panning is just scrolling and needs no transform
+  // math of its own. The wheel and L2/R2 zoom (about the pointer / the centre);
+  // dragging anywhere but a node pans; a click on a node still fires immediately,
+  // unaffected, because panning only ever arms on a press that starts off one.
 
   const _WEB_RING_CAP  = 8;   // nodes on the innermost ring
   const _WEB_RING_STEP = 4;   // each ring outward holds this many more
@@ -2238,17 +2313,31 @@
       node(pts[i].x, pts[i].y, _WEB_NODE_R, e.name, _resolveBustPath(e.name, null), i)).join('');
     const centre = node(0, 0, _WEB_CENTER_R, npcName || '?', bustPath || null, -1);
 
+    // The SVG's own pixel size (width/height, not its viewBox) is what the CSS
+    // scale transform grows or shrinks; the sizer around it is set to match, so
+    // its native scrollLeft/scrollTop is the pan. `webZoom()` persists on the
+    // scene across re-renders (SkillMaster's atlas does the same), so leaving
+    // the tab and coming back does not reset it.
+    this._webBaseSize = { w: half * 2, h: half * 2 };
+    const zoom = this.webZoom();
+
     // i18n-ignore-start: SVG frame for the web
     const graph =
-      `<div class="npc-web-stage">
-         <svg class="npc-web-svg" viewBox="${viewBox}" preserveAspectRatio="xMidYMid meet"
-              xmlns="http://www.w3.org/2000/svg">
-           ${edges}${tallies}${nodes}${centre}
-         </svg>
+      `<div class="npc-web-stage" id="npc-web-stage">
+         <div class="npc-web-sizer" style="width:${Math.round(half * 2 * zoom)}px;height:${Math.round(half * 2 * zoom)}px;">
+           <svg class="npc-web-svg" viewBox="${viewBox}" width="${num(half * 2)}" height="${num(half * 2)}"
+                style="transform:scale(${zoom});" xmlns="http://www.w3.org/2000/svg">
+             ${edges}${tallies}${nodes}${centre}
+           </svg>
+         </div>
        </div>
        <div class="npc-web-legend">
          <span class="npc-legend-item"><span class="npc-legend-line npc-legend-line--single"></span>${T.singleMeeting}</span>
          <span class="npc-legend-item"><span class="npc-legend-line npc-legend-line--multi"></span>${T.frequentMeetings}</span>
+         <span class="npc-web-zoom-controls">
+           <span class="npc-web-zoom-btn" onmousedown="event.stopPropagation();SceneManager._scene.zoomWeb(-1)">&minus;</span>
+           <span class="npc-web-zoom-btn" onmousedown="event.stopPropagation();SceneManager._scene.zoomWeb(1)">+</span>
+         </span>
        </div>`;
 
     if (!all.length) {
@@ -2293,6 +2382,112 @@
     if (!entry || !entry.name) return;
     SoundManager.playOk();
     window.NPCEmpathize?.openByName?.(entry.name, 'web');
+  };
+
+  // ── Social web: zoom / pan ─────────────────────────────────────────────────
+
+  const _WEB_ZOOM_MIN  = 0.45;
+  const _WEB_ZOOM_MAX  = 3.2;
+  const _WEB_ZOOM_STEP = 1.2;   // one press of a legend button, or L2/R2 tapped
+  const _WEB_WHEEL_STEP = 1.12; // one wheel tick
+
+  Scene_NPCEmpathize.prototype._webStageEl = function () {
+    return this._rightEl ? this._rightEl.querySelector('#npc-web-stage') : null;
+  };
+
+  // Whole-web-on-screen, matching what the fixed viewBox used to guarantee on
+  // its own before zoom existed: fit the graph's diameter into the stage the
+  // way it is CSS-sized (a fixed 380px tall, the right page's own width),
+  // read off `_rightEl` since the stage itself is mid-rebuild when this runs.
+  Scene_NPCEmpathize.prototype._defaultWebZoom = function () {
+    const base = this._webBaseSize;
+    if (!base) return 1;
+    const w = Math.max(280, (this._rightEl ? this._rightEl.clientWidth : 520) - 40);
+    const h = 380;
+    const fit = Math.min(w, h) / Math.max(base.w, base.h);
+    return Math.max(_WEB_ZOOM_MIN, Math.min(1.4, fit));
+  };
+
+  Scene_NPCEmpathize.prototype.webZoom = function () {
+    if (!this._webZoom) this._webZoom = this._defaultWebZoom();
+    return this._webZoom;
+  };
+
+  // Anchor coordinates are in the stage's own scroll-content space (i.e.
+  // scrollLeft/Top plus a point inside the viewport); the point under them is
+  // held still while the graph grows or shrinks beneath it, the same trick
+  // SkillMaster's atlas zoom uses (SkillMaster.js, setAtlasZoom).
+  Scene_NPCEmpathize.prototype.setWebZoom = function (zoom, anchorX, anchorY) {
+    const stage = this._webStageEl();
+    const sizer = stage && stage.querySelector('.npc-web-sizer');
+    const svg   = stage && stage.querySelector('.npc-web-svg');
+    const base  = this._webBaseSize;
+    if (!stage || !sizer || !svg || !base) return;
+    const next = Math.max(_WEB_ZOOM_MIN, Math.min(_WEB_ZOOM_MAX, zoom));
+    const prev = this.webZoom();
+    if (Math.abs(next - prev) < 0.001) return;
+
+    const ax = (anchorX === undefined) ? stage.scrollLeft + stage.clientWidth / 2 : anchorX;
+    const ay = (anchorY === undefined) ? stage.scrollTop + stage.clientHeight / 2 : anchorY;
+    const worldX = ax / prev;
+    const worldY = ay / prev;
+
+    this._webZoom = next;
+    sizer.style.width  = Math.round(base.w * next) + 'px';
+    sizer.style.height = Math.round(base.h * next) + 'px';
+    svg.style.transform = `scale(${next})`;
+    stage.scrollLeft += worldX * next - ax;
+    stage.scrollTop  += worldY * next - ay;
+    this._webScrollX = stage.scrollLeft;
+    this._webScrollY = stage.scrollTop;
+  };
+
+  // The legend's +/- buttons and the discrete end of L2/R2.
+  Scene_NPCEmpathize.prototype.zoomWeb = function (dir, anchorX, anchorY) {
+    this.setWebZoom(
+      dir > 0 ? this.webZoom() * _WEB_ZOOM_STEP : this.webZoom() / _WEB_ZOOM_STEP,
+      anchorX, anchorY
+    );
+  };
+
+  // Drag anywhere on the field to pan; a press that starts on a node is left
+  // alone so the node's own onmousedown still opens it immediately (this panel
+  // fires on mousedown throughout, not click, so there is no "did it travel"
+  // window to swallow afterwards the way SkillMaster's atlas gets one). Native
+  // scrollLeft/scrollTop is the pan, so no transform math is needed here.
+  // Idempotent per element: a rebuilt stage is a new node and gets bound fresh.
+  Scene_NPCEmpathize.prototype._bindWebStagePointer = function (stage) {
+    if (!stage || stage._webPointerBound) return;
+    stage._webPointerBound = true;
+    let dragging = false, fromX = 0, fromY = 0, startLeft = 0, startTop = 0;
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 || e.target.closest('.npc-web-node')) return;
+      dragging = true;
+      fromX = e.clientX; fromY = e.clientY;
+      startLeft = stage.scrollLeft; startTop = stage.scrollTop;
+      stage.classList.add('npc-web-stage--dragging');
+      if (stage.setPointerCapture) stage.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    stage.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      stage.scrollLeft = startLeft - (e.clientX - fromX);
+      stage.scrollTop  = startTop  - (e.clientY - fromY);
+    });
+    const release = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      stage.classList.remove('npc-web-stage--dragging');
+      if (stage.hasPointerCapture && stage.hasPointerCapture(e.pointerId)) stage.releasePointerCapture(e.pointerId);
+      this._webScrollX = stage.scrollLeft;
+      this._webScrollY = stage.scrollTop;
+    };
+    stage.addEventListener('pointerup', release);
+    stage.addEventListener('pointercancel', release);
+    stage.addEventListener('scroll', () => {
+      this._webScrollX = stage.scrollLeft;
+      this._webScrollY = stage.scrollTop;
+    });
   };
 
   // ============================================================================
@@ -2823,9 +3018,18 @@
     return { sexual, romantic, genitalCode: _npcGenitalCode(npcName, profile) };
   }
 
-  function _npcRelationshipStyle(npcName, partnered) {
+  // `profile._relStyleOverride` is written the moment a Propose actually
+  // lands (see _proposeInteract): once somebody has agreed to a style out
+  // loud, the panel reads that fact back rather than the deterministic roll
+  // it would otherwise still be making, exactly the way profile._orientOverride
+  // already overrules the rolled orientation (_npcRomance, above).
+  function _npcRelationshipStyle(npcName, partnered, profile) {
+    const styles = _relationshipData().styles || [];
+    if (profile?._relStyleOverride) {
+      const ov = styles.find(s => s.key === profile._relStyleOverride);
+      if (ov) return ov;
+    }
     const Shared   = window.NPCShared;
-    const styles   = _relationshipData().styles || [];
     const eligible = styles.filter(s => s.mode === 'any' || (partnered ? s.mode === 'partnered' : s.mode === 'solo'));
     if (!eligible.length) return null;
     const rng = Shared ? new Shared.Rng(Shared.nameHash(npcName + '_relstyle') ^ Shared.worldSeed()) : null;
@@ -2927,7 +3131,7 @@
 
     // ── Relationship style (deterministic, conditioned on being partnered) ──
     let styleHTML = '';
-    const style = _npcRelationshipStyle(npcName, partnered);
+    const style = _npcRelationshipStyle(npcName, partnered, profile);
     if (style) {
       styleHTML = `<div class="npc-ident-row" style="margin-top:6px;">${_iconSpan(83, 17)}<span style="opacity:0.65;">${_escapeHtml(T.relStyleLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(style))}</b></span></div>`;
       if (ds(style)) styleHTML += `<div class="npc-thought" style="margin-top:2px;">${_escapeHtml(ds(style))}</div>`;
@@ -3061,7 +3265,7 @@
       window.NPCLifeSim.ensureLifeRecord?.(npcName, profile?._homeGroupName);
       partnered = !!window.NPCLifeSim.getRecord?.(npcName)?.partner;
     }
-    return { partnered, style: _npcRelationshipStyle(npcName, partnered) };
+    return { partnered, style: _npcRelationshipStyle(npcName, partnered, profile) };
   }
 
   // Why (if at all) a romance move cannot land right now. Returns null when the
@@ -3134,9 +3338,11 @@
     return Math.max(-10, Math.min(14, Math.round((luk - 20) / 5) + Math.floor((actor.level ?? 1) / 8)));
   }
 
-  // Odds the move lands. Disposition dominates (trait compatibility and the
-  // hygiene of both parties already ride inside the effective opinion), the
-  // boldness tier is the main brake.
+  // Odds the move lands. Attraction is now the dominant term (it is the axis
+  // courting actually spends and builds, see _addNpcAttraction), disposition
+  // a secondary one (trait compatibility and the hygiene of both parties
+  // already ride inside the effective opinion), the boldness tier the main
+  // brake.
   const _ROM_TIER_PENALTY = 11;
   // Courting happens at arm's length or closer, so the hygiene reading that
   // already dulled the disposition is felt a second time here, at full weight
@@ -3144,14 +3350,15 @@
   // never notices, a Germaphobe cannot get past it. See _hygienePenalty
   // (NPCEmpathize.js) for the whole table.
   const _ROM_HYGIENE_WEIGHT = 1;
-  function _romanceChance(profile, npcName, actor, def, opinion) {
+  function _romanceChance(profile, npcName, actor, def, opinion, attraction) {
     const { sexual, romantic } = _npcRomance(npcName, profile);
     const { style }            = _romanceStanding(npcName, profile);
 
-    let c = 46
-      + (Number(opinion) || 0) * 0.42
+    let c = 44
+      + (Number(attraction) || 0) * 0.55
+      + (Number(opinion) || 0) * 0.20
       + _romanceCharm(actor)
-      + Math.round((_personalitySocialMult(profile, 'positive') - 1) * 25)
+      + Math.round((_personalitySocialMult(profile, 'positive') - 1) * 22)
       + (_ROM_STYLE_MOD[style?.key] || 0)
       + _hygienePenalty(profile, actor, _ROM_HYGIENE_WEIGHT)
       - (Number(def.tier) || 1) * _ROM_TIER_PENALTY
@@ -3167,16 +3374,64 @@
     return Math.round(Math.max(3, Math.min(95, c)));
   }
 
+  // ==========================================================================
+  // Propose (Court -> Propose)
+  // ==========================================================================
+  // A step past ordinary courting: naming an actual relationship out loud
+  // instead of letting an attraction sit there unspent. It needs attraction
+  // itself running very high, since that is the one axis courting exists to
+  // build; it reads far better when the style asked for is already the one
+  // the other person leans toward, and better again when the proposing party
+  // member leans the exact same way.
+  const _PROPOSE_MIN_ATTRACTION  = 60;  // below this the question is not even entertained
+  const _PROPOSE_BASE            = -30;
+  const _PROPOSE_ATTR_WEIGHT     = 0.9;
+  const _PROPOSE_OPINION_WEIGHT  = 0.18;
+  const _PROPOSE_NPC_MATCH_BONUS = 24;  // the style asked for is what THEY lean toward
+  const _PROPOSE_MUTUAL_BONUS    = 20;  // AND the proposer leans the very same way
+
+  // Every style an actual partnership could settle into; the "solo" styles
+  // describe not being partnered at all, which a proposal is the opposite of.
+  function _proposeStyles() {
+    return (_relationshipData().styles || []).filter(s => s.mode === 'partnered' || s.mode === 'any');
+  }
+
+  // Reuses the ordinary Court gate (taken, aromantic, orientation, Em/Bubba...)
+  // before adding the one rule that belongs to Propose alone.
+  function _proposeBlockReason(profile, npcName, actor, attraction) {
+    const reason = _romanceBlockReason(profile, npcName, actor, { physical: false });
+    if (reason) return reason;
+    if ((Number(attraction) || 0) < _PROPOSE_MIN_ATTRACTION) return 'lowAttraction';
+    return null;
+  }
+
+  function _proposeChance(profile, npcName, actor, styleKey, attraction, opinion) {
+    const npcStyle   = _npcRelationshipStyle(npcName, true, profile);
+    const actorStyle = actor ? _npcRelationshipStyle(actor.name(), true, _getProfile(actor.name())) : null;
+    let c = _PROPOSE_BASE
+      + (Number(attraction) || 0) * _PROPOSE_ATTR_WEIGHT
+      + (Number(opinion)    || 0) * _PROPOSE_OPINION_WEIGHT
+      + _romanceCharm(actor)
+      + Math.round((_personalitySocialMult(profile, 'positive') - 1) * 20)
+      + _hygienePenalty(profile, actor, _ROM_HYGIENE_WEIGHT);
+    if (npcStyle && styleKey === npcStyle.key) {
+      c += _PROPOSE_NPC_MATCH_BONUS;
+      if (actorStyle && styleKey === actorStyle.key) c += _PROPOSE_MUTUAL_BONUS;
+    }
+    return Math.round(Math.max(2, Math.min(96, c)));
+  }
+
   // The Court submenu's rows, one per move, each carrying its own odds and the
   // reason it cannot land when it cannot.
   const BUBBA_DECLINE_ID = 'bubbaDecline';
 
   Scene_NPCEmpathize.prototype._romanceOptions = function () {
-    const lang    = ConfigManager.language === 'it' ? 'it' : 'en';
-    const npcName = _getNPCName(this._eventId) || this._npcName;
-    const profile = _getProfile(npcName);
-    const actor   = this._focusActor();
-    const opinion = this._focusOpinion(profile);
+    const lang       = ConfigManager.language === 'it' ? 'it' : 'en';
+    const npcName    = this._targetName();
+    const profile    = _getProfile(npcName);
+    const actor      = this._focusActor();
+    const opinion    = this._focusOpinion(profile);
+    const attraction = this._focusAttraction(profile);
 
     // Bubba (Switch 49) has exactly one move, and it is not a move: the person
     // in front of him has loved him from a distance for years, and he says no.
@@ -3193,7 +3448,7 @@
       }];
     }
 
-    return _romanceActions().map(def => {
+    const moves = _romanceActions().map(def => {
       const reason = _romanceBlockReason(profile, npcName, actor, def);
       const pool   = reason ? _romanceRejection(reason) : null;
       return {
@@ -3201,11 +3456,28 @@
         label:  def.label || def.id,
         reason,
         reasonLabel: pool ? (pool.reasonLabel || '') : '',
-        chance: reason ? 0 : _romanceChance(profile, npcName, actor, def, opinion),
+        chance: reason ? 0 : _romanceChance(profile, npcName, actor, def, opinion, attraction),
         gain:   Number(def.successDelta) || 0,
         loss:   Number(def.failDelta)    || 0,
       };
     });
+
+    // Propose opens a further choice (which relationship style) rather than
+    // resolving here, so it carries no single chance of its own to show.
+    const proposeReason = _proposeBlockReason(profile, npcName, actor, attraction);
+    moves.push({
+      id: 'propose',
+      label: T.proposeLabel,
+      reason: proposeReason,
+      reasonLabel: proposeReason === 'lowAttraction'
+        ? T.proposeNeedsAttraction
+        : (proposeReason ? (_romanceRejection(proposeReason)?.reasonLabel || '') : ''),
+      chance: null,
+      gain: 0,
+      loss: 0,
+      submenu: true,
+    });
+    return moves;
   };
 
   // Says out loud what the odds below have already been docked for, so a run of
@@ -3214,7 +3486,7 @@
   // and a suitor whose traits ignore the smell is told nothing.
   const _ROM_HYGIENE_HINT_AT = -4; // opinion points, below which it is worth saying
   Scene_NPCEmpathize.prototype._buildRomanceHygieneHint = function () {
-    const npcName = _getNPCName(this._eventId) || this._npcName;
+    const npcName = this._targetName();
     const profile = _getProfile(npcName);
     const actor   = this._focusActor();
     if (!profile || !actor) return '';
@@ -3242,6 +3514,12 @@
           (o.reasonLabel ? `<span style="opacity:0.55;margin-left:4px;font-size:0.95em;">${_escapeHtml(o.reasonLabel)}</span>` : '') +
           `</div>`;
       }
+      // Propose carries no single chance of its own: it opens a further page,
+      // one row per relationship style, each with its own odds.
+      if (o.submenu) {
+        return `${open}<span style="color:#8a2f5a;">${_escapeHtml(o.label)}</span>` +
+          `<span style="opacity:0.6;margin-left:6px;">&rsaquo;</span></div>`;
+      }
       const cc = o.chance >= 60 ? '#2a6e4a' : o.chance >= 30 ? '#b8860b' : '#c02020';
       return `${open}<span style="color:#8a2f5a;">${_escapeHtml(o.label)}</span>` +
         `<span style="color:#2a6e4a;margin-left:6px;">+${o.gain}♥</span>` +
@@ -3252,12 +3530,156 @@
     return html;
   };
 
+  // Leaves the Court list for the Propose list: every relationship style the
+  // world knows, each with its own odds against this NPC. Refuses quietly
+  // (the row was already greyed out) if reached through a stale panel.
+  Scene_NPCEmpathize.prototype._openPropose = function () {
+    const npcName    = this._targetName();
+    const profile    = _getProfile(npcName);
+    const actor      = this._focusActor();
+    const attraction = this._focusAttraction(profile);
+    if (_proposeBlockReason(profile, npcName, actor, attraction)) { SoundManager.playBuzzer(); return; }
+    SoundManager.playCursor();
+    this._romanceMode = false;
+    this._proposeMode  = true;
+    this._menuIndex    = 0;
+    this._render();
+  };
+
+  Scene_NPCEmpathize.prototype._proposeOptions = function () {
+    const lang        = ConfigManager.language === 'it' ? 'it' : 'en';
+    const nm          = v => (lang === 'it' ? (v?.name_it || v?.name) : v?.name);
+    const npcName     = this._targetName();
+    const profile     = _getProfile(npcName);
+    const actor       = this._focusActor();
+    const opinion     = this._focusOpinion(profile);
+    const attraction  = this._focusAttraction(profile);
+    return _proposeStyles().map(style => ({
+      key:    style.key,
+      label:  nm(style),
+      chance: _proposeChance(profile, npcName, actor, style.key, attraction, opinion),
+    }));
+  };
+
+  Scene_NPCEmpathize.prototype._buildInlineProposeActions = function (T) {
+    let html = `<div style="opacity:0.7;font-style:italic;font-size:0.95em;margin:2px 0 6px;">${_escapeHtml(T.proposeSubtitle)}</div>`;
+    html += this._proposeOptions().map(o => {
+      const cc = o.chance >= 60 ? '#2a6e4a' : o.chance >= 30 ? '#b8860b' : '#c02020';
+      return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._proposeInteract('${o.key}')">` +
+        `<span style="color:#8a2f5a;">${_escapeHtml(o.label)}</span>` +
+        `<span style="color:${cc};margin-left:6px;font-weight:bold;">${o.chance}%</span></div>`;
+    }).join('');
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelPropose()">${_escapeHtml(T.cancel)}</div>`;
+    return html;
+  };
+
+  // Steps back from the style picker to the Court list it was opened from,
+  // rather than all the way out to the standing menu of verbs.
+  Scene_NPCEmpathize.prototype._cancelPropose = function () {
+    this._proposeMode = false;
+    this._romanceMode = true;
+    this._menuIndex   = 0;
+    this._render();
+  };
+
+  // Resolving a proposal: unlike an ordinary Court move it can actually start
+  // something. A landed proposal writes the style asked for onto this NPC's
+  // own record (_npcRelationshipStyle reads profile._relStyleOverride first,
+  // exactly the way profile._orientOverride already overrules a rolled
+  // orientation) and updates NPCLifeSim's sentimental-status record, the one
+  // the Romance tab already reads live, so the panel tells the truth about it
+  // from the very next render.
+  Scene_NPCEmpathize.prototype._proposeInteract = function (styleKey) {
+    const lang    = ConfigManager.language === 'it' ? 'it' : 'en';
+    const nm      = v => (lang === 'it' ? (v?.name_it || v?.name) : v?.name);
+    const style   = (_relationshipData().styles || []).find(s => s.key === styleKey);
+    if (!style) return;
+    const npcName = this._targetName();
+    const profile = _getProfile(npcName);
+    const actor   = this._focusActor();
+    const actorId = actor && actor.actorId();
+    const fill    = s => String(s || '').replace(/\{name\}/g, npcName).replace(/\{style\}/g, nm(style));
+
+    const priorOpinion = this._focusOpinion(profile);
+    if (_courtRefused(profile, actorId, priorOpinion)) { SoundManager.playBuzzer(); return; }
+
+    const priorAttraction = this._focusAttraction(profile);
+    const reason = _proposeBlockReason(profile, npcName, actor, priorAttraction);
+    const bank   = (_socialLines().romance || {}).propose || {};
+    const playerLine = fill(_rand(bank.player));
+    let npcLine, delta, landed = false;
+
+    if (reason) {
+      const pool = _romanceRejection(reason) || {};
+      npcLine = fill(_rand(pool.lines)) || fill(_rand(bank.reject));
+      delta   = Number(pool.delta) || -4;
+    } else {
+      const chance = _proposeChance(profile, npcName, actor, styleKey, priorAttraction, priorOpinion);
+      landed  = Math.random() * 100 < chance;
+      npcLine = fill(_rand(landed ? bank.accept : bank.reject));
+      delta   = landed ? 20 : -14;
+    }
+
+    if (profile && actorId != null) {
+      _addNpcAttraction(profile, actorId, delta);
+      (profile.eventLog ??= []).push({
+        tag: 'romance_propose', desc: `propose ${styleKey} (${delta >= 0 ? '+' : ''}${delta})`, // i18n-ignore: event-log record id
+        timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+      });
+      if ((profile.factionIndex ?? -1) >= 0 && delta !== 0 && window.$gameFactions?.changeReputation)
+        window.$gameFactions.changeReputation(profile.factionIndex, Math.round(delta / 8));
+    }
+
+    if (landed && profile) {
+      profile._relStyleOverride = styleKey;
+      if (window.NPCLifeSim && actor) {
+        window.NPCLifeSim.ensureLifeRecord?.(npcName, profile?._homeGroupName);
+        const record = window.NPCLifeSim.getRecord?.(npcName);
+        if (record) {
+          record.partner            = { name: actor.name(), external: true };
+          record.maritalStatus      = (styleKey === 'arranged-marriage' || styleKey === 'civil-union')
+            ? 'married' : 'dating';
+          record.partnerSinceMinute = $gameVariables?.value(114) ?? 0;
+        }
+      }
+    }
+
+    const charge = priorOpinion < 0
+      ? _recordUnwantedCourting(profile, actorId, npcName, actor ? actor.name() : '')
+      : null;
+
+    if (landed) SoundManager.playOk(); else SoundManager.playBuzzer();
+
+    if (window.Diary && actor) {
+      window.Diary.onRomance(actor.name(), npcName, 'propose_' + styleKey, landed);
+    }
+
+    this._proposeMode = false;
+    this._romanceMode = false;
+    this._activeTab   = 'chat';
+    this._chatHistory.push({ role: 'player', text: playerLine });
+    this._isTyping    = true;
+    const deltaText   = `${delta >= 0 ? '+' : ''}${delta} ♥ (${actor ? actor.name() : ''})`;
+    this._joinMessage = charge
+      ? { type: 'reject', text: `${charge} ${deltaText}` }
+      : { type: landed ? 'accept' : 'reject', text: deltaText };
+    this._render();
+    this._scrollChatToBottom();
+    setTimeout(() => {
+      this._isTyping = false;
+      this._chatHistory.push({ role: 'npc', text: npcLine });
+      if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
+      this._render();
+      this._scrollChatToBottom();
+    }, 350);
+  };
+
   // Bubba turning down somebody who has loved him since the coaches started
   // running: their confession, his modest refusal, and what it costs him with
   // them for good. There is no roll, it always lands and it always hurts.
   Scene_NPCEmpathize.prototype._bubbaDecline = function () {
     const rom     = _bubbaDb?.()?.romantic || {};
-    const npcName = _getNPCName(this._eventId) || this._npcName;
+    const npcName = this._targetName();
     const profile = _getProfile(npcName);
     const actor   = this._focusActor();
     const actorId = actor && actor.actorId();
@@ -3265,7 +3687,7 @@
     const delta   = Number(rom.delta) || -70;
 
     if (profile && actorId != null) {
-      _addNpcOpinion(profile, actorId, delta);
+      _addNpcAttraction(profile, actorId, delta);
       (profile.eventLog ??= []).push({
         tag: 'romance_' + BUBBA_DECLINE_ID, desc: `turned down (${delta})`, // i18n-ignore: event-log record id
         timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
@@ -3276,6 +3698,7 @@
 
     SoundManager.playBuzzer();
     this._romanceMode = false;
+    this._proposeMode = false;
     this._activeTab   = 'chat';
     this._chatHistory.push({ role: 'npc',    text: fill(_rand(rom.confession)) });
     this._chatHistory.push({ role: 'player', text: fill(_rand(rom.decline)) });
@@ -3294,9 +3717,10 @@
 
   Scene_NPCEmpathize.prototype._romanceInteract = function (id) {
     if (id === BUBBA_DECLINE_ID) return this._bubbaDecline();
+    if (id === 'propose') return this._openPropose();
     const def = _romanceActions().find(a => a.id === id);
     if (!def) return;
-    const npcName = _getNPCName(this._eventId) || this._npcName;
+    const npcName = this._targetName();
     const profile = _getProfile(npcName);
     const actor   = this._focusActor();
     const actorId = actor && actor.actorId();
@@ -3307,6 +3731,7 @@
     const priorOpinion = this._focusOpinion(profile);
     if (_courtRefused(profile, actorId, priorOpinion)) { SoundManager.playBuzzer(); return; }
 
+    const priorAttraction = this._focusAttraction(profile);
     const reason = _romanceBlockReason(profile, npcName, actor, def);
     const playerLine = fill(_rand(def.player));
     let npcLine, delta, landed = false;
@@ -3316,7 +3741,7 @@
       npcLine = fill(_rand(pool.lines));
       delta   = Number(pool.delta) || 0;
     } else {
-      const chance = _romanceChance(profile, npcName, actor, def, priorOpinion);
+      const chance = _romanceChance(profile, npcName, actor, def, priorOpinion, priorAttraction);
       landed  = Math.random() * 100 < chance;
       npcLine = fill(_rand(landed ? def.responseGood : def.responseBad));
       delta   = landed
@@ -3324,11 +3749,12 @@
         : Math.min(-1, Math.round(def.failDelta    * _personalitySocialMult(profile, 'negative')));
     }
 
-    // Reputation lands on the focused member only, exactly like a social move.
-    // Nothing is written to the NPCLifeSim partnership record: courting does
-    // not (yet) start a relationship with the player, however well it goes.
+    // Reputation is tracked apart from attraction: a move that lands moves how
+    // much this NPC WANTS the focused member rather than how much they think
+    // of them in general. Nothing is written to the NPCLifeSim partnership
+    // record here either, that is what Propose (below) is for.
     if (profile && actorId != null) {
-      _addNpcOpinion(profile, actorId, delta);
+      _addNpcAttraction(profile, actorId, delta);
       (profile.eventLog ??= []).push({
         tag: 'romance_' + id, desc: `${id} (${delta >= 0 ? '+' : ''}${delta})`,
         timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
