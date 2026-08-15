@@ -1440,11 +1440,11 @@
       // Input._currentState is keyed by mapped action name (e.g. 'up'), never by
       // physical codes like 'KeyW', so the old lookup was always undefined (dead).
       // Translate the physical key to the engine action bound to it and use the
-      // same trigger test the arrows use.
+      // same trigger+repeat test the arrows use.
       const codeToKeyCode = { KeyW: 87, KeyA: 65, KeyS: 83, KeyD: 68 };
       const keyCode = codeToKeyCode[key];
       const action = keyCode != null ? Input.keyMapper[keyCode] : null;
-      return action ? Input.isTriggered(action) : false;
+      return action ? (Input.isTriggered(action) || Input.isRepeated(action)) : false;
     }
   }
 

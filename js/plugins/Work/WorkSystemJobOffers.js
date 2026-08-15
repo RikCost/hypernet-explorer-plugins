@@ -412,7 +412,7 @@
             const hourlyPay = Math.round(job.basePay / job.duration);
 
             listHTML += `
-                <div class="job-item ${isSelected ? 'selected' : ''}" onclick="${sref}.selectJobItem(${idx})">  <!-- i18n-ignore  inline handler -->
+                <div class="job-item focusable" tabindex="0" data-focus-key="job-${idx}" onclick="${sref}.selectJobItem(${idx})">  <!-- i18n-ignore  inline handler -->
                   <div style="display:flex; flex-direction:column; gap:2px;">
                     <span style="font-size:12px; font-weight:bold; color:#000;">
                       ${jobName}
@@ -439,7 +439,7 @@
               ${listHTML}
             </div>
             <div style="margin-top:auto; border-top:1px solid #7f9db9; padding-top:8px; display:flex; justify-content:flex-end; align-items:center; font-size:11px; color:#555; width:100%;">
-              <div class="back-button focusable" onclick="${sref}.popScene()" style="padding:4px 12px; cursor:pointer;">
+              <div class="back-button focusable" tabindex="0" data-focus-key="back-btn" onclick="${sref}.popScene()" style="padding:4px 12px; cursor:pointer;">
                 ${T('WorkSystem.dismiss')}
               </div>
             </div>
@@ -812,7 +812,7 @@
           }
 
           listHTML += `
-              <div class="roster-item focusable ${isSelected ? 'selected' : ''}" onclick="${sref}.selectActorItem(${idx})">  <!-- i18n-ignore  inline handler -->
+              <div class="roster-item focusable ${isSelected ? 'selected' : ''}" tabindex="0" data-focus-key="actor-${idx}" onclick="${sref}.selectActorItem(${idx})">  <!-- i18n-ignore  inline handler -->
                 ${this.getActorFaceHTML(actor, 44)}
                 <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
                   <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -841,11 +841,11 @@
             </div>
 
             <div style="margin-top:8px; border-top:1px solid #7f9db9; padding-top:8px; display:flex; flex-direction:column; gap:4px; box-sizing:border-box; width:100%;">
-              <div class="action-button focusable" onclick="${sref}.confirmActorSelection()" style="width:100%;">
+              <div class="action-button focusable" tabindex="0" data-focus-key="accept-btn" onclick="${sref}.confirmActorSelection()" style="width:100%;">
                 ${T('WorkSystem.acceptJobOffer')}
               </div>
               
-              <div class="action-button focusable" onclick="${sref}.retractActorSelection()" style="background:#e1e1e1 !important; color:#000 !important; border-color:#7f9db9 !important; width:100%;">
+              <div class="action-button focusable" tabindex="0" data-focus-key="retract-btn" onclick="${sref}.retractActorSelection()" style="background:#e1e1e1 !important; color:#000 !important; border-color:#7f9db9 !important; width:100%;">
                 ${T('WorkSystem.retractCandidate')}
               </div>
             </div>
@@ -956,11 +956,10 @@
     }
 
     update() {
-      // In OS app mode the Scene_HypernetOS focus ring drives keyboard/controller
-      // navigation (job items, roster cards and buttons are all .focusable), so the
-      // scene must stay out of the input loop to avoid double-processing.
-      if (this._isAppMode) return;
-
+      // In OS app mode the Scene_HypernetOS focus ring also drives keyboard
+      // navigation, but we still process Input here as a fallback so arrow/WASD
+      // keys and Enter work reliably. The dual path is safe because the OS ring
+      // handles tab-order focusing while this handles selection/confirmation.
       super.update();
 
       if (this._dndContainer) {
@@ -1033,11 +1032,11 @@
       // Input._currentState is keyed by mapped action name (e.g. 'up'), never by
       // physical codes like 'KeyW', so the old lookup was always undefined (dead).
       // Translate the physical key to the engine action bound to it and use the
-      // same trigger test the arrows use.
+      // same trigger+repeat test the arrows use.
       const codeToKeyCode = { KeyW: 87, KeyA: 65, KeyS: 83, KeyD: 68 };
       const keyCode = codeToKeyCode[key];
       const action = keyCode != null ? Input.keyMapper[keyCode] : null;
-      return action ? Input.isTriggered(action) : false;
+      return action ? (Input.isTriggered(action) || Input.isRepeated(action)) : false;
     }
   }
 

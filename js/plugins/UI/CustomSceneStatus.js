@@ -971,7 +971,6 @@
                     </div>
                     <div class="right-page" style="position:relative;">
                         <div class="status-right-header">
-                            <h3 class="right-title">${T('SceneStatus.ui.attributesAbilities')}</h3>
                             <div class="companion-switcher" id="status-companion-switcher"></div>
                         </div>
 

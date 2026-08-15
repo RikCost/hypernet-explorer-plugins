@@ -36,8 +36,9 @@
   "resign": "Abbandona",
   "returnToShip": "Torna alla Nave",
   "teleportToShip": "Teletrasporto alla Nave",
-  "returnToWorldMap": "Torna alla mappa del mondo",
-  "chooseLandingSite": "Scegli il sito di atterraggio"
+  "returnToWorldMap": "Torna alla mappa",
+  "chooseLandingSite": "Scegli il sito di atterraggio",
+  "stopTravel": "Interrompi viaggio"
  },
  "dynamics": {
   "roster": "Organico",

@@ -1851,7 +1851,7 @@
     transition: all 0.22s ease;
     border: 1px solid transparent;
     position: relative;
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     line-height: 1.15;
 }
 
@@ -1872,7 +1872,7 @@
 }
 
 .command-item.is-disabled:hover {
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     border: 1px solid transparent;
     box-shadow: none;
     text-shadow: none;
@@ -2453,7 +2453,7 @@
     border: 1px solid var(--border-gold-amber-30);
     border-radius: 3px;
     transition: all 0.2s ease;
-    background: var(--bg-panel);
+    background: transparent;
     font-weight: bold;
 }
 
@@ -2531,7 +2531,7 @@
 
 /* Individual Item Cards */
 .item-slot {
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     border: 1px solid var(--border-primary-hover-translucent-15);
     border-radius: 4px;
     padding: 6px 12px;
@@ -6482,7 +6482,7 @@
 .status-right-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 10px;
     flex: 0 0 auto;
     margin: 0 0 12px 0;
@@ -6490,24 +6490,15 @@
     border-bottom: 2px solid var(--border-primary-hover-translucent-15);
 }
 
-.status-right-header .right-title {
-    flex: 1 1 auto;
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    border-bottom: none;
-    overflow-wrap: break-word;
-}
-
 .status-right-header .companion-switcher {
     flex: 0 1 auto;
     min-width: 0;
-    justify-content: flex-end;
+    justify-content: center;
 }
 
 .status-right-header .companion-tabs-row {
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: center;
     border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 0;
@@ -6718,13 +6709,13 @@
    now that the traits have a page of their own. */
 .status-alignment-row {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     margin-bottom: 12px;
 }
 
 .status-element-box {
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     border: 1px solid var(--border-primary-hover-translucent-15);
     border-radius: 8px;
     padding: 10px;
@@ -8453,6 +8444,10 @@
     margin-bottom: 14px;
 }
 
+.stats-grid--3col {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
 .stat-row {
     display: flex;
     justify-content: space-between;
@@ -8466,6 +8461,12 @@
     font-family: 'Lora', serif;
     font-weight: bold;
     color: var(--border-muted-focus);
+}
+
+/* The base stat a currently equipped weapon scales its damage on, picked out
+   gold in place of the old separate "Scaling: STR" line. */
+.stat-label--scaling {
+    color: var(--text-primary-hover);
 }
 
 .stat-val-container {
@@ -8617,7 +8618,7 @@
     margin-bottom: 6px;
     border-radius: 4px;
     border: 1px solid var(--border-primary-hover-translucent-15);
-    background: var(--bg-primary-hover-translucent-35);
+    background: transparent;
     cursor: pointer;
     position: relative;
     transition: all 0.2s ease;
@@ -8661,6 +8662,7 @@
     color: var(--text-secondary-active);
     font-size: 0.78em;
     flex-shrink: 0;
+    text-align: center;
 }
 
 .slot-item-col {
@@ -8877,9 +8879,9 @@
     min-width: 0;
 }
 
-/* Companion tabs, equip-scene variant (right-aligned, no bottom border) */
+/* Companion tabs, equip-scene variant (centered on the right page, no bottom border) */
 #equip-container .companion-tabs-row {
-    justify-content: flex-end;
+    justify-content: center;
     border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 0;

@@ -35,13 +35,13 @@
     "oil": "OIL",
     "souls": "SOULS"
   },
-  "appName": "QUANTUM PROJECTOR",
+  "appName": "OILSOUL MARKET",
   "portfolio": {
-    "liquid": "LIQUID GOLD",
+    "liquid": "LIQUID EUROS",
     "netWorth": "NET WORTH"
   },
   "ui": {
-    "oilTether": "OIL TETHER:",
-    "soulCrystal": "SOUL CRYSTAL:"
+    "oilTether": "OIL:",
+    "soulCrystal": "SOUL:"
   }
 }

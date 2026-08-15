@@ -137,6 +137,21 @@
     const PROC_MAP_HEIGHT = 64;
 
     // ============================================================================
+    // WORLD MAP / PROCEDURAL MAP TOGGLE HOTKEY
+    // ----------------------------------------------------------------------------
+    // T on the keyboard and Select on the gamepad jump straight between the world
+    // map and the procedural map, bypassing the "Visit <place> / Make a camp /
+    // Cancel" choice window (openTravelDecision) and the vehicle action menu's
+    // "Visit map" / "Return to the world map" rows: same destinations those reach,
+    // one press. CustomMainMenuLayout.js no longer claims T for its "Wait" hotkey
+    // (see its HOTKEYS table), so claiming it here doesn't fight over
+    // Input.keyMapper. Select is unused by the engine and by CustomCommandMapper's
+    // default gamepad bindings.
+    const WMR_TOGGLE_KEY = 'wmrToggle';
+    Input.keyMapper[84] = WMR_TOGGLE_KEY;      // T
+    Input.gamepadMapper[8] = WMR_TOGGLE_KEY;   // Select / Back
+
+    // ============================================================================
     // MYSTERY ENCOUNTERS ("???" world-map tiles)
     // ----------------------------------------------------------------------------
     // Each time the player enters the world map (315) we scatter "???" markers on
@@ -4159,9 +4174,26 @@
         $gameTemp.clearDestination();
     };
 
+    function updateWorldMapToggleHotkey() {
+        if (!Input.isTriggered(WMR_TOGGLE_KEY)) return;
+        if ($gameMessage.isBusy() || $gameMap.isEventRunning() || $gamePlayer.isTransferring()) return;
+        const mapId = $gameMap.mapId();
+        if (mapId === procMapId) {
+            // procMapId (636) is also what an alien planet's surface stands on
+            // (GalaxySim_Core's isAlienSurface). performReturnToWorldMap() already
+            // asks divertedToLandingPicker() first, which opens the landing-grid
+            // picker instead of transferring to Earth's map 315 whenever the party
+            // is off-world, so T reaches the right "go back up" screen either way.
+            performReturnToWorldMap();
+        } else if (mapId === worldMapId) {
+            performStopTravel();
+        }
+    }
+
     const _Scene_Map_update_wmr = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function() {
         _Scene_Map_update_wmr.call(this);
+        updateWorldMapToggleHotkey();
         updateMysteryMarkers();
         updateQuestMarkers();
         updateQuestCompass();
@@ -4344,19 +4376,21 @@
         return `proc:${pg.currentBiome}:${wx},${wy}:${depth}${salt}`;
     };
 
+    function performReturnToWorldMap() {
+        if (divertedToLandingPicker()) return;
+        const saved = playerWorldCoords();
+        if (saved.x !== 0 || saved.y !== 0) {
+            $gamePlayer.reserveTransfer(worldMapId, saved.x, saved.y, 0, 0);
+        }
+    }
+
     // ============================================================================
     // PUBLIC API
     // ============================================================================
 
     window.WorldMapReturn = {
         performVisitMap: performStopTravel,
-        returnToWorldMap() {
-            if (divertedToLandingPicker()) return;
-            const saved = playerWorldCoords();
-            if (saved.x !== 0 || saved.y !== 0) {
-                $gamePlayer.reserveTransfer(worldMapId, saved.x, saved.y, 0, 0);
-            }
-        },
+        returnToWorldMap: performReturnToWorldMap,
         worldMapId,
         procMapId,
         // The name to file a place under (Assets menu, delivery targets, ...).

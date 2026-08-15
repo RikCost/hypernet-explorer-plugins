@@ -35,13 +35,13 @@
     "oil": "OIL",
     "souls": "SOUL"
   },
-  "appName": "Proiettore Quantistico",
+  "appName": "OILSOUL MARKET",
   "portfolio": {
-    "liquid": "Oro Liquido",
+    "liquid": "Euro liquidi",
     "netWorth": "Patrimonio Netto"
   },
   "ui": {
-    "oilTether": "Ancoraggio Petrolio:",
-    "soulCrystal": "Cristallo d'Anima:"
+    "oilTether": "Petrolio:",
+    "soulCrystal": "Anime:"
   }
 }

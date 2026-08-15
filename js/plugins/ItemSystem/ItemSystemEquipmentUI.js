@@ -513,73 +513,54 @@
         // Expose to 3D preview init
         this._hoverPreviewEquips = tempActor ? tempActor.equips() : null;
 
-        // Weapon scaling line
+        // Weapon scaling: which base stat(s) the equipped weapon(s) scale on.
+        // Instead of a separate "Scaling: STR" line, the scaling stat's own
+        // label in the grid below is picked out in gold.
         const weapon1 = tempActor ? tempActor.equips()[0] : actor.equips()[0];
         const weapon2 = tempActor ? tempActor.equips()[1] : actor.equips()[1];
         const s1 = actor.getWeaponScalingType(weapon1);
         const s2 = actor.getWeaponScalingType(weapon2);
-        let scalingText;
-        if (s1 && s2)    scalingText = `${t.scale} 1: ${s1} | ${t.scale} 2: ${s2}`;
-        else if (s1||s2) scalingText = `${t.scale}: ${s1 || s2}`;
-        else             scalingText = `${t.scale}: STR`;
+        const scalingCodes = new Set([s1, s2].filter(c => c && c !== 'MIX'));
+        if (scalingCodes.size === 0) scalingCodes.add('STR');
 
-        // Base stat grid
-        const statsMap = [
-            { label: t.hp,  valBefore: actor.mhp, valAfter: tempActor ? tempActor.mhp : actor.mhp },
-            { label: t.mp,  valBefore: actor.mmp, valAfter: tempActor ? tempActor.mmp : actor.mmp },
-            { label: t.str, valBefore: actor.atk, valAfter: tempActor ? tempActor.atk : actor.atk },
-            { label: t.con, valBefore: actor.def, valAfter: tempActor ? tempActor.def : actor.def },
-            { label: t.int, valBefore: actor.mat, valAfter: tempActor ? tempActor.mat : actor.mat },
-            { label: t.wis, valBefore: actor.mdf, valAfter: tempActor ? tempActor.mdf : actor.mdf },
-            { label: t.dex, valBefore: actor.agi, valAfter: tempActor ? tempActor.agi : actor.agi },
-            { label: t.psi, valBefore: actor.luk, valAfter: tempActor ? tempActor.luk : actor.luk }
+        // Base + alchemical stats, interleaved into one 3-column grid: the
+        // custom stats (Arcane/Substance/Stealth/Intimidation) ride as plain
+        // numbers in the third column rather than their own bars.
+        const cBefore = actor.calculateCustomStats();
+        const cAfter  = tempActor ? tempActor.calculateCustomStats() : cBefore;
+        const gridStats = [
+            { label: t.hp,  code: null,  percent: false, valBefore: actor.mhp, valAfter: tempActor ? tempActor.mhp : actor.mhp },
+            { label: t.mp,  code: null,  percent: false, valBefore: actor.mmp, valAfter: tempActor ? tempActor.mmp : actor.mmp },
+            { label: t.arcane, code: null, percent: true, valBefore: cBefore.arcane, valAfter: cAfter.arcane },
+
+            { label: t.str, code: 'STR', percent: false, valBefore: actor.atk, valAfter: tempActor ? tempActor.atk : actor.atk },
+            { label: t.con, code: 'CON', percent: false, valBefore: actor.def, valAfter: tempActor ? tempActor.def : actor.def },
+            { label: t.substance, code: null, percent: true, valBefore: cBefore.substance, valAfter: cAfter.substance },
+
+            { label: t.int, code: 'INT', percent: false, valBefore: actor.mat, valAfter: tempActor ? tempActor.mat : actor.mat },
+            { label: t.wis, code: 'WIS', percent: false, valBefore: actor.mdf, valAfter: tempActor ? tempActor.mdf : actor.mdf },
+            { label: t.stealth, code: null, percent: true, valBefore: cBefore.stealth, valAfter: cAfter.stealth },
+
+            { label: t.dex, code: 'DEX', percent: false, valBefore: actor.agi, valAfter: tempActor ? tempActor.agi : actor.agi },
+            { label: t.psi, code: 'PSI', percent: false, valBefore: actor.luk, valAfter: tempActor ? tempActor.luk : actor.luk },
+            { label: t.intimidation, code: null, percent: true, valBefore: cBefore.intimidation, valAfter: cAfter.intimidation }
         ];
 
         let statsGridHTML = '';
-        for (const stat of statsMap) {
+        for (const stat of gridStats) {
+            const unit = stat.percent ? '%' : '';
             const diff = stat.valAfter - stat.valBefore;
-            const diffHtml = diff > 0 ? `<span class="stat-diff positive">+${diff}</span>`
-                           : diff < 0 ? `<span class="stat-diff negative">${diff}</span>` : '';
+            const diffHtml = diff > 0 ? `<span class="stat-diff positive">+${diff}${unit}</span>`
+                           : diff < 0 ? `<span class="stat-diff negative">${diff}${unit}</span>` : '';
+            const labelCls = stat.code && scalingCodes.has(stat.code) ? 'stat-label stat-label--scaling' : 'stat-label';
             statsGridHTML += `
                 <div class="stat-row">
-                    <span class="stat-label">${stat.label}</span>
+                    <span class="${labelCls}">${stat.label}</span>
                     <span class="stat-val-container">
-                        <span class="stat-val">${stat.valBefore}</span>
-                        ${tempActor && diff !== 0 ? `➔ <span class="stat-val-new">${stat.valAfter}</span>` : ''}
+                        <span class="stat-val">${stat.valBefore}${unit}</span>
+                        ${tempActor && diff !== 0 ? `➔ <span class="stat-val-new">${stat.valAfter}${unit}</span>` : ''}
                         ${diffHtml}
                     </span>
-                </div>`;
-        }
-
-        //  progress bars
-        const cBefore = actor.calculateCustomStats();
-        const cAfter  = tempActor ? tempActor.calculateCustomStats() : cBefore;
-        const customStatsMap = [
-            { label: t.arcane,       before: cBefore.arcane,       after: cAfter.arcane,       color: '#8e44ad' },
-            { label: t.substance,    before: cBefore.substance,    after: cAfter.substance,    color: '#27ae60' },
-            { label: t.stealth,      before: cBefore.stealth,      after: cAfter.stealth,      color: '#7f8c8d' },
-            { label: t.intimidation, before: cBefore.intimidation, after: cAfter.intimidation, color: '#c0392b' }
-        ];
-
-        let alchemicalHTML = '';
-        for (const cs of customStatsMap) {
-            const diff     = cs.after - cs.before;
-            const diffHtml = diff > 0 ? `<span class="stat-diff positive">+${diff}%</span>`
-                           : diff < 0 ? `<span class="stat-diff negative">${diff}%</span>` : '';
-            alchemicalHTML += `
-                <div class="custom-stat-row">
-                    <div class="custom-stat-header">
-                        <span class="custom-stat-label">${cs.label}</span>
-                        <span class="custom-stat-val">
-                            ${cs.before}%
-                            ${tempActor && diff !== 0 ? `➔ ${cs.after}%` : ''}
-                            ${diffHtml}
-                        </span>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width:${cs.before}%;background:${cs.color};"></div>
-                        ${tempActor && diff !== 0 ? `<div class="progress-bar-fill-preview" style="left:${Math.min(cs.before,cs.after)}%;width:${Math.abs(diff)}%;background:${diff>0?'#2ecc71':'#e74c3c'};opacity:0.75;"></div>` : ''}
-                    </div>
                 </div>`;
         }
 
@@ -632,20 +613,12 @@
             const loreText = window.ItemSystemUtils.loreFor(loreItem);
             if (loreText) loreHTML += `<div class="equip-lore" style="font-style:italic;opacity:0.78;margin-top:6px;font-family:'Lora',serif;line-height:1.35;">${loreText}</div>`;
         }
-        // What it is made of, the trade that makes it and the tier that trade
-        // needs: the same block the forge shows, so a piece of gear explains
-        // itself without the player opening a crafting menu.
-        if (loreItem && window.ItemSystemUtils && typeof window.ItemSystemUtils.craftHTML === 'function') {
-            loreHTML += window.ItemSystemUtils.craftHTML(loreItem);
-        }
 
         return `
             <div class="equip-right-content">
                 ${previewBoxHTML}
                 <div class="bottom-stats-block">
-                    <div class="scaling-box">${scalingText}</div>
-                    <div class="stats-grid">${statsGridHTML}</div>
-                    <div class="alchemical-stats">${alchemicalHTML}</div>
+                    <div class="stats-grid stats-grid--3col">${statsGridHTML}</div>
                     ${loreHTML}
                 </div>
             </div>`;
@@ -813,7 +786,7 @@
                         <div class="left-content-area equip-main-content"></div>
                     </div>
                     <div class="right-page" style="position:relative;">
-                        <div class="companion-switcher" id="equip-companion-switcher" style="position:absolute; top:6px; right:0; z-index:5; justify-content:flex-end; min-height:26px;"></div>
+                        <div class="companion-switcher" id="equip-companion-switcher" style="position:absolute; top:6px; left:0; right:0; z-index:5; justify-content:center; min-height:26px;"></div>
                         <div class="right-content-area"></div>
                     </div>
                 </div>`;

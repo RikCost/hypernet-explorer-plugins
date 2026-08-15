@@ -36,8 +36,9 @@
   "resign": "Resign",
   "returnToShip": "Return to Ship",
   "teleportToShip": "Teleport to Ship",
-  "returnToWorldMap": "Return to world map",
-  "chooseLandingSite": "Choose landing site"
+  "returnToWorldMap": "Return to map",
+  "chooseLandingSite": "Choose landing site",
+  "stopTravel": "Stop travel"
  },
  "dynamics": {
   "roster": "Roster",

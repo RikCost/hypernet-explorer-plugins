@@ -17,21 +17,23 @@
  *   file, which drives Input.keyMapper, the badges on the pockets tiles, the
  *   in-menu shortcuts and the on-map shortcuts at once.
  *
- *     Tab  Open / close the menu        T  Wait (passes time, no rest)
- *     I    Inventory                    J  Journal (Quest Log)
- *     P    Magic (Skills)               C  Character (Status)
- *     R    Ready gear (Equip)           M  Map (minimap toggle)
- *     V    Vehicles                     B  Build
- *     F    Factions                     H  Holdings (Assets)
- *     K    Cooking                      L  Lore (Codex)
- *     N    Training                     Y  Bestiary
- *     U    Biologics                    O  Options
- *     G    Sandbox (tester only)        1-9 Favourite items (on the map)
+ *     Tab  Open / close the menu        J  Journal (Quest Log)
+ *     I    Inventory                    P  Magic (Skills)
+ *     C    Character (Status)           R  Ready gear (Equip)
+ *     M    Map (minimap toggle)         V  Vehicles
+ *     B    Build                        F  Factions
+ *     H    Holdings (Assets)            K  Cooking
+ *     L    Lore (Codex)                 N  Training
+ *     Y    Bestiary                     U  Biologics
+ *     O    Options                      G  Sandbox (tester only)
+ *     1-9  Favourite items (on the map)
  *     1/2/3 Thinker / Multiplayer / Hypernet (inside the menu only)
  *     F5   Quicksave, F9 Quickload (Core/SaveSystem.js)
  *
  *   W/A/S/D move, Z/X are ok/cancel and Q/E zoom the world map
- *   (Map/WorldMap.js), so none of those are available for commands.
+ *   (Map/WorldMap.js), so none of those are available for commands. T is
+ *   world map <-> procedural map (Map/WorldMapReturn.js); Wait has no
+ *   dedicated hotkey and opens from its pockets tile or the pause menu.
  */
 
 (function () {
@@ -109,18 +111,19 @@
     // listened on A, ...).
     //
     // The layout follows Skyrim/Fallout muscle memory:
-    //   T Wait · I Inventory · J Journal(Quests) · P Magic(Skills)
+    //   I Inventory · J Journal (Quest Log) · P Magic(Skills)
     //   C Character(Status) · M Map · R Ready gear(Equip) · Tab open/close menu
     //   F5 quicksave · F9 quickload (see Core/SaveSystem.js)
     //
     // Reserved and unavailable: W/A/S/D (movement), Z/X (ok/cancel),
-    // Q/E (Map/WorldMap.js zoom, that plugin loads later and wins the mapping).
+    // Q/E (Map/WorldMap.js zoom, that plugin loads later and wins the mapping),
+    // T (Map/WorldMapReturn.js: world map <-> procedural map toggle; Wait has
+    // no dedicated hotkey and opens from its pockets tile or the pause menu).
     // `input` overrides the derived "letter_<key>" symbol for keys another
     // plugin already owns; `code` is omitted for those so we don't fight over
     // Input.keyMapper.
     const HOTKEYS = [
         { symbol: "item",        key: "I", code: 73 },
-        { symbol: "sleep_menu",  key: "T", code: 84 },
         { symbol: "quest_log",   key: "J", code: 74 },
         { symbol: "skill",       key: "P", code: 80 },
         { symbol: "status1",     key: "C", code: 67 },
@@ -1342,6 +1345,12 @@
             } else {
                 console.warn("commandOpenWorldMap is not defined on Scene_Menu!");
             }
+        } else if (action === "stop") {
+            if (typeof this.commandStop === "function") {
+                this.commandStop();
+            } else {
+                console.warn("commandStop is not defined on Scene_Menu!");
+            }
         }
     };
 
@@ -1779,13 +1788,32 @@
                     ${vehicleRows}
                 </div>`;
         } else {
-            // On the procedural map (636) surface the "Return to world map" travel
+            // T jumps straight between the world map and the procedural map
+            // (Map/WorldMapReturn.js), skipping the "Visit / Make a camp / Cancel"
+            // choice window entirely, so both hand-rolled travel tiles below carry
+            // its badge like any other hotkeyed command tile.
+            const worldMapToggleBadge = '<span class="hotkey-badge">T</span>';
+
+            // On the world map (315) surface the "Stop travel" command as the
+            // first pockets entry: it visits whatever tile the party is standing
+            // on (settlement, hardcoded location, or a freshly generated
+            // procedural map), the same destination the T hotkey reaches directly.
+            const stopTravelHTML = ($gameMap.mapId() === 315) ? `
+                    <div class="command-item focusable" data-symbol="travel_stop" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('stop')">
+                        <span class="icon" style="background: url('img/system/IconSet.png') -${(282 % 16) * 32}px -${Math.floor(282 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                        <span>${T('MainMenu.cmd.stopTravel')}</span>
+                        ${worldMapToggleBadge}
+                    </div>
+            ` : "";
+
+            // On the procedural map (636) surface the "Return to map" travel
             // command as the very first pockets entry, copied from the World Map
             // submenu, so the player can bail out to map 315 without drilling in.
             const procReturnHTML = ($gameMap.mapId() === 636) ? `
                     <div class="command-item focusable" data-symbol="travel_return" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('return')">
                         <span class="icon" style="background: url('img/system/IconSet.png') -${(310 % 16) * 32}px -${Math.floor(310 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
                         <span>${worldMapReturnLabel()}</span>
+                        ${worldMapToggleBadge}
                     </div>
             ` : "";
 
@@ -1810,8 +1838,9 @@
             // pockets reads as coherent blocks instead of one long alphabet soup:
             //   character (self)  ·  party (companions)  ·  travel & rest  ·
             //   activities  ·  records & standing  ·  network  ·  system.
-            // The character block is always first; on the procedural map the
-            // travel block leads with the "Return to world map" escape hatch.
+            // The character block is always first; the travel block leads with
+            // whichever escape hatch applies to the current map ("Stop travel"
+            // on the world map, "Return to map" on the procedural map).
             const commandGroups = [
                 // Sandbox: tester/sandbox-only tools, surfaced as the very first
                 // pockets entry when the player is named "test" or sandbox mode is
@@ -1837,6 +1866,7 @@
                 ],
                 // Travel & rest
                 [
+                    stopTravelHTML,
                     procReturnHTML,
                     returnToShipHTML,
                     this.generateUICommandItemHTML(T('MainMenu.cmd.worldMap'), "world_map"),

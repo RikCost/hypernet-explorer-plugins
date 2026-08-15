@@ -9,7 +9,7 @@
     "description": "Load and unload cargo in the warehouse district.",
     "description_it": "Carica e scarica merci nel distretto dei magazzini.",
     "duration": 8,
-    "basePay": 120,
+    "basePay": 300,
     "locations": [
       26,
       37,
@@ -33,7 +33,7 @@
           "You finish the shift without incident.",
           "The work is hard but straightforward."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.1.success_msgs"
       },
       "partial": {
@@ -98,7 +98,7 @@
     "description": "Work the fields, tend to crops and livestock.",
     "description_it": "Lavora nei campi, cura i raccolti e il bestiame.",
     "duration": 10,
-    "basePay": 100,
+    "basePay": 250,
     "locations": [
       1035,
       1037
@@ -117,7 +117,7 @@
           "The farmer thanks you for your hard work.",
           "Another productive day on the farm."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.2.success_msgs"
       },
       "partial": {
@@ -163,7 +163,7 @@
           "A fire started from your carelessness!",
           "The damage costs more than a day's wages!"
         ],
-        "payMultiplier": -1.0,
+        "payMultiplier": -1,
         "damage": {
           "hp": 35
         },
@@ -186,7 +186,7 @@
     "description": "Serve drinks and manage patrons at the tavern.",
     "description_it": "Servi bevande e gestisci clienti alla taverna.",
     "duration": 8,
-    "basePay": 90,
+    "basePay": 225,
     "locations": [
       302,
       367,
@@ -276,7 +276,7 @@
     "description": "Entertain crowds with performances for tips.",
     "description_it": "Intrattieni la folla con spettacoli per mance.",
     "duration": 6,
-    "basePay": 60,
+    "basePay": 150,
     "locations": [
       446,
       533,
@@ -351,7 +351,7 @@
     "description": "Help the blacksmith forge weapons and tools.",
     "description_it": "Aiuta il fabbro a forgiare armi e attrezzi.",
     "duration": 9,
-    "basePay": 130,
+    "basePay": 325,
     "locations": [
       "Forge District",
       "Craftsman Quarter",
@@ -371,7 +371,7 @@
           "The heat is intense but you manage well.",
           "Quality work earns quality pay."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.5.success_msgs"
       },
       "partial": {
@@ -440,7 +440,7 @@
     "description": "Collect rare magical ingredients in dangerous areas.",
     "description_it": "Raccogli ingredienti magici rari in zone pericolose.",
     "duration": 7,
-    "basePay": 150,
+    "basePay": 375,
     "locations": [
       450,
       1039
@@ -527,7 +527,7 @@
     "description": "Mix potions and manage the alchemist's laboratory.",
     "description_it": "Mescola pozioni e gestisci il laboratorio dell'alchimista.",
     "duration": 8,
-    "basePay": 140,
+    "basePay": 350,
     "locations": [
       320,
       531
@@ -546,7 +546,7 @@
           "You discover a more efficient mixing method.",
           "Quality work in the arcane arts."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.7.success_msgs"
       },
       "partial": {
@@ -619,7 +619,7 @@
     "description": "Repair and restore damaged magical items.",
     "description_it": "Ripara e restaura oggetti magici danneggiati.",
     "duration": 6,
-    "basePay": 180,
+    "basePay": 450,
     "locations": [],
     "requirements": {
       "MAT": 30,
@@ -682,7 +682,7 @@
           "Rampant magic damages the workshop!",
           "You must compensate for the lost artifact!"
         ],
-        "payMultiplier": -2.0,
+        "payMultiplier": -2,
         "damage": {
           "hp": 50,
           "mp": 60
@@ -707,7 +707,7 @@
     "description": "Protect merchant caravans from bandits and monsters.",
     "description_it": "Proteggi le carovane mercantili da banditi e mostri.",
     "duration": 12,
-    "basePay": 200,
+    "basePay": 500,
     "locations": [],
     "requirements": {
       "ATK": 30,
@@ -724,7 +724,7 @@
           "Your reputation precedes you.",
           "An uneventful but profitable escort."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.9.success_msgs"
       },
       "partial": {
@@ -794,7 +794,7 @@
     "description": "Fight in the arena for prize money and glory.",
     "description_it": "Combatti nell'arena per denaro e gloria.",
     "duration": 4,
-    "basePay": 150,
+    "basePay": 375,
     "locations": [
       503,
       525
@@ -825,7 +825,7 @@
           "The match was closer than expected.",
           "Victory, but at a cost."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "damage": {
           "hp": 35
         },
@@ -881,7 +881,7 @@
     "description": "Clear out monster infestations from civilian areas.",
     "description_it": "Elimina infestazioni di mostri dalle aree civili.",
     "duration": 8,
-    "basePay": 220,
+    "basePay": 550,
     "locations": [],
     "requirements": {
       "ATK": 30,
@@ -898,7 +898,7 @@
           "Professional and efficient work.",
           "Another clean extermination job."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.11.success_msgs"
       },
       "partial": {
@@ -968,7 +968,7 @@
     "description": "Steal from unsuspecting marks in crowded areas.",
     "description_it": "Ruba da vittime ignare in aree affollate.",
     "duration": 5,
-    "basePay": 100,
+    "basePay": 250,
     "locations": [
       446,
       533,
@@ -1010,7 +1010,7 @@
           "A mob of angry citizens pursues you!",
           "No loot, just bruises!"
         ],
-        "payMultiplier": 0.0,
+        "payMultiplier": 0,
         "damage": {
           "hp": 20
         },
@@ -1050,7 +1050,7 @@
     "description": "Transport illegal goods across checkpoints.",
     "description_it": "Trasporta merci illegali attraverso i posti di blocco.",
     "duration": 10,
-    "basePay": 250,
+    "basePay": 625,
     "locations": [],
     "requirements": {
       "Stealth": 30,
@@ -1067,7 +1067,7 @@
           "Not a single guard suspected you.",
           "Clean run, clean profit."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.13.success_msgs"
       },
       "partial": {
@@ -1109,7 +1109,7 @@
           "Massive fines are imposed!",
           "You're blacklisted from future jobs!"
         ],
-        "payMultiplier": -2.0,
+        "payMultiplier": -2,
         "damage": {
           "hp": 55
         },
@@ -1132,7 +1132,7 @@
     "description": "Break into a building and steal valuables.",
     "description_it": "Entra con scasso in un edificio e ruba oggetti di valore.",
     "duration": 6,
-    "basePay": 300,
+    "basePay": 750,
     "locations": [
       1076
     ],
@@ -1176,7 +1176,7 @@
           "The target had better security than expected!",
           "A botched job from start to finish!"
         ],
-        "payMultiplier": 0.0,
+        "payMultiplier": 0,
         "damage": {
           "hp": 30
         },
@@ -1217,7 +1217,7 @@
     "description": "Repair vehicles and machinery.",
     "description_it": "Ripara veicoli e macchinari.",
     "duration": 8,
-    "basePay": 140,
+    "basePay": 350,
     "locations": [
       403,
       630,
@@ -1238,7 +1238,7 @@
           "You diagnose problems instantly.",
           "Another satisfied customer."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.15.success_msgs"
       },
       "partial": {
@@ -1303,7 +1303,7 @@
     "description": "Create and repair locks for clients.",
     "description_it": "Crea e ripara serrature per i clienti.",
     "duration": 6,
-    "basePay": 120,
+    "basePay": 300,
     "locations": [],
     "requirements": {
       "Substance": 25,
@@ -1319,7 +1319,7 @@
           "Complex mechanisms pose no challenge.",
           "Another perfect day at the bench."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.16.success_msgs"
       },
       "partial": {
@@ -1355,7 +1355,7 @@
           "The client sues for damages!",
           "Your reputation is destroyed!"
         ],
-        "payMultiplier": -1.0,
+        "payMultiplier": -1,
         "damage": {
           "hp": 30
         },
@@ -1378,7 +1378,7 @@
     "description": "Craft and repair intricate timepieces.",
     "description_it": "Crea e ripara orologi complessi.",
     "duration": 7,
-    "basePay": 160,
+    "basePay": 400,
     "locations": [
       29,
       723
@@ -1456,7 +1456,7 @@
     "description": "Negotiate deals and resolve disputes.",
     "description_it": "Negozia accordi e risolvi dispute.",
     "duration": 6,
-    "basePay": 180,
+    "basePay": 450,
     "locations": [
       1000
     ],
@@ -1474,7 +1474,7 @@
           "Conflict resolved through words alone.",
           "A diplomatic triumph."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.18.success_msgs"
       },
       "partial": {
@@ -1536,7 +1536,7 @@
     "description": "Read fortunes for paying customers.",
     "description_it": "Leggi il futuro per clienti paganti.",
     "duration": 5,
-    "basePay": 80,
+    "basePay": 200,
     "locations": [
       450
     ],
@@ -1609,7 +1609,7 @@
     "description": "Deliver packages and messages across the city.",
     "description_it": "Consegna pacchi e messaggi in città.",
     "duration": 7,
-    "basePay": 100,
+    "basePay": 250,
     "locations": [],
     "requirements": {
       "AGI": 30,
@@ -1691,7 +1691,7 @@
     "description": "Inspect magical practitioners for proper permits and licensing.",
     "description_it": "Ispeziona praticanti magici per permessi e licenze appropriate.",
     "duration": 8,
-    "basePay": 140,
+    "basePay": 350,
     "locations": [
       1050
     ],
@@ -1709,7 +1709,7 @@
           "Forms filed in triplicate - perfection.",
           "Another day upholding Guild regulations."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.100.success_msgs"
       },
       "partial": {
@@ -1773,7 +1773,7 @@
     "description": "Ensure magical rituals follow Guild protocols exactly.",
     "description_it": "Assicura che i rituali magici seguano esattamente i protocolli della Gilda.",
     "duration": 6,
-    "basePay": 130,
+    "basePay": 325,
     "locations": [],
     "requirements": {
       "MAT": 25,
@@ -1789,7 +1789,7 @@
           "No deviations from tradition.",
           "Order maintained, chaos prevented."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.101.success_msgs"
       },
       "partial": {
@@ -1857,7 +1857,7 @@
     "description": "Seek out and destroy illegal techno-magical fusion devices.",
     "description_it": "Cerca e distruggi dispositivi illegali di fusione tecno-magica.",
     "duration": 8,
-    "basePay": 160,
+    "basePay": 400,
     "locations": [],
     "requirements": {
       "MAT": 30,
@@ -1874,7 +1874,7 @@
           "Technology corrupts; you prevent it.",
           "Another successful raid against modernity."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.102.success_msgs"
       },
       "partial": {
@@ -1922,7 +1922,7 @@
           "Expensive Guild property is destroyed!",
           "Your failure becomes a cautionary tale!"
         ],
-        "payMultiplier": -1.0,
+        "payMultiplier": -1,
         "damage": {
           "hp": 55,
           "mp": 40
@@ -1948,7 +1948,7 @@
     "description": "Develop experimental fusion of magic and machinery.",
     "description_it": "Sviluppa fusioni sperimentali di magia e macchinari.",
     "duration": 9,
-    "basePay": 200,
+    "basePay": 500,
     "locations": [
       320,
       531
@@ -2018,7 +2018,7 @@
           "Years of research go up in flames!",
           "You're banned from experimental work!"
         ],
-        "payMultiplier": -2.0,
+        "payMultiplier": -2,
         "damage": {
           "hp": 70,
           "mp": 60
@@ -2044,7 +2044,7 @@
     "description": "Meticulously categorize spells into the 92 distinct schools.",
     "description_it": "Categorizza meticolosamente gli incantesimi nelle 92 scuole distinte.",
     "duration": 10,
-    "basePay": 110,
+    "basePay": 275,
     "locations": [],
     "requirements": {
       "MAT": 30,
@@ -2060,7 +2060,7 @@
           "92 schools, no exceptions.",
           "Academic rigor at its finest."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.104.success_msgs"
       },
       "partial": {
@@ -2126,7 +2126,7 @@
     "description": "Remove dangerous knowledge from historical texts.",
     "description_it": "Rimuovi conoscenza pericolosa dai testi storici.",
     "duration": 8,
-    "basePay": 150,
+    "basePay": 375,
     "locations": [],
     "requirements": {
       "Arcane": 25,
@@ -2142,7 +2142,7 @@
           "Another day preserving ignorance.",
           "Containment protocols upheld."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.105.success_msgs"
       },
       "partial": {
@@ -2181,7 +2181,7 @@
           "Your career is destroyed!",
           "You're marked as a security risk!"
         ],
-        "payMultiplier": -1.0,
+        "payMultiplier": -1,
         "damage": {
           "hp": 20,
           "mp": 40
@@ -2206,7 +2206,7 @@
     "description": "Steal historical artifacts for the Foundation's collection.",
     "description_it": "Ruba artefatti storici per la collezione della Fondazione.",
     "duration": 8,
-    "basePay": 250,
+    "basePay": 625,
     "locations": [],
     "requirements": {
       "Stealth": 40,
@@ -2223,7 +2223,7 @@
           "Professional extraction.",
           "Knowledge contained, mission complete."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.106.success_msgs"
       },
       "partial": {
@@ -2294,7 +2294,7 @@
     "description": "Maintain the archives and permanently silence noisy patrons.",
     "description_it": "Mantieni gli archivi e zittisci permanentemente i visitatori rumorosi.",
     "duration": 8,
-    "basePay": 140,
+    "basePay": 350,
     "locations": [
       7,
       43,
@@ -2314,7 +2314,7 @@
           "Silence is golden, and blood red.",
           "Another quiet day in the archives."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.107.success_msgs"
       },
       "partial": {
@@ -2384,7 +2384,7 @@
     "description": "Craft convincing misinformation for public consumption.",
     "description_it": "Crea disinformazione convincente per il consumo pubblico.",
     "duration": 7,
-    "basePay": 130,
+    "basePay": 325,
     "locations": [],
     "requirements": {
       "MAT": 30,
@@ -2400,7 +2400,7 @@
           "Another successful information campaign.",
           "The irony of your unit's name amuses you."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.108.success_msgs"
       },
       "partial": {
@@ -2456,7 +2456,7 @@
     "description": "Root out information leaks within the Foundation.",
     "description_it": "Scova perdite di informazioni all'interno della Fondazione.",
     "duration": 9,
-    "basePay": 180,
+    "basePay": 450,
     "locations": [
       1050
     ],
@@ -2475,7 +2475,7 @@
           "The Foundation's secrets remain safe.",
           "Internal security maintained."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.109.success_msgs"
       },
       "partial": {
@@ -2539,7 +2539,7 @@
     "description": "Manipulate markets for profit through any means necessary.",
     "description_it": "Manipola i mercati per profitto con qualsiasi mezzo necessario.",
     "duration": 8,
-    "basePay": 200,
+    "basePay": 500,
     "locations": [],
     "requirements": {
       "LUK": 30,
@@ -2616,7 +2616,7 @@
     "description": "Maximize oil extraction efficiency through infernal optimization.",
     "description_it": "Massimizza l'efficienza dell'estrazione petrolifera attraverso ottimizzazione infernale.",
     "duration": 10,
-    "basePay": 220,
+    "basePay": 550,
     "locations": [],
     "requirements": {
       "Intimidation": 35,
@@ -2679,7 +2679,7 @@
           "Massive damages and deaths!",
           "Hell comes to collect!"
         ],
-        "payMultiplier": -2.0,
+        "payMultiplier": -2,
         "damage": {
           "hp": 75
         },
@@ -2704,7 +2704,7 @@
     "description": "Deliver packages at breakneck speeds, worshipping velocity.",
     "description_it": "Consegna pacchi a velocità folle, adorando la velocità.",
     "duration": 5,
-    "basePay": 180,
+    "basePay": 450,
     "locations": [],
     "requirements": {
       "AGI": 40,
@@ -2788,7 +2788,7 @@
     "description": "Ensure the Seven Sisters maintain total fuel market control.",
     "description_it": "Assicura che le Sette Sorelle mantengano il controllo totale del mercato carburante.",
     "duration": 8,
-    "basePay": 200,
+    "basePay": 500,
     "locations": [],
     "requirements": {
       "ATK": 30,
@@ -2876,7 +2876,7 @@
     "description": "Spread discord and disruption in the name of the Goddess of Chaos.",
     "description_it": "Diffondi discordia e disordine nel nome della Dea del Caos.",
     "duration": 6,
-    "basePay": 150,
+    "basePay": 375,
     "locations": [],
     "requirements": {
       "LUK": 35,
@@ -2949,7 +2949,7 @@
     "description": "Transcribe and maintain sacred texts and church documents.",
     "description_it": "Trascrivi e mantieni testi sacri e documenti della chiesa.",
     "duration": 8,
-    "basePay": 130,
+    "basePay": 325,
     "locations": [
       727,
       1000,
@@ -2971,7 +2971,7 @@
           "The church is pleased.",
           "Another day in service of faith."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.124.success_msgs"
       },
       "partial": {
@@ -3027,7 +3027,7 @@
     "description": "Train in both scripture and combat as a Vatican special forces operative.",
     "description_it": "Addestrati sia nelle scritture che nel combattimento come operativa delle forze speciali vaticane.",
     "duration": 10,
-    "basePay": 170,
+    "basePay": 425,
     "locations": [
       727
     ],
@@ -3046,7 +3046,7 @@
           "Holy violence perfected.",
           "A warrior nun is born."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.127.success_msgs"
       },
       "partial": {
@@ -3112,7 +3112,7 @@
     "description": "Guard property through the dangerous night hours.",
     "description_it": "Sorveglia proprietà durante le pericolose ore notturne.",
     "duration": 10,
-    "basePay": 110,
+    "basePay": 275,
     "locations": [],
     "requirements": {
       "DEF": 20,
@@ -3128,7 +3128,7 @@
           "The property is secure.",
           "Another peaceful night."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.128.success_msgs"
       },
       "partial": {
@@ -3193,7 +3193,7 @@
     "description": "Catch fish for sale at the market.",
     "description_it": "Pesca pesce per venderlo al mercato.",
     "duration": 8,
-    "basePay": 95,
+    "basePay": 240,
     "locations": [
       570
     ],
@@ -3267,7 +3267,7 @@
     "description": "Clean the filthy city streets.",
     "description_it": "Pulisci le sporche strade cittadine.",
     "duration": 8,
-    "basePay": 80,
+    "basePay": 200,
     "locations": [
       704,
       689,
@@ -3287,7 +3287,7 @@
           "The work is simple but necessary.",
           "Another area cleaned thoroughly."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.130.success_msgs"
       },
       "partial": {
@@ -3353,7 +3353,7 @@
     "description": "Oversee daily operations and keep staff in line.",
     "description_it": "Supervisiona le operazioni quotidiane e il personale.",
     "duration": 8,
-    "basePay": 150,
+    "basePay": 375,
     "locations": [
       706,
       1007
@@ -3372,7 +3372,7 @@
           "The books balance perfectly tonight.",
           "A well-managed shift from start to finish."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.131.success_msgs"
       },
       "partial": {
@@ -3438,7 +3438,7 @@
     "description": "Take orders and serve food and drinks to customers.",
     "description_it": "Prendi ordinazioni e servi cibo e bevande ai clienti.",
     "duration": 8,
-    "basePay": 90,
+    "basePay": 225,
     "locations": [
       1054,
       463,
@@ -3528,7 +3528,7 @@
     "description": "Prepare meals in a busy kitchen.",
     "description_it": "Prepara pasti in una cucina indaffarata.",
     "duration": 8,
-    "basePay": 110,
+    "basePay": 275,
     "locations": [
       713,
       1061,
@@ -3549,7 +3549,7 @@
           "You handle the rush without breaking a sweat.",
           "A flawless night in the kitchen."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.133.success_msgs"
       },
       "partial": {
@@ -3595,7 +3595,7 @@
           "Food poisoning sends customers to the clinic!",
           "The restaurant's reputation takes a serious hit!"
         ],
-        "payMultiplier": -1.0,
+        "payMultiplier": -1,
         "damage": {
           "hp": 35
         },
@@ -3618,7 +3618,7 @@
     "description": "Catalog exhibits and guide visitors through the museum.",
     "description_it": "Cataloga le esposizioni e guida i visitatori nel museo.",
     "duration": 7,
-    "basePay": 130,
+    "basePay": 325,
     "locations": [
       307,
       714
@@ -3637,7 +3637,7 @@
           "A wealthy donor is impressed by your tour.",
           "Another day of cultural enrichment well done."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.134.success_msgs"
       },
       "partial": {
@@ -3698,7 +3698,7 @@
     "description": "Guide clients through workouts and fitness routines.",
     "description_it": "Guida i clienti attraverso allenamenti e programmi di fitness.",
     "duration": 6,
-    "basePay": 120,
+    "basePay": 300,
     "locations": [
       304,
       541,
@@ -3757,7 +3757,7 @@
           "The gym threatens to revoke your contract!",
           "You're blamed for the injury and lose pay!"
         ],
-        "payMultiplier": -1.0,
+        "payMultiplier": -1,
         "damage": {
           "hp": 35
         },
@@ -3779,7 +3779,7 @@
     "description": "Greet guests and control entry at the venue's front door.",
     "description_it": "Accogli gli ospiti e controlla l'ingresso del locale.",
     "duration": 9,
-    "basePay": 100,
+    "basePay": 250,
     "locations": [
       725
     ],
@@ -3797,7 +3797,7 @@
           "Generous tips fill your pocket.",
           "A pleasant, uneventful shift."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.136.success_msgs"
       },
       "partial": {
@@ -3839,7 +3839,7 @@
           "The venue holds you responsible for the chaos!",
           "You're fired on the spot!"
         ],
-        "payMultiplier": -1.0,
+        "payMultiplier": -1,
         "damage": {
           "hp": 40
         },
@@ -3862,7 +3862,7 @@
     "description": "Keep order and remove troublemakers from the venue.",
     "description_it": "Mantieni l'ordine e allontana i facinorosi dal locale.",
     "duration": 8,
-    "basePay": 130,
+    "basePay": 325,
     "locations": [
       726
     ],
@@ -3880,7 +3880,7 @@
           "Patrons behave themselves under your watchful eye.",
           "A calm, well-controlled venue tonight."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.137.success_msgs"
       },
       "partial": {
@@ -3950,7 +3950,7 @@
     "description": "Watch over swimmers and respond to emergencies in the water.",
     "description_it": "Sorveglia i bagnanti e intervieni in caso di emergenza in acqua.",
     "duration": 8,
-    "basePay": 110,
+    "basePay": 275,
     "locations": [
       1130,
       1160
@@ -3969,7 +3969,7 @@
           "Your vigilance keeps everyone secure.",
           "A perfect day on the watchtower."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.138.success_msgs"
       },
       "partial": {
@@ -4034,7 +4034,7 @@
     "description": "Argue for the accused before the Goddess of Justice, who does not recognise a defence bar.",
     "description_it": "Difendi gli imputati davanti alla Dea della Giustizia, che non riconosce alcun ordine forense.",
     "duration": 8,
-    "basePay": 900,
+    "basePay": 2250,
     "locations": [
       1102
     ],
@@ -4052,7 +4052,7 @@
           "You cited a precedent Eris invented and she was too flattered to object.",
           "A clean acquittal. The stenographer applauded, briefly, then apologised."
         ],
-        "payMultiplier": 1.0,
+        "payMultiplier": 1,
         "messages_int": "jobs.139.success_msgs"
       },
       "partial": {

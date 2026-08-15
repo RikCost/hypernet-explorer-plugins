@@ -1178,7 +1178,12 @@
     }
   });
 
-  if (window.HypernetOS) {
+  // Deferred registration: register when HypernetOS is available.
+  // StockMarketSystem loads at plugins.js line 48, _before_ HypernetOS (line 65),
+  // so window.HypernetOS may not exist yet at load time. If that is the case,
+  // re-attempt at Scene_Boot.create, when every plugin has been loaded.
+  function registerStockMarketApp() {
+    if (!window.HypernetOS) return false;
     window.HypernetOS.registerApp({
       id: 'app-stock-market',
       name: T('StockMarket.appName'),
@@ -1195,6 +1200,15 @@
       },
       desktopShortcut: true
     });
+    return true;
+  }
+
+  if (!registerStockMarketApp()) {
+    const _Scene_Boot_create = Scene_Boot.prototype.create;
+    Scene_Boot.prototype.create = function() {
+      _Scene_Boot_create.call(this);
+      registerStockMarketApp();
+    };
   }
 
   const _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
