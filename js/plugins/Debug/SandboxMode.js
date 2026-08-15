@@ -118,21 +118,50 @@
         $gameParty.gainItem(orb, SANDBOX_WISH_ORB_COUNT);
     }
 
-    // Check if player name is Test to enable Sandbox mode
-    const _Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;
-    Scene_Menu.prototype.createCommandWindow = function () {
-        if ($gameParty && $gameParty.leader() && $gameParty.leader().name().toLowerCase() === "test") {
+    // Check if player name is Test (or Party) to enable Sandbox mode. Run from
+    // both the pause menu AND every map start, so the "Party" full-randomize
+    // override fires as soon as the name takes effect (character creation,
+    // an in-game rename, ...) rather than only once the player opens the menu.
+    function applySandboxNameOverrides() {
+        const leader = $gameParty && $gameParty.leader();
+        const leaderName = leader ? leader.name().toLowerCase() : "";
+        if (leaderName === "test") {
             $gameSystem._isSandboxMode = true;
             // Build a random party from the arena party generator at a random level 1-99.
-            // Only runs once per session (the guard prevents re-randomizing on every menu open).
+            // Only runs once per session (the guard prevents re-randomizing on every check).
             if (!$gameSystem._sandboxPartyGenerated && window.ArenaBattleHandler) {
                 const randomLevel = Math.floor(Math.random() * 99) + 1;
                 ArenaBattleHandler.buildRandomParty(randomLevel, randomLevel);
                 $gameSystem._sandboxPartyGenerated = true;
             }
+        } else if (leaderName === "party") {
+            $gameSystem._isSandboxMode = true;
+            // Build a full 3-member party through the character creator's own
+            // randomization (npc:true sprite + name, random class, traits with
+            // their equipment, class-compatible weapon + armor, starter skills)
+            // at a single random level 1-20, plus a proper starting purse.
+            // Only runs once per session.
+            if (!$gameSystem._sandboxPartyGenerated && window.CharacterCreationParty) {
+                const randomLevel = Math.floor(Math.random() * 20) + 1;
+                window.CharacterCreationParty.randomizeFullParty(randomLevel, 3);
+                $gameSystem._sandboxPartyGenerated = true;
+            }
         }
         if ($gameSystem && $gameSystem._isSandboxMode) grantSandboxWishOrbs();
+    }
+
+    const _Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;
+    Scene_Menu.prototype.createCommandWindow = function () {
+        if ($gameParty && $gameSystem) applySandboxNameOverrides();
         _Scene_Menu_createCommandWindow.call(this);
+    };
+
+    // Also checked on every map start (new game, load, scene return), so the
+    // "Party" party-build fires without the player ever opening the menu.
+    const _Scene_Map_start = Scene_Map.prototype.start;
+    Scene_Map.prototype.start = function () {
+        if ($gameParty && $gameSystem) applySandboxNameOverrides();
+        _Scene_Map_start.call(this);
     };
 
     // =========================================================================

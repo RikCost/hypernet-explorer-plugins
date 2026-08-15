@@ -785,6 +785,32 @@ select option:hover {
     color: var(--text-pure-white) !important;
 }
 
+/* ==========================================================================
+   Thinker + Blacksmithing, "item obtained" success overlay
+   .success-overlay and .success-item-row read var(--text-highlight-active)
+   and var(--text-warning-hover), both pure white in this theme, so the
+   whole "you obtained X" popup renders as a stark white card floating on
+   the black tower page. success-obtained-label's dark ink (--border-muted-
+   focus) is tuned for that white card and would vanish were the background
+   simply darkened without repainting it too. Give both menus a black panel
+   with a gold rule instead, and lift the label to gold.
+   ========================================================================== */
+#thinker-container .success-overlay,
+#blacksmith-container .success-overlay {
+    background: var(--bg-panel) !important;
+    border: 1px solid var(--border-focus-hover);
+    box-shadow: 0 0 16px var(--shadow-gold-amber-50);
+}
+#thinker-container .success-item-row,
+#blacksmith-container .success-item-row {
+    background: var(--bg-tertiary-focus-translucent-45) !important;
+    border: 1px solid var(--border-focus-hover);
+}
+#thinker-container .success-obtained-label,
+#blacksmith-container .success-obtained-label {
+    color: var(--text-primary-hover) !important;
+}
+
 /* Disassemble owned-count is painted dark brown (#5c2c16) inline -> lift it. */
 #thinker-container .blueprint-count[style*="#5c2c16"] {
     color: var(--text-text-alt-8) !important;

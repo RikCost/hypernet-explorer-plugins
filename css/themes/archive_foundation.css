@@ -505,49 +505,67 @@
 }
 
 /* ==========================================================================
-   Thinker (Crafting) menu, parchment-theme readability
+   Thinker (Crafting) + Blacksmithing (Anvil) menus, parchment-theme readability
    Item names are inked inline with the rarity.colorCode palette baked into
-   ThinkerMenu.js, a set of bright neon hues (white / lime / cyan / violet /
-   orange) tuned for the dark Omega Tower page. On this light parchment the
-   white common names vanish outright and the neon uncommon/rare/epic/legendary
-   names glare against the cream. Re-ink each tier to this theme's parchment-
-   tuned rarity palette so the Assemble blueprint rows, Disassemble salvage rows
-   and the success overlay all read cleanly. Scoped to this file only;
-   omega_tower.css keeps its own (correct) light-on-dark forcing of these names.
+   ThinkerMenu.js / BlacksmithingMenu.js, a set of bright neon hues (white /
+   lime / cyan / violet / orange) tuned for the dark Omega Tower page. On this
+   light parchment the white common names vanish outright and the neon
+   uncommon/rare/epic/legendary names glare against the cream. Re-ink each
+   tier to this theme's parchment-tuned rarity palette so the Assemble
+   blueprint rows, Disassemble salvage rows and both menus' success overlay
+   all read cleanly. Scoped to this file only; omega_tower.css keeps its own
+   (correct) light-on-dark forcing of these names.
    ========================================================================== */
 #thinker-container .blueprint-name[style*="#FFFFFF"],
 #thinker-container .workbench-item-name[style*="#FFFFFF"],
+#blacksmith-container .blueprint-name[style*="#FFFFFF"],
+#blacksmith-container .workbench-item-name[style*="#FFFFFF"],
 /* success-overlay background uses var(--text-highlight-active) which
    is already cream (#f4edd4) in this theme, but its child .success-item-row
    inherits the base theme's white background. Override so the rows sit
    visibly on the cream page and don't wash out the common-rarity items. */
-#thinker-container .success-overlay {
+#thinker-container .success-overlay,
+#blacksmith-container .success-overlay {
     background: rgba(244, 237, 212, 0.92) !important;
 }
-#thinker-container .success-item-row {
+#thinker-container .success-item-row,
+#blacksmith-container .success-item-row {
     background: rgba(200, 180, 150, 0.35) !important;
 }
-#thinker-container .success-item-row span[style*="#FFFFFF"] {
+#thinker-container .success-item-row span[style*="#FFFFFF"],
+#blacksmith-container .success-item-row span[style*="#FFFFFF"] {
     color: var(--rarity-common) !important;
 }
 #thinker-container .blueprint-name[style*="#1AFF1A"],
 #thinker-container .workbench-item-name[style*="#1AFF1A"],
-#thinker-container .success-item-row span[style*="#1AFF1A"] {
+#thinker-container .success-item-row span[style*="#1AFF1A"],
+#blacksmith-container .blueprint-name[style*="#1AFF1A"],
+#blacksmith-container .workbench-item-name[style*="#1AFF1A"],
+#blacksmith-container .success-item-row span[style*="#1AFF1A"] {
     color: var(--rarity-uncommon) !important;
 }
 #thinker-container .blueprint-name[style*="#0080FF"],
 #thinker-container .workbench-item-name[style*="#0080FF"],
-#thinker-container .success-item-row span[style*="#0080FF"] {
+#thinker-container .success-item-row span[style*="#0080FF"],
+#blacksmith-container .blueprint-name[style*="#0080FF"],
+#blacksmith-container .workbench-item-name[style*="#0080FF"],
+#blacksmith-container .success-item-row span[style*="#0080FF"] {
     color: var(--rarity-rare) !important;
 }
 #thinker-container .blueprint-name[style*="#8000FF"],
 #thinker-container .workbench-item-name[style*="#8000FF"],
-#thinker-container .success-item-row span[style*="#8000FF"] {
+#thinker-container .success-item-row span[style*="#8000FF"],
+#blacksmith-container .blueprint-name[style*="#8000FF"],
+#blacksmith-container .workbench-item-name[style*="#8000FF"],
+#blacksmith-container .success-item-row span[style*="#8000FF"] {
     color: var(--rarity-epic) !important;
 }
 #thinker-container .blueprint-name[style*="#FF8000"],
 #thinker-container .workbench-item-name[style*="#FF8000"],
-#thinker-container .success-item-row span[style*="#FF8000"] {
+#thinker-container .success-item-row span[style*="#FF8000"],
+#blacksmith-container .blueprint-name[style*="#FF8000"],
+#blacksmith-container .workbench-item-name[style*="#FF8000"],
+#blacksmith-container .success-item-row span[style*="#FF8000"] {
     color: var(--rarity-legendary) !important;
 }
 

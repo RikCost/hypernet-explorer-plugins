@@ -158,6 +158,35 @@
         console.log("DataService: merged " + added + " alien biomes into WorldGen.Biomes.");
     }
 
+    // ── window.WorldGen.HardcodedBiomeNames, derived from Destinations.json ──
+    // The old js/db/WorldGen/HardcodedBiomeNames.json ("x,y" -> place name) was
+    // a hand-maintained duplicate of the footprint every named place already
+    // has to declare somewhere: it is retired, and every coordinate it held
+    // now lives as that place's own `reservedTiles` array in
+    // js/db/WorkSystem/Destinations.json (the same array FastTravelSystem
+    // reads to walk a traveller through the place's own `entrance` instead of
+    // dropping them on the open world tile). This block rebuilds the old flat
+    // "x,y" -> Destinations.json KEY map at load time so every plugin that
+    // still reads window.WorldGen.HardcodedBiomeNames[x+','+y] keeps working
+    // unchanged.
+    if (window.WorkSystem && window.WorkSystem.Destinations) {
+        const flat = {};
+        let tiles = 0;
+        for (const key in window.WorkSystem.Destinations) {
+            const entry = window.WorkSystem.Destinations[key];
+            const reserved = entry && entry.reservedTiles;
+            if (!Array.isArray(reserved)) continue;
+            reserved.forEach(function (coord) {
+                flat[coord] = key;
+                tiles++;
+            });
+        }
+        window.WorldGen = window.WorldGen || {};
+        window.WorldGen.HardcodedBiomeNames = flat;
+        console.log("DataService: derived WorldGen.HardcodedBiomeNames from " +
+            tiles + " Destinations.json reservedTiles.");
+    }
+
     // ── The sprite catalogue: NPCs.json ─────────────────────────────────────
     // js/db/WorldGen/NPCs.json (window.WorldGen.NPCs) is the one record of every
     // character sheet the game knows. The old js/db/Sprites/SpritesAssociation.json

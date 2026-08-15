@@ -6586,6 +6586,33 @@
     }
   };
 
+  // Rebuild the current party as `memberCount` (max 3) fully random members,
+  // all at the same level, through the character creator's own randomization
+  // rules: an NPC sprite/name drawn only from npc:true entries in NPCs.json,
+  // a random sentient class, random traits (which grant their own items and
+  // equipment), a class-compatible weapon plus random armor per slot, and the
+  // baseline starter skills - the same recipe randomizeBattleTestActor uses to
+  // build a Battle Test roster, generalized to any level/size and exposed for
+  // callers outside this file (e.g. Sandbox Mode's "Party" name override).
+  // Finishes with the same starting purse a normal creation run hands out.
+  window.CharacterCreationParty = window.CharacterCreationParty || {};
+  window.CharacterCreationParty.randomizeFullParty = function (level, memberCount) {
+    const count = Math.max(1, Math.min(3, memberCount || 3));
+    const lvl = Math.max(1, Math.min(99, level || 1));
+
+    for (const id of $gameParty._actors.slice()) {
+      $gameParty.removeActor(id);
+    }
+    for (let i = 0; i < count; i++) {
+      const actorId = i + 1;
+      $gameParty.addActor(actorId);
+      randomizeBattleTestActor($gameActors.actor(actorId), i, lvl);
+    }
+
+    if ($gamePlayer) $gamePlayer.refresh();
+    giveStartingMoney();
+  };
+
   // --- Overland origin placement -----------------------------------------
   // An origin must never put the party on an Ocean square: about half the world
   // map is open sea, and the procedural map behind such a square is water with

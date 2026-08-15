@@ -44,7 +44,12 @@
     "sameItemNegative": "\nPerhaps you shouldn't have tried that...",
     "recoveredHunger": "\nRecovered {percent}% Hunger per member",
     "splitAmong": " (split among {count} members)",
-    "ate": "You ate {name} raw."
+    "ate": "You ate {name} raw.",
+    "cannotCombine": "Raw meat and plant matter can't be cooked together."
+  },
+  "names": {
+    "meaty": "Meaty {name}",
+    "vegetarian": "Vegetarian {name}"
   },
   "ui": {
     "selectFirstIngredient": "Select first ingredient to cook",

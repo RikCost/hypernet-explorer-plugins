@@ -833,6 +833,23 @@
         return transportType === 'bus' && isProceduralTown(dest);
     }
 
+    // The door of a hardcoded, named place: a Destinations.json entry that
+    // carries `reservedTiles` (its old js/db/WorldGen/HardcodedBiomeNames.json
+    // world-map footprint, now folded straight into the entry) AND its own
+    // `entrance` {id, x, y, direction}. A transport with nowhere more specific
+    // of its own to arrive at would otherwise leave the traveller standing on
+    // the open world tile the town's `base` pin only approximates; stepping
+    // through the door it actually names reads far better, so this is checked
+    // ahead of that fallback in getActualDestination.
+    function entranceFor(destination) {
+        const o = destination && destination.transportOverrides;
+        const tiles = o && o.reservedTiles;
+        const entrance = o && o.entrance;
+        if (!entrance || !Array.isArray(tiles) || !tiles.length) return null;
+        if (!entrance.id || !$dataMapInfos[entrance.id]) return null;
+        return entrance;
+    }
+
     function getActualDestination(destination, transportType) {
         // One arrival, whatever was picked and whatever it was picked on: the
         // stations, the stops and the helipads were all on the ground.
@@ -852,6 +869,16 @@
         if (TRANSPORT_KEYS.includes(transportType) && overrides[transportType]) {
             const override = overrides[transportType];
             return withWorldPosition(destination, { mapId: override.mapId, x: override.x, y: override.y, name: destination.name });
+        }
+
+        // A named place with a door of its own is walked through it, rather
+        // than left standing on the open world tile.
+        const entrance = entranceFor(destination);
+        if (entrance) {
+            return withWorldPosition(destination, {
+                mapId: entrance.id, x: entrance.x, y: entrance.y, direction: entrance.direction,
+                name: destination.name
+            });
         }
 
         // Everything else arrives on the world map at the town's base tile.
@@ -1019,7 +1046,7 @@
             $gameScreen.startFadeOut(24);
             const actualDest = getActualDestination(destination, data.selectedTransport);
             setTimeout(() => {
-                $gamePlayer.reserveTransfer(actualDest.mapId, actualDest.x, actualDest.y, 2, 0);
+                $gamePlayer.reserveTransfer(actualDest.mapId, actualDest.x, actualDest.y, actualDest.direction || 2, 0);
                 clearFastTravelData();
                 setPlayerWorldFromDest(actualDest);
                 $gameVariables.setValue(45, actualDest.mapId);
@@ -1109,7 +1136,7 @@
             data.finalDestination.mapId,
             data.finalDestination.x,
             data.finalDestination.y,
-            2, 0
+            data.finalDestination.direction || 2, 0
         );
 
         setPlayerWorldFromDest(data.finalDestination);
@@ -1137,7 +1164,7 @@
         if (data.timerActive && data.timerRemainingTime <= 0) {
 
             // Teleport to destination using the mapId from finalDestination
-            $gamePlayer.reserveTransfer(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y, 2, 0);
+            $gamePlayer.reserveTransfer(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y, data.finalDestination.direction || 2, 0);
             const vehicle = $gameMap.vehicle("ship");
             vehicle.setLocation(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
 
@@ -1173,7 +1200,7 @@
         if (data.timerActive && data.timerRemainingTime <= 0) {
 
             // Teleport to destination using the mapId from finalDestination
-            $gamePlayer.reserveTransfer(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y, 2, 0);
+            $gamePlayer.reserveTransfer(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y, data.finalDestination.direction || 2, 0);
             // The shared engine slot must stand for the car before it is moved, so
             // the move is recorded against the car rather than the bike or boat.
             $gameSystem._boatType = 'car';
@@ -1210,7 +1237,7 @@
         if (data.timerActive && data.timerRemainingTime <= 0) {
 
             // Teleport to destination using the mapId from finalDestination
-            $gamePlayer.reserveTransfer(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y, 2, 0);
+            $gamePlayer.reserveTransfer(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y, data.finalDestination.direction || 2, 0);
             const vehicle = $gameMap.vehicle("airship");
             vehicle.setLocation(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
 
@@ -1276,7 +1303,7 @@
             data.finalDestination.mapId,
             data.finalDestination.x,
             data.finalDestination.y,
-            2, 0
+            data.finalDestination.direction || 2, 0
         );
         setPlayerWorldFromDest(data.finalDestination);
         clearFastTravelData();

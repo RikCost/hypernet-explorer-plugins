@@ -62,9 +62,11 @@
  * patrons are neighbours and every corner of the map gets one, and rolls a
  * square inside each. A square is always a field biome (Fields, Meadows,
  * Farm) - open ground on the tileset that declares the Hatch feature - and is
- * never a settlement, a river, a bridge, a square named in
- * HardcodedBiomeNames.json / HardcodedBiomeOverrides.json /
- * NonProceduralCoordinates.json, or anywhere near a WorkSystem destination.
+ * never a settlement, a river, a bridge, a town's `reservedTiles` footprint,
+ * `base` square or per-direction `coords` square in WorkSystem/Destinations.json
+ * (the retired HardcodedBiomeNames.json and NonProceduralCoordinates.json
+ * rosters, both folded into that entry), or a square named in
+ * HardcodedBiomeOverrides.json.
  * The field biome is a preference, not a condition: the hatch is stamped on
  * the secret's tile whatever biome the square generates as.
  * The hatch tile inside the square is rolled in the ring around the middle of

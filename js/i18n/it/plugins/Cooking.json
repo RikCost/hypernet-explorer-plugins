@@ -44,7 +44,12 @@
     "sameItemNegative": "\nForse non avresti dovuto provarlo...",
     "recoveredHunger": "\nRecuperati {percent}% Fame per membro",
     "splitAmong": " (diviso tra {count} membri)",
-    "ate": "Hai mangiato {name} crudo."
+    "ate": "Hai mangiato {name} crudo.",
+    "cannotCombine": "Carne cruda e materia vegetale non possono essere cucinate insieme."
+  },
+  "names": {
+    "meaty": "{name} alla carne",
+    "vegetarian": "{name} vegetariano"
   },
   "ui": {
     "selectFirstIngredient": "Seleziona il primo ingrediente da cucinare",

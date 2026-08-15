@@ -68,6 +68,14 @@
     const recoverySoundName = parameters['Recovery Sound'] || 'Recovery';
     const requiredItemIds = [127, 128]; // Replace with your desired item IDs
 
+    // Raw meat and raw plant matter carry no nutrition of their own
+    // (category:Crafting, not Food) and are cookable only through their own
+    // fixed recipe, or paired with any other food item under their own name.
+    const RAW_MEAT_ID = 862;
+    const COOKED_MEAT_ID = 447;
+    const RAW_VEG_ID = 858;
+    const ROASTED_VEG_ID = 499;
+
     //=============================================================================
     // i18n
     //=============================================================================
@@ -111,7 +119,28 @@
 
         isFoodItem: function (item) {
             if (!item) return false;
+            if (item.id === RAW_MEAT_ID || item.id === RAW_VEG_ID) return true;
             return item && item.meta && item.meta.category === "Food";
+        },
+
+        // Raw meat and raw plant matter refuse to be cooked with each other;
+        // every other pairing (including with themselves) is allowed.
+        canPairItems: function (item1, item2) {
+            if (!item1 || !item2 || item1 === item2) return true;
+            const ids = [item1.id, item2.id];
+            return !(ids.includes(RAW_MEAT_ID) && ids.includes(RAW_VEG_ID));
+        },
+
+        // The fixed-recipe item raw meat/plant matter becomes when cooked
+        // with a second unit of itself, or null for any other pairing.
+        fixedRecipeFor: function (item1, item2) {
+            if (item1.id === RAW_MEAT_ID && item2.id === RAW_MEAT_ID) {
+                return $dataItems[COOKED_MEAT_ID];
+            }
+            if (item1.id === RAW_VEG_ID && item2.id === RAW_VEG_ID) {
+                return $dataItems[ROASTED_VEG_ID];
+            }
+            return null;
         },
 
         getRecoveryValues: function (item) {
@@ -135,6 +164,24 @@
 
         createCookedItemName: function (item1, item2) {
             const tr = (name) => (window.translateText ? window.translateText(name) : name);
+
+            // Raw meat/plant matter cooked in bulk with itself becomes its
+            // finished form outright, never the random-adjective roll.
+            const fixedRecipe = this.fixedRecipeFor(item1, item2);
+            if (fixedRecipe) {
+                return tr(fixedRecipe.name);
+            }
+            // Paired with anything else, raw meat/plant matter names the dish
+            // instead of the usual first-word/last-word splice.
+            if (item1.id === RAW_MEAT_ID || item2.id === RAW_MEAT_ID) {
+                const other = item1.id === RAW_MEAT_ID ? item2 : item1;
+                return _ci18n('names.meaty', { name: tr(other.name) });
+            }
+            if (item1.id === RAW_VEG_ID || item2.id === RAW_VEG_ID) {
+                const other = item1.id === RAW_VEG_ID ? item2 : item1;
+                return _ci18n('names.vegetarian', { name: tr(other.name) });
+            }
+
             // If items are the same, use a random adjective
             if (item1 === item2) {
                 return this.getRandomAdjectiveForSameItem(item1) + " " + tr(item1.name);
@@ -208,6 +255,17 @@
 
         cookItems: function (item1, item2) {
 
+            if (!this.canPairItems(item1, item2)) {
+                SoundManager.playBuzzer();
+                if (window.ParchmentToast) {
+                    window.ParchmentToast.show(_ci18n('messages.cannotCombine'), {
+                        severity: "warn",
+                        duration: 180
+                    });
+                }
+                return;
+            }
+
             // Remove items from inventory
             $gameParty.loseItem(item1, 1);
             $gameParty.loseItem(item2, 1);
@@ -230,8 +288,10 @@
             const item1Nutrition = this.getRecoveryValues(item1);
             const item2Nutrition = this.getRecoveryValues(item2);
 
-            // Check if same item is used twice
-            const isSameItem = item1 === item2;
+            // Raw meat/plant matter cooked with a second unit of itself is a
+            // fixed recipe, never the random-adjective "same item" roll.
+            const fixedRecipe = this.fixedRecipeFor(item1, item2);
+            const isSameItem = item1 === item2 && !fixedRecipe;
             let multiplier = 1.0;
 
             // Roll the cooked name first so getMultiplierForSameItem() reads the
@@ -249,19 +309,28 @@
                 multiplier = this.getMultiplierForSameItem();
             }
 
-            // Double first item's nutrition and add second item's nutrition (with potential modifier)
-            let totalCalories = item1Nutrition.hunger * 2;
-            let totalProtein = item1Nutrition.tp * 2;
-            let totalFat = item1Nutrition.mp * 2;
-
-            if (isSameItem) {
-                totalCalories += item2Nutrition.hunger * multiplier;
-                totalProtein += item2Nutrition.tp * multiplier;
-                totalFat += item2Nutrition.mp * multiplier;
+            let totalCalories, totalProtein, totalFat;
+            if (fixedRecipe) {
+                // The finished item's own nutrition, not the doubled raw total.
+                const recipeNutrition = this.getRecoveryValues(fixedRecipe);
+                totalCalories = recipeNutrition.hunger;
+                totalProtein = recipeNutrition.tp;
+                totalFat = recipeNutrition.mp;
             } else {
-                totalCalories += item2Nutrition.hunger;
-                totalProtein += item2Nutrition.tp;
-                totalFat += item2Nutrition.mp;
+                // Double first item's nutrition and add second item's nutrition (with potential modifier)
+                totalCalories = item1Nutrition.hunger * 2;
+                totalProtein = item1Nutrition.tp * 2;
+                totalFat = item1Nutrition.mp * 2;
+
+                if (isSameItem) {
+                    totalCalories += item2Nutrition.hunger * multiplier;
+                    totalProtein += item2Nutrition.tp * multiplier;
+                    totalFat += item2Nutrition.mp * multiplier;
+                } else {
+                    totalCalories += item2Nutrition.hunger;
+                    totalProtein += item2Nutrition.tp;
+                    totalFat += item2Nutrition.mp;
+                }
             }
 
             // Calculate hunger recovery using the same formula as TimeDateSystem.
@@ -678,6 +747,8 @@
             return $gameParty.numItems(item) >= 2;
         }
 
+        if (!CookingSystem.canPairItems(firstItem, item)) return false;
+
         return true;
     };
 
@@ -850,6 +921,8 @@
                 if (!CookingSystem.getFirstItem()) {
                     CookingSystem.setFirstItem(selectedItem);
                     SoundManager.playOk();
+                } else if (!CookingSystem.canPairItems(CookingSystem.getFirstItem(), selectedItem)) {
+                    SoundManager.playBuzzer();
                 } else {
                     CookingSystem.setSecondItem(selectedItem);
 
@@ -1331,24 +1404,33 @@
                 const item1Nutrition = CookingSystem.getRecoveryValues(item1);
                 const item2Nutrition = CookingSystem.getRecoveryValues(item2);
 
-                const isSameItem = item1 === item2;
+                const fixedRecipe = CookingSystem.fixedRecipeFor(item1, item2);
+                const isSameItem = item1 === item2 && !fixedRecipe;
                 let multiplier = 1.0;
                 if (isSameItem) {
                     multiplier = CookingSystem.getMultiplierForSameItem();
                 }
 
-                let totalCalories = item1Nutrition.hunger * 2;
-                let totalProtein = item1Nutrition.tp * 2;
-                let totalFat = item1Nutrition.mp * 2;
-
-                if (isSameItem) {
-                    totalCalories += item2Nutrition.hunger * multiplier;
-                    totalProtein += item2Nutrition.tp * multiplier;
-                    totalFat += item2Nutrition.mp * multiplier;
+                let totalCalories, totalProtein, totalFat;
+                if (fixedRecipe) {
+                    const recipeNutrition = CookingSystem.getRecoveryValues(fixedRecipe);
+                    totalCalories = recipeNutrition.hunger;
+                    totalProtein = recipeNutrition.tp;
+                    totalFat = recipeNutrition.mp;
                 } else {
-                    totalCalories += item2Nutrition.hunger;
-                    totalProtein += item2Nutrition.tp;
-                    totalFat += item2Nutrition.mp;
+                    totalCalories = item1Nutrition.hunger * 2;
+                    totalProtein = item1Nutrition.tp * 2;
+                    totalFat = item1Nutrition.mp * 2;
+
+                    if (isSameItem) {
+                        totalCalories += item2Nutrition.hunger * multiplier;
+                        totalProtein += item2Nutrition.tp * multiplier;
+                        totalFat += item2Nutrition.mp * multiplier;
+                    } else {
+                        totalCalories += item2Nutrition.hunger;
+                        totalProtein += item2Nutrition.tp;
+                        totalFat += item2Nutrition.mp;
+                    }
                 }
 
                 // Get formula params

@@ -3935,8 +3935,10 @@
     // on. They stand still and play their idle animation; pooled and recycled
     // by distance like the traffic.
     // =========================================================================
-    const ENEMY_3D_MAX       = 10;     // concurrently loaded battler models
+    const ENEMY_3D_MAX       = 24;     // concurrently loaded battler models
     const ENEMY_3D_DESPAWN   = 1250;   // world units before an enemy recycles
+    const ENEMY_3D_SPAWN_INT = 0.5;    // seconds between spawn attempts
+    const ENEMY_3D_CONTACT_R = 16;     // world units: how close counts as "touching"
 
     class BiomeEnemyManager {
         constructor(scene, terrain) {
@@ -3998,7 +4000,7 @@
                 if (dx * dx + dz * dz > ENEMY_3D_DESPAWN * ENEMY_3D_DESPAWN) this._remove(i);
             }
             this._timer += delta;
-            if (this._timer < 1.2) return;
+            if (this._timer < ENEMY_3D_SPAWN_INT) return;
             this._timer = 0;
             if (this._ents.length < ENEMY_3D_MAX) this._trySpawn(vanX, vanZ);
         }
@@ -4026,7 +4028,7 @@
 
         _trySpawn(vanX, vanZ) {
             const ts = WORLD_TILE_SIZE;
-            for (let attempt = 0; attempt < 4; attempt++) {
+            for (let attempt = 0; attempt < 6; attempt++) {
                 const ang  = Math.random() * Math.PI * 2;
                 const dist = 260 + Math.random() * 700;
                 const x = vanX + Math.cos(ang) * dist;
@@ -4055,7 +4057,7 @@
                 const flyH = loco.gait === 'fly' ? (45 + Math.random() * 55) : 0;
                 const yaw = Math.random() * Math.PI * 2;
                 const ent = {
-                    model, x, z, alive: true, root: null,
+                    model, x, z, alive: true, root: null, enemyId: data.id,
                     gait: loco.gait, moveSpeed, flyH,
                     heading: yaw, turnT: 1 + Math.random() * 2
                 };
@@ -4112,6 +4114,43 @@
         dispose() {
             for (let i = this._ents.length - 1; i >= 0; i--) this._remove(i);
         }
+    }
+
+    // enemy id -> a troop holding that one creature, same reading BolognaMapSystem
+    // uses for its own walked-into street/canal fauna ("troop N holds enemy N"
+    // for most of the table but not all of it, so it is read rather than assumed).
+    let _bioTroopByEnemy = null;
+
+    function bioBuildTroopIndex() {
+        const index = {};
+        for (let i = 1; i < $dataTroops.length; i++) {
+            const troop = $dataTroops[i];
+            if (!troop || !troop.members || troop.members.length !== 1) continue;
+            if (troop._bseReinforced || troop._bsePetrodemon) continue;
+            const id = troop.members[0].enemyId;
+            if (index[id] === undefined || i === id) index[id] = i;
+        }
+        _bioTroopByEnemy = index;
+    }
+
+    function bioTroopHoldsEnemy(troopId, enemyId) {
+        const troop = troopId ? $dataTroops[troopId] : null;
+        return !!(troop && troop.members && troop.members[0] &&
+            troop.members[0].enemyId === enemyId);
+    }
+
+    function troopForBioEnemy(enemyId) {
+        if (!_bioTroopByEnemy) bioBuildTroopIndex();
+        let troopId = _bioTroopByEnemy[enemyId] || 0;
+        // A scratch slot (a reinforced troop, a petrodemon) is written over an
+        // existing one at runtime, so a cached answer is checked against the
+        // live table and the index rebuilt rather than trusted for the session.
+        if (!bioTroopHoldsEnemy(troopId, enemyId)) {
+            bioBuildTroopIndex();
+            troopId = _bioTroopByEnemy[enemyId] || 0;
+            if (!bioTroopHoldsEnemy(troopId, enemyId)) return 0;
+        }
+        return troopId;
     }
 
     // =========================================================================
@@ -6728,6 +6767,40 @@
             }
         }
 
+        // Touch a roaming BiomeEnemyManager animal: pull it out of the wildlife
+        // pool and drop straight into a fight. For now this ALWAYS runs the
+        // ordinary Scene_Battle presentation, ignoring the map-battle option:
+        // the drive is not a real overworld map for MapBattleMode's tactical
+        // layer to run on top of. Never checked in title mode / free-play (no
+        // real party) or mid auto-travel (see the ftActive gate at the call site).
+        _checkBioEnemyCollision() {
+            if (!this._bioEnemies || this._menuOpen || this._suspended) return;
+            const ents = this._bioEnemies._ents;
+            const R = FOOT_VAN_HALF_LEN + ENEMY_3D_CONTACT_R;
+            for (let i = ents.length - 1; i >= 0; i--) {
+                const ent = ents[i];
+                if (!ent.alive || !ent.root) continue;
+                const dx = ent.x - this._vanX, dz = ent.z - this._vanZ;
+                if (dx * dx + dz * dz > R * R) continue;
+                const enemyId = ent.enemyId;
+                this._bioEnemies._remove(i);
+                this._startBioEnemyBattle(enemyId);
+                return;
+            }
+        }
+
+        // Pause the drive (same suspend/resume the main menu uses) and push a
+        // normal battle against the touched creature's own troop.
+        _startBioEnemyBattle(enemyId) {
+            const troopId = troopForBioEnemy(enemyId);
+            if (!troopId) return;
+            this._suspended = true;
+            if (this._overlay) this._overlay.style.display = 'none';
+            if (document.pointerLockElement === document.body) document.exitPointerLock();
+            BattleManager.setup(troopId, true, false);
+            SceneManager.push(Scene_Battle);
+        }
+
         // Wheel dust offroad, tyre smoke while drifting, exhaust chuffs under
         // hard throttle. Rate-limited to ~11 spawns per second (lighter than
         // before so the camper leaves a thin trail instead of a smoke screen).
@@ -6927,6 +7000,12 @@
             // Fender benders with the pooled traffic (never during auto travel).
             if (!ftActive && (this._env === 'road' || this._env === 'water')) {
                 this._checkTrafficCollision(delta);
+            }
+
+            // Roaming wildlife: touching one drops straight into a battle (never
+            // during the title's silent autopilot, free-play, or auto-travel).
+            if (!ftActive && !this._titleMode && !this._standalone) {
+                this._checkBioEnemyCollision();
             }
 
             // Wheel dust / tyre smoke / exhaust.

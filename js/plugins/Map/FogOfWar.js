@@ -271,7 +271,20 @@
 
     function fogError(e) {
         errorCount++;
-        if ($gameMap) $gameMap._fogOfWarDisabled = true;
+        if ($gameMap) {
+            $gameMap._fogOfWarDisabled = true;
+            // "Disabled" alone is not enough on a map carrying region-30
+            // interior dividers (MousePan's convention, unrelated to fog):
+            // isDividerOnlyFog() reads _fogOfWarDisabled as "fog is inactive,
+            // so fall back to enforcing dividers", not "something broke, show
+            // everything". Left unmarked, an error here fails CLOSED - the
+            // whole map goes black except the player's current flood-filled
+            // room and whatever is exempt from fog (NPC/Chest/Trigger events,
+            // region 31) - instead of failing open. This flag tells
+            // isDividerOnlyFog() and fogOfWarState() to skip the divider
+            // fallback and reveal the map outright, the actual fail-safe.
+            $gameMap._fogOfWarErrorFallback = true;
+        }
         if (errorCount >= ERROR_LIMIT) sessionDisabled = true;
         console.error(`FogOfWar: error ${errorCount}/${ERROR_LIMIT}, fog off for this map` +
             (sessionDisabled ? ' and for the rest of the session' : ''), e);
@@ -570,6 +583,7 @@
         }
 
         this._fogOfWarDisabled = false;
+        this._fogOfWarErrorFallback = false;
         this._visibleFogOfWar = false;
         this._isExteriorMap = false;
         if ($dataMap && $dataMap.note) {
@@ -977,7 +991,7 @@
         if (window.dreamActive) return STATE_VISIBLE;
         // On divider maps the real fog data still matters even when fog is
         // globally off / disabled for the map, so we don't short-circuit here.
-        if ((this._fogOfWarDisabled || !fogEnabled()) && !this._hasVisionDividers) return STATE_VISIBLE;
+        if ((this._fogOfWarDisabled || !fogEnabled()) && (!this._hasVisionDividers || this._fogOfWarErrorFallback)) return STATE_VISIBLE;
         const pos = this.normalizePos(x, y);
         if (!pos.isValid) return STATE_UNSEEN;
         if (this.regionId(pos.x, pos.y) === REGION_FOG_EXEMPT) return STATE_VISIBLE;
@@ -1161,7 +1175,7 @@
     // True when this map should render fog purely to enforce interior dividers
     // (region 30) - i.e. it has dividers but fog is otherwise inactive.
     Game_Map.prototype.isDividerOnlyFog = function () {
-        if (this._fogOfWarForceOff) return false;
+        if (this._fogOfWarForceOff || this._fogOfWarErrorFallback) return false;
         return !!this._hasVisionDividers &&
             (!fogEnabled() || this._fogOfWarDisabled) &&
             !window.dreamActive;
@@ -1396,25 +1410,13 @@
         this.updateEventVisibility(isInitial);
     };
 
-    // Which eyes the vision source still has. A character whose archetype has
-    // no eye parts at all sees normally.
+    // Eye-damage blindness for fog of war is disabled: a character with both
+    // eyes destroyed used to lose almost all terrain reveal (calculateVision
+    // and castRay skip terrain when blind, leaving only the immediate 3x3
+    // tile and whatever events fall inside the traced cone), which read
+    // exactly like a stuck-black-screen bug. Always answer sighted.
     Game_Map.prototype.visionEyesFor = function (char) {
-        let actor = null;
-        if (char === $gamePlayer) {
-            actor = $gameParty.leader();
-        } else if (window.$gameSplitScreen && char === window.$gameSplitScreen.p2Event) {
-            actor = $gameParty.members()[1];
-        }
-
-        let left = true;
-        let right = true;
-        if (actor && actor._bodyParts) {
-            const leftEye = actor._bodyParts["LEFT_EYE"];   // i18n-ignore  body part key
-            const rightEye = actor._bodyParts["RIGHT_EYE"]; // i18n-ignore  body part key
-            if (leftEye && (leftEye.damaged || leftEye.currentHp <= 0)) left = false;
-            if (rightEye && (rightEye.damaged || rightEye.currentHp <= 0)) right = false;
-        }
-        return { left, right, blind: !left && !right };
+        return { left: true, right: true, blind: false };
     };
 
     Game_Map.prototype.calculateVision = function (centerX, centerY, direction, character) {
@@ -2024,6 +2026,20 @@
         try {
             if (fullRefresh && this.resizeFogCanvas()) {
                 $gameMap.ensureFogBuffers();
+                // Scene_Map.prototype.create reloads $dataMap from disk on
+                // EVERY scene creation, not only on a real transfer - closing
+                // any menu/HypernetOS app/UI overlay recreates Scene_Map and
+                // silently swaps $dataMap under the running game, without ever
+                // calling Game_Map.setup() (that only happens on a transfer).
+                // ensureFogBuffers() does not know the map data changed - it
+                // only rebuilds the terrain/region cache when the buffer SIZE
+                // is wrong - so isVisionBlocking(), the region-31 exempt list
+                // and the region-30 divider list could all still be judging
+                // the map against whatever it looked like before the reload.
+                // A full refresh (which onMapLoaded already requests after
+                // every scene creation) is the one signal that $dataMap may
+                // have just changed, so force the cache to rebuild here.
+                $gameMap.refreshTerrainCache();
                 if ($gameMap.isDividerOnlyFog()) {
                     // Interior-divider maps reveal the whole current room rather
                     // than a vision cone.

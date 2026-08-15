@@ -4,6 +4,13 @@
     "type": "city",
     "procedural": false,
     "tag": "port",
+    "entrance": {},
+    "coords": [
+      { "direction": "south", "id": 397, "x": 23, "y": 1, "mapCoord": "88,117" },
+      { "direction": "north", "id": 397, "x": 23, "y": 48, "mapCoord": "88,116" },
+      { "direction": "east", "id": 397, "x": 1, "y": 35, "mapCoord": "89,116" },
+      { "direction": "west", "id": 397, "x": 48, "y": 34, "mapCoord": "89,117" }
+    ],
     "mapOffset": {
       "x": 387,
       "y": 504
@@ -12,6 +19,12 @@
       "x": 88,
       "y": 118
     },
+    "reservedTiles": [
+      "88,116",
+      "88,117",
+      "89,116",
+      "89,117"
+    ],
     "train": {
       "mapId": 1043,
       "x": 14,
@@ -25,6 +38,12 @@
     "type": "village",
     "procedural": false,
     "tag": "rural",
+    "entrance": {
+      "id": 1414,
+      "x": 110,
+      "y": 41,
+      "direction": 6
+    },
     "mapOffset": {
       "x": 270,
       "y": 391
@@ -50,10 +69,22 @@
       "x": 300,
       "y": 485
     },
+    "entrance": {
+      "id": 619,
+      "x": 58,
+      "y": 46,
+      "direction": 6
+    },
     "base": {
       "x": 63,
       "y": 116
     },
+    "reservedTiles": [
+      "62,115",
+      "62,116",
+      "63,115",
+      "63,116"
+    ],
     "train": {
       "mapId": 596,
       "x": 23,
@@ -70,6 +101,12 @@
     "mapOffset": {
       "x": 300,
       "y": 500
+    },
+    "entrance": {
+      "id": 593,
+      "x": 76,
+      "y": 1,
+      "direction": 6
     },
     "base": {
       "x": 61,
@@ -92,10 +129,22 @@
       "x": 376,
       "y": 507
     },
+    "entrance": {
+      "id": 1078,
+      "x": 1,
+      "y": 60,
+      "direction": 6
+    },
     "base": {
       "x": 84,
       "y": 120
     },
+    "reservedTiles": [
+      "84,118",
+      "84,119",
+      "85,118",
+      "85,119"
+    ],
     "train": {
       "mapId": 708,
       "x": 25,
@@ -133,6 +182,12 @@
     "type": "village",
     "procedural": false,
     "tag": "business",
+    "entrance": {
+      "id": 136,
+      "x": 49,
+      "y": 163,
+      "direction": 6
+    },
     "mapOffset": {
       "x": 377,
       "y": 505
@@ -141,6 +196,9 @@
       "x": 79,
       "y": 125
     },
+    "reservedTiles": [
+      "79,124"
+    ],
     "train": {
       "mapId": 102,
       "x": 39,
@@ -164,6 +222,12 @@
     "type": "village",
     "procedural": false,
     "tag": "business",
+    "entrance": {
+      "id": 600,
+      "x": 17,
+      "y": 48,
+      "direction": 6
+    },
     "mapOffset": {
       "x": 414,
       "y": 537
@@ -172,6 +236,9 @@
       "x": 101,
       "y": 128
     },
+    "reservedTiles": [
+      "101,127"
+    ],
     "bus": {
       "mapId": 600,
       "x": 19,
@@ -192,6 +259,12 @@
       "x": 91,
       "y": 109
     },
+    "reservedTiles": [
+      "91,107",
+      "91,108",
+      "92,107",
+      "92,108"
+    ],
     "picture": "Amsterdam"
   },
   "The Hague": {
@@ -207,6 +280,12 @@
       "x": 87,
       "y": 111
     },
+    "reservedTiles": [
+      "87,109",
+      "87,110",
+      "88,109",
+      "88,110"
+    ],
     "picture": "TheHague"
   },
   "Rotterdam": {
@@ -222,6 +301,12 @@
       "x": 92,
       "y": 112
     },
+    "reservedTiles": [
+      "91,110",
+      "91,111",
+      "92,110",
+      "92,111"
+    ],
     "picture": "Rotterdam"
   },
   "Ouddorp": {
@@ -237,6 +322,9 @@
       "x": 87,
       "y": 113
     },
+    "reservedTiles": [
+      "87,112"
+    ],
     "picture": "Ouddorp"
   },
   "Middelburg": {
@@ -252,6 +340,9 @@
       "x": 85,
       "y": 11
     },
+    "reservedTiles": [
+      "85,114"
+    ],
     "picture": "Middelburg"
   },
   "Harlem": {
@@ -267,6 +358,10 @@
       "x": 88,
       "y": 108
     },
+    "reservedTiles": [
+      "88,107",
+      "89,107"
+    ],
     "picture": "Harlem"
   },
   "Alkmaar": {
@@ -282,6 +377,9 @@
       "x": 89,
       "y": 105
     },
+    "reservedTiles": [
+      "89,104"
+    ],
     "picture": "Alkmaar"
   },
   "Leeuwarden": {
@@ -297,6 +395,9 @@
       "x": 96,
       "y": 101
     },
+    "reservedTiles": [
+      "96,100"
+    ],
     "picture": "Leeuwarden"
   },
   "Groningen": {
@@ -312,6 +413,9 @@
       "x": 103,
       "y": 102
     },
+    "reservedTiles": [
+      "103,101"
+    ],
     "picture": "Groningen"
   },
   "Limburg": {
@@ -327,6 +431,9 @@
       "x": 100,
       "y": 119
     },
+    "reservedTiles": [
+      "100,118"
+    ],
     "picture": "Limburg"
   },
   "Eindhoven": {
@@ -342,6 +449,10 @@
       "x": 97,
       "y": 113
     },
+    "reservedTiles": [
+      "97,112",
+      "98,112"
+    ],
     "picture": "Eindhoven"
   },
   "Zwolle": {
@@ -357,6 +468,9 @@
       "x": 102,
       "y": 108
     },
+    "reservedTiles": [
+      "102,107"
+    ],
     "picture": "Zwolle"
   },
   "Tritunnel Ovest": {
@@ -372,6 +486,9 @@
       "x": 83,
       "y": 116
     },
+    "reservedTiles": [
+      "83,115"
+    ],
     "picture": "TritunnelOvest"
   },
   "Charleroi": {
@@ -387,6 +504,10 @@
       "x": 94,
       "y": 125
     },
+    "reservedTiles": [
+      "94,124",
+      "95,124"
+    ],
     "picture": "Charleroi"
   },
   "Luik": {
@@ -402,6 +523,10 @@
       "x": 94,
       "y": 119
     },
+    "reservedTiles": [
+      "93,118",
+      "94,118"
+    ],
     "picture": "Luik"
   },
   "Bologna": {
@@ -422,6 +547,12 @@
       "x": 124,
       "y": 167
     },
+    "reservedTiles": [
+      "124,166",
+      "124,167",
+      "125,166",
+      "125,167"
+    ],
     "picture": "Bologna"
   },
   "Super sacred shrine": {
@@ -436,7 +567,10 @@
     "base": {
       "x": 97,
       "y": 142
-    }
+    },
+    "reservedTiles": [
+      "97,142"
+    ]
   },
   "London": {
     "name": "London",
@@ -450,7 +584,13 @@
     "base": {
       "x": 66,
       "y": 112
-    }
+    },
+    "reservedTiles": [
+      "66,112",
+      "66,113",
+      "67,112",
+      "67,113"
+    ]
   },
   "MAXGauntlet": {
     "name": "MAX Gauntlet",
@@ -464,7 +604,10 @@
     "base": {
       "x": 111,
       "y": 163
-    }
+    },
+    "reservedTiles": [
+      "111,163"
+    ]
   },
   "Vatican Citadel": {
     "name": "Vatican Citadel",
@@ -478,7 +621,10 @@
     "base": {
       "x": 126,
       "y": 187
-    }
+    },
+    "reservedTiles": [
+      "126,187"
+    ]
   },
   "MAXTavern": {
     "name": "MAX Tavern",
@@ -492,7 +638,10 @@
     "base": {
       "x": 115,
       "y": 161
-    }
+    },
+    "reservedTiles": [
+      "115,161"
+    ]
   },
   "Cardiff": {
     "name": "Cardiff",
@@ -506,7 +655,13 @@
     "base": {
       "x": 52,
       "y": 111
-    }
+    },
+    "reservedTiles": [
+      "52,109",
+      "52,110",
+      "53,109",
+      "53,110"
+    ]
   },
   "Milano": {
     "name": "Milano",
@@ -520,7 +675,13 @@
     "base": {
       "x": 121,
       "y": 161
-    }
+    },
+    "reservedTiles": [
+      "121,160",
+      "121,161",
+      "122,160",
+      "122,161"
+    ]
   },
   "Canicattini Bagni": {
     "name": "Canicattini Bagni",
@@ -534,7 +695,10 @@
     "base": {
       "x": 130,
       "y": 223
-    }
+    },
+    "reservedTiles": [
+      "130,223"
+    ]
   },
   "Casalpusterlengo": {
     "name": "Casalpusterlengo",
@@ -548,7 +712,10 @@
     "base": {
       "x": 117,
       "y": 163
-    }
+    },
+    "reservedTiles": [
+      "117,163"
+    ]
   },
   "Plymouth": {
     "name": "Plymouth",
@@ -562,7 +729,11 @@
     "base": {
       "x": 48,
       "y": 120
-    }
+    },
+    "reservedTiles": [
+      "48,120",
+      "49,120"
+    ]
   },
   "Canterbury": {
     "name": "Canterbury",
@@ -576,7 +747,10 @@
     "base": {
       "x": 73,
       "y": 119
-    }
+    },
+    "reservedTiles": [
+      "73,119"
+    ]
   },
   "Brighton": {
     "name": "Brighton",
@@ -590,7 +764,10 @@
     "base": {
       "x": 66,
       "y": 120
-    }
+    },
+    "reservedTiles": [
+      "66,120"
+    ]
   },
   "Boston": {
     "name": "Boston",
@@ -604,7 +781,10 @@
     "base": {
       "x": 68,
       "y": 105
-    }
+    },
+    "reservedTiles": [
+      "68,105"
+    ]
   },
   "Manchester": {
     "name": "Manchester",
@@ -618,7 +798,10 @@
     "base": {
       "x": 62,
       "y": 101
-    }
+    },
+    "reservedTiles": [
+      "62,101"
+    ]
   },
   "Birmingham": {
     "name": "Birmingham",
@@ -632,7 +815,10 @@
     "base": {
       "x": 57,
       "y": 108
-    }
+    },
+    "reservedTiles": [
+      "57,108"
+    ]
   },
   "Edinburgh": {
     "name": "Edinburgh",
@@ -646,7 +832,10 @@
     "base": {
       "x": 62,
       "y": 89
-    }
+    },
+    "reservedTiles": [
+      "62,89"
+    ]
   },
   "Glasgow": {
     "name": "Glasgow",
@@ -660,7 +849,10 @@
     "base": {
       "x": 58,
       "y": 90
-    }
+    },
+    "reservedTiles": [
+      "58,90"
+    ]
   },
   "Perth": {
     "name": "Perth",
@@ -674,7 +866,10 @@
     "base": {
       "x": 61,
       "y": 86
-    }
+    },
+    "reservedTiles": [
+      "61,86"
+    ]
   },
   "Oban": {
     "name": "Oban",
@@ -688,7 +883,10 @@
     "base": {
       "x": 53,
       "y": 82
-    }
+    },
+    "reservedTiles": [
+      "53,82"
+    ]
   },
   "Aberdeen": {
     "name": "Aberdeen",
@@ -702,13 +900,24 @@
     "base": {
       "x": 64,
       "y": 82
-    }
+    },
+    "reservedTiles": [
+      "64,82",
+      "65,82"
+    ]
   },
   "Petrocave": {
     "name": "Petrocave",
     "type": "dungeon",
     "procedural": false,
     "tag": "industrial",
+    "entrance": {},
+    "coords": [
+      { "direction": "north", "id": 722, "x": 27, "y": 28, "mapCoord": "88,131" },
+      { "direction": "south", "id": 722, "x": 13, "y": 1, "mapCoord": "88,131" },
+      { "direction": "east", "id": 722, "x": 1, "y": 50, "mapCoord": "88,131" },
+      { "direction": "west", "id": 722, "x": 78, "y": 51, "mapCoord": "88,131" }
+    ],
     "mapOffset": {
       "x": 0,
       "y": 0
@@ -716,7 +925,10 @@
     "base": {
       "x": 88,
       "y": 131
-    }
+    },
+    "reservedTiles": [
+      "88,131"
+    ]
   },
   "Belfast": {
     "name": "Belfast",
@@ -730,7 +942,13 @@
     "base": {
       "x": 42,
       "y": 85
-    }
+    },
+    "reservedTiles": [
+      "42,84",
+      "42,85",
+      "43,84",
+      "43,85"
+    ]
   },
   "Roma": {
     "name": "Roma",
@@ -744,7 +962,10 @@
     "base": {
       "x": 126,
       "y": 186
-    }
+    },
+    "reservedTiles": [
+      "126,186"
+    ]
   },
   "Messina": {
     "name": "Messina",
@@ -758,7 +979,10 @@
     "base": {
       "x": 134,
       "y": 218
-    }
+    },
+    "reservedTiles": [
+      "134,218"
+    ]
   },
   "Londonderry": {
     "name": "Londonderry",
@@ -772,7 +996,11 @@
     "base": {
       "x": 37,
       "y": 82
-    }
+    },
+    "reservedTiles": [
+      "36,82",
+      "37,82"
+    ]
   },
   "Sligo": {
     "name": "Sligo",
@@ -786,7 +1014,10 @@
     "base": {
       "x": 36,
       "y": 85
-    }
+    },
+    "reservedTiles": [
+      "36,85"
+    ]
   },
   "Reggio Calabria": {
     "name": "Reggio Calabria",
@@ -800,7 +1031,10 @@
     "base": {
       "x": 136,
       "y": 215
-    }
+    },
+    "reservedTiles": [
+      "136,215"
+    ]
   },
   "Alba Adriatica": {
     "name": "Alba Adriatica",
@@ -814,7 +1048,10 @@
     "base": {
       "x": 137,
       "y": 180
-    }
+    },
+    "reservedTiles": [
+      "137,180"
+    ]
   },
   "Dublin": {
     "name": "Dublin",
@@ -828,7 +1065,13 @@
     "base": {
       "x": 43,
       "y": 92
-    }
+    },
+    "reservedTiles": [
+      "43,91",
+      "43,92",
+      "44,91",
+      "44,92"
+    ]
   },
   "Wexford": {
     "name": "Wexford",
@@ -842,7 +1085,11 @@
     "base": {
       "x": 43,
       "y": 96
-    }
+    },
+    "reservedTiles": [
+      "43,96",
+      "44,96"
+    ]
   },
   "Cork": {
     "name": "Cork",
@@ -856,7 +1103,11 @@
     "base": {
       "x": 37,
       "y": 100
-    }
+    },
+    "reservedTiles": [
+      "37,100",
+      "38,100"
+    ]
   },
   "Tritunnel East": {
     "name": "Tritunnel East",
@@ -870,7 +1121,10 @@
     "base": {
       "x": 73,
       "y": 111
-    }
+    },
+    "reservedTiles": [
+      "73,111"
+    ]
   },
   "Killarney": {
     "name": "Killarney",
@@ -884,13 +1138,22 @@
     "base": {
       "x": 33,
       "y": 101
-    }
+    },
+    "reservedTiles": [
+      "33,101"
+    ]
   },
   "Brusselles": {
     "name": "Bruxelles",
     "type": "city",
     "procedural": true,
     "tag": "business",
+    "entrance": {
+      "id": 400,
+      "x": 18,
+      "y": 1,
+      "direction": 6
+    },
     "mapOffset": {
       "x": 386,
       "y": 512
@@ -898,7 +1161,13 @@
     "base": {
       "x": 89,
       "y": 121
-    }
+    },
+    "reservedTiles": [
+      "89,120",
+      "89,121",
+      "90,120",
+      "90,121"
+    ]
   },
   "Reykyavik": {
     "name": "Reykjavik",
@@ -912,13 +1181,26 @@
     "base": {
       "x": 49,
       "y": 24
-    }
+    },
+    "reservedTiles": [
+      "49,23",
+      "49,24",
+      "50,23",
+      "50,24"
+    ]
   },
   "Dark tower": {
     "name": "Dark Tower",
     "type": "dungeon",
     "procedural": false,
     "tag": "industrial",
+    "entrance": {},
+    "coords": [
+      { "direction": "north", "id": 401, "x": 17, "y": 39, "mapCoord": "81,129" },
+      { "direction": "south", "id": 401, "x": 13, "y": 1, "mapCoord": "81,129" },
+      { "direction": "east", "id": 401, "x": 1, "y": 19, "mapCoord": "81,129" },
+      { "direction": "west", "id": 401, "x": 33, "y": 21, "mapCoord": "81,129" }
+    ],
     "mapOffset": {
       "x": 362,
       "y": 535
@@ -926,7 +1208,10 @@
     "base": {
       "x": 81,
       "y": 129
-    }
+    },
+    "reservedTiles": [
+      "81,129"
+    ]
   },
   "Kalfafell": {
     "name": "Kalfafell",
@@ -940,7 +1225,10 @@
     "base": {
       "x": 56,
       "y": 25
-    }
+    },
+    "reservedTiles": [
+      "56,25"
+    ]
   },
   "Laugar": {
     "name": "Laugar",
@@ -954,7 +1242,10 @@
     "base": {
       "x": 60,
       "y": 20
-    }
+    },
+    "reservedTiles": [
+      "60,20"
+    ]
   },
   "Hvammstangi": {
     "name": "Hvammstangi",
@@ -968,7 +1259,10 @@
     "base": {
       "x": 50,
       "y": 21
-    }
+    },
+    "reservedTiles": [
+      "50,21"
+    ]
   },
   "Klasvik": {
     "name": "Klaksvik",
@@ -982,7 +1276,10 @@
     "base": {
       "x": 76,
       "y": 41
-    }
+    },
+    "reservedTiles": [
+      "76,41"
+    ]
   },
   "Gasadalur": {
     "name": "Gasadalur",
@@ -996,7 +1293,10 @@
     "base": {
       "x": 71,
       "y": 42
-    }
+    },
+    "reservedTiles": [
+      "71,42"
+    ]
   },
   "Torshavn": {
     "name": "Torshavn",
@@ -1010,7 +1310,10 @@
     "base": {
       "x": 73,
       "y": 45
-    }
+    },
+    "reservedTiles": [
+      "73,45"
+    ]
   },
   "Sandvik": {
     "name": "Sandvik",
@@ -1024,7 +1327,10 @@
     "base": {
       "x": 71,
       "y": 50
-    }
+    },
+    "reservedTiles": [
+      "71,50"
+    ]
   },
   "Crabby Beach": {
     "name": "Crabby Beach",
@@ -1038,7 +1344,10 @@
     "base": {
       "x": 85,
       "y": 116
-    }
+    },
+    "reservedTiles": [
+      "85,116"
+    ]
   },
   "Madrid": {
     "name": "Madrid",
@@ -1052,7 +1361,18 @@
     "base": {
       "x": 49,
       "y": 188
-    }
+    },
+    "reservedTiles": [
+      "49,186",
+      "49,187",
+      "49,188",
+      "50,186",
+      "50,187",
+      "50,188",
+      "51,186",
+      "51,187",
+      "51,188"
+    ]
   },
   "Granada": {
     "name": "Granada",
@@ -1066,7 +1386,10 @@
     "base": {
       "x": 54,
       "y": 205
-    }
+    },
+    "reservedTiles": [
+      "54,205"
+    ]
   },
   "Valencia": {
     "name": "Valencia",
@@ -1080,7 +1403,13 @@
     "base": {
       "x": 70,
       "y": 199
-    }
+    },
+    "reservedTiles": [
+      "70,198",
+      "70,199",
+      "71,198",
+      "71,199"
+    ]
   },
   "Genova": {
     "name": "Genova",
@@ -1094,7 +1423,13 @@
     "base": {
       "x": 110,
       "y": 171
-    }
+    },
+    "reservedTiles": [
+      "110,170",
+      "110,171",
+      "111,170",
+      "111,171"
+    ]
   },
   "La Spezia": {
     "name": "La Spezia",
@@ -1108,7 +1443,10 @@
     "base": {
       "x": 118,
       "y": 171
-    }
+    },
+    "reservedTiles": [
+      "118,171"
+    ]
   },
   "Pisa": {
     "name": "Pisa",
@@ -1122,7 +1460,13 @@
     "base": {
       "x": 119,
       "y": 175
-    }
+    },
+    "reservedTiles": [
+      "119,174",
+      "119,175",
+      "120,174",
+      "120,175"
+    ]
   },
   "Livorno": {
     "name": "Livorno",
@@ -1136,7 +1480,10 @@
     "base": {
       "x": 118,
       "y": 178
-    }
+    },
+    "reservedTiles": [
+      "118,178"
+    ]
   },
   "Frosinone": {
     "name": "Frosinone",
@@ -1150,7 +1497,10 @@
     "base": {
       "x": 133,
       "y": 185
-    }
+    },
+    "reservedTiles": [
+      "133,185"
+    ]
   },
   "Napoli": {
     "name": "Napoli",
@@ -1164,7 +1514,13 @@
     "base": {
       "x": 135,
       "y": 194
-    }
+    },
+    "reservedTiles": [
+      "135,193",
+      "135,194",
+      "136,193",
+      "136,194"
+    ]
   },
   "Capri": {
     "name": "Capri",
@@ -1178,7 +1534,10 @@
     "base": {
       "x": 134,
       "y": 196
-    }
+    },
+    "reservedTiles": [
+      "134,196"
+    ]
   },
   "Taranto": {
     "name": "Taranto",
@@ -1192,7 +1551,13 @@
     "base": {
       "x": 151,
       "y": 200
-    }
+    },
+    "reservedTiles": [
+      "151,199",
+      "151,200",
+      "152,199",
+      "152,200"
+    ]
   },
   "Catanzaro": {
     "name": "Catanzaro",
@@ -1206,7 +1571,10 @@
     "base": {
       "x": 144,
       "y": 210
-    }
+    },
+    "reservedTiles": [
+      "144,210"
+    ]
   },
   "Cosenza": {
     "name": "Cosenza",
@@ -1220,7 +1588,10 @@
     "base": {
       "x": 144,
       "y": 201
-    }
+    },
+    "reservedTiles": [
+      "144,201"
+    ]
   },
   "Lecce": {
     "name": "Lecce",
@@ -1234,7 +1605,13 @@
     "base": {
       "x": 154,
       "y": 199
-    }
+    },
+    "reservedTiles": [
+      "154,198",
+      "154,199",
+      "155,198",
+      "155,199"
+    ]
   },
   "Ancona": {
     "name": "Ancona",
@@ -1248,7 +1625,13 @@
     "base": {
       "x": 134,
       "y": 176
-    }
+    },
+    "reservedTiles": [
+      "134,175",
+      "134,176",
+      "135,175",
+      "135,176"
+    ]
   },
   "San Marino": {
     "name": "San Marino",
@@ -1262,7 +1645,10 @@
     "base": {
       "x": 129,
       "y": 176
-    }
+    },
+    "reservedTiles": [
+      "129,176"
+    ]
   },
   "Verona": {
     "name": "Verona",
@@ -1276,7 +1662,10 @@
     "base": {
       "x": 125,
       "y": 161
-    }
+    },
+    "reservedTiles": [
+      "125,161"
+    ]
   },
   "Venezia": {
     "name": "Venezia",
@@ -1290,7 +1679,13 @@
     "base": {
       "x": 136,
       "y": 163
-    }
+    },
+    "reservedTiles": [
+      "136,162",
+      "136,163",
+      "137,162",
+      "137,163"
+    ]
   },
   "Torino": {
     "name": "Torino",
@@ -1304,7 +1699,13 @@
     "base": {
       "x": 113,
       "y": 162
-    }
+    },
+    "reservedTiles": [
+      "113,161",
+      "113,162",
+      "114,161",
+      "114,162"
+    ]
   },
   "Lucca": {
     "name": "Lucca",
@@ -1318,7 +1719,10 @@
     "base": {
       "x": 121,
       "y": 173
-    }
+    },
+    "reservedTiles": [
+      "121,173"
+    ]
   },
   "Firenze": {
     "name": "Firenze",
@@ -1332,7 +1736,10 @@
     "base": {
       "x": 123,
       "y": 174
-    }
+    },
+    "reservedTiles": [
+      "123,174"
+    ]
   },
   "L'Aquila": {
     "name": "L'Aquila",
@@ -1346,7 +1753,10 @@
     "base": {
       "x": 135,
       "y": 181
-    }
+    },
+    "reservedTiles": [
+      "135,181"
+    ]
   },
   "Latina": {
     "name": "Latina",
@@ -1360,7 +1770,10 @@
     "base": {
       "x": 127,
       "y": 188
-    }
+    },
+    "reservedTiles": [
+      "127,188"
+    ]
   },
   "Amalfi": {
     "name": "Amalfi",
@@ -1374,7 +1787,10 @@
     "base": {
       "x": 137,
       "y": 196
-    }
+    },
+    "reservedTiles": [
+      "137,196"
+    ]
   },
   "Sorrento": {
     "name": "Sorrento",
@@ -1388,7 +1804,10 @@
     "base": {
       "x": 139,
       "y": 196
-    }
+    },
+    "reservedTiles": [
+      "139,196"
+    ]
   },
   "Crotone": {
     "name": "Crotone",
@@ -1402,7 +1821,10 @@
     "base": {
       "x": 148,
       "y": 208
-    }
+    },
+    "reservedTiles": [
+      "148,208"
+    ]
   },
   "Catania": {
     "name": "Catania",
@@ -1416,7 +1838,10 @@
     "base": {
       "x": 133,
       "y": 222
-    }
+    },
+    "reservedTiles": [
+      "133,222"
+    ]
   },
   "Siracusa": {
     "name": "Siracusa",
@@ -1430,7 +1855,10 @@
     "base": {
       "x": 132,
       "y": 225
-    }
+    },
+    "reservedTiles": [
+      "132,225"
+    ]
   },
   "Palermo": {
     "name": "Palermo",
@@ -1444,7 +1872,10 @@
     "base": {
       "x": 125,
       "y": 219
-    }
+    },
+    "reservedTiles": [
+      "125,219"
+    ]
   },
   "Marsala": {
     "name": "Marsala",
@@ -1458,7 +1889,10 @@
     "base": {
       "x": 123,
       "y": 221
-    }
+    },
+    "reservedTiles": [
+      "123,221"
+    ]
   },
   "Lampedusa": {
     "name": "Lampedusa",
@@ -1472,7 +1906,10 @@
     "base": {
       "x": 120,
       "y": 228
-    }
+    },
+    "reservedTiles": [
+      "120,228"
+    ]
   },
   "Agrigento": {
     "name": "Agrigento",
@@ -1486,7 +1923,10 @@
     "base": {
       "x": 127,
       "y": 223
-    }
+    },
+    "reservedTiles": [
+      "127,223"
+    ]
   },
   "Cagliari": {
     "name": "Cagliari",
@@ -1500,7 +1940,13 @@
     "base": {
       "x": 105,
       "y": 210
-    }
+    },
+    "reservedTiles": [
+      "105,209",
+      "105,210",
+      "106,209",
+      "106,210"
+    ]
   },
   "Sassari": {
     "name": "Sassari",
@@ -1514,7 +1960,10 @@
     "base": {
       "x": 106,
       "y": 201
-    }
+    },
+    "reservedTiles": [
+      "106,201"
+    ]
   },
   "Tunisi": {
     "name": "Tunisi",
@@ -1528,7 +1977,13 @@
     "base": {
       "x": 105,
       "y": 226
-    }
+    },
+    "reservedTiles": [
+      "105,225",
+      "105,226",
+      "106,225",
+      "106,226"
+    ]
   },
   "Biserta": {
     "name": "Biserta",
@@ -1542,7 +1997,10 @@
     "base": {
       "x": 102,
       "y": 223
-    }
+    },
+    "reservedTiles": [
+      "102,223"
+    ]
   },
   "Tripoli": {
     "name": "Tripoli",
@@ -1556,7 +2014,10 @@
     "base": {
       "x": 125,
       "y": 253
-    }
+    },
+    "reservedTiles": [
+      "125,253"
+    ]
   },
   "Algeri": {
     "name": "Algeri",
@@ -1570,7 +2031,13 @@
     "base": {
       "x": 59,
       "y": 228
-    }
+    },
+    "reservedTiles": [
+      "59,227",
+      "59,228",
+      "60,227",
+      "60,228"
+    ]
   },
   "Atene": {
     "name": "Atene",
@@ -1584,7 +2051,13 @@
     "base": {
       "x": 204,
       "y": 224
-    }
+    },
+    "reservedTiles": [
+      "204,223",
+      "204,224",
+      "205,223",
+      "205,224"
+    ]
   },
   "Instanbul": {
     "name": "Istanbul",
@@ -1598,7 +2071,18 @@
     "base": {
       "x": 237,
       "y": 194
-    }
+    },
+    "reservedTiles": [
+      "237,192",
+      "237,193",
+      "237,194",
+      "238,192",
+      "238,193",
+      "238,194",
+      "239,192",
+      "239,193",
+      "239,194"
+    ]
   },
   "Corfù": {
     "name": "Corfù",
@@ -1612,7 +2096,10 @@
     "base": {
       "x": 151,
       "y": 179
-    }
+    },
+    "reservedTiles": [
+      "151,179"
+    ]
   },
   "Odessa": {
     "name": "Odessa",
@@ -1626,7 +2113,13 @@
     "base": {
       "x": 232,
       "y": 147
-    }
+    },
+    "reservedTiles": [
+      "232,146",
+      "232,147",
+      "233,146",
+      "233,147"
+    ]
   },
   "Berlin": {
     "name": "Berlin",
@@ -1640,7 +2133,13 @@
     "base": {
       "x": 135,
       "y": 109
-    }
+    },
+    "reservedTiles": [
+      "135,108",
+      "135,109",
+      "136,108",
+      "136,109"
+    ]
   },
   "Copenaghen": {
     "name": "Copenaghen",
@@ -1654,7 +2153,13 @@
     "base": {
       "x": 144,
       "y": 78
-    }
+    },
+    "reservedTiles": [
+      "144,77",
+      "144,78",
+      "145,77",
+      "145,78"
+    ]
   },
   "Malmo": {
     "name": "Malmo",
@@ -1668,7 +2173,13 @@
     "base": {
       "x": 148,
       "y": 68
-    }
+    },
+    "reservedTiles": [
+      "148,67",
+      "148,68",
+      "149,67",
+      "149,68"
+    ]
   },
   "Oslo": {
     "name": "Oslo",
@@ -1682,7 +2193,13 @@
     "base": {
       "x": 131,
       "y": 45
-    }
+    },
+    "reservedTiles": [
+      "131,44",
+      "131,45",
+      "132,44",
+      "132,45"
+    ]
   },
   "Paris": {
     "name": "Paris",
@@ -1696,7 +2213,13 @@
     "base": {
       "x": 79,
       "y": 139
-    }
+    },
+    "reservedTiles": [
+      "79,138",
+      "79,139",
+      "80,138",
+      "80,139"
+    ]
   },
   "Marsiglia": {
     "name": "Marsiglia",
@@ -1710,7 +2233,10 @@
     "base": {
       "x": 88,
       "y": 166
-    }
+    },
+    "reservedTiles": [
+      "88,166"
+    ]
   },
   "Bordeaux": {
     "name": "Bordeaux",
@@ -1724,7 +2250,10 @@
     "base": {
       "x": 67,
       "y": 160
-    }
+    },
+    "reservedTiles": [
+      "67,160"
+    ]
   },
   "Brest": {
     "name": "Brest",
@@ -1738,7 +2267,10 @@
     "base": {
       "x": 53,
       "y": 144
-    }
+    },
+    "reservedTiles": [
+      "53,144"
+    ]
   },
   "Berna": {
     "name": "Berna",
@@ -1752,7 +2284,13 @@
     "base": {
       "x": 117,
       "y": 151
-    }
+    },
+    "reservedTiles": [
+      "117,150",
+      "117,151",
+      "118,150",
+      "118,151"
+    ]
   },
   "Ginevra": {
     "name": "Ginevra",
@@ -1766,7 +2304,13 @@
     "base": {
       "x": 105,
       "y": 157
-    }
+    },
+    "reservedTiles": [
+      "105,156",
+      "105,157",
+      "106,156",
+      "106,157"
+    ]
   },
   "Zermatt": {
     "name": "Zermatt",
@@ -1780,7 +2324,10 @@
     "base": {
       "x": 112,
       "y": 157
-    }
+    },
+    "reservedTiles": [
+      "112,157"
+    ]
   },
   "Lugano": {
     "name": "Lugano",
@@ -1794,7 +2341,10 @@
     "base": {
       "x": 115,
       "y": 155
-    }
+    },
+    "reservedTiles": [
+      "115,155"
+    ]
   },
   "Liechtenstein": {
     "name": "Liechtenstein",
@@ -1808,7 +2358,13 @@
     "base": {
       "x": 128,
       "y": 153
-    }
+    },
+    "reservedTiles": [
+      "128,152",
+      "128,153",
+      "129,152",
+      "129,153"
+    ]
   },
   "Zurigo": {
     "name": "Zurigo",
@@ -1822,7 +2378,13 @@
     "base": {
       "x": 118,
       "y": 148
-    }
+    },
+    "reservedTiles": [
+      "118,147",
+      "118,148",
+      "119,147",
+      "119,148"
+    ]
   },
   "Basilea": {
     "name": "Basilea",
@@ -1836,7 +2398,13 @@
     "base": {
       "x": 112,
       "y": 147
-    }
+    },
+    "reservedTiles": [
+      "112,146",
+      "112,147",
+      "113,146",
+      "113,147"
+    ]
   },
   "Le Havre": {
     "name": "Le Havre",
@@ -1850,7 +2418,10 @@
     "base": {
       "x": 75,
       "y": 130
-    }
+    },
+    "reservedTiles": [
+      "75,130"
+    ]
   },
   "Lille": {
     "name": "Lille",
@@ -1878,7 +2449,10 @@
     "base": {
       "x": 80,
       "y": 147
-    }
+    },
+    "reservedTiles": [
+      "80,147"
+    ]
   },
   "Le Mans": {
     "name": "Le Mans",
@@ -1892,7 +2466,13 @@
     "base": {
       "x": 73,
       "y": 144
-    }
+    },
+    "reservedTiles": [
+      "73,143",
+      "73,144",
+      "74,143",
+      "74,144"
+    ]
   },
   "Saint Helier": {
     "name": "Saint Helier",
@@ -1906,7 +2486,10 @@
     "base": {
       "x": 58,
       "y": 136
-    }
+    },
+    "reservedTiles": [
+      "58,136"
+    ]
   },
   "Jersey": {
     "name": "Jersey",
@@ -1920,7 +2503,10 @@
     "base": {
       "x": 56,
       "y": 135
-    }
+    },
+    "reservedTiles": [
+      "56,135"
+    ]
   },
   "Guernsey": {
     "name": "Guernsey",
@@ -1934,7 +2520,10 @@
     "base": {
       "x": 52,
       "y": 131
-    }
+    },
+    "reservedTiles": [
+      "52,131"
+    ]
   },
   "Palma di Maiorca": {
     "name": "Palma di Maiorca",
@@ -1948,7 +2537,11 @@
     "base": {
       "x": 82,
       "y": 194
-    }
+    },
+    "reservedTiles": [
+      "82,194",
+      "83,194"
+    ]
   },
   "Ivissa": {
     "name": "Ivissa",
@@ -1962,7 +2555,10 @@
     "base": {
       "x": 80,
       "y": 198
-    }
+    },
+    "reservedTiles": [
+      "80,198"
+    ]
   },
   "Minorca": {
     "name": "Minorca",
@@ -1976,7 +2572,10 @@
     "base": {
       "x": 88,
       "y": 191
-    }
+    },
+    "reservedTiles": [
+      "88,191"
+    ]
   },
   "Barcellona": {
     "name": "Barcellona",
@@ -1990,7 +2589,13 @@
     "base": {
       "x": 77,
       "y": 184
-    }
+    },
+    "reservedTiles": [
+      "77,183",
+      "77,184",
+      "78,183",
+      "78,184"
+    ]
   },
   "Saragozza": {
     "name": "Saragozza",
@@ -2004,7 +2609,13 @@
     "base": {
       "x": 63,
       "y": 184
-    }
+    },
+    "reservedTiles": [
+      "63,183",
+      "63,184",
+      "64,183",
+      "64,184"
+    ]
   },
   "Siviglia": {
     "name": "Siviglia",
@@ -2018,7 +2629,13 @@
     "base": {
       "x": 39,
       "y": 205
-    }
+    },
+    "reservedTiles": [
+      "39,204",
+      "39,205",
+      "40,204",
+      "40,205"
+    ]
   },
   "Moonlit Station": {
     "name": "Moonlit Station",
@@ -2060,7 +2677,13 @@
     "base": {
       "x": 22,
       "y": 192
-    }
+    },
+    "reservedTiles": [
+      "22,191",
+      "22,192",
+      "23,191",
+      "23,192"
+    ]
   },
   "Porto": {
     "name": "Porto",
@@ -2074,7 +2697,13 @@
     "base": {
       "x": 25,
       "y": 179
-    }
+    },
+    "reservedTiles": [
+      "25,178",
+      "25,179",
+      "26,178",
+      "26,179"
+    ]
   },
   "Santiago di Compostela": {
     "name": "Santiago di Compostela",
@@ -2088,7 +2717,13 @@
     "base": {
       "x": 34,
       "y": 167
-    }
+    },
+    "reservedTiles": [
+      "34,166",
+      "34,167",
+      "35,166",
+      "35,167"
+    ]
   },
   "Pola": {
     "name": "Pola",
@@ -2102,7 +2737,13 @@
     "base": {
       "x": 146,
       "y": 172
-    }
+    },
+    "reservedTiles": [
+      "146,171",
+      "146,172",
+      "147,171",
+      "147,172"
+    ]
   },
   "Zara": {
     "name": "Zara",
@@ -2116,7 +2757,10 @@
     "base": {
       "x": 152,
       "y": 176
-    }
+    },
+    "reservedTiles": [
+      "152,176"
+    ]
   },
   "Sarajevo": {
     "name": "Sarajevo",
@@ -2130,7 +2774,13 @@
     "base": {
       "x": 168,
       "y": 175
-    }
+    },
+    "reservedTiles": [
+      "168,174",
+      "168,175",
+      "169,174",
+      "169,175"
+    ]
   },
   "Belgrado": {
     "name": "Belgrado",
@@ -2144,7 +2794,13 @@
     "base": {
       "x": 178,
       "y": 165
-    }
+    },
+    "reservedTiles": [
+      "178,164",
+      "178,165",
+      "179,164",
+      "179,165"
+    ]
   },
   "Novi Sad": {
     "name": "Novi Sad",
@@ -2158,7 +2814,10 @@
     "base": {
       "x": 170,
       "y": 157
-    }
+    },
+    "reservedTiles": [
+      "170,157"
+    ]
   },
   "Tirana": {
     "name": "Tirana",
@@ -2172,7 +2831,10 @@
     "base": {
       "x": 175,
       "y": 196
-    }
+    },
+    "reservedTiles": [
+      "175,196"
+    ]
   },
   "Sofia": {
     "name": "Sofia",
@@ -2186,7 +2848,13 @@
     "base": {
       "x": 209,
       "y": 190
-    }
+    },
+    "reservedTiles": [
+      "209,189",
+      "209,190",
+      "210,189",
+      "210,190"
+    ]
   },
   "Bucarest": {
     "name": "Bucarest",
@@ -2200,7 +2868,13 @@
     "base": {
       "x": 207,
       "y": 168
-    }
+    },
+    "reservedTiles": [
+      "207,167",
+      "207,168",
+      "208,167",
+      "208,168"
+    ]
   },
   "Costanza": {
     "name": "Costanza",
@@ -2214,7 +2888,10 @@
     "base": {
       "x": 226,
       "y": 169
-    }
+    },
+    "reservedTiles": [
+      "226,169"
+    ]
   },
   "Roccalonga": {
     "name": "Roccalonga",
@@ -2228,6 +2905,26 @@
     "base": {
       "x": 147,
       "y": 192
-    }
+    },
+    "reservedTiles": [
+      "147,192"
+    ]
+  },
+  "Rome": {
+    "name": "Rome",
+    "type": "village",
+    "procedural": true,
+    "tag": "business",
+    "mapOffset": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 127,
+      "y": 186
+    },
+    "reservedTiles": [
+      "127,186"
+    ]
   }
 }

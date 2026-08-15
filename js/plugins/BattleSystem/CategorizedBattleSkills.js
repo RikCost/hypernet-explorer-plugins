@@ -4,7 +4,7 @@
 
 /*:
  * @target MZ
- * @plugindesc Role-tabbed skill menu with a carried battle loadout of 7 skills and 7 magic per character.
+ * @plugindesc Role-tabbed skill menu with a carried battle loadout of 9 skills per character.
  * @author Omni-Lex
  * @version 3.0.0
  *
@@ -13,9 +13,9 @@
  * Combines CategorizedBattleSkills and CustomSkillsMenuSwitcher into one plugin.
  *
  * --- THE LOADOUT ---
- * A character knows far more than they can hold in their hands. At most 7
- * skills and 7 magic are carried at once, and only those reach the battle
- * menus; everything else is known but benched until the player says otherwise.
+ * A character knows far more than they can hold in their hands. At most 9
+ * skills are carried at once, and only those reach the battle menus;
+ * everything else is known but benched until the player says otherwise.
  * A newly learned skill is carried straight away while its half of the loadout
  * still has room. The Basic kit (<category:Basic>: Attack, Guard, Check, ...)
  * and anything a weapon or a state grants are always carried and spend no slot.
@@ -661,7 +661,7 @@
     // Basic kit (the engine's own fallback moves) and anything a weapon or a
     // state grants, which comes and goes with what is worn.
     // The carried ids live on $gameSystem, so a loadout travels with the save.
-    const LOADOUT_MAX = 14;
+    const LOADOUT_MAX = 9;
 
     // Width of the battle skill page, in game pixels. The description box above
     // it matches, so a line of help text breaks where the skill names do.
@@ -1854,8 +1854,8 @@
                 border-color: transparent;
             }
             .skill-card-slot.carried {
-                background: var(--bg-panel);
-                border-color: var(--text-primary-hover);
+                background: transparent;
+                border-color: var(--border-primary-hover-translucent-15);
             }
             .loadout-pill {
                 font-family: 'Lora', serif;

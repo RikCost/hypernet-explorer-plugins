@@ -27,9 +27,10 @@
  * THE EPIDEMIC LAYER (window.EpidemicSystem)
  *   - Outbreaks run on the real map. A "place" is a town: its name comes from
  *     js/db/WorkSystem/Destinations.json (where an outbreak can start) and its
- *     extent from js/db/WorldGen/HardcodedBiomeNames.json, so a four-tile city
- *     like Milano infects the procedural map behind every one of its tiles,
- *     plus the countryside within a couple of tiles of it.
+ *     extent from that entry's own `reservedTiles` array (the retired
+ *     js/db/WorldGen/HardcodedBiomeNames.json roster, folded into it), so a
+ *     four-tile city like Milano infects the procedural map behind every one
+ *     of its tiles, plus the countryside within a couple of tiles of it.
  *   - Each infected town runs its own SIR curve, resolved one whole day at a
  *     time at midnight, and exports cases to other towns along map distance
  *     (with the occasional long-range jump: people travel). Public response
@@ -182,9 +183,14 @@
   // ==========================================================================
   // Epidemics run on the real map. A "place" is a town: its name comes from
   // js/db/WorkSystem/Destinations.json (where an outbreak can start) and its
-  // extent from js/db/WorldGen/HardcodedBiomeNames.json, which is what pins a
-  // city to several world-map tiles. Milano is four tiles, so all four
-  // procedural maps behind it carry the same infection.
+  // extent from that entry's own `reservedTiles` array (the retired
+  // js/db/WorldGen/HardcodedBiomeNames.json roster, folded into it), which is
+  // what pins a city to several world-map tiles. Milano is four tiles, so all
+  // four procedural maps behind it carry the same infection.
+  // window.WorldGen.HardcodedBiomeNames itself still resolves ("x,y" -> the
+  // Destinations.json key standing on it): DataService derives it from every
+  // entry's `reservedTiles` at load time, so this file (and every other
+  // reader of that global) needed no further change.
   const MINUTES_PER_DAY = 1440;
   const EPOCH_YEAR = 2001;              // minute 0 = 1 Jan 2001, as in NPCWorldWeb
   const RURAL_RADIUS = 2;               // world tiles of countryside a town infects

@@ -77,7 +77,7 @@
   const PROC_MAP_HEIGHT = 64;
   const DEBUG_MODE = Utils.isOptionValid("test");
   const BORDER_DETECTION_RANGE = 3;
-  const { Biomes, NonProceduralCoordinates } =
+  const { Biomes } =
     window.WorldGen;
 
   // ===== PERFORMANCE CACHE =====
@@ -725,47 +725,50 @@
   }
 
   /**
-   * Check if a world coordinate has a non-procedural destination
-   * Now supports multiple coordinate pairs in coords array.
-   * First coord is the main position, others are for directional border transitions.
+   * Check if a world coordinate has a non-procedural destination.
+   * A WorkSystem/Destinations.json entry can name two different doors onto a
+   * hand-authored map: `coords` (direction/id/x/y/mapCoord, one door per
+   * side of the town's footprint) and a single fixed `entrance`
+   * {id,x,y,direction}. `coords` takes priority when it names this exact
+   * square; any other square inside the town's `reservedTiles` footprint
+   * falls back to `entrance` regardless of the direction crossed.
    */
   function getNonProceduralDestination(worldX, worldY, exitDirection) {
-    for (const [key, location] of Object.entries(
-      NonProceduralCoordinates
-    )) {
-      // Check if worldX, worldY matches ANY coordinate pair in the array
-      const foundCoord = location.coords.some(
-        (coord) => coord[0] === worldX && coord[1] === worldY
-      );
+    const destinations = window.WorkSystem && window.WorkSystem.Destinations;
+    if (!destinations) return { exists: false, destination: null };
 
-      if (foundCoord) {
-        // Determine direction from exit direction
-        let direction = null;
-        switch (exitDirection) {
-          case 2:
-            direction = "south";
-            break;
-          case 4:
-            direction = "west";
-            break;
-          case 6:
-            direction = "east";
-            break;
-          case 8:
-            direction = "north";
-            break;
-        }
+    const directionNames = { 2: "south", 4: "west", 6: "east", 8: "north" };
+    const direction = directionNames[exitDirection] || null;
+    const mapCoord = worldX + "," + worldY;
 
-        if (direction && location[direction]) {
-          const dest = location[direction];
+    for (const location of Object.values(destinations)) {
+      const coords = Array.isArray(location.coords) ? location.coords : null;
+      const onCoords = coords && coords.some((c) => c.mapCoord === mapCoord);
+      const onReserved =
+        Array.isArray(location.reservedTiles) &&
+        location.reservedTiles.includes(mapCoord);
+      if (!onCoords && !onReserved) continue;
+
+      if (onCoords) {
+        const dest = direction && coords.find((c) => c.direction === direction);
+        if (dest) {
           return {
             exists: true,
             destination: { mapId: dest.id, x: dest.x, y: dest.y },
           };
         }
-
         return { exists: true, destination: null };
       }
+
+      const entrance = location.entrance;
+      if (entrance && entrance.id) {
+        return {
+          exists: true,
+          destination: { mapId: entrance.id, x: entrance.x, y: entrance.y },
+        };
+      }
+
+      return { exists: true, destination: null };
     }
 
     return { exists: false, destination: null };

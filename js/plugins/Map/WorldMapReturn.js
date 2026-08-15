@@ -626,8 +626,8 @@
     }
 
     function getWorldMapCoordinates() {
-        if (window.WorldGen && window.WorldGen.NonProceduralCoordinates) {
-            return window.WorldGen.NonProceduralCoordinates;
+        if (window.WorkSystem && window.WorkSystem.Destinations) {
+            return window.WorkSystem.Destinations;
         }
         return {};
     }
@@ -2370,9 +2370,25 @@
     };
 
     // OK button on world map: open travel decision window (or interact with teleport/vehicle)
+    //
+    // openTravelDecision() below calls Input.clear() right after opening the
+    // "Visit / Make a camp / Cancel" choice window, to stop the very button
+    // press that opened it from also being read as its first input. Input.clear()
+    // wipes Input._previousState along with the current one, so if that button
+    // is still physically held on the next frame (routine on a gamepad, whose
+    // trigger reads a continuous "pressed" flag rather than a discrete keydown),
+    // Input.isTriggered('ok') reports a brand-new press even though the player
+    // never released it. Without the isBusy() guard here, that phantom press
+    // re-enters this handler while the choice window is still only *pending*
+    // (isBusy() is already true, so the isHardcodedBiomeHere() branch below
+    // politely declines) and falls through to the plain "Teleport - <place>"
+    // event on the same tile, starting it directly and skipping the choice
+    // the player never got to answer. Gating the whole handler on !isBusy()
+    // makes a phantom re-trigger while a message/choice is already up a no-op,
+    // same as any other button press would be.
     const _orig_Player_triggerButtonAction = Game_Player.prototype.triggerButtonAction;
     Game_Player.prototype.triggerButtonAction = function() {
-        if ($gameMap.mapId() === worldMapId && Input.isTriggered('ok')) {
+        if ($gameMap.mapId() === worldMapId && Input.isTriggered('ok') && !$gameMessage.isBusy()) {
             const currentEvents   = $gameMap.eventsXy(this.x, this.y);
             // Named hardcoded locations (London, Milano, ...) always offer the
             // "Visit <name>" travel menu, taking precedence over a Teleport event
@@ -3469,33 +3485,35 @@
             return;
         }
 
+        // `coords` (a door per side of the town's footprint) takes priority;
+        // any other square inside the town's `reservedTiles` falls back to
+        // its single fixed `entrance`, whatever direction it was crossed from.
+        const currentMapCoord = parseInt(currentX) + ',' + parseInt(currentY);
         for (const key in NON_PROCEDURAL_COORDS) {
             const location = NON_PROCEDURAL_COORDS[key];
-            if (!location.coords || !Array.isArray(location.coords)) continue;
-            const isNewFormat   = Array.isArray(location.coords[0]);
-            const coordsToCheck = isNewFormat ? location.coords : [location.coords];
+            const coords = Array.isArray(location.coords) ? location.coords : null;
+            const onCoords = coords && coords.some(c => c.mapCoord === currentMapCoord);
+            const onReserved = Array.isArray(location.reservedTiles) &&
+                location.reservedTiles.includes(currentMapCoord);
+            if (!onCoords && !onReserved) continue;
 
-            const foundCoord = coordsToCheck.some(coord => {
-                return parseInt(coord[0]) === parseInt(currentX) && parseInt(coord[1]) === parseInt(currentY);
-            });
-
-            if (foundCoord) {
-                const direction = $gamePlayer.direction();
-                let destination = null;
-                if (direction === 2) destination = location.south;
-                else if (direction === 8) destination = location.north;
-                else if (direction === 4) destination = location.west;
-                else if (direction === 6) destination = location.east;
-
-                if (destination) {
-                    console.log('[WMR] Transferring to map', destination.id, 'at', destination.x, destination.y);
-                    if (camperDriving) window.CamperDrivingSystem.stop();
-                    $gamePlayer.reserveTransfer(destination.id, destination.x, destination.y, 0, 0);
-                } else {
-                    console.log('[WMR] No destination for direction', direction);
-                }
-                return;
+            const direction = $gamePlayer.direction();
+            let destination = null;
+            if (onCoords) {
+                const directionName = { 2: 'south', 4: 'west', 6: 'east', 8: 'north' }[direction];
+                destination = directionName && coords.find(c => c.direction === directionName);
+            } else if (location.entrance && location.entrance.id) {
+                destination = location.entrance;
             }
+
+            if (destination) {
+                console.log('[WMR] Transferring to map', destination.id, 'at', destination.x, destination.y);
+                if (camperDriving) window.CamperDrivingSystem.stop();
+                $gamePlayer.reserveTransfer(destination.id, destination.x, destination.y, 0, 0);
+            } else {
+                console.log('[WMR] No destination for direction', direction);
+            }
+            return;
         }
 
         console.log('[WMR] No non-proc match, generating procedural map');
