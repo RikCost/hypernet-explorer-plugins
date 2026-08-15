@@ -181,6 +181,28 @@
                 tiles++;
             });
         }
+        // A place that declares no `reservedTiles` still occupies the one world
+        // square its `base` names - that is the tile the fast-travel system parks
+        // a traveller on. Without it the square is anonymous, and everything gated
+        // on "is this a named place?" (the "Visit <name>" travel menu above all)
+        // skips it: a one-tile village like Lille or Le Havre sits on a Village
+        // biome tile, and a plain settlement tile suppresses that menu entirely.
+        //
+        // Only places WITHOUT a footprint get this. Where `reservedTiles` exists it
+        // is the authority and `base` is not dependably inside it (Amsterdam's base
+        // is two squares south of its four reserved tiles; Middelburg's reads
+        // "85,11" against a reserved "85,114"), so a base fill-in there would name
+        // open countryside next door to the town.
+        for (const key in window.WorkSystem.Destinations) {
+            const entry = window.WorkSystem.Destinations[key];
+            if (!entry || Array.isArray(entry.reservedTiles)) continue;
+            const base = entry.base;
+            if (!base || typeof base.x !== 'number' || typeof base.y !== 'number') continue;
+            const coord = base.x + ',' + base.y;
+            if (flat[coord]) continue;
+            flat[coord] = key;
+            tiles++;
+        }
         window.WorldGen = window.WorldGen || {};
         window.WorldGen.HardcodedBiomeNames = flat;
         console.log("DataService: derived WorldGen.HardcodedBiomeNames from " +
@@ -481,7 +503,7 @@
             // wardrobe, the creature-creation board and the enemies that roam
             // the map all read this one list. A two-headed one is still a
             // person, which is why DoubleHeadedHumanoid is on it.
-            PEOPLE_ARCHETYPES: ["Humanoid", "DoubleHeadedHumanoid", "Elven", "Goblin"],
+            PEOPLE_ARCHETYPES: ["Humanoid", "DoubleHeadedHumanoid", "Elven", "Goblin", "Dwarf"],
 
             // Whether one wardrobe entry belongs in this world at all. This is
             // the single rule behind both the sprite a procedural inhabitant is
@@ -491,7 +513,7 @@
             //   goblin  , only goblins: the sheet says so in its name or the
             //             entry carries the Goblin archetype outright.
             //   monster , nothing that reads as a person: every archetype
-            //             except Humanoid, Elven and Goblin.
+            //             except Humanoid, Elven, Goblin and Dwarf.
             //   normal  , everything, which is every world made before this
             //             option existed.
             //

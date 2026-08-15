@@ -233,9 +233,9 @@
             const where = entry.w ? `<span class="diary-margin">${escapeHtml(entry.w)}</span>` : "";
             return `
                 <div class="diary-line ink-${shade}"
-                     style="transform: rotate(${wobble.toFixed(2)}deg);">
+                     style="transform: rotate(${wobble.toFixed(2)}deg)">
                     <span class="diary-hour">${escapeHtml(clockOf(entry.t))}</span>
-                    <span class="diary-glyph" style="background-position: -${x}px -${y}px;"></span>
+                    <span class="diary-glyph" style="background-position: -${x}px -${y}px"></span>
                     <span class="diary-text">${escapeHtml(text)}</span>
                     ${where}
                 </div>
@@ -497,8 +497,8 @@
             flex-shrink: 0;
         }
         #diary-container .diary-date-text {
-            font-size: 1.5rem;
-            font-style: italic;
+            font-size: 1.725rem;
+            font-style: normal;
             font-weight: 700;
             letter-spacing: 0.4px;
             color: var(--ink-strong, #43301c);
@@ -533,14 +533,14 @@
             min-height: 34px;
             padding: 4px 6px 2px 6px;
             border-radius: 3px;
-            font-size: 1.02rem;
+            font-size: 1.173rem;
             line-height: 1.55;
             transform-origin: left center;
         }
         #diary-container .diary-hour {
             flex: 0 0 auto;
             min-width: 44px;
-            font-size: 0.86rem;
+            font-size: 1.032rem;
             font-weight: 700;
             font-variant-numeric: tabular-nums;
             opacity: 0.72;
@@ -559,7 +559,7 @@
         #diary-container .diary-text {
             flex: 1 1 auto;
             min-width: 0;
-            font-style: italic;
+            font-style: normal;
             word-break: break-word;
         }
         /* Three shades of the same ink, so a page does not read as printed. */
@@ -570,8 +570,8 @@
         #diary-container .diary-margin {
             flex: 0 0 auto;
             max-width: 30%;
-            font-size: 0.76rem;
-            font-style: italic;
+            font-size: 0.927rem;
+            font-style: normal;
             text-align: right;
             opacity: 0.55;
             padding-top: 5px;
@@ -586,8 +586,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-style: italic;
-            font-size: 1.05rem;
+            font-style: normal;
+            font-size: 1.208rem;
             opacity: 0.42;
             text-align: center;
             padding: 0 40px;
@@ -606,7 +606,7 @@
         #diary-container .diary-mark {
             position: relative;
             padding: 4px 12px 4px 10px;
-            font-size: 0.72rem;
+            font-size: 0.878rem;
             letter-spacing: 0.4px;
             text-transform: uppercase;
             color: var(--paper, #efe4c8);
@@ -633,8 +633,8 @@
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            font-size: 0.8rem;
-            font-style: italic;
+            font-size: 0.96rem;
+            font-style: normal;
             color: var(--paper, #efe4c8);
             opacity: 0.72;
             pointer-events: none;

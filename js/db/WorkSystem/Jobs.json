@@ -9,7 +9,7 @@
     "description": "Load and unload cargo in the warehouse district.",
     "description_it": "Carica e scarica merci nel distretto dei magazzini.",
     "duration": 8,
-    "basePay": 300,
+    "basePay": 12000,
     "locations": [
       26,
       37,
@@ -98,7 +98,7 @@
     "description": "Work the fields, tend to crops and livestock.",
     "description_it": "Lavora nei campi, cura i raccolti e il bestiame.",
     "duration": 10,
-    "basePay": 250,
+    "basePay": 27000,
     "locations": [
       1035,
       1037
@@ -186,7 +186,7 @@
     "description": "Serve drinks and manage patrons at the tavern.",
     "description_it": "Servi bevande e gestisci clienti alla taverna.",
     "duration": 8,
-    "basePay": 225,
+    "basePay": 10400,
     "locations": [
       302,
       367,
@@ -276,7 +276,7 @@
     "description": "Entertain crowds with performances for tips.",
     "description_it": "Intrattieni la folla con spettacoli per mance.",
     "duration": 6,
-    "basePay": 150,
+    "basePay": 7800,
     "locations": [
       446,
       533,
@@ -351,7 +351,7 @@
     "description": "Help the blacksmith forge weapons and tools.",
     "description_it": "Aiuta il fabbro a forgiare armi e attrezzi.",
     "duration": 9,
-    "basePay": 325,
+    "basePay": 15300,
     "locations": [
       "Forge District",
       "Craftsman Quarter",
@@ -440,7 +440,7 @@
     "description": "Collect rare magical ingredients in dangerous areas.",
     "description_it": "Raccogli ingredienti magici rari in zone pericolose.",
     "duration": 7,
-    "basePay": 375,
+    "basePay": 15400,
     "locations": [
       450,
       1039
@@ -527,7 +527,7 @@
     "description": "Mix potions and manage the alchemist's laboratory.",
     "description_it": "Mescola pozioni e gestisci il laboratorio dell'alchimista.",
     "duration": 8,
-    "basePay": 350,
+    "basePay": 16000,
     "locations": [
       320,
       531
@@ -619,7 +619,7 @@
     "description": "Repair and restore damaged magical items.",
     "description_it": "Ripara e restaura oggetti magici danneggiati.",
     "duration": 6,
-    "basePay": 450,
+    "basePay": 18600,
     "locations": [],
     "requirements": {
       "MAT": 30,
@@ -707,7 +707,7 @@
     "description": "Protect merchant caravans from bandits and monsters.",
     "description_it": "Proteggi le carovane mercantili da banditi e mostri.",
     "duration": 12,
-    "basePay": 500,
+    "basePay": 31200,
     "locations": [],
     "requirements": {
       "ATK": 30,
@@ -794,7 +794,7 @@
     "description": "Fight in the arena for prize money and glory.",
     "description_it": "Combatti nell'arena per denaro e gloria.",
     "duration": 4,
-    "basePay": 375,
+    "basePay": 16000,
     "locations": [
       503,
       525
@@ -881,7 +881,7 @@
     "description": "Clear out monster infestations from civilian areas.",
     "description_it": "Elimina infestazioni di mostri dalle aree civili.",
     "duration": 8,
-    "basePay": 550,
+    "basePay": 25600,
     "locations": [],
     "requirements": {
       "ATK": 30,
@@ -968,7 +968,7 @@
     "description": "Steal from unsuspecting marks in crowded areas.",
     "description_it": "Ruba da vittime ignare in aree affollate.",
     "duration": 5,
-    "basePay": 250,
+    "basePay": 14000,
     "locations": [
       446,
       533,
@@ -1050,7 +1050,7 @@
     "description": "Transport illegal goods across checkpoints.",
     "description_it": "Trasporta merci illegali attraverso i posti di blocco.",
     "duration": 10,
-    "basePay": 625,
+    "basePay": 31000,
     "locations": [],
     "requirements": {
       "Stealth": 30,
@@ -1132,7 +1132,7 @@
     "description": "Break into a building and steal valuables.",
     "description_it": "Entra con scasso in un edificio e ruba oggetti di valore.",
     "duration": 6,
-    "basePay": 750,
+    "basePay": 21600,
     "locations": [
       1076
     ],
@@ -1217,7 +1217,7 @@
     "description": "Repair vehicles and machinery.",
     "description_it": "Ripara veicoli e macchinari.",
     "duration": 8,
-    "basePay": 350,
+    "basePay": 16000,
     "locations": [
       403,
       630,
@@ -1303,7 +1303,7 @@
     "description": "Create and repair locks for clients.",
     "description_it": "Crea e ripara serrature per i clienti.",
     "duration": 6,
-    "basePay": 300,
+    "basePay": 14400,
     "locations": [],
     "requirements": {
       "Substance": 25,
@@ -1378,7 +1378,7 @@
     "description": "Craft and repair intricate timepieces.",
     "description_it": "Crea e ripara orologi complessi.",
     "duration": 7,
-    "basePay": 400,
+    "basePay": 21000,
     "locations": [
       29,
       723
@@ -1456,7 +1456,8 @@
     "description": "Negotiate deals and resolve disputes.",
     "description_it": "Negozia accordi e risolvi dispute.",
     "duration": 6,
-    "basePay": 450,
+    "basePay": 17400,
+    "remote": true,
     "locations": [
       1000
     ],
@@ -1536,7 +1537,8 @@
     "description": "Read fortunes for paying customers.",
     "description_it": "Leggi il futuro per clienti paganti.",
     "duration": 5,
-    "basePay": 200,
+    "basePay": 11000,
+    "remote": true,
     "locations": [
       450
     ],
@@ -1609,7 +1611,7 @@
     "description": "Deliver packages and messages across the city.",
     "description_it": "Consegna pacchi e messaggi in città.",
     "duration": 7,
-    "basePay": 250,
+    "basePay": 11900,
     "locations": [],
     "requirements": {
       "AGI": 30,
@@ -1691,7 +1693,7 @@
     "description": "Inspect magical practitioners for proper permits and licensing.",
     "description_it": "Ispeziona praticanti magici per permessi e licenze appropriate.",
     "duration": 8,
-    "basePay": 350,
+    "basePay": 16000,
     "locations": [
       1050
     ],
@@ -1773,7 +1775,7 @@
     "description": "Ensure magical rituals follow Guild protocols exactly.",
     "description_it": "Assicura che i rituali magici seguano esattamente i protocolli della Gilda.",
     "duration": 6,
-    "basePay": 325,
+    "basePay": 16200,
     "locations": [],
     "requirements": {
       "MAT": 25,
@@ -1857,7 +1859,7 @@
     "description": "Seek out and destroy illegal techno-magical fusion devices.",
     "description_it": "Cerca e distruggi dispositivi illegali di fusione tecno-magica.",
     "duration": 8,
-    "basePay": 400,
+    "basePay": 24800,
     "locations": [],
     "requirements": {
       "MAT": 30,
@@ -1948,7 +1950,7 @@
     "description": "Develop experimental fusion of magic and machinery.",
     "description_it": "Sviluppa fusioni sperimentali di magia e macchinari.",
     "duration": 9,
-    "basePay": 500,
+    "basePay": 31500,
     "locations": [
       320,
       531
@@ -2044,7 +2046,8 @@
     "description": "Meticulously categorize spells into the 92 distinct schools.",
     "description_it": "Categorizza meticolosamente gli incantesimi nelle 92 scuole distinte.",
     "duration": 10,
-    "basePay": 275,
+    "basePay": 21000,
+    "remote": true,
     "locations": [],
     "requirements": {
       "MAT": 30,
@@ -2126,7 +2129,8 @@
     "description": "Remove dangerous knowledge from historical texts.",
     "description_it": "Rimuovi conoscenza pericolosa dai testi storici.",
     "duration": 8,
-    "basePay": 375,
+    "basePay": 18400,
+    "remote": true,
     "locations": [],
     "requirements": {
       "Arcane": 25,
@@ -2206,7 +2210,7 @@
     "description": "Steal historical artifacts for the Foundation's collection.",
     "description_it": "Ruba artefatti storici per la collezione della Fondazione.",
     "duration": 8,
-    "basePay": 625,
+    "basePay": 30400,
     "locations": [],
     "requirements": {
       "Stealth": 40,
@@ -2294,7 +2298,7 @@
     "description": "Maintain the archives and permanently silence noisy patrons.",
     "description_it": "Mantieni gli archivi e zittisci permanentemente i visitatori rumorosi.",
     "duration": 8,
-    "basePay": 350,
+    "basePay": 20800,
     "locations": [
       7,
       43,
@@ -2384,7 +2388,8 @@
     "description": "Craft convincing misinformation for public consumption.",
     "description_it": "Crea disinformazione convincente per il consumo pubblico.",
     "duration": 7,
-    "basePay": 325,
+    "basePay": 16800,
+    "remote": true,
     "locations": [],
     "requirements": {
       "MAT": 30,
@@ -2456,7 +2461,8 @@
     "description": "Root out information leaks within the Foundation.",
     "description_it": "Scova perdite di informazioni all'interno della Fondazione.",
     "duration": 9,
-    "basePay": 450,
+    "basePay": 27900,
+    "remote": true,
     "locations": [
       1050
     ],
@@ -2539,7 +2545,8 @@
     "description": "Manipulate markets for profit through any means necessary.",
     "description_it": "Manipola i mercati per profitto con qualsiasi mezzo necessario.",
     "duration": 8,
-    "basePay": 500,
+    "basePay": 26400,
+    "remote": true,
     "locations": [],
     "requirements": {
       "LUK": 30,
@@ -2616,7 +2623,8 @@
     "description": "Maximize oil extraction efficiency through infernal optimization.",
     "description_it": "Massimizza l'efficienza dell'estrazione petrolifera attraverso ottimizzazione infernale.",
     "duration": 10,
-    "basePay": 550,
+    "basePay": 33000,
+    "remote": true,
     "locations": [],
     "requirements": {
       "Intimidation": 35,
@@ -2704,7 +2712,7 @@
     "description": "Deliver packages at breakneck speeds, worshipping velocity.",
     "description_it": "Consegna pacchi a velocità folle, adorando la velocità.",
     "duration": 5,
-    "basePay": 450,
+    "basePay": 16500,
     "locations": [],
     "requirements": {
       "AGI": 40,
@@ -2788,7 +2796,7 @@
     "description": "Ensure the Seven Sisters maintain total fuel market control.",
     "description_it": "Assicura che le Sette Sorelle mantengano il controllo totale del mercato carburante.",
     "duration": 8,
-    "basePay": 500,
+    "basePay": 27200,
     "locations": [],
     "requirements": {
       "ATK": 30,
@@ -2876,7 +2884,8 @@
     "description": "Spread discord and disruption in the name of the Goddess of Chaos.",
     "description_it": "Diffondi discordia e disordine nel nome della Dea del Caos.",
     "duration": 6,
-    "basePay": 375,
+    "basePay": 18600,
+    "remote": true,
     "locations": [],
     "requirements": {
       "LUK": 35,
@@ -2949,7 +2958,7 @@
     "description": "Transcribe and maintain sacred texts and church documents.",
     "description_it": "Trascrivi e mantieni testi sacri e documenti della chiesa.",
     "duration": 8,
-    "basePay": 325,
+    "basePay": 16800,
     "locations": [
       727,
       1000,
@@ -3027,7 +3036,7 @@
     "description": "Train in both scripture and combat as a Vatican special forces operative.",
     "description_it": "Addestrati sia nelle scritture che nel combattimento come operativa delle forze speciali vaticane.",
     "duration": 10,
-    "basePay": 425,
+    "basePay": 29000,
     "locations": [
       727
     ],
@@ -3112,7 +3121,7 @@
     "description": "Guard property through the dangerous night hours.",
     "description_it": "Sorveglia proprietà durante le pericolose ore notturne.",
     "duration": 10,
-    "basePay": 275,
+    "basePay": 15000,
     "locations": [],
     "requirements": {
       "DEF": 20,
@@ -3193,7 +3202,7 @@
     "description": "Catch fish for sale at the market.",
     "description_it": "Pesca pesce per venderlo al mercato.",
     "duration": 8,
-    "basePay": 240,
+    "basePay": 13600,
     "locations": [
       570
     ],
@@ -3267,7 +3276,7 @@
     "description": "Clean the filthy city streets.",
     "description_it": "Pulisci le sporche strade cittadine.",
     "duration": 8,
-    "basePay": 200,
+    "basePay": 8000,
     "locations": [
       704,
       689,
@@ -3353,7 +3362,8 @@
     "description": "Oversee daily operations and keep staff in line.",
     "description_it": "Supervisiona le operazioni quotidiane e il personale.",
     "duration": 8,
-    "basePay": 375,
+    "basePay": 13600,
+    "remote": true,
     "locations": [
       706,
       1007
@@ -3438,7 +3448,7 @@
     "description": "Take orders and serve food and drinks to customers.",
     "description_it": "Prendi ordinazioni e servi cibo e bevande ai clienti.",
     "duration": 8,
-    "basePay": 225,
+    "basePay": 9600,
     "locations": [
       1054,
       463,
@@ -3528,7 +3538,7 @@
     "description": "Prepare meals in a busy kitchen.",
     "description_it": "Prepara pasti in una cucina indaffarata.",
     "duration": 8,
-    "basePay": 275,
+    "basePay": 10400,
     "locations": [
       713,
       1061,
@@ -3618,7 +3628,7 @@
     "description": "Catalog exhibits and guide visitors through the museum.",
     "description_it": "Cataloga le esposizioni e guida i visitatori nel museo.",
     "duration": 7,
-    "basePay": 325,
+    "basePay": 12600,
     "locations": [
       307,
       714
@@ -3698,7 +3708,7 @@
     "description": "Guide clients through workouts and fitness routines.",
     "description_it": "Guida i clienti attraverso allenamenti e programmi di fitness.",
     "duration": 6,
-    "basePay": 300,
+    "basePay": 11400,
     "locations": [
       304,
       541,
@@ -3779,7 +3789,7 @@
     "description": "Greet guests and control entry at the venue's front door.",
     "description_it": "Accogli gli ospiti e controlla l'ingresso del locale.",
     "duration": 9,
-    "basePay": 250,
+    "basePay": 11700,
     "locations": [
       725
     ],
@@ -3862,7 +3872,7 @@
     "description": "Keep order and remove troublemakers from the venue.",
     "description_it": "Mantieni l'ordine e allontana i facinorosi dal locale.",
     "duration": 8,
-    "basePay": 325,
+    "basePay": 16800,
     "locations": [
       726
     ],
@@ -3950,7 +3960,7 @@
     "description": "Watch over swimmers and respond to emergencies in the water.",
     "description_it": "Sorveglia i bagnanti e intervieni in caso di emergenza in acqua.",
     "duration": 8,
-    "basePay": 275,
+    "basePay": 24000,
     "locations": [
       1130,
       1160
@@ -4034,7 +4044,7 @@
     "description": "Argue for the accused before the Goddess of Justice, who does not recognise a defence bar.",
     "description_it": "Difendi gli imputati davanti alla Dea della Giustizia, che non riconosce alcun ordine forense.",
     "duration": 8,
-    "basePay": 2250,
+    "basePay": 23200,
     "locations": [
       1102
     ],

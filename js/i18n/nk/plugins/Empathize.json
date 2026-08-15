@@ -410,6 +410,8 @@
   },
   "tellAJoke": "TELL A JOKE",
   "jokeFallback": "A FUNNY THING HAPPENED.",
+  "funShared": "YOU AND {name} BOTH ENJOYED THAT.",
+  "funHint": "FUN FOR YOU AND FOR THEM, WHEN IT LANDS.",
   "oldLegend": "AN OLD LEGEND",
   "bribeAccepted": "{name} ACCEPTS. +{op} ♥",
   "joinedParty": "{name} JOINED DA PARTY!",

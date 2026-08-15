@@ -30,6 +30,7 @@
       "slowed": "{need} drains {pct}% slower.",
       "hastened": "{need} drains {pct}% faster.",
       "restores": "{need} refills instead of draining, at {pct}% of the usual rate."
-    }
+    },
+    "searchPlaceholder": "Search augments…"
   }
 }

@@ -134,7 +134,7 @@
             const dur = (2.6 + Math.random() * 3.4).toFixed(2);
             const delay = (Math.random() * 4).toFixed(2);
             s += `<circle class="gsv-field-star" cx="${x.toFixed(2)}%" cy="${y.toFixed(2)}%" r="${r.toFixed(2)}" ` +
-                `style="--gsv-op:${op};animation-duration:${dur}s;animation-delay:${delay}s"/>`;
+                `style="--gsv-op:${op}; animation-duration:${dur}s; animation-delay:${delay}s"/>`;
         }
         return s;
     }
@@ -261,18 +261,18 @@
   border-bottom:2px solid var(--border-gold-amber-30,rgba(212,160,80,0.3)); padding-bottom:6px; }
 #gsv-root .gsv-tab { pointer-events:auto; cursor:pointer; padding:6px 16px; margin:0; border-radius:4px 4px 0 0;
   background:transparent; border:1px solid transparent;
-  color:var(--text-text-alt-12,#aaa); font-size:14px; letter-spacing:0.4px; font-weight:600;
+  color:var(--text-text-alt-12,#aaa); font-size:17px; letter-spacing:0.4px; font-weight:600;
   transition:all .15s ease; white-space:nowrap; user-select:none; }
 #gsv-root .gsv-tab:hover { background:var(--border-gold-amber-30,rgba(212,160,80,0.15)); color:var(--text-pure-white,#fff); }
 #gsv-root .gsv-tab.gsv-active { color:#1a1206; background:var(--accent-gold-pure,#ffd700);
   box-shadow:0 4px 10px var(--shadow-black-translucent-55,rgba(0,0,0,0.55)); }
-#gsv-root .gsv-legend { display:flex; align-items:center; gap:6px; padding-bottom:8px; font-size:12px;
+#gsv-root .gsv-legend { display:flex; align-items:center; gap:6px; padding-bottom:8px; font-size:15px;
   color:var(--text-text-alt-12,#aaa); }
 #gsv-root .gsv-legend-swatch { width:16px; height:2px; background:${ZODIAC_COLOR_CSS};
   box-shadow:0 0 4px rgba(255,215,90,.7); display:inline-block; }
 #gsv-root .gsv-bottombar { position:absolute; left:50%; bottom:20px; transform:translateX(-50%);
   text-align:center; z-index:2; pointer-events:none; max-width:90vw; }
-#gsv-root .gsv-hover-name { font-size:22px; font-weight:600; letter-spacing:0.6px;
+#gsv-root .gsv-hover-name { font-size:24px; font-weight:600; letter-spacing:0.6px;
   color:var(--accent-amber-glow,#ffe9a8); text-shadow:0 2px 6px var(--shadow-black-translucent-75,rgba(0,0,0,0.75));
   opacity:0; transition:opacity .18s; }
 #gsv-root .gsv-hover-name.gsv-visible { opacity:1; }

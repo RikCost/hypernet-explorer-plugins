@@ -36,7 +36,7 @@
 #gx-ui { position:absolute; top:0; right:0; bottom:0; left:0;
   width:100%; height:100%; pointer-events:none;
   font-family:'Segoe UI',Arial,sans-serif; color:var(--text-pure-white,#fff);
-  user-select:none; font-size:13px; }
+  user-select:none; font-size:16px; }
 #gx-ui .gx-panel {
   position:absolute; pointer-events:auto;
   background:var(--bg-dark-panel,rgba(20,24,33,0.96));
@@ -45,13 +45,13 @@
   box-shadow:0 6px 20px var(--shadow-black-translucent-55,rgba(0,0,0,0.55));
   line-height:1.5; }
 #gx-ui .gx-title {
-  color:var(--accent-amber-glow,#ffe9a8); font-weight:bold; font-size:18px;
+  color:var(--accent-amber-glow,#ffe9a8); font-weight:bold; font-size:21px;
   letter-spacing:0.5px; margin-bottom:6px;
   text-shadow:0 1px 3px var(--shadow-black-translucent-75,rgba(0,0,0,0.75)); }
 #gx-ui .gx-title.gx-hard { color:var(--accent-gold-pure,#ffd700); }
 #gx-ui .gx-loc-star { color:var(--accent-gold-pure,#ffd700);
   text-shadow:0 0 6px var(--shadow-gold-amber-50,rgba(212,160,80,0.8)); }
-#gx-ui .gx-sub { color:var(--accent-amber-light,#e9c46a); font-size:12px;
+#gx-ui .gx-sub { color:var(--accent-amber-light,#e9c46a); font-size:15px;
   margin:-4px 0 6px; text-transform:capitalize; }
 #gx-ui .gx-divider { height:1px; margin:6px 0;
   background:var(--border-gold-amber-30,rgba(212,160,80,0.3)); }
@@ -80,14 +80,14 @@
   min-width:340px; max-width:380px; padding:10px 14px; }
 #gx-fuel .gx-fuel-head { display:flex; align-items:baseline; gap:8px;
   margin-bottom:2px; }
-#gx-fuel .gx-fuel-head .gx-title { flex:0 0 auto; margin:0; font-size:15px; }
-#gx-fuel .gx-fuel-head .gx-muted { flex:1 1 auto; min-width:0; font-size:11px;
+#gx-fuel .gx-fuel-head .gx-title { flex:0 0 auto; margin:0; font-size:17px; }
+#gx-fuel .gx-fuel-head .gx-muted { flex:1 1 auto; min-width:0; font-size:14px;
   line-height:1.3; }
-#gx-fuel .gx-fuel-pct { margin-left:auto; font-weight:bold; font-size:15px;
+#gx-fuel .gx-fuel-pct { margin-left:auto; font-weight:bold; font-size:17px;
   color:#7ad0ff; }
 #gx-fuel .gx-fuel-pct.gx-low { color:var(--accent-red-3,#ff5252); }
 #gx-fuel .gx-fuel-row { display:flex; align-items:center; gap:8px; margin:5px 0; }
-#gx-fuel .gx-fuel-name { flex:0 0 78px; font-size:11px; letter-spacing:0.5px;
+#gx-fuel .gx-fuel-name { flex:0 0 78px; font-size:14px; letter-spacing:0.5px;
   color:var(--text-text-alt-12,#aaa); text-transform:uppercase; }
 #gx-fuel .gx-fuel-bar { flex:1 1 auto; height:9px; border-radius:5px;
   background:rgba(13,16,23,0.9);
@@ -101,7 +101,7 @@
   background:linear-gradient(to right,#8a1f1f,#ff6b6b); }
 #gx-fuel .gx-fuel-fill.mapfuel {
   background:linear-gradient(to right,#c98a2b,#ffd27a); }
-#gx-fuel .gx-fuel-val { flex:0 0 auto; font-size:11px; min-width:132px;
+#gx-fuel .gx-fuel-val { flex:0 0 auto; font-size:14px; min-width:132px;
   text-align:right; color:var(--text-pure-white,#fff); }
 /* Refuel row: the button plus where the Hyperflux is coming from. */
 #gx-fuel .gx-refuel-row { display:flex; align-items:center; gap:8px;
@@ -111,7 +111,7 @@
 #gx-fuel .gx-btn.gx-refuel.gx-on {
   background:rgba(122,208,255,0.18); border-color:#7ad0ff; color:#bfe8ff; }
 #gx-fuel .gx-btn.gx-refuel.gx-disabled { opacity:0.4; cursor:not-allowed; }
-#gx-fuel .gx-refuel-hint { flex:1 1 auto; font-size:11px; line-height:1.3;
+#gx-fuel .gx-refuel-hint { flex:1 1 auto; font-size:14px; line-height:1.3;
   text-align:right; color:var(--text-text-alt-12,#aaa); }
 #gx-fuel .gx-sb-pips { flex:1 1 auto; display:flex; flex-wrap:wrap; gap:2px; }
 #gx-fuel .gx-sb-pip { width:6px; height:9px; border-radius:2px;
@@ -176,14 +176,14 @@
   100% { transform:scaleY(0.02) scaleX(0.55); opacity:0; } }
 @keyframes gx-warp-box-bg-kf {
   0% { background-position:0% 0; } 100% { background-position:220% 0; } }
-#gx-mode { bottom:14px; right:26px; font-size:12px;
+#gx-mode { bottom:14px; right:26px; font-size:15px;
   color:var(--text-text-alt-12,#aaa); pointer-events:none; }
 #gx-mode b { color:var(--accent-amber-light,#e9c46a); }
 /* Controller button chips (Xbox layout), written into hint text as [A], [LB],
    [LS]... and expanded by padGlyphs(). The face buttons keep their pad colours
    so they read at a glance; shoulders/triggers/sticks are plain keycaps. */
 #gx-ui .gx-pad { display:inline-block; min-width:15px; padding:0 4px;
-  margin:0 1px; border-radius:9px; font-size:10px; font-weight:bold;
+  margin:0 1px; border-radius:9px; font-size:13px; font-weight:bold;
   line-height:15px; text-align:center; vertical-align:baseline;
   color:var(--text-pure-black,#0b0e14);
   background:var(--text-text-alt-12,#aaa); }
@@ -224,12 +224,12 @@
   display:none; min-width:290px; max-width:330px; z-index:3;
   max-height:calc(100vh - 290px); overflow-y:auto; overscroll-behavior:contain; }
 #gx-catalog .gx-cat-tabs { display:flex; flex-wrap:wrap; margin-bottom:4px; }
-#gx-catalog .gx-cat-tab { padding:3px 9px; font-size:11px; }
+#gx-catalog .gx-cat-tab { padding:3px 9px; font-size:14px; }
 #gx-catalog .gx-cat-tab.gx-on {
   background:var(--bg-tertiary-focus-translucent-45,rgba(255,204,102,0.18));
   color:var(--accent-amber-glow,#ffe9a8); }
 #gx-catalog .gx-cat-group { display:flex; align-items:center; gap:6px;
-  margin:10px 0 4px; font-size:11px; font-weight:bold;
+  margin:10px 0 4px; font-size:14px; font-weight:bold;
   letter-spacing:1px; text-transform:uppercase;
   color:var(--accent-amber-light,#e9c46a);
   border-bottom:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.3));
@@ -242,15 +242,15 @@
 #gx-catalog .gx-cat-label { flex:1 1 auto; min-width:0; line-height:1.25; }
 #gx-catalog .gx-cat-name { display:block; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap; }
-#gx-catalog .gx-cat-type { display:block; font-size:11px;
+#gx-catalog .gx-cat-type { display:block; font-size:14px;
   color:var(--text-text-alt-12,#aaa); overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap; }
-#gx-catalog .gx-btn { margin:0; padding:3px 8px; font-size:11px; flex:0 0 auto; }
-#gx-catalog .gx-cat-empty { color:var(--text-text-alt-12,#aaa); font-size:12px; }
+#gx-catalog .gx-btn { margin:0; padding:3px 8px; font-size:14px; flex:0 0 auto; }
+#gx-catalog .gx-cat-empty { color:var(--text-text-alt-12,#aaa); font-size:15px; }
 #gx-tooltip { position:absolute; pointer-events:none; display:none;
   background:var(--bg-darker-panel,rgba(13,16,23,0.97));
   border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.3));
-  border-radius:4px; padding:4px 8px; font-size:12px; white-space:nowrap;
+  border-radius:4px; padding:4px 8px; font-size:15px; white-space:nowrap;
   color:var(--text-pure-white,#fff); transform:translate(12px,12px); z-index:5; }
 #gx-tooltip .gx-tt-type { color:var(--text-text-alt-12,#aaa);
   text-transform:capitalize; }
@@ -261,7 +261,7 @@
   border:1px solid var(--border-focus-hover,#ffcc66);
   color:var(--text-primary-hover,#ffcc66);
   border-radius:4px; padding:6px 12px; margin:4px 6px 0 0;
-  font-weight:bold; font-size:12px; }
+  font-weight:bold; font-size:15px; }
 #gx-ui .gx-btn.gx-land { border-color:var(--accent-green-3,#60b345);
   color:var(--accent-green-3,#60b345); }
 #gx-ui .gx-btn.gx-stop { border-color:var(--accent-red-3,#ff5252);
@@ -285,8 +285,8 @@
 #gx-landing-grid .gx-lg-canvas { display:block; margin:10px auto 4px; cursor:pointer;
   border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.4)); border-radius:4px; }
 /* A body's hand-written note: the one paragraph of prose on the panel. */
-#gx-ui .gx-note { margin:8px 0 2px; font-size:12px; line-height:1.45;
-  color:var(--accent-amber-light,#e9c46a); font-style:italic; }
+#gx-ui .gx-note { margin:8px 0 2px; font-size:15px; line-height:1.45;
+  color:var(--accent-amber-light,#e9c46a); font-style: normal; }
 /* Servicing bay: the Hubble parts list, as a full-screen modal. */
 #gx-service { position:absolute; top:0; right:0; bottom:0; left:0; z-index:25; display:none;
   align-items:center; justify-content:center; pointer-events:auto;
@@ -306,10 +306,10 @@
 #gx-service .gx-svc-part.gx-crit { border-color:rgba(255,82,82,0.45); }
 #gx-service .gx-svc-part.gx-ok { opacity:0.6; }
 #gx-service .gx-svc-main { flex:1 1 auto; min-width:0; }
-#gx-service .gx-svc-name { font-weight:bold; font-size:13px; }
-#gx-service .gx-svc-note { font-size:11px; color:var(--text-text-alt-12,#aaa);
+#gx-service .gx-svc-name { font-weight:bold; font-size:16px; }
+#gx-service .gx-svc-note { font-size:14px; color:var(--text-text-alt-12,#aaa);
   line-height:1.35; }
-#gx-service .gx-svc-cost { font-size:11px; margin-top:2px;
+#gx-service .gx-svc-cost { font-size:14px; margin-top:2px;
   color:var(--accent-amber-light,#e9c46a); }
 #gx-service .gx-svc-cost .gx-short { color:var(--accent-red-3,#ff5252); }
 #gx-service .gx-svc-bar { flex:0 0 110px; height:9px; border-radius:5px;
@@ -320,7 +320,7 @@
   background:linear-gradient(to right,#2b6cff,#7ad0ff); }
 #gx-service .gx-svc-fill.gx-warn { background:linear-gradient(to right,#c98a2b,#ffd27a); }
 #gx-service .gx-svc-fill.gx-bad { background:linear-gradient(to right,#8a1f1f,#ff6b6b); }
-#gx-service .gx-svc-pct { flex:0 0 40px; text-align:right; font-size:11px; }
+#gx-service .gx-svc-pct { flex:0 0 40px; text-align:right; font-size:14px; }
 #gx-service .gx-btn { margin:0; flex:0 0 auto; }
 #gx-service .gx-btn.gx-disabled { opacity:0.35; cursor:not-allowed; }
 /* Anomaly log: the branching encounter, as a message window over the map. */
@@ -333,19 +333,19 @@
   border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.35));
   border-radius:6px; padding:16px 20px;
   box-shadow:0 6px 24px var(--shadow-black-translucent-55,rgba(0,0,0,0.6)); }
-#gx-anomaly .gx-anom-where { font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+#gx-anomaly .gx-anom-where { font-size:14px; letter-spacing:0.08em; text-transform:uppercase;
   color:var(--text-text-alt-12,#9aa4b4); }
 #gx-anomaly .gx-anom-body { overflow-y:auto; overscroll-behavior:contain;
-  margin:10px -4px 0; padding:0 4px; font-size:13px; line-height:1.62; }
+  margin:10px -4px 0; padding:0 4px; font-size:16px; line-height:1.62; }
 #gx-anomaly .gx-anom-body p { margin:0 0 10px; }
 #gx-anomaly .gx-anom-rewards { margin-top:8px; padding-top:8px;
   border-top:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.2));
-  font-size:12px; color:var(--accent-amber-light,#e9c46a); }
+  font-size:15px; color:var(--accent-amber-light,#e9c46a); }
 #gx-anomaly .gx-anom-rewards div { margin:2px 0; }
 #gx-anomaly .gx-anom-choices { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
 #gx-anomaly .gx-anom-choice { display:block; text-align:left; padding:8px 12px;
   border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.28));
-  border-radius:4px; cursor:pointer; font-size:13px; line-height:1.4;
+cursor:pointer; font-size:16px; line-height:1.4;
   background:rgba(13,16,23,0.6); }
 #gx-anomaly .gx-anom-choice:hover, #gx-anomaly .gx-anom-choice.focused {
   border-color:var(--accent-amber-light,#e9c46a);
@@ -360,8 +360,8 @@
   border-radius:6px; padding:12px 16px; z-index:20;
   box-shadow:0 6px 20px var(--shadow-black-translucent-55,rgba(0,0,0,0.55)); }
 #gx-mining .gx-mine-head { display:flex; align-items:baseline; gap:10px; }
-#gx-mining .gx-mine-head .gx-title { margin:0; font-size:15px; }
-#gx-mining .gx-mine-clock { margin-left:auto; font-size:13px;
+#gx-mining .gx-mine-head .gx-title { margin:0; font-size:17px; }
+#gx-mining .gx-mine-clock { margin-left:auto; font-size:16px;
   font-family:'Consolas',monospace; color:#7ad0ff; }
 #gx-mining .gx-mine-bar { height:12px; border-radius:6px; margin:8px 0 6px;
   background:rgba(13,16,23,0.9);
@@ -370,7 +370,7 @@
 #gx-mining .gx-mine-fill { height:100%; width:0%; border-radius:5px;
   background:linear-gradient(to right,#c98a2b,#ff6b3d,#ffd27a);
   transition:width 0.25s linear; }
-#gx-mining .gx-mine-log { font-size:11px; line-height:1.45; min-height:34px;
+#gx-mining .gx-mine-log { font-size:14px; line-height:1.45; min-height:34px;
   color:var(--text-text-alt-12,#aaa); }
 #gx-mining .gx-mine-log b { color:var(--accent-amber-glow,#ffe9a8); }
 #gx-mining .gx-mine-log .gx-rare { color:#c39bff; }
@@ -437,6 +437,13 @@
     if (!type) return "?";
     const key = 'Galaxy.bodyType.' + String(type);
     return T.has(key) ? T(key) : String(type);
+  };
+
+  // The word a biosignature tier is read out as (Weak / Strong / Hyper), asked
+  // of the core so the info box, the catalogue and the ground all say the same.
+  const bioTierLabel = (tier) => {
+    const GS = window.GalaxySim;
+    return (GS && GS.bioTierLabel) ? GS.bioTierLabel(tier) : "";
   };
 
   class GalaxyOverlay {
@@ -1235,11 +1242,16 @@
         // via opts); "Has Life" is only shown when the planet actually has life.
         [T('Galaxy.row.breathableAir'), opts.breathable != null
           ? (opts.breathable ? T('Galaxy.row.yes') : T('Galaxy.row.no')) : null],
-        // "Life" reads Detected for a real biosphere and Weak signs for a world
-        // that only grows the tentacle things (GalaxySim.planetLifeSigns); a
-        // dead world simply omits the row.
-        [T('Galaxy.row.life'), opts.hasLife ? T('Galaxy.row.detected')
-          : (opts.weakLife ? T('Galaxy.row.weakSigns') : null)],
+        // "Life" reads the biosignature the scan came back with. A real
+        // biosphere reads as its strength against the party - Weak, Strong or
+        // Hyper, which is how the world's own level stands against theirs
+        // (GalaxySim.planetBioTier) - and a world that only grows the tentacle
+        // things reads as trace signs; a dead world simply omits the row.
+        [T('Galaxy.row.life'), opts.hasLife
+          ? (opts.bioTier
+            ? T('Galaxy.row.bioReading', { tier: bioTierLabel(opts.bioTier) })
+            : T('Galaxy.row.detected'))
+          : (opts.weakLife ? T('Galaxy.row.traceSigns') : null)],
         [T('Anomaly.ui.signalRow'), opts.canInvestigate ? T('Anomaly.ui.signalUnread') : null],
         [T('Galaxy.row.moons'), body.moons ? body.moons.length : null],
         // Anything the ship's lasers have already taken off this body.

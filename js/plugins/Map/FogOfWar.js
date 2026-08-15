@@ -84,7 +84,7 @@
  *
  * @param Options Menu Text
  * @desc Text to display in the options menu
- * @default Fog of War
+ * @default Fog of War (WIP)
  * @type string
  *
  * @command toggleFogOfWar
@@ -175,7 +175,7 @@
     const REVEAL_TRANSITION_DURATION = Math.max(1, Number(parameters['Reveal Transition Duration'] || 16));
     const VISION_SMOOTHING = Number(parameters['Vision Smoothing'] || 0.9);
     const ADD_TO_OPTIONS_MENU = parameters['Add To Options Menu'] !== 'false';
-    const OPTIONS_MENU_TEXT = parameters['Options Menu Text'] || 'Fog of War';
+    const OPTIONS_MENU_TEXT = parameters['Options Menu Text'] || 'Fog of War (WIP)';
     const RESET_ON_NEW_GAME = parameters['Reset On New Game'] !== 'false';
 
     const VISION_ANGLE = 110;
@@ -261,7 +261,9 @@
     let pendingRefreshReload = false;
 
     function fogEnabled() {
-        return !sessionDisabled && commandEnabled && ConfigManager.fogOfWar !== false;
+        // Off unless the player turned it on: the option defaults to false, so
+        // an undefined/missing value must read as "off" too.
+        return !sessionDisabled && commandEnabled && ConfigManager.fogOfWar === true;
     }
 
     function requestFullRefresh(frames, reload) {
@@ -423,7 +425,9 @@
         }
     };
 
-    ConfigManager.fogOfWar = true;
+    // Work in progress: off unless the player opts in, both here and in
+    // character creation (CharacterCreation.js).
+    ConfigManager.fogOfWar = false;
 
     const _ConfigManager_makeData = ConfigManager.makeData;
     ConfigManager.makeData = function () {
@@ -435,7 +439,7 @@
     const _ConfigManager_applyData = ConfigManager.applyData;
     ConfigManager.applyData = function (config) {
         _ConfigManager_applyData.call(this, config);
-        this.fogOfWar = this.readFlag(config, 'fogOfWar', true);
+        this.fogOfWar = this.readFlag(config, 'fogOfWar', false);
     };
 
     if (ADD_TO_OPTIONS_MENU) {

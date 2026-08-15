@@ -948,7 +948,7 @@
         rows.push({ type: "picker", kind: "part", slot: slot, label: PART_SLOTS[slot].label() });
       });
       rows.push({ type: "seed", key: "seed", label: T('CharCreate.variation') });
-      rows.push({ type: "button", action: "confirm", label: T('CharCreate.confirm') });
+      rows.push({ type: "button", action: "confirm", label: T('CharCreate.continue') });
       return rows;
     }
     SLOT_NAMES.forEach((slot) => {
@@ -973,7 +973,7 @@
     rows.push({ type: "segment", key: "wings", label: T('CharCreate.wings'), states: [0, 1], stateLabels: [T('CharCreate.no'), T('CharCreate.yes')] });
     rows.push({ type: "segment", key: "halo", label: T('CharCreate.halo'), states: [0, 1], stateLabels: [T('CharCreate.no'), T('CharCreate.yes')] });
     rows.push({ type: "seed", key: "seed", label: T('CharCreate.variation') });
-    rows.push({ type: "button", action: "confirm", label: T('CharCreate.confirm') });
+    rows.push({ type: "button", action: "confirm", label: T('CharCreate.continue') });
     return rows;
   };
 
@@ -1039,23 +1039,31 @@
     const rowsHtml = this._rows.map((row, i) => this._rowHtml(row, i)).join("");
     container.innerHTML = `
       <div class="cc-pockets-spread">
-        <div class="cc-page cc-page-left" style="display:flex; flex-direction:column;">
+        <div class="cc-page cc-page-left" style="display:flex">
           <h2 class="cc-header-gothic">${T('CharCreate.3dModel')}</h2>
-          <p class="cc-text-desc" style="text-align:center;">${T('CharCreate.mixPartsFromAnyCreatureDragToRotateWheelToZo')}</p>
-          <canvas id="cc3d-canvas" style="flex:1; width:100%; min-height:420px; display:block; cursor:grab; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));"></canvas>
+          <p class="cc-text-desc">${T('CharCreate.mixPartsFromAnyCreatureDragToRotateWheelToZo')}</p>
+          <canvas id="cc3d-canvas" style="flex:1; width:100%; min-height:420px; display:block; cursor:grab; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4))"></canvas>
         </div>
-        <div class="cc-page cc-page-right" style="display:flex; flex-direction:column;">
+        <div class="cc-page cc-page-right" style="display:flex">
           <h2 class="cc-header-gothic">${T('CharCreate.customize')}</h2>
-          <div id="cc3d-rows" class="pockets-scroll" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:8px;">
+          <div id="cc3d-rows" class="pockets-scroll" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:8px">
             ${rowsHtml}
           </div>
-          <div class="cc-button-panel" style="margin-top:12px;">
-            <button class="cc-btn-treaty" onclick="SceneManager._scene.onBack()">${T('CharCreate.back')}</button>
-            <button class="cc-btn-treaty confirm" onclick="SceneManager._scene.onConfirm()">${T('CharCreate.confirm')}</button>
-          </div>
+          ${window.CCButtons.panel({
+            back: window.CCButtons.button(window.CCButtons.backLabel(), {
+              onclick: "SceneManager._scene.onBack()",
+            }),
+            // No Random in the middle slot here: the row list already opens with
+            // a keyboard-reachable "Randomize all" entry (see _buildRows).
+            next: window.CCButtons.button(window.CCButtons.continueLabel(), {
+              onclick: "SceneManager._scene.onConfirm()",
+              confirm: true,
+            }),
+            style: "margin-top:12px;",
+          })}
         </div>
       </div>
-      <div id="cc3d-modal" style="display:none;"></div>
+      <div id="cc3d-modal" style="display:none"></div>
     `;
     // Wheel + L2/R2 scrolling for the row list (and the picker modal's grid,
     // which claims its own wheel events). See CCScroll.
@@ -1067,7 +1075,7 @@
 
   Scene_CC3DModel.prototype._rowHtml = function (row, i) {
     if (row.type === "button") {
-      return `<div class="option-row" id="cc3d-row-${i}" onclick="SceneManager._scene.onRowActivate(${i})" style="justify-content:center;">
+      return `<div class="option-row" id="cc3d-row-${i}" onclick="SceneManager._scene.onRowActivate(${i})" style="justify-content:center">
           <span class="option-name">${row.label}</span></div>`;
     }
     if (row.type === "seed") {
@@ -1075,7 +1083,7 @@
           <span class="option-name">${row.label}</span>
           <span class="option-select">
             <span class="option-select-val" id="cc3d-val-${i}">#${this._config.seed}</span>
-            <span class="cc3d-reroll" onclick="event.stopPropagation(); SceneManager._scene.rerollSeed()" style="cursor:pointer; padding:2px 10px; border:1px solid var(--text-primary-hover); border-radius:4px; font-weight:bold;">&#x21bb;</span>
+            <span class="cc3d-reroll" onclick="event.stopPropagation(); SceneManager._scene.rerollSeed()" style="cursor:pointer; padding:2px 10px; border:1px solid var(--text-primary-hover); font-weight:bold">&#x21bb;</span>
           </span></div>`;
     }
     if (row.type === "segment") {
@@ -1090,15 +1098,15 @@
             <span class="option-value" id="cc3d-val-${i}">${this._sliderLabel(row)}</span>
           </div>
           <div class="option-slider-bar" data-row="${i}" id="cc3d-slider-${i}">
-            <div class="option-slider-fill" id="cc3d-fill-${i}" style="width:${this._sliderPct(row)}%;"></div>
+            <div class="option-slider-fill" id="cc3d-fill-${i}" style="width:${this._sliderPct(row)}%"></div>
           </div></div>`;
     }
     // picker
     return `<div class="option-row" id="cc3d-row-${i}" onclick="SceneManager._scene.openPicker(${i})">
         <span class="option-name">${row.label}</span>
-        <span class="option-select" style="gap:8px;">
+        <span class="option-select">
           <span id="cc3d-thumb-${i}">${this._pickerPreviewHtml(row)}</span>
-          <span class="option-select-val" id="cc3d-val-${i}" style="min-width:96px;">${this._pickerValueLabel(row)}</span>
+          <span class="option-select-val" id="cc3d-val-${i}" style="min-width:96px">${this._pickerValueLabel(row)}</span>
         </span></div>`;
   };
 
@@ -1106,7 +1114,7 @@
     const cur = this._config[row.key];
     return row.states.map((st, k) => {
       const on = st === cur;
-      return `<span onclick="event.stopPropagation(); SceneManager._scene.setSegment(${i}, ${st})" style="cursor:pointer; padding:2px 9px; margin-left:4px; border-radius:4px; font-size:0.82rem; border:1px solid ${on ? "var(--text-primary-hover)" : "var(--border-primary-hover-translucent-15)"}; color:${on ? "var(--text-primary-hover)" : "var(--text-muted-hover)"}; background:${on ? "var(--border-primary-hover-translucent-15)" : "transparent"};">${row.stateLabels[k]}</span>`;
+      return `<span onclick="event.stopPropagation(); SceneManager._scene.setSegment(${i}, ${st})" style="cursor:pointer; padding:2px 9px; margin-left:4px; font-size:1.234rem; border:1px solid ${on ?"var(--text-primary-hover)" : "var(--border-primary-hover-translucent-15)"}; color:${on ? "var(--text-primary-hover)" : "var(--text-muted-hover)"}; background:${on ? "var(--border-primary-hover-translucent-15)" : "transparent"};">${row.stateLabels[k]}</span>`;
     }).join("");
   };
 
@@ -1118,7 +1126,7 @@
     const v = this._config[row.key];
     if (row.swatch) {
       const c = `hsl(${Math.round(v * 360)}, ${Math.round((this._config.sat || 0.45) * 100)}%, ${Math.round((this._config.lit || 0.6) * 100)}%)`;
-      return `<span style="display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:middle; margin-right:6px; border:1px solid rgba(0,0,0,0.35); background:${c};"></span>${Math.round(v * 360)}°`;
+      return `<span style="display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:middle; margin-right:6px; border:1px solid rgba(0,0,0,0.35); background:${c}"></span>${Math.round(v * 360)}°`;
     }
     if (row.unit === "height") {
       const totalCm = Math.round(HEIGHT_BASE_M * v * 100);
@@ -1141,16 +1149,16 @@
   };
   Scene_CC3DModel.prototype._pickerPreviewHtml = function (row) {
     if (row.kind === "haircolor") {
-      return `<span style="display:inline-block; width:20px; height:20px; border-radius:50%; vertical-align:middle; background:${hairSwatchCss(this._config.hairColor)}; border:1px solid rgba(0,0,0,0.35);"></span>`;
+      return `<span style="display:inline-block; width:20px; height:20px; border-radius:50%; vertical-align:middle; background:${hairSwatchCss(this._config.hairColor)}; border:1px solid rgba(0,0,0,0.35)"></span>`;
     }
     if (row.kind === "surface") {
       const colors = { flesh: "#c78b6a", green: "#5a7a3a", bone: "#e6e0cf", metal: "#8a8f98", stone: "#7a726a" };
       const c = colors[this._config.texturePool] || "#888";
-      return `<span style="display:inline-block; width:20px; height:20px; border-radius:4px; vertical-align:middle; background:${c}; border:1px solid rgba(0,0,0,0.35);"></span>`;
+      return `<span style="display:inline-block; width:20px; height:20px; border-radius:4px; vertical-align:middle; background:${c}; border:1px solid rgba(0,0,0,0.35)"></span>`;
     }
     const val = this._rowValue(row);
     if (val === "default") {
-      return `<span style="display:inline-flex; width:20px; height:20px; border-radius:4px; vertical-align:middle; align-items:center; justify-content:center; background:var(--bg-card-translucent-5); border:1px dashed var(--border-primary-hover-translucent-15); font-size:0.7rem;">&#9642;</span>`;
+      return `<span style="display:inline-flex; width:20px; height:20px; border-radius:4px; vertical-align:middle; align-items:center; justify-content:center; background:var(--bg-card-translucent-5); border:1px dashed var(--border-primary-hover-translucent-15); font-size:1.081rem">&#9642;</span>`;
     }
     // Text-only picker: the value label carries the selection, no thumbnail.
     return "";
@@ -1404,13 +1412,13 @@
     // top-left corner), so the longhands and an explicit size are used.
     el.style.cssText = "position:absolute; left:0; top:0; right:0; bottom:0; width:100%; height:100%; z-index:1200; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.55);";
     el.innerHTML = `
-      <div style="width:78%; max-width:900px; height:82%; display:flex; flex-direction:column; background:var(--gradient-1); border:2px solid var(--border-primary-hover-translucent-15); border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,0.5); padding:16px 18px; box-sizing:border-box;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; gap:12px;">
-          <h2 class="cc-header-gothic" style="margin:0; border:none; padding:0; font-size:1.5rem;">${this._modalTitle()}</h2>
-          ${searchable ? `<input id="cc3d-modal-search" type="text" placeholder="${T('CharCreate.search')}" value="${m.filter}" style="flex:0 0 220px; padding:6px 10px; border-radius:6px; border:1px solid var(--border-primary-hover-translucent-15); background:var(--bg-primary-hover-translucent-35); color:var(--text-primary-hover); font-family:'Lora',serif;" />` : ``}
+      <div style="width:78%; max-width:900px; height:82%; display:flex; flex-direction:column; background:var(--gradient-1); border:2px solid var(--border-primary-hover-translucent-15); border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,0.5); padding:16px 18px; box-sizing:border-box">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; gap:12px">
+          <h2 class="cc-header-gothic" style="margin:0; border:none; padding:0; font-size:2.064rem">${this._modalTitle()}</h2>
+          ${searchable ? `<input id="cc3d-modal-search" type="text" placeholder="${T('CharCreate.search')}" value="${m.filter}" style="flex:0 0 220px; padding:6px 10px; border-radius:6px; border:1px solid var(--border-primary-hover-translucent-15); background:var(--bg-primary-hover-translucent-35); color:var(--text-primary-hover); font-family:'Lora',serif" />` : ``}
           <button class="cc-btn-treaty" onclick="SceneManager._scene.closeModal()">${T('CharCreate.close')}</button>
         </div>
-        <div id="cc3d-grid" class="pockets-scroll" style="flex:1; overflow-y:auto; display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; padding-right:8px; align-content:start;"></div>
+        <div id="cc3d-grid" class="pockets-scroll" style="flex:1; overflow-y:auto; display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; padding-right:8px; align-content:start"></div>
       </div>`;
     el.style.display = "flex";
     const search = document.getElementById("cc3d-modal-search");
@@ -1447,7 +1455,7 @@
     m.page = m.page || 48;
     m.shown = 0;
     if (!m.filtered.length) {
-      grid.innerHTML = `<div class="cc-text-desc" style="grid-column:1/-1; text-align:center; font-style:italic;">${T('CharCreate.noMatches')}</div>`;
+      grid.innerHTML = `<div class="cc-text-desc" style="grid-column:1/-1">${T('CharCreate.noMatches')}</div>`;
       return;
     }
     grid.innerHTML = "";
@@ -1503,16 +1511,16 @@
     let lead = "";
     if (m.kind === "surface") {
       const colors = { flesh: "#c78b6a", green: "#5a7a3a", bone: "#e6e0cf", metal: "#8a8f98", stone: "#7a726a" };
-      lead = `<span style="display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:middle; margin-right:6px; background:${colors[opt] || "#888"}; border:1px solid rgba(0,0,0,0.35);"></span>`;
+      lead = `<span style="display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:middle; margin-right:6px; background:${colors[opt] ||"#888"}; border:1px solid rgba(0,0,0,0.35);"></span>`;
     } else if (m.kind === "haircolor") {
-      lead = `<span style="display:inline-block; width:14px; height:14px; border-radius:50%; vertical-align:middle; margin-right:6px; background:${hairSwatchCss(opt)}; border:1px solid rgba(0,0,0,0.35);"></span>`;
+      lead = `<span style="display:inline-block; width:14px; height:14px; border-radius:50%; vertical-align:middle; margin-right:6px; background:${hairSwatchCss(opt)}; border:1px solid rgba(0,0,0,0.35)"></span>`;
     } else if (opt === "default") {
-      lead = `<span style="margin-right:6px; color:var(--text-muted-hover);">&#9642;</span>`;
+      lead = `<span style="margin-right:6px; color:var(--text-muted-hover)">&#9642;</span>`;
     }
     return `<div class="cc-wanted-card cc3d-cell" data-idx="${idx}" data-val="${opt}"
         onclick="SceneManager._scene.pickModalOption(${idx})"
-        style="display:flex; align-items:center; justify-content:center; text-align:center; min-height:42px; padding:8px 6px; cursor:pointer;">
-        <span style="font-size:0.78rem; line-height:1.15; word-break:break-word; color:var(--text-muted-hover);">${lead}${label}</span>
+        style="display:flex; align-items:center; justify-content:center; text-align:center; min-height:42px; padding:8px 6px">
+        <span style="font-size:1.17rem; line-height:1.15; word-break:break-word; color:var(--text-muted-hover)">${lead}${label}</span>
       </div>`;
   };
 

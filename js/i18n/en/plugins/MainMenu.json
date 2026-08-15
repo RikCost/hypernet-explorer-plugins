@@ -8,6 +8,7 @@
   "specializations": "Specializations",
   "biologics": "Biologics",
   "augments": "Augments",
+  "search": "Search",
   "dynamics": "Dynamics",
   "thinker": "Thinker",
   "pets": "Followers",
@@ -192,5 +193,59 @@
  "tools": {
   "hexphone": "Hexphone",
   "alchemistryKit": "Alchemistry Kit"
+ },
+ "search": {
+  "placeholder": "Search items, gear, skills, recipes, creatures…",
+  "title": "Search ({count})",
+  "clear": "Clear the search",
+  "noResults": "Nothing found for “{query}”.",
+  "andMore": "…and {count} more.",
+  "detailTitle": "Details",
+  "detailHint": "Pick a result on the left to read it here.",
+  "carried": "Carried x{n}",
+  "wornBy": "{name} · {slot}",
+  "craftable": "Can be made now",
+  "craftableAt": "Can be made now · {trade}",
+  "cannotEquip": "{name} cannot wear that.",
+  "pickWearer": "Who puts it on?",
+  "anyCategory": "Any category",
+  "weightRange": "Weight (kg)",
+  "priceRange": "Price (€)",
+  "min": "min",
+  "max": "max",
+  "kindAll": "All",
+  "kindItems": "Items",
+  "kindEquipment": "Equipment",
+  "kindSkills": "Skills",
+  "kindCraftable": "Craftable",
+  "kindBestiary": "Bestiary",
+  "kind": {
+   "item": "Item",
+   "equip": "Worn",
+   "skill": "Skill",
+   "craft": "Recipe",
+   "enemy": "Creature"
+  },
+  "sort": {
+   "name": "Name",
+   "weight": "Weight",
+   "price": "Price",
+   "level": "Level"
+  },
+  "action": {
+   "unequip": "Take off",
+   "openBench": "Open the bench"
+  },
+  "enemy": {
+   "stats": "Statistics",
+   "ecology": "Ecology",
+   "archetype": "Archetype",
+   "biome": "Habitat",
+   "behavior": "Behaviour",
+   "activity": "Active",
+   "weight": "Weight",
+   "speed": "Speed"
+  },
+  "noPanel": "That panel needs {what}, which is switched off."
  }
 }

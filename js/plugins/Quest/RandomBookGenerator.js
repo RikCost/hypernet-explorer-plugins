@@ -175,6 +175,49 @@
         window.skipLocalization = false;
     }
 
+    // ==========================================================================
+    // Reading is a pleasure
+    // ==========================================================================
+    // A generated book, inscription, painting, mask or fossil card is a small
+    // pleasure for whoever stopped to read it, and for the people standing
+    // around while they do: the whole party takes a fifth of a Fun meter off it.
+    //
+    // It pays once per thing. The text is seeded off where the thing stands and
+    // never changes, so a second look is a re-read, and a message box that could
+    // be mashed would be the cheapest leisure in the game. What has been read is
+    // remembered in the save, capped so a long game cannot grow the file without
+    // bound — forgetting the oldest few hundred readings only means a statue
+    // somebody read a very long time ago is worth reading again.
+    const READING_FUN = 20;
+    const READING_MEMORY = 500;
+
+    // What identifies the thing being read: the event it hangs on where there is
+    // one, and otherwise where the reader is standing — which is what the text
+    // itself is seeded off, so the key changes exactly when the reading does.
+    function readingKey(kind, id) {
+        const mapId = $gameMap ? $gameMap.mapId() : 0;
+        if (id !== null && id !== undefined && id !== "") return `${kind}:${mapId}:${id}`;
+        const x = $gamePlayer ? $gamePlayer.x : 0;
+        const y = $gamePlayer ? $gamePlayer.y : 0;
+        return `${kind}:${mapId}:${x},${y}`;
+    }
+
+    function payReadingFun(kind, eventId) {
+        if (!$gameSystem || !$gameParty) return;
+        const key = readingKey(kind, eventId);
+        const log = ($gameSystem._readFunLog = $gameSystem._readFunLog || []);
+        if (log.includes(key)) return;
+        log.push(key);
+        while (log.length > READING_MEMORY) log.shift();
+
+        const needs = window.PartyNeeds;
+        if (!needs || typeof needs.addLeisureToAll !== "function") return;
+        needs.addLeisureToAll(READING_FUN);
+        try {
+            if (window.ParchmentToast) window.ParchmentToast.need("leisure", READING_FUN);  // i18n-ignore  need id
+        } catch (e) { /* the Fun is paid whether or not it is announced */ }
+    }
+
     // Show text across as many message boxes as needed. colorPrefix (e.g. "\\C[6]")
     // is re-applied at the start of every page so coloring survives the page break.
     function showPaged(text, colorPrefix) {
@@ -600,6 +643,7 @@ function createSeededRNG(eventId = null) {
 
         const messageText = titleLines + '\n' + authorLines + '\n' + descLines;
         showPaged(messageText, '');
+        payReadingFun("book", eventId);  // i18n-ignore  reading-log id
     }
 
     // Core function to display a statue description with seeded randomness
@@ -608,6 +652,7 @@ function createSeededRNG(eventId = null) {
         let description = generateStatueDescription(random, customSubject);
         description = wrapText(description, 40);
         showPaged(description, "\\C[6]");
+        payReadingFun("statue", eventId);  // i18n-ignore  reading-log id
     }
     
     // Core function to display a painting description with seeded randomness
@@ -616,6 +661,7 @@ function createSeededRNG(eventId = null) {
         let description = generatePaintingDescription(random, customSubject);
         description = wrapText(description, 40);
         showPaged(description, "\\C[5]");
+        payReadingFun("painting", eventId);  // i18n-ignore  reading-log id
     }
 
 // Core function to display a mask description with seeded randomness
@@ -624,6 +670,7 @@ function displayMaskDescription(customSubject = "", eventId = null) {
     let description = generateMaskDescription(random, customSubject);
     description = wrapText(description, 40);
     showPaged(description, "\\C[2]");
+    payReadingFun("mask", eventId);  // i18n-ignore  reading-log id
 }
 
 // Generate a deterministic mask description
@@ -931,6 +978,7 @@ function generatePaintingDescription(random = Math.random, customSubject = "") {
         const random = createSeededRNG(eventId);
         const text   = wrapText(generateFossilDescription(random, fossilType), 40);
         showPaged("\\C[6][ FOSSIL SPECIMEN ]\\C[0]\n" + text, '');
+        payReadingFun("fossil", eventId);  // i18n-ignore  reading-log id
     }
 
     const RAMAN_PROBE_ID = 141;
@@ -1008,6 +1056,12 @@ function generatePaintingDescription(random = Math.random, customSubject = "") {
             const r = random || Math.random;
             return subjects[Math.floor(r() * subjects.length)];
         },
+        // For anything that borrows the generators above to put a reading in
+        // front of the player itself (the procedural map's shelves and statues):
+        // the same one-off Fun the plugin's own message boxes pay. `id` is
+        // whatever identifies that particular thing on that map — an event id, a
+        // tile — so the same shelf read twice pays once.
+        payReadingFun: (kind, id) => payReadingFun(kind, id),
     };
 
 })();

@@ -80,16 +80,16 @@
 
             const id = 'app-hypernet-tv-guide';
             const contentHTML = `
-                <div style="display:flex; flex-direction:column; height:100%; background:#ece9d8; font-family:'Tahoma',sans-serif; font-size:12px; color:#000;">
+                <div style="display:flex; flex-direction:column; height:100%; background:#ece9d8; font-family:'Tahoma',sans-serif; font-size:15px; color:#000">
                     <!-- Body: channel list + detail -->
-                    <div style="display:flex; flex:1; min-height:0;">
+                    <div style="display:flex; flex:1; min-height:0">
                         <!-- Channel list -->
-                        <div id="tvguide-channel-list" style="width:230px; background:#ffffff; border-right:1px solid #aca899; overflow-y:auto; flex-shrink:0;"></div>
+                        <div id="tvguide-channel-list" style="width:230px; background:#ffffff; border-right:1px solid #aca899; overflow-y:auto; flex-shrink:0"></div>
                         <!-- Detail panel -->
-                        <div id="tvguide-detail" style="flex:1; overflow-y:auto; padding:12px 16px; background:#f5f4ec;"></div>
+                        <div id="tvguide-detail" style="flex:1; overflow-y:auto; padding:12px 16px; background:#f5f4ec"></div>
                     </div>
                     <!-- Status bar -->
-                    <div id="tvguide-status" style="border-top:1px solid #aca899; padding:3px 8px; background:#ece9d8; font-size:11px; color:#444;"></div>
+                    <div id="tvguide-status" style="border-top:1px solid #aca899; padding:3px 8px; background:#ece9d8; font-size:14px; color:#444"></div>
                 </div>
             `;
 
@@ -109,7 +109,7 @@
             statusEl.textContent = T('HypernetTVGuide.status', { channels: channels.length, map: db.studioMapId || '?', slots: (db.slotHours || []).length });
 
             if (channels.length === 0) {
-                detailEl.innerHTML = `<div style="padding:20px; color:#a00;">No transmissions found. ${DB_PATH} could not be loaded.</div>`;
+                detailEl.innerHTML = `<div style="padding:20px; color:#a00">No transmissions found. ${DB_PATH} could not be loaded.</div>`;
                 return;
             }
 
@@ -140,7 +140,7 @@
                     } catch (e) { console.error('TV Guide: buildScript failed', e); }
                 }
                 if (!lines.length) {
-                    dlg.innerHTML = `<div style="color:#888; font-style:italic;">${T('HypernetTVGuide.noSignal')}</div>`;
+                    dlg.innerHTML = `<div style="color:#888">${T('HypernetTVGuide.noSignal')}</div>`;
                     return;
                 }
 
@@ -152,7 +152,7 @@
                     if (token !== playToken || !document.body.contains(dlg)) return;
                     if (i >= lines.length) {
                         const end = document.createElement('div');
-                        end.style.cssText = 'text-align:center; color:#999; font-size:10px; margin-top:8px;';
+                        end.style.cssText = 'text-align:center; color:#999; font-size:13px; margin-top:8px;';
                         end.textContent = T('HypernetTVGuide.endOfTransmission');
                         dlg.appendChild(end);
                         dlg.scrollTop = dlg.scrollHeight;
@@ -162,8 +162,8 @@
                     const bubble = document.createElement('div');
                     bubble.style.cssText = 'margin:6px 0; padding:6px 9px; background:#ffffff; border:1px solid #d4d0c8; border-left:3px solid ' + swatch + '; border-radius:3px;';
                     bubble.innerHTML =
-                        `<div style="font-weight:bold; font-size:11px; color:#333; margin-bottom:2px;">${escapeHtml(ln.speaker || channelName(ch))}</div>` +
-                        `<div style="font-size:12px; color:#000;">${escapeHtml(ln.text || '')}</div>`;
+                        `<div style="font-weight:bold; font-size:14px; color:#333; margin-bottom:2px">${escapeHtml(ln.speaker || channelName(ch))}</div>` +
+                        `<div style="font-size:15px; color:#000">${escapeHtml(ln.text || '')}</div>`;
                     dlg.appendChild(bubble);
                     dlg.scrollTop = dlg.scrollHeight;
                     playTimer = setTimeout(showNext, LINE_DELAY_MS);
@@ -180,27 +180,27 @@
                     const cast = (p.cast || []).map(m => escapeHtml(m.characterName || '')).filter(Boolean).join(', ') || T('HypernetTVGuide.narrator');
                     return `
                         <div class="tvguide-program${canPlay ? ' focusable' : ''}"${canPlay ? ' tabindex="0"' : ''} data-channel="${escapeHtml(ch.id)}" data-program="${escapeHtml(p.id)}"
-                             style="display:flex; align-items:center; gap:8px; padding:8px 10px; margin:6px 0; background:#ffffff; border:1px solid #d4d0c8; border-radius:3px; cursor:${canPlay ? 'pointer' : 'default'};">
-                            <div style="flex:1; min-width:0;">
-                                <div style="font-weight:bold;">${escapeHtml(programTitle(p))}</div>
-                                <div style="font-size:11px; color:#666;">${T('HypernetTVGuide.format')} ${escapeHtml(p.format || '?')} &nbsp;&middot;&nbsp; ${T('HypernetTVGuide.tone')} ${escapeHtml(p.tone || '?')}</div>
-                                <div style="font-size:11px; color:#888;">${T('HypernetTVGuide.cast')} ${cast}</div>
+                             style="display:flex; align-items:center; gap:8px; padding:8px 10px; margin:6px 0; background:#ffffff; border:1px solid #d4d0c8; border-radius:3px; cursor:${canPlay ? 'pointer' : 'default'}">
+                            <div style="flex:1; min-width:0">
+                                <div style="font-weight:bold">${escapeHtml(programTitle(p))}</div>
+                                <div style="font-size:14px; color:#666">${T('HypernetTVGuide.format')} ${escapeHtml(p.format || '?')} &nbsp;&middot;&nbsp; ${T('HypernetTVGuide.tone')} ${escapeHtml(p.tone || '?')}</div>
+                                <div style="font-size:14px; color:#888">${T('HypernetTVGuide.cast')} ${cast}</div>
                             </div>
-                            ${canPlay ? `<span style="margin-left:auto; font-size:11px; color:#3a6;">${T('HypernetTVGuide.watch')}</span>` : ''}
+                            ${canPlay ? `<span style="margin-left:auto; font-size:14px; color:#3a6">${T('HypernetTVGuide.watch')}</span>` : ''}
                         </div>`;
                 }).join('');
 
                 detailEl.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
-                        <span style="width:16px; height:16px; border-radius:3px; border:1px solid #888; background:${swatch}; display:inline-block;"></span>
-                        <h2 style="margin:0; font-size:16px;">${escapeHtml(channelName(ch))}</h2>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px">
+                        <span style="width:16px; height:16px; border-radius:3px; border:1px solid #888; background:${swatch}; display:inline-block"></span>
+                        <h2 style="margin:0; font-size:19px">${escapeHtml(channelName(ch))}</h2>
                     </div>
-                    <div style="font-size:11px; color:#666; margin-bottom:10px;">${T('HypernetTVGuide.tone')} ${escapeHtml(ch.tone || '?')}</div>
-                    <div style="font-weight:bold; margin-bottom:2px; color:#333;">${T('HypernetTVGuide.programs')}</div>
-                    ${programs || `<div style="color:#888;">${T('HypernetTVGuide.noPrograms')}</div>`}
-                    <div style="font-weight:bold; margin:12px 0 2px; color:#333;">${T('HypernetTVGuide.transmission')}</div>
-                    <div id="tvguide-dialogue" style="min-height:60px; max-height:220px; overflow-y:auto; padding:8px; background:#f0efe6; border:1px solid #d4d0c8; border-radius:3px;">
-                        <div style="color:#888; font-style:italic;">${T('HypernetTVGuide.tuneInHint')}</div>
+                    <div style="font-size:14px; color:#666; margin-bottom:10px">${T('HypernetTVGuide.tone')} ${escapeHtml(ch.tone || '?')}</div>
+                    <div style="font-weight:bold; margin-bottom:2px; color:#333">${T('HypernetTVGuide.programs')}</div>
+                    ${programs || `<div style="color:#888">${T('HypernetTVGuide.noPrograms')}</div>`}
+                    <div style="font-weight:bold; margin:12px 0 2px; color:#333">${T('HypernetTVGuide.transmission')}</div>
+                    <div id="tvguide-dialogue" style="min-height:60px; max-height:220px; overflow-y:auto; padding:8px; background:#f0efe6; border:1px solid #d4d0c8; border-radius:3px">
+                        <div style="color:#888">${T('HypernetTVGuide.tuneInHint')}</div>
                     </div>
                 `;
 
@@ -227,10 +227,10 @@
                     row.tabIndex = 0;
                     row.style.cssText = 'display:flex; align-items:center; gap:8px; padding:8px 10px; cursor:pointer; border-bottom:1px solid #efeee6; user-select:none;';
                     row.innerHTML = `
-                        <span style="width:12px; height:12px; border-radius:2px; border:1px solid #888; background:${colorSwatch(ch.color)}; flex-shrink:0;"></span>
-                        <div style="flex:1; min-width:0;">
-                            <div style="font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(channelName(ch))}</div>
-                            <div style="font-size:10px; color:#888;">${(ch.programs || []).length} programs</div>
+                        <span style="width:12px; height:12px; border-radius:2px; border:1px solid #888; background:${colorSwatch(ch.color)}; flex-shrink:0"></span>
+                        <div style="flex:1; min-width:0">
+                            <div style="font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${escapeHtml(channelName(ch))}</div>
+                            <div style="font-size:13px; color:#888">${(ch.programs || []).length} programs</div>
                         </div>`;
 
                     const setSelected = () => {

@@ -288,6 +288,14 @@
     // for its objective), as opposed to a "Door (...)" map-exit (handled by
     // isExitEvent). Matches any event whose name contains the word "door".
     isWalkThroughDoor: (name) => !!name && name.toLowerCase().includes("door") && !name.startsWith("Door ("), // i18n-ignore: event names matched at runtime
+    // Terrain an NPC must never stand on (water tag 3, tag 7). Delegates to
+    // NPCShared so spawning, pathing and yielding all block the same tags,
+    // with the list inlined as a fallback if NPCShared has not evaluated yet.
+    isBlockedTerrain: (x, y) => {
+      if (window.NPCShared?.isBlockedTerrain) return window.NPCShared.isBlockedTerrain(x, y);
+      const tag = $gameMap.terrainTag(x, y);
+      return tag === 3 || tag === 7;
+    },
     isValidTileType: (x, y) => {
       if (!$dataMap) return false;
       const tileId = $gameMap.tileId(x, y, 0);
@@ -376,8 +384,8 @@
           // Region 10/103: blocked tiles. Region 99: water (CLAUDE.md). Region 11
           // is an explicitly allowed spawn region (NPCs may stand on it).
           if (regionId === 10 || regionId === 103 || regionId === 99) continue;
-          // Water tiles (terrain tag 3) are not walkable for NPCs.
-          if ($gameMap.terrainTag(x, y) === 3) continue;
+          // Water (terrain tag 3) and tag 7 are not walkable for NPCs.
+          if (Utils.isBlockedTerrain(x, y)) continue;
           if ($gameMap.eventsXy(x, y).length > 0) continue;
 
           if (Utils.isValidTileType(x, y) && Utils.has2x2FreeArea(x, y)) {
@@ -1608,6 +1616,9 @@ initializeGroupNPCs: (groupName, activeMapId = null) => {
       if (!mem || mem.mapId !== mapId) return null;
       if (!$gameMap.isValid(mem.x, mem.y)) return null;
       if (![2, 4, 6, 8].some(dir => $gameMap.isPassable(mem.x, mem.y, dir))) return null;
+      // A spot remembered from an older save may sit on terrain NPCs are no
+      // longer allowed to occupy, so re-check it rather than trusting memory.
+      if (Utils.isBlockedTerrain(mem.x, mem.y)) return null;
       if ($gameMap.eventsXy(mem.x, mem.y).length > 0) return null;
       return { x: mem.x, y: mem.y };
     },
@@ -2507,6 +2518,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
      */
     spawnRoadsideNPC: (x, y, options) => {
       if (!$gameMap || $gameMap.mapId() !== 636) return null;
+      // The tile comes from the caller (RoadCarAI picks a kerbside doorstep),
+      // so it still has to clear the terrain rule every other spawn obeys.
+      if (Utils.isBlockedTerrain(x, y)) return null;
       const ev = ProceduralManager.freeProcNPCSlot();
       if (!ev) return null;
 
@@ -3337,7 +3351,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       if (!$gameMap.isValid(nx, ny)) return false;
       const r = $gameMap.regionId(nx, ny);
       if (r === 10) return false;
-      if (r === 99 || $gameMap.terrainTag(nx, ny) === 3) return false;
+      if (r === 99 || Utils.isBlockedTerrain(nx, ny)) return false;
       if (r === 5 || $gameMap.regionId(x, y) === 5) return true;
       return $gameMap.isPassable(x, y, d) && $gameMap.isPassable(nx, ny, 10 - d);
     },
@@ -3493,8 +3507,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       if (r === 5) return true;
       if (r === 10) return false;
       // Keep roaming NPCs off water so they do not appear to drown. Water is
-      // region 99 or terrain tag 3 (matches MovementInteractionSystem) (#121).
-      if (r === 99 || $gameMap.terrainTag(x, y) === 3) return false;
+      // region 99 or terrain tag 3 (matches MovementInteractionSystem) (#121);
+      // terrain tag 7 is barred the same way (Utils.isBlockedTerrain).
+      if (r === 99 || Utils.isBlockedTerrain(x, y)) return false;
 
       const mapW = $gameMap.width();
       const key = x + y * mapW;
@@ -4099,9 +4114,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       for (const dir of dirs) {
         const nx = $gameMap.roundXWithDirection(this.event.x, dir), ny = $gameMap.roundYWithDirection(this.event.y, dir);
         // Never wander onto water (region 99 or terrain tag 3): NPCs would
-        // appear to drown (#121).
-        const isWater = $gameMap.regionId(nx, ny) === 99 || $gameMap.terrainTag(nx, ny) === 3;
-        let w = (!isWater && this.event.canPass(this.event.x, this.event.y, dir)) ? 1 : 0;
+        // appear to drown (#121). Terrain tag 7 is barred alongside it.
+        const blocked = $gameMap.regionId(nx, ny) === 99 || Utils.isBlockedTerrain(nx, ny);
+        let w = (!blocked && this.event.canPass(this.event.x, this.event.y, dir)) ? 1 : 0;
         if (w > 0) {
           if ($gameMap.regionId(nx, ny) === Config.Zones.SOCIAL) w *= 1.5;
           if (occupied.has(nx + ny * mapW)) w *= 0.3;
@@ -4319,7 +4334,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
           const x = tx + dx, y = ty + dy;
           if (!$gameMap.isValid(x, y)) continue;
           if ([10, 103, 99, 11].includes($gameMap.regionId(x, y))) continue;
-          if ($gameMap.terrainTag(x, y) === 3) continue;
+          if (Utils.isBlockedTerrain(x, y)) continue;
           if (![2, 4, 6, 8].some(dir => $gameMap.isPassable(x, y, dir))) continue;
           const d = Math.abs(x - ex) + Math.abs(y - ey);
           if (d < bestD) { bestD = d; best = { x, y }; }

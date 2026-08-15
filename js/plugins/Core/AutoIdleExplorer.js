@@ -1475,7 +1475,7 @@
             el.textContent = "AUTO";
             el.style.cssText =
                 "position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:99;" +
-                "padding:3px 12px;border-radius:10px;font:bold 13px monospace;letter-spacing:1px;" +
+                "padding:3px 12px;font:bold 13px monospace;letter-spacing:1px;" +
                 "color:#ffe9b0;background:rgba(40,20,10,0.78);border:1px solid #b89d7c;" +
                 "pointer-events:none;text-shadow:0 1px 2px #000;";
             document.body.appendChild(el);
@@ -1819,7 +1819,7 @@
             el.textContent = T('AutoIdle.badge');
             el.style.cssText =
                 "position:fixed;top:8px;right:8px;z-index:99;" +
-                "padding:3px 12px;border-radius:10px;font:bold 13px monospace;letter-spacing:1px;" +
+                "padding:3px 12px;font:bold 13px monospace;letter-spacing:1px;" +
                 "color:#b0e0ff;background:rgba(10,20,40,0.78);border:1px solid #7c9db8;" +
                 "pointer-events:none;text-shadow:0 1px 2px #000;";
             document.body.appendChild(el);

@@ -172,7 +172,7 @@
           icon: 244,
           width: 950,
           height: 600,
-          contentHTML: '<div id="job-offers-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8;"></div>'
+          contentHTML: '<div id="job-offers-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8"></div>'
         });
 
         this.appInstance = new Scene_JobOffers();
@@ -236,20 +236,33 @@
       // Handled by custom D&D navigation
     }
 
-    onActorSelected(actor) {
+    onActorSelected(actor, remote) {
       const job = this._jobListWindow.currentJob();
       if (job && actor) {
-        this.startWork(actor, job);
+        this.startWork(actor, job, remote);
       }
     }
 
-    startWork(actor, job) {
+    startWork(actor, job, remote) {
       // Store work data and return to map
       $gameTemp._pendingWork = {
         actorId: actor.actorId(),
-        job: job
+        job: job,
+        remote: !!remote
       };
       this.popScene();
+
+      // A remote shift is worked from wherever the party is standing, right
+      // now, so the OS has to be left as well: the hours only run on the map,
+      // where the travel card can show them passing.
+      if (remote) this.leaveHypernetOS();
+    }
+
+    leaveHypernetOS() {
+      const scene = SceneManager._scene;
+      if (window.Scene_HypernetOS && scene instanceof window.Scene_HypernetOS) {
+        scene.popScene();
+      }
     }
 
     popScene() {
@@ -332,12 +345,15 @@
         rightPageHTML = this.getActorSelectionHTML(actors, selectedActorIndex, selectedJob);
       }
 
-      const spreadWidth = this._isAppMode ? "100%" : "1400px";
-      const spreadHeight = this._isAppMode ? "100%" : "900px";
+      // App mode embeds the spread in a Hypernet OS window, so it fills that
+      // window. Standalone it IS the screen, and takes its size from the shared
+      // full-bleed .cc-pockets-spread rule in theme.css, so it must not pin
+      // itself to the old 1400x900 design box here.
+      const spreadSize = this._isAppMode ? "width: 100%; height: 100%" : "";
 
       if (this._isAppMode) {
         this._dndContainer.innerHTML = `
-          <div class="cc-pockets-spread" style="width: 100%; height: 100%;">
+          <div class="cc-pockets-spread" style="width: 100%; height: 100%">
             <!-- Left Page -->
             <div class="cc-page cc-page-left">
               ${leftPageHTML}
@@ -351,17 +367,17 @@
         `;
       } else {
         this._dndContainer.innerHTML = `
-          <div class="cc-pockets-spread" style="width: ${spreadWidth}; height: ${spreadHeight};">
+          <div class="cc-pockets-spread" style="${spreadSize}">
             <!-- Spine Shading -->
-            <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 100%; background: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.15) 100%); pointer-events: none; z-index: 10;"></div>
+            <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 100%; background: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.15) 100%); pointer-events: none; z-index: 10"></div>
 
             <!-- Left Page -->
-            <div class="cc-page cc-page-left" style="padding: 28px 36px; display: flex; flex-direction: column; width:50%; box-sizing: border-box;">
+            <div class="cc-page cc-page-left" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
               ${leftPageHTML}
             </div>
 
             <!-- Right Page -->
-            <div class="cc-page cc-page-right" style="padding: 28px 36px; display: flex; flex-direction: column; width:50%; box-sizing: border-box;">
+            <div class="cc-page cc-page-right" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
               ${rightPageHTML}
             </div>
           </div>
@@ -401,7 +417,7 @@
         let listHTML = "";
         if (jobs.length === 0) {
           listHTML = `
-              <div style="text-align:center; padding: 40px; font-style:italic; color:#666;">
+              <div style="text-align:center; padding: 40px; color:#666">
                 ${T('WorkSystem.noJobOffersCurrentlyAvailable')}
               </div>
             `;
@@ -413,16 +429,16 @@
 
             listHTML += `
                 <div class="job-item focusable" tabindex="0" data-focus-key="job-${idx}" onclick="${sref}.selectJobItem(${idx})">  <!-- i18n-ignore  inline handler -->
-                  <div style="display:flex; flex-direction:column; gap:2px;">
-                    <span style="font-size:12px; font-weight:bold; color:#000;">
+                  <div style="display:flex; flex-direction:column; gap:2px">
+                    <span style="font-size:15px; font-weight:bold; color:#000">
                       ${jobName}
                     </span>
-                    <span style="font-size:10px; color:#555;">
-                      ${job.category} • ${job.duration}h
+                    <span style="font-size:13px; color:#555; display:flex; align-items:center; gap:5px">
+                      ${job.category} • ${job.duration}h ${this.getRemoteTagHTML(job)}
                     </span>
                   </div>
-                  <div style="display:flex; flex-direction:column; align-items:flex-end;">
-                    <span style="font-size:12px; font-weight:bold; color:#0054e3;">
+                  <div style="display:flex; flex-direction:column; align-items:flex-end">
+                    <span style="font-size:15px; font-weight:bold; color:#0054e3">
                       ${(hourlyPay / 100).toFixed(2)}€/hr
                     </span>
                   </div>
@@ -435,11 +451,11 @@
             <h2 class="cc-header-gothic">
               ${title}
             </h2>
-            <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px;">
+            <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px">
               ${listHTML}
             </div>
-            <div style="margin-top:auto; border-top:1px solid #7f9db9; padding-top:8px; display:flex; justify-content:flex-end; align-items:center; font-size:11px; color:#555; width:100%;">
-              <div class="back-button focusable" tabindex="0" data-focus-key="back-btn" onclick="${sref}.popScene()" style="padding:4px 12px; cursor:pointer;">
+            <div style="margin-top:auto; border-top:1px solid #7f9db9; padding-top:8px; display:flex; justify-content:flex-end; align-items:center; font-size:14px; color:#555; width:100%">
+              <div class="back-button focusable" tabindex="0" data-focus-key="back-btn" onclick="${sref}.popScene()" style="padding:4px 12px">
                 ${T('WorkSystem.dismiss')}
               </div>
             </div>
@@ -449,7 +465,7 @@
       let listHTML = "";
       if (jobs.length === 0) {
         listHTML = `
-            <div style="text-align:center; padding: 40px; font-style:italic; color:#6b5242; font-family:'Lora', serif;">
+            <div style="text-align:center; padding: 40px; color:#6b5242; font-family:'Lora', serif">
               ${T('WorkSystem.noJobOffersCurrentlyAvailable')}
             </div>
           `;
@@ -475,16 +491,16 @@
 
           listHTML += `
               <div class="job-item" style="${itemStyle}" onclick="${sref}.selectJobItem(${idx})">
-                <div style="display:flex; flex-direction:column; gap:2px;">
-                  <span style="font-family:'Lora', serif; font-size:0.95rem; font-weight:${isSelected ? 'bold' : 'normal'}; color:#1a1a1a;">
+                <div style="display:flex; flex-direction:column; gap:2px">
+                  <span style="font-family:'Lora', serif; font-size:1.14rem; font-weight:${isSelected ? 'bold' : 'normal'}; color:#1a1a1a">
                     ${jobName}
                   </span>
-                  <span style="font-size:0.75rem; color:#6b5242; font-family:'Lora', serif;">
-                    ${job.category} • ${job.duration}h
+                  <span style="font-size:0.915rem; color:#6b5242; font-family:'Lora', serif; display:flex; align-items:center; gap:6px">
+                    ${job.category} • ${job.duration}h ${this.getRemoteTagHTML(job)}
                   </span>
                 </div>
-                <div style="display:flex; flex-direction:column; align-items:flex-end;">
-                  <span style="font-family:'Lora', serif; font-size:1rem; font-weight:bold; color:#4a1d0f;">
+                <div style="display:flex; flex-direction:column; align-items:flex-end">
+                  <span style="font-family:'Lora', serif; font-size:1.15rem; font-weight:bold; color:#4a1d0f">
                     ${(hourlyPay / 100).toFixed(2)}€/hr
                   </span>
                 </div>
@@ -494,14 +510,14 @@
       }
 
       return `
-          <h2 class="cc-header-gothic" style="font-size:1.85rem; margin-bottom:16px;">
+          <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px">
             ${title}
           </h2>
-          <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px;">
+          <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px">
             ${listHTML}
           </div>
-          <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-end; align-items:center; font-size:0.82rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%;">
-            <div class="back-button focusable" onclick="${sref}.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; cursor:pointer; transition:all 0.2s ease; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:0.9rem;">
+          <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-end; align-items:center; font-size:0.984rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%">
+            <div class="back-button focusable" onclick="${sref}.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; transition:all 0.2s ease; border:1px solid #4a2711; font-family:'Lora', serif; font-size:1.08rem">
               ${T('WorkSystem.dismiss')}
             </div>
           </div>
@@ -517,13 +533,13 @@
       if (!job) {
         if (this._isAppMode) {
           return `
-              <div style="display:flex; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; font-style:italic; color:#555; border:1px dashed #7f9db9; border-radius:3px; padding:20px; font-size:11px; background:#fcfcfc;">
+              <div style="display:flex; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; color:#555; border:1px dashed #7f9db9; border-radius:3px; padding:20px; font-size:14px; background:#fcfcfc">
                 ${T('WorkSystem.selectAJobOfferTo')}
               </div>
             `;
         }
         return `
-            <div style="display:flex; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; font-style:italic; color:#5c4b3d; font-family:'Lora', serif; font-size:1.1rem; border:2px dashed #bda881; border-radius:6px; padding:40px;">
+            <div style="display:flex; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; color:#5c4b3d; font-family:'Lora', serif; font-size:1.265rem; border:2px dashed #bda881; border-radius:6px; padding:40px">
               ${T('WorkSystem.selectAJobOfferTo')}
             </div>
           `;
@@ -562,7 +578,7 @@
           const statLabel = _si18n(mappedName);
 
           requirementsHTML += `
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px; color:${meetsReq ? '#008000' : '#a00'}; font-weight:${meetsReq ? 'normal' : 'bold'}; font-size:11px;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px; color:${meetsReq ? '#008000' : '#a00'}; font-weight:${meetsReq ? 'normal' : 'bold'}; font-size:14px">
                 <span>${statLabel}</span>
                 <span>${actorValue} / ${required}</span>
               </div>
@@ -572,10 +588,10 @@
         let locationsHTML = "";
         if (job.locations && job.locations.length > 0) {
           locationsHTML += `
-              <div style="margin-top: 8px;">
-                <strong style="color:#0b2f70; font-size:10px; text-transform:uppercase;">${T('WorkSystem.availableLocations')}:</strong>
-                <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:2px;">
-                  ${job.locations.map(loc => `<span style="background:#e5effa; border:1px solid #7f9db9; padding:1px 6px; border-radius:2px; font-size:10px; color:#0b2f70;">${this.getLocationName(loc)}</span>`).join('')}
+              <div style="margin-top: 8px">
+                <strong style="color:#0b2f70; font-size:13px; text-transform:uppercase">${T('WorkSystem.availableLocations')}:</strong>
+                <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:2px">
+                  ${job.locations.map(loc => `<span style="background:#e5effa; border:1px solid #7f9db9; padding:1px 6px; border-radius:2px; font-size:13px; color:#0b2f70">${this.getLocationName(loc)}</span>`).join('')}
                 </div>
               </div>
             `;
@@ -585,64 +601,76 @@
         if (job.factionId !== undefined && job.factionId !== null) {
           const factionName = this._detailWindow.getFactionName(job.factionId);
           factionHTML = `
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px; font-size:11px;">
-                <strong style="color:#333;">${T('WorkSystem.faction')}:</strong>
-                <span style="color:#0054e3; font-weight:bold;">${factionName}</span>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px; font-size:14px">
+                <strong style="color:#333">${T('WorkSystem.faction')}:</strong>
+                <span style="color:#0054e3; font-weight:bold">${factionName}</span>
               </div>
             `;
         }
 
         return `
-            <h2 class="cc-header-gothic" style="text-align:center;">
+            <h2 class="cc-header-gothic" style="text-align:center">
               ${T('WorkSystem.proposalContract')}
             </h2>
 
-            <div style="flex:1; display:flex; flex-direction:column; gap:8px; box-sizing: border-box; width:100%; min-height:0; overflow-y:auto; padding-right:2px;">
-              <div style="border: 1px solid #7f9db9; background: #fcfcfc; padding: 12px; border-radius: 3px; display:flex; flex-direction:column; gap:8px; box-sizing: border-box; width:100%;">
-                <div style="font-size:13px; color:#0b2f70; font-weight:bold; border-bottom:1px solid #7f9db9; padding-bottom:4px; text-align:center; text-transform:uppercase;">
+            <div style="flex:1; display:flex; flex-direction:column; gap:8px; box-sizing: border-box; width:100%; min-height:0; overflow-y:auto; padding-right:2px">
+              <div style="border: 1px solid #7f9db9; background: #fcfcfc; padding: 12px; border-radius: 3px; display:flex; flex-direction:column; gap:8px; box-sizing: border-box; width:100%">
+                <div style="font-size:16px; color:#0b2f70; font-weight:bold; border-bottom:1px solid #7f9db9; padding-bottom:4px; text-align:center; text-transform:uppercase">
                   ${jobName}
                 </div>
 
-                <div style="font-size:11px; font-style:italic; line-height:1.35; color:#444; border-bottom:1px dashed #ccc; padding-bottom:6px; margin-bottom:4px; text-align:justify;">
+                <div style="font-size:14px; line-height:1.35; color:#444; border-bottom:1px dashed #ccc; padding-bottom:6px; margin-bottom:4px; text-align:justify">
                   "${description}"
                 </div>
 
-                <div style="display:flex; flex-direction:column; gap:4px; font-size:11px;">
-                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px;">
-                    <strong style="color:#333;">${T('WorkSystem.categoryLabel')}:</strong>
+                <div style="display:flex; flex-direction:column; gap:4px; font-size:14px">
+                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px">
+                    <strong style="color:#333">${T('WorkSystem.categoryLabel')}:</strong>
                     <span>${job.category}</span>
                   </div>
-                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px;">
-                    <strong style="color:#333;">${T('WorkSystem.duration')}:</strong>
+                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px">
+                    <strong style="color:#333">${T('WorkSystem.duration')}:</strong>
                     <span>${T('WorkSystem.hoursValue', { hours: job.duration })}</span>
                   </div>
-                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px; font-weight:bold; color:#008000;">
+                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px">
+                    <strong style="color:#333">${T('WorkSystem.hourlyRate')}:</strong>
+                    <span>€${(job.basePay / job.duration / 100).toFixed(2)}</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px; font-weight:bold; color:#008000">
                     <span>${T('WorkSystem.totalReward')}:</span>
                     <span>€${(job.basePay / 100).toFixed(2)}</span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px">
+                    <strong style="color:#333">${T('WorkSystem.remoteWorkLabel')}:</strong>
+                    <span style="color:${this.isRemoteJob(job) ? '#008000' : '#a00'}; font-weight:bold">
+                      ${this.isRemoteJob(job) ? T('WorkSystem.remoteAvailable') : T('WorkSystem.remoteOnSiteOnly')}
+                    </span>
                   </div>
                   ${factionHTML}
                 </div>
 
                 ${locationsHTML}
 
-                <div style="margin-top: 6px; border-top: 1px dashed #ccc; padding-top: 6px; display:flex; flex-direction:column; gap:4px;">
-                  <strong style="color:#0b2f70; font-size:10px; text-transform:uppercase;">${T('WorkSystem.requiredStats')} (${actor.name()}):</strong>
-                  <div style="display:flex; flex-direction:column; gap:2px; margin-top:2px;">
+                <div style="margin-top: 6px; border-top: 1px dashed #ccc; padding-top: 6px; display:flex; flex-direction:column; gap:4px">
+                  <strong style="color:#0b2f70; font-size:13px; text-transform:uppercase">${T('WorkSystem.requiredStats')} (${actor.name()}):</strong>
+                  <div style="display:flex; flex-direction:column; gap:2px; margin-top:2px">
                     ${requirementsHTML}
                   </div>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; border-top:1px dashed #ccc; padding-top:6px; font-weight:bold; font-size:11px;">
-                  <span style="color:#333;">${T('WorkSystem.estimatedSuccessRate')}:</span>
-                  <span style="color:${chanceColorXP}; font-size:13px;">${chancePercent}%</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; border-top:1px dashed #ccc; padding-top:6px; font-weight:bold; font-size:14px">
+                  <span style="color:#333">${T('WorkSystem.estimatedSuccessRate')}:</span>
+                  <span style="color:${chanceColorXP}; font-size:16px">${chancePercent}%</span>
                 </div>
 
                 ${!reqCheck.meets ? `
-                <div style="margin-top:6px; padding:6px; background:#fff8e8; border-left:3px solid #ff9900; border-radius:2px; font-size:10px; color:#b85c00; line-height:1.3; font-style:italic;">
+                <div style="margin-top:6px; padding:6px; background:#fff8e8; border-left:3px solid #ff9900; border-radius:2px; font-size:13px; color:#b85c00; line-height:1.3">
                   Deficits detected! Undertaking this contract will carry higher hazards of failure and injury.
                 </div>
                 ` : ''}
               </div>
+
+              ${this.getChooseCandidateButtonHTML()}
             </div>
           `;
       }
@@ -655,7 +683,7 @@
         const statLabel = _si18n(mappedName);
 
         requirementsHTML += `
-            <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; color:${meetsReq ? '#3d5e4b' : '#822d2d'}; font-weight:${meetsReq ? 'normal' : 'bold'};">
+            <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; color:${meetsReq ? '#3d5e4b' : '#822d2d'}; font-weight:${meetsReq ? 'normal' : 'bold'}">
               <span>${statLabel}</span>
               <span>${actorValue} / ${required}</span>
             </div>
@@ -665,10 +693,10 @@
       let locationsHTML = "";
       if (job.locations && job.locations.length > 0) {
         locationsHTML += `
-            <div style="margin-top: 10px;">
-              <strong style="color:#5c3516; font-size:0.85rem; text-transform:uppercase;">${T('WorkSystem.availableLocations')}:</strong>
-              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">
-                ${job.locations.map(loc => `<span style="background:rgba(139,90,43,0.1); border:1px solid rgba(139,90,43,0.2); padding:2px 8px; border-radius:3px; font-size:0.75rem; color:#4a1d0f;">${this.getLocationName(loc)}</span>`).join('')}
+            <div style="margin-top: 10px">
+              <strong style="color:#5c3516; font-size:1.02rem; text-transform:uppercase">${T('WorkSystem.availableLocations')}:</strong>
+              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px">
+                ${job.locations.map(loc => `<span style="background:rgba(139,90,43,0.1); border:1px solid rgba(139,90,43,0.2); padding:2px 8px; border-radius:3px; font-size:0.915rem; color:#4a1d0f">${this.getLocationName(loc)}</span>`).join('')}
               </div>
             </div>
           `;
@@ -678,66 +706,137 @@
       if (job.factionId !== undefined && job.factionId !== null) {
         const factionName = this._detailWindow.getFactionName(job.factionId);
         factionHTML = `
-            <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px;">
-              <strong style="color:#5c3516;">${T('WorkSystem.faction')}:</strong>
-              <span style="color:#8b5a2b; font-weight:bold;">${factionName}</span>
+            <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
+              <strong style="color:#5c3516">${T('WorkSystem.faction')}:</strong>
+              <span style="color:#8b5a2b; font-weight:bold">${factionName}</span>
             </div>
           `;
       }
 
       return `
-          <h2 class="cc-header-gothic" style="font-size:1.85rem; margin-bottom:16px; text-align:center;">
+          <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px; text-align:center">
             ${T('WorkSystem.proposalContract')}
           </h2>
 
-          <div style="flex:1; display:flex; flex-direction:column; gap:12px; box-sizing: border-box; width:100%;">
-            <div style="border: 4px double #4a2711; background: #ecdcb9; padding: 22px; border-radius: 6px; box-shadow: inset 0 0 40px rgba(78,38,12,0.15); font-family:'Lora', serif; display:flex; flex-direction:column; gap:10px; box-sizing: border-box; width:100%;">
-              <div style="font-family:'Lora', serif; font-size:1.5rem; color:#4a1d0f; font-weight:bold; border-bottom:2px double rgba(74,29,15,0.3); padding-bottom:6px; text-align:center; text-transform:uppercase;">
+          <div style="flex:1; display:flex; flex-direction:column; gap:12px; box-sizing: border-box; width:100%">
+            <div style="border: 4px double #4a2711; background: #ecdcb9; padding: 22px; border-radius: 6px; box-shadow: inset 0 0 40px rgba(78,38,12,0.15); font-family:'Lora', serif; display:flex; flex-direction:column; gap:10px; box-sizing: border-box; width:100%">
+              <div style="font-family:'Lora', serif; font-size:1.725rem; color:#4a1d0f; font-weight:bold; border-bottom:2px double rgba(74,29,15,0.3); padding-bottom:6px; text-align:center; text-transform:uppercase">
                 ${jobName}
               </div>
 
-              <div style="font-size:0.9rem; font-style:italic; line-height:1.45; color:#2b1c11; border-bottom:1px dashed rgba(139,90,43,0.25); padding-bottom:10px; margin-bottom:6px; text-align:justify;">
+              <div style="font-size:1.08rem; line-height:1.45; color:#2b1c11; border-bottom:1px dashed rgba(139,90,43,0.25); padding-bottom:10px; margin-bottom:6px; text-align:justify">
                 "${description}"
               </div>
 
-              <div style="display:flex; flex-direction:column; gap:6px; font-size:0.9rem;">
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px;">
-                  <strong style="color:#5c3516;">${T('WorkSystem.categoryLabel')}:</strong>
+              <div style="display:flex; flex-direction:column; gap:6px; font-size:1.08rem">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
+                  <strong style="color:#5c3516">${T('WorkSystem.categoryLabel')}:</strong>
                   <span>${job.category}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px;">
-                  <strong style="color:#5c3516;">${T('WorkSystem.duration')}:</strong>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
+                  <strong style="color:#5c3516">${T('WorkSystem.duration')}:</strong>
                   <span>${T('WorkSystem.hoursValue', { hours: job.duration })}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; font-weight:bold; color:#3d5e4b;">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
+                  <strong style="color:#5c3516">${T('WorkSystem.hourlyRate')}:</strong>
+                  <span>€${(job.basePay / job.duration / 100).toFixed(2)}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; font-weight:bold; color:#3d5e4b">
                   <span>${T('WorkSystem.totalReward')}:</span>
                   <span>€${(job.basePay / 100).toFixed(2)}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
+                  <strong style="color:#5c3516">${T('WorkSystem.remoteWorkLabel')}:</strong>
+                  <span style="color:${this.isRemoteJob(job) ? '#3d5e4b' : '#822d2d'}; font-weight:bold">
+                    ${this.isRemoteJob(job) ? T('WorkSystem.remoteAvailable') : T('WorkSystem.remoteOnSiteOnly')}
+                  </span>
                 </div>
                 ${factionHTML}
               </div>
 
               ${locationsHTML}
 
-              <div style="margin-top: 10px; border-top: 1px dashed rgba(139,90,43,0.25); padding-top: 10px; display:flex; flex-direction:column; gap:6px;">
-                <strong style="color:#5c3516; font-size:0.85rem; text-transform:uppercase;">${T('WorkSystem.requiredStats')} (${actor.name()}):</strong>
-                <div style="display:flex; flex-direction:column; gap:4px; margin-top:2px;">
+              <div style="margin-top: 10px; border-top: 1px dashed rgba(139,90,43,0.25); padding-top: 10px; display:flex; flex-direction:column; gap:6px">
+                <strong style="color:#5c3516; font-size:1.02rem; text-transform:uppercase">${T('WorkSystem.requiredStats')} (${actor.name()}):</strong>
+                <div style="display:flex; flex-direction:column; gap:4px; margin-top:2px">
                   ${requirementsHTML}
                 </div>
               </div>
 
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px dashed rgba(139,90,43,0.25); padding-top:10px; font-weight:bold; font-size:1rem;">
-                <span style="color:#5c3516;">${T('WorkSystem.estimatedSuccessRate')}:</span>
-                <span style="color:${chanceColor}; font-family:'Lora', serif; font-size:1.15rem;">${chancePercent}%</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px dashed rgba(139,90,43,0.25); padding-top:10px; font-weight:bold; font-size:1.15rem">
+                <span style="color:#5c3516">${T('WorkSystem.estimatedSuccessRate')}:</span>
+                <span style="color:${chanceColor}; font-family:'Lora', serif; font-size:1.322rem">${chancePercent}%</span>
               </div>
 
               ${!reqCheck.meets ? `
-              <div style="margin-top:8px; padding:8px 12px; background:rgba(130,45,45,0.06); border-left:3px solid #822d2d; border-radius:3px; font-size:0.78rem; color:#822d2d; line-height:1.35; font-style:italic;">
+              <div style="margin-top:8px; padding:8px 12px; background:rgba(130,45,45,0.06); border-left:3px solid #822d2d; border-radius:3px; font-size:0.952rem; color:#822d2d; line-height:1.35">
                 Deficits detected! Undertaking this contract will carry higher hazards of failure and injury.
               </div>
               ` : ''}
             </div>
+
+            ${this.getChooseCandidateButtonHTML()}
           </div>
         `;
+    }
+
+    // The way off the contract page and onto the roster, where a job is
+    // actually taken. Without it the board is a dead end for anyone not
+    // driving the scene from the keyboard: in the OS app the focus ring is the
+    // only input, and it has nothing to press until this button exists.
+    getChooseCandidateButtonHTML() {
+      if (this._dndFocusSection !== 'list') return '';
+
+      if (this._isAppMode) {
+        return `
+            <div class="action-button focusable" onclick="window.HypernetJobsApp.appInstance.openCandidateRoster()" style="width:100%">
+              ${T('WorkSystem.chooseCandidate')}
+            </div>
+          `;
+      }
+
+      return `
+          <div class="action-button focusable" onclick="SceneManager._scene.openCandidateRoster()" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.208rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease">
+            ${T('WorkSystem.chooseCandidate')}
+          </div>
+        `;
+    }
+
+    // A job that can be done down the wire gets a second way to take it: the
+    // same contract, worked from wherever the party is standing. Jobs that
+    // cannot are simply not offered the button.
+    isRemoteJob(job) {
+      return !!(job && job.remote);
+    }
+
+    getRemoteWorkButtonHTML(job, sref) {
+      if (!this.isRemoteJob(job)) return '';
+
+      if (this._isAppMode) {
+        return `
+            <div class="action-button focusable" onclick="${sref}.confirmRemoteWork()" style="background:#1f7a1f !important; border-color:#0b4d0b !important; color:#fff !important; width:100%">
+              ${T('WorkSystem.remoteWork')}
+            </div>
+          `;
+      }
+
+      return `
+          <div class="action-button focusable" onclick="${sref}.confirmRemoteWork()" style="background:#3d5e4b; color:#ecdcb9; padding:9px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #24382c; text-transform:uppercase; font-family:'Lora', serif; font-size:1.15rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease">
+            ${T('WorkSystem.remoteWork')}
+          </div>
+        `;
+    }
+
+    // Small "remote" chip for the board listing, so the offers that can be
+    // taken without leaving the terminal are picked out at a glance.
+    getRemoteTagHTML(job) {
+      if (!this.isRemoteJob(job)) return '';
+
+      const style = this._isAppMode
+        ? 'background:#dff3df; border:1px solid #1f7a1f; color:#0b4d0b; padding:0 4px; font-size:12px; font-weight:bold; text-transform:uppercase;'
+        : "background:rgba(61,94,75,0.12); border:1px solid rgba(61,94,75,0.35); color:#3d5e4b; padding:1px 6px; font-size:0.793rem; font-weight:bold; font-family:'Lora', serif; text-transform:uppercase;";
+
+      return `<span style="${style}">${T('WorkSystem.remoteTag')}</span>`;
     }
 
     getActorFaceHTML(actor, size = 64) {
@@ -747,23 +846,11 @@
       const textCSS = this._isAppMode ? "#fff" : "#ecdcb9";
 
       if (!faceName) {
-        return `<div style="width:${size}px; height:${size}px; border-radius:50%; background:${bgCSS}; color:${textCSS}; display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:bold;">${actor.name().charAt(0)}</div>`;
+        return `<div style="width:${size}px; height:${size}px; border-radius:50%; background:${bgCSS}; color:${textCSS}; display:flex; align-items:center; justify-content:center; font-size:1.38rem; font-weight:bold">${actor.name().charAt(0)}</div>`;
       }
 
       return `
-          <div style="
-            width: ${size}px;
-            height: ${size}px;
-            border-radius: 50%;
-            border: ${borderCSS};
-            box-sizing: border-box;
-            background-image: url('img/busts/${faceName}.png');
-            background-position: 50% 12%;
-            background-size: 220%;
-            background-repeat: no-repeat;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-            flex-shrink: 0;
-          "></div>
+          <div style="width: ${size}px; height: ${size}px; border-radius: 50%; border: ${borderCSS}; box-sizing: border-box; background-image: url('img/busts/${faceName}.png'); background-position: 50% 12%; background-size: 220%; background-repeat: no-repeat; box-shadow: 0 1px 3px rgba(0,0,0,0.15); flex-shrink: 0"></div>
         `;
     }
 
@@ -783,7 +870,7 @@
           : (isMet ? '#3d5e4b' : '#822d2d');
 
         html += `
-            <div style="display:flex; justify-content:space-between; font-size:10px; color:${color}; font-weight:${isMet ? 'normal' : 'bold'}; border-bottom:1px dotted rgba(0,0,0,0.05); padding:1px 0;">
+            <div style="display:flex; justify-content:space-between; font-size:13px; color:${color}; font-weight:${isMet ? 'normal' : 'bold'}; border-bottom:1px dotted rgba(0,0,0,0.05); padding:1px 0">
               <span>${statLabel}</span>
               <span>${actorValue} / ${required}</span>
             </div>
@@ -814,16 +901,16 @@
           listHTML += `
               <div class="roster-item focusable ${isSelected ? 'selected' : ''}" tabindex="0" data-focus-key="actor-${idx}" onclick="${sref}.selectActorItem(${idx})">  <!-- i18n-ignore  inline handler -->
                 ${this.getActorFaceHTML(actor, 44)}
-                <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong style="font-size:11px; color:#000;">
+                <div style="flex:1; display:flex; flex-direction:column; gap:2px">
+                  <div style="display:flex; justify-content:space-between; align-items:center">
+                    <strong style="font-size:14px; color:#000">
                       ${actor.name()}
                     </strong>
-                    <span style="font-size:10px; font-weight:bold; color:${chanceColor};">
+                    <span style="font-size:13px; font-weight:bold; color:${chanceColor}">
                       ${chancePercent}% SUCCESS
                     </span>
                   </div>
-                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; margin-top:2px;">
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; margin-top:2px">
                     ${this.getActorRequirementDetailHTML(actor, selectedJob)}
                   </div>
                 </div>
@@ -836,16 +923,18 @@
               ${T('WorkSystem.candidateRoster')}
             </h2>
 
-            <div id="roster-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:4px;">
+            <div id="roster-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:4px">
               ${listHTML}
             </div>
 
-            <div style="margin-top:8px; border-top:1px solid #7f9db9; padding-top:8px; display:flex; flex-direction:column; gap:4px; box-sizing:border-box; width:100%;">
-              <div class="action-button focusable" tabindex="0" data-focus-key="accept-btn" onclick="${sref}.confirmActorSelection()" style="width:100%;">
+            <div style="margin-top:8px; border-top:1px solid #7f9db9; padding-top:8px; display:flex; flex-direction:column; gap:4px; box-sizing:border-box; width:100%">
+              <div class="action-button focusable" tabindex="0" data-focus-key="accept-btn" onclick="${sref}.confirmActorSelection()" style="width:100%">
                 ${T('WorkSystem.acceptJobOffer')}
               </div>
-              
-              <div class="action-button focusable" tabindex="0" data-focus-key="retract-btn" onclick="${sref}.retractActorSelection()" style="background:#e1e1e1 !important; color:#000 !important; border-color:#7f9db9 !important; width:100%;">
+
+              ${this.getRemoteWorkButtonHTML(selectedJob, sref)}
+
+              <div class="action-button focusable" onclick="${sref}.retractActorSelection()" style="background:#e1e1e1 !important; color:#000 !important; border-color:#7f9db9 !important; width:100%">
                 ${T('WorkSystem.retractCandidate')}
               </div>
             </div>
@@ -885,16 +974,16 @@
         listHTML += `
             <div class="roster-item focusable" style="${cardStyle}" onclick="${sref}.selectActorItem(${idx})">
               ${this.getActorFaceHTML(actor, 54)}
-              <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <strong style="font-family:'Lora', serif; font-size:0.95rem; color:#1a1a1a;">
+              <div style="flex:1; display:flex; flex-direction:column; gap:2px">
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                  <strong style="font-family:'Lora', serif; font-size:1.14rem; color:#1a1a1a">
                     ${actor.name()}
                   </strong>
-                  <span style="font-family:'Lora', serif; font-size:0.75rem; font-weight:bold; color:${chanceColor};">
+                  <span style="font-family:'Lora', serif; font-size:0.915rem; font-weight:bold; color:${chanceColor}">
                     ${chancePercent}% SUCCESS
                   </span>
                 </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; margin-top:2px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; margin-top:2px">
                   ${this.getActorRequirementDetailHTML(actor, selectedJob)}
                 </div>
               </div>
@@ -903,20 +992,22 @@
       });
 
       return `
-          <h2 class="cc-header-gothic" style="font-size:1.85rem; margin-bottom:16px;">
+          <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px">
             ${T('WorkSystem.candidateRoster')}
           </h2>
 
-          <div id="roster-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:4px;">
+          <div id="roster-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:4px">
             ${listHTML}
           </div>
 
-          <div style="margin-top:12px; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; flex-direction:column; gap:8px; box-sizing:border-box; width:100%;">
-            <div class="action-button focusable" onclick="${sref}.confirmActorSelection()" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.05rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease;">
+          <div style="margin-top:12px; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; flex-direction:column; gap:8px; box-sizing:border-box; width:100%">
+            <div class="action-button focusable" onclick="${sref}.confirmActorSelection()" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.208rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease">
               ${T('WorkSystem.acceptJobOffer')}
             </div>
-            
-            <div class="action-button focusable" onclick="${sref}.retractActorSelection()" style="background:#8b5a2b; color:#ecdcb9; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:0.9rem; transition: all 0.2s ease;">
+
+            ${this.getRemoteWorkButtonHTML(selectedJob, sref)}
+
+            <div class="action-button focusable" onclick="${sref}.retractActorSelection()" style="background:#8b5a2b; color:#ecdcb9; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:1.08rem; transition: all 0.2s ease">
               ${T('WorkSystem.retractCandidate')}
             </div>
           </div>
@@ -932,6 +1023,17 @@
       }
     }
 
+    openCandidateRoster() {
+      if (!this._jobListWindow || !this._jobListWindow.currentJob()) {
+        SoundManager.playBuzzer();
+        return;
+      }
+      this._dndFocusSection = 'actors';
+      this._dndActorIndex = 0;
+      SoundManager.playOk();
+      this.refreshUIJobOffersDOM();
+    }
+
     selectActorItem(index) {
       this._dndActorIndex = index;
       this._dndFocusSection = 'actors';
@@ -944,6 +1046,19 @@
       if (actor) {
         SoundManager.playOk();
         this.onActorSelected(actor);
+      } else {
+        SoundManager.playBuzzer();
+      }
+    }
+
+    // Same contract, worked over the Hypernet instead of on site. Only offered
+    // for the jobs that carry "remote": true in Jobs.json.
+    confirmRemoteWork() {
+      const job = this._jobListWindow ? this._jobListWindow.currentJob() : null;
+      const actor = $gameParty.members()[this._dndActorIndex];
+      if (job && job.remote && actor) {
+        SoundManager.playOk();
+        this.onActorSelected(actor, true);
       } else {
         SoundManager.playBuzzer();
       }
@@ -1010,6 +1125,10 @@
             SoundManager.playCancel();
           } else if (Input.isTriggered('ok')) {
             this.confirmActorSelection();
+          } else if (Input.isTriggered('shift') && this.isRemoteJob(job)) {
+            // Outside the OS there is no focus ring to tab onto the second
+            // button, so remote work answers to Shift on the roster page.
+            this.confirmRemoteWork();
           }
         }
 

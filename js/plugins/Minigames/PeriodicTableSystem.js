@@ -487,7 +487,7 @@
                 const c = CAT_COLORS[cat];
                 return `<div class="pt-placeholder pt-cat-${cat}" style="display:inline-flex;align-items:center;justify-content:center;
                          width:${W}px;min-width:${W}px;height:${H}px;border:1px dashed ${c}66;
-                         border-radius:2px;flex-shrink:0;font-size:11px;color:${c}99;font-style:italic;">
+                         border-radius:2px;flex-shrink:0;font-size:11px;color:${c}99;font-style: normal;">
                          ${label}</div>`;
             };
 
@@ -516,7 +516,7 @@
             // Separator label row
             html += `<div style="display:flex;gap:${G}px;margin:5px 0 3px 0;align-items:center;">`;
             html += emptyCell(W * 2 + G);
-            html += `<span class="pt-sep-label" style="font-size:10.5px;color:#6b5242;font-style:italic;white-space:nowrap;">
+            html += `<span class="pt-sep-label" style="font-size:10.5px;color:#6b5242;font-style: normal;white-space:nowrap;">
                         * ${ui.lan} &nbsp;&nbsp; ** ${ui.act}
                      </span>`;
             html += `</div>`;
@@ -542,7 +542,7 @@
             // Esoteric section
             html += `<div class="pt-eso-section" style="margin-top:10px;border-top:1px dashed #bba16d66;padding-top:6px;">`;
             html += `<div class="pt-eso-title" style="font-size:11.5px;color:#8b5a2b;letter-spacing:1px;margin-bottom:4px;
-                                  font-family:'Lora',serif;font-style:italic;">
+                                  font-family:'Lora',serif;font-style: normal;">
                          &#10022; ${ui.eso}
                      </div>`;
             html += `<div style="${rowStyle}">`;
@@ -599,7 +599,7 @@
                         <span class="pt-sym-mass" style="font-size:10px;color:rgba(44,36,22,0.55);line-height:1;">${mass}</span>
                     </div>
                     <div class="pt-name" style="font-family:'Lora',serif;font-size:1.45em;color:#2c2416;font-weight:bold;">${_esc(name)}</div>
-                    <div class="pt-cat-label" style="font-size:0.78em;color:${color};font-style:italic;margin-top:2px;">${_esc(catLbl)}</div>
+                    <div class="pt-cat-label" style="font-size:0.78em;color:${color};font-style: normal;margin-top:2px;">${_esc(catLbl)}</div>
                 </div>`;
 
             // Properties grid
@@ -629,7 +629,7 @@
                 <div class="pt-desc" style="font-family:'Lora',serif;font-size:0.9em;line-height:1.55;color:#3e2c1a;
                             background:rgba(43,28,17,0.04);border:1px double rgba(187,161,109,0.35);
                             border-radius:4px;padding:14px 16px;flex:0 0 auto;max-height:45%;overflow-y:auto;
-                            font-style:italic;box-shadow:inset 0 0 12px rgba(0,0,0,0.08);">
+                            font-style: normal;box-shadow:inset 0 0 12px rgba(0,0,0,0.08);">
                     ${_esc(desc)}
                 </div>` : '';
 

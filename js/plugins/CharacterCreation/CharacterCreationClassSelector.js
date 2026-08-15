@@ -143,7 +143,7 @@
     const rows = getClassGrantedSpecializations(className);
     if (!rows.length) return "";
     const badges = rows.map((r) =>
-      `<span class="cc-element-badge cc-chip">${r.name} <span style="opacity:0.7;">(${r.levelName})</span></span>`
+      `<span class="cc-element-badge cc-chip">${r.name} <span style="opacity:0.7">(${r.levelName})</span></span>`
     ).join(" ");
     return `
       <div class="cc-dossier-card cc-card-tight">
@@ -712,34 +712,40 @@
 
         const activeClass = (cat) => activeCategoryTemp === cat ? "selected" : "";
         const tabsHtml = `
-          <div class="cc-select-grid" style="grid-template-columns: 1fr; gap: 12px; margin-bottom: 24px;">
+          <div class="cc-select-grid" style="grid-template-columns: 1fr; gap: 12px; margin-bottom: 24px">
             <div class="cc-card-option ${activeClass('levelUpList')}" onclick="SceneManager._scene.onSoulConvergenceTabClick('levelUpList')">
-              <div class="cc-option-title" style="font-size: 1.1rem; margin: 0;">${T('CharCreate.skillRoadmap2')}</div>
+              <div class="cc-option-title" style="font-size: 1.585rem; margin: 0">${T('CharCreate.skillRoadmap2')}</div>
             </div>
             <div class="cc-card-option ${activeClass('stats')}" onclick="SceneManager._scene.onSoulConvergenceTabClick('stats')">
-              <div class="cc-option-title" style="font-size: 1.1rem; margin: 0;">${T('CharCreate.attributeBreakdown')}</div>
+              <div class="cc-option-title" style="font-size: 1.585rem; margin: 0">${T('CharCreate.attributeBreakdown')}</div>
             </div>
             <div class="cc-card-option ${activeClass('skillCategories')}" onclick="SceneManager._scene.onSoulConvergenceTabClick('skillCategories')">
-              <div class="cc-option-title" style="font-size: 1.1rem; margin: 0;">${T('CharCreate.skillsSpecialties')}</div>
+              <div class="cc-option-title" style="font-size: 1.585rem; margin: 0">${T('CharCreate.skillsSpecialties')}</div>
             </div>
           </div>
         `;
 
         const isConfirmHighlighted = cmdSymbol === 'yes';
         const isBackHighlighted = cmdSymbol === 'no';
-        const buttonPanelHtml = `
-          <div class="cc-button-panel" style="display: flex; gap: 20px; justify-content: center; margin-top: auto; padding-top: 16px;">
-            <button class="cc-btn-treaty ${isBackHighlighted ? 'highlighted' : ''}" onclick="SceneManager._scene.onSoulConvergenceBackClick()">${T('CharCreate.back')}</button>
-            <button class="cc-btn-treaty confirm ${isConfirmHighlighted ? 'highlighted' : ''}" onclick="SceneManager._scene.onSoulConvergenceConfirmClick()">${T('CharCreate.confirmClass')}</button>
-          </div>
-        `;
+        const buttonPanelHtml = window.CCButtons.panel({
+          back: window.CCButtons.button(window.CCButtons.backLabel(), {
+            onclick: "SceneManager._scene.onSoulConvergenceBackClick()",
+            highlighted: isBackHighlighted,
+          }),
+          next: window.CCButtons.button(window.CCButtons.continueLabel(), {
+            onclick: "SceneManager._scene.onSoulConvergenceConfirmClick()",
+            confirm: true,
+            highlighted: isConfirmHighlighted,
+          }),
+          style: "margin-top: auto; padding-top: 16px;",
+        });
 
         leftHtml = `
-          <div class="cc-page cc-page-left" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="cc-page cc-page-left" style="display: flex; justify-content: space-between">
             ${activeCategoryTemp === 'levelUpList' ? `
               <h2 class="cc-header-gothic">${T('CharCreate.skillRoadmap3')}</h2>
               <p class="cc-text-desc">${T('CharCreate.initialSpecialSkillsAndProgressionUnlockedAl')}</p>
-              <div class="cc-dossier-card" style="max-height: 480px; overflow-y: auto; margin-top: 12px; flex-grow: 1;">
+              <div class="cc-dossier-card" style="max-height: 480px; overflow-y: auto; margin-top: 12px; flex-grow: 1">
                 ${(c && c.learnings ? c.learnings.map(l => {
           const skill = $dataSkills[l.skillId];
           return skill ? `
@@ -752,7 +758,7 @@
               </div>
             ` : activeCategoryTemp === 'stats' ? `
               <h2 class="cc-header-gothic">${T('CharCreate.attributeBreakdown2')}</h2>
-              <div class="cc-dossier-card" style="max-height: 480px; overflow-y: auto; margin-top: 12px; padding: 18px; flex-grow: 1;">
+              <div class="cc-dossier-card" style="max-height: 480px; overflow-y: auto; margin-top: 12px; padding: 18px; flex-grow: 1">
                 ${[
               { name: "STR", desc: T('CharCreate.increasesPhysicalStrikePower') },
               { name: "CON", desc: T('CharCreate.decreasesPhysicalDamageTaken') },
@@ -761,32 +767,32 @@
               { name: "DEX", desc: T('CharCreate.increasesHitRateDodgeAndActionSpeed') },
               { name: "PSI", desc: T('CharCreate.increasesCriticalHitsAndAlchemicalAnomaliesC') }
             ].map(s => `
-                  <div class="cc-dossier-row" style="margin-bottom: 12px; border-bottom: 1px dotted rgba(139, 90, 43, 0.2); padding-bottom: 6px;">
-                    <span class="cc-dossier-label" style="min-width: 60px; display: inline-block;">${s.name}:</span>
-                    <span class="cc-dossier-value" style="font-size: 0.88rem; line-height: 1.35; display: inline-block; vertical-align: top;">${s.desc}</span>
+                  <div class="cc-dossier-row" style="margin-bottom: 12px; border-bottom: 1px dotted rgba(139, 90, 43, 0.2); padding-bottom: 6px">
+                    <span class="cc-dossier-label" style="min-width: 60px; display: inline-block">${s.name}:</span>
+                    <span class="cc-dossier-value" style="font-size: 1.268rem; line-height: 1.35; display: inline-block; vertical-align: top">${s.desc}</span>
                   </div>
                 `).join("")}
               </div>
             ` : `
               <h2 class="cc-header-gothic">${T('CharCreate.masteries')}</h2>
-              <div class="cc-dossier-card" style="margin-top: 12px; padding: 18px; margin-bottom: 16px;">
-                <h4 class="cc-subheader" style="color: var(--text-primary-hover); font-size: 1.1rem; margin-bottom: 8px;">${T('CharCreate.primaryMastery')}</h4>
-                <p style="font-size: 0.95rem; color: var(--text-card-dark); line-height: 1.4;">${(c && getClassSkillCats(c.id).primary.length ? getClassSkillCats(c.id).primary.map(s => s.replace(/([A-Z])/g, ' $1').trim()).join(", ") : "") || T('CharCreate.none')}</p>
+              <div class="cc-dossier-card" style="margin-top: 12px; padding: 18px; margin-bottom: 16px">
+                <h4 class="cc-subheader" style="color: var(--text-primary-hover); font-size: 1.585rem; margin-bottom: 8px">${T('CharCreate.primaryMastery')}</h4>
+                <p style="font-size: 1.365rem; color: var(--text-card-dark); line-height: 1.4">${(c && getClassSkillCats(c.id).primary.length ? getClassSkillCats(c.id).primary.map(s => s.replace(/([A-Z])/g, ' $1').trim()).join(", ") : "") || T('CharCreate.none')}</p>
               </div>
-              <div class="cc-dossier-card" style="padding: 18px; flex-grow: 1;">
-                <h4 class="cc-subheader" style="color: var(--text-muted-hover); font-size: 1.1rem; margin-bottom: 8px;">${T('CharCreate.secondaryMastery')}</h4>
-                <p style="font-size: 0.95rem; color: var(--text-card-dark); line-height: 1.4;">${(c && getClassSkillCats(c.id).secondary.length ? getClassSkillCats(c.id).secondary.map(s => s.replace(/([A-Z])/g, ' $1').trim()).join(", ") : "") || T('CharCreate.none')}</p>
+              <div class="cc-dossier-card" style="padding: 18px; flex-grow: 1">
+                <h4 class="cc-subheader" style="color: var(--text-muted-hover); font-size: 1.585rem; margin-bottom: 8px">${T('CharCreate.secondaryMastery')}</h4>
+                <p style="font-size: 1.365rem; color: var(--text-card-dark); line-height: 1.4">${(c && getClassSkillCats(c.id).secondary.length ? getClassSkillCats(c.id).secondary.map(s => s.replace(/([A-Z])/g, ' $1').trim()).join(", ") : "") || T('CharCreate.none')}</p>
               </div>
             `}
           </div>
         `;
 
         rightHtml = `
-          <div class="cc-page cc-page-right" style="display: flex; flex-direction: column; justify-content: space-between;">
-            <div style="position: absolute; top: -15px; left: 25%; transform: rotate(-12deg); font-family: 'Lora', serif; font-size: 1.6rem; color: #822d2d; border: 3px double #822d2d; padding: 2px 10px; border-radius: 4px; background: #faf2dc; font-weight: bold; letter-spacing: 2px; z-index: 20; pointer-events: none;">${T('ClassSelect.ui.covenantStamp')}</div>
-            <h2 class="cc-header-gothic" style="margin-top: 10px;">${T('CharCreate.details')}</h2>
+          <div class="cc-page cc-page-right" style="display: flex; justify-content: space-between">
+            <div style="position: absolute; top: -15px; left: 25%; transform: rotate(-12deg); font-family: 'Lora', serif; font-size: 2.204rem; color: #822d2d; border: 3px double #822d2d; padding: 2px 10px; border-radius: 4px; background: #faf2dc; font-weight: bold; letter-spacing: 2px; z-index: 20; pointer-events: none">${T('ClassSelect.ui.covenantStamp')}</div>
+            <h2 class="cc-header-gothic" style="margin-top: 10px">${T('CharCreate.details')}</h2>
             
-            <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;"> 
+            <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center"> 
               ${tabsHtml}
             </div>
             
@@ -856,7 +862,7 @@
             const elementId = parseInt(elemMatch[1]);
             if (elementId > 0 && elementId < $dataSystem.elements.length) {
               const elementName = elementLabel(elementId);
-              elementHtml = `<div class="cc-element-badge" style="margin-top: 8px;">${elementName}</div>`;
+              elementHtml = `<div class="cc-element-badge" style="margin-top: 8px">${elementName}</div>`;
             }
           }
 
@@ -903,7 +909,7 @@
             }
           }
           if (!lv1SkillsHtml) {
-            lv1SkillsHtml = `<span style="font-size: 0.85rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.noStartingSkills')}</span>`;
+            lv1SkillsHtml = `<span style="font-size: 1.219rem; color: var(--text-card-medium)">${T('CharCreate.noStartingSkills')}</span>`;
           }
 
           // Thematic class starting items (Items.json only). See
@@ -915,7 +921,7 @@
               if (!it) return "";
               return `
                 <div class="cc-dossier-row">
-                  <span class="cc-dossier-label" style="display:flex;align-items:center;gap:6px;">
+                  <span class="cc-dossier-label" style="display:flex; align-items:center; gap:6px">
                     <span style="${iconStyle(it.iconIndex)}"></span>${window.CCDbName(it)}
                   </span>
                   <span class="cc-dossier-value">x${e.qty}</span>
@@ -938,11 +944,11 @@
             : "";
 
           leftHtml = `
-            <div class="cc-page cc-page-left" style="display: flex; flex-direction: column;">
+            <div class="cc-page cc-page-left" style="display: flex">
               <h2 class="cc-header-gothic">${T('CharCreate.classes')}</h2>
               ${creatureNote}
 
-              <div class="cc-presets-board" style="grid-template-columns: repeat(2, 1fr); gap: 0 24px; margin-top: 6px; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; align-content: start;">
+              <div class="cc-presets-board" style="grid-template-columns: repeat(2, 1fr); gap: 0 24px; margin-top: 6px; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; align-content: start">
                 ${classCards}
               </div>
             </div>
@@ -951,23 +957,23 @@
         rightHtml = `
           <div class="cc-page cc-page-right">
             <h2 class="cc-header-gothic">${window.CCDbName(c)}</h2>
-            <p style="font-size: 0.95rem; line-height: 1.45; color: var(--text-card-dark); font-style: italic; text-align: center; margin-bottom: 12px;">
+            <p style="font-size: 1.365rem; line-height: 1.45; color: var(--text-card-dark); text-align: center; margin-bottom: 12px">
               "${note}"
             </p>
 
-            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 12px">
               ${elementHtml}
             </div>
 
             <div class="cc-dossier-card cc-card-tight">
               <h3 class="cc-subheader">${T('CharCreate.startingWeaponProficiencies')}</h3>
               <div class="cc-chip-row">
-                ${weaponBadges.join("") || `<span style="font-size: 0.85rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.none')}</span>`}
+                ${weaponBadges.join("") || `<span style="font-size: 1.219rem; color: var(--text-card-medium)">${T('CharCreate.none')}</span>`}
               </div>
             </div>
 
             <div class="cc-dossier-card cc-card-tight">
-              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 16px;">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 16px">
                 <div>
                   <div class="cc-dossier-row"><span class="cc-dossier-label">STR:</span><span class="cc-dossier-value">${str}</span></div>
                   <div class="cc-dossier-row"><span class="cc-dossier-label">DEX:</span><span class="cc-dossier-value">${agi}</span></div>
@@ -992,10 +998,16 @@
 
             ${getClassSpecializationsHTML(className)}
 
-            <div class="cc-button-panel" style="display: flex; gap: 20px; justify-content: center; margin-top: 16px;">
-              <button class="cc-btn-treaty" onclick="SceneManager._scene.onClassCancel()">${T('CharCreate.back')}</button>
-              <button class="cc-btn-treaty confirm" onclick="SceneManager._scene.onClassSelect()">${T('CharCreate.continue')}</button>
-            </div>
+            ${window.CCButtons.panel({
+              back: window.CCButtons.button(window.CCButtons.backLabel(), {
+                onclick: "SceneManager._scene.onClassCancel()",
+              }),
+              next: window.CCButtons.button(window.CCButtons.continueLabel(), {
+                onclick: "SceneManager._scene.onClassSelect()",
+                confirm: true,
+              }),
+              style: "margin-top: 16px;",
+            })}
           </div>
         `;
         }

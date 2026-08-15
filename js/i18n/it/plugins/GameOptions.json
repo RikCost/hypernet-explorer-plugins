@@ -73,7 +73,6 @@
   "enemySpawn": [
     "Bilanciato",
     "Realistico",
-    "Distanza dalla Torre",
     "Caos"
   ],
   "enemyBattler": [
@@ -101,8 +100,7 @@
     ],
     "enemySpawnMode": [
       "Bilanciato: i nemici restano al tuo livello o sotto, con un boss più forte nascosto in ogni casella.",
-      "Realistico: incontri tutta la fauna del bioma, più spesso vicino al tuo livello. Ogni nazione e bioma ha la propria fauna; un boss è sempre nascosto.",
-      "Distanza dalla Torre: il livello dei nemici dipende solo dalla distanza dalla Torre Omega, non dal tuo.",
+      "",
       "Caos: nemici di qualsiasi livello (1-110) ovunque, ridistribuiti a ogni ingresso in una mappa procedurale."
     ],
     "musicArtistDisplay": [

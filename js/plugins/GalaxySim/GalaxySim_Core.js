@@ -424,6 +424,90 @@
   }
   window.GalaxySim.planetLifeSigns = planetLifeSigns;
 
+  // ============================================================================
+  // What a world weighs: its own level, and how it reads against the party
+  // ============================================================================
+  // Nothing out here answers to the Omega Tower and nothing answers to the
+  // party: a world's creatures are built around the WORLD. Every planet carries
+  // one level, rolled from its own name and the world seed, and the species
+  // that walk its surface are drawn from around that number (see
+  // alienSpeciesRoster below, which is the encounter list on an alien map).
+  // Two planets of the same star can therefore be a stroll and a massacre, and
+  // which is which does not change as the party grows.
+  //
+  // Nothing is stored: the roll is a hash, so a world reads the same in the
+  // info box, in the catalogue, in a scan and under the party's feet, in this
+  // session and in every later one.
+  const PLANET_LEVEL_MIN = 1;
+  const PLANET_LEVEL_MAX = 110;  // the top of the ordinary level ladder
+
+  function planetLevel(planet) {
+    const name = (planet && planet.name) || "";
+    if (!name) return PLANET_LEVEL_MIN;
+    const span = PLANET_LEVEL_MAX - PLANET_LEVEL_MIN + 1;
+    return PLANET_LEVEL_MIN + (fnv1a(name + "|level|" + worldSeedInt()) % span);
+  }
+  window.GalaxySim.planetLevel = planetLevel;
+
+  // The level of the world being stood on, or 0 anywhere else.
+  function currentPlanetLevel() {
+    const landed = getSurfacePlanet();
+    return landed ? planetLevel(landed) : 0;
+  }
+  window.GalaxySim.currentPlanetLevel = currentPlanetLevel;
+
+  // The level the space around the ship answers to: the world it is orbiting
+  // if it is orbiting one, else the system it is sitting in. Rolled exactly as
+  // a planet's is (the roll only ever looks at a name), so a derelict in orbit
+  // of a lethal world holds lethal things, and a quiet system stays quiet from
+  // its star out to its last rock.
+  function currentSpaceLevel() {
+    const dm = (typeof $gameSystem !== "undefined" && $gameSystem) ? $gameSystem.starMapData : null;
+    const ship = dm && dm.playerShip;
+    const name = (ship && (ship.currentPlanet || ship.currentSystem)) || "";
+    return name ? planetLevel({ name }) : 0;
+  }
+  window.GalaxySim.currentSpaceLevel = currentSpaceLevel;
+
+  // What the biosignature reads as. The instruments cannot phrase a level, so
+  // they phrase the only thing that matters to the people reading them: how the
+  // life down there stands against the people who would meet it.
+  //
+  //   Weak    the world's level is well under the party's; a landing is a walk
+  //   Strong  the two are within reach of each other; a landing is a fight
+  //   Hyper   the world is well above them; a landing is a way to die
+  //
+  // A world with no biosphere has no reading at all (the tentacle-only worlds
+  // scan as trace signs, LIFE.WEAK, which is a statement about life being
+  // present, not about danger).
+  const BIO = { WEAK: "weak", STRONG: "strong", HYPER: "hyper" };
+  window.GalaxySim.BioTiers = BIO;
+  const BIO_WEAK_UNDER = 0.75;   // under three quarters of the party's level
+  const BIO_HYPER_OVER = 1.35;   // over a third above it
+
+  function partyLevelForBio() {
+    if (typeof $gameParty === "undefined" || !$gameParty || !$gameParty.members) return 1;
+    const members = $gameParty.members();
+    if (!members || !members.length) return 1;
+    const sum = members.reduce((t, a) => t + ((a && a.level) || 1), 0);
+    return Math.max(1, Math.round(sum / members.length));
+  }
+
+  function planetBioTier(planet) {
+    if (!planetHasLife(planet)) return null;
+    const ratio = planetLevel(planet) / partyLevelForBio();
+    if (ratio < BIO_WEAK_UNDER) return BIO.WEAK;
+    if (ratio > BIO_HYPER_OVER) return BIO.HYPER;
+    return BIO.STRONG;
+  }
+  window.GalaxySim.planetBioTier = planetBioTier;
+
+  // The word a tier is shown as, ready for any readout.
+  function bioTierLabel(tier) {
+    return tier ? T('Galaxy.bio.' + tier) : "";
+  }
+  window.GalaxySim.bioTierLabel = bioTierLabel;
+
   // Alien surface = the procedural map (636) generated from an alien biome
   // (biome names produced by AlienBiomes.json all start with "Alien").
   function isAlienSurface() {
@@ -942,10 +1026,16 @@
 
   // ============================================================================
   // Procedural alien species. A living world (see currentAlienHasLife) hosts a
-  // roster of 1-6 species, deterministic from the world seed. Each species maps
-  // to a base enemy id (its 3D look, which the battler system already re-rolls
-  // per world seed) and a procedurally generated name. Encountering one records
-  // it for the Aliens tab of the bestiary.
+  // roster of 1-6 species, deterministic from the world seed AND the world's own
+  // name, so every planet has its own creatures rather than the galaxy sharing
+  // one set. Each species maps to a base enemy id (its 3D look, which the
+  // battler system already re-rolls per world seed) and a procedurally generated
+  // name. Encountering one records it for the Aliens tab of the bestiary.
+  //
+  // What decides WHICH base enemies a world may draw is the world's own level
+  // (planetLevel): the look is picked from the creatures built at around that
+  // level, which is how a planet ends up uniformly gentle or uniformly lethal
+  // and how the biosignature tier can promise anything about a landing.
   // ============================================================================
   function worldSeedInt() {
     try {
@@ -968,25 +1058,56 @@
     for (let i = 0; i < parts; i++) n += syll[Math.floor(rnd() * syll.length)];
     return n.charAt(0).toUpperCase() + n.slice(1);
   }
-  // Base enemy ids usable as a procedural species look (has a battler, not a boss).
-  function alienSpeciesPool() {
+  // The level a creature is built at, off its own note. Same tag the battle
+  // system reads (BSE.Helpers.getEnemyLevel); parsed here so the roster does
+  // not depend on the battle plugins having loaded first.
+  function enemyNoteLevel(enemy) {
+    const m = String((enemy && enemy.note) || "").match(/<Level:\s*(\d+)>/i);
+    return m ? parseInt(m[1], 10) : 0;
+  }
+
+  // Base enemy ids usable as a procedural species look (has a battler, not a
+  // boss). With a level, only the creatures built within a band of it, widening
+  // until the band holds something so no world is ever left without fauna.
+  const ALIEN_BAND = 0.35;      // ±35% of the world's level on the first pass
+  const ALIEN_BAND_PASSES = 4;  // then 70%, 105%, 140%, then the whole table
+
+  function alienSpeciesPool(level) {
     const pool = [];
     if (typeof $dataEnemies === "undefined" || !$dataEnemies) return pool;
     for (let i = 1; i < $dataEnemies.length; i++) {
       const e = $dataEnemies[i];
-      if (e && e.name && e.battlerName && !/<Boss>/i.test(e.note || "")) pool.push(i);
+      if (e && e.name && e.battlerName && !/<Boss>/i.test(e.note || "")) {
+        pool.push({ id: i, level: enemyNoteLevel(e) });
+      }
     }
-    return pool;
+    if (!level || !pool.length) return pool.map((p) => p.id);
+    for (let pass = 1; pass <= ALIEN_BAND_PASSES; pass++) {
+      const reach = level * ALIEN_BAND * pass;
+      const inBand = pool.filter((p) => p.level > 0 && Math.abs(p.level - level) <= reach);
+      if (inBand.length) return inBand.map((p) => p.id);
+    }
+    return pool.map((p) => p.id);
   }
-  // The current world's species roster (cached per world seed on $gameSystem).
-  function alienSpeciesRoster() {
+
+  // A world's species roster, cached per world seed AND planet on $gameSystem.
+  // Called with no argument it answers for the world being stood on; off a
+  // surface (the sandbox, a menu) there is no planet to speak of and the old
+  // galaxy-wide roster is what comes back.
+  function alienSpeciesRoster(planet) {
     if (typeof $gameSystem === "undefined" || !$gameSystem) return [];
+    const world = planet || getSurfacePlanet();
+    const worldName = (world && world.name) || "";
     const seed = worldSeedInt();
-    const cacheKey = String(seed);
+    const level = worldName ? planetLevel(world) : 0;
+    const cacheKey = seed + "|" + worldName;
     if (!$gameSystem._alienSpeciesRoster) $gameSystem._alienSpeciesRoster = {};
     if ($gameSystem._alienSpeciesRoster[cacheKey]) return $gameSystem._alienSpeciesRoster[cacheKey];
-    const pool = alienSpeciesPool();
-    const rnd = mulberry(seed ^ 0x5bd1e995);
+    const pool = alienSpeciesPool(level);
+    // The planet's name is mixed into the stream as well as into the cache key,
+    // so two worlds of one galaxy hold different creatures under different names.
+    const nameHash = worldName ? fnv1a(worldName) : 0;
+    const rnd = mulberry((seed ^ 0x5bd1e995) + nameHash);
     const count = pool.length ? (1 + Math.floor(rnd() * 6)) : 0; // 1..6
     const chosen = [];
     const used = new Set();
@@ -995,10 +1116,12 @@
       do { eid = pool[Math.floor(rnd() * pool.length)]; tries++; } while (used.has(eid) && tries < 24);
       used.add(eid);
       chosen.push({
-        key: "sp" + seed + "_" + i,
-        name: alienSpeciesName(Math.imul(seed, 131) + i * 977 + 7),
+        key: "sp" + seed + "_" + nameHash.toString(36) + "_" + i,
+        name: alienSpeciesName(Math.imul(seed, 131) + nameHash + i * 977 + 7),
         enemyId: eid,
         worldSeed: seed,
+        planet: worldName,
+        level: enemyNoteLevel($dataEnemies[eid]),
       });
     }
     $gameSystem._alienSpeciesRoster[cacheKey] = chosen;
@@ -1013,6 +1136,7 @@
     if (!$gameSystem._discoveredAlienSpecies[sp.key]) {
       $gameSystem._discoveredAlienSpecies[sp.key] = {
         key: sp.key, name: sp.name, enemyId: sp.enemyId, worldSeed: sp.worldSeed,
+        planet: sp.planet || "", level: sp.level || 0,
       };
     }
   }
@@ -1499,588 +1623,13 @@
   window.GalaxySim.Mining = Mining;
 
   // ==========================================================================
-  // Anomalies: the one world in a system that is signalling, and what answers
+  // Anomalies: the one world in a system that is signalling
   // --------------------------------------------------------------------------
-  // Every system that holds planets carries at least one anomalous world, rolled
-  // from the world seed, marked with a "?" in the system view. Holding orbit over
-  // it offers Investigate, once and once only: a branching encounter written out
-  // of that world's own alien biome (js/i18n/<lang>/plugins/Anomaly.json), where
-  // every choice leads somewhere and the last node pays out - a relic for the
-  // world's artifact list, a fight with something native, salvage, or the walk
-  // back with nothing. The party leader is the one who goes down there.
-  //
-  // Content shape (one merged namespace, so a translation overrides the prose
-  // and inherits every structural field):
-  //   Anomaly.tokens.<bank>          shared word banks
-  //   Anomaly.biomes.<Biome>         { label, scenarios: [id], tokens: {bank} }
-  //   Anomaly.scenarios.<id>         { title, start, nodes: { <id>: node } }
-  //   node                           { text, choices: [{ text, to }] }
-  //   terminal node                  { text, outcome: { kind, mag } }
+  // Moved out to js/plugins/Procedural/ProceduralAdventureSystem.js, which
+  // plays the same branching encounter on Earth's biomes as well. It publishes
+  // itself as GalaxySim.Anomaly, which is what the star map's "?" marker and
+  // its Investigate button still read (GalaxySim_Scene3D / _Bodies / _Overlay).
   // ==========================================================================
-  const ANOM_FALLBACK_BIOME = "AlienIce";   // i18n-ignore: biome id
-
-  let _anomDB = null, _anomDBLang = null;
-  function anomalyDB() {
-    const lang = (window.T && T.language) ? T.language() : "en";
-    if (_anomDB && _anomDBLang === lang) return _anomDB;
-    _anomDB = (window.T && T.obj) ? (T.obj("Anomaly") || {}) : {};
-    _anomDBLang = lang;
-    return _anomDB;
-  }
-
-  function anomalyBiomeKey(planet) {
-    const PT = window.GalaxySim.PlanetTypes || {};
-    const b = PT[planet && planet.type] && PT[planet.type].biome;
-    const db = anomalyDB().biomes || {};
-    return (b && db[b]) ? b : ANOM_FALLBACK_BIOME;
-  }
-
-  // Which worlds in a system are signalling. Deterministic from the world seed:
-  // every system with a landable planet has one, a crowded one can have two.
-  const _anomBySystem = {};   // session cache, keyed by system name
-  function anomalyPlanetNames(system) {
-    const sysKey = String((system && system.name) || "?");
-    if (_anomBySystem[sysKey]) return _anomBySystem[sysKey];
-    const all = ((system && system.planets) || [])
-      .filter((p) => p && p.name && p.type && !p.artificial && !p.noLanding);
-    // A world with hand-authored landing sites is a known, documented place
-    // (Earth and its spaceports): it only carries the signal if the system has
-    // nothing else to hang it on.
-    const unknown = all.filter((p) => !(p.landingLocations && p.landingLocations.length));
-    const usable = unknown.length ? unknown : all;
-    const names = [];
-    if (usable.length) {
-      const first = Math.floor(seededFloat(sysKey, 6151) * usable.length) % usable.length;
-      names.push(usable[first].name);
-      if (usable.length >= 5 && seededFloat(sysKey, 6173) < 0.34) {
-        const step = 1 + Math.floor(seededFloat(sysKey, 6197) * (usable.length - 1));
-        const second = (first + step) % usable.length;
-        if (usable[second].name !== names[0]) names.push(usable[second].name);
-      }
-    }
-    _anomBySystem[sysKey] = names;
-    return names;
-  }
-
-  function anomalyKey(system, body) {
-    return String((system && system.name) || "?") + "|" + String((body && body.name) || "?");
-  }
-
-  function anomalyStore() {
-    if (typeof $gameSystem === "undefined" || !$gameSystem) return {};
-    if (!$gameSystem._gsAnomalies) $gameSystem._gsAnomalies = {};
-    return $gameSystem._gsAnomalies;
-  }
-
-  // ---- Text ---------------------------------------------------------------
-  // The same passes the TV transmissions use: inline {a|b|c} alternation first,
-  // then {token} substitution out of the biome's banks. A token resolved once is
-  // pinned for the rest of the encounter, so the place the party walked into in
-  // the first paragraph is the place they are standing in at the last.
-  function anomAlt(rng, text) {
-    let s = String(text || "");
-    for (let depth = 0; depth < 12; depth++) {
-      if (s.indexOf("|") < 0) break;
-      const next = s.replace(/\{([^{}]*\|[^{}]*)\}/g, (m, body) => {
-        const opts = body.split("|");
-        return opts[Math.floor(rng() * opts.length)];
-      });
-      if (next === s) break;
-      s = next;
-    }
-    return s;
-  }
-
-  const ANOM_SOUNDS_VOWEL = /^(hour|honest|honou?r|heir)/i;
-  const ANOM_SOUNDS_CONSONANT = /^(uni|use|user|euro|one|once|ubiquit)/i;
-  function anomFixIndefinite(text) {
-    return String(text).replace(/\b([Aa]n?)(\s+)([A-Za-z][\w'-]*)/g, (m, art, gap, word) => {
-      if (word.length > 1 && word === word.toUpperCase()) return m;
-      const needsAn = (/^[aeiou]/i.test(word) && !ANOM_SOUNDS_CONSONANT.test(word))
-        || ANOM_SOUNDS_VOWEL.test(word);
-      if (needsAn === (art.length === 2)) return m;
-      const upper = art[0] === "A";
-      return (needsAn ? (upper ? "An" : "an") : (upper ? "A" : "a")) + gap + word;
-    });
-  }
-
-  // Italian fuses a preposition with the article that follows it, and a bank
-  // entry carries its own article, so "in la fossa" has to come back as "nella
-  // fossa". Obligatory and exceptionless, which is why it is done here instead
-  // of asking every written line to guess which token it is about to take.
-  const ANOM_IT_PREPS = {
-    di: { il: "del", lo: "dello", la: "della", i: "dei", gli: "degli", le: "delle", "l'": "dell'" },
-    a: { il: "al", lo: "allo", la: "alla", i: "ai", gli: "agli", le: "alle", "l'": "all'" },
-    da: { il: "dal", lo: "dallo", la: "dalla", i: "dai", gli: "dagli", le: "dalle", "l'": "dall'" },
-    "in": { il: "nel", lo: "nello", la: "nella", i: "nei", gli: "negli", le: "nelle", "l'": "nell'" },
-    su: { il: "sul", lo: "sullo", la: "sulla", i: "sui", gli: "sugli", le: "sulle", "l'": "sull'" },
-  };
-  function anomFixItalian(text) {
-    return String(text).replace(/\b(di|a|da|in|su)\s+(il|lo|la|i|gli|le|l')(?=\s|$|[a-zàèéìòù])/gi, (m, prep, art) => {
-      const joined = ANOM_IT_PREPS[prep.toLowerCase()] && ANOM_IT_PREPS[prep.toLowerCase()][art.toLowerCase()];
-      if (!joined) return m;
-      return prep[0] === prep[0].toUpperCase() ? joined[0].toUpperCase() + joined.slice(1) : joined;
-    });
-  }
-
-  // A bank entry lands at the head of a sentence as often as not, and a place
-  // name written to sit mid-line would otherwise be read out lowercase there.
-  function anomCapitalize(text) {
-    return String(text).replace(/(^|[^.][.!?]["')\]]?\s+)([a-z])/g, (m, pre, c) => pre + c.toUpperCase());
-  }
-
-  function anomTidy(text) {
-    return String(text)
-      .replace(/\s{2,}/g, " ")
-      .replace(/ +([,.;:!?])/g, "$1")
-      .replace(/([?!])\.(?!\.)/g, "$1")
-      .trim();
-  }
-
-  function anomBanks(session) {
-    const db = anomalyDB();
-    const biome = (db.biomes && db.biomes[session.biome]) || {};
-    return [biome.tokens || {}, db.tokens || {}];
-  }
-
-  function anomResolve(session, tpl) {
-    const rng = anomRng(session);
-    let s = anomAlt(rng, String(tpl || ""));
-    const banks = anomBanks(session);
-    for (let pass = 0; pass < 6; pass++) {
-      let hit = false;
-      s = s.replace(/\{(\w+)\}/g, (m, key) => {
-        if (session.ctx[key] !== undefined) { hit = true; return session.ctx[key]; }
-        // A numbered token ({place2}) draws from the same bank as its base but
-        // pins separately, so two different places can stand in one sentence.
-        const base = /^([a-z_]+?)\d+$/i.exec(key);
-        const bankName = base ? base[1] : key;
-        for (const bank of banks) {
-          const list = bank[bankName];
-          if (Array.isArray(list) && list.length) {
-            const v = list[Math.floor(rng() * list.length)];
-            session.ctx[key] = v;
-            hit = true;
-            return v;
-          }
-        }
-        return m;
-      });
-      if (!hit) break;
-      s = anomAlt(rng, s);
-    }
-    // Anything still unresolved would be read out verbatim.
-    s = anomTidy(s.replace(/\{(\w+)\}/g, (m, k) => k.replace(/_/g, " ")));
-    const italian = (window.T && T.language && T.language() === "it");
-    return anomCapitalize(italian ? anomFixItalian(s) : anomFixIndefinite(s));
-  }
-
-  // The encounter's own random stream. Seeded from the world seed and the body,
-  // so the same anomaly always tells the same story, and advanced across the
-  // whole encounter (the cursor is saved with the session).
-  function anomRng(session) {
-    return function () {
-      session.roll = (Math.imul(session.roll || 1, 1664525) + 1013904223) >>> 0;
-      return session.roll / 4294967296;
-    };
-  }
-
-  // ---- Rewards ------------------------------------------------------------
-  function anomPartyLevel() {
-    const m = ($gameParty && $gameParty.members) ? $gameParty.members() : [];
-    if (!m.length) return 1;
-    const lv = m.map((a) => a.level).sort((a, b) => a - b);
-    return lv[Math.floor(lv.length / 2)] || 1;
-  }
-
-  const ANOM_MAG = { small: 1, medium: 2.4, large: 5 };
-  function anomMag(out) { return ANOM_MAG[out && out.mag] || ANOM_MAG.medium; }
-
-  function anomText(key, params) { return T("Anomaly." + key, params); }
-
-  // The free row in the artifact band (items 1501-1600). "Empty ..." is the
-  // sentinel ArctifactGenerator writes into an unused slot; a row the history
-  // simulator or the generator has already claimed is never overwritten.
-  function anomFreeArtifactId() {
-    if (typeof $dataItems === "undefined") return 0;
-    for (let id = 1501; id <= 1600; id++) {
-      const it = $dataItems[id];
-      if (!it || (typeof it.name === "string" && it.name.indexOf("Empty ") === 0)) return id;
-    }
-    return 0;
-  }
-
-  // Mint a relic and file it with the world's own artifacts, so it survives in
-  // the world folder (artifacts.json) exactly like a historical one.
-  function anomMakeArtifact(session) {
-    const id = anomFreeArtifactId();
-    if (!id) return null;
-    const rng = anomRng(session);
-    const pick = (bank) => {
-      const list = (anomalyDB().relic && anomalyDB().relic[bank]) || [];
-      return list.length ? list[Math.floor(rng() * list.length)] : "";
-    };
-    const name = anomText("relic.nameTemplate", {
-      prefix: pick("prefix"), noun: pick("noun"), of: session.planetName,
-    });
-    const item = {
-      id,
-      name,
-      description: anomText("relic.description", { planet: session.planetName }),
-      note: "<Category: Artifact>\n<Procedural: true>",   // i18n-ignore: note tags
-      iconIndex: 245,
-      price: 250000 + Math.floor(rng() * 2000000),
-      itypeId: 1,
-      consumable: false,
-      occasion: 3,
-      scope: 0,
-      effects: [],
-      params: [0, 0, 0, 0, 0, 0, 0, 0],
-      isGenerated: true,
-    };
-    $dataItems[id] = item;
-    // File it with the world's artifacts (HistorySimulator re-injects this list
-    // on every load, and WorldManager persists it into the world folder).
-    const gen = ($gameSystem._generatedArtifacts =
-      $gameSystem._generatedArtifacts || { items: [], weapons: [], armors: [] });
-    if (!Array.isArray(gen.items)) gen.items = [];
-    gen.items.push(item);
-    if (window.WorldManager && window.WorldManager.setField) {
-      window.WorldManager.setField("artifacts", "generated", gen);
-    }
-    if ($gameParty) $gameParty.gainItem(item, 1);
-    return item;
-  }
-
-  // A piece of kit off the shelf, priced into the party's league.
-  function anomRandomGear(session, kind) {
-    const db = kind === "armor" ? $dataArmors : $dataWeapons;
-    if (!db) return null;
-    const level = anomPartyLevel();
-    const lo = 200 + level * 120, hi = 4000 + level * 2600;
-    const pool = [];
-    for (let i = 1; i < db.length && i < 1501; i++) {
-      const e = db[i];
-      if (e && e.name && e.price >= lo && e.price <= hi) pool.push(e);
-    }
-    if (!pool.length) return null;
-    const rng = anomRng(session);
-    const gear = pool[Math.floor(rng() * pool.length)];
-    if ($gameParty) $gameParty.gainItem(gear, 1);
-    return gear;
-  }
-
-  function anomGiveMaterials(session, kinds, qty) {
-    const rng = anomRng(session);
-    const ids = Object.keys(MAT).map((k) => MAT[k]);
-    const out = [];
-    const used = {};
-    for (let i = 0; i < kinds; i++) {
-      let id = ids[Math.floor(rng() * ids.length)];
-      if (used[id]) continue;
-      used[id] = true;
-      const n = Math.max(1, qty + Math.floor(rng() * qty));
-      matGive(id, n);
-      out.push(matName(id) + " x" + n);
-    }
-    return out;
-  }
-
-  // Everything a terminal node can hand over. Returns the lines the panel and
-  // the toasts read out; a battle instead arms the handover (see startBattle).
-  function anomApplyOutcome(session, out) {
-    const lines = [];
-    const kind = (out && out.kind) || "none";
-    const mag = anomMag(out);
-    const level = anomPartyLevel();
-    const spec = (name, pts) => {
-      if (window.SpecializationXP) window.SpecializationXP.award(name, pts);
-    };
-
-    if (kind === "artifact") {
-      const item = anomMakeArtifact(session);
-      if (item) {
-        lines.push(anomText("reward.artifact", { name: item.name }));
-      } else {
-        // The artifact band (items 1501-1600) is full: pay the ending out in
-        // kit and coin rather than leaving the party with a story and nothing.
-        const gear = anomRandomGear(session, "weapon");
-        if (gear) lines.push(anomText("reward.gear", { name: gear.name }));
-        const gold = Math.round(1800 * mag * (1 + level / 24));
-        if ($gameParty) $gameParty.gainGold(gold);
-        lines.push(anomText("reward.gold", { amount: (gold / 100).toFixed(2) }));
-      }
-      spec("UFOlogy", 3);            // i18n-ignore: specialization id
-      spec("Anthropology", 2);       // i18n-ignore: specialization id
-    } else if (kind === "gear") {
-      const gear = anomRandomGear(session, out.slot === "armor" ? "armor" : "weapon");
-      if (gear) lines.push(anomText("reward.gear", { name: gear.name }));
-      spec("Survival", 2);           // i18n-ignore: specialization id
-    } else if (kind === "schrodingerite") {
-      const dm = $gameSystem && $gameSystem.starMapData;
-      const units = Math.max(1, Math.round(mag / 2));
-      if (dm && dm.getSchrodingerite) dm.setSchrodingerite(dm.getSchrodingerite() + units);
-      lines.push(anomText("reward.schrodingerite", { units: units }));
-      spec("Quantum Cryptography", 2);   // i18n-ignore: specialization id
-    } else if (kind === "loot") {
-      const mats = anomGiveMaterials(session, Math.max(1, Math.round(mag / 1.6)), Math.round(2 * mag));
-      if (mats.length) lines.push(anomText("reward.materials", { list: mats.join(", ") }));
-      spec("Survival", 2);           // i18n-ignore: specialization id
-    } else if (kind === "gold") {
-      const gold = Math.round(900 * mag * (1 + level / 24));
-      if ($gameParty) $gameParty.gainGold(gold);
-      lines.push(anomText("reward.gold", { amount: (gold / 100).toFixed(2) }));
-    } else if (kind === "harm") {
-      const pct = Math.min(0.6, 0.08 * mag);
-      ($gameParty ? $gameParty.members() : []).forEach((a) => {
-        a.setHp(Math.max(1, Math.floor(a.hp - a.mhp * pct)));
-      });
-      lines.push(anomText("reward.harm", { pct: Math.round(pct * 100) }));
-    } else if (kind === "heal") {
-      ($gameParty ? $gameParty.members() : []).forEach((a) => {
-        a.setHp(a.mhp); a.setMp(a.mmp); a.clearStates();
-      });
-      lines.push(anomText("reward.heal"));
-    }
-
-    // Every ending teaches the away team something, even the empty ones.
-    const exp = Math.round((out && out.exp != null ? out.exp : 10) * mag * level);
-    if (exp > 0 && $gameParty) {
-      $gameParty.allMembers().forEach((a) => a.gainExp(exp));
-      lines.push(anomText("reward.exp", { exp: exp }));
-    }
-    if (kind === "none") spec("Astrobiology", 1);   // i18n-ignore: specialization id
-    return lines;
-  }
-
-  // ---- Battle handover ----------------------------------------------------
-  // A fight cannot start inside the star map, so a battle ending arms this and
-  // the scene pops back to the map before calling startBattle().
-  let _anomPendingBattle = null;
-
-  // A synthetic troop of 1-3 of whatever lives out here, picked from the enemies
-  // whose <Level:> sits nearest the party's own. Session-local: $dataTroops is
-  // rebuilt from the database on every load, so nothing is persisted.
-  function anomBuildTroop(session, count) {
-    if (typeof $dataEnemies === "undefined" || typeof $dataTroops === "undefined") return 0;
-    const level = anomPartyLevel();
-    const lvOf = (e) => (window.BSE && window.BSE.Helpers)
-      ? (window.BSE.Helpers.getEnemyLevel(e.note) || 0) : 0;
-    const pool = [];
-    for (let i = 1; i < $dataEnemies.length; i++) {
-      const e = $dataEnemies[i];
-      if (!e || !e.name || !e.battlerName) continue;
-      const lv = lvOf(e);
-      if (lv > 0 && Math.abs(lv - level) <= Math.max(6, level * 0.25)) pool.push(i);
-    }
-    if (!pool.length) {
-      for (let i = 1; i < $dataEnemies.length; i++) {
-        if ($dataEnemies[i] && $dataEnemies[i].battlerName) pool.push(i);
-      }
-    }
-    if (!pool.length) return 0;
-    const rng = anomRng(session);
-    const enemyId = pool[Math.floor(rng() * pool.length)];
-    const n = Math.max(1, Math.min(3, count || 1));
-    const members = [];
-    for (let m = 0; m < n; m++) {
-      members.push({ enemyId, x: 320 + m * 180, y: 300, hidden: false });
-    }
-    const troopId = $dataTroops.length;
-    $dataTroops.push({ id: troopId, members, name: $dataEnemies[enemyId].name, pages: [] });
-    return troopId;
-  }
-
-  // ---- The encounter itself ----------------------------------------------
-  function anomScenarioFor(session) {
-    const db = anomalyDB();
-    const biome = (db.biomes && db.biomes[session.biome]) || {};
-    const list = (biome.scenarios && biome.scenarios.length)
-      ? biome.scenarios : (db.fallbackScenarios || []);
-    const usable = list.filter((id) => db.scenarios && db.scenarios[id]);
-    if (!usable.length) return null;
-    const idx = Math.floor(seededFloat(session.key, 7717) * usable.length) % usable.length;
-    return usable[idx];
-  }
-
-  // Resolve the node the session is sitting on into the panel's view. Resolved
-  // once and cached on the session, so a re-render never re-rolls the prose.
-  function anomBuildView(session) {
-    const db = anomalyDB();
-    const sc = db.scenarios && db.scenarios[session.scenario];
-    const node = sc && sc.nodes && sc.nodes[session.node];
-    if (!node) {
-      session.view = { title: session.planetName, text: anomText("ui.signalLost"), choices: [], done: true };
-      return session.view;
-    }
-    const view = {
-      title: session.title || anomResolve(session, sc.title || ""),
-      text: anomResolve(session, node.text),
-      choices: [],
-      done: !!node.outcome,
-      rewards: [],
-    };
-    session.title = view.title;
-    if (node.outcome) {
-      view.rewards = session.rewards || [];
-    } else {
-      view.choices = (node.choices || []).map((c) => ({
-        text: anomResolve(session, c.text), to: c.to,
-      }));
-    }
-    session.view = view;
-    return view;
-  }
-
-  const Anomaly = {
-    // Is this body the one signalling in its system?
-    isAnomalous(system, body) {
-      if (!system || !body || !body.name) return false;
-      return anomalyPlanetNames(system).indexOf(body.name) >= 0;
-    },
-    key: anomalyKey,
-    // Answered, whichever way it went.
-    isResolved(system, body) {
-      const rec = anomalyStore()[anomalyKey(system, body)];
-      return !!(rec && rec.done);
-    },
-    // The "?" and the Investigate button both follow this: a world that has
-    // never been touched, or the one the party is halfway through. An encounter
-    // walked away from mid-branch is spent, like any other answer.
-    isPending(system, body) {
-      if (!Anomaly.isAnomalous(system, body)) return false;
-      const rec = anomalyStore()[anomalyKey(system, body)];
-      if (!rec) return true;
-      if (rec.done) return false;
-      return Anomaly.hasSessionOn(system, body);
-    },
-    session() {
-      return (typeof $gameSystem !== "undefined" && $gameSystem)
-        ? ($gameSystem._gsAnomalySession || null) : null;
-    },
-    // Is there a half-finished encounter on this exact body?
-    hasSessionOn(system, body) {
-      const s = Anomaly.session();
-      return !!(s && s.key === anomalyKey(system, body));
-    },
-    // Open (or resume) the encounter. The body is marked the moment it is
-    // opened, not when it ends, which is what makes the answer final: walking
-    // out of the panel is one of the ways to answer a signal.
-    begin(system, planet) {
-      if (typeof $gameSystem === "undefined" || !$gameSystem) return null;
-      const key = anomalyKey(system, planet);
-      const live = Anomaly.session();
-      // Resuming: hand back the view as it was written, rather than resolving
-      // the same node again and re-rolling every {a|b} in it.
-      if (live && live.key === key) {
-        if (!live.view) anomBuildView(live);
-        return live;
-      }
-      if (anomalyStore()[key]) return null;   // answered, or walked away from
-      const session = {
-        key,
-        biome: anomalyBiomeKey(planet),
-        planetName: planet.name,
-        systemName: (system && (system.label || system.name)) || "",
-        roll: seededHash(key, 8191) || 1,
-        ctx: {},
-        rewards: [],
-        node: null,
-        scenario: null,
-      };
-      session.ctx.planet = session.planetName;
-      session.ctx.system = session.systemName;
-      session.ctx.leader = ($gameParty && $gameParty.leader()) ? $gameParty.leader().name() : "";
-      const db = anomalyDB();
-      const biome = (db.biomes && db.biomes[session.biome]) || {};
-      // Anomaly.json names the surfaces it writes for; anything it does not
-      // cover falls back to the biome's own declared name, never the raw id.
-      session.ctx.biome = biome.label || window.BiomeNames.display(session.biome);
-      session.scenario = anomScenarioFor(session);
-      if (!session.scenario) return null;
-      const sc = db.scenarios[session.scenario];
-      session.node = sc.start || Object.keys(sc.nodes || {})[0];
-      anomalyStore()[key] = { started: true };
-      $gameSystem._gsAnomalySession = session;
-      anomBuildView(session);
-      return session;
-    },
-    view() {
-      const s = Anomaly.session();
-      return s ? (s.view || anomBuildView(s)) : null;
-    },
-    // Take a branch. Returns the new view; a terminal node applies its outcome
-    // first, so the view already carries the reward lines.
-    choose(index) {
-      const s = Anomaly.session();
-      if (!s || !s.view || s.view.done) return null;
-      const choice = s.view.choices[index];
-      if (!choice) return null;
-      s.node = choice.to;
-      const db = anomalyDB();
-      const sc = db.scenarios && db.scenarios[s.scenario];
-      const node = sc && sc.nodes && sc.nodes[s.node];
-      if (node && node.outcome) {
-        if (node.outcome.kind === "battle") {
-          const troopId = anomBuildTroop(s, node.outcome.count);
-          if (troopId) {
-            _anomPendingBattle = { troopId, outcome: node.outcome, key: s.key };
-            s.rewards = [anomText("reward.battle")];
-          } else {
-            // No enemy could be built (a database this thin should not happen,
-            // but an ending has to pay out something).
-            s.rewards = anomApplyOutcome(s, Object.assign({}, node.outcome,
-              { kind: node.outcome.reward || "loot" }));
-          }
-        } else {
-          s.rewards = anomApplyOutcome(s, node.outcome);
-        }
-      }
-      return anomBuildView(s);
-    },
-    // Close the panel for good and record how it ended.
-    end() {
-      if (typeof $gameSystem === "undefined" || !$gameSystem) return;
-      const s = Anomaly.session();
-      if (s) anomalyStore()[s.key] = { started: true, done: true, scenario: s.scenario };
-      $gameSystem._gsAnomalySession = null;
-    },
-    // A fight was the answer. The scene pops back to the map, then calls this.
-    hasPendingBattle() { return !!(_anomPendingBattle && _anomPendingBattle.troopId); },
-    startBattle() {
-      const pend = _anomPendingBattle;
-      _anomPendingBattle = null;
-      if (!pend || !pend.troopId) return false;
-      const session = Anomaly.session();
-      // No map to fight on (a load that never streamed one in): close the
-      // encounter rather than leaving it half-open forever.
-      if (!$dataMap || typeof $dataMap.width !== "number") { Anomaly.end(); return false; }
-      BattleManager.setup(pend.troopId, true, false);
-      BattleManager.setEventCallback((result) => {
-        // Victory pays what the ending promised; anything else is the walk back.
-        if (result === 0 && session) {
-          const lines = anomApplyOutcome(session, Object.assign({}, pend.outcome, { kind: pend.outcome.reward || "loot" }));
-          if (window.ParchmentToast) {
-            window.ParchmentToast.group(lines.map((l) => ({ text: l, severity: "good" })));
-          }
-        }
-        Anomaly.end();
-      });
-      SceneManager.push(Scene_Battle);
-      return true;
-    },
-  };
-  window.GalaxySim.Anomaly = Anomaly;
-
-  // A branch that ended in a fight leaves the star map and lands here: the map
-  // scene is the only place a battle can be pushed from safely.
-  const _GS_Scene_Map_start = Scene_Map.prototype.start;
-  Scene_Map.prototype.start = function () {
-    _GS_Scene_Map_start.call(this);
-    if (Anomaly.hasPendingBattle() && !this._transfer) {
-      try { Anomaly.startBattle(); } catch (e) { console.error(e); Anomaly.end(); }
-    }
-  };
 
   // ============================================================================
   // Nibiru: the world that is on its way

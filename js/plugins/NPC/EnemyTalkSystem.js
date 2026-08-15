@@ -61,6 +61,7 @@
         Demon: -20,
         Elven: 10,
         Gnome: 10,
+        Dwarf: 5,
         Ghost: -15,
         ArmoredKnight: 5,
         Dragon: -25
@@ -79,6 +80,7 @@
         Demon: ["Baalgor", "Infernus", "Malphas", "Azgoroth", "Vexia", "Zargath", "Morrigan", "Beleth", "Asmodeus", "Lilith"],
         Elven: ["Aelindor", "Silvariel", "Faelyn", "Thandor", "Liraelle", "Caladorn", "Elarion", "Sylvaris", "Galadhwen"],
         Gnome: ["Fizzlebang", "Tinkertop", "Gearshift", "Sparkplug", "Cogsworth", "Boltworth", "Springlock", "Whizbang"],
+        Dwarf: ["Thrain", "Balgrim", "Durna", "Hrothgar", "Katla", "Borin", "Vesla", "Grimni", "Dagna", "Ormar"],
         Ghost: ["Whisper", "Phantom", "Shade", "Specter", "Wraith", "Echo", "Hollow", "Mist", "Veil", "Haunt"],
         ArmoredKnight: ["Sir Roland", "Dame Cassandra", "Sir Aldric", "Lady Evaine", "Sir Godfrey", "Dame Brigitte", "Sir Percival"],
         Dragon: ["Ignathor", "Frostfang", "Emberwing", "Stormclaw", "Cinderheart", "Nightscale", "Sunfire", "Shadowmaw"]
@@ -96,6 +98,7 @@
         Demon: [5, 19, 23, 31, 32, 34, 37, 38],
         Elven: [24, 34, 27, 20],
         Gnome: [1, 21],
+        Dwarf: [4, 13, 16, 22, 30, 33, 40, 47, 54],
         Ghost: [63],
         ArmoredKnight: [4, 22, 33, 34, 37],
         Dragon: [63]
@@ -845,6 +848,17 @@
                     'NPCs/!$BotSpacer1'
                 ];
                 characterName = goblinSheets[Math.floor(Math.random() * goblinSheets.length)];
+                characterIndex = 0;
+                break;
+
+            case 'Dwarf':
+                const dwarfSheets = [
+                    'Skab/!$DwarvenGuard', 'Skab/!$DwarvenMiner',
+                    'Skab/!$DwarvenWarrior', 'Skab/!$DwarvenSmith',
+                    'Skab/!$DwarvenExplorer', 'Skab/!$DwarvenSage',
+                    'Skab/!$DwarvenValkirie'
+                ];
+                characterName = dwarfSheets[Math.floor(Math.random() * dwarfSheets.length)];
                 characterIndex = 0;
                 break;
 

@@ -70,8 +70,8 @@
   // Who this world is populated with (WorldManager.populationMode). A goblin
   // world keeps the whole board , the primary is pinned to Goblin below and the
   // secondary is picked under the ordinary rules , while a monster world has
-  // nothing that reads as a person in it, so the three people archetypes leave
-  // the board entirely.
+  // nothing that reads as a person in it, so the people archetypes leave the
+  // board entirely.
   function populationMode() {
     const WM = window.WorldManager;
     return (WM && typeof WM.populationMode === "function")
@@ -84,7 +84,7 @@
   function archetypeOfferedInPopulation(key) {
     if (populationMode() !== "monster") return true;
     const people = (window.SpriteCatalog && window.SpriteCatalog.PEOPLE_ARCHETYPES) ||
-                   ["Humanoid", "DoubleHeadedHumanoid", "Elven", "Goblin"];
+                   ["Humanoid", "DoubleHeadedHumanoid", "Elven", "Goblin", "Dwarf"];
     return !people.includes(key);
   }
 
@@ -875,10 +875,16 @@
             <div class="cc-tube-label">TUBE-01</div>   <!-- i18n-ignore: equipment serial -->
           </div>
 
-          <div class="cc-button-panel" style="margin-top: 16px;">
-            <button class="cc-btn-treaty" onclick="SceneManager._scene.onCreationCancel()">${T('CharCreate.cancel')}</button>
-            <button class="cc-btn-treaty confirm" onclick="SceneManager._scene.onModeCardConfirm()">${T('CharCreate.continue')}</button>
-          </div>
+          ${window.CCButtons.panel({
+            back: window.CCButtons.button(window.CCButtons.backLabel(), {
+              onclick: "SceneManager._scene.onCreationCancel()",
+            }),
+            next: window.CCButtons.button(window.CCButtons.continueLabel(), {
+              onclick: "SceneManager._scene.onModeCardConfirm()",
+              confirm: true,
+            }),
+            style: "margin-top: 16px;",
+          })}
         </div>
       `;
     } else if (this._step === 1 || this._step === 2) {
@@ -898,23 +904,23 @@
             // Base skills section
             let skillsHtml = "";
             if (arch.skills && arch.skills.length > 0) {
-              skillsHtml = `<div class="cc-dossier-section-title" style="color: var(--text-muted-hover); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.baseSkills')}</div>` +
+              skillsHtml = `<div class="cc-dossier-section-title" style="color: var(--text-muted-hover); font-weight: bold; margin: 4px 0 2px 0; font-size: 1.219rem">${T('CharCreate.baseSkills')}</div>` +
                 arch.skills.map(sid => {
                   const sname = getSkillDisplayName(sid) || sid;
-                  return `<div class="cc-dossier-row" style="margin-bottom: 0;"><span class="cc-dossier-label" style="color: var(--text-muted-hover);">${sname}</span><span class="cc-dossier-value" style="font-size: 0.75rem; color: var(--text-card-medium);">#${sid}</span></div>`;
+                  return `<div class="cc-dossier-row" style="margin-bottom: 0"><span class="cc-dossier-label" style="color: var(--text-muted-hover)">${sname}</span><span class="cc-dossier-value" style="font-size: 1.132rem; color: var(--text-card-medium)">#${sid}</span></div>`;
                 }).join("");
             }
             // Parts section
             let bodyHtml = "";
             if (arch.parts) {
-              bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.anatomy')}</div>` +
+              bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 1.219rem">${T('CharCreate.anatomy')}</div>` +
                 Object.keys(arch.parts).map(k => {
                   const p = arch.parts[k];
                   const name = window.getArchetypeText(p.name) || p.name;
                   const skillName = getSkillDisplayName(p.skillId);
-                  const skillInfo = skillName ? `<span style="font-size: 0.75rem; color: var(--text-card-medium); font-style: italic;">, ${skillName}</span>` : "";
+                  const skillInfo = skillName ? `<span style="font-size: 1.132rem; color: var(--text-card-medium)">, ${skillName}</span>` : "";
                   return `
-                    <div class="cc-dossier-row" style="margin-bottom: 0;">
+                    <div class="cc-dossier-row" style="margin-bottom: 0">
                       <span class="cc-dossier-label">${name}:</span>
                       <span class="cc-dossier-value">${p.hpPercent}% HP${skillInfo}</span>
                     </div>
@@ -939,23 +945,23 @@
               // Base skills section
               let skillsHtml = "";
               if (arch.skills && arch.skills.length > 0) {
-                skillsHtml = `<div class="cc-dossier-section-title" style="color: var(--text-muted-hover); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.baseSkills')}</div>` +
+                skillsHtml = `<div class="cc-dossier-section-title" style="color: var(--text-muted-hover); font-weight: bold; margin: 4px 0 2px 0; font-size: 1.219rem">${T('CharCreate.baseSkills')}</div>` +
                   arch.skills.map(sid => {
                     const sname = getSkillDisplayName(sid) || sid;
-                    return `<div class="cc-dossier-row" style="margin-bottom: 0;"><span class="cc-dossier-label" style="color: var(--text-muted-hover);">${sname}</span><span class="cc-dossier-value" style="font-size: 0.75rem; color: var(--text-card-medium);">#${sid}</span></div>`;
+                    return `<div class="cc-dossier-row" style="margin-bottom: 0"><span class="cc-dossier-label" style="color: var(--text-muted-hover)">${sname}</span><span class="cc-dossier-value" style="font-size: 1.132rem; color: var(--text-card-medium)">#${sid}</span></div>`;
                   }).join("");
               }
               // Parts section
               let bodyHtml = "";
               if (arch.parts) {
-                bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.anatomy')}</div>` +
+                bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 1.219rem">${T('CharCreate.anatomy')}</div>` +
                   Object.keys(arch.parts).map(k => {
                     const p = arch.parts[k];
                     const name = window.getArchetypeText(p.name) || p.name;
                     const skillName = getSkillDisplayName(p.skillId);
-                    const skillInfo = skillName ? `<span style="font-size: 0.75rem; color: var(--text-card-medium); font-style: italic;">, ${skillName}</span>` : "";
+                    const skillInfo = skillName ? `<span style="font-size: 1.132rem; color: var(--text-card-medium)">, ${skillName}</span>` : "";
                     return `
-                      <div class="cc-dossier-row" style="margin-bottom: 0;">
+                      <div class="cc-dossier-row" style="margin-bottom: 0">
                         <span class="cc-dossier-label">${name}:</span>
                         <span class="cc-dossier-value">${p.hpPercent}% HP${skillInfo}</span>
                       </div>
@@ -966,7 +972,7 @@
             }
           } else {
             leftSubheaderName = "...";
-            partsHtml = `<div class="cc-text-desc" style="font-style: italic; grid-column: span 2; width: 100%; text-align: center;">${T('CharCreate.selectArchetypes')}</div>`;
+            partsHtml = `<div class="cc-text-desc" style="grid-column: span 2; width: 100%">${T('CharCreate.selectArchetypes')}</div>`;
           }
         } else {
           // Merged display
@@ -997,7 +1003,7 @@
           if (arch2 && arch2.skills) arch2.skills.forEach(sid => mergedSkillIds.add(sid));
           let skillsHtml = "";
           if (mergedSkillIds.size > 0) {
-            skillsHtml = `<div class="cc-dossier-section-title" style="color: var(--text-muted-hover); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.baseSkills')}</div>` +
+            skillsHtml = `<div class="cc-dossier-section-title" style="color: var(--text-muted-hover); font-weight: bold; margin: 4px 0 2px 0; font-size: 1.219rem">${T('CharCreate.baseSkills')}</div>` +
               Array.from(mergedSkillIds).map(sid => {
                 const sname = getSkillDisplayName(sid) || sid;
                 const fromArch1 = arch1 && arch1.skills && arch1.skills.includes(sid);
@@ -1010,11 +1016,11 @@
                 } else {
                   badges = `<span class="cc-role-badge secondary">${T('Creature.ui.secondaryBadge')}</span>`;
                 }
-                return `<div class="cc-dossier-row" style="margin-bottom: 0;"><span class="cc-dossier-label" style="color: var(--text-muted-hover);">${sname}</span><span class="cc-dossier-value" style="font-size: 0.75rem; color: var(--text-card-medium);">#${sid}${badges}</span></div>`;
+                return `<div class="cc-dossier-row" style="margin-bottom: 0"><span class="cc-dossier-label" style="color: var(--text-muted-hover)">${sname}</span><span class="cc-dossier-value" style="font-size: 1.132rem; color: var(--text-card-medium)">#${sid}${badges}</span></div>`;
               }).join("");
           }
 
-          let bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 0.85rem;">${T('CharCreate.anatomy')}</div>` +
+          let bodyHtml = `<div class="cc-dossier-section-title" style="color: var(--text-forest-green); font-weight: bold; margin: 4px 0 2px 0; font-size: 1.219rem">${T('CharCreate.anatomy')}</div>` +
             Object.keys(mergedParts).map(partKey => {
               const { part, from } = mergedParts[partKey];
               const name = window.getArchetypeText(part.name) || part.name;
@@ -1022,15 +1028,15 @@
                 ? `<span class="cc-role-badge secondary">${T('Creature.ui.secondaryBadge')}</span>`
                 : `<span class="cc-role-badge primary">${T('Creature.ui.primaryBadge')}</span>`;
               const skillName = getSkillDisplayName(part.skillId);
-              const skillInfo = skillName ? `<span style="font-size: 0.75rem; color: var(--text-card-medium); font-style: italic;">, ${skillName}</span>` : "";
+              const skillInfo = skillName ? `<span style="font-size: 1.132rem; color: var(--text-card-medium)">, ${skillName}</span>` : "";
               
               return `
-                <div class="cc-dossier-row" style="margin-bottom: 0; display: flex; align-items: center;">
-                  <div style="display: flex; align-items: center;">
+                <div class="cc-dossier-row" style="margin-bottom: 0; display: flex; align-items: center">
+                  <div style="display: flex; align-items: center">
                     <span class="cc-dossier-label" style="color: ${from === 2 ? '#5a3d75' : '#822d2d'}">${name}</span>
                     ${originLabel}
                   </div>
-                  <span class="cc-dossier-value" style="font-weight: bold;">${part.hpPercent}% HP${skillInfo}</span>
+                  <span class="cc-dossier-value" style="font-weight: bold">${part.hpPercent}% HP${skillInfo}</span>
                 </div>
               `;
             }).join("");
@@ -1067,7 +1073,7 @@
         const isCursor = !isSelected && idx === activeIndex;
         return `
           <div class="cc-card-option ${isSelected ? 'selected' : isCursor ? 'highlighted' : ''}"${
-            isLockedPrimary ? ' style="opacity: 0.75; cursor: default;"' : ''
+            isLockedPrimary ? ' style="opacity: 0.75; cursor: default"' : ''
           } onclick="SceneManager._scene.onArchetypeCardClick(${idx})">
             <div class="cc-option-title">${item.name}</div>
             ${selectionBadge}
@@ -1084,11 +1090,11 @@
       const confirmFocusStyle = bothReady ? ' outline: 3px solid #c8a96e; outline-offset: 2px; box-shadow: 0 0 10px rgba(200,169,110,0.6);' : '';
 
       leftHtml = `
-        <div class="cc-page cc-page-left" style="display: flex; flex-direction: column;">
+        <div class="cc-page cc-page-left" style="display: flex">
           <h2 class="cc-header-gothic">${stepTitle}</h2>
           <p class="cc-text-desc">${stepDesc}</p>
 
-          <div class="cc-select-grid cc-compact cc-three-col" style="flex: 1; min-height: 0; overflow-y: auto; align-content: start;">
+          <div class="cc-select-grid cc-compact cc-three-col" style="flex: 1; min-height: 0; overflow-y: auto; align-content: start">
             ${archetypeCards}
           </div>
         </div>
@@ -1098,17 +1104,26 @@
         <div class="cc-page cc-page-right">
           <h2 class="cc-header-gothic">${T('CharCreate.biology')}</h2>
 
-          <div class="cc-dossier-card" style="margin-top: 16px; flex: 1; min-height: 0; overflow-y: auto;">
+          <div class="cc-dossier-card" style="margin-top: 16px; flex: 1; min-height: 0; overflow-y: auto">
             <h3 class="cc-subheader">${leftSubheaderName || "..."}</h3>
             <div class="cc-dossier-grid cc-dossier-grid-single">
-              ${partsHtml || `<div class="cc-text-desc" style="font-style: italic; width: 100%; text-align: center;">${T('CharCreate.noAnatomicalOrgansDefined')}</div>`}
+              ${partsHtml || `<div class="cc-text-desc" style="width: 100%">${T('CharCreate.noAnatomicalOrgansDefined')}</div>`}
             </div>
           </div>
 
-          <div class="cc-button-panel" style="margin-top: 16px;">
-            <button class="cc-btn-treaty" onclick="SceneManager._scene.onArchetypeCancel()">${T('CharCreate.back')}</button>
-            <button class="cc-btn-treaty confirm" ${isConfirmDisabled ? 'disabled style="opacity: 0.5; pointer-events: none;"' : `style="${confirmFocusStyle}"`} onclick="SceneManager._scene.onArchetypeConfirm()">${T('CharCreate.confirmBlueprint')}</button>
-          </div>
+          ${window.CCButtons.panel({
+            back: window.CCButtons.button(window.CCButtons.backLabel(), {
+              onclick: "SceneManager._scene.onArchetypeCancel()",
+            }),
+            next: window.CCButtons.button(window.CCButtons.continueLabel(), {
+              onclick: "SceneManager._scene.onArchetypeConfirm()",
+              confirm: true,
+              attrs: isConfirmDisabled
+                ? 'disabled style="opacity: 0.5; pointer-events: none;"'
+                : `style="${confirmFocusStyle}"`,
+            }),
+            style: "margin-top: 16px;",
+          })}
         </div>
       `;
     } else if (this._step === 3) {
@@ -1128,24 +1143,24 @@
       let previewImgHtml = "";
       if (activeItem && activeItem.custom) {
         previewImgHtml = `
-          <div style="text-align: center; padding: 24px;">
-            <div style="font-size: 2.4rem; margin-bottom: 12px;">&#128736;</div>
-            <div style="font-size: 1.1rem; font-weight: bold; color: var(--text-primary-hover); margin-bottom: 8px;">${T('CharCreate.custom3dModel')}</div>
-            <div style="font-size: 0.9rem; color: var(--text-card-medium); max-width: 320px; margin: 0 auto; line-height: 1.4;">${T('CharCreate.sculptAUniqueCreatureFromMixedPartsSeededFro')}</div>
+          <div style="text-align: center; padding: 24px">
+            <div style="font-size: 2.798rem; margin-bottom: 12px">&#128736;</div>
+            <div style="font-size: 1.585rem; font-weight: bold; color: var(--text-primary-hover); margin-bottom: 8px">${T('CharCreate.custom3dModel')}</div>
+            <div style="font-size: 1.292rem; color: var(--text-card-medium); max-width: 320px; margin: 0 auto; line-height: 1.4">${T('CharCreate.sculptAUniqueCreatureFromMixedPartsSeededFro')}</div>
           </div>
         `;
       } else if (canShow3D) {
         const hint = T('CharCreate.dragToRotateWheelToZoomMiddleDragToPan');
         previewImgHtml = `
-          <canvas id="creature-3d-canvas" style="width: 100%; height: 380px; min-height: 380px; display: block; cursor: grab; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));"></canvas>
-          <div style="text-align: center; font-size: 11px; color: rgba(94,47,23,0.55); margin-top: 6px;">${hint}</div>
+          <canvas id="creature-3d-canvas" style="width: 100%; height: 380px; min-height: 380px; display: block; cursor: grab; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4))"></canvas>
+          <div style="text-align: center; font-size: 15px; color: rgba(94,47,23,0.55); margin-top: 6px">${hint}</div>
         `;
       } else if (activeItem && activeItem.battlerName) {
         previewImgHtml = `
-          <img src="img/enemies/${activeItem.battlerName}.png" style="max-width: 100%; max-height: 560px; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));" />
+          <img src="img/enemies/${activeItem.battlerName}.png" style="max-width: 100%; max-height: 560px; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4))" />
         `;
       } else {
-        previewImgHtml = `<span style="font-size: 0.95rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.loadingBattlerAsset')}</span>`;
+        previewImgHtml = `<span style="font-size: 1.365rem; color: var(--text-card-medium)">${T('CharCreate.loadingBattlerAsset')}</span>`;
       }
 
       // Name-only entries, so they render as flat roster rows rather than the
@@ -1161,9 +1176,9 @@
       }).join("");
 
       leftHtml = `
-        <div class="cc-page cc-page-left" style="align-items: center; justify-content: flex-start;">
-          <h2 class="cc-header-gothic" style="margin-bottom: 20px;">${T('CharCreate.profileImage')}</h2>
-          <div style="width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <div class="cc-page cc-page-left" style="align-items: center; justify-content: flex-start">
+          <h2 class="cc-header-gothic" style="margin-bottom: 20px">${T('CharCreate.profileImage')}</h2>
+          <div style="width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center">
             ${previewImgHtml}
           </div>
         </div>
@@ -1174,14 +1189,19 @@
           <h2 class="cc-header-gothic">${T('CharCreate.profileImageSelection')}</h2>
           <p class="cc-text-desc">${T('CharCreate.chooseAProfileImage')}</p>
 
-          <div class="cc-presets-board" style="grid-template-columns: repeat(2, 1fr); gap: 0 20px; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; margin-top: 10px; align-content: start;">
+          <div class="cc-presets-board" style="grid-template-columns: repeat(2, 1fr); gap: 0 20px; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; margin-top: 10px; align-content: start">
             ${battlerCards}
           </div>
 
-          <div class="cc-button-panel">
-            <button class="cc-btn-treaty" onclick="SceneManager._scene.onBattlerCancel()">${T('CharCreate.back')}</button>
-            <button class="cc-btn-treaty confirm" onclick="SceneManager._scene.onBattlerOk()">${T('CharCreate.confirm')}</button>
-          </div>
+          ${window.CCButtons.panel({
+            back: window.CCButtons.button(window.CCButtons.backLabel(), {
+              onclick: "SceneManager._scene.onBattlerCancel()",
+            }),
+            next: window.CCButtons.button(window.CCButtons.continueLabel(), {
+              onclick: "SceneManager._scene.onBattlerOk()",
+              confirm: true,
+            }),
+          })}
         </div>
       `;
     } else if (this._step === 4) {
@@ -1206,33 +1226,39 @@
       }).join("");
 
       leftHtml = `
-        <div class="cc-page cc-page-left" style="display: flex; flex-direction: column;">
+        <div class="cc-page cc-page-left" style="display: flex">
           <h2 class="cc-header-gothic">${T('CharCreate.sprites')}</h2>
 
-          <div class="cc-presets-board cc-sprite-board" style="flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; margin-top: 14px;">
+          <div class="cc-presets-board cc-sprite-board" style="flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; margin-top: 14px">
             ${spriteCards}
           </div>
         </div>
       `;
 
       rightHtml = `
-        <div class="cc-page cc-page-right" style="align-items: center; justify-content: center;">
-          <h2 class="cc-header-gothic" style="margin-bottom: 12px;">${T('CharCreate.selectedSprite')}</h2>
-          <p class="cc-text-desc" style="text-align: center; margin-bottom: 8px;">
+        <div class="cc-page cc-page-right" style="align-items: center; justify-content: center">
+          <h2 class="cc-header-gothic" style="margin-bottom: 12px">${T('CharCreate.selectedSprite')}</h2>
+          <p class="cc-text-desc" style="margin-bottom: 8px">
             ${T('CharCreate.creatureSynthesisComplete')}
           </p>
 
           <div class="cc-sprite-portrait no-bust">
             <div class="cc-sprite-portrait-sprite" style="${largeSpriteStyle}"></div>
           </div>
-          <div class="cc-option-title" style="text-align: center;">
+          <div class="cc-option-title" style="text-align: center">
             ${activeItem ? activeItem.displayName : "..."}
           </div>
 
-          <div class="cc-button-panel" style="margin-top: auto; width: 100%;">
-            <button class="cc-btn-treaty" onclick="SceneManager._scene.onCharacterCancel()">${T('CharCreate.back')}</button>
-            <button class="cc-btn-treaty confirm" onclick="SceneManager._scene.onCharacterOk()">${T('CharCreate.confirm')}</button>
-          </div>
+          ${window.CCButtons.panel({
+            back: window.CCButtons.button(window.CCButtons.backLabel(), {
+              onclick: "SceneManager._scene.onCharacterCancel()",
+            }),
+            next: window.CCButtons.button(window.CCButtons.continueLabel(), {
+              onclick: "SceneManager._scene.onCharacterOk()",
+              confirm: true,
+            }),
+            style: "margin-top: auto; width: 100%;",
+          })}
         </div>
       `;
     }

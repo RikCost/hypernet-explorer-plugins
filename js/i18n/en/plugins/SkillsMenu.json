@@ -1,112 +1,120 @@
 {
-  "title": "Skills",
-  "back": "Back",
-  "unit": {
-    "ap": "AP",
-    "mp": "MP"
+ "title": "Skills",
+ "back": "Back",
+ "unit": {
+  "ap": "AP",
+  "mp": "MP"
+ },
+ "cost": {
+  "mp": "{n} MP",
+  "ap": "{n} AP"
+ },
+ "discipline": {
+  "basic": "Basic Discipline",
+  "standard": "Standard Discipline"
+ },
+ "section": {
+  "damage": "Damage",
+  "skillEffects": "Skill Effects",
+  "training": "Training"
+ },
+ "role": {
+  "offensive": {
+   "name": "Offensive",
+   "description": "Skills that deal damage.\nStrike down your foes."
   },
-  "cost": {
-    "mp": "{n} MP",
-    "ap": "{n} AP"
+  "healing": {
+   "name": "Healing",
+   "description": "Restore HP and cure ailments.\nMend yourself and allies."
   },
-  "discipline": {
-    "basic": "Basic Discipline",
-    "standard": "Standard Discipline"
-  },
-  "section": {
-    "damage": "Damage",
-    "skillEffects": "Skill Effects",
-    "classifications": "Classifications",
-    "training": "Training"
-  },
-  "role": {
-    "offensive": {
-      "name": "Offensive",
-      "description": "Skills that deal damage.\nStrike down your foes."
-    },
-    "healing": {
-      "name": "Healing",
-      "description": "Restore HP and cure ailments.\nMend yourself and allies."
-    },
-    "support": {
-      "name": "Support",
-      "description": "Buffs, debuffs and utility.\nShift the tide of battle."
-    }
-  },
-  "cmd": {
-    "levelUp": "Level Up",
-    "allSkills": "All Skills",
-    "use": "Use",
-    "cancel": "Cancel",
-    "carry": "Sync",
-    "bench": "Desync",
-    "basic": "Basic",
-    "esoteric": "Esoteric"
-  },
-  "action": {
-    "useSkill": "[ Use Skill ]",
-    "carry": "[ Sync ]",
-    "bench": "[ Desync ]",
-    "back": "[ Back ]"
-  },
-  "info": {
-    "type": "Type:",
-    "scale": "Scale:",
-    "basic": "Basic",
-    "none": "None",
-    "effect": "Effect:",
-    "hpDmg": "HP Damage",
-    "mpDmg": "MP Damage",
-    "hpHeal": "HP Recover",
-    "mpHeal": "MP Recover",
-    "hpDrain": "HP Drain",
-    "mpDrain": "MP Drain",
-    "buffs": "Buffs",
-    "debuffs": "Debuffs",
-    "state": "State"
-  },
-  "target": {
-    "title": "Target Companion",
-    "prompt": "Channeling {skill}. Select the target companion:",
-    "allCompanions": "All Party Companions"
-  },
-  "empty": {
-    "title": "Grimoire Codicil",
-    "hint": "Select a skill from the list on the left to inspect its elemental scale, use cost, and alchemical actions.",
-    "section": "No skills cataloged under this section.",
-    "category": "No skills cataloged in this category."
-  },
-  "spec": {
-    "trains": "Trains",
-    "bonus": "Skill bonus",
-    "label": {
-      "damage": "Damage"
-    }
-  },
-  "loadout": {
-    "skills": "Skills",
-    "magic": "Magic",
-    "count": "{group} {n}/{max}",
-    "carried": "Synced",
-    "benched": "Desynced",
-    "always": "Always",
-    "hint": "Shift syncs or desyncs the selected skill",
-    "full": "{group} loadout is full ({max} synced). Desync one first."
-  },
-  "tag": {
-    "field": "Field"
-  },
-  "magicSystem": {
-    "label": "Magic System",
-    "Arcane": "Arcane",
-    "Sacred": "Sacred",
-    "Sympathetic": "Sympathetic",
-    "Dimensional": "Dimensional",
-    "Psionics": "Psionics",
-    "Technomagic": "Technomagic",
-    "Pataphysic": "Pataphysic",
-    "Natural": "Natural",
-    "Thermodynamics": "Thermodynamics",
-    "Ritual": "Ritual"
+  "support": {
+   "name": "Support",
+   "description": "Buffs, debuffs and utility.\nShift the tide of battle."
   }
+ },
+ "cmd": {
+  "levelUp": "Level Up",
+  "allSkills": "All Skills",
+  "use": "Use",
+  "cancel": "Cancel",
+  "carry": "Sync",
+  "bench": "Desync",
+  "basic": "Basic",
+  "esoteric": "Esoteric"
+ },
+ "action": {
+  "useSkill": "[ Use Skill ]",
+  "carry": "[ Sync ]",
+  "bench": "[ Desync ]",
+  "back": "[ Back ]"
+ },
+ "info": {
+  "type": "Type:",
+  "scale": "Scale:",
+  "basic": "Basic",
+  "none": "None",
+  "effect": "Effect:",
+  "hpDmg": "HP Damage",
+  "mpDmg": "MP Damage",
+  "hpHeal": "HP Recover",
+  "mpHeal": "MP Recover",
+  "hpDrain": "HP Drain",
+  "mpDrain": "MP Drain",
+  "buffs": "Buffs",
+  "debuffs": "Debuffs",
+  "state": "State"
+ },
+ "target": {
+  "title": "Target Companion",
+  "prompt": "Channeling {skill}. Select the target companion:",
+  "allCompanions": "All Party Companions"
+ },
+ "empty": {
+  "title": "Grimoire Codicil",
+  "hint": "Select a skill from the list on the left to inspect its elemental scale, use cost, and alchemical actions.",
+  "section": "No skills cataloged under this section.",
+  "category": "No skills cataloged in this category."
+ },
+ "spec": {
+  "trains": "Trains",
+  "bonus": "Skill bonus",
+  "label": {
+   "damage": "Damage",
+   "range": "Range"
+  },
+  "range": {
+   "tiles": {
+    "one": "{count} tile",
+    "other": "{count} tiles"
+   },
+   "unlimited": "Anywhere"
+  }
+ },
+ "loadout": {
+  "skills": "Skills",
+  "magic": "Magic",
+  "count": "{group} {n}/{max}",
+  "carried": "Synced",
+  "benched": "Desynced",
+  "always": "Always",
+  "hint": "Shift syncs or desyncs the selected skill",
+  "full": "{group} loadout is full ({max} synced). Desync one first."
+ },
+ "tag": {
+  "field": "Field"
+ },
+ "magicSystem": {
+  "label": "Magic System",
+  "Arcane": "Arcane",
+  "Sacred": "Sacred",
+  "Sympathetic": "Sympathetic",
+  "Dimensional": "Dimensional",
+  "Psionics": "Psionics",
+  "Technomagic": "Technomagic",
+  "Pataphysic": "Pataphysic",
+  "Natural": "Natural",
+  "Thermodynamics": "Thermodynamics",
+  "Ritual": "Ritual"
+ },
+ "searchPlaceholder": "Search skills…"
 }

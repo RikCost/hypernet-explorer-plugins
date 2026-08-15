@@ -31,7 +31,7 @@ body {
     border-radius: 3px;
     cursor: pointer;
     font-family: 'Lora', serif;
-    font-size: 1.1em;
+    font-size: 1.095em;
 }
 
 #printButton:hover {
@@ -51,9 +51,9 @@ h1, h2, h3 {
     margin-bottom: 1em;
 }
 
-h1 { font-size: 2.8em; text-align: center; }
-h2 { font-size: 2.2em; }
-h3 { font-size: 1.6em; border-bottom: 1px solid #d9c8a0; }
+h1 { font-size: 2.71em; text-align: center; }
+h2 { font-size: 2.14em; }
+h3 { font-size: 1.57em; border-bottom: 1px solid #d9c8a0; }
 
 hr {
     border: 0;
@@ -140,7 +140,7 @@ code {
     color: #8B4513;
     font-family: 'Lora', serif;
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1.095em;
 }
 
 .traits-list ul {
@@ -190,7 +190,7 @@ code {
 .class-header h3 {
     margin: 0 0 0.5rem 0;
     color: #8B4513;
-    font-size: 1.4em;
+    font-size: 1.38em;
     font-weight: bold;
 }
 
@@ -203,7 +203,7 @@ code {
 .skill-type {
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
-    font-size: 0.8em;
+    font-size: 0.856em;
     font-weight: bold;
     text-transform: uppercase;
 }
@@ -220,7 +220,7 @@ code {
 
 .class-description {
     margin-bottom: 1rem;
-    font-style: italic;
+    font-style: normal;
     color: #5d4037;
 }
 
@@ -240,7 +240,7 @@ code {
 .learnings-list h4 {
     margin: 0 0 0.5rem 0;
     color: #8B4513;
-    font-size: 1.1em;
+    font-size: 1.095em;
     font-weight: bold;
 }
 
@@ -265,8 +265,7 @@ code {
     background-color: #8B4513;
     color: white;
     padding: 0.15rem 0.4rem;
-    border-radius: 12px;
-    font-size: 0.8em;
+    font-size: 0.856em;
     font-weight: bold;
     min-width: 35px;
     text-align: center;

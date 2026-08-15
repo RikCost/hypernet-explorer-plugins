@@ -445,6 +445,8 @@
   },
   "tellAJoke": "Racconta una Barzelletta",
   "jokeFallback": "È successa una cosa buffa.",
+  "funShared": "Vi siete divertiti entrambi, tu e {name}.",
+  "funHint": "Divertimento per te e per loro, se funziona.",
   "oldLegend": "una vecchia leggenda",
   "bribeAccepted": "{name} accetta. +{op} ♥",
   "joinedParty": "{name} si è unito al gruppo!",

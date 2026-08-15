@@ -79,5 +79,6 @@
   "gold": "Gold",
   "drawing": "Drawing...",
   "exp": "EXP",
-  "harvestChance": "{chance}% chance"
+  "harvestChance": "{chance}% chance",
+  "searchPlaceholder": "Search creatures…"
 }

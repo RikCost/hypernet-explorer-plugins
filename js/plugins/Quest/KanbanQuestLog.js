@@ -245,13 +245,13 @@
    button and the hint, so the two flanking items never push it off centre. */
 .kb-board-title { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
   pointer-events: none; white-space: nowrap;
-  font-size: 2.1rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; }
+  font-size: 2.31rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; }
 /* Shared .back-button look, but kept in the header's flex flow: the global rule
    pins it position:absolute;left:0, which here would resolve against the whole
    board overlay and land on top of the To Do column. */
 #kb-board-header .back-button { position: relative; left: auto; flex: 0 0 auto;
   align-self: center; text-shadow: none; }
-.kb-board-hint { margin-left: auto; font-size: 0.9rem; opacity: 0.72; text-align: right; }
+.kb-board-hint { margin-left: auto; font-size: 1.08rem; opacity: 0.72; text-align: right; }
 #kb-columns { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0;
   display: flex; gap: 0; padding: 22px 26px 30px;
   border-top: 2px solid rgba(43,16,8,0.35); }
@@ -262,9 +262,9 @@
   gap: 10px; padding: 8px 22px 9px; margin: 0 0 16px;
   color: #f5ebd0; background: #7a4d24; border: 2px solid #2b1008;
   border-radius: 10px 10px 0 0; box-shadow: 0 -2px 6px rgba(0,0,0,0.35), 0 3px 8px rgba(0,0,0,0.4); }
-.kb-col-title { font-size: 1.1rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;
+.kb-col-title { font-size: 1.265rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;
   text-shadow: 1px 1px 2px #2b1008; }
-.kb-col-count { font-size: 0.95rem; font-weight: bold; color: #f5ebd0;
+.kb-col-count { font-size: 1.14rem; font-weight: bold; color: #f5ebd0;
   background: rgba(43,16,8,0.45); border: 1px solid #2b1008; border-radius: 3px;
   padding: 1px 10px; min-width: 30px; text-align: center; }
 .kb-cards-wrap { flex: 1 1 auto; min-height: 0; overflow-y: auto;
@@ -273,7 +273,7 @@
 .kb-cards-wrap::-webkit-scrollbar { width: 12px; }
 .kb-cards-wrap::-webkit-scrollbar-track { background: rgba(43,16,8,0.28); }
 .kb-cards-wrap::-webkit-scrollbar-thumb { background: #5d3a1c; border: 2px solid #2b1008; border-radius: 6px; }
-.kb-empty-col { color: #f5ebd0; font-size: 1.05rem; font-style: italic; opacity: 0.8;
+.kb-empty-col { color: #f5ebd0; font-size: 1.208rem; font-style: normal; opacity: 0.8;
   text-align: center; padding: 26px 12px; text-shadow: 1px 1px 3px #2b1008; }
 .kb-card { position: relative; width: 100%; max-width: 300px; min-height: 132px; flex: 0 0 auto;
   padding: 32px 18px 18px; box-sizing: border-box; cursor: pointer; color: #2b251d;
@@ -293,10 +293,10 @@
   background-image: url('img/system/IconSet.png'); image-rendering: pixelated;
   border-radius: 5px; background-color: rgba(43,16,8,0.55);
   outline: 2px solid var(--marker, #7a4d24); box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
-.kb-card-title { display: block; font-size: 1.02rem; font-weight: bold; line-height: 1.2; margin-bottom: 8px; }
-.kb-card-giver { display: block; font-size: 0.85rem; font-style: italic; opacity: 0.8; margin-bottom: 8px; }
-.kb-card-reward { display: block; font-size: 0.92rem; font-weight: bold; color: #5d3a00; }
-.kb-card-meta { display: block; font-size: 0.82rem; color: #444; margin-top: 6px; line-height: 1.3;
+.kb-card-title { display: block; font-size: 1.173rem; font-weight: bold; line-height: 1.2; margin-bottom: 8px; }
+.kb-card-giver { display: block; font-size: 1.02rem; font-style: normal; opacity: 0.8; margin-bottom: 8px; }
+.kb-card-reward { display: block; font-size: 1.104rem; font-weight: bold; color: #5d3a00; }
+.kb-card-meta { display: block; font-size: 0.984rem; color: #444; margin-top: 6px; line-height: 1.3;
   overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3;
   line-clamp: 3; -webkit-box-orient: vertical; }
 .kb-diff { display: flex; gap: 2px; margin-top: 6px; }
@@ -308,24 +308,24 @@
 .kb-progress-track { height: 7px; background: rgba(43,16,8,0.22); border: 1px solid rgba(43,16,8,0.45);
   border-radius: 4px; overflow: hidden; }
 .kb-progress-fill { height: 100%; background: linear-gradient(90deg, #7a4d24, #b8860b); }
-.kb-progress-label { display: block; margin-top: 3px; font-size: 0.78rem; font-weight: bold; color: #5d3a00; }
-.kb-checklist { font-size: 1.15rem; line-height: 1.6; margin: 8px 0; }
+.kb-progress-label { display: block; margin-top: 3px; font-size: 0.952rem; font-weight: bold; color: #5d3a00; }
+.kb-checklist { font-size: 1.322rem; line-height: 1.6; margin: 8px 0; }
 .kb-check-row { padding: 2px 0; }
 .kb-check-row.done { color: #3e6b2f; }
 .kb-check-row.current { font-weight: bold; }
 .kb-check-mark { display: inline-block; width: 1.5em; color: #58180d; }
 .kb-check-count { font-weight: bold; color: #5d3a00; }
-.kb-check-order { margin-top: 6px; font-style: italic; font-size: 1rem; opacity: 0.75; }
-.kb-urgent { position: absolute; top: 34px; right: -10px; padding: 2px 13px; font-size: 0.76rem;
+.kb-check-order { margin-top: 6px; font-style: normal; font-size: 1.15rem; opacity: 0.75; }
+.kb-urgent { position: absolute; top: 34px; right: -10px; padding: 2px 13px; font-size: 0.927rem;
   font-weight: bold; letter-spacing: 1px; color: #fff; background: #a2242f;
   transform: rotate(8deg); box-shadow: 1px 2px 4px rgba(0,0,0,0.4); }
 .kb-seal { position: absolute; right: 12px; bottom: 12px; width: 34px; height: 34px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  color: #f5ebd0; font-size: 1rem; font-weight: bold;
+  color: #f5ebd0; font-size: 1.15rem; font-weight: bold;
   background: var(--seal, #8b263e); box-shadow: 0 2px 4px rgba(0,0,0,0.5);
   border: 2px solid rgba(245,235,208,0.6); }
 .kb-resolved-stamp { position: absolute; left: 14px; bottom: 14px; padding: 2px 10px;
-  font-size: 0.8rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;
+  font-size: 0.96rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;
   color: #8b263e; border: 2px solid #8b263e; border-radius: 3px; opacity: 0.7;
   transform: rotate(-6deg); }
 .kb-resolved-stamp.failed { color: #41414d; border-color: #41414d; }
@@ -345,25 +345,25 @@
 #kb-detail-panel::-webkit-scrollbar-track { background: rgba(88,24,13,0.12); }
 #kb-detail-panel::-webkit-scrollbar-thumb { background: #a8814f; border-radius: 7px; }
 .kb-detail-page { max-width: 1180px; margin: 0 auto; padding: 46px 60px 60px; }
-.kb-detail-header { margin: 0 0 8px; font-size: 2.3rem; font-weight: bold; line-height: 1.15;
+.kb-detail-header { margin: 0 0 8px; font-size: 2.53rem; font-weight: bold; line-height: 1.15;
   color: #58180d; border-bottom: 3px double #805d3f; padding-bottom: 12px;
   font-family: "Lora", "IM Fell English", serif; background: none; }
-.kb-detail-giver { font-style: italic; font-size: 1.15rem; margin: 12px 0 26px; opacity: 0.85; }
-.kb-detail-body { font-size: 1.3rem; line-height: 1.65; margin-bottom: 24px; text-align: justify; }
-.kb-detail-body::first-letter { font-size: 2.6rem; font-weight: bold; color: #58180d;
+.kb-detail-giver { font-style: normal; font-size: 1.322rem; margin: 12px 0 26px; opacity: 0.85; }
+.kb-detail-body { font-size: 1.495rem; line-height: 1.65; margin-bottom: 24px; text-align: justify; }
+.kb-detail-body::first-letter { font-size: 2.86rem; font-weight: bold; color: #58180d;
   float: left; line-height: 0.9; padding: 4px 8px 0 0; }
-.kb-detail-sec { font-size: 1.05rem; font-weight: bold; text-transform: uppercase; letter-spacing: 3px;
+.kb-detail-sec { font-size: 1.208rem; font-weight: bold; text-transform: uppercase; letter-spacing: 3px;
   color: #805d3f; border-bottom: 1px solid #805d3f; margin: 30px 0 12px; }
-.kb-detail-steps { font-size: 1.2rem; white-space: pre-line; margin: 8px 0; line-height: 1.6; }
-.kb-detail-line { font-size: 1.15rem; margin: 5px 0; }
+.kb-detail-steps { font-size: 1.38rem; white-space: pre-line; margin: 8px 0; line-height: 1.6; }
+.kb-detail-line { font-size: 1.322rem; margin: 5px 0; }
 .kb-detail-line.warn { color: #8b263e; font-weight: bold; }
 .kb-upd-row { border-bottom: 1px dotted rgba(88,24,13,0.35); padding: 10px 0 12px; }
 .kb-upd-row:last-child { border-bottom: none; }
-.kb-upd-date { display: block; font-size: 0.9rem; font-weight: bold; color: #805d3f; margin-bottom: 4px; }
-.kb-upd-text { font-size: 1.15rem; line-height: 1.55; margin: 0; white-space: pre-wrap; }
+.kb-upd-date { display: block; font-size: 1.08rem; font-weight: bold; color: #805d3f; margin-bottom: 4px; }
+.kb-upd-text { font-size: 1.322rem; line-height: 1.55; margin: 0; white-space: pre-wrap; }
 .kb-detail-btns { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 40px; }
 .kb-detail-close { display: inline-block; padding: 14px 40px;
-  font-size: 1.2rem; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
+  font-size: 1.38rem; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
   background: #5d3a1c; color: #f5ebd0; border: 1px solid #2b1008; border-radius: 3px;
   font-family: "Lora", "IM Fell English", serif; }
 .kb-detail-close:hover { background: #7a4d24; }
@@ -711,7 +711,7 @@
                     icon: 186,
                     width: 950,
                     height: 600,
-                    contentHTML: '<div id="kanban-quest-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8;"></div>'
+                    contentHTML: '<div id="kanban-quest-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8"></div>'
                 });
 
                 this.appInstance = new Scene_KanbanQuest();
@@ -1211,14 +1211,13 @@
         this.keyMapper[68] = 'd'; // D
     };
 
-    const _Input_shouldPreventDefault = Input._shouldPreventDefault;
-    Input._shouldPreventDefault = function (keyCode) {
-        // Prevent default for WASD keys
-        if (keyCode === 87 || keyCode === 65 || keyCode === 83 || keyCode === 68) {
-            return true;
-        }
-        return _Input_shouldPreventDefault.call(this, keyCode);
-    };
+    // NOTE: do NOT preventDefault W/A/S/D here. Input._onKeyDown is a
+    // document-level listener that runs on every keystroke in the game,
+    // including ones aimed at DOM text fields layered over the canvas (the
+    // Hypernet OS browser address bar, Notepad, search boxes). Blocking the
+    // default on those letters made them impossible to type. The board below
+    // reads W/A/S/D through Input's own state, which _onKeyDown records
+    // whether or not the default is prevented, so nothing here needs it.
 
     // Plugin Commands
     PluginManager.registerCommand(pluginName, 'addQuest', args => {

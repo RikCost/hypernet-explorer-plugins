@@ -954,7 +954,7 @@
                     icon: 189,
                     width: 950,
                     height: 600,
-                    contentHTML: '<div id="news-history-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8;"></div>'
+                    contentHTML: '<div id="news-history-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8"></div>'
                 });
 
                 this.appInstance = new Scene_NewsHistory();
@@ -1194,7 +1194,7 @@
             let headlinesHTML = "";
             if (newsList.length === 0) {
                 headlinesHTML = `
-                    <div style="text-align:center; font-style:italic; padding:40px; color:#555; font-family:'Tahoma', sans-serif; font-size:11px;">
+                    <div style="text-align:center; padding:40px; color:#555; font-family:'Tahoma', sans-serif; font-size:14px">
                         ${T('NewsSystem.ui.noChroniclesRegisteredIn')}
                     </div>
                 `;
@@ -1241,15 +1241,15 @@
 
                     headlinesHTML += `
                         <div class="newspaper-headline-item focusable ${selectedClass}" data-focus-key="news-item-${idx}" style="${hoverStyle}" onclick="${sref}.selectNewspaperItem(${idx})">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:10px; color:#555; font-family:'Tahoma', sans-serif; font-weight:bold;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px; color:#555; font-family:'Tahoma', sans-serif; font-weight:bold">
                                 <span>${day} ${monthName.substring(0, 3).toUpperCase()} • ${timeStr}</span>
-                                <span style="color:${categoryColor}; font-size:10px; font-family:'Tahoma', sans-serif; font-weight:bold; letter-spacing:0.5px;">${categoryLabel}</span>
+                                <span style="color:${categoryColor}; font-size:13px; font-family:'Tahoma', sans-serif; font-weight:bold; letter-spacing:0.5px">${categoryLabel}</span>
                             </div>
-                            <div style="font-family:'Tahoma', sans-serif; font-size:11px; font-weight:${isSelected ? 'bold' : 'normal'}; color:#000; line-height:1.3;">
+                            <div style="font-family:'Tahoma', sans-serif; font-size:14px; font-weight:${isSelected ? 'bold' : 'normal'}; color:#000; line-height:1.3">
                                 ${news.text}
                             </div>
                             ${news.location ? `
-                            <div style="font-size:10px; font-style:italic; color:#555; margin-top:2px;">
+                            <div style="font-size:13px; color:#555; margin-top:2px">
                                 ,  ${news.location.toUpperCase()}
                             </div>
                             ` : ''}
@@ -1276,11 +1276,11 @@
                     const soulMod = selectedNews.soulTendencyModifier || 0;
 
                     effectsBox = `
-                        <div style="margin-top: 14px; padding: 10px; border: 1px dashed #7f9db9; background: rgba(0,0,0,0.03); border-radius: 3px; font-family:'Tahoma', sans-serif; font-size:11px; color:#000; box-sizing: border-box; width: 100%;">
-                            <h4 style="margin:0 0 6px 0; font-family:'Tahoma', sans-serif; font-size:11px; border-bottom:1px solid #7f9db9; padding-bottom:3px; font-weight:bold; color:#0b2f70;">
+                        <div style="margin-top: 14px; padding: 10px; border: 1px dashed #7f9db9; background: rgba(0,0,0,0.03); border-radius: 3px; font-family:'Tahoma', sans-serif; font-size:14px; color:#000; box-sizing: border-box; width: 100%">
+                            <h4 style="margin:0 0 6px 0; font-family:'Tahoma', sans-serif; font-size:14px; border-bottom:1px solid #7f9db9; padding-bottom:3px; font-weight:bold; color:#0b2f70">
                                 ${T('NewsSystem.ui.marketSoulInfluence')}
                             </h4>
-                            <div style="display:flex; flex-direction:column; gap:4px;">
+                            <div style="display:flex; flex-direction:column; gap:4px">
                                 ${selectedNews.priceEffect !== 1 ? `<div><strong>${T('NewsSystem.ui.propertyValues')}</strong> ${pricePct >= 0 ? '+' : ''}${pricePct}%</div>` : ''}
                                 ${selectedNews.occupancyEffect !== 1 ? `<div><strong>${T('NewsSystem.ui.occupancyRates')}</strong> ${occupancyPct >= 0 ? '+' : ''}${occupancyPct}%</div>` : ''}
                                 ${soulMod !== 0 ? `<div><strong>${T('NewsSystem.ui.soulAlignment')}</strong> ${soulMod >= 0 ? '+' : ''}${soulMod.toFixed(1)}%</div>` : ''}
@@ -1293,18 +1293,18 @@
 
                 if (this._isAppMode) {
                     articleHTML = `
-                        <div style="display:flex; flex-direction:column; flex:1; overflow-y:auto; padding-right:6px; margin-bottom:6px; box-sizing: border-box;">
-                            <div style="font-family:'Tahoma', sans-serif; font-size:22px; color:#0b2f70; line-height:1.25; font-weight:bold; margin-bottom:8px; border-bottom:1px solid #7f9db9; padding-bottom:8px;">
+                        <div style="display:flex; flex-direction:column; flex:1; overflow-y:auto; padding-right:6px; margin-bottom:6px; box-sizing: border-box">
+                            <div style="font-family:'Tahoma', sans-serif; font-size:24px; color:#0b2f70; line-height:1.25; font-weight:bold; margin-bottom:8px; border-bottom:1px solid #7f9db9; padding-bottom:8px">
                                 ${selectedNews.text}
                             </div>
 
-                            <div style="font-family:'Tahoma', sans-serif; font-size:14px; color:#555; margin-bottom:12px; display:flex; justify-content:space-between; font-weight:bold;">
+                            <div style="font-family:'Tahoma', sans-serif; font-size:17px; color:#555; margin-bottom:12px; display:flex; justify-content:space-between; font-weight:bold">
                                 <span>${fullDateText.toUpperCase()}</span>
                                 ${selectedNews.location ? `<span>${selectedNews.location.toUpperCase()}</span>` : ''}
                             </div>
 
-                            <div style="font-family:'Tahoma', sans-serif; font-size:17px; line-height:1.6; color:#000; text-align:justify; margin-bottom:10px;">
-                                ${selectedNews.location ? `<span style="font-family:'Tahoma', sans-serif; font-weight:bold; color:#0b2f70; font-size:17px; margin-right:4px;">[${selectedNews.location.toUpperCase()}]</span>` : ''}
+                            <div style="font-family:'Tahoma', sans-serif; font-size:20px; line-height:1.6; color:#000; text-align:justify; margin-bottom:10px">
+                                ${selectedNews.location ? `<span style="font-family:'Tahoma', sans-serif; font-weight:bold; color:#0b2f70; font-size:20px; margin-right:4px">[${selectedNews.location.toUpperCase()}]</span>` : ''}
                                 ${detailedText}
                             </div>
 
@@ -1313,18 +1313,18 @@
                     `;
                 } else {
                     articleHTML = `
-                        <div style="display:flex; flex-direction:column; flex:1; overflow-y:auto; padding-right:12px; margin-bottom:12px; box-sizing: border-box;">
-                            <div style="font-family:'Lora', serif; font-size:1.65rem; color:#4a1d0f; line-height:1.2; font-weight:bold; margin-bottom:8px; border-bottom:1px solid rgba(74, 29, 15, 0.2); padding-bottom:8px;">
+                        <div style="display:flex; flex-direction:column; flex:1; overflow-y:auto; padding-right:12px; margin-bottom:12px; box-sizing: border-box">
+                            <div style="font-family:'Lora', serif; font-size:1.815rem; color:#4a1d0f; line-height:1.2; font-weight:bold; margin-bottom:8px; border-bottom:1px solid rgba(74, 29, 15, 0.2); padding-bottom:8px">
                                 ${selectedNews.text}
                             </div>
                             
-                            <div style="font-family:'Lora', serif; font-size:0.8rem; font-style:italic; color:#5c4b3d; margin-bottom:16px; display:flex; justify-content:space-between;">
+                            <div style="font-family:'Lora', serif; font-size:0.96rem; color:#5c4b3d; margin-bottom:16px; display:flex; justify-content:space-between">
                                 <span>${fullDateText.toUpperCase()}</span>
                                 ${selectedNews.location ? `<span>${selectedNews.location.toUpperCase()}</span>` : ''}
                             </div>
                             
-                            <div style="font-family:'Lora', serif; font-size:0.95rem; line-height:1.6; color:#1a1a1a; text-align:justify; column-count:2; column-gap:24px; column-rule:1px dotted rgba(139, 90, 43, 0.25);">
-                                ${selectedNews.location ? `<span style="font-family:'Lora', serif; font-weight:bold; color:#4a1d0f; font-size:1.1rem; margin-right:4px;">[${selectedNews.location.toUpperCase()}]</span>` : ''}
+                            <div style="font-family:'Lora', serif; font-size:1.14rem; line-height:1.6; color:#1a1a1a; text-align:justify; column-count:2; column-gap:24px; column-rule:1px dotted rgba(139, 90, 43, 0.25)">
+                                ${selectedNews.location ? `<span style="font-family:'Lora', serif; font-weight:bold; color:#4a1d0f; font-size:1.265rem; margin-right:4px">[${selectedNews.location.toUpperCase()}]</span>` : ''}
                                 ${detailedText}
                             </div>
                             
@@ -1334,18 +1334,21 @@
                 }
             } else {
                 articleHTML = `
-                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; font-style:italic; color:#555; font-family:'Tahoma', sans-serif; font-size:11px;">
+                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; color:#555; font-family:'Tahoma', sans-serif; font-size:14px">
                         ${T('NewsSystem.ui.selectAnEntryTo')}
                     </div>
                 `;
             }
 
-            const spreadWidth = this._isAppMode ? "100%" : "1400px";
-            const spreadHeight = this._isAppMode ? "100%" : "900px";
+            // App mode embeds the spread in a Hypernet OS window, so it fills
+            // that window. Standalone it IS the screen, and takes its size from
+            // the shared full-bleed .cc-pockets-spread rule in theme.css, so it
+            // must not pin itself to the old 1400x900 design box here.
+            const spreadSize = this._isAppMode ? "width: 100%; height: 100%; " : "";
 
             if (this._isAppMode) {
                 this._dndContainer.innerHTML = `
-                    <div class="cc-pockets-spread" style="width: 100%; height: 100%;">
+                    <div class="cc-pockets-spread" style="width: 100%; height: 100%">
                         <!-- Left Page: The Headlines Column -->
                         <div class="cc-page cc-page-left">
                             <div class="cc-subheader">
@@ -1353,14 +1356,14 @@
                             </div>
                             
                             <!-- Month Selection Navigator -->
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-family: 'Tahoma', sans-serif; font-size: 11px; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 3px; border: 1px solid #7f9db9; width:100%; box-sizing: border-box; user-select:none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-family: 'Tahoma', sans-serif; font-size: 14px; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 3px; border: 1px solid #7f9db9; width:100%; box-sizing: border-box; user-select:none">
                                 <div class="newspaper-nav-btn focusable" onclick="${sref}.changeNewspaperMonth(-1)">${T('News.ui.prev')}</div>
-                                <span style="font-weight: bold; color: #0b2f70; letter-spacing:0.5px;">${monthName.toUpperCase()} 2001</span>
+                                <span style="font-weight: bold; color: #0b2f70; letter-spacing:0.5px">${monthName.toUpperCase()} 2001</span>
                                 <div class="newspaper-nav-btn focusable" onclick="${sref}.changeNewspaperMonth(1)">${T('News.ui.next')}</div>
                             </div>
 
                             <!-- Scrollable Headlines List -->
-                            <div id="newspaper-headlines-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 4px;">
+                            <div id="newspaper-headlines-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 4px">
                                 ${headlinesHTML}
                             </div>
                         </div>
@@ -1374,7 +1377,7 @@
                             ${articleHTML}
                             
                             <!-- Return / Navigation Help at the bottom -->
-                            <div style="margin-top: auto; border-top: 1px dashed #7f9db9; padding-top: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #555; font-family: 'Tahoma', sans-serif; width:100%; box-sizing: border-box;">
+                            <div style="margin-top: auto; border-top: 1px dashed #7f9db9; padding-top: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #555; font-family: 'Tahoma', sans-serif; width:100%; box-sizing: border-box">
                                 <span>${T('NewsSystem.ui.aDMonthW')}</span>
                                 <div class="back-button focusable" onclick="${sref}.popScene()">
                                     ${T('NewsSystem.ui.dismiss')}
@@ -1385,51 +1388,51 @@
                 `;
             } else {
                 this._dndContainer.innerHTML = `
-                    <div class="cc-pockets-spread" style="flex-direction: column; width: ${spreadWidth}; height: ${spreadHeight};">
+                    <div class="cc-pockets-spread" style="${spreadSize}flex-direction: column">
                         <!-- Beautiful Vintage Newspaper Header Banner -->
-                        <div class="newspaper-header" style="padding: 24px 48px 12px 48px; border-bottom: 6px double #4a2711; display: flex; flex-direction: column; align-items: center; background: #ecdcb9; position:relative; box-sizing: border-box; width:100%;">
-                            <div style="font-family: 'Lora', serif; font-size: 3.2rem; color: #4a1d0f; text-align: center; letter-spacing: 3px; font-weight:bold; margin-bottom:4px;">
+                        <div class="newspaper-header" style="padding: 24px 48px 12px 48px; border-bottom: 6px double #4a2711; display: flex; flex-direction: column; align-items: center; background: #ecdcb9; position:relative; box-sizing: border-box; width:100%">
+                            <div style="font-family: 'Lora', serif; font-size: 3.52rem; color: #4a1d0f; text-align: center; letter-spacing: 3px; font-weight:bold; margin-bottom:4px">
                                 THE HYPERNET CHRONICLE
                             </div>
-                            <div style="font-family: 'Lora', serif; font-size: 1.15rem; font-weight: bold; color: #5c3516; width: 100%; border-top: 2px solid #4a2711; border-bottom: 2px solid #4a2711; padding: 6px 0; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;">
+                            <div style="font-family: 'Lora', serif; font-size: 1.322rem; font-weight: bold; color: #5c3516; width: 100%; border-top: 2px solid #4a2711; border-bottom: 2px solid #4a2711; padding: 6px 0; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box">
                                 <span>${T('News.ui.volumeNo', { no: monthIndex + 1 })}</span>
-                                <span style="letter-spacing: 1px;">${T('News.ui.masthead')}</span>
+                                <span style="letter-spacing: 1px">${T('News.ui.masthead')}</span>
                                 <span>${displayDate}</span>
                             </div>
                         </div>
 
-                        <div style="display: flex; flex: 1; overflow: hidden; position: relative; width:100%; box-sizing: border-box;">
+                        <div style="display: flex; flex: 1; overflow: hidden; position: relative; width:100%; box-sizing: border-box">
                             <!-- Left Page: The Headlines Column -->
-                            <div class="cc-page cc-page-left" style="padding: 24px 32px; display: flex; flex-direction: column; border-right: 1px solid rgba(139, 90, 43, 0.2); width:50%; box-sizing: border-box;">
-                                <div class="cc-subheader" style="text-align: center; font-size: 1.35rem; letter-spacing: 1px; margin-bottom: 16px; font-family:'Lora', serif;">
+                            <div class="cc-page cc-page-left" style="padding: 24px 32px; display: flex; border-right: 1px solid rgba(139, 90, 43, 0.2); width:50%; box-sizing: border-box">
+                                <div class="cc-subheader" style="text-align: center; font-size: 1.552rem; letter-spacing: 1px; margin-bottom: 16px; font-family:'Lora', serif">
                                     LATEST CHRONICLES
                                 </div>
                                 
                                 <!-- Month Selection Navigator -->
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-family: 'Lora', serif; font-size: 1.05rem; background: rgba(0,0,0,0.04); padding: 8px 12px; border-radius: 4px; border: 1px solid rgba(139,90,43,0.15); width:100%; box-sizing: border-box;">
-                                    <div class="newspaper-nav-btn focusable" onclick="${sref}.changeNewspaperMonth(-1)" style="cursor: pointer; color: #4a1d0f; font-weight:bold; user-select:none;">${T('News.ui.prev')}</div>
-                                    <span style="font-weight: bold; color: #4a1d0f; letter-spacing:1px;">${monthName.toUpperCase()} 2001</span>
-                                    <div class="newspaper-nav-btn focusable" onclick="${sref}.changeNewspaperMonth(1)" style="cursor: pointer; color: #4a1d0f; font-weight:bold; user-select:none;">${T('News.ui.next')}</div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-family: 'Lora', serif; font-size: 1.208rem; background: rgba(0,0,0,0.04); padding: 8px 12px; border-radius: 4px; border: 1px solid rgba(139,90,43,0.15); width:100%; box-sizing: border-box">
+                                    <div class="newspaper-nav-btn focusable" onclick="${sref}.changeNewspaperMonth(-1)" style="cursor: pointer; color: #4a1d0f; font-weight:bold; user-select:none">${T('News.ui.prev')}</div>
+                                    <span style="font-weight: bold; color: #4a1d0f; letter-spacing:1px">${monthName.toUpperCase()} 2001</span>
+                                    <div class="newspaper-nav-btn focusable" onclick="${sref}.changeNewspaperMonth(1)" style="cursor: pointer; color: #4a1d0f; font-weight:bold; user-select:none">${T('News.ui.next')}</div>
                                 </div>
 
                                 <!-- Scrollable Headlines List -->
-                                <div id="newspaper-headlines-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 8px;">
+                                <div id="newspaper-headlines-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 8px">
                                     ${headlinesHTML}
                                 </div>
                             </div>
 
                             <!-- Right Page: The Detailed Article -->
-                            <div class="cc-page cc-page-right" style="padding: 24px 32px; display: flex; flex-direction: column; width:50%; box-sizing: border-box;">
-                                <div class="cc-subheader" style="text-align: center; font-size: 1.35rem; letter-spacing: 1px; margin-bottom: 16px; font-family:'Lora', serif;">
+                            <div class="cc-page cc-page-right" style="padding: 24px 32px; display: flex; width:50%; box-sizing: border-box">
+                                <div class="cc-subheader" style="text-align: center; font-size: 1.552rem; letter-spacing: 1px; margin-bottom: 16px; font-family:'Lora', serif">
                                     GAZETTE MAGNIFIER
                                 </div>
                                 
                                 ${articleHTML}
                                 
                                 <!-- Return / Navigation Help at the bottom -->
-                                <div style="margin-top: auto; border-top: 1px dashed rgba(139, 90, 43, 0.4); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: #5c4b3d; font-family: 'Lora', serif; width:100%; box-sizing: border-box;">
+                                <div style="margin-top: auto; border-top: 1px dashed rgba(139, 90, 43, 0.4); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.984rem; color: #5c4b3d; font-family: 'Lora', serif; width:100%; box-sizing: border-box">
                                     <span>${T('NewsSystem.ui.aDMonthW')}</span>
-                                    <div class="back-button focusable" onclick="${sref}.popScene()" style="background: #8b5a2b; color: #ecdcb9; padding: 6px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1px solid #4a2711; text-transform: uppercase; font-family: 'Lora', serif; font-size: 0.9rem;">
+                                    <div class="back-button focusable" onclick="${sref}.popScene()" style="background: #8b5a2b; color: #ecdcb9; padding: 6px 16px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1px solid #4a2711; font-family: 'Lora', serif; font-size: 1.08rem">
                                         ${T('NewsSystem.ui.dismiss')}
                                     </div>
                                 </div>

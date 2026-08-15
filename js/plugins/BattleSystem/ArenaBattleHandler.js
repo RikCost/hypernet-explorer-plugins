@@ -264,7 +264,8 @@
 
             // Ascending streak loot on top of the battle's base reward.
             const streakReward = this.grantStreakRewards(newWins);
-            this.showStreakToast(newWins, streakReward);
+            const fun = this.payVictoryFun(newWins);
+            this.showStreakToast(newWins, streakReward, fun);
 
             // Advance a bracket every 7 wins.
             if (newWins % 7 === 0) {
@@ -538,18 +539,50 @@
         return { gold, entries };
     };
 
+    //=========================================================================
+    // Fun paid for a bout won
+    //=========================================================================
+    // A crowd, a win, and everyone still standing: the arena is entertainment
+    // as much as it is a fight, so a victory feeds the whole party's Fun meter,
+    // not just the actor who landed the last hit. A run that keeps going is
+    // worth more than a single bout, up to a ceiling - by then the party has
+    // had its evening out.
+    ArenaBattleHandler.WIN_FUN_BASE = 40;
+    ArenaBattleHandler.WIN_FUN_PER_STREAK = 8;
+    ArenaBattleHandler.WIN_FUN_MAX = 120;
+
+    // Returns the Fun actually paid, which showStreakToast announces alongside
+    // the spoils, or 0 when the needs system is not loaded.
+    ArenaBattleHandler.payVictoryFun = function (streak) {
+        const needs = window.PartyNeeds;
+        if (!needs || typeof needs.addLeisureToAll !== 'function') return 0;
+        const extra = Math.max(0, (streak || 1) - 1) * this.WIN_FUN_PER_STREAK;
+        const delta = Math.min(this.WIN_FUN_MAX, this.WIN_FUN_BASE + extra);
+        needs.addLeisureToAll(delta);
+        return delta;
+    };
+
     // Streak spoils are a reward like any other, so they use the shared reward
-    // popup: the streak is the heading, the gold and the drop are its body.
-    ArenaBattleHandler.showStreakToast = function (streak, reward) {
-        if (!reward || !window.ParchmentToast) return;
+    // popup: the streak is the heading, the gold and the drop are its body. The
+    // Fun the win paid is a second, grouped popup so neither overwrites the
+    // other.
+    ArenaBattleHandler.showStreakToast = function (streak, reward, fun) {
+        if (!window.ParchmentToast) return;
         try {
-            const streakLabel = T('Arena.streak');
-            window.ParchmentToast.reward({
-                title: `${streakLabel} x${streak}`,
-                gold: reward.gold,
-                entries: reward.entries,
-                duration: 150
-            });
+            const toasts = [];
+            if (reward) {
+                const streakLabel = T('Arena.streak');
+                toasts.push(() => window.ParchmentToast.reward({
+                    title: `${streakLabel} x${streak}`,
+                    gold: reward.gold,
+                    entries: reward.entries,
+                    duration: 150
+                }));
+            }
+            if (fun) {
+                toasts.push(() => window.ParchmentToast.need('leisure', fun)); // i18n-ignore: need id
+            }
+            window.ParchmentToast.group(toasts);
         } catch (e) { /* toast is best-effort */ }
     };
 
@@ -583,7 +616,8 @@
                 const streak = ArenaBattleHandler.getArenaStreak() + 1;
                 ArenaBattleHandler.setArenaStreak(streak);
                 const reward = ArenaBattleHandler.grantStreakRewards(streak);
-                ArenaBattleHandler.showStreakToast(streak, reward);
+                const fun = ArenaBattleHandler.payVictoryFun(streak);
+                ArenaBattleHandler.showStreakToast(streak, reward, fun);
                 this.setArenaMode(false);
             }
             return result;
@@ -978,7 +1012,8 @@
         t.partyLevel += 1;
 
         const reward = this.grantStreakRewards(t.wins);
-        this.showStreakToast(t.wins, reward);
+        const fun = this.payVictoryFun(t.wins);
+        this.showStreakToast(t.wins, reward, fun);
 
         if (SceneManager._scene && SceneManager._scene.isActive() && !this._nextTrialTimer) {
             this._nextTrialTimer = setTimeout(() => {

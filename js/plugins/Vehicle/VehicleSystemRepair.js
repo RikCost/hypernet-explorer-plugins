@@ -666,17 +666,17 @@
         }
 
         partsListHTML += `
-          <div style="border:1px solid var(--border-gold-amber-30); background:var(--bg-dark-warm-translucent-96); border-radius:6px; padding:10px 12px; display:flex; flex-direction:column; gap:6px; box-sizing:border-box;">
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
-              <span style="font-weight:bold; color:${isCritical ? 'var(--accent-red-3)' : 'var(--accent-cream-light)'};">
-                ${window.VehicleParts.label(part)} ${isCritical ? `<span style="font-size:0.7rem; font-weight:bold; text-transform:uppercase; color:var(--accent-red-3); border:1px solid var(--accent-red-3); border-radius:3px; padding:0px 4px; margin-left:6px; vertical-align:middle; font-family:'Lora', serif;">${T('VehicleRepair.critical')}</span>` : ''}
+          <div style="border:1px solid var(--border-gold-amber-30); background:var(--bg-dark-warm-translucent-96); border-radius:6px; padding:10px 12px; display:flex; flex-direction:column; gap:6px; box-sizing:border-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:6px">
+              <span style="font-weight:bold; color:${isCritical ? 'var(--accent-red-3)' : 'var(--accent-cream-light)'}">
+                ${window.VehicleParts.label(part)} ${isCritical ? `<span style="font-size:0.854rem; font-weight:bold; text-transform:uppercase; color:var(--accent-red-3); border:1px solid var(--accent-red-3); border-radius:3px; padding:0px 4px; margin-left:6px; vertical-align:middle; font-family:'Lora', serif">${T('VehicleRepair.critical')}</span>` : ''}
               </span>
-              <span style="font-family:'Lora', serif; font-weight:bold; color:${color}; font-size:1.1rem;">
+              <span style="font-family:'Lora', serif; font-weight:bold; color:${color}; font-size:1.265rem">
                 ${partHealth}%
               </span>
             </div>
-            <div style="width:100%; height:6px; background:var(--bg-well); border:1px solid var(--border-subtle-translucent-25); border-radius:3px; overflow:hidden;">
-              <div style="width:${partHealth}%; height:100%; background:${color}; border-radius:3px; transition: width 0.3s ease;"></div>
+            <div style="width:100%; height:6px; background:var(--bg-well); border:1px solid var(--border-subtle-translucent-25); border-radius:3px; overflow:hidden">
+              <div style="width:${partHealth}%; height:100%; background:${color}; border-radius:3px; transition: width 0.3s ease"></div>
             </div>
           </div>
         `;
@@ -690,37 +690,37 @@
       if (shipSpec) vehicleName = shipSpec.name.toUpperCase();
 
       const shipPlateHTML = shipSpec ? `
-          <div style="font-family:'Lora', serif; font-size:0.85rem; color:var(--accent-amber-light); letter-spacing:1px;">
+          <div style="font-family:'Lora', serif; font-size:1.02rem; color:var(--accent-amber-light); letter-spacing:1px">
             ${shipSpec.registry} &middot; ${shipSpec.hull.label} &middot; ${shipSpec.engine.label}
           </div>` : "";
 
       const appearanceBtnHTML = shipSpec ? `
-          <div class="action-button focusable" onclick="SceneManager._scene.openAppearance()" style="background:var(--bg-tertiary-focus-translucent-45); color:var(--accent-amber-glow); padding:10px 16px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid var(--border-focus-hover); text-transform:uppercase; font-family:'Lora', serif; font-size:0.95rem; box-shadow:0 2px 4px var(--shadow-black-translucent-45);">
+          <div class="action-button focusable" onclick="SceneManager._scene.openAppearance()" style="background:var(--bg-tertiary-focus-translucent-45); color:var(--accent-amber-glow); padding:10px 16px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid var(--border-focus-hover); text-transform:uppercase; font-family:'Lora', serif; font-size:1.14rem; box-shadow:0 2px 4px var(--shadow-black-translucent-45)">
             ${T('VehicleRepair.changeAppearance')}
           </div>` : "";
 
       const leftPageHTML = `
-        <h2 class="cc-header-gothic" style="font-size:1.85rem; margin-bottom:16px; text-align:center;">
+        <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px; text-align:center">
           ${vehicleName}
         </h2>
 
-        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:16px; text-align:center; font-family:'Lora', serif;">
-          <div style="width: 180px; height: 180px; border: 4px double var(--border-gold-amber); background: var(--bg-dark-warm-translucent-96); border-radius: 50%; box-shadow: inset 0 0 24px var(--shadow-black-translucent-55); display:flex; justify-content:center; align-items:center; overflow:hidden;">
-            <canvas id="vehicle-sprite-canvas" width="150" height="150" style="image-rendering:${shipSpec ? 'auto' : 'pixelated'};"></canvas>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:16px; text-align:center; font-family:'Lora', serif">
+          <div style="width: 180px; height: 180px; border: 4px double var(--border-gold-amber); background: var(--bg-dark-warm-translucent-96); border-radius: 50%; box-shadow: inset 0 0 24px var(--shadow-black-translucent-55); display:flex; justify-content:center; align-items:center; overflow:hidden">
+            <canvas id="vehicle-sprite-canvas" width="150" height="150" style="image-rendering:${shipSpec ? 'auto' : 'pixelated'}"></canvas>
           </div>
           ${shipPlateHTML}
 
-          <div style="font-style:italic; font-size:0.92rem; line-height:1.55; color:var(--text-card-medium); padding:0 12px;">
+          <div style="font-size:1.104rem; line-height:1.55; color:var(--text-card-medium); padding:0 12px">
             "${vehicleDesc}"
           </div>
 
-          <div style="margin: 6px 0; border: 4px double ${isBroken ? 'var(--border-blood-red)' : 'var(--border-forest-green)'}; background: ${isBroken ? 'var(--bg-danger-medium-10)' : 'var(--bg-success-green-15)'}; color: ${isBroken ? 'var(--accent-red-3)' : 'var(--text-cost-ok)'}; padding: 12px 24px; border-radius: 8px; font-family:'Lora', serif; font-size:1.3rem; font-weight:bold; letter-spacing:1px; box-shadow: 0 4px 8px var(--shadow-black-translucent-45); text-transform:uppercase;">
+          <div style="margin: 6px 0; border: 4px double ${isBroken ? 'var(--border-blood-red)' : 'var(--border-forest-green)'}; background: ${isBroken ? 'var(--bg-danger-medium-10)' : 'var(--bg-success-green-15)'}; color: ${isBroken ? 'var(--accent-red-3)' : 'var(--text-cost-ok)'}; padding: 12px 24px; border-radius: 8px; font-family:'Lora', serif; font-size:1.495rem; font-weight:bold; letter-spacing:1px; box-shadow: 0 4px 8px var(--shadow-black-translucent-45); text-transform:uppercase">
             ${isBroken ? (T('VehicleRepair.statusBroken')) : (T('VehicleRepair.statusOperational'))}
           </div>
           ${appearanceBtnHTML}
         </div>
 
-        <div style="margin-top:auto; text-align:center; font-family:'Lora', serif; font-size:0.8rem; color:var(--text-caption-brown); font-style:italic; border-top:1px dashed var(--border-gold-amber-30); padding-top:12px;">
+        <div style="margin-top:auto; text-align:center; font-family:'Lora', serif; font-size:0.96rem; color:var(--text-caption-brown); border-top:1px dashed var(--border-gold-amber-30); padding-top:12px">
           ${T('VehicleRepair.allCriticalComponentsMustMaintain')}
         </div>
       `;
@@ -731,7 +731,7 @@
           ${label}
         </div>`;
       const tabBarHTML = `
-        <div style="display:flex; gap:8px; margin-bottom:14px;">
+        <div style="display:flex; gap:8px; margin-bottom:14px">
           ${tab('repair',T('VehicleRepair.repair'))}
           ${tab('upgrades',T('VehicleRepair.upgrades'))}
         </div>`;
@@ -739,41 +739,40 @@
       // Both panels are built up-front and toggled by display so switching tabs
       // never rebuilds the DOM (and never reloads the sprite on the left page).
       const bodyHTML = `
-        <div id="maint-panel-repair" style="flex:1; flex-direction:column; min-height:0; display:${this._tab === 'repair' ? 'flex' : 'none'};">
+        <div id="maint-panel-repair" style="flex:1; flex-direction:column; min-height:0; display:${this._tab === 'repair' ? 'flex' : 'none'}">
           ${this.renderRepairPage(useItalian, partsListHTML)}
         </div>
-        <div id="maint-panel-upgrades" style="flex:1; flex-direction:column; min-height:0; display:${this._tab === 'upgrades' ? 'flex' : 'none'};">
+        <div id="maint-panel-upgrades" style="flex:1; flex-direction:column; min-height:0; display:${this._tab === 'upgrades' ? 'flex' : 'none'}">
           ${this.renderUpgradesPage(useItalian)}
         </div>`;
 
       // Transient feedback line.
       let flashHTML = "";
       if (this._flashTimer > 0 && this._flash) {
-        flashHTML = `<div style="text-align:center; font-family:'Lora', serif; font-weight:bold; font-size:0.95rem; margin-bottom:8px;
-          color:${this._flash.ok ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'};">${this._flash.text}</div>`;
+        flashHTML = `<div style="text-align:center; font-family:'Lora', serif; font-weight:bold; font-size:1.14rem; margin-bottom:8px; color:${this._flash.ok ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'}">${this._flash.text}</div>`;
       }
 
       const rightPageHTML = `
         ${tabBarHTML}
         ${flashHTML}
         ${bodyHTML}
-        <div class="action-button focusable" onclick="SceneManager._scene.exitMaintenance()" style="background:var(--bg-dark-warm-translucent-96); color:var(--accent-amber-glow); padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid var(--border-gold-amber); text-transform:uppercase; font-family:'Lora', serif; font-size:1.0rem; letter-spacing:0.5px; box-shadow:0 2px 4px var(--shadow-black-translucent-45); margin-top:auto;">
+        <div class="action-button focusable" onclick="SceneManager._scene.exitMaintenance()" style="background:var(--bg-dark-warm-translucent-96); color:var(--accent-amber-glow); padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid var(--border-gold-amber); text-transform:uppercase; font-family:'Lora', serif; font-size:1.15rem; letter-spacing:0.5px; box-shadow:0 2px 4px var(--shadow-black-translucent-45); margin-top:auto">
           ${T('VehicleRepair.close')}
         </div>
       `;
 
       this._dndContainer.innerHTML = `
-        <div class="cc-pockets-spread" style="width: 1400px; height: 900px;">
+        <div class="cc-pockets-spread">
           <!-- Spine Shading -->
-          <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 100%; background: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.15) 100%); pointer-events: none; z-index: 10;"></div>
+          <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 100%; background: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.15) 100%); pointer-events: none; z-index: 10"></div>
 
           <!-- Left Page -->
-          <div class="cc-page cc-page-left" style="padding: 28px 36px; display: flex; flex-direction: column; width:50%; box-sizing: border-box;">
+          <div class="cc-page cc-page-left" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
             ${leftPageHTML}
           </div>
 
           <!-- Right Page -->
-          <div class="cc-page cc-page-right" style="padding: 28px 36px; display: flex; flex-direction: column; width:50%; box-sizing: border-box;">
+          <div class="cc-page cc-page-right" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
             ${rightPageHTML}
           </div>
         </div>
@@ -789,26 +788,22 @@
         const cost = REPAIR_COST[type === 'bike' ? 'bike' : 'default'][mode];
         const afford = canAfford(cost);
         return `
-          <div class="focusable" onclick="SceneManager._scene.doRepair('${mode}')" style="
-            flex:1; cursor:${afford ? 'pointer' : 'not-allowed'}; opacity:${afford ? 1 : 0.55};
-            border:2px solid ${afford ? 'var(--border-gold-amber)' : 'var(--border-gold-amber-30)'};
-            background:var(--bg-dark-warm-translucent-96);
-            border-radius:6px; padding:8px 10px; text-align:center; font-family:'Lora', serif; box-shadow:0 2px 4px var(--shadow-black-translucent-45);">
-            <div style="font-weight:bold; text-transform:uppercase; color:var(--accent-amber-glow); font-size:0.95rem; letter-spacing:0.5px;">${label}</div>
-            <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:6px; justify-content:center;">${this.renderCost(cost)}</div>
+          <div class="focusable" onclick="SceneManager._scene.doRepair('${mode}')" style="flex:1; cursor:${afford ? 'pointer' : 'not-allowed'}; opacity:${afford ? 1 : 0.55}; border:2px solid ${afford ? 'var(--border-gold-amber)' : 'var(--border-gold-amber-30)'}; background:var(--bg-dark-warm-translucent-96); border-radius:6px; padding:8px 10px; text-align:center; font-family:'Lora', serif; box-shadow:0 2px 4px var(--shadow-black-translucent-45)">
+            <div style="font-weight:bold; text-transform:uppercase; color:var(--accent-amber-glow); font-size:1.14rem; letter-spacing:0.5px">${label}</div>
+            <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:6px; justify-content:center">${this.renderCost(cost)}</div>
           </div>`;
       };
 
       return `
-        <h2 class="cc-header-gothic" style="font-size:1.55rem; margin-bottom:12px; text-align:center;">
+        <h2 class="cc-header-gothic" style="font-size:1.705rem; margin-bottom:12px; text-align:center">
           ${T('VehicleRepair.componentsRegistry')}
         </h2>
 
-        <div class="maint-scroll" data-active="${this._tab === 'repair' ? '1' : '0'}" style="flex:1; overflow-y:auto; padding-right:12px; margin-bottom:14px; display:grid; grid-template-columns:1fr 1fr; gap:10px 16px; align-content:start; max-height: 480px; box-sizing:border-box;">
+        <div class="maint-scroll" data-active="${this._tab === 'repair' ? '1' : '0'}" style="flex:1; overflow-y:auto; padding-right:12px; margin-bottom:14px; display:grid; grid-template-columns:1fr 1fr; gap:10px 16px; align-content:start; max-height: 480px; box-sizing:border-box">
           ${partsListHTML}
         </div>
 
-        <div style="display:flex; gap:12px; margin-bottom:12px;">
+        <div style="display:flex; gap:12px; margin-bottom:12px">
           ${mkRepairBtn('partial', T('VehicleRepair.repairPercent', { percent: repairAmountPartial }))}
           ${mkRepairBtn('full',T('VehicleRepair.fullRepair'))}
         </div>
@@ -834,7 +829,7 @@
         // Level pips / installed badge.
         let progressHTML;
         if (isBool) {
-          progressHTML = `<span style="font-size:0.8rem; font-weight:bold; color:${maxed ? 'var(--text-cost-ok)' : 'var(--text-card-medium)'};">
+          progressHTML = `<span style="font-size:0.96rem; font-weight:bold; color:${maxed ? 'var(--text-cost-ok)' : 'var(--text-card-medium)'}">
             ${maxed ? (T('VehicleRepair.installed')) : (T('VehicleRepair.notInstalled'))}</span>`;
         } else {
           let pips = "";
@@ -842,40 +837,35 @@
             pips += `<span style="display:inline-block; width:12px; height:12px; border-radius:50%; margin-left:3px;
               border:1px solid var(--border-gold-amber); background:${i < level ? 'var(--accent-amber-glow)' : 'transparent'};"></span>`;
           }
-          progressHTML = `<span style="font-size:0.75rem; color:var(--text-card-medium); vertical-align:middle;">${T('VehicleRepair.lv')} ${level}/${def.max}</span>${pips}`;
+          progressHTML = `<span style="font-size:0.915rem; color:var(--text-card-medium); vertical-align:middle">${T('VehicleRepair.lv')} ${level}/${def.max}</span>${pips}`;
         }
 
         // Effect line (current -> next).
-        const effectHTML = `<div style="font-size:0.78rem; color:var(--accent-amber-light); margin-top:4px;">${this.upgradeEffectText(type, key, useItalian)}</div>`;
+        const effectHTML = `<div style="font-size:0.952rem; color:var(--accent-amber-light); margin-top:4px">${this.upgradeEffectText(type, key, useItalian)}</div>`;
 
         const iconStyle = `background: url('img/system/IconSet.png') -${(def.icon % 16) * 32}px -${Math.floor(def.icon / 16) * 32}px no-repeat; width:32px; height:32px; flex:0 0 32px;`;
 
         let actionHTML;
         if (maxed) {
-          actionHTML = `<div style="text-align:center; font-weight:bold; color:var(--text-cost-ok); font-size:0.85rem;">${T('VehicleRepair.maxed')}</div>`;
+          actionHTML = `<div style="text-align:center; font-weight:bold; color:var(--text-cost-ok); font-size:1.02rem">${T('VehicleRepair.maxed')}</div>`;
         } else {
           actionHTML = `
-            <div style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin:6px 0;">${this.renderCost(cost)}</div>
-            <div class="focusable" onclick="SceneManager._scene.purchaseUpgrade('${key}')" style="
-              cursor:${afford ? 'pointer' : 'not-allowed'}; opacity:${afford ? 1 : 0.55};
-              border:2px solid ${afford ? 'var(--border-gold-amber)' : 'var(--border-gold-amber-30)'};
-              background:var(--bg-dark-warm-translucent-96); box-shadow:0 2px 4px var(--shadow-black-translucent-45);
-              border-radius:5px; padding:6px; text-align:center; font-weight:bold; text-transform:uppercase;
-              color:var(--accent-amber-glow); font-family:'Lora', serif; font-size:0.85rem; letter-spacing:0.5px;">
+            <div style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin:6px 0">${this.renderCost(cost)}</div>
+            <div class="focusable" onclick="SceneManager._scene.purchaseUpgrade('${key}')" style="cursor:${afford ? 'pointer' : 'not-allowed'}; opacity:${afford ? 1 : 0.55}; border:2px solid ${afford ? 'var(--border-gold-amber)' : 'var(--border-gold-amber-30)'}; background:var(--bg-dark-warm-translucent-96); box-shadow:0 2px 4px var(--shadow-black-translucent-45); border-radius:5px; padding:6px; text-align:center; font-weight:bold; text-transform:uppercase; color:var(--accent-amber-glow); font-family:'Lora', serif; font-size:1.02rem; letter-spacing:0.5px">
               ${isBool ? (T('VehicleRepair.install')) : (T('VehicleRepair.upgrade'))}
             </div>`;
         }
 
         cardsHTML += `
-          <div style="border:1px solid var(--border-gold-amber-30); background:var(--bg-dark-warm-translucent-96); border-radius:8px; padding:12px; box-sizing:border-box;">
-            <div style="display:flex; gap:10px; align-items:flex-start;">
+          <div style="border:1px solid var(--border-gold-amber-30); background:var(--bg-dark-warm-translucent-96); border-radius:8px; padding:12px; box-sizing:border-box">
+            <div style="display:flex; gap:10px; align-items:flex-start">
               <div style="${iconStyle}"></div>
-              <div style="flex:1;">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                  <span style="font-weight:bold; color:var(--accent-cream-light); font-size:1.0rem;">${name}</span>
-                  <span style="white-space:nowrap;">${progressHTML}</span>
+              <div style="flex:1">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px">
+                  <span style="font-weight:bold; color:var(--accent-cream-light); font-size:1.15rem">${name}</span>
+                  <span style="white-space:nowrap">${progressHTML}</span>
                 </div>
-                <div style="font-size:0.8rem; font-style:italic; color:var(--text-card-medium); line-height:1.4; margin-top:3px;">${desc}</div>
+                <div style="font-size:0.96rem; color:var(--text-card-medium); line-height:1.4; margin-top:3px">${desc}</div>
                 ${effectHTML}
               </div>
             </div>
@@ -884,11 +874,11 @@
       });
 
       return `
-        <h2 class="cc-header-gothic" style="font-size:1.55rem; margin-bottom:12px; text-align:center;">
+        <h2 class="cc-header-gothic" style="font-size:1.705rem; margin-bottom:12px; text-align:center">
           ${T('VehicleRepair.upgradeWorkshop')}
         </h2>
-        <div class="maint-scroll" data-active="${this._tab === 'upgrades' ? '1' : '0'}" style="flex:1; overflow-y:auto; padding-right:10px; margin-bottom:14px; display:flex; flex-direction:column; gap:10px; max-height: 540px; box-sizing:border-box;">
-          ${cardsHTML || `<div style="text-align:center; color:var(--text-card-medium); font-style:italic; padding:24px;">${T('VehicleRepair.noUpgradesAvailable')}</div>`}
+        <div class="maint-scroll" data-active="${this._tab === 'upgrades' ? '1' : '0'}" style="flex:1; overflow-y:auto; padding-right:10px; margin-bottom:14px; display:flex; flex-direction:column; gap:10px; max-height: 540px; box-sizing:border-box">
+          ${cardsHTML || `<div style="text-align:center; color:var(--text-card-medium); padding:24px">${T('VehicleRepair.noUpgradesAvailable')}</div>`}
         </div>
       `;
     }
@@ -938,7 +928,7 @@
         const ok = have >= qty || ($gameSystem && $gameSystem._isSandboxMode);
         const icon = matIcon(id);
         const iconStyle = `background: url('img/system/IconSet.png') -${(icon % 16) * 24}px -${Math.floor(icon / 16) * 24}px no-repeat; background-size:384px auto; width:24px; height:24px; display:inline-block; vertical-align:middle;`;
-        return `<span style="display:inline-flex; align-items:center; gap:3px; font-size:0.8rem; font-weight:bold; color:${ok ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'};" title="${matName(id)}">
+        return `<span style="display:inline-flex; align-items:center; gap:3px; font-size:0.96rem; font-weight:bold; color:${ok ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'}" title="${matName(id)}">
           <span style="${iconStyle}"></span>${have}/${qty}</span>`;
       }).join('');
     }
@@ -948,7 +938,7 @@
     tabStyleFor(active) {
       return `
         flex:1; text-align:center; cursor:pointer; padding:9px 6px; font-weight:bold; text-transform:uppercase;
-        font-family:'Lora', serif; font-size:0.95rem; letter-spacing:0.5px; border-radius:6px 6px 0 0;
+        font-family:'Lora', serif; font-size:1.14rem; letter-spacing:0.5px; border-radius:6px 6px 0 0;
         border:2px solid ${active ? 'var(--border-gold-amber)' : 'var(--border-gold-amber-30)'}; border-bottom:none;
         color:${active ? 'var(--accent-amber-glow)' : 'var(--text-card-medium)'};
         background:${active ? 'var(--bg-dark-warm-translucent-96)' : 'transparent'};

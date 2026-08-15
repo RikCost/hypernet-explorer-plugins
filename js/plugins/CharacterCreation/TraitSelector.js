@@ -4,15 +4,18 @@
 
 /*:
  * @target MZ
- * @plugindesc Trait Selector Menu v1.3.0
+ * @plugindesc Trait Selector Menu v1.4.0
  * @author Omni-Lex
- * @version 1.3.0
+ * @version 1.4.0
  * @description A trait selection menu that affects player stats and abilities
  *
  * @help TraitSelector.js
  *
- * This plugin creates a trait selection menu where players must choose 4 traits
- * that will affect their character's base stats, skills, items, and equipment.
+ * This plugin creates a trait selection menu where players spend a purse of
+ * trait points on traits that affect their character's base stats, skills,
+ * items and equipment. Every trait in js/db/Health/Traits.json carries a
+ * `cost`: a positive one is paid out of the purse, a negative one is a
+ * drawback that pays points back into it.
  *
  * The scene is drawn entirely by the shared character creation overlay
  * (#character-creation-container), so it uses the same book spread, cards,
@@ -40,7 +43,7 @@
  *
  * @command randomizeTraits
  * @text Randomize Traits
- * @desc Randomly selects and applies 5 compatible traits to the actor
+ * @desc Rolls a compatible set of traits the point budget can pay for and applies it to the actor
  *
  * @param switchIds
  * @text Switch IDs to Reset
@@ -89,9 +92,114 @@
   // theme.css so keyboard up/down moves the cursor by one visual row.
   const TRAIT_GRID_COLS = 4;
 
+  // --- Trait points -------------------------------------------------------
+  // A trait is not one of four interchangeable slots any more. Every entry in
+  // js/db/Health/Traits.json carries a `cost` in the -4..+5 range and a
+  // character is born with a purse to spend: a strong trait is expensive, and
+  // a trait that is nothing but a burden costs a negative number, paying
+  // points back so a build can afford something it otherwise could not.
+  //
+  // The two caps are what keep that honest. Without the refund cap a sheet
+  // could be twenty afflictions deep and buy the whole book with them; without
+  // the pick cap a purse full of one-point traits would print a character
+  // sheet nobody can read.
+  const TRAIT_POINT_BUDGET = 10;
+  const TRAIT_REFUND_CAP = 6;
+  const TRAIT_MAX_PICKS = 8;
+
+  // Nothing is free: a trait whose data forgot to price it is charged a point.
+  // Illnesses are not traits and are never priced (see the diseases tab).
+  const traitCost = (trait) => {
+    if (!trait || trait.diseaseId) return 0;
+    const cost = Number(trait.cost);
+    return Number.isFinite(cost) ? cost : 1;
+  };
+
+  // What a set of traits has spent, what its drawbacks paid back and what is
+  // left. `refunded` is the raw sum of the drawbacks; only `credit`, the part
+  // under the cap, actually buys anything.
+  const traitTally = (traits) => {
+    const rows = traits || [];
+    let spent = 0;
+    let refunded = 0;
+    rows.forEach((trait) => {
+      const cost = traitCost(trait);
+      if (cost >= 0) spent += cost;
+      else refunded -= cost;
+    });
+    const credit = Math.min(refunded, TRAIT_REFUND_CAP);
+    return {
+      spent,
+      refunded,
+      credit,
+      available: TRAIT_POINT_BUDGET + credit,
+      remaining: TRAIT_POINT_BUDGET + credit - spent,
+      count: rows.length,
+    };
+  };
+
+  // Whether one more trait fits: the purse, the refund cap and the pick cap.
+  // A drawback past the cap is refused rather than silently paying nothing.
+  const traitFits = (trait, traits) => {
+    const tally = traitTally(traits);
+    if (tally.count >= TRAIT_MAX_PICKS) return false;
+    const cost = traitCost(trait);
+    if (cost < 0) return tally.refunded - cost <= TRAIT_REFUND_CAP;
+    return cost <= tally.remaining;
+  };
+
+  // A cost badge reads as what the trait does to the purse: a plain number is
+  // what it takes out, a "+n" in the refund colour is what it pays in.
+  const costBadgeHTML = (cost) =>
+    cost < 0
+      ? `<span class="trait-cost refund">+${-cost}</span>`
+      : `<span class="trait-cost">${cost}</span>`;
+
+  // Roll a build the purse can actually pay for. `rng` is any () => [0,1) so
+  // the seeded generators elsewhere (NPC society, the character sheet) can
+  // hand in their own and stay reproducible. Drawbacks are rolled first: what
+  // they pay back is what the rest of the build is bought with.
+  const pickRandomTraits = (options) => {
+    const opts = options || {};
+    const rng = opts.rng || Math.random;
+    const bag = (opts.pool || getTraits()).slice();
+    for (let i = bag.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      const swap = bag[i];
+      bag[i] = bag[j];
+      bag[j] = swap;
+    }
+
+    const picked = [];
+    const compatible = (trait) => !picked.some((bound) =>
+      (trait.incompatible || []).includes(bound.id) ||
+      (bound.incompatible || []).includes(trait.id)
+    );
+    const consider = (trait) => {
+      if (picked.includes(trait)) return;
+      if (compatible(trait) && traitFits(trait, picked)) picked.push(trait);
+    };
+
+    const wantedDrawbacks = Math.floor(rng() * 3); // 0-2 burdens to fund the rest
+    if (wantedDrawbacks > 0) {
+      for (const trait of bag) {
+        if (picked.length >= wantedDrawbacks) break;
+        if (traitCost(trait) < 0) consider(trait);
+      }
+    }
+    // Then spend the purse down. The bag is walked to the end rather than
+    // stopped at the first trait that does not fit, so the last point or two
+    // still find something cheap to buy.
+    for (const trait of bag) {
+      if (traitTally(picked).remaining <= 0) break;
+      if (traitCost(trait) >= 0) consider(trait);
+    }
+    return picked;
+  };
+
   // "diseases" is a fifth tab and not a fifth kind of trait: what is picked
-  // there is an illness the character walks in already carrying, it costs none
-  // of the four trait slots, and it is handed to Health_DiseaseSystem rather
+  // there is an illness the character walks in already carrying, it costs no
+  // trait points at all, and it is handed to Health_DiseaseSystem rather
   // than folded into paramPlus.
   const TRAIT_CATEGORIES = ["genetic", "physical", "mental", "magical", "diseases"];
   const TRAIT_CATEGORY_LABELS = {
@@ -126,7 +234,7 @@
       .sort((a, b) => a.name.localeCompare(b.name));
   };
 
-  const t = (key) => T('Traits.' + key);
+  const t = (key, params) => T('Traits.' + key, params);
 
   let _statsI18n = null;
 
@@ -234,9 +342,9 @@
   //-----------------------------------------------------------------------------
   // The whole scene is the shared character creation overlay: a book spread
   // whose LEFT page holds the category tabs, the trait cards and the details of
-  // the highlighted trait, and whose RIGHT page holds the four bound slots, the
-  // running tally and the granted skills. No RPG Maker window is drawn, the
-  // cursor lives in the scene itself.
+  // the highlighted trait, and whose RIGHT page holds the point purse, every
+  // bound trait written out in full, the running tally and the granted skills.
+  // No RPG Maker window is drawn, the cursor lives in the scene itself.
 
   class Scene_TraitSelector extends Scene_MenuBase {
     static _returnToCharacterCreation = false; // Flag to control return behavior
@@ -259,6 +367,24 @@
       // Only keyboard movement scrolls the grid to the cursor; mouse hover
       // must never yank the list under the pointer.
       this._keyboardCursor = true;
+
+      // The shared search + filter strip (UI/MenuSearchBar.js), in this page's
+      // vocabulary: a trait costs points and has a nature, and nothing here is
+      // weighed or levelled.
+      this._traitBar = window.MenuSearchBar ? window.MenuSearchBar.create({
+        id: 'traits',
+        placeholder: t('searchPlaceholder'),
+        sorts: ['name', 'price'],
+        onChange: () => {
+          this._cursor = 0;
+          // The grid only ever rebuilds on a category switch; a new filter is
+          // a new grid too, so the signature is cleared to force one.
+          if (this._sig) this._sig.category = null;
+          this.syncOverlay(false);
+          if (this._traitBar) this._traitBar.restoreFocus();
+        }
+      }) : null;
+
       loadI18nData().then(() => {
         this.resetSwitches();
         this.resetActorTraits();
@@ -268,6 +394,7 @@
 
     terminate() {
       super.terminate();
+      if (this._traitBar) { this._traitBar.dispose(); this._traitBar = null; }
       if (this._dndContainer) {
         this._dndContainer.style.display = "none";
       }
@@ -335,7 +462,22 @@
         if (!rows.length) return rows;
         this._categoryCache[category] = rows;
       }
-      return this._categoryCache[category];
+      return this.filterTraits(this._categoryCache[category]);
+    }
+
+    // Whatever the search strip is asking for, applied to the open tab. It is
+    // applied OUTSIDE the category cache, so narrowing the search never bakes a
+    // filtered list into the tab it came from. A trait has a name, a nature and
+    // a price in points; it has no weight and no level, so the strip is never
+    // asked to offer those here.
+    filterTraits(rows) {
+      if (!this._traitBar) return rows;
+      return this._traitBar.apply(rows, (trait) => ({
+        name: getTraitText(trait, "name"),
+        subtitle: getTraitText(trait, "description"),
+        category: trait.nature || "",
+        price: trait.diseaseId ? 0 : traitCost(trait)
+      }));
     }
 
     currentTrait() {
@@ -356,13 +498,13 @@
       this.onTabClick(next);
     }
 
-    // A trait can be bound unless it is already bound, the four slots are full,
-    // or it clashes with something already bound.
+    // A trait can be bound unless it is already bound, the purse cannot pay
+    // for it, or it clashes with something already bound.
     traitState(trait) {
-      // An illness never competes for a trait slot, so it is never blocked and
-      // never counts toward the four.
+      // An illness never competes for trait points, so it is never blocked and
+      // never shows up in the tally.
       if (trait && trait.diseaseId) {
-        return { selected: this._selectedDiseases.includes(trait), incompatible: false, blocked: false };
+        return { selected: this._selectedDiseases.includes(trait), incompatible: false, unaffordable: false, blocked: false };
       }
       const selected = this._selectedTraits.includes(trait);
       const incompatible = !selected && this._selectedTraits.some(
@@ -370,8 +512,14 @@
           (trait.incompatible || []).includes(bound.id) ||
           (bound.incompatible || []).includes(trait.id)
       );
-      const blocked = !selected && (incompatible || this._selectedTraits.length >= 4);
-      return { selected, incompatible, blocked };
+      const unaffordable = !selected && !incompatible && !traitFits(trait, this._selectedTraits);
+      const blocked = !selected && (incompatible || unaffordable);
+      return { selected, incompatible, unaffordable, blocked };
+    }
+
+    // The purse as the right page prints it.
+    tally() {
+      return traitTally(this._selectedTraits);
     }
 
     calculateTotalBonuses() {
@@ -386,54 +534,79 @@
     // --- Overlay rendering -------------------------------------------------
     // The markup is built exactly once; every later change patches only the
     // panel that actually changed (state classes on the cards, the detail
-    // card, the bound slots). Nothing rebuilds on cursor movement, so the
-    // overlay never flickers.
+    // card, the purse, the bound traits). Nothing rebuilds on cursor movement,
+    // so the overlay never flickers.
 
+    // The page is two columns with one job each.
+    //
+    // LEFT is the shop: the purse strip the player is spending out of, the
+    // category tabs, the search strip and then nothing but trait cards, all the
+    // way down. The old layout also wedged a fixed 26%-tall details box under
+    // the grid, which left the cards a narrow band in the middle of the page and
+    // put the description of the highlighted trait in a box too short to hold
+    // it; the details have moved to the right page, where there is room.
+    //
+    // RIGHT is the sheet being written: the open trait in full at the top, the
+    // bound traits under it, one summary card for everything they add up to, and
+    // the Back / Random / Continue bar. Five separately-scrolling dossier cards
+    // used to compete for that page and none of them ever had enough height.
     buildOverlayDOM() {
       const tabsHtml = TRAIT_CATEGORIES.map((category) =>
-        `<div class="cc-card-option" data-category="${category}"><div class="cc-option-title">${t(TRAIT_CATEGORY_LABELS[category])}</div></div>`
+        `<div class="ts-tab" data-category="${category}">${t(TRAIT_CATEGORY_LABELS[category])}</div>`
       ).join("");
 
       this._dndContainer.innerHTML = `
         <div class="cc-pockets-spread">
-          <div class="cc-page cc-page-left" style="display: flex; flex-direction: column;">
+          <div class="cc-page cc-page-left ts-page">
             <h2 class="cc-header-gothic">${t('titleTraits')}</h2>
-            <p class="cc-text-desc" style="margin-bottom: 0;">${t("headerText")}</p>
 
-            <div class="cc-select-grid cc-compact cc-tab-row" id="ts-tabs">${tabsHtml}</div>
-            <div class="cc-select-grid cc-compact cc-trait-grid" id="ts-grid"></div>
-            <div id="ts-info" style="flex: 0 0 auto; height: 26%; min-height: 148px; overflow-y: auto; margin-top: 12px;"></div>
+            <!-- The purse, at the top of the page it is spent on. -->
+            <div class="ts-purse" id="ts-points"></div>
+
+            <div class="ts-tab-row" id="ts-tabs">${tabsHtml}</div>
+            <div class="ts-search-slot" id="ts-search-slot"></div>
+            <div class="cc-select-grid cc-trait-grid" id="ts-grid"></div>
           </div>
 
-          <div class="cc-page cc-page-right" style="display: flex; flex-direction: column;">
-            <h2 class="cc-header-gothic">${t("selectedTraitsLabel")}</h2>
+          <div class="cc-page cc-page-right ts-page">
+            <!-- The page is headed by whatever the cursor is on, so the name is
+                 not repeated inside the card below it. -->
+            <h2 class="cc-header-gothic" id="ts-info-title">${t("titleTraits")}</h2>
 
-            <div class="cc-dossier-card" id="ts-slots"></div>
+            <!-- The trait under the cursor, written out in full. -->
+            <div class="ts-detail" id="ts-info"></div>
 
-            <div class="cc-dossier-card" id="ts-diseases-card" style="display: none;">
+            <h3 class="cc-subheader ts-section-head">
+              <span>${t("selectedTraitsLabel")}</span>
+              <span class="ts-count" id="ts-picked-count"></span>
+            </h3>
+            <div class="ts-picked-list" id="ts-picked"></div>
+
+            <div class="cc-dossier-card ts-summary" id="ts-diseases-card" style="display: none">
               <h3 class="cc-subheader">${t("selectedDiseasesLabel")}</h3>
-              <div id="ts-diseases" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+              <div class="ts-badge-row" id="ts-diseases"></div>
             </div>
 
-            <div class="cc-dossier-card">
-              <h3 class="cc-subheader">${t("totalBonuses")}</h3>
-              <div id="ts-bonuses" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+            <!-- What the build adds up to. Bonuses and granted skills were two
+                 cards fighting for the same few centimetres; they are one. -->
+            <div class="cc-dossier-card ts-summary">
+              <div class="ts-summary-row">
+                <span class="cc-dossier-label">${t("totalBonuses")}</span>
+                <div class="ts-badge-row" id="ts-bonuses"></div>
+              </div>
+              <div class="ts-summary-row">
+                <span class="cc-dossier-label">${t("finalSkills")}</span>
+                <div class="ts-badge-row" id="ts-skills"></div>
+              </div>
             </div>
 
-            <div class="cc-dossier-card" style="flex: 1 1 auto; min-height: 80px; overflow-y: auto;">
-              <h3 class="cc-subheader">${t("finalSkills")}</h3>
-              <div id="ts-skills" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
-            </div>
-
-            <div class="cc-button-panel">
-              <button class="cc-btn-treaty confirm" id="ts-btn-confirm">${t('confirm')}</button>
-            </div>
+            <div class="cc-button-panel" id="ts-buttons"></div>
           </div>
 
           <!-- The runtime does not honour the "inset" shorthand: it silently
                collapses the overlay onto the top-left corner of the spread, so
                the four longhands (plus a size) are spelled out here. -->
-          <div id="ts-prompt" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 1200; display: none; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.55);"></div>
+          <div id="ts-prompt" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 1200; display: none; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.55)"></div>
         </div>
       `;
 
@@ -444,18 +617,47 @@
         diseasesCard: q("#ts-diseases-card"),
         grid: q("#ts-grid"),
         info: q("#ts-info"),
-        slots: q("#ts-slots"),
+        infoTitle: q("#ts-info-title"),
+        points: q("#ts-points"),
+        picked: q("#ts-picked"),
+        pickedCount: q("#ts-picked-count"),
         bonuses: q("#ts-bonuses"),
         skills: q("#ts-skills"),
         prompt: q("#ts-prompt"),
       };
 
-      this._el.tabs.querySelectorAll(".cc-card-option").forEach((el) => {
+      this._el.tabs.querySelectorAll(".ts-tab").forEach((el) => {
         el.addEventListener("click", () => this.onTabClick(el.dataset.category));
       });
-      q("#ts-btn-confirm").addEventListener("click", () => this.openPrompt());
 
+      this.buildButtons(q("#ts-buttons"));
       this.syncOverlay(true);
+    }
+
+    // Back / Random / Continue, in the shared three-slot bar every creation
+    // screen ends with, so the two controls the player navigates with sit where
+    // they sat on the step before this one.
+    buildButtons(panelEl) {
+      const CCB = window.CCButtons;
+      const slots = CCB.slots(panelEl);
+
+      const back = document.createElement("button");
+      back.className = "cc-btn-treaty";
+      back.textContent = CCB.backLabel();
+      back.addEventListener("click", () => this.onTraitsBack());
+      slots.back.appendChild(back);
+
+      const random = document.createElement("button");
+      random.className = "cc-btn-treaty";
+      random.textContent = CCB.randomLabel();
+      random.addEventListener("click", () => this.onTraitsRandom());
+      slots.mid.appendChild(random);
+
+      this._confirmEl = document.createElement("button");
+      this._confirmEl.className = "cc-btn-treaty confirm";
+      this._confirmEl.textContent = CCB.continueLabel();
+      this._confirmEl.addEventListener("click", () => this.openPrompt());
+      slots.next.appendChild(this._confirmEl);
     }
 
     // Rebuilds the card grid. Only ever called on a category switch.
@@ -465,9 +667,12 @@
       this._cardEls = traits.map((trait, idx) => {
         const el = document.createElement("div");
         el.className = "cc-card-option";
+        // Illnesses are browsed in the same grid but are not bought with
+        // points, so only a real trait carries a price on its card.
         el.innerHTML = `
           <span style="${this.getIconStyle(trait.icon, 22)}"></span>
           <div class="cc-option-title">${getTraitText(trait, "name")}</div>
+          ${trait.diseaseId ? "" : costBadgeHTML(traitCost(trait))}
         `;
         el.addEventListener("click", () => this.onTraitCardClick(idx));
         el.addEventListener("mouseenter", () => this.onTraitCardHover(idx));
@@ -478,9 +683,17 @@
       this._el.grid.appendChild(frag);
       this._el.grid.scrollTop = 0;
 
-      this._el.tabs.querySelectorAll(".cc-card-option").forEach((el) => {
-        el.classList.toggle("selected", el.dataset.category === this._currentCategory);
+      this._el.tabs.querySelectorAll(".ts-tab").forEach((el) => {
+        el.classList.toggle("active", el.dataset.category === this._currentCategory);
       });
+
+      // The strip is redrawn with the grid (the natures on offer change with
+      // the tab), then handed its caret back.
+      const searchSlot = this._dndContainer.querySelector("#ts-search-slot");
+      if (searchSlot && this._traitBar) {
+        searchSlot.innerHTML = this._traitBar.html();
+        this._traitBar.restoreFocus();
+      }
 
       this._sig.category = this._currentCategory;
       this._sig.cursor = -1;
@@ -502,22 +715,27 @@
       }
     }
 
-    // Detail card for the trait under the cursor.
+    // Detail card for the trait under the cursor. It heads the right page, so
+    // the page's own title is the trait's name.
     renderInfo(trait) {
       if (!trait) {
         this._el.info.innerHTML = "";
+        if (this._el.infoTitle) this._el.infoTitle.textContent = t("titleTraits");
         return;
+      }
+      if (this._el.infoTitle) {
+        this._el.infoTitle.textContent = trait.diseaseId ? trait.name : getTraitText(trait, "name");
       }
       if (trait.diseaseId) return this.renderDiseaseInfo(trait);
 
       const statBadges = (stats, color) => Object.keys(stats || {}).map((key) => {
         const value = stats[key];
         const sign = value > 0 ? "+" : "";
-        return `<span class="cc-element-badge" style="color: ${color};">${getParamDisplayName(key)} ${sign}${value}</span>`;
+        return `<span class="cc-element-badge" style="color: ${color}">${getParamDisplayName(key)} ${sign}${value}</span>`;
       }).join("");
 
       const iconBadge = (iconIndex, label, suffix) =>
-        `<span class="cc-element-badge"><span style="${this.getIconStyle(iconIndex, 16)} margin-right: 6px;"></span>${label}${suffix ? ` ${suffix}` : ""}</span>`;
+        `<span class="cc-element-badge"><span style="${this.getIconStyle(iconIndex, 16)} margin-right: 6px"></span>${label}${suffix ? ` ${suffix}` : ""}</span>`;
 
       // trait.items is a flat array with one entry per copy, so tally by id.
       const itemCounts = {};
@@ -537,18 +755,30 @@
         .join("");
 
       const row = (label, content) => content ? `
-        <div class="cc-dossier-row" style="align-items: flex-start; gap: 8px;">
-          <span class="cc-dossier-label" style="flex: 0 0 auto;">${label}</span>
-          <span style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: flex-end;">${content}</span>
+        <div class="ts-detail-row">
+          <span class="cc-dossier-label">${label}</span>
+          <div class="ts-badge-row">${content}</div>
         </div>
       ` : "";
 
+      // Why a card cannot be taken, said in words on the page that describes it,
+      // rather than left to the dimmed card in the grid.
+      const state = this.traitState(trait);
+      const blockedNote = state.incompatible
+        ? `<div class="ts-detail-note">${t("incompatibleNote")}</div>`
+        : state.unaffordable
+          ? `<div class="ts-detail-note">${t("unaffordableNote")}</div>`
+          : "";
+
       this._el.info.innerHTML = `
-        <div class="cc-dossier-card" style="margin-bottom: 0;">
-          <h3 class="cc-subheader" style="display: flex; align-items: center; gap: 8px;">
-            <span style="${this.getIconStyle(trait.icon, 22)}"></span>${getTraitText(trait, "name")}
-          </h3>
-          <p class="cc-text-desc" style="text-align: left; margin-bottom: 10px;">${getTraitText(trait, "description")}</p>
+        <div class="cc-dossier-card ts-detail-card">
+          <div class="ts-detail-head">
+            <span style="${this.getIconStyle(trait.icon, 30)}"></span>
+            <span class="ts-detail-label">${t("costLabel")}</span>
+            ${costBadgeHTML(traitCost(trait))}
+          </div>
+          <p class="ts-detail-desc">${getTraitText(trait, "description")}</p>
+          ${blockedNote}
           ${row(t("benefits"), statBadges(trait.positive, "var(--text-forest-green)"))}
           ${row(t("drawbacks"), statBadges(trait.negative, "var(--accent-red-3)"))}
           ${row(t("grantsSkills"), skillBadges)}
@@ -558,41 +788,65 @@
       `;
     }
 
-    renderSlots() {
-      let html = "";
-      for (let i = 0; i < 4; i++) {
-        const trait = this._selectedTraits[i];
-        html += trait ? `
-          <div class="cc-dossier-row" data-slot="${i}" style="cursor: pointer; align-items: center;">
-            <span class="cc-dossier-label" style="display: flex; align-items: center; gap: 8px;">
-              <span style="${this.getIconStyle(trait.icon, 20)}"></span>${i + 1}. ${getTraitText(trait, "name")}
-            </span>
-            <span class="cc-slot-remove">✕</span>
-          </div>
-        ` : `
-          <div class="cc-dossier-row" style="opacity: 0.55;">
-            <span class="cc-dossier-label">${i + 1}. ${t("emptySlot")}</span>
-          </div>
-        `;
+    // The purse, at the head of the page it is spent on: what has been spent out
+    // of what is available, how much of the refund cap the drawbacks have
+    // already claimed, and how many of the picks are gone. Three plain figures
+    // side by side rather than three label/value rows down a card , the player
+    // reads this constantly and it must not cost the grid any height.
+    renderPoints() {
+      const tally = this.tally();
+      const overspent = tally.remaining < 0;
+      const cell = (label, value, cls) => `
+        <div class="ts-purse-cell${cls ? ` ${cls}` : ""}">
+          <span class="ts-purse-value">${value}</span>
+          <span class="ts-purse-label">${label}</span>
+        </div>
+      `;
+      this._el.points.innerHTML =
+        cell(t("pointsLabel"), `${tally.spent} / ${tally.available}`, overspent ? "over" : "spend") +
+        cell(t("refundLabel"), `${tally.credit} / ${TRAIT_REFUND_CAP}`, "refund") +
+        cell(t("picksLabel"), `${tally.count} / ${TRAIT_MAX_PICKS}`);
+    }
+
+    // Every bound trait written out where it is bound: icon, name, price and
+    // what it actually says, however many there are. Clicking one releases it;
+    // nothing here reacts to the pointer merely passing over it.
+    renderPicked() {
+      const picked = this._selectedTraits;
+      if (this._el.pickedCount) {
+        this._el.pickedCount.textContent = `${picked.length} / ${TRAIT_MAX_PICKS}`;
       }
-      this._el.slots.innerHTML = html;
-      this._el.slots.querySelectorAll("[data-slot]").forEach((node) => {
-        const slot = parseInt(node.dataset.slot, 10);
-        node.addEventListener("click", () => this.onSlotClick(slot));
-        node.addEventListener("mouseenter", () => this.onSlotHover(slot));
+      if (!picked.length) {
+        this._el.picked.innerHTML = `<div class="ts-picked-empty">${t("emptySlot")}</div>`;
+        return;
+      }
+      // One row a trait: icon, name, what it cost and the way to drop it. The
+      // description is not repeated here , the same trait's card on the left is
+      // one keypress away and prints it in full above.
+      this._el.picked.innerHTML = picked.map((trait, index) => `
+        <div class="cc-trait-picked" data-picked="${index}">
+          <span style="${this.getIconStyle(trait.icon, 20)}"></span>
+          <span class="cc-trait-picked-name">${getTraitText(trait, "name")}</span>
+          ${costBadgeHTML(traitCost(trait))}
+          <span class="cc-slot-remove">✕</span>
+        </div>
+      `).join("");
+      this._el.picked.querySelectorAll("[data-picked]").forEach((node) => {
+        const at = parseInt(node.dataset.picked, 10);
+        node.addEventListener("click", () => this.onPickedClick(at));
       });
     }
 
     // The illnesses chosen on the diseases tab, listed on the right page under
-    // the four trait slots. The card hides itself while none are picked, so a
+    // the bound traits. The card hides itself while none are picked, so a
     // party built without one never sees it.
     renderDiseases() {
       if (!this._el.diseases) return;
       const cards = this._selectedDiseases;
       this._el.diseasesCard.style.display = cards.length ? "" : "none";
       this._el.diseases.innerHTML = cards.map((card, idx) => `
-        <span class="cc-element-badge focusable" data-disease-slot="${idx}" style="cursor: pointer;">
-          <span style="${this.getIconStyle(card.icon, 16)} margin-right: 6px;"></span>${card.name} ✕
+        <span class="cc-element-badge focusable" data-disease-slot="${idx}" style="cursor: pointer">
+          <span style="${this.getIconStyle(card.icon, 16)} margin-right: 6px"></span>${card.name} ✕
         </span>
       `).join("");
       this._el.diseases.querySelectorAll("[data-disease-slot]").forEach((node) => {
@@ -606,9 +860,12 @@
     renderDiseaseInfo(card) {
       const api = window.DiseaseSystem;
       this._el.info.innerHTML = `
-        <div class="cc-dossier-card">
-          <h3 class="cc-subheader">${card.name}</h3>
-          ${api && api.diseaseDossierHTML ? api.diseaseDossierHTML(card.diseaseId) : `<p class="cc-text-desc">${card.description}</p>`}
+        <div class="cc-dossier-card ts-detail-card">
+          <div class="ts-detail-head">
+            <span style="${this.getIconStyle(card.icon, 30)}"></span>
+            <span class="ts-detail-label">${card.name}</span>
+          </div>
+          ${api && api.diseaseDossierHTML ? api.diseaseDossierHTML(card.diseaseId) : `<p class="ts-detail-desc">${card.description}</p>`}
         </div>
       `;
     }
@@ -618,10 +875,10 @@
       const badges = Object.keys(totals).filter((key) => totals[key] !== 0).map((key) => {
         const value = totals[key];
         const color = value > 0 ? "var(--text-forest-green)" : "var(--accent-red-3)";
-        return `<span class="cc-element-badge" style="color: ${color};">${getParamDisplayName(key)} ${value > 0 ? "+" : ""}${value}</span>`;
+        return `<span class="cc-element-badge" style="color: ${color}">${getParamDisplayName(key)} ${value > 0 ? "+" : ""}${value}</span>`;
       }).join("");
       this._el.bonuses.innerHTML = badges ||
-        `<span class="cc-dossier-value" style="font-style: italic;">${t('noBonusesYet')}</span>`;
+        `<span class="ts-summary-empty">${t('noBonusesYet')}</span>`;
     }
 
     renderSkills() {
@@ -633,8 +890,8 @@
       });
       this._el.skills.innerHTML = ids.length ? ids.map((id) => {
         const skill = $dataSkills[id];
-        return `<span class="cc-element-badge"><span style="${this.getIconStyle(skill.iconIndex, 16)} margin-right: 6px;"></span>${dbName(skill)}</span>`;
-      }).join("") : `<span class="cc-dossier-value" style="font-style: italic;">${t("noSkills")}</span>`;
+        return `<span class="cc-element-badge"><span style="${this.getIconStyle(skill.iconIndex, 16)} margin-right: 6px"></span>${dbName(skill)}</span>`;
+      }).join("") : `<span class="ts-summary-empty">${t("noSkills")}</span>`;
     }
 
     // "Confirm these traits?" — yes or no, nothing else.
@@ -648,12 +905,16 @@
       }
       if (!this._promptBtns) {
         layer.innerHTML = `
-          <div style="padding: 24px 32px; text-align: center; background: var(--gradient-1); border: 2px solid var(--border-primary-hover-translucent-15); border-radius: 10px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);">
-            <h2 class="cc-header-gothic" style="margin: 0 0 18px 0; font-size: 1.5rem;">${t('confirmTraits')}</h2>
-            <div class="cc-button-panel" style="margin-top: 0; padding-top: 0;">
-              <button class="cc-btn-treaty confirm" data-yes="1">${t('yes')}</button>
-              <button class="cc-btn-treaty" data-yes="0">${t('no')}</button>
-            </div>
+          <div style="padding: 24px 32px; text-align: center; background: var(--gradient-1); border: 2px solid var(--border-primary-hover-translucent-15); border-radius: 10px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5)">
+            <h2 class="cc-header-gothic" style="margin: 0 0 18px 0; font-size: 2.064rem">${t('confirmTraits')}</h2>
+            <!-- Same three-slot bar as the page behind it, so the answer that
+                 goes back is on the left and the one that goes on is on the
+                 right, exactly where Back and Continue are. -->
+            ${window.CCButtons.panel({
+              back: window.CCButtons.button(t('no'), { attrs: 'data-yes="0"' }),
+              next: window.CCButtons.button(t('yes'), { confirm: true, attrs: 'data-yes="1"' }),
+              style: "margin-top: 0; padding-top: 0; min-width: 380px;",
+            })}
           </div>
         `;
         this._promptBtns = Array.from(layer.querySelectorAll("[data-yes]"));
@@ -683,10 +944,17 @@
       const selectionChanged = force || sig.selection !== selectionSig;
       if (selectionChanged) {
         sig.selection = selectionSig;
-        this.renderSlots();
+        this.renderPoints();
+        this.renderPicked();
         this.renderDiseases();
         this.renderBonuses();
         this.renderSkills();
+        // Continue only reads as available when openPrompt would actually open:
+        // at least one trait bound, and the purse not overspent.
+        if (this._confirmEl) {
+          const tally = this.tally();
+          this._confirmEl.classList.toggle("disabled", tally.count < 1 || tally.remaining < 0);
+        }
       }
 
       const cursorChanged = sig.cursor !== this._cursor;
@@ -726,21 +994,8 @@
       }
     }
 
-    onSlotHover(slotIndex) {
-      const trait = this._selectedTraits[slotIndex];
-      if (!trait) return;
-      this._currentCategory = trait.category || "mental";
-      const index = this.currentTraits().indexOf(trait);
-      if (index >= 0) {
-        // Unlike a hover over the grid, this one may point far outside the
-        // visible rows, so the card is scrolled into view.
-        this._keyboardCursor = true;
-        this._cursor = index;
-      }
-    }
-
-    onSlotClick(slotIndex) {
-      const trait = this._selectedTraits[slotIndex];
+    onPickedClick(index) {
+      const trait = this._selectedTraits[index];
       if (trait) this.releaseTrait(trait);
     }
 
@@ -790,8 +1045,41 @@
       }
     }
 
+    // Leave without a build. Character creation resumes at
+    // `_interruptedStep + 1`, so stepping that back by one lands the player on
+    // the trait step itself rather than skipping past it: Back means "let me
+    // choose again", not "go on without traits".
+    onTraitsBack() {
+      SoundManager.playCancel();
+      const SC = window.Scene_CharacterCreation;
+      if (Scene_TraitSelector._returnToCharacterCreation && SC && SC._interruptedStep > 0) {
+        SC._interruptedStep -= 1;
+      }
+      Scene_TraitSelector._returnToCharacterCreation = false;
+      Scene_TraitSelector._targetActorId = null;
+      this.popScene();
+    }
+
+    // Roll a build the purse can pay for and drop it straight into the picks, so
+    // the player can see what they were given and edit it, rather than being
+    // handed a finished sheet. Illnesses are left alone: they are chosen, never
+    // rolled. Genetic traits stay out of the roll for the same reason the
+    // plugin-command randomizer skips them , that category is decided by the
+    // biology chosen earlier in creation.
+    onTraitsRandom() {
+      SoundManager.playOk();
+      this._selectedTraits = pickRandomTraits({
+        pool: getTraits().filter((trait) => (trait.category || "mental") !== "genetic"),
+      });
+      this._cursor = 0;
+      this.syncOverlay(false);
+    }
+
+    // A build is sealable once it carries at least one trait and has not
+    // overspent. Leaving points on the table is the player's business.
     openPrompt() {
-      if (this._selectedTraits.length !== 4) {
+      const tally = this.tally();
+      if (tally.count < 1 || tally.remaining < 0) {
         SoundManager.playBuzzer();
         return;
       }
@@ -856,11 +1144,13 @@
       } else if (Input.isRepeated("left") && index % cols > 0) {
         index--; moved = true;
       } else if (Input.isTriggered("ok")) {
-        // With four traits bound the only thing left to do is seal them, so OK
-        // raises the prompt instead of buzzing on a blocked card. OK on a bound
-        // card still releases it.
+        // Once the purse can no longer pay for what the cursor is on, the only
+        // thing left to do is seal the build, so OK raises the prompt instead
+        // of buzzing. A card blocked by a clash still buzzes (another trait can
+        // be afforded, just not that one), and OK on a bound card releases it.
         const trait = this.currentTrait();
-        if (this._selectedTraits.length >= 4 && !this._selectedTraits.includes(trait)) {
+        const state = trait ? this.traitState(trait) : null;
+        if (state && state.unaffordable) {
           this.openPrompt();
         } else {
           this.toggleTrait(trait);
@@ -880,7 +1170,9 @@
       super.update();
 
       if (this._dndContainer && this._dndContainer.style.display !== "none") {
-        this.updateInput();
+        // A focused search field owns the keyboard: the cursor must not walk
+        // the grid under the caret (UI/MenuSearchBar.js).
+        if (!(window.MenuSearchBar && window.MenuSearchBar.isTyping())) this.updateInput();
         if (window.CCScroll) window.CCScroll.update(this._dndContainer);
         // syncOverlay is signature-driven: it touches the DOM only when
         // something really changed, so polling it every frame is free.
@@ -1137,33 +1429,13 @@
   function randomizeTraitsForActor(targetActorId = null) {
     const targetId = targetActorId || actorId;
 
-    // Get available traits (excluding incompatible ones as we select).
     // Genetic-category traits are never randomly picked: they represent inherent
     // biology decided elsewhere in creation, so random rolls draw only from the
-    // physical / mental / magical categories.
-    const availableTraits = getTraits().filter(
-      (trait) => (trait.category || "mental") !== "genetic"
-    );
-    const selectedTraits = [];
-
-    // Select 4 random traits (changed from 5 to 4 for consistency)
-    while (selectedTraits.length < 4 && availableTraits.length > 0) {
-      const randomIndex = Math.floor(Math.random() * availableTraits.length);
-      const trait = availableTraits[randomIndex];
-
-      // Check if this trait is compatible with already selected traits
-      const isCompatible = !selectedTraits.some(selected =>
-        trait.incompatible.includes(selected.id) ||
-        selected.incompatible.includes(trait.id)
-      );
-
-      if (isCompatible) {
-        selectedTraits.push(trait);
-      }
-
-      // Remove this trait from available pool regardless
-      availableTraits.splice(randomIndex, 1);
-    }
+    // physical / mental / magical categories. The roll spends the same purse a
+    // player would and can never hand back a build the budget cannot pay for.
+    const selectedTraits = pickRandomTraits({
+      pool: getTraits().filter((trait) => (trait.category || "mental") !== "genetic"),
+    });
 
     // Apply the traits
     const actor = $gameActors.actor(targetId);
@@ -1239,4 +1511,18 @@
   // Export globally
   window.Scene_TraitSelector = Scene_TraitSelector;
   window.randomizeTraitsForActor = randomizeTraitsForActor;
+
+  // The trait economy, for every other screen that has to price a trait, print
+  // a purse or roll a build the budget can pay for (the character sheet, the
+  // NPC society generator, the detailed creation panel).
+  window.TraitPoints = {
+    BUDGET: TRAIT_POINT_BUDGET,
+    REFUND_CAP: TRAIT_REFUND_CAP,
+    MAX_PICKS: TRAIT_MAX_PICKS,
+    costOf: traitCost,
+    tally: traitTally,
+    fits: traitFits,
+    pick: pickRandomTraits,
+    costBadgeHTML,
+  };
 })();

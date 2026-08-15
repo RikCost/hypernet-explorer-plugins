@@ -61,82 +61,82 @@
 
             const quickButtons = QUICK_AMOUNTS.map(n => `
                 <button class="focusable" data-focus-key="hte-quick-${n}" data-quick="${n}" tabindex="0"
-                        style="flex:1; padding:5px 0; font-size:11px; font-family:Tahoma,sans-serif; background:#ece9d8; border:1px solid #8a8a8a; cursor:pointer;">
+                        style="flex:1; padding:5px 0; font-size:14px; font-family:Tahoma,sans-serif; background:#ece9d8; border:1px solid #8a8a8a; cursor:pointer">
                     ${n}
                 </button>`).join('');
 
             const contentHTML = `
-                <div style="display:flex; flex-direction:column; height:100%; font-family:Tahoma,sans-serif; background:#ece9d8; overflow:hidden;">
-                    <div style="background:linear-gradient(135deg, #06263f 0%, #0b5394 55%, #2a8fd8 100%); padding:11px 16px; display:flex; align-items:center; gap:12px; border-bottom:2px solid #04203a; flex-shrink:0;">
+                <div style="display:flex; flex-direction:column; height:100%; font-family:Tahoma,sans-serif; background:#ece9d8; overflow:hidden">
+                    <div style="background:linear-gradient(135deg, #06263f 0%, #0b5394 55%, #2a8fd8 100%); padding:11px 16px; display:flex; align-items:center; gap:12px; border-bottom:2px solid #04203a; flex-shrink:0">
                         <div>
-                            <div style="color:#ffd700; font-weight:bold; font-size:14px; letter-spacing:2px;">${T('TokenExchange.banner')}</div>
-                            <div style="color:#cfe6ff; font-size:10px; margin-top:2px;">${T('TokenExchange.tagline')}</div>
+                            <div style="color:#ffd700; font-weight:bold; font-size:17px; letter-spacing:2px">${T('TokenExchange.banner')}</div>
+                            <div style="color:#cfe6ff; font-size:13px; margin-top:2px">${T('TokenExchange.tagline')}</div>
                         </div>
-                        <div style="margin-left:auto; text-align:right; color:#cfe6ff; font-size:10px; line-height:1.5;">
+                        <div style="margin-left:auto; text-align:right; color:#cfe6ff; font-size:13px; line-height:1.5">
                             ${T('TokenExchange.rate', { price: TOKEN_PRICE_EURO.toFixed(2) })}<br>${T('TokenExchange.atPar')}
                         </div>
                     </div>
 
-                    <div style="display:flex; gap:1px; background:#a0a0a0; flex-shrink:0;">
-                        <div style="flex:1; background:#fff; padding:8px 14px;">
-                            <div style="font-size:10px; color:#666; letter-spacing:1px;">${T('TokenExchange.wallet')}</div>
-                            <div id="hte-euro-balance" style="font-size:18px; font-weight:bold; color:#0b5394;">&euro;0.00</div>
+                    <div style="display:flex; gap:1px; background:#a0a0a0; flex-shrink:0">
+                        <div style="flex:1; background:#fff; padding:8px 14px">
+                            <div style="font-size:13px; color:#666; letter-spacing:1px">${T('TokenExchange.wallet')}</div>
+                            <div id="hte-euro-balance" style="font-size:21px; font-weight:bold; color:#0b5394">&euro;0.00</div>
                         </div>
-                        <div style="flex:1; background:#fff; padding:8px 14px;">
-                            <div style="font-size:10px; color:#666; letter-spacing:1px;">${T('TokenExchange.tokensHeld')}</div>
-                            <div id="hte-token-balance" style="font-size:18px; font-weight:bold; color:#8B6914;">0</div>
+                        <div style="flex:1; background:#fff; padding:8px 14px">
+                            <div style="font-size:13px; color:#666; letter-spacing:1px">${T('TokenExchange.tokensHeld')}</div>
+                            <div id="hte-token-balance" style="font-size:21px; font-weight:bold; color:#8B6914">0</div>
                         </div>
                     </div>
 
-                    <div style="display:flex; gap:6px; padding:10px 14px 4px 14px; flex-shrink:0;">
+                    <div style="display:flex; gap:6px; padding:10px 14px 4px 14px; flex-shrink:0">
                         <button id="hte-mode-buy" class="focusable" data-focus-key="hte-mode-buy" tabindex="0"
-                                style="flex:1; padding:7px 0; font-size:12px; font-weight:bold; font-family:Tahoma,sans-serif; cursor:pointer; border:1px solid #4a76b8;">
+                                style="flex:1; padding:7px 0; font-size:15px; font-weight:bold; font-family:Tahoma,sans-serif; cursor:pointer; border:1px solid #4a76b8">
                             ${T('TokenExchange.buyTokens')}
                         </button>
                         <button id="hte-mode-sell" class="focusable" data-focus-key="hte-mode-sell" tabindex="0"
-                                style="flex:1; padding:7px 0; font-size:12px; font-weight:bold; font-family:Tahoma,sans-serif; cursor:pointer; border:1px solid #4a76b8;">
+                                style="flex:1; padding:7px 0; font-size:15px; font-weight:bold; font-family:Tahoma,sans-serif; cursor:pointer; border:1px solid #4a76b8">
                             ${T('TokenExchange.sellTokens')}
                         </button>
                     </div>
 
-                    <div style="flex:1; padding:8px 14px 12px 14px; display:flex; flex-direction:column; gap:8px; overflow-y:auto;">
-                        <div style="background:#fff; border:1px solid #b5b5b5; padding:10px 12px;">
-                            <div id="hte-amount-label" style="font-size:11px; color:#444; margin-bottom:6px;">${T('TokenExchange.tokensToBuy')}</div>
-                            <div style="display:flex; align-items:center; gap:6px;">
+                    <div style="flex:1; padding:8px 14px 12px 14px; display:flex; flex-direction:column; gap:8px; overflow-y:auto">
+                        <div style="background:#fff; border:1px solid #b5b5b5; padding:10px 12px">
+                            <div id="hte-amount-label" style="font-size:14px; color:#444; margin-bottom:6px">${T('TokenExchange.tokensToBuy')}</div>
+                            <div style="display:flex; align-items:center; gap:6px">
                                 <button id="hte-minus" class="focusable" data-focus-key="hte-minus" tabindex="0"
-                                        style="width:34px; padding:5px 0; font-size:14px; font-family:Tahoma,sans-serif; background:#ece9d8; border:1px solid #8a8a8a; cursor:pointer;">-</button>
-                                <div id="hte-amount" style="flex:1; text-align:center; font-size:22px; font-weight:bold; color:#222; background:#f7f7f7; border:1px solid #d0d0d0; padding:3px 0;">1</div>
+                                        style="width:34px; padding:5px 0; font-size:17px; font-family:Tahoma,sans-serif; background:#ece9d8; border:1px solid #8a8a8a; cursor:pointer">-</button>
+                                <div id="hte-amount" style="flex:1; text-align:center; font-size:24px; font-weight:bold; color:#222; background:#f7f7f7; border:1px solid #d0d0d0; padding:3px 0">1</div>
                                 <button id="hte-plus" class="focusable" data-focus-key="hte-plus" tabindex="0"
-                                        style="width:34px; padding:5px 0; font-size:14px; font-family:Tahoma,sans-serif; background:#ece9d8; border:1px solid #8a8a8a; cursor:pointer;">+</button>
+                                        style="width:34px; padding:5px 0; font-size:17px; font-family:Tahoma,sans-serif; background:#ece9d8; border:1px solid #8a8a8a; cursor:pointer">+</button>
                             </div>
-                            <div style="display:flex; gap:5px; margin-top:7px;">
+                            <div style="display:flex; gap:5px; margin-top:7px">
                                 ${quickButtons}
                                 <button class="focusable" data-focus-key="hte-quick-max" data-quick="max" tabindex="0"
-                                        style="flex:1; padding:5px 0; font-size:11px; font-family:Tahoma,sans-serif; background:#ece9d8; border:1px solid #8a8a8a; cursor:pointer;">
+                                        style="flex:1; padding:5px 0; font-size:14px; font-family:Tahoma,sans-serif; background:#ece9d8; border:1px solid #8a8a8a; cursor:pointer">
                                     ${T('TokenExchange.max')}
                                 </button>
                             </div>
-                            <div id="hte-limit" style="font-size:10px; color:#777; margin-top:6px;">&nbsp;</div>
+                            <div id="hte-limit" style="font-size:13px; color:#777; margin-top:6px">&nbsp;</div>
                         </div>
 
-                        <div style="background:#f4f4ec; border:1px solid #c8c8b8; padding:10px 12px; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="background:#f4f4ec; border:1px solid #c8c8b8; padding:10px 12px; display:flex; justify-content:space-between; align-items:center">
                             <div>
-                                <div id="hte-summary-label" style="font-size:10px; color:#666; letter-spacing:1px;">${T('TokenExchange.youPay')}</div>
-                                <div id="hte-summary-value" style="font-size:20px; font-weight:bold; color:#8B1A00;">&euro;0.00</div>
+                                <div id="hte-summary-label" style="font-size:13px; color:#666; letter-spacing:1px">${T('TokenExchange.youPay')}</div>
+                                <div id="hte-summary-value" style="font-size:23px; font-weight:bold; color:#8B1A00">&euro;0.00</div>
                             </div>
-                            <div style="text-align:right;">
-                                <div id="hte-receive-label" style="font-size:10px; color:#666; letter-spacing:1px;">${T('TokenExchange.youReceive')}</div>
-                                <div id="hte-receive-value" style="font-size:20px; font-weight:bold; color:#1d6b2f;">0</div>
+                            <div style="text-align:right">
+                                <div id="hte-receive-label" style="font-size:13px; color:#666; letter-spacing:1px">${T('TokenExchange.youReceive')}</div>
+                                <div id="hte-receive-value" style="font-size:23px; font-weight:bold; color:#1d6b2f">0</div>
                             </div>
                         </div>
 
                         <button id="hte-confirm" class="focusable" data-focus-key="hte-confirm" tabindex="0"
-                                style="width:100%; padding:11px; background:linear-gradient(135deg, #0b5394, #2a8fd8); color:#ffd700; border:1px solid #6fb6e8; font-size:13px; font-weight:bold; font-family:Tahoma,sans-serif; letter-spacing:1.5px; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.3);">
+                                style="width:100%; padding:11px; background:linear-gradient(135deg, #0b5394, #2a8fd8); color:#ffd700; border:1px solid #6fb6e8; font-size:16px; font-weight:bold; font-family:Tahoma,sans-serif; letter-spacing:1.5px; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.3)">
                             ${T('TokenExchange.confirm')}
                         </button>
                     </div>
 
-                    <div id="hte-status" style="border-top:1px solid #a0a0a0; padding:3px 10px; background:#ece9d8; font-size:10px; color:#555; flex-shrink:0;">
+                    <div id="hte-status" style="border-top:1px solid #a0a0a0; padding:3px 10px; background:#ece9d8; font-size:13px; color:#555; flex-shrink:0">
                         ${T('TokenExchange.hint')}
                     </div>
                 </div>`;

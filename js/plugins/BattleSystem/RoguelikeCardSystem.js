@@ -393,13 +393,13 @@
   box-shadow:0 10px 22px rgba(0,0,0,.6),0 0 14px rgba(255,193,7,.85);}
 #${CARD_OVERLAY_ID} .rcs-card.poor{filter:grayscale(.75) brightness(.62);}
 #${CARD_OVERLAY_ID} .rcs-name{height:34px;line-height:34px;border-radius:6px;
-  background:rgba(0,0,0,.62);color:#fff;font-size:17px;font-weight:700;
+  background:rgba(0,0,0,.62);color:#fff;font-size:20px;font-weight:700;
   text-align:center;padding:0 34px 0 8px;white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis;text-shadow:0 1px 2px rgba(0,0,0,.9);}
 #${CARD_OVERLAY_ID} .rcs-cost{position:absolute;top:4px;right:4px;
   width:30px;height:30px;border-radius:50%;background:#00bcd4;
   border:2px solid #00707d;box-sizing:border-box;color:#fff;
-  font-size:17px;font-weight:700;line-height:26px;text-align:center;
+  font-size:20px;font-weight:700;line-height:26px;text-align:center;
   text-shadow:0 1px 2px rgba(0,0,0,.8);}
 #${CARD_OVERLAY_ID} .rcs-card.poor .rcs-cost{background:#f44336;border-color:#8e1c14;}
 #${CARD_OVERLAY_ID} .rcs-icon-wrap{margin:8px auto 6px auto;width:52px;height:52px;
@@ -410,10 +410,10 @@
   background-repeat:no-repeat;image-rendering:pixelated;}
 #${CARD_OVERLAY_ID} .rcs-desc{margin-top:2px;padding:5px 6px;border-radius:5px;
   background:rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.14);
-  font-size:14px;line-height:17px;font-weight:600;overflow:hidden;
+  font-size:17px;line-height:17px;font-weight:600;overflow:hidden;
   height:calc(100% - 130px);}
 #${CARD_OVERLAY_ID} .rcs-type{position:absolute;left:10px;bottom:6px;
-  font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(0,0,0,.55);}
+  font-size:14px;font-weight:700;letter-spacing:1px;color:rgba(0,0,0,.55);}
 #${CARD_OVERLAY_ID} .rcs-energy{position:absolute;width:126px;padding:6px 0 8px 0;
   border-radius:10px;text-align:center;
   background:linear-gradient(160deg,#00bcd4 0%,#00838f 100%);
@@ -421,8 +421,8 @@
   box-shadow:0 6px 14px rgba(0,0,0,.5);
   font-family:'Segoe UI',Tahoma,Verdana,sans-serif;color:#fff;
   text-shadow:0 2px 3px rgba(0,0,0,.85);}
-#${CARD_OVERLAY_ID} .rcs-energy-value{font-size:34px;font-weight:700;line-height:38px;}
-#${CARD_OVERLAY_ID} .rcs-energy-deck{font-size:14px;font-weight:600;line-height:16px;}
+#${CARD_OVERLAY_ID} .rcs-energy-value{font-size:37px;font-weight:700;line-height:38px;}
+#${CARD_OVERLAY_ID} .rcs-energy-deck{font-size:17px;font-weight:600;line-height:16px;}
 `;
         document.head.appendChild(st);
     }

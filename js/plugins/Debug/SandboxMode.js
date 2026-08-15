@@ -656,35 +656,35 @@
         let leftPageHTML = "";
         if (isWish) {
             leftPageHTML = `
-                <div class="left-page" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="left-page" style="display: flex; justify-content: space-between; height: 100%">
                     <div>
-                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--border-focus-hover); padding-bottom: 8px; margin-bottom: 15px; min-height: 40px; width: 100%;">
-                          <div class="back-button focusable" onclick="SoundManager.playCancel(); SceneManager._scene.exitWish()" style="position: absolute; left: 0; font-family: 'Lora', serif; font-size: 0.8rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: fit-content; line-height: normal; user-select: none;">
+                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--border-focus-hover); padding-bottom: 8px; margin-bottom: 15px; min-height: 40px; width: 100%">
+                          <div class="back-button focusable" onclick="SoundManager.playCancel(); SceneManager._scene.exitWish()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
                             ${backBtnText}
                           </div>
-                          <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${wishTitle}</h2>
+                          <h2 class="title" style="border: none; margin: 0; padding: 0">${wishTitle}</h2>
                         </div>
                         
-                        <div style="font-family: 'Lora', serif; font-size: 0.9em; color: var(--text-text-alt-2); font-style: italic; background: var(--bg-subtle-translucent-10); border: 1px dashed var(--border-focus-hover); padding: 15px; border-radius: 4px; margin-bottom: 20px; line-height: 1.5; text-align: justify;">
+                        <div style="font-family: 'Lora', serif; font-size: 0.928em; color: var(--text-text-alt-2); background: var(--bg-subtle-translucent-10); border: 1px dashed var(--border-focus-hover); padding: 15px; border-radius: 4px; margin-bottom: 20px; line-height: 1.5; text-align: justify">
                             "Deep in the recesses of your consciousness, your psychic power (PSI) manifests as a desire to bend reality. Close your eyes, concentrate, and whisper your soul's true wish..."
                         </div>
 
-                        <div style="text-align: center; margin: 30px 0;">
-                            <span style="font-family: 'Lora', serif; font-size: 3em; color: var(--text-gold-dark); display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">✦ ✦ ✦</span>
+                        <div style="text-align: center; margin: 30px 0">
+                            <span style="font-family: 'Lora', serif; font-size: 2.9em; color: var(--text-gold-dark); display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1))">✦ ✦ ✦</span>
                         </div>
                     </div>
 
-                    <div class="vitals-box" style="padding: 12px 14px; background: rgba(184, 134, 11, 0.05); border: 1px solid rgba(184,134,11,0.15); border-radius: 4px; margin-top: auto;">
-                        <h4 style="margin: 0 0 8px 0; font-family: 'Lora', serif; font-size: 1.05em; color: var(--text-gold-dark); border-bottom: 1px solid rgba(184,134,11,0.2); padding-bottom: 4px;">
+                    <div class="vitals-box" style="padding: 12px 14px; background: rgba(184, 134, 11, 0.05); border: 1px solid rgba(184,134,11,0.15); border-radius: 4px; margin-top: auto">
+                        <h4 style="margin: 0 0 8px 0; font-family: 'Lora', serif; font-size: 1.048em; color: var(--text-gold-dark); border-bottom: 1px solid rgba(184,134,11,0.2); padding-bottom: 4px">
                             Psychic Diagnostics
                         </h4>
-                        <div style="display: flex; flex-direction: column; gap: 6px; font-family: 'Lora', serif; font-size: 0.85em; color: var(--text-text-alt-2);">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="font-weight: bold;">Party PSI (Luck):</span>
-                                <span style="font-weight: bold; color: var(--text-gold-dark);">${this.getMedianPartyPSI()}</span>
+                        <div style="display: flex; flex-direction: column; gap: 6px; font-family: 'Lora', serif; font-size: 0.892em; color: var(--text-text-alt-2)">
+                            <div style="display: flex; justify-content: space-between">
+                                <span style="font-weight: bold">Party PSI (Luck):</span>
+                                <span style="font-weight: bold; color: var(--text-gold-dark)">${this.getMedianPartyPSI()}</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="font-weight: bold;">Manifestation Rate:</span>
+                            <div style="display: flex; justify-content: space-between">
+                                <span style="font-weight: bold">Manifestation Rate:</span>
                                 <span>${this.getMedianPartyPSI() >= 50 ? "Clear Mind (100%)" : (this.getMedianPartyPSI() >= 25 ? "Cryptic Whispers (50%)" : "Chaotic Murmurs (25%)")}</span>
                             </div>
                         </div>
@@ -698,49 +698,49 @@
             let categoriesHTML = "";
             sortedCategories().forEach((cat, idx) => {
                 categoriesHTML += `
-                    <div class="category-item focusable" data-symbol="${cat.symbol}" data-index="${idx}" onclick="SceneManager._scene.selectCategoryByClick('${cat.symbol}', ${idx})" style="padding: 10px 6px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 6px; min-height: 62px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px; border: 1px solid rgba(88,24,13,0.10);">
-                        <canvas class="cat-icon" width="20" height="20" data-icon="${cat.icon}" style="display:block; image-rendering:pixelated; flex: 0 0 auto;"></canvas>
-                        <span style="font-family: 'Lora', serif; font-size: 0.8em; line-height: 1.25; color: var(--text-primary-hover); font-weight: bold; letter-spacing: 0.3px; overflow-wrap: anywhere;">${escapeHtml(categoryName(cat))}</span>
+                    <div class="category-item focusable" data-symbol="${cat.symbol}" data-index="${idx}" onclick="SceneManager._scene.selectCategoryByClick('${cat.symbol}', ${idx})" style="padding: 10px 6px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 6px; min-height: 62px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px; border: 1px solid rgba(88,24,13,0.10)">
+                        <canvas class="cat-icon" width="20" height="20" data-icon="${cat.icon}" style="display:block; image-rendering:pixelated; flex: 0 0 auto"></canvas>
+                        <span style="font-family: 'Lora', serif; font-size: 0.856em; line-height: 1.25; color: var(--text-primary-hover); font-weight: bold; letter-spacing: 0.3px; overflow-wrap: anywhere">${escapeHtml(categoryName(cat))}</span>
                     </div>
                 `;
             });
 
             leftPageHTML = `
-                <div class="left-page" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="left-page" style="display: flex; justify-content: space-between; height: 100%">
                     <div>
-                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--border-focus-hover); padding-bottom: 8px; margin-bottom: 12px; min-height: 40px; width: 100%;">
-                          <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; left: 0; font-family: 'Lora', serif; font-size: 0.8rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: fit-content; line-height: normal; user-select: none;">
+                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--border-focus-hover); padding-bottom: 8px; margin-bottom: 12px; min-height: 40px; width: 100%">
+                          <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
                             ${backBtnText}
                           </div>
-                          <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${sandboxTitle}</h2>
+                          <h2 class="title" style="border: none; margin: 0; padding: 0">${sandboxTitle}</h2>
                         </div>
-                        <div class="categories-list" style="display: grid; grid-template-columns: repeat(${CATEGORY_COLUMNS}, minmax(0, 1fr)); gap: 6px; align-content: start; max-height: 60vh; overflow-y: auto; padding-right: 4px; border-bottom: 1px solid rgba(88,24,13,0.08); padding-bottom: 10px; margin-bottom: 10px;">
+                        <div class="categories-list" style="display: grid; grid-template-columns: repeat(${CATEGORY_COLUMNS}, minmax(0, 1fr)); gap: 6px; align-content: start; max-height: 60vh; overflow-y: auto; padding-right: 4px; border-bottom: 1px solid rgba(88,24,13,0.08); padding-bottom: 10px; margin-bottom: 10px">
                             ${categoriesHTML}
                         </div>
                     </div>
 
-                    <div class="vitals-box" style="padding: 10px 12px; background: rgba(88, 24, 13, 0.04); border: 1px solid rgba(88,24,13,0.08); border-radius: 4px; margin-top: auto;">
-                        <h4 style="margin: 0 0 6px 0; font-family: 'Lora', serif; font-size: 0.95em; color: var(--text-primary-hover); border-bottom: 1px solid rgba(88,24,13,0.12); padding-bottom: 3px; display: flex; justify-content: space-between; align-items: center;">
+                    <div class="vitals-box" style="padding: 10px 12px; background: rgba(88, 24, 13, 0.04); border: 1px solid rgba(88,24,13,0.08); border-radius: 4px; margin-top: auto">
+                        <h4 style="margin: 0 0 6px 0; font-family: 'Lora', serif; font-size: 0.964em; color: var(--text-primary-hover); border-bottom: 1px solid rgba(88,24,13,0.12); padding-bottom: 3px; display: flex; justify-content: space-between; align-items: center">
                             <span>Sandbox Status</span>
-                            <span style="font-size: 0.75em; cursor: pointer; color: ${$gamePlayer.isThrough() ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'}; font-weight: bold; border: 1px solid currentColor; padding: 1px 4px; border-radius: 3px;" onclick="SceneManager._scene.toggleCollisionUI()">
+                            <span style="font-size: 0.82em; cursor: pointer; color: ${$gamePlayer.isThrough() ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'}; font-weight: bold; border: 1px solid currentColor; padding: 1px 4px; border-radius: 3px" onclick="SceneManager._scene.toggleCollisionUI()">
                                 Collision: ${$gamePlayer.isThrough() ? 'OFF' : 'ON'}
                             </span>
                         </h4>
-                        <div style="display: flex; flex-direction: column; gap: 4px; font-family: 'Lora', serif; font-size: 0.8em; color: var(--text-text-alt-2);">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="font-weight: bold;">Party Leader:</span>
+                        <div style="display: flex; flex-direction: column; gap: 4px; font-family: 'Lora', serif; font-size: 0.856em; color: var(--text-text-alt-2)">
+                            <div style="display: flex; justify-content: space-between">
+                                <span style="font-weight: bold">Party Leader:</span>
                                 <span>${$gameParty.leader() ? $gameParty.leader().name() : "None"} (Lv. ${$gameParty.leader() ? $gameParty.leader().level : 1})</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="font-weight: bold;">Current Map:</span>
+                            <div style="display: flex; justify-content: space-between">
+                                <span style="font-weight: bold">Current Map:</span>
                                 <span>ID ${$gameMap.mapId()} (${$gamePlayer.x}, ${$gamePlayer.y})</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="font-weight: bold;">PSI (Luck):</span>
+                            <div style="display: flex; justify-content: space-between">
+                                <span style="font-weight: bold">PSI (Luck):</span>
                                 <span>${$gameParty.leader() ? $gameParty.leader().luk : 10}</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="font-weight: bold;">Spawn:</span>
+                            <div style="display: flex; justify-content: space-between">
+                                <span style="font-weight: bold">Spawn:</span>
                                 <span>${spawnModeLabel}, ${eraLabel}</span>
                             </div>
                         </div>
@@ -757,13 +757,13 @@
             <div class="book-spread">
                 ${leftPageHTML}
 
-                <div class="right-page" style="display: flex; flex-direction: column; height: 100%;">
-                    <h2 class="title" style="margin-bottom: 12px;">${rightPageTitle}</h2>
+                <div class="right-page" style="display: flex; height: 100%">
+                    <h2 class="title" style="margin-bottom: 12px">${rightPageTitle}</h2>
                     
-                    <div style="padding: 0 4px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;">
-                        <input type="text" id="sandbox-search" placeholder="Search outcomes..." value="${escapeHtml(this._searchQuery)}" oninput="SceneManager._scene.handleSearchInput(this.value)" style="width: 100%; box-sizing: border-box; padding: 8px 12px; background: var(--bg-white-translucent-25); border: 1px solid var(--border-focus-hover); border-radius: 4px; font-family: 'Lora', serif; margin-bottom: 10px; font-size: 0.88em; color: var(--text-text-alt-2); outline: none;">
+                    <div style="padding: 0 4px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden">
+                        <input type="text" id="sandbox-search" placeholder="Search outcomes..." value="${escapeHtml(this._searchQuery)}" oninput="SceneManager._scene.handleSearchInput(this.value)" style="width: 100%; box-sizing: border-box; padding: 8px 12px; background: var(--bg-white-translucent-25); border: 1px solid var(--border-focus-hover); border-radius: 4px; font-family: 'Lora', serif; margin-bottom: 10px; font-size: 0.914em; color: var(--text-text-alt-2); outline: none">
                         
-                        <div class="actions-list-container" style="flex-grow: 1; overflow-y: auto; padding-right: 4px;">
+                        <div class="actions-list-container" style="flex-grow: 1; overflow-y: auto; padding-right: 4px">
                             ${actionsHTML}
                         </div>
                     </div>
@@ -793,7 +793,7 @@
     Scene_SandboxMenu.prototype.buildActionsListHTML = function () {
         const filtered = this.getFilteredActions();
         if (filtered.length === 0) {
-            return `<div style="text-align:center; padding: 40px 20px; font-family:'Lora', serif; font-size: 0.95em; color: var(--text-card-medium); font-style:italic;">No matching outcomes.</div>`;
+            return `<div style="text-align:center; padding: 40px 20px; font-family:'Lora', serif; font-size: 0.964em; color: var(--text-card-medium)">No matching outcomes.</div>`;
         }
         if (this._listWindow._mode === "map") return this.buildMapTreeHTML(filtered);
         const cap = Scene_SandboxMenu.MAX_ACTION_ROWS;
@@ -802,15 +802,15 @@
         for (let idx = 0; idx < shown; idx++) {
             const label = this.getActionLabel(filtered[idx]);
             actionsHTML += `
-                    <div class="action-item focusable" data-index="${idx}" onclick="SceneManager._scene.selectActionByClick(${idx})" style="padding: 8px 12px; text-align: left; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px;">
-                        <span style="font-family: 'Lora', serif; font-size: 0.88em; color: var(--text-text-alt-2); font-weight: 500;">${label}</span>
-                        <span style="font-family: 'Lora', serif; font-size: 0.75em; color: var(--text-gold-dark);">✦</span>
+                    <div class="action-item focusable" data-index="${idx}" onclick="SceneManager._scene.selectActionByClick(${idx})" style="padding: 8px 12px; text-align: left; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px">
+                        <span style="font-family: 'Lora', serif; font-size: 0.914em; color: var(--text-text-alt-2); font-weight: 500">${label}</span>
+                        <span style="font-family: 'Lora', serif; font-size: 0.82em; color: var(--text-gold-dark)">✦</span>
                     </div>
                 `;
         }
         if (filtered.length > cap) {
             const more = filtered.length - cap;
-            actionsHTML += `<div style="text-align:center; padding: 12px 20px; font-family:'Lora', serif; font-size: 0.85em; color: var(--text-card-medium); font-style:italic;">...${more} more (refine your search)</div>`;
+            actionsHTML += `<div style="text-align:center; padding: 12px 20px; font-family:'Lora', serif; font-size: 0.892em; color: var(--text-card-medium)">...${more} more (refine your search)</div>`;
         }
         return actionsHTML;
     };
@@ -831,20 +831,20 @@
             // past 8 levels (the tree is only ~9 deep at its worst).
             const indent = searching ? 0 : Math.min(row.depth, 8) * 13;
             const handle = isFolder
-                ? `<span class="map-toggle" onclick="event.stopPropagation(); SceneManager._scene.toggleMapFolder(${row.id})" style="width: 14px; flex: 0 0 14px; text-align: center; cursor: pointer; font-size: 0.8em; color: var(--text-gold-dark); user-select: none;">${open ? "▾" : "▸"}</span>`
-                : `<span style="width: 14px; flex: 0 0 14px; text-align: center; font-size: 0.7em; color: var(--text-card-medium);">·</span>`;
+                ? `<span class="map-toggle" onclick="event.stopPropagation(); SceneManager._scene.toggleMapFolder(${row.id})" style="width: 14px; flex: 0 0 14px; text-align: center; cursor: pointer; font-size: 0.856em; color: var(--text-gold-dark); user-select: none">${open ? "▾" : "▸"}</span>`
+                : `<span style="width: 14px; flex: 0 0 14px; text-align: center; font-size: 0.784em; color: var(--text-card-medium)">·</span>`;
             const label = String(row.id).padStart(3, '0') + ": " + row.name;
             const pathHTML = (searching && row.path)
-                ? `<span style="font-family: 'Lora', serif; font-size: 0.72em; font-style: italic; color: var(--text-card-medium); margin-left: 6px;">${escapeHtml(row.path)}</span>`
+                ? `<span style="font-family: 'Lora', serif; font-size: 0.798em; color: var(--text-card-medium); margin-left: 6px">${escapeHtml(row.path)}</span>`
                 : "";
             const rightHTML = isFolder
-                ? `<span style="font-family: 'Lora', serif; font-size: 0.72em; color: var(--text-gold-dark);">${row.childCount}</span>`
-                : `<span style="font-family: 'Lora', serif; font-size: 0.75em; color: var(--text-gold-dark);">✦</span>`;
+                ? `<span style="font-family: 'Lora', serif; font-size: 0.798em; color: var(--text-gold-dark)">${row.childCount}</span>`
+                : `<span style="font-family: 'Lora', serif; font-size: 0.82em; color: var(--text-gold-dark)">✦</span>`;
             html += `
-                    <div class="action-item focusable" data-index="${idx}" onclick="SceneManager._scene.selectActionByClick(${idx})" style="padding: 6px 12px 6px ${12 + indent}px; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 3px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px;">
-                        <span style="display: flex; align-items: center; gap: 6px; min-width: 0;">
+                    <div class="action-item focusable" data-index="${idx}" onclick="SceneManager._scene.selectActionByClick(${idx})" style="padding: 6px 12px 6px ${12 + indent}px; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 3px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px">
+                        <span style="display: flex; align-items: center; gap: 6px; min-width: 0">
                             ${handle}
-                            <span style="font-family: 'Lora', serif; font-size: 0.88em; color: var(--text-text-alt-2); font-weight: ${isFolder ? "bold" : "500"}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(label)}</span>
+                            <span style="font-family: 'Lora', serif; font-size: 0.914em; color: var(--text-text-alt-2); font-weight: ${isFolder ?"bold" : "500"}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(label)}</span>
                             ${pathHTML}
                         </span>
                         ${rightHTML}
@@ -853,7 +853,7 @@
         }
         if (rows.length > cap) {
             const more = rows.length - cap;
-            html += `<div style="text-align:center; padding: 12px 20px; font-family:'Lora', serif; font-size: 0.85em; color: var(--text-card-medium); font-style:italic;">...${more} more (refine your search)</div>`;
+            html += `<div style="text-align:center; padding: 12px 20px; font-family:'Lora', serif; font-size: 0.892em; color: var(--text-card-medium)">...${more} more (refine your search)</div>`;
         }
         return html;
     };
@@ -1093,22 +1093,22 @@
         const phrase = item.wishingPhrase || item.name || "";
         this._dndContainer.innerHTML = `
             <div class="book-spread skill-fullpage">
-                <div class="left-page" style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px;">
-                    <span style="font-family: 'Lora', serif; font-size: 3em; color: var(--text-gold-dark); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">&#10022;</span>
-                    <h2 class="title" style="border: none; margin: 0; padding: 0;">${escapeHtml(T("Wish.granted.title"))}</h2>
-                    <div style="font-family: 'Lora', serif; font-size: 0.9em; color: var(--text-card-medium); font-style: italic;">
+                <div class="left-page" style="width: 100%; display: flex; align-items: center; justify-content: center; text-align: center; gap: 18px">
+                    <span style="font-family: 'Lora', serif; font-size: 2.9em; color: var(--text-gold-dark); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1))">&#10022;</span>
+                    <h2 class="title" style="border: none; margin: 0; padding: 0">${escapeHtml(T("Wish.granted.title"))}</h2>
+                    <div style="font-family: 'Lora', serif; font-size: 0.928em; color: var(--text-card-medium)">
                         ${escapeHtml(T("Wish.granted.whispered"))}
                     </div>
-                    <div style="font-family: 'Lora', serif; font-size: 1.5em; line-height: 1.4; color: var(--text-text-alt-2); max-width: 70%; background: var(--bg-subtle-translucent-10); border: 1px dashed var(--border-focus-hover); border-radius: 4px; padding: 18px 24px;">
+                    <div style="font-family: 'Lora', serif; font-size: 1.475em; line-height: 1.4; color: var(--text-text-alt-2); max-width: 70%; background: var(--bg-subtle-translucent-10); border: 1px dashed var(--border-focus-hover); border-radius: 4px; padding: 18px 24px">
                         &ldquo;${escapeHtml(phrase)}&rdquo;
                     </div>
-                    <div style="font-family: 'Lora', serif; font-size: 1.05em; font-weight: bold; color: var(--text-gold-dark);">
+                    <div style="font-family: 'Lora', serif; font-size: 1.048em; font-weight: bold; color: var(--text-gold-dark)">
                         ${escapeHtml(T("Wish.granted.manifested", { outcome: item.name || "" }))}
                     </div>
-                    <div style="font-family: 'Lora', serif; font-size: 0.9em; color: var(--text-card-medium); font-style: italic;">
+                    <div style="font-family: 'Lora', serif; font-size: 0.928em; color: var(--text-card-medium)">
                         ${escapeHtml(T("Wish.granted.spent"))}
                     </div>
-                    <div style="font-family: 'Lora', serif; font-size: 0.8em; color: var(--text-card-medium); text-transform: uppercase; letter-spacing: 0.08em;">
+                    <div style="font-family: 'Lora', serif; font-size: 0.856em; color: var(--text-card-medium); text-transform: uppercase; letter-spacing: 0.08em">
                         ${escapeHtml(T("Wish.granted.close"))}
                     </div>
                 </div>

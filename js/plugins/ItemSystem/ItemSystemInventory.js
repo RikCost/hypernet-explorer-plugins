@@ -246,7 +246,6 @@
     this.createTargetWindow();
     this.createEquipSelectionWindow();
     this.createContextMenu();
-    this.createFavoriteSlotsWindow();
 
     // Hide standard canvas windows from screen, drawing them in the background
     if (this._weightWindow) this._weightWindow.visible = false;
@@ -256,7 +255,6 @@
     if (this._targetWindow) this._targetWindow.visible = false;
     if (this._equipSelectionWindow) this._equipSelectionWindow.visible = false;
     if (this._contextMenu) this._contextMenu.visible = false;
-    if (this._favoriteSlotsWindow) this._favoriteSlotsWindow.visible = false;
   };
 
   Scene_EnhancedItem.prototype.createWeightWindow = function () {
@@ -358,10 +356,6 @@
     return new Rectangle(wx, wy, ww, wh);
   };
 
-  // NOTE: createFavoriteSlotsWindow is defined later (favorites section) and
-  // that definition wins at load; the earlier duplicate here was dead and has
-  // been removed.
-
   Scene_EnhancedItem.prototype.onItemOk = function () {
     // Dummy handler
   };
@@ -370,47 +364,78 @@
     this.popScene();
   };
 
+  // The tabs are not a fixed list. There is no point offering a Magic tab to a
+  // party carrying no charms, and a hard-coded row can never offer the tab for
+  // whatever a mod or a new region put in the pockets: the row is read off what
+  // is actually in them, so every category that exists has a tab and no
+  // category that does not.
+  //
+  // The label is the item's own category name — the <category:> tag, or the
+  // weapon/armour type where there is no tag — which is what the item sheet and
+  // the shop's own grouping quote, so a thing is never filed under a name the
+  // tab of that name would not show.
+  const ALL_CATEGORY = "All";        // i18n-ignore  item-category id
+  const FAVORITES_CATEGORY = "Favorites";  // i18n-ignore  item-category id
+  const MISC_CATEGORY = "Misc";      // i18n-ignore  item-category id
+
+  const uiCategoryOf = (item) => {
+    const utils = window.ItemSystemUtils;
+    const label = utils && typeof utils.getItemCategoryName === "function"
+      ? String(utils.getItemCategoryName(item) || "").trim()
+      : "";
+    return label || MISC_CATEGORY;
+  };
+
+  function matchesUICategory(item, category) {
+    if (!item) return false;
+    if (category === ALL_CATEGORY) return true;
+    if (category === FAVORITES_CATEGORY) {
+      return !!window.ItemHotbar && window.ItemHotbar.isFavorited(item);
+    }
+    return uiCategoryOf(item).toLowerCase() === String(category).toLowerCase();
+  }
+
+  // The row itself: the two standing tabs, then a tab per category the pockets
+  // hold, alphabetically. Favourites earns its place whatever is carried — it
+  // is a shelf the player builds rather than one the loot decides.
+  Scene_EnhancedItem.prototype.uiCategories = function () {
+    const present = new Map();
+    for (const item of $gameParty.allItems()) {
+      const label = uiCategoryOf(item);
+      const key = label.toLowerCase();
+      if (!present.has(key)) present.set(key, label);
+    }
+    const labels = Array.from(present.values()).sort((a, b) => a.localeCompare(b));
+    return [ALL_CATEGORY, FAVORITES_CATEGORY, ...labels];
+  };
+
+  // The caption a tab or a heading is printed under. Inventory.category is the
+  // one table the whole game names item categories out of — the shop's own chips
+  // and group headings read it too — and a tag nobody has written a caption for
+  // reads as itself.
+  Scene_EnhancedItem.prototype.uiCategoryLabel = function (category) {
+    const key = 'Inventory.category.' + category;
+    return T.has(key) ? T(key) : String(category);
+  };
+
+  // The heading one item files under.
+  Scene_EnhancedItem.prototype.uiGroupOf = function (item) {
+    return uiCategoryOf(item);
+  };
+
+  // The All tab is a categorized list rather than one long roll: the sort
+  // orders each heading's own contents, the headings run alphabetically.
+  Scene_EnhancedItem.prototype.isUIGroupedView = function () {
+    return this._activeUICategory === ALL_CATEGORY;
+  };
+
   Scene_EnhancedItem.prototype.getFilteredUIItems = function () {
     const allItems = $gameParty.allItems();
     const category = this._activeUICategory;
 
-    let items;
-    // i18n-ignore-start  item-category ids, matched against the
-    // <category:> note tag; the tab labels are Inventory.category.<id>
-    if (category === "All") {
-      items = allItems;
-    } else {
-      items = allItems.filter((item) => {
-        if (category === "Favorites") {
-          for (let i = 1; i <= 9; i++) {
-            if ($gameSystem.getFavoriteItem(String(i)) === item.id) {
-              return true;
-            }
-          }
-          return false;
-        }
-        if (category === "Weapons") return DataManager.isWeapon(item);
-        if (category === "Armor") return DataManager.isArmor(item);
-        if (category === "Food") return window.ItemSystemUtils && window.ItemSystemUtils.hasItemCategory(item, "Food");  // i18n-ignore  item-category id
-        if (category === "Medical") return window.ItemSystemUtils && window.ItemSystemUtils.hasItemCategory(item, "Medical");  // i18n-ignore  item-category id
-        if (category === "Tools") return window.ItemSystemUtils && window.ItemSystemUtils.hasItemCategory(item, "Tools");  // i18n-ignore  item-category id
-        if (category === "Materials") {
-          return (window.ItemSystemUtils && (
-            window.ItemSystemUtils.hasItemCategory(item, "Materials") ||  // i18n-ignore  item-category id
-            window.ItemSystemUtils.hasItemCategory(item, "Alchemistry") ||  // i18n-ignore  item-category id
-            window.ItemSystemUtils.hasItemCategory(item, "Crafting")  // i18n-ignore  item-category id
-          ));
-        }
-        if (category === "Quest") return DataManager.isItem(item) && item.itypeId === 2;
-        if (category === "Books") return window.ItemSystemUtils && window.ItemSystemUtils.hasItemCategory(item, "Books");  // i18n-ignore  item-category id
-        if (category === "Combat") return window.ItemSystemUtils && window.ItemSystemUtils.hasItemCategory(item, "Combat");  // i18n-ignore  item-category id
-        if (category === "Lifestyle") return window.ItemSystemUtils && window.ItemSystemUtils.hasItemCategory(item, "Lifestyle");  // i18n-ignore  item-category id
-        if (category === "Magic") return window.ItemSystemUtils && window.ItemSystemUtils.hasItemCategory(item, "Magic");  // i18n-ignore  item-category id
-        if (category === "Misc") return window.ItemSystemUtils && window.ItemSystemUtils.hasItemCategory(item, "Misc");  // i18n-ignore  item-category id
-        // i18n-ignore-end
-        return false;
-      });
-    }
+    let items = category === ALL_CATEGORY
+      ? allItems.slice()
+      : allItems.filter((item) => matchesUICategory(item, category));
 
     const query = (this._searchText || "").trim().toLowerCase();
     if (query) {
@@ -439,6 +464,13 @@
       if (valA > valB) return isAsc ? 1 : -1;
       return 0;
     });
+
+    // Under All, one more pass files each item under its heading. Sorting is
+    // stable, so the pass above still decides the order INSIDE a heading; the
+    // headings themselves run alphabetically, the order their tabs are in.
+    if (this.isUIGroupedView()) {
+      items.sort((a, b) => this.uiGroupOf(a).localeCompare(this.uiGroupOf(b)));
+    }
 
     return items;
   };
@@ -503,10 +535,11 @@
         this.throwItemToPlugin(item);
         break;
       case "favorite":
-        this._favoriteSlotsWindow.setItem(item);
-        this._favoriteSlotsWindow.show();
-        this._favoriteSlotsWindow.activate();
-        this._favoriteSlotsWindow.select(0);
+        // The slot picker is gone: the hotbar itself (ItemSystemHotbar.js) is
+        // where slots are chosen now, so this only flips the item onto it.
+        if (window.ItemHotbar && window.ItemHotbar.toggle(item)) SoundManager.playOk();
+        else SoundManager.playBuzzer();
+        this._itemWindow.activate();
         break;
       case "disassemble":
         this.disassembleItem(item);
@@ -771,27 +804,198 @@
     }
   };
 
-  Scene_EnhancedItem.prototype.useItemWithoutTarget = function (item) {
-    if (!item) return;
+  //=============================================================================
+  // ItemUse , using an item, with no menu around it
+  //=============================================================================
+  // The backpack is not the only place an item is used: the map's quick bar
+  // reaches for the same food and the same bandages with no scene to pop back
+  // out of. So the application itself lives here, scene-free, and each caller
+  // adds only its own navigation: the backpack pops back to the map when a
+  // common event has been reserved, the quick bar is standing there already.
+  //
+  // Every entry point answers { used, commonEvent }: whether the item was
+  // spent at all, and the id of the common event it reserved (0 for none).
 
-    if (item.scope === 0 || item.scope === 11) {
-      const commonEventId = this.getCommonEventEffect(item);
-      this.playItemSound(item);
+  const NO_USE = { used: false, commonEvent: 0 };
+
+  function animationSoundOf(item) {
+    if (!item || !item.animationId || item.animationId <= 0) return null;
+    const animation = $dataAnimations[item.animationId];
+    if (!animation || !animation.soundTimings || animation.soundTimings.length === 0) return null;
+    const sorted = animation.soundTimings.slice().sort((a, b) => a.frame - b.frame);
+    return sorted[0] ? sorted[0].se : null;
+  }
+
+  function playItemSound(item) {
+    const se = animationSoundOf(item);
+    if (se && se.name) AudioManager.playSe(se);
+    else SoundManager.playUseItem();  // Fallback
+  }
+
+  function commonEventEffectOf(item) {
+    if (!item || !item.effects) return 0;
+    const effect = item.effects.find((e) => e.code === Game_Action.EFFECT_COMMON_EVENT);
+    return effect ? effect.dataId : 0;
+  }
+
+  // Nutrition into the variables the food events read, then the eating event
+  // of whoever ate. The party case is credited to the leader's event.
+  function reserveFoodCommonEvent(actor, item, isParty) {
+    const caloriesMatch = item.note.match(/<calories:(\d+)>/);
+    const fatMatch = item.note.match(/<fat:(\d+)>/);
+    const proteinMatch = item.note.match(/<protein:(\d+)>/);
+
+    if (caloriesMatch) $gameVariables.setValue(88, Number(caloriesMatch[1]));
+    if (fatMatch) $gameVariables.setValue(89, Number(fatMatch[1]));
+    if (proteinMatch) $gameVariables.setValue(90, Number(proteinMatch[1]));
+
+    let commonEventId = 0;
+    if (isParty || !actor) commonEventId = FOOD_COMMON_EVENT_ACTOR1;
+    else if (actor.actorId() === 1) commonEventId = FOOD_COMMON_EVENT_ACTOR1;
+    else if (actor.actorId() === 2) commonEventId = FOOD_COMMON_EVENT_ACTOR2;
+    else if (actor.actorId() === 3) commonEventId = FOOD_COMMON_EVENT_ACTOR3;
+
+    if (commonEventId > 0) $gameTemp.reserveCommonEvent(commonEventId);
+  }
+
+  // The item's own common event, if it carries one. Reserving it is what tells
+  // the caller the use has to be played out on the map.
+  function reserveItemCommonEvent(item) {
+    const commonEventId = commonEventEffectOf(item);
+    if (commonEventId > 0) $gameTemp.reserveCommonEvent(commonEventId);
+    else $gameScreen.startFlash([255, 255, 255, 128], 8);
+    return commonEventId;
+  }
+
+  const ItemUse = {
+    /** One ally: the target picker's answer, wherever it was asked. */
+    onActor(actor, item) {
+      if (!actor || !item) return NO_USE;
+
+      const isFood = utils.hasItemCategory(item, "Food");  // i18n-ignore  item-category id
+
+      if (isFood) {
+        playItemSound(item);
+
+        if (actor.hp < actor.mhp && item.damage && item.damage.type === 3) {
+          const action = new Game_Action(actor);
+          action.setItemObject(item);
+          action.apply(actor);
+          actor.refresh();
+        }
+
+        // Eating always consumes one of the item, regardless of the database
+        // "Consume" flag (issue #144).
+        $gameParty.loseItem(item, 1);
+        utils.applyNeedRestores(actor, item);
+        reserveFoodCommonEvent(actor, item, false);
+
+        return { used: true, commonEvent: reserveItemCommonEvent(item) };
+      }
+
+      const action = new Game_Action(actor);
+      action.setItemObject(item);
+      action.apply(actor);
+
+      // Items whose only purpose is replenishing a need or feeding a craving (no
+      // HP/MP/state effect) won't register a "hit", so honor those tags as a
+      // valid use on their own.
+      const hasNeedRestore = utils.satisfiesNeed(item);
+
+      if (!(actor.result().isHit() || hasNeedRestore)) {
+        SoundManager.playBuzzer();
+        return NO_USE;
+      }
+
+      playItemSound(item);
+      $gameParty.consumeItem(item);
+      utils.applyNeedRestores(actor, item);
+      const commonEvent = reserveItemCommonEvent(item);
+      actor.refresh();
+      return { used: true, commonEvent };
+    },
+
+    /** The whole party, from a scope-8/10 item. */
+    onAllParty(item) {
+      if (!item) return NO_USE;
+
+      const isFood = utils.hasItemCategory(item, "Food");  // i18n-ignore  item-category id
+
+      if (isFood) {
+        const targets = $gameParty.members().filter((member) => member.isAlive());
+        if (targets.length === 0) return NO_USE;
+
+        playItemSound(item);
+        // Eating always consumes one, regardless of the database flag (issue #144).
+        $gameParty.loseItem(item, 1);
+
+        for (const actor of targets) {
+          if (item.damage && item.damage.type === 3 && actor.hp < actor.mhp) {
+            const action = new Game_Action(actor);
+            action.setItemObject(item);
+            action.apply(actor);
+            actor.refresh();
+          }
+          utils.applyNeedRestores(actor, item);
+        }
+
+        reserveFoodCommonEvent(null, item, true);
+        return { used: true, commonEvent: reserveItemCommonEvent(item) };
+      }
+
+      const targets = $gameParty.members().filter((member) => {
+        if (item.scope === 9 || item.scope === 10) return member.isDead();
+        return member.isAlive();
+      });
+      if (targets.length === 0) return NO_USE;
+
+      playItemSound(item);
+      $gameParty.consumeItem(item);
+      let successfulUses = 0;
+      for (const actor of targets) {
+        const action = new Game_Action(actor);
+        action.setItemObject(item);
+        action.apply(actor);
+        if (actor.result().isHit()) successfulUses++;
+        utils.applyNeedRestores(actor, item);
+        actor.refresh();
+      }
+
+      const commonEventId = commonEventEffectOf(item);
+      if (commonEventId > 0) $gameTemp.reserveCommonEvent(commonEventId);
+      else if (successfulUses > 0) $gameScreen.startFlash([255, 255, 255, 128], 8);
+      return { used: true, commonEvent: commonEventId };
+    },
+
+    /**
+     * An item that asks nobody who it is for: the whole party (scope 0), the
+     * user (scope 11), or anything at all whose point is the common event it
+     * carries.
+     */
+    withoutTarget(item) {
+      if (!item) return NO_USE;
+
+      const scope = item.scope;
+      const commonEventId = commonEventEffectOf(item);
+      if (scope !== 0 && scope !== 11 && commonEventId <= 0) {
+        SoundManager.playBuzzer();
+        return NO_USE;
+      }
+
+      playItemSound(item);
       $gameParty.consumeItem(item);
 
       if (commonEventId > 0) {
         $gameTemp.reserveCommonEvent(commonEventId);
-        this.popScene();
-        SceneManager.goto(Scene_Map);
-        return;
+        return { used: true, commonEvent: commonEventId };
       }
 
-      if (item.scope === 0) {
+      if (scope === 0) {
         $gameParty.members().forEach((actor) => {
           actor.useItem(item);
           utils.applyNeedRestores(actor, item);
         });
-      } else if (item.scope === 11) {
+      } else if (scope === 11) {
         const actor = $gameParty.leader();
         if (actor && actor.canUse(item)) {
           actor.useItem(item);
@@ -800,157 +1004,52 @@
       }
 
       $gameScreen.startFlash([255, 255, 255, 128], 8);
-    } else {
-      SoundManager.playBuzzer();
+      return { used: true, commonEvent: 0 };
+    },
+
+    /** Whether an item wants to be told which ally it is for. */
+    needsTarget(item) {
+      return !!item && [7, 8, 9, 10].includes(item.scope);
+    }
+  };
+
+  window.ItemUse = ItemUse;
+
+  // The scene's own use paths: the shared application, plus the one thing only
+  // a menu has to do , get out of the way so the map can run what was reserved.
+  Scene_EnhancedItem.prototype.useItemWithoutTarget = function (item) {
+    const result = ItemUse.withoutTarget(item);
+    if (result.commonEvent > 0) {
+      this.popScene();
+      SceneManager.goto(Scene_Map);
     }
   };
 
   Scene_EnhancedItem.prototype.useItemOnAllParty = function (item) {
-    if (!item) return;
-
-    const isFood = utils.hasItemCategory(item, "Food");  // i18n-ignore  item-category id
-
-    if (isFood) {
-      this.playItemSound(item);
-      let totalHpRecoveryPercent = 0;
-      let memberCount = 0;
-      const targets = $gameParty.members().filter((member) => member.isAlive());
-      if (targets.length === 0) return;
-
-      // Eating always consumes one, regardless of the database flag (issue #144).
-      $gameParty.loseItem(item, 1);
-
-      for (const actor of targets) {
-        if (item.damage && item.damage.type === 3) {
-          const action = new Game_Action(actor);
-          action.setItemObject(item);
-          const value = action.makeDamageValue(actor, false);
-          totalHpRecoveryPercent += Math.floor((value / actor.mhp) * 100);
-          memberCount++;
-
-          if (actor.hp < actor.mhp) {
-            action.apply(actor);
-            actor.refresh();
-          }
-        }
-        utils.applyNeedRestores(actor, item);
-      }
-
-      const avgRecovery = memberCount > 0 ? Math.floor(totalHpRecoveryPercent / memberCount) : 0;
-      this.handleFoodItem(null, item, true);
-
-      if (this.triggerCommonEvent(item)) {
-        this.popScene();
-        SceneManager.goto(Scene_Map);
-      } else {
-        $gameScreen.startFlash([255, 255, 255, 128], 8);
-      }
-
-      this.hideTargetWindowAndRefresh();
-      return;
-    }
-
-    this.playItemSound(item);
-
-    const targets = $gameParty.members().filter((member) => {
-      if (item.scope === 9 || item.scope === 10) return member.isDead();
-      return member.isAlive();
-    });
-
-    if (targets.length === 0) return;
-
-    $gameParty.consumeItem(item);
-    let successfulUses = 0;
-    for (const actor of targets) {
-      const action = new Game_Action(actor);
-      action.setItemObject(item);
-      action.apply(actor);
-      if (actor.result().isHit()) {
-        successfulUses++;
-      }
-      utils.applyNeedRestores(actor, item);
-      actor.refresh();
-    }
-
-    if (this.triggerCommonEvent(item)) {
+    const result = ItemUse.onAllParty(item);
+    if (result.commonEvent > 0) {
       this.popScene();
       SceneManager.goto(Scene_Map);
-    } else if (successfulUses > 0) {
-      $gameScreen.startFlash([255, 255, 255, 128], 8);
     }
+    this.hideTargetWindowAndRefresh();
+  };
 
+  Scene_EnhancedItem.prototype.useItemOnActor = function (actor, item) {
+    const result = ItemUse.onActor(actor, item);
+    if (result.commonEvent > 0) {
+      this.popScene();
+      SceneManager.goto(Scene_Map);
+    }
     this.hideTargetWindowAndRefresh();
   };
 
   Scene_EnhancedItem.prototype.triggerCommonEvent = function (item) {
-    const commonEventId = this.getCommonEventEffect(item);
-
+    const commonEventId = commonEventEffectOf(item);
     if (commonEventId > 0) {
       $gameTemp.reserveCommonEvent(commonEventId);
       return true;
     }
     return false;
-  };
-
-  Scene_EnhancedItem.prototype.useItemOnActor = function (actor, item) {
-    if (!actor || !item) return;
-
-    const isFood = utils.hasItemCategory(item, "Food");  // i18n-ignore  item-category id
-
-    if (isFood) {
-      this.playItemSound(item);
-
-      if (actor.hp < actor.mhp && item.damage && item.damage.type === 3) {
-        const action = new Game_Action(actor);
-        action.setItemObject(item);
-        action.apply(actor);
-        actor.refresh();
-      }
-
-      // Eating always consumes one of the item, regardless of the database
-      // "Consume" flag (issue #144).
-      $gameParty.loseItem(item, 1);
-      utils.applyNeedRestores(actor, item);
-      this.handleFoodItem(actor, item);
-
-      if (this.triggerCommonEvent(item)) {
-        this.popScene();
-        SceneManager.goto(Scene_Map);
-      } else {
-        $gameScreen.startFlash([255, 255, 255, 128], 8);
-      }
-
-      this.hideTargetWindowAndRefresh();
-      return;
-    }
-
-    const action = new Game_Action(actor);
-    action.setItemObject(item);
-    action.apply(actor);
-
-    // Items whose only purpose is replenishing a need or feeding a craving (no
-    // HP/MP/state effect) won't register a "hit", so honor those tags as a
-    // valid use on their own.
-    const hasNeedRestore = utils.satisfiesNeed(item);
-
-    if (actor.result().isHit() || hasNeedRestore) {
-      this.playItemSound(item);
-      $gameParty.consumeItem(item);
-      utils.applyNeedRestores(actor, item);
-
-      if (this.triggerCommonEvent(item)) {
-        this.popScene();
-        SceneManager.goto(Scene_Map);
-      } else {
-        $gameScreen.startFlash([255, 255, 255, 128], 8);
-      }
-
-      actor.refresh();
-    } else {
-      SoundManager.playBuzzer();
-    }
-
-    this.hideTargetWindowAndRefresh();
   };
 
   Scene_EnhancedItem.prototype.calculateHealingAmount = function (
@@ -1013,63 +1112,22 @@
     return regex.test(item.note);
   };
 
-  Scene_EnhancedItem.prototype.handleFoodItem = function (
-    actor,
-    item,
-    isParty = false
-  ) {
-    const caloriesMatch = item.note.match(/<calories:(\d+)>/);
-    const fatMatch = item.note.match(/<fat:(\d+)>/);
-    const proteinMatch = item.note.match(/<protein:(\d+)>/);
-
-    if (caloriesMatch) $gameVariables.setValue(88, Number(caloriesMatch[1]));
-    if (fatMatch) $gameVariables.setValue(89, Number(fatMatch[1]));
-    if (proteinMatch) $gameVariables.setValue(90, Number(proteinMatch[1]));
-
-    let commonEventId = 0;
-
-    if (isParty || !actor) {
-      commonEventId = FOOD_COMMON_EVENT_ACTOR1;
-    } else if (actor.actorId() === 1) {
-      commonEventId = FOOD_COMMON_EVENT_ACTOR1;
-    } else if (actor.actorId() === 2) {
-      commonEventId = FOOD_COMMON_EVENT_ACTOR2;
-    } else if (actor.actorId() === 3) {
-      commonEventId = FOOD_COMMON_EVENT_ACTOR3;
-    }
-
-    if (commonEventId > 0) {
-      $gameTemp.reserveCommonEvent(commonEventId);
-    }
+  // Kept as the scene's own names for these; the work itself is ItemUse's, so
+  // there is one reading of a food tag and one item sound in the plugin.
+  Scene_EnhancedItem.prototype.handleFoodItem = function (actor, item, isParty = false) {
+    reserveFoodCommonEvent(actor, item, isParty);
   };
 
   Scene_EnhancedItem.prototype.getCommonEventEffect = function (item) {
-    if (!item || !item.effects) return 0;
-    const commonEventEffect = item.effects.find(
-      (effect) => effect.code === Game_Action.EFFECT_COMMON_EVENT
-    );
-    return commonEventEffect ? commonEventEffect.dataId : 0;
+    return commonEventEffectOf(item);
   };
 
   Scene_EnhancedItem.prototype.getAnimationSound = function (item) {
-    if (!item || !item.animationId || item.animationId <= 0) {
-      return null;
-    }
-    const animation = $dataAnimations[item.animationId];
-    if (!animation || !animation.soundTimings || animation.soundTimings.length === 0) {
-      return null;
-    }
-    const sortedSounds = animation.soundTimings.slice().sort((a, b) => a.frame - b.frame);
-    return sortedSounds[0] ? sortedSounds[0].se : null;
+    return animationSoundOf(item);
   };
 
   Scene_EnhancedItem.prototype.playItemSound = function (item) {
-    const animationSound = this.getAnimationSound(item);
-    if (animationSound && animationSound.name) {
-      AudioManager.playSe(animationSound);
-    } else {
-      SoundManager.playUseItem(); // Fallback
-    }
+    playItemSound(item);
   };
 
   //=============================================================================
@@ -1786,7 +1844,10 @@
         this.addCommand(T('Inventory.use'), "use");
       }
 
-      this.addCommand(T('Inventory.favorites2'), "favorite");
+      // Only usable items reach the hotbar (ItemSystemHotbar.js).
+      if (window.ItemHotbar && window.ItemHotbar.isFavoritable(this._item)) {
+        this.addCommand(T('Inventory.favorites2'), "favorite");
+      }
       this.addCommand(T('Inventory.throw'), "throw");
       this.addCommand(T('Inventory.disassemble'), "disassemble");
 
@@ -1860,82 +1921,6 @@
   Game_System.prototype.setFavoriteItem = function (slot, itemId) {
     if (!this._favoriteItems) this._favoriteItems = {};
     this._favoriteItems[slot] = itemId;
-  };
-
-  //=============================================================================
-  // Window_FavoriteSlots
-  //=============================================================================
-
-  function Window_FavoriteSlots() {
-    this.initialize(...arguments);
-  }
-
-  Window_FavoriteSlots.prototype = Object.create(Window_Command.prototype);
-  Window_FavoriteSlots.prototype.constructor = Window_FavoriteSlots;
-
-  Window_FavoriteSlots.prototype.initialize = function (rect) {
-    this._item = null;
-    Window_Command.prototype.initialize.call(this, rect);
-    this.hide();
-    this.deactivate();
-  };
-
-  Window_FavoriteSlots.prototype.setItem = function (item) {
-    this._item = item;
-    this.refresh();
-  };
-
-  Window_FavoriteSlots.prototype.makeCommandList = function () {
-    const useTranslation = ConfigManager.language === "it";
-    for (let i = 1; i <= 9; i++) {
-      const assignedItemId = $gameSystem.getFavoriteItem(String(i));
-      let assignedName = "";
-      if (assignedItemId) {
-        const assignedItem = $dataItems[assignedItemId];
-        if (assignedItem) {
-          assignedName = window.translateText ? window.translateText(assignedItem.name) : assignedItem.name;
-        }
-      }
-
-      const label = assignedName ? `${i}: ${assignedName}` : `${i}: ${T('Inventory.empty')}`;
-      this.addCommand(label, "slot", true, String(i));
-    }
-  };
-
-  //=============================================================================
-  // Scene_EnhancedItem Extensions for Favorites
-  //=============================================================================
-
-  Scene_EnhancedItem.prototype.createFavoriteSlotsWindow = function () {
-    const rect = this.favoriteSlotsWindowRect();
-    this._favoriteSlotsWindow = new Window_FavoriteSlots(rect);
-    this._favoriteSlotsWindow.setHandler("ok", this.onFavoriteSlotsOk.bind(this));
-    this._favoriteSlotsWindow.setHandler("cancel", this.onFavoriteSlotsCancel.bind(this));
-    this.addWindow(this._favoriteSlotsWindow);
-  };
-
-  Scene_EnhancedItem.prototype.favoriteSlotsWindowRect = function () {
-    const ww = 400;
-    const wh = this.calcWindowHeight(9, true);
-    const wx = (Graphics.boxWidth - ww) / 2;
-    const wy = (Graphics.boxHeight - wh) / 2;
-    return new Rectangle(wx, wy, ww, wh);
-  };
-
-  Scene_EnhancedItem.prototype.onFavoriteSlotsOk = function () {
-    const slot = this._favoriteSlotsWindow.currentExt();
-    const item = this._favoriteSlotsWindow._item;
-    if (slot && item) {
-      $gameSystem.setFavoriteItem(slot, item.id);
-      SoundManager.playOk();
-    }
-    this._favoriteSlotsWindow.hide();
-    this._itemWindow.activate();
-  };
-
-  Scene_EnhancedItem.prototype.onFavoriteSlotsCancel = function () {
-    this._favoriteSlotsWindow.hide();
-    this._itemWindow.activate();
   };
 
   //=============================================================================
@@ -2466,80 +2451,6 @@
 
   Window_EquipSelection.prototype.onSelectionCancel = function () {
     this._scene.onEquipSelectionCancel();
-  };
-
-  //=============================================================================
-  // Scene_Map Extensions for Favorites Hotkeys
-  //=============================================================================
-
-  const _Scene_Map_update = Scene_Map.prototype.update;
-  Scene_Map.prototype.update = function () {
-    _Scene_Map_update.call(this);
-    this.updateFavoriteHotkeys();
-  };
-
-  Scene_Map.prototype.updateFavoriteHotkeys = function () {
-    if ($gameMap.isEventRunning() || $gameMessage.isBusy()) return;
-
-    for (let i = 1; i <= 9; i++) {
-      if (Input.isTriggered(String(i))) {
-        this.useFavoriteItem(String(i));
-        break;
-      }
-    }
-  };
-
-  Scene_Map.prototype.useFavoriteItem = function (slot) {
-    const itemId = $gameSystem.getFavoriteItem(slot);
-    if (!itemId) return;
-
-    const item = $dataItems[itemId];
-    if (!item) return;
-
-    if ($gameParty.numItems(item) <= 0) {
-      SoundManager.playBuzzer();
-      return;
-    }
-
-    const scope = item.scope;
-
-    // Check if it targets allies (7, 8, 9, 10)
-    if ([7, 8, 9, 10].includes(scope)) {
-      SoundManager.playOk();
-      SceneManager.push(Scene_EnhancedItem);
-      SceneManager.prepareNextScene(item);
-    } else {
-      // Use directly on map
-      const commonEventId = this.getCommonEventEffect(item);
-
-      if (commonEventId > 0 || scope === 0 || scope === 11) {
-        SoundManager.playOk();
-        $gameParty.consumeItem(item);
-
-        if (commonEventId > 0) {
-          $gameTemp.reserveCommonEvent(commonEventId);
-        }
-
-        if (scope === 0) {
-          $gameParty.members().forEach((actor) => actor.useItem(item));
-        } else if (scope === 11) {
-          const actor = $gameParty.leader();
-          if (actor) actor.useItem(item);
-        }
-
-        $gameScreen.startFlash([255, 255, 255, 128], 8);
-      } else {
-        SoundManager.playBuzzer();
-      }
-    }
-  };
-
-  Scene_Map.prototype.getCommonEventEffect = function (item) {
-    if (!item || !item.effects) return 0;
-    const commonEventEffect = item.effects.find(
-      (effect) => effect.code === Game_Action.EFFECT_COMMON_EVENT
-    );
-    return commonEventEffect ? commonEventEffect.dataId : 0;
   };
 
 })();

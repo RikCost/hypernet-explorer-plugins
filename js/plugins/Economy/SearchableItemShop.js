@@ -2021,9 +2021,9 @@
 
         // Initialize empty structure so we don't redraw everything later
         this._dndContainer.innerHTML = `
-            <div style="background: #d3e5fa; padding: 6px 12px; border-bottom: 1px solid #7f9db9; font-size: 11px; font-weight: bold; color: #0b2f70; display: flex; justify-content: space-between; align-items: center; user-select: none; box-sizing: border-box; height: 28px;">
+            <div style="background: #d3e5fa; padding: 6px 12px; border-bottom: 1px solid #7f9db9; font-size: 14px; font-weight: bold; color: #0b2f70; display: flex; justify-content: space-between; align-items: center; user-select: none; box-sizing: border-box; height: 28px;">
                 <span>${this._isLimited ? T('Stockbusters.text.theArchmageSBazaar') : T('Stockbusters.text.stockbustersOnlineWares')}</span>
-                <span id="emporium-gold-display" style="color: #27ae60; font-size: 12px; font-weight: 700;">0 €</span>
+                <span id="emporium-gold-display" style="color: #27ae60; font-size: 15px; font-weight: 700;">0 €</span>
             </div>
             <div style="display: flex; flex: 1; overflow: hidden; height: calc(100% - 28px); box-sizing: border-box;">
                 <!-- Left Sidebar: search box + categories -->
@@ -2032,7 +2032,7 @@
                     <div style="padding: 10px 12px 8px 12px; box-sizing: border-box;">
                         <input id="emporium-search" type="text" autocomplete="off" spellcheck="false"
                                placeholder="${T('Stockbusters.ui.searchPlaceholder')}"
-                               style="width: 100%; box-sizing: border-box; padding: 4px 6px; font-family: 'Tahoma', sans-serif; font-size: 11px; border: 1px solid #7f9db9; border-radius: 3px; background: #ffffff; color: #333;" />
+                               style="width: 100%; box-sizing: border-box; padding: 4px 6px; font-family: 'Tahoma', sans-serif; font-size: 14px; border: 1px solid #7f9db9; border-radius: 3px; background: #ffffff; color: #333;" />
                     </div>
                     <div id="emporium-left-page" style="flex: 1; padding: 0 12px 12px 12px; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; overflow-y: auto; user-select: none;"></div>
                 </div>
@@ -2040,7 +2040,7 @@
                 <div id="emporium-right-page" style="flex: 1; padding: 12px; overflow-y: auto; background: #ffffff; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; height: 100%;"></div>
             </div>
             <div id="emporium-modal-overlay" style="display: none; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
-                <div id="emporium-modal-content" style="background: #ece9d8; border: 3px solid #0054e3; border-radius: 4px; padding: 20px; width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Tahoma', sans-serif; font-size: 12px;"></div>
+                <div id="emporium-modal-content" style="background: #ece9d8; border: 3px solid #0054e3; border-radius: 4px; padding: 20px; width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Tahoma', sans-serif; font-size: 15px;"></div>
             </div>
         `;
         
@@ -2104,7 +2104,7 @@
         const selectedIndex = this._categoryGridWindow.index();
 
         if (stage === 'category') {
-            let gridHTML = `<div style="font-weight: bold; font-size: 10px; text-transform: uppercase; color: #5c6c8c; margin-bottom: 6px; letter-spacing: 0.5px;">${T('Stockbusters.ui.catalogCategories')}</div>`;
+            let gridHTML = `<div style="font-weight: bold; font-size: 13px; text-transform: uppercase; color: #5c6c8c; margin-bottom: 6px; letter-spacing: 0.5px;">${T('Stockbusters.ui.catalogCategories')}</div>`;
             categories.forEach((cat, idx) => {
                 const isSelected = idx === selectedIndex;
                 const bg = isSelected ? '#316ac5' : 'transparent';
@@ -2114,7 +2114,7 @@
                 gridHTML += `
                     <div ${isSelected ? 'data-selected="1"' : ''} style="padding: 8px 12px; margin-bottom: 3px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 3px; background: ${bg}; color: ${color}; border: ${border}; box-sizing: border-box; transition: background 0.1s;" onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.selectCategoryItem(${idx})">
                         ${getIconSpriteHTML(cat.icon, 20)}
-                        <span style="font-weight: bold; font-size: 11px;">${cat.name}</span>
+                        <span style="font-weight: bold; font-size: 14px;">${cat.name}</span>
                     </div>
                 `;
             });
@@ -2126,7 +2126,7 @@
             let ordersHTML = "";
 
             if (orders.length === 0) {
-                ordersHTML = `<div style="text-align: center; color: #666; margin-top: 15px; font-size: 11px; font-style: italic;">${T('Stockbusters.text.noActiveDeliveriesInTransit')}</div>`;
+                ordersHTML = `<div style="text-align: center; color: #666; margin-top: 15px; font-size: 14px; font-style: normal;">${T('Stockbusters.text.noActiveDeliveriesInTransit')}</div>`;
             } else {
                 orders.forEach((order, idx) => {
                     const entry = DeliveryManager.dataOf(order);
@@ -2140,17 +2140,17 @@
                     const timeColor = ready ? '#27ae60' : '#0054e3';
 
                     const collectHTML = ready
-                        ? `<button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.collectOrder(${idx})" style="padding: 2px 10px; font-weight: bold; border-radius: 3px; background: linear-gradient(to bottom, #53a93f 0%, #3c8227 100%); color: white; cursor: pointer; border: 1px solid #205416; font-size: 10.5px; text-shadow: 0 1px 1px #000;">${T('Stockbusters.text.collect')}</button>`
+                        ? `<button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.collectOrder(${idx})" style="padding: 2px 10px; font-weight: bold; border-radius: 3px; background: linear-gradient(to bottom, #53a93f 0%, #3c8227 100%); color: white; cursor: pointer; border: 1px solid #205416; font-size: 14px; text-shadow: 0 1px 1px #000;">${T('Stockbusters.text.collect')}</button>`
                         : '';
 
                     ordersHTML += `
                         <div style="border: 1px solid #c5c2af; border-radius: 4px; padding: 6px 10px; margin-bottom: 6px; background: #fdfcfa; display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); box-sizing: border-box;">
                             <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
                                 ${getIconSpriteHTML(entry.iconIndex, 20)}
-                                <strong style="font-size: 11.5px; color: #333;">${entry.name}</strong>
+                                <strong style="font-size: 14px; color: #333;">${entry.name}</strong>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                                <span style="font-size: 10.5px; color: ${timeColor}; font-weight: bold;">${timeLabel}</span>
+                                <span style="font-size: 14px; color: ${timeColor}; font-weight: bold;">${timeLabel}</span>
                                 ${collectHTML}
                             </div>
                         </div>
@@ -2160,7 +2160,7 @@
                 if (readyCount > 1) {
                     ordersHTML += `
                         <div style="text-align: right; margin-top: 8px;">
-                            <button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.collectAllOrders()" style="padding: 4px 14px; font-weight: bold; border-radius: 3px; background: linear-gradient(to bottom, #53a93f 0%, #3c8227 100%); color: white; cursor: pointer; border: 1px solid #205416; font-size: 11px; text-shadow: 0 1px 1px #000;">${T('Stockbusters.text.collectAll', { count: readyCount })}</button>
+                            <button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.collectAllOrders()" style="padding: 4px 14px; font-weight: bold; border-radius: 3px; background: linear-gradient(to bottom, #53a93f 0%, #3c8227 100%); color: white; cursor: pointer; border: 1px solid #205416; font-size: 14px; text-shadow: 0 1px 1px #000;">${T('Stockbusters.text.collectAll', { count: readyCount })}</button>
                         </div>
                     `;
                 }
@@ -2169,13 +2169,13 @@
             rightPageHTML = `
                 <div style="display: flex; flex-direction: column; gap: 15px; height: 100%; box-sizing: border-box; overflow-y: auto; width: 100%;">
                     <div style="border-bottom: 1px solid #7f9db9; padding-bottom: 10px;">
-                        <h2 style="margin: 0 0 4px 0; color: #0b2f70; font-size: 15px; font-weight: bold;">${T('Stockbusters.text.emporiumCatalogRegistry')}</h2>
-                        <div style="color: #666; font-size: 11px;">${T('Stockbusters.text.welcomeToTheChronostaticAlchemical')}</div>
+                        <h2 style="margin: 0 0 4px 0; color: #0b2f70; font-size: 17px; font-weight: bold;">${T('Stockbusters.text.emporiumCatalogRegistry')}</h2>
+                        <div style="color: #666; font-size: 14px;">${T('Stockbusters.text.welcomeToTheChronostaticAlchemical')}</div>
                     </div>
                     
                     <div style="background: #fdfdfd; border: 1px dashed #7f9db9; border-radius: 4px; padding: 12px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.02); box-sizing: border-box;">
-                        <h3 style="margin: 0 0 10px 0; color: #0b2f70; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 6px;">
-                            ${T('Stockbusters.text.activeOrders')} <span style="font-size: 11px; font-weight: normal; color: #666;">(${activeOrdersCount}/${MAX_ACTIVE_ORDERS})</span>
+                        <h3 style="margin: 0 0 10px 0; color: #0b2f70; font-size: 15px; font-weight: bold; display: flex; align-items: center; gap: 6px;">
+                            ${T('Stockbusters.text.activeOrders')} <span style="font-size: 14px; font-weight: normal; color: #666;">(${activeOrdersCount}/${MAX_ACTIVE_ORDERS})</span>
                         </h3>
                         ${ordersHTML}
                     </div>
@@ -2190,7 +2190,7 @@
             const items = this._itemListWindow._data || [];
             const selectedIndex = this._itemListWindow.index();
 
-            let gridHTML = `<div style="font-weight: bold; font-size: 10px; text-transform: uppercase; color: #5c6c8c; margin-bottom: 6px; letter-spacing: 0.5px;">${T('Stockbusters.ui.catalogCategories')}</div>`;
+            let gridHTML = `<div style="font-weight: bold; font-size: 13px; text-transform: uppercase; color: #5c6c8c; margin-bottom: 6px; letter-spacing: 0.5px;">${T('Stockbusters.ui.catalogCategories')}</div>`;
             categories.forEach((cat, idx) => {
                 // A search spans every category, so none of them is the one open.
                 const isSelected = !onSearchPage && category && cat.name === category.name;
@@ -2201,7 +2201,7 @@
                 gridHTML += `
                     <div ${isSelected ? 'data-selected="1"' : ''} style="padding: 8px 12px; margin-bottom: 3px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 3px; background: ${bg}; color: ${color}; border: ${border}; box-sizing: border-box; transition: background 0.1s;" onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.selectCategoryItem(${idx})">
                         ${getIconSpriteHTML(cat.icon, 20)}
-                        <span style="font-weight: bold; font-size: 11px;">${cat.name}</span>
+                        <span style="font-weight: bold; font-size: 14px;">${cat.name}</span>
                     </div>
                 `;
             });
@@ -2222,9 +2222,9 @@
                     <div ${isSelected ? 'data-selected="1"' : ''} style="padding: 8px 12px; margin-bottom: 4px; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 2px rgba(0,0,0,0.02); ${activeStyle} ${borderStyle} ${orderedStyle}" onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.selectShopItem(${idx})">
                         <div style="display: flex; align-items: center; gap: 8px; overflow: hidden; flex-grow: 1; margin-right: 8px; box-sizing: border-box;">
                             ${getIconSpriteHTML(item.iconIndex, 20)}
-                            <span style="font-weight: bold; font-size: 11.5px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 150px;">${item.name}</span>
+                            <span style="font-weight: bold; font-size: 14px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 150px;">${item.name}</span>
                         </div>
-                        <div style="font-weight: bold; font-size: 11px; flex-shrink: 0;">${priceText}</div>
+                        <div style="font-weight: bold; font-size: 14px; flex-shrink: 0;">${priceText}</div>
                     </div>
                 `;
             });
@@ -2233,9 +2233,9 @@
                 const emptyText = onSearchPage
                     ? T('Stockbusters.text.noSearchResults', { query: escapeHtml(this._searchQuery) })
                     : T('Stockbusters.text.noProductsAvailable');
-                itemsHTML = `<div style="text-align: center; color: #666; margin-top: 20px; font-style: italic; font-size: 11px;">${emptyText}</div>`;
+                itemsHTML = `<div style="text-align: center; color: #666; margin-top: 20px; font-style: normal; font-size: 14px;">${emptyText}</div>`;
             } else if (onSearchPage && items.length >= SEARCH_RESULT_LIMIT) {
-                itemsHTML += `<div style="text-align: center; color: #666; margin-top: 8px; font-style: italic; font-size: 10.5px;">${T('Stockbusters.text.searchTruncated', { count: SEARCH_RESULT_LIMIT })}</div>`;
+                itemsHTML += `<div style="text-align: center; color: #666; margin-top: 8px; font-style: normal; font-size: 14px;">${T('Stockbusters.text.searchTruncated', { count: SEARCH_RESULT_LIMIT })}</div>`;
             }
 
             const selectedItem = this._itemListWindow.item();
@@ -2246,7 +2246,7 @@
 
             if (!selectedItem) {
                 inspectorHTML = `
-                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; flex-grow: 1; text-align: center; color: #7f8c8d; font-style: italic; font-size: 11px; border: 1px dashed #7f9db9; border-radius: 4px; background: #fcfcfc; padding: 15px; height: 100%; box-sizing: border-box;">
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; flex-grow: 1; text-align: center; color: #7f8c8d; font-style: normal; font-size: 14px; border: 1px dashed #7f9db9; border-radius: 4px; background: #fcfcfc; padding: 15px; height: 100%; box-sizing: border-box;">
                         <span>${T('Stockbusters.text.selectAProductToView')}</span>
                     </div>
                 `;
@@ -2261,13 +2261,13 @@
                     const orderedLabel = minutesLeft > 0
                         ? T('Stockbusters.text.arrivesIn', { time: formatDelay(minutesLeft) })
                         : T('Stockbusters.text.readyForPickup');
-                    actionButtonHTML = `<button disabled style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #ccc; background: #e2e2e2; color: #888; font-size: 11px;">${orderedLabel}</button>`;
+                    actionButtonHTML = `<button disabled style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #ccc; background: #e2e2e2; color: #888; font-size: 14px;">${orderedLabel}</button>`;
                 } else if (!canAfford) {
-                    actionButtonHTML = `<button disabled style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #ccc; background: #f5dcdc; color: #c0392b; font-size: 11px;">${T('Stockbusters.text.insufficientFunds')}</button>`;
+                    actionButtonHTML = `<button disabled style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #ccc; background: #f5dcdc; color: #c0392b; font-size: 14px;">${T('Stockbusters.text.insufficientFunds')}</button>`;
                 } else if (maxOrdersReached && !this._isLimited) {
-                    actionButtonHTML = `<button disabled style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #ccc; background: #e2e2e2; color: #888; font-size: 11px;">${T('Stockbusters.text.maxOrdersReached')}</button>`;
+                    actionButtonHTML = `<button disabled style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #ccc; background: #e2e2e2; color: #888; font-size: 14px;">${T('Stockbusters.text.maxOrdersReached')}</button>`;
                 } else {
-                    actionButtonHTML = `<button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.onItemOk()" style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; background: linear-gradient(to bottom, #53a93f 0%, #3c8227 100%); color: white; cursor: pointer; border: 1px solid #205416; font-size: 11px; text-shadow: 0 1px 1px #000; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">${this._isLimited ? T('Stockbusters.text.acquireItem') : T('Stockbusters.text.orderItem')}</button>`;
+                    actionButtonHTML = `<button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.onItemOk()" style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; background: linear-gradient(to bottom, #53a93f 0%, #3c8227 100%); color: white; cursor: pointer; border: 1px solid #205416; font-size: 14px; text-shadow: 0 1px 1px #000; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">${this._isLimited ? T('Stockbusters.text.acquireItem') : T('Stockbusters.text.orderItem')}</button>`;
                 }
 
                 const descTranslated = window.translateText ? window.translateText(selectedItem.description) : selectedItem.description;
@@ -2287,23 +2287,23 @@
                         <!-- Detail Header -->
                         <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; border-bottom: 1px solid #ccc; padding-bottom: 10px; box-sizing: border-box;">
                             ${getIconSpriteHTML(selectedItem.iconIndex, 36)}
-                            <div style="font-weight: bold; font-size: 13px; color: #0b2f70; text-align: center; word-break: break-all;">${selectedItem.name}</div>
+                            <div style="font-weight: bold; font-size: 16px; color: #0b2f70; text-align: center; word-break: break-all;">${selectedItem.name}</div>
                         </div>
                         
                         <!-- Description -->
-                        <div style="flex-grow: 1; overflow-y: auto; background: #fdfdfd; border: 1px solid #7f9db9; border-radius: 3px; padding: 8px 10px; font-size: 11px; line-height: 1.45; color: #555; font-style: italic; text-align: justify; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); box-sizing: border-box;">
+                        <div style="flex-grow: 1; overflow-y: auto; background: #fdfdfd; border: 1px solid #7f9db9; border-radius: 3px; padding: 8px 10px; font-size: 14px; line-height: 1.45; color: #555; font-style: normal; text-align: justify; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); box-sizing: border-box;">
                             ${descTranslated || T('Stockbusters.text.noDescription')}
                             ${loreBlockHTML}
                         </div>
 
                         <!-- Price & Action -->
                         <div style="border-top: 1px solid #ccc; padding-top: 8px; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; flex-shrink: 0;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 13.5px;">
-                                <span style="color: #666; font-size: 11px; text-transform: uppercase;">${T('Stockbusters.ui.totalCost')}</span>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 16px;">
+                                <span style="color: #666; font-size: 14px; text-transform: uppercase;">${T('Stockbusters.ui.totalCost')}</span>
                                 <span style="color: #0054e3;">${formatPrice(price)}</span>
                             </div>
                             ${(this._isLimited || isOrdered) ? '' : `
-                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #666;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #666;">
                                 <span style="text-transform: uppercase;">${T('Stockbusters.ui.deliveryEstimate')}</span>
                                 <span style="font-weight: bold; color: #333;">${formatDelay(DeliveryManager.calculateDeliveryTime(price))}</span>
                             </div>`}
@@ -2315,10 +2315,10 @@
 
             rightPageHTML = `
                 <div style="display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #7f9db9; padding-bottom: 6px; margin-bottom: 10px; height: 28px; box-sizing: border-box; flex-shrink: 0;">
-                    <button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.onItemCancel()" style="padding: 2px 8px; font-weight: bold; cursor: pointer; border: 1px solid #7f9db9; border-radius: 3px; background: linear-gradient(to bottom, #fff 0%, #ece9d8 100%); font-size: 11px; display: flex; align-items: center; gap: 4px;">
-                        <span style="font-size: 12px; font-weight: bold;">←</span> ${T('Stockbusters.text.back')}
+                    <button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.onItemCancel()" style="padding: 2px 8px; font-weight: bold; cursor: pointer; border: 1px solid #7f9db9; border-radius: 3px; background: linear-gradient(to bottom, #fff 0%, #ece9d8 100%); font-size: 14px; display: flex; align-items: center; gap: 4px;">
+                        <span style="font-size: 15px; font-weight: bold;">←</span> ${T('Stockbusters.text.back')}
                     </button>
-                    <div style="font-weight: bold; color: #0b2f70; font-size: 13px;">${onSearchPage
+                    <div style="font-weight: bold; color: #0b2f70; font-size: 16px;">${onSearchPage
                         ? T('Stockbusters.text.searchResultsFor', { query: escapeHtml(this._searchQuery), count: items.length })
                         : (category ? category.name : T('Stockbusters.text.wares'))}</div>
                 </div>
@@ -2339,8 +2339,8 @@
             if (stage === 'confirm' && selectedItem) {
                 modalOverlay.style.display = 'flex';
                 modalContent.innerHTML = `
-                    <h2 style="margin-top: 0; color: #0054e3; border-bottom: 2px solid #0054e3; padding-bottom: 10px; font-size: 15px;">${T('Stockbusters.text.confirmTransaction')}</h2>
-                    <p style="font-size: 13px; margin: 15px 0 20px 0;">
+                    <h2 style="margin-top: 0; color: #0054e3; border-bottom: 2px solid #0054e3; padding-bottom: 10px; font-size: 17px;">${T('Stockbusters.text.confirmTransaction')}</h2>
+                    <p style="font-size: 16px; margin: 15px 0 20px 0;">
                         ${T('Stockbusters.text.transfer')} <strong>${formatPrice(price)}</strong> ${T('Stockbusters.text.for')} <strong>${selectedItem.name}</strong>?
                     </p>
                     <div style="display: flex; gap: 10px; justify-content: center;">

@@ -246,9 +246,9 @@
   function iconHTML(iconIndex, size = 20) {
     const x = (iconIndex % 16) * size;
     const y = Math.floor(iconIndex / 16) * size;
-    return `<span class="onu-icon" style="display:inline-block;vertical-align:middle;width:${size}px;height:${size}px;` +
-      `background-image:url('img/system/IconSet.png');background-size:${size * 16}px auto;` +
-      `background-position:-${x}px -${y}px;image-rendering:pixelated;"></span>`;
+    return `<span class="onu-icon" style="display:inline-block; vertical-align:middle; width:${size}px; height:${size}px; ` +
+      `background-image:url('img/system/IconSet.png'); background-size:${size * 16}px auto; ` +
+      `background-position:-${x}px -${y}px; image-rendering:pixelated"></span>`;
   }
 
   const escapeHTML = (s) => String(s == null ? "" : s)
@@ -1048,13 +1048,13 @@
       if (!this._container) return;
       this._container.innerHTML = `
         <div class="book-spread">
-          <div class="left-page" style="justify-content:flex-start;">
+          <div class="left-page" style="justify-content:flex-start">
             <h2 class="title">${T(this._titleKey)}</h2>
-            <div class="onu-headline" id="onu-headline" style="font-family:'Lora',serif; font-style:italic; text-align:center; margin-bottom:8px; color:#6b5242;">${escapeHTML(this._headline)}</div>
+            <div class="onu-headline" id="onu-headline" style="font-family:'Lora',serif; text-align:center; margin-bottom:8px; color:#6b5242">${escapeHTML(this._headline)}</div>
             <div class="eris-dialogue-log" id="onu-log">${this.logHTML()}</div>
             <div class="eris-choices-panel" id="onu-choices"></div>
           </div>
-          <div class="right-page" style="justify-content:flex-start;" id="onu-side">${this._sidebar}</div>
+          <div class="right-page" style="justify-content:flex-start" id="onu-side">${this._sidebar}</div>
         </div>`;
       const log = this._container.querySelector("#onu-log");
       if (log) log.scrollTop = log.scrollHeight;
@@ -1267,12 +1267,12 @@
 
   function statBar(label, value, max, color) {
     const pct = Math.max(0, Math.min(100, (value / max) * 100));
-    return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;font-family:'Lora',serif;font-size:0.8em;">
-      <span style="flex:0 0 84px;">${label}</span>
-      <span style="flex:1 1 auto;height:8px;background:rgba(90,70,50,0.18);border-radius:4px;overflow:hidden;">
-        <span style="display:block;height:100%;width:${pct}%;background:${color};"></span>
+    return `<div style="display:flex; align-items:center; gap:6px; margin-bottom:3px; font-family:'Lora',serif; font-size:0.856em">
+      <span style="flex:0 0 84px">${label}</span>
+      <span style="flex:1 1 auto; height:8px; background:rgba(90,70,50,0.18); border-radius:4px; overflow:hidden">
+        <span style="display:block; height:100%; width:${pct}%; background:${color}"></span>
       </span>
-      <span style="flex:0 0 34px;text-align:right;">${value}</span>
+      <span style="flex:0 0 34px; text-align:right">${value}</span>
     </div>`;
   }
 
@@ -1302,26 +1302,26 @@
     return `
       <div class="faction-heraldry-card">
         <div class="heraldry-emblem-box">
-          <canvas id="onu-emblem" width="32" height="32" style="width:36px;height:36px;image-rendering:pixelated;"></canvas>
+          <canvas id="onu-emblem" width="32" height="32" style="width:36px; height:36px; image-rendering:pixelated"></canvas>
         </div>
         <div class="heraldry-header"><h3 class="heraldry-title">${escapeHTML(delegation.name)}</h3></div>
-        <div style="font-family:'Lora',serif;font-size:0.9em;font-style:italic;text-align:center;margin-bottom:10px;color:#6b5242;">
+        <div style="font-family:'Lora',serif; font-size:0.928em; text-align:center; margin-bottom:10px; color:#6b5242">
           ${T("ONUMenu.ui.ledBy", { leader: escapeHTML(leaderOf(delegation)) })}
         </div>
-        <div class="inspect-lore" style="max-height:130px;overflow-y:auto;padding-right:5px;margin-bottom:12px;">
+        <div class="inspect-lore" style="max-height:130px; padding-right:5px; margin-bottom:12px">
           ${delegation.description || T("Factions.noDossier")}
         </div>
         ${bars}
-        ${branches.length ? `<div style="margin-top:10px;font-family:'Lora',serif;font-size:0.85em;">
-          <strong>${T("Factions.branches")}</strong> <span style="font-style:italic;">${escapeHTML(branches.join(", "))}</span>
+        ${branches.length ? `<div style="margin-top:10px; font-family:'Lora',serif; font-size:0.892em">
+          <strong>${T("Factions.branches")}</strong> <span>${escapeHTML(branches.join(", "))}</span>
         </div>` : ""}
-        <div style="display:flex;justify-content:space-between;margin-top:12px;font-family:'Lora',serif;font-size:0.9em;border-top:1px solid #c9b4a1;padding-top:8px;">
+        <div style="display:flex; justify-content:space-between; margin-top:12px; font-family:'Lora',serif; font-size:0.928em; border-top:1px solid #c9b4a1; padding-top:8px">
           <span>${T("ONUMenu.ui.yourStanding")}</span>
-          <span style="color:${$gameFactions.reputationColorOf(rep)};font-weight:bold;">${$gameFactions.reputationLevelOf(rep)} (${rep})</span>
+          <span style="color:${$gameFactions.reputationColorOf(rep)}; font-weight:bold">${$gameFactions.reputationLevelOf(rep)} (${rep})</span>
         </div>
-        <div style="display:flex;justify-content:space-between;font-family:'Lora',serif;font-size:0.9em;">
+        <div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em">
           <span>${T("ONUMenu.ui.projectedStipend")}</span>
-          <span style="font-weight:bold;">${euros(projected)}</span>
+          <span style="font-weight:bold">${euros(projected)}</span>
         </div>
       </div>`;
   }
@@ -1350,9 +1350,9 @@
       const color = state === "done"
         ? (session.results[i] && session.results[i].passed ? "#2e7d32" : "#c62828")
         : (state === "current" ? "#58180D" : "#8c715c");
-      return `<div class="eris-crime-row" style="opacity:${state === "pending" ? 0.55 : 1};">
+      return `<div class="eris-crime-row" style="opacity:${state ==="pending" ? 0.55 : 1};">
         <span class="crime-name">${escapeHTML(m.title)}</span>
-        <span style="color:${color};font-weight:bold;">${mark}</span>
+        <span style="color:${color}; font-weight:bold">${mark}</span>
       </div>`;
     }).join("");
 
@@ -1378,20 +1378,16 @@
   function boardHTML(entries, opts) {
     const secret = !!(opts && opts.secret);
     const tiles = entries.map((e, i) => `
-      <div class="onu-seat" id="onu-seat-${i}" style="
-        flex:0 0 auto; min-width:86px; max-width:120px; padding:5px 6px; border-radius:5px;
-        border:1.5px solid rgba(90,70,50,0.35); background:rgba(120,100,75,0.12);
-        font-family:'Lora',serif; font-size:0.68rem; line-height:1.15; text-align:center;
-        color:#4a3a2a; transition:background 0.28s ease, border-color 0.28s ease, color 0.28s ease;">
+      <div class="onu-seat" id="onu-seat-${i}" style="flex:0 0 auto; min-width:86px; max-width:120px; padding:5px 6px; border-radius:5px; border:1.5px solid rgba(90,70,50,0.35); background:rgba(120,100,75,0.12); font-family:'Lora',serif; font-size:0.83rem; line-height:1.15; text-align:center; color:#4a3a2a; transition:background 0.28s ease, border-color 0.28s ease, color 0.28s ease">
         ${secret ? T("ONUMenu.ui.sealedSeat") : escapeHTML(e.delegation.name)}
       </div>`).join("");
     return `
       <h2 class="title">${T("ONUMenu.ui.division")}</h2>
-      <div style="font-family:'Lora',serif;font-style:italic;text-align:center;margin-bottom:8px;color:#6b5242;">
+      <div style="font-family:'Lora',serif; text-align:center; margin-bottom:8px; color:#6b5242">
         ${secret ? T("ONUMenu.ui.secretBallotNote") : T("ONUMenu.ui.publicBallotNote")}
       </div>
-      <div id="onu-board" style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-content:flex-start;">${tiles}</div>
-      <div id="onu-tally" style="margin-top:14px;font-family:'Lora',serif;text-align:center;font-size:0.95em;"></div>`;
+      <div id="onu-board" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; align-content:flex-start">${tiles}</div>
+      <div id="onu-tally" style="margin-top:14px; font-family:'Lora',serif; text-align:center; font-size:0.964em"></div>`;
   }
 
   const VOTE_STYLE = {
@@ -1413,9 +1409,9 @@
     const el = document.getElementById("onu-tally");
     if (!el) return;
     el.innerHTML =
-      `<span style="color:#2e7d32;font-weight:bold;">${T("ONUMenu.ui.votesFor")} ${counts.for}</span> &nbsp;·&nbsp; ` +
-      `<span style="color:#c62828;font-weight:bold;">${T("ONUMenu.ui.votesAgainst")} ${counts.against}</span> &nbsp;·&nbsp; ` +
-      `<span style="color:#8c6b2f;font-weight:bold;">${T("ONUMenu.ui.votesAbstain")} ${counts.abstain}</span>`;
+      `<span style="color:#2e7d32; font-weight:bold">${T("ONUMenu.ui.votesFor")} ${counts.for}</span> &nbsp;·&nbsp; ` +
+      `<span style="color:#c62828; font-weight:bold">${T("ONUMenu.ui.votesAgainst")} ${counts.against}</span> &nbsp;·&nbsp; ` +
+      `<span style="color:#8c6b2f; font-weight:bold">${T("ONUMenu.ui.votesAbstain")} ${counts.abstain}</span>`;
   }
 
   //===========================================================================
@@ -1710,9 +1706,9 @@
     board.open();
 
     if (!offered.length) {
-      board.setSidebar(`<div class="faction-heraldry-card" style="justify-content:center;text-align:center;padding:40px 10px;">
-        <h3 class="title" style="border:none;margin-bottom:10px;">${T("ONUMenu.ui.noSeatsTitle")}</h3>
-        <p style="font-family:'Lora',serif;font-style:italic;line-height:1.6;color:#6b5242;">${T("ONUMenu.ui.noSeatsHint")}</p>
+      board.setSidebar(`<div class="faction-heraldry-card" style="justify-content:center; text-align:center; padding:40px 10px">
+        <h3 class="title" style="border:none; margin-bottom:10px">${T("ONUMenu.ui.noSeatsTitle")}</h3>
+        <p style="font-family:'Lora',serif; line-height:1.6; color:#6b5242">${T("ONUMenu.ui.noSeatsHint")}</p>
       </div>`);
       board.add(say("ONUAssembly.joining.refused", { name: actor.name() }), "narrator");
       await board.advance();
@@ -1775,33 +1771,33 @@
   function lobbySidebar(actor) {
     const post = postOf(actor);
     if (!post) {
-      return `<div class="faction-heraldry-card" style="justify-content:center;text-align:center;padding:40px 10px;">
-        <h3 class="title" style="border:none;margin-bottom:10px;">${T("ONUMenu.ui.unaccredited")}</h3>
-        <p style="font-family:'Lora',serif;font-style:italic;line-height:1.6;color:#6b5242;">${T("ONUMenu.ui.unaccreditedHint")}</p>
+      return `<div class="faction-heraldry-card" style="justify-content:center; text-align:center; padding:40px 10px">
+        <h3 class="title" style="border:none; margin-bottom:10px">${T("ONUMenu.ui.unaccredited")}</h3>
+        <p style="font-family:'Lora',serif; line-height:1.6; color:#6b5242">${T("ONUMenu.ui.unaccreditedHint")}</p>
       </div>`;
     }
     if (post.sg) {
       const state = assemblyState();
       return `<div class="faction-heraldry-card">
         <div class="heraldry-header"><h3 class="heraldry-title">${T("ONUMenu.role.secretaryGeneral")}</h3></div>
-        <div class="inspect-lore" style="margin-bottom:12px;">${T("ONUMenu.ui.sgBlurb")}</div>
-        <div style="display:flex;justify-content:space-between;font-family:'Lora',serif;font-size:0.9em;">
+        <div class="inspect-lore" style="margin-bottom:12px">${T("ONUMenu.ui.sgBlurb")}</div>
+        <div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em">
           <span>${T("ONUMenu.ui.weeksServed")}</span><span>${post.weeksServed || 0}</span>
         </div>
-        <div style="display:flex;justify-content:space-between;font-family:'Lora',serif;font-size:0.9em;">
+        <div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em">
           <span>${T("ONUMenu.ui.weeklyStipend")}</span><span>${euros(weeklyPay(actor))}</span>
         </div>
-        <div style="display:flex;justify-content:space-between;font-family:'Lora',serif;font-size:0.9em;">
+        <div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em">
           <span>${T("ONUMenu.ui.sessionsHeld")}</span><span>${(state && state.sessionsHeld) || 0}</span>
         </div>
       </div>`;
     }
     const delegation = delegationByKey(post.key);
     let html = dossierHTML(delegation, actor);
-    html += `<div style="display:flex;justify-content:space-between;font-family:'Lora',serif;font-size:0.9em;margin-top:6px;">
+    html += `<div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em; margin-top:6px">
       <span>${T("ONUMenu.ui.weeksServed")}</span><span>${post.weeksServed || 0}</span>
     </div>
-    <div style="display:flex;justify-content:space-between;font-family:'Lora',serif;font-size:0.9em;">
+    <div style="display:flex; justify-content:space-between; font-family:'Lora',serif; font-size:0.928em">
       <span>${T("ONUMenu.ui.weeklyStipend")}</span><span>${euros(weeklyPay(actor))}</span>
     </div>`;
     return html;

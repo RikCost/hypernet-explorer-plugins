@@ -77,11 +77,11 @@
 #qb-header { position: relative; z-index: 1; display: flex; align-items: baseline; gap: 18px;
   padding: 18px 34px 6px; color: #f5ebd0; text-shadow: 1px 1px 3px #2b1008;
   border-bottom: 2px solid rgba(43,16,8,0.35); }
-#qb-title { font-size: 2.1rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; }
-#qb-sub { font-size: 1.05rem; opacity: 0.85; }
-#qb-hint { margin-left: auto; font-size: 0.9rem; opacity: 0.72; }
+#qb-title { font-size: 2.31rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; }
+#qb-sub { font-size: 1.208rem; opacity: 0.85; }
+#qb-hint { margin-left: auto; font-size: 1.08rem; opacity: 0.72; }
 #qb-tabs { position: relative; z-index: 1; display: flex; gap: 10px; padding: 10px 34px 0; }
-.qb-tab { padding: 8px 30px 9px; font-size: 1.05rem; font-weight: bold; cursor: pointer;
+.qb-tab { padding: 8px 30px 9px; font-size: 1.208rem; font-weight: bold; cursor: pointer;
   color: #f5ebd0; background: #5d3a1c; border: 2px solid #2b1008; border-bottom: none;
   border-radius: 10px 10px 0 0; box-shadow: 0 -2px 6px rgba(0,0,0,0.35); opacity: 0.75; }
 .qb-tab.active { background: #7a4d24; opacity: 1; transform: translateY(1px); }
@@ -103,19 +103,19 @@
 .qb-pin { position: absolute; top: 8px; left: 50%; width: 18px; height: 18px; margin-left: -9px;
   border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f0f0f0, var(--pin, #b03030) 55%, #501010);
   box-shadow: 0 3px 4px rgba(0,0,0,0.5); }
-.qb-note-title { font-size: 1.02rem; font-weight: bold; line-height: 1.2; margin-bottom: 8px; }
-.qb-note-giver { font-size: 0.85rem; font-style: italic; opacity: 0.8; margin-bottom: 8px; }
-.qb-note-reward { font-size: 0.92rem; font-weight: bold; color: #5d3a00; }
-.qb-note-deadline { font-size: 0.85rem; color: #8b263e; font-weight: bold; }
-.qb-note-steps { font-size: 0.82rem; color: #444; margin-top: 6px; line-height: 1.3; }
+.qb-note-title { font-size: 1.173rem; font-weight: bold; line-height: 1.2; margin-bottom: 8px; }
+.qb-note-giver { font-size: 1.02rem; font-style: normal; opacity: 0.8; margin-bottom: 8px; }
+.qb-note-reward { font-size: 1.104rem; font-weight: bold; color: #5d3a00; }
+.qb-note-deadline { font-size: 1.02rem; color: #8b263e; font-weight: bold; }
+.qb-note-steps { font-size: 0.984rem; color: #444; margin-top: 6px; line-height: 1.3; }
 .qb-seal { position: absolute; right: 12px; bottom: 12px; width: 34px; height: 34px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  color: #f5ebd0; font-size: 1rem; font-weight: bold;
+  color: #f5ebd0; font-size: 1.15rem; font-weight: bold;
   background: var(--seal, #8b263e); box-shadow: 0 2px 4px rgba(0,0,0,0.5);
   border: 2px solid rgba(245,235,208,0.6); }
 /* Above the title rather than across it: voice-stamped titles ("SURVEY / ...")
    are long enough to run under a tag pinned beside them. */
-.qb-urgent { position: absolute; top: 6px; right: -10px; padding: 2px 13px; font-size: 0.76rem;
+.qb-urgent { position: absolute; top: 6px; right: -10px; padding: 2px 13px; font-size: 0.927rem;
   font-weight: bold; letter-spacing: 1px; color: #fff; background: #a2242f;
   transform: rotate(8deg); box-shadow: 1px 2px 4px rgba(0,0,0,0.4); }
 .qb-diff { display: flex; gap: 2px; margin-top: 6px; }
@@ -123,14 +123,14 @@
 .qb-star { width: 18px; height: 18px; flex: 0 0 18px;
   background-image: url('img/system/IconSet.png'); background-size: 288px auto;
   background-position: -126px -90px; image-rendering: pixelated; }
-.qb-empty { width: 100%; align-self: center; text-align: center; color: #f5ebd0; font-size: 1.4rem;
-  font-style: italic; opacity: 0.85; padding: 60px 30px; text-shadow: 1px 1px 3px #2b1008; }
+.qb-empty { width: 100%; align-self: center; text-align: center; color: #f5ebd0; font-size: 1.61rem;
+  font-style: normal; opacity: 0.85; padding: 60px 30px; text-shadow: 1px 1px 3px #2b1008; }
 .qb-contract { flex: 0 0 392px; width: 392px; min-height: 200px; }
-.qb-status { font-size: 0.86rem; font-weight: bold; }
+.qb-status { font-size: 1.032rem; font-weight: bold; }
 .qb-status.claimable { color: #1f6b2f; }
 .qb-status.active { color: #1f4e79; }
 .qb-btnrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-.qb-btn { padding: 6px 18px; font-size: 0.88rem; font-weight: bold; cursor: pointer;
+.qb-btn { padding: 6px 18px; font-size: 1.056rem; font-weight: bold; cursor: pointer;
   background: #5d3a1c; color: #f5ebd0; border: 1px solid #2b1008; border-radius: 3px; }
 .qb-btn:hover { background: #7a4d24; }
 .qb-btn.claim { background: #2f6b3a; }
@@ -151,19 +151,19 @@
   box-shadow: inset 0 0 0 3px #a8814f, inset 0 0 120px rgba(139,90,40,0.3);
   padding: 0; color: #2b251d; }
 #qb-detail .qb-d-page { max-width: 1180px; margin: 0 auto; padding: 46px 60px 60px; }
-#qb-detail h2 { margin: 0 0 8px; font-size: 2.3rem; line-height: 1.15; color: #58180d;
+#qb-detail h2 { margin: 0 0 8px; font-size: 2.53rem; line-height: 1.15; color: #58180d;
   border-bottom: 3px double #805d3f; padding-bottom: 12px; }
-#qb-detail .qb-d-giver { font-style: italic; font-size: 1.15rem; margin: 12px 0 26px; opacity: 0.85; }
-#qb-detail .qb-d-body { font-size: 1.3rem; line-height: 1.65; margin-bottom: 24px; text-align: justify; }
-#qb-detail .qb-d-body::first-letter { font-size: 2.6rem; font-weight: bold; color: #58180d;
+#qb-detail .qb-d-giver { font-style: normal; font-size: 1.322rem; margin: 12px 0 26px; opacity: 0.85; }
+#qb-detail .qb-d-body { font-size: 1.495rem; line-height: 1.65; margin-bottom: 24px; text-align: justify; }
+#qb-detail .qb-d-body::first-letter { font-size: 2.86rem; font-weight: bold; color: #58180d;
   float: left; line-height: 0.9; padding: 4px 8px 0 0; }
-#qb-detail .qb-d-sec { font-size: 1.05rem; font-weight: bold; text-transform: uppercase;
+#qb-detail .qb-d-sec { font-size: 1.208rem; font-weight: bold; text-transform: uppercase;
   letter-spacing: 3px; color: #805d3f; border-bottom: 1px solid #805d3f; margin: 30px 0 12px; }
-#qb-detail .qb-d-line { font-size: 1.15rem; margin: 5px 0; }
+#qb-detail .qb-d-line { font-size: 1.322rem; margin: 5px 0; }
 #qb-detail .qb-d-line.warn { color: #8b263e; font-weight: bold; }
-#qb-detail .qb-d-steps { font-size: 1.2rem; white-space: pre-line; margin: 8px 0; line-height: 1.6; }
+#qb-detail .qb-d-steps { font-size: 1.38rem; white-space: pre-line; margin: 8px 0; line-height: 1.6; }
 #qb-detail .qb-d-btns { display: flex; gap: 20px; margin-top: 40px; }
-#qb-detail .qb-d-btns .qb-btn { font-size: 1.2rem; padding: 14px 40px; }
+#qb-detail .qb-d-btns .qb-btn { font-size: 1.38rem; padding: 14px 40px; }
 #qb-detail::-webkit-scrollbar { width: 14px; }
 #qb-detail::-webkit-scrollbar-track { background: rgba(88,24,13,0.12); }
 #qb-detail::-webkit-scrollbar-thumb { background: #a8814f; border-radius: 7px; }
@@ -352,7 +352,7 @@
         btns.push(`<span class="qb-btn danger" data-abandon="${esc(q.qid)}">${T('QuestBoard.abandon')}</span>`);
       }
       return `<div class="qb-note qb-contract ${i === this._focus && !this._detail ? "focused" : ""}"
-        data-card="${i}" style="--rot:${rot}deg; --note-bg:${bg};">
+        data-card="${i}" style="--rot:${rot}deg; --note-bg:${bg}">
         <div class="qb-pin"></div>
         <div class="qb-note-title">${esc(q.title)}</div>
         <div class="qb-note-giver">${esc(q.giverLabel)}</div>

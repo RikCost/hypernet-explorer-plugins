@@ -433,7 +433,7 @@
       const summaryCard = (lbl, val, color) => `
         <div class="assets-sum-card">
           <span class="assets-sum-lbl">${lbl}</span>
-          <span class="assets-sum-val" style="color:${color};">${val}</span>
+          <span class="assets-sum-val" style="color:${color}">${val}</span>
         </div>`;
 
       const summaryHTML = `
@@ -459,13 +459,13 @@
           const sign = a.liability ? '-' : '';
           listHTML += `
             <div class="item-slot assets-row ${sel}" onclick="SceneManager._scene.selectAsset(${idx})">
-              <div class="assets-row-bar" style="background:${a.color};"></div>
+              <div class="assets-row-bar" style="background:${a.color}"></div>
               <div class="assets-row-info">
                 <div class="assets-row-name">${a.name}</div>
                 <div class="assets-row-sub">${a.sub}</div>
               </div>
               <div class="assets-row-vals">
-                <span class="assets-row-val" style="color:${valColor};">${sign}${euro(a.value)}</span>
+                <span class="assets-row-val" style="color:${valColor}">${sign}${euro(a.value)}</span>
                 ${a.bought != null ? `<span class="assets-row-bought">${T('Assets.ui.paid')} ${euro(a.bought)}</span>` : ''}
               </div>
             </div>`;
@@ -489,8 +489,8 @@
             <div class="assets-graph-title">${T('Assets.ui.stockMarket')}</div>
             <canvas id="assets-graph" width="560" height="200"></canvas>
             <div class="assets-graph-legend">
-              <div class="assets-legend-item"><span class="assets-legend-dot" style="background:#2ecc71;"></span>OIL</div>
-              <div class="assets-legend-item"><span class="assets-legend-dot" style="background:#9b59b6;"></span>SOUL</div>
+              <div class="assets-legend-item"><span class="assets-legend-dot" style="background:#2ecc71"></span>OIL</div>
+              <div class="assets-legend-item"><span class="assets-legend-dot" style="background:#9b59b6"></span>SOUL</div>
             </div>
           </div>
           <div class="assets-detail" id="assets-detail">${this.buildDetailHTML()}</div>
@@ -518,9 +518,9 @@
         </div>`;
       }).join('');
       return `
-        <div class="assets-detail-head" style="border-color:${a.color};">
+        <div class="assets-detail-head" style="border-color:${a.color}">
           <h3 class="assets-detail-name">${a.name}</h3>
-          <div class="assets-detail-cat" style="color:${a.color};">${a.cat}</div>
+          <div class="assets-detail-cat" style="color:${a.color}">${a.cat}</div>
         </div>
         ${a.animal ? this.buildAnimalPortraitHTML(a.animal) : ''}
         <div class="inspect-section-title">${T('Assets.ui.pocketsDetail')}</div>
@@ -888,37 +888,37 @@
       #menu-container .assets-summary { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
       #menu-container .assets-sum-card { display:flex; flex-direction:column; gap:2px; padding:8px 12px;
         background:rgba(255,255,255,0.4); border:1px dashed rgba(139,90,43,0.4); border-radius:4px; }
-      #menu-container .assets-sum-lbl { font-family:'Lora',serif; font-size:0.72rem; color:#6b5242; font-weight:bold;
+      #menu-container .assets-sum-lbl { font-family:'Lora',serif; font-size:0.878rem; color:#6b5242; font-weight:bold;
         text-transform:uppercase; letter-spacing:0.5px; }
-      #menu-container .assets-sum-val { font-family:'Lora',serif; font-size:1.25rem; font-weight:bold; }
+      #menu-container .assets-sum-val { font-family:'Lora',serif; font-size:1.438rem; font-weight:bold; }
       #menu-container .assets-list { flex:1; overflow-y:auto; padding-right:6px; display:flex; flex-direction:column; gap:4px; }
-      #menu-container .assets-cat-header { font-family:'Lora',serif; font-size:0.82rem; font-weight:bold; color:#58180D;
+      #menu-container .assets-cat-header { font-family:'Lora',serif; font-size:0.984rem; font-weight:bold; color:#58180D;
         text-transform:uppercase; letter-spacing:1px; margin:10px 0 2px; border-bottom:1px dashed rgba(139,90,43,0.4); padding-bottom:3px; }
       #menu-container .assets-row { display:flex; align-items:center; gap:10px; padding:8px 12px; position:relative; }
       #menu-container .assets-row-bar { width:4px; align-self:stretch; border-radius:2px; }
       #menu-container .assets-row-info { flex:1; min-width:0; }
-      #menu-container .assets-row-name { font-family:'Lora',serif; font-size:0.98rem; font-weight:bold; color:#1a1a1a;
+      #menu-container .assets-row-name { font-family:'Lora',serif; font-size:1.176rem; font-weight:bold; color:#1a1a1a;
         white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-      #menu-container .assets-row-sub { font-family:'Lora',serif; font-size:0.74rem; color:#6b5242; }
+      #menu-container .assets-row-sub { font-family:'Lora',serif; font-size:0.903rem; color:#6b5242; }
       #menu-container .assets-row-vals { display:flex; flex-direction:column; align-items:flex-end; gap:1px; }
-      #menu-container .assets-row-val { font-family:'Lora',serif; font-size:0.98rem; font-weight:bold; }
-      #menu-container .assets-row-bought { font-family:'Lora',serif; font-size:0.68rem; color:#8b7355; font-style:italic; }
-      #menu-container .assets-empty { font-family:'Lora',serif; font-style:italic; color:#5c4b3d; text-align:center;
+      #menu-container .assets-row-val { font-family:'Lora',serif; font-size:1.176rem; font-weight:bold; }
+      #menu-container .assets-row-bought { font-family:'Lora',serif; font-size:0.83rem; color:#8b7355; font-style: normal; }
+      #menu-container .assets-empty { font-family:'Lora',serif; font-style: normal; color:#5c4b3d; text-align:center;
         padding:40px 20px; border:2px dashed #bda881; border-radius:6px; }
       #menu-container .assets-graph-box { background:rgba(0,0,0,0.04); border:2px solid rgba(74,39,17,0.5); border-radius:6px;
         padding:10px 12px; margin-bottom:14px; }
-      #menu-container .assets-graph-title { font-family:'Lora',serif; font-size:0.78rem; font-weight:bold; color:#58180D;
+      #menu-container .assets-graph-title { font-family:'Lora',serif; font-size:0.952rem; font-weight:bold; color:#58180D;
         text-align:center; letter-spacing:1px; margin-bottom:6px; }
       #menu-container #assets-graph { width:100%; height:auto; display:block; }
       #menu-container .assets-graph-legend { display:flex; gap:16px; justify-content:center; margin-top:6px; }
       #menu-container .assets-legend-item { display:flex; align-items:center; gap:5px; font-family:'Lora',serif;
-        font-size:0.74rem; color:#4a2711; }
+        font-size:0.903rem; color:#4a2711; }
       #menu-container .assets-legend-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
       #menu-container .assets-detail { flex:1; overflow-y:auto; padding-right:6px; }
-      #menu-container .assets-detail-empty { font-family:'Lora',serif; font-style:italic; color:#5c4b3d; text-align:center; padding:30px 16px; }
+      #menu-container .assets-detail-empty { font-family:'Lora',serif; font-style: normal; color:#5c4b3d; text-align:center; padding:30px 16px; }
       #menu-container .assets-detail-head { border-bottom:2px double; padding-bottom:6px; margin-bottom:8px; }
-      #menu-container .assets-detail-name { font-family:'Lora',serif; font-size:1.3rem; font-weight:bold; color:#4a1d0f; margin:0; }
-      #menu-container .assets-detail-cat { font-family:'Lora',serif; font-size:0.78rem; font-weight:bold; text-transform:uppercase; letter-spacing:1px; }
+      #menu-container .assets-detail-name { font-family:'Lora',serif; font-size:1.495rem; font-weight:bold; color:#4a1d0f; margin:0; }
+      #menu-container .assets-detail-cat { font-family:'Lora',serif; font-size:0.952rem; font-weight:bold; text-transform:uppercase; letter-spacing:1px; }
     `;
     const style = document.createElement('style');
     style.id = 'assets-menu-styles';

@@ -1859,7 +1859,8 @@
             this._won = won;
 
             if (window.MinigameFun) {
-                won ? window.MinigameFun.won('Card Counting') : window.MinigameFun.lost('Card Counting');
+                const stake = { spec: 'Card Counting', gambling: true };
+                won ? window.MinigameFun.won(stake) : window.MinigameFun.lost(stake);
             }
 
             playSe(SE.neigh, 92 + Math.floor(Math.random() * 20), 70);

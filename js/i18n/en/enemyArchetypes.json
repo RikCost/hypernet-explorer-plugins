@@ -2189,6 +2189,133 @@
       },
       "name": "Gnome"
     },
+    "dwarf": {
+      "head": {
+        "name": "Head",
+        "msg": "Head struck!"
+      },
+      "beard": {
+        "name": "Beard",
+        "msg": "Beard shorn off!"
+      },
+      "torso": {
+        "name": "Torso",
+        "msg": "Torso crushed!"
+      },
+      "left_arm": {
+        "name": "Left Arm",
+        "msg": "Left Arm ripped off!"
+      },
+      "right_arm": {
+        "name": "Right Arm",
+        "msg": "Right Arm ripped off!"
+      },
+      "left_leg": {
+        "name": "Left Leg",
+        "msg": "Left Leg cut off!"
+      },
+      "right_leg": {
+        "name": "Right Leg",
+        "msg": "Right Leg cut off!"
+      },
+      "brain": {
+        "name": "Brain",
+        "msg": "Brain concussed!"
+      },
+      "left_eye": {
+        "name": "Left Eye",
+        "msg": "Left eye swollen shut!"
+      },
+      "right_eye": {
+        "name": "Right Eye",
+        "msg": "Right eye swollen shut!"
+      },
+      "nose": {
+        "name": "Nose",
+        "msg": "Nose broken!"
+      },
+      "left_ear": {
+        "name": "Left Ear",
+        "msg": "Left ear ringing!"
+      },
+      "right_ear": {
+        "name": "Right Ear",
+        "msg": "Right ear ringing!"
+      },
+      "mouth": {
+        "name": "Mouth",
+        "msg": "Jaw dislocated!"
+      },
+      "teeth": {
+        "name": "Teeth",
+        "msg": "Teeth knocked out!"
+      },
+      "genitals": {
+        "name": "Genitals",
+        "msg": "Genitals damaged!"
+      },
+      "heart": {
+        "name": "Heart",
+        "msg": "Heart damaged!"
+      },
+      "left_lung": {
+        "name": "Left Lung",
+        "msg": "Left lung collapsed!"
+      },
+      "right_lung": {
+        "name": "Right Lung",
+        "msg": "Right lung collapsed!"
+      },
+      "liver": {
+        "name": "Liver",
+        "msg": "Liver lacerated!"
+      },
+      "stomach": {
+        "name": "Stomach",
+        "msg": "Stomach ruptured!"
+      },
+      "spleen": {
+        "name": "Spleen",
+        "msg": "Spleen ruptured!"
+      },
+      "intestines": {
+        "name": "Intestines",
+        "msg": "Intestines perforated!"
+      },
+      "left_hand": {
+        "name": "Left Hand",
+        "msg": "Left hand mangled!"
+      },
+      "left_fingers": {
+        "name": "Left Fingers",
+        "msg": "Left fingers broken!"
+      },
+      "right_hand": {
+        "name": "Right Hand",
+        "msg": "Right hand mangled!"
+      },
+      "right_fingers": {
+        "name": "Right Fingers",
+        "msg": "Right fingers broken!"
+      },
+      "left_foot": {
+        "name": "Left Foot",
+        "msg": "Left foot damaged!"
+      },
+      "left_toes": {
+        "name": "Left Toes",
+        "msg": "Left toes crushed!"
+      },
+      "right_foot": {
+        "name": "Right Foot",
+        "msg": "Right foot damaged!"
+      },
+      "right_toes": {
+        "name": "Right Toes",
+        "msg": "Right toes crushed!"
+      },
+      "name": "Dwarf"
+    },
     "elephant": {
       "head": {
         "name": "Head",

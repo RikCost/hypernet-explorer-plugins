@@ -72,7 +72,6 @@
   "enemySpawn": [
     "Équilibré",
     "Réaliste",
-    "Distance à la Tour",
     "Chaos"
   ],
   "enemyBattler": [
@@ -91,8 +90,7 @@
   "descState": {
     "enemySpawnMode": [
       "Équilibré : les ennemis s'adaptent à votre groupe. Les rôdeurs restent à votre niveau ou en dessous, et chaque case du monde cache un boss bien plus puissant.",
-      "Réaliste : toute la faune du biome est présente, à n'importe quel niveau. Vous croisez surtout ce qui approche votre niveau, le reste demeure possible mais rare. Chaque nation et chaque biome ont leur propre roster, et une case cache toujours un boss.",
-      "Distance à la Tour : votre niveau est ignoré. Le danger vient du lieu lui-même, de la distance à la Tour Oméga, si bien que les terres lointaines peuvent être mortelles tôt.",
+      "",
       "Chaos : plus aucune retenue. N'importe quoi du niveau 1 au 110 rôde partout, et chaque entrée sur une carte procédurale redistribue ses monstres."
     ]
   }

@@ -172,6 +172,31 @@
         return (db && db.levelName) ? db.levelName(level) : String(level);
     }
 
+    // The trade level a given pair of hands has in what an entry asks for.
+    function levelInFor(actor, item) {
+        const spec = craftSpec(item);
+        if (!spec || !window.SpecializationXP) return 1;
+        return window.SpecializationXP.levelOf(actor, spec);
+    }
+
+    // ── Shared forge service ─────────────────────────────────────────────────
+    // The anvil's own answers about a piece, for any menu that wants to ask them
+    // (the main menu's search page lists what the party could forge right now).
+    // Armor is the forge's alone, so window.CraftRecipes cannot answer for it.
+    window.ForgeRecipes = {
+        entries: forgeEntries,
+        parseRecipe,
+        hasMaterials: (item) => hasMaterials(parseRecipe(item)),
+        missingCount: (item) => missingCount(parseRecipe(item)),
+        tier: craftTier,
+        tradeName: craftSpecName,
+        // Trained far enough in the trade the piece declares. Sandbox makes
+        // anything, the same way the forge itself does.
+        canMake: (actor, item) => isSandbox() || levelInFor(actor, item) >= craftTier(item),
+        canMakeNow: (actor, item) => (isSandbox() || levelInFor(actor, item) >= craftTier(item)) &&
+            hasMaterials(parseRecipe(item))
+    };
+
     function rarityOf(item) {
         if (window.ItemSystemUtils && window.ItemSystemUtils.getItemRarity) {
             return window.ItemSystemUtils.getItemRarity(item);
@@ -213,6 +238,22 @@
             this._overlayData = null;
             this._listDirty = true;
 
+            // The shared search + filter strip (UI/MenuSearchBar.js), in the
+            // anvil's vocabulary: pieces belong to trades and carry a weight and
+            // a price; nothing here has a level or a cast cost.
+            this._forgeBar = window.MenuSearchBar ? window.MenuSearchBar.create({
+                id: 'forge',
+                placeholder: T('Blacksmith.searchPlaceholder'),
+                sorts: ['name', 'weight', 'price'],
+                onChange: () => {
+                    this._itemIndex = 0;
+                    this._listDirty = true;
+                    this._selectedItem = this.itemsForTrade()[0] || null;
+                    this.refreshForge();
+                    if (this._forgeBar) this._forgeBar.restoreFocus();
+                }
+            }) : null;
+
             this.createLayout();
             this.refreshForge();
             if (window.CharSwitcher) {
@@ -221,11 +262,15 @@
         }
 
         update() {
-            this.updateForgeInput();
+            // A focused search field owns the keyboard (UI/MenuSearchBar.js).
+            if (!(window.MenuSearchBar && window.MenuSearchBar.isTyping())) {
+                this.updateForgeInput();
+            }
             super.update();
         }
 
         terminate() {
+            if (this._forgeBar) { this._forgeBar.dispose(); this._forgeBar = null; }
             this.dispose3D();
             const c = document.getElementById('blacksmith-container');
             if (c) c.remove();
@@ -310,9 +355,19 @@
 
         itemsForTrade() {
             if (!this._selectedTrade) return [];
-            return this.entriesForTab()
+            const pieces = this.entriesForTab()
                 .filter(e => craftSpecName(e) === this._selectedTrade)
                 .sort((a, b) => (a.price || 0) - (b.price || 0));
+            // Last word goes to the search strip, so the page and the cursor are
+            // indexed against the same, already-filtered list.
+            if (!this._forgeBar) return pieces;
+            return this._forgeBar.apply(pieces, item => ({
+                name: item.name,
+                category: craftSpecName(item),
+                weight: (window.ItemSystemUtils && window.ItemSystemUtils.getItemWeight
+                    ? window.ItemSystemUtils.getItemWeight(item) : 0) / 1000,
+                price: (item.price || 0) / 100
+            }));
         }
 
         // ----------------------------------------------------------------- DOM
@@ -339,6 +394,7 @@
                                 <div class="back-button focusable" id="forge-back">${escapeHtml(T('Blacksmith.back'))}</div>
                                 <h2 class="title">${escapeHtml(t.title)}</h2>
                             </div>
+                            <div id="forge-search-slot"></div>
                             <div id="forge-tabs"></div>
                             <div class="list-viewport" id="forge-list"></div>
                         </div>
@@ -402,6 +458,14 @@
                 return `<div class="tab-btn ${active} ${focused}" data-tab="${key}">${escapeHtml(labels[key])} (${counts[key]})</div>`;
             };
             el.innerHTML = `<div class="mode-tabs">${TABS.map(tab).join('')}</div>`;
+
+            // The search strip is redrawn with the tabs above it (the trades on
+            // offer change with the open tab), then handed its caret back.
+            const searchSlot = document.getElementById('forge-search-slot');
+            if (searchSlot && this._forgeBar) {
+                searchSlot.innerHTML = this._forgeBar.html();
+                this._forgeBar.restoreFocus();
+            }
         }
 
         renderList() {
@@ -525,7 +589,7 @@
                 const owned = $gameParty.numItems(mat);
                 const ok = isSandbox() || owned >= need;
                 matHTML += `
-                    <div class="reagent-row" style="opacity:${ok ? 1 : 0.6};">
+                    <div class="reagent-row" style="opacity:${ok ? 1 : 0.6}">
                         <div class="reagent-meta">
                             <span class="icon" style="${iconStyle(mat.iconIndex, 24)}"></span>
                             <span class="reagent-name">${escapeHtml(tr(mat.name))}</span>
@@ -622,7 +686,7 @@
             let lore = '';
             if (window.ItemSystemUtils && window.ItemSystemUtils.loreFor) {
                 const text = window.ItemSystemUtils.loreFor(item);
-                if (text) lore = `<div class="equip-lore" style="font-style:italic;opacity:0.78;margin-top:6px;">${escapeHtml(text)}</div>`;
+                if (text) lore = `<div class="equip-lore" style="opacity:0.78; margin-top:6px">${escapeHtml(text)}</div>`;
             }
 
             return (statsGrid ? `<div class="stats-grid">${statsGrid}</div>` : '') +
@@ -640,7 +704,7 @@
                 html += `<div class="weapon-preview-card weapon-preview-card--single"><canvas id="forge-preview-canvas" width="140" height="240"></canvas></div>`;
             } else {
                 const rarity = rarityOf(item);
-                const inner = `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle" style="border:2.5px solid ${rarity.colorCode};"><div class="item-icon" style="${iconStyle(item.iconIndex, 32)}"></div></div></div>`;
+                const inner = `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle" style="border:2.5px solid ${rarity.colorCode}"><div class="item-icon" style="${iconStyle(item.iconIndex, 32)}"></div></div></div>`;
                 html += `<div class="weapon-preview-card weapon-preview-card--single">${inner}</div>`;
             }
             return html + '</div>';
@@ -765,11 +829,11 @@
                 const rarity = rarityOf(item);
                 el.innerHTML = `
                     <div class="success-overlay">
-                        <div class="cauldron-animation" style="font-size:80px;"></div>
+                        <div class="cauldron-animation" style="font-size:88px"></div>
                         <h2 class="success-title">${escapeHtml(bsText().forged)}</h2>
                         <div class="success-item-row">
                             <span class="icon" style="${iconStyle(item.iconIndex, 32)}"></span>
-                            <span style="font-weight:bold;color:${rarity.colorCode}">${escapeHtml(tr(item.name))}</span>
+                            <span style="font-weight:bold; color:${rarity.colorCode}">${escapeHtml(tr(item.name))}</span>
                         </div>
                     </div>`;
             } else {

@@ -21,7 +21,7 @@
  * ----------------------------------------------------------------------------
  * Enemy spawn modes (Options -> Enemy Spawn, ConfigManager.enemySpawnMode)
  * ----------------------------------------------------------------------------
- *   Balanced (0, default)
+ *   Balanced (0)
  *     Roaming enemies come out of a band that opens upward from the party's
  *     own median level: a party of median level L meets levels L to
  *     L + 7 + floor(L / 10). A level 1 party meets levels 1-8, a level 10
@@ -30,22 +30,28 @@
  *     high-level encounter is placed per world map tile: a boss above the top
  *     of that band and never over level 100.
  *
- *   Realistic (1)
+ *   Realistic (1, default)
  *     Everything the biome holds is on the table, whatever its level: a wood
  *     holds fawns and it holds the thing that eats them, and the party does not
- *     decide which of the two is at home. The party level decides only what is
- *     LIKELY - a creature near their own level is by far the commonest sight,
- *     and distance from it thins a creature out without ever ruling it out. The
- *     roster is seeded on the nation AND the biome together, so one country's
- *     Fields hold a different set of animals from the next country's. Places
- *     the same per-tile boss Balanced does.
+ *     decide which of the two is at home. What decides how hard the place is is
+ *     the PLACE: the level everything is pitched around comes from how far the
+ *     world square under the party lies from the square they started the game
+ *     on, reaching the ceiling around 200 tiles out. Near where they began the
+ *     world is gentle and far from it lethal, whatever level the party has
+ *     reached, so a run is a journey outward rather than a treadmill. That
+ *     level only decides what is LIKELY - a creature near it is by far the
+ *     commonest sight, and distance from it thins a creature out without ever
+ *     ruling it out. The roster is seeded on the nation AND the biome together,
+ *     so one country's Fields hold a different set of animals from the next
+ *     country's. Places the same per-tile boss Balanced does.
  *
- *   Tower Distance (2)
- *     Party level is ignored, and so is the biome. The only term is the world
- *     map distance to the Omega Tower: the further from the tower, the higher
- *     the levels, reaching the ceiling around 200 tiles out. No per-tile boss.
+ *     Every kind of map answers for a world square: a procedural map its origin
+ *     tile, an authored one the `base` of the place it belongs to
+ *     (Destinations.json), and a ship or an alien surface has no Earth square
+ *     at all - out there the world's own level decides instead (see
+ *     getWorldPosition and getOffWorldLevel).
  *
- *   Chaos (3)
+ *   Chaos (2)
  *     Nothing is held back and nothing is remembered. The pool is the whole
  *     fauna table, flat random, level 1 to 110, and every entrance to a
  *     procedural map re-deals its monsters from scratch.
@@ -80,7 +86,13 @@
  *   Hand-made map with its own encounter list  -> exactly that list, untouched.
  *   Procedural map (636)                       -> always the algorithm above.
  *   Alien surface (GalaxySim landing)          -> its own rules entirely
- *                                                 (section 16), none of this.
+ *                                                 (section 16), none of this:
+ *                                                 the WORLD's level decides,
+ *                                                 rolled per planet and read
+ *                                                 out by its biosignature.
+ *   Anywhere else off Earth (a ship, a station) -> the level of the space it
+ *                                                 sits in, over the top of
+ *                                                 whichever mode is set.
  *
  * ----------------------------------------------------------------------------
  * Movement personalities (<Movement: X> on the enemy note)
@@ -108,8 +120,8 @@
  *              drawn from a level 80-100 pool.
  *   2012+      the cap is lifted and two fifths of the roaming enemies are
  *              drawn from a level 100+ pool.
- * These high-level spawns ignore the party level and the distance from the
- * Omega Tower, and appear alongside the normally levelled fauna. The sandbox
+ * These high-level spawns ignore the party level and how far from home the
+ * party has walked, and appear alongside the normally levelled fauna. The sandbox
  * lifts the cap at any year, and scales enemy stats instead (SandboxMode.js).
  *
  * ----------------------------------------------------------------------------
@@ -422,8 +434,8 @@
     // As the Squishing accelerates the fauna gets out of hand: from 2010 the
     // world starts fielding level 80-100 monsters, and from 2012 level 100+
     // ones. They turn up alongside the normally levelled enemies and are picked
-    // without consulting the party level or the distance from the Omega Tower,
-    // so they appear in both spawn modes alike.
+    // without consulting the party level or how far from home the party has
+    // walked, so they appear in every spawn mode alike.
     BSE.Helpers.getSpawnEra = function() {
         const year = BSE.Helpers.getCurrentGameYear();
         let era;
@@ -452,7 +464,7 @@
     // ------------------------------------------------------------------
     // The Squishing: what the calendar does to every spawn mode
     // ------------------------------------------------------------------
-    // The year is the one term that overrides all four spawn modes. It does not
+    // The year is the one term that overrides all three spawn modes. It does not
     // narrow their bands, it MOVES them, so a party that stands still while the
     // years run watches the world get away from it:
     //
@@ -731,8 +743,8 @@
     // band (80-100 from 2010, 100+ from 2012), as weighted {troopId, weight}
     // entries ready for the same weighted pick the encounter list uses.
     //
-    // Neither the party level nor the distance from the Omega Tower is
-    // consulted, which is the whole point of these spawns. Troops matching the
+    // Neither the party level nor the distance from home is consulted, which
+    // is the whole point of these spawns. Troops matching the
     // local biome are preferred so the monsters still belong to the place they
     // turn up in, and the fallback is limited to biome-tagged fauna so bosses
     // and alien species never leak into a roaming spawn. The nation frequency
@@ -827,8 +839,8 @@
     // fauna answers to it exactly as the crowd does:
     //
     //   monster , nothing that reads as a person roams the map either, so a
-    //             troop holding a Humanoid, DoubleHeadedHumanoid, Elven or
-    //             Goblin creature is not spawnable anywhere.
+    //             troop holding a Humanoid, DoubleHeadedHumanoid, Elven,
+    //             Goblin or Dwarf creature is not spawnable anywhere.
     //   empty   , a <Talk> creature is one that can be spoken to and recruited
     //             (EnemyTalkSystem), which makes it a person as far as an empty
     //             world is concerned: there is nobody left to talk to, so none
@@ -847,7 +859,7 @@
     // sprite wardrobe and the creature-creation board (SpriteCatalog).
     BSE.Helpers.isPeopleArchetype = function(archetype) {
         const people = (window.SpriteCatalog && window.SpriteCatalog.PEOPLE_ARCHETYPES) ||
-            ["Humanoid", "DoubleHeadedHumanoid", "Elven", "Goblin"];
+            ["Humanoid", "DoubleHeadedHumanoid", "Elven", "Goblin", "Dwarf"];
         return people.includes(archetype);
     };
 
@@ -930,8 +942,8 @@
     // ========================================================================
     // 4b. SPAWN MODE (level selection on top of the nation-weighted pool)
     // ========================================================================
-    // Spawn mode (ConfigManager.enemySpawnMode): 0 = Balanced (default),
-    // 1 = Realistic, 2 = Tower Distance, 3 = Chaos.
+    // Spawn mode (ConfigManager.enemySpawnMode): 0 = Balanced,
+    // 1 = Realistic (default), 2 = Chaos.
     //
     //   Balanced  - the biome's own fauna, out of a band opening upward from
     //               the party's own median level (see getBalancedLevelBand),
@@ -939,17 +951,17 @@
     //   Realistic - EVERYTHING the biome holds is on the table, whatever its
     //               level: a wood holds fawns and it holds the thing that eats
     //               them, and the party's level does not decide which of them
-    //               is at home. The party level only decides what is LIKELY -
-    //               a creature near their own level is far the commonest sight
-    //               and the distance from it thins a creature out without ever
-    //               ruling it out - and the same occasional boss balanced
-    //               places is placed here too. What keeps a place a place is
-    //               the seed: the roster is drawn from the nation AND the biome
-    //               together, so a Fields tile in one country holds a different
-    //               set of animals from a Fields tile in the next.
-    //   Tower     - the party level is ignored entirely, and so is the biome.
-    //   Distance    The level comes from the world-map distance to the Omega
-    //               Tower and from nothing else: the further out, the deadlier.
+    //               is at home. What the place is pitched at is decided by the
+    //               PLACE - how far the world square underfoot lies from the
+    //               square the party started the game on (see getPlaceLevel) -
+    //               and that level only decides what is LIKELY: a creature near
+    //               it is far the commonest sight and the distance from it
+    //               thins a creature out without ever ruling it out. The same
+    //               occasional boss balanced places is placed here too. What
+    //               keeps a place a place is the seed: the roster is drawn from
+    //               the nation AND the biome together, so a Fields tile in one
+    //               country holds a different set of animals from a Fields tile
+    //               in the next.
     //   Chaos     - nothing is held back and nothing is remembered. Every
     //               entrance to a procedural map re-deals its monsters, flat
     //               random out of the whole table, level 1 to 110.
@@ -958,26 +970,34 @@
     // in decides which enemies are absent / rare / common there, and the mode
     // decides which slice of that weighted pool is on the table. Every mode is
     // then put through the calendar (applyEraToBand), and the special-biome
-    // guarantee (section 4a) sits above all four.
+    // guarantee (section 4a) sits above all three.
     // ------------------------------------------------------------------
-    const SPAWN_MODES = ['balanced', 'realistic', 'towerdistance', 'chaos'];
+    const SPAWN_MODES = ['balanced', 'realistic', 'chaos'];
+    // Realistic is what the world is written for: the one mode where the map
+    // itself says how dangerous a place is. GameOptions defaults the stored
+    // setting to the same index.
+    const DEFAULT_SPAWN_MODE = 1;
 
     // The modes that hide one encounter far above the band on each world tile.
-    // Tower Distance deliberately does not: there, the distance from the tower
-    // is the whole statement about how dangerous a place is, and a boss over
-    // the top of it would contradict the mode. Chaos needs no help.
+    // Chaos needs no help.
     const BOSS_MODES = ['balanced', 'realistic'];
 
     BSE.Helpers.getSpawnMode = function() {
-        const v = window.ConfigManager ? ConfigManager.enemySpawnMode : 0;
-        return SPAWN_MODES[v | 0] || SPAWN_MODES[0];
+        const v = window.ConfigManager ? ConfigManager.enemySpawnMode : DEFAULT_SPAWN_MODE;
+        return SPAWN_MODES[v | 0] || SPAWN_MODES[DEFAULT_SPAWN_MODE];
+    };
+
+    // The reference level a mode builds its band and its weighting around.
+    // Balanced and Chaos read the party; Realistic reads the ground, and only
+    // falls back to the party where no world square can be resolved at all.
+    BSE.Helpers.getModeRefLevel = function(mode, partyLevel) {
+        if (mode !== 'realistic') return partyLevel;
+        return BSE.Helpers.getPlaceLevel() || partyLevel;
     };
 
     // The level window the current mode draws from, calendar already applied.
     BSE.Helpers.getSpawnBand = function(mode, refLevel) {
         switch (mode) {
-            case 'towerdistance':
-                return BSE.Helpers.getTowerDistanceLevelBand();
             case 'realistic':
                 return BSE.Helpers.getRealisticLevelBand(refLevel);
             case 'chaos':
@@ -1001,7 +1021,7 @@
                 BSE.Helpers.getTroopMaxLevel(enc.troopId) >= band.min);
             return above.length > 0 ? above : encList;
         }
-        if (mode === 'towerdistance' || mode === 'chaos') {
+        if (mode === 'chaos') {
             return BSE.Helpers.filterTroopsInLevelBand(encList, band);
         }
         return BSE.Helpers.filterTroopsInBalancedBand(encList, band);
@@ -1204,17 +1224,22 @@
     };
 
     // ------------------------------------------------------------------
-    // Tower Distance mode: distance from the Omega Tower, and nothing else
+    // How dangerous a place is: how far it lies from where the party began
     // ------------------------------------------------------------------
-    // The Omega Tower is the safe heart of the world map. Enemy levels scale
-    // with the straight-line world-map distance from it and with no other
-    // term: neither the party level nor the local biome is consulted, so the
-    // same ring of the world is exactly as dangerous whether it is a meadow or
-    // a crypt, and a player reads the map by how far out they have walked.
+    // Realistic mode measures the world from the square the party started the
+    // game on - the city the train put them down in, the overland square the
+    // bike start rolled, the tower for anyone who began off Earth - and levels
+    // everything by the straight-line distance out from it. Home ground is
+    // gentle and the far side of the map is lethal, and neither answer moves as
+    // the party grows: what changes is where they dare to walk.
+    //
+    // The anchor is captured once, the first time the party stands anywhere
+    // that resolves to a world square after character creation is finished (see
+    // the Game_Map.setup hook), and kept in the save from then on.
 
     const OMEGA_TOWER_FALLBACK = { x: 79, y: 125 }; // world map (315) tile
-    const TOWER_FULL_RANGE = 200;  // tiles from the tower at which the ceiling is reached
-    const TOWER_CURVE      = 1.2;  // >1 keeps the tower's neighbourhood gentle
+    const PLACE_FULL_RANGE = 200;  // tiles from the start square at which the ceiling is reached
+    const PLACE_CURVE      = 1.2;  // >1 keeps the neighbourhood of home gentle
 
     // Top of the gradient: the highest level any biome-tagged enemy reaches.
     // Read from the database rather than hardcoded so retuning enemy levels
@@ -1244,14 +1269,87 @@
         return OMEGA_TOWER_FALLBACK;
     };
 
-    // Where the party sits on the world map (map 315 tile coordinates).
-    // Procedural maps carry their origin tile; everywhere else falls back to
-    // the world coordinates FastTravelSystem keeps in Variables 43 / 44.
+    // A map that is nowhere on the world map at all: a spaceship cabin (any
+    // <Biome: Space> map) or an alien surface, where map 636's world
+    // coordinates are a landing-grid cell on another planet and mean nothing
+    // as an Earth tile. Reading those two small numbers as a world square
+    // would measure a distance across a map the party is not standing on.
+    BSE.Helpers.isOffWorldMap = function() {
+        const GS = window.GalaxySim;
+        if (GS && typeof GS.isAlienSurface === 'function' && GS.isAlienSurface()) return true;
+        return /^space$/i.test(String(BSE.Helpers.getMapBiome() || ''));
+    };
+
+    // The `base` world square of the named place a map belongs to, or null.
+    // An authored map says which place it is part of with <MapGroup: X>, and
+    // Destinations.json is where that place's square is written down, so the
+    // station the train origin starts on is Ghent's own 84,120 rather than
+    // whatever square the map happens to have been tagged with by hand.
+    const destBaseKey = s => String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]/g, '');
+    let _destBaseIndex = null;
+
+    function destinationBaseIndex() {
+        if (_destBaseIndex) return _destBaseIndex;
+        const index = {};
+        const dest = (window.WorkSystem && window.WorkSystem.Destinations) || {};
+        for (const key in dest) {
+            const entry = dest[key];
+            const base = entry && entry.base;
+            if (!base || typeof base.x !== 'number' || typeof base.y !== 'number') continue;
+            index[destBaseKey(key)] = base;
+            if (typeof entry.name === 'string') index[destBaseKey(entry.name)] = base;
+        }
+        // Only keep the index once the destination table is actually loaded, so
+        // a lookup made before DataService published it is not cached as empty.
+        if (Object.keys(index).length) _destBaseIndex = index;
+        return index;
+    }
+
+    BSE.Helpers.getPlaceBaseCoords = function() {
+        const note = ($dataMap && $dataMap.note) || '';
+        const group = note.match(/<\s*MapGroup\s*[:=]?\s*([^>]+)>/i);
+        if (!group) return null;
+        return destinationBaseIndex()[destBaseKey(group[1])] || null;
+    };
+
+    // The world square (map 315 tile) the party's CURRENT map stands on. It is
+    // both ends of Realistic's measurement: frozen once as the start anchor,
+    // and read live as where they have walked to. Every kind of map answers it,
+    // and each answers it differently:
+    //
+    //   off the world map  a ship cabin or an alien surface stands on no Earth
+    //                      square: they answer with the tower's own square, the
+    //                      one coordinate that is defined out there, rather
+    //                      than a distance read off a landing-grid cell. The
+    //                      distance from home is not what levels them anyway -
+    //                      the world they are on is (see getOffWorldLevel) - so
+    //                      this only keeps the answer from being nonsense.
+    //   procedural (636)   the world square the biome was generated from - the
+    //                      bike origin's random overland square is one of these.
+    //   world map (315)    the party's own tile.
+    //   authored maps      the named place they belong to (<MapGroup> ->
+    //                      Destinations.json `base`), then the map's own
+    //                      <Coords x y> tag, then the last square the party
+    //                      stood on (Variables 43 / 44). The tag and the
+    //                      variables are what WorldMapTransfer already answers
+    //                      for the whole game, so ask it rather than parsing
+    //                      notes here.
     BSE.Helpers.getWorldPosition = function() {
+        if (BSE.Helpers.isOffWorldMap()) return BSE.Helpers.getOmegaTowerCoords();
+
         const procCoords = BSE.Helpers.getWorldCoordinates();
         if (procCoords && (procCoords.x || procCoords.y)) return procCoords;
         if ($gameMap && $gameMap.mapId() === 315) {
             return { x: $gamePlayer.x, y: $gamePlayer.y };
+        }
+
+        const place = BSE.Helpers.getPlaceBaseCoords();
+        if (place) return place;
+
+        const WMT = window.WorldMapTransfer;
+        if (WMT && typeof WMT.currentWorldCoords === 'function') {
+            const wc = WMT.currentWorldCoords();
+            if (wc && (wc.x || wc.y)) return wc;
         }
         return {
             x: ($gameVariables && $gameVariables.value(43)) || 0,
@@ -1259,40 +1357,61 @@
         };
     };
 
-    // Straight-line world-map distance (in tiles) from the Omega Tower.
-    BSE.Helpers.getOmegaTowerDistance = function() {
-        const here = BSE.Helpers.getWorldPosition();
-        const tower = BSE.Helpers.getOmegaTowerCoords();
-        // An unset world position (0,0) would read as "as far as possible";
-        // treat it as standing at the tower instead of as the deadliest corner.
-        if (!here || (!here.x && !here.y)) return 0;
-        return Math.sqrt(Math.pow(here.x - tower.x, 2) + Math.pow(here.y - tower.y, 2));
+    // The world square the party started the game on. Everything is measured
+    // from here. A party that began off Earth (the space and crash-landed
+    // origins) never stood on a world square at all, and neither does a save
+    // whose anchor was never captured: both answer with the Omega Tower, the
+    // one square that is always defined.
+    BSE.Helpers.getStartAnchor = function() {
+        const rec = $gameSystem && $gameSystem._bseStartAnchor;
+        if (rec && (rec.x || rec.y)) return rec;
+        return BSE.Helpers.getOmegaTowerCoords();
     };
 
-    // The level window Tower Distance mode spawns from at the current location.
-    // The only input is how far the world tile the party is standing on lies
-    // from the Omega Tower; the band around that centre is what gives a ring of
-    // the world its variety.
-    BSE.Helpers.getTowerDistanceLevelBand = function() {
+    // Remember where the world was entered, once. Called on every map load; it
+    // takes the first square the party stands on after character creation has
+    // finished ($gameSystem._hasCompletedFirstCreation, set at the end of the
+    // origin step), which is where their origin put them. Nothing captured
+    // during creation itself, and nothing recaptured for a later party.
+    BSE.Helpers.captureStartAnchor = function() {
+        if (!$gameSystem || $gameSystem._bseStartAnchor) return;
+        if (!$gameSystem._hasCompletedFirstCreation) return;
+        // Off Earth there is no world square to remember; wait for one rather
+        // than writing down a landing-grid cell or the tower by accident.
+        if (BSE.Helpers.isOffWorldMap()) return;
+        const here = BSE.Helpers.getWorldPosition();
+        if (!here || (!here.x && !here.y)) return;
+        $gameSystem._bseStartAnchor = { x: here.x, y: here.y };
+    };
+
+    // Straight-line world-map distance (in tiles) from the party's start square.
+    BSE.Helpers.getStartDistance = function() {
+        const here = BSE.Helpers.getWorldPosition();
+        const home = BSE.Helpers.getStartAnchor();
+        // An unresolved position (0,0) would read as "as far as possible";
+        // treat it as standing at home instead of as the deadliest corner.
+        if (!here || (!here.x && !here.y)) return 0;
+        return Math.sqrt(Math.pow(here.x - home.x, 2) + Math.pow(here.y - home.y, 2));
+    };
+
+    // The level the ground under the party is pitched at: how far this square
+    // lies from the one they started on, run through the curve. 0 where no
+    // world square resolves at all, which is the caller's cue to fall back to
+    // the party's own level (see getModeRefLevel).
+    BSE.Helpers.getPlaceLevel = function() {
+        const here = BSE.Helpers.getWorldPosition();
+        if (!here || (!here.x && !here.y)) return 0;
         const ceiling = Math.min(BSE.Helpers.getSpawnLevelCap(), biomeRosterCeiling());
-        const dist = BSE.Helpers.getOmegaTowerDistance();
-        const t = Math.max(0, Math.min(1, dist / TOWER_FULL_RANGE));
-        const center = Math.max(1, Math.min(ceiling,
-            1 + Math.pow(t, TOWER_CURVE) * (ceiling - 1)));
-        // The calendar sits on top of the gradient like it sits on every other
-        // mode: the ring of the world the party is standing in still decides the
-        // shape of the band, the year decides where that band sits.
-        return BSE.Helpers.applyEraToBand({
-            min: Math.max(1, Math.floor(center * 0.55)),
-            max: Math.min(ceiling, Math.ceil(center * 1.35) + 3)
-        });
+        const t = Math.max(0, Math.min(1, BSE.Helpers.getStartDistance() / PLACE_FULL_RANGE));
+        return Math.max(1, Math.min(ceiling,
+            Math.round(1 + Math.pow(t, PLACE_CURVE) * (ceiling - 1))));
     };
 
     // ------------------------------------------------------------------
     // THE LOWER TOWER
     // ------------------------------------------------------------------
     // The ninety-two floors under the Omega Tower (DungeonFloorSystem) answer
-    // to none of the four spawn modes and to none of the biome rosters: what a
+    // to none of the three spawn modes and to none of the biome rosters: what a
     // creature down there weighs is the DEPTH and nothing else, climbing from
     // about level 40 on the first floor to 222 on the last. The party's own
     // level has no say, so a floor is as dangerous the day it is first opened
@@ -1317,7 +1436,7 @@
         };
     };
 
-    // Tower Distance / Chaos: keep only the troops whose level falls in the band.
+    // Chaos: keep only the troops whose level falls in the band.
     // The band widens if the (nation-weighted, biome-matched) pool has nothing
     // in range, and finally falls back to whatever sits closest to its centre,
     // so a map is never left without spawnable enemies.
@@ -1471,6 +1590,9 @@
         if ($gameSystem) {
             $gameSystem._chaosSpawnVisit = (($gameSystem._chaosSpawnVisit || 0) + 1) % 1000000;
         }
+        // Every transfer is a chance to learn where the party began, until one
+        // of them answers (see captureStartAnchor); it is written down once.
+        BSE.Helpers.captureStartAnchor();
     };
 
     Scene_Map.prototype.spawnEnemiesFromEncounters = function() {
@@ -1597,7 +1719,11 @@
         // which is the depth's own (see getTowerFloorBand).
         const towerFloorLevel = BSE.Helpers.getTowerFloorLevel();
         const spawnModeForPool = towerFloorLevel ? 'chaos' : BSE.Helpers.getSpawnMode();
-        const poolRefLevel = towerFloorLevel || BSE.Helpers.getPartyReferenceLevel();
+        // What the mode measures everything against: the party's own level in
+        // Balanced and Chaos, the ground the party is standing on in Realistic
+        // (how far it lies from where they began, see getPlaceLevel).
+        const poolRefLevel = towerFloorLevel ||
+            BSE.Helpers.getModeRefLevel(spawnModeForPool, BSE.Helpers.getPartyReferenceLevel());
         if (!useAuthoredList && $gameParty.members().length > 0) {
             // Structure biomes match troops against the borrowed rosters their
             // catalogue entry names (a mine draws on Mines and Underdark, a
@@ -1630,11 +1756,11 @@
 
             // Build the encounter list from the candidate troops. The weight is
             // the mode's:
-            //   balanced / tower distance - the nation's per-enemy frequency,
-            //     dropping what the nation never spawns or the era caps out;
+            //   balanced - the nation's per-enemy frequency, dropping what the
+            //     nation never spawns or the era caps out;
             //   realistic - nation AND biome seeded, times how near the creature
-            //     stands to the party's own level, so the whole roster is
-            //     reachable and the fitting part of it is what is usually met;
+            //     stands to the level of the ground itself, so the whole roster
+            //     is reachable and the fitting part of it is what is usually met;
             //   chaos - flat, because that is the mode.
             const buildFromTroops = candidateIds => {
                 const list = [];
@@ -1766,18 +1892,30 @@
         // it: its species roster is the encounter list and no band, boss, elite
         // or special-biome rule is laid over it.
         const spawnMode = onAlienSurface ? null : spawnModeForPool;
-        const partyRefLevel = poolRefLevel;
+        // The level everything on this map is measured against - the party's in
+        // Balanced and Chaos, the ground's in Realistic. The boss and the
+        // `deadly` filter below read it too, so a place far from home hides a
+        // boss to match the place rather than to match the party.
+        const baseRefLevel = poolRefLevel;
         // A structure sits on a rung of the danger ladder, and that is a shift
         // of the level the band is built around: a smuggler's cache spawns
-        // below the party, a bunker or an under-forge above them. `deadly` is
+        // below that level, a bunker or an under-forge above it. `deadly` is
         // not a shift but a different filter, applied where the band is used.
         // A tower floor keeps its own level whichever structure was dealt to it:
         // the depth is the danger, and the rung the borrowed layout sits on has
         // nothing to say about it.
-        const spawnRefLevel = towerFloorLevel || BSE.Helpers.dangerRefLevel(structDanger, partyRefLevel);
+        const spawnRefLevel = towerFloorLevel || BSE.Helpers.dangerRefLevel(structDanger, baseRefLevel);
+        // Off Earth the place decides, over the top of whichever mode is set:
+        // a ship, a station or a derelict spawns from the level of the space it
+        // is sitting in (see getOffWorldLevel). An alien SURFACE needs nothing
+        // here - its encounter list is the world's own species roster, already
+        // built around that same level - and passes through with no band at all.
+        const offWorldLevel = BSE.Helpers.getOffWorldLevel();
         const levelBand = towerFloorLevel
             ? BSE.Helpers.getTowerFloorBand(towerFloorLevel)
-            : (spawnMode ? BSE.Helpers.getSpawnBand(spawnMode, spawnRefLevel) : null);
+            : (offWorldLevel > 0
+                ? BSE.Helpers.getOffWorldBand(offWorldLevel)
+                : (spawnMode ? BSE.Helpers.getSpawnBand(spawnMode, spawnRefLevel) : null));
 
         // The era's high-level fauna (level 80-110 from 2010, 100+ from 2012)
         // rides on top of whichever mode is selected: a share of the roaming
@@ -1880,19 +2018,18 @@
                     if (chosenTroopId === null && bossDue) {
                         // Balanced and Realistic: the single high-level
                         // encounter of this world map tile, much higher than the
-                        // party and capped at 100. Tower Distance has no such
-                        // exception (every enemy comes out of the location's own
-                        // band) and Chaos needs none. A structure that says
-                        // it holds no boss (a cellar, a den, a hoard) never
-                        // gets one.
-                        const bossTroopId = BSE.Helpers.getBalancedBossTroop(encounterBiome, partyRefLevel);
+                        // level the map is pitched at and capped at 100. Chaos
+                        // needs no such exception. A structure that says it
+                        // holds no boss (a cellar, a den, a hoard) never gets
+                        // one.
+                        const bossTroopId = BSE.Helpers.getBalancedBossTroop(encounterBiome, baseRefLevel);
                         if (bossTroopId !== null) chosenTroopId = bossTroopId;
                     }
 
                     // Era high-level spawn: from 2010 a quarter of the roaming
                     // enemies (and from 2012 two fifths of them) come out of the
                     // era band regardless of the spawn mode, the party level and
-                    // the distance from the Omega Tower. A one-species
+                    // how far from home the party has walked. A one-species
                     // structure is exempt: its whole population is that
                     // species by design.
                     if (chosenTroopId === null && eraElitePool.length > 0 &&
@@ -1912,17 +2049,16 @@
                         }
                         // Narrow the (already weighted) candidates to the mode's
                         // level range: the party band in Balanced, the calendar
-                        // floor alone in Realistic, the Omega-distance band in
-                        // Tower Distance, the whole ladder in Chaos.
+                        // floor alone in Realistic, the whole ladder in Chaos.
                         // A `deadly` structure overrides every mode: its
-                        // guardians are always far above the party's median
-                        // level, which is the rule the temple has always used
+                        // guardians are always far above the level the map is
+                        // pitched at, which is the rule the temple has always used
                         // and the shrine, the library and the lava tube now
                         // share. An alien surface is filtered by none of it.
                         let pickList = validTroops;
                         if (pickList.length > 0 && spawnMode) {
                             pickList = (structDanger === 'deadly' && !towerFloorLevel)
-                                ? BSE.Helpers.filterTroopsWellAboveLevel(pickList, partyRefLevel)
+                                ? BSE.Helpers.filterTroopsWellAboveLevel(pickList, baseRefLevel)
                                 : BSE.Helpers.filterTroopsForMode(pickList, spawnMode, levelBand);
                         }
                         if (pickList.length > 0) {
@@ -3589,8 +3725,14 @@
     // 16. Alien planet life gating (GalaxySim)
     // ------------------------------------------------------------------------
     // A landed alien planet (proc map 636 from an "Alien*" biome) either hosts
-    // life -> spawn totally random enemies, or is barren -> no enemies at all.
-    // The life flag is decided at landing (GalaxySim.currentAlienHasLife).
+    // life -> spawn its own species, or is barren -> no enemies at all. The life
+    // flag is decided at landing (GalaxySim.currentAlienHasLife).
+    //
+    // A living world's creatures are drawn from around the WORLD'S level
+    // (GalaxySim.planetLevel), not the party's and not the tower's: the species
+    // roster is already built out of base enemies near that level, so the list
+    // below needs no band of its own, and the biosignature tier the scan shows
+    // (Weak / Strong / Hyper) is a promise about exactly these creatures.
     // ========================================================================
     function alienSurfaceState() {
         const GS = window.GalaxySim;
@@ -3598,13 +3740,70 @@
         return { hasLife: !!(GS.currentAlienHasLife && GS.currentAlienHasLife()) };
     }
 
+    // The level an alien world spawns at: the world's own (GalaxySim.planetLevel),
+    // which answers to neither the party nor the Omega Tower. Null off a surface.
+    BSE.Helpers.getAlienWorldLevel = function() {
+        const GS = window.GalaxySim;
+        const level = (GS && GS.currentPlanetLevel) ? GS.currentPlanetLevel() : 0;
+        return level > 0 ? level : null;
+    };
+
+    // ------------------------------------------------------------------
+    // Off Earth: the place sets the level
+    // ------------------------------------------------------------------
+    // Nothing out here is on the world map, so neither the distance from the
+    // Omega Tower nor the party's own level has anything to say about what
+    // lives there. What does is where "there" is: the surface underfoot
+    // (GalaxySim.planetLevel) or, aboard a ship or a station, the space around
+    // it (the world it orbits, else its system). Both are rolled once from a
+    // name and never move, so a world is as dangerous the first time it is
+    // seen as the hundredth, and two planets of one star can be a stroll and a
+    // massacre.
+    //
+    // The calendar is deliberately NOT laid over this, for the same reason the
+    // tower's own ladder refuses it: Earth's paradox is Earth's, and a world
+    // ten thousand light years away does not restock its fauna because of what
+    // a year on another planet did.
+    BSE.Helpers.getOffWorldLevel = function() {
+        if (!BSE.Helpers.isOffWorldMap()) return 0;
+        const GS = window.GalaxySim;
+        if (!GS) return 0;
+        const surface = GS.currentPlanetLevel ? GS.currentPlanetLevel() : 0;
+        if (surface > 0) return surface;
+        return (GS.currentSpaceLevel ? GS.currentSpaceLevel() : 0) || 0;
+    };
+
+    // The window an off-Earth place spawns from, around its own level.
+    BSE.Helpers.getOffWorldBand = function(level) {
+        const lvl = Math.max(1, Math.round(level));
+        return {
+            min: Math.max(1, Math.round(lvl * 0.65)),
+            max: Math.round(lvl * 1.35),
+            center: lvl
+        };
+    };
+
     // A "totally random" encounter list for living alien worlds: random valid
-    // troops with no biome / nation weighting.
+    // troops with no biome / nation weighting, but drawn from around the world's
+    // own level so the fallback lands where the species roster would have. This
+    // is only reached when the roster comes back empty (no usable base enemies).
     function randomAlienEncounterList(count) {
+        const worldLevel = BSE.Helpers.getAlienWorldLevel();
+        const inBand = (troopId) => {
+            if (!worldLevel) return true;
+            const lvl = BSE.Helpers.getTroopMaxLevel(troopId);
+            return lvl > 0 && Math.abs(lvl - worldLevel) <= worldLevel * 0.35;
+        };
         const ids = [];
+        const all = [];
         for (let i = 1; i < $dataTroops.length; i++) {
-            if (BSE.Helpers.isSpawnableTroopData($dataTroops[i])) ids.push(i);
+            if (!BSE.Helpers.isSpawnableTroopData($dataTroops[i])) continue;
+            all.push(i);
+            if (inBand(i)) ids.push(i);
         }
+        // Nothing at this world's level: rather than leave it empty, take the
+        // whole spawnable table, exactly as before per-planet levels existed.
+        if (!ids.length) ids.push(...all);
         if (!ids.length) return [];
         const pool = ids.slice();
         const n = Math.min(count || 6, pool.length);

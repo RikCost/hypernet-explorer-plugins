@@ -145,6 +145,16 @@
   const TURN_COOLDOWN_MIN = 5;
   const TURN_COOLDOWN_MAX = 12;
 
+  // Walking into a procedural square from a world-map road drops the player ON
+  // the border tile they came in from - which is exactly where traffic enters
+  // and leaves. A car dropped there on the first frame, pointed inward at road
+  // speed, runs the player over before they can take a step, so no car is ever
+  // placed inside a box around the player, and the initial fill keeps off the
+  // border band entirely (cars still ENTER from the border later, they are just
+  // not standing there the moment the map opens).
+  const SPAWN_PLAYER_CLEARANCE = 14; // tiles kept clear around the player
+  const SPAWN_BORDER_MARGIN = 10;    // border band with no first-frame spawns
+
   // Tiles no bodywork may ever cover, whatever the road data says. Region 10 is
   // the game's "keep out" marker and terrain tag 4 is a wall / climbable face.
   const BLOCK_REGION_ID = 10;
@@ -233,6 +243,7 @@
   let gridH = 0;
   let roadTiles = [];            // [{x,y}] every road tile
   let roadEdgeTiles = [];        // road tiles near the map border (spawn points)
+  let roadInnerTiles = [];       // road tiles away from the border (first fill)
   let biomeCategory = "none";    // 'road' | 'city' | 'village' | 'none'
   let laneDefs = [];             // road biome: fixed lane paths (see LANE GEOMETRY)
   let laneCursor = 0;            // round-robin lane assignment counter
@@ -363,10 +374,20 @@
     });
   }
 
+  // Within `margin` tiles of any map edge.
+  const nearBorder = (x, y, margin) =>
+    x < margin || y < margin || x >= gridW - margin || y >= gridH - margin;
+
+  // Inside the box of `radius` tiles around the player. Nothing is dropped in
+  // here: on a highway a car this close is already touching them next frame.
+  const nearPlayer = (x, y, radius) =>
+    Math.abs(x - $gamePlayer.x) <= radius && Math.abs(y - $gamePlayer.y) <= radius;
+
   function buildRoadGrid() {
     roadGrid = null;
     roadTiles = [];
     roadEdgeTiles = [];
+    roadInnerTiles = [];
     gridW = $dataMap.width;
     gridH = $dataMap.height;
 
@@ -392,6 +413,9 @@
         if (x === 0 || y === 0 || x === gridW - 1 || y === gridH - 1) {
           roadEdgeTiles.push({ x, y });
         }
+        // Deep enough inside the map that a car put here on load cannot be on
+        // top of somebody who just walked in over the border.
+        if (!nearBorder(x, y, SPAWN_BORDER_MARGIN)) roadInnerTiles.push({ x, y });
       }
     }
     // Fallback: if the road never touches the exact edge, widen the margin
@@ -649,6 +673,9 @@
       const li = Math.floor(Math.random() * laneDefs.length);
       const start = laneDefs[li][0];
       const dir = dirToward(start.x, start.y, laneDefs[li][1].x, laneDefs[li][1].y);
+      // Not into the player's lap: a lane entry is a border tile, and the
+      // player standing on one is how they walked into this square.
+      if (nearPlayer(start.x, start.y, SPAWN_PLAYER_CLEARANCE)) continue;
       if (!carCanBePlaced(ev, start.x, start.y, dir)) continue;
       placeOnLane(ev, li, 0);
       return;
@@ -990,6 +1017,7 @@
     for (let tries = 0; tries < 30; tries++) {
       const t = pool[Math.floor(Math.random() * pool.length)];
       const dir = pickStartDirection(t.x, t.y);
+      if (nearPlayer(t.x, t.y, SPAWN_PLAYER_CLEARANCE)) continue;
       if (!carCanBePlaced(ev, t.x, t.y, dir)) continue;
       ev.setPosition(t.x, t.y);
       ev._carDir = dir;
@@ -1208,11 +1236,16 @@
       for (let tries = 0; tries < 40; tries++) {
         const li = laneCursor++ % laneDefs.length;
         const len = pathLength(laneDefs[li]);
-        const dist = Math.floor(Math.random() * len * 0.9);
+        // Never at the very start of the lane (= on the border the player may
+        // have just walked in over): start the spread a margin in and stop it a
+        // margin short of the far edge.
+        const span = Math.max(1, len * 0.9 - SPAWN_BORDER_MARGIN * 2);
+        const dist = Math.floor(SPAWN_BORDER_MARGIN + Math.random() * span);
         const pt = pointAlongPath(laneDefs[li], dist);
         const key = pt.x + "," + pt.y;
         const target = laneDefs[li][pt.wp];
         const dir = dirToward(pt.x, pt.y, target.x, target.y);
+        if (nearPlayer(pt.x, pt.y, SPAWN_PLAYER_CLEARANCE)) continue;
         if (occupied.has(key) || !carCanBePlaced(ev, pt.x, pt.y, dir)) continue;
         occupied.add(key);
         placeOnLane(ev, li, dist);
@@ -1221,11 +1254,16 @@
       return false;
     }
 
-    const pool = roadEdgeTiles.length > 0 ? roadEdgeTiles : roadTiles;
+    // Free-roaming (city/village) traffic is laid down inside the map, not on
+    // the border tiles it would normally enter from.
+    const pool =
+      roadInnerTiles.length > 0 ? roadInnerTiles :
+      roadEdgeTiles.length > 0 ? roadEdgeTiles : roadTiles;
     for (let tries = 0; tries < 60; tries++) {
       const t = pool[Math.floor(Math.random() * pool.length)];
       const key = t.x + "," + t.y;
       const dir = pickStartDirection(t.x, t.y);
+      if (nearPlayer(t.x, t.y, SPAWN_PLAYER_CLEARANCE)) continue;
       if (occupied.has(key) || !carCanBePlaced(ev, t.x, t.y, dir)) continue;
       occupied.add(key);
       ev.setPosition(t.x, t.y);

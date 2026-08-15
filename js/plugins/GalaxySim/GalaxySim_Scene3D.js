@@ -1384,6 +1384,11 @@
             ? GS.planetHasLife(pick.data) : false,
           weakLife: (pick.kind === "planet" && GS.planetLifeSigns)
             ? GS.planetLifeSigns(pick.data) === (GS.LifeSigns || {}).WEAK : false,
+          // How the world's own level stands against the party's: the strength
+          // the biosignature is read out at (Weak / Strong / Hyper). Null on
+          // anything without a biosphere, which has no creatures to weigh.
+          bioTier: (pick.kind === "planet" && GS.planetBioTier)
+            ? GS.planetBioTier(pick.data) : null,
           isBookmarked: this._isBookmarked(pick),
         });
       }
@@ -1911,7 +1916,11 @@
       });
 
       // Logged biosignatures: every life-bearing world a scan has turned up,
-      // and under it every world that only read as weak.
+      // and under it every world that only read as trace signs. A life-bearing
+      // row carries the strength of its reading (Weak / Strong / Hyper), which
+      // is what says whether a landing there is a walk or a way to die; it
+      // moves with the party's own level, so the list re-reads itself as they
+      // grow rather than freezing at what the scan first said.
       const life = [];
       const weakLife = [];
       const addLifeRow = (list, prefix) => (w) => {
@@ -1920,10 +1929,12 @@
           id, scale: SCALE_SYSTEM, kind: "planet", name: w.planet.name,
           data: w.planet, system: w.system,
         });
+        const tier = GS.planetBioTier ? GS.planetBioTier(w.planet) : null;
         list.push({
           id, name: w.planet.name,
           sub: w.system.name + " · " + String(w.planet.type || "?").replace(/_/g, " ") +
-            (isFinite(w.dist) ? " · " + w.dist.toFixed(1) + " ly" : ""),
+            (isFinite(w.dist) ? " · " + w.dist.toFixed(1) + " ly" : "") +
+            (tier ? " · " + GS.bioTierLabel(tier) : ""),
           course: true,
         });
       };
@@ -2018,9 +2029,14 @@
             classSub(localSys.feeding.donor.type, 'donor'), "star", localSys);
         }
         (localSys.planets || []).forEach((planet) => {
+          // A living world is listed by the strength of its biosignature, which
+          // is the one thing worth knowing before setting down on it; a world
+          // with only tentacles to its name reads as trace signs.
           const signs = GS.planetLifeSigns ? GS.planetLifeSigns(planet) : null;
-          const life = signs === (GS.LifeSigns || {}).STRONG ? T('Galaxy.catalog.life')
-            : (signs === (GS.LifeSigns || {}).WEAK ? T('Galaxy.catalog.weakLife') : "");
+          const tier = GS.planetBioTier ? GS.planetBioTier(planet) : null;
+          const life = signs === (GS.LifeSigns || {}).STRONG
+            ? (tier ? " · " + GS.bioTierLabel(tier) : T('Galaxy.catalog.life'))
+            : (signs === (GS.LifeSigns || {}).WEAK ? T('Galaxy.catalog.traceLife') : "");
           addLocal(planet.name,
             String(planet.type || "?").replace(/_/g, " ") +
             (planet.orbitRadius != null ? " · " + planet.orbitRadius.toFixed(2) + " AU" : "") + life,
@@ -2108,7 +2124,7 @@
           empty: T('Galaxy.tab.biosignaturesEmpty'),
           groups: [
             { title: T('Galaxy.tab.lifeBearing'), items: life, life: true },
-            { title: T('Galaxy.tab.weakSignatures'), items: weakLife, life: true },
+            { title: T('Galaxy.tab.traceSignatures'), items: weakLife, life: true },
           ],
         },
         {
@@ -2251,7 +2267,7 @@
       const radius = this._bioscanRadius();
       this._overlayUI.setModeHint(
         T.n('Galaxy.scan.worldsFound', found, { radius: radius }) +
-        (weak ? T.n('Galaxy.scan.weakCount', weak, { count: weak }) : "") +
+        (weak ? T.n('Galaxy.scan.traceCount', weak, { count: weak }) : "") +
         (radius > BIOSCAN_RADIUS ? T('Galaxy.scan.hubbleOnline') : "") +
         (fresh ? T('Galaxy.scan.newCount', { count: fresh }) : "") +
         T('Galaxy.scan.loggedInCatalog'));

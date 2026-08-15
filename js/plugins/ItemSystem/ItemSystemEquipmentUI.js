@@ -38,7 +38,7 @@
                 style.textContent = `
                     .companion-switcher { display:flex; align-items:center; gap:6px; }
                     .char-switch-hint {
-                        font-family:'Lora',serif; font-size:0.6rem; font-weight:bold;
+                        font-family:'Lora',serif; font-size:0.732rem; font-weight:bold;
                         line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
                         border:1.5px solid var(--text-primary-hover); border-radius:3px;
                         padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
@@ -165,10 +165,262 @@
     // =============================================================================
     // 3D weapon preview
     // =============================================================================
+    // The viewer itself is a shared service (window.Weapon3DPreview): one weapon,
+    // one canvas, orbit / pan / zoom, with the model's own gears, ropes and runes
+    // ticking exactly as they do in battle. Any other menu that wants to show a
+    // weapon in 3D (the main menu's search page) mounts the same viewer rather
+    // than growing a second copy of this loop.
+    if (!window.Weapon3DPreview) {
+        window.Weapon3DPreview = (() => {
+
+            // Build one viewport on `canvas` for `item`. Returns a record the
+            // caller keeps and later hands back to disposeAll(), or null when
+            // three.js is missing or the canvas is not in the document.
+            function mount(canvas, item) {
+                if (typeof THREE === 'undefined' || !canvas || !item) return null;
+
+                const rect   = canvas.getBoundingClientRect();
+                const width  = rect.width  || 140;
+                const height = rect.height || 380;
+
+                const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                const scene = new THREE.Scene();
+                scene.add(new THREE.AmbientLight(0xffffff, 0.95));
+                const dl1 = new THREE.DirectionalLight(0xffffff, 0.7); dl1.position.set(3, 5, 4);   scene.add(dl1);
+                const dl2 = new THREE.DirectionalLight(0xffffff, 0.4); dl2.position.set(-3, -5, -4); scene.add(dl2);
+
+                const camera = new THREE.PerspectiveCamera(40, width / height, 0.05, 50);
+                camera.position.set(0, 0, 2.7);
+
+                let model = null;
+
+                const setupModelPosition = (m) => {
+                    const box    = new THREE.Box3().setFromObject(m);
+                    const size   = box.getSize(new THREE.Vector3());
+                    const center = box.getCenter(new THREE.Vector3());
+                    m.position.sub(center);
+                    const scaleFactor = 1.85 / (Math.max(size.x, size.y, size.z) || 1);
+                    m.scale.set(scaleFactor, scaleFactor, scaleFactor);
+                    m.rotation.set(0.1, -0.4, 0.35);
+                    if (window.PSXShader) window.PSXShader.applyToObject(m);
+                    scene.add(m);
+                    model = m;
+                };
+
+                if (item.model3d && THREE.GLTFLoader) {
+                    new THREE.GLTFLoader().load(
+                        `models/${item.model3d}`,
+                        (gltf) => setupModelPosition(gltf.scene),
+                        undefined,
+                        (err) => console.error('[Weapon3DPreview] Failed to load model:', item.model3d, err)
+                    );
+                } else if (window.WeaponSystemProcedural) {
+                    const pModel = WeaponSystemProcedural.createModel(item);
+                    if (pModel) setupModelPosition(pModel);
+                }
+
+                let activeButton  = -1;
+                let prevPosition  = { x: 0, y: 0 };
+                let isDragging    = false;
+
+                const onStart = (e) => {
+                    if (e.button === 0 || e.button === 1) {
+                        activeButton = e.button;
+                        isDragging   = true;
+                        prevPosition = { x: e.clientX, y: e.clientY };
+                        if (e.button === 1) e.preventDefault();
+                    }
+                };
+                const onMove = (e) => {
+                    if (activeButton === -1) return;
+                    const dx = e.clientX - prevPosition.x;
+                    const dy = e.clientY - prevPosition.y;
+                    if (activeButton === 0 && model) {
+                        model.rotation.y += dx * 0.015;
+                        model.rotation.x += dy * 0.015;
+                    } else if (activeButton === 1) {
+                        const panSpeed = 0.002 * camera.position.z;
+                        camera.position.x -= dx * panSpeed;
+                        camera.position.y += dy * panSpeed;
+                    }
+                    prevPosition = { x: e.clientX, y: e.clientY };
+                };
+                const onEnd = (e) => {
+                    if (e.button === activeButton || e.type === 'mouseup') {
+                        activeButton = -1;
+                        isDragging   = false;
+                    }
+                };
+                const onAuxClick = (e) => { if (e.button === 1) e.preventDefault(); };
+                const onWheel    = (e) => {
+                    e.preventDefault();
+                    camera.position.z = Math.max(0.4, Math.min(5.0, camera.position.z + e.deltaY * 0.001));
+                };
+
+                const onTouchStart = (e) => {
+                    if (e.touches.length === 1) {
+                        isDragging   = true;
+                        activeButton = 0;
+                        prevPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                    }
+                };
+                const onTouchMove = (e) => {
+                    if (e.touches.length === 1 && model) {
+                        const dx = e.touches[0].clientX - prevPosition.x;
+                        const dy = e.touches[0].clientY - prevPosition.y;
+                        model.rotation.y += dx * 0.015;
+                        model.rotation.x += dy * 0.015;
+                        prevPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                    }
+                };
+                const onTouchEnd = () => { isDragging = false; activeButton = -1; };
+
+                canvas.addEventListener('mousedown',   onStart);
+                canvas.addEventListener('mousemove',   onMove);
+                window.addEventListener('mouseup',     onEnd);
+                canvas.addEventListener('wheel',       onWheel, { passive: false });
+                canvas.addEventListener('auxclick',    onAuxClick);
+                canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+                canvas.addEventListener('touchstart',  onTouchStart);
+                canvas.addEventListener('touchmove',   onTouchMove);
+                window.addEventListener('touchend',    onTouchEnd);
+
+                // One preview record per weapon; holds this loop's latest rAF id so
+                // cleanup can cancel it (instead of pushing a new id every frame into
+                // a shared, unbounded array).
+                const previewEntry = {
+                    renderer, canvas,
+                    listeners: { mousedown: onStart, mousemove: onMove, mouseup: onEnd, wheel: onWheel,
+                                 auxclick: onAuxClick, touchstart: onTouchStart, touchmove: onTouchMove, touchend: onTouchEnd },
+                    rafId: 0
+                };
+
+                // Scratch objects reused every frame to avoid per-frame allocations.
+                const _scratchDeltaRot = new THREE.Euler();
+                const _scratchDeltaPos = new THREE.Vector3();
+
+                let _previewLastTime = performance.now();
+                const animate = () => {
+                    previewEntry.rafId = requestAnimationFrame(animate);
+
+                    const now     = performance.now();
+                    const deltaMs = Math.min(now - _previewLastTime, 50);
+                    _previewLastTime = now;
+
+                    if (model) {
+                        if (!model.userData._prevRot) {
+                            model.userData._prevRot = model.rotation.clone();
+                            model.userData._prevPos = model.position.clone();
+                        }
+                        const deltaRot = _scratchDeltaRot.set(
+                            model.rotation.x - model.userData._prevRot.x,
+                            model.rotation.y - model.userData._prevRot.y,
+                            model.rotation.z - model.userData._prevRot.z
+                        );
+                        const deltaPos = _scratchDeltaPos.copy(model.position).sub(model.userData._prevPos);
+                        model.userData._prevRot.copy(model.rotation);
+                        model.userData._prevPos.copy(model.position);
+
+                        if (window.WeaponSystemProcedural &&
+                            (deltaRot.x !== 0 || deltaRot.y !== 0 || deltaRot.z !== 0 ||
+                             deltaPos.x !== 0 || deltaPos.y !== 0 || deltaPos.z !== 0)) {
+                            const ropes = [];
+                            if (model.userData._verletRope)  ropes.push(model.userData._verletRope);
+                            if (model.userData._verletRopes) model.userData._verletRopes.forEach(r => ropes.push(r));
+                            if (ropes.length > 0) {
+                                model.updateMatrixWorld(true);
+                                const worldAnchor = new THREE.Vector3(0, 0, 0).applyMatrix4(model.matrixWorld);
+                                for (const rope of ropes) {
+                                    for (const p of rope.points) {
+                                        if (p.pinned) continue;
+                                        const oldPos = p.pos.clone();
+                                        p.pos.add(deltaPos);
+                                        p.prev.add(deltaPos);
+                                        const rotateAround = (point, anchor, euler) => {
+                                            const dir = point.clone().sub(anchor);
+                                            dir.applyEuler(euler);
+                                            point.copy(anchor).add(dir);
+                                        };
+                                        rotateAround(p.pos,  worldAnchor, deltaRot);
+                                        rotateAround(p.prev, worldAnchor, deltaRot);
+                                        const rigidDisp = p.pos.clone().sub(oldPos);
+                                        const lag = 0.55 * (rope.points.indexOf(p) / rope.points.length);
+                                        p.pos.sub(rigidDisp.multiplyScalar(lag));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!isDragging && model) model.rotation.y += 0.007;
+
+                    if (model && window.WeaponSystemProcedural) {
+                        // Gears, drifting shards and pulsing runes declared by the
+                        // model itself, same as in battle.
+                        WeaponSystemProcedural.tickModelParts(model, deltaMs);
+                        const ropes = [];
+                        if (model.userData._verletRope)  ropes.push(model.userData._verletRope);
+                        if (model.userData._verletRopes) model.userData._verletRopes.forEach(r => ropes.push(r));
+                        if (ropes.length > 0) {
+                            model.updateMatrixWorld(true);
+                            const invWorld = model.matrixWorld.clone().invert();
+                            const dtSec   = deltaMs / 1000;
+                            const worldScale = model.scale.x || 1;
+                            for (const rope of ropes) {
+                                const worldAnchor = rope.anchorPos.clone().applyMatrix4(model.matrixWorld);
+                                WeaponSystemProcedural.tickRope(rope, dtSec, worldAnchor, worldScale);
+                                WeaponSystemProcedural.updateRopeMeshes(rope, invWorld);
+                            }
+                        }
+                    }
+
+                    if (window.PSXShader) {
+                        window.PSXShader.render(renderer, scene, camera);
+                    } else {
+                        renderer.render(scene, camera);
+                    }
+                };
+                animate();
+
+                return previewEntry;
+            }
+
+            function disposeAll(entries) {
+                if (!entries) return;
+                entries.forEach(p => {
+                    if (p.rafId) cancelAnimationFrame(p.rafId);
+                    p.renderer.dispose();
+                    p.canvas.removeEventListener('mousedown',  p.listeners.mousedown);
+                    p.canvas.removeEventListener('mousemove',  p.listeners.mousemove);
+                    window.removeEventListener('mouseup',      p.listeners.mouseup);
+                    p.canvas.removeEventListener('wheel',      p.listeners.wheel);
+                    p.canvas.removeEventListener('touchstart', p.listeners.touchstart);
+                    p.canvas.removeEventListener('touchmove',  p.listeners.touchmove);
+                    window.removeEventListener('touchend',     p.listeners.touchend);
+                    // dispose() releases this scene's GPU resources but leaves the
+                    // WebGL context itself alive. The browser caps how many contexts
+                    // may live at once and force-loses the OLDEST once the cap is
+                    // passed: that is the game's own canvas, after which PIXI
+                    // silently stops rendering and the picture freezes for the rest
+                    // of the session. Release it here, and swap in a clean canvas
+                    // node for the next preview, since a lost context never comes
+                    // back on the element it was taken from.
+                    try { if (p.renderer.forceContextLoss) p.renderer.forceContextLoss(); } catch (e) {}
+                    if (p.canvas && p.canvas.parentNode) {
+                        p.canvas.parentNode.replaceChild(p.canvas.cloneNode(false), p.canvas);
+                    }
+                });
+            }
+
+            return { mount, disposeAll };
+        })();
+    }
 
     Scene_Equip.prototype.init3DWeaponPreview = function () {
         this.cleanup3DWeaponPreview();
-        if (typeof THREE === 'undefined') return;
 
         const equips  = this._hoverPreviewEquips || this._actor.equips();
         const weapons = [];
@@ -180,248 +432,16 @@
         }
         if (weapons.length === 0) return;
 
-        this._previewRenderers     = [];
-
+        this._previewRenderers = [];
         weapons.forEach(wData => {
-            const canvas = document.getElementById(wData.canvasId);
-            if (!canvas) return;
-
-            const rect   = canvas.getBoundingClientRect();
-            const width  = rect.width  || 140;
-            const height = rect.height || 380;
-
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-            renderer.setSize(width, height);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            const scene = new THREE.Scene();
-            scene.add(new THREE.AmbientLight(0xffffff, 0.95));
-            const dl1 = new THREE.DirectionalLight(0xffffff, 0.7); dl1.position.set(3, 5, 4);   scene.add(dl1);
-            const dl2 = new THREE.DirectionalLight(0xffffff, 0.4); dl2.position.set(-3, -5, -4); scene.add(dl2);
-
-            const camera = new THREE.PerspectiveCamera(40, width / height, 0.05, 50);
-            camera.position.set(0, 0, 2.7);
-
-            let model = null;
-
-            const setupModelPosition = (m) => {
-                const box    = new THREE.Box3().setFromObject(m);
-                const size   = box.getSize(new THREE.Vector3());
-                const center = box.getCenter(new THREE.Vector3());
-                m.position.sub(center);
-                const scaleFactor = 1.85 / (Math.max(size.x, size.y, size.z) || 1);
-                m.scale.set(scaleFactor, scaleFactor, scaleFactor);
-                m.rotation.set(0.1, -0.4, 0.35);
-                if (window.PSXShader) window.PSXShader.applyToObject(m);
-                scene.add(m);
-                model = m;
-            };
-
-            if (wData.item.model3d && THREE.GLTFLoader) {
-                new THREE.GLTFLoader().load(
-                    `models/${wData.item.model3d}`,
-                    (gltf) => setupModelPosition(gltf.scene),
-                    undefined,
-                    (err) => console.error('[EquipPreview] Failed to load model:', wData.item.model3d, err)
-                );
-            } else if (window.WeaponSystemProcedural) {
-                const pModel = WeaponSystemProcedural.createModel(wData.item);
-                if (pModel) setupModelPosition(pModel);
-            }
-
-            let activeButton  = -1;
-            let prevPosition  = { x: 0, y: 0 };
-            let isDragging    = false;
-
-            const onStart = (e) => {
-                if (e.button === 0 || e.button === 1) {
-                    activeButton = e.button;
-                    isDragging   = true;
-                    prevPosition = { x: e.clientX, y: e.clientY };
-                    if (e.button === 1) e.preventDefault();
-                }
-            };
-            const onMove = (e) => {
-                if (activeButton === -1) return;
-                const dx = e.clientX - prevPosition.x;
-                const dy = e.clientY - prevPosition.y;
-                if (activeButton === 0 && model) {
-                    model.rotation.y += dx * 0.015;
-                    model.rotation.x += dy * 0.015;
-                } else if (activeButton === 1) {
-                    const panSpeed = 0.002 * camera.position.z;
-                    camera.position.x -= dx * panSpeed;
-                    camera.position.y += dy * panSpeed;
-                }
-                prevPosition = { x: e.clientX, y: e.clientY };
-            };
-            const onEnd = (e) => {
-                if (e.button === activeButton || e.type === 'mouseup') {
-                    activeButton = -1;
-                    isDragging   = false;
-                }
-            };
-            const onAuxClick = (e) => { if (e.button === 1) e.preventDefault(); };
-            const onWheel    = (e) => {
-                e.preventDefault();
-                camera.position.z = Math.max(0.4, Math.min(5.0, camera.position.z + e.deltaY * 0.001));
-            };
-
-            const onTouchStart = (e) => {
-                if (e.touches.length === 1) {
-                    isDragging   = true;
-                    activeButton = 0;
-                    prevPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-                }
-            };
-            const onTouchMove = (e) => {
-                if (e.touches.length === 1 && model) {
-                    const dx = e.touches[0].clientX - prevPosition.x;
-                    const dy = e.touches[0].clientY - prevPosition.y;
-                    model.rotation.y += dx * 0.015;
-                    model.rotation.x += dy * 0.015;
-                    prevPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-                }
-            };
-            const onTouchEnd = () => { isDragging = false; activeButton = -1; };
-
-            canvas.addEventListener('mousedown',   onStart);
-            canvas.addEventListener('mousemove',   onMove);
-            window.addEventListener('mouseup',     onEnd);
-            canvas.addEventListener('wheel',       onWheel, { passive: false });
-            canvas.addEventListener('auxclick',    onAuxClick);
-            canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-            canvas.addEventListener('touchstart',  onTouchStart);
-            canvas.addEventListener('touchmove',   onTouchMove);
-            window.addEventListener('touchend',    onTouchEnd);
-
-            // One preview record per weapon; holds this loop's latest rAF id so
-            // cleanup can cancel it (instead of pushing a new id every frame into
-            // a shared, unbounded array).
-            const previewEntry = {
-                renderer, canvas,
-                listeners: { mousedown: onStart, mousemove: onMove, mouseup: onEnd, wheel: onWheel,
-                             auxclick: onAuxClick, touchstart: onTouchStart, touchmove: onTouchMove, touchend: onTouchEnd },
-                rafId: 0
-            };
-            this._previewRenderers.push(previewEntry);
-
-            // Scratch objects reused every frame to avoid per-frame allocations.
-            const _scratchDeltaRot = new THREE.Euler();
-            const _scratchDeltaPos = new THREE.Vector3();
-
-            let _previewLastTime = performance.now();
-            const animate = () => {
-                previewEntry.rafId = requestAnimationFrame(animate);
-
-                const now     = performance.now();
-                const deltaMs = Math.min(now - _previewLastTime, 50);
-                _previewLastTime = now;
-
-                if (model) {
-                    if (!model.userData._prevRot) {
-                        model.userData._prevRot = model.rotation.clone();
-                        model.userData._prevPos = model.position.clone();
-                    }
-                    const deltaRot = _scratchDeltaRot.set(
-                        model.rotation.x - model.userData._prevRot.x,
-                        model.rotation.y - model.userData._prevRot.y,
-                        model.rotation.z - model.userData._prevRot.z
-                    );
-                    const deltaPos = _scratchDeltaPos.copy(model.position).sub(model.userData._prevPos);
-                    model.userData._prevRot.copy(model.rotation);
-                    model.userData._prevPos.copy(model.position);
-
-                    if (window.WeaponSystemProcedural &&
-                        (deltaRot.x !== 0 || deltaRot.y !== 0 || deltaRot.z !== 0 ||
-                         deltaPos.x !== 0 || deltaPos.y !== 0 || deltaPos.z !== 0)) {
-                        const ropes = [];
-                        if (model.userData._verletRope)  ropes.push(model.userData._verletRope);
-                        if (model.userData._verletRopes) model.userData._verletRopes.forEach(r => ropes.push(r));
-                        if (ropes.length > 0) {
-                            model.updateMatrixWorld(true);
-                            const worldAnchor = new THREE.Vector3(0, 0, 0).applyMatrix4(model.matrixWorld);
-                            for (const rope of ropes) {
-                                for (const p of rope.points) {
-                                    if (p.pinned) continue;
-                                    const oldPos = p.pos.clone();
-                                    p.pos.add(deltaPos);
-                                    p.prev.add(deltaPos);
-                                    const rotateAround = (point, anchor, euler) => {
-                                        const dir = point.clone().sub(anchor);
-                                        dir.applyEuler(euler);
-                                        point.copy(anchor).add(dir);
-                                    };
-                                    rotateAround(p.pos,  worldAnchor, deltaRot);
-                                    rotateAround(p.prev, worldAnchor, deltaRot);
-                                    const rigidDisp = p.pos.clone().sub(oldPos);
-                                    const lag = 0.55 * (rope.points.indexOf(p) / rope.points.length);
-                                    p.pos.sub(rigidDisp.multiplyScalar(lag));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (!isDragging && model) model.rotation.y += 0.007;
-
-                if (model && window.WeaponSystemProcedural) {
-                    // Gears, drifting shards and pulsing runes declared by the
-                    // model itself, same as in battle.
-                    WeaponSystemProcedural.tickModelParts(model, deltaMs);
-                    const ropes = [];
-                    if (model.userData._verletRope)  ropes.push(model.userData._verletRope);
-                    if (model.userData._verletRopes) model.userData._verletRopes.forEach(r => ropes.push(r));
-                    if (ropes.length > 0) {
-                        model.updateMatrixWorld(true);
-                        const invWorld = model.matrixWorld.clone().invert();
-                        const dtSec   = deltaMs / 1000;
-                        const worldScale = model.scale.x || 1;
-                        for (const rope of ropes) {
-                            const worldAnchor = rope.anchorPos.clone().applyMatrix4(model.matrixWorld);
-                            WeaponSystemProcedural.tickRope(rope, dtSec, worldAnchor, worldScale);
-                            WeaponSystemProcedural.updateRopeMeshes(rope, invWorld);
-                        }
-                    }
-                }
-
-                if (window.PSXShader) {
-                    window.PSXShader.render(renderer, scene, camera);
-                } else {
-                    renderer.render(scene, camera);
-                }
-            };
-            animate();
+            const entry = window.Weapon3DPreview.mount(document.getElementById(wData.canvasId), wData.item);
+            if (entry) this._previewRenderers.push(entry);
         });
     };
 
     Scene_Equip.prototype.cleanup3DWeaponPreview = function () {
-        if (this._previewRenderers) {
-            this._previewRenderers.forEach(p => {
-                if (p.rafId) cancelAnimationFrame(p.rafId);
-                p.renderer.dispose();
-                p.canvas.removeEventListener('mousedown',  p.listeners.mousedown);
-                p.canvas.removeEventListener('mousemove',  p.listeners.mousemove);
-                window.removeEventListener('mouseup',      p.listeners.mouseup);
-                p.canvas.removeEventListener('wheel',      p.listeners.wheel);
-                p.canvas.removeEventListener('touchstart', p.listeners.touchstart);
-                p.canvas.removeEventListener('touchmove',  p.listeners.touchmove);
-                window.removeEventListener('touchend',     p.listeners.touchend);
-                // dispose() releases this scene's GPU resources but leaves the
-                // WebGL context itself alive. The browser caps how many contexts
-                // may live at once and force-loses the OLDEST once the cap is
-                // passed: that is the game's own canvas, after which PIXI
-                // silently stops rendering and the picture freezes for the rest
-                // of the session. Release it here, and swap in a clean canvas
-                // node for the next preview, since a lost context never comes
-                // back on the element it was taken from.
-                try { if (p.renderer.forceContextLoss) p.renderer.forceContextLoss(); } catch (e) {}
-                if (p.canvas && p.canvas.parentNode) {
-                    p.canvas.parentNode.replaceChild(p.canvas.cloneNode(false), p.canvas);
-                }
-            });
-            this._previewRenderers = [];
-        }
+        window.Weapon3DPreview.disposeAll(this._previewRenderers);
+        this._previewRenderers = [];
     };
 
     // =============================================================================
@@ -611,7 +631,7 @@
         }
         if (loreItem && window.ItemSystemUtils && typeof window.ItemSystemUtils.loreFor === 'function') {
             const loreText = window.ItemSystemUtils.loreFor(loreItem);
-            if (loreText) loreHTML += `<div class="equip-lore" style="font-style:italic;opacity:0.78;margin-top:6px;font-family:'Lora',serif;line-height:1.35;">${loreText}</div>`;
+            if (loreText) loreHTML += `<div class="equip-lore" style="font-style: normal;opacity:0.78;margin-top:6px;font-family:'Lora',serif;line-height:1.35;">${loreText}</div>`;
         }
 
         return `

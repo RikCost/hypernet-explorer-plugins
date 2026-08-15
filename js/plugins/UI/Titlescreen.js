@@ -2904,19 +2904,19 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             const states = _weaponStates(weapon);
 
             let html =
-                `<div style="color:#FFD700;font-size:18px;font-weight:bold;">${name.toUpperCase()}</div>` +
-                `<div style="color:#FFA500;font-size:13px;">[${kindTag}] [${wtype.toUpperCase()}]</div>`;
+                `<div style="color:#FFD700; font-size:21px; font-weight:bold">${name.toUpperCase()}</div>` +
+                `<div style="color:#FFA500; font-size:16px">[${kindTag}] [${wtype.toUpperCase()}]</div>`;
             if (statBits.length) {
-                html += `<div style="color:#9fd9ff;font-size:13px;font-weight:bold;">${statBits.join('  ')}</div>`;
+                html += `<div style="color:#9fd9ff; font-size:16px; font-weight:bold">${statBits.join('  ')}</div>`;
             }
             if (elements.length) {
-                html += `<div style="color:#ff9a6b;font-size:12px;">${T('Titlescreen.card.element')}: ${elements.join(', ').toUpperCase()}</div>`;
+                html += `<div style="color:#ff9a6b; font-size:15px">${T('Titlescreen.card.element')}: ${elements.join(', ').toUpperCase()}</div>`;
             }
             if (states.length) {
                 const stTxt = states.map(s => `${s.name.toUpperCase()}${s.chance ? ' ' + s.chance + '%' : ''}`).join(', ');
-                html += `<div style="color:#c8a6ff;font-size:12px;">${T('Titlescreen.card.inflicts')}: ${stTxt}</div>`;
+                html += `<div style="color:#c8a6ff; font-size:15px">${T('Titlescreen.card.inflicts')}: ${stTxt}</div>`;
             }
-            html += `<div style="color:#FF6B35;font-size:14px;font-weight:bold;">${euro}â‚¬</div>`;
+            html += `<div style="color:#FF6B35; font-size:17px; font-weight:bold">${euro}â‚¬</div>`;
             div.innerHTML = html;
             this._labelLayer.appendChild(div);
             return div;
@@ -3241,11 +3241,11 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             div.style.width = '300px';
             div.style.textShadow = '0 0 4px #000, 0 0 4px #000';
             let html =
-                `<div style="color:#FFD700;font-size:16px;font-weight:bold;white-space:nowrap;">${this._esc(enemy.name).toUpperCase()}</div>` +
-                `<div style="color:#FFD27A;font-size:12px;font-weight:bold;white-space:nowrap;">${lvLabel} ${this._esc(lv)}${archName ? '  &middot;  ' + this._esc(archName).toUpperCase() : ''}</div>` +
-                `<div style="color:#9FD9FF;font-size:11px;font-weight:bold;white-space:nowrap;">HP ${p[0]} &middot; ATK ${p[2]} &middot; DEF ${p[3]} &middot; AGI ${p[6]}</div>`;
+                `<div style="color:#FFD700; font-size:19px; font-weight:bold; white-space:nowrap">${this._esc(enemy.name).toUpperCase()}</div>` +
+                `<div style="color:#FFD27A; font-size:15px; font-weight:bold; white-space:nowrap">${lvLabel} ${this._esc(lv)}${archName ? '  &middot;  ' + this._esc(archName).toUpperCase() : ''}</div>` +
+                `<div style="color:#9FD9FF; font-size:14px; font-weight:bold; white-space:nowrap">HP ${p[0]} &middot; ATK ${p[2]} &middot; DEF ${p[3]} &middot; AGI ${p[6]}</div>`;
             if (descTxt) {
-                html += `<div style="color:#FFA500;font-size:12px;line-height:1.25;margin-top:2px;">${this._esc(descTxt)}</div>`;
+                html += `<div style="color:#FFA500; font-size:15px; line-height:1.25; margin-top:2px">${this._esc(descTxt)}</div>`;
             }
             div.innerHTML = html;
             this._labelLayer.appendChild(div);
@@ -4454,14 +4454,14 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             // Every inner size is relative to the box font (INFO_BASE_FONT), which
             // is the single value the layout pass rescales.
             const em = px => (px / INFO_BASE_FONT).toFixed(3) + 'em';
-            const header = `<div style="color:#8fb4c8;font-size:${em(10)};letter-spacing:2px;margin-bottom:0.5em;">${lead}${source}${pos}</div>`;
+            const header = `<div style="color:#8fb4c8; font-size:${em(10)}; letter-spacing:2px; margin-bottom:0.5em">${lead}${source}${pos}</div>`;
             const body = lines.map(ln => {
                 const fw = ln.bold ? 'bold' : 'normal';
                 const mt = ln.bold ? '' : 'margin-top:0.15em;';
-                return `<div style="color:${ln.color || '#FFA500'};font-size:${em(ln.size || 12)};font-weight:${fw};line-height:1.3;${mt}">${esc(ln.text)}</div>`;
+                return `<div style="color:${ln.color || '#FFA500'}; font-size:${em(ln.size || 12)}; font-weight:${fw}; line-height:1.3; ${mt}">${esc(ln.text)}</div>`;
             }).join('');
             const hint = (color, text) =>
-                `<div style="color:${color};font-size:${em(10)};letter-spacing:1px;margin-top:0.8em;">${text}</div>`;
+                `<div style="color:${color}; font-size:${em(10)}; letter-spacing:1px; margin-top:0.8em">${text}</div>`;
             const foot = this._look.active
                 ? hint('#7fe08f', T('Titlescreen.hyperverse.freeLook'))
                 : hint('#6f8a99', T('Titlescreen.hyperverse.controls'));
@@ -5250,12 +5250,12 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             const ap = k => T('Titlescreen.autopilot.' + k);
             const em = px => (px / INFO_BASE_FONT).toFixed(3) + 'em';
             box.innerHTML =
-                `<div style="color:#8fb4c8;font-size:${em(10)};letter-spacing:2px;margin-bottom:0.5em;">${ap('header')}</div>` +
-                `<div style="color:#FFD700;font-size:${em(18)};font-weight:bold;" id="ad-road">--</div>` +
-                `<div style="color:#FFA500;font-size:${em(13)};margin-top:0.15em;" id="ad-place">--</div>` +
-                `<div style="color:#9fd9ff;font-size:${em(12)};margin-top:0.5em;" id="ad-speed">${ap('speed')} -- km/h</div>` +
-                `<div style="color:#9fd9ff;font-size:${em(12)};margin-top:0.15em;" id="ad-head">${ap('heading')} --</div>` +
-                `<div style="color:#6f8a99;font-size:${em(10)};letter-spacing:1px;margin-top:0.8em;">${ap('lookHint')}</div>`;
+                `<div style="color:#8fb4c8; font-size:${em(10)}; letter-spacing:2px; margin-bottom:0.5em">${ap('header')}</div>` +
+                `<div style="color:#FFD700; font-size:${em(18)}; font-weight:bold" id="ad-road">--</div>` +
+                `<div style="color:#FFA500; font-size:${em(13)}; margin-top:0.15em" id="ad-place">--</div>` +
+                `<div style="color:#9fd9ff; font-size:${em(12)}; margin-top:0.5em" id="ad-speed">${ap('speed')} -- km/h</div>` +
+                `<div style="color:#9fd9ff; font-size:${em(12)}; margin-top:0.15em" id="ad-head">${ap('heading')} --</div>` +
+                `<div style="color:#6f8a99; font-size:${em(10)}; letter-spacing:1px; margin-top:0.8em">${ap('lookHint')}</div>`;
             this._roadEl = box.querySelector('#ad-road');
             this._placeEl = box.querySelector('#ad-place');
             this._speedEl = box.querySelector('#ad-speed');

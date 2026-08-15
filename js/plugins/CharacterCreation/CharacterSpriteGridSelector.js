@@ -141,6 +141,9 @@
     if (SC.allowedInPopulation && !SC.allowedInPopulation(name, entry)) return false;
     return true;
   };
+  // Inside each of those two blocks the Skab folder is dealt first: it holds the
+  // faces this world was drawn for, so it leads whichever block it lands in.
+  const isSkabSheet = (name) => name.startsWith("Skab/");
   const spriteSheets = [];
   function rebuildSpriteSheets() {
     spriteSheets.length = 0;
@@ -150,8 +153,16 @@
         )
       : Object.keys(SPRITE_SHEET_CONFIG)
     ).filter(allowedSheet);
-    for (const name of offered) if (!isBetaSheet(name)) spriteSheets.push(name);
-    for (const name of offered) if (isBetaSheet(name)) spriteSheets.push(name);
+    const deal = (beta) => {
+      for (const name of offered) {
+        if (isBetaSheet(name) === beta && isSkabSheet(name)) spriteSheets.push(name);
+      }
+      for (const name of offered) {
+        if (isBetaSheet(name) === beta && !isSkabSheet(name)) spriteSheets.push(name);
+      }
+    };
+    deal(false);
+    deal(true);
   }
   rebuildSpriteSheets();
 
@@ -576,7 +587,7 @@
               <div class="cc-option-title"></div>
               <div class="cc-wanted-class cc-sprite-index"></div>
             </div>
-            <div class="cc-button-panel" style="margin-top: 24px;"></div>
+            <div class="cc-button-panel" style="margin-top: 24px; width: 100%;"></div>
           </div>
         </div>
       `;
@@ -590,17 +601,17 @@
       this._indexEl = container.querySelector(".cc-sprite-index");
       container.querySelector(".cc-page-left h2").textContent = T("CharCreate.selectSprite");
 
-      const buttons = container.querySelector(".cc-button-panel");
+      const slots = window.CCButtons.slots(container.querySelector(".cc-button-panel"));
       const back = document.createElement("button");
       back.className = "cc-btn-treaty";
-      back.textContent = T("CharCreate.back");
+      back.textContent = window.CCButtons.backLabel();
       back.addEventListener("click", () => this.popScene());
+      slots.back.appendChild(back);
       const confirm = document.createElement("button");
       confirm.className = "cc-btn-treaty confirm";
-      confirm.textContent = T("CharCreate.continue2");
+      confirm.textContent = window.CCButtons.continueLabel();
       confirm.addEventListener("click", () => this.onSpriteConfirm());
-      buttons.appendChild(back);
-      buttons.appendChild(confirm);
+      slots.next.appendChild(confirm);
 
       // One listener on the board rather than an inline handler a card: the
       // grid rebuilds its cells constantly and must not re-bind on every pass.
@@ -1274,30 +1285,36 @@
     }
 
     buildButtons() {
-      this._buttonsEl.innerHTML = "";
+      // Back on the left, Random in the middle, Continue on the right: the same
+      // bar, in the same order, as every other creation step (CCButtons).
+      const slots = window.CCButtons.slots(this._buttonsEl);
+
       const back = document.createElement("button");
       back.className = "cc-btn-treaty";
-      back.textContent = T("CharCreate.back");
+      back.textContent = window.CCButtons.backLabel();
       back.addEventListener("click", () => this.onBustCancel());
-      this._buttonsEl.appendChild(back);
-
-      this._confirmEl = document.createElement("button");
-      this._confirmEl.className = "cc-btn-treaty confirm";
-      this._confirmEl.textContent = T("CharCreate.confirmBust");
-      this._confirmEl.addEventListener("click", () => this.onBustConfirm());
-      this._buttonsEl.appendChild(this._confirmEl);
-      this._confirmEl.style.display = "none";
+      slots.back.appendChild(back);
 
       // Always present, never gated on the gallery having loaded: if the
       // img/busts scan comes back empty (or is still running) the species
-      // list and grid stay bare, and Confirm has nothing to pick. Random
+      // list and grid stay bare, and Continue has nothing to pick. Random
       // draws from availableBustNames(), which falls back to its own
       // synchronous folder read rather than waiting on BustCatalogue's scan.
       this._randomEl = document.createElement("button");
       this._randomEl.className = "cc-btn-treaty";
-      this._randomEl.textContent = T("CharCreate.randomBust");
+      this._randomEl.textContent = window.CCButtons.randomLabel();
       this._randomEl.addEventListener("click", () => this.onBustRandom());
-      this._buttonsEl.appendChild(this._randomEl);
+      slots.mid.appendChild(this._randomEl);
+
+      this._confirmEl = document.createElement("button");
+      this._confirmEl.className = "cc-btn-treaty confirm";
+      this._confirmEl.textContent = window.CCButtons.continueLabel();
+      this._confirmEl.addEventListener("click", () => this.onBustConfirm());
+      slots.next.appendChild(this._confirmEl);
+      // Hidden with `visibility`, not `display`: while the species list has the
+      // cursor there is nothing to confirm, but Back and Random must not slide
+      // sideways when Continue comes and goes.
+      window.CCButtons.setShown(this._confirmEl, false);
     }
 
     // The id a random pick's bust name would file under, mirroring
@@ -1580,7 +1597,7 @@
     }
 
     refreshMode() {
-      this._confirmEl.style.display = this._mode === "bust" ? "" : "none";
+      window.CCButtons.setShown(this._confirmEl, this._mode === "bust");
       this.refreshBustSelection();
       this.refreshCategorySelection();
       this.schedulePreview();

@@ -1,4 +1,8 @@
 {
+ "hotbar": {
+  "title": "Slot rapidi",
+  "starHint": "Aggiungi agli slot rapidi (1-9)"
+ },
  "title": "Zaino",
  "back": "Indietro",
  "searchPlaceholder": "Cerca oggetti...",

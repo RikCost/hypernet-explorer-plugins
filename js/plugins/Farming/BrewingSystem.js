@@ -25,7 +25,7 @@
         const scale = sz / 32;
         const bw = Math.round(512 * scale), bh = Math.round(384 * scale);
         const x = (idx % 16) * sz, y = Math.floor(idx / 16) * sz;
-        return `<span style="display:inline-block;width:${sz}px;height:${sz}px;background:url('img/system/IconSet.png') -${x}px -${y}px no-repeat;background-size:${bw}px ${bh}px;vertical-align:middle;margin-right:3px;image-rendering:pixelated;flex-shrink:0;"></span>`;
+        return `<span style="display:inline-block; width:${sz}px; height:${sz}px; background:url('img/system/IconSet.png') -${x}px -${y}px no-repeat; background-size:${bw}px ${bh}px; vertical-align:middle; margin-right:3px; image-rendering:pixelated; flex-shrink:0"></span>`;
     };
 
     // mulberry32 seeded RNG ,  deterministic, fast, good quality
@@ -235,7 +235,7 @@
             const timeEl = this._container.querySelector('#brewery-time-remaining');
             if (timeEl) {
                 timeEl.innerHTML = state.stage === STAGES.READY
-                    ? `<span style="color:#27ae60;font-weight:bold;">${T('Brewing.ui.ready')}</span>`
+                    ? `<span style="color:#27ae60; font-weight:bold">${T('Brewing.ui.ready')}</span>`
                     : formatTimeRemaining(state.remainingMinutes);
             }
         }
@@ -373,7 +373,7 @@
             // ── Left page: recipe list ─────────────────────────────────────────
             let recipeListHTML = '';
             if (recipes.length === 0) {
-                recipeListHTML = `<div style="font-size:0.82rem;color:#8b7355;font-style:italic;padding:8px 0;">${T('Brewing.ui.loadingRecipes')}</div>`;
+                recipeListHTML = `<div style="font-size:0.984rem; color:#8b7355; padding:8px 0">${T('Brewing.ui.loadingRecipes')}</div>`;
             } else {
                 for (let i = 0; i < recipes.length; i++) {
                     const r       = recipes[i];
@@ -402,10 +402,10 @@
                     const ok     = have >= ing.quantity;
                     const color  = ok ? '#27ae60' : '#c0392b';
                     const mkIcon = ok ? ic(87, 14) : ic(12, 14);
-                    return `<div class="brewery-ingredient-check" style="color:${color}">${mkIcon} ${item.name} ×${ing.quantity} <span style="opacity:0.65;font-size:0.74rem;">(have ${have})</span></div>`;
+                    return `<div class="brewery-ingredient-check" style="color:${color}">${mkIcon} ${item.name} ×${ing.quantity} <span style="opacity:0.65; font-size:0.903rem">(have ${have})</span></div>`;
                 }).join('');
                 ingredientCheckHTML = `
-                    <div class="apiary-section" style="margin-top:14px;">
+                    <div class="apiary-section" style="margin-top:14px">
                         <div class="apiary-section-title">${ic(105, 14)} ${T('Brewing.ui.ingredients')}</div>
                         ${checks}
                     </div>`;
@@ -420,12 +420,12 @@
             if (!barrelState) {
                 // Empty barrel
                 rightHTML = `
-                    <h2 class="title" style="border:none;margin:0 0 14px 0;padding:0;text-align:center;">${T('Brewing.ui.barrel')}</h2>
+                    <h2 class="title" style="border:none; margin:0 0 14px 0; padding:0">${T('Brewing.ui.barrel')}</h2>
                     <div class="apiary-section">
                         <div class="apiary-section-title">${ic(210, 14)} ${T('Brewing.ui.status')}</div>
-                        <div class="apiary-stat-row"><span>${T('Brewing.ui.state')}</span><span style="color:#8b7355;">${T('Brewing.ui.empty')}</span></div>
+                        <div class="apiary-stat-row"><span>${T('Brewing.ui.state')}</span><span style="color:#8b7355">${T('Brewing.ui.empty')}</span></div>
                     </div>
-                    <p style="font-size:0.8rem;color:#8b7355;font-style:italic;margin:10px 0 0 0;">
+                    <p style="font-size:0.96rem; color:#8b7355; margin:10px 0 0 0">
                         ${T('Brewing.ui.selectRecipeHint')}
                     </p>
                     ${feedbackHTML}
@@ -445,7 +445,7 @@
                 }[stage];
 
                 const timeLabel = stage === STAGES.READY
-                    ? `<span style="color:#27ae60;font-weight:bold;">${T('Brewing.ui.ready')}</span>`
+                    ? `<span style="color:#27ae60; font-weight:bold">${T('Brewing.ui.ready')}</span>`
                     : formatTimeRemaining(remainingMinutes);
 
                 const startedLabel = savedData ? dateTimeFromMinutes(savedData.startMinutes).fullDate : ', ';
@@ -459,23 +459,23 @@
                 const actionBtns = stage === STAGES.READY
                     ? `<div class="apiary-action-btn" onclick="SceneManager._scene.harvestBarrel()">${ic(340, 16)} ${T('Brewing.ui.harvest')}</div>
                        <div class="apiary-action-btn" onclick="SceneManager._scene.popScene()">${T('Brewing.ui.exit')}</div>`
-                    : `<div class="apiary-action-btn" style="opacity:0.45;cursor:default;pointer-events:none;">${T('Brewing.ui.fermenting')}</div>
+                    : `<div class="apiary-action-btn" style="opacity:0.45; cursor:default; pointer-events:none">${T('Brewing.ui.fermenting')}</div>
                        <div class="apiary-action-btn" onclick="SceneManager._scene.popScene()">${T('Brewing.ui.exit')}</div>`;
 
                 rightHTML = `
-                    <h2 class="title" style="border:none;margin:0 0 14px 0;padding:0;text-align:center;">${T('Brewing.ui.barrel')}</h2>
+                    <h2 class="title" style="border:none; margin:0 0 14px 0; padding:0">${T('Brewing.ui.barrel')}</h2>
                     <div class="apiary-section">
                         <div class="apiary-section-title">${ic(210, 14)} ${T('Brewing.ui.fermentingTitle')}</div>
                         <div class="apiary-stat-row"><span>${T('Brewing.ui.recipe')}</span><span>${recipe.name}</span></div>
-                        <div class="apiary-stat-row"><span>${T('Brewing.ui.stage')}</span><span style="color:${stageInfo.color};font-weight:bold;">${stageInfo.text}</span></div>
-                        <div style="margin:8px 0 4px;">
+                        <div class="apiary-stat-row"><span>${T('Brewing.ui.stage')}</span><span style="color:${stageInfo.color}; font-weight:bold">${stageInfo.text}</span></div>
+                        <div style="margin:8px 0 4px">
                             <div class="brewery-stage-bar">
                                 <div class="brewery-stage-fill" style="width:${pct}%"></div>
                             </div>
-                            <div class="brewery-stage-pct" style="font-size:0.7rem;color:#8b7355;text-align:right;margin-top:2px;">${pct}%</div>
+                            <div class="brewery-stage-pct" style="font-size:0.854rem; color:#8b7355; text-align:right; margin-top:2px">${pct}%</div>
                         </div>
                         <div class="apiary-stat-row"><span>${T('Brewing.ui.timeRemaining')}</span><span id="brewery-time-remaining">${timeLabel}</span></div>
-                        <div class="apiary-stat-row"><span>${T('Brewing.ui.started')}</span><span style="font-size:0.74rem;">${startedLabel}</span></div>
+                        <div class="apiary-stat-row"><span>${T('Brewing.ui.started')}</span><span style="font-size:0.903rem">${startedLabel}</span></div>
                     </div>
                     <div class="apiary-section">
                         <div class="apiary-section-title">${ic(80, 14)} ${T('Brewing.ui.expectedOutput')}</div>
@@ -489,9 +489,9 @@
             this._container.innerHTML = `
                 <div class="book-spread">
                     <div class="left-page">
-                        <div style="position:relative;display:flex;align-items:center;justify-content:center;border-bottom:2px dashed #bba16d;padding-bottom:8px;margin-bottom:18px;min-height:40px;width:100%;">
-                            <div class="back-button" onclick="SceneManager._scene.popScene()" style="position:absolute;left:0;background:#8b5a2b;color:#ecdcb9;padding:4px 14px;border-radius:4px;font-weight:bold;cursor:pointer;border:1.5px solid #4a2711;text-transform:uppercase;font-size:0.8rem;font-family:'Lora',serif;user-select:none;">${T('Brewing.ui.back')}</div>
-                            <h2 class="title" style="border:none;margin:0;padding:0;text-align:center;">${T('Brewing.ui.brewery')}</h2>
+                        <div style="position:relative; display:flex; align-items:center; justify-content:center; border-bottom:2px dashed #bba16d; padding-bottom:8px; margin-bottom:18px; min-height:40px; width:100%">
+                            <div class="back-button" onclick="SceneManager._scene.popScene()" style="position:absolute; background:#8b5a2b; color:#ecdcb9; padding:4px 14px; border-radius:4px; font-weight:bold; border:1.5px solid #4a2711; font-size:0.96rem; font-family:'Lora',serif">${T('Brewing.ui.back')}</div>
+                            <h2 class="title" style="border:none; margin:0; padding:0">${T('Brewing.ui.brewery')}</h2>
                         </div>
                         <div class="apiary-section">
                             <div class="apiary-section-title">${ic(105, 14)} ${T('Brewing.ui.recipes')}</div>

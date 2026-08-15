@@ -1184,6 +1184,8 @@
     const description = typeof RBG.generateDescription === "function" ? RBG.generateDescription(rng) : "";
     const heading = author ? `"${title}" — ${author}` : `"${title}"`;
     showLoreMessage(description ? [heading, description] : [heading]);
+    // Reading it is worth the same one-off Fun as a book read off an event.
+    if (typeof RBG.payReadingFun === "function") RBG.payReadingFun("book", `${t.x},${t.y}`);  // i18n-ignore  reading-log id
   };
 
   // --- Chair / Throne / Stool: sit, exactly like a region-102 seat tile ---
@@ -1203,6 +1205,7 @@
     const rng = seededRngForTile(t.x, t.y, 0x57A700E);
     const subject = RBG.randomSubject(rng);
     showLoreMessage(T('Terrain.statue', { subject: subject }));
+    if (typeof RBG.payReadingFun === "function") RBG.payReadingFun("statue", `${t.x},${t.y}`);  // i18n-ignore  reading-log id
   };
 
   // --- Vase (+ ice/plant variants): Break -> random food item ---

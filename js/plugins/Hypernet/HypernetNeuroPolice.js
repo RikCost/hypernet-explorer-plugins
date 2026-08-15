@@ -98,25 +98,25 @@
     // Continental government portal circa 2001: institutional blue, flat panels.
     const S = {
         app: 'display:flex; flex-direction:column; height:100%; background:#eceae1; ' +
-             "font-family:'Tahoma',sans-serif; font-size:12px; color:#1b1b1b;",
+             "font-family:'Tahoma',sans-serif; font-size:15px; color:#1b1b1b;",
         header: 'display:flex; align-items:center; gap:12px; padding:10px 14px; ' +
                 'background:linear-gradient(to bottom,#22458c,#16305f); color:#fff; border-bottom:2px solid #0d1e3d;',
         nav: 'width:150px; flex-shrink:0; background:#dedbcf; border-right:1px solid #aca899; padding:8px 0;',
         navItem: 'padding:9px 12px; cursor:pointer; border-left:4px solid transparent; user-select:none;',
         panel: 'flex:1; overflow-y:auto; padding:14px 16px; background:#f6f5ee; min-width:0;',
         status: 'display:flex; gap:16px; align-items:center; border-top:1px solid #aca899; ' +
-                'padding:4px 10px; background:#eceae1; font-size:11px; color:#333;',
+                'padding:4px 10px; background:#eceae1; font-size:14px; color:#333;',
         card: 'background:#fff; border:1px solid #cdc9bd; border-radius:3px; padding:10px 12px; margin-bottom:8px;',
         btn: 'display:inline-block; padding:5px 12px; background:linear-gradient(to bottom,#fdfdfb,#dcd8cc); ' +
-             'border:1px solid #8c887c; border-radius:3px; cursor:pointer; font-size:12px; color:#111; user-select:none;',
+             'border:1px solid #8c887c; border-radius:3px; cursor:pointer; font-size:15px; color:#111; user-select:none;',
         btnMain: 'display:inline-block; padding:6px 14px; background:linear-gradient(to bottom,#3a63b8,#22458c); ' +
-                 'border:1px solid #16305f; border-radius:3px; cursor:pointer; font-size:12px; color:#fff; ' +
+                 'border:1px solid #16305f; border-radius:3px; cursor:pointer; font-size:15px; color:#fff; ' +
                  'font-weight:bold; user-select:none;',
         btnDanger: 'display:inline-block; padding:6px 14px; background:linear-gradient(to bottom,#c0392b,#8e2a20); ' +
-                   'border:1px solid #6b1f18; border-radius:3px; cursor:pointer; font-size:12px; color:#fff; ' +
+                   'border:1px solid #6b1f18; border-radius:3px; cursor:pointer; font-size:15px; color:#fff; ' +
                    'font-weight:bold; user-select:none;',
-        note: 'color:#5a5a5a; font-size:11px; line-height:1.5;',
-        h: 'margin:0 0 8px; font-size:14px; font-weight:bold; color:#16305f;'
+        note: 'color:#5a5a5a; font-size:14px; line-height:1.5;',
+        h: 'margin:0 0 8px; font-size:17px; font-weight:bold; color:#16305f;'
     };
 
     const TABS = [
@@ -144,14 +144,14 @@
             const contentHTML = `
                 <div style="${S.app}">
                     <div style="${S.header}">
-                        <div style="filter:drop-shadow(0 1px 1px rgba(0,0,0,0.5));">${iconHTML(APP_ICON, 34)}</div>
-                        <div style="flex:1; min-width:0;">
-                            <div style="font-size:15px; font-weight:bold; letter-spacing:0.5px;">${T('NeuroPolice.banner')}</div>
-                            <div style="font-size:10px; opacity:0.82;">${T('NeuroPolice.subtitle')}</div>
+                        <div style="filter:drop-shadow(0 1px 1px rgba(0,0,0,0.5))">${iconHTML(APP_ICON, 34)}</div>
+                        <div style="flex:1; min-width:0">
+                            <div style="font-size:17px; font-weight:bold; letter-spacing:0.5px">${T('NeuroPolice.banner')}</div>
+                            <div style="font-size:13px; opacity:0.82">${T('NeuroPolice.subtitle')}</div>
                         </div>
-                        <div id="np-status-pill" style="padding:4px 10px; border-radius:10px; font-size:11px; font-weight:bold;"></div>
+                        <div id="np-status-pill" style="padding:4px 10px; font-size:14px; font-weight:bold"></div>
                     </div>
-                    <div style="display:flex; flex:1; min-height:0;">
+                    <div style="display:flex; flex:1; min-height:0">
                         <div id="np-nav" style="${S.nav}"></div>
                         <div id="np-panel" style="${S.panel}"></div>
                     </div>
@@ -159,7 +159,7 @@
                         <span>${T('NeuroPolice.citizenLabel')} <b id="np-citizen"></b></span>
                         <span>${T('NeuroPolice.outstandingLabel')} <b id="np-outstanding"></b></span>
                         <span>${T('NeuroPolice.walletLabel')} <b id="np-wallet"></b></span>
-                        <span id="np-message" style="margin-left:auto; color:#16305f;"></span>
+                        <span id="np-message" style="margin-left:auto; color:#16305f"></span>
                     </div>
                 </div>
             `;
@@ -269,26 +269,26 @@
 
             panel.innerHTML = `
                 <h2 style="${S.h}">${T('NeuroPolice.record.heading', { name: escapeHtml(citizenName()) })}</h2>
-                <div style="${S.note} margin-bottom:12px;">
+                <div style="${S.note} margin-bottom:12px">
                     ${T('NeuroPolice.record.blurb')}
                 </div>
                 <div id="np-charges"></div>
-                <div id="np-record-actions" style="margin-top:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;"></div>
+                <div id="np-record-actions" style="margin-top:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap"></div>
             `;
 
             const holder = panel.querySelector('#np-charges');
             if (list.length === 0) {
-                holder.innerHTML = `<div style="${S.card} color:#4a4a4a;">${T('NeuroPolice.emptyFile')}</div>`;
+                holder.innerHTML = `<div style="${S.card} color:#4a4a4a">${T('NeuroPolice.emptyFile')}</div>`;
             } else {
                 list.forEach((crime, index) => {
                     const row = document.createElement('div');
                     row.style.cssText = S.card + ' display:flex; align-items:center; gap:12px;';
                     row.innerHTML = `
-                        <div style="flex:1; min-width:0;">
-                            <div style="font-weight:bold;">${escapeHtml(crime.name)}</div>
+                        <div style="flex:1; min-width:0">
+                            <div style="font-weight:bold">${escapeHtml(crime.name)}</div>
                             <div style="${S.note}">${T('NeuroPolice.filedOn', { date: escapeHtml(crime.timestamp || T('NeuroPolice.dateUnknown')) })}</div>
                         </div>
-                        <div style="font-weight:bold; color:#8e2a20; white-space:nowrap;">${euros(crime.bounty)}</div>
+                        <div style="font-weight:bold; color:#8e2a20; white-space:nowrap">${euros(crime.bounty)}</div>
                     `;
                     const affordable = gold >= (crime.bounty || 0);
                     row.appendChild(this.button(
@@ -382,12 +382,11 @@
         renderSelfReport: function(panel) {
             panel.innerHTML = `
                 <h2 style="${S.h}">${T('NeuroPolice.voluntaryDeclaration')}</h2>
-                <div style="${S.note} margin-bottom:10px;">
+                <div style="${S.note} margin-bottom:10px">
                     ${T('NeuroPolice.declarationBlurb')}
                 </div>
                 <input id="np-report-filter" type="text" placeholder="${T('NeuroPolice.searchOffences')}" value="${escapeHtml(this.reportFilter)}"
-                       style="width:100%; box-sizing:border-box; padding:5px 8px; margin-bottom:10px;
-                              border:1px solid #8c887c; border-radius:2px; font-family:inherit; font-size:12px;" />
+                       style="width:100%; box-sizing:border-box; padding:5px 8px; margin-bottom:10px; border:1px solid #8c887c; border-radius:2px; font-family:inherit; font-size:15px" />
                 <div id="np-report-list"></div>
             `;
 
@@ -420,7 +419,7 @@
 
             const cats = Object.keys(categories);
             if (cats.length === 0) {
-                holder.innerHTML = `<div style="${S.card} color:#4a4a4a;">${T('NeuroPolice.noOffenceMatch')}</div>`;
+                holder.innerHTML = `<div style="${S.card} color:#4a4a4a">${T('NeuroPolice.noOffenceMatch')}</div>`;
                 return;
             }
 
@@ -436,9 +435,9 @@
                     const row = document.createElement('div');
                     row.style.cssText = S.card + ' display:flex; align-items:center; gap:12px; margin-bottom:5px; padding:7px 10px;';
                     row.innerHTML = `
-                        <div style="flex:1; min-width:0;">${escapeHtml(crime.name)}</div>
-                        <div style="${S.note} white-space:nowrap;">
-                            <s>${euros(crime.bounty)}</s> &rarr; <b style="color:#8e2a20;">${euros(half)}</b>
+                        <div style="flex:1; min-width:0">${escapeHtml(crime.name)}</div>
+                        <div style="${S.note} white-space:nowrap">
+                            <s>${euros(crime.bounty)}</s> &rarr; <b style="color:#8e2a20">${euros(half)}</b>
                         </div>
                     `;
                     row.appendChild(this.button(T('NeuroPolice.confess'), S.btn, 'np-confess-' + key,
@@ -466,19 +465,19 @@
 
             panel.innerHTML = `
                 <h2 style="${S.h}">${T('NeuroPolice.custodyHearings')}</h2>
-                <div style="${S.note} margin-bottom:12px;">
+                <div style="${S.note} margin-bottom:12px">
                     ${T('NeuroPolice.custodyBlurb', { bounty: euros(bounty) })}
                 </div>
                 <div id="np-custody-surrender" style="${S.card}">
-                    <div style="font-weight:bold; margin-bottom:4px;">${T('NeuroPolice.turnYourselfIn')}</div>
-                    <div style="${S.note} margin-bottom:10px;">
+                    <div style="font-weight:bold; margin-bottom:4px">${T('NeuroPolice.turnYourselfIn')}</div>
+                    <div style="${S.note} margin-bottom:10px">
                         ${T('NeuroPolice.surrenderBlurb')}
                     </div>
                     <div id="np-surrender-action"></div>
                 </div>
                 <div id="np-custody-trial" style="${S.card}">
-                    <div style="font-weight:bold; margin-bottom:4px;">${T('NeuroPolice.requestHearing')}</div>
-                    <div style="${S.note} margin-bottom:10px;">
+                    <div style="font-weight:bold; margin-bottom:4px">${T('NeuroPolice.requestHearing')}</div>
+                    <div style="${S.note} margin-bottom:10px">
                         ${T('NeuroPolice.hearingBlurb')}
                     </div>
                     <div id="np-trial-action"></div>
@@ -549,14 +548,11 @@
             if (!holder) { onOk(); return; }
 
             holder.innerHTML = `
-                <div style="position:absolute; top:0; right:0; bottom:0; left:0; background:rgba(20,25,40,0.45); display:flex;
-                            align-items:center; justify-content:center; z-index:10;">
-                    <div style="background:#f6f5ee; border:2px solid #16305f; border-radius:4px; width:380px; max-width:85%;
-                                box-shadow:0 8px 22px rgba(0,0,0,0.4);">
-                        <div style="background:linear-gradient(to bottom,#22458c,#16305f); color:#fff; padding:6px 10px;
-                                    font-weight:bold;">${escapeHtml(title)}</div>
-                        <div style="padding:12px; line-height:1.5;">${escapeHtml(body)}</div>
-                        <div id="np-confirm-actions" style="padding:0 12px 12px; display:flex; gap:8px; justify-content:flex-end;"></div>
+                <div style="position:absolute; top:0; right:0; bottom:0; left:0; background:rgba(20,25,40,0.45); display:flex; align-items:center; justify-content:center; z-index:10">
+                    <div style="background:#f6f5ee; border:2px solid #16305f; border-radius:4px; width:380px; max-width:85%; box-shadow:0 8px 22px rgba(0,0,0,0.4)">
+                        <div style="background:linear-gradient(to bottom,#22458c,#16305f); color:#fff; padding:6px 10px; font-weight:bold">${escapeHtml(title)}</div>
+                        <div style="padding:12px; line-height:1.5">${escapeHtml(body)}</div>
+                        <div id="np-confirm-actions" style="padding:0 12px 12px; display:flex; gap:8px; justify-content:flex-end"></div>
                     </div>
                 </div>
             `;

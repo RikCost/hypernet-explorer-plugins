@@ -823,9 +823,9 @@
                 const amVal = 540 + i * 193;
                 const fmVal = (88.1 + i * 3.3).toFixed(1);
                 const emVal = 1420 + i * 1430;
-                amTicks += `<span style="position:absolute; left:${pct}%; transform:translateX(-50%); font-size:0.6rem; color:rgba(255,180,50,0.65);">${amVal}</span>`;
-                fmTicks += `<span style="position:absolute; left:${pct}%; transform:translateX(-50%); font-size:0.6rem; color:rgba(255,180,50,0.65);">${fmVal}</span>`;
-                emTicks += `<span style="position:absolute; left:${pct}%; transform:translateX(-50%); font-size:0.6rem; color:rgba(255,180,50,0.65);">${emVal}</span>`;
+                amTicks += `<span style="position:absolute; left:${pct}%; transform:translateX(-50%); font-size:0.732rem; color:rgba(255,180,50,0.65)">${amVal}</span>`;
+                fmTicks += `<span style="position:absolute; left:${pct}%; transform:translateX(-50%); font-size:0.732rem; color:rgba(255,180,50,0.65)">${fmVal}</span>`;
+                emTicks += `<span style="position:absolute; left:${pct}%; transform:translateX(-50%); font-size:0.732rem; color:rgba(255,180,50,0.65)">${emVal}</span>`;
             }
 
             this._dndContainer.innerHTML = `
@@ -855,23 +855,23 @@
                                 <!-- AM Scale -->
                                 <div class="dial-scale">
                                     <span class="dial-scale-label">AM</span>
-                                    <div style="width:100%; height:100%; position:relative; margin-left:24px; width:calc(100% - 30px);">
+                                    <div style="width:100%; height:100%; position:relative; margin-left:24px; width:calc(100% - 30px)">
                                         ${amTicks}
                                     </div>
                                 </div>
 
                                 <!-- FM Scale -->
                                 <div class="dial-scale">
-                                    <span class="dial-scale-label" style="color:#ffcc00;">FM</span>
-                                    <div style="width:100%; height:100%; position:relative; margin-left:24px; width:calc(100% - 30px);">
+                                    <span class="dial-scale-label" style="color:#ffcc00">FM</span>
+                                    <div style="width:100%; height:100%; position:relative; margin-left:24px; width:calc(100% - 30px)">
                                         ${fmTicks}
                                     </div>
                                 </div>
 
                                 <!-- EM Scale -->
                                 <div class="dial-scale">
-                                    <span class="dial-scale-label" style="color:#ff4400;">EM</span>
-                                    <div style="width:100%; height:100%; position:relative; margin-left:24px; width:calc(100% - 30px);">
+                                    <span class="dial-scale-label" style="color:#ff4400">EM</span>
+                                    <div style="width:100%; height:100%; position:relative; margin-left:24px; width:calc(100% - 30px)">
                                         ${emTicks}
                                     </div>
                                 </div>
@@ -880,18 +880,18 @@
                             <!-- Readout Row -->
                             <div id="digital-readout-row">
                                 <div id="nixie-display">--.-</div>
-                                <div style="display:flex; align-items:center; gap:8px;">
-                                    <span style="font-size:0.65rem; color:#8c7667; font-family:'Lora', serif; letter-spacing:0.5px; font-weight:bold;">${T('Radio.magicEye')}</span>
-                                    <div id="magic-eye-tube" style="width:22px; height:22px; border-radius:50%; border:2px solid #222; background:#331100; box-shadow:inset 0 0 5px rgba(0,0,0,0.85); display:flex; justify-content:center; align-items:center;">
-                                        <div id="magic-eye-glow" style="width:14px; height:14px; border-radius:50%; background:#ff4400; box-shadow:0 0 8px #ff4400; transition:all 0.12s ease;"></div>
+                                <div style="display:flex; align-items:center; gap:8px">
+                                    <span style="font-size:0.793rem; color:#8c7667; font-family:'Lora', serif; letter-spacing:0.5px; font-weight:bold">${T('Radio.magicEye')}</span>
+                                    <div id="magic-eye-tube" style="width:22px; height:22px; border-radius:50%; border:2px solid #222; background:#331100; box-shadow:inset 0 0 5px rgba(0,0,0,0.85); display:flex; justify-content:center; align-items:center">
+                                        <div id="magic-eye-glow" style="width:14px; height:14px; border-radius:50%; background:#ff4400; box-shadow:0 0 8px #ff4400; transition:all 0.12s ease"></div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Information Screen -->
                             <div id="station-info-screen">
-                                <div id="song-title-marquee" style="font-weight:bold; letter-spacing:0.5px; white-space:nowrap; text-transform:uppercase;">...</div>
-                                <div id="station-sub-details" style="color:#00aa44; font-size:0.7rem; margin-top:2px;">...</div>
+                                <div id="song-title-marquee" style="font-weight:bold; letter-spacing:0.5px; white-space:nowrap; text-transform:uppercase">...</div>
+                                <div id="station-sub-details" style="color:#00aa44; font-size:0.854rem; margin-top:2px">...</div>
                             </div>
                         </div>
 

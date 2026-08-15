@@ -1428,17 +1428,17 @@ Scene_Name.prototype.createHtmlNameInput = function() {
         <div class="book-spread">
             <!-- Left Page: Virtual onscreen keyboard layout -->
             <div class="name-left-page">
-                <div style="border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 16px;">
-                    <h2 class="title" style="border: none; margin: 0; padding: 0;">${T('AltNameInput.ui.yourNameIs')}</h2>
+                <div style="border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 16px">
+                    <h2 class="title" style="border: none; margin: 0; padding: 0">${T('AltNameInput.ui.yourNameIs')}</h2>
                 </div>
                 <div class="kbd-grid" id="virtual-keyboard-grid">
                     <!-- Loaded dynamically via refresh -->
                 </div>
                 
                 <!-- Bottom spacing keys -->
-                <div style="display: flex; gap: 8px; margin-top: 10px; width: 100%;">
-                    <button class="kbd-key" style="flex: 1;" onmousedown="event.preventDefault();" onclick="SceneManager._scene.onSpaceClick()">${T('AltNameInput.ui.space')}</button>
-                    <button class="kbd-key" style="flex: 1;" onmousedown="event.preventDefault();" onclick="SceneManager._scene.onBackspaceClick()">${T('AltNameInput.ui.backspace')}</button>
+                <div style="display: flex; gap: 8px; margin-top: 10px; width: 100%">
+                    <button class="kbd-key" style="flex: 1" onmousedown="event.preventDefault();" onclick="SceneManager._scene.onSpaceClick()">${T('AltNameInput.ui.space')}</button>
+                    <button class="kbd-key" style="flex: 1" onmousedown="event.preventDefault();" onclick="SceneManager._scene.onBackspaceClick()">${T('AltNameInput.ui.backspace')}</button>
                 </div>
             </div>
 
@@ -1446,7 +1446,7 @@ Scene_Name.prototype.createHtmlNameInput = function() {
             <div class="name-right-page">
                 <!-- Identity Sync Card -->
                 <div class="actor-sync-card">
-                    <div class="actor-portrait-frame" style="background-image: url('img/busts/${faceName}.png'); background-size: 400% 200%; background-position: ${xPercent}% ${yPercent}%;"></div>
+                    <div class="actor-portrait-frame" style="background-image: url('img/busts/${faceName}.png'); background-size: 400% 200%; background-position: ${xPercent}% ${yPercent}%"></div>
                     <div class="actor-info-box">
                         <h3 class="actor-name-title">${actor.name()}</h3>
                         <span class="actor-class-subtitle">${className}</span>
@@ -1455,8 +1455,8 @@ Scene_Name.prototype.createHtmlNameInput = function() {
                 </div>
 
                 <!-- Current Input field -->
-                <div style="margin-top: 10px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: bold; text-transform: uppercase; color: #8b5a2b; letter-spacing: 0.5px;">
+                <div style="margin-top: 10px">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.878rem; font-weight: bold; text-transform: uppercase; color: #8b5a2b; letter-spacing: 0.5px">
                         <span>${T('AltNameInput.ui.synchronizeName')}</span>
                         <span id="name-character-counter">0 / ${maxLength}</span>
                     </div>
@@ -1473,11 +1473,11 @@ Scene_Name.prototype.createHtmlNameInput = function() {
                 <div id="spelling-buffer-badge-container"></div>
 
                 <!-- Hidden input listener -->
-                <input type="text" id="name-hardware-input" style="position: absolute; left: -9999px; opacity: 0; width: 1px; height: 1px;" autocomplete="off" spellcheck="false" maxlength="${maxLength}">
+                <input type="text" id="name-hardware-input" style="position: absolute; left: -9999px; opacity: 0; width: 1px; height: 1px" autocomplete="off" spellcheck="false" maxlength="${maxLength}">
 
                 <!-- Language Toggles -->
                 <div>
-                    <div class="inspect-section-title" style="font-family: 'Lora', serif; font-size: 0.8rem; margin: 0 0 6px 0;">${T('AltNameInput.ui.translationLayers')}</div>
+                    <div class="inspect-section-title" style="font-family: 'Lora', serif; font-size: 0.96rem; margin: 0 0 6px 0">${T('AltNameInput.ui.translationLayers')}</div>
                     <div class="lang-grid" id="language-toggles-grid">
                         <!-- Loaded dynamically via refresh -->
                     </div>
@@ -1485,16 +1485,25 @@ Scene_Name.prototype.createHtmlNameInput = function() {
 
                 <!-- Additional editing controls -->
                 <div>
-                    <div class="inspect-section-title" style="font-family: 'Lora', serif; font-size: 0.8rem; margin: 0 0 6px 0;">${T('AltNameInput.ui.modifiersNavigation')}</div>
+                    <div class="inspect-section-title" style="font-family: 'Lora', serif; font-size: 0.96rem; margin: 0 0 6px 0">${T('AltNameInput.ui.modifiersNavigation')}</div>
                     <div class="edit-grid" id="editing-controls-grid">
                         <!-- Loaded dynamically via refresh -->
                     </div>
                 </div>
 
-                <!-- Actions confirmation panel -->
-                <div class="action-panel">
-                    <button class="action-btn action-btn-abort" id="action-btn-abort" onmousedown="event.preventDefault();" onclick="SceneManager._scene.onInputCancel()">${T('AltNameInput.ui.abort')}</button>
-                    <button class="action-btn action-btn-seal" id="action-btn-seal" onmousedown="event.preventDefault();" onclick="SceneManager._scene.onInputOk()">${T('AltNameInput.ui.continue')}</button>
+                <!-- Actions confirmation panel. Naming is a step of character
+                     creation like any other, so it ends with the same bar the
+                     other steps do: the shared three-slot cc-button-panel, Back
+                     hard left and Continue hard right, in cc-btn-treaty rather
+                     than this screen's own .action-btn. -->
+                <div class="cc-button-panel cc-nav action-panel">
+                    <div class="cc-nav-slot cc-nav-back">
+                        <button class="cc-btn-treaty" id="action-btn-abort" onmousedown="event.preventDefault();" onclick="SceneManager._scene.onInputCancel()">${T('AltNameInput.ui.abort')}</button>
+                    </div>
+                    <div class="cc-nav-slot cc-nav-mid"></div>
+                    <div class="cc-nav-slot cc-nav-next">
+                        <button class="cc-btn-treaty confirm" id="action-btn-seal" onmousedown="event.preventDefault();" onclick="SceneManager._scene.onInputOk()">${T('AltNameInput.ui.continue')}</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1742,11 +1751,13 @@ Scene_Name.prototype.refreshHtmlNameInput = function() {
         });
     }
 
-    // 6. Highlight actions (Abort & Seal)
+    // 6. Highlight actions (Abort & Continue). These are .cc-btn-treaty buttons,
+    // whose cursor state is .highlighted , the same class every other creation
+    // screen marks the focused button with.
     const btnAbort = document.getElementById("action-btn-abort");
     const btnSeal = document.getElementById("action-btn-seal");
-    if (btnAbort) btnAbort.classList.toggle("selected", activeSection === "actions" && this._actionFocusIndex === 0);
-    if (btnSeal) btnSeal.classList.toggle("selected", activeSection === "actions" && this._actionFocusIndex === 1);
+    if (btnAbort) btnAbort.classList.toggle("highlighted", activeSection === "actions" && this._actionFocusIndex === 0);
+    if (btnSeal) btnSeal.classList.toggle("highlighted", activeSection === "actions" && this._actionFocusIndex === 1);
 };
 
 //-----------------------------------------------------------------------------

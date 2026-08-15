@@ -162,7 +162,7 @@
             }
             const colorId = parseInt(match[1]);
             const hexColor = colorMap[colorId] || "#2b1207";
-            html += `<span style="color: ${hexColor}; font-weight: ${colorId === 0 ? 'normal' : 'bold'};">`;
+            html += `<span style="color: ${hexColor}; font-weight: ${colorId === 0 ? 'normal' : 'bold'}">`;
             openSpan = true;
             lastIndex = regex.lastIndex;
         }
@@ -419,11 +419,11 @@
         }
 
         leftPage.innerHTML = `
-            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;">
-              <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; left: 0; font-family: 'Lora', serif; font-size: 0.8rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: fit-content; line-height: normal; user-select: none;">
+            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
+              <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
                 ${backBtnText}
               </div>
-              <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${tCodex}</h2>
+              <h2 class="title" style="border: none; margin: 0; padding: 0">${tCodex}</h2>
             </div>
             ${rightHTML}
         `;
@@ -468,7 +468,7 @@
             }
 
             rightPage.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;"></div>
+                <div style="display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%"></div>
                 <div class="tabs-bar">
                     ${tabsHTML}
                 </div>

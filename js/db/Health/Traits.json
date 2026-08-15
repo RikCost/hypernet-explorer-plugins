@@ -2,6 +2,7 @@
   {
     "id": 1,
     "icon": 259,
+    "cost": 3,
     "positive": {
       "hp": 50,
       "def": 1
@@ -28,6 +29,7 @@
   {
     "id": 2,
     "icon": 298,
+    "cost": 1,
     "positive": {
       "agi": 2,
       "eva": 1
@@ -52,6 +54,7 @@
   {
     "id": 3,
     "icon": 211,
+    "cost": -3,
     "positive": {
       "agi": 1,
       "luk": 5
@@ -73,6 +76,7 @@
   {
     "id": 4,
     "icon": 115,
+    "cost": 2,
     "positive": {
       "atk": 1,
       "agi": 1
@@ -99,6 +103,7 @@
   {
     "id": 5,
     "icon": 9,
+    "cost": -1,
     "positive": {
       "eva": 2,
       "luk": 1
@@ -123,6 +128,7 @@
   {
     "id": 6,
     "icon": 30,
+    "cost": 5,
     "positive": {
       "atk": 1,
       "agi": 8,
@@ -152,6 +158,7 @@
   {
     "id": 7,
     "icon": 186,
+    "cost": 3,
     "positive": {
       "mat": 2,
       "mp": 4,
@@ -179,6 +186,7 @@
   {
     "id": 8,
     "icon": 182,
+    "cost": 3,
     "positive": {
       "luk": 2,
       "eva": 5
@@ -203,6 +211,7 @@
   {
     "id": 9,
     "icon": 11,
+    "cost": 3,
     "positive": {
       "mp": 30,
       "mdf": 1
@@ -230,6 +239,7 @@
   {
     "id": 10,
     "icon": 5,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "mat": 1
@@ -258,6 +268,7 @@
   {
     "id": 11,
     "icon": 128,
+    "cost": 2,
     "positive": {
       "def": 2,
       "mdf": 1,
@@ -284,6 +295,7 @@
   {
     "id": 12,
     "icon": 102,
+    "cost": 4,
     "positive": {
       "atk": 1,
       "eva": 1,
@@ -316,6 +328,7 @@
   {
     "id": 13,
     "icon": 151,
+    "cost": -2,
     "positive": {
       "luk": 1
     },
@@ -338,6 +351,7 @@
   {
     "id": 14,
     "icon": 132,
+    "cost": 1,
     "positive": {
       "atk": 1,
       "def": 1
@@ -362,6 +376,7 @@
   {
     "id": 67,
     "icon": 67,
+    "cost": 1,
     "positive": {
       "agi": 2,
       "mp": 2
@@ -383,6 +398,7 @@
   {
     "id": 16,
     "icon": 246,
+    "cost": 2,
     "positive": {
       "luk": 3,
       "mat": 1,
@@ -413,6 +429,7 @@
   {
     "id": 17,
     "icon": 276,
+    "cost": 1,
     "positive": {
       "mdf": 2,
       "mp": 3,
@@ -437,6 +454,7 @@
   {
     "id": 18,
     "icon": 256,
+    "cost": 1,
     "positive": {
       "mdf": 1,
       "mp": 2,
@@ -461,6 +479,7 @@
   {
     "id": 247,
     "icon": 222,
+    "cost": -1,
     "positive": {
       "mat": 2,
       "luk": 1,
@@ -487,6 +506,7 @@
   {
     "id": 20,
     "icon": 294,
+    "cost": 4,
     "positive": {
       "hp": 30,
       "atk": 2,
@@ -519,6 +539,7 @@
   {
     "id": 21,
     "icon": 8,
+    "cost": 1,
     "positive": {
       "agi": 2,
       "eva": 1,
@@ -547,6 +568,7 @@
   {
     "id": 22,
     "icon": 275,
+    "cost": 1,
     "positive": {
       "atk": 1,
       "def": 1,
@@ -580,6 +602,7 @@
   {
     "id": 23,
     "icon": 81,
+    "cost": 2,
     "positive": {
       "mdf": 3,
       "def": 1
@@ -607,6 +630,7 @@
   {
     "id": 24,
     "icon": 73,
+    "cost": 2,
     "positive": {
       "atk": 2,
       "agi": 2,
@@ -637,6 +661,7 @@
   {
     "id": 25,
     "icon": 84,
+    "cost": 2,
     "positive": {
       "mdf": 2,
       "def": 2,
@@ -669,6 +694,7 @@
   {
     "id": 26,
     "icon": 64,
+    "cost": 4,
     "positive": {
       "mat": 3,
       "atk": 1
@@ -701,6 +727,7 @@
   {
     "id": 27,
     "icon": 210,
+    "cost": 1,
     "positive": {
       "luk": 2,
       "def": 1,
@@ -731,6 +758,7 @@
   {
     "id": 28,
     "icon": 235,
+    "cost": 2,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -757,6 +785,7 @@
   {
     "id": 29,
     "icon": 10,
+    "cost": 2,
     "positive": {
       "luk": 2,
       "eva": 2,
@@ -785,6 +814,7 @@
   {
     "id": 30,
     "icon": 305,
+    "cost": 2,
     "positive": {
       "mat": 2,
       "def": 1,
@@ -816,6 +846,7 @@
   {
     "id": 31,
     "icon": 345,
+    "cost": 2,
     "positive": {
       "def": 3,
       "hp": 20,
@@ -840,6 +871,7 @@
   {
     "id": 32,
     "icon": 336,
+    "cost": 2,
     "positive": {
       "atk": 2,
       "mat": 2,
@@ -869,6 +901,7 @@
   {
     "id": 33,
     "icon": 312,
+    "cost": 2,
     "positive": {
       "mdf": 3,
       "mp": 5,
@@ -900,6 +933,7 @@
   {
     "id": 34,
     "icon": 83,
+    "cost": 1,
     "positive": {
       "hp": 15,
       "def": 2,
@@ -928,6 +962,7 @@
   {
     "id": 35,
     "icon": 398,
+    "cost": 3,
     "positive": {
       "mat": 3,
       "agi": 1,
@@ -958,6 +993,7 @@
   {
     "id": 36,
     "icon": 160,
+    "cost": 2,
     "positive": {
       "luk": 4,
       "eva": 1
@@ -987,6 +1023,7 @@
   {
     "id": 37,
     "icon": 281,
+    "cost": 2,
     "positive": {
       "mat": 2,
       "mdf": 2,
@@ -1013,6 +1050,7 @@
   {
     "id": 38,
     "icon": 71,
+    "cost": 2,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -1038,6 +1076,7 @@
   {
     "id": 39,
     "icon": 243,
+    "cost": 1,
     "positive": {
       "hp": 15,
       "def": 1,
@@ -1065,6 +1104,7 @@
   {
     "id": 40,
     "icon": 220,
+    "cost": 2,
     "positive": {
       "atk": 1,
       "mat": 1,
@@ -1094,6 +1134,7 @@
   {
     "id": 41,
     "icon": 183,
+    "cost": 3,
     "positive": {
       "mat": 3,
       "mdf": 2,
@@ -1122,6 +1163,7 @@
   {
     "id": 42,
     "icon": 224,
+    "cost": -1,
     "positive": {
       "def": 1,
       "hp": 5
@@ -1143,6 +1185,7 @@
   {
     "id": 43,
     "icon": 143,
+    "cost": 3,
     "positive": {
       "atk": 2,
       "agi": 1,
@@ -1167,6 +1210,7 @@
   {
     "id": 44,
     "icon": 3,
+    "cost": 1,
     "positive": {
       "mdf": 5,
       "def": 2,
@@ -1195,6 +1239,7 @@
   {
     "id": 45,
     "icon": 146,
+    "cost": 2,
     "positive": {
       "def": 3,
       "hp": 15,
@@ -1218,6 +1263,7 @@
   {
     "id": 46,
     "icon": 214,
+    "cost": 1,
     "positive": {
       "def": 2,
       "mdf": 2,
@@ -1242,6 +1288,7 @@
   {
     "id": 47,
     "icon": 353,
+    "cost": 3,
     "positive": {
       "atk": 3,
       "mat": 2,
@@ -1272,6 +1319,7 @@
   {
     "id": 48,
     "icon": 2,
+    "cost": 1,
     "positive": {
       "eva": 3,
       "agi": 2,
@@ -1299,6 +1347,7 @@
   {
     "id": 49,
     "icon": 209,
+    "cost": 3,
     "positive": {
       "luk": 4,
       "agi": 2,
@@ -1329,6 +1378,7 @@
   {
     "id": 50,
     "icon": 138,
+    "cost": 3,
     "positive": {
       "mp": 10,
       "mdf": 3,
@@ -1361,6 +1411,7 @@
   {
     "id": 51,
     "icon": 225,
+    "cost": -1,
     "positive": {
       "def": 2,
       "hp": 10,
@@ -1384,6 +1435,7 @@
   {
     "id": 52,
     "icon": 80,
+    "cost": 2,
     "positive": {
       "mat": 2,
       "luk": 2,
@@ -1410,6 +1462,7 @@
   {
     "id": 53,
     "icon": 351,
+    "cost": 1,
     "positive": {
       "atk": 4,
       "hp": 20,
@@ -1439,6 +1492,7 @@
   {
     "id": 54,
     "icon": 412,
+    "cost": 3,
     "positive": {
       "eva": 4,
       "agi": 3,
@@ -1468,6 +1522,7 @@
   {
     "id": 55,
     "icon": 125,
+    "cost": 1,
     "positive": {
       "def": 2,
       "atk": 2,
@@ -1494,6 +1549,7 @@
   {
     "id": 56,
     "icon": 176,
+    "cost": 1,
     "positive": {
       "mdf": 3,
       "def": 2,
@@ -1519,6 +1575,7 @@
   {
     "id": 57,
     "icon": 189,
+    "cost": 2,
     "positive": {
       "mat": 3,
       "mp": 5,
@@ -1547,6 +1604,7 @@
   {
     "id": 58,
     "icon": 151,
+    "cost": -1,
     "positive": {
       "mp": 3,
       "luk": 1
@@ -1571,6 +1629,7 @@
   {
     "id": 59,
     "icon": 306,
+    "cost": 1,
     "positive": {
       "def": 2,
       "hp": 10,
@@ -1594,6 +1653,7 @@
   {
     "id": 60,
     "icon": 145,
+    "cost": 1,
     "positive": {
       "atk": 3,
       "mat": 3,
@@ -1623,6 +1683,7 @@
   {
     "id": 61,
     "icon": 88,
+    "cost": -1,
     "positive": {
       "mp": 4,
       "mat": 2,
@@ -1646,6 +1707,7 @@
   {
     "id": 62,
     "icon": 392,
+    "cost": 3,
     "positive": {
       "hp": 40,
       "atk": 3,
@@ -1674,6 +1736,7 @@
   {
     "id": 63,
     "icon": 216,
+    "cost": 1,
     "positive": {
       "eva": 3,
       "agi": 2,
@@ -1700,6 +1763,7 @@
   {
     "id": 64,
     "icon": 162,
+    "cost": -1,
     "positive": {
       "mat": 2,
       "mp": 5,
@@ -1726,6 +1790,7 @@
   {
     "id": 65,
     "icon": 378,
+    "cost": 1,
     "positive": {
       "agi": 3,
       "eva": 2,
@@ -1751,6 +1816,7 @@
   {
     "id": 66,
     "icon": 342,
+    "cost": 3,
     "positive": {
       "agi": 3,
       "eva": 3,
@@ -1776,6 +1842,7 @@
   {
     "id": 19,
     "icon": 142,
+    "cost": 2,
     "positive": {
       "agi": 2,
       "atk": 1,
@@ -1800,6 +1867,7 @@
   {
     "id": 68,
     "icon": 291,
+    "cost": 1,
     "positive": {
       "def": 3,
       "hp": 15,
@@ -1823,6 +1891,7 @@
   {
     "id": 69,
     "icon": 169,
+    "cost": -1,
     "positive": {
       "mdf": 3,
       "mp": 4,
@@ -1849,6 +1918,7 @@
   {
     "id": 70,
     "icon": 158,
+    "cost": 2,
     "positive": {
       "luk": 3,
       "eva": 2,
@@ -1873,6 +1943,7 @@
   {
     "id": 71,
     "icon": 297,
+    "cost": 4,
     "positive": {
       "def": 2,
       "eva": 2,
@@ -1900,6 +1971,7 @@
   {
     "id": 72,
     "icon": 168,
+    "cost": 1,
     "positive": {
       "def": 2,
       "mdf": 2,
@@ -1926,6 +1998,7 @@
   {
     "id": 73,
     "icon": 194,
+    "cost": 1,
     "positive": {
       "agi": 4,
       "eva": 3
@@ -1950,6 +2023,7 @@
   {
     "id": 74,
     "icon": 104,
+    "cost": 2,
     "positive": {
       "atk": 3,
       "def": 3,
@@ -1978,6 +2052,7 @@
   {
     "id": 75,
     "icon": 196,
+    "cost": 1,
     "positive": {
       "mat": 5,
       "mp": 10,
@@ -2004,6 +2079,7 @@
   {
     "id": 76,
     "icon": 69,
+    "cost": -1,
     "positive": {
       "mdf": 2,
       "mp": 3,
@@ -2030,6 +2106,7 @@
   {
     "id": 77,
     "icon": 66,
+    "cost": 3,
     "positive": {
       "agi": 3,
       "eva": 2,
@@ -2058,6 +2135,7 @@
   {
     "id": 78,
     "icon": 247,
+    "cost": 2,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -2087,6 +2165,7 @@
   {
     "id": 79,
     "icon": 192,
+    "cost": 1,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -2113,6 +2192,7 @@
   {
     "id": 80,
     "icon": 232,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "def": 1,
@@ -2138,6 +2218,7 @@
   {
     "id": 81,
     "icon": 7,
+    "cost": 3,
     "positive": {
       "luk": 4,
       "eva": 2,
@@ -2165,6 +2246,7 @@
   {
     "id": 82,
     "icon": 248,
+    "cost": 2,
     "positive": {
       "luk": 2,
       "eva": 2,
@@ -2192,6 +2274,7 @@
   {
     "id": 83,
     "icon": 234,
+    "cost": 3,
     "positive": {
       "mat": 2,
       "mdf": 2,
@@ -2219,6 +2302,7 @@
   {
     "id": 84,
     "icon": 6,
+    "cost": 1,
     "positive": {
       "mdf": 3,
       "def": 2,
@@ -2246,6 +2330,7 @@
   {
     "id": 85,
     "icon": 411,
+    "cost": 2,
     "positive": {
       "atk": 2,
       "mat": 2,
@@ -2271,6 +2356,7 @@
   {
     "id": 86,
     "icon": 74,
+    "cost": -1,
     "positive": {
       "hp": 20,
       "def": 2,
@@ -2298,6 +2384,7 @@
   {
     "id": 87,
     "icon": 191,
+    "cost": 1,
     "positive": {
       "luk": 4,
       "agi": 1
@@ -2326,6 +2413,7 @@
   {
     "id": 88,
     "icon": 314,
+    "cost": 1,
     "positive": {
       "mdf": 3,
       "mp": 5,
@@ -2351,6 +2439,7 @@
   {
     "id": 89,
     "icon": 334,
+    "cost": 3,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -2379,6 +2468,7 @@
   {
     "id": 90,
     "icon": 340,
+    "cost": 2,
     "positive": {
       "atk": 3,
       "agi": 2,
@@ -2407,6 +2497,7 @@
   {
     "id": 91,
     "icon": 406,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "mat": 2,
@@ -2433,6 +2524,7 @@
   {
     "id": 92,
     "icon": 135,
+    "cost": 1,
     "positive": {
       "mdf": 3,
       "mp": 5,
@@ -2459,6 +2551,7 @@
   {
     "id": 93,
     "icon": 258,
+    "cost": 2,
     "positive": {
       "hp": 25,
       "def": 2,
@@ -2489,6 +2582,7 @@
   {
     "id": 94,
     "icon": 154,
+    "cost": 1,
     "positive": {
       "luk": 3,
       "eva": 2,
@@ -2518,6 +2612,7 @@
   {
     "id": 95,
     "icon": 161,
+    "cost": 4,
     "positive": {
       "def": 4,
       "mdf": 3,
@@ -2546,6 +2641,7 @@
   {
     "id": 96,
     "icon": 100,
+    "cost": 3,
     "positive": {
       "agi": 2,
       "luk": 3,
@@ -2574,6 +2670,7 @@
   {
     "id": 97,
     "icon": 205,
+    "cost": 3,
     "positive": {
       "hp": 20,
       "def": 2,
@@ -2599,6 +2696,7 @@
   {
     "id": 98,
     "icon": 193,
+    "cost": 4,
     "positive": {
       "mat": 3,
       "mdf": 2,
@@ -2628,6 +2726,7 @@
   {
     "id": 99,
     "icon": 79,
+    "cost": 2,
     "positive": {
       "atk": 3,
       "mat": 3,
@@ -2656,6 +2755,7 @@
   {
     "id": 100,
     "icon": 221,
+    "cost": 2,
     "positive": {
       "luk": 5,
       "mdf": 3,
@@ -2684,6 +2784,7 @@
   {
     "id": 101,
     "icon": 226,
+    "cost": 2,
     "positive": {
       "agi": 2,
       "eva": 1,
@@ -2714,6 +2815,7 @@
   {
     "id": 102,
     "icon": 167,
+    "cost": -1,
     "positive": {
       "agi": 1,
       "eva": 1,
@@ -2745,6 +2847,7 @@
   {
     "id": 103,
     "icon": 182,
+    "cost": 1,
     "positive": {
       "luk": 4,
       "agi": 1
@@ -2777,6 +2880,7 @@
   {
     "id": 104,
     "icon": 179,
+    "cost": -2,
     "positive": {
       "mp": 5,
       "mat": 2
@@ -2807,6 +2911,7 @@
   {
     "id": 105,
     "icon": 316,
+    "cost": -3,
     "positive": {
       "agi": 2,
       "eva": 2
@@ -2835,6 +2940,7 @@
   {
     "id": 106,
     "icon": 269,
+    "cost": -2,
     "positive": {
       "hp": 20,
       "def": 2
@@ -2863,6 +2969,7 @@
   {
     "id": 107,
     "icon": 212,
+    "cost": -1,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -2889,6 +2996,7 @@
   {
     "id": 108,
     "icon": 1,
+    "cost": 1,
     "positive": {
       "eva": 3,
       "def": 2,
@@ -2915,6 +3023,7 @@
   {
     "id": 109,
     "icon": 296,
+    "cost": 1,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -2938,6 +3047,7 @@
   {
     "id": 110,
     "icon": 215,
+    "cost": 1,
     "positive": {
       "eva": 3,
       "agi": 2
@@ -2960,6 +3070,7 @@
   {
     "id": 111,
     "icon": 298,
+    "cost": 1,
     "positive": {
       "eva": 2,
       "agi": 2,
@@ -2983,6 +3094,7 @@
   {
     "id": 112,
     "icon": 72,
+    "cost": 1,
     "positive": {
       "eva": 3,
       "agi": 2,
@@ -3008,6 +3120,7 @@
   {
     "id": 113,
     "icon": 261,
+    "cost": 1,
     "positive": {
       "eva": 2,
       "mdf": 2,
@@ -3031,6 +3144,7 @@
   {
     "id": 114,
     "icon": 74,
+    "cost": 1,
     "positive": {
       "def": 2,
       "mdf": 2,
@@ -3057,6 +3171,7 @@
   {
     "id": 115,
     "icon": 130,
+    "cost": -1,
     "positive": {
       "def": 2,
       "luk": 2,
@@ -3082,6 +3197,7 @@
   {
     "id": 116,
     "icon": 129,
+    "cost": 4,
     "positive": {
       "mdf": 4,
       "mp": 6,
@@ -3113,6 +3229,7 @@
   {
     "id": 117,
     "icon": 229,
+    "cost": 1,
     "positive": {
       "mat": 3,
       "luk": 2,
@@ -3139,6 +3256,7 @@
   {
     "id": 118,
     "icon": 231,
+    "cost": 2,
     "positive": {
       "atk": 2,
       "mat": 2,
@@ -3170,6 +3288,7 @@
   {
     "id": 119,
     "icon": 399,
+    "cost": 3,
     "positive": {
       "agi": 2,
       "def": 2,
@@ -3200,6 +3319,7 @@
   {
     "id": 120,
     "icon": 282,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "agi": 1,
@@ -3228,6 +3348,7 @@
   {
     "id": 121,
     "icon": 106,
+    "cost": 5,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -3256,6 +3377,7 @@
   {
     "id": 122,
     "icon": 307,
+    "cost": 3,
     "positive": {
       "luk": 5,
       "eva": 3,
@@ -3284,6 +3406,7 @@
   {
     "id": 123,
     "icon": 139,
+    "cost": 1,
     "positive": {
       "luk": 3,
       "mp": 4,
@@ -3313,6 +3436,7 @@
   {
     "id": 124,
     "icon": 140,
+    "cost": 4,
     "positive": {
       "agi": 3,
       "eva": 3,
@@ -3344,6 +3468,7 @@
   {
     "id": 125,
     "icon": 149,
+    "cost": 2,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -3372,6 +3497,7 @@
   {
     "id": 126,
     "icon": 126,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "agi": 2,
@@ -3397,6 +3523,7 @@
   {
     "id": 127,
     "icon": 157,
+    "cost": 1,
     "positive": {
       "luk": 4,
       "mp": 4,
@@ -3425,6 +3552,7 @@
   {
     "id": 128,
     "icon": 197,
+    "cost": 2,
     "positive": {
       "luk": 3,
       "eva": 2,
@@ -3451,6 +3579,7 @@
   {
     "id": 129,
     "icon": 110,
+    "cost": 1,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -3475,6 +3604,7 @@
   {
     "id": 130,
     "icon": 111,
+    "cost": 1,
     "positive": {
       "def": 3,
       "hp": 15,
@@ -3501,6 +3631,7 @@
   {
     "id": 131,
     "icon": 300,
+    "cost": 1,
     "positive": {
       "luk": 4,
       "mp": 4,
@@ -3529,6 +3660,7 @@
   {
     "id": 132,
     "icon": 188,
+    "cost": 3,
     "positive": {
       "mat": 4,
       "mp": 6,
@@ -3560,6 +3692,7 @@
   {
     "id": 133,
     "icon": 187,
+    "cost": 2,
     "positive": {
       "luk": 4,
       "agi": 1,
@@ -3587,6 +3720,7 @@
   {
     "id": 134,
     "icon": 338,
+    "cost": 4,
     "positive": {
       "agi": 3,
       "eva": 3,
@@ -3618,6 +3752,7 @@
   {
     "id": 135,
     "icon": 230,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "def": 2,
@@ -3646,6 +3781,7 @@
   {
     "id": 136,
     "icon": 131,
+    "cost": 5,
     "positive": {
       "atk": 3,
       "def": 3,
@@ -3677,6 +3813,7 @@
   {
     "id": 137,
     "icon": 217,
+    "cost": 3,
     "positive": {
       "hp": 25,
       "def": 2,
@@ -3706,6 +3843,7 @@
   {
     "id": 138,
     "icon": 181,
+    "cost": 4,
     "positive": {
       "mat": 2,
       "mp": 4,
@@ -3736,6 +3874,7 @@
   {
     "id": 139,
     "icon": 178,
+    "cost": 4,
     "positive": {
       "mat": 4,
       "mp": 5,
@@ -3768,6 +3907,7 @@
   {
     "id": 140,
     "icon": 190,
+    "cost": 4,
     "positive": {
       "luk": 3,
       "agi": 2,
@@ -3797,6 +3937,7 @@
   {
     "id": 141,
     "icon": 108,
+    "cost": 4,
     "positive": {
       "atk": 3,
       "def": 3,
@@ -3825,6 +3966,7 @@
   {
     "id": 142,
     "icon": 195,
+    "cost": 5,
     "positive": {
       "agi": 4,
       "eva": 3,
@@ -3857,6 +3999,7 @@
   {
     "id": 143,
     "icon": 199,
+    "cost": 3,
     "positive": {
       "luk": 3,
       "eva": 2,
@@ -3886,6 +4029,7 @@
   {
     "id": 144,
     "icon": 148,
+    "cost": 2,
     "positive": {
       "luk": 4,
       "eva": 2,
@@ -3912,6 +4056,7 @@
   {
     "id": 145,
     "icon": 117,
+    "cost": 2,
     "positive": {
       "atk": 2,
       "def": 3,
@@ -3936,6 +4081,7 @@
   {
     "id": 146,
     "icon": 379,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "def": 1,
@@ -3962,6 +4108,7 @@
   {
     "id": 147,
     "icon": 326,
+    "cost": 2,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -3987,6 +4134,7 @@
   {
     "id": 148,
     "icon": 143,
+    "cost": 3,
     "positive": {
       "atk": 3,
       "def": 2,
@@ -4015,6 +4163,7 @@
   {
     "id": 149,
     "icon": 16,
+    "cost": -1,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -4041,6 +4190,7 @@
   {
     "id": 150,
     "icon": 341,
+    "cost": 2,
     "positive": {
       "agi": 1,
       "eva": 1,
@@ -4066,6 +4216,7 @@
   {
     "id": 151,
     "icon": 327,
+    "cost": 4,
     "positive": {
       "agi": 4,
       "eva": 3
@@ -4092,6 +4243,7 @@
   {
     "id": 152,
     "icon": 97,
+    "cost": 4,
     "positive": {
       "atk": 3,
       "eva": 2,
@@ -4119,6 +4271,7 @@
   {
     "id": 153,
     "icon": 388,
+    "cost": 4,
     "positive": {
       "atk": 3,
       "def": 2,
@@ -4148,6 +4301,7 @@
   {
     "id": 154,
     "icon": 370,
+    "cost": 3,
     "positive": {
       "atk": 2,
       "agi": 2,
@@ -4175,6 +4329,7 @@
   {
     "id": 155,
     "icon": 124,
+    "cost": 3,
     "positive": {
       "def": 4,
       "mdf": 2,
@@ -4202,6 +4357,7 @@
   {
     "id": 156,
     "icon": 96,
+    "cost": 4,
     "positive": {
       "atk": 4,
       "agi": 3,
@@ -4231,6 +4387,7 @@
   {
     "id": 157,
     "icon": 346,
+    "cost": 1,
     "positive": {
       "atk": 5,
       "hp": 25
@@ -4261,6 +4418,7 @@
   {
     "id": 158,
     "icon": 107,
+    "cost": 4,
     "positive": {
       "atk": 2,
       "agi": 2,
@@ -4288,6 +4446,7 @@
   {
     "id": 159,
     "icon": 350,
+    "cost": 5,
     "positive": {
       "atk": 3,
       "agi": 3,
@@ -4313,6 +4472,7 @@
   {
     "id": 160,
     "icon": 89,
+    "cost": 1,
     "positive": {
       "luk": 4,
       "mp": 4,
@@ -4340,6 +4500,7 @@
   {
     "id": 161,
     "icon": 85,
+    "cost": 2,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -4365,6 +4526,7 @@
   {
     "id": 162,
     "icon": 241,
+    "cost": 3,
     "positive": {
       "atk": 3,
       "mat": 2,
@@ -4393,6 +4555,7 @@
   {
     "id": 163,
     "icon": 87,
+    "cost": 1,
     "positive": {
       "mp": 5,
       "mdf": 3,
@@ -4419,6 +4582,7 @@
   {
     "id": 164,
     "icon": 332,
+    "cost": 2,
     "positive": {
       "def": 2,
       "mat": 2,
@@ -4444,6 +4608,7 @@
   {
     "id": 165,
     "icon": 84,
+    "cost": 1,
     "positive": {
       "luk": 3,
       "mp": 4,
@@ -4470,6 +4635,7 @@
   {
     "id": 166,
     "icon": 208,
+    "cost": 3,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -4495,6 +4661,7 @@
   {
     "id": 167,
     "icon": 119,
+    "cost": 3,
     "positive": {
       "atk": 3,
       "mat": 2,
@@ -4522,6 +4689,7 @@
   {
     "id": 168,
     "icon": 144,
+    "cost": 1,
     "positive": {
       "mdf": 3,
       "mp": 5,
@@ -4547,6 +4715,7 @@
   {
     "id": 169,
     "icon": 164,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "agi": 2
@@ -4572,6 +4741,7 @@
   {
     "id": 170,
     "icon": 177,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "agi": 2,
@@ -4598,6 +4768,7 @@
   {
     "id": 171,
     "icon": 70,
+    "cost": 1,
     "positive": {
       "mdf": 3,
       "mp": 4,
@@ -4626,6 +4797,7 @@
   {
     "id": 172,
     "icon": 385,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "def": 2,
@@ -4652,6 +4824,7 @@
   {
     "id": 173,
     "icon": 203,
+    "cost": 2,
     "positive": {
       "luk": 5,
       "mp": 4,
@@ -4681,6 +4854,7 @@
   {
     "id": 174,
     "icon": 123,
+    "cost": 1,
     "positive": {
       "atk": 3,
       "mat": 2,
@@ -4707,6 +4881,7 @@
   {
     "id": 175,
     "icon": 407,
+    "cost": 3,
     "positive": {
       "eva": 4,
       "agi": 2,
@@ -4733,6 +4908,7 @@
   {
     "id": 176,
     "icon": 218,
+    "cost": 2,
     "positive": {
       "agi": 3,
       "eva": 3,
@@ -4759,6 +4935,7 @@
   {
     "id": 177,
     "icon": 320,
+    "cost": 3,
     "positive": {
       "atk": 2,
       "def": 2,
@@ -4789,6 +4966,7 @@
   {
     "id": 178,
     "icon": 321,
+    "cost": 1,
     "positive": {
       "atk": 2,
       "agi": 2,
@@ -4814,6 +4992,7 @@
   {
     "id": 179,
     "icon": 65,
+    "cost": 3,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -4840,6 +5019,7 @@
   {
     "id": 180,
     "icon": 184,
+    "cost": 2,
     "positive": {
       "agi": 3,
       "eva": 2,
@@ -4864,6 +5044,7 @@
   {
     "id": 181,
     "icon": 166,
+    "cost": 3,
     "positive": {
       "hp": 20,
       "def": 2,
@@ -4890,6 +5071,7 @@
   {
     "id": 182,
     "icon": 315,
+    "cost": 2,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -4916,6 +5098,7 @@
   {
     "id": 183,
     "icon": 163,
+    "cost": 3,
     "positive": {
       "def": 3,
       "hp": 15,
@@ -4942,6 +5125,7 @@
   {
     "id": 184,
     "icon": 289,
+    "cost": 3,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -4971,6 +5155,7 @@
   {
     "id": 185,
     "icon": 260,
+    "cost": 2,
     "positive": {
       "luk": 3,
       "mp": 3,
@@ -4998,6 +5183,7 @@
   {
     "id": 186,
     "icon": 293,
+    "cost": 3,
     "positive": {
       "luk": 4,
       "eva": 2,
@@ -5024,6 +5210,7 @@
   {
     "id": 187,
     "icon": 288,
+    "cost": 2,
     "positive": {
       "mdf": 3,
       "mp": 5,
@@ -5049,6 +5236,7 @@
   {
     "id": 188,
     "icon": 273,
+    "cost": 3,
     "positive": {
       "agi": 3,
       "eva": 2,
@@ -5078,6 +5266,7 @@
   {
     "id": 189,
     "icon": 292,
+    "cost": 3,
     "positive": {
       "atk": 3,
       "agi": 3,
@@ -5109,6 +5298,7 @@
   {
     "id": 190,
     "icon": 101,
+    "cost": 3,
     "positive": {
       "mat": 5,
       "mp": 10,
@@ -5137,6 +5327,7 @@
   {
     "id": 191,
     "icon": 17,
+    "cost": 2,
     "positive": {
       "atk": 4,
       "def": 4,
@@ -5166,6 +5357,7 @@
   {
     "id": 192,
     "icon": 118,
+    "cost": 2,
     "positive": {
       "mdf": 4,
       "def": 2,
@@ -5189,6 +5381,7 @@
   {
     "id": 193,
     "icon": 133,
+    "cost": 1,
     "positive": {
       "mat": 3,
       "mp": 4,
@@ -5216,6 +5409,7 @@
   {
     "id": 194,
     "icon": 71,
+    "cost": -1,
     "positive": {},
     "negative": {},
     "skills": [
@@ -5236,6 +5430,7 @@
   {
     "id": 195,
     "icon": 105,
+    "cost": 1,
     "positive": {},
     "negative": {},
     "skills": [
@@ -5257,6 +5452,7 @@
   {
     "id": 196,
     "icon": 308,
+    "cost": 4,
     "positive": {
       "luk": 5,
       "eva": 3,
@@ -5287,6 +5483,7 @@
   {
     "id": 197,
     "icon": 204,
+    "cost": 2,
     "positive": {
       "atk": 2,
       "def": 2,
@@ -5314,6 +5511,7 @@
   {
     "id": 198,
     "icon": 201,
+    "cost": 2,
     "positive": {
       "eva": 3,
       "agi": 2,
@@ -5340,6 +5538,7 @@
   {
     "id": 199,
     "icon": 4,
+    "cost": 4,
     "positive": {
       "eva": 4,
       "agi": 3,
@@ -5368,6 +5567,7 @@
   {
     "id": 200,
     "icon": 233,
+    "cost": 2,
     "positive": {
       "mat": 3,
       "mp": 4,
@@ -5396,6 +5596,7 @@
   {
     "id": 201,
     "icon": 198,
+    "cost": 1,
     "positive": {
       "def": 2,
       "hp": 10,
@@ -5419,6 +5620,7 @@
   {
     "id": 202,
     "icon": 116,
+    "cost": 3,
     "positive": {
       "agi": 2,
       "atk": 1

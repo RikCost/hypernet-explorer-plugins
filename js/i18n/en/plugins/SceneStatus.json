@@ -62,6 +62,7 @@
  },
  "trait": {
   "category": "Category:",
+  "points": "Trait points:",
   "equipment": "Equipment:",
   "specializations": "Specializations:",
   "noDescription": "No description recorded..."

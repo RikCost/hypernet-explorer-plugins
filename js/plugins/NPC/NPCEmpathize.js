@@ -1170,6 +1170,72 @@
     _paySocial(actorId, Math.max(-SOCIAL_MAX_STEP, Math.min(SOCIAL_MAX_STEP, Math.round(step))));
   }
 
+  // ── Fun: the moves that are entertainment, not just company ──────────────
+  // Most of the Socialize catalog is contact: it feeds the social meter and
+  // moves an opinion. A few of the options are ENTERTAINMENT — a joke that
+  // lands, a story or a poem that holds the room, gossip worth hearing — and
+  // those pay the Fun (leisure) meter as well, on BOTH sides of the exchange:
+  // the party member who performed, and the NPC who was performed to
+  // (profile.leisure, the same 0-100 field the society sim drains in
+  // NPCSimulationCore.js).
+  //
+  // Only a move that actually LANDED pays. A joke that flops, a poem the NPC
+  // sat through with a flat face (delta <= 0) is not fun for anybody, and the
+  // repetition fatigue already baked into the delta means the fourth telling
+  // of the same routine is worth less than the first. The weight is how
+  // entertaining the move is at its best; the amount then follows how well it
+  // actually went, so a story that lands beats a chuckle.
+  const FUN_ACTIONS      = { joke: 1, story: 1.1, poem: 0.9, gossip: 0.6 };
+  const FUN_PER_OPINION  = 1.6;  // fun points per point of opinion the move moved
+  const FUN_MIN_STEP     = 2;
+  const FUN_MAX_STEP     = 18;
+  const FUN_TALKER_BONUS = 1.5;  // whoever told it enjoyed telling it
+  const FUN_NPC_SHARE    = 1.2;  // the audience gets a little more than the party
+  const FUN_DAILY_LIMIT  = 5;    // per NPC: an act only stays funny so many times
+
+  // How much of today's amusement this NPC has left in them, spent as it is
+  // read. Same shape as the company allowance above: the fifth performance of
+  // the day lands on somebody who has already had their fill.
+  function _funAllowance(profile) {
+    const day  = Math.floor(($gameVariables?.value(114) ?? 0) / 1440);
+    const host = profile || $gameSystem;
+    if (!host) return 1;
+    if (host._funShared?.day !== day) host._funShared = { day, count: 0 };
+    const used = host._funShared.count++;
+    if (used >= FUN_DAILY_LIMIT) return 0;
+    return 1 - used / FUN_DAILY_LIMIT;
+  }
+
+  // Pay the Fun meter for one entertainment move that landed. Returns what was
+  // paid (0 when the move was not entertainment, did not land, or the NPC has
+  // laughed enough today), so the caller can label the exchange with it.
+  function _payFun(actorId, profile, npcName, id, delta) {
+    const weight = FUN_ACTIONS[id];
+    if (!weight || delta <= 0) return 0;
+    const taper = _funAllowance(profile);
+    if (taper <= 0) return 0;
+    const raw  = Math.max(FUN_MIN_STEP, delta * FUN_PER_OPINION * weight);
+    const step = Math.round(Math.min(FUN_MAX_STEP, raw) * taper);
+    if (step <= 0) return 0;
+
+    // The party: everyone standing there heard it, the performer most of all.
+    if (window.PartyNeeds?.addLeisureToAll) {
+      const focus = ($gameParty?.members() ?? []).find(m => m && m.actorId() === actorId) || null;
+      window.PartyNeeds.addLeisureToAll(step, { focus, focusBonus: FUN_TALKER_BONUS });
+    }
+    // The NPC: the field the sim drains, so a bored resident who was told a
+    // good joke is measurably less bored for the rest of the day.
+    if (profile) {
+      profile.leisure = Math.max(0, Math.min(100,
+        Math.round((profile.leisure ?? 100) + step * FUN_NPC_SHARE)));
+    }
+    try {
+      const T = _getT();
+      window.ParchmentToast?.need('leisure', step, { note: T('Empathize.funShared', { name: npcName }) });
+    } catch (e) { /* a popup never breaks a conversation */ }
+    return step;
+  }
+
   function _addNpcOpinion(profile, actorId, delta) {
     _gainSocialFromOpinion(actorId, delta, profile);
     return _setNpcBaseOpinion(profile, actorId, _npcBaseOpinion(profile, actorId) + delta);
@@ -2797,6 +2863,11 @@
         delta = Math.round(delta * _stanceToneMult(bubbaCtx, tone));
       }
 
+      // Entertainment that landed is worth something to everybody who was
+      // there: the Fun meter of the whole party (the performer most) and the
+      // NPC's own. A flop pays nobody.
+      const funStep = _payFun(actorId, profile, npcName, id, delta);
+
       // Apply reputation to the focused member only.
       if (profile && actorId != null) {
         _addNpcOpinion(profile, actorId, delta);
@@ -2819,7 +2890,8 @@
       this._isTyping = true;
       this._joinMessage = {
         type: delta >= 0 ? 'accept' : 'reject',
-        text: `${delta >= 0 ? '+' : ''}${delta} ♥ (${actor ? actor.name() : ''})`,
+        text: `${delta >= 0 ? '+' : ''}${delta} ♥ (${actor ? actor.name() : ''})`
+          + (funStep ? ` +${funStep} ☺` : ''),
       };
       this._render();
       this._scrollChatToBottom();
@@ -4480,6 +4552,9 @@
       _diseaseVialId, _diseaseVialItems, _infectChance,
       // Social/romance maths, shared with the UI layer's romance submenu.
       _socialLines, _rand, _addNpcOpinion, _npcEffectiveOpinion,
+      // Which Socialize moves are entertainment, so the submenu can mark the
+      // ones that feed Fun as well as opinion.
+      FUN_ACTIONS,
       // The ledger underneath _addNpcOpinion, for a caller that has already
       // paid the company for this exchange and only wants the number moved
       // (AutoIdleExplorer's two-sided party conversations).

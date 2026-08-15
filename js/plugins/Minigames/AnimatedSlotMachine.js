@@ -1514,12 +1514,12 @@
                 this._cabinet.celebrate(level);
                 this._cabinet.payCoins(Math.round(4 + Math.min(20, winAmount / 6)));
                 this._cabinet.setCameraMode(CAM_WIN);
-                if (window.MinigameFun) window.MinigameFun.won('Card Counting');
+                if (window.MinigameFun) window.MinigameFun.won({ spec: 'Card Counting', gambling: true });
             } else {
                 this._lastWin = 0;
                 message = T('SlotMachine.noMatch');
                 playSe(SE.lose);
-                if (window.MinigameFun) window.MinigameFun.lost('Card Counting');
+                if (window.MinigameFun) window.MinigameFun.lost({ spec: 'Card Counting', gambling: true });
             }
 
             this._banner.setMessage(message);

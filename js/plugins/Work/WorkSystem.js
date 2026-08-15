@@ -106,6 +106,30 @@
     workSoundEffect: String(parameters.workSoundEffect || "")
   };
 
+  // What an hour on the clock costs the worker, matching the drain rates in
+  // TimeDateSystem: 5% hunger and 3% sleep per hour worked.
+  const HUNGER_PER_HOUR = 5;
+  const SLEEP_PER_HOUR = 3;
+
+  // The shift's clock. TimeDateSystem owns the same variable and also keeps the
+  // readable date (variable 113) in step with it, so go through it when it is
+  // loaded and fall back to the raw variable when it is not.
+  function getGameTimeMinutes() {
+    const TDS = window.TimeDateSystem;
+    if (TDS && TDS.getGameTimeMinutes) return TDS.getGameTimeMinutes();
+    return $gameVariables.value(settings.timeVariable) || 0;
+  }
+
+  function setGameTimeMinutes(minutes) {
+    const TDS = window.TimeDateSystem;
+    if (TDS && TDS.setGameTimeMinutes) {
+      TDS.setGameTimeMinutes(minutes);
+      if (TDS.updateGameDateVariable) TDS.updateGameDateVariable();
+      return;
+    }
+    $gameVariables.setValue(settings.timeVariable, Math.max(0, minutes));
+  }
+
   let _statsI18n = null;
 
   const _loadStatsI18n = async () => {
@@ -343,7 +367,12 @@
       };
     }
 
-    static applyWorkEffects(actor, job, result) {
+    // options.timeAlreadyPassed: the caller ran the clock (and the worker's
+    // hunger/sleep) forward itself, slice by slice, so the shift could be
+    // watched passing - see Scene_Map.startRemoteWorkSequence. Taking the same
+    // hours again here would double-charge the shift.
+    static applyWorkEffects(actor, job, result, options) {
+      const opts = options || {};
       // Apply gold gain/loss
       if (result.pay > 0) {
         $gameParty.gainGold(result.pay);
@@ -379,19 +408,15 @@
         }
       }
 
+      if (opts.timeAlreadyPassed) return;
+
       // Advance time (duration in hours, convert to minutes)
-      const timeInMinutes = job.duration * 60;
-      const currentTime = $gameVariables.value(settings.timeVariable);
-      $gameVariables.setValue(settings.timeVariable, currentTime + timeInMinutes);
+      setGameTimeMinutes(getGameTimeMinutes() + job.duration * 60);
 
       // Reduce hunger/sleep based on work duration
-      // Assume 5% hunger and 3% sleep per hour (matching TimeDateSystem rates)
       if (actor.reduceHunger !== undefined) {
-        const hungerCost = job.duration * 5;
-        const sleepCost = job.duration * 3;
-
-        actor.reduceHunger(hungerCost);
-        actor.reduceSleep(sleepCost);
+        actor.reduceHunger(job.duration * HUNGER_PER_HOUR);
+        actor.reduceSleep(job.duration * SLEEP_PER_HOUR);
       }
     }
   }
@@ -458,7 +483,9 @@
       this.drawText(`${job.duration}h`, rect.x + rect.width - 150, rect.y, 50, 'right');
 
       // Pay
-      const payColor = job.basePay > 150 ? ColorManager.powerUpColor() : ColorManager.normalColor();
+      // Highlight the shifts that pay above the middle of the €10-€40/hour band.
+      const payColor = job.basePay / job.duration > 2500
+        ? ColorManager.powerUpColor() : ColorManager.normalColor();
       this.changeTextColor(payColor);
       this.drawText(`€${(job.basePay / 100).toFixed(2)}`, rect.x + rect.width - 90, rect.y, 80, 'right');
     }
@@ -966,17 +993,17 @@
       }
 
       this._dndContainer.innerHTML = `
-        <div class="cc-pockets-spread" style="width: 1400px; height: 900px;">
+        <div class="cc-pockets-spread">
           <!-- Spine Shading -->
-          <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 100%; background: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.15) 100%); pointer-events: none; z-index: 10;"></div>
+          <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 100%; background: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.15) 100%); pointer-events: none; z-index: 10"></div>
 
           <!-- Left Page -->
-          <div class="cc-page cc-page-left" style="padding: 28px 36px; display: flex; flex-direction: column; width:50%; box-sizing: border-box;">
+          <div class="cc-page cc-page-left" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
             ${leftPageHTML}
           </div>
 
           <!-- Right Page -->
-          <div class="cc-page cc-page-right" style="padding: 28px 36px; display: flex; flex-direction: column; width:50%; box-sizing: border-box;">
+          <div class="cc-page cc-page-right" style="padding: 28px 36px; display: flex; width:50%; box-sizing: border-box">
             ${rightPageHTML}
           </div>
         </div>
@@ -1012,7 +1039,7 @@
       let listHTML = "";
       if (jobs.length === 0) {
         listHTML = `
-          <div style="text-align:center; padding: 40px; font-style:italic; color:#6b5242; font-family:'Lora', serif;">
+          <div style="text-align:center; padding: 40px; color:#6b5242; font-family:'Lora', serif">
             ${T('WorkSystem.noGuildLaborRequisitionsCurrently')}
           </div>
         `;
@@ -1037,16 +1064,16 @@
 
           listHTML += `
             <div class="job-item" style="${itemStyle}" onclick="SceneManager._scene.selectJobItem(${idx})">
-              <div style="display:flex; flex-direction:column; gap:2px;">
-                <span style="font-family:'Lora', serif; font-size:0.95rem; font-weight:${isSelected ? 'bold' : 'normal'}; color:#1a1a1a;">
+              <div style="display:flex; flex-direction:column; gap:2px">
+                <span style="font-family:'Lora', serif; font-size:1.14rem; font-weight:${isSelected ? 'bold' : 'normal'}; color:#1a1a1a">
                   ${jobName}
                 </span>
-                <span style="font-size:0.75rem; color:#6b5242; font-family:'Lora', serif;">
+                <span style="font-size:0.915rem; color:#6b5242; font-family:'Lora', serif">
                   ${job.category} • ${job.duration}h
                 </span>
               </div>
-              <div style="display:flex; flex-direction:column; align-items:flex-end;">
-                <span style="font-family:'Lora', serif; font-size:1rem; font-weight:bold; color:#4a1d0f;">
+              <div style="display:flex; flex-direction:column; align-items:flex-end">
+                <span style="font-family:'Lora', serif; font-size:1.15rem; font-weight:bold; color:#4a1d0f">
                   €${(job.basePay / 100).toFixed(2)}
                 </span>
               </div>
@@ -1056,14 +1083,14 @@
       }
 
       return `
-        <h2 class="cc-header-gothic" style="font-size:1.85rem; margin-bottom:16px;">
+        <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px">
           ${title}
         </h2>
-        <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px;">
+        <div id="jobs-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; padding-right:4px">
           ${listHTML}
         </div>
-        <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-end; align-items:center; font-size:0.82rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%;">
-          <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; cursor:pointer; transition:all 0.2s ease; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:0.9rem;">
+        <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-end; align-items:center; font-size:0.984rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%">
+          <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; transition:all 0.2s ease; border:1px solid #4a2711; font-family:'Lora', serif; font-size:1.08rem">
             ${T('WorkSystem.dismiss')}
           </div>
         </div>
@@ -1074,7 +1101,7 @@
       const useItalian = ConfigManager.language === 'it';
       if (!job) {
         return `
-          <div style="display:flex; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; font-style:italic; color:#5c4b3d; font-family:'Lora', serif; font-size:1.1rem; border:2px dashed #bda881; border-radius:6px; padding:40px;">
+          <div style="display:flex; justify-content:center; align-items:center; flex:1; height:100%; text-align:center; color:#5c4b3d; font-family:'Lora', serif; font-size:1.265rem; border:2px dashed #bda881; border-radius:6px; padding:40px">
             ${T('WorkSystem.selectALaborContractTo')}
           </div>
         `;
@@ -1102,7 +1129,7 @@
         const statLabel = _si18n(mappedName);
 
         requirementsHTML += `
-          <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; color:${meetsReq ? '#3d5e4b' : '#822d2d'}; font-weight:${meetsReq ? 'normal' : 'bold'};">
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; color:${meetsReq ? '#3d5e4b' : '#822d2d'}; font-weight:${meetsReq ? 'normal' : 'bold'}">
             <span>${statLabel}</span>
             <span>${actorValue} / ${required}</span>
           </div>
@@ -1112,10 +1139,10 @@
       let locationsHTML = "";
       if (job.locations && job.locations.length > 0) {
         locationsHTML = `
-          <div style="margin-top: 10px;">
-            <strong style="color:#5c3516; font-size:0.85rem; text-transform:uppercase;">${T('WorkSystem.deploymentLocations')}:</strong>
-            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">
-              ${job.locations.map(loc => `<span style="background:rgba(139,90,43,0.1); border:1px solid rgba(139,90,43,0.2); padding:2px 8px; border-radius:3px; font-size:0.75rem; color:#4a1d0f;">${window.WorkSystem.locationLabel ? window.WorkSystem.locationLabel(loc) : loc}</span>`).join('')}
+          <div style="margin-top: 10px">
+            <strong style="color:#5c3516; font-size:1.02rem; text-transform:uppercase">${T('WorkSystem.deploymentLocations')}:</strong>
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px">
+              ${job.locations.map(loc => `<span style="background:rgba(139,90,43,0.1); border:1px solid rgba(139,90,43,0.2); padding:2px 8px; border-radius:3px; font-size:0.915rem; color:#4a1d0f">${window.WorkSystem.locationLabel ? window.WorkSystem.locationLabel(loc) : loc}</span>`).join('')}
             </div>
           </div>
         `;
@@ -1125,38 +1152,38 @@
       if (job.factionId !== undefined && job.factionId !== null) {
         const factionName = this._detailsPanel.getFactionName(job.factionId);
         factionHTML = `
-          <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px;">
-            <strong style="color:#5c3516;">${T('WorkSystem.faction')}:</strong>
-            <span style="color:#8b5a2b; font-weight:bold;">${factionName}</span>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
+            <strong style="color:#5c3516">${T('WorkSystem.faction')}:</strong>
+            <span style="color:#8b5a2b; font-weight:bold">${factionName}</span>
           </div>
         `;
       }
 
       return `
-        <h2 class="cc-header-gothic" style="font-size:1.85rem; margin-bottom:16px; text-align:center;">
+        <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px; text-align:center">
           ${T('WorkSystem.laborContract')}
         </h2>
 
-        <div style="flex:1; display:flex; flex-direction:column; gap:12px; box-sizing: border-box; width:100%;">
-          <div style="border: 4px double #4a2711; background: #ecdcb9; padding: 22px; border-radius: 6px; box-shadow: inset 0 0 40px rgba(78,38,12,0.15); font-family:'Lora', serif; display:flex; flex-direction:column; gap:10px; box-sizing: border-box; width:100%;">
-            <div style="font-family:'Lora', serif; font-size:1.5rem; color:#4a1d0f; font-weight:bold; border-bottom:2px double rgba(74,29,15,0.3); padding-bottom:6px; text-align:center; text-transform:uppercase;">
+        <div style="flex:1; display:flex; flex-direction:column; gap:12px; box-sizing: border-box; width:100%">
+          <div style="border: 4px double #4a2711; background: #ecdcb9; padding: 22px; border-radius: 6px; box-shadow: inset 0 0 40px rgba(78,38,12,0.15); font-family:'Lora', serif; display:flex; flex-direction:column; gap:10px; box-sizing: border-box; width:100%">
+            <div style="font-family:'Lora', serif; font-size:1.725rem; color:#4a1d0f; font-weight:bold; border-bottom:2px double rgba(74,29,15,0.3); padding-bottom:6px; text-align:center; text-transform:uppercase">
               ${jobName}
             </div>
 
-            <div style="font-size:0.9rem; font-style:italic; line-height:1.45; color:#2b1c11; border-bottom:1px dashed rgba(139,90,43,0.25); padding-bottom:10px; margin-bottom:6px; text-align:justify;">
+            <div style="font-size:1.08rem; line-height:1.45; color:#2b1c11; border-bottom:1px dashed rgba(139,90,43,0.25); padding-bottom:10px; margin-bottom:6px; text-align:justify">
               "${description}"
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:6px; font-size:0.9rem;">
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px;">
-                <strong style="color:#5c3516;">${T('WorkSystem.categoryLabel')}:</strong>
+            <div style="display:flex; flex-direction:column; gap:6px; font-size:1.08rem">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
+                <strong style="color:#5c3516">${T('WorkSystem.categoryLabel')}:</strong>
                 <span>${job.category}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px;">
-                <strong style="color:#5c3516;">${T('WorkSystem.duration')}:</strong>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px">
+                <strong style="color:#5c3516">${T('WorkSystem.duration')}:</strong>
                 <span>${T('WorkSystem.hoursValue', { hours: job.duration })}</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; font-weight:bold; color:#3d5e4b;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; font-weight:bold; color:#3d5e4b">
                 <span>${T('WorkSystem.baseReward')}:</span>
                 <span>€${(job.basePay / 100).toFixed(2)}</span>
               </div>
@@ -1165,22 +1192,22 @@
 
             ${locationsHTML}
 
-            <div style="margin-top: 10px; border-top: 1px dashed rgba(139,90,43,0.25); padding-top: 10px; display:flex; flex-direction:column; gap:6px;">
-              <strong style="color:#5c3516; font-size:0.85rem; text-transform:uppercase;">${T('WorkSystem.statRequirements')} (${actor.name()}):</strong>
-              <div style="display:flex; flex-direction:column; gap:4px; margin-top:2px;">
+            <div style="margin-top: 10px; border-top: 1px dashed rgba(139,90,43,0.25); padding-top: 10px; display:flex; flex-direction:column; gap:6px">
+              <strong style="color:#5c3516; font-size:1.02rem; text-transform:uppercase">${T('WorkSystem.statRequirements')} (${actor.name()}):</strong>
+              <div style="display:flex; flex-direction:column; gap:4px; margin-top:2px">
                 ${requirementsHTML}
               </div>
             </div>
 
             ${settings.showSuccessChance ? `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px dashed rgba(139,90,43,0.25); padding-top:10px; font-weight:bold; font-size:1rem;">
-              <span style="color:#5c3516;">${T('WorkSystem.estimatedSuccessRate')}:</span>
-              <span style="color:${chanceColor}; font-family:'Lora', serif; font-size:1.15rem;">${chancePercent}%</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px dashed rgba(139,90,43,0.25); padding-top:10px; font-weight:bold; font-size:1.15rem">
+              <span style="color:#5c3516">${T('WorkSystem.estimatedSuccessRate')}:</span>
+              <span style="color:${chanceColor}; font-family:'Lora', serif; font-size:1.322rem">${chancePercent}%</span>
             </div>
             ` : ''}
 
             ${!reqCheck.meets ? `
-            <div style="margin-top:8px; padding:8px 12px; background:rgba(130,45,45,0.06); border-left:3px solid #822d2d; border-radius:3px; font-size:0.78rem; color:#822d2d; line-height:1.35; font-style:italic;">
+            <div style="margin-top:8px; padding:8px 12px; background:rgba(130,45,45,0.06); border-left:3px solid #822d2d; border-radius:3px; font-size:0.952rem; color:#822d2d; line-height:1.35">
               Warning: Deficits detected! Undertaking this contract will carry higher hazards of failure and injury.
             </div>
             ` : ''}
@@ -1188,8 +1215,8 @@
         </div>
 
         ${this._singleJobMode ? `
-        <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-start; align-items:center; font-size:0.82rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%;">
-          <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; cursor:pointer; transition:all 0.2s ease; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:0.9rem;">
+        <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; justify-content:flex-start; align-items:center; font-size:0.984rem; color:#5c4b3d; font-family:'Lora', serif; box-sizing:border-box; width:100%">
+          <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="background:#8b5a2b; color:#ecdcb9; padding:6px 16px; border-radius:4px; font-weight:bold; transition:all 0.2s ease; border:1px solid #4a2711; font-family:'Lora', serif; font-size:1.08rem">
             ${T('WorkSystem.dismiss')}
           </div>
         </div>
@@ -1200,23 +1227,11 @@
     getActorFaceHTML(actor, size = 64) {
       const faceName = actor.faceName();
       if (!faceName) {
-        return `<div style="width:${size}px; height:${size}px; border-radius:50%; background:#8b5a2b; color:#ecdcb9; display:flex; align-items:center; justify-content:center; font-family:'Lora', serif; font-size:1.2rem; font-weight:bold;">${actor.name().charAt(0)}</div>`;
+        return `<div style="width:${size}px; height:${size}px; border-radius:50%; background:#8b5a2b; color:#ecdcb9; display:flex; align-items:center; justify-content:center; font-family:'Lora', serif; font-size:1.38rem; font-weight:bold">${actor.name().charAt(0)}</div>`;
       }
 
       return `
-        <div style="
-          width: ${size}px;
-          height: ${size}px;
-          border-radius: 50%;
-          border: 2px solid #8b5a2b;
-          box-sizing: border-box;
-          background-image: url('img/busts/${faceName}.png');
-          background-position: 50% 12%;
-          background-size: 220%;
-          background-repeat: no-repeat;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-          flex-shrink: 0;
-        "></div>
+        <div style="width: ${size}px; height: ${size}px; border-radius: 50%; border: 2px solid #8b5a2b; box-sizing: border-box; background-image: url('img/busts/${faceName}.png'); background-position: 50% 12%; background-size: 220%; background-repeat: no-repeat; box-shadow: 0 2px 4px rgba(0,0,0,0.15); flex-shrink: 0"></div>
       `;
     }
 
@@ -1229,7 +1244,7 @@
         const statLabel = _si18n(mappedName);
 
         html += `
-          <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:${isMet ? '#3d5e4b' : '#822d2d'}; font-weight:${isMet ? 'normal' : 'bold'}; border-bottom:1px dotted rgba(0,0,0,0.05); padding:1px 0;">
+          <div style="display:flex; justify-content:space-between; font-size:0.915rem; color:${isMet ? '#3d5e4b' : '#822d2d'}; font-weight:${isMet ? 'normal' : 'bold'}; border-bottom:1px dotted rgba(0,0,0,0.05); padding:1px 0">
             <span>${statLabel}</span>
             <span>${actorValue} / ${required}</span>
           </div>
@@ -1274,16 +1289,16 @@
         listHTML += `
           <div class="roster-item focusable" style="${cardStyle}" onclick="SceneManager._scene.selectActorItem(${idx})">
             ${this.getActorFaceHTML(actor, 54)}
-            <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="font-family:'Lora', serif; font-size:0.95rem; color:#1a1a1a;">
+            <div style="flex:1; display:flex; flex-direction:column; gap:2px">
+              <div style="display:flex; justify-content:space-between; align-items:center">
+                <strong style="font-family:'Lora', serif; font-size:1.14rem; color:#1a1a1a">
                   ${actor.name()}
                 </strong>
-                <span style="font-family:'Lora', serif; font-size:0.75rem; font-weight:bold; color:${chanceColor};">
+                <span style="font-family:'Lora', serif; font-size:0.915rem; font-weight:bold; color:${chanceColor}">
                   ${chancePercent}% SUCCESS
                 </span>
               </div>
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; margin-top:2px;">
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; margin-top:2px">
                 ${this.getActorRequirementDetailHTML(actor, selectedJob)}
               </div>
             </div>
@@ -1292,21 +1307,21 @@
       });
 
       return `
-        <h2 class="cc-header-gothic" style="font-size:1.85rem; margin-bottom:16px;">
+        <h2 class="cc-header-gothic" style="font-size:2.035rem; margin-bottom:16px">
           ${T('WorkSystem.workerRoster')}
         </h2>
 
-        <div id="roster-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:4px;">
+        <div id="roster-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; padding-right:4px">
           ${listHTML}
         </div>
 
-        <div style="margin-top:12px; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; flex-direction:column; gap:8px; box-sizing:border-box; width:100%;">
-          <div class="action-button focusable" onclick="SceneManager._scene.confirmActorSelection()" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.05rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease;">
+        <div style="margin-top:12px; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; flex-direction:column; gap:8px; box-sizing:border-box; width:100%">
+          <div class="action-button focusable" onclick="SceneManager._scene.confirmActorSelection()" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.208rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease">
             ${T('WorkSystem.signContract')}
           </div>
           
           ${!this._singleJobMode ? `
-          <div class="action-button focusable" onclick="SceneManager._scene.retractActorSelection()" style="background:#8b5a2b; color:#ecdcb9; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:0.9rem; transition: all 0.2s ease;">
+          <div class="action-button focusable" onclick="SceneManager._scene.retractActorSelection()" style="background:#8b5a2b; color:#ecdcb9; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:1.08rem; transition: all 0.2s ease">
             ${T('WorkSystem.retractContract')}
           </div>
           ` : ''}
@@ -1456,6 +1471,11 @@
   Scene_Map.prototype.update = function () {
     _Scene_Map_update.call(this);
 
+    if (this._remoteWork) {
+      this.updateRemoteWorkSequence();
+      return;
+    }
+
     if ($gameTemp._pendingWork && !$gameMessage.isBusy() && !$gamePlayer.isMoving()) {
       this.processWork();
     }
@@ -1471,7 +1491,152 @@
     if (!actor || !job) return;
 
     // Start work sequence
-    this.startWorkSequence(actor, job);
+    if (workData.remote) {
+      this.startRemoteWorkSequence(actor, job);
+    } else {
+      this.startWorkSequence(actor, job);
+    }
+  };
+
+  // ============================================================================
+  // Remote work - the shift is worked from wherever the party is standing, over
+  // the Hypernet, so there is nothing to watch but the hours going by. The clock
+  // is therefore stepped forward a slice per frame the way a night's sleep is
+  // (TimeDateSystem's _stepSleepAdvance), which keeps the map-info card up with
+  // the date, the time and the party's needs all moving in real time.
+  // ============================================================================
+
+  // The whole shift plays out over this many frames whatever its length, so a
+  // four-hour job and a twelve-hour one both take about two and a half seconds.
+  const REMOTE_WORK_FRAMES = 150;
+
+  Scene_Map.prototype.startRemoteWorkSequence = function (actor, job) {
+    // Flagged for the travel window (TimeDateSystem's MapInfoHUD): the clock
+    // is about to run fast behind the darkened screen, so the card shows.
+    this._workSequenceActive = true;
+
+    $gamePlayer.setMoveSpeed(0);
+
+    if (settings.workSoundEffect) {
+      AudioManager.playSe({
+        name: settings.workSoundEffect,
+        volume: 90,
+        pitch: 100,
+        pan: 0
+      });
+    }
+
+    $gameScreen.startFadeOut(settings.workFadeDuration);
+
+    // Hold until the screen is actually dark before the hours start moving.
+    this._remoteWork = { actor: actor, job: job, wait: settings.workFadeDuration, advance: null };
+  };
+
+  Scene_Map.prototype.updateRemoteWorkSequence = function () {
+    const s = this._remoteWork;
+    if (!s) return;
+
+    if (s.wait > 0) {
+      s.wait--;
+      return;
+    }
+    if (!s.advance) {
+      this._beginRemoteWorkAdvance(s);
+      return;
+    }
+    this._stepRemoteWorkAdvance(s);
+  };
+
+  Scene_Map.prototype._beginRemoteWorkAdvance = function (s) {
+    const totalMinutes = s.job.duration * 60;
+    const startTime = getGameTimeMinutes();
+
+    s.advance = {
+      totalMinutes: totalMinutes,
+      doneMinutes: 0,
+      minutesPerFrame: totalMinutes / REMOTE_WORK_FRAMES,
+      startTime: startTime,
+      // NPC schedules still tick once per simulated hour as the shift passes.
+      nextNpcTick: startTime + 60,
+    };
+  };
+
+  Scene_Map.prototype._stepRemoteWorkAdvance = function (s) {
+    const a = s.advance;
+
+    const prevDone = a.doneMinutes;
+    a.doneMinutes = Math.min(a.totalMinutes, a.doneMinutes + a.minutesPerFrame);
+    const deltaMin = a.doneMinutes - prevDone;
+    const currentTime = a.startTime + a.doneMinutes;
+
+    setGameTimeMinutes(Math.floor(currentTime));
+    this._runRemoteWorkNpcTicks(a, currentTime);
+
+    // The same wear the shift costs in applyWorkEffects, paid by the minute
+    // instead of in one bite at the end so the bars visibly drop.
+    const actor = s.actor;
+    if (actor && actor.reduceHunger !== undefined) {
+      actor.reduceHunger((HUNGER_PER_HOUR / 60) * deltaMin);
+      actor.reduceSleep((SLEEP_PER_HOUR / 60) * deltaMin);
+    }
+
+    // Push the new state to the card immediately this frame.
+    if (this._mapInfoHUD && this._mapInfoHUD._refresh) {
+      this._mapInfoHUD._refresh();
+    }
+
+    if (a.doneMinutes >= a.totalMinutes) {
+      this._finishRemoteWorkAdvance(s);
+    }
+  };
+
+  Scene_Map.prototype._runRemoteWorkNpcTicks = function (a, upTo) {
+    while (a.nextNpcTick <= upTo) {
+      if (window.NPCSim?.tick) {
+        try { window.NPCSim.tick(a.nextNpcTick); } catch (_) {}
+      }
+      a.nextNpcTick += 60;
+    }
+  };
+
+  Scene_Map.prototype._finishRemoteWorkAdvance = function (s) {
+    const a = s.advance;
+    this._remoteWork = null;
+
+    // Snap the clock to the exact end of the shift, finish the hourly NPC ticks,
+    // then resolve background NPC life events across the whole shift in one pass.
+    const endTime = a.startTime + a.totalMinutes;
+    setGameTimeMinutes(endTime);
+    this._runRemoteWorkNpcTicks(a, endTime);
+    if (window.NPCLifeSim?.catchUp) {
+      try { window.NPCLifeSim.catchUp(endTime); } catch (_) {}
+    }
+
+    const actor = s.actor;
+    const job = s.job;
+    const result = WorkManager.executeWork(actor, job);
+    WorkManager.applyWorkEffects(actor, job, result, { timeAlreadyPassed: true });
+
+    // The shift itself is over; the travel window drops with the fade-in.
+    this._workSequenceActive = false;
+
+    $gameScreen.startFadeIn(settings.workFadeDuration);
+    $gamePlayer.setMoveSpeed(4);
+
+    setTimeout(() => {
+      // Guard against a transfer swapping in a fresh Scene_Map mid-fade.
+      if (SceneManager._scene !== this) return;
+      this.displayWorkResult(actor, job, result);
+    }, (settings.workFadeDuration / 60) * 1000);
+  };
+
+  // The party is at the terminal for the whole shift: no walking off behind the
+  // darkened screen while the clock runs.
+  const _Game_Player_canMove_Work = Game_Player.prototype.canMove;
+  Game_Player.prototype.canMove = function () {
+    const scene = SceneManager._scene;
+    if (scene instanceof Scene_Map && scene._remoteWork) return false;
+    return _Game_Player_canMove_Work.call(this);
   };
 
   Scene_Map.prototype.startWorkSequence = function (actor, job) {

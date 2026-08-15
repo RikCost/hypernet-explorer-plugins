@@ -74,23 +74,23 @@
     // flat panels, the same furniture as the other government portals.
     const S = {
         app: 'display:flex; flex-direction:column; height:100%; background:#eceae1; ' +
-             "font-family:'Tahoma',sans-serif; font-size:12px; color:#1b1b1b;",
+             "font-family:'Tahoma',sans-serif; font-size:15px; color:#1b1b1b;",
         header: 'display:flex; align-items:center; gap:12px; padding:10px 14px; ' +
                 'background:linear-gradient(to bottom,#1f6f5c,#134637); color:#fff; border-bottom:2px solid #0c2f24;',
         nav: 'width:152px; flex-shrink:0; background:#dedbcf; border-right:1px solid #aca899; padding:8px 0;',
         navItem: 'padding:9px 12px; cursor:pointer; border-left:4px solid transparent; user-select:none;',
         panel: 'flex:1; overflow-y:auto; padding:14px 16px; background:#f6f5ee; min-width:0;',
         status: 'display:flex; gap:16px; align-items:center; border-top:1px solid #aca899; ' +
-                'padding:4px 10px; background:#eceae1; font-size:11px; color:#333;',
+                'padding:4px 10px; background:#eceae1; font-size:14px; color:#333;',
         card: 'background:#fff; border:1px solid #cdc9bd; border-radius:3px; padding:10px 12px; margin-bottom:8px;',
         btn: 'display:inline-block; padding:5px 12px; background:linear-gradient(to bottom,#fdfdfb,#dcd8cc); ' +
-             'border:1px solid #8c887c; border-radius:3px; cursor:pointer; font-size:12px; color:#111; user-select:none;',
-        h: 'margin:0 0 8px; font-size:14px; font-weight:bold; color:#134637;',
-        note: 'color:#5a5a5a; font-size:11px; line-height:1.5;',
+             'border:1px solid #8c887c; border-radius:3px; cursor:pointer; font-size:15px; color:#111; user-select:none;',
+        h: 'margin:0 0 8px; font-size:17px; font-weight:bold; color:#134637;',
+        note: 'color:#5a5a5a; font-size:14px; line-height:1.5;',
         tile: 'flex:1; min-width:96px; background:#fff; border:1px solid #cdc9bd; border-radius:3px; padding:8px 10px;',
-        tileNum: 'font-size:19px; font-weight:bold; line-height:1.2;',
-        tileLbl: 'font-size:10px; color:#5a5a5a; text-transform:uppercase; letter-spacing:0.4px;',
-        table: 'width:100%; border-collapse:collapse; font-size:11px;',
+        tileNum: 'font-size:22px; font-weight:bold; line-height:1.2;',
+        tileLbl: 'font-size:13px; color:#5a5a5a; text-transform:uppercase; letter-spacing:0.4px;',
+        table: 'width:100%; border-collapse:collapse; font-size:14px;',
         th: 'text-align:left; padding:4px 6px; border-bottom:1px solid #aca899; color:#134637; font-weight:bold;',
         td: 'padding:4px 6px; border-bottom:1px solid #e6e3d8;',
     };
@@ -110,7 +110,7 @@
     function buildChart(epidemic) {
         const history = (epidemic && epidemic.history) || [];
         if (history.length < 2) {
-            return `<div style="${S.note} padding:18px 0;">${T('Eurodemics.curveHint')}</div>`;
+            return `<div style="${S.note} padding:18px 0">${T('Eurodemics.curveHint')}</div>`;
         }
         const { w, h, padL, padR, padT, padB } = CHART;
         const plotW = w - padL - padR;
@@ -157,15 +157,15 @@
             : T('Eurodemics.dayNumbered', { day: d }));
 
         return `
-            <div style="display:flex; gap:14px; align-items:center; margin-bottom:2px;">
-              <span style="display:inline-flex; align-items:center; gap:5px; font-size:11px;">
-                <span style="width:14px; height:3px; background:${C.ill}; display:inline-block;"></span>${T('Eurodemics.currentlyIll')}</span>
-              <span style="display:inline-flex; align-items:center; gap:5px; font-size:11px;">
-                <span style="width:14px; height:3px; background:${C.dead}; display:inline-block;"></span>${T('Eurodemics.deadSoFar')}</span>
-              <span style="${S.note} margin-left:auto;">${T('Eurodemics.chartFootnote')}</span>
+            <div style="display:flex; gap:14px; align-items:center; margin-bottom:2px">
+              <span style="display:inline-flex; align-items:center; gap:5px; font-size:14px">
+                <span style="width:14px; height:3px; background:${C.ill}; display:inline-block"></span>${T('Eurodemics.currentlyIll')}</span>
+              <span style="display:inline-flex; align-items:center; gap:5px; font-size:14px">
+                <span style="width:14px; height:3px; background:${C.dead}; display:inline-block"></span>${T('Eurodemics.deadSoFar')}</span>
+              <span style="${S.note} margin-left:auto">${T('Eurodemics.chartFootnote')}</span>
             </div>
-            <div id="ed-chart-wrap" style="position:relative; background:${C.surface}; border:1px solid #cdc9bd; border-radius:3px;">
-              <svg id="ed-chart" viewBox="0 0 ${w} ${h}" style="width:100%; height:auto; display:block;"
+            <div id="ed-chart-wrap" style="position:relative; background:${C.surface}; border:1px solid #cdc9bd; border-radius:3px">
+              <svg id="ed-chart" viewBox="0 0 ${w} ${h}" style="width:100%; height:auto; display:block"
                    data-daymin="${dayMin}" data-daymax="${dayMax}" data-padl="${padL}" data-plotw="${plotW}">
                 ${gridLines}
                 <line x1="${padL}" y1="${padT + plotH}" x2="${padL + plotW}" y2="${padT + plotH}"
@@ -182,9 +182,7 @@
                 <text x="${padL + plotW}" y="${h - 8}" font-size="9" fill="${C.inkSoft}"
                       text-anchor="end">${escapeHtml(dateOf(dayMax))}</text>
               </svg>
-              <div id="ed-tip" style="position:absolute; display:none; pointer-events:none; background:#fffef7;
-                   border:1px solid #8c887c; border-radius:3px; padding:4px 7px; font-size:11px;
-                   box-shadow:0 2px 6px rgba(0,0,0,0.25); white-space:nowrap;"></div>
+              <div id="ed-tip" style="position:absolute; display:none; pointer-events:none; background:#fffef7; border:1px solid #8c887c; border-radius:3px; padding:4px 7px; font-size:14px; box-shadow:0 2px 6px rgba(0,0,0,0.25); white-space:nowrap"></div>
             </div>`;
     }
 
@@ -219,9 +217,9 @@
             cross.setAttribute('opacity', '1');
             const dateOf = ES() && ES().dateStr ? ES().dateStr(best[0]) : `day ${best[0]}`;
             tip.innerHTML = `<b>${escapeHtml(dateOf)}</b><br>` +
-                `<span style="color:${C.ill};">&#9632;</span> ${num(best[1])} ill ` +
-                `<span style="color:${C.inkSoft};">(+${num(best[2])} new)</span><br>` +
-                `<span style="color:${C.dead};">&#9632;</span> ${num(best[3])} dead`;
+                `<span style="color:${C.ill}">&#9632;</span> ${num(best[1])} ill ` +
+                `<span style="color:${C.inkSoft}">(+${num(best[2])} new)</span><br>` +
+                `<span style="color:${C.dead}">&#9632;</span> ${num(best[3])} dead`;
             tip.style.display = 'block';
             const px = bx / scale;
             tip.style.left = Math.min(box.width - tip.offsetWidth - 4, Math.max(0, px + 10)) + 'px';
@@ -258,21 +256,21 @@
             const contentHTML = `
                 <div style="${S.app}">
                     <div style="${S.header}">
-                        <div style="filter:drop-shadow(0 1px 1px rgba(0,0,0,0.5));">${iconHTML(APP_ICON, 34)}</div>
-                        <div style="flex:1; min-width:0;">
-                            <div style="font-size:15px; font-weight:bold; letter-spacing:0.5px;">${T('Eurodemics.appName')}</div>
-                            <div style="font-size:10px; opacity:0.82;">${T('Eurodemics.subtitle')}</div>
+                        <div style="filter:drop-shadow(0 1px 1px rgba(0,0,0,0.5))">${iconHTML(APP_ICON, 34)}</div>
+                        <div style="flex:1; min-width:0">
+                            <div style="font-size:17px; font-weight:bold; letter-spacing:0.5px">${T('Eurodemics.appName')}</div>
+                            <div style="font-size:13px; opacity:0.82">${T('Eurodemics.subtitle')}</div>
                         </div>
-                        <div id="ed-alert" style="padding:4px 10px; border-radius:10px; font-size:11px; font-weight:bold;"></div>
+                        <div id="ed-alert" style="padding:4px 10px; border-radius:10px; font-size:14px; font-weight:bold"></div>
                     </div>
-                    <div style="display:flex; flex:1; min-height:0;">
+                    <div style="display:flex; flex:1; min-height:0">
                         <div id="ed-nav" style="${S.nav}"></div>
                         <div id="ed-panel" style="${S.panel}"></div>
                     </div>
                     <div style="${S.status}">
                         <span>${T('Eurodemics.bulletinLabel')} <b id="ed-date"></b></span>
                         <span>${T('Eurodemics.outbreaksLabel')} <b id="ed-count"></b></span>
-                        <span id="ed-message" style="margin-left:auto; color:#134637;"></span>
+                        <span id="ed-message" style="margin-left:auto; color:#134637"></span>
                     </div>
                 </div>`;
 
@@ -391,22 +389,22 @@
             const hotspots = ES().hotspots(8);
             const tile = (value, label, color) => `
                 <div style="${S.tile}">
-                    <div style="${S.tileNum} color:${color || C.ink};">${escapeHtml(value)}</div>
+                    <div style="${S.tileNum} color:${color || C.ink}">${escapeHtml(value)}</div>
                     <div style="${S.tileLbl}">${escapeHtml(label)}</div>
                 </div>`;
 
             const rows = hotspots.map(h => `
                 <tr>
                     <td style="${S.td}">${escapeHtml(placeName(h.place))}</td>
-                    <td style="${S.td} text-align:right;">${num(h.infected)}</td>
-                    <td style="${S.td} text-align:right;">${num(h.population)}</td>
-                    <td style="${S.td} text-align:right;">${pct(h.prevalence)}</td>
+                    <td style="${S.td} text-align:right">${num(h.infected)}</td>
+                    <td style="${S.td} text-align:right">${num(h.population)}</td>
+                    <td style="${S.td} text-align:right">${pct(h.prevalence)}</td>
                     <td style="${S.td}">${escapeHtml(h.outbreaks.map(e => e.diseaseName || ES().nameOf(e)).join(', '))}</td>
                 </tr>`).join('');
 
             panel.innerHTML = `
                 <h2 style="${S.h}">${T('Eurodemics.situationReport')}</h2>
-                <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+                <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap">
                     ${tile(num(stats.active), T('Eurodemics.outbreaksRunning'))}
                     ${tile(num(stats.infected), T('Eurodemics.currentlyIll'), C.ill)}
                     ${tile(num(stats.dead), T('Eurodemics.deadActive'), C.dead)}
@@ -414,14 +412,14 @@
                     ${tile(num(stats.totalDead), T('Eurodemics.deadAllRecords'), C.dead)}
                 </div>
                 <div id="ed-local"></div>
-                <h3 style="${S.h} margin-top:14px;">${T('Eurodemics.worstTowns')}</h3>
+                <h3 style="${S.h} margin-top:14px">${T('Eurodemics.worstTowns')}</h3>
                 ${hotspots.length ? `
-                <div style="${S.card} padding:6px 8px;">
+                <div style="${S.card} padding:6px 8px">
                   <table style="${S.table}">
                     <thead><tr>
-                      <th style="${S.th}">${T('Eurodemics.colTown')}</th><th style="${S.th} text-align:right;">${T('Eurodemics.colIll')}</th>
-                      <th style="${S.th} text-align:right;">${T('Eurodemics.colPopulation')}</th>
-                      <th style="${S.th} text-align:right;">${T('Eurodemics.colShareIll')}</th>
+                      <th style="${S.th}">${T('Eurodemics.colTown')}</th><th style="${S.th} text-align:right">${T('Eurodemics.colIll')}</th>
+                      <th style="${S.th} text-align:right">${T('Eurodemics.colPopulation')}</th>
+                      <th style="${S.th} text-align:right">${T('Eurodemics.colShareIll')}</th>
                       <th style="${S.th}">${T('Eurodemics.colOutbreak')}</th>
                     </tr></thead>
                     <tbody>${rows}</tbody>
@@ -450,13 +448,13 @@
             if (!place) {
                 holder.innerHTML = `<div style="${S.card}"><b>${T('Eurodemics.yourPosition')}</b>
                     <div style="${S.note}">${T('Eurodemics.outsideNetwork')}</div>
-                    ${ill.length ? `<div style="margin-top:6px;">${T('Eurodemics.carriedByParty', { list: escapeHtml(ill.join('; ')) })}</div>` : ''}</div>`;
+                    ${ill.length ? `<div style="margin-top:6px">${T('Eurodemics.carriedByParty', { list: escapeHtml(ill.join('; ')) })}</div>` : ''}</div>`;
                 return;
             }
             const live = ES().activeAt(place.key);
             const lines = live.map(e => {
                 const site = e.sites[place.key];
-                return `<div style="margin-top:4px;"><b>${escapeHtml(ES().nameOf(e))}</b>
+                return `<div style="margin-top:4px"><b>${escapeHtml(ES().nameOf(e))}</b>
                     <div style="${S.note}">${T('Eurodemics.localLine', { ill: num(site.infected), residents: num(place.population),
                       share: pct(ES().prevalenceAt(place.key, e)), dead: num(site.dead) })}</div></div>`;
             }).join('');
@@ -465,8 +463,8 @@
                     <b>${T('Eurodemics.yourPositionAt', { place: escapeHtml(placeName(place.key)) })}</b>
                     ${live.length ? lines
                         : `<div style="${S.note}">${T('Eurodemics.noOutbreakHere')}</div>`}
-                    ${ill.length ? `<div style="margin-top:8px; color:#8e2a20;">${T('Eurodemics.carriedByParty', { list: escapeHtml(ill.join('; ')) })}</div>`
-                        : `<div style="${S.note} margin-top:8px;">${T('Eurodemics.nobodyIll')}</div>`}
+                    ${ill.length ? `<div style="margin-top:8px; color:#8e2a20">${T('Eurodemics.carriedByParty', { list: escapeHtml(ill.join('; ')) })}</div>`
+                        : `<div style="${S.note} margin-top:8px">${T('Eurodemics.nobodyIll')}</div>`}
                 </div>`;
         },
 
@@ -484,7 +482,7 @@
             }
             panel.innerHTML = `
                 <h2 style="${S.h}">${T('Eurodemics.activeOutbreaks')}</h2>
-                <div id="ed-list" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;"></div>
+                <div id="ed-list" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px"></div>
                 <div id="ed-detail"></div>`;
 
             const list = panel.querySelector('#ed-list');
@@ -518,29 +516,28 @@
                     const place = ES().place(key);
                     return `<tr>
                         <td style="${S.td}">${escapeHtml(placeName(key))}</td>
-                        <td style="${S.td} text-align:right;">${num(site.infected || 0)}</td>
-                        <td style="${S.td} text-align:right;">${num(site.cases || 0)}</td>
-                        <td style="${S.td} text-align:right;">${num(site.dead || 0)}</td>
-                        <td style="${S.td} text-align:right;">${place ? num(place.population) : '&mdash;'}</td>
+                        <td style="${S.td} text-align:right">${num(site.infected || 0)}</td>
+                        <td style="${S.td} text-align:right">${num(site.cases || 0)}</td>
+                        <td style="${S.td} text-align:right">${num(site.dead || 0)}</td>
+                        <td style="${S.td} text-align:right">${place ? num(place.population) : '&mdash;'}</td>
                     </tr>`;
                 }).join('');
 
             holder.innerHTML = `
                 <div style="${S.card}">
-                    <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
-                        <div style="font-size:14px; font-weight:bold;">${escapeHtml(ES().nameOf(epidemic))}</div>
-                        <span style="font-size:10px; padding:1px 7px; border-radius:8px; color:#fff;
-                              background:${hysteria ? '#6b4fa8' : '#1f6f5c'};">
+                    <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap">
+                        <div style="font-size:17px; font-weight:bold">${escapeHtml(ES().nameOf(epidemic))}</div>
+                        <span style="font-size:13px; padding:1px 7px; border-radius:8px; color:#fff; background:${hysteria ? '#6b4fa8' : '#1f6f5c'}">
                               ${hysteria ? T('Eurodemics.massHysteria') : T('Eurodemics.pathogen')}</span>
                         <span style="${S.note}">${T('Eurodemics.since', { date: escapeHtml(ES().dateStr(epidemic.startDay)) })}</span>
                     </div>
-                    ${disease && disease.desc ? `<div style="${S.note} margin:4px 0 8px;">${escapeHtml(disease.desc)}</div>` : ''}
-                    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-                        <div style="${S.tile}"><div style="${S.tileNum} color:${C.ill};">${num(infected)}</div>
+                    ${disease && disease.desc ? `<div style="${S.note} margin:4px 0 8px">${escapeHtml(disease.desc)}</div>` : ''}
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px">
+                        <div style="${S.tile}"><div style="${S.tileNum} color:${C.ill}">${num(infected)}</div>
                             <div style="${S.tileLbl}">${T('Eurodemics.currentlyIll')}</div></div>
                         <div style="${S.tile}"><div style="${S.tileNum}">${num(epidemic.totals.cases)}</div>
                             <div style="${S.tileLbl}">${T('Eurodemics.casesInTotal')}</div></div>
-                        <div style="${S.tile}"><div style="${S.tileNum} color:${C.dead};">${num(epidemic.totals.dead)}</div>
+                        <div style="${S.tile}"><div style="${S.tileNum} color:${C.dead}">${num(epidemic.totals.dead)}</div>
                             <div style="${S.tileLbl}">${T('Eurodemics.dead')}</div></div>
                         <div style="${S.tile}"><div style="${S.tileNum}">${Object.keys(epidemic.sites).length}</div>
                             <div style="${S.tileLbl}">${T('Eurodemics.townsReached')}</div></div>
@@ -549,20 +546,20 @@
                     </div>
                     ${buildChart(epidemic)}
                 </div>
-                <div style="${S.card} padding:6px 8px;">
+                <div style="${S.card} padding:6px 8px">
                     <table style="${S.table}">
                         <thead><tr>
-                            <th style="${S.th}">${T('Eurodemics.colTown')}</th><th style="${S.th} text-align:right;">${T('Eurodemics.colIllNow')}</th>
-                            <th style="${S.th} text-align:right;">${T('Eurodemics.colCases')}</th>
-                            <th style="${S.th} text-align:right;">${T('Eurodemics.dead')}</th>
-                            <th style="${S.th} text-align:right;">${T('Eurodemics.colPopulation')}</th>
+                            <th style="${S.th}">${T('Eurodemics.colTown')}</th><th style="${S.th} text-align:right">${T('Eurodemics.colIllNow')}</th>
+                            <th style="${S.th} text-align:right">${T('Eurodemics.colCases')}</th>
+                            <th style="${S.th} text-align:right">${T('Eurodemics.dead')}</th>
+                            <th style="${S.th} text-align:right">${T('Eurodemics.colPopulation')}</th>
                         </tr></thead>
                         <tbody>${siteRows}</tbody>
                     </table>
                 </div>
                 ${epidemic.log && epidemic.log.length ? `
                 <div style="${S.card}">
-                    <div style="font-weight:bold; margin-bottom:4px;">${T('Eurodemics.bureauLog')}</div>
+                    <div style="font-weight:bold; margin-bottom:4px">${T('Eurodemics.bureauLog')}</div>
                     ${epidemic.log.slice(-6).reverse().map(entry =>
                         `<div style="${S.note}">${escapeHtml(ES().dateStr(entry.day))} &mdash; ${escapeHtml(ES().logTextOf(entry))}</div>`).join('')}
                 </div>` : ''}`;
@@ -583,8 +580,8 @@
                     <td style="${S.td}">${escapeHtml(epidemic.kind === 'hysteria' ? 'hysteria' : 'pathogen')}</td>
                     <td style="${S.td}">${escapeHtml(ES().dateStr(epidemic.startDay))}</td>
                     <td style="${S.td}">${epidemic.endDay != null ? escapeHtml(ES().dateStr(epidemic.endDay)) : '&mdash;'}</td>
-                    <td style="${S.td} text-align:right;">${num(epidemic.totals.cases)}</td>
-                    <td style="${S.td} text-align:right;">${num(epidemic.totals.dead)}</td>
+                    <td style="${S.td} text-align:right">${num(epidemic.totals.cases)}</td>
+                    <td style="${S.td} text-align:right">${num(epidemic.totals.dead)}</td>
                 </tr>`).join('');
 
             const histRows = historical.slice().reverse().map(record => `
@@ -593,30 +590,30 @@
                     <td style="${S.td}">${escapeHtml(record.kind === 'hysteria' ? 'hysteria' : 'pathogen')}</td>
                     <td style="${S.td}">${escapeHtml(record.startDate)}</td>
                     <td style="${S.td}">${escapeHtml(record.endDate || '')}</td>
-                    <td style="${S.td} text-align:right;">${num(record.infected)}</td>
-                    <td style="${S.td} text-align:right;">${num(record.deaths)}</td>
+                    <td style="${S.td} text-align:right">${num(record.infected)}</td>
+                    <td style="${S.td} text-align:right">${num(record.deaths)}</td>
                 </tr>
-                <tr><td colspan="6" style="${S.td} ${S.note} padding-top:0;">
+                <tr><td colspan="6" style="${S.td} ${S.note} padding-top:0">
                     ${escapeHtml((record.places || []).map(placeName).join(', '))}</td></tr>`).join('');
 
             const head = (last) => `<thead><tr>
                 <th style="${S.th}">${T('Eurodemics.colOutbreak')}</th><th style="${S.th}">${T('Eurodemics.colKind')}</th>
                 <th style="${S.th}">${T('Eurodemics.colFrom')}</th><th style="${S.th}">${T('Eurodemics.colTo')}</th>
-                <th style="${S.th} text-align:right;">${T('Eurodemics.colCases')}</th>
-                <th style="${S.th} text-align:right;">${last}</th></tr></thead>`;
+                <th style="${S.th} text-align:right">${T('Eurodemics.colCases')}</th>
+                <th style="${S.th} text-align:right">${last}</th></tr></thead>`;
 
             panel.innerHTML = `
                 <h2 style="${S.h}">${T('Eurodemics.archiveTitle')}</h2>
-                <div style="${S.note} margin-bottom:10px;">
+                <div style="${S.note} margin-bottom:10px">
                     ${T('Eurodemics.archiveBlurb')}
                 </div>
                 <h3 style="${S.h}">${T('Eurodemics.closedThisWorld')}</h3>
-                ${past.length ? `<div style="${S.card} padding:6px 8px;">
+                ${past.length ? `<div style="${S.card} padding:6px 8px">
                     <table style="${S.table}">${head(T('Eurodemics.dead'))}<tbody>${pastRows}</tbody></table></div>`
                     : `<div style="${S.card} ${S.note}">${T('Eurodemics.nothingClosed')}</div>`}
                 <div id="ed-arch-detail"></div>
-                <h3 style="${S.h} margin-top:14px;">${T('Eurodemics.lastCentury')}</h3>
-                ${historical.length ? `<div style="${S.card} padding:6px 8px;">
+                <h3 style="${S.h} margin-top:14px">${T('Eurodemics.lastCentury')}</h3>
+                ${historical.length ? `<div style="${S.card} padding:6px 8px">
                     <table style="${S.table}">${head(T('Eurodemics.dead'))}<tbody>${histRows}</tbody></table></div>`
                     : `<div style="${S.card} ${S.note}">${T('Eurodemics.historyEmpty')}</div>`}`;
 
@@ -635,9 +632,9 @@
             const chosen = past.find(e => e.id === this.archiveId);
             if (detail && chosen) {
                 detail.innerHTML = `<div style="${S.card}">
-                    <div style="font-weight:bold; margin-bottom:6px;">${escapeHtml(ES().nameOf(chosen))}</div>
+                    <div style="font-weight:bold; margin-bottom:6px">${escapeHtml(ES().nameOf(chosen))}</div>
                     ${buildChart(chosen)}
-                    <div style="${S.note} margin-top:6px;">
+                    <div style="${S.note} margin-top:6px">
                         ${T.n('Eurodemics.archive.reachedTowns', Object.keys(chosen.sites).length, { n: Object.keys(chosen.sites).length })}
                         ${escapeHtml(Object.keys(chosen.sites).map(placeName).join(', '))}
                     </div>

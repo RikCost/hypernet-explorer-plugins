@@ -363,6 +363,35 @@
         return (typeof window.translateText === 'function') ? window.translateText(name) : name;
     }
 
+    // ── Shared recipe service ────────────────────────────────────────────────
+    // What the workbench knows about a blueprint, offered to any other menu that
+    // wants to ask the same questions (the main menu's search page lists what the
+    // party could make right now). Every answer is the workbench's own, so the
+    // two can never disagree about whether a recipe reads or a sack covers it.
+    window.CraftRecipes = {
+        // Every item/weapon entry the bench could ever make.
+        entries: allCraftableEntries,
+        parseRecipe,
+        isUncraftable,
+        categoryOf: parseCategory,
+        tier: recipeTier,
+        // The bill is covered by what the party carries.
+        hasMaterials: (item) => canCraft(parseRecipe(item)),
+        // The blueprint reads at all: built before, or recognised off the trade.
+        knows: knowsRecipe,
+        // Trained far enough to attempt it.
+        tierMet,
+        // Reading, making, and holding the reagents for it, all at once.
+        canMakeNow: (item) => {
+            const recipe = parseRecipe(item);
+            if (!recipe || isUncraftable(item)) return false;
+            return knowsRecipe(item) && tierMet(item) && canCraft(recipe);
+        },
+        // The trade a recipe belongs to, as the player reads it.
+        tradeName: (item) => specLabel(recipeSpec(item)),
+        clearKnowledgeCache: clearRecipeKnowledgeCache
+    };
+
     function levelLabel(level) {
         const db = window.Specializations;
         return (db && db.levelName) ? db.levelName(level) : String(level);
@@ -527,6 +556,22 @@
 
             this._fabActorIndex = 0;
 
+            // The shared search + filter strip (UI/MenuSearchBar.js), in the
+            // bench's vocabulary: recipes have a category and a weight and a
+            // price, and no level or cast cost.
+            this._thinkerBar = window.MenuSearchBar ? window.MenuSearchBar.create({
+                id: 'thinker',
+                placeholder: T('Thinker.searchPlaceholder'),
+                sorts: ['name', 'weight', 'price'],
+                onChange: () => {
+                    this._itemIndex = 0;
+                    this._thinkerItemsDirty = true;
+                    this._forceListRebuild = true;
+                    this.refreshUIThinker();
+                    if (this._thinkerBar) this._thinkerBar.restoreFocus();
+                }
+            }) : null;
+
             this.initUIThinkerLayout();
             this.refreshUIThinker();
             if (window.CharSwitcher) {
@@ -584,11 +629,15 @@
         }
 
         update() {
-            this.updateUIThinkerInput();
+            // A focused search field owns the keyboard (UI/MenuSearchBar.js).
+            if (!(window.MenuSearchBar && window.MenuSearchBar.isTyping())) {
+                this.updateUIThinkerInput();
+            }
             super.update();
         }
 
         terminate() {
+            if (this._thinkerBar) { this._thinkerBar.dispose(); this._thinkerBar = null; }
             const container = document.getElementById("thinker-container");
             if (container) container.remove();
             if (window.SpecBadge) window.SpecBadge.hide();
@@ -626,16 +675,19 @@
                         <div id="success-overlay-container"></div>
                         
                         <div class="left-page">
-                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;">
-                                <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; left: 0; font-family: 'Lora', serif; font-size: 0.8rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: fit-content; line-height: normal; user-select: none;">
+                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
+                                <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
                                     ${backBtnText}
                                 </div>
-                                <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${t.title}</h2>
+                                <h2 class="title" style="border: none; margin: 0; padding: 0">${t.title}</h2>
                             </div>
                             
                             <!-- Tab buttons container -->
+                            <!-- Search + filter strip (UI/MenuSearchBar.js) -->
+                            <div id="thinker-search-slot"></div>
+
                             <div id="tabs-container"></div>
-                            
+
                             <!-- List viewport -->
                             <div class="list-viewport"></div>
                         </div>
@@ -747,6 +799,14 @@
             }
             if (window.SpecBadge) window.SpecBadge.show(FAB_SPEC, { actor: this.fabActor() });
 
+            // The strip is rebuilt in place and handed its caret back, so
+            // typing into it never loses the cursor mid-word.
+            const searchSlot = spread.querySelector("#thinker-search-slot");
+            if (searchSlot && this._thinkerBar) {
+                searchSlot.innerHTML = this._thinkerBar.html();
+                this._thinkerBar.restoreFocus();
+            }
+
             const tabsContainer = spread.querySelector("#tabs-container");
             if (tabsContainer) {
                 // The second row is the book itself: the recipes this member
@@ -796,12 +856,12 @@
 
                     successOverlayContainer.innerHTML = `
                         <div class="success-overlay">
-                            <div class="cauldron-animation" style="font-size: 80px;"></div>
+                            <div class="cauldron-animation" style="font-size: 88px"></div>
                             <h2 class="success-title">${successTitle}</h2>
                             ${isBotch
                             ? `<span class="success-obtained-label">${T('Thinker.botchNote')}</span>`
                             : `<span class="success-obtained-label">${t.obtained}</span>
-                            <div style="display:flex; flex-direction:column; gap:8px;">
+                            <div style="display:flex; flex-direction:column; gap:8px">
                                 ${itemsHTML}
                             </div>`}
                         </div>
@@ -918,7 +978,7 @@
                                     } else {
                                         itemMetaHTML = `
                                             <div class="blueprint-icon-locked">?</div>
-                                            <span class="blueprint-name-locked" style="font-style:italic;">${t.blueprintLocked}</span>
+                                            <span class="blueprint-name-locked">${t.blueprintLocked}</span>
                                         `;
                                     }
 
@@ -931,7 +991,7 @@
                                             <div class="blueprint-meta">
                                                 ${itemMetaHTML}
                                             </div>
-                                            <span class="blueprint-count" style="color: ${craftColor}; font-weight: bold;">(x${ownedCount})</span>
+                                            <span class="blueprint-count" style="color: ${craftColor}; font-weight: bold">(x${ownedCount})</span>
                                         </div>
                                     `;
                                 });
@@ -948,7 +1008,7 @@
                         const salvageItems = this.thinkerItemsList();
 
                         if (salvageItems.length === 0) {
-                            leftListHTML += `<div class="workbench-empty" style="margin-top: 24px;">${t.noOwned}</div>`;
+                            leftListHTML += `<div class="workbench-empty" style="margin-top: 24px">${t.noOwned}</div>`;
                         } else {
                             this._itemIndex = Math.max(0, Math.min(salvageItems.length - 1, this._itemIndex));
 
@@ -973,7 +1033,7 @@
                                             <div class="blueprint-icon" style="${iconStyle}"></div>
                                             <span class="blueprint-name" style="color: ${rarity.colorCode}">${item.name}</span>
                                         </div>
-                                        <span class="blueprint-count" style="font-weight: bold; color: #5c2c16;">x${ownedCount}</span>
+                                        <span class="blueprint-count" style="font-weight: bold; color: #5c2c16">x${ownedCount}</span>
                                     </div>
                                 `;
                             });
@@ -1049,7 +1109,7 @@
                     let descHTML = "";
 
                     if (this._mode === 'assemble' && !known) {
-                        nameHTML = `<span class="workbench-item-name" style="color: #7f7360;">??? (${t.blueprintLocked})</span>`;
+                        nameHTML = `<span class="workbench-item-name" style="color: #7f7360">??? (${t.blueprintLocked})</span>`;
                         // Say what would read it: the trade it is written in and
                         // how far along that trade these hands would have to be.
                         const lockedDesc = T('Thinker.lockedRecipeHint');
@@ -1133,7 +1193,7 @@
                                 : `<span class="reagent-status-indicator deficient">✖</span>`;
 
                             reagentsHTML += `
-                                <div class="reagent-row" style="opacity: ${satisfied ? 1 : 0.6};">
+                                <div class="reagent-row" style="opacity: ${satisfied ? 1 : 0.6}">
                                     <div class="reagent-meta">
                                         <span class="icon" style="${iconStyle}"></span>
                                         <span class="reagent-name">${(typeof window.translateText === 'function') ? window.translateText(reagent.name) : reagent.name}</span>
@@ -1171,7 +1231,7 @@
                             skillNotice += `<div class="workbench-skill"><span>${T('Thinker.knownBySkill', { spec: specLabel(trade.name), level: levelLabel(trade.level) })}</span></div>`;
                         }
                         if (!trained) {
-                            skillNotice += `<div class="sandbox-badge" style="background:rgba(160,40,40,0.18); border-color:#a02828; color:#a02828;">${T('Thinker.needFabrication', { level: tierLevelName(item) })}</div>`;
+                            skillNotice += `<div class="sandbox-badge" style="background:rgba(160,40,40,0.18); border-color:#a02828; color:#a02828">${T('Thinker.needFabrication', { level: tierLevelName(item) })}</div>`;
                         }
                     } else if (recipe) {
                         skillNotice = `<div class="workbench-skill">
@@ -1370,6 +1430,18 @@
                     return $gameParty.numItems(item) > 0;
                 });
             }
+            // Last word goes to the search strip, so the page and the cursor
+            // are indexed against the same, already-filtered list.
+            if (this._thinkerBar) {
+                itemsList = this._thinkerBar.apply(itemsList, item => ({
+                    name: item.name,
+                    category: parseCategory(item),
+                    weight: (window.ItemSystemUtils && window.ItemSystemUtils.getItemWeight
+                        ? window.ItemSystemUtils.getItemWeight(item) : 0) / 1000,
+                    price: (item.price || 0) / 100
+                }));
+            }
+
             this._thinkerItemsList = itemsList;
             this._thinkerItemsKey = key;
             this._thinkerItemsDirty = false;

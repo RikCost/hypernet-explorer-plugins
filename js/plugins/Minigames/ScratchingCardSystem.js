@@ -1655,10 +1655,10 @@
                 if ($gameVariables && WIN_VARIABLE_ID > 0) {
                     $gameVariables.setValue(WIN_VARIABLE_ID, won);
                 }
-                if (window.MinigameFun) window.MinigameFun.won({ spec: 'Card Counting' });
+                if (window.MinigameFun) window.MinigameFun.won({ spec: 'Card Counting', gambling: true });
             } else {
                 safePlaySe({ name: 'Buzzer1', volume: 90, pitch: 100, pan: 0 });
-                if (window.MinigameFun) window.MinigameFun.lost({ spec: 'Card Counting' });
+                if (window.MinigameFun) window.MinigameFun.lost({ spec: 'Card Counting', gambling: true });
             }
         }
 

@@ -1,0 +1,19 @@
+{
+ "placeholder": "Search…",
+ "clear": "Clear the search",
+ "anyCategory": "Any category",
+ "showing": "{count} shown",
+ "min": "min",
+ "max": "max",
+ "sort": {
+  "name": "Name",
+  "level": "Level",
+  "weight": "Weight",
+  "price": "Price",
+  "cost": "Cost"
+ },
+ "range": {
+  "weight": "Weight (kg)",
+  "price": "Price (€)"
+ }
+}

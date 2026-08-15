@@ -544,7 +544,7 @@
   "startingOut": "Punto di Partenza",
   "language": "Lingua",
   "gameLanguageAnyMissingTranslationFallsBackTo": "Lingua del gioco. Le traduzioni mancanti ripiegano sull'inglese.",
-  "fogOfWar": "Nebbia di Guerra",
+  "fogOfWar": "Nebbia di Guerra (WIP)",
   "revealsTheMapGraduallyAsYouExploreUnvisitedA": "Rivela la mappa gradualmente mentre esplori. Le aree non visitate rimangono nascoste.",
   "theEntireMapIsFullyRevealedNoHiddenAreas": "L'intera mappa è visibile, nessuna area nascosta.",
   "exploreTileByTileDarknessVeilsTheUnknown": "Esplora casella per casella, l'ignoto resta nell'ombra.",

@@ -5621,7 +5621,7 @@
                 'box-shadow:0 0 0 1px var(--bg-base, #000) inset, 0 10px 40px var(--shadow-heavy, rgba(4,2,1,0.96));';
             const title = document.createElement('div');
             title.textContent = T('Dream.dreamThins');
-            title.style.cssText = 'font-size:17px;margin-bottom:20px;letter-spacing:3px;text-transform:uppercase;' +
+            title.style.cssText = 'font-size:20px;margin-bottom:20px;letter-spacing:3px;text-transform:uppercase;' +
                 'color:var(--text-primary-hover, #ffcc66);' +
                 'text-shadow:0 0 10px var(--accent-amber-glow, #ffe9a8);';
             panel.appendChild(title);
@@ -5630,7 +5630,7 @@
             items.forEach((label, i) => {
                 const b = document.createElement('div');
                 b.textContent = label;
-                b.style.cssText = 'font-size:15px;padding:11px 16px;margin:6px 0;cursor:pointer;' +
+                b.style.cssText = 'font-size:17px;padding:11px 16px;margin:6px 0;cursor:pointer;' +
                     'letter-spacing:1px;border:1px solid transparent;transition:all .12s;';
                 b.addEventListener('mouseenter', () => { this._wakeSel = i; this._paintWake(); });
                 b.addEventListener('click', () => { this._wakeSel = i; this._confirmWake(); });

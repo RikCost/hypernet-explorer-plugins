@@ -5,9 +5,13 @@
  "confirmTraits": "Confirm these traits?",
  "yes": "Yes",
  "no": "No",
- "headerText": "Select 4 traits that will define your character.",
+ "headerText": "Spend your {budget} trait points. Drawbacks pay points back.",
+ "pointsLabel": "Points spent",
+ "refundLabel": "Paid back by drawbacks",
+ "picksLabel": "Traits taken",
+ "costLabel": "Cost:",
  "selectedTraitsLabel": "SELECTED TRAITS",
- "emptySlot": "[Empty]",
+ "emptySlot": "[No traits chosen]",
  "totalBonuses": "Total Bonuses:",
  "benefits": "Benefits:",
  "drawbacks": "Drawbacks:",
@@ -20,5 +24,8 @@
  "tabMental": "Mental",
  "tabMagical": "Magical",
  "tabDiseases": "Diseases",
- "selectedDiseasesLabel": "Illnesses carried"
+ "selectedDiseasesLabel": "Illnesses carried",
+ "searchPlaceholder": "Search traits…",
+ "incompatibleNote": "Clashes with a trait you have already taken.",
+ "unaffordableNote": "Not enough trait points left for this one."
 }

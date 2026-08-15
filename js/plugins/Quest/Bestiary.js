@@ -295,6 +295,15 @@
             // re-rollable from the button under the viewport).
             this._bestiaryGenSeeds = {};
 
+            // The shared strip (UI/MenuSearchBar.js), asked for only what a
+            // codex page can answer: a name, an archetype, a level.
+            this._bestiaryBar = window.MenuSearchBar ? window.MenuSearchBar.create({
+                id: 'bestiary',
+                placeholder: T('Bestiary.searchPlaceholder'),
+                sorts: ['name'],
+                onChange: () => this.onBestiaryFilterChanged()
+            }) : null;
+
             this.buildUIBestiaryData();
             this.initUIBestiaryDOM();
             this.refreshUIBestiary();
@@ -307,6 +316,7 @@
         }
 
         terminate() {
+            if (this._bestiaryBar) { this._bestiaryBar.dispose(); this._bestiaryBar = null; }
             if (this._intersectionObserver) {
                 this._intersectionObserver.disconnect();
             }
@@ -538,72 +548,26 @@
         }
 
         buildUIBestiaryData() {
-            // Earth tab: encountered hardcoded enemies. Petrodemon tab: the ones
-            // the party has felled, each read out of the copy of its record the
-            // codex kept (it was never a database creature). Alien tab:
-            // discovered procedural species (each keyed to a base enemy for
-            // stats/look but shown under its procedural name).
-            this._earthList = [];
-            const allEnemies = $dataEnemies.filter(enemy => enemy && enemy.id > 0 && !isDividerEnemy(enemy));
-            allEnemies.forEach(enemy => {
-                if ($gameSystem.isMonsterEncountered(enemy.id)) {
-                    const l10n = getEnemyL10n(enemy.id);
-                    const noteData = this.parseMonsterNotes(enemy.note, enemy.id);
-                    this._earthList.push({
-                        id: enemy.id,
-                        name: l10n ? l10n.name : enemy.name,
-                        battlerName: enemy.battlerName,
-                        character: noteData.character,
-                        enemy: enemy,
-                        noteData: noteData
-                    });
-                }
-            });
-
-            this._petroList = [];
-            const codex = ($gameSystem.petrodemonCodex && $gameSystem.petrodemonCodex()) || [];
-            codex.forEach(entry => {
-                if (!entry || !entry.enemy) return;
-                // Its own page, not whatever the scratch enemy slot holds now:
-                // the description travels with the entry.
-                const noteData = this.parseMonsterNotes(entry.enemy.note, 0);
-                if (entry.description) noteData.description = entry.description;
-                this._petroList.push({
-                    id: entry.enemy.id,
-                    name: entry.name,
-                    battlerName: entry.enemy.battlerName,
-                    character: noteData.character,
-                    enemy: entry.enemy,
-                    noteData: noteData,
-                    isPetrodemon: true,
-                    // Its look was rolled from its own seed, so that is what
-                    // keeps its portrait its own.
-                    speciesKey: 'petro:' + entry.seed
-                });
-            });
-
-            this._alienList = [];
-            const disc = (window.GalaxySim && window.GalaxySim.getDiscoveredAlienSpecies)
-                ? window.GalaxySim.getDiscoveredAlienSpecies() : [];
-            disc.forEach(sp => {
-                const enemy = $dataEnemies[sp.enemyId];
-                if (!enemy || isDividerEnemy(enemy)) return;
-                const noteData = this.parseMonsterNotes(enemy.note, sp.enemyId);
-                this._alienList.push({
-                    id: sp.enemyId,
-                    name: sp.name,
-                    battlerName: enemy.battlerName,
-                    character: noteData.character,
-                    enemy: enemy,
-                    noteData: noteData,
-                    isAlien: true,
-                    speciesKey: sp.key
-                });
-            });
+            // The three pages themselves are built by the shared service below,
+            // so any other menu that wants to search the codex (the main menu's
+            // search page) reads exactly the same three lists.
+            this._earthList = window.BestiaryData.earth();
+            this._petroList = window.BestiaryData.petrodemons();
+            this._alienList = window.BestiaryData.aliens();
 
             if (this._pageTab == null) this._pageTab = 0;
-            this._monsterList = this._pageTab === 2 ? this._alienList
+            const page = this._pageTab === 2 ? this._alienList
                 : (this._pageTab === 1 ? this._petroList : this._earthList);
+
+            // Whatever the strip is asking for, applied to the open page.
+            this._monsterList = this._bestiaryBar
+                ? this._bestiaryBar.apply(page, mon => ({
+                    name: mon.name,
+                    category: (mon.noteData && mon.noteData.archetype) || '',
+                    subtitle: (mon.noteData && mon.noteData.biome) || '',
+                    level: mon.noteData && mon.noteData.level ? parseInt(mon.noteData.level, 10) : 0
+                }))
+                : page;
         }
 
         // Switch the left-page pockets between Earth, petrodemons and alien
@@ -636,24 +600,25 @@
                 container.innerHTML = `
                     <div class="book-spread" id="bestiary-layout">
                         <div class="left-page">
-                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #5e2f17; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;">
+                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #5e2f17; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
                               <div class="back-button focusable">
                                 ${T('Bestiary.back')}
                               </div>
 
-                              <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${T('Bestiary.bestiary')}</h2>
+                              <h2 class="title" style="border: none; margin: 0; padding: 0">${T('Bestiary.bestiary')}</h2>
                             </div>
-                            <div id="bestiary-page-tabs" style="display:flex; gap:8px; justify-content:center; margin-bottom:12px;">
-                              <div class="bestiary-page-tab focusable" data-page="0" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold;">${T('Bestiary.earth')}</div>
-                              <div class="bestiary-page-tab focusable" data-page="1" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold;">${T('Bestiary.petrodemons')}</div>
-                              <div class="bestiary-page-tab focusable" data-page="2" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold;">${T('Bestiary.aliens')}</div>
+                            <div id="bestiary-search-slot"></div>
+                            <div id="bestiary-page-tabs" style="display:flex; gap:8px; justify-content:center; margin-bottom:12px">
+                              <div class="bestiary-page-tab focusable" data-page="0" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold">${T('Bestiary.earth')}</div>
+                              <div class="bestiary-page-tab focusable" data-page="1" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold">${T('Bestiary.petrodemons')}</div>
+                              <div class="bestiary-page-tab focusable" data-page="2" style="cursor:pointer; padding:4px 14px; border:1px solid #5e2f17; border-radius:4px; font-weight:bold">${T('Bestiary.aliens')}</div>
                             </div>
                             <div class="list-viewport" id="bestiary-list-viewport"></div>
                         </div>
 
                         <div class="right-page">
-                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #5e2f17; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;"></div>
-                            <div id="bestiary-portfolio-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;"></div>
+                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #5e2f17; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%"></div>
+                            <div id="bestiary-portfolio-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden"></div>
                         </div>
                     </div>
                 `;
@@ -682,6 +647,17 @@
                         this.switchBestiaryPageTab(parseInt(tabEl.getAttribute("data-page"), 10));
                     });
                 });
+            }
+
+            // The shared search + filter strip (UI/MenuSearchBar.js), sitting
+            // under the title and over the Earth / Petrodemon / Alien tabs. Its
+            // vocabulary is this menu's own: creatures have archetypes and
+            // levels, not prices or item categories, so those controls are never
+            // offered here. Rebuilt in place, then handed its caret back.
+            const searchSlot = document.getElementById("bestiary-search-slot");
+            if (searchSlot && this._bestiaryBar) {
+                searchSlot.innerHTML = this._bestiaryBar.html();
+                this._bestiaryBar.restoreFocus();
             }
 
             // Reflect the active page tab styling every refresh.
@@ -802,14 +778,14 @@
                     if (this._activeTab === 0) {
                         // Tab 0: Lexicon / Portrait & Info
                         let imgHTML = `
-                            <div style="font-size:40px; color:rgba(94,47,23,0.3); font-style:italic;">${T('Bestiary.drawing')}</div>
+                            <div style="font-size:44px; color:rgba(94,47,23,0.3)">${T('Bestiary.drawing')}</div>
                         `;
 
                         // Without a model the portrait is the creature's own
                         // walking sprite, blown up; the flat battler
                         // illustration it used to be retired with the 2D mode.
                         if (mon.character) {
-                            imgHTML = `<canvas id="bestiary-portrait-sprite" class="portrait-sketch-image" width="192" height="192" style="image-rendering:pixelated; width:100%; height:100%; max-height:380px; object-fit:contain;"></canvas>`;
+                            imgHTML = `<canvas id="bestiary-portrait-sprite" class="portrait-sketch-image" width="192" height="192" style="image-rendering:pixelated; width:100%; height:100%; max-height:380px"></canvas>`;
                         }
 
                         // 3D/sprite toggle (only when a procedural archetype exists).
@@ -818,23 +794,23 @@
                             const label = can3D
                                 ? (T('Bestiary.3dModel'))
                                 : (T('Bestiary.spritePortrait'));
-                            toggleHTML = `<button id="bestiary-3d-toggle" style="position:absolute; top:8px; right:8px; z-index:5; cursor:pointer; padding:4px 10px; font-family:inherit; font-size:12px; font-weight:bold; color:#5e2f17; background:rgba(244,232,208,0.92); border:1.5px solid #5e2f17; border-radius:4px;"><span style="margin-right:4px;">&#x21c4;</span>${label}</button>`;
+                            toggleHTML = `<button id="bestiary-3d-toggle" style="position:absolute; top:8px; right:8px; z-index:5; cursor:pointer; padding:4px 10px; font-family:inherit; font-size:15px; font-weight:bold; color:#5e2f17; background:rgba(244,232,208,0.92); border:1.5px solid #5e2f17; border-radius:4px"><span style="margin-right:4px">&#x21c4;</span>${label}</button>`;
                         }
 
                         const portraitInner = can3D
-                            ? `<canvas id="bestiary-3d-canvas" style="width:100%; height:100%; min-height:380px; display:block; cursor:grab;"></canvas>`
+                            ? `<canvas id="bestiary-3d-canvas" style="width:100%; height:100%; min-height:380px; display:block; cursor:grab"></canvas>`
                             : imgHTML;
 
                         const hintHTML = can3D
-                            ? `<div class="bestiary-3d-hint" style="text-align:center; font-size:11px; color:rgba(94,47,23,0.55); margin-top:2px;">${T('Bestiary.dragToRotateWheelTo')}</div>`
+                            ? `<div class="bestiary-3d-hint" style="text-align:center; font-size:14px; color:rgba(94,47,23,0.55); margin-top:2px">${T('Bestiary.dragToRotateWheelTo')}</div>`
                             : "";
 
                         // Seed re-roll: shows the seed this specimen was grown from
                         // (the world seed until the player rolls a new one).
                         const seedHTML = can3D
-                            ? `<div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:6px;">
-                                   <button id="bestiary-seed-reroll" style="cursor:pointer; padding:4px 10px; font-family:inherit; font-size:12px; font-weight:bold; color:#5e2f17; background:rgba(244,232,208,0.92); border:1.5px solid #5e2f17; border-radius:4px;"><span style="margin-right:4px;">&#x2684;</span>${T('Bestiary.randomizeSeed')}</button>
-                                   <span style="font-size:11px; color:rgba(94,47,23,0.6); font-style:italic;">${T('Bestiary.seed')}: ${this.bestiaryGenSeed(this.bestiarySeedKey(mon))}</span>
+                            ? `<div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:6px">
+                                   <button id="bestiary-seed-reroll" style="cursor:pointer; padding:4px 10px; font-family:inherit; font-size:15px; font-weight:bold; color:#5e2f17; background:rgba(244,232,208,0.92); border:1.5px solid #5e2f17; border-radius:4px"><span style="margin-right:4px">&#x2684;</span>${T('Bestiary.randomizeSeed')}</button>
+                                   <span style="font-size:14px; color:rgba(94,47,23,0.6)">${T('Bestiary.seed')}: ${this.bestiaryGenSeed(this.bestiarySeedKey(mon))}</span>
                                </div>`
                             : "";
 
@@ -912,7 +888,7 @@
                                 const formattedRate = obj.rate + "x";
                                 affinitiesGridHTML += `
                                     <div class="affinity-row">
-                                        <span style="font-weight:bold; color:#8c7667;">${obj.name}</span>
+                                        <span style="font-weight:bold; color:#8c7667">${obj.name}</span>
                                         <span class="affinity-val ${valClass}">${formattedRate}</span>
                                     </div>
                                 `;
@@ -921,7 +897,7 @@
                         } else {
                             affinitiesGridHTML += `
                                 <h4 class="affinities-header">${T('Bestiary.elementalAffinities')}</h4>
-                                <p style="font-size:12px; color:rgba(94,47,23,0.5); font-style:italic;">${T('Bestiary.noElementalWeaknessOrResistance')}</p>
+                                <p style="font-size:15px; color:rgba(94,47,23,0.5)">${T('Bestiary.noElementalWeaknessOrResistance')}</p>
                             `;
                         }
 
@@ -956,7 +932,7 @@
                         };
                         const behaviorInfo = noteData.behavior ? behaviorMap[noteData.behavior] : null;
                         const behaviorText = behaviorInfo
-                            ? `<span style="font-weight:bold; color:${behaviorInfo.color};">${T(behaviorInfo.key)}</span>`
+                            ? `<span style="font-weight:bold; color:${behaviorInfo.color}">${T(behaviorInfo.key)}</span>`
                             : (T('Bestiary.unknown'));
 
                         // The 3 nations where this enemy is most commonly found,
@@ -1013,9 +989,9 @@
                         let spoilsHTML = `
                             <div class="drops-section">
                                 <h4 class="affinities-header">${T('Bestiary.rewards')}</h4>
-                                <div style="display:flex; justify-content:space-between; padding:4px 8px; font-size:13px; font-weight:bold;">
-                                    <span>${T('Bestiary.exp')}: <span style="color:#8c1d0f;">${enemy.exp}</span></span>
-                                    <span>${T('Bestiary.gold')}: <span style="color:#27ae60;">${enemy.gold / 100} €</span></span>
+                                <div style="display:flex; justify-content:space-between; padding:4px 8px; font-size:16px; font-weight:bold">
+                                    <span>${T('Bestiary.exp')}: <span style="color:#8c1d0f">${enemy.exp}</span></span>
+                                    <span>${T('Bestiary.gold')}: <span style="color:#27ae60">${enemy.gold / 100} €</span></span>
                                 </div>
                             </div>
                         `;
@@ -1050,7 +1026,7 @@
                                 }
                             });
                         } else {
-                            dropsHTML += `<p style="font-size:12px; color:rgba(94,47,23,0.5); font-style:italic;">${T('Bestiary.noExtractableReagents')}</p>`;
+                            dropsHTML += `<p style="font-size:15px; color:rgba(94,47,23,0.5)">${T('Bestiary.noExtractableReagents')}</p>`;
                         }
                         dropsHTML += `</div>`;
 
@@ -1070,14 +1046,14 @@
                                         <div class="harvest-row">
                                             <div class="harvest-meta">
                                                 <span class="harvest-icon" style="${iconStyle}"></span>
-                                                <span class="harvest-name" style="font-weight:bold;">${skill.name}</span>
+                                                <span class="harvest-name" style="font-weight:bold">${skill.name}</span>
                                             </div>
                                         </div>
                                     `;
                                 }
                             });
                         } else {
-                            actionsHTML += `<p style="font-size:12px; color:rgba(94,47,23,0.5); font-style:italic;">${T('Bestiary.noCombatAbilitiesRegistered')}</p>`;
+                            actionsHTML += `<p style="font-size:15px; color:rgba(94,47,23,0.5)">${T('Bestiary.noCombatAbilitiesRegistered')}</p>`;
                         }
                         actionsHTML += `</div>`;
 
@@ -1104,7 +1080,7 @@
                         </div>
                     `;
                 } else {
-                    rightPageHTML = `<div style="flex:1;"></div>`;
+                    rightPageHTML = `<div style="flex:1"></div>`;
                 }
 
                 // Tear down any previous 3D viewer before its canvas is removed.
@@ -1286,6 +1262,10 @@
         // Keyboard & Gamepad navigation inputs
         // =============================================================================
         updateUIBestiaryInput() {
+            // While the search field has the keyboard, the cards must not move
+            // under the caret and Escape must reach the field, not the scene.
+            if (window.MenuSearchBar && window.MenuSearchBar.isTyping()) return;
+
             if (this._monsterList.length === 0) {
                 if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
                     this.popScene();
@@ -1443,6 +1423,88 @@
     }
 
     window.Scene_CDCollection = Scene_CDCollection;
+
+    // =============================================================================
+    // Shared bestiary service
+    // =============================================================================
+    // The codex's three pages as plain data: Earth (encountered database
+    // creatures), Petrodemons (the ones the party has felled, read out of the
+    // copy of its record the codex kept) and Aliens (discovered procedural
+    // species, each keyed to a base enemy for stats and look but shown under its
+    // procedural name). Scene_CDCollection draws these; the main menu's search
+    // page searches them.
+    const parseNotes = (note, enemyId) =>
+        Scene_CDCollection.prototype.parseMonsterNotes.call(Scene_CDCollection.prototype, note, enemyId);
+
+    window.BestiaryData = {
+        parseNotes,
+
+        earth() {
+            const out = [];
+            $dataEnemies.forEach(enemy => {
+                if (!enemy || enemy.id <= 0 || isDividerEnemy(enemy)) return;
+                if (!$gameSystem.isMonsterEncountered(enemy.id)) return;
+                const l10n = getEnemyL10n(enemy.id);
+                const noteData = parseNotes(enemy.note, enemy.id);
+                out.push({
+                    id: enemy.id,
+                    name: l10n ? l10n.name : enemy.name,
+                    battlerName: enemy.battlerName,
+                    character: noteData.character,
+                    enemy: enemy,
+                    noteData: noteData
+                });
+            });
+            return out;
+        },
+
+        petrodemons() {
+            const out = [];
+            const codex = ($gameSystem.petrodemonCodex && $gameSystem.petrodemonCodex()) || [];
+            codex.forEach(entry => {
+                if (!entry || !entry.enemy) return;
+                // Its own page, not whatever the scratch enemy slot holds now:
+                // the description travels with the entry.
+                const noteData = parseNotes(entry.enemy.note, 0);
+                if (entry.description) noteData.description = entry.description;
+                out.push({
+                    id: entry.enemy.id,
+                    name: entry.name,
+                    battlerName: entry.enemy.battlerName,
+                    character: noteData.character,
+                    enemy: entry.enemy,
+                    noteData: noteData,
+                    isPetrodemon: true,
+                    // Its look was rolled from its own seed, so that is what
+                    // keeps its portrait its own.
+                    speciesKey: 'petro:' + entry.seed
+                });
+            });
+            return out;
+        },
+
+        aliens() {
+            const out = [];
+            const disc = (window.GalaxySim && window.GalaxySim.getDiscoveredAlienSpecies)
+                ? window.GalaxySim.getDiscoveredAlienSpecies() : [];
+            disc.forEach(sp => {
+                const enemy = $dataEnemies[sp.enemyId];
+                if (!enemy || isDividerEnemy(enemy)) return;
+                const noteData = parseNotes(enemy.note, sp.enemyId);
+                out.push({
+                    id: sp.enemyId,
+                    name: sp.name,
+                    battlerName: enemy.battlerName,
+                    character: noteData.character,
+                    enemy: enemy,
+                    noteData: noteData,
+                    isAlien: true,
+                    speciesKey: sp.key
+                });
+            });
+            return out;
+        }
+    };
 
     //=============================================================================
     // Battle Integration & Initialization

@@ -63,5 +63,6 @@
     "Weapons": "Weapons",
     "Armor": "Armor",
     "Misc": "Misc"
-  }
+  },
+  "searchPlaceholder": "Search recipes…"
 }

@@ -1719,16 +1719,16 @@
     }
     #menu-container .teach-card.taught { border-color:#2e7d32; background:rgba(46,125,50,0.18); }
     #menu-container .teach-card.locked { opacity:0.45; cursor:not-allowed; }
-    #menu-container .teach-name { font-weight:bold; font-size:1.02em; display:flex; justify-content:space-between; gap:8px; }
+    #menu-container .teach-name { font-weight:bold; font-size:1.019em; display:flex; justify-content:space-between; gap:8px; }
     #menu-container .teach-price { color:var(--accent-gold-pure,#b8860b); font-weight:bold; }
-    #menu-container .teach-meta { font-size:0.72em; text-transform:uppercase; letter-spacing:0.5px; opacity:0.8; }
+    #menu-container .teach-meta { font-size:0.798em; text-transform:uppercase; letter-spacing:0.5px; opacity:0.8; }
     #menu-container .teach-forbidden { color:#a01818; font-weight:bold; }
-    #menu-container .teach-desc { font-size:0.82em; opacity:0.85; line-height:1.35; }
-    #menu-container .teach-empty { text-align:center; padding:40px 20px; font-style:italic; opacity:0.7; font-family:'Lora',serif; color:var(--text-primary-hover,#5d483b); }
+    #menu-container .teach-desc { font-size:0.87em; opacity:0.85; line-height:1.35; }
+    #menu-container .teach-empty { text-align:center; padding:40px 20px; font-style: normal; opacity:0.7; font-family:'Lora',serif; color:var(--text-primary-hover,#5d483b); }
     #menu-container .teach-info { padding:10px 12px; border-radius:4px; margin-top:auto;
         background:var(--bg-card-translucent-5, rgba(184,134,11,0.05));
         border:1px solid var(--border-primary-hover-translucent-15, rgba(184,134,11,0.2));
-        font-family:'Lora',serif; font-size:0.82em; color:var(--text-primary-hover,#2b251d); }
+        font-family:'Lora',serif; font-size:0.87em; color:var(--text-primary-hover,#2b251d); }
     #menu-container .teach-info .row { display:flex; justify-content:space-between; margin-top:4px; gap:10px; }
     `;
     document.head.appendChild(el);
@@ -1913,10 +1913,10 @@
       <div class="left-page">
         <div style="position:relative; display:flex; align-items:center; justify-content:center; border-bottom:2px dashed var(--border-primary-hover-translucent-15,#bba16d); padding-bottom:8px; margin-bottom:14px; min-height:40px;">
           <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position:absolute; left:0;">${back}</div>
-          <h2 class="title" style="margin:0; border:none; font-size:1.7em;">${this.headerTitle()}</h2>
+          <h2 class="title" style="margin:0; border:none; font-size:1.665em;">${this.headerTitle()}</h2>
         </div>
-        <div style="font-family:'Lora',serif; font-style:italic; opacity:0.8; font-size:0.85em; margin-bottom:12px; color:var(--text-primary-hover,#58180D);">${blurb}</div>
-        <div style="font-family:'Lora',serif; font-weight:bold; font-size:0.9em; margin-bottom:6px; color:var(--text-primary-hover,#58180D);">${T('DailyShop.ui.pupil')}</div>
+        <div style="font-family:'Lora',serif; font-style: normal; opacity:0.8; font-size:0.892em; margin-bottom:12px; color:var(--text-primary-hover,#58180D);">${blurb}</div>
+        <div style="font-family:'Lora',serif; font-weight:bold; font-size:0.928em; margin-bottom:6px; color:var(--text-primary-hover,#58180D);">${T('DailyShop.ui.pupil')}</div>
         <div class="teach-list">${actorsHTML}</div>
         <div class="teach-info">
           <div style="font-weight:bold; color:var(--accent-gold-pure,#b8860b);">${isMagic ? (T('DailyShop.ui.todaySSchools')) : (T('DailyShop.ui.todaySDisciplines'))}</div>
@@ -1955,7 +1955,7 @@
 
     const rightHTML = `
       <div class="right-page">
-        <h2 class="title" style="font-size:1.5em; margin-bottom:12px;">${isMagic ? (T('DailyShop.ui.spellsForSale')) : (T('DailyShop.ui.techniquesForSale'))}</h2>
+        <h2 class="title" style="font-size:1.475em; margin-bottom:12px;">${isMagic ? (T('DailyShop.ui.spellsForSale')) : (T('DailyShop.ui.techniquesForSale'))}</h2>
         <div class="teach-list">${cardsHTML}</div>
       </div>`;
 

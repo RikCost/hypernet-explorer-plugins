@@ -57,6 +57,7 @@
         "name": "Earth",
         "type": "earth_like",
         "debris": "kessler",
+        "noLanding": true,
         "note": "The shell around it is not decoration. Forty years of spent upper stages, dead satellites and frozen coolant, every collision breeding the fragments for the next one.",
         "landingLocations": [
           {

@@ -634,5 +634,11 @@
     "cancel": "NOBODY",
     "source": "A VIAL",
     "already": "{actor} ALREADY HAB {disease}"
+  },
+  "diagnose": {
+    "header": "DA CHECKUP IS DONE.",
+    "line": "{actor}: {diseases}",
+    "clean": "{actor}: NUFFIN",
+    "none": "NOBODY IN DA GANG IS CARRYIN NUFFIN."
   }
 }

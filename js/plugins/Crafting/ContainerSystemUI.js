@@ -40,13 +40,13 @@
         }
         #cs-mini .cs-head, #hv-mini .cs-head { display:flex; align-items:center; justify-content:space-between;
             padding:17px 23px; border-bottom:1px solid rgba(255,255,255,0.1); }
-        #cs-mini .cs-title, #hv-mini .cs-title { font-size:26px; font-weight:700; color: var(--text-primary-hover, #e0b64a);
+        #cs-mini .cs-title, #hv-mini .cs-title { font-size:29px; font-weight:700; color: var(--text-primary-hover, #e0b64a);
             letter-spacing:0.3px; text-shadow:0 1px 2px rgba(0,0,0,0.6); }
         #cs-mini .cs-close, #hv-mini .cs-close { cursor:pointer; padding:3px 14px; border-radius:6px;
-            opacity:0.75; font-size:26px; line-height:1; }
+            opacity:0.75; font-size:29px; line-height:1; }
         #cs-mini .cs-close:hover, #hv-mini .cs-close:hover { opacity:1; background:rgba(255,255,255,0.1); }
         #cs-mini .cs-tabs { display:flex; gap:6px; padding:12px 15px 0; }
-        #cs-mini .cs-tab { flex:1; text-align:center; padding:11px 0; font-size:21px; font-weight:600; cursor:pointer;
+        #cs-mini .cs-tab { flex:1; text-align:center; padding:11px 0; font-size:23px; font-weight:600; cursor:pointer;
             opacity:0.62; border-bottom:3px solid transparent; }
         #cs-mini .cs-tab:hover { opacity:0.92; }
         #cs-mini .cs-tab.active { opacity:1; border-bottom-color: var(--text-primary-hover, #e0b64a); color: var(--text-primary-hover, #e0b64a); }
@@ -59,27 +59,27 @@
         #cs-mini .cs-row.inactive, #hv-mini .cs-row.inactive { opacity:0.45; }
         #cs-mini .cs-rarity-bar { width:7px; align-self:stretch; border-radius:4px; flex:0 0 7px; }
         #cs-mini .cs-ic, #hv-mini .cs-ic { width:54px; height:54px; flex:0 0 54px; image-rendering:pixelated; }
-        #cs-mini .cs-name, #hv-mini .cs-name { flex:1; font-size:23px; white-space:nowrap; overflow:hidden;
+        #cs-mini .cs-name, #hv-mini .cs-name { flex:1; font-size:25px; white-space:nowrap; overflow:hidden;
             text-overflow:ellipsis; }
-        #cs-mini .cs-count { font-size:21px; opacity:0.85; font-variant-numeric:tabular-nums; }
-        #hv-mini .cs-status { font-size:20px; font-weight:600; }
-        #hv-mini .cs-rate { font-size:21px; opacity:0.85; min-width:63px; text-align:right; font-variant-numeric:tabular-nums; }
-        #cs-mini .cs-empty, #hv-mini .cs-empty { text-align:center; opacity:0.62; font-size:23px;
-            padding:72px 15px; font-style:italic; }
+        #cs-mini .cs-count { font-size:23px; opacity:0.85; font-variant-numeric:tabular-nums; }
+        #hv-mini .cs-status { font-size:23px; font-weight:600; }
+        #hv-mini .cs-rate { font-size:23px; opacity:0.85; min-width:63px; text-align:right; font-variant-numeric:tabular-nums; }
+        #cs-mini .cs-empty, #hv-mini .cs-empty { text-align:center; opacity:0.62; font-size:25px;
+            padding:72px 15px; font-style: normal; }
         #cs-mini .cs-qty-overlay, #hv-mini .cs-qty-overlay { position:absolute; top:0; right:0; bottom:0; left:0; background:rgba(0,0,0,0.58);
             display:flex; align-items:center; justify-content:center; }
         #cs-mini .cs-qty-box { background: var(--bg-panel,#211a13); border:1px solid var(--border-gold-amber,#7a6039);
             border-radius:11px; padding:24px 27px; width:80%; text-align:center; }
-        #cs-mini .cs-qty-title { font-size:23px; margin-bottom:14px; }
-        #cs-mini .cs-qty-val { font-size:35px; margin-bottom:8px; }
-        #cs-mini .cs-qty-hint { font-size:18px; opacity:0.65; margin-bottom:18px; }
+        #cs-mini .cs-qty-title { font-size:25px; margin-bottom:14px; }
+        #cs-mini .cs-qty-val { font-size:38px; margin-bottom:8px; }
+        #cs-mini .cs-qty-hint { font-size:21px; opacity:0.65; margin-bottom:18px; }
         #cs-mini .cs-qty-btns { display:flex; gap:14px; }
-        #cs-mini .cs-qty-btn { flex:1; padding:12px 0; font-size:21px; border-radius:8px; cursor:pointer;
+        #cs-mini .cs-qty-btn { flex:1; padding:12px 0; font-size:23px; border-radius:8px; cursor:pointer;
             background:rgba(255,255,255,0.07); }
         #cs-mini .cs-qty-btn.selected { background: var(--text-primary-hover,#e0b64a); color:#1a140d; font-weight:700; }
         #hv-mini .cs-actbar { display:flex; gap:12px; padding:14px 17px; border-top:1px solid rgba(255,255,255,0.1);
             flex-wrap:wrap; }
-        #hv-mini .cs-actbtn { flex:1 1 auto; min-width:144px; text-align:center; padding:12px 15px; font-size:21px;
+        #hv-mini .cs-actbtn { flex:1 1 auto; min-width:144px; text-align:center; padding:12px 15px; font-size:23px;
             font-weight:600; border-radius:8px; cursor:pointer; background:rgba(255,255,255,0.07); }
         #hv-mini .cs-actbtn:hover { background:rgba(255,255,255,0.12); }
         #hv-mini .cs-actbtn.selected { background: var(--text-primary-hover,#e0b64a); color:#1a140d; }
@@ -237,13 +237,13 @@
             const pct     = Math.min(100, Math.round(used / this._weightLimit * 100));
             const barColor = pct >= 100 ? "#c0392b" : pct >= 85 ? "#d4881f" : "#5a8f4a";
             return `
-                <div class="container-capacity" style="padding:4px 10px 6px;">
-                    <div style="display:flex;justify-content:space-between;font-size:12px;opacity:0.85;margin-bottom:3px;">
+                <div class="container-capacity" style="padding:4px 10px 6px">
+                    <div style="display:flex; justify-content:space-between; font-size:15px; opacity:0.85; margin-bottom:3px">
                         <span>${getText('capacity')}</span>
                         <span class="container-capacity-text">${usedKg} / ${limitKg} kg</span>
                     </div>
-                    <div style="height:8px;border-radius:4px;background:rgba(0,0,0,0.25);overflow:hidden;">
-                        <div class="container-capacity-fill" style="height:100%;width:${pct}%;background:${barColor};transition:width 0.18s ease;"></div>
+                    <div style="height:8px; border-radius:4px; background:rgba(0,0,0,0.25); overflow:hidden">
+                        <div class="container-capacity-fill" style="height:100%; width:${pct}%; background:${barColor}; transition:width 0.18s ease"></div>
                     </div>
                 </div>
             `;
@@ -305,7 +305,7 @@
                     const canvasId    = `cs-ic-${idx}`;
                     listHTML += `
                         <div class="cs-row ${idx === this._selectedIndex ? "selected" : ""}" data-icon-index="${item.iconIndex}" data-canvas-id="${canvasId}" onclick="SceneManager._scene.selectItem(${idx})">
-                            <span class="cs-rarity-bar" style="background:${rarityColor};" title="${rarityName}"></span>
+                            <span class="cs-rarity-bar" style="background:${rarityColor}" title="${rarityName}"></span>
                             <canvas id="${canvasId}" width="32" height="32" class="cs-ic"></canvas>
                             <span class="cs-name">${item.name}</span>
                             <span class="cs-count">x${count}</span>
@@ -758,7 +758,7 @@
                              onclick="SceneManager._scene && SceneManager._scene.onPartClick(${idx})">
                             <canvas id="hv-ic-${idx}" width="36" height="36" class="cs-ic"></canvas>
                             <span class="cs-name">${itemName}</span>
-                            <span class="cs-status" style="color:${cl.color};">${cl.label}</span>
+                            <span class="cs-status" style="color:${cl.color}">${cl.label}</span>
                             <span class="cs-rate">${rateText}</span>
                         </div>`;
                 });

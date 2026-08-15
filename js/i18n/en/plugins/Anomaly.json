@@ -7,7 +7,10 @@
     "where": "{planet} - {system}",
     "signalRow": "Signal",
     "signalUnread": "anomalous, unresolved",
-    "signalLost": "The signal breaks up before anything can be made of it."
+    "signalLost": "The signal breaks up before anything can be made of it.",
+    "mapTitle": "\\c[14]{title}\\c[0]",
+    "walkAway": "Leave it.",
+    "walkedAway": "The party walks away from it, and it stays walked away from."
   },
   "reward": {
     "artifact": "Recovered: {name}.",
@@ -50,7 +53,8 @@
       "Mask",
       "Compass",
       "Bell"
-    ]
+    ],
+    "descriptionEarth": "Picked up in {planet}. Nothing on file explains it."
   },
   "tokens": {
     "instrument": [
@@ -3201,6 +3205,2464 @@
           }
         }
       }
+    },
+    "e_ocean": {
+      "title": "The Drift",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "{hour} the swell flattens out for no reason anyone can give, and a hull comes up out of it: a fishing boat, riding high, nets still out and nobody on the deck.\nThe name has been painted over twice. Under both coats it is the same name.",
+          "choices": [
+            {
+              "text": "Go aboard.",
+              "to": "a"
+            },
+            {
+              "text": "Haul in the nets from your own side.",
+              "to": "b"
+            },
+            {
+              "text": "Circle her once and log the position.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The galley kettle is warm. The log is written up to this morning in a steady hand, and the last line is a list of everyone aboard with a tick against every name.\nBelow that, in the same hand: they all came back.",
+          "choices": [
+            {
+              "text": "Take the log and search the hold.",
+              "to": "a1"
+            },
+            {
+              "text": "Answer the tick with your own names.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The net comes up heavy and wrong, the weight shifting the way weight does when it is deciding.\n{leader} braces on the rail and gets it over the side.",
+          "choices": [
+            {
+              "text": "Cut it open.",
+              "to": "b1"
+            },
+            {
+              "text": "Put it back in the water.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Two turns, close in, and the boat drifts the whole time against the current instead of with it.\nThe crew notes the heading, the hour and the fact that the deck is dry in a rain that has not stopped since dawn, and leaves her to it. A fortnight later the sighting is worth something to a very quiet office in {region}.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "small",
+            "exp": 8
+          }
+        },
+        "a1": {
+          "text": "The hold is full of ice and under the ice is the catch of a season nobody had. Packed in the middle of it, wrapped in oilcloth like the best fish aboard, is a thing that was never in any sea.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "The pen is where the last hand left it. Everyone signs, because it seems rude not to, and the boat leans very slightly towards the party as they do.\nWhat comes up the companionway wants its list back.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "gear",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "Sailcloth, cable, three crates of ship's stores and a sounding weight of good bronze. Whoever lost this net lost a working month with it.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 10
+          }
+        },
+        "b2": {
+          "text": "It goes down slower than it should, keeping its shape, and something takes it politely at about four fathoms.\nThe swell picks back up. Everyone aboard sleeps that night like they have not slept in a year.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "medium",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "e_fields": {
+      "title": "The Standing Crop",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "A square of the crop is still standing in a field that was cut a month ago, and it is standing in a shape: forty paces across, sides too straight for a plough.\nInside it {sound_field}. Outside it, nothing at all.",
+          "choices": [
+            {
+              "text": "Walk into the middle of it.",
+              "to": "a"
+            },
+            {
+              "text": "Find whoever farms this.",
+              "to": "b"
+            },
+            {
+              "text": "Cut a sheaf and take it away.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The stalks bend away as the party comes on and close again behind them, and in the centre there is a patch of bare, packed earth with a hollow in it the size of a sleeping animal. It is warm.\nThe crop around the hollow has grown a second time this year, out of season, and it has grown heavy.",
+          "choices": [
+            {
+              "text": "Lie down in the hollow.",
+              "to": "a1"
+            },
+            {
+              "text": "Dig it out.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The farmhouse is a mile off and the man there does not want to talk about the square. He wants to talk about his father, who left it standing for forty years, and about what the two dry summers were like the once it got cut.\nHe will pay for it to be left alone. He will pay more if someone will go and look.",
+          "choices": [
+            {
+              "text": "Take his money and leave the square standing.",
+              "to": "b1"
+            },
+            {
+              "text": "Take his tools and cut it flat.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The sheaf comes away easily and stays green for eleven days in a pack where bread goes mouldy in three.\nThe grain in it is heavier than the grain around it and it seeds true. The agricultural office in {region} takes the whole sheaf and asks no questions worth answering.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "small",
+            "exp": 8
+          }
+        },
+        "a1": {
+          "text": "It is the length of a person and it fits like it was measured. {leader} is out for eleven minutes by the watch and wakes up with a taste of copper, a scar closed that has been open since spring, and everybody standing over them looking rested for the first time in a month.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "a2": {
+          "text": "A foot down, the earth stops being earth. What comes up out of the hollow has been sleeping there through several harvests and it wants the rest of its year.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "loot",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "He pays in the notes his father kept back from three good years and shakes every hand twice.\nThe square is still standing. Everything around it will be, too.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 10
+          }
+        },
+        "b2": {
+          "text": "It cuts like any crop and threshes out at four times what the field beside it gave. The sacks go on the cart and the farmer will not touch them, so they go with the party instead.\nHe stands at the gate watching the flat ground and does not wave anyone off.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "e_meadows": {
+      "title": "The Hives",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Eleven hives in a meadow with no house within a day's walk, painted and re-painted and kept, and the grass between them is mown.\nThe bees are working {weather}, which bees do not do.",
+          "choices": [
+            {
+              "text": "Open a hive.",
+              "to": "a"
+            },
+            {
+              "text": "Wait for whoever mows the grass.",
+              "to": "b"
+            },
+            {
+              "text": "Take a comb from the outermost hive and go.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The comb is built around something that is not a frame: a rod of dark metal, set upright in the middle of the brood, and the whole colony has organised itself around it as though it were the queen.\nThey do not sting. They move aside.",
+          "choices": [
+            {
+              "text": "Take the rod.",
+              "to": "a1"
+            },
+            {
+              "text": "Close the hive and leave everything as it was.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Nobody comes. At dusk the mowing starts anyway, a long way off at first, working inward in neat lines that nothing is standing in.\nBy full dark the grass around the party's boots is cut.",
+          "choices": [
+            {
+              "text": "Stand still and let it finish.",
+              "to": "b1"
+            },
+            {
+              "text": "Get between it and the hives.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "It is the best honey anyone aboard has had, and there is nine kilos of it, and the hive is fuller the next morning than it was before the comb came out.\nNobody says anything about going back for more. Everybody thinks it.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 8
+          }
+        },
+        "a1": {
+          "text": "It is warm at one end and it hums against the palm at the pitch the hive hums at. The colony goes quiet for exactly as long as it takes to walk out of the meadow, and then goes back to work on nothing.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "The lid goes back down and the hum comes back up to where it was. Something in the meadow is satisfied, and the party's water bottles are full and cold when they get back to them, and one of the packs has a wax-sealed jar in it that nobody put there.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "It goes round the party's feet and moves on without touching them. In the morning there is a scythe laid across the path out, old, sharp, the handle worn to fit a hand that is very nearly a hand.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "It does not stop for the hives and it does not stop for anyone standing in front of them.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "gear",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_forest": {
+      "title": "The Blind",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "A hunter's blind, nailed up a beech at the height of a first branch, in a wood with no track to it. The ladder is new. The rifle rest is worn shiny.\nIt is facing away from the deer path, and it is facing {landmark}.",
+          "choices": [
+            {
+              "text": "Climb up and sit in it.",
+              "to": "a"
+            },
+            {
+              "text": "Follow the sightline to what it is watching.",
+              "to": "b"
+            },
+            {
+              "text": "Strip it for what it is worth.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "There is a flask, a cushion, and a tally cut into the rail: three hundred and eleven marks, in groups of four struck through, made over years by someone patient.\nNothing on the ground has been shot. There are no bones under this tree.",
+          "choices": [
+            {
+              "text": "Sit the watch out until dark.",
+              "to": "a1"
+            },
+            {
+              "text": "Cut a mark of your own into the rail.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Ninety paces along the sightline the wood opens onto a clearing that is not on any map, and in the middle of it is a stone with a hollow ground into the top of it.\nThe hollow has been kept filled. Whatever was in it this morning is gone.",
+          "choices": [
+            {
+              "text": "Fill it from your own stores.",
+              "to": "b1"
+            },
+            {
+              "text": "Turn the stone over.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The rifle rest is machined, the ladder is good ash and the flask is silver under a century of thumbing.\nOn the walk out, every bird in the wood starts up at once, and behind the party something comes down the ladder they have just taken.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "At last light the wood goes quiet in a ring that closes on the tree, and holds, and opens again on nothing. Whatever it was walked under the blind and left what it was carrying at the foot of it, the way you would pay a toll.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "The knife goes in easily. Three hundred and twelve.\nSomething in the wood has been counting too, and the number is a promise, and {leader} has just made it on everybody's behalf.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "gear",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "Salt, a strip of meat and the last of the good bread. It is gone before the party is out of the clearing.\nThe wood lets them out on the side they wanted, which is not the side they walked in on, and every scratch anybody took today is shut.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "Under the stone the ground is packed with what has been paid over a very long time: coin from four countries, teeth, buttons, a wedding band, a cartridge case still in its wax.\nThe wood does not stop them. It simply never lets any of them enjoy a clearing again.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "e_forestice": {
+      "title": "The Long Cold",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "A stand of black spruce, and standing in it, upright and frozen through, an elk that has been dead since some winter nobody can date. The snow around it is undisturbed to a radius of ten paces.\nNothing has taken a bite out of it. In this country, in this cold, that is the strange part.",
+          "choices": [
+            {
+              "text": "Cut into it.",
+              "to": "a"
+            },
+            {
+              "text": "Camp beside it and watch what comes.",
+              "to": "b"
+            },
+            {
+              "text": "Leave it and follow its tracks backwards.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The hide is board-hard and the meat under it is fresh, red, and the wrong temperature: not frozen, not warm, exactly nothing.\nThe heart is missing and the cavity has been packed with clean snow by something with hands.",
+          "choices": [
+            {
+              "text": "Take the meat.",
+              "to": "a1"
+            },
+            {
+              "text": "Pack it back up the way you found it.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The cold comes down to a place where the fire stops meaning anything. At the third hour something crosses the clearing at the edge of the light, on two legs, tall, and stops at the elk and stands with it.\nIt is keeping it. It has kept it for a long time.",
+          "choices": [
+            {
+              "text": "Offer it a share of the fire.",
+              "to": "b1"
+            },
+            {
+              "text": "Take the shot.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The tracks run backwards for four miles under new snow, which is not possible, and end at a hollow in the roots of a windfall where somebody lived through a winter on very little.\nThe kit left in there is old, and it is good, and the man who owned it did not need it after all.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "It feeds everybody for a week and it does not spoil and nobody who eats it is cold again for a month, in any weather, which is worth more up here than the meat is.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 10
+          }
+        },
+        "a2": {
+          "text": "Snow, hide, and the wound closed with a splint of green wood, as neatly as it can be done by firelight.\nIn the morning the party's packs are heavier by a good weight of dressed fur, and the elk is gone, and the ten paces of unmarked snow are unmarked still.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "It sits down at the edge of the light and stays until the wood goes grey. It does not eat. When it goes it leaves the heart of the elk in the snow at {leader}'s boots, thawed, and warm, and beating twice more before it stops.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "It is fast for something that has been standing still since the last ice age.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_foresttropical": {
+      "title": "The Canopy",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Forty metres up, in the crown of a fig, there is a platform: plank, rope, tin roof, a rainwater butt, all of it thirty years old and none of it rotten in a forest that eats a felled tree in two seasons.\nThe ladder starts eight metres off the ground.",
+          "choices": [
+            {
+              "text": "Climb.",
+              "to": "a"
+            },
+            {
+              "text": "Search the base of the tree.",
+              "to": "b"
+            },
+            {
+              "text": "Shout up.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Someone lived up here for years: notebooks in a language nobody reads, jars of specimens, a hammock, a rifle with no rounds left, and a chart of the canopy that maps eleven trees and marks one of them with a cross.\nThe crossed tree is visible from the rail. Something is moving in it.",
+          "choices": [
+            {
+              "text": "Take the notebooks and go.",
+              "to": "a1"
+            },
+            {
+              "text": "Cross to the marked tree.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The roots are staked out with pegs and string in a grid, and each square of the grid has been dug and filled back in. The last three are still open.\nIn the bottom of the last one is a hand's worth of yellow metal that came out of this ground, not out of a river.",
+          "choices": [
+            {
+              "text": "Dig the rest of the grid.",
+              "to": "b1"
+            },
+            {
+              "text": "Fill them in and mark the site on your own chart.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Nobody answers. Everything else does: the whole forest goes up at once, howlers and macaws and something under it all with a lower voice, and it stays up for four minutes and stops dead.\nOn the ground at the party's feet, dropped from a great height, is a satchel of instruments still in working order.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "Thirty years of a life spent looking at one hectare. Six universities want it and the one that gets it pays in a currency that spends anywhere.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "a2": {
+          "text": "The rope holds. The tree does not want the party in it, and it has been keeping something up there since before the platform was built.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "medium",
+            "reward": "artifact",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "Four more squares and the seam gives it up: worked gold, not ore, hammered flat and folded over and buried by people who buried it to keep it out of somebody's hands.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "The pegs go back, the string goes back, the earth goes back. The forest closes it in a fortnight and the coordinates are worth exactly what the party decides they are worth, later, in a room in {region}.\nSomething watches the whole job from the canopy and lets them walk out.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_spiritwoods": {
+      "title": "The Lantern",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "There is a light in the trees, at head height, at the distance where it never gets closer. It has been there since before the party came in, because everyone here has a story about it from before they came in.\n{leader} counts the trees between here and there. The count comes out different every time.",
+          "choices": [
+            {
+              "text": "Walk to it.",
+              "to": "a"
+            },
+            {
+              "text": "Put your own light out.",
+              "to": "b"
+            },
+            {
+              "text": "Walk out of the wood by the way you came.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "It backs off at a walking pace for three hours and then it doesn't, and it is a lamp, an ordinary storm lamp, hung on a branch at head height with the wick trimmed and the oil half gone.\nUnder it there is a good deal of ground that has been walked flat by people arriving.",
+          "choices": [
+            {
+              "text": "Take the lamp down.",
+              "to": "a1"
+            },
+            {
+              "text": "Fill it from your own oil and leave it burning.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "In the dark the wood is not the wood. There are two of everything and one of them is closer, and the light in the trees is much nearer than it has been letting on.\nIt is not a light. It is an opening, and the light is what is on the other side of it.",
+          "choices": [
+            {
+              "text": "Go through.",
+              "to": "b1"
+            },
+            {
+              "text": "Wait it out until dawn.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The way back is exactly as long as it was and comes out where it should, which in this wood is a courtesy, not a certainty.\nEverybody's watch is four minutes fast. Whatever that was worth, the party did not spend it.",
+          "outcome": {
+            "kind": "none",
+            "exp": 8
+          }
+        },
+        "a1": {
+          "text": "It comes down easily and it goes out, and the wood is suddenly a wood, ordinary and cold, and the way home is fifteen minutes east.\nThe lamp does not light again for anyone. It is also not empty, and what is in it is not oil, and a certain kind of buyer knows that at a glance.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "The wick takes. The light steadies, and settles, and stops being a thing that moves away.\nWalking out, every member of the party is given back something they had lost in here: a knife, an hour, a name they had been trying for days to remember.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "It is warm on the other side, and bright, and there are people at a table who make room. Nobody can say afterwards what was said. Everybody comes back out of the same tree they went in at, forty minutes later, carrying something they were given.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "Dawn takes a long time and it is not alone in here waiting for it.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "gold",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "e_mountain": {
+      "title": "The Cairn",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "A cairn on the saddle, chest-high, and it is built out of stone that does not come from this mountain. Somebody carried every piece of it up.\nOn the flat capstone somebody has left {offering}, out of the wind, dry.",
+          "choices": [
+            {
+              "text": "Add a stone and go on.",
+              "to": "a"
+            },
+            {
+              "text": "Take the cairn apart.",
+              "to": "b"
+            },
+            {
+              "text": "Wait beside it for the weather to turn.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The stone goes on and settles, and the wind drops out of the saddle entirely, which anyone who has walked this country knows does not happen.\nIn the lee of it the path onward is suddenly obvious, and it is not the path the party would have taken.",
+          "choices": [
+            {
+              "text": "Take the path it is showing you.",
+              "to": "a1"
+            },
+            {
+              "text": "Take the route you planned.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Three courses down there is a slate box, and in the box a rolled sheet, and on the sheet a list of names in the same hand as the map that comes with it.\nThe map is of this mountain. There is one mark on it that is not a summit and not a hut.",
+          "choices": [
+            {
+              "text": "Walk to the mark.",
+              "to": "b1"
+            },
+            {
+              "text": "Rebuild the cairn and take the map.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "It turns hard within the hour, and the cairn is a poor shelter but it is the only one, and the party sits it out in the lee of a thing built by somebody who sat out the same weather.\nThey come off the mountain a day late and entirely alive, which the mountain does not always allow.",
+          "outcome": {
+            "kind": "none",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "It contours round to a ledge nobody could see from the saddle, and on the ledge is a pack, forty years old, belonging to someone who did not come back and who packed very well.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "The planned route goes fine for two hours and then the cloud comes down on it. Everybody gets off the hill. Everybody is a good deal worse for it, and nobody says out loud what they are all thinking about the cairn.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "medium",
+            "exp": 10
+          }
+        },
+        "b1": {
+          "text": "It is a cleft under an overhang, and the people on the list are all in it, laid out in order, with everything they were carrying stacked at their feet where somebody put it for them.\nThey have been waiting a long time for someone to come up and take it down.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "Every stone goes back where it came from, and it takes until dark, and the box goes back with the sheet in it and the map goes in {leader}'s coat.\nThe mountain lets the party down in weather that has no business being this kind.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_mountainice": {
+      "title": "The Crevasse",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The glacier has opened a crevasse across the route, and eight metres down, held in the blue like something in a jar, there is a rope. It is running. It goes into the ice on one side and out of it on the other.\nSomeone is on the end of it and has been for a very long time.",
+          "choices": [
+            {
+              "text": "Rope down.",
+              "to": "a"
+            },
+            {
+              "text": "Cut it and take what comes up.",
+              "to": "b"
+            },
+            {
+              "text": "Bridge the crevasse and go on.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "It is cold in a way that is a sound. At twelve metres the rope runs into a wall of ice with a shape behind it, close enough to see the wool of the jersey, the ice axe, the face.\nThe face is turned up towards the party and it was turned up before they got here.",
+          "choices": [
+            {
+              "text": "Cut them out.",
+              "to": "a1"
+            },
+            {
+              "text": "Take the axe and leave them in.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The rope comes up hand over hand, forty metres of it, and at the end there is a knot, and in the knot there is a mitten, and in the mitten there is a hand.\nThe ice below the party gives a noise it has not made all day.",
+          "choices": [
+            {
+              "text": "Keep pulling.",
+              "to": "b1"
+            },
+            {
+              "text": "Drop it and get off the glacier.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Ladder, two screws and a very careful ten minutes. The party crosses, and the rope goes on running in the blue underneath them, and nobody looks down twice.\nThe route beyond it goes well. It goes better than it should.",
+          "outcome": {
+            "kind": "none",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "Four hours of axe work to bring up someone who has been eighty years in the ice, with their name still legible inside the collar. There are people in {region} who have been waiting on that name for three generations, and they pay what they said they would.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "The axe comes out of the ice with a crack that runs the length of the crevasse, and the hand that was holding it comes with it, and the crevasse decides it would like the party to stay.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "gear",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "Everything they were carrying comes up with them, packed as carefully as a man packs when he expects to need it tomorrow: a lamp, a set of screws, and a case of instruments in brass that still read true.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "The glacier takes the rope back at speed and the lip goes where the party was standing four seconds earlier.\nEverybody gets off. Two people get off badly, and the walk out is long.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "small",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "e_mountaindesert": {
+      "title": "The Stair",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Cut into the face of the mesa, a stair. Two hundred steps, hand-worked, going up to a ledge with nothing on it, and the rock at the top is worn into a groove by feet.\nNobody has lived within thirty miles of here in living memory.",
+          "choices": [
+            {
+              "text": "Climb it.",
+              "to": "a"
+            },
+            {
+              "text": "Work along the base looking for the door it belongs to.",
+              "to": "b"
+            },
+            {
+              "text": "Sit at the bottom until the shadow reaches the first step.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The ledge is empty and swept. From up here the desert below is not empty at all: there are lines in it, straight, miles long, that cannot be seen from the ground, and they all run to the foot of this stair.\nThey are paths. They are still being walked.",
+          "choices": [
+            {
+              "text": "Wait on the ledge for whoever walks them.",
+              "to": "a1"
+            },
+            {
+              "text": "Map the lines and get down before dark.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Forty paces round the base the rock has been cut and filled, and the fill is a plug of dressed stone with a hand's grip worn into it, from the inside.\nSomething closed this behind itself.",
+          "choices": [
+            {
+              "text": "Pull the plug.",
+              "to": "b1"
+            },
+            {
+              "text": "Leave it shut and camp against it.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The shadow comes off the mesa at the hour, and the steps go from bare rock to a stair of shade, and for about ninety seconds there is a sound of people coming down it, unhurried, a great many of them.\nThey pass. The party has been counted and let alone.",
+          "outcome": {
+            "kind": "none",
+            "exp": 14
+          }
+        },
+        "a1": {
+          "text": "At last light they arrive up all four paths at once, and they are courteous, and they do not stay, and each of them leaves at {leader}'s feet the thing they carried up here to leave.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "Four lines, eleven miles, three junctions and a centre. The survey is worth money to a university and a great deal more to a mining company, and only one of the two is told.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "The plug comes out into a chamber cut level with a floor of laid stone, and stacked on it is what a people carried up here when they went in for the last time and pulled the door shut after them.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "It is a good wall to have at your back and a poor one to sleep against. Something works at the fill from inside all night, patiently, and stops at first light with the plug a finger's width out.\nEverybody is alive. Nobody rested.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "small",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "e_desert": {
+      "title": "The Buried Convoy",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The sand has moved off a line of vehicles: six trucks, nose to tail, tyres flat, canvas gone, the paint sandblasted down to bare metal on the windward side and perfect on the other.\nThe fuel caps are all open. The tanks are all full.",
+          "choices": [
+            {
+              "text": "Search the cabs.",
+              "to": "a"
+            },
+            {
+              "text": "Open the load beds.",
+              "to": "b"
+            },
+            {
+              "text": "Siphon the fuel and go.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "No drivers, no bodies, no boots. Every cab has the keys in it and the handbrake off, and the lead truck has a map on the seat with a route on it that ends here, in the middle of nothing, marked as a destination.\nSomebody drove six trucks to a place and got out and walked.",
+          "choices": [
+            {
+              "text": "Follow the footprints out.",
+              "to": "a1"
+            },
+            {
+              "text": "Start the lead truck.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Five beds are empty and swept. The sixth is full of crates, stencilled in a hand nobody uses any more, and the top one is open, and whatever came out of it was taken out carefully.\nThe rest are sealed.",
+          "choices": [
+            {
+              "text": "Open a crate.",
+              "to": "b1"
+            },
+            {
+              "text": "Take a sealed crate whole and leave the rest.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Eight hundred litres of fuel that should have gone to varnish forty years ago and has not. It burns clean, it moves anything, and it sells for what it is: impossible, and useful.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "They go out a mile and a half in a straight line and stop. Not scattered, not covered: stopped, all of them, at the same point, facing the same way.\nWhat is buried at that point is not a body. It is much older than the trucks, and it is the reason they drove here.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "It starts. Of course it starts. It also does not stop, and it has been waiting for a driver, and it did not specify which one it would take.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "loot",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "Machine parts in grease, tools in oil paper, spare barrels, and a crate of rations that are still, by any test anyone can run out here, food.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "It takes four of them to carry it and it goes in the hold unopened, and it stays unopened for a fortnight, and a dealer in {region} pays for it unopened, which is the sort of price a man only offers when he knows exactly what is in it.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_badlands": {
+      "title": "The Bone Bed",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Rain has cut a new gully through the clay and opened a bed of bone in the side of it, forty metres of it, layered like a wall.\nMost of it is old past reckoning. About a metre of it is not, and that metre has been dug at from below.",
+          "choices": [
+            {
+              "text": "Work the old bed properly.",
+              "to": "a"
+            },
+            {
+              "text": "Get into the hole that was dug from below.",
+              "to": "b"
+            },
+            {
+              "text": "Photograph the face and sell the location.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Two days with brushes and a good deal of care and there is a skull out of it entire, of nothing on any list, with a hole through the crown that was made by a tool.\nThe tool is in the next layer down, and it is not stone.",
+          "choices": [
+            {
+              "text": "Take the tool.",
+              "to": "a1"
+            },
+            {
+              "text": "Take the skull and leave the layer sealed.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "It goes in three metres and opens into a burrow that runs along the bone bed, and the walls of it are packed with bones that have been sorted: long with long, jaw with jaw, skull with skull.\nSomething down here files.",
+          "choices": [
+            {
+              "text": "Go further in.",
+              "to": "b1"
+            },
+            {
+              "text": "Back out and collapse it behind you.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The plates are good and the site is genuine and the buyer is a museum with a bad conscience and a large budget. The gully will be under a tent by the autumn.\nWhat is in the burrow will be somebody else's problem by then.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "It comes out of clay that has not been open to the air since long before there was anyone to make a tool, and it is machined, and it fits a hand.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "The skull goes into a crate packed with the party's own spare clothes and the layer under it goes back under clay, tamped and sealed and marked on nobody's map.\nThe money is good. The sleep afterwards is better.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "The sorting gets neater the further in it goes, and the freshest section is the neatest, and it has a gap in it exactly the size of a person.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "medium",
+            "reward": "loot",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "Two charges in the clay and the burrow comes down for its whole visible length, and the noise from underneath goes on for a while afterwards and then does not.\nWhat came out of the mouth of it on the way, half-sorted and worth carrying, goes in the packs.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "e_tundra": {
+      "title": "The Survey Stake",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "A steel stake in the permafrost with a brass cap, stamped with a number and a year that has not happened yet.\nThere are five more within a mile, in a line, and the line runs to the horizon in both directions.",
+          "choices": [
+            {
+              "text": "Walk the line.",
+              "to": "a"
+            },
+            {
+              "text": "Dig one out.",
+              "to": "b"
+            },
+            {
+              "text": "Take a rubbing and leave the stakes alone.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Eleven miles of it, dead straight over ground that has no straight lines in it, and at the end of the line there is a rig: a drill mast, a hut, a fuel bowser, all of it new and none of it started.\nThe hut is warm and there is tea in the pot.",
+          "choices": [
+            {
+              "text": "Wait for the crew.",
+              "to": "a1"
+            },
+            {
+              "text": "Take what is useful and go.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "It goes down two and a half metres into ground that a pick will not touch, and it comes out with the bottom end warm, and the hole it leaves is not a hole in soil.\nThere is a cavity under this. There is a cavity under all of them.",
+          "choices": [
+            {
+              "text": "Open the cavity.",
+              "to": "b1"
+            },
+            {
+              "text": "Put the stake back and tamp it.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Wax and paper and eleven brass caps recorded, and the numbers on them run in a sequence with three gaps.\nSomebody in an office is going to want this very badly, and the party will be the ones who name the price.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "They come in at midnight in two tracked vehicles, and they are not surprised, and they are extremely glad to see anyone at all. What they have brought up out of the first hole has kept them from starting the second, and they will hand it to anyone who will take it away.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "Fuel, cable, a good stove, two crates of core samples and a set of cold-weather kit that would cost a season's pay anywhere south of here.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "The cavity is a metre across and it is smooth and it has been kept open, and it goes down further than the lamp goes, and the thing in it is coming up to see who pulled the stake.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "gear",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "In it goes, straight and true, and the ground takes it back and closes on it. Ten miles on, at the fifth stake, someone has left a case out on the tundra with the party's own heading written on the lid, which is a wage, and a request.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_permafrost": {
+      "title": "The Thaw",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "A slump in the frozen ground, ten metres across, where the ice under the soil has let go and taken the surface down with it.\nWhat the thaw has brought up out of the bottom of it has been in there since long before this was tundra, and it is not all bone.",
+          "choices": [
+            {
+              "text": "Go down into the slump.",
+              "to": "a"
+            },
+            {
+              "text": "Take samples from the edge and stay out of it.",
+              "to": "b"
+            },
+            {
+              "text": "Refreeze what you can and mark the site.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "It smells like a stable and a butcher's and a river bank. Half a mammoth is out of the wall, and beside it, packed in the same mud, a sledge, and on the sledge a load that was tied down by someone who meant to come back for it.",
+          "choices": [
+            {
+              "text": "Cut the load free.",
+              "to": "a1"
+            },
+            {
+              "text": "Take the tusk instead.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Six cores, and every one of them has something alive in it that has not been alive anywhere else for forty thousand years.\nOne of the six is still moving in the tube.",
+          "choices": [
+            {
+              "text": "Keep all six sealed.",
+              "to": "b1"
+            },
+            {
+              "text": "Open the one that is moving.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Two days of hard, cold, unrewarding work: the exposed face packed and covered, the slump edged, a cairn and a plate with a date on it.\nIt will hold a decade, perhaps. Somebody will be glad of the decade.",
+          "outcome": {
+            "kind": "none",
+            "exp": 16
+          }
+        },
+        "a1": {
+          "text": "Furs, worked ivory, a bundle of tools in a hide roll and a thing at the bottom wrapped in eleven layers that everyone agrees, without discussing it, to leave wrapped.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "Two metres of ivory, sound the whole way, worth a year of anybody's wages. The mud comes off it and the mud does not want to leave the slump, and neither, it turns out, does what was lying under it.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "gold",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "They go into the cold store double-sealed and they are sold that way, unopened, to the one institute that promised in writing to keep them that way.\nThe cheque clears. So far, so does the promise.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "It is out of the tube before the cap is fully off.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "medium",
+            "reward": "loot",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_volcano": {
+      "title": "The Vent",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "On the flank, where the old flow went over the ridge, a vent is going: not smoke, a column of clean heat that stands straight up in wind that should be laying it flat.\nAround the mouth of it the rock has been dressed. Somebody made this a doorway.",
+          "choices": [
+            {
+              "text": "Go to the mouth.",
+              "to": "a"
+            },
+            {
+              "text": "Follow the flow down to what it buried.",
+              "to": "b"
+            },
+            {
+              "text": "Take a reading from a distance and leave.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Standing at the lip is like standing in front of an open furnace door and being looked at through it. The heat holds at exactly the temperature a person can bear, and no closer, and it does that as the party moves.\nSet into the dressed stone are handholds, going down.",
+          "choices": [
+            {
+              "text": "Climb down into it.",
+              "to": "a1"
+            },
+            {
+              "text": "Put something into it.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The flow went through a village and stopped in the middle of it, dead square, leaving one half in ash and the other half standing with the washing still on the lines.\nThe standing half has not been lived in since, and it has not been looted either.",
+          "choices": [
+            {
+              "text": "Go house to house.",
+              "to": "b1"
+            },
+            {
+              "text": "Go to the house the flow stopped at.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Temperature, gas, and a column that reads as no gas at all. The observatory in {region} does not believe the figures and buys them anyway, twice, once for the record and once to keep it off the record.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "Nine metres down the handholds end at a floor, and the floor is glass, and under the glass the mountain is going about its business a long way below and something is going about its business in the middle of it, and it stops to acknowledge the party before they climb back out.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "A ration tin, because it is what there is. It goes in and does not fall.\nWhat comes back up the shaft is the same shape as a tin and made of something that took a very long time to cool, and it is not the only thing coming up.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "Everything anybody left when they ran, and they ran with what they could carry, which was not much. Tools, stock, a jeweller's whole stripped bench, and in the church box the collection of a wealthy parish.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "The flow came up to the doorstep and stopped. There is a woman's chair in the doorway, still turned to face it, and what she was holding when the mountain changed its mind is on the seat.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "medium",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_ruins": {
+      "title": "The Sunken Floor",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Walls to knee height, a gate arch still standing, and a floor of laid stone that has sunk in the middle so the whole of it drains to one point.\nAt that point there is a grating, and it is clear of leaves, and nothing else here is.",
+          "choices": [
+            {
+              "text": "Lift the grating.",
+              "to": "a"
+            },
+            {
+              "text": "Walk the walls and read what is cut into them.",
+              "to": "b"
+            },
+            {
+              "text": "Dig the floor at the four corners.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Under it, a shaft with rungs, dry, and at the bottom a room the ruin above has no business having: plastered, painted, the colours still in it, and a long table with places set for a meal that was not eaten.",
+          "choices": [
+            {
+              "text": "Sit down at the table.",
+              "to": "a1"
+            },
+            {
+              "text": "Take the plate and go.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The cutting is a list, and it runs the length of three walls, and it is a list of what was taken away from here and by whom, in the order it went.\nThe last line was cut recently, in the same lettering, and it names a road three days from here.",
+          "choices": [
+            {
+              "text": "Ride to the road.",
+              "to": "b1"
+            },
+            {
+              "text": "Cut the next line yourself.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Three corners give up potsherds and a coin. The fourth gives up a jar, sealed with wax and pitch, that has kept a hoard of small silver dry for a very long time.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "The chairs are the right height and the room warms while everybody is sitting in it. Nobody eats. Nothing is served. When the party stands up the table is bare and each of them is holding what was in front of them, which was not there when they sat down.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "It is silver under the tarnish and it weighs what a good plate weighs, and it comes up the rungs easily, and something at the table objects to the place being one short.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "gold",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "There is a carter on that road, on that day, carrying exactly what the wall says he is carrying, and he has been waiting for somebody to come and take it off him for eleven years.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "{leader} cuts the party's own name and what they came for. It takes an hour and the letters come out better than they should.\nWhat is under the grating that night puts something on the top rung for them, and does not come up after it.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_graveyard": {
+      "title": "The Fresh Grave",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "In a burying ground where the newest stone is a hundred and forty years old, one grave has been opened and filled in again this week. The turf is laid back neatly.\nThere is no stone on it, and there is a spade leaning against the wall, cleaned.",
+          "choices": [
+            {
+              "text": "Open it.",
+              "to": "a"
+            },
+            {
+              "text": "Find the parish register.",
+              "to": "b"
+            },
+            {
+              "text": "Sit up with it overnight.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Four feet down the spade rings on wood, and the wood is old, far older than the digging, and it has been opened before and closed again with new nails.\nSomebody put something in with the occupant, recently, and did the coffin the courtesy of shutting it properly.",
+          "choices": [
+            {
+              "text": "Open the coffin.",
+              "to": "a1"
+            },
+            {
+              "text": "Fill it in and lay the turf back as you found it.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The church is locked and the register is in the vestry press, and the last entry is in this month's ink: a name, no dates, and in the margin, in the same hand, returned.\nThe same name appears eleven times, going back three hundred years, always with the same note.",
+          "choices": [
+            {
+              "text": "Take the register.",
+              "to": "b1"
+            },
+            {
+              "text": "Wait in the vestry for whoever writes in it.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Nothing comes out and nothing goes in. At about four in the morning the turf settles, once, the way ground settles when weight comes off it rather than on.\nBy daylight the spade has been put away in the shed, and the shed was locked all night.",
+          "outcome": {
+            "kind": "none",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "The occupant has been dead for centuries and is dressed for a journey, and laid on their chest, new, wrapped in oilcloth, is the thing somebody brought back to them.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "Turf, tamped, watered from the party's own bottles so it takes. The spade goes back against the wall.\nAt the gate somebody has left a purse on the post, heavy, with nothing in it but coin, and no one is on the road in either direction.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "Three hundred years of a parish, and the eleven entries, and a good deal that certain families would pay to have and rather more that they would pay to have burned.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "The vestry door opens at two and it is not the parson, and the pen is already in its hand, and the party is standing between it and the book.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_swamp": {
+      "title": "The Chapel in the Water",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "A gable end and half a bell tower standing out of the water, and the bell still in it, and the water around the tower is clear where everything else here is peat-black.\nThe bell rings sometimes. There is nothing left to swing it.",
+          "choices": [
+            {
+              "text": "Swim or pole out to the tower.",
+              "to": "a"
+            },
+            {
+              "text": "Work along the drowned street beneath you.",
+              "to": "b"
+            },
+            {
+              "text": "Wait on the bank for the bell.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Inside the tower the water is waist-deep and warm and the stair goes up out of it to a bell-loft with dry boards. Somebody has been sleeping up here: a bed of reed, a fire scar, fish bones, and forty years of tally marks.\nThe last mark is today's.",
+          "choices": [
+            {
+              "text": "Wait for whoever sleeps here.",
+              "to": "a1"
+            },
+            {
+              "text": "Ring the bell.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Under two metres of black water there is a street: doorways, sills, a cart, and every door standing open because they all opened outward when the water came.\nThe houses have not been emptied.",
+          "choices": [
+            {
+              "text": "Go into the houses.",
+              "to": "b1"
+            },
+            {
+              "text": "Take what is loose in the street and stay out of the doors.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "It goes at dusk, four strokes, and every frog and bird in the swamp stops for it and starts again after.\nWhatever it is calling does not come while there is anyone on the bank to see it. The party is left with a bearing, an hour, and their whole skin.",
+          "outcome": {
+            "kind": "none",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "It comes up out of the water at dark, and it has been down there since the flood, and it is glad of the company in a way that is worse than anger. It gives what it has been keeping and asks only that somebody knows the name of the place.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "The rope is rotten and the bell rings anyway, once, enormously.\nEverything in this swamp that has been waiting forty years to be told the hour comes at the tower at speed.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "large",
+            "reward": "gold",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "Pewter, lead, a chest of tools under a bench and a strongbox in the third house that the water has kept better than any bank would.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "The cart is worth nothing and the harness brasses are worth something and the anchor stone on the corner is worth carrying, and the doors are all left exactly as open as they were.\nOn the way back to the bank the water goes warm around the party, all at once, and lets them go.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_temple": {
+      "title": "The Offering",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The temple is open, swept, and empty of people at an hour when it should not be. On the offering table there is a place laid for one more.\nThe bowl at that place has the party's number of grains in it, and nobody counted them out for a party this size.",
+          "choices": [
+            {
+              "text": "Take the place that has been laid.",
+              "to": "a"
+            },
+            {
+              "text": "Go behind the screen.",
+              "to": "b"
+            },
+            {
+              "text": "Leave an offering of your own and go.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The floor is cold and the sitting is long and about the third hour it stops being uncomfortable in a way that is not physical relief.\nSomething is going through the party's business item by item, without hurry, and putting most of it down again.",
+          "choices": [
+            {
+              "text": "Let it finish.",
+              "to": "a1"
+            },
+            {
+              "text": "Stand up and stop it.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Behind the screen is a room of shelves and on the shelves is everything that has been given here for four hundred years, labelled, dated, and dusted this week.\nThere is a shelf with the party's arrival date already written on the card.",
+          "choices": [
+            {
+              "text": "Put something on the empty shelf.",
+              "to": "b1"
+            },
+            {
+              "text": "Take something off a full one.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Salt, a coin, and the good bread, laid out properly, and the bowl at the empty place is left where it stands.\nThe road out is clear and stays clear, and the party is not ill this season, and it is a long season.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "It takes a memory that nobody misses, and leaves in its place a thing that has been on the temple's books, unclaimed, since the year the walls went up.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "It has not finished, and standing up in the middle of it is a way of saying no that the temple has heard exactly once before.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "{leader} leaves what they were carrying and the card is written up in a hand nobody sees move.\nWhat is on the shelf next to it, given three hundred years ago by somebody who never came back for it, is handed over as though it had always been meant for this party.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "It comes off the shelf easily, which is the trouble. Everything else on the shelves is now a witness.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "gold",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "e_castle": {
+      "title": "The Postern",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The curtain wall is sound and the gate is barred from inside, and round the north side there is a postern with a new lock on an eight-hundred-year-old door.\nThe key is on a nail beside it.",
+          "choices": [
+            {
+              "text": "Use the key.",
+              "to": "a"
+            },
+            {
+              "text": "Go over the wall instead.",
+              "to": "b"
+            },
+            {
+              "text": "Knock at the main gate and wait.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Inside the bailey the grass is cut and the well is drawing and there is not a soul in the place. The hall is laid for forty and the fire is banked.\nEverything is ready. It has been ready for some time.",
+          "choices": [
+            {
+              "text": "Eat at the high table.",
+              "to": "a1"
+            },
+            {
+              "text": "Go up to the keep.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The wall walk is clear and from up here the bailey shows what the ground does not: the whole of it has been dug over and filled in, in strips, by somebody working alone with a spade over a great many nights.\nThere is one strip left undug, against the chapel wall.",
+          "choices": [
+            {
+              "text": "Dig the last strip.",
+              "to": "b1"
+            },
+            {
+              "text": "Find the digger.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "It takes half an hour and then the wicket opens and a very old servant of a family that has been gone from here for two centuries takes the party's names, thanks them, and closes it again.\nOn the step afterwards there is a purse of the old coinage, which is still gold, whoever's face is on it.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "The food is real and hot and it is the best meal any of them has had in a year, and the fire draws, and afterwards everybody sleeps in beds and nothing at all happens.\nThey wake up whole, and better than whole.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "The stair goes up four floors past four hundred years of a family's belongings, and the room at the top has one occupant, and it has been waiting for the postern key to be used.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "Two feet down, wrapped in oiled canvas, is what the family took off the altar the night before the castle fell, buried by somebody who came back for it and could not remember which strip.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "He is in the gatehouse and he is ninety and he has been digging up his own family's bailey for sixty years looking for one thing.\nHe does not want help. He wants somebody to carry out the rest of what he has found, because he cannot lift it any more, and to take a fair share for the carrying.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_city": {
+      "title": "The Shuttered Door",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "One shop on a busy street has its shutters down at noon, and the people going past it go round a piece of pavement in front of it without looking at what they are avoiding.\nThe letterbox is full. The bell, when {leader} presses it, is answered instantly.",
+          "choices": [
+            {
+              "text": "Go in.",
+              "to": "a"
+            },
+            {
+              "text": "Ask on the street about the shop.",
+              "to": "b"
+            },
+            {
+              "text": "Clear the letterbox and read the letters.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Behind the shutters it is a shop, stocked, lit, and the stock is not the sort that is sold from a street like this. Nobody is behind the counter. There is a ledger open on it, in credit, and a note asking whoever comes in to mind the place for an hour.",
+          "choices": [
+            {
+              "text": "Mind the shop.",
+              "to": "a1"
+            },
+            {
+              "text": "Take from the stock and go.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Nobody on this street will say the shop's name, but four people, separately, say the same sentence about it, word for word, as though they had all been told what to answer.\nThe fifth is a boy who says his mother goes in on Thursdays and comes out with the shopping already done.",
+          "choices": [
+            {
+              "text": "Come back on Thursday.",
+              "to": "b1"
+            },
+            {
+              "text": "Follow the boy home and talk to his mother.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Bills, circulars, and eleven letters in the same hand, all addressed to the shop and all signed by the shopkeeper, posted from further and further away over two years.\nThe last has a bank draft in it, made out to the bearer, and a line asking that the shutters be kept down.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "Four customers in the hour and each of them asks for something the party would not have believed was in the stock, and each time the party finds it exactly where they reach.\nThe shopkeeper comes back at the hour, pays the hour's wage properly, and asks nothing else.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "The stock does not object. The street does. Everybody on it turns round at once, and the piece of pavement nobody walks on is now behind the party.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "loot",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "Thursday, and the shutters are up, and inside it is an ordinary shop full of ordinary people, and the shopkeeper is glad to be asked because nobody ever asks.\nWhat is kept in the back room is given to the party outright, on the condition that they take it a long way from here.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "She sits the party down, feeds them, and explains the arrangement the street has with the shop in about four sentences, none of which anybody enjoys.\nShe also sends them away with the week's shopping, which is more than it should be, and a doctor's kit her husband no longer needs.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_docks": {
+      "title": "The Impound",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "In the impound yard at the end of the quay there is one crate under a tarpaulin with four different customs seals on it, from four countries, none of them cancelled.\nThe yard man has been paid to leave it and paid again to say who left it.",
+          "choices": [
+            {
+              "text": "Pay him a third time.",
+              "to": "a"
+            },
+            {
+              "text": "Come back for the crate at night.",
+              "to": "b"
+            },
+            {
+              "text": "Take the paperwork instead of the crate.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "It came off a ship that is not on the register, was landed by men who spoke the wrong language for the flag, and has been claimed three times by three consignees who each looked at the seals and left without it.\nHe will look the other way for an hour. He will not touch it himself.",
+          "choices": [
+            {
+              "text": "Open it in the yard.",
+              "to": "a1"
+            },
+            {
+              "text": "Carry it out whole.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The yard at two in the morning has three men in it who are not the watchman, working by shuttered lamp, doing to the crate what people do when they intend to take one thing out of a box and leave the box looking untouched.",
+          "choices": [
+            {
+              "text": "Take them.",
+              "to": "b1"
+            },
+            {
+              "text": "Watch, and take it off them afterwards.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Four manifests, four seals, four sets of lies, and taken together they describe a route that certain people would very much prefer nobody drew on a map.\nThey buy the map back. They pay well and they pay quickly.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "Straw, then lead sheet, then a case with a handle on it, and inside the case a single object packed for a journey that was clearly expected to be much longer than a crossing.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "Four men and an hour to get it onto a cart, and nobody stops them, and everybody watches.\nWhat is in it is worth the carrying, and the people whose seals are on it will be along in their own time.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "They are not dockers and they are armed and they have done this before.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "medium",
+            "reward": "gear",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "They take one thing out, re-seal the crate beautifully, and are on the quay steps with it when the party steps out of the dark.\nThey hand it over rather than lose the hour. They are professionals, and so, tonight, is everybody.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_road": {
+      "title": "The Wayside Shrine",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "A shrine at the roadside: a niche, a saint with the face worn off, a shelf of stubs and coins, and a boot. One boot, good quality, set on the shelf like an offering.\nA hundred paces on there is another shrine. There is a boot on that one too.",
+          "choices": [
+            {
+              "text": "Walk the road shrine to shrine.",
+              "to": "a"
+            },
+            {
+              "text": "Take the boots.",
+              "to": "b"
+            },
+            {
+              "text": "Leave a coin at each and pass on.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Eleven shrines in four miles and a boot on every one, all of them left boots, all of them different sizes, none of them older than a year.\nAt the twelfth there is no boot. There is a place cleared for one.",
+          "choices": [
+            {
+              "text": "Put a boot of your own on the shelf.",
+              "to": "a1"
+            },
+            {
+              "text": "Wait at the twelfth shrine.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "They come off the shelves easily. By the third the road behind the party has gone quiet, and by the fifth there is somebody walking it a long way back, keeping pace, not gaining.\nThey are not wearing boots.",
+          "choices": [
+            {
+              "text": "Put them all back.",
+              "to": "b1"
+            },
+            {
+              "text": "Keep walking and let them come.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "A coin at each and a hand on the stone, which is what the country people here do without thinking about it.\nThe road runs well. The weather holds. Nobody's cart throws a wheel this side of the border, and in this country that is worth more than the coins.",
+          "outcome": {
+            "kind": "none",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "{leader}'s own boot on the shelf, which means walking on in one, which is a long four miles.\nAt the end of it, on the last shrine, there is a pair: new, made for that foot, and a purse besides, from somebody who evidently keeps very careful accounts.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "He comes up the road at dusk carrying the twelfth boot and he is very tired and he has been doing this a long time. He would like to stop. He would like to hand the whole route over.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "b1": {
+          "text": "Eleven shrines, backwards, in the dark, at a jog. The last one goes back on its shelf with the walker forty paces off, and he stops, and turns round, and goes back the way he came.\nNobody in the party ever leaves a road shrine unsaluted again.",
+          "outcome": {
+            "kind": "none",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "He does not gain for six miles and then, all at once, he is not behind the party any more.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "gear",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_beach": {
+      "title": "The Wrack Line",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The tide has left a line up the beach for two miles, and it is all one wreck: dunnage, a hatch cover, crates, a ship's name board, and not one splinter of it wet.\nWhatever went down went down a long way from here and a long time ago.",
+          "choices": [
+            {
+              "text": "Work the line for cargo.",
+              "to": "a"
+            },
+            {
+              "text": "Follow it to whatever is at the end of it.",
+              "to": "b"
+            },
+            {
+              "text": "Report the name board to the harbour office.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Four crates unbroken, a chest, and a locker with a padlock somebody has already tried and failed to break.\nEverything the sea has given up here is dry, and the chest, when it is moved, is not the weight it looks.",
+          "choices": [
+            {
+              "text": "Break the locker.",
+              "to": "a1"
+            },
+            {
+              "text": "Take the crates and leave the chest.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "At the top of the beach, above the tide, above where anything the sea throws could reach, there is a boat drawn up, and it is the ship's boat off the name board, and it is dry inside.\nThere are footprints leading out of it and up the dune. Only one set.",
+          "choices": [
+            {
+              "text": "Follow them.",
+              "to": "b1"
+            },
+            {
+              "text": "Take the boat's gear and go the other way.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The name is on the register: lost with all hands, sixty-one years ago, eleven hundred miles from this coast.\nThe insurers stopped paying on it a lifetime back and the maritime museum has not, and they take the board and the whole account of where it lay.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "Ship's papers, a captain's instruments, and under a false bottom the thing the captain was carrying that is not on any manifest and never was.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "Good salvage, hauled clear of the tide and carted off before the beachcombers are up: cordage, tinned stores, sailcloth and a barrel of oil that has kept.\nThe chest is still sitting on the sand and the sea has not come back for it.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "They go over the dune and inland for a mile and a half and stop at a house that has been empty for years, and the door is open, and whoever walked up from the boat is sitting in the kitchen with their back to it.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "Oars, a compass that still swings true, a water breaker and a bag of tools stowed the way a good boatswain stows them.\nWalking off the beach the party passes the footprints again, going the other way now, which nobody mentions until they are well up the road.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_lake": {
+      "title": "The Weir",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "There is a weir here that is on no map and belongs to no mill, cut stone, well kept, and it holds the water back a foot and a half.\nOn the still side there is something under the surface with a straight edge, and the fish will not go over it.",
+          "choices": [
+            {
+              "text": "Wade out to the straight edge.",
+              "to": "a"
+            },
+            {
+              "text": "Open the weir and let the water down.",
+              "to": "b"
+            },
+            {
+              "text": "Fish the still side.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Chest-deep and cold, and it is a roof: tile, ridge, chimney, a whole house standing on its own floor under three feet of water, and the door in it is shut.\nThe weir was built to keep the water over this.",
+          "choices": [
+            {
+              "text": "Open the door.",
+              "to": "a1"
+            },
+            {
+              "text": "Go back and leave it under.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The sluice gear is greased. Somebody maintains this. The water goes down over an hour and what comes out of it is a street, a green, a well, and around the well the whole village sitting where they sat down.\nThey have been under the water a very long time and they are not bones.",
+          "choices": [
+            {
+              "text": "Go down to the well.",
+              "to": "b1"
+            },
+            {
+              "text": "Shut the sluice and put the water back.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Nothing takes for two hours and then everything does at once, and the fish out of the still side are enormous and pale and perfectly good eating, and there is more of them than the party can carry.\nThe last one out of the water has a ring in its gut, and the ring is warm.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "It opens outward, and it opens into a kitchen with air in it, dry, and a lamp burning, and a table with one place laid, and on the plate the thing this whole weir was built to keep somebody from coming and taking.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "Back over the weir with nothing, which is a decision, and the fish come back over the straight edge as soon as the party is out of the water.\nWhat that was worth is not in the packs. Everybody knows what they did not do.",
+          "outcome": {
+            "kind": "none",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "They are all facing the well and the well is open and the water in the party's boots is going the wrong way, uphill, towards it.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "large",
+            "reward": "gold",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "The sluice takes both of {leader}'s hands and an hour to close and the water comes back up over the green, the well and the sitting, and stops where it was.\nThe grease pot is still on the ledge. Somebody has left a purse beside it, which is a wage for an hour's work, paid in full.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_wayside": {
+      "title": "The Marker",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "There is a marker here that nobody in {region} put up: a post, a heap, a cut in a rock face, in the middle of {place} where there is no reason to mark anything.\nSomething has been left at the foot of it, out of the weather, and it has been left recently.",
+          "choices": [
+            {
+              "text": "Take what was left.",
+              "to": "a"
+            },
+            {
+              "text": "Wait for whoever leaves it.",
+              "to": "b"
+            },
+            {
+              "text": "Leave something of your own and go on.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "It is a bundle, tied the way a person ties a thing they expect somebody else to untie, and inside it there is food, a length of good rope, and a paper with a direction on it in a hand that has written a great many of these.\nThe direction is not towards anything the party can see.",
+          "choices": [
+            {
+              "text": "Go the way the paper says.",
+              "to": "a1"
+            },
+            {
+              "text": "Keep the bundle and go your own way.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "It takes most of a day, and it is not a person. It comes to the marker the way a postman comes to a box: with something to leave, and something to collect, and no interest in anybody standing there.",
+          "choices": [
+            {
+              "text": "Give it something to carry.",
+              "to": "b1"
+            },
+            {
+              "text": "Stop it.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Salt, a coin and a strip of dried meat, set out of the rain under the lee of the marker.\nTwo days later, well away from here, the party's own stores are heavier than they were, and nobody is short of anything for a month.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "small",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "Four hours out, exactly where the paper stops, there is a second marker, and a cache under it, and the cache has been stocked for somebody who never came.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "The rope is good and the food is good and both of them go a long way.\nWhatever was walking out to collect that bundle turns and follows the party instead, and it is patient, and it catches up at dusk.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "gear",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "{leader} puts a letter in its hand, and it takes it, and it goes.\nWhat is at the foot of the marker on the way back is the answer, in a hand nobody knows, and wrapped around something that has been a long way to get here.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "It has been walking this route for longer than {region} has had a name, and it does not stop for people.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "gold",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_camp": {
+      "title": "The Cold Camp",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Somebody camped here and left in a hurry: a fire dead about a day, a tent still pegged, a pot of food gone cold on the stones and a pack sitting open beside it.\nNothing has been dragged. There is no blood. The boots are still by the tent door.",
+          "choices": [
+            {
+              "text": "Go through the camp.",
+              "to": "a"
+            },
+            {
+              "text": "Cast around for the trail out.",
+              "to": "b"
+            },
+            {
+              "text": "Rebuild the fire and stay the night in it.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Two of everything for one person, a journal in a private shorthand, and a tin box that has been buried and dug up again more than once.\nThe last page of the journal is a drawing of this exact ground, with a cross on the spot where the party is standing.",
+          "choices": [
+            {
+              "text": "Dig where the cross is.",
+              "to": "a1"
+            },
+            {
+              "text": "Take the tin box unopened.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The trail out is barefoot and it goes away from the road, away from water, and away from every direction a lost person walks.\nIt is also not one set of prints all the way. About two hundred paces out it becomes two, then four.",
+          "choices": [
+            {
+              "text": "Follow it to the end.",
+              "to": "b1"
+            },
+            {
+              "text": "Go back to the camp and wait for the owner.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The fire takes, the food is good, and the tent is a better one than the party owns.\nNobody comes back for it in the night. In the morning everything is exactly where it was, and there is one more pair of boots by the door than there was at dusk.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "Eighteen inches down, wrapped in waxed cloth, is what the camper had been carrying around long enough to bury it every night: worth burying, and worth leaving a tent behind to get away from.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "It goes in the pack and it stays shut, all the way out, and the party gets a fortnight's clean sleep out of not knowing.\nThe collector who buys it does not open it either, which tells everybody something.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "It ends in a hollow a mile and a half out where a great deal of walking has been done in a small circle, and whatever finished walking there is still in the hollow.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "loot",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "They come in at dusk on their own feet, alive, filthy, and enormously relieved to find anyone at all in their camp.\nThey pay for the company in the only coin they have left, which is the kit they can now afford to leave behind.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 14
+          }
+        }
+      }
     }
   },
   "fallbackScenarios": [
@@ -3208,5 +5670,230 @@
     "derelict",
     "shrine",
     "signal"
-  ]
+  ],
+  "earth": {
+    "fallbackScenarios": [
+      "e_wayside",
+      "e_camp"
+    ],
+    "tokens": {
+      "hour": [
+        "An hour before dark",
+        "At first light",
+        "In the flat part of the afternoon",
+        "Somewhere in the middle of the morning"
+      ],
+      "weather": [
+        "in rain",
+        "in a wind that has not dropped since dawn",
+        "under a sky the colour of a bad coin",
+        "in weather nobody would work in"
+      ],
+      "tool": [
+        "the spade",
+        "the lamp",
+        "the field glasses",
+        "the knife"
+      ]
+    },
+    "aliases": {
+      "SeaBed": "Ocean",
+      "Farm": "Fields",
+      "Savannah": "Fields",
+      "Steppe": "Fields",
+      "Highlands": "Mountain",
+      "Park": "Meadows",
+      "Taiga": "Forest",
+      "Bamboo": "Forest",
+      "Jungle": "ForestTropical",
+      "Mangrove": "ForestTropical",
+      "SaltFlats": "Desert",
+      "Canyon": "Badlands",
+      "Ice": "Permafrost",
+      "Snow": "Permafrost",
+      "Abandoned": "Ruins",
+      "Landfill": "Ruins",
+      "Mushroom": "Swamp",
+      "TempleShinto": "Temple",
+      "CityIce": "City",
+      "CityDesert": "City",
+      "Burg": "City",
+      "BurgIce": "City",
+      "BurgDesert": "City",
+      "Village": "City",
+      "VillageIce": "City",
+      "VillageMountain": "City",
+      "VillageDesert": "City",
+      "VillageRiver": "City",
+      "VillageSea": "City",
+      "Houses": "City",
+      "River": "Lake",
+      "River vertical": "Lake",
+      "River horizontal": "Lake",
+      "River cross": "Lake",
+      "RiverBank": "Lake",
+      "Highway": "Road",
+      "Bridge": "Road",
+      "Road vertical": "Road",
+      "Road horizontal": "Road",
+      "Road cross": "Road",
+      "Road t-up": "Road",
+      "Road t-down": "Road",
+      "Road t-left": "Road",
+      "Road t-right": "Road",
+      "Road corner-up-right": "Road",
+      "Road corner-up-left": "Road",
+      "Road corner-down-right": "Road",
+      "Road corner-down-left": "Road"
+    },
+    "biomes": {
+      "Ocean": {
+        "scenarios": [
+          "e_ocean"
+        ]
+      },
+      "Fields": {
+        "scenarios": [
+          "e_fields"
+        ],
+        "tokens": {
+          "sound_field": [
+            "the wind is doing something a wind cannot do to a crop",
+            "there is a sound like a great many people breathing carefully",
+            "the stalks are moving against the wind and keeping time"
+          ]
+        }
+      },
+      "Meadows": {
+        "scenarios": [
+          "e_meadows"
+        ]
+      },
+      "Forest": {
+        "scenarios": [
+          "e_forest"
+        ],
+        "tokens": {
+          "landmark": [
+            "a clearing that is not on the survey",
+            "the one beech in the wood that has never been cut",
+            "a slope where nothing grows in a circle"
+          ]
+        }
+      },
+      "ForestIce": {
+        "scenarios": [
+          "e_forestice"
+        ]
+      },
+      "ForestTropical": {
+        "scenarios": [
+          "e_foresttropical"
+        ]
+      },
+      "SpiritWoods": {
+        "scenarios": [
+          "e_spiritwoods"
+        ]
+      },
+      "Mountain": {
+        "scenarios": [
+          "e_mountain"
+        ],
+        "tokens": {
+          "offering": [
+            "a mug of tea, still hot",
+            "a bootlace, coiled",
+            "a photograph face down under a pebble",
+            "a child's glove"
+          ]
+        }
+      },
+      "MountainIce": {
+        "scenarios": [
+          "e_mountainice"
+        ]
+      },
+      "MountainDesert": {
+        "scenarios": [
+          "e_mountaindesert"
+        ]
+      },
+      "Desert": {
+        "scenarios": [
+          "e_desert"
+        ]
+      },
+      "Badlands": {
+        "scenarios": [
+          "e_badlands"
+        ]
+      },
+      "Tundra": {
+        "scenarios": [
+          "e_tundra"
+        ]
+      },
+      "Permafrost": {
+        "scenarios": [
+          "e_permafrost"
+        ]
+      },
+      "Volcano": {
+        "scenarios": [
+          "e_volcano"
+        ]
+      },
+      "Ruins": {
+        "scenarios": [
+          "e_ruins"
+        ]
+      },
+      "Graveyard": {
+        "scenarios": [
+          "e_graveyard"
+        ]
+      },
+      "Swamp": {
+        "scenarios": [
+          "e_swamp"
+        ]
+      },
+      "Temple": {
+        "scenarios": [
+          "e_temple"
+        ]
+      },
+      "Castle": {
+        "scenarios": [
+          "e_castle"
+        ]
+      },
+      "City": {
+        "scenarios": [
+          "e_city"
+        ]
+      },
+      "Docks": {
+        "scenarios": [
+          "e_docks"
+        ]
+      },
+      "Road": {
+        "scenarios": [
+          "e_road"
+        ]
+      },
+      "Beach": {
+        "scenarios": [
+          "e_beach"
+        ]
+      },
+      "Lake": {
+        "scenarios": [
+          "e_lake"
+        ]
+      }
+    }
+  }
 }

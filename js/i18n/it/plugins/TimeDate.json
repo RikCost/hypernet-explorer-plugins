@@ -94,6 +94,7 @@
   "addiction": {
     "withdrawal": "{name} è in astinenza da {substance}!",
     "relieved": "{name} ha superato il peggio della voglia di {substance}",
+    "eased": "{name}: la voglia di {substance} cala di {amount}.",
     "partyCard": "Dipendenze ({count})",
     "none": "Pulito"
   },

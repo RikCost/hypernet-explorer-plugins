@@ -25,6 +25,10 @@
  * @desc Asks which party member to infect, then gives them the disease.
  * Works on the map and in battle. Used by the disease vials.
  *
+ * @command Diagnose
+ * @desc Examines the whole party and names every illness they carry,
+ * including ones still inside their window period. Works in battle too.
+ *
  * @arg disease
  * @type string
  * @desc Disease id from js/db/Health/Diseases.json (e.g. influenza, rabies).
@@ -60,7 +64,7 @@
         style.textContent = `
           .companion-switcher { display:flex; align-items:center; gap:6px; }
           .char-switch-hint {
-            font-family:'Lora',serif; font-size:0.6rem; font-weight:bold;
+            font-family:'Lora',serif; font-size:0.732rem; font-weight:bold;
             line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
             border:1.5px solid var(--text-primary-hover); border-radius:3px;
             padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
@@ -694,15 +698,15 @@
 
     this._dndContainer.innerHTML = `
         <div class="book-spread">
-            <div class="left-page" style="justify-content: flex-start;">
-                <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;">
-                  <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; left: 0; font-family: 'Lora', serif; font-size: 0.8rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: fit-content; line-height: normal; user-select: none;">
+            <div class="left-page" style="justify-content: flex-start">
+                <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
+                  <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
                     ${T('Biologic.back')}
                   </div>
-                  <h1 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${T('Biologic.biology')}</h1>
+                  <h1 class="title" style="border: none; margin: 0; padding: 0">${T('Biologic.biology')}</h1>
                 </div>
                 
-                <div class="card left-profile-fields" style="padding: 10px 14px; margin-bottom: 10px;"></div>
+                <div class="card left-profile-fields" style="padding: 10px 14px; margin-bottom: 10px"></div>
             </div>
             
             <div class="right-page"></div>
@@ -891,7 +895,7 @@
     const hintR = manyMembers
       ? `<span class="char-switch-hint">${padOn ? 'R2' : 'TAB'}</span>`
       : '';
-    const companionHTML = `${hintL}<div class="companion-tabs-row" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">${companionTabsHTML}</div>${hintR}`;
+    const companionHTML = `${hintL}<div class="companion-tabs-row" style="border-bottom:none; margin-bottom:0; padding-bottom:0">${companionTabsHTML}</div>${hintR}`;
 
     const bio = actor._biologicData;
     if (!bio) {
@@ -914,7 +918,7 @@
     const leftProfileHTML = `
         <div class="metric-row"><span class="metric-label">${T('Biologic.class')}</span><span class="metric-value">${classLabel} (Lv ${actor.level})</span></div>
         <div class="metric-row"><span class="metric-label">${T('Biologic.bloodType')}</span><span class="metric-value">${bloodType.type} (${bloodType.rarity})</span></div>
-        <div class="metric-row"><span class="metric-label">${T('Biologic.personality')}</span><span class="metric-value" style="color: var(--text-text-alt-17);">${pName}</span></div>
+        <div class="metric-row"><span class="metric-label">${T('Biologic.personality')}</span><span class="metric-value" style="color: var(--text-text-alt-17)">${pName}</span></div>
         <div class="metric-row"><span class="metric-label">${T('Biologic.reproduction')}</span><span class="metric-value">${repText}</span></div>
     `;
     const profileContainer = this._dndContainer.querySelector(".left-profile-fields");
@@ -934,7 +938,7 @@
     // position:static here: the sticky pinning is owned by the wrapping
     // .bio-right-header (which also holds the character switcher) so the two
     // rows pin together instead of colliding at top:0.
-    let categoryTabsHTML = `<div class="category-tabs-top" style="position:static; margin-bottom:0; border-bottom:none;">`;
+    let categoryTabsHTML = `<div class="category-tabs-top" style="position:static; margin-bottom:0; border-bottom:none">`;
     this._categories.forEach((cat, idx) => {
       const isSelected = idx === this._category ? "selected" : "";
       const catName = T('Biologic.tab.' + cat);
@@ -949,7 +953,7 @@
     const rightPage = this._dndContainer.querySelector(".right-page");
     const rightScrollTop = rightPage ? rightPage.scrollTop : 0;
 
-    let rightHTML = `<div class="bio-right-header" style="position:sticky; top:0; z-index:6; background:var(--gradient-34), var(--gradient-26); padding-top:2px; margin-bottom:14px; border-bottom:2px solid var(--border-primary-hover-translucent-15);"><div class="companion-switcher" style="justify-content:flex-end; min-height:26px; margin:0 0 6px 0;">${companionHTML}</div>${categoryTabsHTML}</div>`;
+    let rightHTML = `<div class="bio-right-header" style="position:sticky; top:0; z-index:6; background:var(--gradient-34), var(--gradient-26); padding-top:2px; margin-bottom:14px; border-bottom:2px solid var(--border-primary-hover-translucent-15)"><div class="companion-switcher" style="justify-content:flex-end; min-height:26px; margin:0 0 6px 0">${companionHTML}</div>${categoryTabsHTML}</div>`;
 
     switch (this._category) {
       case 0:
@@ -993,7 +997,7 @@
     let statesHTML = "";
     states.forEach(state => {
       statesHTML += `
-              <span class="badge info" style="margin-right: 4px; display: inline-flex; align-items: center; gap: 4px;">
+              <span class="badge info" style="margin-right: 4px; display: inline-flex; align-items: center; gap: 4px">
                   ${state.name}
               </span>
           `;
@@ -1005,7 +1009,7 @@
     // critical, so this list reads on the same scale as the rest of the UI.
     const needColor = (p) => p <= 20 ? '#d9433a' : (p <= 50 ? '#e2933a' : '#d4a64e');
 
-    let partsGridHTML = `<div class="grid-3" style="gap: 4px 14px; margin-top: 10px;">`;
+    let partsGridHTML = `<div class="grid-3" style="gap: 4px 14px; margin-top: 10px">`;
     for (let key in actor._bodyParts) {
       const part = actor._bodyParts[key];
       if (!part) continue;
@@ -1018,9 +1022,9 @@
       partsGridHTML += `
               <div class="${cellClass}">
                   <span class="bodypart-vital-lbl">${part.name}</span>
-                  <span class="bodypart-vital-val" style="color:${c};">${hpText}</span>
+                  <span class="bodypart-vital-val" style="color:${c}">${hpText}</span>
                   <div class="bodypart-vital-bar">
-                      <div class="bodypart-vital-bar-fill" style="width: ${isDestroyed ? 0 : rate}%; background:${c};"></div>
+                      <div class="bodypart-vital-bar-fill" style="width: ${isDestroyed ? 0 : rate}%; background:${c}"></div>
                   </div>
               </div>
           `;
@@ -1030,7 +1034,7 @@
     return `
           <div class="card">
               <div class="card-header">${T('Biologic.statesReactions')}</div>
-              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px;">
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px">
                   ${statesHTML}
               </div>
           </div>
@@ -1169,7 +1173,7 @@
                   <span class="badge ${testColor}">${Math.floor(testosterone)} ng/dL (${testStatus})</span>
               </div>
               <div class="gauge-container">
-                  <div class="gauge-outer"><div class="gauge-inner hp" style="width: ${Math.min(100, (testosterone / 1200) * 100)}%;"></div></div>
+                  <div class="gauge-outer"><div class="gauge-inner hp" style="width: ${Math.min(100, (testosterone / 1200) * 100)}%"></div></div>
               </div>
 
               <div class="metric-row">
@@ -1177,7 +1181,7 @@
                   <span class="badge ${estColor}">${Math.floor(estrogen)} pg/mL (${estStatus})</span>
               </div>
               <div class="gauge-container">
-                  <div class="gauge-outer"><div class="gauge-inner magic" style="width: ${Math.min(100, (estrogen / 150) * 100)}%;"></div></div>
+                  <div class="gauge-outer"><div class="gauge-inner magic" style="width: ${Math.min(100, (estrogen / 150) * 100)}%"></div></div>
               </div>
 
               <div class="metric-row">
@@ -1185,7 +1189,7 @@
                   <span class="badge ${progColor}">${progesterone.toFixed(1)} ng/mL (${progStatus})</span>
               </div>
               <div class="gauge-container">
-                  <div class="gauge-outer"><div class="gauge-inner mp" style="width: ${Math.min(100, (progesterone / 40) * 100)}%;"></div></div>
+                  <div class="gauge-outer"><div class="gauge-inner mp" style="width: ${Math.min(100, (progesterone / 40) * 100)}%"></div></div>
               </div>
           </div>
           
@@ -1229,10 +1233,10 @@
       foundPathogen = true;
       immune.viruses.forEach(v => {
         infectionsHTML += `
-                  <div class="metric-row" style="border-bottom: 1px dashed rgba(43,18,7,0.15); padding: 6px 0;">
+                  <div class="metric-row" style="border-bottom: 1px dashed rgba(43,18,7,0.15); padding: 6px 0">
                       <div>
-                          <strong style="color: #8b1e10;">${pathogenLabel(v.name)} (${T('Biologic.virus')})</strong>
-                          <div style="font-size: 11px; opacity: 0.85;">${T('Biologic.viralCopies')}: ${Math.floor(v.copies).toLocaleString()}/mL</div>
+                          <strong style="color: #8b1e10">${pathogenLabel(v.name)} (${T('Biologic.virus')})</strong>
+                          <div style="font-size: 14px; opacity: 0.85">${T('Biologic.viralCopies')}: ${Math.floor(v.copies).toLocaleString()}/mL</div>
                       </div>
                       <span class="badge danger">${T('Biologic.active')}</span>
                   </div>
@@ -1244,10 +1248,10 @@
       foundPathogen = true;
       immune.bacteria.forEach(b => {
         infectionsHTML += `
-                  <div class="metric-row" style="border-bottom: 1px dashed rgba(43,18,7,0.15); padding: 6px 0;">
+                  <div class="metric-row" style="border-bottom: 1px dashed rgba(43,18,7,0.15); padding: 6px 0">
                       <div>
-                          <strong style="color: #8b1e10;">${pathogenLabel(b.name)} (${T('Biologic.bacterium')})</strong>
-                          <div style="font-size: 11px; opacity: 0.85;">${T('Biologic.cfuCount')}: ${Math.floor(b.cfu).toLocaleString()}/mL</div>
+                          <strong style="color: #8b1e10">${pathogenLabel(b.name)} (${T('Biologic.bacterium')})</strong>
+                          <div style="font-size: 14px; opacity: 0.85">${T('Biologic.cfuCount')}: ${Math.floor(b.cfu).toLocaleString()}/mL</div>
                       </div>
                       <span class="badge danger">${T('Biologic.infection')}</span>
                   </div>
@@ -1256,7 +1260,7 @@
     }
 
     if (!foundPathogen) {
-      infectionsHTML = `<div style="text-align: center; padding: 20px 0; color: #3d5e38; font-style: italic;">
+      infectionsHTML = `<div style="text-align: center; padding: 20px 0; color: #3d5e38">
               ${T('Biologic.noActivePathogensOrSystemic')}
           </div>`;
     }
@@ -1275,8 +1279,8 @@
           </div>
           
           <div class="card">
-              <div class="card-header" style="color: #8b1e10;">${T('Biologic.activePathogensInfections')}</div>
-              <div style="margin-top: 5px;">
+              <div class="card-header" style="color: #8b1e10">${T('Biologic.activePathogensInfections')}</div>
+              <div style="margin-top: 5px">
                   ${infectionsHTML}
               </div>
           </div>
@@ -1322,22 +1326,22 @@
       else if (currentFlow < 45) flowBarColor = "mp";
 
       tableRows += `
-              <tr style="border-bottom: 1px dashed rgba(43,18,7,0.1);">
-                  <td style="padding: 6px 4px; font-weight: bold; font-family: 'Lora', serif; color: #16487e;">${partName}</td>
-                  <td style="padding: 6px 4px;">
-                      <div class="metric-row" style="margin: 0; padding: 0; font-size: 11px;">
+              <tr style="border-bottom: 1px dashed rgba(43,18,7,0.1)">
+                  <td style="padding: 6px 4px; font-weight: bold; font-family: 'Lora', serif; color: #16487e">${partName}</td>
+                  <td style="padding: 6px 4px">
+                      <div class="metric-row" style="margin: 0; padding: 0; font-size: 14px">
                           <span>${integrityPercent}%</span>
                       </div>
-                      <div class="gauge-container" style="margin: 2px 0 0 0;">
-                          <div class="gauge-outer" style="height: 4px;"><div class="gauge-inner ${rowColor === 'success' ? 'magic' : (rowColor === 'warning' ? 'mp' : 'hp')}" style="width: ${integrityPercent}%;"></div></div>
+                      <div class="gauge-container" style="margin: 2px 0 0 0">
+                          <div class="gauge-outer" style="height: 4px"><div class="gauge-inner ${rowColor === 'success' ? 'magic' : (rowColor === 'warning' ? 'mp' : 'hp')}" style="width: ${integrityPercent}%"></div></div>
                       </div>
                   </td>
-                  <td style="padding: 6px 4px; text-align: right;">
-                      <div class="metric-row" style="margin: 0; padding: 0; font-size: 11px;">
+                  <td style="padding: 6px 4px; text-align: right">
+                      <div class="metric-row" style="margin: 0; padding: 0; font-size: 14px">
                           <span>${currentFlow}%</span>
                       </div>
-                      <div class="gauge-container" style="margin: 2px 0 0 0;">
-                          <div class="gauge-outer" style="height: 4px;"><div class="gauge-inner ${flowBarColor}" style="width: ${Math.min(100, currentFlow)}%;"></div></div>
+                      <div class="gauge-container" style="margin: 2px 0 0 0">
+                          <div class="gauge-outer" style="height: 4px"><div class="gauge-inner ${flowBarColor}" style="width: ${Math.min(100, currentFlow)}%"></div></div>
                       </div>
                   </td>
               </tr>
@@ -1357,14 +1361,14 @@
               </div>
           </div>
           
-          <div class="card" style="padding: 10px 14px;">
-              <div class="card-header" style="color: #16487e;">${T('Biologic.meridianChannelStatus')}</div>
-              <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px;">
+          <div class="card" style="padding: 10px 14px">
+              <div class="card-header" style="color: #16487e">${T('Biologic.meridianChannelStatus')}</div>
+              <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 16px">
                   <thead>
-                      <tr style="border-bottom: 2px solid #2b1207; font-family: 'Lora', serif; opacity: 0.85;">
-                          <th style="text-align: left; padding: 4px;">${T('Biologic.meridian')}</th>
-                          <th style="text-align: left; padding: 4px;">${T('Biologic.channelIntegrity')}</th>
-                          <th style="text-align: right; padding: 4px;">${T('Biologic.flowIntensity')}</th>
+                      <tr style="border-bottom: 2px solid #2b1207; font-family: 'Lora', serif; opacity: 0.85">
+                          <th style="text-align: left; padding: 4px">${T('Biologic.meridian')}</th>
+                          <th style="text-align: left; padding: 4px">${T('Biologic.channelIntegrity')}</th>
+                          <th style="text-align: right; padding: 4px">${T('Biologic.flowIntensity')}</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -1425,8 +1429,8 @@
         regionsHTML += `
                   <div class="brain-region-card">
                       <div class="brain-region-header">
-                          <strong style="color: #2b1207;">${regionName}</strong>
-                          <span class="badge ${badgeColor}" style="font-size: 10px; padding: 2px 6px;">${activity}% (${badgeStatus})</span>
+                          <strong style="color: #2b1207">${regionName}</strong>
+                          <span class="badge ${badgeColor}" style="font-size: 13px; padding: 2px 6px">${activity}% (${badgeStatus})</span>
                       </div>
                       <div class="brain-region-func">${funcDesc}</div>
                       <div class="brain-region-meta">
@@ -1461,46 +1465,46 @@
                   <span class="metric-label">${T('Biologic.cognitiveAlignment')}</span>
                   <span class="badge success">${mood}</span>
               </div>
-              <div class="metric-row" style="margin-bottom: 8px;">
+              <div class="metric-row" style="margin-bottom: 8px">
                   <span class="metric-label">${T('Biologic.activeThought')}</span>
-                  <span class="metric-value" style="font-style: italic; color: #8b1e10;">"${thought}"</span>
+                  <span class="metric-value" style="color: #8b1e10">"${thought}"</span>
               </div>
-              <hr style="border: 0; border-top: 1px dashed rgba(43,18,7,0.25); margin: 8px 0;">
+              <hr style="border: 0; border-top: 1px dashed rgba(43,18,7,0.25); margin: 8px 0">
               
-              <div class="metric-row" style="margin: 4px 0 2px 0; font-size: 12px;">
+              <div class="metric-row" style="margin: 4px 0 2px 0; font-size: 15px">
                   <span>${T('Biologic.ego')}: ${Math.floor(ego)}%</span>
                   <span>${T('Biologic.subconscious')}: ${Math.floor(subc)}%</span>
               </div>
               <div class="gauge-container">
-                  <div class="gauge-outer" style="height: 6px; display: flex;">
-                      <div class="gauge-inner hp" style="width: ${ego}%; height: 100%; border-radius: 4px 0 0 4px;"></div>
-                      <div class="gauge-inner magic" style="width: ${subc}%; height: 100%; border-radius: 0 4px 4px 0; opacity: 0.85;"></div>
+                  <div class="gauge-outer" style="height: 6px; display: flex">
+                      <div class="gauge-inner hp" style="width: ${ego}%; height: 100%; border-radius: 4px 0 0 4px"></div>
+                      <div class="gauge-inner magic" style="width: ${subc}%; height: 100%; border-radius: 0 4px 4px 0; opacity: 0.85"></div>
                   </div>
               </div>
-              <div class="metric-row" style="margin-top: 6px;">
+              <div class="metric-row" style="margin-top: 6px">
                   <span class="metric-label">${T('Biologic.orgoneEnergyCharge')}</span>
                   <span class="metric-value">${Math.floor(orgone)}%</span>
               </div>
               <div class="gauge-container">
-                  <div class="gauge-outer"><div class="gauge-inner orgone" style="width: ${Math.max(0, Math.min(100, orgone))}%;"></div></div>
+                  <div class="gauge-outer"><div class="gauge-inner orgone" style="width: ${Math.max(0, Math.min(100, orgone))}%"></div></div>
               </div>
           </div>
 
           <div class="card">
               <div class="card-header">${T('Biologic.electroencephalogramSpectrum')}</div>
-              <div class="metric-row" style="font-size: 12px; margin-bottom: 4px;">
+              <div class="metric-row" style="font-size: 15px; margin-bottom: 4px">
                   ${waveBands.map((b) => `<span>${b.label}: ${b.hz.toFixed(1)} Hz</span>`).join("")}
               </div>
-              <div class="gauge-container" style="height: 10px;">
-                  <div class="gauge-outer" style="display: flex; height: 10px; overflow: hidden;">
-                      ${waveBands.map((b) => `<div style="background-color: ${b.color}; width: ${b.share}%; height: 100%;"></div>`).join("")}
+              <div class="gauge-container" style="height: 10px">
+                  <div class="gauge-outer" style="display: flex; height: 10px">
+                      ${waveBands.map((b) => `<div style="background-color: ${b.color}; width: ${b.share}%; height: 100%"></div>`).join("")}
                   </div>
               </div>
           </div>
 
-          <div class="card" style="padding: 10px 14px;">
+          <div class="card" style="padding: 10px 14px">
               <div class="card-header">${T('Biologic.brainRegionalCortexRegistry')}</div>
-              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px">
                   ${regionsHTML}
               </div>
           </div>
@@ -1527,10 +1531,10 @@
 
     if (repType === -1) {
       return `
-              <div class="card" style="text-align: center; padding: 40px 10px; color: #8b1e10;">
-                  <div style="font-size: 40px; margin-bottom: 10px;"></div>
+              <div class="card" style="text-align: center; padding: 40px 10px; color: #8b1e10">
+                  <div style="font-size: 44px; margin-bottom: 10px"></div>
                   <h3>${T('Biologic.reproductiveSystemShielded')}</h3>
-                  <p style="font-size: 13px; opacity: 0.85; margin-top: 8px;">
+                  <p style="font-size: 16px; opacity: 0.85; margin-top: 8px">
                       ${T('Biologic.thisActorIsAsexualSterile')}
                   </p>
               </div>
@@ -1594,25 +1598,25 @@
         const milestone = T('Biologic.fetalBand.' + fetalBandId + '.milestone');
 
         detailsHTML = `
-                  <div class="card" style="border-color: #8b1e10;">
-                      <div class="card-header" style="color: #8b1e10;">${T('Biologic.activeGestationalRegistry')}</div>
+                  <div class="card" style="border-color: #8b1e10">
+                      <div class="card-header" style="color: #8b1e10">${T('Biologic.activeGestationalRegistry')}</div>
                       <div class="metric-row"><span class="metric-label">${T('Biologic.gestationalState')}</span><span class="badge danger">${T('Biologic.pregnant')}</span></div>
                       <div class="metric-row"><span class="metric-label">${T('Biologic.gestationalAge')}</span><span class="metric-value">${gestationalAge} ${T('Biologic.days')} (${(gestationalAge / 7).toFixed(1)} ${T('Biologic.weeks')})</span></div>
                       <div class="metric-row"><span class="metric-label">${T('Biologic.currentTrimester')}</span><span class="metric-value">${trimester}° ${T('Biologic.trimester')}</span></div>
                       <div class="metric-row"><span class="metric-label">${T('Biologic.gestationalTerm')}</span><span class="metric-value">${term} ${T('Biologic.days')}</span></div>
                       <div class="metric-row"><span class="metric-label">${T('Biologic.gestationalProgress')}</span><span class="metric-value">${progressPercent.toFixed(1)}%</span></div>
                       <div class="gauge-container">
-                          <div class="gauge-outer"><div class="gauge-inner hp" style="width: ${progressPercent}%;"></div></div>
+                          <div class="gauge-outer"><div class="gauge-inner hp" style="width: ${progressPercent}%"></div></div>
                       </div>
                   </div>
                   
                   <div class="card">
                       <div class="card-header">${T('Biologic.fetalBiometricRegister')}</div>
-                      <div class="metric-row"><span class="metric-label">${T('Biologic.developmentalStage')}</span><span class="metric-value" style="font-weight:bold; color: #8b1e10;">${fetalStage}</span></div>
+                      <div class="metric-row"><span class="metric-label">${T('Biologic.developmentalStage')}</span><span class="metric-value" style="font-weight:bold; color: #8b1e10">${fetalStage}</span></div>
                       <div class="metric-row"><span class="metric-label">${T('Biologic.estimatedFetalLength')}</span><span class="metric-value">${sizeDesc}</span></div>
                       <div class="metric-row"><span class="metric-label">${T('Biologic.estimatedFetalWeight')}</span><span class="metric-value">${weightDesc}</span></div>
-                      <div class="metric-row" style="margin-top: 8px;"><span class="metric-label" style="display:block; font-weight:bold; margin-bottom: 2px;">${T('Biologic.developmentalMilestone')}</span></div>
-                      <p style="font-size: 12px; margin: 0; padding: 0 4px; line-height: 1.35; color: #2b1207; opacity: 0.85;">${milestone}</p>
+                      <div class="metric-row" style="margin-top: 8px"><span class="metric-label" style="display:block; font-weight:bold; margin-bottom: 2px">${T('Biologic.developmentalMilestone')}</span></div>
+                      <p style="font-size: 15px; margin: 0; padding: 0 4px; line-height: 1.35; color: #2b1207; opacity: 0.85">${milestone}</p>
                   </div>
               `;
       } else {
@@ -1639,8 +1643,8 @@
                   </div>
 
 
-                  <div class="card" style="text-align: center; padding: 20px 10px; opacity: 0.85;">
-                      <p style="font-size: 13px; font-style: italic; color: #2b1207;">
+                  <div class="card" style="text-align: center; padding: 20px 10px; opacity: 0.85">
+                      <p style="font-size: 16px; color: #2b1207">
                           ${T('Biologic.noActiveConceptionSeedlingGermination')}
                       </p>
                   </div>
@@ -1649,7 +1653,7 @@
       return detailsHTML;
     }
 
-    return `<div style="text-align:center; padding: 40px 10px;">${T('Biologic.noReproductiveRegisterDataAvailable')}</div>`;
+    return `<div style="text-align:center; padding: 40px 10px">${T('Biologic.noReproductiveRegisterDataAvailable')}</div>`;
   };
 
   // State Reaction System for Biologic Simulation
@@ -2554,6 +2558,79 @@
     }
   );
 
+  // ── Being looked over by somebody who knows ───────────────────────────────
+  // What a doctor's visit is worth. Every illness in the party is named at
+  // once, the ones still inside their window period included: those are the
+  // ones the party could not have found on their own, and until somebody says
+  // what they are the morning dose round walks straight past them. Naming
+  // them is therefore not a cosmetic reveal — it is what lets them be treated.
+  window.BiologicDiagnosis = {
+    // Everyone the examination covers. Away from a fight that is the whole
+    // travelling party; in one, only the line that is actually present.
+    targets() {
+      if (!window.$gameParty) return [];
+      const inBattle = typeof $gameParty.inBattle === "function" && $gameParty.inBattle();
+      const list = inBattle ? $gameParty.battleMembers() : $gameParty.members();
+      return (list || []).filter(Boolean);
+    },
+
+    // One member, named illnesses and all. Returns the diseases found so the
+    // caller can write the line; the marking is the lasting part.
+    examine(actor) {
+      const api = window.DiseaseSystem;
+      if (!api || !actor) return [];
+      const found = [];
+      for (const entry of api.actorEntries(actor)) {
+        entry.diagnosed = true;          // ends the window period for good
+        const disease = api.resolve(entry);
+        if (disease) found.push(disease);
+      }
+      if (found.length && actor.refresh) actor.refresh();
+      return found;
+    },
+
+    // The examination itself: one line per member, put through $gameMessage so
+    // it reads the same on the map and in a fight, four lines to a page.
+    run() {
+      const members = this.targets();
+      if (!window.DiseaseSystem || !members.length) return;
+      const lines = [];
+      let anyIll = false;
+      for (const actor of members) {
+        const found = this.examine(actor);
+        if (found.length) anyIll = true;
+        lines.push(
+          found.length
+            ? T("Biologic.diagnose.line", {
+                actor: actor.name(),
+                diseases: found.map((d) => d.name).join(", "),
+              })
+            : T("Biologic.diagnose.clean", { actor: actor.name() })
+        );
+      }
+      if (!window.$gameMessage) {
+        if (window.ParchmentToast) {
+          window.ParchmentToast.show(lines.join("  "), { severity: anyIll ? "warning" : "good", duration: 300 });
+        }
+        return;
+      }
+      // A party where nobody is carrying anything says so in one line rather
+      // than reciting a clean bill of health name by name.
+      if (!anyIll) {
+        $gameMessage.add(T("Biologic.diagnose.none"));
+        return;
+      }
+      $gameMessage.add(T("Biologic.diagnose.header"));
+      for (let i = 0; i < lines.length; i++) {
+        if ((i + 1) % 4 === 0) $gameMessage.newPage();
+        $gameMessage.add(lines[i]);
+      }
+    },
+  };
+
+  PluginManager.registerCommand("Health_BiologicSimulation", "Diagnose", () => {
+    window.BiologicDiagnosis.run();
+  });
 
   Window_BiologicSimulation.prototype.determinePersonality = function (name) {
     const personalityData = getPersonalityData();

@@ -104,15 +104,15 @@
   background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0));}
 .cd-side{display:flex;align-items:center;gap:10px;min-width:230px;}
 .cd-side.cd-right{justify-content:flex-end;}
-.cd-who{font-size:1.05rem;font-weight:bold;letter-spacing:.04em;text-shadow:0 2px 0 rgba(0,0,0,.6);}
-.cd-tally{font-size:2rem;font-weight:bold;line-height:1;min-width:44px;text-align:center;
+.cd-who{font-size:1.208rem;font-weight:bold;letter-spacing:.04em;text-shadow:0 2px 0 rgba(0,0,0,.6);}
+.cd-tally{font-size:2.2rem;font-weight:bold;line-height:1;min-width:44px;text-align:center;
   padding:2px 10px;border-radius:8px;background:rgba(0,0,0,.42);border:2px solid rgba(255,255,255,.16);
   transition:transform .12s ease-out;}
 .cd-tally.cd-pop{transform:scale(1.45);}
 .cd-p0 .cd-tally{color:#8fe3ff;border-color:#3b8fb5;}
 .cd-p1 .cd-tally{color:#ffb08f;border-color:#b5613b;}
-.cd-stakebar{text-align:center;font-size:.92rem;opacity:.92;}
-.cd-turnline{font-size:1rem;font-weight:bold;letter-spacing:.06em;}
+.cd-stakebar{text-align:center;font-size:1.104rem;opacity:.92;}
+.cd-turnline{font-size:1.15rem;font-weight:bold;letter-spacing:.06em;}
 
 .cd-boardwrap{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);}
 /* The live board renders BEHIND the grid, and the tiles go transparent for it,
@@ -155,7 +155,7 @@
 /* Effect cards: what one leaves on a tile, and the moment it lands. */
 .cd-tile.cd-swappick{border-color:#7fe2ff;box-shadow:0 0 0 3px rgba(127,226,255,.6),0 0 22px rgba(127,226,255,.5);}
 .cd-tilemark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  font-size:1.5rem;pointer-events:none;opacity:.72;text-shadow:0 2px 4px #000;}
+  font-size:1.725rem;pointer-events:none;opacity:.72;text-shadow:0 2px 4px #000;}
 .cd-tilemark.cd-mk-halve{color:#ff8f8f;}
 .cd-tilemark.cd-mk-double{color:#9dffa4;}
 .cd-tilemark.cd-mk-trap{color:#ffd06a;animation:cd-trap 1.4s ease-in-out infinite;}
@@ -181,7 +181,7 @@
   font-size:calc(var(--cd-cardh) * .042);max-height:4.4em;overflow:hidden;}
 
 .cd-chip{position:absolute;left:50%;top:8%;transform:translateX(-50%);font-weight:bold;
-  font-size:1.15rem;padding:1px 7px;border-radius:7px;pointer-events:none;z-index:8;
+  font-size:1.322rem;padding:1px 7px;pointer-events:none;z-index:8;
   animation:cd-chip .62s ease-out forwards;text-shadow:0 2px 3px #000;}
 .cd-chip.cd-win{background:rgba(60,180,90,.92);color:#eaffe9;}
 .cd-chip.cd-loss{background:rgba(190,60,55,.92);color:#ffecea;}
@@ -231,15 +231,15 @@
   font-size:calc(var(--cd-cardh) * .042);}
 
 .cd-foot{position:absolute;left:0;bottom:0;width:100%;padding:6px 16px;display:flex;
-  align-items:center;justify-content:space-between;font-size:.82rem;opacity:.88;
+  align-items:center;justify-content:space-between;font-size:0.984rem;opacity:.88;
   pointer-events:none;text-shadow:0 1px 2px #000;z-index:13;}
 .cd-btn{pointer-events:auto;cursor:pointer;padding:4px 12px;border-radius:6px;
   border:1.5px solid #d8c08a;background:rgba(0,0,0,.5);font-family:inherit;color:#f2e6cf;
-  font-size:.82rem;font-weight:bold;}
+  font-size:0.984rem;font-weight:bold;}
 .cd-btn:hover{background:rgba(255,228,134,.22);}
 .cd-btn.cd-btnsel{border-color:#ffe486;box-shadow:0 0 0 2px rgba(255,228,134,.45);}
 
-.cd-oppdeck{font-size:.8rem;opacity:.7;margin-top:2px;}
+.cd-oppdeck{font-size:0.96rem;opacity:.7;margin-top:2px;}
 
 .cd-banner{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(.2);
   padding:18px 46px;border-radius:14px;border:3px solid #ffe486;background:rgba(12,20,14,.92);
@@ -248,15 +248,15 @@
 @keyframes cd-stamp{0%{transform:translate(-50%,-50%) scale(2.2) rotate(-8deg);opacity:0}
   70%{transform:translate(-50%,-50%) scale(.94) rotate(1deg);opacity:1}
   100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
-.cd-banner h1{margin:0 0 6px;font-size:2.1rem;letter-spacing:.06em;}
-.cd-banner p{margin:2px 0;font-size:.95rem;opacity:.92;}
+.cd-banner h1{margin:0 0 6px;font-size:2.31rem;letter-spacing:.06em;}
+.cd-banner p{margin:2px 0;font-size:1.14rem;opacity:.92;}
 
 .cd-detail{position:absolute;right:14px;top:70px;width:236px;padding:10px 12px;border-radius:10px;
-  border:2px solid rgba(216,192,138,.6);background:rgba(10,16,12,.92);font-size:.8rem;z-index:20;}
-.cd-detail h3{margin:0 0 4px;font-size:.95rem;color:#ffe486;}
-.cd-detail .cd-lore{font-style:italic;opacity:.85;font-size:.74rem;line-height:1.3;
+  border:2px solid rgba(216,192,138,.6);background:rgba(10,16,12,.92);font-size:0.96rem;z-index:20;}
+.cd-detail h3{margin:0 0 4px;font-size:1.14rem;color:#ffe486;}
+.cd-detail .cd-lore{font-style: normal;opacity:.85;font-size:0.903rem;line-height:1.3;
   max-height:9em;overflow:hidden;}
-.cd-detail table{width:100%;font-size:.76rem;margin:5px 0;}
+.cd-detail table{width:100%;font-size:0.927rem;margin:5px 0;}
 .cd-detail td:last-child{text-align:right;font-weight:bold;color:#ffe486;}
 `;
     document.head.appendChild(style);
@@ -1385,7 +1385,7 @@
           </div>
         </div>
         <div class="cd-boardwrap">
-          <canvas id="cd-3d" style="display:none;"></canvas>
+          <canvas id="cd-3d" style="display:none"></canvas>
           <div class="cd-grid" id="cd-grid"></div>
         </div>
         <div class="cd-hand" id="cd-hand"></div>
@@ -1793,12 +1793,12 @@
       // half played the panel says what it is waiting for.
       const body = effect
         ? (this._pendingSwap != null
-          ? `<div class="cd-lore" style="color:#9fe8ff;">${escapeHtml(T("CardGame.duel.pickSecondTile"))}</div>` : "")
+          ? `<div class="cd-lore" style="color:#9fe8ff">${escapeHtml(T("CardGame.duel.pickSecondTile"))}</div>` : "")
         : `<table>${CGx.STATS.map((id) =>
           `<tr><td>${escapeHtml(CGx.statLabel(id))}</td><td>${stats[id]}</td></tr>`).join("")}</table>`;
       panel.innerHTML = `
         <h3>${escapeHtml(CGx.nameOf(card.key))}</h3>
-        <div style="font-size:.72rem;opacity:.8;margin-bottom:3px;">${escapeHtml(
+        <div style="font-size:0.878rem; opacity:.8; margin-bottom:3px">${escapeHtml(
           effect ? T("CardGame.type.effect") : CGx.rarityName(CGx.rarityOf(card.key)))}</div>
         ${body}
         <div class="cd-lore">${escapeHtml(card.lore || "")}</div>`;

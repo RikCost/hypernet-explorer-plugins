@@ -1004,7 +1004,7 @@ select option:hover {
    the attribute-modifier green/red literals (#2e7d32 / #c62828) read dark.
    Lift the plate to a solid warm-dark card, re-ink the labels to cream/white,
    brighten the section titles, and remap the inline +/- colours. (The backpack
-   flattens this plate away again; see .backpack-rework in theme.css.)
+   flattens this plate away again; see .inspect-pockets in theme.css.)
    ========================================================================== */
 .item-inspect .inspect-lore {
     background: var(--bg-dark-warm-translucent-96);
@@ -1015,7 +1015,7 @@ select option:hover {
     color: var(--accent-amber-glow);
     border-bottom-color: var(--border-gold-amber-30);
 }
-.item-inspect .inspect-spec-row { font-size: 0.86rem; }
+.item-inspect .inspect-spec-row { font-size: 1.032rem; }
 .item-inspect .inspect-spec-label { color: var(--accent-cream-warm); }
 .item-inspect .inspect-spec-value { color: var(--text-pure-white); }
 .item-inspect .inspect-bullet-item { color: var(--accent-cream-light); }
@@ -1502,11 +1502,11 @@ select option:hover {
     color: var(--accent-amber-glow) !important;
     border-bottom-color: var(--accent-amber-glow) !important;
 }
-#shop-container .category-btn {
+#shop-container .backpack-tab {
     color: rgba(244, 233, 201, 0.72) !important;
     border-color: var(--border-gold-amber-30) !important;
 }
-#shop-container .category-btn.active {
+#shop-container .backpack-tab.active {
     background: var(--accent-amber-glow) !important;
     color: var(--bg-dark-warm-translucent-96) !important;
 }
@@ -1521,6 +1521,12 @@ select option:hover {
 #shop-container .shop-sell-hint,
 #shop-container .shop-selection-bar .selection-count {
     color: var(--accent-cream-light) !important;
+}
+#shop-container .shop-cat-name {
+    color: var(--accent-amber-glow) !important;
+}
+#shop-container .shop-cat-meta {
+    color: rgba(244, 233, 201, 0.68) !important;
 }
 
 /* --- Right page: the dossier's own prose. --- */
@@ -1544,4 +1550,35 @@ select option:hover {
 }
 #shop-container .detail-effect-chip {
     border-color: var(--border-gold-amber-30) !important;
+}
+
+
+/* ==========================================================================
+   HANDHELD / STEAM DECK PRIORITY OVERRIDE (theme preset half)
+   --------------------------------------------------------------------------
+   The full-bleed frame and the raised type live in css/theme.css and therefore
+   already apply under this preset -- these files carry colour tokens, not
+   layout. What does NOT carry over is anything this preset sizes or spaces
+   itself: those rules are *earlier* in the cascade than theme.css (the preset
+   is pulled in by the @import at the top of theme.css, or copied over
+   css/vars.css by GameOptions.persistTheme), so theme.css's handheld block
+   cannot reach them at equal specificity. They are re-stated here.
+
+   Breakpoint and design box are shared with theme.css and with
+   HANDHELD_MAX_W / HANDHELD_MAX_H in Core/GameOptions.js; change one, change
+   all three.
+   ========================================================================== */
+@media (max-width: 1366px) and (max-height: 860px) {
+
+    /* Preset-scoped panels that paint their own plate: give the dense ones the
+       same reclaimed padding the shared spread pages get, which is the whole of
+       what this breakpoint does. Type is NOT capped here -- this preset's own
+       .item-inspect .inspect-spec-row was raised at its declaration above, to
+       1.032rem, and a handheld rule pinning it to a smaller absolute size would
+       undo that; see the matching note in css/theme.css. */
+    .item-inspect .inspect-lore,
+    #pt-container .pt-props,
+    #pt-container .pt-desc {
+        padding: 8px 10px;
+    }
 }

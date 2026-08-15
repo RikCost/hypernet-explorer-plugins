@@ -179,6 +179,7 @@
         factions: 132,
         biologics: 84,
         augments: 223,
+        search: 391,
         help: 186,
         options: 83,
         tools: 252,
@@ -326,6 +327,14 @@
 
         static update() {
             if (!this.active) return;
+
+            // A focused text field owns the keyboard (the search bar above the
+            // party cards, a pet's name field). Their key events are stopped at
+            // the element so Input never sees the typing, but the gamepad poll
+            // and any key pressed before the field took focus still reach here,
+            // and "I" must type an i rather than open the backpack.
+            const focused = document.activeElement;
+            if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA')) return;
 
             // Backing out is answered before anything else: a page can be empty
             // of focusable tiles (a Followers list with nobody in it, a Vehicles
@@ -499,6 +508,14 @@
         }
     };
 
+    // Re-read the focusable tiles after something has replaced part of a page
+    // without going through a full refreshUIMenuDOM (the search page patches
+    // just its results list as the player types, see CustomMainMenuSearch.js).
+    // Without this the navigator would keep walking DOM nodes that are gone.
+    Scene_Menu.prototype.rebindMenuFocus = function () {
+        UIMenuInputManager.activate(this._isWorldMapPage ? 1 : 3);
+    };
+
     Scene_Menu.prototype.selectedActor = function () {
         const members = $gameParty.members();
         return members[this._selectedActorIndex] || members[0];
@@ -618,6 +635,7 @@
 
             // Re-bind focusable commands in new list immediately so keyboard/gamepad navigation finds them
             UIMenuInputManager.activate(this._isWorldMapPage ? 1 : 3);
+            if (window.MenuSearch) window.MenuSearch.afterRender(this);
 
             leftPageContainer.style.transition = "opacity 0.15s ease-in, transform 0.15s ease-in";
             leftPageContainer.style.opacity = "1";
@@ -640,6 +658,7 @@
 
             // Render Canvases for portraits
             this.drawAllPartyPortraits();
+            if (window.MenuSearch) window.MenuSearch.afterRender(this);
 
             rightPageContainer.style.transition = "opacity 0.15s ease-in, transform 0.15s ease-in";
             rightPageContainer.style.opacity = "1";
@@ -653,6 +672,12 @@
     // page absorbed the cancel; false means "nothing nested left, close the menu".
     // Each hideXPage() plays its own cancel SE, so callers must not play one too.
     Scene_Menu.prototype.backOutOneLevel = function () {
+        // A live search covers both pages, so it is the first thing a cancel
+        // takes back (CustomMainMenuSearch.js).
+        if (window.MenuSearch && window.MenuSearch.isActive()) {
+            window.MenuSearch.clear(this);
+            return true;
+        }
         if (this._isWorldMapPage) {
             this.hideWorldMapPage();
         } else if (this._isToolsPage) {
@@ -1057,12 +1082,12 @@
         // The hint ink is left to CSS (.pockets-hint) so each theme can set a
         // readable colour; a hardcoded brown was unreadable on the dark themes.
         const tile = (label, hint, iconIndex, action, enabled) => `
-                        <div class="command-item dynamics-tile focusable" style="width:100%;opacity:${enabled ? 1 : 0.45};pointer-events:${enabled ? 'auto' : 'none'};"
+                        <div class="command-item dynamics-tile focusable" style="width:100%; opacity:${enabled ? 1 : 0.45}; pointer-events:${enabled ? 'auto' : 'none'}"
                             onclick="${enabled ? action : ''}/* i18n-ignore: inline handler */">
-                            <span class="icon" style="background: url('img/system/IconSet.png') -${(iconIndex % 16) * 32}px -${Math.floor(iconIndex / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
-                            <span style="display:flex;flex-direction:column;align-items:flex-start;">
+                            <span class="icon" style="background: url('img/system/IconSet.png') -${(iconIndex % 16) * 32}px -${Math.floor(iconIndex / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
+                            <span style="display:flex; flex-direction:column; align-items:flex-start">
                                 <span>${label}</span>
-                                <span class="pockets-hint" style="font-size:0.72em;">${hint}</span>
+                                <span class="pockets-hint" style="font-size:0.798em">${hint}</span>
                             </span>
                         </div>`;
 
@@ -1072,7 +1097,7 @@
                         <div class="back-button" onclick="SceneManager._scene?.hideDynamicsPage?.()">${T('MainMenu.dynamics.back')}</div>
                         <h2 class="tools-title">${T('MainMenu.dynamics.title')}</h2>
                     </div>
-                    <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+                    <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px">
                         ${tile(T('MainMenu.dynamics.roster'), T('MainMenu.dynamics.rosterSub', { count: partySize }), COMMAND_ICONS.dynamics,
                             "SceneManager._scene?.setDynamicsView?.('roster')", true)}
                         ${tile(T('MainMenu.dynamics.turnOrder'),
@@ -1099,38 +1124,38 @@
             const canRetireThis = canRetire && !isLeader;
 
             const leaderBtn = isLeader
-                ? `<div class="command-item" style="flex:1;opacity:0.6;pointer-events:none;">${T('MainMenu.roster.leader')}</div>`
-                : `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.promoteUIPartyLeader?.(${actorId})">${T('MainMenu.roster.makeLeader')}</div>`;
+                ? `<div class="command-item" style="flex:1; opacity:0.6; pointer-events:none">${T('MainMenu.roster.leader')}</div>`
+                : `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.promoteUIPartyLeader?.(${actorId})">${T('MainMenu.roster.makeLeader')}</div>`;
 
             // Retiring is a one-way door, so the row asks twice.
             const retireBtns = pending
-                ? `<div class="command-item focusable" style="flex:1;color:#8b1010;" onclick="SceneManager._scene?.retireUIMember?.(${actorId})">${T('MainMenu.roster.confirm')}</div>
-                            <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.cancelRetireUIMember?.()">${T('MainMenu.roster.cancel')}</div>`
+                ? `<div class="command-item focusable" style="flex:1; color:#8b1010" onclick="SceneManager._scene?.retireUIMember?.(${actorId})">${T('MainMenu.roster.confirm')}</div>
+                            <div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.cancelRetireUIMember?.()">${T('MainMenu.roster.cancel')}</div>`
                 : (canRetireThis
-                    ? `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.askRetireUIMember?.(${actorId})">${T('MainMenu.roster.setInactive')}</div>`
-                    : `<div class="command-item" style="flex:1;opacity:0.45;pointer-events:none;">${T('MainMenu.roster.setInactive')}</div>`);
+                    ? `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.askRetireUIMember?.(${actorId})">${T('MainMenu.roster.setInactive')}</div>`
+                    : `<div class="command-item" style="flex:1; opacity:0.45; pointer-events:none">${T('MainMenu.roster.setInactive')}</div>`);
 
             memberRows += `
-                    <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
-                        <div class="portrait-frame" style="flex-shrink:0;">
+                    <div class="npc-dynamics-member" style="margin-bottom:16px; border-bottom:1px dashed rgba(74,39,17,0.25); padding-bottom:12px; display:flex; gap:12px; align-items:center">
+                        <div class="portrait-frame">
                             <canvas id="roster-canvas-${actorId}" width="48" height="48"></canvas>
                         </div>
-                        <div style="flex:1;">
-                            <div style="font-family:'Lora',serif;font-size:1.05em;color:#58180D;font-weight:bold;margin-bottom:6px;">
+                        <div style="flex:1">
+                            <div style="font-family:'Lora',serif; font-size:1.048em; color:#58180D; font-weight:bold; margin-bottom:6px">
                                 ${escapeHtml(mem.name())}
-                                <span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${escapeHtml(mem.currentClass() ? mem.currentClass().name : '')} Lv.${mem.level}${isLeader ? ' · leads the party' : ''}</span>
+                                <span style="font-size:0.842em; font-weight:normal; color:#7a5c3a; margin-left:6px">${escapeHtml(mem.currentClass() ? mem.currentClass().name : '')} Lv.${mem.level}${isLeader ? ' · leads the party' : ''}</span>
                             </div>
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <div style="display:flex; gap:8px; flex-wrap:wrap">
                                 ${leaderBtn}
                                 ${retireBtns}
-                                <div class="command-item focusable" style="flex:1;" onclick="window.NPCEmpathize?.openForActor(${actorId})">${T('MainMenu.roster.empathize')}</div>
+                                <div class="command-item focusable" style="flex:1" onclick="window.NPCEmpathize?.openForActor(${actorId})">${T('MainMenu.roster.empathize')}</div>
                             </div>
                         </div>
                     </div>`;
         });
 
         if (!members.length) {
-            memberRows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.dynamics.noMembers')}</div>`;
+            memberRows = `<div style="opacity:0.6; margin-top:24px; font-family:'Lora',serif">${T('MainMenu.dynamics.noMembers')}</div>`;
         }
 
         const footNote = canRetire
@@ -1144,7 +1169,7 @@
                         <h2 class="tools-title">${T('MainMenu.dynamics.rosterTitle')}</h2>
                     </div>
                     ${memberRows}
-                    <div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-top:4px;">${footNote}</div>
+                    <div style="font-size:0.842em; color:#7a5c3a; margin-top:4px">${footNote}</div>
                     ${this.generateUIDynamicsBenchHTML()}
                 </div>`;
     };
@@ -1165,21 +1190,21 @@
                 ? T('MainMenu.dynamics.inactiveSince', { date: escapeHtml(preset.retiredDate) })
                 : '';
             const recallBtn = hasRoom
-                ? `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.reactivateUIMember?.(${preset.id})">${T('MainMenu.roster.setActive')}</div>`
-                : `<div class="command-item" style="flex:1;opacity:0.45;pointer-events:none;">${T('MainMenu.roster.setActive')}</div>`;
+                ? `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.reactivateUIMember?.(${preset.id})">${T('MainMenu.roster.setActive')}</div>`
+                : `<div class="command-item" style="flex:1; opacity:0.45; pointer-events:none">${T('MainMenu.roster.setActive')}</div>`;
 
             rows += `
-                    <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
-                        <div class="portrait-frame" style="flex-shrink:0;">
+                    <div class="npc-dynamics-member" style="margin-bottom:16px; border-bottom:1px dashed rgba(74,39,17,0.25); padding-bottom:12px; display:flex; gap:12px; align-items:center">
+                        <div class="portrait-frame">
                             <canvas id="bench-canvas-${preset.id}" width="48" height="48"></canvas>
                         </div>
-                        <div style="flex:1;">
-                            <div style="font-family:'Lora',serif;font-size:1.05em;color:#58180D;font-weight:bold;margin-bottom:6px;">
+                        <div style="flex:1">
+                            <div style="font-family:'Lora',serif; font-size:1.048em; color:#58180D; font-weight:bold; margin-bottom:6px">
                                 ${escapeHtml(preset.name)}
-                                <span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${escapeHtml(className)} ${T('MainMenu.roster.levelAbbr')}${preset.level || 1}</span>
+                                <span style="font-size:0.842em; font-weight:normal; color:#7a5c3a; margin-left:6px">${escapeHtml(className)} ${T('MainMenu.roster.levelAbbr')}${preset.level || 1}</span>
                             </div>
-                            <div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-bottom:6px;">${since}</div>
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <div style="font-size:0.842em; color:#7a5c3a; margin-bottom:6px">${since}</div>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap">
                                 ${recallBtn}
                             </div>
                         </div>
@@ -1187,7 +1212,7 @@
         });
 
         if (!rows) {
-            rows = `<div style="opacity:0.6;font-style:italic;font-family:'Lora',serif;">${T('MainMenu.dynamics.inactiveEmpty')}</div>`;
+            rows = `<div style="opacity:0.6; font-family:'Lora',serif">${T('MainMenu.dynamics.inactiveEmpty')}</div>`;
         }
 
         const benchNote = !bench.length
@@ -1195,9 +1220,9 @@
             : (hasRoom ? T('MainMenu.dynamics.inactiveWorldHint') : T('MainMenu.dynamics.inactiveFull'));
 
         return `
-                    <h2 class="tools-title" style="margin-top:18px;">${T('MainMenu.dynamics.inactiveTitle')}</h2>
+                    <h2 class="tools-title" style="margin-top:18px">${T('MainMenu.dynamics.inactiveTitle')}</h2>
                     ${rows}
-                    ${benchNote ? `<div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-top:4px;">${benchNote}</div>` : ''}`;
+                    ${benchNote ? `<div style="font-size:0.842em; color:#7a5c3a; margin-top:4px">${benchNote}</div>` : ''}`;
     };
 
     // Turn order: the party acts in this order, member 1 first, whatever their
@@ -1216,21 +1241,21 @@
             const first = (idx === 0);
             const last = (idx === order.length - 1);
             const step = (delta, label, disabled) => (disabled
-                ? `<div class="command-item" style="flex:0 0 auto;opacity:0.35;pointer-events:none;">${label}</div>`
-                : `<div class="command-item focusable" style="flex:0 0 auto;" onclick="SceneManager._scene?.moveUITurnOrder?.(${actorId}, ${delta})">${label}</div>`);
+                ? `<div class="command-item" style="flex:0 0 auto; opacity:0.35; pointer-events:none">${label}</div>`
+                : `<div class="command-item focusable" style="flex:0 0 auto" onclick="SceneManager._scene?.moveUITurnOrder?.(${actorId}, ${delta})">${label}</div>`);
 
             rows += `
-                    <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
-                        <div style="flex:0 0 auto;font-family:'Lora',serif;font-size:1.3em;color:#58180D;font-weight:bold;width:24px;text-align:center;">${idx + 1}</div>
-                        <div class="portrait-frame" style="flex-shrink:0;">
+                    <div class="npc-dynamics-member" style="margin-bottom:16px; border-bottom:1px dashed rgba(74,39,17,0.25); padding-bottom:12px; display:flex; gap:12px; align-items:center">
+                        <div style="flex:0 0 auto; font-family:'Lora',serif; font-size:1.285em; color:#58180D; font-weight:bold; width:24px; text-align:center">${idx + 1}</div>
+                        <div class="portrait-frame">
                             <canvas id="roster-canvas-${actorId}" width="48" height="48"></canvas>
                         </div>
-                        <div style="flex:1;">
-                            <div style="font-family:'Lora',serif;font-size:1.05em;color:#58180D;font-weight:bold;margin-bottom:6px;">
+                        <div style="flex:1">
+                            <div style="font-family:'Lora',serif; font-size:1.048em; color:#58180D; font-weight:bold; margin-bottom:6px">
                                 ${escapeHtml(mem.name())}
-                                <span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${dexLabel} ${mem.agi}${first ? ' · ' + T('MainMenu.dynamics.actsFirst') : ''}</span>
+                                <span style="font-size:0.842em; font-weight:normal; color:#7a5c3a; margin-left:6px">${dexLabel} ${mem.agi}${first ? ' · ' + T('MainMenu.dynamics.actsFirst') : ''}</span>
                             </div>
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <div style="display:flex; gap:8px; flex-wrap:wrap">
                                 ${step(-1, T('MainMenu.dynamics.moveUp'), first)}
                                 ${step(1, T('MainMenu.dynamics.moveDown'), last)}
                             </div>
@@ -1239,7 +1264,7 @@
         });
 
         if (!rows) {
-            rows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.dynamics.noMembers')}</div>`;
+            rows = `<div style="opacity:0.6; margin-top:24px; font-family:'Lora',serif">${T('MainMenu.dynamics.noMembers')}</div>`;
         }
 
         return `
@@ -1249,7 +1274,7 @@
                         <h2 class="tools-title">${T('MainMenu.dynamics.turnOrderTitle')}</h2>
                     </div>
                     ${rows}
-                    <div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-top:8px;">${T('MainMenu.dynamics.turnOrderNote', { stat: dexLabel })}</div>
+                    <div style="font-size:0.842em; color:#7a5c3a; margin-top:8px">${T('MainMenu.dynamics.turnOrderNote', { stat: dexLabel })}</div>
                 </div>`;
     };
 
@@ -1275,20 +1300,20 @@
                 : (entry.status === 'active' ? T('MainMenu.roster.travellingWithYou') : T('MainMenu.roster.dateUnrecorded'));
 
             rows += `
-                    <div class="npc-dynamics-member" style="margin-bottom:12px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:10px;">
-                        <div style="font-family:'Lora',serif;font-size:1.02em;color:#58180D;font-weight:bold;">
-                            ${escapeHtml(entry.name)}${entry.status === 'died' ? ' <span style="color:#8b1010;">✝</span>' : ''}
-                            <span style="font-size:0.78em;font-weight:normal;color:${status.color};margin-left:6px;">${status.label}</span>
+                    <div class="npc-dynamics-member" style="margin-bottom:12px; border-bottom:1px dashed rgba(74,39,17,0.25); padding-bottom:10px">
+                        <div style="font-family:'Lora',serif; font-size:1.019em; color:#58180D; font-weight:bold">
+                            ${escapeHtml(entry.name)}${entry.status === 'died' ? ' <span style="color:#8b1010">✝</span>' : ''}
+                            <span style="font-size:0.842em; font-weight:normal; color:${status.color}; margin-left:6px">${status.label}</span>
                         </div>
-                        <div style="font-size:0.8em;color:#7a5c3a;">
+                        <div style="font-size:0.856em; color:#7a5c3a">
                             ${escapeHtml(entry.className || '')}${entry.className ? ' · ' : ''}${T('MainMenu.roster.levelAbbr')}${entry.level}${entry.isLeader ? T('MainMenu.roster.partyLeader') : ''}
                         </div>
-                        <div style="font-size:0.78em;color:#7a5c3a;font-style:italic;">${dateLine}</div>
+                        <div style="font-size:0.842em; color:#7a5c3a">${dateLine}</div>
                     </div>`;
         });
 
         if (!rows) {
-            rows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.roster.noRecords')}</div>`;
+            rows = `<div style="opacity:0.6; margin-top:24px; font-family:'Lora',serif">${T('MainMenu.roster.noRecords')}</div>`;
         }
 
         return `
@@ -1458,7 +1483,7 @@
                         <p class="char-class">${mem.currentClass() ? mem.currentClass().name : T('MainMenu.roster.classless')} (${T('MainMenu.roster.levelAbbr')} ${mem.level})</p>
                     </div>
                     <div class="bio-vitals">
-                        <div class="bio-vital"><span class="bio-vital-lbl">${T('MainMenu.vital.hp')}</span><span class="bio-vital-val" style="color:${memHpColor};">${mem.hp}/${mem.mhp}</span></div>
+                        <div class="bio-vital"><span class="bio-vital-lbl">${T('MainMenu.vital.hp')}</span><span class="bio-vital-val" style="color:${memHpColor}">${mem.hp}/${mem.mhp}</span></div>
                         <div class="bio-vital"><span class="bio-vital-lbl">${T('MainMenu.vital.mp')}</span><span class="bio-vital-val">${mem.mp}/${mem.mmp}</span></div>
                         <div class="bio-vital"><span class="bio-vital-lbl">${T('MainMenu.vital.ap')}</span><span class="bio-vital-val">${Math.floor(mem.tp)}</span></div>
                     </div>
@@ -1494,9 +1519,9 @@
             needsCardsHTML += `
                     <div class="survival-card">
                         <span class="survival-lbl">${n.label}</span>
-                        <span class="survival-val" style="color:${c};">${n.val}%</span>
+                        <span class="survival-val" style="color:${c}">${n.val}%</span>
                         <div class="survival-bar">
-                            <div class="survival-bar-fill" style="width:${n.val}%; background:${c};"></div>
+                            <div class="survival-bar-fill" style="width:${n.val}%; background:${c}"></div>
                         </div>
                     </div>`;
         });
@@ -1512,9 +1537,9 @@
             const cravingCard = (label, val) => `
                     <div class="survival-card">
                         <span class="survival-lbl">${label}</span>
-                        <span class="survival-val" style="color:${cravingColor(val)};">${val}%</span>
+                        <span class="survival-val" style="color:${cravingColor(val)}">${val}%</span>
                         <div class="survival-bar">
-                            <div class="survival-bar-fill" style="width:${val}%; background:${cravingColor(val)};"></div>
+                            <div class="survival-bar-fill" style="width:${val}%; background:${cravingColor(val)}"></div>
                         </div>
                     </div>`;
 
@@ -1536,14 +1561,18 @@
 
         // Left Page: Commands Pockets, Tools Pockets, or Travel Pockets
         let leftPageHTML = "";
-        if (this._isWorldMapPage) {
+        if (window.MenuSearch && window.MenuSearch.isActive()) {
+            // A live query takes the whole left page: the results list and its
+            // filter/sort bar (CustomMainMenuSearch.js).
+            leftPageHTML = window.MenuSearch.leftPageHTML();
+        } else if (this._isWorldMapPage) {
             // Render Travel choices
             leftPageHTML = `
-                <div class="travel-pockets" style="display: flex; flex-direction: column; height: 100%; justify-content: space-between;">
-                    <div class="tools-header" style="margin-bottom: 20px;">
-                        <h2 class="title" style="font-family: 'Lora', serif; font-size: 2.2em; color: #58180D; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin: 0;">${T('MainMenu.travel.worldMapTitle')}</h2>
+                <div class="travel-pockets" style="display: flex; flex-direction: column; height: 100%; justify-content: space-between">
+                    <div class="tools-header" style="margin-bottom: 20px">
+                        <h2 class="title" style="font-family: 'Lora', serif; font-size: 2.14em; color: #58180D; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin: 0">${T('MainMenu.travel.worldMapTitle')}</h2>
                     </div>
-                    <div class="commands-grid" style="display: flex; flex-direction: column; gap: 15px; flex-grow: 1;">
+                    <div class="commands-grid" style="display: flex; flex-direction: column; gap: 15px">
             `;
 
             // 1. Return to World Map — planetside the same row opens the
@@ -1552,7 +1581,7 @@
             if (canReturn) {
                 leftPageHTML += `
                     <div class="command-item focusable" data-symbol="travel_return" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('return')">
-                        <span class="icon" style="background: url('img/system/IconSet.png') -${(310 % 16) * 32}px -${Math.floor(310 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                        <span class="icon" style="background: url('img/system/IconSet.png') -${(310 % 16) * 32}px -${Math.floor(310 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                         <span>${worldMapReturnLabel()}</span>
                     </div>
                 `;
@@ -1568,14 +1597,14 @@
                 if (isUnderground) {
                     leftPageHTML += `
                         <div class="command-item focusable" data-symbol="travel_goUp" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('goUp')">
-                            <span class="icon" style="background: url('img/system/IconSet.png') -${(311 % 16) * 32}px -${Math.floor(311 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                            <span class="icon" style="background: url('img/system/IconSet.png') -${(311 % 16) * 32}px -${Math.floor(311 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                             <span>${T('MainMenu.travel.goUp')}</span>
                         </div>
                     `;
                 } else if (hasUnderground) {
                     leftPageHTML += `
                         <div class="command-item focusable" data-symbol="travel_goDown" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('goDown')">
-                            <span class="icon" style="background: url('img/system/IconSet.png') -${(311 % 16) * 32}px -${Math.floor(311 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                            <span class="icon" style="background: url('img/system/IconSet.png') -${(311 % 16) * 32}px -${Math.floor(311 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                             <span>${T('MainMenu.travel.goDown')}</span>
                         </div>
                     `;
@@ -1585,7 +1614,7 @@
             // 3. Toggle World Map (Minimap)
             leftPageHTML += `
                 <div class="command-item focusable" data-symbol="travel_toggleMinimap" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('toggleMinimap')">
-                    <span class="icon" style="background: url('img/system/IconSet.png') -${(186 % 16) * 32}px -${Math.floor(186 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                    <span class="icon" style="background: url('img/system/IconSet.png') -${(186 % 16) * 32}px -${Math.floor(186 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                     <span>${T('MainMenu.travel.toggleMinimap')}</span>
                 </div>
             `;
@@ -1593,7 +1622,7 @@
             // 3b. Open World Map (Actual Zoomable Map)
             leftPageHTML += `
                 <div class="command-item focusable" data-symbol="travel_open" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('open')">
-                    <span class="icon" style="background: url('img/system/IconSet.png') -${(310 % 16) * 32}px -${Math.floor(310 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                    <span class="icon" style="background: url('img/system/IconSet.png') -${(310 % 16) * 32}px -${Math.floor(310 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                     <span>${T('MainMenu.travel.openMap')}</span>
                 </div>
             `;
@@ -1601,7 +1630,7 @@
             // 4. Cancel / Back
             leftPageHTML += `
                         <div class="command-item focusable" data-symbol="travel_cancel" onclick="if(SceneManager._scene && typeof SceneManager._scene.hideWorldMapPage === 'function') SceneManager._scene.hideWorldMapPage()">
-                            <span class="icon" style="background: url('img/system/IconSet.png') -${(16 % 16) * 32}px -${Math.floor(16 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                            <span class="icon" style="background: url('img/system/IconSet.png') -${(16 % 16) * 32}px -${Math.floor(16 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                             <span>${T('MainMenu.travel.resume')}</span>
                         </div>
                     </div>
@@ -1617,11 +1646,11 @@
                     </div>
                     <div class="commands-grid">
                         <div class="command-item focusable" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUICommand === 'function') SceneManager._scene.triggerUICommand('hexphone')">
-                            <span class="icon" style="background: url('img/system/IconSet.png') -${(187 % 16) * 32}px -${Math.floor(187 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                            <span class="icon" style="background: url('img/system/IconSet.png') -${(187 % 16) * 32}px -${Math.floor(187 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                             <span>${T('MainMenu.tools.hexphone')}</span>
                         </div>
                         <div class="command-item focusable" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUICommand === 'function') SceneManager._scene.triggerUICommand('alchemistry')">
-                            <span class="icon" style="background: url('img/system/IconSet.png') -${(180 % 16) * 32}px -${Math.floor(180 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                            <span class="icon" style="background: url('img/system/IconSet.png') -${(180 % 16) * 32}px -${Math.floor(180 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                             <span>${T('MainMenu.tools.alchemistryKit')}</span>
                         </div>
                         ${this.generateUIToolItemsListHTML()}
@@ -1643,8 +1672,8 @@
                     ? T('MainMenu.roster.child')
                     : (pet.isFollower ? T('MainMenu.roster.follower') : T('MainMenu.roster.pet'));
                 const activeBtn = isActive
-                    ? `<div class="command-item" style="flex:1;opacity:0.6;pointer-events:none;">${T('MainMenu.roster.following')}</div>`
-                    : `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.setActivePet?.(${pet.id})">${T('MainMenu.roster.setActive')}</div>`;
+                    ? `<div class="command-item" style="flex:1; opacity:0.6; pointer-events:none">${T('MainMenu.roster.following')}</div>`
+                    : `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.setActivePet?.(${pet.id})">${T('MainMenu.roster.setActive')}</div>`;
                 const activeTag = isActive ? ` · ${T('MainMenu.pets.active')}` : '';
                 // While a pet is being renamed its row hands the whole button
                 // strip over to the name field, so there is no way to abandon or
@@ -1652,43 +1681,43 @@
                 const maxLen = window.PetSystem?.NAME_MAX_LENGTH ?? 16;
                 let buttons;
                 if (isRenaming) {
-                    buttons = `<input type="text" id="pet-rename-input" class="pet-rename-input" style="flex:2;min-width:0;"
+                    buttons = `<input type="text" id="pet-rename-input" class="pet-rename-input" style="flex:2; min-width:0"
                             maxlength="${maxLen}" autocomplete="off" spellcheck="false"
                             value="${escapeHtml(pet.name)}"
                             onkeydown="SceneManager._scene?.onPetRenameKey?.(event)"
                             onkeyup="event.stopPropagation()"
                             onkeypress="event.stopPropagation()">
-                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.confirmPetRename?.()">${T('MainMenu.roster.confirm')}</div>
-                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.cancelPetRename?.()">${T('MainMenu.roster.cancel')}</div>`;
+                        <div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.confirmPetRename?.()">${T('MainMenu.roster.confirm')}</div>
+                        <div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.cancelPetRename?.()">${T('MainMenu.roster.cancel')}</div>`;
                 } else if (isAbandoning) {
                     // Walking away from a dependent is an offence, so the row
                     // says which charge and what it costs before it is done.
-                    buttons = `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.confirmPetAbandon?.()">${T('MainMenu.roster.confirm')}</div>
-                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.cancelPetAbandon?.()">${T('MainMenu.roster.cancel')}</div>`;
+                    buttons = `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.confirmPetAbandon?.()">${T('MainMenu.roster.confirm')}</div>
+                        <div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.cancelPetAbandon?.()">${T('MainMenu.roster.cancel')}</div>`;
                 } else {
                     buttons = `${activeBtn}
-                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.startPetAbandon?.(${pet.id})">${T('MainMenu.pets.abandon')}</div>
-                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.startPetRename?.(${pet.id})">${T('MainMenu.pets.rename')}</div>`;
+                        <div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.startPetAbandon?.(${pet.id})">${T('MainMenu.pets.abandon')}</div>
+                        <div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.startPetRename?.(${pet.id})">${T('MainMenu.pets.rename')}</div>`;
                 }
                 const parentLine = pet.isChild && pet.parentName
-                    ? `<div style="font-size:0.78em;color:#7a5c3a;margin-bottom:4px;">${T('MainMenu.pets.childOf', { parent: escapeHtml(pet.parentName) })}</div>`
+                    ? `<div style="font-size:0.842em; color:#7a5c3a; margin-bottom:4px">${T('MainMenu.pets.childOf', { parent: escapeHtml(pet.parentName) })}</div>`
                     : '';
                 const warning = isAbandoning
-                    ? `<div style="font-size:0.8em;color:#8e2a20;margin-bottom:4px;font-style:italic;">${this.petAbandonWarning(pet)}</div>`
+                    ? `<div style="font-size:0.856em; color:#8e2a20; margin-bottom:4px">${this.petAbandonWarning(pet)}</div>`
                     : '';
                 return `
-                    <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
-                        <div class="portrait-frame" style="flex-shrink:0;">
+                    <div class="npc-dynamics-member" style="margin-bottom:16px; border-bottom:1px dashed rgba(74,39,17,0.25); padding-bottom:12px; display:flex; gap:12px; align-items:center">
+                        <div class="portrait-frame">
                             <canvas id="pet-canvas-${pet.id}" width="48" height="48"></canvas>
                         </div>
-                        <div style="flex:1;">
-                            <div style="font-family:'Lora',serif;font-size:1.05em;color:#58180D;font-weight:bold;margin-bottom:4px;">
+                        <div style="flex:1">
+                            <div style="font-family:'Lora',serif; font-size:1.048em; color:#58180D; font-weight:bold; margin-bottom:4px">
                                 ${escapeHtml(pet.name)}
-                                <span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${typeLabel}${activeTag} · ${T('MainMenu.roster.levelAbbr')}${pet.level}</span>
+                                <span style="font-size:0.842em; font-weight:normal; color:#7a5c3a; margin-left:6px">${typeLabel}${activeTag} · ${T('MainMenu.roster.levelAbbr')}${pet.level}</span>
                             </div>
                             ${parentLine}
                             ${warning}
-                            <div style="display:flex;gap:10px;align-items:center;">
+                            <div style="display:flex; gap:10px; align-items:center">
                                 ${buttons}
                             </div>
                         </div>
@@ -1705,11 +1734,11 @@
             let petRows = groups
                 .filter(g => g.rows.length)
                 .map(g => `
-                    <div style="font-family:'Lora',serif;font-size:1.15em;color:#58180D;font-weight:bold;margin:10px 0 8px;border-bottom:2px solid rgba(74,39,17,0.35);">${g.label}</div>
+                    <div style="font-family:'Lora',serif; font-size:1.142em; color:#58180D; font-weight:bold; margin:10px 0 8px; border-bottom:2px solid rgba(74,39,17,0.35)">${g.label}</div>
                     ${g.rows.map(petRow).join('')}`)
                 .join('');
             if (!pets.length) {
-                petRows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.pets.none')}</div>`;
+                petRows = `<div style="opacity:0.6; margin-top:24px; font-family:'Lora',serif">${T('MainMenu.pets.none')}</div>`;
             }
             leftPageHTML = `
                 <div class="tools-pockets">
@@ -1732,39 +1761,39 @@
             let vehicleRows = '';
             vehicles.forEach(v => {
                 const fuelLine = v.usesFuel
-                    ? `<span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">Fuel ${Math.floor(v.fuel)}L / ${v.max}L</span>`
-                    : `<span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${T('MainMenu.vehicles.noFuelNeeded')}</span>`;
+                    ? `<span style="font-size:0.842em; font-weight:normal; color:#7a5c3a; margin-left:6px">Fuel ${Math.floor(v.fuel)}L / ${v.max}L</span>`
+                    : `<span style="font-size:0.842em; font-weight:normal; color:#7a5c3a; margin-left:6px">${T('MainMenu.vehicles.noFuelNeeded')}</span>`;
                 const repairBtn = v.hasRepair
-                    ? `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.repairUIVehicle?.('${v.key}')">${T('MainMenu.roster.repair')}</div>`
+                    ? `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.repairUIVehicle?.('${v.key}')">${T('MainMenu.roster.repair')}</div>`
                     : '';
                 // The Starship also offers a direct "Teleport to Ship" into its interior.
                 const boardBtn = v.type === 'airship'
-                    ? `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.teleportToShipUI?.()">${T('MainMenu.cmd.teleportToShip')}</div>`
+                    ? `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.teleportToShipUI?.()">${T('MainMenu.cmd.teleportToShip')}</div>`
                     : '';
                 // Disabled tiles drop `focusable` as well as the handler, so the
                 // menu's focus ring walks straight past them.
                 const canSpawn = canSpawnKey(v.key);
                 if (!canSpawn) anyBlocked = true;
                 const spawnBtn = canSpawn
-                    ? `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.spawnUIVehicle?.('${v.key}')">${T('MainMenu.vehicles.spawn')}</div>`
-                    : `<div class="command-item is-disabled" style="flex:1;" title="${escapeHtml(T('MainMenu.vehicles.spawnIndoors'))}">${T('MainMenu.vehicles.spawn')}</div>`;
+                    ? `<div class="command-item focusable" style="flex:1" onclick="SceneManager._scene?.spawnUIVehicle?.('${v.key}')">${T('MainMenu.vehicles.spawn')}</div>`
+                    : `<div class="command-item is-disabled" style="flex:1" title="${escapeHtml(T('MainMenu.vehicles.spawnIndoors'))}">${T('MainMenu.vehicles.spawn')}</div>`;
                 // Where it was left standing: the place and the exact tile, so a
                 // camper parked outside Ghent station can be walked back to as
                 // well as summoned.
                 const parkedLine = v.parkedAt
-                    ? `<div style="font-family:'Lora',serif;font-size:0.8em;color:#7a5c3a;margin-bottom:6px;">${T('MainMenu.vehicles.parkedAt')} ${escapeHtml(v.parkedAt)}</div>`
+                    ? `<div style="font-family:'Lora',serif; font-size:0.856em; color:#7a5c3a; margin-bottom:6px">${T('MainMenu.vehicles.parkedAt')} ${escapeHtml(v.parkedAt)}</div>`
                     : '';
                 vehicleRows += `
-                    <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
-                        <div class="portrait-frame" style="flex-shrink:0;">
+                    <div class="npc-dynamics-member" style="margin-bottom:16px; border-bottom:1px dashed rgba(74,39,17,0.25); padding-bottom:12px; display:flex; gap:12px; align-items:center">
+                        <div class="portrait-frame">
                             <canvas id="vehicle-canvas-${v.key}" width="48" height="48"></canvas>
                         </div>
-                        <div style="flex:1;">
-                            <div style="font-family:'Lora',serif;font-size:1.05em;color:#58180D;font-weight:bold;margin-bottom:4px;">
+                        <div style="flex:1">
+                            <div style="font-family:'Lora',serif; font-size:1.048em; color:#58180D; font-weight:bold; margin-bottom:4px">
                                 ${escapeHtml(v.name)}${fuelLine}
                             </div>
                             ${parkedLine}
-                            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <div style="display:flex; gap:10px; flex-wrap:wrap">
                                 ${spawnBtn}
                                 ${repairBtn}
                                 ${boardBtn}
@@ -1773,10 +1802,10 @@
                     </div>`;
             });
             if (!vehicles.length) {
-                vehicleRows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.vehicles.none')}</div>`;
+                vehicleRows = `<div style="opacity:0.6; margin-top:24px; font-family:'Lora',serif">${T('MainMenu.vehicles.none')}</div>`;
             }
             const indoorsNote = anyBlocked
-                ? `<div class="pockets-hint" style="font-style:italic;margin-bottom:12px;font-family:'Lora',serif;">${T('MainMenu.vehicles.spawnIndoors')}</div>`
+                ? `<div class="pockets-hint" style="margin-bottom:12px; font-family:'Lora',serif">${T('MainMenu.vehicles.spawnIndoors')}</div>`
                 : '';
             leftPageHTML = `
                 <div class="tools-pockets">
@@ -1800,7 +1829,7 @@
             // procedural map), the same destination the T hotkey reaches directly.
             const stopTravelHTML = ($gameMap.mapId() === 315) ? `
                     <div class="command-item focusable" data-symbol="travel_stop" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('stop')">
-                        <span class="icon" style="background: url('img/system/IconSet.png') -${(282 % 16) * 32}px -${Math.floor(282 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                        <span class="icon" style="background: url('img/system/IconSet.png') -${(282 % 16) * 32}px -${Math.floor(282 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                         <span>${T('MainMenu.cmd.stopTravel')}</span>
                         ${worldMapToggleBadge}
                     </div>
@@ -1811,7 +1840,7 @@
             // submenu, so the player can bail out to map 315 without drilling in.
             const procReturnHTML = ($gameMap.mapId() === 636) ? `
                     <div class="command-item focusable" data-symbol="travel_return" onclick="if(SceneManager._scene && typeof SceneManager._scene.triggerUITravel === 'function') SceneManager._scene.triggerUITravel('return')">
-                        <span class="icon" style="background: url('img/system/IconSet.png') -${(310 % 16) * 32}px -${Math.floor(310 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                        <span class="icon" style="background: url('img/system/IconSet.png') -${(310 % 16) * 32}px -${Math.floor(310 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                         <span>${worldMapReturnLabel()}</span>
                         ${worldMapToggleBadge}
                     </div>
@@ -1828,7 +1857,7 @@
             const showReturnToShip = onAlienSurface || awayFromShip || $gameMap.mapId() === 315;
             const returnToShipHTML = showReturnToShip ? `
                     <div class="command-item focusable" data-symbol="return_to_ship" onclick="if(SceneManager._scene && typeof SceneManager._scene.commandReturnToShip === 'function') SceneManager._scene.commandReturnToShip()">
-                        <span class="icon" style="background: url('img/system/IconSet.png') -${(313 % 16) * 32}px -${Math.floor(313 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                        <span class="icon" style="background: url('img/system/IconSet.png') -${(313 % 16) * 32}px -${Math.floor(313 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                         <span>${T('MainMenu.cmd.returnToShip')}</span>
                     </div>
             ` : "";
@@ -1857,6 +1886,10 @@
                     this.generateUICommandItemHTML(T('MainMenu.cmd.specializations'), "specializations"),
                     this.generateUICommandItemHTML(emLabel("menuBiologics", T('MainMenu.cmd.biologics')), "biologics"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.augments'), "augments"),
+                    // Not a page of its own: the tile drops the caret into the
+                    // search field the right page already wears over the party
+                    // cards (UI/CustomMainMenuSearch.js).
+                    this.generateUICommandItemHTML(T('MainMenu.cmd.search'), "search"),
                 ],
                 // Party: the people and creatures travelling with you
                 [
@@ -1916,7 +1949,12 @@
                 .filter((html) => html)
                 .join(`\n${groupSeparatorHTML}\n`);
 
+            // The search field sits at the head of the pockets, the same place
+            // the Skills scene, the Bestiary, the workbench, the forge and the
+            // trait picker keep theirs (UI/MenuSearchBar.js). Typing in it
+            // replaces this whole page with the results.
             leftPageHTML = `
+                ${window.MenuSearch ? window.MenuSearch.barHTML() : ''}
                 <div class="commands-grid">
                     ${commandsHTML}
                 </div>
@@ -1949,29 +1987,29 @@
             }
 
             rightPageHTML = `
-                <div class="travel-codex" style="font-family: 'Lora', serif; color: #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div class="travel-codex" style="font-family: 'Lora', serif; color: #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; height: 100%">
                     
-                    <div style="background: rgba(88, 24, 13, 0.04); border: 1px solid rgba(88, 24, 13, 0.15); border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(88, 24, 13, 0.15); padding-bottom: 4px; font-size: 0.9em;">
-                            <span style="font-weight: bold; color: #58180D;">${T('MainMenu.label.location')}</span>
+                    <div style="background: rgba(88, 24, 13, 0.04); border: 1px solid rgba(88, 24, 13, 0.15); border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05)">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(88, 24, 13, 0.15); padding-bottom: 4px; font-size: 0.928em">
+                            <span style="font-weight: bold; color: #58180D">${T('MainMenu.label.location')}</span>
                             <span>${currentRegionName}</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(88, 24, 13, 0.15); padding-bottom: 4px; font-size: 0.9em;">
-                            <span style="font-weight: bold; color: #58180D;">${T('MainMenu.label.worldCoordinates')}</span>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(88, 24, 13, 0.15); padding-bottom: 4px; font-size: 0.928em">
+                            <span style="font-weight: bold; color: #58180D">${T('MainMenu.label.worldCoordinates')}</span>
                             <span>X: ${worldX} | Y: ${worldY}</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(88, 24, 13, 0.15); padding-bottom: 4px; font-size: 0.9em;">
-                            <span style="font-weight: bold; color: #58180D;">${T('MainMenu.label.sector')}</span>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px dashed rgba(88, 24, 13, 0.15); padding-bottom: 4px; font-size: 0.928em">
+                            <span style="font-weight: bold; color: #58180D">${T('MainMenu.label.sector')}</span>
                             <span>${T('MainMenu.label.rowColumn', { row: row, col: col })}</span>
                         </div>
                     </div>
 
                     <!-- Map Segment Image Container -->
-                    <div style="position: relative; width: 100%; border: 3px double #58180D; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); overflow: hidden; background: #ecdcb9; display: flex; justify-content: center; align-items: center; aspect-ratio: 4 / 3; margin-top: auto; margin-bottom: auto;">
-                        <img src="img/worldmap/row-${row}-column-${col}.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block; filter: sepia(0.12) contrast(1.02);" />
+                    <div style="position: relative; width: 100%; border: 3px double #58180D; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); overflow: hidden; background: #ecdcb9; display: flex; justify-content: center; align-items: center; aspect-ratio: 4 / 3; margin-top: auto; margin-bottom: auto">
+                        <img src="img/worldmap/row-${row}-column-${col}.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block; filter: sepia(0.12) contrast(1.02)" />
                         
                         <!-- Player Indicator Pin Overlay on the local segment map (0-31 range mapped to 0-100%) -->
-                        <div style="position: absolute; left: ${((worldX % 32) / 32) * 100}%; top: ${((worldY % 32) / 32) * 100}%; width: 12px; height: 12px; background: #c62828; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.6); transform: translate(-50%, -50%); animation: dndPulse 1.8s infinite ease-in-out;"></div>
+                        <div style="position: absolute; left: ${((worldX % 32) / 32) * 100}%; top: ${((worldY % 32) / 32) * 100}%; width: 12px; height: 12px; background: #c62828; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.6); transform: translate(-50%, -50%); animation: dndPulse 1.8s infinite ease-in-out"></div>
                     </div>
 
                 
@@ -1984,6 +2022,11 @@
                     </style>
                 </div>
             `;
+        } else if (window.MenuSearch && window.MenuSearch.isActive()) {
+            // While searching, the right page is the selected result's own
+            // detail card. The field that found it is on the left page with the
+            // results, as it is in every other list menu.
+            rightPageHTML = window.MenuSearch.rightPageHTML();
         } else {
             rightPageHTML = `
                 <div class="party-bio-list">
@@ -2043,7 +2086,11 @@
                 this._petAbandonId || 0
             ].join(':')
             : '';
-        const leftPageKey = `${this._isToolsPage}_${this._isWorldMapPage}_${this._isDynamicsPage}${dynamicsKey}_${this._isPetsPage}${petsKey}_${this._isVehiclesPage}`;
+        // A search takes over the left page, and every change to the query, the
+        // filters or the selected row redraws it, so the whole search state is
+        // part of the key.
+        const searchKey = window.MenuSearch ? window.MenuSearch.stateKey() : '';
+        const leftPageKey = `${this._isToolsPage}_${this._isWorldMapPage}_${this._isDynamicsPage}${dynamicsKey}_${this._isPetsPage}${petsKey}_${this._isVehiclesPage}_${searchKey}`;
         let spread = this._dndContainer.querySelector(".book-spread");
 
         if (!spread) {
@@ -2069,6 +2116,7 @@
 
             // Re-bind input mappings
             UIMenuInputManager.activate(this._isWorldMapPage ? 1 : 3);
+            if (window.MenuSearch) window.MenuSearch.afterRender(this);
         } else {
             // Subsequent updates
             if (useTransitions) {
@@ -2099,6 +2147,7 @@
 
                 // Re-bind input mappings
                 UIMenuInputManager.activate(this._isWorldMapPage ? 1 : 3);
+                if (window.MenuSearch) window.MenuSearch.afterRender(this);
             }
         }
     };
@@ -2146,8 +2195,8 @@
         }
 
         return `
-            <div class="command-item focusable" data-symbol="${symbol}" style="opacity:${opacity}; pointer-events:${pointerEvents};" onclick="${clickAction}">
-                <span class="icon" style="background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+            <div class="command-item focusable" data-symbol="${symbol}" style="opacity:${opacity}; pointer-events:${pointerEvents}" onclick="${clickAction}">
+                <span class="icon" style="background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                 <span>${label}</span>
                 ${hotkey}
             </div>
@@ -2170,7 +2219,7 @@
             const y = Math.floor(iconIndex / 16) * 32;
             html += `
                 <div class="command-item focusable" data-symbol="tool_${item.id}" onclick="if(SceneManager._scene && typeof SceneManager._scene.useUIToolItem === 'function') SceneManager._scene.useUIToolItem(${item.id})">
-                    <span class="icon" style="background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85);"></span>
+                    <span class="icon" style="background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85)"></span>
                     <span>${item.name}</span>
                 </div>
             `;
@@ -2414,6 +2463,15 @@
                         SceneManager.push(Scene_PartyAugments);
                     } else {
                         console.warn("Scene_PartyAugments is not defined!");
+                    }
+                    break;
+                case "search":
+                    // Stays on this page: the field is already rendered, so the
+                    // command only hands it the caret.
+                    if (window.MenuSearch) {
+                        window.MenuSearch.focus();
+                    } else {
+                        console.warn("MenuSearch is not defined!");
                     }
                     break;
                 case "sandbox":

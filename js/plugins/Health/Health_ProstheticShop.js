@@ -189,7 +189,7 @@
         style.textContent = `
           .companion-switcher { display:flex; align-items:center; gap:6px; }
           .char-switch-hint {
-            font-family:'Lora',serif; font-size:0.6rem; font-weight:bold;
+            font-family:'Lora',serif; font-size:0.732rem; font-weight:bold;
             line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
             border:1.5px solid var(--text-primary-hover); border-radius:3px;
             padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
@@ -574,7 +574,35 @@
     return lookup;
   }
 
-  function getInventoryBodyParts() {
+  // One item can stand for several genuinely different slots: a hydra's three
+  // heads all drop item 1204, as do an ophanim's four wheels, an octopus'
+  // tentacles and a mutant's extra limbs. Taking only the first match hid every
+  // slot but one, so the centre and right heads were ungraftable. The slot key
+  // is the real identity here -- the same leg shared by 29 archetypes is one
+  // option, not 29.
+  function distinctPartMatches(matches, actor) {
+    const bodyParts = (actor && actor._bodyParts) || null;
+    const bySlot = new Map();
+    for (const match of matches) {
+      if (!bySlot.has(match.partKey)) bySlot.set(match.partKey, match);
+    }
+    // Some archetypes spell one slot differently (Goblin EYE_LEFT vs Humanoid
+    // LEFT_EYE); an identical part name means it is the same slot, so keep one
+    // entry -- under the key the patient's body already uses where there is a
+    // choice, so the surgery fills that slot instead of bolting a second one on
+    // under the alias key.
+    const byName = new Map();
+    for (const match of bySlot.values()) {
+      const nameKey = String(getTranslated(match.part, "name") || match.partKey).toLowerCase();
+      const kept = byName.get(nameKey);
+      if (!kept || (bodyParts && bodyParts[match.partKey] && !bodyParts[kept.partKey])) {
+        byName.set(nameKey, match);
+      }
+    }
+    return Array.from(byName.values());
+  }
+
+  function getInventoryBodyParts(actor) {
     const lookup = buildBodyPartItemLookup();
     const results = [];
     for (let i = 1; i < $dataItems.length; i++) {
@@ -585,25 +613,26 @@
       if ($gameParty.numItems(item) <= 0) continue;
       const matches = lookup[i];
       if (!matches || matches.length === 0) continue;
-      const { archetypeKey, partKey, part } = matches[0];
-      const statBonus = computeStatBonus(part.statEffect);
-      results.push({
-        isInventoryPart: true,
-        isArchetypePart: true,
-        item,
-        itemId: i,
-        archetypeKey,
-        partKey,
-        name: getTranslated(part, "name"),
-        hpPercent: part.hpPercent,
-        vital: part.vital,
-        statEffect: part.statEffect || null,
-        statBonus,
-        skillId: part.skillId || 0,
-        cost: INSTALLATION_FEE,
-        alreadyOwned: false,
-        archPart: part,
-      });
+      for (const { archetypeKey, partKey, part } of distinctPartMatches(matches, actor)) {
+        const statBonus = computeStatBonus(part.statEffect);
+        results.push({
+          isInventoryPart: true,
+          isArchetypePart: true,
+          item,
+          itemId: i,
+          archetypeKey,
+          partKey,
+          name: getTranslated(part, "name"),
+          hpPercent: part.hpPercent,
+          vital: part.vital,
+          statEffect: part.statEffect || null,
+          statBonus,
+          skillId: part.skillId || 0,
+          cost: INSTALLATION_FEE,
+          alreadyOwned: false,
+          archPart: part,
+        });
+      }
     }
     return results;
   }
@@ -2008,7 +2037,7 @@
         <div class="book-spread">
             <div class="left-page">
                 <h2 id="left-title" class="title" style="margin:0 0 10px 0;"></h2>
-                <p id="left-desc" style="font-family:'Lora', serif; font-size:0.88em; line-height:1.45; color:#5d483b; margin:0 0 15px 0; text-align:center; font-style:italic;"></p>
+                <p id="left-desc" style="font-family:'Lora', serif; font-size:0.914em; line-height:1.45; color:#5d483b; margin:0 0 15px 0; text-align:center; font-style: normal;"></p>
                 <div id="left-page-content" style="display:flex; flex-direction:column; height:100%; overflow:hidden;"></div>
             </div>
             <div class="right-page" id="right-page-content">
@@ -2041,8 +2070,8 @@
                   <canvas id="actor-canvas-left-${idx}" width="48" height="48" style="image-rendering:pixelated; display:block;"></canvas>
               </div>
               <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.25em; color:#58180D;">${actor.name()}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.85em; color:#5d483b;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.238em; color:#58180D;">${actor.name()}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.892em; color:#5d483b;">
                       ${actor.currentClass() ? actor.currentClass().name : T('Prosthetics.classless')} (${T('Prosthetics.levelShort', { level: actor.level })})
                   </p>
               </div>
@@ -2065,12 +2094,12 @@
         leftPageHTML += `
           <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectSurgeon(${idx})">
               <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${actor.name()}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${actor.name()}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
                       ${T('Prosthetics.surgerySpec', { level: levelName })}${odds.self ? ` | ${T('Prosthetics.operatingOnSelf')}` : ""}
                   </p>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
+              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
                   ${odds.chance}%
               </div>
           </div>
@@ -2129,14 +2158,14 @@
       leftPageHTML += '<div class="shop-scroll" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; align-content:start;">';
       cols = 2;
       leftPageHTML += `
-        <div class="command-item focusable" style="grid-column:1/-1; font-size:1.1em; display:flex; justify-content:center; text-align:center; padding:10px 6px; border:2px solid rgba(88,24,13,0.4); background:rgba(88,24,13,0.06);" onclick="SceneManager._scene.chooseArchetype('__INVENTORY__')">
+        <div class="command-item focusable" style="grid-column:1/-1; font-size:1.095em; display:flex; justify-content:center; text-align:center; padding:10px 6px; border:2px solid rgba(88,24,13,0.4); background:rgba(88,24,13,0.06);" onclick="SceneManager._scene.chooseArchetype('__INVENTORY__')">
             <span>${T('Prosthetics.inventoryOwnedParts')}</span>
         </div>
       `;
       for (const key of _archetypeKeys) {
         const label = key.replace(/([A-Z])/g, " $1").trim();
         leftPageHTML += `
-          <div class="command-item focusable" style="font-size: 1.15em; display:flex; justify-content:center; text-align:center; padding:12px 6px;" onclick="SceneManager._scene.chooseArchetype('${key}')">
+          <div class="command-item focusable" style="font-size: 1.142em; display:flex; justify-content:center; text-align:center; padding:12px 6px;" onclick="SceneManager._scene.chooseArchetype('${key}')">
               <span>${label}</span>
           </div>
         `;
@@ -2200,13 +2229,13 @@
         leftPageHTML += `
           <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
               <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
                       ${item.statEffect ? `${getParamName(item.statEffect.param)} +${item.statBonus}` : ""}
                       ${skillNames(item.skillId) ? ` | ★ ${skillNames(item.skillId)}` : ""}
                   </p>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
+              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
                   ${item.alreadyOwned ? T('Prosthetics.owned') : formatPriceInEuros(item.cost)}
               </div>
           </div>
@@ -2218,7 +2247,7 @@
       leftTitle = T('Prosthetics.inventoryParts');
       leftDesc = T('Prosthetics.installBodyPartsYouAlreadyOwnInstallationFee', { p1: formatPriceInEuros(INSTALLATION_FEE) });
 
-      this._activeListItems = getInventoryBodyParts();
+      this._activeListItems = getInventoryBodyParts(this._selectedActor);
       if (this._selectedActor && this._selectedActor._bodyParts) {
         this._activeListItems.forEach(entry => {
           entry.alreadyOwned = !!this._selectedActor._bodyParts[entry.partKey];
@@ -2227,7 +2256,7 @@
 
       leftPageHTML += '<div class="shop-scroll">';
       if (this._activeListItems.length === 0) {
-        leftPageHTML += `<p style="font-family:'Lora',serif; color:#5d483b; font-style:italic; text-align:center; padding:20px;">${T('Prosthetics.noBodyPartItemsInInventory')}</p>`;
+        leftPageHTML += `<p style="font-family:'Lora',serif; color:#5d483b; font-style: normal; text-align:center; padding:20px;">${T('Prosthetics.noBodyPartItemsInInventory')}</p>`;
       } else {
         this._activeListItems.forEach((entry, idx) => {
           const opacity = entry.alreadyOwned ? "opacity:0.55;" : "";
@@ -2235,13 +2264,13 @@
           leftPageHTML += `
             <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
                 <div style="flex-grow:1;">
-                    <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${entry.name}</h4>
-                    <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                    <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${entry.name}</h4>
+                    <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
                         [${archLabel}]${entry.statEffect ? ` | ${getParamName(entry.statEffect.param)} +${entry.statBonus}` : ""}
                         ${skillNames(entry.skillId) ? ` | ★ ${skillNames(entry.skillId)}` : ""}
                     </p>
                 </div>
-                <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
+                <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
                     ${entry.alreadyOwned ? T('Prosthetics.installed2') : formatPriceInEuros(entry.cost)}
                 </div>
             </div>
@@ -2285,12 +2314,12 @@
         leftPageHTML += `
           <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
               <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name} ${item.hasImplant ? " *" : ""}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name} ${item.hasImplant ? " *" : ""}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
                       ${item.statEffect && item.statBonus > 0 ? T('Prosthetics.loses', { p1: getParamName(item.statEffect.param), p2: item.statBonus }) : ""}
                   </p>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#822d2d;">
+              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#822d2d;">
                   ${item.vital ? T('Prosthetics.vital') : formatPriceInEuros(item.cost)}
               </div>
           </div>
@@ -2339,8 +2368,8 @@
         leftPageHTML += `
           <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
               <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
                       ${item.vital ? T('Prosthetics.vital') : `${T('Prosthetics.removalFee2')} ${formatPriceInEuros(item.removalFee)}`}
                   </p>
               </div>
@@ -2395,12 +2424,12 @@
         leftPageHTML += `
           <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
               <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
                       [${item.archetypeLabel}] ${item.statEffect ? ` | ${getParamName(item.statEffect.param)} +${item.statBonus}` : ""}
                   </p>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
+              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
                   ${formatPriceInEuros(item.cost)}
               </div>
           </div>
@@ -2435,8 +2464,8 @@
         leftPageHTML += `
           <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
               <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:${item.currentProstheticKey ? '#2e7d32' : '#5d483b'};">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:${item.currentProstheticKey ? '#2e7d32' : '#5d483b'};">
                       ${statusText}
                   </p>
               </div>
@@ -2488,13 +2517,13 @@
         leftPageHTML += `
           <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
               <div style="flex-grow:1;">
-                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
-                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.142em; color:#58180D;">${item.name}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.856em; color:#5d483b;">
                       ${item.isRemoveOption ? (item.currentProsthetic ? T('Prosthetics.uninstallActiveDevice') : T('Prosthetics.limbHasOriginalPart')) : ""}
                       ${item.isProsthetic ? implantEffectText(item.prosthetic).join(" | ") : ""}
                   </p>
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
+              <div style="font-family:'Lora', serif; font-size:0.964em; font-weight:bold; color:#58180D;">
                   ${item.isRemoveOption ? "" : (item.isCurrentlyInstalled ? T('Prosthetics.installed') : formatPriceInEuros(item.cost))}
               </div>
           </div>
@@ -2536,9 +2565,9 @@
     if (!actor) {
       return `
         <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; font-family:'Lora', serif; color:#5d483b; text-align:center; padding: 20px;">
-            <span style="font-size:3em; margin-bottom:15px; filter: opacity(0.65);"></span>
-            <h3 style="font-family:'Lora', serif; color:#58180D; font-size:1.6em; margin:0 0 10px 0;">${T('Prosthetics.dossierTitle')}</h3>
-            <p style="font-size:0.95em; line-height:1.5; font-style:italic;">${T('Prosthetics.dossierPrompt')}</p>
+            <span style="font-size:2.9em; margin-bottom:15px; filter: opacity(0.65);"></span>
+            <h3 style="font-family:'Lora', serif; color:#58180D; font-size:1.57em; margin:0 0 10px 0;">${T('Prosthetics.dossierTitle')}</h3>
+            <p style="font-size:0.964em; line-height:1.5; font-style: normal;">${T('Prosthetics.dossierPrompt')}</p>
         </div>
       `;
     }
@@ -2584,7 +2613,7 @@
           }
         }
         partsHTML += `
-          <div style="display:flex; justify-content:space-between; font-size:0.8em; margin-bottom:4px; font-family:'Lora', serif; border-bottom:1px dotted rgba(0,0,0,0.06); padding-bottom:2px;">
+          <div style="display:flex; justify-content:space-between; font-size:0.856em; margin-bottom:4px; font-family:'Lora', serif; border-bottom:1px dotted rgba(0,0,0,0.06); padding-bottom:2px;">
             <span>${part.name || partKey}</span>
             <span style="color:${hasImplant ? '#2e7d32' : '#5d483b'}; font-weight:${hasImplant ? 'bold' : 'normal'};">${hasImplant ? `Implant:${implantName}` : T('Prosthetics.original')}</span>
           </div>
@@ -2602,57 +2631,57 @@
           <div class="bio-text">
               <h3 class="char-name">${actor.name()}</h3>
               <p class="char-class">${actor.currentClass() ? actor.currentClass().name : T('Prosthetics.classless')} (${T('Prosthetics.levelShort', { level: actor.level })})</p>
-              <p style="font-size:0.75em; margin:2px 0 0 0; color:#6b5242; font-family:'Lora', serif;">${T('Prosthetics.genderReprLine', { gender: genderName, repr: repName })}</p>
+              <p style="font-size:0.82em; margin:2px 0 0 0; color:#6b5242; font-family:'Lora', serif;">${T('Prosthetics.genderReprLine', { gender: genderName, repr: repName })}</p>
           </div>
       </div>
 
       <div class="ability-container" style="margin-bottom:10px; grid-gap:5px;">
           <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.str')}</span>
-              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${str}</span>
-              <span class="ability-mod" style="font-size:0.65em;">${getModText(str)}</span>
+              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.str')}</span>
+              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${str}</span>
+              <span class="ability-mod" style="font-size:0.748em;">${getModText(str)}</span>
           </div>
           <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.con')}</span>
-              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${con}</span>
-              <span class="ability-mod" style="font-size:0.65em;">${getModText(con)}</span>
+              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.con')}</span>
+              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${con}</span>
+              <span class="ability-mod" style="font-size:0.748em;">${getModText(con)}</span>
           </div>
           <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.dex')}</span>
-              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${dex}</span>
-              <span class="ability-mod" style="font-size:0.65em;">${getModText(dex)}</span>
+              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.dex')}</span>
+              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${dex}</span>
+              <span class="ability-mod" style="font-size:0.748em;">${getModText(dex)}</span>
           </div>
           <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.int')}</span>
-              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${intVal}</span>
-              <span class="ability-mod" style="font-size:0.65em;">${getModText(intVal)}</span>
+              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.int')}</span>
+              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${intVal}</span>
+              <span class="ability-mod" style="font-size:0.748em;">${getModText(intVal)}</span>
           </div>
           <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.wis')}</span>
-              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${wis}</span>
-              <span class="ability-mod" style="font-size:0.65em;">${getModText(wis)}</span>
+              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.wis')}</span>
+              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${wis}</span>
+              <span class="ability-mod" style="font-size:0.748em;">${getModText(wis)}</span>
           </div>
           <div class="ability-card" style="padding:2px;">
-              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.psi')}</span>
-              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${psi}</span>
-              <span class="ability-mod" style="font-size:0.65em;">${getModText(psi)}</span>
+              <span class="ability-label" style="font-size:0.748em;">${T('Prosthetics.ability.psi')}</span>
+              <span class="ability-value" style="font-size:1.095em; margin:1px 0;">${psi}</span>
+              <span class="ability-mod" style="font-size:0.748em;">${getModText(psi)}</span>
           </div>
       </div>
 
       <div class="vitals-box" style="padding:8px 12px; margin-bottom:10px;">
           <div class="vital-row" style="margin-bottom:4px;">
-              <span class="vital-lbl" style="width:20px; font-size:0.85em;">${T('Prosthetics.vital.hp')}</span>
+              <span class="vital-lbl" style="width:20px; font-size:0.892em;">${T('Prosthetics.vital.hp')}</span>
               <div class="flask-container" style="height:10px;">
                   <div class="flask-fill hp-fill" style="width: ${Math.floor(actor.hpRate() * 100)}%;"></div>
               </div>
-              <span class="vital-vals" style="font-size:0.85em; width:65px;">${actor.hp}/${actor.mhp}</span>
+              <span class="vital-vals" style="font-size:0.892em; width:65px;">${actor.hp}/${actor.mhp}</span>
           </div>
           <div class="vital-row">
-              <span class="vital-lbl" style="width:20px; font-size:0.85em;">${T('Prosthetics.vital.mp')}</span>
+              <span class="vital-lbl" style="width:20px; font-size:0.892em;">${T('Prosthetics.vital.mp')}</span>
               <div class="flask-container" style="height:10px;">
                   <div class="flask-fill mp-fill" style="width: ${Math.floor(actor.mpRate() * 100)}%;"></div>
               </div>
-              <span class="vital-vals" style="font-size:0.85em; width:65px;">${actor.mp}/${actor.mmp}</span>
+              <span class="vital-vals" style="font-size:0.892em; width:65px;">${actor.mp}/${actor.mmp}</span>
           </div>
       </div>
 
@@ -2682,15 +2711,15 @@
     if (odds.self) rows.push([T('Prosthetics.operatingOnSelf'), signed(odds.selfMod)]);
     return `
       <div class="surgery-blueprint" style="font-family:'Lora', serif;">
-          <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.1em; margin:0 0 4px 0; border-bottom: 1px dashed rgba(88,24,13,0.15); padding-bottom:4px;">${item.actor.name()}</h4>
+          <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.095em; margin:0 0 4px 0; border-bottom: 1px dashed rgba(88,24,13,0.15); padding-bottom:4px;">${item.actor.name()}</h4>
           ${rows.map(([label, value]) => `
-          <div style="display:flex; justify-content:space-between; font-size:0.85em; color:#5d483b; padding:2px 0;">
+          <div style="display:flex; justify-content:space-between; font-size:0.892em; color:#5d483b; padding:2px 0;">
               <span>${label}</span><span>${value}</span>
           </div>`).join("")}
-          <div style="display:flex; justify-content:space-between; font-size:0.95em; font-weight:bold; color:#58180D; border-top:1px dotted rgba(88,24,13,0.12); margin-top:4px; padding-top:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:0.964em; font-weight:bold; color:#58180D; border-top:1px dotted rgba(88,24,13,0.12); margin-top:4px; padding-top:4px;">
               <span>${T('Prosthetics.successChance')}</span><span>${odds.chance}%</span>
           </div>
-          <p style="margin:6px 0 0; font-size:0.78em; line-height:1.4; color:#5d483b;">${T('Prosthetics.failureWarning')}</p>
+          <p style="margin:6px 0 0; font-size:0.842em; line-height:1.4; color:#5d483b;">${T('Prosthetics.failureWarning')}</p>
       </div>
     `;
   };
@@ -2770,27 +2799,27 @@
     if (!isAffordable && actionSymbol !== "remove_implant" && !(this._viewState === 'implant_select_prosthetic' && item.isRemoveOption)) isOkEnabled = false;
 
     const ledgerHTML = this._fieldMode
-      ? `<div style="font-family:'Lora', serif; font-size:0.9em; margin-top:6px; border-top:1px dotted rgba(88,24,13,0.12); padding-top:4px;">
+      ? `<div style="font-family:'Lora', serif; font-size:0.928em; margin-top:6px; border-top:1px dotted rgba(88,24,13,0.12); padding-top:4px;">
               <div style="display:flex; justify-content:space-between;">
                   <span>${T('Prosthetics.successChance')}</span>
                   <strong style="color:#58180D;">${this.currentOdds().chance}%</strong>
               </div>
-              <div style="font-size:0.82em; color:#5d483b; margin-top:2px;">${this.oddsBreakdownText()}</div>
+              <div style="font-size:0.87em; color:#5d483b; margin-top:2px;">${this.oddsBreakdownText()}</div>
           </div>`
-      : `<div style="display:flex; justify-content:space-between; align-items:center; font-family:'Lora', serif; font-size:0.9em; margin-top:6px; border-top:1px dotted rgba(88,24,13,0.12); padding-top:4px;">
+      : `<div style="display:flex; justify-content:space-between; align-items:center; font-family:'Lora', serif; font-size:0.928em; margin-top:6px; border-top:1px dotted rgba(88,24,13,0.12); padding-top:4px;">
               <span>${T('Prosthetics.surgeryFee')} <strong style="color:${costColor};">${costText}</strong></span>
               <span>${T('Prosthetics.availableFunds')} <strong style="color:#2e7d32;">${formatPriceInEuros($gameParty.gold())}</strong></span>
           </div>`;
 
     previewContainer.innerHTML = `
       <div class="surgery-blueprint" style="font-family:'Lora', serif;">
-          <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.1em; margin:0 0 4px 0; border-bottom: 1px dashed rgba(88,24,13,0.15); padding-bottom:4px; letter-spacing:0.5px;">${title}</h4>
-          <p style="margin:4px 0; font-size:0.8em; line-height:1.4; color:#5d483b;">${descText}</p>
+          <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.095em; margin:0 0 4px 0; border-bottom: 1px dashed rgba(88,24,13,0.15); padding-bottom:4px; letter-spacing:0.5px;">${title}</h4>
+          <p style="margin:4px 0; font-size:0.856em; line-height:1.4; color:#5d483b;">${descText}</p>
           ${ledgerHTML}
           
           <div style="display:flex; gap:8px; margin-top:8px;">
-              <button class="action-btn action-focusable ${!isOkEnabled ? 'disabled' : ''}" style="flex:1; padding:4px 8px; font-size:0.9em;" onclick="SceneManager._scene.executeSurgeryAction('${actionSymbol}')">${actionBtnLabel}</button>
-              <button class="action-btn action-focusable" style="flex:1; padding:4px 8px; font-size:0.9em;" onclick="SceneManager._scene.cancelSurgeryAction()">${T('Prosthetics.cancel')}</button>
+              <button class="action-btn action-focusable ${!isOkEnabled ? 'disabled' : ''}" style="flex:1; padding:4px 8px; font-size:0.928em;" onclick="SceneManager._scene.executeSurgeryAction('${actionSymbol}')">${actionBtnLabel}</button>
+              <button class="action-btn action-focusable" style="flex:1; padding:4px 8px; font-size:0.928em;" onclick="SceneManager._scene.cancelSurgeryAction()">${T('Prosthetics.cancel')}</button>
           </div>
       </div>
     `;

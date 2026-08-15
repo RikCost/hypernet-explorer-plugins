@@ -1010,7 +1010,7 @@
   function iconHtml(iconIndex) {
     const x = (iconIndex % 16) * 32;
     const y = Math.floor(iconIndex / 16) * 32;
-    return `<span style="background:url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width:32px; height:32px; display:inline-block; transform:scale(0.75); image-rendering:pixelated; flex-shrink:0;"></span>`;
+    return `<span style="background:url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width:32px; height:32px; display:inline-block; transform:scale(0.75); image-rendering:pixelated; flex-shrink:0"></span>`;
   }
 
   class UIPlantInputManager {
@@ -1268,45 +1268,45 @@
       }
 
       const leftPageHTML = `
-        <div class="tools-pockets" style="height:100%; display:flex; flex-direction:column; justify-content:space-between;">
+        <div class="tools-pockets" style="height:100%; display:flex; justify-content:space-between">
           <div>
-            <h2 class="title" style="margin-bottom:8px;">${T('Plant.ui.cropPlot')}</h2>
-            <div class="plant-desc" style="margin-bottom:18px;">${this._plotLabel()}</div>
+            <h2 class="title" style="margin-bottom:8px">${T('Plant.ui.cropPlot')}</h2>
+            <div class="plant-desc" style="margin-bottom:18px">${this._plotLabel()}</div>
             
-            <div style="display:flex; justify-content:center; align-items:center; flex-direction:column; margin-bottom:20px;">
-              <div class="portrait-frame" style="width:110px; height:110px; border-radius:12px; margin-bottom:8px; display:flex; align-items:center; justify-content:center;">
+            <div style="display:flex; justify-content:center; align-items:center; flex-direction:column; margin-bottom:20px">
+              <div class="portrait-frame" style="width:110px; height:110px; border-radius:12px; margin-bottom:8px; display:flex">
                 <canvas id="plant-sprite-canvas" width="96" height="96"></canvas>
               </div>
-              <div style="font-family:'Lora', serif; font-size:1.6em; color:#58180D; font-weight:bold; text-align:center;">
+              <div style="font-family:'Lora', serif; font-size:1.57em; color:#58180D; font-weight:bold; text-align:center">
                 ${rec.plantId}
               </div>
-              <div style="font-family:'Lora', serif; font-size:0.9em; font-style:italic; color:#5d483b;">
+              <div style="font-family:'Lora', serif; font-size:0.928em; color:#5d483b">
                 ${T('PlantGrowth.stageLine', { name: stageName(rec.stage), n: rec.stage })}
               </div>
             </div>
 
-            <div class="vitals-box" style="margin-bottom:15px; padding:12px 18px;">
-              <div class="vital-row" style="margin-bottom:6px;">
-                <span class="vital-lbl" style="width:90px;">${T('PlantGrowth.growthLabel')}</span>
-                <div class="flask-container" style="height:14px; border-radius:7px;">
-                  <div class="flask-fill hp-fill" style="width: ${progressPercent}%; background: linear-gradient(to right, #2e7d32 0%, #4caf50 40%, #81c784 100%);"></div>
+            <div class="vitals-box" style="padding:12px 18px">
+              <div class="vital-row" style="margin-bottom:6px">
+                <span class="vital-lbl" style="width:90px">${T('PlantGrowth.growthLabel')}</span>
+                <div class="flask-container" style="height:14px; border-radius:7px">
+                  <div class="flask-fill hp-fill" style="width: ${progressPercent}%; background: linear-gradient(to right, #2e7d32 0%, #4caf50 40%, #81c784 100%)"></div>
                 </div>
-                <span class="vital-vals" style="width:50px; font-weight:bold;">${progressPercent}%</span>
+                <span class="vital-vals" style="width:50px; font-weight:bold">${progressPercent}%</span>
               </div>
-              <div style="text-align:right; font-family:monospace; font-size:0.8em; color:#5d483b; margin-top:2px;">
+              <div style="text-align:right; font-family:monospace; font-size:0.856em; color:#5d483b; margin-top:2px">
                 ${T('PlantGrowth.dayOf', { day: Math.floor(rec.effectiveGrowthMinutes / MINUTES_PER_DAY), total: def.growthDays })}
               </div>
             </div>
 
-            <div class="cc-dossier-card" style="margin-bottom:0; padding:12px 16px;">
+            <div class="cc-dossier-card" style="margin-bottom:0; padding:12px 16px">
               <div class="cc-dossier-row">
                 <span class="cc-dossier-label">${T('PlantGrowth.expectedYield')}</span>
                 <span class="cc-dossier-value" style="font-weight:bold; color:${canYield ? '#2e7d32' : '#ee7777'}">${yieldText}</span>
               </div>
-              <div class="cc-dossier-row" style="border-bottom:none; padding-bottom:0; margin-bottom:0;">
+              <div class="cc-dossier-row" style="border-bottom:none; padding-bottom:0; margin-bottom:0">
                 <span class="cc-dossier-label">${T('PlantGrowth.produces')}</span>
-                <span class="cc-dossier-value" style="display:flex; align-items:center; gap:6px;">
-                  <span style="background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.75);"></span>
+                <span class="cc-dossier-value" style="display:flex; align-items:center; gap:6px">
+                  <span style="background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.75)"></span>
                   <strong>${itemName}</strong>
                 </span>
               </div>
@@ -1320,16 +1320,16 @@
       const harvestPointerEvents = harvestEnabled ? "auto" : "none";
 
       const rightPageHTML = `
-        <div class="tools-pockets" style="height:100%; display:flex; flex-direction:column; justify-content:space-between;">
+        <div class="tools-pockets" style="height:100%; display:flex; justify-content:space-between">
           <div>
-            <h2 class="title" style="margin-bottom:8px;">${T('PlantGrowth.conditionsActions')}</h2>
-            <div class="plant-desc" style="margin-bottom:18px;">${T('PlantGrowth.plotBlurb')}</div>
+            <h2 class="title" style="margin-bottom:8px">${T('PlantGrowth.conditionsActions')}</h2>
+            <div class="plant-desc" style="margin-bottom:18px">${T('PlantGrowth.plotBlurb')}</div>
 
-            <div class="cc-dossier-card" style="margin-bottom:20px; padding:14px 18px;">
-              <div class="cc-subheader" style="margin-bottom:10px;">${T('PlantGrowth.growingConditions')}</div>
+            <div class="cc-dossier-card" style="margin-bottom:20px; padding:14px 18px">
+              <div class="cc-subheader" style="margin-bottom:10px">${T('PlantGrowth.growingConditions')}</div>
               <div class="cc-dossier-row">
                 <span class="cc-dossier-label">${T('PlantGrowth.seasonLabel')}</span>
-                <span class="cc-dossier-value" style="font-weight:bold; color:#58180D;">${curSeason}</span>
+                <span class="cc-dossier-value" style="font-weight:bold; color:#58180D">${curSeason}</span>
               </div>
               <div class="cc-dossier-row">
                 <span class="cc-dossier-label">${T('PlantGrowth.greenhouseLabel')}</span>
@@ -1343,21 +1343,21 @@
                 <span class="cc-dossier-label">${T('PlantGrowth.growthSpeed')}</span>
                 <span class="cc-dossier-value" style="font-weight:bold; color:${currentMult > 0 ? '#2e7d32' : '#ee7777'}">${currentMult.toFixed(1)}x</span>
               </div>
-              <div class="cc-dossier-row" style="border-bottom:none; padding-bottom:0; margin-bottom:0;">
+              <div class="cc-dossier-row" style="border-bottom:none; padding-bottom:0; margin-bottom:0">
                 <span class="cc-dossier-label">${T('PlantGrowth.readyLabel')}</span>
-                <span class="cc-dossier-value" style="font-weight:bold; color:${readyColor};">${readyEstimateText}</span>
+                <span class="cc-dossier-value" style="font-weight:bold; color:${readyColor}">${readyEstimateText}</span>
               </div>
             </div>
 
-            <div class="cc-subheader" style="margin-bottom:10px;">${T('PlantGrowth.actions')}</div>
+            <div class="cc-subheader" style="margin-bottom:10px">${T('PlantGrowth.actions')}</div>
             <div class="plant-grid">
-              <div class="command-item focusable" style="opacity:${harvestOpacity}; pointer-events:${harvestPointerEvents}; margin-bottom:8px;" onclick="SceneManager._scene._onHarvest()">
+              <div class="command-item focusable" style="opacity:${harvestOpacity}; pointer-events:${harvestPointerEvents}; margin-bottom:8px" onclick="SceneManager._scene._onHarvest()">
                 ${iconHtml(263)}
-                <span style="font-weight:bold;">${T('PlantGrowth.cmd.harvest')}</span>
+                <span style="font-weight:bold">${T('PlantGrowth.cmd.harvest')}</span>
               </div>
-              <div class="command-item focusable" style="border-color:rgba(130, 45, 45, 0.4); color:#822d2d; margin-bottom:8px;" onclick="SceneManager._scene._onRemove()">
+              <div class="command-item focusable" style="border-color:rgba(130, 45, 45, 0.4); color:#822d2d; margin-bottom:8px" onclick="SceneManager._scene._onRemove()">
                 ${iconHtml(217)}
-                <span style="font-weight:bold;">${T('PlantGrowth.clearPlot')}</span>
+                <span style="font-weight:bold">${T('PlantGrowth.clearPlot')}</span>
               </div>
               <div class="command-item focusable" onclick="SceneManager._scene.popScene()">
                 ${iconHtml(186)}
@@ -1519,15 +1519,15 @@
           if (detailEl) {
             const seasonText = def.seasons.join(", ");
             detailEl.innerHTML = `
-              <div class="cc-dossier-row" style="font-size:0.85rem; margin-bottom:4px;">
+              <div class="cc-dossier-row" style="font-size:1.02rem; margin-bottom:4px">
                 <span class="cc-dossier-label">${T('Plant.ui.growingSeasons')}</span>
-                <span class="cc-dossier-value" style="font-weight:bold; color:#58180D;">${seasonText}</span>
+                <span class="cc-dossier-value" style="font-weight:bold; color:#58180D">${seasonText}</span>
               </div>
-              <div class="cc-dossier-row" style="font-size:0.85rem; margin-bottom:4px;">
+              <div class="cc-dossier-row" style="font-size:1.02rem; margin-bottom:4px">
                 <span class="cc-dossier-label">${T('Plant.ui.growthDuration')}</span>
-                <span class="cc-dossier-value" style="font-weight:bold;">${T('Plant.ui.days', { count: def.growthDays })}</span>
+                <span class="cc-dossier-value" style="font-weight:bold">${T('Plant.ui.days', { count: def.growthDays })}</span>
               </div>
-              <div class="cc-dossier-row" style="font-size:0.85rem; margin-bottom:0; border-bottom:none; padding-bottom:0;">
+              <div class="cc-dossier-row" style="font-size:1.02rem; margin-bottom:0; border-bottom:none; padding-bottom:0">
                 <span class="cc-dossier-label">${T('Plant.ui.yieldRange')}</span>
                 <span class="cc-dossier-value">×${def.yieldMin} – ${def.yieldMax}</span>
               </div>
@@ -1545,7 +1545,7 @@
         if (stageLbl) stageLbl.innerText = "";
 
         const detailEl = document.getElementById("preview-seed-details");
-        if (detailEl) detailEl.innerHTML = `<p style='text-align:center; font-style:italic;'>${T('Plant.ui.goBackToMap')}</p>`;
+        if (detailEl) detailEl.innerHTML = `<p style='text-align:center; font-style: normal;'>${T('Plant.ui.goBackToMap')}</p>`;
 
         const canvas = document.getElementById("plant-preview-canvas");
         if (canvas) {
@@ -1595,31 +1595,31 @@
       const weather = currentWeather().toUpperCase();
 
       const leftPageHTML = `
-        <div class="tools-pockets" style="height:100%; display:flex; flex-direction:column; justify-content:space-between;">
+        <div class="tools-pockets" style="height:100%; display:flex; justify-content:space-between">
           <div>
-            <h2 class="title" style="margin-bottom:8px;">${T('Plant.ui.emptyPlot')}</h2>
-            <div class="plant-desc" style="margin-bottom:18px;">${this._plotLabel()}</div>
+            <h2 class="title" style="margin-bottom:8px">${T('Plant.ui.emptyPlot')}</h2>
+            <div class="plant-desc" style="margin-bottom:18px">${this._plotLabel()}</div>
             
-            <div style="display:flex; justify-content:center; align-items:center; flex-direction:column; margin-bottom:20px;">
-              <div class="portrait-frame" style="width:110px; height:110px; border-radius:12px; margin-bottom:8px; display:flex; align-items:center; justify-content:center;">
+            <div style="display:flex; justify-content:center; align-items:center; flex-direction:column; margin-bottom:20px">
+              <div class="portrait-frame" style="width:110px; height:110px; border-radius:12px; margin-bottom:8px; display:flex">
                 <canvas id="plant-preview-canvas" width="96" height="96"></canvas>
               </div>
-              <div id="preview-seed-name" style="font-family:'Lora', serif; font-size:1.6em; color:#58180D; font-weight:bold; text-align:center;">
+              <div id="preview-seed-name" style="font-family:'Lora', serif; font-size:1.57em; color:#58180D; font-weight:bold; text-align:center">
                 ${T('Plant.ui.selectASeed')}
               </div>
-              <div id="preview-stage-name" style="font-family:'Lora', serif; font-size:0.9em; font-style:italic; color:#5d483b;">
+              <div id="preview-stage-name" style="font-family:'Lora', serif; font-size:0.928em; color:#5d483b">
                 -
               </div>
             </div>
 
-            <div id="preview-seed-details" class="cc-dossier-card" style="margin-bottom:20px; padding:12px 16px;">
-              <p style="text-align:center; font-style:italic; margin:0; color:#5d483b; font-size:0.9em;">
+            <div id="preview-seed-details" class="cc-dossier-card" style="margin-bottom:20px; padding:12px 16px">
+              <p style="text-align:center; margin:0; color:#5d483b; font-size:0.928em">
                 ${T('PlantGrowth.pickSeedHint')}
               </p>
             </div>
 
-            <div class="cc-dossier-card" style="background:rgba(88, 24, 13, 0.03); border-style:solid; border-color:rgba(88, 24, 13, 0.15); padding:10px 14px;">
-              <p style="font-family:'Lora', serif; font-size:0.82em; color:#5d483b; text-align:center; line-height:1.45; margin:0; font-style:italic;">
+            <div class="cc-dossier-card" style="background:rgba(88, 24, 13, 0.03); border-style:solid; border-color:rgba(88, 24, 13, 0.15); padding:10px 14px">
+              <p style="font-family:'Lora', serif; font-size:0.87em; color:#5d483b; text-align:center; line-height:1.45; margin:0">
                 "${T('PlantGrowth.seedBlurb')}"
               </p>
             </div>
@@ -1637,13 +1637,13 @@
         const costColor = canAfford ? "#58180D" : "#cc2222";
 
         seedGridHTML += `
-          <div class="command-item focusable" data-plant="${id}" onclick="SceneManager._scene.onPlantSeedClick('${id}')" style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="background:${dotColor}; width:8px; height:8px; border-radius:50%; display:inline-block;"></span>
-              <span style="font-weight:bold;">${id}</span>
-              <span style="font-size:0.7em; font-style:italic; color:#5d483b;">(${def.growthDays}d)</span>
+          <div class="command-item focusable" data-plant="${id}" onclick="SceneManager._scene.onPlantSeedClick('${id}')" style="margin-bottom:8px; display:flex; justify-content:space-between">
+            <div style="display:flex; align-items:center; gap:8px">
+              <span style="background:${dotColor}; width:8px; height:8px; border-radius:50%; display:inline-block"></span>
+              <span style="font-weight:bold">${id}</span>
+              <span style="font-size:0.784em; color:#5d483b">(${def.growthDays}d)</span>
             </div>
-            <div style="font-weight:bold; color:${costColor}; font-family:monospace; font-size:0.9em;">
+            <div style="font-weight:bold; color:${costColor}; font-family:monospace; font-size:0.928em">
               ${priceText}
             </div>
           </div>
@@ -1651,23 +1651,23 @@
       }
 
       const rightPageHTML = `
-        <div class="tools-pockets" style="height:100%; display:flex; flex-direction:column; justify-content:space-between;">
-          <div style="display:flex; flex-direction:column; height:100%;">
-            <h2 class="title" style="margin-bottom:8px;">${T('PlantGrowth.seeds')}</h2>
+        <div class="tools-pockets" style="height:100%; display:flex; justify-content:space-between">
+          <div style="display:flex; flex-direction:column; height:100%">
+            <h2 class="title" style="margin-bottom:8px">${T('PlantGrowth.seeds')}</h2>
             
-            <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.78em; color:#5d483b; margin-bottom:12px; border-bottom:1px solid rgba(88,24,13,0.1); padding-bottom:4px;">
+            <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.842em; color:#5d483b; margin-bottom:12px; border-bottom:1px solid rgba(88,24,13,0.1); padding-bottom:4px">
               <span>${T('PlantGrowth.seasonLabel')} <strong>${curSeason}</strong></span>
               <span>${T('PlantGrowth.weatherLabel')} <strong>${weather}</strong></span>
               <span>${T('PlantGrowth.greenhouseLabel')} <strong>${greenhouse ? T('PlantGrowth.yes') : T('PlantGrowth.no')}</strong></span>
             </div>
 
-            <div class="plant-grid" style="flex-grow:1; max-height:410px; overflow-y:auto; margin-bottom:12px; padding-right:4px;">
+            <div class="plant-grid" style="flex-grow:1; max-height:410px; margin-bottom:12px; padding-right:4px">
               ${seedGridHTML}
             </div>
 
-            <div class="command-item focusable" onclick="SceneManager._scene.popScene()" style="margin-top:auto;">
+            <div class="command-item focusable" onclick="SceneManager._scene.popScene()" style="margin-top:auto">
               ${iconHtml(186)}
-              <span style="font-weight:bold;">${T('Plant.ui.close')}</span>
+              <span style="font-weight:bold">${T('Plant.ui.close')}</span>
             </div>
           </div>
         </div>

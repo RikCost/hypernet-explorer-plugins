@@ -94,7 +94,8 @@
     "oreBody": "Ore Body",
     "units": "{remaining} / {capacity} units",
     "condition": "Condition",
-    "weakSigns": "Weak signs"
+    "traceSigns": "Trace signs",
+    "bioReading": "Detected · {tier}"
   },
   "nibiru": {
     "impactRow": "Earth Impact",
@@ -337,7 +338,7 @@
     "donor": "{type} class · donor",
     "life": " · life",
     "moonOf": "{type} · moon of {planet}",
-    "weakLife": " · weak signs"
+    "traceLife": " · trace signs"
   },
   "tab": {
     "current": "Current System",
@@ -363,7 +364,7 @@
     "patrons": "Patrons",
     "patronsEmpty": "No patron worlds on file.",
     "patronWorlds": "Patron Worlds",
-    "weakSignatures": "Weak Signatures"
+    "traceSignatures": "Trace Signatures"
   },
   "scan": {
     "worldsFound": {
@@ -373,9 +374,9 @@
     "hubbleOnline": " (Hubble online)",
     "newCount": " · {count} new",
     "loggedInCatalog": " · logged in the Catalog",
-    "weakCount": {
-      "one": " · {count} weak reading",
-      "other": " · {count} weak readings"
+    "traceCount": {
+      "one": " · {count} trace reading",
+      "other": " · {count} trace readings"
     }
   },
   "refuel": {
@@ -391,5 +392,10 @@
     "nearest": "Nearest fuel star",
     "mayBeOutOfRange": "Nearest fuel star may be out of range",
     "noneInRange": "No fusing star in range"
+  },
+  "bio": {
+    "weak": "Weak",
+    "strong": "Strong",
+    "hyper": "Hyper"
   }
 }

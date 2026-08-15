@@ -17,6 +17,8 @@
  *   sampleCount(rng, expected) expected-count sampling: rate×days → concrete
  *                              event count without iterating days
  *   clamp(v, min, max)
+ *   BLOCKED_TERRAIN_TAGS       terrain tags NPCs never occupy: [3, 7]
+ *   isBlockedTerrain(x, y)     true when (x, y) carries one of those tags
  *   seededShuffle(arr, rng)    Fisher–Yates returning a new array
  *   escapeHtml(s)
  *   ideologyFor(profile)       the creed a society profile holds (id, else slot)
@@ -69,6 +71,17 @@
   }
 
   function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+  // Terrain tags no NPC may ever stand on, spawn on or path through: 3 is
+  // water (an NPC that wanders in looks like it is drowning, #121) and 7 is
+  // likewise off limits. Every NPC plugin asks here so the list stays in one
+  // place, region rules (10/103/99) are separate and stay with their callers.
+  const BLOCKED_TERRAIN_TAGS = [3, 7];
+
+  function isBlockedTerrain(x, y) {
+    if (typeof $gameMap === "undefined" || !$gameMap) return false;
+    return BLOCKED_TERRAIN_TAGS.includes($gameMap.terrainTag(x, y));
+  }
 
   function seededShuffle(arr, rng) {
     const a = [...arr];
@@ -304,6 +317,8 @@
     worldSeed,
     sampleCount,
     clamp,
+    BLOCKED_TERRAIN_TAGS,
+    isBlockedTerrain,
     seededShuffle,
     escapeHtml,
     formatMoney,

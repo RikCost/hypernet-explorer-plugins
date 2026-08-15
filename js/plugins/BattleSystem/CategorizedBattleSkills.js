@@ -6,7 +6,7 @@
  * @target MZ
  * @plugindesc Role-tabbed skill menu with a carried battle loadout of 9 skills per character.
  * @author Omni-Lex
- * @version 3.0.0
+ * @version 3.1.0
  *
  * @help CategorizedBattleSkills.js
  *
@@ -38,6 +38,11 @@
  * without one is bucketed from its own mechanics.
  *
  * --- CHANGE LOG ---
+ * v3.1.0 - The Skills scene is the backpack's page: the same header, category
+ *          chips, pocket cards, quick-slot strip (the loadout, on
+ *          Core/HotbarUI.js) and inspect card, all inked by css/theme.css's
+ *          ".inspect-pockets" rules rather than a stylesheet of its own.
+ *          1-9 drops the skill being read into that slot of the loadout.
  * v3.0.0 - Carried battle loadout (7 skills + 7 magic). Skill menu tabs are
  *          roles, not schools. Battle categories, the categorization option
  *          and favourite skills all removed.
@@ -110,6 +115,10 @@
                 const arr = T.list(key);
                 return arr[index] || arr[0] || "";
             };
+            // MapBattleMode tags anything that reaches across the field with a
+            // range this large; it is a sentinel, not a number of tiles.
+            const UNLIMITED_RANGE = 99;
+
             const hitTypeName = (hitType) => enumName("Inventory.spec.hitType", hitType);
             const occasionName = (occasion) => enumName("Inventory.spec.occasion", occasion);
             const scopeName = (scope) => enumName("Inventory.spec.scope", scope);
@@ -199,6 +208,28 @@
                 if (skill.repeats !== undefined && skill.repeats > 1) specs.push({ label: T("Inventory.spec.label.repeatActions"), val: "x" + skill.repeats });
                 if (skill.tpGain > 0) specs.push({ label: T("Inventory.spec.label.apGain"), val: "+" + skill.tpGain });
                 if (skill.hitType) specs.push({ label: T("Inventory.spec.label.hitClassification"), val: hitTypeName(skill.hitType) });
+
+                // How far it reaches, in tiles of the map battle grid
+                // (MapBattleMode's <Range:N>). The far end of the scale is not a
+                // distance the player can pace out, it means "anywhere in the
+                // fight", so it is named rather than numbered.
+                const range = Number(skill.meta && skill.meta.Range);
+                if (Number.isFinite(range) && range > 0) {
+                    specs.push({
+                        label: T("SkillsMenu.spec.label.range"),
+                        val: range >= UNLIMITED_RANGE ? T("SkillsMenu.spec.range.unlimited")
+                                                      : T.n("SkillsMenu.spec.range.tiles", range)
+                    });
+                }
+
+                // Which of the ten magic systems it is worked through
+                // (gen_magic_system_tags.js's <MagicSystem:X>), read out in the
+                // current language.
+                const system = skill.meta && skill.meta.MagicSystem;
+                if (system) {
+                    const key = "SkillsMenu.magicSystem." + String(system).trim();
+                    specs.push({ label: T("SkillsMenu.magicSystem.label"), val: T.has(key) ? T(key) : String(system).trim() });
+                }
                 return specs;
             };
 
@@ -333,48 +364,6 @@
                 return list;
             };
 
-            // Note tags become the "Classifications" block; <Lore:> is resolved
-            // through the shared lore service so it reads as prose.
-            const noteTagsOf = (skill) => {
-                const tags = [];
-                if (!skill || !skill.note) return tags;
-                const matches = skill.note.match(/<([^>]+)>/g);
-                if (!matches) return tags;
-                matches.forEach(m => {
-                    const inner = m.slice(1, -1).trim();
-                    const colonIdx = inner.indexOf(":");
-                    let tagName = inner;
-                    let val = "";
-                    if (colonIdx !== -1) {
-                        tagName = inner.substring(0, colonIdx).trim();
-                        val = inner.substring(colonIdx + 1).trim();
-                    }
-                    const nameLower = tagName.toLowerCase();
-                    // A tag with no name has nothing to say; it would print as a
-                    // bare colon and read as a fault in the page.
-                    if (!nameLower) return;
-                    if (nameLower === "category") return;
-                    // The role is the tab the skill was found under, and its raw
-                    // bucket id is not the label the player reads.
-                    if (nameLower === "role") return;
-                    if (nameLower === "uncraftable") return;
-                    // Sphere-grid plumbing (SkillMaster's <Node:> / <Link:> tags):
-                    // where a skill sits on its category graph is drawn, not listed.
-                    if (nameLower === "node" || nameLower === "link") return;
-                    if (nameLower === "lore" && val && window.ItemSystemUtils && typeof window.ItemSystemUtils.fillLore === "function") {
-                        val = window.ItemSystemUtils.fillLore(val, skill.id);
-                    }
-                    // <MagicSystem: X> (gen_magic_system_tags.js) - one of the
-                    // ten magic systems, read out in the current language.
-                    if (nameLower === "magicsystem") {
-                        tags.push({ name: T("SkillsMenu.magicSystem.label"), value: T("SkillsMenu.magicSystem." + val) || val });
-                        return;
-                    }
-                    tags.push({ name: tagName.charAt(0).toUpperCase() + tagName.slice(1), value: val || T("Inventory.spec.yes") });
-                });
-                return tags;
-            };
-
             // ── Rendering ─────────────────────────────────────────────────────
             const specRows = (specs) => specs.map(spec =>
                 `<div class="inspect-spec-row"><span class="inspect-spec-label">${esc(spec.label)}:</span><span class="inspect-spec-value">${esc(spec.val)}</span></div>`
@@ -414,87 +403,115 @@
                 const combat = combatSpecsOf(skill);
                 const damage = damageSpecsOf(skill, actor);
                 const effects = effectsOf(skill);
-                const noteTags = noteTagsOf(skill);
                 const training = specRowsOf(skill, actor);
 
                 let html = "";
 
-                // Combat Application and Damage sit side by side on one row; a
-                // single present column simply spans the full width.
-                const columns = [];
-                if (combat.length) columns.push(`<div class="inspect-spec-col">${section(T("Inventory.section.combatApplication"), specRows(combat))}</div>`);
-                if (damage.length) columns.push(`<div class="inspect-spec-col">${section(T("SkillsMenu.section.damage"), specRows(damage))}</div>`);
-                if (columns.length) html += `<div class="inspect-spec-columns">${columns.join("")}</div>`;
+                // One section after another, in the backpack's own vocabulary
+                // (.inspect-section-title / .inspect-spec-row / .inspect-bullet-item),
+                // so a skill read here is laid out and inked exactly as an item
+                // read on the backpack's right page.
+                if (combat.length) html += section(T("Inventory.section.combatApplication"), specRows(combat));
+                if (damage.length) html += section(T("SkillsMenu.section.damage"), specRows(damage));
 
                 if (effects.length) {
                     html += section(T("SkillsMenu.section.skillEffects"), effects.map(desc =>
-                        `<div class="inspect-effect-row"><span style="color:var(--text-primary-hover); margin-right:6px;">✦</span><span style="color:var(--text-success-active);">${esc(desc)}</span></div>`
+                        `<div class="inspect-bullet-item">${esc(desc)}</div>`
                     ).join(""));
                 }
                 if (training.length) {
                     html += section(T("SkillsMenu.section.training"), specRows(training));
                 }
-                if (noteTags.length) {
-                    html += section(T("SkillsMenu.section.classifications"), specRows(noteTags));
-                }
                 return html;
             }
 
+            // The card's own stylesheet, and the whole of it: everything else the
+            // card wears is the backpack's (css/theme.css, ".inspect-pockets"),
+            // so the two inspect pages are one page drawn twice. Only the greyed
+            // Use button has no counterpart there.
             function injectStyles() {
                 if (document.getElementById("skill-details-styles")) return;
                 const style = document.createElement("style");
                 style.id = "skill-details-styles";
                 style.textContent = `
-                    .inspect-section-title {
-                        font-family: 'Lora', serif;
-                        font-weight: bold;
+                    /* The Use button is never taken away: a skill the character
+                       cannot pay for greys out where it stood and still takes the
+                       click, which answers with a buzzer. */
+                    .inspect-btn.unusable {
+                        opacity: 0.45;
+                        border-style: dashed;
+                    }
+                    .inspect-btn.unusable:hover {
+                        background: var(--bg-secondary-hover);
                         color: var(--text-primary-hover);
-                        border-bottom: 1px solid var(--border-gold-amber-30);
-                        padding-bottom: 4px;
-                        margin: 12px 0 8px 0;
-                        font-size: 1.05em;
-                    }
-                    .inspect-spec-row {
-                        display: flex;
-                        justify-content: space-between;
-                        gap: 10px;
-                        padding: 2px 0;
-                        font-size: 0.9em;
-                    }
-                    .inspect-spec-label {
-                        color: var(--text-card-medium);
-                        font-weight: bold;
-                    }
-                    .inspect-spec-value {
-                        color: var(--text-success-active);
-                        font-weight: bold;
-                        text-align: right;
-                    }
-                    .inspect-effect-row {
-                        display: flex;
-                        align-items: flex-start;
-                        font-size: 0.9em;
-                        margin-bottom: 4px;
-                    }
-                    .inspect-spec-columns {
-                        display: flex;
-                        flex-wrap: wrap;
-                        align-items: flex-start;
-                        gap: 0 20px;
-                    }
-                    .inspect-spec-col {
-                        flex: 1 1 190px;
-                        min-width: 0;
-                    }
-                    .inspect-spec-col .inspect-section-title {
-                        margin-top: 0;
+                        box-shadow: 0 2px 5px var(--shadow-primary-hover-translucent-5);
                     }
                 `;
                 document.head.appendChild(style);
             }
 
+            // The whole right-page card for a skill: header, cost gauges,
+            // scrolling reading, buttons. The Skills scene and the main menu's
+            // search page both draw THIS, so the two can never drift apart.
+            //   opts.canvasId    id of the icon canvas the caller will paint
+            //   opts.subtitle    replaces the discipline line (the search page
+            //                    names the member who knows it there)
+            //   opts.actionsHTML the button strip under the card
+            function card(skill, actor, opts) {
+                if (!skill || !actor) return "";
+                injectStyles();
+                const o = opts || {};
+                const canvasId = o.canvasId || "inspect-canvas";
+                const subtitle = o.subtitle || typeLabelOf(skill);
+
+                // What the cast costs against what the character holds, read in
+                // the meta strip the backpack prints an item's weight and price
+                // in. A cost the character cannot pay is inked red where the
+                // pocket money would be.
+                const maxAp = actor.maxTp ? actor.maxTp() : 100;
+                const gauge = (label, current, maximum, cost) => {
+                    const cur = Math.floor(current);
+                    const max = Math.floor(maximum);
+                    const color = cost > 0
+                        ? (cost <= cur ? 'var(--text-success-active)' : 'var(--text-danger-hover)')
+                        : 'var(--text-text-alt-7)';
+                    return `
+                        <div class="inspect-meta-item">
+                            <span>${esc(label)}</span>
+                            <span class="inspect-meta-val" style="color:${color};">${cur} / ${max}</span>
+                        </div>`;
+                };
+                const resourceHTML =
+                    gauge(T("SkillsMenu.unit.mp"), actor.mp, actor.mmp, actor.skillMpCost(skill)) +
+                    gauge(T("SkillsMenu.unit.ap"), actor.tp, maxAp, actor.skillTpCost(skill));
+
+                // The backpack's own card, class for class (.item-inspect,
+                // css/theme.css): header, meta strip, one scrolling reading,
+                // buttons pinned under it. Nothing here is skill-specific
+                // markup, so a skill and an item are read on the same page.
+                return `
+                    <div class="item-inspect">
+                        <div class="inspect-header">
+                            <div class="inspect-frame">
+                                <canvas id="${canvasId}" width="32" height="32" style="width:36px; height:36px; image-rendering: pixelated;"></canvas>
+                            </div>
+                            <div class="inspect-title-box">
+                                <h3 class="inspect-name">${esc(skill.name)}</h3>
+                                <div class="inspect-rarity" style="color: var(--text-gold-dark);">${esc(subtitle)}</div>
+                            </div>
+                        </div>
+                        <div class="inspect-meta-grid">${resourceHTML}</div>
+                        <div class="inspect-lore">
+                            ${skill.description ? `<div class="inspect-desc">${esc(skill.description)}</div>` : ""}
+                            ${build(skill, actor)}
+                        </div>
+                        <div class="inspect-actions">${o.actionsHTML || ""}</div>
+                    </div>`;
+            }
+
             return {
                 build,
+                card,
                 injectStyles,
                 costTextOf,
                 scaleOf,
@@ -504,8 +521,7 @@
                 translateFormula,
                 combatSpecsOf,
                 damageSpecsOf,
-                effectsOf,
-                noteTagsOf
+                effectsOf
             };
         })();
     }
@@ -531,7 +547,7 @@
                 style.textContent = `
                     .companion-switcher { display:flex; align-items:center; gap:6px; }
                     .char-switch-hint {
-                        font-family:'Lora',serif; font-size:0.6rem; font-weight:bold;
+                        font-family:'Lora',serif; font-size:0.732rem; font-weight:bold;
                         line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
                         border:1.5px solid var(--text-primary-hover); border-radius:3px;
                         padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
@@ -676,6 +692,19 @@
     // and the "All Skills" overview.
     const isEsotericSkill = skill => !!skill && /<esoteric\b/i.test(skill.note || '');
 
+    // The stripe down the left edge of a list card. The backpack prints an
+    // item's rarity there; a skill has no rarity, so it prints the role the
+    // skill answers to, which is the one thing about it that never changes.
+    const ROLE_STRIPE = {
+        Offensive: 'var(--text-danger-hover)',
+        Healing: 'var(--text-success-active)',
+        Support: 'var(--text-primary-hover)'
+    };
+    function skillStripeColor(skill) {
+        if (!skill || isBasicSkill(skill)) return 'var(--border-primary-hover-translucent-15)';
+        return ROLE_STRIPE[getSkillRole(skill)] || 'var(--border-primary-hover-translucent-15)';
+    }
+
     // A skill a body part or an installed augment grants is carried the way a
     // weapon's is: the anatomy teaches it, so it spends no loadout slot and
     // cannot be benched. It is learned rather than added, which is why it needs
@@ -782,6 +811,34 @@
             }
             if (list.length >= LOADOUT_MAX) return 'full';
             list.push(skill.id);
+            return 'on';
+        },
+
+        // Put a skill in a named slot of the carried row, the way a number key
+        // drops an item into a backpack quick slot: whatever held that slot is
+        // put down, and a slot past the end of what is carried means the first
+        // free one. 'same' , it already stood there.
+        setSlot(actor, index, skill) {
+            if (!actor || !skill) return 'locked';
+            if (isAlwaysCarried(actor, skill)) return 'locked';
+            if (index < 0 || index >= LOADOUT_MAX) return 'locked';
+            // The row shows this.ids(), not the raw stored list, so the slot the
+            // player counted along is an index into the filtered view.
+            const view = this.ids(actor);
+            const at = view.indexOf(skill.id);
+            if (at === index) return 'same';
+            if (at >= 0) {
+                // Already carried: this is a reordering, so nothing is put down.
+                view.splice(at, 1);
+                view.splice(Math.min(index, view.length), 0, skill.id);
+            } else if (index < view.length) {
+                // A new skill takes the slot, and whatever held it is benched.
+                view[index] = skill.id;
+            } else {
+                // Past the end of what is carried: the first free slot.
+                view.push(skill.id);
+            }
+            loadoutStore()[actor.actorId()] = view;
             return 'on';
         },
 
@@ -1530,6 +1587,21 @@
         // not be listed under the open tab at all.
         this._dndInspectSkillId = null;
 
+        // The shared search + filter strip (UI/MenuSearchBar.js), in this page's
+        // vocabulary: disciplines and cast cost, never item categories or prices.
+        this._skillBar = window.MenuSearchBar ? window.MenuSearchBar.create({
+            id: 'skills',
+            placeholder: T('SkillsMenu.searchPlaceholder'),
+            sorts: ['name'],
+            onChange: () => {
+                // A new list means the old cursor points at nothing.
+                this._dndSelectedIndex = 0;
+                this._dndInspectSkillId = null;
+                this.refreshUISkill();
+                if (this._skillBar) this._skillBar.restoreFocus();
+            }
+        }) : null;
+
         this.createUISkillOverlay();
     };
 
@@ -1712,443 +1784,30 @@
             companionStyles.id = "companion-styles";
             document.head.appendChild(companionStyles);
         }
+        // The one thing the skills page wears that the backpack does not: a
+        // "cast outside a fight" flag on a list row. Everything else on this
+        // page , the header, the tabs, the list cards, the loadout strip and the
+        // inspect card , is the backpack's own markup wearing the backpack's own
+        // rules (css/theme.css, ".inspect-pockets"), so the two menus cannot
+        // drift apart.
         companionStyles.innerHTML = `
-            .companion-tabs-row {
-                display: flex;
-                justify-content: flex-end;
-                align-items: center;
-            }
-            .companion-tab {
-                font-family: 'Lora', serif;
-                font-size: 1.05rem;
-                padding: 6px 14px;
-                margin: 0 6px;
-                color: var(--text-primary-hover);
-                cursor: pointer;
-                border: 1px solid transparent;
-                border-radius: 4px;
-                transition: all 0.2s ease;
-                user-select: none;
-                font-weight: bold;
-            }
-            .companion-tab.selected {
-                background: var(--text-primary-hover);
-                color: var(--bg-secondary-hover) !important;
-                font-weight: bold;
-                box-shadow: 0 2px 4px var(--shadow-gold-amber-50);
-            }
-            .companion-tab:hover {
-                background: var(--bg-primary-hover-translucent-35);
-            }
-
-            .skill-types-row {
-                display: flex;
-                justify-content: center;
-                margin-bottom: 15px;
-                border-bottom: 2px dashed var(--border-gold-amber-30);
-                padding-bottom: 8px;
-            }
-            .skill-type-tab {
-                font-family: 'Lora', serif;
-                font-size: 0.95rem;
-                padding: 5px 12px;
-                margin: 0 5px;
-                color: var(--text-primary-hover);
-                cursor: pointer;
-                border: 1px solid var(--border-gold-amber-30);
-                background: var(--bg-panel);
-                border-radius: 4px;
-                transition: all 0.15s ease;
-                user-select: none;
-                font-weight: bold;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-            .skill-type-tab.active {
-                background: var(--text-primary-hover);
-                color: var(--bg-secondary-hover) !important;
-                border-color: var(--text-primary-hover);
-                box-shadow: 0 2px 4px var(--shadow-gold-amber-50);
-            }
-            .skill-type-tab.selected {
-                outline: 2px solid var(--text-primary-hover);
-                outline-offset: 1px;
-            }
-            .skill-type-tab:hover {
-                background: var(--bg-primary-hover-translucent-35);
-                border-color: var(--text-primary-hover);
-            }
-
-            .skill-book-content {
-                display: flex;
-                flex-direction: column;
-                height: 660px;
-                overflow-y: auto;
-                padding-right: 6px;
-                box-sizing: border-box;
-            }
-            .skill-book-content::-webkit-scrollbar {
-                width: 6px;
-            }
-            .skill-book-content::-webkit-scrollbar-track {
-                background: rgba(74, 39, 17, 0.05);
-                border-radius: 3px;
-            }
-            .skill-book-content::-webkit-scrollbar-thumb {
-                background: rgba(74, 39, 17, 0.25);
-                border-radius: 3px;
-            }
-            .skill-book-content::-webkit-scrollbar-thumb:hover {
-                background: rgba(74, 39, 17, 0.45);
-            }
-
-            .skill-section-title {
-                font-family: 'Lora', serif;
-                font-size: 1.15rem;
-                font-weight: bold;
-                color: var(--text-primary-hover);
-                margin: 14px 0 8px 0;
-                border-bottom: 1.5px solid var(--border-gold-amber-30);
-                padding-bottom: 4px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-            .skill-section-title:first-child {
-                margin-top: 0;
-            }
-            .skill-section-subtitle {
-                font-size: 0.72rem;
-                font-style: italic;
-                color: var(--text-card-medium);
-                font-weight: normal;
-            }
-  .skills-grid-container {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                grid-gap: 10px;
-                align-content: start;
-                padding-bottom: 10px;
-            }
-
-
-            .discipline-card, .skill-card-slot {
-                background: var(--bg-panel);
-                border: 1px solid var(--border-gold-amber-30);
-                border-radius: 5px;
-                padding: 6px 10px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                cursor: pointer;
-                transition: all 0.15s ease;
-                user-select: none;
-                box-sizing: border-box;
-                min-height: 44px;
-            }
-            /* The plate and the border belong to the skills in sync. Everything
-               else is plain text on the page, at full legibility: what is in
-               hand is told by what is drawn around it, never by fading the rest. */
-            .skill-card-slot {
-                background: transparent;
-                border-color: transparent;
-            }
-            .skill-card-slot.carried {
-                background: transparent;
-                border-color: var(--border-primary-hover-translucent-15);
-            }
-            .loadout-pill {
-                font-family: 'Lora', serif;
-                font-size: 0.62rem;
-                font-weight: bold;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                line-height: 1;
-                padding: 3px 6px;
-                margin-left: 6px;
-                border-radius: 3px;
-                border: 1px solid var(--text-primary-hover);
-                color: var(--text-primary-hover);
-                background: var(--border-primary-hover-translucent-15);
-                cursor: pointer;
-                user-select: none;
-                white-space: nowrap;
-            }
-            .loadout-pill.locked {
-                cursor: default;
-                opacity: 0.7;
-                border-style: dashed;
-            }
-            /* Cast away from a fight: the only kind this menu can actually use. */
-            .card-field-tag {
-                font-family: 'Lora', serif;
-                font-size: 0.6rem;
-                font-weight: bold;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                line-height: 1;
-                padding: 3px 5px;
-                margin-left: 6px;
-                border-radius: 3px;
-                border: 1px solid var(--border-success);
-                color: var(--text-success-active);
-                white-space: nowrap;
-            }
-            .discipline-card:hover, .skill-card-slot:hover {
-                background: var(--bg-primary-hover-translucent-35);
-                border-color: var(--text-primary-hover);
-            }
-            .discipline-card.selected, .skill-card-slot.selected {
-                background: var(--bg-tertiary-focus-translucent-45);
-                border-color: var(--text-primary-hover);
-                box-shadow: 0 0 6px var(--shadow-gold-amber-50);
-                outline: 2px solid var(--text-primary-hover);
-            }
-
-            .card-left-side {
-                display: flex;
-                align-items: center;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            .card-title-text {
-                font-family: 'Lora', serif;
-                font-weight: bold;
-                color: var(--text-primary-hover);
-                font-size: 0.9rem;
-            }
-            .card-right-side {
-                display: flex;
-                align-items: center;
-                font-size: 80%;
-                font-family: 'Lora', serif;
-            }
-            .card-cost-label {
-                color: var(--text-gold-dark);
-                font-weight: bold;
-                margin-left: 6px;
-            }
-            .card-tag {
-                font-size: 0.72rem;
-                color: var(--text-card-medium);
-                font-style: italic;
-            }
-
-            .category-detail-header {
-                display: flex;
-                align-items: center;
-                margin-bottom: 15px;
-                border-bottom: 2px solid var(--border-gold-amber-30);
-                padding-bottom: 8px;
-            }
-            .category-back-btn {
-                font-family: 'Lora', serif;
-                font-size: 0.8rem;
-                background: var(--border-primary-hover-translucent-15);
-                color: var(--text-primary-hover);
-                padding: 3px 10px;
-                border-radius: 4px;
-                font-weight: bold;
-                cursor: pointer;
-                border: 1.5px solid var(--text-primary-hover);
-                margin-right: 12px;
-                text-transform: uppercase;
-                user-select: none;
-                transition: all 0.15s ease;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .category-back-btn:hover {
-                background: var(--text-primary-hover);
-                color: var(--bg-secondary-hover);
-            }
-            .category-detail-title {
-                font-family: 'Lora', serif;
-                font-size: 1.3rem;
-                font-weight: bold;
-                color: var(--text-primary-hover);
-            }
-
-            .inspect-section-title {
-                font-family: 'Lora', serif;
-                font-weight: bold;
-                color: var(--text-primary-hover);
-                border-bottom: 1px solid var(--border-gold-amber-30);
-                padding-bottom: 4px;
-                margin: 12px 0 8px 0;
-                font-size: 1.05em;
-            }
-            .inspect-spec-row {
-                display: flex;
-                justify-content: space-between;
-                padding: 2px 0;
-                font-size: 0.9em;
-            }
-            .inspect-spec-label {
-                color: var(--text-card-medium);
-                font-weight: bold;
-            }
-            .inspect-spec-value {
+            .skill-field-flag {
                 color: var(--text-success-active);
                 font-weight: bold;
-                text-align: right;
-            }
-            .inspect-effect-row {
-                display: flex;
-                align-items: flex-start;
-                font-size: 0.9em;
-                margin-bottom: 4px;
+                letter-spacing: 0.5px;
             }
 
-            /* The Use button is never taken away: a skill the character cannot
-               pay for greys out where it stood and still takes the click, which
-               answers with a buzzer. */
-            .inspect-btn.unusable {
-                opacity: 0.45;
-                border-style: dashed;
-            }
-            .inspect-btn.unusable:hover {
-                background: var(--bg-secondary-hover);
-                color: var(--text-primary-hover);
-                box-shadow: 0 2px 5px var(--shadow-primary-hover-translucent-5);
-            }
-
-            /* --- The inspect card on the right page ----------------------
-               A fixed frame: the header and the buttons hold still and only
-               the middle scrolls, so the reading never pushes Use off the page. */
-            .skill-inspect-compact .inspect-header {
-                flex: 0 0 auto;
-                gap: 10px;
-                margin-bottom: 8px;
-                padding-bottom: 8px;
-                border-bottom: 1px solid var(--border-gold-amber-30);
-            }
-            .skill-inspect-compact .inspect-frame { width: 44px; height: 44px; }
-            .skill-inspect-compact .inspect-name { font-size: 1.2em; }
-            .skill-inspect-compact .inspect-rarity { font-size: 0.7em; margin-top: 1px; }
-            /* What the cast costs against what the character holds, kept in the
-               header so it stays put while the body scrolls. */
-            .skill-resource-block {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 3px;
-                flex-shrink: 0;
-                font-family: 'Lora', serif;
-                font-size: 0.72rem;
-                font-weight: bold;
-                white-space: nowrap;
-            }
-            .skill-res {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-            .skill-res-name {
-                color: var(--text-card-medium);
-                width: 20px;
-                text-align: right;
-            }
-            .skill-res-bar {
-                display: block;
-                width: 68px;
-                height: 6px;
-                border: 1px solid var(--border-gold-amber-30);
-                border-radius: 3px;
-                background: var(--bg-secondary-hover);
-                overflow: hidden;
-            }
-            .skill-res-fill {
-                display: block;
-                height: 100%;
-                transition: width 0.2s ease;
-            }
-            .skill-res-val {
-                min-width: 58px;
-                text-align: right;
-            }
-            /* The description is prose, not an exhibit: no plate behind it. */
-            .skill-inspect-compact .inspect-lore {
-                background: none;
-                border: none;
-                box-shadow: none;
-                padding: 0;
-                margin: 0 0 6px 0;
-                max-height: none;
-                overflow: visible;
-                flex: 0 0 auto;
-                font-size: 0.9em;
-                line-height: 1.35;
-            }
-            /* One scroll region for the whole reading, so the wheel has a
-               single obvious thing to move. */
-            .skill-inspect-body {
-                flex: 1 1 auto;
-                min-height: 0;
-                overflow-y: auto;
-                padding-right: 8px;
-            }
-            .skill-inspect-body::-webkit-scrollbar { width: 6px; }
-            .skill-inspect-body::-webkit-scrollbar-track {
-                background: var(--shadow-primary-hover-translucent-5);
-                border-radius: 3px;
-            }
-            .skill-inspect-body::-webkit-scrollbar-thumb {
-                background: var(--scroll-thumb-hover-translucent-60);
-                border-radius: 3px;
-            }
-            .skill-inspect-compact .inspect-section-title {
-                margin: 10px 0 3px 0;
-                padding-bottom: 2px;
-                font-size: 0.95em;
-            }
-            .skill-inspect-compact .inspect-spec-row { padding: 0; font-size: 0.84em; }
-            .skill-inspect-compact .inspect-effect-row { font-size: 0.84em; margin-bottom: 2px; }
-            .skill-inspect-compact .inspect-spec-columns { gap: 0 16px; }
-            /* Use and Sync stand side by side on one row. */
-            .skill-inspect-compact .inspect-actions {
-                flex: 0 0 auto;
-                flex-direction: row;
-                gap: 8px;
-                margin-top: 8px;
-                padding-top: 8px;
-                border-top: 1px solid var(--border-gold-amber-30);
-            }
-            .skill-inspect-compact .inspect-btn {
-                flex: 1 1 0;
+            /* The shared strip (UI/MenuSearchBar.js) laid into the backpack's
+               one-line toolbar: field left, sort tags right. */
+            #menu-container .backpack-search .msb {
+                margin-bottom: 0;
                 min-width: 0;
-                font-size: 0.95em;
-                padding: 6px 8px;
-                white-space: nowrap;
             }
-
-            /* The carried row: one cell per loadout slot, the opened one lit. */
-            .loadout-cell {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                width: 34px;
-                height: 34px;
-                border: 1px solid var(--border-gold-amber-30);
-                border-radius: 4px;
-                background: var(--bg-panel);
-                box-sizing: border-box;
+            #menu-container .backpack-search .msb-field-only {
+                flex: 1 1 auto;
             }
-            .loadout-cell.filled {
-                cursor: pointer;
-            }
-            .loadout-cell.filled:hover {
-                border-color: var(--text-primary-hover);
-                background: var(--bg-primary-hover-translucent-35);
-            }
-            .loadout-cell.opened {
-                border-color: var(--text-primary-hover);
-                box-shadow: 0 0 6px var(--shadow-gold-amber-50);
-            }
-            .loadout-cell canvas {
-                pointer-events: none;
+            #menu-container .backpack-search .msb-row {
+                flex: 0 0 auto;
             }
         `;
 
@@ -2175,9 +1834,21 @@
                 }
                 node = node.parentElement;
             }
-            const content = this._dndContainer.querySelector(".skill-book-content");
+            const content = this._dndContainer.querySelector(".backpack-grid");
             if (content) content.scrollTop += e.deltaY;
         }, { passive: false });
+
+        // The carried row is the backpack's quick-slot strip: the same widget
+        // (Core/HotbarUI.js), the same nine numbered slots, mounted into the
+        // foot of the left page. A click opens that skill on the right page,
+        // a right click puts it down.
+        this._loadoutBar = window.HotbarUI ? new window.HotbarUI({
+            id: 'skill-loadout-row',
+            slots: LOADOUT_MAX,
+            inline: true,
+            onSlotClick: (i) => this.clickUILoadoutCell(i),
+            onSlotContext: (i) => this.dropUILoadoutCell(i)
+        }) : null;
 
         this.refreshUISkill();
         UISkillInputManager.activate(this);
@@ -2200,6 +1871,8 @@
     const _Scene_Skill_terminate = Scene_Skill.prototype.terminate;
     Scene_Skill.prototype.terminate = function () {
         _Scene_Skill_terminate.call(this);
+        if (this._skillBar) { this._skillBar.dispose(); this._skillBar = null; }
+        if (this._loadoutBar) { this._loadoutBar.destroy(); this._loadoutBar = null; }
         UISkillInputManager.deactivate();
         window.CharSwitcher.removeTabKey(this);
         if (this._dndContainer) {
@@ -2276,7 +1949,8 @@
         this._dndInspectSkillId = null;
     };
 
-    Scene_Skill.prototype.getUISkillsOnlyList = function () {
+    // Everything the open tab holds, before the search strip has had its say.
+    Scene_Skill.prototype.getUISkillsOnlyListRaw = function () {
         const actor = this.actor();
         if (!actor) return [];
         const type = this.getUISkillTypes()[this._dndSelectedTypeIndex];
@@ -2311,6 +1985,26 @@
             .filter(skill => skill && !isDummySkill(skill) && !isBasicSkill(skill) &&
                 !isEsotericSkill(skill) && getSkillRole(skill) === type.ext)
             .sort((a, b) => a.name.localeCompare(b.name));
+    };
+
+    // What the tab holds after the strip (UI/MenuSearchBar.js) has filtered and
+    // ordered it. A skill has a discipline and a cost, not a weight or a price,
+    // so those controls are never offered on this page.
+    Scene_Skill.prototype.getUISkillsOnlyList = function () {
+        const list = this.getUISkillsOnlyListRaw();
+        if (!this._skillBar) return list;
+        return this._skillBar.apply(list, entry => {
+            const skill = this.uiSkillOf(entry);
+            if (!skill) return null;
+            return {
+                name: skill.name,
+                category: window.SkillDetails.categoryOf(skill) || '',
+                subtitle: skill.description || '',
+                cost: skill.mpCost || skill.tpCost || 0,
+                // On the Level Up ledger the level is the level it is learned at.
+                level: entry && entry.level ? entry.level : 0
+            };
+        });
     };
 
     Scene_Skill.prototype.getUISkillCostText = function (skill) {
@@ -2359,12 +2053,12 @@
 
     // The right page when nothing is selected.
     Scene_Skill.prototype._uiSkillEmptyHTML = function () {
+        // The backpack's own empty page, class for class.
         return `
-            <div class="skill-inspect-card" style="justify-content: center; text-align: center; padding: 40px 10px;">
-                <h3 class="title" style="border:none; margin-bottom: 10px;">${T('SkillsMenu.empty.title')}</h3>
-                <p style="font-family: 'Lora', serif; font-style: italic; line-height: 1.6; color: var(--text-card-medium);">
-                    ${T('SkillsMenu.empty.hint')}
-                </p>
+            <div class="item-inspect item-inspect--empty">
+                <div class="inspect-placeholder-icon"></div>
+                <h3 class="title">${T('SkillsMenu.empty.title')}</h3>
+                <p class="inspect-placeholder-text">${T('SkillsMenu.empty.hint')}</p>
             </div>
         `;
     };
@@ -2374,55 +2068,12 @@
     // the full refresh and the hover-only one draw the page from here, so they
     // cannot drift apart.
     Scene_Skill.prototype._uiSkillInspectHTML = function (actor, skill) {
-        const skillType = window.SkillDetails.typeLabelOf(skill);
-        // Full spec block (Combat Application + Damage side by side, then Skill
-        // Effects and Classifications) from the shared service, which
-        // SkillMaster's Training encyclopedia renders too.
-        const detailedInfoHTML = window.SkillDetails.build(skill, actor);
-        const actionsHTML = this._uiSkillActionsHTML(actor, skill);
-
-        // What the character holds, drawn as gauges: how much is left reads off
-        // a bar faster than off a fraction. The cost itself is listed once,
-        // among the combat specs, so it is not repeated here.
-        const mtp = actor.maxTp ? actor.maxTp() : 100;
-        const bar = (label, current, maximum, cost) => {
-            const cur = Math.floor(current);
-            const max = Math.floor(maximum);
-            const pct = max > 0 ? Math.max(0, Math.min(100, (cur / max) * 100)) : 0;
-            const color = cost > 0
-                ? (cost <= cur ? 'var(--text-success-active)' : 'var(--text-danger-hover)')
-                : 'var(--text-primary-hover)';
-            return `
-                <div class="skill-res">
-                    <span class="skill-res-name">${escapeHtml(label)}</span>
-                    <span class="skill-res-bar"><span class="skill-res-fill" style="width:${pct}%; background:${color};"></span></span>
-                    <span class="skill-res-val" style="color:${color};">${cur}/${max}</span>
-                </div>
-            `;
-        };
-        const resourceHTML =
-            bar(T('SkillsMenu.unit.mp'), actor.mp, actor.mmp, actor.skillMpCost(skill)) +
-            bar(T('SkillsMenu.unit.ap'), actor.tp, mtp, actor.skillTpCost(skill));
-
-        return `
-            <div class="skill-inspect-card skill-inspect-compact">
-                <div class="inspect-header">
-                    <div class="inspect-frame">
-                        <canvas id="inspect-canvas" width="32" height="32" style="width:32px; height:32px; image-rendering: pixelated;"></canvas>
-                    </div>
-                    <div class="inspect-title-box">
-                        <h3 class="inspect-name">${escapeHtml(skill.name)}</h3>
-                        <div class="inspect-rarity" style="color: var(--text-gold-dark);">${escapeHtml(skillType)}</div>
-                    </div>
-                    <div class="skill-resource-block">${resourceHTML}</div>
-                </div>
-                <div class="skill-inspect-body">
-                    <div class="inspect-lore">${escapeHtml(skill.description || "")}</div>
-                    ${detailedInfoHTML}
-                </div>
-                <div class="inspect-actions">${actionsHTML}</div>
-            </div>
-        `;
+        // The card itself is window.SkillDetails.card, which the main menu's
+        // search page draws too, so the two pages cannot drift apart. This scene
+        // only supplies the buttons that belong to it.
+        return window.SkillDetails.card(skill, actor, {
+            actionsHTML: this._uiSkillActionsHTML(actor, skill)
+        });
     };
 
     // Take a skill up or put it down. A full loadout refuses rather than
@@ -2481,6 +2132,55 @@
         this._dndActiveSection = "actions";
         this._dndSelectedActionIndex = 0;
         this.refreshUISkill();
+    };
+
+    // 1-9 while a skill is being read drops it into that slot of the carried
+    // row, the same assignment a number key makes in the backpack.
+    Scene_Skill.prototype.assignUILoadoutSlot = function (index) {
+        const actor = this.actor();
+        const skill = this.uiCurrentSkill();
+        if (!actor || !skill) { SoundManager.playBuzzer(); return; }
+        const result = BattleLoadout.setSlot(actor, index, skill);
+        if (result === 'locked') { SoundManager.playBuzzer(); return; }
+        if (result === 'same') { SoundManager.playCursor(); return; }
+        SoundManager.playOk();
+        this._itemWindow.refresh();
+        this.refreshUISkill();
+    };
+
+    // A right click on a carried cell puts that skill down, the way a right
+    // click empties a backpack quick slot.
+    Scene_Skill.prototype.dropUILoadoutCell = function (i) {
+        const actor = this.actor();
+        const skillId = BattleLoadout.ids(actor)[i];
+        const skill = skillId ? $dataSkills[skillId] : null;
+        if (!skill) return;
+        this.toggleUILoadout(skill);
+    };
+
+    // Paint the carried row into whatever mount point the current left page
+    // holds. The bar itself (Core/HotbarUI.js) outlives the page, so its slots
+    // are re-mounted rather than rebuilt.
+    Scene_Skill.prototype._renderUILoadoutBar = function () {
+        if (!this._loadoutBar) return;
+        const mount = this._dndContainer && this._dndContainer.querySelector("#skill-loadout-mount");
+        if (!mount) { this._loadoutBar.hide(); return; }
+        const actor = this.actor();
+        const ids = BattleLoadout.ids(actor);
+        const entries = [];
+        let selected = -1;
+        for (let i = 0; i < LOADOUT_MAX; i++) {
+            const skill = ids[i] ? $dataSkills[ids[i]] : null;
+            if (!skill) { entries.push(null); continue; }
+            if (this._dndInspectSkillId === skill.id) selected = i;
+            entries.push({
+                iconIndex: skill.iconIndex,
+                enabled: actor.canUse(skill),
+                tooltip: skill.name
+            });
+        }
+        this._loadoutBar.mount(mount);
+        this._loadoutBar.render(entries, { selected: selected, active: selected >= 0 });
     };
 
     // A skill "calls a common event" when one of its effects reserves one
@@ -2639,20 +2339,18 @@
         if (this._dndSelectedTypeIndex >= types.length) {
             this._dndSelectedTypeIndex = Math.max(0, types.length - 1);
         }
+        // The tabs are the backpack's category chips: same class, same block,
+        // same two-row shape, so a filter reads the same in both menus.
         let typesRowHTML = "";
         types.forEach((type, idx) => {
             const isActive = this._dndSelectedTypeIndex === idx ? "active" : "";
             const isFocused = (this._dndActiveSection === "types" && this._dndSelectedTypeIndex === idx) ? "selected" : "";
-            typesRowHTML += `
-                <div class="skill-type-tab ${isActive} ${isFocused}" onclick="SceneManager._scene.selectUISkillType(${idx})">
-                    ${type.name}
-                </div>
-            `;
+            typesRowHTML += `<div class="backpack-tab ${isActive} ${isFocused}" onclick="SceneManager._scene.selectUISkillType(${idx})">${escapeHtml(type.name)}</div>`;
         });
 
         const skillTypesRowHTML = `
-            <div class="skill-types-row">
-                ${typesRowHTML}
+            <div class="backpack-tabs">
+                <div class="backpack-tabs-row">${typesRowHTML}</div>
             </div>
         `;
 
@@ -2668,127 +2366,120 @@
         const selectedItem = this.uiCurrentSkill();
 
         // Determine left page key to see if left page needs full render. The
-        // carried ids are part of it: taking a skill up repaints its pill. So
+        // carried ids are part of it: taking a skill up repaints its chip. So
         // is whichever cell of the carried row is open, which is lit there.
         const carriedKey = BattleLoadout.ids(actor).join(',');
-        const leftPageKey = `${actor.actorId()}_${this._dndSelectedTypeIndex}_${list.length}_${carriedKey}_${this._dndInspectSkillId || 0}`;
+        // The strip's own state belongs in the key too: reversing the sort
+        // leaves the list the same LENGTH, so without it the page would keep
+        // showing the old order.
+        const barKey = this._skillBar
+            ? `${this._skillBar.query}|${this._skillBar.sortKey}|${this._skillBar.sortDir}` : '';
+        const leftPageKey = `${actor.actorId()}_${this._dndSelectedTypeIndex}_${list.length}_${carriedKey}_${this._dndInspectSkillId || 0}_${barKey}`;
 
         const skillsTitle = T('SkillsMenu.title');
         const backBtnText = T('SkillsMenu.back');
 
+        // Every row is one of the backpack's pocket cards: rarity stripe, icon,
+        // name, and a meta line reading cost on the left and the stack chip on
+        // the right. What the chip says is whether the skill is synced.
         let skillsGridHTML = "";
         if (list.length === 0) {
-            skillsGridHTML = `
-                <div style="grid-column: 1 / -1; font-family:'Lora', serif; font-style:italic; text-align:center; padding: 40px 10px; color:var(--text-card-medium);">
-                    ${T('SkillsMenu.empty.section')}
-                </div>
-            `;
+            skillsGridHTML = `<div class="item-grid-empty">${T('SkillsMenu.empty.section')}</div>`;
         } else {
             list.forEach((entry, idx) => {
                 const item = isLevelUp ? entry.skill : entry;
                 if (!item) return;
 
                 const isLearned = isLevelUp ? entry.isLearned : true;
-                const levelText = isLevelUp ? `<span style="color:#bba16d; margin-right: 5px; font-family:'Lora', serif; font-size: 0.9em; font-weight: bold;">Lv ${entry.level}:</span>` : "";
-
                 const isFocused = (this._dndActiveSection === "skills" && this._dndSelectedIndex === idx) ? "selected" : "";
-                const isEnabled = actor.canUse(item);
                 const costText = this.getUISkillCostText(item);
                 const canvasId = `skill-canvas-${idx}`;
-                let nameWeight = isEnabled ? "font-weight: bold;" : "";
-                if (isLevelUp && !isLearned) nameWeight += " opacity: 0.6;";
+                const dimStyle = (isLevelUp && !isLearned) ? ' style="opacity:0.6;"' : '';
 
-                // Whether the skill is in hand, and whether that is the player's
-                // to decide: the basic kit and anything worn are simply carried.
-                let pillHTML = "";
-                let carriedClass = "";
-                if (!isLevelUp) {
-                    const locked = BattleLoadout.isAlwaysCarried(actor, item);
-                    const carried = BattleLoadout.isActive(actor, item);
-                    if (carried) carriedClass = " carried";
-                    if (locked) {
-                        pillHTML = `<span class="loadout-pill locked">${T('SkillsMenu.loadout.always')}</span>`;
-                    } else if (carried) {
-                        pillHTML = `<span class="loadout-pill" onclick="event.stopPropagation(); SceneManager._scene.clickUILoadout(${idx})">${T('SkillsMenu.loadout.carried')}</span>`;
-                    }
-                    // A skill out of sync wears no label at all: the bare card
-                    // says it, and the row stays as legible as any other.
+                // The chip in the stack-count corner. On the ledger it is the
+                // level the skill is learned at; everywhere else it says
+                // whether the skill is in hand, and whether that is the
+                // player's to decide , the basic kit and anything worn are
+                // simply carried, and say so without offering a click.
+                let chipHTML = "";
+                if (isLevelUp) {
+                    chipHTML = `<span class="item-slot-count">Lv ${entry.level}</span>`;
+                } else if (BattleLoadout.isAlwaysCarried(actor, item)) {
+                    chipHTML = `<span class="item-slot-count">${T('SkillsMenu.loadout.always')}</span>`;
+                } else if (BattleLoadout.isActive(actor, item)) {
+                    chipHTML = `<span class="item-slot-count" onclick="event.stopPropagation(); SceneManager._scene.clickUILoadout(${idx})">${T('SkillsMenu.loadout.carried')}</span>`;
                 }
+                // A skill out of sync wears no chip at all: the bare card says
+                // it, and the row stays as legible as any other.
 
                 // A skill that can be cast away from a fight is worth knowing at
                 // a glance, since it is the only kind this menu can actually use.
-                const fieldTag = actor.isOccasionOk(item)
-                    ? `<span class="card-field-tag">${T('SkillsMenu.tag.field')}</span>` : "";
+                const fieldFlag = actor.isOccasionOk(item)
+                    ? `<span class="skill-field-flag">${costText ? ' · ' : ''}${escapeHtml(T('SkillsMenu.tag.field'))}</span>` : "";
 
                 skillsGridHTML += `
-                    <div class="skill-card-slot ${isFocused}${carriedClass}" data-skill-idx="${idx}" onclick="SceneManager._scene.clickUISkill(${idx})" ondblclick="SceneManager._scene.dblClickUISkill(${idx})">
-                        <div class="card-left-side">
-                            ${levelText}
-                            <div class="faction-icon-frame" style="margin-right: 8px; border-radius: 50%; display: flex; align-items: center;">
-                                <canvas id="${canvasId}" width="32" height="32" style="width:24px; height:24px;"></canvas>
-                            </div>
-                            <span class="card-title-text" style="${nameWeight}">${item.name}</span>
+                    <div class="item-slot ${isFocused}"${dimStyle} data-skill-idx="${idx}" onclick="SceneManager._scene.clickUISkill(${idx})" ondblclick="SceneManager._scene.dblClickUISkill(${idx})">
+                        <div class="item-rarity-bar" style="background:${skillStripeColor(item)};"></div>
+                        <div class="item-slot-icon">
+                            <canvas id="${canvasId}" width="32" height="32" style="width:32px;height:32px;"></canvas>
                         </div>
-                        <div class="card-right-side">
-                            <span class="card-cost-label">${costText}</span>
-                            ${fieldTag}
-                            ${pillHTML}
+                        <div class="item-slot-info">
+                            <div class="item-slot-name">${escapeHtml(item.name)}</div>
+                            <div class="item-slot-meta">
+                                <span>${escapeHtml(costText)}${fieldFlag}</span>
+                                ${chipHTML}
+                            </div>
                         </div>
                     </div>
                 `;
             });
         }
 
-        const leftPageContentHTML = `
-            <div class="skill-book-content">
-                <div class="skills-grid-container">
-                    ${skillsGridHTML}
-                </div>
-            </div>
-        `;
+        const leftPageContentHTML = `<div class="backpack-grid" id="skill-grid">${skillsGridHTML}</div>`;
 
-        // What the character carries, one cell per slot in a single row. A
-        // filled cell opens its skill on the right page; the open one is lit.
+        // What the character carries, in the backpack's own quick-slot strip:
+        // nine numbered slots under a header line whose gauge counts the synced
+        // skills against the loadout's capacity, exactly where the backpack
+        // counts carried weight against what can be borne.
         const loadoutIds = BattleLoadout.ids(actor);
         let loadoutGridHTML = "";
         if (!isLevelUp) {
-            let cells = "";
-            for (let i = 0; i < LOADOUT_MAX; i++) {
-                const skillId = loadoutIds[i];
-                const skill = skillId ? $dataSkills[skillId] : null;
-                const classes = skill
-                    ? `loadout-cell filled${this._dndInspectSkillId === skillId ? " opened" : ""}`
-                    : "loadout-cell";
-                const click = skill ? ` onclick="SceneManager._scene.clickUILoadoutCell(${i})"` : "";
-                cells += `<div class="${classes}"${click}>`;
-                if (skill) {
-                    cells += `<canvas id="loadout-icon-${i}" width="32" height="32" style="width:28px;height:28px;image-rendering:pixelated;"></canvas>`;
-                }
-                cells += '</div>';
-            }
+            const carriedCount = loadoutIds.length;
+            const loadoutPct = Math.min(100, Math.floor((carriedCount / LOADOUT_MAX) * 100));
             loadoutGridHTML = `
-                <div style="text-align:center;margin-bottom:10px;">
-                    <div style="display:inline-grid;grid-template-columns:repeat(${LOADOUT_MAX},36px);grid-auto-rows:36px;gap:2px;align-items:center;justify-items:center;">
-                        ${cells}
+                <div class="backpack-hotbar">
+                    <div class="backpack-hotbar-head">
+                        <div class="backpack-hotbar-label">${T('SkillsMenu.loadout.skills')}</div>
+                        <div class="weight-status">
+                            <div class="weight-lbl-row">
+                                <span>${T('SkillsMenu.loadout.carried')}</span>
+                                <span>${carriedCount} / ${LOADOUT_MAX}</span>
+                            </div>
+                            <div class="weight-progress">
+                                <div class="weight-progress-fill" style="width:${loadoutPct}%;"></div>
+                            </div>
+                        </div>
                     </div>
+                    <div class="backpack-hotbar-mount" id="skill-loadout-mount"></div>
                 </div>
             `;
         }
 
         const leftPageHeaderHTML = `
-            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--border-gold-amber-30); padding-bottom: 8px; margin-bottom: 12px; min-height: 40px; width: 100%;">
-              <div class="back-button focusable" onclick="SceneManager._scene.exitUISkill()" style="position: absolute; left: 0; font-family: 'Lora', serif; font-size: 0.8rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: fit-content; line-height: normal; user-select: none;">
-                ${backBtnText}
-              </div>
-              <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${skillsTitle}</h2>
+            <div class="page-header-bar">
+                <div class="back-button focusable" onclick="SceneManager._scene.exitUISkill()">${backBtnText}</div>
+                <h2 class="title">${skillsTitle}</h2>
             </div>
             ${skillTypesRowHTML}
-            ${loadoutGridHTML}
+            ${this._skillBar ? `<div class="backpack-search">${this._skillBar.fieldHTML()}${this._skillBar.filtersHTML()}</div>` : ''}
         `;
 
+        // Header, filters, the pockets, and the quick-slot strip at the foot:
+        // the backpack's left page, in that order.
         const leftPageHTML = `
             ${leftPageHeaderHTML}
             ${leftPageContentHTML}
+            ${loadoutGridHTML}
         `;
 
         // 4. Generate Right Page: Spell / Inspect Card
@@ -2838,8 +2529,11 @@
         // The character switcher lives at the top of the RIGHT page (its own
         // static row), so the left page can start with its title straight away.
         if (!this._dndContainer.querySelector(".book-spread")) {
+            // ".inspect-pockets" is what makes this the backpack's page: the
+            // compact chips, the denser pockets and the flat inspect card all
+            // hang off it (css/theme.css).
             this._dndContainer.innerHTML = `
-                <div class="book-spread">
+                <div class="book-spread inspect-pockets">
                     <div class="left-page"></div>
                     <div class="right-page">
                         <div class="companion-switcher" id="skill-companion-row" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:10px;"></div>
@@ -2865,18 +2559,11 @@
                 const item = isLevelUp ? entry.skill : entry;
                 if (item) this.drawUISkillIcon(item.iconIndex, `skill-canvas-${idx}`);
             });
-            // Draw the carried row's icons
-            if (!isLevelUp) {
-                loadoutIds.slice(0, LOADOUT_MAX).forEach((skillId, i) => {
-                    const skill = $dataSkills[skillId];
-                    if (skill) this.drawUISkillIcon(skill.iconIndex, `loadout-icon-${i}`);
-                });
-            }
         } else {
             // Left page already drawn! Update only selection classes in-place
             // (companion tabs live on the right page and are rebuilt above).
             // 1. Skill type tabs
-            const typeTabs = leftPageContainer.querySelectorAll(".skill-type-tab");
+            const typeTabs = leftPageContainer.querySelectorAll(".backpack-tab");
             typeTabs.forEach((tab, idx) => {
                 if (idx === this._dndSelectedTypeIndex) {
                     tab.classList.add("active");
@@ -2891,7 +2578,7 @@
             });
 
             // 2. Skill cards
-            const skillSlots = leftPageContainer.querySelectorAll(".skill-card-slot");
+            const skillSlots = leftPageContainer.querySelectorAll(".item-slot");
             skillSlots.forEach((slot) => {
                 const sIdx = parseInt(slot.getAttribute("data-skill-idx"), 10);
                 if (sIdx === this._dndSelectedIndex && this._dndActiveSection === "skills") {
@@ -2901,6 +2588,11 @@
                 }
             });
         }
+
+        // The strip's mount point is rebuilt with the left page, but the bar's
+        // own root survives it, so the slots are only ever re-mounted and
+        // re-rendered , never rebuilt from scratch with the page.
+        this._renderUILoadoutBar();
 
         // Always update right page contents inside the static right-page container (prevents full page repaint/redraws)
         rightPageContainer.innerHTML = rightPageContentHTML;
@@ -2912,7 +2604,7 @@
 
         // Scroll active item into view
         if (this._dndActiveSection === "skills") {
-            const selectedElem = this._dndContainer.querySelector(".skill-card-slot.selected");
+            const selectedElem = this._dndContainer.querySelector(".item-slot.selected");
             if (selectedElem) {
                 selectedElem.scrollIntoView({ block: "nearest", behavior: "smooth" });
             }
@@ -3032,7 +2724,7 @@
         // 1. Patch left-page skill card selection classes in-place
         const leftPageContainer = this._dndContainer.querySelector(".left-page");
         if (leftPageContainer) {
-            const skillSlots = leftPageContainer.querySelectorAll(".skill-card-slot");
+            const skillSlots = leftPageContainer.querySelectorAll(".item-slot");
             skillSlots.forEach((slot) => {
                 const sIdx = parseInt(slot.getAttribute("data-skill-idx"), 10);
                 if (sIdx === idx) slot.classList.add("selected");
@@ -3083,6 +2775,17 @@
 
         update: function () {
             if (!this._active || !this._scene) return;
+            // A focused search field owns the keyboard: the cursor must not walk
+            // the grid under the caret (UI/MenuSearchBar.js).
+            if (window.MenuSearchBar && window.MenuSearchBar.isTyping()) return;
+
+            // 1-9 assigns the skill being read to that slot of the carried row.
+            for (let n = 1; n <= LOADOUT_MAX; n++) {
+                if (Input.isTriggered(String(n))) {
+                    if (!this._scene._dndTargetingMode) this._scene.assignUILoadoutSlot(n - 1);
+                    return;
+                }
+            }
 
             // Directions: isRepeated so holding a key auto-scrolls
             if (Input.isRepeated('down')) {

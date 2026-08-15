@@ -1138,9 +1138,9 @@
                                 <span>${prop.location} • ${t('propertyTypes')[prop.type]}</span>
                             </div>
                         </div>
-                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; margin-left:10px;">
-                            <span style="color:${statusColor}; font-family:'Lora', serif; font-size:0.78rem; font-weight:bold; letter-spacing:0.5px;">${statusLabel}</span>
-                            <span style="font-size:0.9rem; color:var(--text-primary-hover);">${stars}</span>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; margin-left:10px">
+                            <span style="color:${statusColor}; font-family:'Lora', serif; font-size:0.952rem; font-weight:bold; letter-spacing:0.5px">${statusLabel}</span>
+                            <span style="font-size:1.08rem; color:var(--text-primary-hover)">${stars}</span>
                         </div>
                     </div>`;
             }).join('');
@@ -1149,9 +1149,9 @@
         buildDeedHTML(selectedProperty) {
             if (!selectedProperty) {
                 return `
-                    <div class="item-inspect item-inspect--empty" style="justify-content:center;text-align:center;padding:40px 10px;flex:1;">
+                    <div class="item-inspect item-inspect--empty" style="justify-content:center; padding:40px 10px; flex:1">
                         <h3 class="title">${T('RealEstate.ui.titleDeed')}</h3>
-                        <p class="inspect-placeholder-text" style="font-style:italic;">
+                        <p class="inspect-placeholder-text">
                             ${T('RealEstate.ui.selectAnAssetFromThe')}
                         </p>
                     </div>`;
@@ -1196,7 +1196,7 @@
 
             let priceVal = `€${effectivePrice.toLocaleString()}`;
             if (priceDiff !== 0) {
-                priceVal += ` <span style="font-size:0.78rem;color:${priceDiff > 0 ? 'var(--text-success-active)' : 'var(--border-danger-active)'};">(${percentChange > 0 ? '+' : ''}${percentChange}%)</span>`;
+                priceVal += ` <span style="font-size:0.952rem;color:${priceDiff > 0 ? 'var(--text-success-active)' : 'var(--border-danger-active)'};">(${percentChange > 0 ? '+' : ''}${percentChange}%)</span>`;
             }
 
             const monthlyRent = $realEstateManager.getMonthlyRent(selectedProperty);
@@ -1214,7 +1214,7 @@
 
             return `
                 <div class="item-inspect">
-                    <h3 class="title" style="font-size:1.6em;">${selectedProperty.name}</h3>
+                    <h3 class="title" style="font-size:1.57em">${selectedProperty.name}</h3>
                     <div class="inspect-section-title">${T('RealEstate.ui.titleDeed')}</div>
                     ${row(t('type'), t('propertyTypes')[selectedProperty.type])}
                     ${row(t('location'), selectedProperty.location)}
@@ -1222,8 +1222,8 @@
                     ${row(t('price'), priceVal, 'color:var(--text-primary-hover);')}
                     ${row(T('RealEstate.ui.marketSentiment'), marketSentiment.toUpperCase(), `color:${sentimentColor};letter-spacing:0.5px;`)}
                     ${ownedRows}
-                    ${effects.length > 0 ? `<div class="inspect-bullet-item" style="margin-top:10px;">${effects.length} ${T('RealEstate.ui.activeEventsAreAlteringPrices')}</div>` : ''}
-                    <div class="inspect-actions" style="margin-top:16px;">${commandsHTML}</div>
+                    ${effects.length > 0 ? `<div class="inspect-bullet-item" style="margin-top:10px">${effects.length} ${T('RealEstate.ui.activeEventsAreAlteringPrices')}</div>` : ''}
+                    <div class="inspect-actions" style="margin-top:16px">${commandsHTML}</div>
                 </div>`;
         }
 
@@ -1295,11 +1295,11 @@
                         <span class="re-stat-lbl">${T('RealEstate.ui.liquidFunds')}</span>
                         <span class="re-stat-val" id="re-cash">€${cash.toLocaleString()}</span>
                     </div>
-                    <div class="re-stat" style="align-items:center;">
+                    <div class="re-stat" style="align-items:center">
                         <span class="re-stat-lbl">${T('RealEstate.ui.holdings')}</span>
-                        <span class="re-stat-val" id="re-held" style="color:var(--text-success-active);">${heldCount}</span>
+                        <span class="re-stat-val" id="re-held" style="color:var(--text-success-active)">${heldCount}</span>
                     </div>
-                    <div class="re-stat" style="align-items:flex-end;">
+                    <div class="re-stat" style="align-items:flex-end">
                         <span class="re-stat-lbl">${T('RealEstate.ui.equityValue')}</span>
                         <span class="re-stat-val" id="re-equity">€${Math.round(holdingsValue / 100).toLocaleString()}</span>
                     </div>`;
@@ -1313,11 +1313,11 @@
                         <span class="re-stat-lbl">${T('RealEstate.ui.liquidFunds')}</span>
                         <span class="re-stat-val" id="re-cash">€${cash.toLocaleString()}</span>
                     </div>
-                    <div class="re-stat" style="align-items:center;">
+                    <div class="re-stat" style="align-items:center">
                         <span class="re-stat-lbl">${T('RealEstate.ui.deedsHeld')}</span>
-                        <span class="re-stat-val" id="re-owned" style="color:var(--text-success-active);">${ownedCount} / 30</span>
+                        <span class="re-stat-val" id="re-owned" style="color:var(--text-success-active)">${ownedCount} / 30</span>
                     </div>
-                    <div class="re-stat" style="align-items:flex-end;">
+                    <div class="re-stat" style="align-items:flex-end">
                         <span class="re-stat-lbl">${T('RealEstate.ui.dailyYield')}</span>
                         <span class="re-stat-val" id="re-yield">€${dailyYield.toLocaleString()}</span>
                     </div>`;
@@ -1345,7 +1345,7 @@
                 return `
                     <div class="right-page">
                         <h2 class="title">${title}</h2>
-                        <div id="re-deed-wrap" style="flex:1;display:flex;flex-direction:column;overflow-y:auto;">${this.buildProspectusHTML(company)}</div>
+                        <div id="re-deed-wrap" style="flex:1; display:flex; flex-direction:column; overflow-y:auto">${this.buildProspectusHTML(company)}</div>
                     </div>`;
             }
             const properties = $realEstateManager.properties;
@@ -1354,7 +1354,7 @@
             return `
                 <div class="right-page">
                     <h2 class="title">${deedTitle}</h2>
-                    <div id="re-deed-wrap" style="flex:1;display:flex;flex-direction:column;overflow-y:auto;">${this.buildDeedHTML(selectedProperty)}</div>
+                    <div id="re-deed-wrap" style="flex:1; display:flex; flex-direction:column; overflow-y:auto">${this.buildDeedHTML(selectedProperty)}</div>
                 </div>`;
         }
 
@@ -1419,14 +1419,14 @@
                 const statusColor = owned ? 'var(--text-success-active)' : 'var(--text-primary-hover)';
                 return `
                     <div class="item-slot ${isSelected ? 'selected' : ''}" onclick="SceneManager._scene.selectCompanyItem(${idx})">
-                        <div class="re-co-bar" style="background:${c.color};"></div>
+                        <div class="re-co-bar" style="background:${c.color}"></div>
                         <div class="item-slot-info">
                             <div class="item-slot-name">${c.name}</div>
                             <div class="item-slot-meta"><span>${c.sector} • €${c.price.toLocaleString()}/${T('RealEstate.ui.sh')}</span></div>
                         </div>
-                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; margin-left:10px;">
-                            <span style="color:${statusColor}; font-family:'Lora', serif; font-size:0.78rem; font-weight:bold; letter-spacing:0.5px;">${statusLabel}</span>
-                            ${owned ? `<span style="font-size:0.72rem;color:var(--text-text-alt-4);">${c.sharesOwned.toLocaleString()} ${T('RealEstate.ui.sh')}</span>` : ''}
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; margin-left:10px">
+                            <span style="color:${statusColor}; font-family:'Lora', serif; font-size:0.952rem; font-weight:bold; letter-spacing:0.5px">${statusLabel}</span>
+                            ${owned ? `<span style="font-size:0.878rem; color:var(--text-text-alt-4)">${c.sharesOwned.toLocaleString()} ${T('RealEstate.ui.sh')}</span>` : ''}
                         </div>
                     </div>`;
             }).join('');
@@ -1436,9 +1436,9 @@
             const it = isItalian();
             if (!company) {
                 return `
-                    <div class="item-inspect item-inspect--empty" style="justify-content:center;text-align:center;padding:40px 10px;flex:1;">
+                    <div class="item-inspect item-inspect--empty" style="justify-content:center; padding:40px 10px; flex:1">
                         <h3 class="title">${T('RealEstate.ui.prospectus')}</h3>
-                        <p class="inspect-placeholder-text" style="font-style:italic;">
+                        <p class="inspect-placeholder-text">
                             ${T('RealEstate.ui.selectACompanyToTrade')}
                         </p>
                     </div>`;
@@ -1481,15 +1481,15 @@
 
             return `
                 <div class="item-inspect">
-                    <h3 class="title" style="font-size:1.6em;">${company.name}</h3>
+                    <h3 class="title" style="font-size:1.57em">${company.name}</h3>
                     <div class="inspect-section-title">${T('RealEstate.ui.shareProspectus2')}</div>
                     ${row(T('RealEstate.ui.sector'), company.sector)}
                     ${row(T('RealEstate.ui.sharePrice'), `€${company.price.toLocaleString()}`, 'color:var(--text-primary-hover);')}
                     ${row(T('RealEstate.ui.totalShares'), company.totalShares.toLocaleString())}
                     ${row(T('RealEstate.ui.available2'), company.available.toLocaleString())}
                     ${ownedRows}
-                    ${desc ? `<div class="inspect-bullet-item" style="margin-top:10px;font-style:italic;">${desc}</div>` : ''}
-                    <div class="inspect-actions" style="margin-top:16px;">${commandsHTML}</div>
+                    ${desc ? `<div class="inspect-bullet-item" style="margin-top:10px">${desc}</div>` : ''}
+                    <div class="inspect-actions" style="margin-top:16px">${commandsHTML}</div>
                 </div>`;
         }
 
@@ -1511,13 +1511,13 @@
                 }
                 .re-stat { display: flex; flex-direction: column; gap: 4px; }
                 .re-stat-lbl {
-                    font-size: 0.72rem;
+                    font-size: 0.878rem;
                     color: var(--text-text-alt-4);
                     font-weight: bold;
                     text-transform: uppercase;
                     letter-spacing: 0.5px;
                 }
-                .re-stat-val { font-size: 1.1rem; font-weight: bold; color: var(--text-primary-hover); }
+                .re-stat-val { font-size: 1.265rem; font-weight: bold; color: var(--text-primary-hover); }
                 .re-list {
                     flex: 1;
                     overflow-y: auto;
@@ -1533,7 +1533,7 @@
                     margin-top: 12px;
                     padding-top: 10px;
                     border-top: 2px dashed var(--border-success);
-                    font-size: 0.8rem;
+                    font-size: 0.96rem;
                     color: var(--text-text-alt-4);
                     font-family: 'Lora', serif;
                     text-align: center;
@@ -1548,7 +1548,7 @@
                     text-align: center;
                     padding: 7px 10px;
                     font-family: 'Lora', serif;
-                    font-size: 0.86rem;
+                    font-size: 1.032rem;
                     font-weight: bold;
                     letter-spacing: 0.5px;
                     text-transform: uppercase;

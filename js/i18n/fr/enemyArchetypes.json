@@ -2185,6 +2185,133 @@
       },
       "name": "Gnome"
     },
+    "dwarf": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : heurtée !"
+      },
+      "beard": {
+        "name": "Barbe",
+        "msg": "Barbe : tondue !"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : écrasé !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : arraché !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : arraché !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : coupée !"
+      },
+      "brain": {
+        "name": "Cerveau",
+        "msg": "Cerveau : commotionné !"
+      },
+      "left_eye": {
+        "name": "Œil gauche",
+        "msg": "Œil gauche : gonflé fermé !"
+      },
+      "right_eye": {
+        "name": "Œil droit",
+        "msg": "Œil droit : gonflé fermé !"
+      },
+      "nose": {
+        "name": "Nez",
+        "msg": "Nez : cassé !"
+      },
+      "left_ear": {
+        "name": "Oreille gauche",
+        "msg": "Oreille gauche : bourdonnante !"
+      },
+      "right_ear": {
+        "name": "Oreille droite",
+        "msg": "Oreille droite : bourdonnante !"
+      },
+      "mouth": {
+        "name": "Bouche",
+        "msg": "Mâchoire : déboîtée !"
+      },
+      "teeth": {
+        "name": "Dents",
+        "msg": "Dents : arrachées !"
+      },
+      "genitals": {
+        "name": "Organes génitaux",
+        "msg": "Organes génitaux : endommagés !"
+      },
+      "heart": {
+        "name": "Cœur",
+        "msg": "Cœur : endommagé !"
+      },
+      "left_lung": {
+        "name": "Poumon gauche",
+        "msg": "Poumon gauche : effondré !"
+      },
+      "right_lung": {
+        "name": "Poumon droit",
+        "msg": "Poumon droit : effondré !"
+      },
+      "liver": {
+        "name": "Foie",
+        "msg": "Foie : lacéré !"
+      },
+      "stomach": {
+        "name": "Estomac",
+        "msg": "Estomac : rompu !"
+      },
+      "spleen": {
+        "name": "Rate",
+        "msg": "Rate : rompue !"
+      },
+      "intestines": {
+        "name": "Intestins",
+        "msg": "Intestins : perforés !"
+      },
+      "left_hand": {
+        "name": "Main gauche",
+        "msg": "Main gauche : mutilée !"
+      },
+      "left_fingers": {
+        "name": "Doigts gauches",
+        "msg": "Doigts gauches : cassés !"
+      },
+      "right_hand": {
+        "name": "Main droite",
+        "msg": "Main droite : mutilée !"
+      },
+      "right_fingers": {
+        "name": "Doigts droits",
+        "msg": "Doigts droits : cassés !"
+      },
+      "left_foot": {
+        "name": "Pied gauche",
+        "msg": "Pied gauche : endommagé !"
+      },
+      "left_toes": {
+        "name": "Orteils gauches",
+        "msg": "Orteils gauches : écrasés !"
+      },
+      "right_foot": {
+        "name": "Pied droit",
+        "msg": "Pied droit : endommagé !"
+      },
+      "right_toes": {
+        "name": "Orteils droits",
+        "msg": "Orteils droits : écrasés !"
+      },
+      "name": "Nain"
+    },
     "elephant": {
       "head": {
         "name": "Tête",

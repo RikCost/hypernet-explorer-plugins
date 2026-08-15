@@ -582,7 +582,7 @@
                 stepLines.push({ label: tn(item.name), value: `x${ing.quantity}` });
             });
         });
-        if (!stepLines.length) stepLines.push({ bullet: t.noSteps, italic: true });
+        if (!stepLines.length) stepLines.push({ bullet: t.noSteps });
         const stNodes = syncRows(e.stepList, stepLines.length, () => {
             const node = document.createElement('div');
             node._bullet = el('div', 'inspect-bullet-item', node);
@@ -596,7 +596,6 @@
             const node = stNodes[i];
             setShown(node._bullet, line.bullet != null);
             setShown(node._row, line.bullet == null);
-            node._bullet.style.fontStyle = line.italic ? 'italic' : '';
             setText(node._bullet, line.bullet || '');
             setText(node._label, line.label || '');
             setText(node._value, line.value || '');

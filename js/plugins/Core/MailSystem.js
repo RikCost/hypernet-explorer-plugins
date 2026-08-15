@@ -821,16 +821,16 @@
 
       this._container.innerHTML = `
         <div class="book-spread">
-          <div class="left-page" style="position:relative;">
+          <div class="left-page" style="position:relative">
             <div class="page-header-bar">
               <div class="back-button focusable" id="mail-back">${escapeHtml(T("Mail.ui.back"))}</div>
               <h2 class="title">${escapeHtml(T("Mail.ui.title"))}</h2>
             </div>
-            <div id="mail-tab-row" style="display:flex; flex-wrap:wrap; gap:5px; padding:6px 0 10px;"></div>
-            <div id="mail-list" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto;"></div>
+            <div id="mail-tab-row" style="display:flex; flex-wrap:wrap; gap:5px; padding:6px 0 10px"></div>
+            <div id="mail-list" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto"></div>
           </div>
-          <div class="right-page" style="position:relative;">
-            <div id="mail-detail" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto;"></div>
+          <div class="right-page" style="position:relative">
+            <div id="mail-detail" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto"></div>
           </div>
         </div>
       `;
@@ -948,14 +948,12 @@
         { key: "compose", label: T("Mail.ui.tab.compose") }
       ];
       const trailing = pending > 0
-        ? `<div style="align-self:center; font-size:0.72rem; opacity:0.7; margin-left:auto;">${escapeHtml(T.n("Mail.ui.inTransit", pending))}</div>`
+        ? `<div style="align-self:center; font-size:0.878rem; opacity:0.7; margin-left:auto">${escapeHtml(T.n("Mail.ui.inTransit", pending))}</div>`
         : "";
       row.innerHTML = tabs.map((tab) => {
         const isSel = tab.key === this._mode;
         const isFocused = isSel && this._area === "tabs";
-        return `<div class="mail-tab focusable" data-tab="${tab.key}" style="
-            font-family:'Lora',serif; font-size:0.78rem; padding:4px 10px; border-radius:12px; cursor:pointer;
-            background:${isSel ? "var(--bg-tertiary-focus-translucent-45)" : "var(--bg-card-translucent-5)"};
+        return `<div class="mail-tab focusable" data-tab="${tab.key}" style="font-family:'Lora',serif; font-size:0.952rem; padding:4px 10px; border-radius:12px; cursor:pointer; background:${isSel ?"var(--bg-tertiary-focus-translucent-45)" : "var(--bg-card-translucent-5)"};
             border:1.5px solid ${isFocused ? "var(--text-secondary-active)" : "var(--border-secondary-hover-translucent-15)"};
             color:${isSel ? "var(--text-secondary-active)" : "var(--text-card-medium)"};
           ">${escapeHtml(tab.label)}</div>`;
@@ -1053,14 +1051,14 @@
           ? T("Mail.inbox.fromSelf")
           : T("Mail.inbox.fromLine", { who: from.label || from.name || "?", world: from.world || "?" });
         return `
-          <div class="mail-row focusable ${isFocused ? "focused" : ""}" data-row="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? "var(--bg-tertiary-focus-translucent-45)" : "transparent"};">
-            <span style="display:flex; flex-direction:column; min-width:0;">
-              <span style="font-family:'Lora',serif; color:${isSel ? "var(--text-secondary-active)" : "var(--text-card-medium)"}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(m.subject || T("Mail.noSubject"))}</span>
-              <span style="font-size:0.72rem; opacity:0.7;">${escapeHtml(sub)}${foreign && !self ? " " + escapeHtml(T("Mail.inbox.crossed")) : ""}</span>
+          <div class="mail-row focusable ${isFocused ? "focused" : ""}" data-row="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ?"var(--bg-tertiary-focus-translucent-45)" : "transparent"};">
+            <span style="display:flex; flex-direction:column; min-width:0">
+              <span style="font-family:'Lora',serif; color:${isSel ?"var(--text-secondary-active)" : "var(--text-card-medium)"}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(m.subject || T("Mail.noSubject"))}</span>
+              <span style="font-size:0.878rem; opacity:0.7">${escapeHtml(sub)}${foreign && !self ? " " + escapeHtml(T("Mail.inbox.crossed")) : ""}</span>
             </span>
-            <span style="display:flex; flex-direction:column; align-items:flex-end; flex:0 0 auto;">
-              <span style="font-size:0.68rem; opacity:0.6;">${escapeHtml(stampOf(m.deliverAt))}</span>
-              ${marks.length ? `<span style="font-size:0.68rem; color:var(--text-text-alt-17);">${escapeHtml(marks.join(" · "))}</span>` : ""}
+            <span style="display:flex; flex-direction:column; align-items:flex-end; flex:0 0 auto">
+              <span style="font-size:0.83rem; opacity:0.6">${escapeHtml(stampOf(m.deliverAt))}</span>
+              ${marks.length ? `<span style="font-size:0.83rem; color:var(--text-text-alt-17)">${escapeHtml(marks.join(" · "))}</span>` : ""}
             </span>
           </div>`;
       }).join("");
@@ -1071,7 +1069,7 @@
       const d = draft();
       return this._recipients.map((entry, idx) => {
         if (entry.header) {
-          return `<div style="padding:10px 10px 3px; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; opacity:0.65; border-bottom:1px dashed var(--border-secondary-hover-translucent-15);">
+          return `<div style="padding:10px 10px 3px; font-size:0.878rem; letter-spacing:0.08em; text-transform:uppercase; opacity:0.65; border-bottom:1px dashed var(--border-secondary-hover-translucent-15)">
             ${escapeHtml(entry.foreign ? T("Mail.compose.otherWorld", { world: entry.world }) : T("Mail.compose.thisWorld", { world: entry.world }))}
           </div>`;
         }
@@ -1084,12 +1082,12 @@
           ? T("Mail.compose.feeShort", { fee: euroLabel(fee) })
           : T("Mail.compose.seenOn", { date: stampOf(card.minute || 0) });
         return `
-          <div class="mail-row focusable" data-row="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? "var(--bg-tertiary-focus-translucent-45)" : "transparent"};">
-            <span style="display:flex; flex-direction:column; min-width:0;">
-              <span style="color:${isSel ? "var(--text-secondary-active)" : "var(--text-card-medium)"};">${chosen ? "&#10003; " : ""}${escapeHtml(label)}</span>
-              <span style="font-size:0.72rem; opacity:0.7;">${escapeHtml(note)}</span>
+          <div class="mail-row focusable" data-row="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ?"var(--bg-tertiary-focus-translucent-45)" : "transparent"};">
+            <span style="display:flex; flex-direction:column; min-width:0">
+              <span style="color:${isSel ?"var(--text-secondary-active)" : "var(--text-card-medium)"};">${chosen ? "&#10003; " : ""}${escapeHtml(label)}</span>
+              <span style="font-size:0.878rem; opacity:0.7">${escapeHtml(note)}</span>
             </span>
-            <span style="font-size:0.7rem; opacity:0.6; flex:0 0 auto;">${escapeHtml(T.n("Mail.compose.memberCount", (card.members || []).length))}</span>
+            <span style="font-size:0.854rem; opacity:0.6; flex:0 0 auto">${escapeHtml(T.n("Mail.compose.memberCount", (card.members || []).length))}</span>
           </div>`;
       }).join("");
     }
@@ -1100,15 +1098,15 @@
         const isSel = idx === this._itemIndex;
         const attached = draftAttached(row.kind, row.id);
         return `
-          <div class="mail-row focusable" data-row="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? "var(--bg-tertiary-focus-translucent-45)" : "transparent"};">
-            <span style="display:flex; flex-direction:column; min-width:0;">
-              <span style="color:${attached ? "var(--text-secondary-active)" : "var(--text-card-medium)"}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(row.item.name)}</span>
-              <span style="font-size:0.72rem; opacity:0.7;">${escapeHtml(T.n("Mail.compose.held", row.held))}</span>
+          <div class="mail-row focusable" data-row="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ?"var(--bg-tertiary-focus-translucent-45)" : "transparent"};">
+            <span style="display:flex; flex-direction:column; min-width:0">
+              <span style="color:${attached ?"var(--text-secondary-active)" : "var(--text-card-medium)"}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(row.item.name)}</span>
+              <span style="font-size:0.878rem; opacity:0.7">${escapeHtml(T.n("Mail.compose.held", row.held))}</span>
             </span>
-            <span style="display:flex; align-items:center; gap:6px; flex:0 0 auto;">
-              <span data-row="${idx}" data-step="-1" style="cursor:pointer; padding:0 5px; opacity:0.8;">&#65293;</span>
-              <span style="min-width:2.2em; text-align:center; color:var(--text-secondary-active);">${attached}</span>
-              <span data-row="${idx}" data-step="1" style="cursor:pointer; padding:0 5px; opacity:0.8;">&#65291;</span>
+            <span style="display:flex; align-items:center; gap:6px; flex:0 0 auto">
+              <span data-row="${idx}" data-step="-1" style="cursor:pointer; padding:0 5px; opacity:0.8">&#65293;</span>
+              <span style="min-width:2.2em; text-align:center; color:var(--text-secondary-active)">${attached}</span>
+              <span data-row="${idx}" data-step="1" style="cursor:pointer; padding:0 5px; opacity:0.8">&#65291;</span>
             </span>
           </div>`;
       }).join("");
@@ -1155,20 +1153,20 @@
         const row = this.formRowData(key);
         const isSel = idx === this._formIndex && this._area === "form";
         const arrows = row.adjustable
-          ? `<span data-row="${idx}" data-step="-1" style="cursor:pointer; padding:0 5px; opacity:0.8;">&#9666;</span>
-             <span style="min-width:4.5em; text-align:right; color:var(--text-secondary-active);">${escapeHtml(row.value)}</span>
-             <span data-row="${idx}" data-step="1" style="cursor:pointer; padding:0 5px; opacity:0.8;">&#9656;</span>`
-          : `<span style="text-align:right; color:${row.action ? "var(--text-secondary-active)" : "var(--text-card-medium)"}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(row.value)}</span>`;
+          ? `<span data-row="${idx}" data-step="-1" style="cursor:pointer; padding:0 5px; opacity:0.8">&#9666;</span>
+             <span style="min-width:4.5em; text-align:right; color:var(--text-secondary-active)">${escapeHtml(row.value)}</span>
+             <span data-row="${idx}" data-step="1" style="cursor:pointer; padding:0 5px; opacity:0.8">&#9656;</span>`
+          : `<span style="text-align:right; color:${row.action ?"var(--text-secondary-active)" : "var(--text-card-medium)"}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(row.value)}</span>`;
         return `
-          <div class="mail-row focusable ${isSel ? "focused" : ""}" data-row="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:7px 10px; cursor:pointer; border-radius:5px; background:${isSel ? "var(--bg-tertiary-focus-translucent-45)" : "transparent"}; ${row.action ? "margin-top:8px; border:1px solid var(--border-secondary-hover-translucent-15);" : ""}">
-            <span style="color:${isSel ? "var(--text-secondary-active)" : "var(--text-card-medium)"}; flex:0 0 auto;">${escapeHtml(row.label)}</span>
-            <span style="display:flex; align-items:center; gap:4px; min-width:0;">${arrows}</span>
+          <div class="mail-row focusable ${isSel ? "focused" : ""}" data-row="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:7px 10px; cursor:pointer; border-radius:5px; background:${isSel ?"var(--bg-tertiary-focus-translucent-45)" : "transparent"}; ${row.action ? "margin-top:8px; border:1px solid var(--border-secondary-hover-translucent-15);" : ""}">
+            <span style="color:${isSel ?"var(--text-secondary-active)" : "var(--text-card-medium)"}; flex:0 0 auto;">${escapeHtml(row.label)}</span>
+            <span style="display:flex; align-items:center; gap:4px; min-width:0">${arrows}</span>
           </div>`;
       }).join("");
     }
 
     emptyNote(text) {
-      return `<div style="opacity:0.6; font-style:italic; padding:14px 10px; font-family:'Lora',serif;">${escapeHtml(text)}</div>`;
+      return `<div style="opacity:0.6; font-style:italic; padding:14px 10px; font-family:'Lora',serif">${escapeHtml(text)}</div>`;
     }
 
     //-------------------------------------------------------------------
@@ -1203,48 +1201,48 @@
 
     buildLetterHTML(letter) {
       if (!letter) {
-        return `<div style="padding:24px; opacity:0.6; font-style:italic;">${escapeHtml(T("Mail.inbox.pickOne"))}</div>`;
+        return `<div style="padding:24px; opacity:0.6; font-style:italic">${escapeHtml(T("Mail.inbox.pickOne"))}</div>`;
       }
       const from = letter.from || {};
       const self = from.partyId === partyId();
       const items = (letter.items || []).map((ref) => {
         const obj = resolveRef(ref);
-        return obj ? `<div style="display:flex; justify-content:space-between; padding:2px 0;">
-            <span>${escapeHtml(obj.name)}</span><span style="color:var(--text-secondary-active);">&times;${ref.count}</span>
+        return obj ? `<div style="display:flex; justify-content:space-between; padding:2px 0">
+            <span>${escapeHtml(obj.name)}</span><span style="color:var(--text-secondary-active)">&times;${ref.count}</span>
           </div>` : "";
       }).join("");
       const hasParcel = !!(letter.gold || (letter.items || []).length);
       const enclosed = hasParcel
-        ? `${letter.gold ? `<div style="display:flex; justify-content:space-between; padding:2px 0;">
-              <span>${escapeHtml(T("Mail.inbox.moneyLine"))}</span><span style="color:var(--text-secondary-active);">${escapeHtml(moneyLabel(letter.gold))}</span>
+        ? `${letter.gold ? `<div style="display:flex; justify-content:space-between; padding:2px 0">
+              <span>${escapeHtml(T("Mail.inbox.moneyLine"))}</span><span style="color:var(--text-secondary-active)">${escapeHtml(moneyLabel(letter.gold))}</span>
             </div>` : ""}${items}`
-        : `<div style="opacity:0.7;">${escapeHtml(T("Mail.inbox.nothingEnclosed"))}</div>`;
+        : `<div style="opacity:0.7">${escapeHtml(T("Mail.inbox.nothingEnclosed"))}</div>`;
 
       const action = !hasParcel ? ""
         : letter.collected
-          ? `<div style="margin-top:10px; opacity:0.7; font-size:0.8rem;">${escapeHtml(T("Mail.inbox.collectedAlready"))}</div>`
-          : `<div id="mail-collect" class="focusable" style="margin-top:10px; padding:7px 12px; text-align:center; cursor:pointer; border-radius:6px; border:1px solid var(--border-secondary-hover-translucent-15); background:var(--bg-tertiary-focus-translucent-45); color:var(--text-secondary-active);">${escapeHtml(T("Mail.inbox.collect"))}</div>`;
+          ? `<div style="margin-top:10px; opacity:0.7; font-size:0.96rem">${escapeHtml(T("Mail.inbox.collectedAlready"))}</div>`
+          : `<div id="mail-collect" class="focusable" style="margin-top:10px; padding:7px 12px; text-align:center; cursor:pointer; border-radius:6px; border:1px solid var(--border-secondary-hover-translucent-15); background:var(--bg-tertiary-focus-translucent-45); color:var(--text-secondary-active)">${escapeHtml(T("Mail.inbox.collect"))}</div>`;
 
       const held = letter.delay && (letter.delay.days || letter.delay.months || letter.delay.years)
-        ? `<div style="opacity:0.7; font-size:0.78rem;">${escapeHtml(T("Mail.inbox.heldBack", { span: this.delaySpan(letter.delay) }))}</div>`
+        ? `<div style="opacity:0.7; font-size:0.952rem">${escapeHtml(T("Mail.inbox.heldBack", { span: this.delaySpan(letter.delay) }))}</div>`
         : "";
       const crossed = from.world && from.world !== activeWorld()
-        ? `<div style="opacity:0.7; font-size:0.78rem;">${escapeHtml(T("Mail.inbox.crossedFrom", { world: from.world, fee: euroLabel(letter.fee || 0) }))}</div>`
+        ? `<div style="opacity:0.7; font-size:0.952rem">${escapeHtml(T("Mail.inbox.crossedFrom", { world: from.world, fee: euroLabel(letter.fee || 0) }))}</div>`
         : "";
 
       return `
-        <div style="padding:24px; font-family:'Lora',serif;">
-          <h2 style="color:var(--text-secondary-active); margin:0 0 4px;">${escapeHtml(letter.subject || T("Mail.noSubject"))}</h2>
-          <div style="opacity:0.75;">${escapeHtml(self ? T("Mail.inbox.fromSelf") : T("Mail.inbox.fromLine", { who: from.label || from.name || "?", world: from.world || "?" }))}</div>
-          <div style="opacity:0.6; font-size:0.78rem;">${escapeHtml(T("Mail.inbox.written", { date: stampOf(letter.sentMinute || 0) }))} &middot; ${escapeHtml(T("Mail.inbox.arrived", { date: stampOf(letter.deliverAt || 0) }))}</div>
+        <div style="padding:24px; font-family:'Lora',serif">
+          <h2 style="color:var(--text-secondary-active); margin:0 0 4px">${escapeHtml(letter.subject || T("Mail.noSubject"))}</h2>
+          <div style="opacity:0.75">${escapeHtml(self ? T("Mail.inbox.fromSelf") : T("Mail.inbox.fromLine", { who: from.label || from.name || "?", world: from.world || "?" }))}</div>
+          <div style="opacity:0.6; font-size:0.952rem">${escapeHtml(T("Mail.inbox.written", { date: stampOf(letter.sentMinute || 0) }))} &middot; ${escapeHtml(T("Mail.inbox.arrived", { date: stampOf(letter.deliverAt || 0) }))}</div>
           ${held}${crossed}
-          <div style="margin-top:18px; white-space:pre-wrap; line-height:1.5;">${escapeHtml(letter.body || "")}</div>
-          <div style="margin-top:20px;">
-            <div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${escapeHtml(T("Mail.inbox.enclosed"))}</div>
+          <div style="margin-top:18px; white-space:pre-wrap; line-height:1.5">${escapeHtml(letter.body || "")}</div>
+          <div style="margin-top:20px">
+            <div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px">${escapeHtml(T("Mail.inbox.enclosed"))}</div>
             ${enclosed}
             ${action}
           </div>
-          <div id="mail-discard" class="focusable" style="margin-top:16px; font-size:0.76rem; opacity:0.6; cursor:pointer; text-align:center;">${escapeHtml(T("Mail.inbox.discard"))}</div>
+          <div id="mail-discard" class="focusable" style="margin-top:16px; font-size:0.927rem; opacity:0.6; cursor:pointer; text-align:center">${escapeHtml(T("Mail.inbox.discard"))}</div>
         </div>`;
     }
 
@@ -1259,24 +1257,19 @@
     buildComposeHTML() {
       const d = draft();
       return `
-        <div style="padding:22px; font-family:'Lora',serif; display:flex; flex-direction:column; gap:10px; height:100%; box-sizing:border-box;">
-          <div id="mail-to-line" style="color:var(--text-secondary-active);"></div>
-          <div id="mail-route-line" style="font-size:0.78rem; opacity:0.75;"></div>
+        <div style="padding:22px; font-family:'Lora',serif; display:flex; flex-direction:column; gap:10px; height:100%; box-sizing:border-box">
+          <div id="mail-to-line" style="color:var(--text-secondary-active)"></div>
+          <div id="mail-route-line" style="font-size:0.952rem; opacity:0.75"></div>
           <input id="mail-subject" type="text" maxlength="120" spellcheck="false"
             placeholder="${escapeHtml(T("Mail.compose.subjectPlaceholder"))}"
             value="${escapeHtml(d.subject)}"
-            style="width:100%; box-sizing:border-box; padding:7px 9px; font-family:'Lora',serif; font-size:0.95rem;
-                   background:var(--bg-card-translucent-5); color:var(--text-secondary-active);
-                   border:1px solid var(--border-secondary-hover-translucent-15); border-radius:5px; outline:none;">
+            style="width:100%; box-sizing:border-box; padding:7px 9px; font-family:'Lora',serif; font-size:1.14rem; background:var(--bg-card-translucent-5); color:var(--text-secondary-active); border:1px solid var(--border-secondary-hover-translucent-15); border-radius:5px; outline:none">
           <textarea id="mail-body" spellcheck="false"
             placeholder="${escapeHtml(T("Mail.compose.bodyPlaceholder"))}"
-            style="width:100%; box-sizing:border-box; flex:1 1 auto; min-height:9em; resize:none; padding:9px;
-                   font-family:'Lora',serif; font-size:0.88rem; line-height:1.5;
-                   background:var(--bg-card-translucent-5); color:var(--text-card-medium);
-                   border:1px solid var(--border-secondary-hover-translucent-15); border-radius:5px; outline:none;">${escapeHtml(d.body)}</textarea>
-          <div id="mail-enclosed-line" style="font-size:0.8rem;"></div>
-          <div id="mail-cost-line" style="font-size:0.8rem;"></div>
-          <div id="mail-warning-line" style="font-size:0.78rem; color:var(--text-text-alt-17); min-height:1em;"></div>
+            style="width:100%; box-sizing:border-box; flex:1 1 auto; min-height:9em; resize:none; padding:9px; font-family:'Lora',serif; font-size:1.056rem; line-height:1.5; background:var(--bg-card-translucent-5); color:var(--text-card-medium); border:1px solid var(--border-secondary-hover-translucent-15); border-radius:5px; outline:none">${escapeHtml(d.body)}</textarea>
+          <div id="mail-enclosed-line" style="font-size:0.96rem"></div>
+          <div id="mail-cost-line" style="font-size:0.96rem"></div>
+          <div id="mail-warning-line" style="font-size:0.952rem; color:var(--text-text-alt-17); min-height:1em"></div>
         </div>`;
     }
 

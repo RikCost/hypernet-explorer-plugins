@@ -81,10 +81,17 @@
   "ownedStock": "Posseduti: {owned} Scorta: {stock}",
   "ownedCount": "Posseduti: {owned}",
   "wornCount": "(indossati: {count})",
-  "sellHint": "Clicca gli oggetti per metterli sul banco, poi vendi tutto in una volta.",
+  "sellHint": "Clicca gli oggetti, o l'intestazione di una categoria, per metterli sul banco: poi vendi tutto in una volta.",
+  "buyHint": "Clicca gli oggetti, o l'intestazione di una categoria, per riempire il cesto: poi compra tutto in una volta.",
   "selectionCount": "{lines} voci, {units} oggetti",
   "sellSelected": "VENDI TUTTE ({lines})",
+  "buySelected": "COMPRA TUTTE ({lines})",
   "clearSelection": "AZZERA",
+  "uncategorized": "Varie",
+  "allCategories": "Tutto",
+  "categorySummary": "{lines} voci · {value} €",
+  "categoryToggleHint": "Seleziona l'intera categoria",
+  "qtyStepHint": "Shift +10 · Ctrl tutto",
   "elementN": "Elemento {id}",
   "stateN": "Stato {id}",
   "paramN": "Parametro {id}",
@@ -115,12 +122,6 @@
     "Mdr",
     "Fdr",
     "Exr"
-  ],
-  "sellCategories": [
-    "Oggetti",
-    "Armi",
-    "Armature",
-    "Chiave"
   ],
   "scope": {
     "0": "Nessuno",

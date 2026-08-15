@@ -544,7 +544,7 @@
   "startingOut": "Starting Out",
   "language": "Language",
   "gameLanguageAnyMissingTranslationFallsBackTo": "Game language. Any missing translation falls back to English.",
-  "fogOfWar": "Fog of War",
+  "fogOfWar": "Fog of War (WIP)",
   "revealsTheMapGraduallyAsYouExploreUnvisitedA": "Reveals the map gradually as you explore. Unvisited areas remain hidden in darkness.",
   "theEntireMapIsFullyRevealedNoHiddenAreas": "The entire map is fully revealed, no hidden areas.",
   "exploreTileByTileDarknessVeilsTheUnknown": "Explore tile by tile, darkness veils the unknown.",

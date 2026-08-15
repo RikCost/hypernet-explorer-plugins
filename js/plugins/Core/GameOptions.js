@@ -266,8 +266,8 @@ const GameOptions = {
             // Language leads the page: it is the setting that decides how every
             // other one reads, so it must stay first.
             symbols: [
-                'language', 'fogOfWar', 'fowEnabled', 'enemySpawnMode', 'enemyDifficulty',
-                'mapBattleMode', 'cpuPartyMembers', 'commandRemember',
+                'language', 'fowEnabled', 'enemySpawnMode', 'enemySpawnModeV2', 'enemyDifficulty',
+                'mapBattleMode', 'cpuPartyMembers', 'fogOfWar', 'commandRemember',
                 'smoothBattleLog'
             ]
         },
@@ -378,28 +378,60 @@ window.GameOptions = GameOptions;
 
     // --- Viewport fit -------------------------------------------------------
     // The DOM menus are authored against one design box: the parchment book
-    // spread, `width: min(1560px, 100%); height: min(960px, 100%)` in theme.css,
-    // sitting inside a 24px-padded full-screen backdrop. Every card, gap and
-    // font inside it is an absolute px/rem value picked to fill that box, so the
-    // spread only holds its contents on a viewport at least 1608x1008. A desktop
-    // at 1080p clears that; a Steam Deck at 1280x800 is 200px short of it and the
-    // bottom of a page (the Back/Confirm bar above all) falls off the spread.
+    // spread. Every card, gap and font inside it is an absolute px/rem value
+    // picked to fill 1560x960, so a menu only holds its contents on a viewport
+    // at least that big. A desktop at 1080p clears it; a Steam Deck at 1280x800
+    // is short of it and the bottom of a page (the Back/Confirm bar above all)
+    // would fall off the spread.
     //
     // Rather than re-author two hundred menus for a second breakpoint, the whole
-    // spread is zoomed down by however much the viewport is short. Layout still
-    // happens at the design size, so a menu renders exactly as it does on the
-    // author's monitor, only smaller. `fit` is 1 on any viewport that already
-    // fits, so nothing changes on desktop.
+    // spread is zoomed by however much the viewport differs. Layout still happens
+    // at (at least) the design size, so a menu renders exactly as it does on the
+    // author's monitor, only scaled.
+    //
+    // The spread itself is FULL BLEED (theme.css): it no longer caps at the
+    // design box and centres inside a padded backdrop, so there is no longer any
+    // padding to subtract here.
     const DESIGN_W = 1560, DESIGN_H = 960;   // book spread design box
-    const DESIGN_PAD = 48;                   // backdrop padding, 24px a side
+    const DESIGN_PAD = 0;                    // full-bleed: backdrop has no inset
     const FIT_MIN = 0.5;                     // past this, panes scroll instead
+
+    // --- Handheld (Steam Deck) --------------------------------------------
+    // The Deck's panel is 1280x800: 0.82 of the design box, so type authored
+    // for the desktop lands on screen at 0.82 of its size on a 7" display, which
+    // is where the legibility complaint comes from. Zooming less is the only
+    // lever, and zooming less means needing less room.
+    //
+    // theme.css has a `@media (max-width: 1366px) and (max-height: 860px)` block
+    // that compacts the chrome at exactly this size (page padding, card gaps,
+    // header rules, button bars). That block buys back roughly 10% in each axis,
+    // so the handheld lays out in a smaller box and is scaled down less: 0.91
+    // instead of 0.82. Combined with the raised per-rule font sizes, text on a
+    // Deck comes out visibly larger than it was, not merely the same.
+    //
+    // The two must be kept in step: widen the media query and this box has to
+    // grow with it, or the compaction will apply to a menu that was not sized
+    // down and the pages will run short.
+    const HANDHELD_MAX_W = 1366, HANDHELD_MAX_H = 860;
+    const HANDHELD_W = 1400, HANDHELD_H = 880;
+
+    function designBox() {
+        const w = window.innerWidth || DESIGN_W;
+        const h = window.innerHeight || DESIGN_H;
+        if (w <= HANDHELD_MAX_W && h <= HANDHELD_MAX_H) {
+            return { w: HANDHELD_W, h: HANDHELD_H };
+        }
+        return { w: DESIGN_W, h: DESIGN_H };
+    }
+    GameOptions.designBox = designBox;
 
     // How many design boxes' worth of room the viewport actually has. Over 1 on
     // anything roomier than the design size, under 1 on a handheld.
     function headroom() {
-        const w = window.innerWidth || DESIGN_W + DESIGN_PAD;
-        const h = window.innerHeight || DESIGN_H + DESIGN_PAD;
-        return Math.min((w - DESIGN_PAD) / DESIGN_W, (h - DESIGN_PAD) / DESIGN_H);
+        const box = designBox();
+        const w = window.innerWidth || box.w + DESIGN_PAD;
+        const h = window.innerHeight || box.h + DESIGN_PAD;
+        return Math.min((w - DESIGN_PAD) / box.w, (h - DESIGN_PAD) / box.h);
     }
 
     // What a default install sees: 1 wherever the design box already fits.
@@ -423,7 +455,24 @@ window.GameOptions = GameOptions;
         if (!root) return;
         root.style.setProperty('--ui-scale', String(GameOptions.uiScale()));
         root.style.setProperty('--ui-fit', String(GameOptions.uiFit()));
-        root.style.setProperty('--ui-zoom', String(GameOptions.uiZoom()));
+        const zoom = GameOptions.uiZoom();
+        root.style.setProperty('--ui-zoom', String(zoom));
+
+        // Full-bleed panel size, in the panel's OWN (pre-zoom) coordinate space.
+        // The panel carries `zoom: var(--ui-zoom)`, which multiplies every px
+        // length it lays out with, so a panel sized viewport/zoom px renders at
+        // exactly the viewport: edge to edge, no bars, at any zoom. Percentages
+        // are not usable here because their behaviour under `zoom` differs
+        // between the legacy and standardised implementations; px does not.
+        //
+        // Because zoom never exceeds the headroom, viewport/zoom is never
+        // smaller than the 1560x960 design box, so a menu authored against that
+        // box always has at least as much room as its author had.
+        const box = designBox();
+        const w = window.innerWidth || box.w;
+        const h = window.innerHeight || box.h;
+        root.style.setProperty('--ui-panel-w', (w / zoom) + 'px');
+        root.style.setProperty('--ui-panel-h', (h / zoom) + 'px');
         const fs = GameOptions.fontScale();
         root.style.setProperty('--ui-font-scale', String(fs));
         root.style.fontSize = (16 * fs) + 'px';
@@ -462,6 +511,14 @@ window.GameOptions = GameOptions;
     // middle is worth 2% per point, so the ends read as -100% / +100%.
     const ENEMY_DIFFICULTY_DEFAULT = 50;
     const ENEMY_DIFFICULTY_SCALE = 2;
+
+    // Enemy spawn modes, in the order the option cycles them and the order
+    // GameOptions.enemySpawn names them: 0 Balanced, 1 Realistic, 2 Chaos.
+    // Realistic is the default - it is the mode the world is written for, where
+    // how far a place lies from where the party started decides what lives
+    // there (BattleSystemEnhancedEncounters.js, section 4b).
+    const ENEMY_SPAWN_MODE_COUNT = 3;
+    const ENEMY_SPAWN_MODE_DEFAULT = 1;
 
     // Slider value -> signed stat percentage shown to the player.
     const enemyDifficultyPercent = function (value) {
@@ -560,9 +617,25 @@ window.GameOptions = GameOptions;
         // is a whole three.js scene behind a menu.
         this.cardBoard3D = config.cardBoard3D !== undefined ? config.cardBoard3D : false;
         // Enemy spawn mode (BattleSystemEnhancedEncounters.js): 0 = Balanced
-        // (default; roaming enemies at/below party level + one much-higher boss
-        // per proc map), 1 = Realistic (current biome/nation spawn formula).
-        this.enemySpawnMode = config.enemySpawnMode !== undefined ? config.enemySpawnMode : 0;
+        // (roaming enemies at/below party level + one much-higher boss per proc
+        // map), 1 = Realistic (default; the whole biome roster, pitched at how
+        // far the ground lies from where the party started), 2 = Chaos.
+        //
+        // The list used to hold a fourth mode, Tower Distance, at index 2, with
+        // Chaos at 3. A config written before it was removed is migrated once -
+        // Tower Distance becomes Realistic, which is the mode that inherited its
+        // idea of danger-by-place, and 3 becomes Chaos where it now sits - and
+        // the migration marker is saved so a later 2 is read as Chaos.
+        const spawnModes = ENEMY_SPAWN_MODE_COUNT;
+        let spawnMode = config.enemySpawnMode !== undefined
+            ? config.enemySpawnMode : ENEMY_SPAWN_MODE_DEFAULT;
+        if (!config.enemySpawnModeV2) {
+            if (spawnMode === 2) spawnMode = ENEMY_SPAWN_MODE_DEFAULT; // was Tower Distance
+            else if (spawnMode === 3) spawnMode = 2;                   // was Chaos
+        }
+        this.enemySpawnModeV2 = true;
+        this.enemySpawnMode = (spawnMode >= 0 && spawnMode < spawnModes)
+            ? spawnMode : ENEMY_SPAWN_MODE_DEFAULT;
         // Enemy difficulty slider: 0..100 with 50 = untouched stats. Anything
         // else scales every enemy parameter (see the Game_Enemy.paramBase hook).
         this.enemyDifficulty = config.enemyDifficulty !== undefined ? config.enemyDifficulty : ENEMY_DIFFICULTY_DEFAULT;
@@ -624,6 +697,7 @@ window.GameOptions = GameOptions;
         config.cardBoard3D = this.cardBoard3D;
         config.mapBattleMode = this.mapBattleMode;
         config.enemySpawnMode = this.enemySpawnMode;
+        config.enemySpawnModeV2 = true;
         config.enemyDifficulty = this.enemyDifficulty;
         config.retroTune = RETRO_TUNE;
         config.retroEnabled = this.retroEnabled;
@@ -1331,14 +1405,14 @@ window.GameOptions = GameOptions;
         // Options whose new value only takes effect after a game restart.
         const RESTART_REQUIRED = ['activeTheme'];
         const restartHTML = RESTART_REQUIRED.includes(symbol)
-            ? `<div class="inspect-bullet-item" style="color: var(--border-focus-hover); font-weight: bold;">${T('GameOptions.requiresRestartToApply')}</div>`
+            ? `<div class="inspect-bullet-item" style="color: var(--border-focus-hover); font-weight: bold">${T('GameOptions.requiresRestartToApply')}</div>`
             : '';
 
         // Per-option warnings shown under the value.
         // Per-option warnings live in GameOptions.warn, keyed by option symbol.
         const noteKey = 'GameOptions.warn.' + symbol;
         const noteHTML = T.has(noteKey)
-            ? `<div class="inspect-bullet-item" style="color: var(--border-focus-hover); font-weight: bold;">${T(noteKey)}</div>`
+            ? `<div class="inspect-bullet-item" style="color: var(--border-focus-hover); font-weight: bold">${T(noteKey)}</div>`
             : '';
 
         // Plain-language explanation of what the option does. `desc.<symbol>` is
@@ -1365,7 +1439,7 @@ window.GameOptions = GameOptions;
                 <div class="inspect-frame"><canvas class="inspect-canvas" width="36" height="36" data-icon="${pickIcon(symbol)}"></canvas></div>
                 <div class="inspect-title-box">
                     <div class="inspect-name">${cmd.name}</div>
-                    <div class="inspect-rarity" style="color: var(--border-focus-hover);">${tabName} · ${typeLabel}</div>
+                    <div class="inspect-rarity" style="color: var(--border-focus-hover)">${tabName} · ${typeLabel}</div>
                 </div>
             </div>
             ${imgHTML}
@@ -1891,25 +1965,23 @@ window.GameOptions = GameOptions;
         }
     );
 
-    // Enemy Spawn Mode select (0 Balanced default, 1 Realistic, 2 Tower
-    // Distance, 3 Chaos). Consumed by BattleSystemEnhancedEncounters.js via
-    // BSE.Helpers.getSpawnMode().
-    const ENEMY_SPAWN_MODE_COUNT = 4;
+    // Enemy Spawn Mode select (0 Balanced, 1 Realistic default, 2 Chaos).
+    // Consumed by BattleSystemEnhancedEncounters.js via BSE.Helpers.getSpawnMode().
     const enemySpawnNames = () => T.list('GameOptions.enemySpawn');
     GameOptions.registerOption('enemySpawnMode', T('GameOptions.label.enemySpawn'),
-        () => ConfigManager.enemySpawnMode !== undefined ? ConfigManager.enemySpawnMode : 0,
+        () => ConfigManager.enemySpawnMode !== undefined ? ConfigManager.enemySpawnMode : ENEMY_SPAWN_MODE_DEFAULT,
         (value) => ConfigManager.enemySpawnMode = value,
         'gameplay', 'boolean',
         (value) => enemySpawnNames()[value] || enemySpawnNames()[0],
         function () {
             let v = this.getConfigValue('enemySpawnMode');
-            if (v === undefined) v = 0;
+            if (v === undefined) v = ENEMY_SPAWN_MODE_DEFAULT;
             v = (v + 1) % ENEMY_SPAWN_MODE_COUNT;
             this.setConfigValue('enemySpawnMode', v);
         },
         function () {
             let v = this.getConfigValue('enemySpawnMode');
-            if (v === undefined) v = 0;
+            if (v === undefined) v = ENEMY_SPAWN_MODE_DEFAULT;
             v = (v - 1 + ENEMY_SPAWN_MODE_COUNT) % ENEMY_SPAWN_MODE_COUNT;
             this.setConfigValue('enemySpawnMode', v);
         }

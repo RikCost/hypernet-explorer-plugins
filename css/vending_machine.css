@@ -88,7 +88,7 @@
 }
 
 .vm-marquee-brand {
-    font-size: 30px;
+    font-size: 33px;
     font-weight: 800;
     letter-spacing: 3px;
     color: #f8fafc;
@@ -106,7 +106,7 @@
 }
 
 .vm-marquee-tagline {
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: 2px;
     color: #ffcc00;
@@ -116,7 +116,7 @@
 
 .vm-marquee-clock {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 18px;
+    font-size: 21px;
     font-weight: 700;
     letter-spacing: 1px;
     color: #39ff14;
@@ -280,7 +280,7 @@
 }
 
 .vm-slot-name {
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
     line-height: 1.15;
     color: #cbd5e1;
@@ -296,7 +296,7 @@
 .vm-slot.active .vm-slot-name { color: #fff; }
 
 .vm-slot-empty {
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: 1px;
     color: #3f444d;
@@ -310,9 +310,8 @@
     transform: translateX(-50%);
     background: #1e2025;
     border: 1px solid #3c4046;
-    border-radius: 4px;
     color: #ffcc00;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
     padding: 1px 8px;
     letter-spacing: 0.5px;
@@ -331,7 +330,7 @@
 }
 
 .vm-slot-price {
-    font-size: 13px;
+    font-size: 16px;
     color: #ffcc66;
     font-weight: 700;
     text-shadow: 0 1px 2px rgba(0,0,0,0.85);
@@ -361,10 +360,9 @@
 .vm-soldout-badge {
     background: #ef4444;
     color: #fff;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 800;
     padding: 3px 10px;
-    border-radius: 4px;
     border: 1px solid #f87171;
     box-shadow: 0 2px 4px rgba(0,0,0,0.5);
     transform: rotate(-10deg);
@@ -420,7 +418,7 @@
 
 .vm-dispenser-door::before {
     content: 'PUSH';
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 800;
     color: #4b525d;
     letter-spacing: 3px;
@@ -515,7 +513,7 @@
 .vm-lcd-text-primary {
     color: #39ff14;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 21px;
+    font-size: 23px;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-shadow: 0 0 6px rgba(57, 255, 20, 0.75);
@@ -528,7 +526,7 @@
 .vm-lcd-text-secondary {
     color: #1ebd1e;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.5px;
     text-shadow: 0 0 3px rgba(30, 189, 30, 0.5);
@@ -580,7 +578,7 @@
 }
 
 .vm-product-name {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 700;
     color: #f8fafc;
     line-height: 1.2;
@@ -591,7 +589,7 @@
 }
 
 .vm-product-code {
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 1px;
     color: #94a3b8;
@@ -601,7 +599,7 @@
 .vm-product-desc {
     flex: 1 1 auto;
     min-height: 0;
-    font-size: 12px;
+    font-size: 15px;
     line-height: 1.45;
     color: #a3adbb;
     overflow: hidden;
@@ -618,7 +616,7 @@
     border: 1px solid #14532d;
     border-radius: 10px;
     color: #fff;
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 800;
     letter-spacing: 1px;
     cursor: pointer;
@@ -696,7 +694,7 @@
 }
 
 .vm-payment-label {
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
     color: #5d6575;
     margin-top: 20px;
@@ -727,7 +725,7 @@
 }
 
 .vm-keypad-hint {
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 2px;
     color: #5d6575;
@@ -747,7 +745,7 @@
     border: 1px solid #1a1c20;
     border-radius: 6px;
     color: #e2e8f0;
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 700;
     display: flex;
     justify-content: center;
@@ -773,7 +771,7 @@
 .vm-key.special-clear {
     background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
     color: #fff;
-    font-size: 11px;
+    font-size: 14px;
 }
 .vm-key.special-clear:active, .vm-key.special-clear.pressed {
     background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
@@ -782,7 +780,7 @@
 .vm-key.special-enter {
     background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
     color: #fff;
-    font-size: 11px;
+    font-size: 14px;
 }
 .vm-key.special-enter:active, .vm-key.special-enter.pressed {
     background: linear-gradient(135deg, #15803d 0%, #166534 100%);
@@ -806,7 +804,7 @@
 .vm-wallet-row {
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
+    font-size: 15px;
     color: #94a3b8;
     font-weight: 500;
 }
@@ -817,7 +815,7 @@
 }
 
 .vm-wallet-row.money-row {
-    font-size: 13px;
+    font-size: 16px;
     color: #cbd5e1;
     border-top: 1px solid #33373e;
     padding-top: 6px;
@@ -826,7 +824,7 @@
 
 .vm-wallet-row.money-row span.val {
     color: #fbbf24;
-    font-size: 15px;
+    font-size: 17px;
     text-shadow: 0 0 4px rgba(251, 191, 36, 0.25);
 }
 
@@ -844,7 +842,7 @@
     border: 1px solid #111827;
     border-radius: 8px;
     color: #f3f4f6;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     cursor: pointer;
     box-shadow:
@@ -878,12 +876,12 @@
 /* Shorter windows: give the glass chamber the room instead of the panel. */
 @media (max-height: 760px) {
     .vm-marquee { padding: 6px 16px; }
-    .vm-marquee-brand { font-size: 22px; }
+    .vm-marquee-brand { font-size: 24px; }
     .vm-dispenser-tray { height: 74px; }
     /* The icon sheet is positioned by inline styles computed for 64px, so it
        is never resized here - only the padding around it gives way. */
     .vm-product-card { padding: 10px; gap: 8px; }
-    .vm-buy-btn { height: 44px; font-size: 14px; }
+    .vm-buy-btn { height: 44px; font-size: 17px; }
     .vm-key { height: 28px; }
     .vm-payment-section { display: none; }
 }

@@ -1037,6 +1037,21 @@ Scene_FactionStatus.prototype.create = function () {
   const members = this.switchableMembers();
   const menuActor = (window.$gameParty && $gameParty.menuActor) ? $gameParty.menuActor() : null;
   this._repActorIndex = Math.max(0, members.indexOf(menuActor));
+
+  // The shared search + filter strip (UI/MenuSearchBar.js), sitting under the
+  // title as it does in every other list menu. A faction has a name and
+  // nothing else worth ordering on.
+  this._factionBar = window.MenuSearchBar ? window.MenuSearchBar.create({
+    id: 'factions',
+    placeholder: T('Factions.searchPlaceholder'),
+    sorts: ['name'],
+    onChange: () => {
+      this._dndSelectedIndex = 0;
+      this.refreshUIFactions();
+      if (this._factionBar) this._factionBar.restoreFocus();
+    }
+  }) : null;
+
   this.createUIFactionsOverlay();
   if (window.CharSwitcher) {
     window.CharSwitcher.installTabKey(this, (dir) => this.cycleRepActor(dir));
@@ -1152,7 +1167,8 @@ Scene_FactionStatus.prototype.getFactionList = function () {
     });
   });
 
-  return list;
+  if (!this._factionBar) return list;
+  return this._factionBar.apply(list, (row) => ({ name: row.name }));
 };
 
 // Whose standings the page is showing. The switcher lives on the right page,
@@ -1214,13 +1230,13 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         ${subMarker}
         ${!item.isSub && item.iconIndex ? `
           <div class="faction-icon-frame">
-            <canvas id="${canvasId}" width="32" height="32" style="width:24px; height:24px;"></canvas>
+            <canvas id="${canvasId}" width="32" height="32" style="width:24px; height:24px"></canvas>
           </div>
         ` : ""}
         <div class="faction-info">
           <span class="faction-name">${item.name}</span>
         </div>
-        <span class="faction-rep-badge" style="color: ${reputationColor};">${reputationLevel} (${reputation})</span>
+        <span class="faction-rep-badge" style="color: ${reputationColor}">${reputationLevel} (${reputation})</span>
       </div>
     `;
   });
@@ -1230,13 +1246,14 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
 
   const leftPageHTML = `
     <div class="left-page">
-      <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;">
-        <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; left: 0; font-family: 'Lora', serif; font-size: 0.8rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: fit-content; line-height: normal; user-select: none;">
+      <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
+        <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
           ${backBtnText}
         </div>
-        <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${factionsTitle}</h2>
+        <h2 class="title" style="border: none; margin: 0; padding: 0">${factionsTitle}</h2>
       </div>
-      <div class="backpack-grid" style="display:flex; flex-direction:column; overflow-y:auto; flex: 1 1 auto; min-height: 0; padding-right:5px;" id="factions-grid">
+      ${this._factionBar ? this._factionBar.html() : ""}
+      <div class="backpack-grid" style="display:flex; flex-direction:column; flex: 1 1 auto; min-height: 0" id="factions-grid">
         ${listHTML}
       </div>
     </div>
@@ -1244,7 +1261,8 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
 
   // Determine left page key to see if left page needs full render.
   // The badges are per character, so a change of character is a full redraw.
-  const leftPageKey = `${factionList.length}:${viewed ? viewed.actorId() : 0}`;
+  const leftPageKey = `${factionList.length}:${viewed ? viewed.actorId() : 0}:` +
+    (this._factionBar ? this._factionBar.query + this._factionBar.sortDir : '');
   const leftPageContainer = this._dndContainer.querySelector(".left-page");
 
   // The character switcher belongs at the top of the RIGHT page, right
@@ -1256,7 +1274,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
       const sel = (this._repActorIndex || 0) === i ? "selected" : "";
       return `<div class="companion-tab ${sel}" onclick="SceneManager._scene.switchRepActor(${i})">${m.name()}</div>`;
     }).join("");
-    switcherHTML = `<div class="companion-switcher" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:8px;">` +
+    switcherHTML = `<div class="companion-switcher" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:8px">` +
       window.CharSwitcher.inner(`<div class="companion-tabs-row">${tabs}</div>`, members.length) +
       `</div>`;
   }
@@ -1268,10 +1286,10 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     rightPageHTML = `
       <div class="right-page">
         ${switcherHTML}
-        <div class="faction-heraldry-card" style="justify-content: center; text-align: center; padding: 40px 10px;">
-          <div style="font-size: 4em; margin-bottom: 20px;"></div>
-          <h3 class="title" style="border:none; margin-bottom: 10px;">${T("Factions.selectTitle")}</h3>
-          <p style="font-family: 'Lora', serif; font-style: italic; line-height: 1.6; color: #6b5242;">
+        <div class="faction-heraldry-card" style="justify-content: center; text-align: center; padding: 40px 10px">
+          <div style="font-size: 3.85em; margin-bottom: 20px"></div>
+          <h3 class="title" style="border:none; margin-bottom: 10px">${T("Factions.selectTitle")}</h3>
+          <p style="font-family: 'Lora', serif; line-height: 1.6; color: #6b5242">
             ${T("Factions.selectHint")}
           </p>
         </div>
@@ -1300,8 +1318,8 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         return FactionDataManager.instance.t(l);
       }).join(", ");
       leadersHTML = `
-        <div style="margin-top: 15px; font-family: 'Lora', serif; font-size: 0.9em; border-top: 1px solid #c9b4a1; padding-top: 10px;">
-          <strong>${T("Factions.councilLeaders")}</strong> <span style="font-style: italic;">${leaderNames}</span>
+        <div style="margin-top: 15px; font-family: 'Lora', serif; font-size: 0.928em; border-top: 1px solid #c9b4a1; padding-top: 10px">
+          <strong>${T("Factions.councilLeaders")}</strong> <span>${leaderNames}</span>
         </div>
       `;
     }
@@ -1320,9 +1338,9 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         const rulingParty = live.parties?.find(p => p.id === live.rulingPartyId);
         const partyLine = rulingParty ? FactionDataManager.instance.t(rulingParty.name) : T("Factions.independentParty");
         currentGovHTML = `
-          <div style="margin-top: 15px; font-family: 'Lora', serif; font-size: 0.9em; border-top: 1px solid #c9b4a1; padding-top: 10px;">
+          <div style="margin-top: 15px; font-family: 'Lora', serif; font-size: 0.928em; border-top: 1px solid #c9b4a1; padding-top: 10px">
             <strong>${T("Factions.currentGovernment")}</strong>
-            ${head ? `<span style="font-style: italic;">${FactionDataManager.instance.t(head.name)}</span> (${window.NPCPolitics.powerLabel(live, "headTitle")}), ` : ""}${T("Factions.rulingPartyLine", { party: partyLine })}
+            ${head ? `<span>${FactionDataManager.instance.t(head.name)}</span> (${window.NPCPolitics.powerLabel(live, "headTitle")}), ` : ""}${T("Factions.rulingPartyLine", { party: partyLine })}
           </div>
         `;
       }
@@ -1335,8 +1353,8 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
       const branches = $gameFactions.getHyperpowerFactions(hp.id).filter(f => !f.hyperpowerHead);
       if (branches.length) {
         branchesHTML = `
-          <div style="margin-top: 12px; font-family: 'Lora', serif; font-size: 0.9em;">
-            <strong>${T("Factions.branches")}</strong> <span style="font-style: italic;">${branches.map(b => FactionDataManager.instance.t(b.name)).join(", ")}</span>
+          <div style="margin-top: 12px; font-family: 'Lora', serif; font-size: 0.928em">
+            <strong>${T("Factions.branches")}</strong> <span>${branches.map(b => FactionDataManager.instance.t(b.name)).join(", ")}</span>
           </div>
         `;
       }
@@ -1345,9 +1363,9 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     // This character's standing, named as well as numbered.
     const rep = $gameFactions.getReputationFor(viewed, selectedRecord.standingKey);
     const standingHTML = viewed ? `
-      <div style="display:flex; justify-content:space-between; margin-top:12px; font-family:'Lora', serif; font-size:0.9em; border-top:1px solid #c9b4a1; padding-top:10px;">
+      <div style="display:flex; justify-content:space-between; margin-top:12px; font-family:'Lora', serif; font-size:0.928em; border-top:1px solid #c9b4a1; padding-top:10px">
         <span>${T("Factions.standingOf", { name: viewed.name() })}</span>
-        <span style="color:${$gameFactions.reputationColorOf(rep)}; font-weight:bold;">${$gameFactions.reputationLevelOf(rep)} (${rep})</span>
+        <span style="color:${$gameFactions.reputationColorOf(rep)}; font-weight:bold">${$gameFactions.reputationLevelOf(rep)} (${rep})</span>
       </div>
     ` : "";
 
@@ -1356,7 +1374,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     if (viewed && window.ONUAssembly && typeof window.ONUAssembly.postLabelFor === "function") {
       const label = window.ONUAssembly.postLabelFor(viewed, selectedRecord.standingKey);
       if (label) {
-        postHTML = `<div style="margin-top:8px; font-family:'Lora', serif; font-size:0.9em; font-style:italic; color:#2e7d32;">${label}</div>`;
+        postHTML = `<div style="margin-top:8px; font-family:'Lora', serif; font-size:0.928em; color:#2e7d32">${label}</div>`;
       }
     }
 
@@ -1373,9 +1391,9 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         if (relValue < 0) relColor = "#c62828"; // Hostile
 
         relationsHTML += `
-          <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-family: 'Lora', serif; font-size: 0.9em; border-bottom: 1px dashed #d1c2b4; padding-bottom: 2px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-family: 'Lora', serif; font-size: 0.928em; border-bottom: 1px dashed #d1c2b4; padding-bottom: 2px">
             <span>vs. ${FactionDataManager.instance.t(other.name)}</span>
-            <span style="color: ${relColor}; font-weight: bold;">${relName}</span>
+            <span style="color: ${relColor}; font-weight: bold">${relName}</span>
           </div>
         `;
       });
@@ -1386,14 +1404,14 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         ${switcherHTML}
         <div class="faction-heraldry-card">
           <div class="heraldry-emblem-box">
-            <canvas id="heraldry-canvas" width="32" height="32" style="width:36px; height:36px; image-rendering: pixelated;"></canvas>
+            <canvas id="heraldry-canvas" width="32" height="32" style="width:36px; height:36px; image-rendering: pixelated"></canvas>
           </div>
 
           <div class="heraldry-header">
             <h3 class="heraldry-title">${factionName}</h3>
           </div>
 
-          <div class="inspect-lore" style="flex-grow: 1; max-height: 180px; overflow-y: auto; padding-right:5px; margin-bottom: 15px;">
+          <div class="inspect-lore" style="flex-grow: 1; max-height: 180px; padding-right:5px; margin-bottom: 15px">
             ${description}
           </div>
 
@@ -1404,8 +1422,8 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
           ${postHTML}
 
           <div class="politics-grid">
-            <h4 style="font-family: 'Lora', serif; font-size: 1.1em; color: #58180D; margin: 0 0 8px 0; border-bottom: 1px solid #d1c2b4; padding-bottom: 4px;">${T("Factions.diplomaticAgreements")}</h4>
-            ${relationsHTML || `<div style="font-family:'Lora', serif; font-style:italic; font-size:0.9em; color:#8c715c;">${T("Factions.independent")}</div>`}
+            <h4 style="font-family: 'Lora', serif; font-size: 1.095em; color: #58180D; margin: 0 0 8px 0; border-bottom: 1px solid #d1c2b4; padding-bottom: 4px">${T("Factions.diplomaticAgreements")}</h4>
+            ${relationsHTML || `<div style="font-family:'Lora', serif; font-size:0.928em; color:#8c715c">${T("Factions.independent")}</div>`}
           </div>
 
         </div>
@@ -1495,12 +1513,15 @@ Scene_FactionStatus.prototype.selectUIFaction = function (idx) {
 const _Scene_FactionStatus_update = Scene_FactionStatus.prototype.update;
 Scene_FactionStatus.prototype.update = function () {
   _Scene_FactionStatus_update.call(this);
+  // A focused search field owns the keyboard (UI/MenuSearchBar.js).
+  if (window.MenuSearchBar && window.MenuSearchBar.isTyping()) return;
   UIFactionsInputManager.update();
 };
 
 const _Scene_FactionStatus_terminate = Scene_FactionStatus.prototype.terminate;
 Scene_FactionStatus.prototype.terminate = function () {
   _Scene_FactionStatus_terminate.call(this);
+  if (this._factionBar) { this._factionBar.dispose(); this._factionBar = null; }
   UIFactionsInputManager.deactivate();
   if (window.CharSwitcher) window.CharSwitcher.removeTabKey(this);
   if (this._dndContainer) {

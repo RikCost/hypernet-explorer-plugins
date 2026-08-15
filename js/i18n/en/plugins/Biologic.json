@@ -648,5 +648,11 @@
   "cancel": "Nobody",
   "source": "a vial",
   "already": "{actor} already has {disease}"
+ },
+ "diagnose": {
+  "header": "The examination is over.",
+  "line": "{actor}: {diseases}",
+  "clean": "{actor}: nothing",
+  "none": "Nobody in the party is carrying anything."
  }
 }

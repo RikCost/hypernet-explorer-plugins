@@ -62,14 +62,14 @@
             margin-bottom: 12px; gap: 12px;
         }
         #arena-ui-container .arena-back {
-            font-family: 'Lora', serif; font-size: 0.75rem; background: var(--text-primary-hover);
+            font-family: 'Lora', serif; font-size: 0.915rem; background: var(--text-primary-hover);
             color: var(--bg-panel); border-radius: 4px; padding: 4px 10px; cursor: pointer;
             font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;
             border: 1px solid var(--border-subtle);
         }
         #arena-ui-container .arena-back:hover { filter: brightness(1.12); }
         #arena-ui-container .arena-subtitle {
-            font-family: 'Lora', serif; font-size: 0.78rem; color: var(--text-info);
+            font-family: 'Lora', serif; font-size: 0.952rem; color: var(--text-info);
             margin: -6px 0 10px 0; letter-spacing: 0.4px;
         }
         #arena-ui-container .arena-scroll {
@@ -90,20 +90,20 @@
         }
         #arena-ui-container .arena-row-text { flex: 1; min-width: 0; }
         #arena-ui-container .arena-row-label {
-            font-weight: bold; color: var(--text-text-alt-2); font-size: 0.98rem;
+            font-weight: bold; color: var(--text-text-alt-2); font-size: 1.176rem;
         }
         #arena-ui-container .arena-row.selected .arena-row-label { color: var(--text-primary-hover); }
         #arena-ui-container .arena-row-sub {
-            font-size: 0.78rem; color: var(--text-info); white-space: nowrap;
+            font-size: 0.952rem; color: var(--text-info); white-space: nowrap;
             overflow: hidden; text-overflow: ellipsis;
         }
         #arena-ui-container .arena-badge {
-            font-family: 'Lora', serif; font-size: 0.75rem; font-weight: bold;
+            font-family: 'Lora', serif; font-size: 0.915rem; font-weight: bold;
             color: var(--text-info); white-space: nowrap;
         }
         #arena-ui-container .arena-icon {
             width: 44px; height: 44px; min-width: 44px; display: flex; align-items: center;
-            justify-content: center; font-size: 1.6rem; color: var(--text-primary-hover);
+            justify-content: center; font-size: 1.76rem; color: var(--text-primary-hover);
         }
         #arena-ui-container .arena-thumb {
             width: 44px; height: 44px; min-width: 44px; image-rendering: pixelated;
@@ -114,20 +114,20 @@
         #arena-ui-container .arena-right.center {
             justify-content: center; align-items: center; text-align: center; padding: 24px; gap: 14px;
         }
-        #arena-ui-container .arena-big-glyph { font-size: 4rem; color: var(--text-primary-hover); line-height: 1; }
+        #arena-ui-container .arena-big-glyph { font-size: 4.4rem; color: var(--text-primary-hover); line-height: 1; }
         #arena-ui-container .arena-detail-head { border-bottom: 2px solid var(--border-subtle); padding-bottom: 6px; }
         #arena-ui-container .arena-detail-title {
-            font-family: 'Lora', serif; font-size: 1.6rem; color: var(--text-primary-hover);
+            font-family: 'Lora', serif; font-size: 1.76rem; color: var(--text-primary-hover);
             margin: 0; line-height: 1.2;
         }
         #arena-ui-container .arena-detail-sub {
-            font-size: 0.8rem; color: var(--text-info); font-family: 'Lora', serif;
+            font-size: 0.96rem; color: var(--text-info); font-family: 'Lora', serif;
             text-transform: uppercase; letter-spacing: 0.5px;
         }
         #arena-ui-container .arena-info-card {
             background: var(--bg-primary-hover-translucent-35);
             border: 1px solid var(--border-subtle-translucent-25); border-radius: 6px;
-            padding: 12px; text-align: left; font-size: 0.85rem; line-height: 1.5;
+            padding: 12px; text-align: left; font-size: 1.02rem; line-height: 1.5;
             color: var(--text-text-alt-2); box-sizing: border-box; width: 100%;
         }
         #arena-ui-container .arena-info-card strong { color: var(--text-primary-hover); }
@@ -138,15 +138,15 @@
             border: 1px solid var(--border-subtle-translucent-25); border-radius: 6px;
         }
         #arena-ui-container .arena-member-name {
-            font-family: 'Lora', serif; font-weight: bold; color: var(--text-primary-hover); font-size: 1rem;
+            font-family: 'Lora', serif; font-weight: bold; color: var(--text-primary-hover); font-size: 1.15rem;
         }
-        #arena-ui-container .arena-member-meta { font-size: 0.8rem; color: var(--text-text-alt-2); }
+        #arena-ui-container .arena-member-meta { font-size: 0.96rem; color: var(--text-text-alt-2); }
         #arena-ui-container .arena-action-btn {
             display: flex; justify-content: center; align-items: center; padding: 12px 24px;
             background: var(--text-primary-hover); color: var(--bg-panel);
             border: 1px solid var(--border-subtle); border-radius: 6px; cursor: pointer;
             font-weight: bold; text-transform: uppercase; font-family: 'Lora', serif;
-            font-size: 1.15rem; box-shadow: 0 3px 6px var(--shadow-black-translucent-25);
+            font-size: 1.322rem; box-shadow: 0 3px 6px var(--shadow-black-translucent-25);
             transition: filter 0.15s ease, box-shadow 0.15s ease; box-sizing: border-box;
         }
         #arena-ui-container .arena-action-btn:hover {
@@ -163,7 +163,7 @@
             justify-content: center; color: var(--text-info); font-family: 'Lora', serif; box-sizing: border-box;
         }
         #arena-ui-container .arena-empty {
-            opacity: 0.7; font-style: italic; margin-top: 24px; font-family: 'Lora', serif;
+            opacity: 0.7; font-style: normal; margin-top: 24px; font-family: 'Lora', serif;
             color: var(--text-text-alt-2); text-align: center;
         }`;
         document.head.appendChild(style);
@@ -287,7 +287,7 @@
             <div class="book-spread">
                 <div class="left-page">
                     <div class="arena-header">
-                        <h2 class="cc-header-gothic" style="font-size:1.75rem; margin:0;">${this.headerTitle()}</h2>
+                        <h2 class="cc-header-gothic" style="font-size:1.925rem; margin:0">${this.headerTitle()}</h2>
                         <div class="arena-back" onclick="SceneManager._scene.goBack()">${this.backLabel()}</div>
                     </div>
                     ${sub ? `<div class="arena-subtitle">${sub}</div>` : ''}
@@ -487,7 +487,7 @@
                 <div class="arena-big-glyph">&#9861;</div>
                 <h3 class="arena-detail-title">${T('Arena.randomParty2')}</h3>
                 <div class="arena-info-card">${T('Arena.threeRandomCombatantsWithGear')}</div>
-                <div class="arena-action-btn" style="width:85%;" onclick="SceneManager._scene.confirmSelection()">${continueLabel}</div>
+                <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${continueLabel}</div>
             </div>`;
         }
         let memberCards = '';
@@ -495,7 +495,7 @@
             const cls = esc(m.className || '');
             const lvl = m.level ? 'Lv. ' + esc(m.level) : '';
             memberCards += `<div class="arena-member">
-                <canvas id="arena-detail-${this._selectedIndex}-${mi}" width="48" height="48" class="arena-thumb" style="width:48px;height:48px;min-width:48px;"></canvas>
+                <canvas id="arena-detail-${this._selectedIndex}-${mi}" width="48" height="48" class="arena-thumb" style="width:48px; height:48px; min-width:48px"></canvas>
                 <div class="arena-row-text">
                     <div class="arena-member-name">${esc(m.name) || (T('Arena.unknown'))}</div>
                     <div class="arena-member-meta">${[cls, lvl].filter(Boolean).join(' &middot; ')}</div>
@@ -507,8 +507,8 @@
                 <h3 class="arena-detail-title">${(T('Arena.saveSlot')) + entry.slotId}</h3>
                 <div class="arena-detail-sub">${entry.playtime || ''}</div>
             </div>
-            <div style="display:flex; flex-direction:column; gap:8px; overflow-y:auto; flex:1;">${memberCards}</div>
-            <div class="arena-action-btn" style="margin-top:auto;" onclick="SceneManager._scene.confirmSelection()">${continueLabel}</div>
+            <div style="display:flex; flex-direction:column; gap:8px; overflow-y:auto; flex:1">${memberCards}</div>
+            <div class="arena-action-btn" style="margin-top:auto" onclick="SceneManager._scene.confirmSelection()">${continueLabel}</div>
         </div>`;
     };
 
@@ -588,7 +588,7 @@
                     <li>${T('Arena.win7ConsecutiveBoutsTo')}</li>
                     <li>${T('Arena.defeatEndsTheGauntlet')}</li>
                 </ul></div>
-                <div class="arena-action-btn" style="width:85%;" onclick="SceneManager._scene.confirmSelection()">${go}</div>
+                <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${go}</div>
             </div>`;
         }
         return `<div class="arena-right center">
@@ -599,7 +599,7 @@
                 <li>${T('Arena.fightTheBiomeRosterIn')}</li>
                 <li>${T('Arena.eachWinGrantsALevel')}</li>
             </ul></div>
-            <div class="arena-action-btn" style="width:85%;" onclick="SceneManager._scene.confirmSelection()">${go}</div>
+            <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${go}</div>
         </div>`;
     };
 
@@ -628,7 +628,7 @@
     };
 
     Scene_GauntletSelect.prototype.renderRow = function (entry) {
-        return `<div class="arena-row-label" style="flex:1;">${entry.label}</div>
+        return `<div class="arena-row-label" style="flex:1">${entry.label}</div>
             <span class="arena-badge">${entry.count} ${T('Arena.vessels')}</span>`;
     };
 
@@ -638,7 +638,7 @@
             <h3 class="arena-detail-title">${entry.label}</h3>
             <div class="arena-detail-sub">${entry.count} ${T('Arena.eligibleCombatantVessels')}</div>
             <div class="arena-info-card">
-                <strong style="display:block; text-align:center; margin-bottom:5px; font-size:1rem;">
+                <strong style="display:block; text-align:center; margin-bottom:5px; font-size:1.15rem">
                     ${T('Arena.theDecreeOfTheTrial')}
                 </strong>
                 <ul>
@@ -647,7 +647,7 @@
                     <li>${T('Arena.noRetreatPermittedDefeatEnds')}</li>
                 </ul>
             </div>
-            <div class="arena-action-btn" style="width:85%;" onclick="SceneManager._scene.confirmSelection()">${T('Arena.initiateGauntlet')}</div>
+            <div class="arena-action-btn" style="width:85%" onclick="SceneManager._scene.confirmSelection()">${T('Arena.initiateGauntlet')}</div>
         </div>`;
     };
 
@@ -680,7 +680,7 @@
     };
 
     Scene_BiomeTrialSelect.prototype.renderRow = function (entry) {
-        return `<div class="arena-row-label" style="flex:1;">${esc(window.BiomeNames.display(entry.biome))}</div>
+        return `<div class="arena-row-label" style="flex:1">${esc(window.BiomeNames.display(entry.biome))}</div>
             <span class="arena-badge">Lv ${entry.minLevel}-${entry.maxLevel} &middot; ${entry.count} ${T('Arena.vessels')}</span>`;
     };
 
@@ -700,7 +700,7 @@
                 <li>${T('Arena.eachVictoryGrantsALevel')}</li>
                 <li>${T('Arena.ifTheLevelGapIs')}</li>
             </ul></div>
-            <div class="arena-action-btn" style="margin-top:auto;" onclick="SceneManager._scene.confirmSelection()">${T('Arena.beginTheTrial')}</div>
+            <div class="arena-action-btn" style="margin-top:auto" onclick="SceneManager._scene.confirmSelection()">${T('Arena.beginTheTrial')}</div>
         </div>`;
     };
 

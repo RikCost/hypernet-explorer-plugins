@@ -2189,6 +2189,133 @@
       },
       "name": "Gnomo"
     },
+    "dwarf": {
+      "head": {
+        "name": "Testa",
+        "msg": "Testa colpita!"
+      },
+      "beard": {
+        "name": "Barba",
+        "msg": "Barba rasata via!"
+      },
+      "torso": {
+        "name": "Torso",
+        "msg": "Torso schiacciato in poltiglia!"
+      },
+      "left_arm": {
+        "name": "Braccio Sinistro",
+        "msg": "Braccio sinistro strappato via!"
+      },
+      "right_arm": {
+        "name": "Braccio Destro",
+        "msg": "Braccio destro strappato via!"
+      },
+      "left_leg": {
+        "name": "Gamba Sinistra",
+        "msg": "Gamba sinistra tagliata!"
+      },
+      "right_leg": {
+        "name": "Gamba Destra",
+        "msg": "Gamba destra tagliata!"
+      },
+      "brain": {
+        "name": "Cervello",
+        "msg": "Concussione cerebrale!"
+      },
+      "left_eye": {
+        "name": "Occhio sinistro",
+        "msg": "Occhio sinistro gonfio!"
+      },
+      "right_eye": {
+        "name": "Occhio destro",
+        "msg": "Occhio destro gonfio!"
+      },
+      "nose": {
+        "name": "Naso",
+        "msg": "Naso rotto!"
+      },
+      "left_ear": {
+        "name": "Orecchio sinistro",
+        "msg": "Orecchio sinistro che fischia!"
+      },
+      "right_ear": {
+        "name": "Orecchio destro",
+        "msg": "Orecchio destro che fischia!"
+      },
+      "mouth": {
+        "name": "Bocca",
+        "msg": "Mascella lussata!"
+      },
+      "teeth": {
+        "name": "Denti",
+        "msg": "Denti divelti!"
+      },
+      "genitals": {
+        "name": "Genitali",
+        "msg": "Genitali danneggiati!"
+      },
+      "heart": {
+        "name": "Cuore",
+        "msg": "Cuore danneggiato!"
+      },
+      "left_lung": {
+        "name": "Polmone sinistro",
+        "msg": "Polmone sinistro collassato!"
+      },
+      "right_lung": {
+        "name": "Polmone destro",
+        "msg": "Polmone destro collassato!"
+      },
+      "liver": {
+        "name": "Fegato",
+        "msg": "Fegato lacerato!"
+      },
+      "stomach": {
+        "name": "Stomaco",
+        "msg": "Stomaco lacerato!"
+      },
+      "spleen": {
+        "name": "Milza",
+        "msg": "Milza lacerata!"
+      },
+      "intestines": {
+        "name": "Intestino",
+        "msg": "Intestino perforato!"
+      },
+      "left_hand": {
+        "name": "Mano sinistra",
+        "msg": "Mano sinistra mutilata!"
+      },
+      "left_fingers": {
+        "name": "Dita della mano sinistra",
+        "msg": "Dita sinistre rotte!"
+      },
+      "right_hand": {
+        "name": "Mano destra",
+        "msg": "Mano destra mutilata!"
+      },
+      "right_fingers": {
+        "name": "Dita della mano destra",
+        "msg": "Dita destre rotte!"
+      },
+      "left_foot": {
+        "name": "Piede sinistro",
+        "msg": "Piede sinistro danneggiato!"
+      },
+      "left_toes": {
+        "name": "Dita del piede sinistro",
+        "msg": "Dita del piede sinistro schiacciate!"
+      },
+      "right_foot": {
+        "name": "Piede destro",
+        "msg": "Piede destro danneggiato!"
+      },
+      "right_toes": {
+        "name": "Dita del piede destro",
+        "msg": "Dita del piede destro schiacciate!"
+      },
+      "name": "Nano"
+    },
     "elephant": {
       "head": {
         "name": "Testa",

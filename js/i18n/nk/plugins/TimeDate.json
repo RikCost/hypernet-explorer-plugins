@@ -94,6 +94,7 @@
   "addiction": {
     "withdrawal": "{name} IZ IN WITHDRAWAL FROM {substance}!",
     "relieved": "{name} IZ OVER DA WORST OF DA {substance} CRAVIN'",
+    "eased": "{name}: DA ITCH FOR {substance} EASES BY {amount}.",
     "partyCard": "ADDICTIONS ({count})",
     "none": "CLEAN"
   },

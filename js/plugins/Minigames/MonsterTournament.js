@@ -1322,7 +1322,8 @@
         endTournament() {
             this.phase = 'results';
             if (window.MinigameFun) {
-                this.playerMonsterEliminated ? window.MinigameFun.lost('Animal Training') : window.MinigameFun.won('Animal Training');
+                const stake = { spec: 'Animal Training', gambling: true };
+                this.playerMonsterEliminated ? window.MinigameFun.lost(stake) : window.MinigameFun.won(stake);
             }
 
             if (this.playerMonsterEliminated) {

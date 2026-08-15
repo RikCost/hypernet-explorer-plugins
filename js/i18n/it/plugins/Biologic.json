@@ -648,5 +648,11 @@
   "cancel": "Nessuno",
   "source": "una fiala",
   "already": "{actor} ha gia' {disease}"
+ },
+ "diagnose": {
+  "header": "La visita e' finita.",
+  "line": "{actor}: {diseases}",
+  "clean": "{actor}: niente",
+  "none": "Nessuno nel gruppo si porta dietro niente."
  }
 }

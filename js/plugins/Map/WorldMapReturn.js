@@ -152,26 +152,24 @@
     Input.gamepadMapper[8] = WMR_TOGGLE_KEY;   // Select / Back
 
     // ============================================================================
-    // MYSTERY ENCOUNTERS ("???" world-map tiles)
+    // ADVENTURE MARKERS ("???" world-map tiles)
     // ----------------------------------------------------------------------------
-    // Each time the player enters the world map (315) we scatter "???" markers on
-    // random passable tiles at a constant density. Stopping at one of those tiles
-    // ("Visit ..." in the travel menu) spawns ONE encounter event (authored in the
-    // procedural map, 636) next to the player. Tune density via
-    // MYSTERY_TILE_DENSITY (markers per tile) and MYSTERY_MAX_TILES (hard cap).
-    //
-    // The encounter pool is every event tagged <RandomEncounter> plus the named
-    // event below, which is the only one dealt for now: Eris is met on a "???"
-    // square and nowhere else, so she is parked off the map on every other
-    // procedural square instead of standing where she was authored.
+    // ProceduralAdventureSystem.js puts exactly one adventure on every biome the
+    // world map paints, on a square picked from the world seed. This draws them:
+    // a "???" plate on each square that still has its adventure to give, and the
+    // "Investigate" row openTravelDecision() offers while standing on one. The
+    // squares themselves, the encounter and the record of which have been
+    // answered all belong to that plugin (ProceduralAdventure.Earth).
     // ============================================================================
-    const MYSTERY_TILE_DENSITY = 0.0006; // ~39 markers on a 256x256 world map
-    const MYSTERY_MAX_TILES    = 50;     // upper bound on simultaneous markers
-    const MYSTERY_FONT_SIZE    = 18;
-    const MYSTERY_FEATURED_EVENT = 'Eris';  // i18n-ignore  event name in Map636
+    const MYSTERY_FONT_SIZE     = 18;
     let   mysteryTiles          = null;  // Set<"x,y"> for the current map-315 visit
     let   mysterySprites        = [];    // Sprite_MysteryMarker[] currently rendered
     let   mysteryMarkersCreated = false;
+
+    function adventureSystem() {
+        const PA = window.ProceduralAdventure;
+        return (PA && PA.Earth) ? PA.Earth : null;
+    }
 
     // ============================================================================
     // PROC GEN IMPORTS
@@ -617,7 +615,7 @@
             }
         }
 
-        updateRandomEncounterVisibility();
+        parkRandomEncounters();
     }
 
     function refreshEnemiesForBiome() {
@@ -757,39 +755,14 @@
     }
 
     // ============================================================================
-    // MYSTERY ENCOUNTER LOGIC
+    // ADVENTURE MARKER LOGIC
     // ============================================================================
 
-    // Can the player stand on world-map tile (x, y)? Same idea as isStandableTile
-    // but not gated to the procedural map.
-    function isWorldTileStandable(x, y) {
-        if (!$gameMap.isValid(x, y)) return false;
-        if ($gameMap.terrainTag(x, y) === 4) return false; // wall
-        if (!$gameMap.isPassable(x, y, 2) && !$gameMap.isPassable(x, y, 4) &&
-            !$gameMap.isPassable(x, y, 6) && !$gameMap.isPassable(x, y, 8)) return false;
-        return true;
-    }
-
-    // Pick the "???" tiles for this world-map visit via rejection sampling, never
-    // landing on an existing event (teleports etc.).
+    // The squares still holding an unplayed adventure, straight from the plugin
+    // that owns them. Without it there is simply nothing to draw.
     function buildMysteryTiles() {
-        mysteryTiles = new Set();
-        const w = $gameMap.width(), h = $gameMap.height();
-        const target = Math.min(MYSTERY_MAX_TILES,
-            Math.max(1, Math.round(MYSTERY_TILE_DENSITY * w * h)));
-        const occupied = new Set();
-        for (const ev of $gameMap.events()) { if (ev) occupied.add(ev.x + ',' + ev.y); }
-        let attempts = 0;
-        const maxAttempts = target * 200;
-        while (mysteryTiles.size < target && attempts < maxAttempts) {
-            attempts++;
-            const x = Math.floor(Math.random() * w);
-            const y = Math.floor(Math.random() * h);
-            const key = x + ',' + y;
-            if (mysteryTiles.has(key) || occupied.has(key)) continue;
-            if (!isWorldTileStandable(x, y)) continue;
-            mysteryTiles.add(key);
-        }
+        const Earth = adventureSystem();
+        mysteryTiles = Earth ? Earth.tiles() : new Set();
     }
 
     class Sprite_MysteryMarker extends Sprite {
@@ -1294,7 +1267,11 @@
     }
 
     // Per-frame driver (called from Scene_Map.update). Rebuilds tiles on each fresh
-    // entry to the world map and tears everything down when leaving it.
+    // entry to the world map and tears everything down when leaving it. The set
+    // also shrinks in place, the moment an adventure is answered, so the plate is
+    // re-read every MARKER_RECHECK_FRAMES while the party stands on the map.
+    const MARKER_RECHECK_FRAMES = 30;
+    let markerRecheck = 0;
     function updateMysteryMarkers() {
         if (!$gameMap) return;
         if ($gameMap.mapId() !== worldMapId) {
@@ -1302,6 +1279,12 @@
             return;
         }
         if (!mysteryTiles) buildMysteryTiles();
+        else if (++markerRecheck >= MARKER_RECHECK_FRAMES) {
+            markerRecheck = 0;
+            const before = mysteryTiles.size;
+            buildMysteryTiles();
+            if (mysteryTiles.size !== before) removeMysteryMarkers();
+        }
         // Sprites are parented to the active spriteset's tilemap. On a scene
         // change (leaving and re-entering the world map) that tilemap is rebuilt
         // and the old sprites are destroyed, so rebuild if ours are stale.
@@ -1314,70 +1297,28 @@
         refreshMysteryMarkers();
     }
 
-    // Spiral out from the player to the nearest standable, unoccupied proc-map tile
-    // (leaving a one-tile gap) to drop the encounter onto.
-    function findEncounterTileNearPlayer() {
-        const px = $gamePlayer.x, py = $gamePlayer.y;
-        const maxRadius = Math.max(PROC_MAP_WIDTH, PROC_MAP_HEIGHT);
-        for (let r = 2; r <= maxRadius; r++) {
-            let best = null, bestDist = Infinity;
-            for (let dx = -r; dx <= r; dx++) {
-                for (let dy = -r; dy <= r; dy++) {
-                    if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
-                    const nx = px + dx, ny = py + dy;
-                    if (!isStandableTile(nx, ny)) continue;
-                    if ($gameMap.eventsXy(nx, ny).some(e => e.isNormalPriority())) continue;
-                    const dist = dx * dx + dy * dy;
-                    if (dist < bestDist) { bestDist = dist; best = { x: nx, y: ny }; }
-                }
-            }
-            if (best) return best;
-        }
-        return null;
-    }
-
-    // Hide every encounter event on the proc map, then (only when the player
-    // stopped on a "???" tile) reveal exactly one next to the player.
-    function updateRandomEncounterVisibility() {
+    // Park every <RandomEncounter> event authored on the procedural map (636) in
+    // its corner, invisible and unwalkable. 636 is one map reused for every world
+    // square, so an encounter left standing where it was authored would be met on
+    // every square in the world. Nothing deals them any more: the world map's
+    // adventures are played on map 315 itself (ProceduralAdventureSystem.js).
+    const PARKED_ENCOUNTER_EVENT = 'Eris';  // i18n-ignore  event name in Map636
+    function parkRandomEncounters() {
         if ($gameMap.mapId() !== procMapId) return;
-
-        const encounters = [];
-        let featured = null;
         for (const event of $gameMap._events) {
             if (!event) continue;
             const data = $dataMap.events[event._eventId];
             if (!data) continue;
-            if (data.name === MYSTERY_FEATURED_EVENT) {
-                featured = event;
-                encounters.push(event);
-            } else if (/RandomEncounter/i.test(data.note || '')) {
-                encounters.push(event);
-            }
-        }
-        if (encounters.length === 0) { $gameTemp._mysteryEncounterPending = false; return; }
-
-        for (const ev of encounters) {
-            ev.setOpacity(0);
-            ev.setThrough(true);
+            if (data.name !== PARKED_ENCOUNTER_EVENT &&
+                !/RandomEncounter/i.test(data.note || '')) continue;
+            event.setOpacity(0);
+            event.setThrough(true);
             // A parked encounter must not wander off its corner while invisible:
             // an authored random move type would leave a ghost the player can
             // still trigger by walking into it.
-            ev._moveType = 0;
-            if (ev.x !== 0 || ev.y !== 0) ev.setPosition(0, 0);
+            event._moveType = 0;
+            if (event.x !== 0 || event.y !== 0) event.setPosition(0, 0);
         }
-
-        if (!$gameTemp._mysteryEncounterPending) return;
-        $gameTemp._mysteryEncounterPending = false;
-
-        const chosen = featured ||
-            encounters[Math.floor(Math.random() * encounters.length)];
-        const spot = findEncounterTileNearPlayer();
-        if (!spot) return;
-        chosen.setPosition(spot.x, spot.y);
-        chosen.setOpacity(255);
-        chosen.setThrough(false);
-        const page = chosen.page();
-        chosen._moveType = page ? page.moveType : 0;
     }
 
     // ============================================================================
@@ -2405,9 +2346,20 @@
     Game_Player.prototype.triggerButtonAction = function() {
         if ($gameMap.mapId() === worldMapId && Input.isTriggered('ok') && !$gameMessage.isBusy()) {
             const currentEvents   = $gameMap.eventsXy(this.x, this.y);
+            const x2           = $gameMap.roundXWithDirection(this.x, this.direction());
+            const y2           = $gameMap.roundYWithDirection(this.y, this.direction());
+            const facingEvents = $gameMap.eventsXy(x2, y2);
+
+            // A Teleport event the party is *facing* owns the OK button outright:
+            // the player deliberately walked up to it and turned towards it, so it
+            // wins even on a named hardcoded square whose own travel menu would
+            // otherwise open (a city tile carrying a Teleport door, say).
+            const facingTeleport = facingEvents.find(e => e && e.event() && e.event().name && e.event().name.startsWith('Teleport'));
+            if (facingTeleport) { facingTeleport.start(); return true; }
+
             // Named hardcoded locations (London, Milano, ...) always offer the
             // "Visit <name>" travel menu, taking precedence over a Teleport event
-            // sharing the same tile.
+            // sharing the same tile (that one is stood on, not aimed at).
             if (isHardcodedBiomeHere()) {
                 const scene = SceneManager._scene;
                 if (scene && scene.openTravelDecision && !$gameMessage.isBusy()) {
@@ -2417,13 +2369,6 @@
             }
             const currentTeleport = currentEvents.find(e => e && e.event() && e.event().name && e.event().name.startsWith('Teleport'));
             if (currentTeleport) { currentTeleport.start(); return true; }
-
-            const x2           = $gameMap.roundXWithDirection(this.x, this.direction());
-            const y2           = $gameMap.roundYWithDirection(this.y, this.direction());
-            const facingEvents = $gameMap.eventsXy(x2, y2);
-
-            const facingTeleport = facingEvents.find(e => e && e.event() && e.event().name && e.event().name.startsWith('Teleport'));
-            if (facingTeleport) { facingTeleport.start(); return true; }
 
             const hasActionEvent = facingEvents.some(e => e.isTriggerIn([0]) && e.isNormalPriority());
 
@@ -2456,7 +2401,7 @@
                 // tiles, so isSettlementBiomeHere() is true for them; they must still
                 // get the "Visit <name>" travel menu, hence the hardcoded override.
                 if (scene && scene.openTravelDecision && !$gameMessage.isBusy() &&
-                    (!isSettlementBiomeHere() || isHardcodedBiomeHere())) {
+                    (!isSettlementBiomeHere() || isHardcodedBiomeHere() || hasAdventureHere())) {
                     scene.openTravelDecision();
                     return true;
                 }
@@ -3503,6 +3448,13 @@
         // `coords` (a door per side of the town's footprint) takes priority;
         // any other square inside the town's `reservedTiles` falls back to
         // its single fixed `entrance`, whatever direction it was crossed from.
+        //
+        // Most named places (London, Milano, Le Havre, ...) are `procedural: true`
+        // and declare neither: they reserve their world squares only so the square
+        // carries their name, and the map the party walks into is generated. Those
+        // must fall through to the procedural generator below - matching a reserved
+        // tile is NOT on its own a reason to stop, or "Visit <name>" silently does
+        // nothing on every one of them.
         const currentMapCoord = parseInt(currentX) + ',' + parseInt(currentY);
         for (const key in NON_PROCEDURAL_COORDS) {
             const location = NON_PROCEDURAL_COORDS[key];
@@ -3510,24 +3462,34 @@
             const onCoords = coords && coords.some(c => c.mapCoord === currentMapCoord);
             const onReserved = Array.isArray(location.reservedTiles) &&
                 location.reservedTiles.includes(currentMapCoord);
-            if (!onCoords && !onReserved) continue;
+            // Places that declare no footprint stand on the single square their
+            // `base` names (Frozen Station, the space centre, ...); their authored
+            // entrance is reached from there and nowhere else. Where reservedTiles
+            // does exist it is the authority - `base` is not dependably inside it.
+            const onBase = !Array.isArray(location.reservedTiles) && location.base &&
+                (parseInt(location.base.x) + ',' + parseInt(location.base.y)) === currentMapCoord;
+            if (!onCoords && !onReserved && !onBase) continue;
 
             const direction = $gamePlayer.direction();
             let destination = null;
             if (onCoords) {
                 const directionName = { 2: 'south', 4: 'west', 6: 'east', 8: 'north' }[direction];
                 destination = directionName && coords.find(c => c.direction === directionName);
-            } else if (location.entrance && location.entrance.id) {
+            }
+            // A door for the crossed side is best; the town's single fixed
+            // `entrance` covers every other side, and any authored door at all
+            // beats refusing to move.
+            if (!destination && location.entrance && location.entrance.id) {
                 destination = location.entrance;
             }
-
-            if (destination) {
-                console.log('[WMR] Transferring to map', destination.id, 'at', destination.x, destination.y);
-                if (camperDriving) window.CamperDrivingSystem.stop();
-                $gamePlayer.reserveTransfer(destination.id, destination.x, destination.y, 0, 0);
-            } else {
-                console.log('[WMR] No destination for direction', direction);
+            if (!destination && coords) {
+                destination = coords.find(c => c && c.id);
             }
+            if (!destination) break;  // hand-made map has no way in: generate one
+
+            console.log('[WMR] Transferring to map', destination.id, 'at', destination.x, destination.y);
+            if (camperDriving) window.CamperDrivingSystem.stop();
+            $gamePlayer.reserveTransfer(destination.id, destination.x, destination.y, 0, 0);
             return;
         }
 
@@ -3535,10 +3497,6 @@
 
         if ($gameSystem.generateProceduralMap) {
             if ($gameSystem.generateProceduralMap()) {
-                // Stopping on a "???" tile arms a single random encounter, consumed
-                // when the procedural map finishes loading (updateEventVisibility).
-                $gameTemp._mysteryEncounterPending =
-                    !!(mysteryTiles && mysteryTiles.has(currentX + ',' + currentY));
                 if (camperDriving) window.CamperDrivingSystem.stop();
                 const playerDirection = $gamePlayer.direction();
                 let startX = Math.floor(PROC_MAP_WIDTH  / 2);
@@ -4151,21 +4109,39 @@
     // usually sit on City/Burg tiles, so isSettlementBiomeHere() is true for
     // them. They still get a "Visit <name>" travel choice, so only suppress the
     // menu over plain settlement tiles that are NOT a named hardcoded location.
+    // Is the party standing on a square whose biome still has its adventure to
+    // give? A town square suppresses the travel menu, so this has to be able to
+    // open it on its own: the town's own adventure is reached no other way.
+    function hasAdventureHere() {
+        const Earth = adventureSystem();
+        return !!(Earth && $gameMap.mapId() === worldMapId &&
+            Earth.isPendingAt($gamePlayer.x, $gamePlayer.y));
+    }
+
     function canOpenTravelDecisionHere() {
         if ($gameMessage.isBusy()) return false;
+        if (window.ProceduralAdventure && window.ProceduralAdventure.isPlaying()) return false;
         if ($gameMap.mapId() !== worldMapId) return false;
-        return !isSettlementBiomeHere() || isHardcodedBiomeHere();
+        return !isSettlementBiomeHere() || isHardcodedBiomeHere() || hasAdventureHere();
     }
 
     Scene_Map.prototype.openTravelDecision = function() {
         if (!canOpenTravelDecisionHere()) return;
+        // Standing on a "???" square, the biome's own adventure is offered first
+        // and above everything else: it is the reason the plate is there.
+        const Earth = adventureSystem();
+        const adventure = !!(Earth && Earth.isPendingAt($gamePlayer.x, $gamePlayer.y));
         const visitLabel = T('WorldMapReturn.visit', { place: getCurrentLocationName() });
-        const choices = [visitLabel, T('WorldMapReturn.makeCamp'), T('WorldMapReturn.cancel')];
+        const choices = [];
+        if (adventure) choices.push(T('Anomaly.ui.investigate'));
+        choices.push(visitLabel, T('WorldMapReturn.makeCamp'), T('WorldMapReturn.cancel'));
         const cancelIndex = choices.length - 1;
         $gameMessage.setChoices(choices, 0, cancelIndex);
         $gameMessage.setChoiceCallback((choice) => {
-            if (choice === 0) { performStopTravel(); }
-            else if (choice === 1) { $gameTemp._pendingWorldMapCommand = 'makeCamp'; }
+            const index = adventure ? choice - 1 : choice;
+            if (adventure && choice === 0) { Earth.beginAt($gamePlayer.x, $gamePlayer.y); }
+            else if (index === 0) { performStopTravel(); }
+            else if (index === 1) { $gameTemp._pendingWorldMapCommand = 'makeCamp'; }
         });
         Input.clear();
         // The click destination is still the tile the player is standing on, and

@@ -9674,7 +9674,7 @@
         },
         "name": "enemyArchetypes.hydra.head_two.name",
         "msg": "enemyArchetypes.hydra.head_two.msg",
-        "itemId": 1204,
+        "itemId": 1205,
         "canHoldWeapon": true
       },
       "HEAD_THREE": {
@@ -9692,7 +9692,7 @@
         },
         "name": "enemyArchetypes.hydra.head_three.name",
         "msg": "enemyArchetypes.hydra.head_three.msg",
-        "itemId": 1204,
+        "itemId": 1206,
         "canHoldWeapon": true
       },
       "BODY": {
@@ -13202,6 +13202,665 @@
       "GnomeWizard",
       "MeowingCat",
       "ObsidianGolem"
+    ]
+  },
+  "Dwarf": {
+    "skills": [],
+    "defaultBattler": "",
+    "reproduction": 1,
+    "lifeSpan": 180,
+    "pregnancyDuration": 330,
+    "classes": [
+      1,
+      2,
+      4,
+      10,
+      12,
+      13,
+      15,
+      16,
+      17,
+      21,
+      22,
+      24,
+      28,
+      30,
+      32,
+      33,
+      35,
+      37,
+      38,
+      39,
+      40,
+      42,
+      45,
+      47,
+      48,
+      50,
+      52,
+      54,
+      55,
+      56,
+      57,
+      59,
+      60
+    ],
+    "creatureClasses": [
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70
+    ],
+    "parts": {
+      "HEAD": {
+        "hpPercent": 22,
+        "vital": true,
+        "skillId": [
+          1789,
+          318,
+          325
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 3,
+          "amount": -20
+        },
+        "name": "enemyArchetypes.dwarf.head.name",
+        "msg": "enemyArchetypes.dwarf.head.msg",
+        "itemId": 999
+      },
+      "BEARD": {
+        "hpPercent": 15,
+        "vital": false,
+        "skillId": [
+          1149,
+          1174,
+          1134
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 7,
+          "amount": -20
+        },
+        "name": "enemyArchetypes.dwarf.beard.name",
+        "msg": "enemyArchetypes.dwarf.beard.msg",
+        "itemId": 1293
+      },
+      "TORSO": {
+        "hpPercent": 55,
+        "vital": false,
+        "skillId": [
+          34,
+          412,
+          890
+        ],
+        "canCutoff": false,
+        "statEffect": {
+          "param": 0,
+          "amount": -15
+        },
+        "name": "enemyArchetypes.dwarf.torso.name",
+        "msg": "enemyArchetypes.dwarf.torso.msg",
+        "itemId": 1000
+      },
+      "LEFT_ARM": {
+        "hpPercent": 18,
+        "vital": false,
+        "skillId": [
+          1784,
+          1782,
+          1783
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 2,
+          "amount": -20
+        },
+        "name": "enemyArchetypes.dwarf.left_arm.name",
+        "msg": "enemyArchetypes.dwarf.left_arm.msg",
+        "itemId": 1001
+      },
+      "RIGHT_ARM": {
+        "hpPercent": 18,
+        "vital": false,
+        "skillId": [
+          1784,
+          1782,
+          87
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 2,
+          "amount": -30
+        },
+        "name": "enemyArchetypes.dwarf.right_arm.name",
+        "msg": "enemyArchetypes.dwarf.right_arm.msg",
+        "itemId": 1002
+      },
+      "LEFT_LEG": {
+        "hpPercent": 18,
+        "vital": false,
+        "skillId": [
+          1790,
+          312,
+          98
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 6,
+          "amount": -10
+        },
+        "name": "enemyArchetypes.dwarf.left_leg.name",
+        "msg": "enemyArchetypes.dwarf.left_leg.msg",
+        "itemId": 1003
+      },
+      "RIGHT_LEG": {
+        "hpPercent": 18,
+        "vital": false,
+        "skillId": [
+          1786,
+          312,
+          98
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 6,
+          "amount": -10
+        },
+        "name": "enemyArchetypes.dwarf.right_leg.name",
+        "msg": "enemyArchetypes.dwarf.right_leg.msg",
+        "itemId": 1004
+      },
+      "BRAIN": {
+        "hpPercent": 18,
+        "vital": true,
+        "skillId": [
+          1771,
+          1772,
+          1773
+        ],
+        "canCutoff": false,
+        "statEffect": {
+          "param": 3,
+          "amount": -15
+        },
+        "name": "enemyArchetypes.dwarf.brain.name",
+        "msg": "enemyArchetypes.dwarf.brain.msg",
+        "itemId": 1005
+      },
+      "LEFT_EYE": {
+        "hpPercent": 8,
+        "vital": false,
+        "skillId": [
+          310,
+          265,
+          935
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 2,
+          "amount": -5
+        },
+        "name": "enemyArchetypes.dwarf.left_eye.name",
+        "msg": "enemyArchetypes.dwarf.left_eye.msg",
+        "itemId": 1006
+      },
+      "RIGHT_EYE": {
+        "hpPercent": 8,
+        "vital": false,
+        "skillId": [
+          310,
+          1266,
+          935
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 2,
+          "amount": -5
+        },
+        "name": "enemyArchetypes.dwarf.right_eye.name",
+        "msg": "enemyArchetypes.dwarf.right_eye.msg",
+        "itemId": 1007
+      },
+      "NOSE": {
+        "hpPercent": 6,
+        "vital": false,
+        "skillId": [
+          343,
+          315,
+          45
+        ],
+        "canCutoff": true,
+        "name": "enemyArchetypes.dwarf.nose.name",
+        "msg": "enemyArchetypes.dwarf.nose.msg",
+        "itemId": 1008
+      },
+      "LEFT_EAR": {
+        "hpPercent": 5,
+        "vital": false,
+        "skillId": [
+          301,
+          306,
+          304
+        ],
+        "canCutoff": true,
+        "name": "enemyArchetypes.dwarf.left_ear.name",
+        "msg": "enemyArchetypes.dwarf.left_ear.msg",
+        "itemId": 1009
+      },
+      "RIGHT_EAR": {
+        "hpPercent": 5,
+        "vital": false,
+        "skillId": [
+          301,
+          306,
+          304
+        ],
+        "canCutoff": true,
+        "name": "enemyArchetypes.dwarf.right_ear.name",
+        "msg": "enemyArchetypes.dwarf.right_ear.msg",
+        "itemId": 1010
+      },
+      "MOUTH": {
+        "hpPercent": 8,
+        "vital": false,
+        "skillId": [
+          1799,
+          325,
+          328
+        ],
+        "canCutoff": false,
+        "name": "enemyArchetypes.dwarf.mouth.name",
+        "msg": "enemyArchetypes.dwarf.mouth.msg",
+        "itemId": 1011
+      },
+      "TEETH": {
+        "hpPercent": 6,
+        "vital": false,
+        "skillId": [
+          1799,
+          322,
+          325
+        ],
+        "canCutoff": false,
+        "multiple": true,
+        "name": "enemyArchetypes.dwarf.teeth.name",
+        "msg": "enemyArchetypes.dwarf.teeth.msg",
+        "itemId": 1012
+      },
+      "GENITALS": {
+        "hpPercent": 35,
+        "vital": false,
+        "skillId": [
+          54,
+          412,
+          890
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 0,
+          "amount": -15
+        },
+        "name": "enemyArchetypes.dwarf.genitals.name",
+        "msg": "enemyArchetypes.dwarf.genitals.msg",
+        "itemId": 1013
+      },
+      "HEART": {
+        "hpPercent": 30,
+        "vital": true,
+        "skillId": [
+          307,
+          1737,
+          561
+        ],
+        "canCutoff": false,
+        "statEffect": {
+          "param": 6,
+          "amount": -10
+        },
+        "name": "enemyArchetypes.dwarf.heart.name",
+        "msg": "enemyArchetypes.dwarf.heart.msg",
+        "itemId": 1014
+      },
+      "LEFT_LUNG": {
+        "hpPercent": 24,
+        "vital": true,
+        "skillId": [
+          348,
+          33,
+          313
+        ],
+        "canCutoff": false,
+        "statEffect": {
+          "param": 6,
+          "amount": -5
+        },
+        "name": "enemyArchetypes.dwarf.left_lung.name",
+        "msg": "enemyArchetypes.dwarf.left_lung.msg",
+        "itemId": 1015
+      },
+      "RIGHT_LUNG": {
+        "hpPercent": 24,
+        "vital": true,
+        "skillId": [
+          348,
+          33,
+          313
+        ],
+        "canCutoff": false,
+        "statEffect": {
+          "param": 6,
+          "amount": -5
+        },
+        "name": "enemyArchetypes.dwarf.right_lung.name",
+        "msg": "enemyArchetypes.dwarf.right_lung.msg",
+        "itemId": 1016
+      },
+      "LIVER": {
+        "hpPercent": 25,
+        "vital": true,
+        "skillId": [
+          300,
+          320,
+          1326
+        ],
+        "canCutoff": false,
+        "statEffect": {
+          "param": 1,
+          "amount": -10
+        },
+        "name": "enemyArchetypes.dwarf.liver.name",
+        "msg": "enemyArchetypes.dwarf.liver.msg",
+        "itemId": 1017
+      },
+      "STOMACH": {
+        "hpPercent": 18,
+        "vital": true,
+        "skillId": [
+          328,
+          1768
+        ],
+        "canCutoff": false,
+        "statEffect": {
+          "param": 7,
+          "amount": -5
+        },
+        "name": "enemyArchetypes.dwarf.stomach.name",
+        "msg": "enemyArchetypes.dwarf.stomach.msg",
+        "itemId": 1018
+      },
+      "SPLEEN": {
+        "hpPercent": 10,
+        "vital": false,
+        "skillId": [
+          300,
+          320,
+          1326
+        ],
+        "canCutoff": false,
+        "name": "enemyArchetypes.dwarf.spleen.name",
+        "msg": "enemyArchetypes.dwarf.spleen.msg",
+        "itemId": 1019
+      },
+      "INTESTINES": {
+        "hpPercent": 22,
+        "vital": true,
+        "skillId": [
+          300,
+          320,
+          1326
+        ],
+        "canCutoff": false,
+        "statEffect": {
+          "param": 5,
+          "amount": -5
+        },
+        "name": "enemyArchetypes.dwarf.intestines.name",
+        "msg": "enemyArchetypes.dwarf.intestines.msg",
+        "itemId": 1020
+      },
+      "LEFT_HAND": {
+        "hpPercent": 12,
+        "vital": false,
+        "skillId": [
+          1785,
+          1783,
+          122
+        ],
+        "canCutoff": true,
+        "equipSlot": "leftHand",
+        "statEffect": {
+          "param": 2,
+          "amount": -5
+        },
+        "name": "enemyArchetypes.dwarf.left_hand.name",
+        "msg": "enemyArchetypes.dwarf.left_hand.msg",
+        "itemId": 1021,
+        "canHoldWeapon": true
+      },
+      "LEFT_FINGERS": {
+        "hpPercent": 5,
+        "vital": false,
+        "skillId": [
+          1782,
+          1783,
+          122
+        ],
+        "canCutoff": true,
+        "multiple": true,
+        "statEffect": {
+          "param": 2,
+          "amount": -2
+        },
+        "name": "enemyArchetypes.dwarf.left_fingers.name",
+        "msg": "enemyArchetypes.dwarf.left_fingers.msg",
+        "itemId": 1022
+      },
+      "RIGHT_HAND": {
+        "hpPercent": 12,
+        "vital": false,
+        "skillId": [
+          1784,
+          1783,
+          87
+        ],
+        "canCutoff": true,
+        "equipSlot": "rightHand",
+        "statEffect": {
+          "param": 2,
+          "amount": -5
+        },
+        "name": "enemyArchetypes.dwarf.right_hand.name",
+        "msg": "enemyArchetypes.dwarf.right_hand.msg",
+        "itemId": 1023,
+        "canHoldWeapon": true
+      },
+      "RIGHT_FINGERS": {
+        "hpPercent": 5,
+        "vital": false,
+        "skillId": [
+          1784,
+          1785,
+          87
+        ],
+        "canCutoff": true,
+        "multiple": true,
+        "statEffect": {
+          "param": 2,
+          "amount": -3
+        },
+        "name": "enemyArchetypes.dwarf.right_fingers.name",
+        "msg": "enemyArchetypes.dwarf.right_fingers.msg",
+        "itemId": 1024
+      },
+      "LEFT_FOOT": {
+        "hpPercent": 12,
+        "vital": false,
+        "skillId": [
+          1786,
+          1790,
+          1793
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 6,
+          "amount": -5
+        },
+        "name": "enemyArchetypes.dwarf.left_foot.name",
+        "msg": "enemyArchetypes.dwarf.left_foot.msg",
+        "itemId": 1025
+      },
+      "LEFT_TOES": {
+        "hpPercent": 5,
+        "vital": false,
+        "skillId": [
+          1786,
+          1790,
+          312
+        ],
+        "canCutoff": true,
+        "multiple": true,
+        "name": "enemyArchetypes.dwarf.left_toes.name",
+        "msg": "enemyArchetypes.dwarf.left_toes.msg",
+        "itemId": 1026
+      },
+      "RIGHT_FOOT": {
+        "hpPercent": 12,
+        "vital": false,
+        "skillId": [
+          1790,
+          1793,
+          312
+        ],
+        "canCutoff": true,
+        "statEffect": {
+          "param": 6,
+          "amount": -5
+        },
+        "name": "enemyArchetypes.dwarf.right_foot.name",
+        "msg": "enemyArchetypes.dwarf.right_foot.msg",
+        "itemId": 1027
+      },
+      "RIGHT_TOES": {
+        "hpPercent": 5,
+        "vital": false,
+        "skillId": [
+          1786,
+          1793,
+          98
+        ],
+        "canCutoff": true,
+        "multiple": true,
+        "name": "enemyArchetypes.dwarf.right_toes.name",
+        "msg": "enemyArchetypes.dwarf.right_toes.msg",
+        "itemId": 1028
+      }
+    },
+    "hitLocations": {
+      "HEAD": {
+        "weight": 7
+      },
+      "BEARD": {
+        "weight": 8
+      },
+      "TORSO": {
+        "weight": 45
+      },
+      "LEFT_ARM": {
+        "weight": 15
+      },
+      "RIGHT_ARM": {
+        "weight": 15
+      },
+      "LEFT_LEG": {
+        "weight": 11
+      },
+      "RIGHT_LEG": {
+        "weight": 11
+      },
+      "BRAIN": {
+        "weight": 3
+      },
+      "LEFT_EYE": {
+        "weight": 2
+      },
+      "RIGHT_EYE": {
+        "weight": 2
+      },
+      "NOSE": {
+        "weight": 3
+      },
+      "LEFT_EAR": {
+        "weight": 2
+      },
+      "RIGHT_EAR": {
+        "weight": 2
+      },
+      "MOUTH": {
+        "weight": 3
+      },
+      "TEETH": {
+        "weight": 2
+      },
+      "GENITALS": {
+        "weight": 3
+      },
+      "HEART": {
+        "weight": 5
+      },
+      "LEFT_LUNG": {
+        "weight": 4
+      },
+      "RIGHT_LUNG": {
+        "weight": 4
+      },
+      "LIVER": {
+        "weight": 4
+      },
+      "STOMACH": {
+        "weight": 4
+      },
+      "SPLEEN": {
+        "weight": 3
+      },
+      "INTESTINES": {
+        "weight": 4
+      },
+      "LEFT_HAND": {
+        "weight": 5
+      },
+      "LEFT_FINGERS": {
+        "weight": 2
+      },
+      "RIGHT_HAND": {
+        "weight": 5
+      },
+      "RIGHT_FINGERS": {
+        "weight": 2
+      },
+      "LEFT_FOOT": {
+        "weight": 4
+      },
+      "LEFT_TOES": {
+        "weight": 2
+      },
+      "RIGHT_FOOT": {
+        "weight": 4
+      },
+      "RIGHT_TOES": {
+        "weight": 2
+      }
+    },
+    "sprites": [
+      "DwarfHammersmith",
+      "DwarfHunter",
+      "dwarfpaladin",
+      "DwarfPriest",
+      "DwarfWarrior"
     ]
   },
   "Elephant": {

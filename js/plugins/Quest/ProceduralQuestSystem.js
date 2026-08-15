@@ -2791,7 +2791,7 @@
   }
 
   const QUEST_BANNER =
-    '<div class="gx-title" style="color:var(--accent-gold-pure,#ffd700);font-size:12px;">' +
+    '<div class="gx-title" style="color:var(--accent-gold-pure,#ffd700); font-size:15px">' +
     "⚑ QUEST TARGET</div>";
 
   function wireGalaxyMarkers() {

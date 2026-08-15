@@ -1,0 +1,467 @@
+/*:
+ * @target MZ
+ * @plugindesc The shared search + filter strip every long list menu puts on its left page.
+ * @author Esoteric Heavy Industries
+ *
+ * @help MenuSearchBar.js
+ *
+ * One search field, one filter strip, one implementation. Any menu that shows a
+ * long list (the Skills scene, the Bestiary, the workbench, the forge, the trait
+ * picker, the main menu's search page) mounts this on its LEFT page instead of
+ * growing a search box of its own.
+ *
+ * The strip is made of four optional pieces, and a menu asks only for the ones
+ * that mean something in it:
+ *
+ *   the field       always shown
+ *   sort keys       config.sorts, from name | level | weight | price | cost
+ *   kind chips      config.kinds, e.g. Earth / Petrodemons / Aliens
+ *   category picker config.categories(), a list the HOST computes from what it
+ *                   is actually showing, so it is always in that menu's own
+ *                   vocabulary
+ *   ranges          config.ranges, from weight | price
+ *
+ * In practice the individual menus take the field and plain name / weight /
+ * price ordering, and nothing else: a per-menu page is for finding one row in a
+ * long list, not for interrogating it. The advanced half — kind chips, the
+ * category picker and the numeric ranges — belongs to the main menu's search
+ * page (UI/CustomMainMenuSearch.js), which searches everything at once and is
+ * the only place worth narrowing that hard.
+ *
+ * Usage from a host scene:
+ *
+ *     this._bar = window.MenuSearchBar.create({
+ *         id: 'bestiary',
+ *         placeholder: T('Bestiary.searchPlaceholder'),
+ *         sorts: ['name', 'level'],
+ *         categories: () => this.archetypesOnThisPage(),
+ *         onChange: () => this.refreshList()
+ *     });
+ *
+ *     // in the left page markup
+ *     this._bar.html()
+ *
+ *     // when building the list
+ *     const rows = this._bar.apply(everything, mon => ({
+ *         name: mon.name, category: mon.archetype, level: mon.level
+ *     }));
+ *
+ *     // after the host has rebuilt the DOM around the field
+ *     this._bar.restoreFocus();
+ *
+ * A focused field owns the keyboard: every key event is stopped at the element,
+ * so neither Input.keyMapper nor a scene's own window-level WASD listener ever
+ * sees the typing. Scenes that read Input directly should still bail out of
+ * their own navigation while window.MenuSearchBar.isTyping() is true, so a
+ * gamepad poll cannot move the cursor out from under the caret.
+ *
+ * Load this BEFORE any menu that uses it.
+ */
+
+(function () {
+    'use strict';
+
+    function escapeHtml(str) {
+        return String(str ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[c]);
+    }
+
+    // Every sort key the strip knows how to offer, and where each reads its
+    // number from on a descriptor. A host names the ones that mean something in
+    // its list and never sees the rest.
+    const SORT_KEYS = ['name', 'level', 'weight', 'price', 'cost'];
+    const RANGE_KEYS = ['weight', 'price'];
+
+    // id -> controller, so the inline handlers in the markup can find their bar.
+    const bars = new Map();
+
+    function injectStyles() {
+        if (document.getElementById('menu-search-bar-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'menu-search-bar-styles';
+        style.textContent = `
+            .msb {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                margin-bottom: 10px;
+                flex-shrink: 0;
+            }
+            .msb-field {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
+            .msb-clear {
+                position: absolute;
+                right: 8px;
+                cursor: pointer;
+                font-family: 'Lora', serif;
+                font-size: 0.892em;
+                color: var(--text-card-medium);
+                padding: 0 4px;
+                user-select: none;
+            }
+            .msb-clear:hover { color: var(--text-primary-hover); }
+            .msb-row {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 6px;
+            }
+            .msb-row .backpack-sort-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .msb-label {
+                font-family: 'Lora', serif;
+                font-size: 0.878rem;
+                font-weight: bold;
+                color: var(--text-card-medium);
+            }
+            .msb-sep {
+                color: var(--text-card-medium);
+                font-size: 0.878rem;
+            }
+            .msb-num,
+            .msb-select {
+                box-sizing: border-box;
+                background: var(--bg-primary-hover-translucent-35);
+                border: 1px solid var(--border-primary-hover-translucent-15);
+                border-radius: 4px;
+                padding: 3px 6px;
+                font-family: 'Lora', serif;
+                font-size: 0.878rem;
+                color: var(--text-success-active);
+                outline: none;
+            }
+            .msb-num { width: 60px; }
+            .msb-select { margin-left: auto; max-width: 55%; }
+            .msb-num:focus,
+            .msb-select:focus { border-color: var(--text-primary-hover); }
+            /* The count of what survived the filters, so an empty page reads as
+               "nothing matched" rather than "this menu is broken". */
+            .msb-count {
+                font-family: 'Lora', serif;
+                font-size: 0.878rem;
+                color: var(--text-card-medium);
+                margin-left: auto;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // The one thing every host needs to ask before it moves a cursor.
+    function isTyping() {
+        const el = document.activeElement;
+        if (!el) return false;
+        if (el.tagName === 'TEXTAREA') return true;
+        if (el.tagName === 'SELECT') return true;
+        return el.tagName === 'INPUT';
+    }
+
+    const numOr = (text, fallback) => {
+        const n = parseFloat(text);
+        return Number.isFinite(n) ? n : fallback;
+    };
+
+    function create(config) {
+        injectStyles();
+        const cfg = config || {};
+        const id = cfg.id || ('bar' + bars.size);
+
+        // A bar is remade every time its scene is opened; the newest one wins
+        // the id so the inline handlers always reach the live scene.
+        const state = {
+            query: '',
+            kind: cfg.kinds && cfg.kinds.length ? cfg.kinds[0].key : '',
+            sortKey: (cfg.sorts && cfg.sorts[0]) || 'name',
+            sortDir: 'asc',
+            category: '',
+            weightMin: '', weightMax: '',
+            priceMin: '', priceMax: '',
+            caret: null,
+            count: null            // filled by apply(), printed by the strip
+        };
+
+        const sorts = (cfg.sorts || []).filter(k => SORT_KEYS.includes(k));
+        const ranges = (cfg.ranges || []).filter(k => RANGE_KEYS.includes(k));
+
+        const changed = () => { if (cfg.onChange) cfg.onChange(); };
+
+        // Every field stops its own key events so the menu underneath never sees
+        // the typing; without this, "I" opens the backpack mid-word.
+        const STOP = `onkeydown="window.MenuSearchBar.onKey(event, '${id}')" onkeyup="event.stopPropagation()" onkeypress="event.stopPropagation()"`;
+        const call = (method, arg) => `window.MenuSearchBar.get('${id}').${method}(${arg})`;
+
+        const bar = {
+            id,
+            get query() { return state.query; },
+            get kind() { return state.kind; },
+            get category() { return state.category; },
+            get sortKey() { return state.sortKey; },
+            get sortDir() { return state.sortDir; },
+
+            isEmpty() {
+                return !state.query.trim() && !state.category && !state.weightMin && !state.weightMax
+                    && !state.priceMin && !state.priceMax;
+            },
+
+            // ---- markup -----------------------------------------------------
+
+            // The strip comes in two halves so a host can place them apart:
+            // the main menu keeps the field on its right page, over the party
+            // cards, and the filters on the left with the results. Everywhere
+            // else html() puts the two together at the top of the left page.
+            html() {
+                return this.fieldHTML() + this.filtersHTML();
+            },
+
+            fieldHTML() {
+                return `
+                    <div class="msb msb-field-only">
+                        <div class="msb-field">
+                            <input type="text" id="msb-input-${id}" class="backpack-search-input"
+                                placeholder="${escapeHtml(cfg.placeholder || T('MenuSearch.placeholder'))}"
+                                autocomplete="off" spellcheck="false"
+                                value="${escapeHtml(state.query)}"
+                                oninput="${call('setQuery', 'this.value')}" ${STOP}>
+                            ${state.query ? `<div class="msb-clear" title="${escapeHtml(T('MenuSearch.clear'))}" onclick="${call('reset', '')}">✕</div>` : ''}
+                        </div>
+                    </div>`;
+            },
+
+            filtersHTML() {
+                const rows = [];
+
+                if (cfg.kinds && cfg.kinds.length) {
+                    rows.push(`<div class="backpack-tabs" style="margin-bottom:0">${cfg.kinds.map(k =>
+                        `<div class="backpack-tab${state.kind === k.key ? ' active' : ''}" onclick="${call('setKind', `'${k.key}'`)}">${escapeHtml(k.label)}</div>`
+                    ).join('')}</div>`);
+                }
+
+                const bits = [];
+                if (sorts.length) {
+                    const arrow = state.sortDir === 'asc' ? '▲' : '▼';
+                    bits.push(`<div class="backpack-sort-tags">${sorts.map(key => {
+                        const active = state.sortKey === key;
+                        return `<div class="sort-tag${active ? ' active' : ''}" onclick="${call('setSort', `'${key}'`)}">${escapeHtml(T('MenuSearch.sort.' + key))}${active ? ' ' + arrow : ''}</div>`;
+                    }).join('')}</div>`);
+                }
+
+                const cats = cfg.categories ? (cfg.categories() || []) : [];
+                if (cats.length) {
+                    // The active pick stays on offer even when the query has
+                    // filtered every row carrying it away, so the select never
+                    // jumps off its own value.
+                    const values = cats.map(c => (typeof c === 'string' ? c : c.key));
+                    const list = (!state.category || values.includes(state.category)) ? cats : cats.concat([state.category]);
+                    const options = [`<option value="">${escapeHtml(cfg.categoryLabel || T('MenuSearch.anyCategory'))}</option>`]
+                        .concat(list.map(c => {
+                            const value = typeof c === 'string' ? c : c.key;
+                            const label = typeof c === 'string' ? c : c.label;
+                            return `<option value="${escapeHtml(value)}"${value === state.category ? ' selected' : ''}>${escapeHtml(label)}</option>`;
+                        })).join('');
+                    bits.push(`<select class="msb-select" onchange="${call('setCategory', 'this.value')}" ${STOP}>${options}</select>`);
+                } else if (state.count !== null) {
+                    bits.push(`<span class="msb-count">${T('MenuSearch.showing', { count: state.count })}</span>`);
+                }
+                if (bits.length) rows.push(`<div class="msb-row">${bits.join('')}</div>`);
+
+                if (ranges.length) {
+                    const num = (field, placeholder) =>
+                        `<input type="number" class="msb-num" step="any" min="0" placeholder="${escapeHtml(placeholder)}"
+                                value="${escapeHtml(state[field])}" ${STOP}
+                                oninput="${call('setRange', `'${field}', this.value`)}">`;
+                    const parts = ranges.map(key =>
+                        `<span class="msb-label">${escapeHtml(T('MenuSearch.range.' + key))}</span>
+                         ${num(key + 'Min', T('MenuSearch.min'))}
+                         <span class="msb-sep">–</span>
+                         ${num(key + 'Max', T('MenuSearch.max'))}`);
+                    rows.push(`<div class="msb-row">${parts.join('')}</div>`);
+                }
+
+                if (!rows.length) return '';
+                return `<div class="msb" id="msb-${id}">${rows.join('')}</div>`;
+            },
+
+            // ---- filtering ---------------------------------------------------
+
+            // `describe` turns one of the host's own entries into the handful of
+            // fields the strip knows how to filter and sort on. Anything it does
+            // not report simply cannot be filtered out by that control.
+            matches(d) {
+                const needle = state.query.trim().toLowerCase();
+                if (needle) {
+                    const haystack = [d.name, d.category, d.subtitle]
+                        .filter(v => v != null).join(' ').toLowerCase();
+                    if (!haystack.includes(needle)) return false;
+                }
+                if (state.category && d.category !== state.category) return false;
+                for (const key of ranges) {
+                    const min = state[key + 'Min'];
+                    const max = state[key + 'Max'];
+                    if (min === '' && max === '') continue;
+                    const value = d[key];
+                    // A range only speaks about entries carrying that number at
+                    // all: a skill has no weight, and a weight filter must not
+                    // silently delete every skill from the page.
+                    if (!value) return false;
+                    if (value < numOr(min, -Infinity)) return false;
+                    if (value > numOr(max, Infinity)) return false;
+                }
+                return true;
+            },
+
+            // Filter and sort a host's list in one call, remembering how many
+            // survived so the strip can print the count.
+            apply(list, describe) {
+                const kept = [];
+                (list || []).forEach(entry => {
+                    const d = describe ? describe(entry) : entry;
+                    if (!d || !this.matches(d)) return;
+                    kept.push({ entry, d });
+                });
+
+                const dir = state.sortDir === 'asc' ? 1 : -1;
+                const key = state.sortKey;
+                kept.sort((a, b) => {
+                    if (key === 'name') return String(a.d.name || '').localeCompare(String(b.d.name || '')) * dir;
+                    const av = a.d[key] || 0;
+                    const bv = b.d[key] || 0;
+                    if (av !== bv) return (av - bv) * dir;
+                    return String(a.d.name || '').localeCompare(String(b.d.name || ''));
+                });
+
+                state.count = kept.length;
+                return kept.map(k => k.entry);
+            },
+
+            // ---- handlers ----------------------------------------------------
+
+            setQuery(value) {
+                state.query = value;
+                const input = document.getElementById('msb-input-' + id);
+                state.caret = input ? input.selectionStart : null;
+                changed();
+                this.restoreFocus();
+            },
+
+            setKind(kind) {
+                if (state.kind === kind) return;
+                state.kind = kind;
+                // A category from another kind's vocabulary would match nothing.
+                state.category = '';
+                if (window.SoundManager) SoundManager.playCursor();
+                changed();
+            },
+
+            setSort(key) {
+                if (state.sortKey === key) state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+                else { state.sortKey = key; state.sortDir = 'asc'; }
+                if (window.SoundManager) SoundManager.playCursor();
+                changed();
+            },
+
+            setCategory(value) {
+                state.category = value || '';
+                changed();
+            },
+
+            setRange(field, value) {
+                if (!Object.prototype.hasOwnProperty.call(state, field)) return;
+                state[field] = String(value);
+                changed();
+                this.restoreFocusTo('.msb-num');
+            },
+
+            reset() {
+                this.resetQuiet();
+                if (window.SoundManager) SoundManager.playCancel();
+                changed();
+            },
+
+            // Empty everything without telling the host: for a host that is
+            // already redrawing (or is not on screen yet), calling back into it
+            // mid-teardown is how a refresh ends up recursing into itself.
+            resetQuiet() {
+                state.query = '';
+                state.category = '';
+                state.weightMin = state.weightMax = state.priceMin = state.priceMax = '';
+                state.caret = null;
+            },
+
+            // Put the caret back after the host rebuilt the DOM around the field.
+            restoreFocus() {
+                const input = document.getElementById('msb-input-' + id);
+                if (!input) return;
+                if (document.activeElement === input) return;
+                input.focus();
+                const at = state.caret === null ? input.value.length : state.caret;
+                try { input.setSelectionRange(at, at); } catch (e) { /* not a text input */ }
+            },
+
+            // Same, for the numeric fields, which have no caret worth keeping but
+            // do need to stay focused across a redraw.
+            restoreFocusTo(selector) {
+                const root = document.getElementById('msb-' + id);
+                if (!root) return;
+                const field = root.querySelector(selector);
+                if (field && document.activeElement !== field) field.focus();
+            },
+
+            // The kind currently picked, for hosts that split their list by it.
+            currentKind() { return state.kind; },
+
+            // Set from the config, so the host's own key handling travels with
+            // the bar rather than having to be found by name.
+            onHostKey: cfg.onKey || null,
+
+            dispose() {
+                if (bars.get(id) === bar) bars.delete(id);
+            }
+        };
+
+        bars.set(id, bar);
+        return bar;
+    }
+
+    window.MenuSearchBar = {
+        create,
+        isTyping,
+        get(id) {
+            // A dead id would take an inline handler down with it, and these
+            // handlers are strings in markup that can outlive their scene.
+            return bars.get(id) || {
+                setQuery() {}, setKind() {}, setSort() {}, setCategory() {},
+                setRange() {}, reset() {}, restoreFocus() {}, restoreFocusTo() {}
+            };
+        },
+
+        // Shared key handling for every field the strip owns: the menu below must
+        // never see the typing, and Escape empties the field before it closes
+        // anything.
+        onKey(event, id) {
+            event.stopPropagation();
+            // The host sees the key first: the main menu walks its results with
+            // Up/Down and runs the highlighted one with Enter, all without the
+            // caret leaving the field.
+            const owner = id ? bars.get(id) : null;
+            if (owner && owner.onHostKey) {
+                owner.onHostKey(event);
+                if (event.defaultPrevented) return;
+            }
+            if (event.key !== 'Escape') return;
+            const field = event.target;
+            if (field && field.value) {
+                event.preventDefault();
+                field.value = '';
+                if (field.oninput) field.oninput(event);
+            } else if (field) {
+                field.blur();
+            }
+        }
+    };
+})();

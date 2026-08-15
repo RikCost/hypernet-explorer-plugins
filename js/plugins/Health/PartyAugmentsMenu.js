@@ -120,15 +120,32 @@
       this._selectedIndex = 0;
       this._activeArea = "tabs";  // 'tabs' | 'list'
       this._rows = [];
+
+      // The shared search + filter strip (UI/MenuSearchBar.js), sitting under
+      // the title as it does in every other list menu. An augment has a name
+      // and a price and nothing else worth ordering on.
+      this._augBar = window.MenuSearchBar ? window.MenuSearchBar.create({
+        id: 'augments',
+        placeholder: T('Augments.ui.searchPlaceholder'),
+        sorts: ['name', 'price'],
+        onChange: () => {
+          this._selectedIndex = 0;
+          this.refreshAugmentDOM();
+          if (this._augBar) this._augBar.restoreFocus();
+        }
+      }) : null;
+
       this.initAugmentDOM();
     }
 
     update() {
       super.update();
-      this.updateAugmentInput();
+      // A focused search field owns the keyboard (UI/MenuSearchBar.js).
+      if (!(window.MenuSearchBar && window.MenuSearchBar.isTyping())) this.updateAugmentInput();
     }
 
     terminate() {
+      if (this._augBar) { this._augBar.dispose(); this._augBar = null; }
       const container = document.getElementById("party-augments-container");
       if (container) container.remove();
       super.terminate();
@@ -155,16 +172,17 @@
 
       this._dndContainer.innerHTML = `
         <div class="book-spread">
-          <div class="left-page" style="position:relative;">
+          <div class="left-page" style="position:relative">
             <div class="page-header-bar">
               <div class="back-button focusable">${T('Augments.ui.back')}</div>
               <h2 class="title">${T('Augments.ui.title')}</h2>
             </div>
-            <div id="aug-tab-row" style="display:flex; flex-wrap:wrap; gap:5px; padding:6px 0 10px;"></div>
-            <div id="aug-list-content" style="display:flex; flex-direction:column; height:100%; overflow-y:auto; color:var(--text-card-medium);"></div>
+            <div id="aug-search-slot"></div>
+            <div id="aug-tab-row" style="display:flex; flex-wrap:wrap; gap:5px; padding:6px 0 10px"></div>
+            <div id="aug-list-content" style="display:flex; flex-direction:column; height:100%; overflow-y:auto; color:var(--text-card-medium)"></div>
           </div>
-          <div class="right-page" style="position:relative;">
-            <div id="aug-detail-content" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto; color:var(--text-card-medium);"></div>
+          <div class="right-page" style="position:relative">
+            <div id="aug-detail-content" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto; color:var(--text-card-medium)"></div>
           </div>
         </div>
       `;
@@ -186,11 +204,24 @@
     }
 
     buildRows() {
-      return this._tab === 0 ? fittedAugments() : catalogueAugments();
+      const rows = this._tab === 0 ? fittedAugments() : catalogueAugments();
+      if (!this._augBar) return rows;
+      return this._augBar.apply(rows, (row) => ({
+        name: augmentName(row.key, row.prosthetic),
+        price: (row.prosthetic && row.prosthetic.cost) || 0
+      }));
     }
 
     refreshAugmentDOM() {
       if (!this._dndContainer) return;
+
+      // Rebuilt in place with the page, then handed its caret back.
+      const searchSlot = document.getElementById("aug-search-slot");
+      if (searchSlot && this._augBar) {
+        searchSlot.innerHTML = this._augBar.html();
+        this._augBar.restoreFocus();
+      }
+
       this._rows = this.buildRows();
       if (this._selectedIndex >= this._rows.length) {
         this._selectedIndex = Math.max(0, this._rows.length - 1);
@@ -206,12 +237,7 @@
         tabRow.innerHTML = tabs.map((label, idx) => {
           const isSel = idx === this._tab;
           const isFocused = isSel && this._activeArea === "tabs";
-          return `<div class="aug-tab focusable" data-tab-idx="${idx}" style="
-              font-family:'Lora',serif; font-size:0.78rem; padding:4px 10px; border-radius:12px; cursor:pointer;
-              background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'};
-              border:1.5px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'};
-              color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'};
-            ">${escapeHtml(label)}</div>`;
+          return `<div class="aug-tab focusable" data-tab-idx="${idx}" style="font-family:'Lora',serif; font-size:0.952rem; padding:4px 10px; border-radius:12px; cursor:pointer; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'}; border:1.5px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(label)}</div>`;
         }).join("");
         tabRow.querySelectorAll(".aug-tab").forEach((tab) => {
           tab.addEventListener("click", () => {
@@ -249,7 +275,7 @@
     buildListHTML() {
       if (!this._rows.length) {
         const empty = this._tab === 0 ? T('Augments.ui.noneFitted') : T('Augments.ui.noCatalogue');
-        return `<div style="opacity:0.6; font-style:italic; padding:14px 10px; font-family:'Lora',serif;">${empty}</div>`;
+        return `<div style="opacity:0.6; padding:14px 10px; font-family:'Lora',serif">${empty}</div>`;
       }
       return this._rows.map((row, idx) => {
         const isSel = idx === this._selectedIndex;
@@ -259,13 +285,13 @@
           ? T('Augments.ui.wornBy', { actor: row.actor.name(), part: row.partName })
           : T('Augments.ui.type.' + (row.prosthetic.type || "biological"));
         const flag = this._tab === 0 && row.damaged
-          ? `<span style="font-size:0.68rem; color:var(--text-text-alt-17);">${T('Augments.ui.damagedHost')}</span>`
-          : `<span style="font-size:0.72rem; opacity:0.7;">${escapeHtml(priceLabel(row.prosthetic.cost))}</span>`;
+          ? `<span style="font-size:0.83rem; color:var(--text-text-alt-17)">${T('Augments.ui.damagedHost')}</span>`
+          : `<span style="font-size:0.878rem; opacity:0.7">${escapeHtml(priceLabel(row.prosthetic.cost))}</span>`;
         return `
-          <div class="aug-row focusable ${isFocused ? 'focused' : ''}" data-idx="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'transparent'};">
-            <span style="display:flex; flex-direction:column;">
-              <span style="font-family:'Lora',serif; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'};">${escapeHtml(name)}</span>
-              <span style="font-size:0.72rem; opacity:0.7;">${escapeHtml(sub)}</span>
+          <div class="aug-row focusable ${isFocused ? 'focused' : ''}" data-idx="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'transparent'}">
+            <span style="display:flex; flex-direction:column">
+              <span style="font-family:'Lora',serif; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(name)}</span>
+              <span style="font-size:0.878rem; opacity:0.7">${escapeHtml(sub)}</span>
             </span>
             ${flag}
           </div>`;
@@ -274,7 +300,7 @@
 
     buildDetailHTML(row) {
       if (!row) {
-        return `<div style="opacity:0.6; font-style:italic; margin:20px;">${T('Augments.ui.noneSelected')}</div>`;
+        return `<div style="opacity:0.6; margin:20px">${T('Augments.ui.noneSelected')}</div>`;
       }
       const p = row.prosthetic;
       const name = augmentName(row.key, p);
@@ -284,12 +310,12 @@
       const effects = Object.entries(p.effects || {});
       if (effects.length) {
         effectsHTML = effects.map(([paramId, value]) => `
-          <div style="display:flex; justify-content:space-between; padding:2px 0;">
+          <div style="display:flex; justify-content:space-between; padding:2px 0">
             <span>${escapeHtml(paramName(parseInt(paramId, 10)))}</span>
-            <span style="color:var(--text-secondary-active); font-weight:bold;">${value >= 0 ? "+" : ""}${value}</span>
+            <span style="color:var(--text-secondary-active); font-weight:bold">${value >= 0 ? "+" : ""}${value}</span>
           </div>`).join("");
       } else {
-        effectsHTML = `<div style="opacity:0.7;">${T('Augments.ui.noStatChange')}</div>`;
+        effectsHTML = `<div style="opacity:0.7">${T('Augments.ui.noStatChange')}</div>`;
       }
 
       // A `needs` block is a multiplier on how fast that need drains, so it is
@@ -308,7 +334,7 @@
         } else {
           continue;
         }
-        effectsHTML += `<div style="margin-top:4px; color:var(--text-secondary-active);">${escapeHtml(line)}</div>`;
+        effectsHTML += `<div style="margin-top:4px; color:var(--text-secondary-active)">${escapeHtml(line)}</div>`;
       }
 
       // An endocrine implant's real effect is in the blood, not in the params,
@@ -316,7 +342,7 @@
       const endocrine = window.EndocrineImplants && window.EndocrineImplants.describe
         ? window.EndocrineImplants.describe(row.key) : null;
       if (endocrine) {
-        effectsHTML += `<div style="margin-top:4px; color:var(--text-secondary-active);">${escapeHtml(endocrine)}</div>`;
+        effectsHTML += `<div style="margin-top:4px; color:var(--text-secondary-active)">${escapeHtml(endocrine)}</div>`;
       }
 
       let skillHTML = "";
@@ -325,45 +351,45 @@
         if (!skill || !skill.name) continue;
         const desc = (skill.description || "").split("\n").join(" ");
         skillHTML += `
-          <div style="margin-top:6px;">
-            <div style="font-weight:bold; color:var(--text-secondary-active);">${escapeHtml(skill.name)}</div>
-            ${desc ? `<div style="opacity:0.85; font-size:0.82rem; line-height:1.4;">${escapeHtml(desc)}</div>` : ""}
-            <div style="opacity:0.7; font-size:0.72rem; margin-top:2px;">${T('Augments.ui.alwaysCarried')}</div>
+          <div style="margin-top:6px">
+            <div style="font-weight:bold; color:var(--text-secondary-active)">${escapeHtml(skill.name)}</div>
+            ${desc ? `<div style="opacity:0.85; font-size:0.984rem; line-height:1.4">${escapeHtml(desc)}</div>` : ""}
+            <div style="opacity:0.7; font-size:0.878rem; margin-top:2px">${T('Augments.ui.alwaysCarried')}</div>
           </div>`;
       }
 
       const sockets = socketsFor(row.key);
       const socketsHTML = sockets.length
-        ? `<div style="display:flex; flex-wrap:wrap; gap:4px;">` + sockets.map((s) =>
-            `<span style="padding:1px 6px; border-radius:9px; font-size:0.72rem; color:var(--text-card-medium); border:1px solid var(--border-secondary-hover-translucent-15);">${escapeHtml(s)}</span>`
+        ? `<div style="display:flex; flex-wrap:wrap; gap:4px">` + sockets.map((s) =>
+            `<span style="padding:1px 6px; border-radius:9px; font-size:0.878rem; color:var(--text-card-medium); border:1px solid var(--border-secondary-hover-translucent-15)">${escapeHtml(s)}</span>`
           ).join("") + `</div>`
-        : `<div style="opacity:0.7;">${T('Augments.ui.noSocket')}</div>`;
+        : `<div style="opacity:0.7">${T('Augments.ui.noSocket')}</div>`;
 
       const fittedHTML = row.actor
-        ? `<div style="margin-top:18px;">
-             <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.fittedTo')}</div>
-             <div style="display:flex; justify-content:space-between; padding:2px 0;">
+        ? `<div style="margin-top:18px">
+             <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px">${T('Augments.ui.fittedTo')}</div>
+             <div style="display:flex; justify-content:space-between; padding:2px 0">
                <span>${escapeHtml(row.actor.name())}</span><span>${escapeHtml(row.partName)}</span>
              </div>
-             ${row.damaged ? `<div style="font-size:0.78rem; color:var(--text-text-alt-17); margin-top:4px;">${T('Augments.ui.damagedWarning')}</div>` : ""}
-             <div style="font-size:0.75rem; opacity:0.7; margin-top:4px;">${T('Augments.ui.severWarning')}</div>
+             ${row.damaged ? `<div style="font-size:0.952rem; color:var(--text-text-alt-17); margin-top:4px">${T('Augments.ui.damagedWarning')}</div>` : ""}
+             <div style="font-size:0.915rem; opacity:0.7; margin-top:4px">${T('Augments.ui.severWarning')}</div>
            </div>`
         : "";
 
       return `
-        <div style="padding:24px; font-family:'Lora',serif;">
-          <h2 style="color:var(--text-secondary-active); margin:0 0 4px;">${escapeHtml(name)}</h2>
-          <div style="opacity:0.7;">${escapeHtml(typeLabel)} &middot; ${escapeHtml(priceLabel(p.cost))}</div>
-          <div style="margin-top:18px;">
-            <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.effects')}</div>
+        <div style="padding:24px; font-family:'Lora',serif">
+          <h2 style="color:var(--text-secondary-active); margin:0 0 4px">${escapeHtml(name)}</h2>
+          <div style="opacity:0.7">${escapeHtml(typeLabel)} &middot; ${escapeHtml(priceLabel(p.cost))}</div>
+          <div style="margin-top:18px">
+            <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px">${T('Augments.ui.effects')}</div>
             ${effectsHTML}
           </div>
-          ${skillHTML ? `<div style="margin-top:18px;">
-            <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.grantedSkill')}</div>
+          ${skillHTML ? `<div style="margin-top:18px">
+            <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px">${T('Augments.ui.grantedSkill')}</div>
             ${skillHTML}
           </div>` : ""}
-          <div style="margin-top:18px;">
-            <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('Augments.ui.sockets')}</div>
+          <div style="margin-top:18px">
+            <div style="font-weight:bold; color:var(--text-secondary-active); border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px">${T('Augments.ui.sockets')}</div>
             ${socketsHTML}
           </div>
           ${fittedHTML}

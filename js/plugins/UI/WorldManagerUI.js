@@ -220,7 +220,7 @@
         return evt.category === 'artifact' || /artifact/i.test(evt.description || '');
     }
 
-    const ARTIFACT_BADGE = `<span class="wm-card-badge" style="color:#a07820; background:rgba(160,120,32,0.1); border:1px solid #a0782050;">${T('WorldManager.ui.artifactBadge')}</span>`;
+    const ARTIFACT_BADGE = `<span class="wm-card-badge" style="color:#a07820; background:rgba(160,120,32,0.1); border:1px solid #a0782050">${T('WorldManager.ui.artifactBadge')}</span>`;
 
     function renderHistoryEvents(events) {
         if (!events || events.length === 0) {
@@ -232,10 +232,10 @@
             const formattedDate = dateParts.length === 3 ? `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}` : evt.date;
             const artifactTag = isArtifactEvent(evt) ? ARTIFACT_BADGE : "";
             return `
-                <div class="wm-event-card" style="border-left:5px solid ${cv.color};">
+                <div class="wm-event-card" style="border-left:5px solid ${cv.color}">
                     <div class="wm-card-header">
                         <span class="wm-card-date">${escapeHtml(formattedDate)}</span>
-                        <span class="wm-card-badge" style="color:${cv.color}; background:${cv.bg}; border:1px solid ${cv.color}30;">${escapeHtml(evt.category)}</span>
+                        <span class="wm-card-badge" style="color:${cv.color}; background:${cv.bg}; border:1px solid ${cv.color}30">${escapeHtml(evt.category)}</span>
                         ${artifactTag}
                     </div>
                     <div class="wm-card-desc">${escapeHtml(evt.description)}</div>
@@ -260,19 +260,19 @@
             }
             const territories = controlled.slice(0, 3).join(", ") + (controlled.length > 3 ? "..." : "");
             html += `
-                <div style="border-bottom:1px dashed var(--scroll-thumb-hover-translucent-60, rgba(139,90,43,0.25)); padding-bottom:8px; margin-bottom:8px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                        <strong style="font-size:0.85rem; color:var(--text-primary-hover, #2b1c11);">${escapeHtml(name)}</strong>
-                        <span style="font-size:0.7rem; color:var(--text-disabled, #5c4b3d); font-family:'Courier Prime', monospace;">${escapeHtml(territories)}</span>
+                <div style="border-bottom:1px dashed var(--scroll-thumb-hover-translucent-60, rgba(139,90,43,0.25)); padding-bottom:8px; margin-bottom:8px">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px">
+                        <strong style="font-size:1.02rem; color:var(--text-primary-hover, #2b1c11)">${escapeHtml(name)}</strong>
+                        <span style="font-size:0.854rem; color:var(--text-disabled, #5c4b3d); font-family:'Courier Prime', monospace">${escapeHtml(territories)}</span>
                     </div>
                     <div class="cc-dossier-row">
                         <span class="cc-dossier-label">${T('WorldManager.ui.military')}</span>
-                        <div class="cc-progress-container"><div class="cc-progress-fill" style="width:${milPct}%; background:var(--text-secondary-active, #822d2d);"></div></div>
+                        <div class="cc-progress-container"><div class="cc-progress-fill" style="width:${milPct}%; background:var(--text-secondary-active, #822d2d)"></div></div>
                         <span class="cc-dossier-value">${Math.floor(data.military)}</span>
                     </div>
                     <div class="cc-dossier-row">
                         <span class="cc-dossier-label">${T('WorldManager.ui.economy')}</span>
-                        <div class="cc-progress-container"><div class="cc-progress-fill" style="width:${ecoPct}%; background:var(--text-text-alt-3, #2b5e3c);"></div></div>
+                        <div class="cc-progress-container"><div class="cc-progress-fill" style="width:${ecoPct}%; background:var(--text-text-alt-3, #2b5e3c)"></div></div>
                         <span class="cc-dossier-value">${Math.floor(data.economy)}</span>
                     </div>
                 </div>
@@ -938,7 +938,7 @@
                     </div>
                 </div>
                 <div id="wm-create-overlay" class="wm-modal-overlay wm-create-overlay"
-                     style="${creating ? "" : "display:none;"}"
+                     style="${creating ?"" : "display:none;"}"
                      onclick="if (event.target === this) SceneManager._scene.closeCreateModal();">
                     <div class="wm-modal wm-create-modal" role="dialog" aria-modal="true">
                         <div class="wm-create-modal-header">
@@ -970,10 +970,10 @@
                                 </div>
                             </div>
                             <div id="wm-enemy-floor" class="wm-enemy-floor" role="status"
-                                 style="${enemyLevelNoticeFor(start.year) ? "" : "display:none;"}"
+                                 style="${enemyLevelNoticeFor(start.year) ?"" : "display:none;"}"
                             >${escapeHtml(enemyLevelNoticeFor(start.year))}</div>
                             <div id="wm-earth-lost" class="wm-enemy-floor wm-earth-lost" role="status"
-                                 style="${earthLostNoticeFor(start.year) ? "" : "display:none;"}"
+                                 style="${earthLostNoticeFor(start.year) ?"" : "display:none;"}"
                             >${escapeHtml(earthLostNoticeFor(start.year))}</div>
                             <label>${T('WorldManagerUI.startingLevel')}</label>
                             <div class="wm-date-row">
@@ -994,7 +994,7 @@
                                 </div>
                             </div>
                             <div id="wm-population-note" class="wm-enemy-floor" role="status"
-                                 style="${populationNoteFor(populationMode) ? "" : "display:none;"}"
+                                 style="${populationNoteFor(populationMode) ?"" : "display:none;"}"
                             >${escapeHtml(populationNoteFor(populationMode))}</div>
                             <label>${T('WorldManagerUI.magicalLevel')}</label>
                             <div class="wm-date-row">
@@ -1006,11 +1006,11 @@
                                 </div>
                             </div>
                             <div id="wm-magic-note" class="wm-enemy-floor" role="status"
-                                 style="${magicalNoteFor(magicalLevel) ? "" : "display:none;"}"
+                                 style="${magicalNoteFor(magicalLevel) ?"" : "display:none;"}"
                             >${escapeHtml(magicalNoteFor(magicalLevel))}</div>
                             <label>${T('WorldManagerUI.seed')}</label>
-                            <div class="wm-seed-row" style="display:flex; gap:6px; align-items:center;">
-                                <input id="wm-seed-input" type="text" maxlength="40" style="flex:1;"
+                            <div class="wm-seed-row" style="display:flex; gap:6px; align-items:center">
+                                <input id="wm-seed-input" type="text" maxlength="40" style="flex:1"
                                        value="${escapeHtml(seedValue)}"
                                        placeholder="${escapeHtml(DEFAULT_WORLD_SEED)}" autocomplete="off">
                                 <button id="wm-seed-random-btn" type="button" class="wm-year-arrow"
@@ -1521,7 +1521,7 @@
         }
         #world-manage-container .wm-empty {
             opacity: 0.7;
-            font-style: italic;
+            font-style: normal;
             padding: 16px;
             text-align: center;
         }
@@ -1544,13 +1544,12 @@
         }
         #world-manage-container .wm-world-name {
             font-family: 'Lora', serif;
-            font-size: 1.1rem;
+            font-size: 1.265rem;
             color: var(--text-primary-hover);
         }
         #world-manage-container .wm-active-badge {
-            font-size: 0.7rem;
+            font-size: 0.854rem;
             border: 1px solid var(--text-primary-hover);
-            border-radius: 3px;
             padding: 1px 6px;
             margin-left: 10px;
             vertical-align: middle;
@@ -1566,7 +1565,7 @@
         }
         #world-manage-container .wm-create h3 { margin: 0 0 4px 0; }
         #world-manage-container .wm-create label {
-            font-size: 0.8rem;
+            font-size: 0.96rem;
             opacity: 0.8;
             margin-top: 4px;
             color: var(--text-muted-hover);
@@ -1578,7 +1577,7 @@
             border-radius: 3px;
             color: var(--text-muted-hover);
             font-family: 'Lora', serif;
-            font-size: 1rem;
+            font-size: 1.15rem;
             padding: 6px 8px;
             outline: none;
         }
@@ -1587,7 +1586,7 @@
             border-color: var(--border-focus-hover);
         }
         #world-manage-container .wm-status {
-            font-size: 0.8rem;
+            font-size: 0.96rem;
             min-height: 18px;
             color: var(--text-secondary-active, #822d2d);
         }
@@ -1626,7 +1625,7 @@
             width: 100%;
         }
         #world-manage-container .wm-diary-row .wm-diary-meta {
-            font-size: 0.78rem;
+            font-size: 0.952rem;
             opacity: 0.7;
         }
         /* The category rule on the left is what tells one record from the next;
@@ -1644,24 +1643,23 @@
         }
         #world-manage-container .wm-card-date {
             font-family: 'Courier Prime', monospace;
-            font-size: 0.8rem;
+            font-size: 0.96rem;
             color: var(--text-disabled, #5c4b3d);
         }
         #world-manage-container .wm-card-badge {
-            font-size: 0.7rem;
+            font-size: 0.854rem;
             padding: 1px 8px;
-            border-radius: 10px;
             text-transform: uppercase;
         }
         #world-manage-container .wm-card-desc {
-            font-size: 0.95rem;
+            font-size: 1.14rem;
             line-height: 1.5;
             color: var(--text-primary-hover);
         }
         #world-manage-container .wm-card-results {
             margin-top: 6px;
-            font-size: 0.8rem;
-            font-style: italic;
+            font-size: 0.96rem;
+            font-style: normal;
             color: var(--text-disabled, #5c4b3d);
         }
         /* Keyboard / controller focus */
@@ -1705,7 +1703,7 @@
             user-select: none;
         }
         #world-manage-container .wm-check-row .wm-check-box {
-            font-size: 1.15rem;
+            font-size: 1.322rem;
             line-height: 1;
             color: var(--text-primary-hover);
         }
@@ -1715,7 +1713,7 @@
         }
         #world-manage-container .wm-check-row .wm-check-label {
             font-family: 'Lora', serif;
-            font-size: 0.95rem;
+            font-size: 1.14rem;
             color: var(--text-primary-hover);
         }
         #world-manage-container .wm-check-row:hover {
@@ -1738,7 +1736,7 @@
         #world-manage-container .wm-enemy-floor {
             margin: 4px 0 2px;
             font-family: 'Lora', serif;
-            font-size: 0.82rem;
+            font-size: 0.984rem;
             line-height: 1.3;
             color: var(--text-highlight-active);
         }
@@ -1765,7 +1763,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             font-family: 'Lora', serif;
-            font-size: 1rem;
+            font-size: 1.15rem;
             font-weight: bold;
             color: var(--text-primary-hover);
         }
@@ -1773,7 +1771,7 @@
             background: none;
             border: none;
             color: var(--text-primary-hover);
-            font-size: 1.1rem;
+            font-size: 1.265rem;
             line-height: 1;
             padding: 2px 14px;
             cursor: pointer;
@@ -1808,7 +1806,7 @@
         }
         #world-manage-container .wm-modal-message {
             font-family: 'Lora', serif;
-            font-size: 0.95rem;
+            font-size: 1.14rem;
             line-height: 1.5;
             color: var(--text-primary-hover);
             margin: 8px 0 20px 0;
@@ -1853,7 +1851,7 @@
             background: none;
             border: none;
             color: var(--text-muted-hover);
-            font-size: 1.4rem;
+            font-size: 1.61rem;
             line-height: 1;
             cursor: pointer;
             padding: 0 4px;

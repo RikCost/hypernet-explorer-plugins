@@ -893,7 +893,7 @@
                 style.textContent = `
                     .companion-switcher { display:flex; align-items:center; gap:6px; }
                     .char-switch-hint {
-                        font-family:'Lora',serif; font-size:0.6rem; font-weight:bold;
+                        font-family:'Lora',serif; font-size:0.732rem; font-weight:bold;
                         line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
                         border:1.5px solid var(--text-primary-hover); border-radius:3px;
                         padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
@@ -1035,17 +1035,17 @@
 
             this._dndContainer.innerHTML = `
                 <div class="book-spread">
-                    <div class="left-page" style="position:relative;">
+                    <div class="left-page" style="position:relative">
                         <div class="page-header-bar">
                             <div class="back-button focusable">${T('SpecMenu.ui.back')}</div>
                             <h2 class="title">${T('SpecMenu.ui.specializations')}</h2>
                         </div>
-                        <div id="spec-category-row" style="display:flex; flex-wrap:wrap; gap:5px; padding:6px 0 10px;"></div>
-                        <div id="spec-list-content" style="display:flex; flex-direction:column; height:100%; overflow-y:auto;"></div>
+                        <div id="spec-category-row" style="display:flex; flex-wrap:wrap; gap:5px; padding:6px 0 10px"></div>
+                        <div id="spec-list-content" style="display:flex; flex-direction:column; height:100%; overflow-y:auto"></div>
                     </div>
-                    <div class="right-page" style="position:relative;">
-                        <div class="companion-switcher" id="spec-companion-row" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:8px;"></div>
-                        <div id="spec-detail-content" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto;"></div>
+                    <div class="right-page" style="position:relative">
+                        <div class="companion-switcher" id="spec-companion-row" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:8px"></div>
+                        <div id="spec-detail-content" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto"></div>
                     </div>
                 </div>
             `;
@@ -1085,10 +1085,10 @@
         }
 
         levelPipsHTML(level) {
-            let html = '<div class="spec-pips" style="display:flex; gap:3px;">';
+            let html = '<div class="spec-pips" style="display:flex; gap:3px">';
             for (let i = 1; i <= 5; i++) {
                 const filled = i <= level;
-                html += `<span style="width:9px; height:9px; border-radius:50%; display:inline-block; background:${filled ? 'var(--text-secondary-active)' : 'transparent'}; border:1.5px solid var(--text-secondary-active);"></span>`;
+                html += `<span style="width:9px; height:9px; border-radius:50%; display:inline-block; background:${filled ? 'var(--text-secondary-active)' : 'transparent'}; border:1.5px solid var(--text-secondary-active)"></span>`;
             }
             html += '</div>';
             return html;
@@ -1111,12 +1111,7 @@
                     const isSel = idx === this._categoryIndex;
                     const isFocused = isSel && this._activeArea === 'categories';
                     tabsHTML += `
-                        <div class="spec-category-tab" data-cat-idx="${idx}" style="
-                            font-family:'Lora',serif; font-size:0.78rem; padding:4px 10px; border-radius:12px; cursor:pointer;
-                            background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'};
-                            border:1.5px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'};
-                            color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'};
-                        ">${escapeHtml(categoryTabLabel(cat))}</div>`;
+                        <div class="spec-category-tab" data-cat-idx="${idx}" style="font-family:'Lora',serif; font-size:0.952rem; padding:4px 10px; border-radius:12px; cursor:pointer; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'}; border:1.5px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(categoryTabLabel(cat))}</div>`;
                 });
                 categoryRow.innerHTML = tabsHTML;
                 categoryRow.querySelectorAll('.spec-category-tab').forEach(tab => {
@@ -1174,24 +1169,24 @@
                 const isSel = idx === this._selectedIndex;
                 const isFocused = isSel && this._activeArea === 'list';
                 return `
-                    <div class="spec-row ${isFocused ? 'focused' : ''}" data-idx="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'transparent'};">
-                        <span style="font-family:'Lora',serif; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'};">${escapeHtml(window.Specializations.displayName(spec))}</span>
-                        <span style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
-                            <span style="font-size:0.7rem; opacity:0.7;">${spec.stat}</span>
+                    <div class="spec-row ${isFocused ? 'focused' : ''}" data-idx="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'transparent'}">
+                        <span style="font-family:'Lora',serif; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(window.Specializations.displayName(spec))}</span>
+                        <span style="display:flex; align-items:center; gap:8px; flex-shrink:0">
+                            <span style="font-size:0.854rem; opacity:0.7">${spec.stat}</span>
                             ${this.levelPipsHTML(level)}
                         </span>
                     </div>`;
             };
 
             let listHTML = '';
-            listHTML += `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:var(--text-secondary-active); padding:8px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15);">${T('SpecMenu.ui.trained')}</div>`;
+            listHTML += `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:var(--text-secondary-active); padding:8px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15)">${T('SpecMenu.ui.trained')}</div>`;
             if (trained.length === 0) {
-                listHTML += `<div style="opacity:0.6; font-style:italic; padding:8px 10px; font-family:'Lora',serif;">${T('SpecMenu.ui.noneTrained')}</div>`;
+                listHTML += `<div style="opacity:0.6; padding:8px 10px; font-family:'Lora',serif">${T('SpecMenu.ui.noneTrained')}</div>`;
             } else {
                 trained.forEach((spec, i) => { listHTML += rowHTML(spec, i); });
             }
             if (untrained.length > 0) {
-                listHTML += `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:var(--text-card-medium); padding:10px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15);">${T('SpecMenu.ui.untrained')}</div>`;
+                listHTML += `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:var(--text-card-medium); padding:10px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15)">${T('SpecMenu.ui.untrained')}</div>`;
                 untrained.forEach((spec, i) => { listHTML += rowHTML(spec, trained.length + i); });
             }
 
@@ -1214,7 +1209,7 @@
         }
 
         buildDetailHTML(actor, spec) {
-            if (!spec) return `<div style="opacity:0.6; font-style:italic; margin:20px;">${T('SpecMenu.ui.noneSelected')}</div>`;
+            if (!spec) return `<div style="opacity:0.6; margin:20px">${T('SpecMenu.ui.noneSelected')}</div>`;
 
             const level = actor.specializationLevel(spec.id);
             const levelName = window.Specializations.levelName(level);
@@ -1238,18 +1233,18 @@
                 const remaining = Math.max(0, Math.ceil((needed - have) * 10) / 10);
                 const nextName = window.Specializations.levelName(level + 1);
                 progressHTML = `
-                    <div style="margin-top:10px;">
-                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; opacity:0.8;">
+                    <div style="margin-top:10px">
+                        <div style="display:flex; justify-content:space-between; font-size:0.915rem; opacity:0.8">
                             <span>${T('SpecMenu.ui.towards', { level: escapeHtml(nextName) })}</span>
                             <span>${have} / ${needed}</span>
                         </div>
-                        <div style="height:6px; border-radius:3px; background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15); overflow:hidden;">
-                            <div style="height:100%; width:${pct}%; background:var(--text-secondary-active);"></div>
+                        <div style="height:6px; border-radius:3px; background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15); overflow:hidden">
+                            <div style="height:100%; width:${pct}%; background:var(--text-secondary-active)"></div>
                         </div>
-                        <div style="font-size:0.72rem; opacity:0.7; margin-top:3px;">${T('SpecMenu.ui.pointsToNext', { points: remaining, level: escapeHtml(nextName) })}</div>
+                        <div style="font-size:0.878rem; opacity:0.7; margin-top:3px">${T('SpecMenu.ui.pointsToNext', { points: remaining, level: escapeHtml(nextName) })}</div>
                     </div>`;
             } else {
-                progressHTML = `<div style="margin-top:10px; font-size:0.75rem; opacity:0.7;">${T('SpecMenu.ui.mastered')}</div>`;
+                progressHTML = `<div style="margin-top:10px; font-size:0.915rem; opacity:0.7">${T('SpecMenu.ui.mastered')}</div>`;
             }
 
             // Weapon proficiencies drive the equip-screen stat scaling, so spell
@@ -1265,10 +1260,10 @@
                         ? T('SpecializationMenu.weapon.raised', { weapon: escapeHtml(window.Specializations.displayName(spec)), pct: pct })
                         : T('SpecializationMenu.weapon.full', { weapon: escapeHtml(window.Specializations.displayName(spec)) }));
                 weaponHTML = `
-                    <div style="margin-top:14px; padding:8px 10px; border-radius:5px; background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15);">
-                        <div style="font-weight:bold; margin-bottom:2px;">${T('SpecializationMenu.weapon.title')}</div>
-                        <div style="opacity:0.85;">${note}</div>
-                        <div style="opacity:0.7; font-size:0.75rem; margin-top:4px;">${T('SpecializationMenu.weapon.trains')}</div>
+                    <div style="margin-top:14px; padding:8px 10px; border-radius:5px; background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15)">
+                        <div style="font-weight:bold; margin-bottom:2px">${T('SpecializationMenu.weapon.title')}</div>
+                        <div style="opacity:0.85">${note}</div>
+                        <div style="opacity:0.7; font-size:0.915rem; margin-top:4px">${T('SpecializationMenu.weapon.trains')}</div>
                     </div>`;
             }
 
@@ -1277,9 +1272,9 @@
                 // Every listed class grants the same head start here, so a wrapped
                 // name list reads better than 30-odd identical rows.
                 const names = Object.keys(spec.classStart);
-                classesHTML = `<div style="display:flex; flex-wrap:wrap; gap:4px;">` + names.map(cls => {
+                classesHTML = `<div style="display:flex; flex-wrap:wrap; gap:4px">` + names.map(cls => {
                     const active = cls === currentClassName;
-                    return `<span style="padding:1px 6px; border-radius:9px; font-size:0.72rem; border:1px solid var(--border-secondary-hover-translucent-15); ${active ? 'color:var(--text-secondary-active); font-weight:bold; background:var(--bg-tertiary-focus-translucent-45);' : ''}">${escapeHtml(cls)}</span>`;
+                    return `<span style="padding:1px 6px; border-radius:9px; font-size:0.878rem; border:1px solid var(--border-secondary-hover-translucent-15); ${active ? 'color:var(--text-secondary-active); font-weight:bold; background:var(--bg-tertiary-focus-translucent-45);' : ''}">${escapeHtml(cls)}</span>`;
                 }).join('') + `</div>`;
             } else if (spec.classStart) {
                 const rows = Object.entries(spec.classStart).map(([cls, lvl]) => {
@@ -1304,18 +1299,18 @@
             }
 
             return `
-                <div style="padding:24px; font-family:'Lora',serif;">
-                    <h2 style="color:var(--text-secondary-active); margin:0 0 4px;">${escapeHtml(window.Specializations.displayName(spec))}</h2>
-                    <div style="opacity:0.7; margin-bottom:2px;">${T('SpecMenu.ui.governingStat', { stat: spec.stat })}${spec.category ? ` &middot; ${escapeHtml(spec.category)}` : ''}</div>
-                    ${spec.description ? `<div style="margin:8px 0 0; line-height:1.5; opacity:0.9;">${escapeHtml(spec.description)}</div>` : ''}
-                    <div style="display:flex; align-items:center; gap:10px; margin:16px 0 0;">
-                        <span style="font-weight:bold;">${escapeHtml(levelName)}</span>
+                <div style="padding:24px; font-family:'Lora',serif">
+                    <h2 style="color:var(--text-secondary-active); margin:0 0 4px">${escapeHtml(window.Specializations.displayName(spec))}</h2>
+                    <div style="opacity:0.7; margin-bottom:2px">${T('SpecMenu.ui.governingStat', { stat: spec.stat })}${spec.category ? ` &middot; ${escapeHtml(spec.category)}` : ''}</div>
+                    ${spec.description ? `<div style="margin:8px 0 0; line-height:1.5; opacity:0.9">${escapeHtml(spec.description)}</div>` : ''}
+                    <div style="display:flex; align-items:center; gap:10px; margin:16px 0 0">
+                        <span style="font-weight:bold">${escapeHtml(levelName)}</span>
                         ${this.levelPipsHTML(level)}
                     </div>
                     ${progressHTML}
                     ${weaponHTML}
-                    ${classesHTML ? `<div style="margin-top:18px;"><div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('SpecMenu.ui.classes')}</div>${classesHTML}</div>` : ''}
-                    ${traitsHTML ? `<div style="margin-top:18px;"><div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('SpecMenu.ui.traits')}</div>${traitsHTML}</div>` : ''}
+                    ${classesHTML ? `<div style="margin-top:18px"><div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px">${T('SpecMenu.ui.classes')}</div>${classesHTML}</div>` : ''}
+                    ${traitsHTML ? `<div style="margin-top:18px"><div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px">${T('SpecMenu.ui.traits')}</div>${traitsHTML}</div>` : ''}
                 </div>
             `;
         }

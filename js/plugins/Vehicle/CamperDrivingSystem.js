@@ -2440,7 +2440,7 @@
                 d.style.cssText = `
                     position:absolute; background:rgba(10,6,3,0.72);
                     border:2px solid rgba(139,90,43,0.55); border-radius:6px;
-                    padding:10px 14px; color:#ecdcb9; font-size:14px;
+                    padding:10px 14px; color:#ecdcb9; font-size:17px;
                     line-height:1.5; ${style}
                 `;
                 d.innerHTML = html;
@@ -2448,11 +2448,11 @@
             };
 
             this._fuelPanel = panel(`
-                <div style="font-size:11px;font-weight:bold;color:#a1680d;letter-spacing:1px;margin-bottom:4px;">${T('CamperDrive.hud.fuel')}</div>
-                <div id="cds-fuel-bar-wrap" style="width:160px;height:10px;background:rgba(255,255,255,0.1);border-radius:5px;overflow:hidden;margin-bottom:4px;">
-                  <div id="cds-fuel-bar" style="height:100%;width:80%;background:#4caf50;border-radius:5px;transition:width 0.5s,background 0.5s;"></div>
+                <div style="font-size:14px; font-weight:bold; color:#a1680d; letter-spacing:1px; margin-bottom:4px">${T('CamperDrive.hud.fuel')}</div>
+                <div id="cds-fuel-bar-wrap" style="width:160px; height:10px; background:rgba(255,255,255,0.1); border-radius:5px; overflow:hidden; margin-bottom:4px">
+                  <div id="cds-fuel-bar" style="height:100%; width:80%; background:#4caf50; border-radius:5px; transition:width 0.5s,background 0.5s"></div>
                 </div>
-                <div id="cds-fuel-text" style="font-size:12px;color:#ecdcb9;">-- L / 100 L</div>
+                <div id="cds-fuel-text" style="font-size:15px; color:#ecdcb9">-- L / 100 L</div>
             `, 'top:16px;left:16px;min-width:200px;');
 
             // Top-right minimap mirroring the 2D world map (map 315). The camper
@@ -2461,9 +2461,9 @@
             this._miniW = MINI_W;
             this._miniH = MINI_H;
             this._miniPanel = panel(`
-                <div style="font-size:11px;font-weight:bold;color:#a1680d;letter-spacing:1px;margin-bottom:4px;">${T('CamperDrive.hud.map')}</div>
-                <canvas id="cds-minimap" width="${MINI_W}" height="${MINI_H}" style="display:block;width:${MINI_W}px;height:${MINI_H}px;border:1px solid rgba(139,90,43,0.45);border-radius:3px;"></canvas>
-                <div id="cds-map-coords" style="font-size:12px;color:#ecdcb9;text-align:right;margin-top:4px;">0, 0</div>
+                <div style="font-size:14px; font-weight:bold; color:#a1680d; letter-spacing:1px; margin-bottom:4px">${T('CamperDrive.hud.map')}</div>
+                <canvas id="cds-minimap" width="${MINI_W}" height="${MINI_H}" style="display:block; width:${MINI_W}px; height:${MINI_H}px; border:1px solid rgba(139,90,43,0.45); border-radius:3px"></canvas>
+                <div id="cds-map-coords" style="font-size:15px; color:#ecdcb9; text-align:right; margin-top:4px">0, 0</div>
             `, 'top:16px;right:16px;');
 
             this._mapImgReady = false;
@@ -2472,15 +2472,15 @@
             this._mapImg.src = 'img/pictures/worldmap.png';
 
             this._journeyPanel = panel(`
-                <div id="cds-dest-name" style="font-size:18px;font-weight:bold;color:#ffe8b0;text-align:center;margin-bottom:4px;">${this._destination || T('CamperDrive.hud.destination')}</div>
-                <div style="display:flex;justify-content:space-around;gap:20px;">
-                    <div style="text-align:center;">
-                        <div style="font-size:10px;color:#a1680d;letter-spacing:1px;">${T('CamperDrive.hud.time')}</div>
-                        <div id="cds-time-text" style="font-size:16px;color:#ecdcb9;">--:--</div>
+                <div id="cds-dest-name" style="font-size:21px; font-weight:bold; color:#ffe8b0; text-align:center; margin-bottom:4px">${this._destination || T('CamperDrive.hud.destination')}</div>
+                <div style="display:flex; justify-content:space-around; gap:20px">
+                    <div style="text-align:center">
+                        <div style="font-size:13px; color:#a1680d; letter-spacing:1px">${T('CamperDrive.hud.time')}</div>
+                        <div id="cds-time-text" style="font-size:19px; color:#ecdcb9">--:--</div>
                     </div>
-                    <div style="text-align:center;">
-                        <div style="font-size:10px;color:#a1680d;letter-spacing:1px;">${T('CamperDrive.hud.distance')}</div>
-                        <div id="cds-dist-text" style="font-size:16px;color:#ecdcb9;">-- km</div>
+                    <div style="text-align:center">
+                        <div style="font-size:13px; color:#a1680d; letter-spacing:1px">${T('CamperDrive.hud.distance')}</div>
+                        <div id="cds-dist-text" style="font-size:19px; color:#ecdcb9">-- km</div>
                     </div>
                 </div>
             `, 'bottom:20px;left:50%;transform:translateX(-50%);min-width:260px;text-align:center;');
@@ -2490,7 +2490,7 @@
                 position:absolute; bottom:20px; left:16px;
                 background:rgba(10,6,3,0.72); border:2px solid rgba(139,90,43,0.55);
                 border-radius:6px; padding:10px 14px; color:#ecdcb9;
-                font-family:'Lora',serif; font-size:13px; pointer-events:auto;
+                font-family:'Lora',serif; font-size:16px; pointer-events:auto;
                 cursor:pointer;
             `;
             // A short, stacked list of only the commands a player needs at a
@@ -2505,19 +2505,17 @@
                 ['ESC', T('CamperDrive.hud.cmdExit')]
             ];
             const cmdRowHTML = ([key, label]) => `
-                <div style="display:flex;align-items:center;gap:8px;">
-                    <span style="min-width:36px;text-align:center;background:rgba(139,90,43,0.35);
-                        border:1px solid rgba(161,104,13,0.8);border-radius:4px;padding:2px 6px;
-                        font-size:11px;font-weight:bold;color:#ffe8b0;letter-spacing:0.5px;">${key}</span>
-                    <span style="font-size:12px;color:#ecdcb9;">${label}</span>
+                <div style="display:flex; align-items:center; gap:8px">
+                    <span style="min-width:36px; text-align:center; background:rgba(139,90,43,0.35); border:1px solid rgba(161,104,13,0.8); padding:2px 6px; font-size:14px; font-weight:bold; color:#ffe8b0; letter-spacing:0.5px">${key}</span>
+                    <span style="font-size:15px; color:#ecdcb9">${label}</span>
                 </div>`;
             this._modePanel.innerHTML = `
-                <div id="cds-mode-btn">${T('CamperDrive.hud.view')} <span id="cds-mode-label" style="color:#4caf50;">${T('CamperDrive.viewMode.fpdrive')}</span> [TAB]</div>
-                <div style="margin-top:4px;">${T('CamperDrive.hud.mode')} <span id="cds-env-label" style="color:#7fd0ff;">${T('CamperDrive.envMode.road')}</span></div>
-                <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;">
+                <div id="cds-mode-btn">${T('CamperDrive.hud.view')} <span id="cds-mode-label" style="color:#4caf50">${T('CamperDrive.viewMode.fpdrive')}</span> [TAB]</div>
+                <div style="margin-top:4px">${T('CamperDrive.hud.mode')} <span id="cds-env-label" style="color:#7fd0ff">${T('CamperDrive.envMode.road')}</span></div>
+                <div style="margin-top:8px; display:flex; flex-direction:column; gap:5px">
                     ${CMD_ROWS.map(cmdRowHTML).join('')}
                 </div>
-                <div id="cds-controller-hint" style="margin-top:8px;font-size:11px;color:#7fd0ff;line-height:1.45;display:none;">
+                <div id="cds-controller-hint" style="margin-top:8px; font-size:14px; color:#7fd0ff; line-height:1.45; display:none">
                     ${T('CamperDrive.hud.controllerHint')}
                 </div>`;
             this._modePanel.onclick = () => {
@@ -2527,11 +2525,11 @@
             };
 
             this._speedPanel = panel(`
-                <div id="cds-speed-text" style="font-size:22px;font-weight:bold;color:#ecdcb9;text-align:center;">0 km/h</div>
-                <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:2px;">
-                    <span id="cds-gear-text" style="font-size:13px;font-weight:bold;color:#a1680d;min-width:14px;">N</span>
-                    <span style="display:inline-block;width:70px;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">
-                        <span id="cds-rpm-bar" style="display:block;height:100%;width:10%;background:#e8c840;"></span>
+                <div id="cds-speed-text" style="font-size:24px; font-weight:bold; color:#ecdcb9; text-align:center">0 km/h</div>
+                <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:2px">
+                    <span id="cds-gear-text" style="font-size:16px; font-weight:bold; color:#a1680d; min-width:14px">N</span>
+                    <span style="display:inline-block; width:70px; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden">
+                        <span id="cds-rpm-bar" style="display:block; height:100%; width:10%; background:#e8c840"></span>
                     </span>
                 </div>`,
                 'top:16px;left:50%;transform:translateX(-50%);min-width:130px;text-align:center;'
@@ -2541,14 +2539,14 @@
             // dim when locked, lit when unlocked, highlighted when active) plus the
             // vehicle condition and a live trip odometer.
             this._statusPanel = panel(`
-                <div style="display:flex;gap:9px;justify-content:center;align-items:center;font-size:11px;font-weight:bold;letter-spacing:0.5px;">
+                <div style="display:flex; gap:9px; justify-content:center; align-items:center; font-size:14px; font-weight:bold; letter-spacing:0.5px">
                     <span id="cds-ab-fly">${T('CamperDrive.hud.fly')}</span>
                     <span id="cds-ab-float">${T('CamperDrive.hud.float')}</span>
                     <span id="cds-ab-dive">${T('CamperDrive.hud.dive')}</span>
                 </div>
-                <div id="cds-status-meta" style="display:flex;gap:14px;justify-content:center;margin-top:5px;font-size:11px;color:#a1680d;">
-                    <span id="cds-cond-wrap">${T('CamperDrive.hud.cond')} <span id="cds-cond" style="color:#4caf50;">--</span></span>
-                    <span>${T('CamperDrive.hud.trip')} <span id="cds-trip" style="color:#ecdcb9;">0.0 km</span></span>
+                <div id="cds-status-meta" style="display:flex; gap:14px; justify-content:center; margin-top:5px; font-size:14px; color:#a1680d">
+                    <span id="cds-cond-wrap">${T('CamperDrive.hud.cond')} <span id="cds-cond" style="color:#4caf50">--</span></span>
+                    <span>${T('CamperDrive.hud.trip')} <span id="cds-trip" style="color:#ecdcb9">0.0 km</span></span>
                 </div>
             `, 'top:88px;left:50%;transform:translateX(-50%);min-width:150px;text-align:center;');
 
@@ -2562,8 +2560,8 @@
                 font-family:'Lora',serif; text-align:center; display:none; z-index:3;
             `;
             this._respawnHint.innerHTML = `
-                <div id="cds-respawn-reason" style="font-size:16px;color:#ffb3a0;margin-bottom:6px;">${T('CamperDrive.hud.camperStuck')}</div>
-                <div style="font-size:20px;font-weight:bold;color:#ffe8b0;">${T('CamperDrive.hud.pressRToRespawn', { key: '<span style="color:#ff7a55;">R</span>' })}</div>`;
+                <div id="cds-respawn-reason" style="font-size:19px; color:#ffb3a0; margin-bottom:6px">${T('CamperDrive.hud.camperStuck')}</div>
+                <div style="font-size:23px; font-weight:bold; color:#ffe8b0">${T('CamperDrive.hud.pressRToRespawn', { key: '<span style="color:#ff7a55">R</span>' })}</div>`;
 
             hud.appendChild(this._fuelPanel);
             hud.appendChild(this._miniPanel);

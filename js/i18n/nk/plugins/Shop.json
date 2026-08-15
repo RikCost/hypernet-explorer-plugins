@@ -81,10 +81,17 @@
   "ownedStock": "OWNED: {owned} STOCK: {stock}",
   "ownedCount": "OWNED: {owned}",
   "wornCount": "(WORN: {count})",
-  "sellHint": "CLICK ITEMS TA PUT DEM ON DA COUNTER, DEN SELL DA LOT IN ONE GO!",
+  "sellHint": "CLICK ITEMS, OR A CATEGORY HEADER, TA PUT DEM ON DA COUNTER, DEN SELL DA LOT IN ONE GO!",
+  "buyHint": "CLICK ITEMS, OR A CATEGORY HEADER, TA FILL DA BASKET, DEN BUY DA LOT IN ONE GO!",
   "selectionCount": "{lines} LINES, {units} ITEMS",
   "sellSelected": "SELL ALL ({lines})",
+  "buySelected": "BUY ALL ({lines})",
   "clearSelection": "CLEAR",
+  "uncategorized": "MISC STUFF",
+  "allCategories": "ALL",
+  "categorySummary": "{lines} LINES · {value} €",
+  "categoryToggleHint": "GRAB DA WHOLE CATEGORY",
+  "qtyStepHint": "SHIFT +10 · CTRL DA LOT",
   "elementN": "ELEMENT {id}",
   "stateN": "STATE {id}",
   "paramN": "PARAM {id}",
@@ -115,12 +122,6 @@
     "MDR",
     "FDR",
     "EXR"
-  ],
-  "sellCategories": [
-    "ITEMS",
-    "WEAPONS",
-    "ARMORS",
-    "KEY ITEMS"
   ],
   "scope": {
     "0": "NONE",

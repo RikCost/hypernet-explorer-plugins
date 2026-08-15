@@ -220,7 +220,7 @@
     // Luna palette the rest of the desktop uses.
     const S = {
         app: 'display:flex; flex-direction:column; height:100%; background:#ece9d8; ' +
-             "font-family:'Tahoma',sans-serif; font-size:12px; color:#1b1b1b;",
+             "font-family:'Tahoma',sans-serif; font-size:15px; color:#1b1b1b;",
         header: 'display:flex; align-items:center; gap:12px; padding:10px 14px; ' +
                 'background:linear-gradient(to bottom,#4a6a4f,#2f4a35); color:#fff; ' +
                 'border-bottom:2px solid #1d2f22;',
@@ -229,36 +229,36 @@
               'background:#dedbcf; border-right:1px solid #aca899;',
         searchWrap: 'padding:8px; border-bottom:1px solid #aca899;',
         search: 'width:100%; box-sizing:border-box; padding:4px 6px; border:1px solid #7f9db9; ' +
-                "background:#fcfcfc; font-family:'Tahoma',sans-serif; font-size:12px;",
+                "background:#fcfcfc; font-family:'Tahoma',sans-serif; font-size:15px;",
         list: 'flex:1; overflow-y:auto; padding:4px 0;',
-        groupHead: 'padding:5px 10px 3px; font-size:10px; font-weight:bold; letter-spacing:0.6px; ' +
+        groupHead: 'padding:5px 10px 3px; font-size:13px; font-weight:bold; letter-spacing:0.6px; ' +
                    'color:#4a6a4f; text-transform:uppercase;',
         row: 'display:flex; align-items:center; gap:6px; padding:4px 10px; cursor:pointer; ' +
              'border-left:4px solid transparent; user-select:none;',
         panel: 'flex:1; overflow-y:auto; padding:14px 16px; background:#f6f5ee; min-width:0;',
         status: 'display:flex; gap:16px; align-items:center; border-top:1px solid #aca899; ' +
-                'padding:4px 10px; background:#ece9d8; font-size:11px; color:#333;',
+                'padding:4px 10px; background:#ece9d8; font-size:14px; color:#333;',
         card: 'background:#fff; border:1px solid #cdc9bd; border-radius:3px; ' +
               'padding:10px 12px; margin-bottom:8px;',
-        h: 'margin:0 0 8px; font-size:13px; font-weight:bold; color:#2f4a35;',
+        h: 'margin:0 0 8px; font-size:16px; font-weight:bold; color:#2f4a35;',
         lore: 'background:#fffdf3; border:1px solid #d8d2be; border-left:3px solid #4a6a4f; ' +
               'border-radius:3px; padding:10px 12px; margin-bottom:8px; ' +
-              'font-style:italic; line-height:1.6; color:#33301f;',
+              'font-style: normal; line-height:1.6; color:#33301f;',
         btn: 'display:inline-block; padding:5px 12px; ' +
              'background:linear-gradient(to bottom,#fdfdfb,#dcd8cc); border:1px solid #8c887c; ' +
-             'border-radius:3px; cursor:pointer; font-size:12px; color:#111; user-select:none;',
-        note: 'color:#5a5a5a; font-size:11px; line-height:1.5;',
-        empty: 'padding:32px 16px; text-align:center; color:#6a6a6a; font-size:12px;'
+             'border-radius:3px; cursor:pointer; font-size:15px; color:#111; user-select:none;',
+        note: 'color:#5a5a5a; font-size:14px; line-height:1.5;',
+        empty: 'padding:32px 16px; text-align:center; color:#6a6a6a; font-size:15px;'
     };
 
     function rowsTable(rows) {
         if (!rows.length) return '';
-        return '<table style="width:100%; border-collapse:collapse;">' +
+        return '<table style="width:100%; border-collapse:collapse">' +
             rows.map(([k, v]) =>
                 '<tr>' +
                 '<td style="padding:2px 8px 2px 0; color:#5a5a5a; white-space:nowrap; ' +
-                'vertical-align:top; width:38%;">' + escapeHtml(k) + '</td>' +  // i18n-ignore  css
-                '<td style="padding:2px 0; vertical-align:top;">' + escapeHtml(v) + '</td>' +
+                'vertical-align:top; width:38%">' + escapeHtml(k) + '</td>' +  // i18n-ignore  css
+                '<td style="padding:2px 0; vertical-align:top">' + escapeHtml(v) + '</td>' +
                 '</tr>'
             ).join('') + '</table>';
     }
@@ -296,14 +296,14 @@
             const contentHTML = `
                 <div style="${S.app}">
                     <div style="${S.header}">
-                        <div style="filter:drop-shadow(0 1px 1px rgba(0,0,0,0.5));">${iconHTML(APP_ICON, 34)}</div>
-                        <div style="flex:1; min-width:0;">
-                            <div style="font-size:15px; font-weight:bold; letter-spacing:0.5px;">${T('ObjectIndex.banner')}</div>
-                            <div style="font-size:10px; opacity:0.85;">${T('ObjectIndex.subtitle')}</div>
+                        <div style="filter:drop-shadow(0 1px 1px rgba(0,0,0,0.5))">${iconHTML(APP_ICON, 34)}</div>
+                        <div style="flex:1; min-width:0">
+                            <div style="font-size:17px; font-weight:bold; letter-spacing:0.5px">${T('ObjectIndex.banner')}</div>
+                            <div style="font-size:13px; opacity:0.85">${T('ObjectIndex.subtitle')}</div>
                         </div>
-                        <div style="font-size:11px; text-align:right; opacity:0.9;">
+                        <div style="font-size:14px; text-align:right; opacity:0.9">
                             <div id="oi-count"></div>
-                            <div style="opacity:0.75;">${T('ObjectIndex.objectsCatalogued')}</div>
+                            <div style="opacity:0.75">${T('ObjectIndex.objectsCatalogued')}</div>
                         </div>
                     </div>
                     <div style="${S.body}">
@@ -318,7 +318,7 @@
                     </div>
                     <div style="${S.status}">
                         <span id="oi-status"></span>
-                        <span id="oi-message" style="margin-left:auto; color:#2f4a35;"></span>
+                        <span id="oi-message" style="margin-left:auto; color:#2f4a35"></span>
                     </div>
                 </div>
             `;
@@ -421,8 +421,8 @@
                         row.style.borderLeftColor = '#1d3f7a';
                     }
                     row.innerHTML =
-                        '<span style="flex-shrink:0;">' + iconHTML(item.iconIndex, 16) + '</span>' +
-                        '<span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' +
+                        '<span style="flex-shrink:0">' + iconHTML(item.iconIndex, 16) + '</span>' +
+                        '<span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap">' +
                         escapeHtml(nameOf(item)) + '</span>';
                     row.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -467,16 +467,16 @@
 
             // Identification
             html.push(
-                '<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">' +
-                '<div style="flex-shrink:0;">' + iconHTML(item.iconIndex, 40) + '</div>' +
-                '<div style="min-width:0;">' +
-                '<div style="font-size:17px; font-weight:bold; color:#1b1b1b;">' +
+                '<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px">' +
+                '<div style="flex-shrink:0">' + iconHTML(item.iconIndex, 40) + '</div>' +
+                '<div style="min-width:0">' +
+                '<div style="font-size:20px; font-weight:bold; color:#1b1b1b">' +
                 escapeHtml(nameOf(item)) + '</div>' +
                 '<div style="' + S.note + '">' + T('ObjectIndex.indexNo', { id: item.id }) +
                 (categoryOf(item) ? ' &middot; ' + escapeHtml(categoryOf(item)) : '') +
                 (rarity && rarity.name ? ' &middot; <span style="color:' +
                     escapeHtml(rarity.colorCode || '#555') + '; font-weight:bold; ' +  // i18n-ignore  css
-                    'text-shadow:0 0 1px rgba(0,0,0,0.55);">' + escapeHtml(rarity.name) + '</span>' : '') +  // i18n-ignore  css
+                    'text-shadow:0 0 1px rgba(0,0,0,0.55)">' + escapeHtml(rarity.name) + '</span>' : '') +  // i18n-ignore  css
                 '</div></div></div>'
             );
 
@@ -490,7 +490,7 @@
                 html.push(
                     '<div style="' + S.h + '">' + T('ObjectIndex.archiveDeclaration') + '</div>' +
                     '<div id="oi-lore" style="' + S.lore + '">' + escapeHtml(lore) + '</div>' +
-                    '<div id="oi-lore-actions" style="margin-bottom:10px;"></div>'
+                    '<div id="oi-lore-actions" style="margin-bottom:10px"></div>'
                 );
             }
 
@@ -528,7 +528,7 @@
             const recipe = recipeText(item);
             if (recipe) {
                 html.push('<div style="' + S.card + '"><div style="' + S.h + '">' + T('ObjectIndex.composition') + '</div>' +
-                          '<div style="line-height:1.6;">' + escapeHtml(recipe) + '</div></div>');
+                          '<div style="line-height:1.6">' + escapeHtml(recipe) + '</div></div>');
             }
 
             // Whatever tags remain, so nothing in the note is hidden

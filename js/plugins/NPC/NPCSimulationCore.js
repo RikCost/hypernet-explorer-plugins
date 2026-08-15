@@ -108,6 +108,12 @@
   // orders. Sibling call sites already null-check window.NPCShared at call time.
   const { nameHash, Rng: MiniRng } = window.NPCShared || {};
 
+  // Terrain NPCs are never sent to (water tag 3, tag 7), same rule the spawner
+  // and the pathfinder in NPCSystem.js apply.
+  const isBlockedTerrain = (x, y) => window.NPCShared
+    ? window.NPCShared.isBlockedTerrain(x, y)
+    : [3, 7].includes($gameMap.terrainTag(x, y));
+
   // Amounts are stored in gold and shown to the player in euros (100g = 1.00€).
   const fmtMoney = (gold) => window.NPCShared
     ? window.NPCShared.formatMoney(gold)
@@ -1204,7 +1210,8 @@
     const w = $gameMap.width(), h = $gameMap.height();
     for (let x = 0; x < w; x++) {
       for (let y = 0; y < h; y++) {
-        if ($gameMap.regionId(x, y) === REST_REGION && $gameMap.isPassable(x, y, 2)) tiles.push({ x, y });
+        if ($gameMap.regionId(x, y) === REST_REGION && $gameMap.isPassable(x, y, 2)
+            && !isBlockedTerrain(x, y)) tiles.push({ x, y });
       }
     }
     _restTilesCache = { mapId, tiles };
@@ -1222,7 +1229,7 @@
     for (let dy = -RADIUS; dy <= RADIUS; dy++) {
       for (let dx = -RADIUS; dx <= RADIUS; dx++) {
         const x = cx + dx, y = cy + dy;
-        if ($gameMap.isValid(x, y) && $gameMap.isPassable(x, y, 2)) {
+        if ($gameMap.isValid(x, y) && $gameMap.isPassable(x, y, 2) && !isBlockedTerrain(x, y)) {
           result.push({ x, y });
         }
       }

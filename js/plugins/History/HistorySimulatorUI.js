@@ -221,14 +221,14 @@
             const selected = rows[at];
             const listHTML = rows.length ? rows.map((d, idx) => `
                 <div class="event-card ${idx === at ? "focused" : ""}" data-disease-idx="${idx}"
-                     style="border-left:5px solid var(--border-muted-focus, #8b5a2b);">
+                     style="border-left:5px solid var(--border-muted-focus, #8b5a2b)">
                     <div class="card-header">
                         <span class="card-date">${d.name}</span>
                         <span class="card-badge">${T('Diseases.category.' + d.category)}</span>
                     </div>
                     <div class="card-desc">${d.desc}</div>
                 </div>
-            `).join("") : `<div style="text-align:center; font-style:italic; margin-top:50px;">${T('Diseases.ui.noLibrary')}</div>`;
+            `).join("") : `<div style="text-align:center; margin-top:50px">${T('Diseases.ui.noLibrary')}</div>`;
 
             const dossierHTML = selected && api && api.diseaseDossierHTML ? `
                 <div class="cc-dossier-card">
@@ -237,9 +237,9 @@
                 </div>` : "";
 
             container.innerHTML = `
-                <div class="cc-pockets-spread" style="max-width:1400px; max-height:900px;">
-                    <div class="cc-page cc-page-left" style="gap:4px;">
-                        <h2 class="cc-header-gothic" style="font-size:1.6rem; margin-bottom:10px;">${T('Diseases.ui.library')}</h2>
+                <div class="cc-pockets-spread">
+                    <div class="cc-page cc-page-left" style="gap:4px">
+                        <h2 class="cc-header-gothic" style="font-size:1.76rem; margin-bottom:10px">${T('Diseases.ui.library')}</h2>
                         <div id="history-timeline-list">${listHTML}</div>
                     </div>
                     <div class="cc-page cc-page-right">
@@ -320,7 +320,7 @@
                 return evt.category === 'artifact' || /artifact/i.test(evt.description || '');
             }
 
-            const artifactBadgeHTML = `<span class="card-badge" style="color:#a07820; background:rgba(160,120,32,0.1); border:1px solid #a0782050;">${T('History.ui.artifactBadge')}</span>`;
+            const artifactBadgeHTML = `<span class="card-badge" style="color:#a07820; background:rgba(160,120,32,0.1); border:1px solid #a0782050">${T('History.ui.artifactBadge')}</span>`;
 
             let dossierHTML = "";
             const selectedEvent = allEvents[currentIndex];
@@ -338,31 +338,31 @@
                             const isPos = trimmed.includes("+");
                             const badgeColor = isPos ? 'var(--text-text-alt-3, #2b5e3c)' : 'var(--text-secondary-active, #822d2d)';
                             const badgeBg = isPos ? 'rgba(43,94,60,0.08)' : 'rgba(130,45,45,0.08)';
-                            consequenceBadges += `<span class="card-badge" style="color:${badgeColor}; background:${badgeBg}; border:1px solid ${badgeColor}; margin-right:4px;">${trimmed}</span>`;
+                            consequenceBadges += `<span class="card-badge" style="color:${badgeColor}; background:${badgeBg}; border:1px solid ${badgeColor}; margin-right:4px">${trimmed}</span>`;
                         }
                     });
                 } else {
-                    consequenceBadges = `<span style="font-size:0.8rem; color:var(--text-disabled, #5c4b3d); font-style:italic;">${isIt ? "Nessuna variazione geopolitica rilevata." : "No geopolitical delta registered."}</span>`;
+                    consequenceBadges = `<span style="font-size:0.96rem; color:var(--text-disabled, #5c4b3d)">${isIt ? "Nessuna variazione geopolitica rilevata." : "No geopolitical delta registered."}</span>`;
                 }
 
                 dossierHTML = `
                     <div class="cc-dossier-card">
-                        <div style="display:flex; flex-direction:column; gap:10px; font-size:0.85rem; margin-bottom:12px;">
+                        <div style="display:flex; flex-direction:column; gap:10px; font-size:1.02rem; margin-bottom:12px">
                             <div class="cc-dossier-row">
                                 <span class="cc-dossier-label">${isIt ? "Data:" : "Date:"}</span>
-                                <span class="cc-dossier-value" style="font-family:'Courier Prime', monospace;">${formattedDate}</span>
+                                <span class="cc-dossier-value" style="font-family:'Courier Prime', monospace">${formattedDate}</span>
                             </div>
                             <div class="cc-dossier-row">
                                 <span class="cc-dossier-label">${isIt ? "Tipo:" : "Type:"}</span>
-                                <span class="cc-dossier-value" style="color:${cv.color}; text-transform:uppercase;">${selectedEvent.category}</span>
+                                <span class="cc-dossier-value" style="color:${cv.color}; text-transform:uppercase">${selectedEvent.category}</span>
                                 ${artifactTag}
                             </div>
                         </div>
-                        <div style="background:var(--bg-primary-hover-translucent-35, rgba(255,255,255,0.4)); border:1px dashed var(--scroll-thumb-hover-translucent-60, rgba(139,90,43,0.3)); padding:12px 14px; border-radius:4px; font-family:'Courier Prime', monospace; font-size:0.8rem; color:var(--text-muted-hover, #2b1c11); line-height:1.45; margin-bottom:12px;">
+                        <div style="background:var(--bg-primary-hover-translucent-35, rgba(255,255,255,0.4)); border:1px dashed var(--scroll-thumb-hover-translucent-60, rgba(139,90,43,0.3)); padding:12px 14px; border-radius:4px; font-family:'Courier Prime', monospace; font-size:0.96rem; color:var(--text-muted-hover, #2b1c11); line-height:1.45; margin-bottom:12px">
                             ${selectedEvent.description}
                         </div>
                         <div>
-                            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-disabled, #5c4b3d); font-weight:bold; margin-bottom:6px;">${isIt ? "CONSEGUENZE:" : "CONSEQUENCES:"}</div>
+                            <div style="font-size:0.915rem; text-transform:uppercase; color:var(--text-disabled, #5c4b3d); font-weight:bold; margin-bottom:6px">${isIt ? "CONSEGUENZE:" : "CONSEQUENCES:"}</div>
                             <div class="conseq-row">
                                 ${consequenceBadges}
                             </div>
@@ -377,7 +377,7 @@
                 // here instead of on every selection change.
                 let timelineHTML = "";
                 if (allEvents.length === 0) {
-                    timelineHTML = `<div style="text-align:center; color:var(--text-disabled, #5c4b3d); font-style:italic; margin-top:50px; font-size:0.95rem;">${isIt ? "Nessun record registrato..." : "No timeline records found."}</div>`;
+                    timelineHTML = `<div style="text-align:center; color:var(--text-disabled, #5c4b3d); margin-top:50px; font-size:1.14rem">${isIt ? "Nessun record registrato..." : "No timeline records found."}</div>`;
                 } else {
                     allEvents.forEach((evt, idx) => {
                         const focused = idx === currentIndex ? "focused" : "";
@@ -387,10 +387,10 @@
                         const artifactTag = isArtifactEvent(evt) ? artifactBadgeHTML : "";
 
                         timelineHTML += `
-                            <div class="event-card ${focused}" data-global-idx="${idx}" style="border-left:5px solid ${cv.color};">
+                            <div class="event-card ${focused}" data-global-idx="${idx}" style="border-left:5px solid ${cv.color}">
                                 <div class="card-header">
                                     <span class="card-date">${formattedDate}</span>
-                                    <span class="card-badge" style="color:${cv.color}; background:${cv.bg}; border:1px solid ${cv.color}30;">${evt.category}</span>
+                                    <span class="card-badge" style="color:${cv.color}; background:${cv.bg}; border:1px solid ${cv.color}30">${evt.category}</span>
                                     ${artifactTag}
                                 </div>
                                 <div class="card-desc">${evt.description}</div>
@@ -413,7 +413,7 @@
                 let standingsHTML = `
                     <div class="cc-dossier-card">
                         <h3 class="cc-subheader">${isIt ? "EQUILIBRIO DELLE HYPERPOTENZE" : "HYPERPOWERS BALANCE"}</h3>
-                        <div style="display:flex; flex-direction:column; gap:10px;">
+                        <div style="display:flex; flex-direction:column; gap:10px">
                 `;
 
                 powersList.slice(0, 3).forEach(([name, data]) => {
@@ -427,24 +427,24 @@
                     const territories = controlled.slice(0, 3).join(", ") + (controlled.length > 3 ? "..." : "");
 
                     standingsHTML += `
-                        <div style="border-bottom:1px dashed var(--scroll-thumb-hover-translucent-60, rgba(139,90,43,0.25)); padding-bottom:8px;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                                <strong style="font-size:0.85rem; color:var(--text-primary-hover, #2b1c11);">${name}</strong>
-                                <span style="font-size:0.7rem; color:var(--text-disabled, #5c4b3d); font-family:'Courier Prime', monospace;">${territories}</span>
+                        <div style="border-bottom:1px dashed var(--scroll-thumb-hover-translucent-60, rgba(139,90,43,0.25)); padding-bottom:8px">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px">
+                                <strong style="font-size:1.02rem; color:var(--text-primary-hover, #2b1c11)">${name}</strong>
+                                <span style="font-size:0.854rem; color:var(--text-disabled, #5c4b3d); font-family:'Courier Prime', monospace">${territories}</span>
                             </div>
                             <div class="cc-dossier-row">
                                 <span class="cc-dossier-label">${T('History.ui.military')}</span>
                                 <div class="cc-progress-container">
-                                    <div class="cc-progress-fill" style="width:${milPct}%; background:var(--text-secondary-active, #822d2d);"></div>
+                                    <div class="cc-progress-fill" style="width:${milPct}%; background:var(--text-secondary-active, #822d2d)"></div>
                                 </div>
-                                <span class="cc-dossier-value" style="color:var(--text-secondary-active, #822d2d);">${Math.floor(data.military)}</span>
+                                <span class="cc-dossier-value" style="color:var(--text-secondary-active, #822d2d)">${Math.floor(data.military)}</span>
                             </div>
                             <div class="cc-dossier-row">
                                 <span class="cc-dossier-label">${T('History.ui.economy')}</span>
                                 <div class="cc-progress-container">
-                                    <div class="cc-progress-fill" style="width:${ecoPct}%; background:var(--text-text-alt-3, #2b5e3c);"></div>
+                                    <div class="cc-progress-fill" style="width:${ecoPct}%; background:var(--text-text-alt-3, #2b5e3c)"></div>
                                 </div>
-                                <span class="cc-dossier-value" style="color:var(--text-text-alt-3, #2b5e3c);">${Math.floor(data.economy)}</span>
+                                <span class="cc-dossier-value" style="color:var(--text-text-alt-3, #2b5e3c)">${Math.floor(data.economy)}</span>
                             </div>
                         </div>
                     `;
@@ -455,9 +455,9 @@
                 const backLabel = T('History.ui.back');
                 const continueLabel = T('History.ui.continue');
                 container.innerHTML = `
-                    <div class="cc-pockets-spread" style="max-width:1400px; max-height:900px;">
-                        <div class="cc-page cc-page-left" style="gap:4px;">
-                            <h2 class="cc-header-gothic" style="font-size:1.6rem; margin-bottom:10px;">${titleText}</h2>
+                    <div class="cc-pockets-spread">
+                        <div class="cc-page cc-page-left" style="gap:4px">
+                            <h2 class="cc-header-gothic" style="font-size:1.76rem; margin-bottom:10px">${titleText}</h2>
                             <div id="history-timeline-list">
                                 ${timelineHTML}
                             </div>

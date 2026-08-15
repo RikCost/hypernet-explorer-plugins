@@ -1273,7 +1273,7 @@
     // on the add-member prompt for this member.
     finish() {
       if (!Session.active) return;
-      // The four chosen traits live on the actor; the panel reads them off the
+      // The chosen traits live on the actor; the panel reads them off the
       // society profile, so they are mirrored across one last time. Money and
       // the starting kit are handed out by the wizard at the end of creation,
       // so nothing is granted here.
@@ -1353,7 +1353,7 @@
 
   Scene_NPCEmpathize.prototype._buildCCEditorHTML = function () {
     const actor = editedActor();
-    if (!actor) return `<p style="opacity:0.6;font-style:italic;">${esc(T("detailed.unavailable"))}</p>`;
+    if (!actor) return `<p style="opacity:0.6;font-style: normal;">${esc(T("detailed.unavailable"))}</p>`;
 
     let html = `<div class="npc-profile-name">${esc(actor.name())}</div>` +
       `<div class="npc-profile-sub">${esc(T("detailed.title"))}</div>` +
@@ -1391,7 +1391,7 @@
     // which is the only place those points are ever shown.
     if (data.note) html += `<div class="npc-cc-note">${esc(data.note)}</div>`;
     if (!data.options.length) {
-      return html + `<p style="opacity:0.6;font-style:italic;">${esc(T("detailed.noOptions"))}</p>`;
+      return html + `<p style="opacity:0.6;font-style: normal;">${esc(T("detailed.noOptions"))}</p>`;
     }
     data.options.forEach((option) => {
       // Town and nation keys carry spaces and apostrophes, so the key travels

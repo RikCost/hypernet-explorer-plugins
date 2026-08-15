@@ -200,7 +200,7 @@
                     width: 60%;
                     max-width: 400px;
                     padding: 10px;
-                    font-size: 16px;
+                    font-size: 19px;
                     border: 2px solid #3498db;
                     border-radius: 5px;
                     background: #34495e;
@@ -213,11 +213,11 @@
                 }
                 .search-info {
                     margin-top: 8px;
-                    font-size: 14px;
+                    font-size: 17px;
                     color: #bdc3c7;
                 }
                 .section-header {
-                    font-size: 18px;
+                    font-size: 21px;
                     font-weight: bold;
                     color: #e74c3c;
                     margin: 20px 0 10px 0;
@@ -268,11 +268,11 @@
                     align-items: center;
                     justify-content: center;
                     color: #bdc3c7;
-                    font-size: 12px;
+                    font-size: 15px;
                     text-align: center;
                 }
                 .map-info {
-                    font-size: 14px;
+                    font-size: 17px;
                 }
                 .map-name {
                     font-weight: bold;
@@ -280,12 +280,12 @@
                 }
                 .map-id {
                     color: #bdc3c7;
-                    font-size: 12px;
+                    font-size: 15px;
                 }
                 .loading {
                     text-align: center;
                     padding: 50px;
-                    font-size: 18px;
+                    font-size: 21px;
                     color: #3498db;
                 }
                 .error {
@@ -303,8 +303,7 @@
                     background: #e74c3c;
                     color: white;
                     padding: 2px 6px;
-                    border-radius: 3px;
-                    font-size: 10px;
+                    font-size: 13px;
                     font-weight: bold;
                 }
                 .map-item {
@@ -312,7 +311,7 @@
                 }
             </style>
             <div class="header">
-                <button id="debugBackButton" style="position:absolute; top:15px; left:15px; padding:8px 16px; font-size:14px; font-weight:bold; background:#e74c3c; color:white; border:none; border-radius:5px; cursor:pointer;">Back (Esc)</button>
+                <button id="debugBackButton" style="position:absolute; top:15px; left:15px; padding:8px 16px; font-size:17px; font-weight:bold; background:#e74c3c; color:white; border:none; border-radius:5px; cursor:pointer">Back (Esc)</button>
                 <h1>Debug Map Teleporter</h1>
                 <div class="search-container">
                     <input type="text" id="mapFilter" placeholder="Search maps by name or ID..." />

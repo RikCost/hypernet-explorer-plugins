@@ -1477,7 +1477,9 @@
     return {
       disease: d,
       days,
-      known: days >= (ph.window || 0),
+      // Time tells the party what they are carrying eventually; a doctor tells
+      // them now. Either way, once an illness has a name it keeps it.
+      known: !!entry.diagnosed || days >= (ph.window || 0),
       symptomatic: days >= (ph.incubation || 0),
       infectivity: days < (ph.incubation || 0) ? 0
         : (days >= (ph.peakStart || 0) && days <= (ph.peakEnd != null ? ph.peakEnd : 9999)

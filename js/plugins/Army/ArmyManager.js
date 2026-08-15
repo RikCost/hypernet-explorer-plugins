@@ -82,9 +82,9 @@ function armyT(key) {
 function armyIconHTML(iconIndex, size = 18) {
   const x = (iconIndex % 16) * size;
   const y = Math.floor(iconIndex / 16) * size;
-  return `<span style="display:inline-block;vertical-align:middle;width:${size}px;height:${size}px;` +
-    `background-image:url('img/system/IconSet.png');background-size:${size * 16}px auto;` +
-    `background-position:-${x}px -${y}px;image-rendering:pixelated;flex-shrink:0;"></span>`;
+  return `<span style="display:inline-block; vertical-align:middle; width:${size}px; height:${size}px; ` +
+    `background-image:url('img/system/IconSet.png'); background-size:${size * 16}px auto; ` +
+    `background-position:-${x}px -${y}px; image-rendering:pixelated; flex-shrink:0"></span>`;
 }
 
 function armyRoleIconHTML(role) {
@@ -895,12 +895,12 @@ Scene_Army.prototype.refreshUIDOM = function () {
       factionRows += `
             <tr>
                 <td>${f.name}</td>
-                <td style="text-align:right; font-weight:bold;">${f.count}</td>
+                <td style="text-align:right; font-weight:bold">${f.count}</td>
             </tr>
         `;
     });
   } else {
-    factionRows = `<tr><td colspan="2" style="text-align:center; font-style:italic; color:var(--text-card-medium);">${T('ArmyManager.noRegiments')}</td></tr>`;
+    factionRows = `<tr><td colspan="2" style="text-align:center; color:var(--text-card-medium)">${T('ArmyManager.noRegiments')}</td></tr>`;
   }
 
   // Troops Roster (Right Page)
@@ -914,15 +914,15 @@ Scene_Army.prototype.refreshUIDOM = function () {
       const roleIcon = armyRoleIconHTML(troop.role);
 
       rosterHTML += `
-            <div class="choice-card ${isSelected ? 'selected' : ''}" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px;" onclick="SceneManager._scene.clickTroop(${idx})">
+            <div class="choice-card ${isSelected ? 'selected' : ''}" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px" onclick="SceneManager._scene.clickTroop(${idx})">
                 <span class="role-badge">${roleIcon} ${name}</span>
-                <span style="font-size:0.85em; font-family:'Lora', serif; color:var(--text-card-medium);">€${euros}/w</span>
+                <span style="font-size:0.892em; font-family:'Lora', serif; color:var(--text-card-medium)">€${euros}/w</span>
             </div>
         `;
     });
   } else {
     rosterHTML = `
-        <div style="text-align:center; color:var(--text-card-medium); font-style:italic; font-size:0.9em; padding-top:40px;">
+        <div style="text-align:center; color:var(--text-card-medium); font-size:0.928em; padding-top:40px">
             ${T('ArmyManager.emptyArmy')}
         </div>
     `;
@@ -939,7 +939,7 @@ Scene_Army.prototype.refreshUIDOM = function () {
     const factionName = faction ? armyT(faction.name) : T('ArmyManager.independent');
 
     const leaderText = troop.hasLeader ? `
-        <div style="margin-bottom: 6px; font-family:'Lora', serif; font-size:0.85em; color:var(--text-text-alt-17); font-weight:bold; text-align:center;">
+        <div style="margin-bottom: 6px; font-family:'Lora', serif; font-size:0.892em; color:var(--text-text-alt-17); font-weight:bold; text-align:center">
              ${T('ArmyManager.ledByCommander', { name: troop.leaderName })}
         </div>
     ` : "";
@@ -960,40 +960,40 @@ Scene_Army.prototype.refreshUIDOM = function () {
       const bonus = st.val - st.base;
       const bonusSpan = bonus > 0 ? `<span class="stat-bonus">(+${bonus})</span>` : "";
       statsGrid += `
-            <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-primary-hover-translucent-15); padding:4px 0;">
-                <span style="font-weight:bold; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:0.95em;">${st.label}:</span>
-                <span style="font-family:'Lora', serif; font-size:0.9em; font-weight:bold; color:var(--text-muted-hover);">${st.val} ${bonusSpan}</span>
+            <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-primary-hover-translucent-15); padding:4px 0">
+                <span style="font-weight:bold; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:0.964em">${st.label}:</span>
+                <span style="font-family:'Lora', serif; font-size:0.928em; font-weight:bold; color:var(--text-muted-hover)">${st.val} ${bonusSpan}</span>
             </div>
         `;
     });
 
     dossierHTML = `
-        <div class="army-card" style="margin-top: 15px; animation: fadeIn 0.3s ease;">
-            <h3 style="margin:0 0 4px 0; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:1.15em; text-align:center; font-weight:bold;">
+        <div class="army-card" style="margin-top: 15px; animation: fadeIn 0.3s ease">
+            <h3 style="margin:0 0 4px 0; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:1.142em; text-align:center; font-weight:bold">
                 ${name}
             </h3>
-            <div style="font-style:italic; font-size:0.82em; color:var(--text-card-medium); text-align:center; margin-bottom:8px;">
+            <div style="font-size:0.87em; color:var(--text-card-medium); text-align:center; margin-bottom:8px">
                 ${T('ArmyManager.regimentLabel')} ${factionName} &middot; ${roleLabel}
             </div>
 
             ${leaderText}
 
-            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px 16px;">
+            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px 16px">
                 ${statsGrid}
             </div>
             
-            <div style="display:flex; justify-content:space-between; margin-top:10px; padding-top:6px; border-top:1px solid var(--border-primary-hover-translucent-15); font-family:'Lora', serif; font-size:0.82em;">
+            <div style="display:flex; justify-content:space-between; margin-top:10px; padding-top:6px; border-top:1px solid var(--border-primary-hover-translucent-15); font-family:'Lora', serif; font-size:0.87em">
                 <span>${T('ArmyManager.hiringBounty')} <strong>€${(troop.hiringCost / 100).toFixed(2)}</strong></span>
                 <span>${T('ArmyManager.upkeep')} <strong>€${(troop.weeklyCost / 100).toFixed(2)}${T('ArmyManager.perWeekShort')}</strong></span>
             </div>
-            <div style="text-align:center; margin-top:8px; font-size:0.8em; color:var(--accent-red-2); font-weight:bold;">
+            <div style="text-align:center; margin-top:8px; font-size:0.856em; color:var(--accent-red-2); font-weight:bold">
                 ${T('ArmyManager.pressOkToRelease')}
             </div>
         </div>
     `;
   } else {
     dossierHTML = `
-        <div class="prophecy-pane" style="text-align:center; color:var(--text-card-medium); font-style:italic; font-size:0.88em; margin-top:15px; min-height:140px;">
+        <div class="prophecy-pane" style="text-align:center; color:var(--text-card-medium); font-size:0.914em; min-height:140px">
             ${T('ArmyManager.dossierHint')}
         </div>
     `;
@@ -1020,44 +1020,44 @@ Scene_Army.prototype.refreshUIDOM = function () {
   this._dndContainer.innerHTML = `
     <div class="book-spread">
         <!-- Left Page: Overview & Commands -->
-        <div class="left-page" style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div class="left-page" style="display:flex; justify-content:space-between">
             <div>
                 <div class="page-header-bar">
                     <div class="back-button focusable" onclick="SceneManager._scene.leaveCamp()">${T('ArmyManager.back')}</div>
                     <h2 class="title">${T('ArmyManager.armyOverview')}</h2>
                 </div>
 
-                <div class="vitals-box" style="padding:10px 14px; background:var(--bg-primary-hover-translucent-35); border:1px solid var(--border-primary-hover-translucent-15); margin-bottom:12px;">
-                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.85em; color:var(--text-muted-hover); margin-bottom:4px;">
+                <div class="vitals-box" style="background:var(--bg-primary-hover-translucent-35); margin-bottom:12px">
+                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.892em; color:var(--text-muted-hover); margin-bottom:4px">
                         <span>${T('ArmyManager.companyStrength')}</span>
-                        <span style="font-weight:bold;">${T('ArmyManager.troopsOf', { count: troopCount, max: maxTroops })}</span>
+                        <span style="font-weight:bold">${T('ArmyManager.troopsOf', { count: troopCount, max: maxTroops })}</span>
                     </div>
-                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.85em; color:var(--text-muted-hover); margin-bottom:4px;">
+                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.892em; color:var(--text-muted-hover); margin-bottom:4px">
                         <span>${T('ArmyManager.weeklyBaseUpkeep')}</span>
-                        <span style="font-weight:bold; color:var(--text-cost-bad);">€${weeklyEuros}</span>
+                        <span style="font-weight:bold; color:var(--text-cost-bad)">€${weeklyEuros}</span>
                     </div>
-                    <div style="font-family:'Lora', serif; font-size:0.82em; color:var(--text-primary-hover); font-weight:bold; display:flex; justify-content:space-between; margin-top:6px;">
+                    <div style="font-family:'Lora', serif; font-size:0.87em; color:var(--text-primary-hover); font-weight:bold; display:flex; justify-content:space-between; margin-top:6px">
                         <span>${T('ArmyManager.militaryCoherence')}</span>
-                        <span style="color:${coherenceColor};">${coherence}%</span>
+                        <span style="color:${coherenceColor}">${coherence}%</span>
                     </div>
                     <div class="coherence-bar-outer">
-                        <div class="coherence-bar-fill" style="width: ${coherence}%; background: ${coherenceColor};"></div>
+                        <div class="coherence-bar-fill" style="width: ${coherence}%; background: ${coherenceColor}"></div>
                     </div>
                 </div>
 
-                <div class="choices-scroll" style="margin-bottom:12px;">
+                <div class="choices-scroll" style="margin-bottom:12px">
                     ${commandsHTML}
                 </div>
 
-                <div class="army-card" style="padding: 8px 12px; max-height:160px; overflow-y:auto;">
-                    <h4 style="margin:0 0 4px 0; font-family:'Lora', serif; font-size:0.9em; color:var(--text-primary-hover); border-bottom:1px solid var(--border-primary-hover-translucent-15); padding-bottom:3px; font-weight:bold;">
+                <div class="army-card" style="padding: 8px 12px; max-height:160px; overflow-y:auto">
+                    <h4 style="margin:0 0 4px 0; font-family:'Lora', serif; font-size:0.928em; color:var(--text-primary-hover); border-bottom:1px solid var(--border-primary-hover-translucent-15); padding-bottom:3px; font-weight:bold">
                         ${T('ArmyManager.regimentalBreakdown')}
                     </h4>
                     <table class="army-table">
                         <thead>
                             <tr>
                                 <th>${T('ArmyManager.factionRegiment')}</th>
-                                <th style="text-align:right;">${T('ArmyManager.troops')}</th>
+                                <th style="text-align:right">${T('ArmyManager.troops')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1067,16 +1067,16 @@ Scene_Army.prototype.refreshUIDOM = function () {
                 </div>
             </div>
 
-            <div style="font-family:'Lora', serif; font-size:0.8em; color:var(--text-card-medium); font-style:italic; text-align:center; border-top:1px dashed var(--border-primary-hover-translucent-15); padding-top:6px; margin-top:auto; margin-bottom:0;">
+            <div style="font-family:'Lora', serif; font-size:0.856em; color:var(--text-card-medium); text-align:center; border-top:1px dashed var(--border-primary-hover-translucent-15); padding-top:6px; margin-top:auto; margin-bottom:0">
                 ${T('ArmyManager.manualFooter')}
             </div>
         </div>
 
         <!-- Right Page: Roster & Dossier -->
-        <div class="right-page" style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+        <div class="right-page" style="display:flex; justify-content:space-between; height:100%">
             <div>
                 
-                <div class="choices-scroll" style="max-height:210px; overflow-y:auto; padding-right:4px;">
+                <div class="choices-scroll" style="max-height:210px; overflow-y:auto; padding-right:4px">
                     ${rosterHTML}
                 </div>
 
@@ -1267,25 +1267,25 @@ Scene_BuyTroops.prototype.buildShellHTML = function () {
   this._dndContainer.innerHTML = `
     <div class="book-spread">
         <!-- Left Page: Recruitment Station -->
-        <div class="left-page" style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div class="left-page" style="display:flex; justify-content:space-between">
             <div>
                 <div class="page-header-bar">
                     <div class="back-button focusable" onclick="SceneManager._scene.leaveCamp()">${T('ArmyManager.back')}</div>
                     <h2 class="title">${T('ArmyManager.recruitCamp')}</h2>
                 </div>
 
-                <div style="font-family: 'Lora', serif; font-size: 0.85em; color: var(--text-primary-hover); font-style: italic; background: var(--bg-primary-hover-translucent-35); border: 1px dashed var(--text-primary-hover); padding: 10px 14px; border-radius: 4px; margin-bottom: 12px; line-height: 1.4; text-align: justify;">
+                <div style="font-family: 'Lora', serif; font-size: 0.892em; color: var(--text-primary-hover); background: var(--bg-primary-hover-translucent-35); border: 1px dashed var(--text-primary-hover); padding: 10px 14px; border-radius: 4px; margin-bottom: 12px; line-height: 1.4; text-align: justify">
                     "${T('ArmyManager.recruitBlurb')}"
                 </div>
 
-                <div class="vitals-box" style="padding:10px 14px; background:var(--bg-primary-hover-translucent-35); border:1px solid var(--border-primary-hover-translucent-15); margin-bottom:12px;">
-                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.9em; color:var(--text-muted-hover); margin-bottom:4px;">
+                <div class="vitals-box" style="background:var(--bg-primary-hover-translucent-35); margin-bottom:12px">
+                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.928em; color:var(--text-muted-hover); margin-bottom:4px">
                         <span>${T('ArmyManager.companyChest')}</span>
-                        <span id="bt-gold" style="font-weight:bold; color:var(--text-cost-ok);">€${($gameParty.gold() / 100).toFixed(2)}</span>
+                        <span id="bt-gold" style="font-weight:bold; color:var(--text-cost-ok)">€${($gameParty.gold() / 100).toFixed(2)}</span>
                     </div>
-                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.9em; color:var(--text-muted-hover);">
+                    <div style="display:flex; justify-content:space-between; font-family:'Lora', serif; font-size:0.928em; color:var(--text-muted-hover)">
                         <span>${T('ArmyManager.regimentLimit')}</span>
-                        <span id="bt-troopcount" style="font-weight:bold;">${T('ArmyManager.troopsOf', { count: troopCount, max: maxTroops })}</span>
+                        <span id="bt-troopcount" style="font-weight:bold">${T('ArmyManager.troopsOf', { count: troopCount, max: maxTroops })}</span>
                     </div>
                 </div>
 
@@ -1293,18 +1293,18 @@ Scene_BuyTroops.prototype.buildShellHTML = function () {
                 <div id="bt-feedback"></div>
             </div>
 
-            <div style="font-family:'Lora', serif; font-size:0.8em; color:var(--text-card-medium); font-style:italic; text-align:center; border-top:1px dashed var(--border-primary-hover-translucent-15); padding-top:6px; margin-top:auto; margin-bottom:0;">
+            <div style="font-family:'Lora', serif; font-size:0.856em; color:var(--text-card-medium); text-align:center; border-top:1px dashed var(--border-primary-hover-translucent-15); padding-top:6px; margin-top:auto; margin-bottom:0">
                 ${T('ArmyManager.escToCampPockets')}
             </div>
         </div>
 
         <!-- Right Page: Available Troops -->
-        <div class="right-page" style="display:flex; flex-direction:column; height:100%;">
-            <div class="page-header-bar" style="margin-bottom:6px;">
+        <div class="right-page" style="display:flex; height:100%">
+            <div class="page-header-bar" style="margin-bottom:6px">
                 <h2 class="title">${T('ArmyManager.availableTroops')}</h2>
             </div>
-            <div id="bt-list-count" style="font-family:'Lora', serif; font-size:0.78em; color:var(--text-card-medium); font-style:italic; text-align:center; margin-bottom:8px;"></div>
-            <div class="choices-scroll" id="bt-list" style="flex:1; min-height:0; overflow-y:auto; padding-right:4px; margin-top:0;"></div>
+            <div id="bt-list-count" style="font-family:'Lora', serif; font-size:0.842em; color:var(--text-card-medium); text-align:center; margin-bottom:8px"></div>
+            <div class="choices-scroll" id="bt-list" style="flex:1; min-height:0; overflow-y:auto; padding-right:4px; margin-top:0"></div>
         </div>
     </div>
   `;
@@ -1330,7 +1330,7 @@ Scene_BuyTroops.prototype.renderList = function () {
 
   if (list.length === 0) {
     listEl.innerHTML = `
-        <div style="text-align:center; font-style:italic; color:var(--text-card-medium); padding-top:40px;">
+        <div style="text-align:center; color:var(--text-card-medium); padding-top:40px">
             ${T('ArmyManager.noLocalTroops')}
         </div>
     `;
@@ -1350,16 +1350,16 @@ Scene_BuyTroops.prototype.renderList = function () {
 
     itemsHTML += `
         <div class="choice-card ${isSelected ? 'selected' : ''}" data-index="${index}" title="${hint}"
-             style="display:flex; justify-content:space-between; align-items:center; opacity: ${canAfford ? 1 : 0.65};"
+             style="display:flex; justify-content:space-between; align-items:center; opacity: ${canAfford ? 1 : 0.65}"
              onclick="SceneManager._scene.clickShopItem(${index})">
-            <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+            <div style="display:flex; align-items:center; gap:10px; min-width:0">
                 ${roleIcon}
-                <div style="min-width:0;">
-                    <div style="font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:${canAfford ? 'var(--text-primary-hover)' : 'var(--text-muted-hover)'};">${name}</div>
-                    <div style="font-size:0.75em; font-style:italic; color:var(--text-card-medium);">${roleLabel}</div>
+                <div style="min-width:0">
+                    <div style="font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:${canAfford ? 'var(--text-primary-hover)' : 'var(--text-muted-hover)'}">${name}</div>
+                    <div style="font-size:0.82em; color:var(--text-card-medium)">${roleLabel}</div>
                 </div>
             </div>
-            <span style="font-size:1em; font-family:'Lora', serif; font-weight:bold; flex-shrink:0; margin-left:10px; color: ${canAfford ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'};">€${hiringPrice}</span>
+            <span style="font-size:1em; font-family:'Lora', serif; font-weight:bold; flex-shrink:0; margin-left:10px; color: ${canAfford ? 'var(--text-cost-ok)' : 'var(--text-cost-bad)'}">€${hiringPrice}</span>
         </div>
     `;
   });
@@ -1377,7 +1377,7 @@ Scene_BuyTroops.prototype.renderDossier = function () {
   const item = this.shopList()[this._selectedIndex];
   if (!item) {
     dossierEl.innerHTML = `
-        <div class="prophecy-pane" style="text-align:center; color:var(--text-card-medium); font-style:italic; font-size:0.9em; margin-top:15px; min-height:140px;">
+        <div class="prophecy-pane" style="text-align:center; color:var(--text-card-medium); font-size:0.928em; min-height:140px">
             ${T('ArmyManager.recruitHint')}
         </div>
     `;
@@ -1404,29 +1404,29 @@ Scene_BuyTroops.prototype.renderDossier = function () {
   let statsGrid = "";
   stats.forEach(st => {
     statsGrid += `
-        <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-primary-hover-translucent-15); padding:4px 0;">
-            <span style="font-weight:bold; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:0.95em;">${st.label}:</span>
-            <span style="font-family:'Lora', serif; font-size:0.9em; font-weight:bold; color:var(--text-muted-hover);">${st.val}</span>
+        <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-primary-hover-translucent-15); padding:4px 0">
+            <span style="font-weight:bold; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:0.964em">${st.label}:</span>
+            <span style="font-family:'Lora', serif; font-size:0.928em; font-weight:bold; color:var(--text-muted-hover)">${st.val}</span>
         </div>
     `;
   });
 
   dossierEl.innerHTML = `
-      <div class="army-card" style="margin-top: 15px; animation: fadeIn 0.25s ease;">
-          <h3 style="margin:0 0 2px 0; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:1.15em; text-align:center; font-weight:bold;">
+      <div class="army-card" style="margin-top: 15px; animation: fadeIn 0.25s ease">
+          <h3 style="margin:0 0 2px 0; font-family:'Lora', serif; color:var(--text-primary-hover); font-size:1.142em; text-align:center; font-weight:bold">
               ${name}
           </h3>
-          <div style="font-style:italic; font-size:0.82em; color:var(--text-card-medium); text-align:center; margin-bottom:8px;">
+          <div style="font-size:0.87em; color:var(--text-card-medium); text-align:center; margin-bottom:8px">
               ${T('ArmyManager.factionLabel')} ${factionName} &middot; ${roleLabel}
           </div>
 
-          <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px 16px;">
+          <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px 16px">
               ${statsGrid}
           </div>
 
-          <div style="display:flex; justify-content:space-between; margin-top:10px; padding-top:6px; border-top:1px solid var(--border-primary-hover-translucent-15); font-family:'Lora', serif; font-size:0.85em;">
-              <span>${T('ArmyManager.hiringCost')} <strong style="color:var(--text-primary-hover);">€${(troop.hiringCost / 100).toFixed(2)}</strong></span>
-              <span>${T('ArmyManager.upkeep')} <strong style="color:var(--text-text-alt-17);">€${(troop.weeklyCost / 100).toFixed(2)}${T('ArmyManager.perWeekShort')}</strong></span>
+          <div style="display:flex; justify-content:space-between; margin-top:10px; padding-top:6px; border-top:1px solid var(--border-primary-hover-translucent-15); font-family:'Lora', serif; font-size:0.892em">
+              <span>${T('ArmyManager.hiringCost')} <strong style="color:var(--text-primary-hover)">€${(troop.hiringCost / 100).toFixed(2)}</strong></span>
+              <span>${T('ArmyManager.upkeep')} <strong style="color:var(--text-text-alt-17)">€${(troop.weeklyCost / 100).toFixed(2)}${T('ArmyManager.perWeekShort')}</strong></span>
           </div>
       </div>
   `;
@@ -1525,7 +1525,7 @@ Scene_BuyTroops.prototype.renderFeedback = function () {
   const el = this._dndContainer.querySelector('#bt-feedback');
   if (!el) return;
   el.innerHTML = this._feedbackText ? `
-    <div style="text-align:center; font-family:'Lora', serif; font-style:italic; font-size:0.85em; padding:8px; border:1px dashed var(--accent-gold-2); background:var(--bg-primary-hover-translucent-35); border-radius:4px; margin-top:10px; color:var(--text-primary-hover); animation:fadeIn 0.2s ease;">
+    <div style="text-align:center; font-family:'Lora', serif; font-size:0.892em; padding:8px; border:1px dashed var(--accent-gold-2); background:var(--bg-primary-hover-translucent-35); border-radius:4px; margin-top:10px; color:var(--text-primary-hover); animation:fadeIn 0.2s ease">
          ${this._feedbackText}
     </div>
   ` : "";
@@ -1635,15 +1635,15 @@ Scene_Squads.prototype.refreshUIDOM = function () {
       }
 
       squadsHTML += `
-            <div class="choice-card ${isSelected ? 'selected' : ''}" style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px;" onclick="SceneManager._scene.clickSquad(${idx})">
+            <div class="choice-card ${isSelected ? 'selected' : ''}" style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px" onclick="SceneManager._scene.clickSquad(${idx})">
                 <span class="role-badge">${armyT(sq.name)} ${T.n('ArmyManager.troopCount', sq.troopIds.length, { n: sq.troopIds.length })}</span>
-                <span style="font-size:0.82em; font-family:'Lora', serif; font-weight:bold; color:var(--text-text-alt-17);">${leaderName}</span>
+                <span style="font-size:0.87em; font-family:'Lora', serif; font-weight:bold; color:var(--text-text-alt-17)">${leaderName}</span>
             </div>
         `;
     });
   } else {
     squadsHTML = `
-        <div style="text-align:center; font-style:italic; color:var(--text-card-medium); padding-top:40px;">
+        <div style="text-align:center; color:var(--text-card-medium); padding-top:40px">
             ${T('ArmyManager.noSquads')}
         </div>
     `;
@@ -1665,20 +1665,20 @@ Scene_Squads.prototype.refreshUIDOM = function () {
       if (!isRemove) {
         isLeadingOther = $gameArmy.getSquads().some(s => s.leaderId === item.actorId && s.id !== squad.id);
         if (isLeadingOther) {
-          statusText = `<span style="font-size:0.8em; color:var(--text-disabled); font-style:italic;">${T('ArmyManager.leadingOtherSquad')}</span>`;
+          statusText = `<span style="font-size:0.856em; color:var(--text-disabled)">${T('ArmyManager.leadingOtherSquad')}</span>`;
         }
       }
 
       leadersHTML += `
-            <div class="choice-card ${isSelected ? 'selected' : ''}" style="display:flex; justify-content:space-between; align-items:center; opacity: ${isLeadingOther ? 0.5 : 1};" onclick="SceneManager._scene.clickLeader(${index})">
-                <span style="font-family:'Lora', serif; font-weight:bold; color: ${isRemove ? 'var(--text-text-alt-5-hover)' : 'var(--text-muted-hover)'};">${item.name}</span>
+            <div class="choice-card ${isSelected ? 'selected' : ''}" style="display:flex; justify-content:space-between; align-items:center; opacity: ${isLeadingOther ? 0.5 : 1}" onclick="SceneManager._scene.clickLeader(${index})">
+                <span style="font-family:'Lora', serif; font-weight:bold; color: ${isRemove ? 'var(--text-text-alt-5-hover)' : 'var(--text-muted-hover)'}">${item.name}</span>
                 ${statusText}
             </div>
         `;
     });
   } else {
     leadersHTML = `
-        <div style="text-align:center; color:var(--text-card-medium); font-style:italic; font-size:0.9em; padding-top:40px;">
+        <div style="text-align:center; color:var(--text-card-medium); font-size:0.928em; padding-top:40px">
             ${T('ArmyManager.squadHint')}
         </div>
     `;
@@ -1687,31 +1687,31 @@ Scene_Squads.prototype.refreshUIDOM = function () {
   this._dndContainer.innerHTML = `
     <div class="book-spread">
         <!-- Left Page: Regimental Squads -->
-        <div class="left-page" style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div class="left-page" style="display:flex; justify-content:space-between">
             <div>
                 <div class="page-header-bar">
                     <div class="back-button focusable" onclick="SceneManager._scene.leaveCamp()">${T('ArmyManager.back')}</div>
                     <h2 class="title">${T('ArmyManager.squadOfficers')}</h2>
                 </div>
 
-                <div style="font-family: 'Lora', serif; font-size: 0.85em; color: var(--text-primary-hover); font-style: italic; background: var(--bg-primary-hover-translucent-35); border: 1px dashed var(--text-primary-hover); padding: 10px 14px; border-radius: 4px; margin-bottom: 12px; line-height: 1.4; text-align: justify;">
+                <div style="font-family: 'Lora', serif; font-size: 0.892em; color: var(--text-primary-hover); background: var(--bg-primary-hover-translucent-35); border: 1px dashed var(--text-primary-hover); padding: 10px 14px; border-radius: 4px; margin-bottom: 12px; line-height: 1.4; text-align: justify">
                     "${T('ArmyManager.squadBlurb')}"
                 </div>
 
-                <div class="choices-scroll" style="max-height: 320px; overflow-y:auto; padding-right:4px;">
+                <div class="choices-scroll" style="max-height: 320px; overflow-y:auto; padding-right:4px">
                     ${squadsHTML}
                 </div>
             </div>
 
-            <div style="font-family:'Lora', serif; font-size:0.8em; color:var(--text-card-medium); font-style:italic; text-align:center; border-top:1px dashed var(--border-primary-hover-translucent-15); padding-top:6px; margin-top:auto; margin-bottom:0;">
+            <div style="font-family:'Lora', serif; font-size:0.856em; color:var(--text-card-medium); text-align:center; border-top:1px dashed var(--border-primary-hover-translucent-15); padding-top:6px; margin-top:auto; margin-bottom:0">
                 ${T('ArmyManager.escToCompanyCamp')}
             </div>
         </div>
 
         <!-- Right Page: Officer Assignment -->
-        <div class="right-page" style="display:flex; flex-direction:column; height:100%;">
+        <div class="right-page" style="display:flex; height:100%">
             
-            <div class="choices-scroll" style="max-height: 480px; overflow-y:auto; padding-right:4px; margin-top:10px;">
+            <div class="choices-scroll" style="max-height: 480px; overflow-y:auto; padding-right:4px">
                 ${leadersHTML}
             </div>
         </div>

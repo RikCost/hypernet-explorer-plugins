@@ -944,7 +944,7 @@
                 const scale = sz / 32;
                 const bw = Math.round(512 * scale), bh = Math.round(384 * scale);
                 const x = (idx % 16) * sz, y = Math.floor(idx / 16) * sz;
-                return `<span style="display:inline-block;width:${sz}px;height:${sz}px;background:url('img/system/IconSet.png') -${x}px -${y}px no-repeat;background-size:${bw}px ${bh}px;vertical-align:middle;margin-right:3px;image-rendering:pixelated;flex-shrink:0;"></span>`;
+                return `<span style="display:inline-block; width:${sz}px; height:${sz}px; background:url('img/system/IconSet.png') -${x}px -${y}px no-repeat; background-size:${bw}px ${bh}px; vertical-align:middle; margin-right:3px; image-rendering:pixelated; flex-shrink:0"></span>`;
             };
 
             const stateColors = {
@@ -1034,16 +1034,16 @@
             this._container.innerHTML = `
                 <div class="book-spread">
                     <div class="left-page">
-                        <div style="position:relative;display:flex;align-items:center;justify-content:center;border-bottom:2px dashed #bba16d;padding-bottom:8px;margin-bottom:18px;min-height:40px;width:100%;">
-                            <div class="back-button" onclick="SceneManager._scene.popScene()" style="position:absolute;left:0;background:#8b5a2b;color:#ecdcb9;padding:4px 14px;border-radius:4px;font-weight:bold;cursor:pointer;border:1.5px solid #4a2711;text-transform:uppercase;font-size:0.8rem;font-family:'Lora',serif;user-select:none;">${T('Apiary.ui.back')}</div>
-                            <h2 class="title" style="border:none;margin:0;padding:0;text-align:center;">${T('Apiary.ui.apiary')}</h2>
+                        <div style="position:relative; display:flex; align-items:center; justify-content:center; border-bottom:2px dashed #bba16d; padding-bottom:8px; margin-bottom:18px; min-height:40px; width:100%">
+                            <div class="back-button" onclick="SceneManager._scene.popScene()" style="position:absolute; background:#8b5a2b; color:#ecdcb9; padding:4px 14px; border-radius:4px; font-weight:bold; border:1.5px solid #4a2711; font-size:0.96rem; font-family:'Lora',serif">${T('Apiary.ui.back')}</div>
+                            <h2 class="title" style="border:none; margin:0; padding:0">${T('Apiary.ui.apiary')}</h2>
                         </div>
 
                         <div class="apiary-content-grid">
                             <div>
                                 <div class="apiary-section">
                                     <div class="apiary-section-title">${ic(41, 14)} ${T('Apiary.ui.colony')}</div>
-                                    <div class="apiary-stat-row"><span>${T('Apiary.ui.state')}</span><span style="color:${stateColor};text-transform:capitalize;">${report.colony.state}</span></div>
+                                    <div class="apiary-stat-row"><span>${T('Apiary.ui.state')}</span><span style="color:${stateColor}; text-transform:capitalize">${report.colony.state}</span></div>
                                     <div class="apiary-stat-row"><span>${T('Apiary.ui.mood')}</span><span>${report.colony.mood}%</span></div>
                                     <div class="apiary-stat-row"><span>${T('Apiary.ui.efficiency')}</span><span>${report.colony.efficiency}%</span></div>
                                 </div>
@@ -1053,8 +1053,8 @@
                                 </div>
                                 <div class="apiary-section">
                                     <div class="apiary-section-title">${ic(231, 14)} ${T('Apiary.ui.environment')}</div>
-                                    <div class="apiary-stat-row"><span>${ic(103, 16)} ${T('Apiary.ui.season')}</span><span style="text-transform:capitalize;">${report.environment.season}</span></div>
-                                    <div class="apiary-stat-row"><span>${ic(232, 16)} ${T('Apiary.ui.weather')}</span><span style="text-transform:capitalize;">${report.environment.weather}</span></div>
+                                    <div class="apiary-stat-row"><span>${ic(103, 16)} ${T('Apiary.ui.season')}</span><span style="text-transform:capitalize">${report.environment.season}</span></div>
+                                    <div class="apiary-stat-row"><span>${ic(232, 16)} ${T('Apiary.ui.weather')}</span><span style="text-transform:capitalize">${report.environment.weather}</span></div>
                                     <div class="apiary-stat-row"><span>${ic(224, 16)} ${T('Apiary.ui.temp')}</span><span>${report.environment.temperature}°C</span></div>
                                     <div class="apiary-stat-row"><span>${ic(105, 16)} ${T('Apiary.ui.flowers')}</span><span>${report.environment.flowers}%</span></div>
                                 </div>
@@ -1063,7 +1063,7 @@
                             <div>
                                 <div class="apiary-section">
                                     <div class="apiary-section-title">${ic(125, 14)} ${T('Apiary.ui.population')}</div>
-                                    <div class="apiary-stat-row" style="opacity:0.65;margin-bottom:5px;"><span>${T('Apiary.ui.total')}</span><span>${report.population.total.toLocaleString()}</span></div>
+                                    <div class="apiary-stat-row" style="opacity:0.65; margin-bottom:5px"><span>${T('Apiary.ui.total')}</span><span>${report.population.total.toLocaleString()}</span></div>
                                     <div class="apiary-pop-list">${popHTML}</div>
                                 </div>
                             </div>
@@ -1071,7 +1071,7 @@
                     </div>
 
                     <div class="right-page">
-                        <h2 class="title" style="border:none;margin:0 0 14px 0;padding:0;text-align:center;">${T('Apiary.ui.resources')}</h2>
+                        <h2 class="title" style="border:none; margin:0 0 14px 0; padding:0">${T('Apiary.ui.resources')}</h2>
 
                         <div class="apiary-resources">${resourceHTML}</div>
 

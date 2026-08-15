@@ -61,6 +61,7 @@
   },
   "trait": {
     "category": "CATEGORY:",
+    "points": "TRAIT POINTS:",
     "equipment": "EQUIPMENT:",
     "specializations": "SPECIALIZATIONS:",
     "noDescription": "NO DESCRIPTION RECORDED..."

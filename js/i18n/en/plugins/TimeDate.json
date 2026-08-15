@@ -94,6 +94,7 @@
   "addiction": {
     "withdrawal": "{name} is in withdrawal from {substance}!",
     "relieved": "{name} is over the worst of the {substance} craving",
+    "eased": "{name}: the itch for {substance} eases by {amount}.",
     "partyCard": "Addictions ({count})",
     "none": "Clean"
   },

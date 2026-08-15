@@ -349,8 +349,8 @@
     const archetypeKeys = window.HealthCore?.getActorArchetypeKeys?.(actor);
     if (archetypeKeys?.length) profile.archetype = archetypeKeys[0];
 
-    // The four traits the player chose at creation (TraitSelector writes them
-    // onto the actor), not the four the society dealt a stranger of that name:
+    // The traits the player bought at creation (TraitSelector writes them
+    // onto the actor), not the ones the society dealt a stranger of that name:
     // they are what the status screen prints and what the compatibility maths
     // already reads off the actor. A recruited NPC whose actor carries none
     // keeps the rolled set, which is the only record they have.
@@ -619,33 +619,48 @@
       const ideology = ideologyPick.ideo;
       const ideologyTraitIds = (ideology && Array.isArray(ideology.traits)) ? ideology.traits : [];
 
-      // 5. Traits (exactly 4: up to 2 from ideology pool, rest from general pool, incompatible[] respected)
+      // 5. Traits: up to 2 from the ideology pool, the rest from the general
+      //    pool, incompatible[] respected. A generated person is priced out of
+      //    the same trait-point purse a player character is (window.TraitPoints,
+      //    owned by TraitSelector.js), so nobody walks around carrying a build
+      //    the budget could never pay for. Without that plugin the old flat
+      //    four still applies.
+      const points = window.TraitPoints;
       const traitIds = [];
+      const pickedTraits = [];
+      const _full = () => points
+        ? points.tally(pickedTraits).remaining <= 0
+        : traitIds.length >= 4;
       const _compatible = (id) => {
         const trait = traits.find(t => t.id === id);
         if (!trait) return false;
+        if (points && !points.fits(trait, pickedTraits)) return false;
         return !traitIds.some(chosen => {
           const c = traits.find(t => t.id === chosen);
           return (trait.incompatible || []).includes(chosen) || (c && (c.incompatible || []).includes(id));
         });
       };
+      const _take = (id) => {
+        traitIds.push(id);
+        pickedTraits.push(traits.find(t => t.id === id));
+      };
       const shuffledIdeo = seededShuffle([...ideologyTraitIds], rng);
       for (const id of shuffledIdeo) {
-        if (traitIds.length >= 2) break;
-        if (_compatible(id)) traitIds.push(id);
+        if (traitIds.length >= 2 || _full()) break;
+        if (_compatible(id)) _take(id);
       }
       const ideologySet = new Set(ideologyTraitIds);
       const generalPool = seededShuffle(traits.filter(t => !ideologySet.has(t.id)).map(t => t.id), rng);
       for (const id of generalPool) {
-        if (traitIds.length >= 4) break;
-        if (_compatible(id)) traitIds.push(id);
+        if (_full()) break;
+        if (_compatible(id)) _take(id);
       }
-      if (traitIds.length < 4) {
+      if (!_full()) {
         const pickedSet = new Set(traitIds);
         const fallback = seededShuffle(traits.map(t => t.id).filter(id => !pickedSet.has(id)), rng);
         for (const id of fallback) {
-          if (traitIds.length >= 4) break;
-          if (_compatible(id)) traitIds.push(id);
+          if (_full()) break;
+          if (_compatible(id)) _take(id);
         }
       }
 

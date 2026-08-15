@@ -86,7 +86,7 @@
                 style.textContent = `
                     .companion-switcher { display:flex; align-items:center; gap:6px; }
                     .char-switch-hint {
-                        font-family:'Lora',serif; font-size:0.6rem; font-weight:bold;
+                        font-family:'Lora',serif; font-size:0.732rem; font-weight:bold;
                         line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
                         border:1.5px solid var(--text-primary-hover); border-radius:3px;
                         padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
@@ -481,7 +481,7 @@
         const categoryKey = TRAIT_CATEGORY_KEYS[trait.category];
 
         const badge = (label, color) =>
-            `<span class="status-trait-badge"${color ? ` style="color:${color};"` : ""}>${escapeAttr(label)}</span>`;
+            `<span class="status-trait-badge"${color ? ` style="color:${color}"` : ""}>${escapeAttr(label)}</span>`;
 
         const iconBadge = (iconIndex, label, suffix) =>
             `<span class="status-trait-badge"><span style="${iconStyle(iconIndex, 16)}"></span>${escapeAttr(label)}${suffix ? ` ${suffix}` : ""}</span>`;
@@ -524,10 +524,16 @@
             </div>
         ` : "";
 
+        // What the trait cost to take, in the same badge the creation screen
+        // prices it with. TraitPoints lives in TraitSelector.js.
+        const points = window.TraitPoints;
+        const costBadge = points ? points.costBadgeHTML(points.costOf(trait)) : "";
+
         return `
             <div class="status-trait-head">
                 <span style="${iconStyle(trait.icon, 22)}"></span>
-                <span>${escapeAttr(name)}</span>
+                <span class="status-trait-name">${escapeAttr(name)}</span>
+                ${costBadge}
             </div>
             <div class="status-trait-desc">${escapeAttr(desc) || T('SceneStatus.trait.noDescription')}</div>
             ${row(T('SceneStatus.trait.category'), categoryKey ? badge(T('Traits.' + categoryKey)) : "")}
@@ -540,7 +546,23 @@
         `;
     }
 
-    // Every trait the character carries, each one fully written out. A stored
+    // The purse the character's traits were bought out of, printed above them:
+    // what was spent, out of what the budget and the drawbacks made available.
+    function buildTraitPointsHTML(traits) {
+        const points = window.TraitPoints;
+        if (!points) return "";
+        const tally = points.tally(traits);
+        const paidBack = tally.credit > 0 ? ` <span class="trait-cost refund">+${tally.credit}</span>` : "";
+        return `
+            <div class="status-trait-points">
+                <span class="status-trait-row-label">${T('SceneStatus.trait.points')}</span>
+                <span><b>${tally.spent}</b> / ${tally.available}${paidBack}</span>
+            </div>
+        `;
+    }
+
+    // Every trait the character carries, each one fully written out, however
+    // many there are: the page scrolls rather than capping the list. A stored
     // entry is sometimes a trimmed copy (id, icon and name only), so the trait
     // database is read over it before the dossier is built.
     function buildTraitsPageHTML(actor) {
@@ -548,11 +570,13 @@
         if (stored.length === 0) {
             return `<div class="status-traits-empty">${T('SceneStatus.ui.noTraits')}</div>`;
         }
-        return stored.map(entry => {
+        const traits = stored.map(entry => {
             const full = getTraitById(entry.id);
-            const trait = full ? Object.assign({}, full, entry) : entry;
-            return `<div class="status-trait-entry">${buildTraitDossierHTML(trait)}</div>`;
-        }).join("");
+            return full ? Object.assign({}, full, entry) : entry;
+        });
+        return buildTraitPointsHTML(traits) + traits
+            .map(trait => `<div class="status-trait-entry">${buildTraitDossierHTML(trait)}</div>`)
+            .join("");
     }
 
     //=============================================================================
@@ -687,43 +711,22 @@
         return window.Health.Traits.find(trait => trait.id === traitId);
     }
 
-    function generateRandomTraits(actorName, count = 5) {
-        if (!window.Health || !window.Health.Traits) {
+    // A companion's traits, rolled from their name so the same character always
+    // carries the same ones. The roll goes through TraitPoints, so a generated
+    // sheet is bought out of the same purse a player would spend and can never
+    // hold more than the budget pays for. Only id / icon / name are stored: the
+    // rest is read back out of the trait database when the sheet is drawn.
+    function generateRandomTraits(actorName) {
+        const points = window.TraitPoints;
+        if (!points || !window.Health || !(window.Health.Traits || []).length) {
             return [];
         }
-
-        const availableTraits = window.Health.Traits;
-        if (availableTraits.length === 0) {
-            return [];
-        }
-
-        const seed = stringToSeed(actorName);
-        const rng = new SeededRandom(seed);
-        const traits = [];
-        const usedIds = new Set();
-        const maxTraitId = Math.max(...availableTraits.map(t => t.id));
-
-        let attempts = 0;
-        const maxAttempts = count * 10;
-
-        while (traits.length < count && attempts < maxAttempts) {
-            attempts++;
-            const traitId = Math.floor(rng.next() * maxTraitId) + 1;
-
-            if (!usedIds.has(traitId)) {
-                const traitData = getTraitById(traitId);
-                if (traitData) {
-                    usedIds.add(traitId);
-                    traits.push({
-                        id: traitData.id,
-                        icon: traitData.icon,
-                        name: traitData.name
-                    });
-                }
-            }
-        }
-
-        return traits;
+        const rng = new SeededRandom(stringToSeed(actorName));
+        return points.pick({ rng: () => rng.next() }).map(trait => ({
+            id: trait.id,
+            icon: trait.icon,
+            name: trait.name
+        }));
     }
 
     function ensureActorTraits(actor, partyIndex) {
@@ -735,7 +738,7 @@
         } else {
             // Other party members get seeded random traits
             if (!actor._selectedTraits || actor._selectedTraits.length === 0) {
-                actor._selectedTraits = generateRandomTraits(actor.name(), 5);
+                actor._selectedTraits = generateRandomTraits(actor.name());
             }
         }
     }
@@ -911,11 +914,11 @@
             this._dndContainer.innerHTML = `
                 <div class="book-spread">
                     <div class="left-page">
-                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 6px; margin-bottom: 10px; min-height: 36px; margin-top: 4px;">
-                            <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; left: 0; font-family: 'Lora', serif; font-size: 0.8rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: fit-content; line-height: normal; user-select: none;">
+                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 6px; margin-bottom: 10px; min-height: 36px; margin-top: 4px">
+                            <div class="back-button focusable" onclick="SceneManager._scene.popScene()" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
                                 ${backBtnText}
                             </div>
-                            <h2 class="title" id="status-actor-name" style="border: none; margin: 0; padding: 0; text-align: center;"></h2>
+                            <h2 class="title" id="status-actor-name" style="border: none; margin: 0; padding: 0"></h2>
                         </div>
                         
                         <div class="status-bust-wrapper">
@@ -969,7 +972,7 @@
                             <div class="status-needs-rows" id="status-needs"></div>
                         </div>
                     </div>
-                    <div class="right-page" style="position:relative;">
+                    <div class="right-page" style="position:relative">
                         <div class="status-right-header">
                             <div class="companion-switcher" id="status-companion-switcher"></div>
                         </div>
@@ -987,7 +990,7 @@
                             <div class="status-tab-panel" data-status-tab="anatomy">
                                 <div class="bodyparts-card status-card-fixed">
                                     <div class="card-label" id="status-archetype-label">${T('SceneStatus.ui.archetype')}</div>
-                                    <div id="status-archetype" style="padding:4px 2px; font-family:'Lora',serif;"></div>
+                                    <div id="status-archetype" style="padding:4px 2px; font-family:'Lora',serif"></div>
                                 </div>
 
                                 <div class="bodyparts-card">
@@ -1002,8 +1005,8 @@
                                 </div>
 
                                 <div class="status-alignment-row">
-                                    <div id="status-alignment-container" style="display:contents;"></div>
-                                    <div id="status-magicsystem-container" style="display:contents;"></div>
+                                    <div id="status-alignment-container" style="display:contents"></div>
+                                    <div id="status-magicsystem-container" style="display:contents"></div>
                                 </div>
                             </div>
 
@@ -1043,7 +1046,7 @@
         const tabsRow = spread.querySelector("#status-companion-switcher");
         if (tabsRow) {
             tabsRow.innerHTML = window.CharSwitcher.inner(
-                `<div class="companion-tabs-row" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">${companionTabsHTML}</div>`,
+                `<div class="companion-tabs-row" style="border-bottom:none; margin-bottom:0; padding-bottom:0">${companionTabsHTML}</div>`,
                 allMembers.length
             );
         }
@@ -1160,10 +1163,10 @@
                     <div class="status-gauge-row">
                         <div class="status-gauge-meta">
                             <span class="gauge-label">${need.label}</span>
-                            <span class="gauge-value" style="color:${c};">${pct}%</span>
+                            <span class="gauge-value" style="color:${c}">${pct}%</span>
                         </div>
                         <div class="status-gauge-bar-outer">
-                            <div class="status-gauge-bar-inner ${need.cls}" style="width: ${pct}%; background:${c};"></div>
+                            <div class="status-gauge-bar-inner ${need.cls}" style="width: ${pct}%; background:${c}"></div>
                         </div>
                     </div>
                 `;
@@ -1183,10 +1186,10 @@
                     <div class="status-gauge-row">
                         <div class="status-gauge-meta">
                             <span class="gauge-label">${craving.label}</span>
-                            <span class="gauge-value" style="color:${c};">${pct}%</span>
+                            <span class="gauge-value" style="color:${c}">${pct}%</span>
                         </div>
                         <div class="status-gauge-bar-outer">
-                            <div class="status-gauge-bar-inner" style="width: ${pct}%; background:${c};"></div>
+                            <div class="status-gauge-bar-inner" style="width: ${pct}%; background:${c}"></div>
                         </div>
                     </div>
                 `;
@@ -1219,7 +1222,7 @@
             if (modifier !== 0) {
                 const origVal = p.val - modifier;
                 displayValHTML = `
-                    <span class="stat-number debuffed" style="text-decoration: line-through; color: var(--text-blood-red); font-size: 0.85em; margin-right: 4px;">${origVal}</span>
+                    <span class="stat-number debuffed" style="text-decoration: line-through; color: var(--text-blood-red); font-size: 0.892em; margin-right: 4px">${origVal}</span>
                     <span class="stat-number">${p.val}</span>
                 `;
             }
@@ -1252,8 +1255,8 @@
                         <div class="status-element-box">
                             <span class="element-title">${T('SceneStatus.ui.alignment')}</span>
                             <span class="element-badge">
-                                <span class="icon" style="background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.7); vertical-align: middle; margin-right: -4px;"></span>
-                                <span style="vertical-align: middle;">${elementName}</span>
+                                <span class="icon" style="background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.7); vertical-align: middle; margin-right: -4px"></span>
+                                <span style="vertical-align: middle">${elementName}</span>
                             </span>
                         </div>
                     `;
@@ -1276,7 +1279,7 @@
                     <div class="status-element-box">
                         <span class="element-title">${T('SceneStatus.ui.magicSystem')}</span>
                         <span class="element-badge">
-                            <span style="vertical-align: middle;">${systemName}</span>
+                            <span style="vertical-align: middle">${systemName}</span>
                         </span>
                     </div>
                 `;
@@ -1326,13 +1329,13 @@
                 const repType = $gameVariables.value(repVar);
                 const term = health.getPregnancyDuration(actor, repType);
                 archetypeEl.innerHTML = `
-                    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:8px;">
-                        <span style="font-weight:bold; color:var(--text-primary-hover); font-size:0.92em;">${names.join(" / ")}</span>
-                        <span style="color:var(--text-card-medium); font-size:0.8em; white-space:nowrap;">${T('SceneStatus.ui.gestationTerm', { days: term })}</span>
+                    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:8px">
+                        <span style="font-weight:bold; color:var(--text-primary-hover); font-size:0.942em">${names.join(" / ")}</span>
+                        <span style="color:var(--text-card-medium); font-size:0.856em; white-space:nowrap">${T('SceneStatus.ui.gestationTerm', { days: term })}</span>
                     </div>
                 `;
             } else {
-                archetypeEl.innerHTML = `<div style="font-style:italic; color:var(--text-card-medium); font-size:0.8em;">${T('SceneStatus.ui.noArchetype')}</div>`;
+                archetypeEl.innerHTML = `<div style="color:var(--text-card-medium); font-size:0.856em">${T('SceneStatus.ui.noArchetype')}</div>`;
             }
         }
 
@@ -1359,7 +1362,7 @@
 
         let bodyPartsHTML = "";
         if (bodyParts.length === 0) {
-            bodyPartsHTML = `<div style="font-family: 'Lora', serif; font-style: italic; text-align: center; color: var(--text-card-medium); padding: 12px; font-size:0.85em;">${T('SceneStatus.ui.noVitals')}</div>`;
+            bodyPartsHTML = `<div style="font-family: 'Lora', serif; text-align: center; color: var(--text-card-medium); padding: 12px; font-size:0.892em">${T('SceneStatus.ui.noVitals')}</div>`;
         } else {
             bodyParts.forEach((part, idx) => {
                 const isDestroyed = part.destroyed || part.currentHp <= 0;

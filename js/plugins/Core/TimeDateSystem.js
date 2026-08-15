@@ -1963,14 +1963,17 @@
 
   window.AddictionSystem = {
     // rate is the craving gained per step as a multiple of the sleep drain, so
-    // a nicotine addict walks into a full craving in about six in-game hours
-    // and a gambler in about sixteen.
+    // a nicotine addict walks into a full craving in about twelve in-game
+    // hours and a gambler in about thirty. These used to be twice as steep,
+    // which turned every dependency into an errand run every few hours; a
+    // craving that takes most of a day to bite is a habit the party lives
+    // with rather than a timer they serve.
     LIST: [
-      { key: "nicotine", traitId: 102, rate: 0.90 },
-      { key: "caffeine", traitId: 101, rate: 0.70 },
-      { key: "narcotic", traitId: 104, rate: 0.55 },
-      { key: "alcohol",  traitId: 22,  rate: 0.45 },
-      { key: "gambling", traitId: 103, rate: 0.35 },
+      { key: "nicotine", traitId: 102, rate: 0.45 },
+      { key: "caffeine", traitId: 101, rate: 0.35 },
+      { key: "narcotic", traitId: 104, rate: 0.28 },
+      { key: "alcohol",  traitId: 22,  rate: 0.22 },
+      { key: "gambling", traitId: 103, rate: 0.18 },
     ],
 
     get LABELS() { return T.obj("TimeDate.addictionLabel"); },
@@ -2477,6 +2480,32 @@
     // losing, but losing still teaches: the party is practising either way.
     SPEC_POINTS: { played: 1, won: 3, lost: 1, draw: 2 },
 
+    // How much of the gambling craving one played round of a game of chance
+    // takes off. A game that is a wager marks itself with `gambling: true`
+    // and the craving is fed whatever the result was: a losing spin scratches
+    // the itch every bit as well as a winning one, which is the whole problem
+    // with the habit.
+    GAMBLING_RELIEF: 60,
+
+    // Feed the gambling craving of EVERY party member who carries it, not just
+    // whoever was holding the lever: the party spent the evening in the casino
+    // together. Returns [{ name, dropped }] for the members who actually had
+    // something to ease, which is what the popup reports.
+    payGambling(amount) {
+      const AS = window.AddictionSystem;
+      if (!AS || !AS.has || !$gameParty) return [];
+      const relief = amount == null ? this.GAMBLING_RELIEF : Number(amount);
+      const eased = [];
+      for (const actor of $gameParty.members()) {
+        if (!actor || !AS.has(actor, 'gambling')) continue;
+        const before = AS.craving(actor, 'gambling') || 0;
+        AS.relieve(actor, 'gambling', relief);
+        const dropped = Math.round(before - (AS.craving(actor, 'gambling') || 0));
+        if (dropped > 0) eased.push({ name: actor.name(), dropped });
+      }
+      return eased;
+    },
+
     // Legacy skins, still passed by older call sites as a bare string. Each one
     // names the specialization that kind of pastime trains, so a call that has
     // not been given an explicit spec still trains something sensible.
@@ -2531,6 +2560,11 @@
         window.PartyNeeds.addLeisureToAll(delta);
       }
 
+      // A game of chance feeds the craving as well as the Fun meter. This runs
+      // whether or not the popup does, so a session opened from the main menu
+      // still counts for the addicts in the party.
+      const eased = opts.gambling ? this.payGambling(opts.relief) : [];
+
       // Every minigame names the skill it is training on screen. played() is
       // called as a session opens, so this is where the badge goes up; it takes
       // itself down when the minigame's scene ends.
@@ -2553,8 +2587,15 @@
 
       try {
         if (!window.ParchmentToast || quiet) return;
+        const substance = window.AddictionSystem
+          ? window.AddictionSystem.label('gambling') // i18n-ignore: label() is localised
+          : 'gambling';
         window.ParchmentToast.group([
           () => window.ParchmentToast.need('leisure', delta),
+          ...eased.map(e => () => window.ParchmentToast.show(
+            T('TimeDate.addiction.eased', { name: e.name, substance, amount: e.dropped }),
+            { severity: 'good', duration: 150 }
+          )),
           ...gained.map(g => () => window.SpecializationXP.announce(g))
         ]);
       } catch (e) { /* never let a cosmetic popup break a minigame */ }
@@ -2870,11 +2911,17 @@
     let html = '';
 
     if (mode === 'clock') {
-      // Waiting, sleeping, in cryo, or working a shift: the clock is the
-      // only thing worth showing, there is no location to report.
+      // Waiting, sleeping, in cryo, or working a shift: there is no location to
+      // report, but the hours are running and the party is living through them,
+      // so the card leads with the clock and keeps the needs underneath it -
+      // the whole point of stepping those sequences frame by frame is that the
+      // bars can be watched moving.
       html =
         `<div class="mih-datetime"><span class="mih-star">&#9733;</span>${dt.dateShort}</div>` +
-        `<div class="mih-datetime"><span class="mih-star">&#9733;</span>${dt.time24}</div>`;
+        `<div class="mih-datetime"><span class="mih-star">&#9733;</span>${dt.time24}</div>` +
+        this._food() +
+        this._insomnia(needs) +
+        this._vitals(needs);
     } else if (mode === 'world') {
       const loc = this._getBiomeName();
       const ci = this._getCountryInfo();
@@ -3436,6 +3483,11 @@
   window.TimeDateSystem.maxSleep = maxSleep;
   window.TimeDateSystem.getDateTimeFromMinutes = getDateTimeFromMinutes;
   window.TimeDateSystem.getGameTimeMinutes = getGameTimeMinutes;
+  // For sequences that run the clock forward themselves, a slice per frame, so
+  // the map-info card animates instead of jumping (sleeping, waiting, and the
+  // remote work shifts in WorkSystem.js).
+  window.TimeDateSystem.setGameTimeMinutes = setGameTimeMinutes;
+  window.TimeDateSystem.updateGameDateVariable = updateGameDateVariable;
   // The cryogenic pod, read by the date picker in TimeDateSystemUI.
   window.TimeDateSystem.getCryoDateRange = getCryoDateRange;
   window.TimeDateSystem.getCryoUnavailableReason = getCryoUnavailableReason;

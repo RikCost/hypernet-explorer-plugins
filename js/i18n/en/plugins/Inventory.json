@@ -1,4 +1,8 @@
 {
+ "hotbar": {
+  "title": "Quick slots",
+  "starHint": "Add to the quick slots (1-9)"
+ },
  "title": "Backpack",
  "back": "Back",
  "searchPlaceholder": "Search items...",
@@ -22,7 +26,24 @@
   "Lifestyle": "Lifestyle",
   "Magic": "Magic",
   "Misc": "Misc",
-  "Quest": "Quest"
+  "Quest": "Quest",
+  "Alchemistry": "Alchemistry",
+  "Arctic": "Arctic",
+  "Artisan": "Artisan",
+  "BodyPart": "Body Parts",
+  "Collectibles": "Collectibles",
+  "Counterfeits": "Counterfeits",
+  "Crafting": "Crafting",
+  "Diseases": "Diseases",
+  "Espionage": "Espionage",
+  "Farming": "Farming",
+  "Homeopathy": "Homeopathy",
+  "Jungle": "Jungle",
+  "Monsters": "Monsters",
+  "Plants": "Plants",
+  "Survival": "Survival",
+  "Trash": "Trash",
+  "Vehicles": "Vehicles"
  },
  "itemType": {
   "standard": "Standard Item",
@@ -262,5 +283,10 @@
   "discardItem": "Discard Item",
   "discardBody": "Remove {qty} of {item} from the backpack? (have {owned})"
  },
- "medicineDoses": "{days} daily doses"
+ "medicineDoses": "{days} daily doses",
+ "nature": {
+  "label": "Nature",
+  "mundane": "Mundane",
+  "magical": "Magical"
+ }
 }

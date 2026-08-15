@@ -518,7 +518,7 @@
           icon: 229,
           width: 980,
           height: 620,
-          contentHTML: '<div id="stock-market-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8;"></div>'
+          contentHTML: '<div id="stock-market-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8"></div>'
         });
 
         this.appInstance = new Scene_StockMarket();
@@ -665,23 +665,23 @@
             </div>
             <div class="portfolio-card">
                 <div class="card-lbl">${worthLabel}</div>
-                <div class="card-val" style="color: #27ae60;">${stockMarket.getNetWorthFormatted()}</div>
+                <div class="card-val" style="color: #27ae60">${stockMarket.getNetWorthFormatted()}</div>
             </div>
         </div>
       `;
 
       const summaryHTML = `
-        <div class="portfolio-card" style="text-align: left; padding: 10px 14px; background: rgba(0,0,0,0.03); border: 1px solid #7f9db9; box-shadow: none; flex: 1; display:flex; flex-direction:column; justify-content:center;">
-            <div class="card-lbl" style="border-bottom: 1px dashed #7f9db9; padding-bottom: 4px; margin-bottom: 8px; font-weight: bold; color: #0b2f70; font-size: 11px;">
+        <div class="portfolio-card" style="text-align: left; padding: 10px 14px; background: rgba(0,0,0,0.03); border: 1px solid #7f9db9; box-shadow: none; display:flex; flex-direction:column; justify-content:center">
+            <div class="card-lbl" style="border-bottom: 1px dashed #7f9db9; padding-bottom: 4px; margin-bottom: 8px; font-weight: bold; color: #0b2f70; font-size: 14px">
                 ${isIt ? "RESOCONTO PORTAFOGLIO" : "PORTFOLIO POCKETS SUMMARY"}
             </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; color:#000;">
-                <span style="font-weight: 500;">${T('StockMarket.ui.oilTether')}</span>
-                <span style="font-weight: bold; color: #0b2f70;">${stockMarket.getOilShares()} ${T('StockMarket.commands.shares')} (${formatMoney(Math.round(stockMarket.getOilShares() * stockMarket.getOilPrice()))})</span>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 15px; color:#000">
+                <span style="font-weight: 500">${T('StockMarket.ui.oilTether')}</span>
+                <span style="font-weight: bold; color: #0b2f70">${stockMarket.getOilShares()} ${T('StockMarket.commands.shares')} (${formatMoney(Math.round(stockMarket.getOilShares() * stockMarket.getOilPrice()))})</span>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; color:#000;">
-                <span style="font-weight: 500;">${T('StockMarket.ui.soulCrystal')}</span>
-                <span style="font-weight: bold; color: #0b2f70;">${stockMarket.getSoulsShares()} ${T('StockMarket.commands.shares')} (${formatMoney(Math.round(stockMarket.getSoulsShares() * stockMarket.getSoulsPrice()))})</span>
+            <div style="display: flex; justify-content: space-between; font-size: 15px; color:#000">
+                <span style="font-weight: 500">${T('StockMarket.ui.soulCrystal')}</span>
+                <span style="font-weight: bold; color: #0b2f70">${stockMarket.getSoulsShares()} ${T('StockMarket.commands.shares')} (${formatMoney(Math.round(stockMarket.getSoulsShares() * stockMarket.getSoulsPrice()))})</span>
             </div>
         </div>
       `;
@@ -723,9 +723,9 @@
                 <div class="graph-box">
                     <canvas id="stock-canvas" width="940" height="146"></canvas>
                     <div class="stock-legend">
-                        <div class="legend-item"><span class="legend-color" style="background:#2ecc71;"></span>${isIt ? "Petrolio" : "Oil Tether"}</div>
-                        <div class="legend-item"><span class="legend-color" style="background:#9b59b6;"></span>${isIt ? "Anime" : "Soul Crystal"}</div>
-                        <div class="legend-item"><span class="legend-color" style="border-top: 1px dashed rgba(155, 89, 182, 0.6); width: 14px; height: 1px;"></span>${isIt ? "Median Soul Target" : "Soul Median Target"}</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#2ecc71"></span>${isIt ? "Petrolio" : "Oil Tether"}</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#9b59b6"></span>${isIt ? "Anime" : "Soul Crystal"}</div>
+                        <div class="legend-item"><span class="legend-color" style="border-top: 1px dashed rgba(155, 89, 182, 0.6); width: 14px; height: 1px"></span>${isIt ? "Median Soul Target" : "Soul Median Target"}</div>
                     </div>
                 </div>
                 <div class="stock-prices-footer">
@@ -744,7 +744,7 @@
                 <div class="trade-pane">
                     <h3 class="stock-title">${isIt ? "NEGOZIO TITOLI" : "ACQUISITION & TRADE DECK"}</h3>
                     ${tabsHTML}
-                    <div style="flex:1; overflow-y:auto; padding-right:4px;">
+                    <div style="flex:1; overflow-y:auto; padding-right:4px">
                         ${assetsHTML}
                     </div>
                 </div>
@@ -824,7 +824,7 @@
       return `
         <div class="ticker-badge">
             <span>${formatMoney(price)}</span>
-            <span style="color:${color}; font-size:11px;">${arrow} ${deltaText}</span>
+            <span style="color:${color}; font-size:14px">${arrow} ${deltaText}</span>
         </div>
       `;
     }

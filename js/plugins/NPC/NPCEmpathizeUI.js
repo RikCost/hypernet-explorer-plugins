@@ -31,7 +31,7 @@
     _addNpcAttraction, _npcEffectiveAttraction, _computePartyAttraction,
     _emPlaythrough, _isEmActor, _isBubbaNpc, _emContext, _emStanceKey, _emStanceData,
     _bubbaPlaythrough, _isBubbaActor, _bubbaContext, _bubbaDb,
-    _isNonSentientActor, FERAL_ACTIONS,
+    _isNonSentientActor, FERAL_ACTIONS, FUN_ACTIONS,
   } = window.NPCEmpathize._helpers;
   const _getT = window.NPCEmpathize._getT;
 
@@ -89,9 +89,9 @@
     const col   = iconIndex % 16;
     const row   = Math.floor(iconIndex / 16);
     return (
-      `<span style="display:inline-block;width:${size}px;height:${size}px;overflow:hidden;flex-shrink:0;vertical-align:middle;">` +
-      `<span style="display:block;width:32px;height:32px;transform:scale(${scale});transform-origin:top left;` +
-      `background:url('img/system/IconSet.png') -${col * 32}px -${row * 32}px no-repeat;image-rendering:pixelated;"></span></span>`
+      `<span style="display:inline-block; width:${size}px; height:${size}px; overflow:hidden; flex-shrink:0; vertical-align:middle">` +
+      `<span style="display:block; width:32px; height:32px; transform:scale(${scale}); transform-origin:top left; ` +
+      `background:url('img/system/IconSet.png') -${col * 32}px -${row * 32}px no-repeat; image-rendering:pixelated"></span></span>`
     );
   }
 
@@ -101,7 +101,7 @@
     return `
       <div class="npc-vital-row">
         <span class="npc-vital-lbl">${label}</span>
-        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${v}%;background:${color};"></div></div>
+        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${v}%; background:${color}"></div></div>
         <span class="npc-vital-pct">${v}%</span>
       </div>`;
   }
@@ -115,7 +115,7 @@
     return `
       <div class="npc-vital-row">
         <span class="npc-vital-lbl">${label}</span>
-        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${v}%;background:${color};"></div></div>
+        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${v}%; background:${color}"></div></div>
         <span class="npc-vital-pct">${v}%</span>
       </div>`;
   }
@@ -413,7 +413,7 @@
     return `
       <div class="npc-vital-row">
         <span class="npc-vital-lbl">${_escapeHtml(label)}</span>
-        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${v}%;background:${color};"></div></div>
+        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${v}%; background:${color}"></div></div>
         <span class="npc-vital-pct">${v}</span>
       </div>`;
   }
@@ -427,8 +427,8 @@
     return `
       <div class="npc-vital-row">
         <span class="npc-vital-lbl">${_escapeHtml(label)}</span>
-        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${pct}%;background:${color};"></div></div>
-        <span class="npc-vital-pct" style="width:44px;">${v > 0 ? '+' : ''}${v}</span>
+        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${pct}%; background:${color}"></div></div>
+        <span class="npc-vital-pct" style="width:44px">${v > 0 ? '+' : ''}${v}</span>
       </div>`;
   }
 
@@ -437,13 +437,13 @@
     return `
       <div class="npc-vital-row">
         <span class="npc-vital-lbl">${_escapeHtml(label)}</span>
-        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${pct}%;background:${color || '#8b5a2b'};"></div></div>
-        <span class="npc-vital-pct" style="width:44px;">${value}</span>
+        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${pct}%; background:${color || '#8b5a2b'}"></div></div>
+        <span class="npc-vital-pct" style="width:44px">${value}</span>
       </div>`;
   }
 
   function _kvRow(iconIdx, label, valueHTML) {
-    return `<div class="npc-ident-row">${_iconSpan(iconIdx, 17)}<span style="opacity:0.65;">${_escapeHtml(label)}:</span>&nbsp;<span>${valueHTML}</span></div>`;
+    return `<div class="npc-ident-row">${_iconSpan(iconIdx, 17)}<span style="opacity:0.65">${_escapeHtml(label)}:</span>&nbsp;<span>${valueHTML}</span></div>`;
   }
 
   function _eventRows(events, ICONS) {
@@ -748,10 +748,10 @@
       console.error('[NPCEmpathizeUI] _render error:', e);
       const T = _getT();
       this._overlay.innerHTML =
-        '<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">' +
-        '<div style="padding:40px;font-family:\'Lora\',serif;color:#2b1d0e;text-align:center;">' +
-        `<div style="font-size:1.51rem;font-weight:bold;margin-bottom:8px;">${T.npcUnavailable}</div>` +
-        `<div style="font-size:1.13rem;opacity:0.7;">${T.pressCancel}</div></div></div>`;
+        '<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%">' +
+        '<div style="padding:40px; font-family:\'Lora\',serif; color:#2b1d0e; text-align:center">' +
+        `<div style="font-size:1.661rem; font-weight:bold; margin-bottom:8px">${T.npcUnavailable}</div>` +
+        `<div style="font-size:1.299rem; opacity:0.7">${T.pressCancel}</div></div></div>`;
     }
     // Every innerHTML rebuild wipes the npc-content-focused class off the Wiki
     // grid tiles, so re-apply the keyboard/controller focus ring after each
@@ -1238,7 +1238,7 @@
     ].filter(([, v]) => v !== undefined && v !== null && v !== 0);
     if (!rows.length) return '';
 
-    let html = `<div class="npc-sec-hdr" style="margin-top:6px;">${_escapeHtml(T.stats)}</div>`;
+    let html = `<div class="npc-sec-hdr" style="margin-top:6px">${_escapeHtml(T.stats)}</div>`;
     html += '<div class="npc-stat-grid">';
     html += rows.map(([label, value]) =>
       `<div class="npc-stat-cell"><span class="npc-stat-lbl">${_escapeHtml(label)}</span>` +
@@ -1256,7 +1256,7 @@
       html +=
         `<div class="npc-exp-section">` +
           `<div class="npc-exp-label">EXP ${pct}%</div>` +
-          `<div class="npc-exp-track"><div class="npc-exp-fill" style="width:${pct}%;"></div></div>` +
+          `<div class="npc-exp-track"><div class="npc-exp-fill" style="width:${pct}%"></div></div>` +
         `</div>`;
     }
     return html;
@@ -1272,13 +1272,13 @@
       hpmpHTML =
         `<div class="npc-vital-row">` +
           `<span class="npc-vital-lbl">${T('Equip.hp')}</span>` +
-          `<div class="npc-vital-track"><div class="npc-vital-fill" style="width:${hpPct}%;background:#d9534f;"></div></div>` +
-          `<span class="npc-vital-pct" style="width:44px;">${mhp}</span>` +
+          `<div class="npc-vital-track"><div class="npc-vital-fill" style="width:${hpPct}%; background:#d9534f"></div></div>` +
+          `<span class="npc-vital-pct" style="width:44px">${mhp}</span>` +
         `</div>` +
         `<div class="npc-vital-row">` +
           `<span class="npc-vital-lbl">${T('Equip.mp')}</span>` +
-          `<div class="npc-vital-track"><div class="npc-vital-fill" style="width:${mpPct}%;background:#4070d0;"></div></div>` +
-          `<span class="npc-vital-pct" style="width:44px;">${mmp}</span>` +
+          `<div class="npc-vital-track"><div class="npc-vital-fill" style="width:${mpPct}%; background:#4070d0"></div></div>` +
+          `<span class="npc-vital-pct" style="width:44px">${mmp}</span>` +
         `</div>`;
     }
 
@@ -1296,20 +1296,20 @@
       const chips = members.map((m, idx) => {
         const on = idx === focusIdx;
         return `<div onmousedown="event.stopPropagation();SceneManager._scene._selectFocusActor(${idx})" ` +
-          `style="cursor:pointer;padding:3px 9px;border-radius:5px;font-size:1.02rem;white-space:nowrap;` +
-          `border:1.5px solid ${on ? '#2b1d0e' : 'rgba(43,29,14,0.3)'};` +
-          `background:${on ? 'rgba(43,29,14,0.14)' : 'transparent'};font-weight:${on ? 'bold' : 'normal'};">` +
+          `style="cursor:pointer; padding:3px 9px; font-size:1.173rem; white-space:nowrap; ` +
+          `border:1.5px solid ${on ? '#2b1d0e' : 'rgba(43,29,14,0.3)'}; ` +
+          `background:${on ? 'rgba(43,29,14,0.14)' : 'transparent'}; font-weight:${on ? 'bold' : 'normal'}">` +
           `${_escapeHtml(m.name())}</div>`;
       }).join('');
       switcherHTML =
-        `<div class="npc-focus-switcher" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:5px;margin:2px 0 6px;">` +
-        `<span style="opacity:0.6;font-size:0.95rem;width:100%;text-align:center;">${_escapeHtml(T.interactingAs)}</span>` +
+        `<div class="npc-focus-switcher" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:5px; margin:2px 0 6px">` +
+        `<span style="opacity:0.6; font-size:1.14rem; width:100%; text-align:center">${_escapeHtml(T.interactingAs)}</span>` +
         `${hint.left}${chips}${hint.right}</div>`;
     }
 
     let predHTML = '';
     if (predispositions?.length) {
-      predHTML = `<div class="npc-sec-hdr" style="margin-top:6px;">${T.predisposition}</div>`;
+      predHTML = `<div class="npc-sec-hdr" style="margin-top:6px">${T.predisposition}</div>`;
       predispositions.forEach(({ actor, score }, idx) => {
         const pct   = Math.round((score + 100) / 2);
         const color = score < -30 ? '#c02020' : score > 30 ? '#2a6e4a' : '#b8860b';
@@ -1317,10 +1317,10 @@
         const on    = idx === focusIdx && isNpcMode;
         predHTML += `
           <div class="npc-pred-row${on ? ' npc-pred-focus' : ''}" onmousedown="event.stopPropagation();SceneManager._scene._selectFocusActor(${idx})"
-               style="cursor:pointer;${on ? 'background:rgba(43,29,14,0.10);border-radius:4px;' : ''}">
+               style="cursor:pointer; ${on ? 'background:rgba(43,29,14,0.10);border-radius:4px;' : ''}">
             <span class="npc-pred-name">${on ? '▸ ' : ''}${_escapeHtml(actor.name())}</span>
-            <div class="npc-pred-track"><div class="npc-pred-fill" style="width:${pct}%;background:${color};"></div></div>
-            <span class="npc-pred-val" style="color:${color};">${sign}${score}</span>
+            <div class="npc-pred-track"><div class="npc-pred-fill" style="width:${pct}%; background:${color}"></div></div>
+            <span class="npc-pred-val" style="color:${color}">${sign}${score}</span>
           </div>`;
       });
     }
@@ -1330,7 +1330,7 @@
     // trade), so it reads apart from Predisposition rather than inside it.
     let attrHTML = '';
     if (attractions?.length) {
-      attrHTML = `<div class="npc-sec-hdr" style="margin-top:6px;">${T.attractionLbl}</div>`;
+      attrHTML = `<div class="npc-sec-hdr" style="margin-top:6px">${T.attractionLbl}</div>`;
       attractions.forEach(({ actor, score }, idx) => {
         const pct   = Math.round((score + 100) / 2);
         const color = score < -30 ? '#c02020' : score > 30 ? '#8a2f5a' : '#b8860b';
@@ -1338,10 +1338,10 @@
         const on    = idx === focusIdx && isNpcMode;
         attrHTML += `
           <div class="npc-pred-row${on ? ' npc-pred-focus' : ''}" onmousedown="event.stopPropagation();SceneManager._scene._selectFocusActor(${idx})"
-               style="cursor:pointer;${on ? 'background:rgba(43,29,14,0.10);border-radius:4px;' : ''}">
+               style="cursor:pointer; ${on ? 'background:rgba(43,29,14,0.10);border-radius:4px;' : ''}">
             <span class="npc-pred-name">${on ? '▸ ' : ''}${_escapeHtml(actor.name())}</span>
-            <div class="npc-pred-track"><div class="npc-pred-fill" style="width:${pct}%;background:${color};"></div></div>
-            <span class="npc-pred-val" style="color:${color};">${sign}${score}</span>
+            <div class="npc-pred-track"><div class="npc-pred-fill" style="width:${pct}%; background:${color}"></div></div>
+            <span class="npc-pred-val" style="color:${color}">${sign}${score}</span>
           </div>`;
       });
     }
@@ -1387,7 +1387,7 @@
       e => e.tag === 'crime' && e.desc === 'attacked by player' && (e.gameMin ?? 0) >= nowMin - 3 * 1440 // i18n-ignore: event-log record id
     );
     if (recentAttack) {
-      hostileHTML = `<div class="npc-need-badge" style="background:rgba(180,30,30,0.12);color:#b01010;border-color:#b01010;">` +
+      hostileHTML = `<div class="npc-need-badge" style="background:rgba(180,30,30,0.12); color:#b01010; border-color:#b01010">` +
         `${_iconSpan(12, 14)}<span>${_escapeHtml(T('Empathize.hostileBadge'))}</span></div>`;
     }
 
@@ -1399,9 +1399,9 @@
       const metLabel = diff <= 0
         ? T('Empathize.metToday')
         : diff === 1 ? T('Empathize.metYesterday') : T.n('Empathize.metDaysAgo', diff, { n: diff });
-      lastMetHTML = `<div style="font-size:1.08rem;opacity:0.72;margin-top:4px;padding:0 4px;">${_escapeHtml(metLabel)}</div>`;
+      lastMetHTML = `<div style="font-size:1.242rem; opacity:0.72; margin-top:4px; padding:0 4px">${_escapeHtml(metLabel)}</div>`;
     } else if (profile) {
-      lastMetHTML = `<div style="font-size:1.08rem;opacity:0.62;margin-top:4px;padding:0 4px;">${_escapeHtml(T('Empathize.firstMeeting'))}</div>`;
+      lastMetHTML = `<div style="font-size:1.242rem; opacity:0.62; margin-top:4px; padding:0 4px">${_escapeHtml(T('Empathize.firstMeeting'))}</div>`;
     }
 
     let identHTML = '';
@@ -1536,7 +1536,7 @@
     // landing, a join). It sits at the FOOT of the log, directly above the
     // buttons it is talking about, where the eye already is.
     const joinMsgHTML = this._joinMessage
-      ? `<div class="npc-join-msg ${this._joinMessage.type}" style="margin:8px 16px 0;">${_escapeHtml(this._joinMessage.text)}</div>`
+      ? `<div class="npc-join-msg ${this._joinMessage.type}" style="margin:8px 16px 0">${_escapeHtml(this._joinMessage.text)}</div>`
       : '';
 
     let actionsHTML;
@@ -1629,18 +1629,18 @@
     const items = this._giftItems;
     let html = '';
     if (!items.length) {
-      html = `<span style="opacity:0.6;font-style:italic;padding:4px 8px;font-size:1.08rem;">${_escapeHtml(T.noItemsToGive)}</span>`;
+      html = `<span style="opacity:0.6; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.noItemsToGive)}</span>`;
     } else {
       html = items.map((item, i) => {
         const qty     = $gameParty.numItems(item);
         const opDelta = Math.round(Math.max(5, Math.min(25, (item.price || 0) / 50)));
         return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._giveItem(${i})">` +
           `${_iconSpan(item.iconIndex || 0, 15)}<span>${_escapeHtml(item.name)}</span>` +
-          `<span style="opacity:0.55;margin-left:4px;font-size:1.00rem;">×${qty}</span>` +
-          `<span style="color:#2a6e4a;margin-left:6px;">+${opDelta}♥</span></div>`;
+          `<span style="opacity:0.55; margin-left:4px; font-size:1.15rem">×${qty}</span>` +
+          `<span style="color:#2a6e4a; margin-left:6px">+${opDelta}♥</span></div>`;
       }).join('');
     }
-    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
     return html;
   };
 
@@ -1655,7 +1655,7 @@
     const chance = _infectChance(this._focusActor());
     let html = '';
     if (!items.length) {
-      html = `<span style="opacity:0.6;font-style:italic;padding:4px 8px;font-size:1.08rem;">${_escapeHtml(T.noVialsToOpen)}</span>`;
+      html = `<span style="opacity:0.6; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.noVialsToOpen)}</span>`;
     } else {
       const DS = window.DiseaseSystem;
       html = items.map((item, i) => {
@@ -1664,12 +1664,12 @@
         const qty  = $gameParty.numItems(item);
         return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._infectWith(${i})">` +
           `${_iconSpan(item.iconIndex || 0, 15)}<span>${_escapeHtml(name)}</span>` +
-          `<span style="opacity:0.55;margin-left:4px;font-size:1.00rem;">×${qty}</span>` +
-          (covert ? `<span style="color:#8a2a2a;margin-left:6px;">~${chance}%</span>` : '') +
+          `<span style="opacity:0.55; margin-left:4px; font-size:1.15rem">×${qty}</span>` +
+          (covert ? `<span style="color:#8a2a2a; margin-left:6px">~${chance}%</span>` : '') +
           `</div>`;
       }).join('');
     }
-    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
     return html;
   };
 
@@ -1687,7 +1687,7 @@
         `<span>${_escapeHtml(T.cardStakeFree)}</span></div>`;
       html += stakes.money.map(amount =>
         `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._startCardDuel({type:'money',amount:${amount}})">` +
-        `<span>${_escapeHtml(T.cardStakeMoney)}</span>, <span style="opacity:0.75;">${_euros(amount)}</span></div>`
+        `<span>${_escapeHtml(T.cardStakeMoney)}</span>, <span style="opacity:0.75">${_euros(amount)}</span></div>`
       ).join('');
       if (stakes.item) {
         const mine   = $dataItems[stakes.item.playerItem.id];
@@ -1699,28 +1699,28 @@
             .replace(/"/g, '&quot;');
           html += `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._startCardDuel(${arg})">` +
             `${_iconSpan(mine.iconIndex || 0, 15)}<span>${_escapeHtml(mine.name)}</span>` +
-            `<span style="opacity:0.6;margin:0 4px;">&rarr;</span>` +
+            `<span style="opacity:0.6; margin:0 4px">&rarr;</span>` +
             `${_iconSpan(theirs.iconIndex || 0, 15)}<span>${_escapeHtml(theirs.name)}</span></div>`;
         }
       }
     } else if (this._cardMode === 'trade') {
       const offers = this._cardTradeOffers();
       if (!offers.length) {
-        html = `<span style="opacity:0.6;font-style:italic;padding:4px 8px;font-size:1.08rem;">${_escapeHtml(T.cardNothingToSwap)}</span>`;
+        html = `<span style="opacity:0.6; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.cardNothingToSwap)}</span>`;
       } else {
         html = offers.map((offer, i) => {
           const theirs = CGx.nameOf(offer.theirs);
           const mine   = CGx.nameOf(offer.mine);
           return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._doCardTrade(${i})">` +
             `<span>${_escapeHtml(mine)}</span>` +
-            `<span style="opacity:0.6;margin:0 4px;">&rarr;</span>` +
-            `<span style="color:#2a6e4a;">${_escapeHtml(theirs)}</span>` +
-            `<span style="opacity:0.5;margin-left:6px;font-size:0.95em;">${CGx.statTotal(offer.mine)}/${CGx.statTotal(offer.theirs)}</span></div>`;
+            `<span style="opacity:0.6; margin:0 4px">&rarr;</span>` +
+            `<span style="color:#2a6e4a">${_escapeHtml(theirs)}</span>` +
+            `<span style="opacity:0.5; margin-left:6px; font-size:0.964em">${CGx.statTotal(offer.mine)}/${CGx.statTotal(offer.theirs)}</span></div>`;
         }).join('');
       }
     }
 
-    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
     return html;
   };
 
@@ -1744,22 +1744,22 @@
 
     let html = '';
     if (isLawNPC) {
-      html = `<span style="color:#b01010;padding:4px 8px;font-style:italic;font-size:1.08rem;">${_escapeHtml(T.bribeRefusedLaw ? T.bribeRefusedLaw(npcName) : `${npcName} refuses on principle.`)}</span>`;
+      html = `<span style="color:#b01010; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.bribeRefusedLaw ? T.bribeRefusedLaw(npcName) : `${npcName} refuses on principle.`)}</span>`;
     } else if (hostile) {
-      html = `<span style="color:#b01010;padding:4px 8px;font-style:italic;font-size:1.08rem;">${_escapeHtml(T.bribeRefused(npcName))}</span>`;
+      html = `<span style="color:#b01010; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.bribeRefused(npcName))}</span>`;
     } else {
       html = TIERS.map((tier, i) => {
         const canAfford = gold >= tier.gold;
         const disabled  = !canAfford ? ' npc-action-disabled' : '';
-        const extra     = costMult > 1 ? ` <span style="color:#c07020;font-size:0.95em;">(×${costMult})</span>` : '';
+        const extra     = costMult > 1 ? ` <span style="color:#c07020; font-size:0.964em">(×${costMult})</span>` : '';
         return `<div class="npc-chat-action-btn${disabled}" onmousedown="event.stopPropagation();SceneManager._scene._attemptBribe(${i})">` +
           `<span>${_escapeHtml(tier.label)}</span>` +
-          `, <span style="opacity:0.75;">${_euros(tier.gold)}</span>${extra}` +
-          `<span style="color:#2a6e4a;margin-left:6px;">+${tier.op}♥</span>` +
-          `<span style="opacity:0.5;margin-left:4px;font-size:0.97em;">${tier.chance}%</span></div>`;
+          `, <span style="opacity:0.75">${_euros(tier.gold)}</span>${extra}` +
+          `<span style="color:#2a6e4a; margin-left:6px">+${tier.op}♥</span>` +
+          `<span style="opacity:0.5; margin-left:4px; font-size:0.978em">${tier.chance}%</span></div>`;
       }).join('');
     }
-    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
     return html;
   };
 
@@ -1774,11 +1774,15 @@
     // stranger in his life and is not starting in this menu.
     if (this._bubbaCtx?.()) cat = cat.filter(c => c.tone !== 'negative');
     const toneColor = { positive: '#2a6e4a', neutral: '#8a6a30', negative: '#b01010', performance: '#6a3fbf' };
-    let html = cat.map(c =>
-      `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._socialInteract('${c.id}')">` +
-      `<span style="color:${toneColor[c.tone] || '#333'};">${_escapeHtml(c.label)}</span></div>`
-    ).join('');
-    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    // The entertainment moves carry a ☺ in the Fun colour: those are the ones
+    // that top up the Fun meter of the party AND of the NPC when they land.
+    let html = cat.map(c => {
+      const fun = (FUN_ACTIONS && FUN_ACTIONS[c.id])
+        ? ` <span style="color:#d4a64e" title="${_escapeHtml(T.funHint || '')}">☺</span>` : '';
+      return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._socialInteract('${c.id}')">` +
+        `<span style="color:${toneColor[c.tone] || '#333'}">${_escapeHtml(c.label)}</span>${fun}</div>`;
+    }).join('');
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
     return html;
   };
 
@@ -1787,7 +1791,7 @@
     const agility = $gameParty.leader()?.agi ?? 10;
     let html = '';
     if (!items.length) {
-      html = `<span style="opacity:0.6;font-style:italic;padding:4px 8px;font-size:1.08rem;">${_escapeHtml(T.noItems)}</span>`;
+      html = `<span style="opacity:0.6; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.noItems)}</span>`;
     } else {
       html = items.map((item, i) => {
         const key    = `${item.type}_${item.id}`;
@@ -1798,15 +1802,15 @@
           : 50;
         const cc = chance >= 70 ? '#2a6e4a' : chance >= 40 ? '#b8860b' : '#c02020';
         const badge = result === 'success'
-          ? ` <span style="color:#2a6e4a;font-weight:bold;">${_escapeHtml(T.successLabel)}</span>`
+          ? ` <span style="color:#2a6e4a; font-weight:bold">${_escapeHtml(T.successLabel)}</span>`
           : result === 'fail'
-          ? ` <span style="color:#c02020;font-weight:bold;">${_escapeHtml(T.failedLabel)}</span>`
-          : ` <span style="color:${cc};">${chance}%</span>`;
+          ? ` <span style="color:#c02020; font-weight:bold">${_escapeHtml(T.failedLabel)}</span>`
+          : ` <span style="color:${cc}">${chance}%</span>`;
         return `<div class="npc-chat-action-btn${done ? ' npc-action-disabled' : ''}" onmousedown="event.stopPropagation();SceneManager._scene._attemptSteal(${i})">` +
           `${_iconSpan(item.data.iconIndex || 0, 15)}<span>${_escapeHtml(item.data.name)}</span>${badge}</div>`;
       }).join('');
     }
-    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
     return html;
   };
 
@@ -1854,7 +1858,7 @@
           ? `<span class="npc-tag">${_iconSpan(trait.icon || 0, 15)}${_escapeHtml(_traitDisplayName(trait))}</span>`
           : '';
       }).filter(Boolean).join('');
-      if (tags) traitsHTML = `<div class="npc-sec-hdr" style="margin-top:6px;">${_escapeHtml(T.traits)}</div><div class="npc-tag-wrap">${tags}</div>`;
+      if (tags) traitsHTML = `<div class="npc-sec-hdr" style="margin-top:6px">${_escapeHtml(T.traits)}</div><div class="npc-tag-wrap">${tags}</div>`;
     }
 
     let specsHTML = '';
@@ -1862,9 +1866,9 @@
       const tags = preset.specializations.map(entry => {
         const spec = window.Specializations.byId.get(entry.id);
         if (!spec) return '';
-        return `<span class="npc-tag">${_escapeHtml(window.Specializations.displayName(spec))} <span style="opacity:0.6;">(${_escapeHtml(window.Specializations.levelName(entry.level))})</span></span>`;
+        return `<span class="npc-tag">${_escapeHtml(window.Specializations.displayName(spec))} <span style="opacity:0.6">(${_escapeHtml(window.Specializations.levelName(entry.level))})</span></span>`;
       }).filter(Boolean).join('');
-      if (tags) specsHTML = `<div class="npc-sec-hdr" style="margin-top:6px;">${_escapeHtml(T.specializations)}</div><div class="npc-tag-wrap">${tags}</div>`;
+      if (tags) specsHTML = `<div class="npc-sec-hdr" style="margin-top:6px">${_escapeHtml(T.specializations)}</div><div class="npc-tag-wrap">${tags}</div>`;
     }
 
     let skillsHTML = '';
@@ -1873,13 +1877,13 @@
         const sk = $dataSkills[id];
         return sk ? `<span class="npc-tag">${_iconSpan(sk.iconIndex || 0, 15)}${_escapeHtml(sk.name)}</span>` : '';
       }).filter(Boolean).join('');
-      if (tags) skillsHTML = `<div class="npc-sec-hdr" style="margin-top:6px;">${_escapeHtml(T.skills)}</div><div class="npc-tag-wrap">${tags}</div>`;
+      if (tags) skillsHTML = `<div class="npc-sec-hdr" style="margin-top:6px">${_escapeHtml(T.skills)}</div><div class="npc-tag-wrap">${tags}</div>`;
     }
 
     const lore = _presetLore(preset, lang);
     const loreHTML = lore
-      ? `<div class="npc-sec-hdr" style="margin-top:6px;">${_escapeHtml(T.history)}</div>` +
-        `<div class="npc-thought" style="font-style:normal;">${_linkify(lore)}</div>`
+      ? `<div class="npc-sec-hdr" style="margin-top:6px">${_escapeHtml(T.history)}</div>` +
+        `<div class="npc-thought">${_linkify(lore)}</div>`
       : '';
 
     if (!rows.length && !traitsHTML && !specsHTML && !skillsHTML && !loreHTML) return '';
@@ -1936,7 +1940,7 @@
       if (wealthLabel)  identHTML += `<div class="npc-ident-row">${_iconSpan(314, 17)}<span>${_escapeHtml(wealthLabel)}</span></div>`;
       if (ideologyName) identHTML += `<div class="npc-ident-row">${_iconSpan(186, 17)}<span>${_escapeHtml(ideologyName)}</span></div>`;
       if (faction)      identHTML += `<div class="npc-ident-row">${_iconSpan(faction.iconIndex || 187, 17)}${_wikiLink('faction', _factionDisplayName(faction))}</div>`;
-      identHTML += `<div class="npc-ident-row">${_iconSpan(175, 17)}<span style="color:${moralColor}">${_escapeHtml(moralEntry.label)}</span><span style="opacity:0.45;">&nbsp;— ${morality}</span></div>`;
+      identHTML += `<div class="npc-ident-row">${_iconSpan(175, 17)}<span style="color:${moralColor}">${_escapeHtml(moralEntry.label)}</span><span style="opacity:0.45">&nbsp;— ${morality}</span></div>`;
       // Em (Switch 48): where this person stands on the witch who fed the
       // spear. Shown only while she is the one doing the talking.
       const emCtx = this._emCtx?.();
@@ -1949,7 +1953,7 @@
             : emCtx.key === 'annoyed' ? '#8a6a30'
             : '#2a6e4a';
           identHTML += `<div class="npc-ident-row">${_iconSpan(79, 17)}` +
-            `<span style="opacity:0.65;">${_escapeHtml(T.towardEmLbl)}:</span>&nbsp;` +
+            `<span style="opacity:0.65">${_escapeHtml(T.towardEmLbl)}:</span>&nbsp;` +
             `<span style="color:${stanceColor}">${_escapeHtml(stanceLabel)}</span></div>`;
         }
       }
@@ -1962,7 +1966,7 @@
           : bubbaCtx.data.label;
         if (label) {
           identHTML += `<div class="npc-ident-row">${_iconSpan(79, 17)}` +
-            `<span style="opacity:0.65;">${_escapeHtml(T.towardBubbaLbl)}:</span>&nbsp;` +
+            `<span style="opacity:0.65">${_escapeHtml(T.towardBubbaLbl)}:</span>&nbsp;` +
             `<span style="color:#2a6e4a">${_escapeHtml(label)}</span></div>`;
         }
       }
@@ -2000,12 +2004,12 @@
       politicsHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.politicsSection}</div>`;
       if (citizenParts.length) {
         const label = alien ? T.originLbl : T.citizenOf;
-        politicsHTML += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(label)}:</span>&nbsp;${citizenParts.join('&nbsp;·&nbsp;')}</div>`;
+        politicsHTML += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(label)}:</span>&nbsp;${citizenParts.join('&nbsp;·&nbsp;')}</div>`;
       }
       if (alien) {
-        politicsHTML += `<div class="npc-ident-row">${_iconSpan(158, 17)}<span style="opacity:0.65;">${_escapeHtml(T.casteLbl)}:</span>&nbsp;<span>${_escapeHtml(alien.casteName)}</span></div>`;
+        politicsHTML += `<div class="npc-ident-row">${_iconSpan(158, 17)}<span style="opacity:0.65">${_escapeHtml(T.casteLbl)}:</span>&nbsp;<span>${_escapeHtml(alien.casteName)}</span></div>`;
         if (alien.casteDesc) {
-          politicsHTML += `<div class="npc-ident-row" style="opacity:0.55;font-style:italic;">${_escapeHtml(alien.casteDesc)}</div>`;
+          politicsHTML += `<div class="npc-ident-row" style="opacity:0.55">${_escapeHtml(alien.casteDesc)}</div>`;
         }
       }
     }
@@ -2019,19 +2023,19 @@
         : eng < 75 ? (T.engActivist)
         : (T.engOrganizer);
 
-      if (party) politicsHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65;">${_escapeHtml(T.partyLbl)}:</span>&nbsp;${_wikiLink('party', party.id, party.name)}</div>`;
-      politicsHTML += `<div class="npc-ident-row">${_iconSpan(83, 17)}<span style="opacity:0.65;">${_escapeHtml(T.engagementLbl)}:</span>&nbsp;<span>${_escapeHtml(engLabel)} (${eng})</span></div>`;
+      if (party) politicsHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65">${_escapeHtml(T.partyLbl)}:</span>&nbsp;${_wikiLink('party', party.id, party.name)}</div>`;
+      politicsHTML += `<div class="npc-ident-row">${_iconSpan(83, 17)}<span style="opacity:0.65">${_escapeHtml(T.engagementLbl)}:</span>&nbsp;<span>${_escapeHtml(engLabel)} (${eng})</span></div>`;
       if (identity.localOffice) {
         const officeLabel = window.NPCPolitics?.LOCAL_OFFICE_LABELS?.[identity.localOffice] || identity.localOffice;
-        politicsHTML += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65;">${_escapeHtml(T.localOfficeLbl)}:</span>&nbsp;<span>${_escapeHtml(`${officeLabel}${identity.group ? `, ${identity.group}` : ''}`)}</span></div>`;
+        politicsHTML += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65">${_escapeHtml(T.localOfficeLbl)}:</span>&nbsp;<span>${_escapeHtml(`${officeLabel}${identity.group ? `, ${identity.group}` : ''}`)}</span></div>`;
       }
       if (identity.votedLast && power) {
         const voted = window.NPCPolitics?.getPartyOf?.(identity.power, identity.votedLast.partyId);
         const when = window.NPCPolitics?.dateOf?.(identity.votedLast.minute);
-        if (voted) politicsHTML += `<div class="npc-ident-row">${_iconSpan(220, 17)}<span style="opacity:0.65;">${_escapeHtml(T.lastVoteLbl)}:</span>&nbsp;<span>${_escapeHtml(voted.name)}${when ? ` <span style="opacity:0.5;">(${_escapeHtml(when)})</span>` : ''}</span></div>`;
+        if (voted) politicsHTML += `<div class="npc-ident-row">${_iconSpan(220, 17)}<span style="opacity:0.65">${_escapeHtml(T.lastVoteLbl)}:</span>&nbsp;<span>${_escapeHtml(voted.name)}${when ? ` <span style="opacity:0.5">(${_escapeHtml(when)})</span>` : ''}</span></div>`;
       }
       if (grudgeParty) {
-        politicsHTML += `<div class="npc-ident-row">${_iconSpan(1, 17)}<span style="opacity:0.65;">${_escapeHtml(T.grudgeLbl)}:</span>&nbsp;<span style="color:#c02020;">${_escapeHtml(grudgeParty.name)}</span></div>`;
+        politicsHTML += `<div class="npc-ident-row">${_iconSpan(1, 17)}<span style="opacity:0.65">${_escapeHtml(T.grudgeLbl)}:</span>&nbsp;<span style="color:#c02020">${_escapeHtml(grudgeParty.name)}</span></div>`;
       }
     }
 
@@ -2051,7 +2055,7 @@
       : _getNpcSpecializations(profile, classId ?? profile?.assignedClassId, dl, npcName);
     if (npcSpecs.length) {
       specsHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.specializations}</div><div class="npc-tag-wrap">`;
-      for (const s of npcSpecs) specsHTML += `<span class="npc-tag">${_escapeHtml(s.name)} <span style="opacity:0.6;">(${_escapeHtml(s.levelName)})</span></span>`;
+      for (const s of npcSpecs) specsHTML += `<span class="npc-tag">${_escapeHtml(s.name)} <span style="opacity:0.6">(${_escapeHtml(s.levelName)})</span></span>`;
       specsHTML += '</div>';
     }
 
@@ -2103,7 +2107,7 @@
           const traitName = _traitDisplayName(srcTrait);
           // Skills that come from a trait rather than the class are marked with
           // the trait's own colour, the tags carry no frame to outline any more.
-          tags += `<span class="npc-tag" style="color:#8a6d3b;" title="${_escapeHtml(`${T.traits}: ${traitName}`)}">${_iconSpan(sk.iconIndex || 0, 15)}${_escapeHtml(sk.name)}</span>`;
+          tags += `<span class="npc-tag" style="color:#8a6d3b" title="${_escapeHtml(`${T.traits}: ${traitName}`)}">${_iconSpan(sk.iconIndex || 0, 15)}${_escapeHtml(sk.name)}</span>`;
         } else {
           tags += `<span class="npc-tag">${_iconSpan(sk.iconIndex || 0, 15)}${_escapeHtml(sk.name)}</span>`;
         }
@@ -2129,7 +2133,7 @@
         if (job) simHTML += `<div class="npc-ident-row">${_iconSpan(126, 17)}<span>${_escapeHtml(job.name)}</span></div>`;
       }
       if (profile.money !== undefined) {
-        simHTML += `<div class="npc-ident-row" style="margin-top:3px;">${_iconSpan(314, 17)}<span>${_euros(profile.money)} ${T.onHand}</span></div>`;
+        simHTML += `<div class="npc-ident-row" style="margin-top:3px">${_iconSpan(314, 17)}<span>${_euros(profile.money)} ${T.onHand}</span></div>`;
       }
       if (opinion >= 20) {
         const lbl = opinion >= 60 ? T.knowsYouWell : T.remembersYou;
@@ -2324,9 +2328,9 @@
     // i18n-ignore-start: SVG frame for the web
     const graph =
       `<div class="npc-web-stage" id="npc-web-stage">
-         <div class="npc-web-sizer" style="width:${Math.round(half * 2 * zoom)}px;height:${Math.round(half * 2 * zoom)}px;">
+         <div class="npc-web-sizer" style="width:${Math.round(half * 2 * zoom)}px; height:${Math.round(half * 2 * zoom)}px">
            <svg class="npc-web-svg" viewBox="${viewBox}" width="${num(half * 2)}" height="${num(half * 2)}"
-                style="transform:scale(${zoom});" xmlns="http://www.w3.org/2000/svg">
+                style="transform:scale(${zoom})" xmlns="http://www.w3.org/2000/svg">
              ${edges}${tallies}${nodes}${centre}
            </svg>
          </div>
@@ -2342,10 +2346,10 @@
 
     if (!all.length) {
       return `
-        <div class="npc-sec-hdr" style="margin-bottom:8px;">${T.socialWebTitle}</div>
+        <div class="npc-sec-hdr" style="margin-bottom:8px">${T.socialWebTitle}</div>
         ${graph}
-        <p style="opacity:.6;font-style:italic;margin-top:8px;">${T.noContacts}</p>
-        <p style="font-size:1.08rem;opacity:.44;">${T.contactsHint}</p>`;
+        <p style="opacity:.6; margin-top:8px">${T.noContacts}</p>
+        <p style="font-size:1.242rem; opacity:.44">${T.contactsHint}</p>`;
     }
 
     // The roster repeats the graph as plain rows: it names everyone in full,
@@ -2361,7 +2365,7 @@
       const off = i >= drawn.length ? ' npc-web-row--offgraph' : '';
       return `<div class="npc-web-row${off}" ` +
         `onmousedown="event.stopPropagation();SceneManager._scene._openWebNode(${i})">` +
-        `<span class="npc-web-dot" style="background:${_webEdgeColor(e)};"></span>` +
+        `<span class="npc-web-dot" style="background:${_webEdgeColor(e)}"></span>` +
         `<span class="npc-web-row-name">${_escapeHtml(e.name)}</span>` +
         `<span class="npc-web-row-meta">${_escapeHtml(meetLabel(e.meetings))}</span>` +
         `</div>`;
@@ -2369,7 +2373,7 @@
     }).join('');
 
     return `
-      <div class="npc-sec-hdr" style="margin-bottom:8px;">${T.socialWebTitle}</div>
+      <div class="npc-sec-hdr" style="margin-bottom:8px">${T.socialWebTitle}</div>
       ${graph}
       <div class="npc-routine-sub-hdr">${_escapeHtml(T.webRosterTitle)}</div>
       <div class="npc-web-roster">${rows}</div>`;
@@ -2501,7 +2505,7 @@
 
     let backstoryHTML;
     if (!backstory) {
-      backstoryHTML = `<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noBackstory)}</p>`;
+      backstoryHTML = `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noBackstory)}</p>`;
     } else {
       const ICONS  = window.HistorySimulator_ICONS ?? {};
       const evRows = (backstory.formativeEvents ?? []).map(e => {
@@ -2542,7 +2546,7 @@
 
     const RM = window.NPCSim?.RoutineManager;
     if (!profile || !RM) {
-      return `${headerHTML}<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noRoutineData)}</p>`;
+      return `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRoutineData)}</p>`;
     }
 
     const needLabels = _needLabels(T);
@@ -2560,7 +2564,7 @@
     const pastRows   = past.map(e => row(e.hour, e.activity, e.isPast ? 'past' : 'now')).join('');
     const futureRows = future.length
       ? future.map(e => row(e.hour, e.activity, '')).join('')
-      : `<p style="opacity:0.6;font-style:italic;">${_escapeHtml(T.routineNothingPlanned)}</p>`;
+      : `<p style="opacity:0.6">${_escapeHtml(T.routineNothingPlanned)}</p>`;
 
     return `
       ${headerHTML}
@@ -2616,7 +2620,7 @@
     // world-seeded, pre-simulated medical history persisted on the profile.
     const actorObj = this._actorId != null ? $gameActors.actor(this._actorId) : null;
     if (!DS || (!actorObj && (!profile || !npcName))) {
-      return `${headerHTML}<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noHealth)}</p>`;
+      return `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noHealth)}</p>`;
     }
     if (!actorObj) { try { DS.ensureNpcMedicalHistory(npcName, profile); } catch (e) {} }
     else { try { DS.ensureStoryConditions?.(); } catch (e) {} }
@@ -2628,20 +2632,20 @@
       if (!d) return '';
       const tags = [];
       if (entry.venereal || d.venereal)
-        tags.push(`<span class="npc-badge" style="color:#b0448b;">${_escapeHtml(T.venerealTag)}</span>`);
+        tags.push(`<span class="npc-badge" style="color:#b0448b">${_escapeHtml(T.venerealTag)}</span>`);
       if (entry.epidemic)
-        tags.push(`<span class="npc-badge" style="color:#d9534f;">${_escapeHtml(T.epidemicTag)}</span>`);
+        tags.push(`<span class="npc-badge" style="color:#d9534f">${_escapeHtml(T.epidemicTag)}</span>`);
       if (d.infective)
         tags.push(`<span class="npc-badge">${_escapeHtml(T.contagiousTag)} ${Math.round(d.transmission * 100)}%</span>`);
       const symptoms = (d.symptoms || []).slice(0, 4).join(', ');
       return `
-        <div class="npc-ident-row" style="align-items:flex-start;">
-          <span style="width:10px;height:10px;border-radius:50%;background:${_SEV_COLOR[d.severity] || '#8a6a30'};margin-top:6px;flex-shrink:0;"></span>
-          <div style="flex:1;">
-            <div><b>${_escapeHtml(d.name)}</b> <span style="opacity:0.5;font-size:0.9em;">${_escapeHtml(d.category)}</span></div>
-            ${tags.length ? `<div class="npc-badge-row" style="margin:2px 0;">${tags.join('')}</div>` : ''}
-            ${d.desc ? `<div class="npc-thought" style="margin-top:1px;">${_escapeHtml(d.desc)}</div>` : ''}
-            ${symptoms ? `<div style="opacity:0.6;font-size:0.9em;">${_escapeHtml(T.symptomsLbl)}: ${_escapeHtml(symptoms)}</div>` : ''}
+        <div class="npc-ident-row" style="align-items:flex-start">
+          <span style="width:10px; height:10px; border-radius:50%; background:${_SEV_COLOR[d.severity] || '#8a6a30'}; margin-top:6px; flex-shrink:0"></span>
+          <div style="flex:1">
+            <div><b>${_escapeHtml(d.name)}</b> <span style="opacity:0.5; font-size:0.928em">${_escapeHtml(d.category)}</span></div>
+            ${tags.length ? `<div class="npc-badge-row" style="margin:2px 0">${tags.join('')}</div>` : ''}
+            ${d.desc ? `<div class="npc-thought" style="margin-top:1px">${_escapeHtml(d.desc)}</div>` : ''}
+            ${symptoms ? `<div style="opacity:0.6; font-size:0.928em">${_escapeHtml(T.symptomsLbl)}: ${_escapeHtml(symptoms)}</div>` : ''}
           </div>
         </div>`;
     };
@@ -2651,18 +2655,18 @@
       if (!c) return '';
       const icon = c.category === 'injury' ? 176 : c.category === 'surgical' ? 168 : 186;
       return `
-        <div class="npc-ident-row" style="align-items:flex-start;">
+        <div class="npc-ident-row" style="align-items:flex-start">
           ${_iconSpan(icon, 17)}
-          <div style="flex:1;">
-            <div><b>${_escapeHtml(c.name)}</b> <span style="opacity:0.5;font-size:0.9em;">${_escapeHtml(c.category)}</span></div>
-            ${c.desc ? `<div class="npc-thought" style="margin-top:1px;">${_escapeHtml(c.desc)}</div>` : ''}
+          <div style="flex:1">
+            <div><b>${_escapeHtml(c.name)}</b> <span style="opacity:0.5; font-size:0.928em">${_escapeHtml(c.category)}</span></div>
+            ${c.desc ? `<div class="npc-thought" style="margin-top:1px">${_escapeHtml(c.desc)}</div>` : ''}
           </div>
         </div>`;
     };
 
     const pastBadge = id => {
       const d = DS.getDisease(id);
-      return d ? `<span class="npc-badge" style="margin:2px 4px 2px 0;">${_escapeHtml(d.name)}</span>` : '';
+      return d ? `<span class="npc-badge" style="margin:2px 4px 2px 0">${_escapeHtml(d.name)}</span>` : '';
     };
 
     // Every outbreak this person has been through: what they caught, and the
@@ -2676,16 +2680,16 @@
       const roleLbl = caught
         ? (hysteria ? (T.epidemicSwept) : (T.epidemicCaught))
         : (T.epidemicLived);
-      const tags = [`<span class="npc-badge" style="color:${caught ? '#d9534f' : '#7a7a7a'};">${_escapeHtml(roleLbl)}</span>`];
-      if (hysteria) tags.push(`<span class="npc-badge" style="color:#7a3fbf;">${_escapeHtml(T.hysteriaTag)}</span>`);
+      const tags = [`<span class="npc-badge" style="color:${caught ? '#d9534f' : '#7a7a7a'}">${_escapeHtml(roleLbl)}</span>`];
+      if (hysteria) tags.push(`<span class="npc-badge" style="color:#7a3fbf">${_escapeHtml(T.hysteriaTag)}</span>`);
       if (entry.historical) tags.push(`<span class="npc-badge">${_escapeHtml(T.historicalTag)}</span>`);
       return `
-        <div class="npc-ident-row" style="align-items:flex-start;">
+        <div class="npc-ident-row" style="align-items:flex-start">
           ${_iconSpan(hysteria ? 79 : 176, 17)}
-          <div style="flex:1;">
+          <div style="flex:1">
             <div><b>${_escapeHtml(entry.name || (disease ? disease.name : entry.diseaseId))}</b></div>
-            <div class="npc-badge-row" style="margin:2px 0;">${tags.join('')}</div>
-            <div style="opacity:0.6;font-size:0.9em;">${_escapeHtml(entry.place || '')}${entry.date ? `, ${_escapeHtml(String(entry.date))}` : ''}</div>
+            <div class="npc-badge-row" style="margin:2px 0">${tags.join('')}</div>
+            <div style="opacity:0.6; font-size:0.928em">${_escapeHtml(entry.place || '')}${entry.date ? `, ${_escapeHtml(String(entry.date))}` : ''}</div>
           </div>
         </div>`;
     };
@@ -2707,16 +2711,16 @@
       if (live.length) {
         const rows = live.map(e => {
           const pct = (ES.prevalenceAt(place.key, e) * 100).toFixed(1);
-          return `<div class="npc-ident-row"><div style="flex:1;"><b>${_escapeHtml(e.name)}</b>
-            <div style="opacity:0.6;font-size:0.9em;">${_escapeHtml(ES.placeName ? ES.placeName(place.key) : place.key)} &mdash; ${pct}% ${_escapeHtml(T.epidemicIll)}</div></div></div>`;
+          return `<div class="npc-ident-row"><div style="flex:1"><b>${_escapeHtml(e.name)}</b>
+            <div style="opacity:0.6; font-size:0.928em">${_escapeHtml(ES.placeName ? ES.placeName(place.key) : place.key)} &mdash; ${pct}% ${_escapeHtml(T.epidemicIll)}</div></div></div>`;
         }).join('');
-        localHTML = `<div class="npc-sec-hdr" style="margin-top:10px;">${_escapeHtml(T.epidemicLocal)}</div>${rows}`;
+        localHTML = `<div class="npc-sec-hdr" style="margin-top:10px">${_escapeHtml(T.epidemicLocal)}</div>${rows}`;
       }
     }
 
     const section = (title, body, empty) =>
-      `<div class="npc-sec-hdr" style="margin-top:10px;">${_escapeHtml(title)}</div>` +
-      (body || `<p style="opacity:0.5;font-style:italic;">${_escapeHtml(empty)}</p>`);
+      `<div class="npc-sec-hdr" style="margin-top:10px">${_escapeHtml(title)}</div>` +
+      (body || `<p style="opacity:0.5">${_escapeHtml(empty)}</p>`);
 
     return `
       ${headerHTML}
@@ -2761,7 +2765,7 @@
       });
     }
     if (!rows.length) {
-      return `${headerHTML}<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noBiologics)}</p>`;
+      return `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noBiologics)}</p>`;
     }
 
     let condSum = 0, condCount = 0;
@@ -2801,9 +2805,9 @@
     const badges = [];
     if (BTS.isUniversalDonor(bloodEntry.id)) badges.push(`<span class="npc-badge">${_escapeHtml(T.bloodUniversalDonor)}</span>`);
     if (BTS.isUniversalRecipient(bloodEntry.id)) badges.push(`<span class="npc-badge">${_escapeHtml(T.bloodUniversalRecipient)}</span>`);
-    const badgeHTML = badges.length ? `<div class="npc-badge-row" style="margin:2px 0;">${badges.join('')}</div>` : '';
+    const badgeHTML = badges.length ? `<div class="npc-badge-row" style="margin:2px 0">${badges.join('')}</div>` : '';
     const rareNoteHTML = bloodEntry.rareAntigen
-      ? `<div class="npc-thought" style="margin-top:1px;">${_escapeHtml(T.bloodRareAntigenNote)}</div>` : '';
+      ? `<div class="npc-thought" style="margin-top:1px">${_escapeHtml(T.bloodRareAntigenNote)}</div>` : '';
 
     let compatHTML = '';
     const focusActor = this._focusActor ? this._focusActor() : null;
@@ -2839,7 +2843,7 @@
       return `
         <div class="npc-bio-part">
           <span class="npc-bio-part-name">${label}${vitalTag}</span>
-          <div class="npc-vital-track" style="flex:1;"><div class="npc-vital-fill" style="width:${cond}%;background:${condColor(cond)};"></div></div>
+          <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${cond}%; background:${condColor(cond)}"></div></div>
           <span class="npc-vital-pct">${cond}%</span>
         </div>`;
     }).join('');
@@ -2853,7 +2857,7 @@
     const archetype  = profile?.archetype || 'Humanoid'; // i18n-ignore: EnemyArchetypes.json id
     const parts      = window.Health?.EnemyArchetypes?.[archetype]?.parts;
     if (!profile || !parts || !Object.keys(parts).length) {
-      return `${headerHTML}<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noBiologics)}</p>`;
+      return `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noBiologics)}</p>`;
     }
 
     // World-seeded per-NPC anatomy roll, stable across sessions: the same
@@ -3048,26 +3052,26 @@
     const headerHTML = `<div class="npc-sec-hdr">${T.romanceTitle}</div><hr class="npc-r-sep">`;
 
     if (!npcName) {
-      return `${headerHTML}<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noRomance)}</p>`;
+      return `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRomance)}</p>`;
     }
 
     const db = _orientationData();
     const { sexual, romantic, genitalCode } = _npcRomance(npcName, profile);
 
     const esotericTag = o => o?.esoteric
-      ? ` <span class="npc-badge" style="font-size:0.8em;">${_escapeHtml(T.esotericTag)}</span>` : '';
+      ? ` <span class="npc-badge" style="font-size:0.856em">${_escapeHtml(T.esotericTag)}</span>` : '';
     const pctLine = o => o
-      ? `<span style="opacity:0.5;margin-left:6px;font-size:0.95em;">${o.pct}% ${_escapeHtml(T.ofPopulation)}</span>` : '';
+      ? `<span style="opacity:0.5; margin-left:6px; font-size:0.964em">${o.pct}% ${_escapeHtml(T.ofPopulation)}</span>` : '';
 
     // ── Orientation ──
-    let orientHTML = `<div class="npc-sec-hdr" style="margin-top:4px;">${T.orientationLbl}</div>`;
+    let orientHTML = `<div class="npc-sec-hdr" style="margin-top:4px">${T.orientationLbl}</div>`;
     if (romantic) {
-      orientHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span style="opacity:0.65;">${_escapeHtml(T.romanticLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(romantic))}</b></span>${pctLine(romantic)}${esotericTag(romantic)}</div>`;
-      if (ds(romantic)) orientHTML += `<div class="npc-thought" style="margin-top:2px;">${_escapeHtml(ds(romantic))}</div>`;
+      orientHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span style="opacity:0.65">${_escapeHtml(T.romanticLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(romantic))}</b></span>${pctLine(romantic)}${esotericTag(romantic)}</div>`;
+      if (ds(romantic)) orientHTML += `<div class="npc-thought" style="margin-top:2px">${_escapeHtml(ds(romantic))}</div>`;
     }
     if (sexual) {
-      orientHTML += `<div class="npc-ident-row" style="margin-top:6px;">${_iconSpan(84, 17)}<span style="opacity:0.65;">${_escapeHtml(T.sexualLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(sexual))}</b></span>${pctLine(sexual)}${esotericTag(sexual)}</div>`;
-      if (ds(sexual)) orientHTML += `<div class="npc-thought" style="margin-top:2px;">${_escapeHtml(ds(sexual))}</div>`;
+      orientHTML += `<div class="npc-ident-row" style="margin-top:6px">${_iconSpan(84, 17)}<span style="opacity:0.65">${_escapeHtml(T.sexualLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(sexual))}</b></span>${pctLine(sexual)}${esotericTag(sexual)}</div>`;
+      if (ds(sexual)) orientHTML += `<div class="npc-thought" style="margin-top:2px">${_escapeHtml(ds(sexual))}</div>`;
     }
 
     // ── Kinsey scale (only for orientations that map onto it) ──
@@ -3077,21 +3081,21 @@
       const scale = db.kinseyScale || {};
       const desc  = scale[String(kv)] || '';
       kinseyHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.kinseyLbl}</div>` +
-        `<div class="npc-ident-row">${_iconSpan(87, 17)}<span><b>${_escapeHtml('Kinsey ' + kv)}</b></span><span style="opacity:0.55;">&nbsp;, ${_escapeHtml(desc)}</span></div>`;
+        `<div class="npc-ident-row">${_iconSpan(87, 17)}<span><b>${_escapeHtml('Kinsey ' + kv)}</b></span><span style="opacity:0.55">&nbsp;, ${_escapeHtml(desc)}</span></div>`;
       if (kv !== 'X') {
         let dots = '';
         for (let i = 0; i <= 6; i++) {
           const on = i === kv;
-          dots += `<span title="${i}" style="display:inline-block;width:14px;height:14px;margin-right:3px;border-radius:50%;border:1px solid #7a5a2a;background:${on ? '#8b1e3f' : 'rgba(120,90,42,0.15)'};"></span>`;
+          dots += `<span title="${i}" style="display:inline-block; width:14px; height:14px; margin-right:3px; border-radius:50%; border:1px solid #7a5a2a; background:${on ? '#8b1e3f' : 'rgba(120,90,42,0.15)'}"></span>`;
         }
-        kinseyHTML += `<div style="margin:4px 0 0 2px;display:flex;align-items:center;">${dots}</div>`;
+        kinseyHTML += `<div style="margin:4px 0 0 2px; display:flex; align-items:center">${dots}</div>`;
       }
     }
 
     // ── Anatomy: genitals (from the prosthetic reproduction DB) ──
     const genName = _genitalName(genitalCode);
     const anatomyHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.anatomyLbl}</div>` +
-      `<div class="npc-ident-row">${_iconSpan(120, 17)}<span style="opacity:0.65;">${_escapeHtml(T.genitalsLbl)}:</span>&nbsp;<span><b>${_escapeHtml(genName)}</b></span></div>`;
+      `<div class="npc-ident-row">${_iconSpan(120, 17)}<span style="opacity:0.65">${_escapeHtml(T.genitalsLbl)}:</span>&nbsp;<span><b>${_escapeHtml(genName)}</b></span></div>`;
 
     // ── Sentimental status (live, from NPCLifeSim) ──
     let statusHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.sentimentalLbl}</div>`;
@@ -3114,16 +3118,16 @@
       else                                       line = _escapeHtml(T.stSingle);
       statusHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span>${line}</span></div>`;
       if (record.timesMarried > 1) {
-        statusHTML += `<div style="font-size:1.0rem;opacity:0.6;margin:2px 0 0 24px;">${_escapeHtml((T.timesMarried).replace('{n}', record.timesMarried))}</div>`;
+        statusHTML += `<div style="font-size:1.15rem; opacity:0.6; margin:2px 0 0 24px">${_escapeHtml((T.timesMarried).replace('{n}', record.timesMarried))}</div>`;
       }
       const exes = (record.exPartners || []).filter(Boolean);
       if (exes.length) {
         const exList = exes.slice(-4).map(e => {
           const nmHtml = e.external ? _escapeHtml(e.name) : _npcLink(e.name);
-          const out    = e.outcome ? ` <span style="opacity:0.5;">(${_escapeHtml(e.outcome)})</span>` : '';
+          const out    = e.outcome ? ` <span style="opacity:0.5">(${_escapeHtml(e.outcome)})</span>` : '';
           return `${nmHtml}${out}`;
         }).join(', ');
-        statusHTML += `<div class="npc-ident-row" style="margin-top:4px;"><span style="opacity:0.65;">${_escapeHtml(T.exPartnersLbl)}:</span>&nbsp;<span>${exList}</span></div>`;
+        statusHTML += `<div class="npc-ident-row" style="margin-top:4px"><span style="opacity:0.65">${_escapeHtml(T.exPartnersLbl)}:</span>&nbsp;<span>${exList}</span></div>`;
       }
     } else {
       statusHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}<span>${_escapeHtml(T.stSingle)}</span></div>`;
@@ -3133,8 +3137,8 @@
     let styleHTML = '';
     const style = _npcRelationshipStyle(npcName, partnered, profile);
     if (style) {
-      styleHTML = `<div class="npc-ident-row" style="margin-top:6px;">${_iconSpan(83, 17)}<span style="opacity:0.65;">${_escapeHtml(T.relStyleLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(style))}</b></span></div>`;
-      if (ds(style)) styleHTML += `<div class="npc-thought" style="margin-top:2px;">${_escapeHtml(ds(style))}</div>`;
+      styleHTML = `<div class="npc-ident-row" style="margin-top:6px">${_iconSpan(83, 17)}<span style="opacity:0.65">${_escapeHtml(T.relStyleLbl)}:</span>&nbsp;<span><b>${_escapeHtml(nm(style))}</b></span></div>`;
+      if (ds(style)) styleHTML += `<div class="npc-thought" style="margin-top:2px">${_escapeHtml(ds(style))}</div>`;
     }
 
     return `${headerHTML}${orientHTML}${kinseyHTML}${anatomyHTML}${statusHTML}${styleHTML}`;
@@ -3495,7 +3499,7 @@
     if (theirs <= _ROM_HYGIENE_HINT_AT) lines.push(T('Empathize.hygieneCourtSelf', { name: npcName }));
     if (mine   <= _ROM_HYGIENE_HINT_AT) lines.push(T('Empathize.hygieneCourtNpc',  { name: npcName }));
     if (!lines.length) return '';
-    return `<div style="opacity:0.7;font-style:italic;font-size:0.95em;margin:2px 0 4px;">` +
+    return `<div style="opacity:0.7; font-size:0.964em; margin:2px 0 4px">` +
       lines.map(l => _escapeHtml(l)).join('<br>') + `</div>`;
   };
 
@@ -3505,28 +3509,28 @@
       const open = `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._romanceInteract('${o.id}')">`;
       // Bubba's single row: no odds to weigh, only the damage it will do.
       if (o.id === BUBBA_DECLINE_ID) {
-        return `${open}<span style="color:#8a2f5a;">${_escapeHtml(o.label)}</span>` +
-          `<span style="color:#b01010;margin-left:6px;">${o.loss}♥</span></div>`;
+        return `${open}<span style="color:#8a2f5a">${_escapeHtml(o.label)}</span>` +
+          `<span style="color:#b01010; margin-left:6px">${o.loss}♥</span></div>`;
       }
       if (o.reason) {
-        return `${open}<span style="color:#8a2f5a;opacity:0.7;">${_escapeHtml(o.label)}</span>` +
-          `<span style="color:#b01010;margin-left:6px;">0%</span>` +
-          (o.reasonLabel ? `<span style="opacity:0.55;margin-left:4px;font-size:0.95em;">${_escapeHtml(o.reasonLabel)}</span>` : '') +
+        return `${open}<span style="color:#8a2f5a; opacity:0.7">${_escapeHtml(o.label)}</span>` +
+          `<span style="color:#b01010; margin-left:6px">0%</span>` +
+          (o.reasonLabel ? `<span style="opacity:0.55; margin-left:4px; font-size:0.964em">${_escapeHtml(o.reasonLabel)}</span>` : '') +
           `</div>`;
       }
       // Propose carries no single chance of its own: it opens a further page,
       // one row per relationship style, each with its own odds.
       if (o.submenu) {
-        return `${open}<span style="color:#8a2f5a;">${_escapeHtml(o.label)}</span>` +
-          `<span style="opacity:0.6;margin-left:6px;">&rsaquo;</span></div>`;
+        return `${open}<span style="color:#8a2f5a">${_escapeHtml(o.label)}</span>` +
+          `<span style="opacity:0.6; margin-left:6px">&rsaquo;</span></div>`;
       }
       const cc = o.chance >= 60 ? '#2a6e4a' : o.chance >= 30 ? '#b8860b' : '#c02020';
-      return `${open}<span style="color:#8a2f5a;">${_escapeHtml(o.label)}</span>` +
-        `<span style="color:#2a6e4a;margin-left:6px;">+${o.gain}♥</span>` +
-        `<span style="color:#b01010;margin-left:3px;">${o.loss}♥</span>` +
-        `<span style="color:${cc};margin-left:6px;font-weight:bold;">${o.chance}%</span></div>`;
+      return `${open}<span style="color:#8a2f5a">${_escapeHtml(o.label)}</span>` +
+        `<span style="color:#2a6e4a; margin-left:6px">+${o.gain}♥</span>` +
+        `<span style="color:#b01010; margin-left:3px">${o.loss}♥</span>` +
+        `<span style="color:${cc}; margin-left:6px; font-weight:bold">${o.chance}%</span></div>`;
     }).join('');
-    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
     return html;
   };
 
@@ -3562,14 +3566,14 @@
   };
 
   Scene_NPCEmpathize.prototype._buildInlineProposeActions = function (T) {
-    let html = `<div style="opacity:0.7;font-style:italic;font-size:0.95em;margin:2px 0 6px;">${_escapeHtml(T.proposeSubtitle)}</div>`;
+    let html = `<div style="opacity:0.7; font-size:0.964em; margin:2px 0 6px">${_escapeHtml(T.proposeSubtitle)}</div>`;
     html += this._proposeOptions().map(o => {
       const cc = o.chance >= 60 ? '#2a6e4a' : o.chance >= 30 ? '#b8860b' : '#c02020';
       return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._proposeInteract('${o.key}')">` +
-        `<span style="color:#8a2f5a;">${_escapeHtml(o.label)}</span>` +
-        `<span style="color:${cc};margin-left:6px;font-weight:bold;">${o.chance}%</span></div>`;
+        `<span style="color:#8a2f5a">${_escapeHtml(o.label)}</span>` +
+        `<span style="color:${cc}; margin-left:6px; font-weight:bold">${o.chance}%</span></div>`;
     }).join('');
-    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelPropose()">${_escapeHtml(T.cancel)}</div>`;
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelPropose()">${_escapeHtml(T.cancel)}</div>`;
     return html;
   };
 
@@ -3899,18 +3903,18 @@
     this._directionList = [...doors, ...people];
 
     const hdr = text =>
-      `<div style="flex-basis:100%;opacity:0.6;font-size:0.95rem;margin:2px 0 -2px;">${_escapeHtml(text)}</div>`;
+      `<div style="flex-basis:100%; opacity:0.6; font-size:1.14rem; margin:2px 0 -2px">${_escapeHtml(text)}</div>`;
     const row = (entry, i) =>
       `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._answerDirections(${i})">` +
       `<span>${_escapeHtml(entry.label)}</span>` +
       (entry.count > 1
-        ? `<span style="opacity:0.55;margin-left:6px;">${_escapeHtml(T('Empathize.directionsCount', { count: String(entry.count) }))}</span>`
+        ? `<span style="opacity:0.55; margin-left:6px">${_escapeHtml(T('Empathize.directionsCount', { count: String(entry.count) }))}</span>`
         : '') +
-      `<span style="opacity:0.55;margin-left:6px;">${entry.dist} m</span></div>`;
+      `<span style="opacity:0.55; margin-left:6px">${entry.dist} m</span></div>`;
 
     let html = '';
     if (!this._directionList.length) {
-      html = `<span style="opacity:0.6;font-style:italic;padding:4px 8px;font-size:1.08rem;">${_escapeHtml(T.directionsNone)}</span>`;
+      html = `<span style="opacity:0.6; padding:4px 8px; font-size:1.242rem">${_escapeHtml(T.directionsNone)}</span>`;
     } else {
       if (doors.length) {
         html += hdr(T.directionsDoors);
@@ -3921,7 +3925,7 @@
         html += people.map((e, i) => row(e, doors.length + i)).join('');
       }
     }
-    html += `<div class="npc-chat-action-btn" style="opacity:0.65;" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
+    html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
     return html;
   };
 
@@ -3973,7 +3977,7 @@
     const story = CP.getEmBackstory(ConfigManager.language);
     if (!story || !story.paragraphs?.length) return '';
     const body = story.paragraphs
-      .map(p => `<p style="margin:0 0 8px 0;">${_linkify(p)}</p>`)
+      .map(p => `<p style="margin:0 0 8px 0">${_linkify(p)}</p>`)
       .join('');
     const branch = story.branch
       ? `<div class="npc-routine-sub-hdr">${_escapeHtml(T.emBranchHdr)}</div>
@@ -3984,7 +3988,7 @@
 
   Scene_NPCEmpathize.prototype._buildLifeHistoryHTML = function (T, profile, npcName) {
     const headerHTML = `
-      <div class="npc-sec-hdr" style="margin-bottom:6px;">${T.lifeHistoryTitle}</div>
+      <div class="npc-sec-hdr" style="margin-bottom:6px">${T.lifeHistoryTitle}</div>
       <hr class="npc-r-sep">`;
 
     const actorObj = this._actorId != null ? $gameActors.actor(this._actorId) : null;
@@ -3994,7 +3998,7 @@
     if (!log.length) {
       return emHTML
         ? `${headerHTML}${emHTML}`
-        : `${headerHTML}<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noLifeHistory)}</p>`;
+        : `${headerHTML}<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noLifeHistory)}</p>`;
     }
 
     const narrative = window.NPCSim?.StoryLogger?.generateNarrative?.(npcName)
@@ -4047,7 +4051,7 @@
       return `
         <div class="npc-life-row">
           <span class="npc-life-time">${fmt(e.minute)}</span>
-          <span><strong style="color:${color};">${badge}</strong> ${_escapeHtml(String(e.title || ''))}</span>
+          <span><strong style="color:${color}">${badge}</strong> ${_escapeHtml(String(e.title || ''))}</span>
         </div>`;
     }).join('');
 
@@ -4055,7 +4059,7 @@
 
     return `
       <div class="npc-routine-sub-hdr">${_escapeHtml(T('Empathize.contractsWithYou'))}</div>
-      <div class="npc-thought" style="font-style:normal;">${_escapeHtml(summary)}</div>
+      <div class="npc-thought">${_escapeHtml(summary)}</div>
       ${rows}`;
   }
 
@@ -4126,7 +4130,7 @@
         <div class="npc-entity-title">${_escapeHtml(String(ent.id))}</div>`;
       this._rightEl.innerHTML = this._activeTab === 'wiki'
         ? this._buildWikiTabHTML(T)
-        : `<p style="opacity:0.6;font-style:italic;margin-top:14px;">${_escapeHtml(T.noRecords)}</p>`;
+        : `<p style="opacity:0.6; margin-top:14px">${_escapeHtml(T.noRecords)}</p>`;
       return;
     }
 
@@ -4187,7 +4191,7 @@
           _meterRow(T.stability,  s.stability,  '#4070d0') +
           _meterRow(T.unrest,        s.unrest,     '#c02020') +
           _meterRow(T.economyLbl,   s.economyMood, '#b8860b') +
-          `<div class="npc-ident-row" style="margin-top:5px;">${_iconSpan(314, 17)}<span>${T.treasury}: ${_euros(view.live.state.treasury)}</span></div>`;
+          `<div class="npc-ident-row" style="margin-top:5px">${_iconSpan(314, 17)}<span>${T.treasury}: ${_euros(view.live.state.treasury)}</span></div>`;
       } else if (view.hist) {
         sideHTML =
           _statBarRow(T.militaryLbl,       Math.round(view.hist.military ?? 0),    400, '#c02020') +
@@ -4198,13 +4202,13 @@
       // Show current holy leader for dual-track powers (e.g. Holy Vatican Empire)
       if (view.currentHoly) {
         sideHTML += `<hr class="npc-r-sep">` +
-          `<div class="npc-ident-row">${_iconSpan(245, 17)}<span style="opacity:0.65;">${_escapeHtml(T.holyLeader)}:</span>&nbsp;${_wikiLink('leader', view.currentHoly.name)}</div>`;
+          `<div class="npc-ident-row">${_iconSpan(245, 17)}<span style="opacity:0.65">${_escapeHtml(T.holyLeader)}:</span>&nbsp;${_wikiLink('leader', view.currentHoly.name)}</div>`;
       }
     } else if (view.type === 'nation') {
       const ctrlHTML = view.controller !== 'Neutral'
         ? _wikiLink('power', view.controller)
         : `<span>${_escapeHtml(T.independent)}</span>`;
-      sideHTML = `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(T.controlledBy)}:</span>&nbsp;${ctrlHTML}</div>`;
+      sideHTML = `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(T.controlledBy)}:</span>&nbsp;${ctrlHTML}</div>`;
       if (view.government) sideHTML += _kvRow(186, T.government, _escapeHtml(view.government));
       const s = view.power?.state;
       if (s) {
@@ -4243,7 +4247,7 @@
       if (view.rec) {
         sideHTML += _kvRow(220, T.discovered, _escapeHtml(view.rec.date || '?'));
         const holder = view.rec.holders?.[view.rec.holders.length - 1];
-        if (holder) sideHTML += `<div class="npc-ident-row">${_iconSpan(210, 17)}<span style="opacity:0.65;">${_escapeHtml(T.currentHolder)}:</span>&nbsp;${_linkify(holder.holder)}</div>`;
+        if (holder) sideHTML += `<div class="npc-ident-row">${_iconSpan(210, 17)}<span style="opacity:0.65">${_escapeHtml(T.currentHolder)}:</span>&nbsp;${_linkify(holder.holder)}</div>`;
       }
     } else if (view.type === 'faction') {
       const h = view.hist;
@@ -4261,13 +4265,13 @@
       // Show parent hyperpower if present
       if (view.parentPower) {
         sideHTML += `<hr class="npc-r-sep">` +
-          `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', view.parentPower)}</div>`;
+          `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', view.parentPower)}</div>`;
       }
     } else if (view.type === 'party') {
       const p = view.party;
-      sideHTML = `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', view.power.name)}</div>`;
-      if (view.ideology) sideHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65;">${_escapeHtml(T.ideologyLbl)}:</span>&nbsp;${_wikiLink('ideology', view.ideology.id, _ideologyLabel(view.ideology.id))}</div>`;
-      if (view.leader) sideHTML += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65;">${_escapeHtml(T.leaderOfPartyLbl)}:</span>&nbsp;${_wikiLink('leader', view.leader.name)}</div>`;
+      sideHTML = `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', view.power.name)}</div>`;
+      if (view.ideology) sideHTML += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65">${_escapeHtml(T.ideologyLbl)}:</span>&nbsp;${_wikiLink('ideology', view.ideology.id, _ideologyLabel(view.ideology.id))}</div>`;
+      if (view.leader) sideHTML += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65">${_escapeHtml(T.leaderOfPartyLbl)}:</span>&nbsp;${_wikiLink('leader', view.leader.name)}</div>`;
       sideHTML += `<hr class="npc-r-sep">`;
       if (p.foundedYear != null) sideHTML += _kvRow(220, T.foundedLbl, `${p.foundedYear}`);
       if (p.lastShare != null) sideHTML += _kvRow(216, T.lastShareLbl, `${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}`);
@@ -4306,16 +4310,16 @@
 
     html += `<div class="npc-sec-hdr">${T.government}</div>`;
     if (view.government) html += _kvRow(186, T.government, _escapeHtml(view.government));
-    html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(T.controlledBy)}:</span>&nbsp;${
+    html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(T.controlledBy)}:</span>&nbsp;${
       view.controller !== 'Neutral' ? _wikiLink('power', view.controller) : _escapeHtml(T.independent)
     }</div>`;
     if (view.faction && view.faction !== 'Neutral') {
-      html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65;">${_escapeHtml(T.wikiFaction)}:</span>&nbsp;${_linkify(view.faction)}</div>`;
+      html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span style="opacity:0.65">${_escapeHtml(T.wikiFaction)}:</span>&nbsp;${_linkify(view.faction)}</div>`;
     }
     if (power) {
       const head = power.politicians?.[power.headId];
       html += _kvRow(216, T.seats, `${power.seats}, ${_escapeHtml(power.legislature)}`);
-      if (head) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65;">${_escapeHtml(power.headTitle)}:</span>&nbsp;${_wikiLink('leader', head.name)}</div>`;
+      if (head) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65">${_escapeHtml(power.headTitle)}:</span>&nbsp;${_wikiLink('leader', head.name)}</div>`;
       const dateOf = window.NPCPolitics?.dateOf;
       if (power.nextElectionMinute != null && dateOf) {
         html += _kvRow(220, T.nextElection, _escapeHtml(dateOf(power.nextElectionMinute)));
@@ -4323,7 +4327,7 @@
       const pol = power.policies;
       if (pol) {
         html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.policiesLbl}</div>
-          <div class="npc-stats-row">${_escapeHtml(`${T.taxRate} ${pol.taxRate}% · ${T.censorship} ${pol.censorship} · ${T.conscription} ${pol.conscription} · ${T.welfare} ${pol.welfare}`)}${pol.curfew ? ` · <span style="color:#c02020;font-weight:bold;">${_escapeHtml(T.curfewActive)}</span>` : ''}</div>`;
+          <div class="npc-stats-row">${_escapeHtml(`${T.taxRate} ${pol.taxRate}% · ${T.censorship} ${pol.censorship} · ${T.conscription} ${pol.conscription} · ${T.welfare} ${pol.welfare}`)}${pol.curfew ? ` · <span style="color:#c02020; font-weight:bold">${_escapeHtml(T.curfewActive)}</span>` : ''}</div>`;
       }
     }
 
@@ -4339,7 +4343,7 @@
       for (const s of view.settlements) {
         const mayor = s.offices?.mayor;
         html += `<div class="npc-ident-row">${_iconSpan(190, 17)}<span>${_escapeHtml(s.group)}</span>${
-          mayor ? `<span style="opacity:0.55;">&nbsp;— ${_escapeHtml(T.mayorLbl)}:&nbsp;</span>${_wikiLink('npc', mayor)}` : ''
+          mayor ? `<span style="opacity:0.55">&nbsp;— ${_escapeHtml(T.mayorLbl)}:&nbsp;</span>${_wikiLink('npc', mayor)}` : ''
         }</div>`;
       }
     }
@@ -4357,7 +4361,7 @@
   Scene_NPCEmpathize.prototype._buildNationGovHistoryHTML = function (view, T) {
     let html = `<div class="npc-sec-hdr">${T.governmentHistory}</div><hr class="npc-r-sep">`;
     if (!view.history.length) {
-      return html + `<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noRecords)}</p>`;
+      return html + `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     // newest first
     html += view.history.slice().reverse().map(rec => `
@@ -4365,7 +4369,7 @@
         <span class="npc-life-time">${_escapeHtml(rec.date)}</span>
         <span><strong>${_escapeHtml(rec.government)}</strong>
           ${rec.controller !== 'Neutral' ? `— ${_wikiLink('power', rec.controller)}` : `— ${_escapeHtml(T.independent)}`}
-          <span style="opacity:0.6;">(${_linkify(rec.reason || '')})</span></span>
+          <span style="opacity:0.6">(${_linkify(rec.reason || '')})</span></span>
       </div>`).join('');
     return html;
   };
@@ -4375,7 +4379,7 @@
   Scene_NPCEmpathize.prototype._buildElectionsHTML = function (power, T) {
     let html = `<div class="npc-sec-hdr">${T.electionRecords}</div><hr class="npc-r-sep">`;
     if (!power || !power.elections?.length) {
-      return html + `<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noRecords)}</p>`;
+      return html + `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     const dateOf = window.NPCPolitics?.dateOf;
     if (power.nextElectionMinute != null && dateOf) {
@@ -4388,16 +4392,16 @@
         const isWinner = r.partyId === e.winnerPartyId || r.name === e.winner;
         html += `
           <div class="npc-vital-row">
-            <span class="npc-vital-lbl" style="width:170px;${isWinner ? 'font-weight:bold;' : ''}">${_escapeHtml(r.name)}</span>
-            <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${Math.min(100, r.share)}%;background:${isWinner ? '#2a6e4a' : '#8c6d58'};"></div></div>
-            <span class="npc-vital-pct" style="width:74px;">${r.share}%${r.seats != null ? ` · ${r.seats}` : ''}</span>
+            <span class="npc-vital-lbl" style="width:170px; ${isWinner ? 'font-weight:bold;' : ''}">${_escapeHtml(r.name)}</span>
+            <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${Math.min(100, r.share)}%; background:${isWinner ? '#2a6e4a' : '#8c6d58'}"></div></div>
+            <span class="npc-vital-pct" style="width:74px">${r.share}%${r.seats != null ? ` · ${r.seats}` : ''}</span>
           </div>`;
       }
       if (e.head && e.head !== '—') {
-        html += `<div class="npc-ident-row" style="margin-top:2px;">${_iconSpan(215, 15)}<span style="opacity:0.65;">${_escapeHtml(power.headTitle)}:</span>&nbsp;${_wikiLink('leader', e.head)}</div>`;
+        html += `<div class="npc-ident-row" style="margin-top:2px">${_iconSpan(215, 15)}<span style="opacity:0.65">${_escapeHtml(power.headTitle)}:</span>&nbsp;${_wikiLink('leader', e.head)}</div>`;
       }
       for (const n of (e.notes || [])) {
-        html += `<div class="npc-stats-row" style="opacity:0.7;font-style:italic;">* ${_linkify(n)}</div>`;
+        html += `<div class="npc-stats-row" style="opacity:0.7">* ${_linkify(n)}</div>`;
       }
     }
     return html;
@@ -4416,9 +4420,9 @@
       const ruling = live.parties?.find(p => p.id === live.rulingPartyId);
       html += `<div class="npc-sec-hdr">${T.government}</div>`;
       html += _kvRow(186, T.government, _escapeHtml(live.govType));
-      if (head) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65;">${_escapeHtml(live.headTitle)}:</span>&nbsp;${_wikiLink('leader', head.name)}<span style="opacity:0.5;">&nbsp;(${T.approval} ${Math.round(head.approval)}%)</span></div>`;
+      if (head) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65">${_escapeHtml(live.headTitle)}:</span>&nbsp;${_wikiLink('leader', head.name)}<span style="opacity:0.5">&nbsp;(${T.approval} ${Math.round(head.approval)}%)</span></div>`;
       else html += _kvRow(215, live.headTitle, _escapeHtml(T.vacant));
-      if (ruling) html += _kvRow(187, T.rulingParty, _wikiLink('party', ruling.id, ruling.name) + (live.coalition?.length > 1 ? ` <span style="opacity:0.55;">(+${live.coalition.length - 1})</span>` : ''));
+      if (ruling) html += _kvRow(187, T.rulingParty, _wikiLink('party', ruling.id, ruling.name) + (live.coalition?.length > 1 ? ` <span style="opacity:0.55">(+${live.coalition.length - 1})</span>` : ''));
       else if (head) html += _kvRow(187, T.rulingParty, _escapeHtml(T.independent));
       html += _kvRow(216, T.seats, `${live.seats}, ${_escapeHtml(live.legislature)}`);
       const dateOf = window.NPCPolitics?.dateOf;
@@ -4428,8 +4432,8 @@
         html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.partiesLbl}</div>`;
         for (const p of live.parties) {
           const leader = live.politicians?.[p.leaderId];
-          html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span>${_wikiLink('party', p.id, p.name)}</span><span style="opacity:0.55;">&nbsp;— ${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}</span>${
-            leader ? `<span style="opacity:0.55;">&nbsp;·&nbsp;</span>${_wikiLink('leader', leader.name)}` : ''
+          html += `<div class="npc-ident-row">${_iconSpan(187, 17)}<span>${_wikiLink('party', p.id, p.name)}</span><span style="opacity:0.55">&nbsp;— ${p.lastShare}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}</span>${
+            leader ? `<span style="opacity:0.55">&nbsp;·&nbsp;</span>${_wikiLink('leader', leader.name)}` : ''
           }</div>`;
         }
       }
@@ -4437,7 +4441,7 @@
       const pol = live.policies;
       if (pol) {
         html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.policiesLbl}</div>
-          <div class="npc-stats-row">${_escapeHtml(`${T.taxRate} ${pol.taxRate}% · ${T.censorship} ${pol.censorship} · ${T.conscription} ${pol.conscription} · ${T.welfare} ${pol.welfare} · ${T.festivalsLbl} ${pol.festivals}`)}${pol.curfew ? ` · <span style="color:#c02020;font-weight:bold;">${_escapeHtml(T.curfewActive)}</span>` : ''}</div>`;
+          <div class="npc-stats-row">${_escapeHtml(`${T.taxRate} ${pol.taxRate}% · ${T.censorship} ${pol.censorship} · ${T.conscription} ${pol.conscription} · ${T.welfare} ${pol.welfare} · ${T.festivalsLbl} ${pol.festivals}`)}${pol.curfew ? ` · <span style="color:#c02020; font-weight:bold">${_escapeHtml(T.curfewActive)}</span>` : ''}</div>`;
       }
     }
 
@@ -4448,13 +4452,13 @@
 
     html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.memberNations} (${view.nations.length})</div><div class="npc-tag-wrap">`;
     html += view.nations.map(n => `<span class="npc-tag">${_wikiLink('nation', n)}</span>`).join('')
-      || `<span style="opacity:0.6;font-style:italic;">${_escapeHtml(T.noRecords)}</span>`;
+      || `<span style="opacity:0.6">${_escapeHtml(T.noRecords)}</span>`;
     html += `</div>`;
 
     if (live?.rumors?.length) {
       html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.rumorsLbl}</div>`;
       for (const r of live.rumors.slice(0, 5)) {
-        html += `<div class="npc-thought">&ldquo;${_linkify(`${r.subjectName}, ${r.kind}`)}&rdquo; <span style="opacity:0.5;font-style:normal;">(${_escapeHtml(r.date)})</span></div>`;
+        html += `<div class="npc-thought">&ldquo;${_linkify(`${r.subjectName}, ${r.kind}`)}&rdquo; <span style="opacity:0.5">(${_escapeHtml(r.date)})</span></div>`;
       }
     }
     return html;
@@ -4472,7 +4476,7 @@
       html += headHistory.map(h => `
         <div class="npc-life-row">
           <span class="npc-life-time">${_escapeHtml(h.date)}${h.endDate ? ` → ${_escapeHtml(h.endDate)}` : ''}</span>
-          <span>${_wikiLink('leader', h.name)} <span style="opacity:0.6;">(${_escapeHtml(window.NPCPolitics?.accessionLabel?.(h.how) || h.how || '?')})</span>${h.endDate ? '' : ` <span style="color:#2a6e4a;">— ${_escapeHtml(T.currentLeader)}</span>`}</span>
+          <span>${_wikiLink('leader', h.name)} <span style="opacity:0.6">(${_escapeHtml(window.NPCPolitics?.accessionLabel?.(h.how) || h.how || '?')})</span>${h.endDate ? '' : ` <span style="color:#2a6e4a">— ${_escapeHtml(T.currentLeader)}</span>`}</span>
         </div>`).join('');
     }
 
@@ -4489,8 +4493,8 @@
         return `
         <div class="npc-life-row">
           <span class="npc-life-time">${_escapeHtml(`${l.years?.[0] ?? '?'}–${l.years?.[1] ?? '?'}`)}</span>
-          <span>${_wikiLink('leader', l.name)}${isDead ? ` <span style="color:#8b1010;">✝${deathDate ? ' ' + _escapeHtml(deathDate) : ''}</span>` : ''}
-            <span style="opacity:0.6;">— ${_escapeHtml(l.ideology || '?')}</span></span>
+          <span>${_wikiLink('leader', l.name)}${isDead ? ` <span style="color:#8b1010">✝${deathDate ? ' ' + _escapeHtml(deathDate) : ''}</span>` : ''}
+            <span style="opacity:0.6">— ${_escapeHtml(l.ideology || '?')}</span></span>
         </div>`;
       }).join('');
     }
@@ -4504,14 +4508,14 @@
         html += `<div class="npc-routine-sub-hdr">${T.politicalClass}</div><div class="npc-tag-wrap">`;
         html += pols.map(p => {
           const dead = _wikiIsDead(!p.alive);
-          return `<span class="npc-tag"${dead ? ' style="opacity:0.55;"' : ''}>${_wikiLink('leader', p.name)}${dead ? ' ✝' : ''}</span>`;
+          return `<span class="npc-tag"${dead ? ' style="opacity:0.55"' : ''}>${_wikiLink('leader', p.name)}${dead ? ' ✝' : ''}</span>`;
         }).join('');
         html += `</div>`;
       }
     }
 
     if (html.indexOf('npc-life-row') < 0 && html.indexOf('npc-tag') < 0) {
-      html += `<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noRecords)}</p>`;
+      html += `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     return html;
   };
@@ -4529,10 +4533,10 @@
       const sub = [polOffice, power.name].filter(Boolean);
       html += `<div class="npc-profile-sub">${_escapeHtml(sub.join(' · '))}</div>`;
       if (view.death) {
-        html += `<div class="npc-dead-badge" style="margin:4px 0 8px;">✝ ${_escapeHtml(T.deceased)}${view.death.date ? `, ${_escapeHtml(view.death.date)}` : ''}${view.death.cause ? ` (${_escapeHtml(view.death.cause)})` : ''}</div>`;
+        html += `<div class="npc-dead-badge" style="margin:4px 0 8px">✝ ${_escapeHtml(T.deceased)}${view.death.date ? `, ${_escapeHtml(view.death.date)}` : ''}${view.death.cause ? ` (${_escapeHtml(view.death.cause)})` : ''}</div>`;
       }
       html += `<hr class="npc-r-sep">`;
-      html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', power.name)}</div>`;
+      html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(T.wikiHyperpower)}:</span>&nbsp;${_wikiLink('power', power.name)}</div>`;
       if (party) html += _kvRow(187, T.partyLbl, _wikiLink('party', party.id, party.name));
       else if (p.office) html += _kvRow(187, T.partyLbl, _escapeHtml(T.independent));
       if (p.office) html += _kvRow(215, T.status, _escapeHtml(polOffice));
@@ -4565,10 +4569,10 @@
       const l = view.leader;
       html += `<div class="npc-profile-sub">${_escapeHtml(view.of)}</div>`;
       if (view.death) {
-        html += `<div class="npc-dead-badge" style="margin:4px 0 8px;">✝ ${_escapeHtml(T.deceased)}${view.death.date ? `, ${_escapeHtml(view.death.date)}` : ''}${view.death.cause ? ` (${_escapeHtml(view.death.cause)})` : ''}</div>`;
+        html += `<div class="npc-dead-badge" style="margin:4px 0 8px">✝ ${_escapeHtml(T.deceased)}${view.death.date ? `, ${_escapeHtml(view.death.date)}` : ''}${view.death.cause ? ` (${_escapeHtml(view.death.cause)})` : ''}</div>`;
       }
       html += `<hr class="npc-r-sep">`;
-      html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65;">${_escapeHtml(view.ofType === 'power' ? (T.wikiHyperpower) : (T.wikiFaction))}:</span>&nbsp;${_wikiLink(view.ofType, view.of)}</div>`;
+      html += `<div class="npc-ident-row">${_iconSpan(97, 17)}<span style="opacity:0.65">${_escapeHtml(view.ofType === 'power' ? (T.wikiHyperpower) : (T.wikiFaction))}:</span>&nbsp;${_wikiLink(view.ofType, view.of)}</div>`;
       html += _kvRow(186, T.ideologyLbl, _escapeHtml(l.ideology || '?'));
       html += _kvRow(220, T.reignLbl, _escapeHtml(`${l.years?.[0] ?? '?'} – ${l.years?.[1] ?? '?'}`));
     }
@@ -4587,13 +4591,13 @@
     html += `<hr class="npc-r-sep">`;
     if (data?.description) html += `<div class="npc-backstory-text">${_escapeHtml(data.description)}</div>`;
 
-    html += `<div class="npc-sec-hdr" style="margin-top:8px;">${T.stats}</div>`;
+    html += `<div class="npc-sec-hdr" style="margin-top:8px">${T.stats}</div>`;
     if (Array.isArray(data?.params)) {
       const PL = _paramLabels();
       const parts = data.params.map((v, i) => v ? `${PL[i]} +${v}` : null).filter(Boolean);
       html += `<div class="npc-stats-row">${parts.length ? _escapeHtml(parts.join(' · ')) : '—'}</div>`;
     }
-    html += `<div class="npc-ident-row" style="margin-top:5px;">${_iconSpan(314, 17)}<span>${T.valueLbl}: <strong>${_euros(data?.price)}</strong></span></div>`;
+    html += `<div class="npc-ident-row" style="margin-top:5px">${_iconSpan(314, 17)}<span>${T.valueLbl}: <strong>${_euros(data?.price)}</strong></span></div>`;
     if (data?.weight) html += _kvRow(208, T.weightLbl, `${data.weight}`);
 
     if (view.rec) {
@@ -4601,10 +4605,10 @@
       html += `<div class="npc-life-row"><span class="npc-life-time">${_escapeHtml(view.rec.date || '?')}</span><span>${_linkify(`${view.rec.origin} ${view.rec.action} the ${view.rec.name}.`)}</span></div>`;
       const holder = view.rec.holders?.[view.rec.holders.length - 1];
       if (holder) {
-        html += `<div class="npc-ident-row" style="margin-top:5px;">${_iconSpan(210, 17)}<span style="opacity:0.65;">${_escapeHtml(T.currentHolder)}:</span>&nbsp;${_linkify(holder.holder)}<span style="opacity:0.5;">&nbsp;(${_escapeHtml(holder.since || '?')})</span></div>`;
+        html += `<div class="npc-ident-row" style="margin-top:5px">${_iconSpan(210, 17)}<span style="opacity:0.65">${_escapeHtml(T.currentHolder)}:</span>&nbsp;${_linkify(holder.holder)}<span style="opacity:0.5">&nbsp;(${_escapeHtml(holder.since || '?')})</span></div>`;
       }
     } else {
-      html += `<hr class="npc-r-sep"><p style="opacity:0.6;font-style:italic;">${_escapeHtml(T.noRecords)}</p>`;
+      html += `<hr class="npc-r-sep"><p style="opacity:0.6">${_escapeHtml(T.noRecords)}</p>`;
     }
     return html;
   };
@@ -4613,13 +4617,13 @@
     let html = `<div class="npc-sec-hdr">${T.pastHolders}</div><hr class="npc-r-sep">`;
     const holders = view.rec?.holders || [];
     if (!holders.length) {
-      return html + `<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noRecords)}</p>`;
+      return html + `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     html += holders.slice().reverse().map((h, i) => `
       <div class="npc-life-row">
         <span class="npc-life-time">${_escapeHtml(h.since || '?')}</span>
-        <span>${_linkify(h.holder)}${h.power && h.power !== h.holder ? ` <span style="opacity:0.55;">(${_linkify(h.power)})</span>` : ''}
-          <span style="opacity:0.6;">— ${_escapeHtml(h.how || '?')}</span>${i === 0 ? ` <span style="color:#2a6e4a;">— ${_escapeHtml(T.currentHolder)}</span>` : ''}</span>
+        <span>${_linkify(h.holder)}${h.power && h.power !== h.holder ? ` <span style="opacity:0.55">(${_linkify(h.power)})</span>` : ''}
+          <span style="opacity:0.6">— ${_escapeHtml(h.how || '?')}</span>${i === 0 ? ` <span style="color:#2a6e4a">— ${_escapeHtml(T.currentHolder)}</span>` : ''}</span>
       </div>`).join('');
     return html;
   };
@@ -4643,7 +4647,7 @@
           const isDead = _wikiIsDead(deadList.includes(l.name) || !!deaths[l.name]);
           return `<div class="npc-life-row">
             <span class="npc-life-time">${_escapeHtml(`${l.years?.[0] ?? '?'}–${l.years?.[1] ?? '?'}`)}</span>
-            <span>${_wikiLink('leader', l.name)}${isDead ? ' <span style="color:#8b1010;">✝</span>' : ''} <span style="opacity:0.6;">— ${_escapeHtml(l.ideology || '?')}</span></span>
+            <span>${_wikiLink('leader', l.name)}${isDead ? ' <span style="color:#8b1010">✝</span>' : ''} <span style="opacity:0.6">— ${_escapeHtml(l.ideology || '?')}</span></span>
           </div>`;
         }).join('');
       }
@@ -4658,7 +4662,7 @@
   Scene_NPCEmpathize.prototype._buildFactionMembersHTML = function (view, T) {
     let html = `<div class="npc-sec-hdr">${T.factionMembersLbl}</div><hr class="npc-r-sep">`;
     if (!view.members.length) {
-      return html + `<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noRecords)}</p>`;
+      return html + `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     html += `<div class="npc-tag-wrap">` +
       view.members.map(n => `<span class="npc-tag">${_iconSpan(82, 15)}${_wikiLink('npc', n)}</span>`).join('') +
@@ -4675,11 +4679,11 @@
     const sub = [power.name, _ideologyLabel(view.ideology?.id)].filter(Boolean);
     html += `<div class="npc-profile-sub">${_escapeHtml(sub.join(' · '))}</div>`;
     if (power.rulingPartyId === p.id) {
-      html += `<div class="npc-dead-badge" style="background:#2a6e4a;">${_escapeHtml(T.rulingParty)}</div>`;
+      html += `<div class="npc-dead-badge" style="background:#2a6e4a">${_escapeHtml(T.rulingParty)}</div>`;
     }
     html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.overview}</div>`;
     if (p.country) html += _kvRow(97, T.originLbl, _escapeHtml(p.country));
-    if (view.leader) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65;">${_escapeHtml(T.leaderOfPartyLbl)}:</span>&nbsp;${_wikiLink('leader', view.leader.name)}</div>`;
+    if (view.leader) html += `<div class="npc-ident-row">${_iconSpan(215, 17)}<span style="opacity:0.65">${_escapeHtml(T.leaderOfPartyLbl)}:</span>&nbsp;${_wikiLink('leader', view.leader.name)}</div>`;
     if (p.foundedYear != null) html += _kvRow(220, T.foundedLbl, `${p.foundedYear}`);
     html += _kvRow(216, T.lastShareLbl, `${p.lastShare ?? 0}%${p.seats ? ` · ${p.seats} ${T.seats?.toLowerCase?.() || 'seats'}` : ''}`);
     html += _kvRow(314, T.fundsLbl, _euros(p.funds));
@@ -4702,7 +4706,7 @@
     let html = `<div class="npc-profile-name">${_escapeHtml(view.name)}</div><hr class="npc-r-sep">`;
     html += `<div class="npc-sec-hdr">${T.heldByLbl} (${view.parties.length})</div>`;
     if (!view.parties.length) {
-      html += `<p style="opacity:0.6;font-style:italic;margin-top:8px;">${_escapeHtml(T.noParties)}</p>`;
+      html += `<p style="opacity:0.6; margin-top:8px">${_escapeHtml(T.noParties)}</p>`;
     } else {
       // Grouped by hyperpower, so "multiple parties, one ideology" reads as
       // the pattern it is rather than a flat unsorted list.
@@ -4712,7 +4716,7 @@
         byPower.get(powerName).push(party);
       }
       for (const [powerName, parties] of byPower) {
-        html += `<div class="npc-ident-row" style="margin-top:8px;">${_iconSpan(97, 17)}${_wikiLink('power', powerName)}</div><div class="npc-tag-wrap">`;
+        html += `<div class="npc-ident-row" style="margin-top:8px">${_iconSpan(97, 17)}${_wikiLink('power', powerName)}</div><div class="npc-tag-wrap">`;
         html += parties.map(p => `<span class="npc-tag">${_wikiLink('party', p.id, p.name)}</span>`).join('');
         html += `</div>`;
       }
@@ -4728,7 +4732,7 @@
     const fromHistory = view.events || [];
     const fromPolitics = view.type === 'power' ? (view.live?.events || []) : [];
     if (!fromHistory.length && !fromPolitics.length) {
-      return html + `<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noRecords)}</p>`;
+      return html + `<p style="opacity:0.6; margin-top:12px">${_escapeHtml(T.noRecords)}</p>`;
     }
     if (fromPolitics.length) {
       html += `<div class="npc-routine-sub-hdr">${_escapeHtml(T.eventsTab)}</div>`;
@@ -4811,7 +4815,7 @@
     const cat = WIKI_CATEGORIES.find(c => c.id === this._wikiCategory) || WIKI_CATEGORIES[0];
     const headerHTML = `
       <div class="npc-panel-top-hdr">
-        <div class="npc-sec-hdr npc-wiki-cat-selected" style="margin-bottom:0;">${cat.glyph} ${_escapeHtml(T[cat.labelKey] || cat.fallback)} (${counts[cat.id]})</div>
+        <div class="npc-sec-hdr npc-wiki-cat-selected" style="margin-bottom:0">${cat.glyph} ${_escapeHtml(T[cat.labelKey] || cat.fallback)} (${counts[cat.id]})</div>
         <span class="npc-back-btn" onmousedown="event.stopPropagation();SceneManager._scene._setWikiCategory(null)">← ${_escapeHtml(T.wikiCategories)}</span>
       </div>
       <hr class="npc-r-sep">`;
@@ -4859,7 +4863,7 @@
           const when = p.deathDate || p.leftDate || '';
           return `
           <div class="npc-wiki-entry" onmousedown="event.stopPropagation();window.NPCEmpathize.openByName(decodeURIComponent('${encodeURIComponent(String(p.name))}'))">
-            <span class="npc-wiki-entry-name">${_escapeHtml(p.name)}${p.reason === 'died' ? ' <span style="color:#8b1010;">✝</span>' : ''}</span>
+            <span class="npc-wiki-entry-name">${_escapeHtml(p.name)}${p.reason === 'died' ? ' <span style="color:#8b1010">✝</span>' : ''}</span>
             <span class="npc-wiki-entry-sub">${_escapeHtml(statusLabel)}${when ? ` ${_escapeHtml(when)}` : ''} · ${_escapeHtml(p.className || '')} Lv.${p.level || 1}</span>
           </div>`;
         }).join('');
@@ -4891,7 +4895,7 @@
       case 'leaders':
         tiles = Wiki.listLeaders().map(l =>
           _wikiEntryTile('leader', l.name,
-            `${_escapeHtml(l.name)}${l.dead ? ' <span style="color:#8b1010;">✝</span>' : ''}`,
+            `${_escapeHtml(l.name)}${l.dead ? ' <span style="color:#8b1010">✝</span>' : ''}`,
             l.of ? _escapeHtml(l.of) : '')
         ).join('');
         break;
@@ -4939,7 +4943,7 @@
         break;
     }
     if (!tiles) {
-      tiles = `<p style="opacity:0.6;font-style:italic;">${_escapeHtml(T.noRecords)}</p>`;
+      tiles = `<p style="opacity:0.6">${_escapeHtml(T.noRecords)}</p>`;
     }
 
     return `${headerHTML}<div class="npc-wiki-grid">${tiles}</div>`;
@@ -4959,7 +4963,7 @@
         <span class="npc-action-arrow">←</span>
       </div>`).join('');
 
-    return `<div class="npc-sec-hdr" style="margin-bottom:6px;">${T.more}</div>${rowsHTML}`;
+    return `<div class="npc-sec-hdr" style="margin-bottom:6px">${T.more}</div>${rowsHTML}`;
   };
 
   console.log('[NPCEmpathizeUI] v3.0.0 loaded.');

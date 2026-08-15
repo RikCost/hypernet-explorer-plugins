@@ -445,6 +445,8 @@
   },
   "tellAJoke": "Tell a Joke",
   "jokeFallback": "A funny thing happened.",
+  "funShared": "You and {name} both enjoyed that.",
+  "funHint": "Fun for you and for them, when it lands.",
   "oldLegend": "an old legend",
   "bribeAccepted": "{name} accepts. +{op} ♥",
   "joinedParty": "{name} joined the party!",

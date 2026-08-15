@@ -394,6 +394,8 @@
   },
   "tellAJoke": "",
   "jokeFallback": "",
+  "funShared": "",
+  "funHint": "",
   "oldLegend": "",
   "bribeAccepted": "",
   "joinedParty": "",

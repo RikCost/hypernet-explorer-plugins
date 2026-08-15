@@ -22,5 +22,6 @@
   "rarity": "Rarity",
   "value": "Value",
   "weight": "Weight",
-  "yes": "Yes"
+  "yes": "Yes",
+  "searchPlaceholder": "Search pieces…"
 }

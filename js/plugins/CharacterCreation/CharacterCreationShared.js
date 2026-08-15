@@ -333,6 +333,92 @@
   }
 
   //=============================================================================
+  // The navigation bar every creation screen ends with
+  //=============================================================================
+  // One shape for every step, sub-step and side menu the creator opens: Back on
+  // the far left, whatever extra actions the step offers (Random, Skip, ...) in
+  // the middle, and Continue on the far right. The three slots are always
+  // emitted, empty or not, so a step that has no Back button (the first one) or
+  // no extras does not slide Continue across the bar , the two controls the
+  // player navigates with sit in exactly the same place on every screen.
+  //
+  // A slot is never given `display: none` for the same reason: a control that is
+  // temporarily unavailable is hidden with `visibility` (see ccSetButtonShown)
+  // and keeps its footprint.
+  const CCButtons = {
+    // Labels, so no screen invents its own wording for the same control.
+    backLabel() { return T("CharCreate.back"); },
+    continueLabel() { return T("CharCreate.continue"); },
+    randomLabel() { return T("CharCreate.randomBust"); },
+    titleLabel() { return T("CharCreate.returnToTitle"); },
+
+    /**
+     * One button.
+     * @param {string} label - Text on the button
+     * @param {object} opts - { onclick, id, confirm (gold styling), highlighted
+     *                          (keyboard/controller cursor is on it), attrs }
+     * @returns {string} HTML
+     */
+    button(label, opts = {}) {
+      const { onclick = "", id = "", confirm = false, highlighted = false, attrs = "" } = opts;
+      const cls = ["cc-btn-treaty", confirm ? "confirm" : "", highlighted ? "highlighted" : ""]
+        .filter(Boolean).join(" ");
+      return `<button class="${cls}"` +
+        `${id ? ` id="${id}"` : ""}${onclick ? ` onclick="${onclick}"` : ""}` +
+        `${attrs ? ` ${attrs}` : ""}>${label}</button>`;
+    },
+
+    /**
+     * The bar itself. Every slot takes raw HTML (or an array of it), so a step
+     * that wants two extras just passes both.
+     * @param {object} slots - { back, middle, next, style }
+     * @returns {string} HTML
+     */
+    panel(slots = {}) {
+      const { back = "", middle = "", next = "", style = "" } = slots;
+      const mid = Array.isArray(middle) ? middle.join("") : middle;
+      return `
+        <div class="cc-button-panel cc-nav"${style ? ` style="${style}"` : ""}>
+          <div class="cc-nav-slot cc-nav-back">${back}</div>
+          <div class="cc-nav-slot cc-nav-mid">${mid}</div>
+          <div class="cc-nav-slot cc-nav-next">${next}</div>
+        </div>
+      `;
+    },
+
+    /**
+     * Same bar, built into an existing element for the screens that wire their
+     * buttons up with addEventListener rather than inline handlers.
+     * @param {Element} panelEl - The .cc-button-panel element
+     * @returns {object} { back, mid, next } slot elements
+     */
+    slots(panelEl) {
+      if (!panelEl) return { back: null, mid: null, next: null };
+      panelEl.classList.add("cc-button-panel", "cc-nav");
+      panelEl.innerHTML =
+        `<div class="cc-nav-slot cc-nav-back"></div>` +
+        `<div class="cc-nav-slot cc-nav-mid"></div>` +
+        `<div class="cc-nav-slot cc-nav-next"></div>`;
+      return {
+        back: panelEl.querySelector(".cc-nav-back"),
+        mid: panelEl.querySelector(".cc-nav-mid"),
+        next: panelEl.querySelector(".cc-nav-next"),
+      };
+    },
+
+    /**
+     * Show / hide a control without moving its neighbours.
+     * @param {Element} el - The button
+     * @param {boolean} shown - Whether it can be used
+     */
+    setShown(el, shown) {
+      if (!el) return;
+      el.style.visibility = shown ? "visible" : "hidden";
+      el.style.pointerEvents = shown ? "" : "none";
+    },
+  };
+
+  //=============================================================================
   // Scrolling for the DOM overlays (mouse wheel + L2/R2 triggers)
   //=============================================================================
   // RMMZ swallows every wheel event at the document level (rmmz_core.js,
@@ -635,6 +721,7 @@
   //=============================================================================
 
   window.CCScroll = CCScroll;
+  window.CCButtons = CCButtons;
   window.CreatureClasses = CreatureClasses;
   // Global alias: the creation panels are template-literal heavy, and every
   // database name they print goes through this.

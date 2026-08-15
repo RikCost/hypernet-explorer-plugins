@@ -73,7 +73,6 @@
   "enemySpawn": [
     "Balanced",
     "Realistic",
-    "Tower Distance",
     "Chaos"
   ],
   "enemyBattler": [
@@ -101,8 +100,7 @@
     ],
     "enemySpawnMode": [
       "Balanced: enemies match your party. Roamers stay at or below your level, and each world tile hides one boss well above it.",
-      "Realistic: the whole local wildlife is out there, at any level. What is near your own level is what you usually meet, and anything else stays possible but rare. Each nation and each biome holds its own roster, and a tile still hides one boss.",
-      "Tower Distance: your level is ignored. The danger comes from the place itself, the distance from the Omega Tower, so far lands can be lethal early.",
+      "Realistic: the whole local wildlife is out there, at any level. How hard a place is comes from the place itself - how far it lies from where you started the game - so home ground stays gentle and the far side of the map is lethal however strong you get. What is near that level is what you usually meet, and anything else stays possible but rare. Each nation and each biome holds its own roster, and a tile still hides one boss.",
       "Chaos: nothing is held back. Anything from level 1 to 110 roams anywhere, and every time you step onto a procedural map its monsters are dealt again."
     ],
     "musicArtistDisplay": [

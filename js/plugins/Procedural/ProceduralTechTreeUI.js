@@ -216,15 +216,25 @@
         // ==============================================================
         _refreshDOM() {
             if (!this._container) return;
-            this._container.innerHTML =
-                `<div class="tt-rail">` +
-                `<div class="back-button tt-back">${T('TechTree.back')}</div>` +
-                `<div class="tt-rail-title">${T('TechTree.disciplines')}</div>` +
-                `<div class="tt-rail-list">${this._buildTabs()}</div></div>` +
-                `<div class="book-spread tt-spread">` +
-                `<div class="left-page tt-left"><div class="tt-tree"></div></div>` +
-                `<div class="right-page tt-right">${this._buildRight()}</div>` +
-                `</div>`;
+            // The shell is built once and then only its contents are swapped.
+            // Re-setting the container's innerHTML would recreate the
+            // .book-spread, restarting its paperRustle animation: the spread
+            // fades in from opacity 0 and the game map shows through it for
+            // the length of the animation on every discipline change.
+            if (!this._container.querySelector('.tt-spread')) {
+                this._container.innerHTML =
+                    `<div class="tt-rail">` +
+                    `<div class="back-button tt-back">${T('TechTree.back')}</div>` +
+                    `<div class="tt-rail-title">${T('TechTree.disciplines')}</div>` +
+                    `<div class="tt-rail-list"></div></div>` +
+                    `<div class="book-spread tt-spread">` +
+                    `<div class="left-page tt-left"><div class="tt-tree"></div></div>` +
+                    `<div class="right-page tt-right"></div>` +
+                    `</div>`;
+            }
+            const railList = this._container.querySelector('.tt-rail-list');
+            if (railList) railList.innerHTML = this._buildTabs();
+            this._updateRight();
             this._renderTree();
             // Each tab is a discipline with its own specialization; name the one
             // the open tree trains, and the party's tier in it.
@@ -242,7 +252,7 @@
                 const cls = 'tt-tab' + (active ? ' active' : '') + (focused ? ' selected' : '');
                 const label = PTT.treeName(t);
                 const glyph = `<span class="tt-tab-icon" style="${iconCss(t.icon, 22)}"></span>`;
-                return `<div class="${cls}" data-tab="${i}" style="--tt-accent:${t.accent};">` +
+                return `<div class="${cls}" data-tab="${i}" style="--tt-accent:${t.accent}">` +
                     `${glyph}<span class="tt-tab-name">${label}</span>` +
                     `<span class="tt-tab-count">${c.done}/${c.total}</span></div>`;
             }).join('');
@@ -285,7 +295,7 @@
             // TechTree.phase.<id>, falling back to the id for a new one.
             const phaseKey = 'TechTree.phase.' + (node.phase || '');
             const badge = node.phase ? (T.has(phaseKey) ? T(phaseKey) : node.phase) : '';
-            return `<div class="${cls}" data-node="${node.id}" data-row="${r}" data-lane="${l}" style="--tt-accent:${this.activeTree.accent};">` +
+            return `<div class="${cls}" data-node="${node.id}" data-row="${r}" data-lane="${l}" style="--tt-accent:${this.activeTree.accent}">` +
                 `<span class="tt-node-glyph">${glyph}</span>` +
                 `<span class="tt-node-body"><span class="tt-node-name">${nobel}${nodeName(node)}</span>` +
                 (badge ? `<span class="tt-node-badge">${badge}</span>` : '') + `</span></div>`;

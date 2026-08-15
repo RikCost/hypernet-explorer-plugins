@@ -105,6 +105,8 @@
     VAR_PLAYER2_REPRODUCTIVE_TYPE,
     VAR_PLAYER3_REPRODUCTIVE_TYPE
   } = window.CharacterCreationUtils || {};
+  // The shared Back / extras / Continue bar (CharacterCreationShared.js).
+  const CCButtons = window.CCButtons;
   const { equipRandomCompatibleWeapon, GLOBAL_STARTER_SKILLS, applyStartingGear, getClassStartingItems, giveClassStartingItems } = window.StartingEquipment || {};
   const { getCharacterPresets, getAvailableCharacterPresets, markPresetUsed, getPresetLore, getPresetHometown, getPresetSkins, getPresetSkin, getPresetSkinLabel, markStepCompleted, isStepCompleted, hasCompletedFirstCreation, Window_CharacterPresets } = window.CharacterPresets || {};
   // Alternate looks a dossier can be played as. Falls back to the dossier's own
@@ -1338,15 +1340,20 @@
   // rather than asked for a booster pack.
   const CARD_ORIGIN_CARDS = 100;
 
-  // Every OTHER origin is handed just enough to sit down at a table: the card
-  // game is part of the world rather than one scenario's toy, and a party that
-  // cannot make a legal deck is simply refused a duel. It is not listed on the
-  // origin dossier because it is not what makes an origin what it is.
+  // Every OTHER start is handed enough to sit down at a table with a little
+  // room to move: a legal deck is nine cards, and two spare copies are what
+  // makes it a deck the player can change rather than the only hand they own.
+  // The card game is part of the world rather than one scenario's toy, and a
+  // party that cannot make a legal deck is simply refused a duel. It is not
+  // listed on the origin dossier because it is not what makes an origin what
+  // it is.
+  const CARD_MINIMUM_SPARE = 2;
+
   function grantMinimumCards() {
     const CG = window.CardGame;
     if (!CG) return;
     CG.ensureStarterEffects();
-    const short = CG.DECK_MIN - CG.totalOwned();
+    const short = CG.DECK_MIN + CARD_MINIMUM_SPARE - CG.totalOwned();
     if (short > 0) dealCards(short);
   }
 
@@ -1774,7 +1781,7 @@
         return T('CharCreate.initialSettings');
       },
       get choices() {
-        return [{ name: T('CharCreate.confirm'), symbol: "confirm" }];
+        return [{ name: T('CharCreate.continue'), symbol: "confirm" }];
       },
       handler: function () {
         ConfigManager.save();
@@ -2902,6 +2909,10 @@
         $gameSwitches.setValue(13, true); // character created
         $gameSwitches.setValue(33, true); // creation sequence complete
         markFirstCreationComplete();
+        // A pre-made character never sees the origin step, so the card floor
+        // every other start stands on is handed over here instead. No dossier
+        // carries cards of its own, so nothing can be doubled up.
+        grantMinimumCards();
 
         // Track the current preset ID for death removal
         $gameSystem._currentPresetId = preset.id;
@@ -3453,21 +3464,21 @@
               const trait = traitBank.find((t) => t.id === traitId);
               if (!trait) return "";
               const traitName = resolveTraitName(trait.name) || trait.name;
-              return `<div class="cc-element-badge" style="margin: 2px;">${traitName}</div>`;
+              return `<div class="cc-element-badge" style="margin: 2px">${traitName}</div>`;
             }).filter(Boolean).join(" ");
           }
           if (!traitsHtml) {
-            traitsHtml = `<span style="font-size: 0.85rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.noDefiningTraits')}</span>`;
+            traitsHtml = `<span style="font-size: 1.219rem; color: var(--text-card-medium)">${T('CharCreate.noDefiningTraits')}</span>`;
           }
 
           let skillsHtml = "";
           if (preset.skills && preset.skills.length > 0) {
             skillsHtml = preset.skills.map(id => {
               const skill = $dataSkills[id];
-              return skill ? `<div class="cc-element-badge" style="margin: 2px;">${window.CCDbName(skill)}</div>` : "";
+              return skill ? `<div class="cc-element-badge" style="margin: 2px">${window.CCDbName(skill)}</div>` : "";
             }).join(" ");
           } else {
-            skillsHtml = `<span style="font-size: 0.85rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.noSkillsLearned')}</span>`;
+            skillsHtml = `<span style="font-size: 1.219rem; color: var(--text-card-medium)">${T('CharCreate.noSkillsLearned')}</span>`;
           }
 
           let specsHtml = "";
@@ -3476,34 +3487,34 @@
               const spec = window.Specializations.byId.get(entry.id);
               if (!spec) return "";
               const levelName = window.Specializations.levelName(entry.level);
-              return `<div class="cc-element-badge" style="margin: 2px;">${window.Specializations.displayName(spec)} <span style="opacity:0.7;">(${levelName})</span></div>`;
+              return `<div class="cc-element-badge" style="margin: 2px">${window.Specializations.displayName(spec)} <span style="opacity:0.7">(${levelName})</span></div>`;
             }).filter(Boolean).join(" ");
           }
           if (!specsHtml) {
-            specsHtml = `<span style="font-size: 0.85rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.noSpecializations')}</span>`;
+            specsHtml = `<span style="font-size: 1.219rem; color: var(--text-card-medium)">${T('CharCreate.noSpecializations')}</span>`;
           }
 
           let gearHtml = "";
           if (preset.items && preset.items.length > 0) {
             gearHtml += preset.items.map(itemData => {
               const item = $dataItems[itemData.id];
-              return item ? `<div style="font-size: 0.85rem; padding: 2px 0;">${window.CCDbName(item)} x${itemData.amount}</div>` : "";
+              return item ? `<div style="font-size: 1.219rem; padding: 2px 0">${window.CCDbName(item)} x${itemData.amount}</div>` : "";
             }).join("");
           }
           if (preset.weapons && preset.weapons.length > 0) {
             gearHtml += preset.weapons.map(itemData => {
               const item = $dataWeapons[itemData.id];
-              return item ? `<div style="font-size: 0.85rem; padding: 2px 0;">${window.CCDbName(item)} x${itemData.amount}</div>` : "";
+              return item ? `<div style="font-size: 1.219rem; padding: 2px 0">${window.CCDbName(item)} x${itemData.amount}</div>` : "";
             }).join("");
           }
           if (preset.armors && preset.armors.length > 0) {
             gearHtml += preset.armors.map(itemData => {
               const item = $dataArmors[itemData.id];
-              return item ? `<div style="font-size: 0.85rem; padding: 2px 0;">${window.CCDbName(item)} x${itemData.amount}</div>` : "";
+              return item ? `<div style="font-size: 1.219rem; padding: 2px 0">${window.CCDbName(item)} x${itemData.amount}</div>` : "";
             }).join("");
           }
           if (!gearHtml) {
-            gearHtml = `<span style="font-size: 0.85rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.emptyBackpack')}</span>`;
+            gearHtml = `<span style="font-size: 1.219rem; color: var(--text-card-medium)">${T('CharCreate.emptyBackpack')}</span>`;
           }
 
           let originRows = "";
@@ -3544,7 +3555,7 @@
           const loreCardHtml = loreText ? `
               <div class="cc-dossier-card">
                 <h3 class="cc-subheader">${T('CharCreate.background')}</h3>
-                <div style="font-size: 0.85rem; line-height: 1.4;">${loreText}</div>
+                <div style="font-size: 1.219rem; line-height: 1.4">${loreText}</div>
               </div>
           ` : "";
 
@@ -3573,7 +3584,7 @@
             <div class="cc-page cc-page-right">
               <h2 class="cc-header-gothic">${T('CharCreate.personalDossier')}</h2>
 
-              <div class="cc-wanted-sprite" style="${this.getSpriteStyle(currentSkin.sprite, currentSkin.spriteIndex)}; margin: 0 auto 16px auto; transform: scale(1.6);"></div>
+              <div class="cc-wanted-sprite" style="${this.getSpriteStyle(currentSkin.sprite, currentSkin.spriteIndex)}; margin: 0 auto 16px auto; transform: scale(1.6)"></div>
 
               <div class="cc-dossier-card">
                 <h3 class="cc-subheader">${T('CharCreate.identityProfile')}</h3>
@@ -3585,28 +3596,28 @@
               ${originCardHtml}
               <div class="cc-dossier-card">
                 <h3 class="cc-subheader">${T('CharCreate.traits')}</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 4px">
                   ${traitsHtml}
                 </div>
               </div>
 
               <div class="cc-dossier-card">
                 <h3 class="cc-subheader">${T('CharCreate.skills')}</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 4px">
                   ${skillsHtml}
                 </div>
               </div>
 
               <div class="cc-dossier-card">
                 <h3 class="cc-subheader">${T('CharCreate.specializations')}</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 4px">
                   ${specsHtml}
                 </div>
               </div>
 
               <div class="cc-dossier-card">
                 <h3 class="cc-subheader">${T('CharCreate.equipment')}</h3>
-                <div style="display: flex; flex-direction: column;">
+                <div style="display: flex; flex-direction: column">
                   ${gearHtml}
                 </div>
               </div>
@@ -3649,9 +3660,11 @@
               ${presetsCards}
             </div>
 
-            <div class="cc-button-panel">
-              ${Scene_CharacterCreation._tutorialMode ? "" : `<button class="cc-btn-treaty" onclick="SceneManager._scene.onPresetCancelClick()">${T('CharCreate.back')}</button>`}
-            </div>
+            ${CCButtons.panel({
+              back: Scene_CharacterCreation._tutorialMode
+                ? ""
+                : CCButtons.button(CCButtons.backLabel(), { onclick: "SceneManager._scene.onPresetCancelClick()" }),
+            })}
           </div>
         `;
       } else {
@@ -3685,9 +3698,9 @@
         // On the very first step of a new game there is nothing to go back to
         // inside the wizard, so the slot holds the way out to the title screen.
         const backBtnHtml = showBackButton
-          ? `<button class="cc-btn-treaty" onclick="SceneManager._scene.onCancel()">${T('CharCreate.back')}</button>`
+          ? CCButtons.button(CCButtons.backLabel(), { onclick: "SceneManager._scene.onCancel()" })
           : (this.canExitToTitle()
-            ? `<button class="cc-btn-treaty" onclick="SceneManager._scene.exitToTitle()">${T('CharCreate.returnToTitle')}</button>`
+            ? CCButtons.button(CCButtons.titleLabel(), { onclick: "SceneManager._scene.exitToTitle()" })
             : "");
 
         // Class/creature class picker uses a two-column grid.
@@ -3705,24 +3718,31 @@
         let gridClass = "cc-select-grid";
         if (isQuickClassStep) gridClass += " cc-two-col";
         if (isClassPicker || isOriginPicker) gridClass += " cc-compact";
+        // The origins are a list to be read down, not a row of posters: the
+        // names are long and centring them left every entry starting at a
+        // different x, so the column is ragged and slow to scan.
+        if (isOriginPicker) gridClass += " cc-align-left";
         if (isHometownStep) gridClass += " cc-dropdown-list";
 
-        const buttonPanelHtml = `
-            <div class="cc-button-panel">
-              ${backBtnHtml}
-              <button class="cc-btn-treaty confirm" onclick="SceneManager._scene.onOptionCardConfirm()">${T('CharCreate.confirm')}</button>
-            </div>
-        `;
+        // Every wizard step ends with the same bar, so Back and Continue never
+        // move as the player walks the steps.
+        const buttonPanelHtml = CCButtons.panel({
+          back: backBtnHtml,
+          next: CCButtons.button(CCButtons.continueLabel(), {
+            onclick: "SceneManager._scene.onOptionCardConfirm()",
+            confirm: true,
+          }),
+        });
 
         if (isClassPicker) {
           // Class step: the class list replaces the party panel on the LEFT
           // page. The RIGHT page shows live details for whatever entry is
           // highlighted, plus the Back/Confirm buttons.
           leftHtml = `
-            <div class="cc-page cc-page-left" style="display: flex; flex-direction: column;">
+            <div class="cc-page cc-page-left" style="display: flex">
               <h2 class="cc-header-gothic">${stepData.title}</h2>
 
-              <div class="${gridClass}" style="flex: 1; min-height: 0; overflow-y: auto; align-content: start;">
+              <div class="${gridClass}" style="flex: 1; min-height: 0; overflow-y: auto; align-content: start">
                 ${optionCards}
               </div>
             </div>
@@ -3732,10 +3752,10 @@
           // Origin step: the list of origins fills the LEFT page; the RIGHT page
           // shows the highlighted origin's description and starting loadout.
           leftHtml = `
-            <div class="cc-page cc-page-left" style="display: flex; flex-direction: column;">
+            <div class="cc-page cc-page-left" style="display: flex">
               <h2 class="cc-header-gothic">${stepData.title}</h2>
 
-              <div class="${gridClass}" style="flex: 1; min-height: 0; overflow-y: auto; align-content: start;">
+              <div class="${gridClass}" style="flex: 1; min-height: 0; overflow-y: auto; align-content: start">
                 ${optionCards}
               </div>
             </div>
@@ -4167,7 +4187,7 @@
         if (!data) return "";
         return `
           <div class="cc-dossier-row">
-            <span class="cc-dossier-label" style="display:flex;align-items:center;gap:6px;">
+            <span class="cc-dossier-label" style="display:flex; align-items:center; gap:6px">
               <span style="${this._ccIconStyle(data.iconIndex)}"></span>${window.CCDbName(data)}
             </span>
             <span class="cc-dossier-value">x${entry.qty}</span>
@@ -4269,19 +4289,27 @@
       );
       const itemsHtml = resolveOriginLoadout(choice.symbol).map(itemRow).join("");
 
-      const rows = (contexts[choice.symbol] || []).join("") + cashRow + itemsHtml;
-      const dossierHtml = rows
-        ? `<div class="cc-dossier-card"><h3 class="cc-subheader">${T('CharCreate.startingOut')}</h3>${rows}</div>`
+      // Where you land and what you are carrying read differently and are laid
+      // out differently. The context rows are sentences and keep the full width
+      // of the page; the loadout is a list of short "icon name / xN" rows, and a
+      // generous origin runs to a dozen of them, so they are set two to a line
+      // rather than as one long column the page has to scroll through.
+      const contextRows = (contexts[choice.symbol] || []).join("") + cashRow;
+      const itemsGrid = itemsHtml
+        ? `<div class="cc-dossier-grid cc-loadout-grid">${itemsHtml}</div>`
+        : "";
+      const dossierHtml = (contextRows || itemsGrid)
+        ? `<div class="cc-dossier-card"><h3 class="cc-subheader">${T('CharCreate.startingOut')}</h3>${contextRows}${itemsGrid}</div>`
         : "";
 
       return `
-        <div class="cc-page cc-page-right" style="display: flex; flex-direction: column;">
+        <div class="cc-page cc-page-right" style="display: flex">
           <h2 class="cc-header-gothic">${choice.name || ""}</h2>
-          <p style="font-size: 0.92rem; line-height: 1.45; color: var(--text-card-dark); font-style: italic; text-align: center; margin-bottom: 16px;">
+          <p style="font-size: 1.329rem; line-height: 1.45; color: var(--text-card-dark); text-align: center; margin-bottom: 16px">
             ${this.cleanText(choice.description || "")}
           </p>
 
-          <div style="flex: 1; min-height: 0; overflow-y: auto;">
+          <div style="flex: 1; min-height: 0; overflow-y: auto">
             ${dossierHtml}
           </div>
           ${buttonsHtml || ""}
@@ -4315,9 +4343,9 @@
 
       // Random class / fallback: just the choice's own description.
       return `
-        <div class="cc-page cc-page-right" style="display: flex; flex-direction: column;">
+        <div class="cc-page cc-page-right" style="display: flex">
           <h2 class="cc-header-gothic">${choice.name || ""}</h2>
-          <p style="font-size: 0.92rem; line-height: 1.45; color: var(--text-card-dark); font-style: italic; text-align: center; margin-bottom: 16px;">
+          <p style="font-size: 1.329rem; line-height: 1.45; color: var(--text-card-dark); text-align: center; margin-bottom: 16px">
             ${this.cleanText(choice.description || "")}
           </p>
           ${buttons}
@@ -4390,13 +4418,13 @@
       const equipBadges = [];
       for (let wId = 1; wId <= 12; wId++) {
         if (hasEquipTrait(51, wId)) {
-          equipBadges.push(`<span class="cc-element-badge" style="margin: 2px; font-size: 0.72rem;">${weaponNames[wId] || "Weapon"}</span>`);
+          equipBadges.push(`<span class="cc-element-badge" style="margin: 2px; font-size: 1.081rem">${weaponNames[wId] || "Weapon"}</span>`);
         }
       }
       const armorTypes = $dataSystem.armorTypes || [];
       for (let aId = 1; aId < armorTypes.length; aId++) {
         if (armorTypes[aId] && hasEquipTrait(52, aId)) {
-          equipBadges.push(`<span class="cc-element-badge" style="margin: 2px; font-size: 0.72rem;">${armorTypes[aId]}</span>`);
+          equipBadges.push(`<span class="cc-element-badge" style="margin: 2px; font-size: 1.081rem">${armorTypes[aId]}</span>`);
         }
       }
 
@@ -4406,10 +4434,10 @@
         .filter((l) => l.level === 1)
         .map((l) => {
           const sk = $dataSkills[l.skillId];
-          return sk ? `<div class="cc-element-badge" style="margin: 2px;">${window.CCDbName(sk)}</div>` : "";
+          return sk ? `<div class="cc-element-badge" style="margin: 2px">${window.CCDbName(sk)}</div>` : "";
         }).join(" ");
       if (!lv1SkillsHtml) {
-        lv1SkillsHtml = `<span style="font-size: 0.85rem; color: var(--text-card-medium); font-style: italic;">${T('CharCreate.noStartingSkills')}</span>`;
+        lv1SkillsHtml = `<span style="font-size: 1.219rem; color: var(--text-card-medium)">${T('CharCreate.noStartingSkills')}</span>`;
       }
 
       // Thematic class starting items (Items.json only), granted alongside the
@@ -4421,7 +4449,7 @@
           if (!it) return "";
           return `
             <div class="cc-dossier-row">
-              <span class="cc-dossier-label" style="display:flex;align-items:center;gap:6px;">
+              <span class="cc-dossier-label" style="display:flex; align-items:center; gap:6px">
                 <span style="${this._ccIconStyle(it.iconIndex)}"></span>${window.CCDbName(it)}
               </span>
               <span class="cc-dossier-value">x${e.qty}</span>
@@ -4430,7 +4458,7 @@
         }).join("");
       const startingItemsCardHtml = classItemsHtml
         ? `
-            <div class="cc-dossier-card" style="margin-bottom: 8px;">
+            <div class="cc-dossier-card" style="margin-bottom: 8px">
               <h3 class="cc-subheader">${T('CharCreate.startingItems')}</h3>
               ${classItemsHtml}
             </div>
@@ -4460,19 +4488,19 @@
         : "";
 
       return `
-        <div class="cc-page cc-page-right" style="display: flex; flex-direction: column;">
+        <div class="cc-page cc-page-right" style="display: flex">
           <h2 class="cc-header-gothic">${window.CCDbName(c)}</h2>
-          <p style="font-size: 0.92rem; line-height: 1.45; color: var(--text-card-dark); font-style: italic; text-align: center; margin-bottom: 12px;">
+          <p style="font-size: 1.329rem; line-height: 1.45; color: var(--text-card-dark); text-align: center; margin-bottom: 12px">
             "${note}"
           </p>
 
-          <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 12px">
             ${elementHtml}
           </div>
 
-          <div style="flex: 1; min-height: 0; overflow-y: auto;">
-            <div class="cc-dossier-card" style="margin-bottom: 8px;">
-              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+          <div style="flex: 1; min-height: 0; overflow-y: auto">
+            <div class="cc-dossier-card" style="margin-bottom: 8px">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px">
                 <div>
                   <div class="cc-dossier-row"><span class="cc-dossier-label">${T('CharCreate.abbrev.hp')}</span><span class="cc-dossier-value">${hp}</span></div>
                   <div class="cc-dossier-row"><span class="cc-dossier-label">${T('CharCreate.abbrev.str')}</span><span class="cc-dossier-value">${str}</span></div>
@@ -4488,16 +4516,16 @@
               </div>
             </div>
 
-            <div class="cc-dossier-card" style="margin-bottom: 8px;">
+            <div class="cc-dossier-card" style="margin-bottom: 8px">
               <h3 class="cc-subheader">${T('CharCreate.equipmentProficiencies')}</h3>
-              <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+              <div style="display: flex; flex-wrap: wrap; gap: 4px">
                 ${equipBadges.join("") || T('CharCreate.none')}
               </div>
             </div>
 
-            <div class="cc-dossier-card" style="margin-bottom: 8px;">
+            <div class="cc-dossier-card" style="margin-bottom: 8px">
               <h3 class="cc-subheader">${T('CharCreate.startingSkills')}</h3>
-              <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+              <div style="display: flex; flex-wrap: wrap; gap: 4px">
                 ${lv1SkillsHtml}
               </div>
             </div>
@@ -4567,7 +4595,7 @@
 
     _buildSettingsRows() {
       const scene = this;
-      if (ConfigManager.fogOfWar === undefined) ConfigManager.fogOfWar = true;
+      if (ConfigManager.fogOfWar === undefined) ConfigManager.fogOfWar = false;
       if (ConfigManager.globalLighting === undefined) ConfigManager.globalLighting = true;
       if (ConfigManager.enemyBattlers === undefined) ConfigManager.enemyBattlers = 1;
       if (!ConfigManager.battleMusicName) ConfigManager.battleMusicName = "RandomMind/Battle";
@@ -4578,6 +4606,9 @@
       if (ConfigManager.cpuPartyMembers === undefined) ConfigManager.cpuPartyMembers = false;
       // Loose (1) is the party's own default, and the row below reads it back.
       if (ConfigManager.partyFormation === undefined) ConfigManager.partyFormation = 1;
+      // Realistic (1) is the default the world is written for; ConfigManager
+      // seeds the same value, this only covers a config that never had one.
+      if (ConfigManager.enemySpawnMode === undefined) ConfigManager.enemySpawnMode = 1;
       return [
         {
           key: 'language',
@@ -4612,17 +4643,39 @@
           prev() { this._changeBy(-1); },
         },
         {
-          key: 'fogOfWar',
-          label: T('CharCreate.fogOfWar'),
-          description: T('CharCreate.revealsTheMapGraduallyAsYouExploreUnvisitedA'),
-          imageOff: "Settings/FogOfWarOFF",
-          imageOn:  "Settings/FogOfWarON",
-          captionOff: T('CharCreate.theEntireMapIsFullyRevealedNoHiddenAreas'),
-          captionOn: T('CharCreate.exploreTileByTileDarknessVeilsTheUnknown'),
-          get currentIndex() { return ConfigManager.fogOfWar === false ? 1 : 0; },
-          get currentLabel() { return this.currentIndex === 0 ? T('CharCreate.yes') : T('CharCreate.no'); },
-          next() { ConfigManager.fogOfWar = ConfigManager.fogOfWar === false; },
-          prev() { ConfigManager.fogOfWar = ConfigManager.fogOfWar === false; },
+          // Enemy spawn mode: what decides the level of everything roaming the
+          // world (BattleSystemEnhancedEncounters.js, BSE.Helpers.getSpawnMode).
+          // It shapes the whole run rather than one screen of it, so it is asked
+          // here, on the first page of creation, as well as in the options menu
+          // (Options > Gameplay > Enemy Spawn), which owns the very same
+          // ConfigManager.enemySpawnMode and can still change it later.
+          //
+          // Mode names and the blurb for the highlighted one are read from the
+          // options menu's own strings, so the two pages can never end up
+          // describing a mode differently, and a new mode has to be added in
+          // one place only.
+          key: 'enemySpawnMode',
+          label: T('GameOptions.label.enemySpawn'),
+          get _modes() { return T.list('GameOptions.enemySpawn'); },
+          get description() {
+            const states = T.list('GameOptions.descState.enemySpawnMode');
+            return states[this.currentIndex] || T('GameOptions.desc.enemySpawnMode');
+          },
+          get currentIndex() {
+            const v = ConfigManager.enemySpawnMode;
+            const count = this._modes.length;
+            return (Number.isInteger(v) && v >= 0 && v < count) ? v : 0;
+          },
+          get currentLabel() {
+            return this._modes[this.currentIndex] || this._modes[0] || '';
+          },
+          _changeBy(delta) {
+            const count = this._modes.length;
+            if (!count) return;
+            ConfigManager.enemySpawnMode = (this.currentIndex + delta + count) % count;
+          },
+          next() { this._changeBy(1); },
+          prev() { this._changeBy(-1); },
         },
         {
           key: 'cpuPartyMembers',
@@ -4688,6 +4741,21 @@
           },
           next() { this._apply(window.EnemyBattlerModes.step(this.currentIndex, 1)); },
           prev() { this._apply(window.EnemyBattlerModes.step(this.currentIndex, -1)); },
+        },
+        {
+          // Still a work in progress (hence the label), so it sits low on the
+          // page and starts off; the options menu owns the same setting.
+          key: 'fogOfWar',
+          label: T('CharCreate.fogOfWar'),
+          description: T('CharCreate.revealsTheMapGraduallyAsYouExploreUnvisitedA'),
+          imageOff: "Settings/FogOfWarOFF",
+          imageOn:  "Settings/FogOfWarON",
+          captionOff: T('CharCreate.theEntireMapIsFullyRevealedNoHiddenAreas'),
+          captionOn: T('CharCreate.exploreTileByTileDarknessVeilsTheUnknown'),
+          get currentIndex() { return ConfigManager.fogOfWar === true ? 0 : 1; },
+          get currentLabel() { return this.currentIndex === 0 ? T('CharCreate.yes') : T('CharCreate.no'); },
+          next() { ConfigManager.fogOfWar = ConfigManager.fogOfWar !== true; },
+          prev() { ConfigManager.fogOfWar = ConfigManager.fogOfWar !== true; },
         },
         {
           key: 'globalLighting',
@@ -4814,29 +4882,36 @@
         `;
       } else if (currentRow.key === 'battleMusic') {
         previewHtml = `
-          <div style="text-align:center;font-size:3.5rem;margin:16px 0;">♪</div>
+          <div style="text-align:center; font-size:4.081rem; margin:16px 0">♪</div>
         `;
       } else if (currentRow.key === 'activeTheme') {
         previewHtml = `
-          <div style="text-align:center;font-size:3.5rem;margin:16px 0;">◈</div>
-          <p style="text-align:center;font-size:1.1rem;font-weight:bold;margin:8px 0;">${currentRow.currentLabel}</p>
+          <div style="text-align:center; font-size:4.081rem; margin:16px 0">◈</div>
+          <p style="text-align:center; font-size:1.585rem; font-weight:bold; margin:8px 0">${currentRow.currentLabel}</p>
+        `;
+      } else if (currentRow.key === 'enemySpawnMode') {
+        // No before/after picture to show: the mode's own blurb above is the
+        // preview, so this only names the mode being described.
+        previewHtml = `
+          <div style="text-align:center; font-size:4.081rem; margin:16px 0">☠</div>
+          <p style="text-align:center; font-size:1.585rem; font-weight:bold; margin:8px 0">${currentRow.currentLabel}</p>
         `;
       } else if (currentRow.key === 'globalLighting') {
         const on = currentRow.currentIndex === 0;
         // Light (70) / Dark (71) IconSet glyphs, drawn at 64px.
         const lightIcon = on ? 70 : 71;
         previewHtml = `
-          <div style="text-align:center;margin:16px 0;"><span style="display:inline-block;width:64px;height:64px;background-image:url('img/system/IconSet.png');background-size:1024px auto;background-position:-${(lightIcon % 16) * 64}px -${Math.floor(lightIcon / 16) * 64}px;image-rendering:pixelated;"></span></div>
-          <p class="cc-settings-img-caption" style="text-align:center;">${on ? currentRow.captionOn : currentRow.captionOff}</p>
+          <div style="text-align:center; margin:16px 0"><span style="display:inline-block; width:64px; height:64px; background-image:url('img/system/IconSet.png'); background-size:1024px auto; background-position:-${(lightIcon % 16) * 64}px -${Math.floor(lightIcon / 16) * 64}px; image-rendering:pixelated"></span></div>
+          <p class="cc-settings-img-caption">${on ? currentRow.captionOn : currentRow.captionOff}</p>
         `;
       }
 
       const leftHtml = `
         <div class="cc-page cc-page-left">
           <h2 class="cc-header-gothic">${T('CharCreate.settingsPreview')}</h2>
-          <div class="cc-dossier-card" style="flex:1;display:flex;flex-direction:column;align-items:center;background:transparent;border:none;box-shadow:none;">
-            <h3 class="cc-subheader" style="text-align:center;color:#ffcc66;">${currentRow.label}</h3>
-            <p style="font-size:0.88rem;color:var(--text-card-dark);margin-bottom:8px;text-align:center;">${currentRow.description}</p>
+          <div class="cc-dossier-card" style="flex:1; display:flex; flex-direction:column; align-items:center; background:transparent; border:none; box-shadow:none">
+            <h3 class="cc-subheader" style="text-align:center; color:#ffcc66">${currentRow.label}</h3>
+            <p style="font-size:1.268rem; color:var(--text-card-dark); margin-bottom:8px; text-align:center">${currentRow.description}</p>
             ${previewHtml}
           </div>
         </div>
@@ -4869,21 +4944,23 @@
       // With no earlier step it becomes the way back to the title screen.
       const showSettingsBack = this._step > Scene_CharacterCreation.getStartingStep();
       const settingsBackBtn = showSettingsBack
-        ? `<button class="cc-btn-treaty" onclick="SceneManager._scene.onCancel()">${T('CharCreate.back')}</button>`
+        ? CCButtons.button(CCButtons.backLabel(), { onclick: "SceneManager._scene.onCancel()" })
         : (this.canExitToTitle()
-          ? `<button class="cc-btn-treaty" onclick="SceneManager._scene.exitToTitle()">${T('CharCreate.returnToTitle')}</button>`
+          ? CCButtons.button(CCButtons.titleLabel(), { onclick: "SceneManager._scene.exitToTitle()" })
           : "");
 
       const rightHtml = `
         <div class="cc-page cc-page-right">
           <h2 class="cc-header-gothic">${T('CharCreate.initialSettings')}</h2>
           <div class="cc-settings-list">${rowsHtml}</div>
-          <div class="cc-button-panel" style="margin-top:auto;padding-top:12px;">
-            ${settingsBackBtn}
-            <button class="cc-btn-treaty confirm" onclick="SceneManager._scene.onSettingsConfirm()">
-              ${T('CharCreate.confirm')}
-            </button>
-          </div>
+          ${CCButtons.panel({
+            back: settingsBackBtn,
+            next: CCButtons.button(CCButtons.continueLabel(), {
+              onclick: "SceneManager._scene.onSettingsConfirm()",
+              confirm: true,
+            }),
+            style: "margin-top:auto;padding-top:12px;",
+          })}
         </div>
       `;
 
@@ -4892,8 +4969,44 @@
         this._dndContainer.innerHTML = `<div class="cc-pockets-spread"><div class="cc-page cc-page-left"></div><div class="cc-page cc-page-right"></div></div>`;
         spread = this._dndContainer.querySelector(".cc-pockets-spread");
       }
-      spread.innerHTML = `${leftHtml}${rightHtml}`;
-      this._drawSettingsIcons();
+
+      // Moving the cursor or nudging a value used to rewrite the whole spread:
+      // both pages were thrown away and rebuilt, which replayed the page-enter
+      // animation, reloaded every preview image and re-created the row icons on
+      // every keypress. Only the parts that actually changed are touched now.
+      //   - the row list is rebuilt only when the settings themselves change
+      //     (a different set of rows, or the very first render);
+      //   - a value or focus change re-stamps the .active class and rewrites the
+      //     one label that moved;
+      //   - the preview page is rebuilt only when the row it describes, or that
+      //     row's value, is what changed.
+      const listEl = spread.querySelector(".cc-settings-list");
+      const rowEls = listEl ? listEl.children : null;
+      const structureStale = !rowEls || rowEls.length !== rows.length;
+      const previewKey = `${rowIdx}:${currentRow.currentIndex}`;
+      const innerOf = (html) => html.replace(/^\s*<div[^>]*>/, "").replace(/<\/div>\s*$/, "");
+
+      if (structureStale) {
+        spread.innerHTML = `${leftHtml}${rightHtml}`;
+        this._drawSettingsIcons();
+        this._lastPreviewKey = previewKey;
+        return;
+      }
+
+      for (let i = 0; i < rows.length; i++) {
+        const rowEl = rowEls[i];
+        rowEl.classList.toggle("active", i === rowIdx);
+        const valueEl = rowEl.querySelector(".option-select-val");
+        if (valueEl && valueEl.textContent !== rows[i].currentLabel) {
+          valueEl.textContent = rows[i].currentLabel;
+        }
+      }
+
+      if (this._lastPreviewKey !== previewKey) {
+        this._lastPreviewKey = previewKey;
+        const leftPage = spread.querySelector(".cc-page-left");
+        if (leftPage) leftPage.innerHTML = innerOf(leftHtml);
+      }
     }
 
     // Draw the IconSet glyph onto every settings-row canvas. Mirrors

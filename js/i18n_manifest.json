@@ -119,6 +119,7 @@
     "plugins/MainMenu.json",
     "plugins/MapGraphs.json",
     "plugins/Markov.json",
+    "plugins/MenuSearch.json",
     "plugins/ModManager.json",
     "plugins/ModManagerUI.json",
     "plugins/MonsterTournament.json",

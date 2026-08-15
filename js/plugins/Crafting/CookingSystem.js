@@ -1172,13 +1172,13 @@
             container.innerHTML = `
                 <div class="book-spread">
                     <div class="left-page">
-                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;">
-                          <div class="back-button focusable" style="position: absolute; left: 0; font-family: 'Lora', serif; font-size: 0.8rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: fit-content; line-height: normal; user-select: none;">
+                        <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%">
+                          <div class="back-button focusable" style="position: absolute; font-family: 'Lora', serif; font-size: 0.96rem; background: transparent; color: var(--text-primary-hover); padding: 4px 12px; border-radius: 4px; font-weight: bold; transition: all 0.2s ease; border: 1.5px solid var(--text-primary-hover); display: inline-flex; height: fit-content">
                             ${backBtnText}
                           </div>
-                          <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${pantryTitle}</h2>
+                          <h2 class="title" style="border: none; margin: 0; padding: 0">${pantryTitle}</h2>
                         </div>
-                        <div class="pantry-list-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;"></div>
+                        <div class="pantry-list-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden"></div>
                     </div>
                     <div class="right-page">
                         <div id="cooking-companion-row" class="companion-switcher companion-switcher--header"></div>
@@ -1456,11 +1456,11 @@
                 let adjectiveMsg = "";
                 if (isSameItem) {
                     if (CookingSystem._lastAdjectiveEffect === 'positive') {
-                        adjectiveMsg = `<div style="font-size:10px; color:#27ae60; font-weight:bold; margin-top:2px;">${T('Cooking.extraordinaryEffect50')}</div>`;
+                        adjectiveMsg = `<div style="font-size:13px; color:#27ae60; font-weight:bold; margin-top:2px">${T('Cooking.extraordinaryEffect50')}</div>`;
                     } else if (CookingSystem._lastAdjectiveEffect === 'neutral') {
-                        adjectiveMsg = `<div style="font-size:10px; color:#f39c12; font-weight:bold; margin-top:2px;">${T('Cooking.minorEffect25')}</div>`;
+                        adjectiveMsg = `<div style="font-size:13px; color:#f39c12; font-weight:bold; margin-top:2px">${T('Cooking.minorEffect25')}</div>`;
                     } else {
-                        adjectiveMsg = `<div style="font-size:10px; color:#c0392b; font-weight:bold; margin-top:2px;">${T('Cooking.disastrousEffect75')}</div>`;
+                        adjectiveMsg = `<div style="font-size:13px; color:#c0392b; font-weight:bold; margin-top:2px">${T('Cooking.disastrousEffect75')}</div>`;
                     }
                 }
 

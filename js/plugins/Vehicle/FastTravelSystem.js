@@ -1666,7 +1666,7 @@
                     <span class="travel-dest-name">${destLabel(dest.name)}${hubBadge}</span>
                     <span class="travel-dest-meta">
                         <span>Distance: ${distanceInKm} km</span>
-                        <span style="font-weight: bold; color: #ffcc66;">${costText}</span>
+                        <span style="font-weight: bold; color: #ffcc66">${costText}</span>
                     </span>
                 </div>
             `;
@@ -1685,7 +1685,7 @@
             const label = isSandbox ? `${baseLabel} (X: ${Math.round(x)}, Y: ${Math.round(y)})` : baseLabel;
 
             return `
-                <div class="travel-marker${hubClass}${kindClass(dest)}" id="marker-${dest.name}" style="left: ${x}px; top: ${y}px;" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
+                <div class="travel-marker${hubClass}${kindClass(dest)}" id="marker-${dest.name}" style="left: ${x}px; top: ${y}px" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
                     <div class="travel-marker-tooltip">${label}</div>
                 </div>
             `;
@@ -1700,8 +1700,8 @@
         const backButtonHTML = isCCTravel
             ? ""
             : `
-            <div style="margin-top: auto; padding-top: 15px; border-top: 1.5px dashed rgba(139, 90, 43, 0.15);">
-                <div class="travel-btn travel-btn-cancel" style="width: 100%; box-sizing: border-box;" onclick="SceneManager._scene.closeTravelUIOverlay()">${T('FastTravel.ui.back')}</div>
+            <div style="margin-top: auto; padding-top: 15px; border-top: 1.5px dashed rgba(139, 90, 43, 0.15)">
+                <div class="travel-btn travel-btn-cancel" style="width: 100%; box-sizing: border-box" onclick="SceneManager._scene.closeTravelUIOverlay()">${T('FastTravel.ui.back')}</div>
             </div>
             `;
 
@@ -1716,13 +1716,13 @@
             <div class="travel-book">
                 <div class="travel-left-page">
                     <!-- LIST PANEL -->
-                    <div id="panel-list" style="display: flex; flex-direction: column; height: 100%; width: 100%;">
+                    <div id="panel-list" style="display: flex; flex-direction: column; height: 100%; width: 100%">
                         <h2 class="travel-title">${T('FastTravel.ui.stations')}</h2>
                         <div class="travel-transport-info">
-                            <div style="font-weight: bold; font-family: 'Lora', serif; font-size: 1rem; margin-bottom: 4px;">
+                            <div style="font-weight: bold; font-family: 'Lora', serif; font-size: 1.15rem; margin-bottom: 4px">
                                 ${transportDisplayName}
                             </div>
-                            <div style="font-size: 0.8rem; font-style: italic; opacity: 0.85;">
+                            <div style="font-size: 0.96rem; opacity: 0.85">
                                 ${multiplierText}
                             </div>
                         </div>
@@ -1733,32 +1733,32 @@
                     </div>
                     
                     <!-- CONFIRM PANEL (initially hidden) -->
-                    <div id="panel-confirm" style="display: none; flex-direction: column; height: 100%; width: 100%; animation: fade-in 0.25s ease-out;">
+                    <div id="panel-confirm" style="display: none; flex-direction: column; height: 100%; width: 100%; animation: fade-in 0.25s ease-out">
                         <h2 class="travel-title">${T('FastTravel.ui.confirmJourney')}</h2>
-                        <div id="sidebar-dest-title" style="font-family: 'Lora', serif; font-size: 1.4rem; color: #ffcc66; text-align: center; margin-bottom: 20px; font-weight: bold; border-bottom: 1.5px dashed rgba(255, 204, 102, 0.15); padding-bottom: 8px;">${T('FastTravel.ui.travelToPlaceholder')}</div>
+                        <div id="sidebar-dest-title" style="font-family: 'Lora', serif; font-size: 1.61rem; color: #ffcc66; text-align: center; margin-bottom: 20px; font-weight: bold; border-bottom: 1.5px dashed rgba(255, 204, 102, 0.15); padding-bottom: 8px">${T('FastTravel.ui.travelToPlaceholder')}</div>
                         
-                        <div class="travel-confirm-details" style="flex-grow: 1; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; padding: 5px;">
-                            <div class="travel-modal-detail" style="font-size: 1rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex; justify-content: space-between;">
-                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b;">${T('FastTravel.ui.transport')}</span>
-                                <span class="travel-modal-value" id="sidebar-transport-val" style="color: #2b251d;">${T('FastTravel.ui.transportPlaceholder')}</span>
+                        <div class="travel-confirm-details" style="flex-grow: 1; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; padding: 5px">
+                            <div class="travel-modal-detail" style="font-size: 1.15rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex">
+                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b">${T('FastTravel.ui.transport')}</span>
+                                <span class="travel-modal-value" id="sidebar-transport-val" style="color: #2b251d">${T('FastTravel.ui.transportPlaceholder')}</span>
                             </div>
-                            <div class="travel-modal-detail" style="font-size: 1rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex; justify-content: space-between;">
-                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b;">${T('FastTravel.ui.distance')}</span>
-                                <span class="travel-modal-value" id="sidebar-distance-val" style="color: #2b251d;">12 km</span>
+                            <div class="travel-modal-detail" style="font-size: 1.15rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex">
+                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b">${T('FastTravel.ui.distance')}</span>
+                                <span class="travel-modal-value" id="sidebar-distance-val" style="color: #2b251d">12 km</span>
                             </div>
-                            <div class="travel-modal-detail" style="font-size: 1rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex; justify-content: space-between;">
-                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b;">${T('FastTravel.ui.cost')}</span>
-                                <span class="travel-modal-value" id="sidebar-cost-val" style="font-weight: bold; color: #ffcc66;">1.20€</span>
+                            <div class="travel-modal-detail" style="font-size: 1.15rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex">
+                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b">${T('FastTravel.ui.cost')}</span>
+                                <span class="travel-modal-value" id="sidebar-cost-val" style="font-weight: bold; color: #ffcc66">1.20€</span>
                             </div>
-                            <div class="travel-modal-detail" style="font-size: 1rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex; justify-content: space-between;">
-                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b;">${T('FastTravel.ui.travelTime')}</span>
-                                <span class="travel-modal-value" id="sidebar-time-val" style="color: #2b251d;">4s</span>
+                            <div class="travel-modal-detail" style="font-size: 1.15rem; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 90, 43, 0.15); display: flex">
+                                <span class="travel-modal-label" style="font-weight: bold; color: #8b5a2b">${T('FastTravel.ui.travelTime')}</span>
+                                <span class="travel-modal-value" id="sidebar-time-val" style="color: #2b251d">4s</span>
                             </div>
                         </div>
                         
-                        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-top: 15px; border-top: 1.5px dashed rgba(139, 90, 43, 0.15);">
-                            <div class="travel-btn travel-btn-cancel" style="width: 100%; box-sizing: border-box;" onclick="SceneManager._scene.closeTravelConfirmModal()">${T('FastTravel.ui.cancel')}</div>
-                            <div class="travel-btn travel-btn-confirm" id="sidebar-confirm-action-btn" style="width: 100%; box-sizing: border-box;">${T('FastTravel.ui.travel')}</div>
+                        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-top: 15px; border-top: 1.5px dashed rgba(139, 90, 43, 0.15)">
+                            <div class="travel-btn travel-btn-cancel" style="width: 100%; box-sizing: border-box" onclick="SceneManager._scene.closeTravelConfirmModal()">${T('FastTravel.ui.cancel')}</div>
+                            <div class="travel-btn travel-btn-confirm" id="sidebar-confirm-action-btn" style="width: 100%; box-sizing: border-box">${T('FastTravel.ui.travel')}</div>
                         </div>
                     </div>
                 </div>
@@ -1768,7 +1768,7 @@
                         <div class="travel-map-wrapper" id="travel-wrapper">
                             ${offEarth
                                 ? `<div class="travel-map-space"><div class="travel-space-tower"
-                                        style="left:${SPACE_CENTRE.x}px; top:${SPACE_CENTRE.y}px;"></div></div>`
+                                        style="left:${SPACE_CENTRE.x}px; top:${SPACE_CENTRE.y}px"></div></div>`
                                 : `<img class="travel-map-img" src="img/worldmap/OldEuropeParacetamolo.png">`}
 
                             <svg class="travel-svg-layer" viewBox="0 0 1232 1039">
@@ -1778,7 +1778,7 @@
                             
                             ${markersHTML}
                             
-                            <div class="travel-player-marker" style="left: ${playerPixelX}px; top: ${playerPixelY}px;">
+                            <div class="travel-player-marker" style="left: ${playerPixelX}px; top: ${playerPixelY}px">
                                 <div class="travel-player-pulse"></div>
                                 <div class="travel-player-dot"></div>
                             </div>

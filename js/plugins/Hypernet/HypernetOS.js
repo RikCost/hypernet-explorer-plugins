@@ -130,20 +130,8 @@
                 const posX = -(col * 32);
                 const posY = -(row * 32);
                 return `
-                    <div style="width: ${size}px; height: ${size}px; overflow: hidden; display: inline-block; position: relative; flex-shrink: 0; border-radius: 4px; vertical-align: middle; background: transparent;">
-                        <div style="
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            width: 512px;
-                            height: 2048px;
-                            background-image: url('img/system/IconSet.png');
-                            background-position: ${posX}px ${posY}px;
-                            background-repeat: no-repeat;
-                            transform: scale(${size / 32});
-                            transform-origin: 0 0;
-                            image-rendering: pixelated;
-                        "></div>
+                    <div style="width: ${size}px; height: ${size}px; overflow: hidden; display: inline-block; position: relative; flex-shrink: 0; border-radius: 4px; vertical-align: middle; background: transparent">
+                        <div style="position: absolute; top: 0; left: 0; width: 512px; height: 2048px; background-image: url('img/system/IconSet.png'); background-position: ${posX}px ${posY}px; background-repeat: no-repeat; transform: scale(${size / 32}); transform-origin: 0 0; image-rendering: pixelated"></div>
                     </div>
                 `;
             }
@@ -152,9 +140,9 @@
                     return icon;
                 }
                 if (icon.match(/\.(png|jpg|jpeg|webp|gif)/i)) {
-                    return `<img src="${icon}" style="width: ${size}px; height: ${size}px; display: inline-block; object-fit: contain;" />`;
+                    return `<img src="${icon}" style="width: ${size}px; height: ${size}px; display: inline-block; object-fit: contain" />`;
                 }
-                return `<span class="hypernet-icon-text" style="font-size: ${size * 0.7}px; line-height: ${size}px; display: inline-block; vertical-align: middle;">${icon}</span>`;
+                return `<span class="hypernet-icon-text" style="font-size: ${size * 0.7}px; line-height: ${size}px; display: inline-block; vertical-align: middle">${icon}</span>`;
             }
             return '';
         },
@@ -1125,11 +1113,11 @@
                 </div>
                 <div class="start-menu-footer">
                     <div class="start-menu-btn" id="start-btn-logoff">
-                        <div class="start-menu-btn-icon" style="background: #e6b0aa; color: #78281f;">↩</div>
+                        <div class="start-menu-btn-icon" style="background: #e6b0aa; color: #78281f">↩</div>
                         <div>${T('HypernetOS.logOff')}</div>
                     </div>
                     <div class="start-menu-btn" id="start-btn-turnoff">
-                        <div class="start-menu-btn-icon" style="background: #ec7063; color: #512e2e;"></div>
+                        <div class="start-menu-btn-icon" style="background: #ec7063; color: #512e2e"></div>
                         <div>${T('HypernetOS.turnOff')}</div>
                     </div>
                 </div>
@@ -2018,9 +2006,9 @@
                     return `
                         <div id="hc-bracket-${i}" class="focusable" data-focus-key="hc-bracket-${i}" tabindex="0"
                              onclick="window._hcSelect(${i})"
-                             style="display:flex; justify-content:space-between; align-items:center; padding:5px 10px; cursor:pointer; border-bottom:1px solid #e8e8e8; background:${sel ? '#316ac5' : 'transparent'}; color:${sel ? '#fff' : '#222'}; font-size:12px; user-select:none;">
+                             style="display:flex; justify-content:space-between; align-items:center; padding:5px 10px; cursor:pointer; border-bottom:1px solid #e8e8e8; background:${sel ? '#316ac5' : 'transparent'}; color:${sel ? '#fff' : '#222'}; font-size:15px; user-select:none">
                             <span>Lv.&nbsp;${b.label}</span>
-                            <span style="opacity:0.75; font-size:10px;">${cnt}&nbsp;✦</span>
+                            <span style="opacity:0.75; font-size:13px">${cnt}&nbsp;✦</span>
                         </div>`;
                 }).join('');
             };
@@ -2032,15 +2020,15 @@
                 const cnt = countEnemies(b.min, b.max);
                 const midLv = Math.floor((b.min + Math.min(b.max, 99)) / 2);
                 el.innerHTML = `
-                    <div style="margin-bottom:8px;">
-                        <div style="font-size:18px; font-weight:bold; font-family:Georgia,serif; color:#8B1A00; margin-bottom:2px;">
+                    <div style="margin-bottom:8px">
+                        <div style="font-size:21px; font-weight:bold; font-family:Georgia,serif; color:#8B1A00; margin-bottom:2px">
                             ${T('HypernetOS.levelBracket', { range: b.label })}
                         </div>
-                        <div style="font-size:11px; color:#666;">${T.n('HypernetOS.eligibleVessels', cnt)}</div>
+                        <div style="font-size:14px; color:#666">${T.n('HypernetOS.eligibleVessels', cnt)}</div>
                     </div>
-                    <div style="background:#f8f8f8; border:1px solid #ddd; padding:10px; font-size:11px; color:#444; line-height:1.75;">
-                        <strong style="display:block; color:#333; margin-bottom:5px;">${T('HypernetOS.randomPartyProtocol')}</strong>
-                        <ul style="margin:0; padding-left:16px;">
+                    <div style="background:#f8f8f8; border:1px solid #ddd; padding:10px; font-size:14px; color:#444; line-height:1.75">
+                        <strong style="display:block; color:#333; margin-bottom:5px">${T('HypernetOS.randomPartyProtocol')}</strong>
+                        <ul style="margin:0; padding-left:16px">
                             <li>${T('HypernetOS.protoDraft')}</li>
                             <li>${T('HypernetOS.protoLevel', { level: midLv })}</li>
                             <li>${T('HypernetOS.protoGear')}</li>
@@ -2049,32 +2037,32 @@
                             <li>${T('HypernetOS.protoRestore')}</li>
                         </ul>
                     </div>
-                    <div style="flex:1;"></div>
+                    <div style="flex:1"></div>
                     <button id="hc-enter-btn" data-focus-key="hc-enter-btn" onclick="window._hcEnter()"
-                            style="width:100%; padding:11px; background:linear-gradient(135deg, #6B0000, #C0392B); color:#FFD700; border:1px solid #FF6B6B; font-size:13px; font-weight:bold; font-family:Georgia,serif; letter-spacing:1.5px; cursor:pointer; margin-top:10px; box-shadow:0 2px 5px rgba(0,0,0,0.35); text-shadow:0 1px 2px #000;">
+                            style="width:100%; padding:11px; background:linear-gradient(135deg, #6B0000, #C0392B); color:#FFD700; border:1px solid #FF6B6B; font-size:16px; font-weight:bold; font-family:Georgia,serif; letter-spacing:1.5px; cursor:pointer; margin-top:10px; box-shadow:0 2px 5px rgba(0,0,0,0.35); text-shadow:0 1px 2px #000">
                         &nbsp;&nbsp;${T('HypernetOS.enterColosseum')}
                     </button>
                 `;
             };
 
             const contentHTML = `
-                <div style="display:flex; flex-direction:column; height:100%; font-family:Tahoma,sans-serif; overflow:hidden; background:#ece9d8;">
-                    <div style="background:linear-gradient(135deg, #1a0300 0%, #8B1A00 55%, #B22222 100%); padding:11px 16px; display:flex; align-items:center; gap:12px; border-bottom:2px solid #6B0000; flex-shrink:0;">
-                        <div style="font-size:2rem; line-height:1;"></div>
+                <div style="display:flex; flex-direction:column; height:100%; font-family:Tahoma,sans-serif; overflow:hidden; background:#ece9d8">
+                    <div style="background:linear-gradient(135deg, #1a0300 0%, #8B1A00 55%, #B22222 100%); padding:11px 16px; display:flex; align-items:center; gap:12px; border-bottom:2px solid #6B0000; flex-shrink:0">
+                        <div style="font-size:2.2rem; line-height:1"></div>
                         <div>
-                            <div style="color:#FFD700; font-weight:bold; font-size:14px; letter-spacing:2px; font-family:Georgia,serif; text-shadow:1px 1px 2px #000;">${T('HypernetOS.colosseumBanner')}</div>
-                            <div style="color:#ffccaa; font-size:10px; margin-top:2px;">${T('HypernetOS.colosseumTagline')}</div>
+                            <div style="color:#FFD700; font-weight:bold; font-size:17px; letter-spacing:2px; font-family:Georgia,serif; text-shadow:1px 1px 2px #000">${T('HypernetOS.colosseumBanner')}</div>
+                            <div style="color:#ffccaa; font-size:13px; margin-top:2px">${T('HypernetOS.colosseumTagline')}</div>
                         </div>
-                        <div style="margin-left:auto; font-size:10px; color:#ff9966; text-align:right; line-height:1.5;">${T('HypernetOS.partyRestoredNote')}</div>
+                        <div style="margin-left:auto; font-size:13px; color:#ff9966; text-align:right; line-height:1.5">${T('HypernetOS.partyRestoredNote')}</div>
                     </div>
-                    <div style="display:flex; flex:1; overflow:hidden;">
-                        <div style="width:200px; min-width:200px; display:flex; flex-direction:column; border-right:1px solid #aaa; overflow:hidden;">
-                            <div style="background:#316ac5; color:#fff; padding:3px 8px; font-size:11px; font-weight:bold; flex-shrink:0; letter-spacing:0.3px;">${T('HypernetOS.levelBrackets')}</div>
-                            <div id="colosseum-list" style="flex:1; overflow-y:auto; background:#fff;"></div>
+                    <div style="display:flex; flex:1; overflow:hidden">
+                        <div style="width:200px; min-width:200px; display:flex; flex-direction:column; border-right:1px solid #aaa; overflow:hidden">
+                            <div style="background:#316ac5; color:#fff; padding:3px 8px; font-size:14px; font-weight:bold; flex-shrink:0; letter-spacing:0.3px">${T('HypernetOS.levelBrackets')}</div>
+                            <div id="colosseum-list" style="flex:1; overflow-y:auto; background:#fff"></div>
                         </div>
-                        <div id="colosseum-right" style="flex:1; display:flex; flex-direction:column; padding:14px; gap:8px; overflow-y:auto;"></div>
+                        <div id="colosseum-right" style="flex:1; display:flex; flex-direction:column; padding:14px; gap:8px; overflow-y:auto"></div>
                     </div>
-                    <div style="border-top:1px solid #a0a0a0; padding:2px 8px; background:#ece9d8; font-size:10px; color:#555; flex-shrink:0;">
+                    <div style="border-top:1px solid #a0a0a0; padding:2px 8px; background:#ece9d8; font-size:13px; color:#555; flex-shrink:0">
                         ${T('HypernetOS.colosseumHint')}
                     </div>
                 </div>`;
