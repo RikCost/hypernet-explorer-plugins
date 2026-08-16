@@ -20,6 +20,17 @@
     "techniquesForSale": "Tecniche in Vendita"
   },
   "shopType": {
+    "generalStore": "Emporio",
+    "tavern": "Taverna",
+    "weaponsmith": "Armeria",
+    "armorer": "Corazzaio",
+    "clothing": "Abbigliamento",
+    "pharmacy": "Farmacia",
+    "magicShop": "Bottega magica",
+    "luxury": "Boutique di lusso",
+    "adventurer": "Fornitore d'avventura",
+    "alchemistry": "Alchimista",
+    "organTrader": "Mercante d'organi",
     "iceCream": "Gelateria",
     "fastFood": "Fast food",
     "gym": "Articoli sportivi",
@@ -70,8 +81,5 @@
     "junkShop": "Rigattiere",
     "academy": "Libreria accademica",
     "grimoire": "Emporio di grimori"
-  },
-  "venue": {
-    "tavern": "Taverna"
   }
 }

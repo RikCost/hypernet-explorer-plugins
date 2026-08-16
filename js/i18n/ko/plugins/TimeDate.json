@@ -44,7 +44,9 @@
     "food": "음식",
     "temp": "기온",
     "noFood": "",
-    "weatherClear": ""
+    "weatherClear": "",
+    "enemies": "적",
+    "level": "Lv. {level}"
   },
   "needLabel": {
     "hunger": "",

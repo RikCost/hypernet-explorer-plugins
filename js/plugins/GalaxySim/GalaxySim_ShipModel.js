@@ -2123,43 +2123,6 @@
 
   const IT = () => ConfigManager && ConfigManager.language === "it";
 
-  const MODAL_CSS = `
-  #gx-ship-appearance { position:absolute; top:0; left:0; width:100%; height:100%; z-index:1400;
-    display:flex; align-items:center; justify-content:center;
-    background:radial-gradient(circle, rgba(14,10,6,0.92) 0%, rgba(4,3,2,0.98) 100%); font-family:'Lora', serif;
-    color:var(--accent-cream-light, #efe3cc); box-sizing:border-box; }
-  #gx-ship-appearance .gx-panel { width:min(1240px, 94vw); height:min(820px, 92vh); display:flex; gap:0;
-    border:4px double var(--border-gold-amber, #8a6a2f); border-radius:10px; overflow:hidden;
-    background:var(--bg-dark-warm-translucent-96, rgba(24,17,10,0.96)); box-shadow:0 10px 40px rgba(0,0,0,0.6); }
-  #gx-ship-appearance .gx-left { width:52%; display:flex; flex-direction:column; padding:18px 20px; box-sizing:border-box;
-    border-right:2px solid var(--border-gold-amber-30, rgba(138,106,47,0.3)); }
-  #gx-ship-appearance .gx-right { width:48%; display:flex; flex-direction:column; padding:18px 20px; box-sizing:border-box; }
-  #gx-ship-appearance h2 { font-size:1.76rem; margin:0 0 2px 0; text-align:center; letter-spacing:1px; }
-  #gx-ship-appearance .gx-sub { text-align:center; font-size:1.02rem; font-style: normal;
-    color:var(--text-card-medium, #b8a37a); margin-bottom:10px; }
-  #gx-ship-appearance canvas.gx-view { flex:1; width:100%; border:2px solid var(--border-gold-amber-30, rgba(138,106,47,0.3));
-    border-radius:8px; background:radial-gradient(circle at 40% 35%, #101828 0%, #05070c 75%); cursor:grab; }
-  #gx-ship-appearance canvas.gx-view:active { cursor:grabbing; }
-  #gx-ship-appearance .gx-rows { flex:1; overflow-y:auto; padding-right:8px; display:flex; flex-direction:column; gap:5px; }
-  #gx-ship-appearance .gx-row { display:flex; align-items:center; gap:8px; padding:5px 8px; border-radius:5px;
-    border:1px solid var(--border-gold-amber-30, rgba(138,106,47,0.3)); background:rgba(0,0,0,0.22); }
-  #gx-ship-appearance .gx-row.sel { border-color:var(--border-focus-hover, #d8a441); background:var(--bg-tertiary-focus-translucent-45, rgba(90,60,20,0.45)); }
-  #gx-ship-appearance .gx-row .gx-lbl { flex:0 0 40%; font-size:0.996rem; color:var(--text-card-medium, #c9b591); }
-  #gx-ship-appearance .gx-row .gx-val { flex:1; text-align:center; font-size:1.08rem; font-weight:bold;
-    color:var(--accent-amber-glow, #f0c265); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  #gx-ship-appearance .gx-arrow { cursor:pointer; padding:1px 8px; border-radius:4px; font-weight:bold;
-    border:1px solid var(--border-gold-amber-30, rgba(138,106,47,0.3)); color:var(--accent-amber-glow, #f0c265); user-select:none; }
-  #gx-ship-appearance .gx-arrow:hover { background:var(--bg-tertiary-focus-translucent-45, rgba(90,60,20,0.45)); }
-  #gx-ship-appearance .gx-btns { display:flex; gap:10px; margin-top:12px; }
-  #gx-ship-appearance .gx-btn { flex:1; text-align:center; cursor:pointer; padding:10px 8px; border-radius:5px;
-    border:2px solid var(--border-focus-hover, #d8a441); background:var(--bg-tertiary-focus-translucent-45, rgba(90,60,20,0.45));
-    color:var(--accent-amber-glow, #f0c265); font-weight:bold; text-transform:uppercase; font-size:1.104rem; user-select:none; }
-  #gx-ship-appearance .gx-btn:hover { background:var(--border-focus-hover, #d8a441); color:#1a1206; }
-  #gx-ship-appearance .gx-btn.sel { background:var(--border-focus-hover, #d8a441); color:#1a1206; }
-  #gx-ship-appearance .gx-hint { margin-top:8px; text-align:center; font-size:0.915rem; font-style: normal;
-    color:var(--text-caption-brown, #9c8666); }
-  `;
-
   // Action buttons, in DOM order. They extend the trait rows into a single focus
   // cycle so a gamepad can reach every action in the modal.
   const BUTTON_IDS = ["gx-btn-random", "gx-btn-reset", "gx-btn-apply", "gx-btn-cancel"];
@@ -2179,13 +2142,6 @@
       this._onClose = opts.onClose || null;
       this._cfg = getConfig();
       this._sel = 0;
-
-      if (!document.getElementById("gx-ship-appearance-css")) {
-        const st = document.createElement("style");
-        st.id = "gx-ship-appearance-css";
-        st.textContent = MODAL_CSS;
-        document.head.appendChild(st);
-      }
 
       const root = document.createElement("div");
       root.id = "gx-ship-appearance";

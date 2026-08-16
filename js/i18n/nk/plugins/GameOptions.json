@@ -72,7 +72,7 @@
   ],
   "enemySpawn": [
     "BALANCED",
-    "REALISTIC",
+    "DISTANCE FROM SPAWN",
     "CHAOS"
   ],
   "enemyBattler": [

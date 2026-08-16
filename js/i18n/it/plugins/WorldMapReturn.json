@@ -1,5 +1,6 @@
 {
   "needDivingSuit": "Ti serve una muta da sub",
+  "cannotDigHere": "Qui non c'è terreno da scavare",
   "returnToWorldMap": "Torna alla mappa del mondo",
   "chooseLandingSite": "Scegli il sito di atterraggio",
   "goToSurface": "Sali in superficie",

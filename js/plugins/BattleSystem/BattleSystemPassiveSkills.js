@@ -742,9 +742,6 @@
   regTrait(190, {
     // Magically Gifted
   });
-  regTrait(195, {
-    // Lycanthrope
-  });
   regTrait(99, {
     // Cursed
   });

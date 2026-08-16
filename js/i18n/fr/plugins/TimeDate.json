@@ -44,7 +44,9 @@
     "food": "Nourriture",
     "temp": "",
     "noFood": "",
-    "weatherClear": ""
+    "weatherClear": "",
+    "enemies": "Ennemis",
+    "level": "Niv. {level}"
   },
   "needLabel": {
     "hunger": "",

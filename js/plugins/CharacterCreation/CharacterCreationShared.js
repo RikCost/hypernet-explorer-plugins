@@ -178,6 +178,49 @@
     applyGenderAndReproduction(memberIndex, randomGender);
   }
 
+  // The body every actor already starts with (Health_Core initializes a new
+  // actor's parts from the Humanoid archetype), so a sheet that answers
+  // "Humanoid" has nothing to change and the actor is left alone.
+  const DEFAULT_ARCHETYPE = "Humanoid"; // i18n-ignore: EnemyArchetypes.json key
+
+  /**
+   * Settle a character's gender and body archetype from the sprite sheet they
+   * were given. js/db/WorldGen/NPCs.json records both for every sheet in the
+   * game (window.SpriteCatalog.entry), so a character the wizard only ever
+   * asked for a face still gets an identity that matches that face instead of
+   * a roll: an elf sheet builds an Elven body, a slime sheet a Slime one.
+   *
+   * The archetype is applied FIRST and the gender second: changeArchetype
+   * writes the reproduction variable from the body plan alone, and the gender
+   * is the finer of the two answers.
+   *
+   * @param {number} memberIndex - Party member index (0, 1, 2)
+   * @param {string} sheetName - Character sheet name, as stored on the actor
+   * @returns {object|null} The NPCs.json record read, or null when unknown
+   */
+  function applyIdentityFromSprite(memberIndex, sheetName) {
+    const entry = window.SpriteCatalog && window.SpriteCatalog.entry
+      ? window.SpriteCatalog.entry(sheetName)
+      : null;
+    if (!entry) {
+      applyRandomGender(memberIndex);
+      return null;
+    }
+
+    const archetype = entry.Archetype;
+    if (archetype && archetype !== DEFAULT_ARCHETYPE && window.changeArchetypeForActor) {
+      const actor = $gameActors.actor(memberIndex + 1);
+      if (actor) window.changeArchetypeForActor(actor, archetype);
+    }
+
+    if (entry.Gender != null) {
+      applyGenderAndReproduction(memberIndex, entry.Gender);
+    } else {
+      applyRandomGender(memberIndex);
+    }
+    return entry;
+  }
+
   /**
    * Get gender choices for selection menu
    * @returns {array} Array of gender choice objects
@@ -747,6 +790,7 @@
     getReproductiveVariableId,
     applyGenderAndReproduction,
     applyRandomGender,
+    applyIdentityFromSprite,
     getGenderChoices,
 
     // Traits

@@ -72,7 +72,7 @@
   ],
   "enemySpawn": [
     "Balanced",
-    "Realistic",
+    "Distance from spawn",
     "Chaos"
   ],
   "enemyBattler": [
@@ -100,7 +100,7 @@
     ],
     "enemySpawnMode": [
       "Balanced: enemies match your party. Roamers stay at or below your level, and each world tile hides one boss well above it.",
-      "Realistic: the whole local wildlife is out there, at any level. How hard a place is comes from the place itself - how far it lies from where you started the game - so home ground stays gentle and the far side of the map is lethal however strong you get. What is near that level is what you usually meet, and anything else stays possible but rare. Each nation and each biome holds its own roster, and a tile still hides one boss.",
+      "Distance from spawn: the whole local wildlife is out there, at any level. How hard a place is comes from the place itself - how far it lies from the square you started the game on - so the ground you began on stays as gentle as the year allows, the far side of the map is lethal however strong you get, and the farthest square from your own start is the top of the roster. What is near that level is what you usually meet, and anything else stays possible but rare. Each nation and each biome holds its own roster, and a tile still hides one boss. A world begun by higher-level characters starts its gradient at their level instead of at 1.",
       "Chaos: nothing is held back. Anything from level 1 to 110 roams anywhere, and every time you step onto a procedural map its monsters are dealt again."
     ],
     "musicArtistDisplay": [

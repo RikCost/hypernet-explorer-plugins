@@ -14,9 +14,12 @@
  * - Standard "Click to move" destination pathfinding is disabled.
 
  * - Click and Drag the mouse to Pan the camera around the map.
- * 
- * Note: If you move the player character using the keyboard or a gamepad 
- * after panning away, the camera will naturally snap back to center on 
+ * - Mouse wheel, the + and - keys, or L2/R2 on a controller zoom the camera
+ *   on any map.
+ * - Right stick pans the camera, the controller twin of click & drag.
+ *
+ * Note: If you move the player character using the keyboard or a gamepad
+ * after panning away, the camera will naturally snap back to center on
  * the player.
  */
 
@@ -46,70 +49,416 @@
 
             // Prevent default scrolling behavior
             e.preventDefault();
-        } else if (isMap315CameraZoomable()) {
-            const delta = e.deltaY;
-            map315Zoom = clampMap315Zoom(map315Zoom + (delta < 0 ? MAP315_WHEEL_STEP : -MAP315_WHEEL_STEP));
-            e.preventDefault();
+        } else {
+            zoomDiag(e);
+            if (isWheelOverMap(e) && cameraZoomAllowed()) {
+                stepCameraZoom(e.deltaY < 0 ? ZOOM_WHEEL_STEP : -ZOOM_WHEEL_STEP, false);
+                zoomDiag(e, true);
+                e.preventDefault();
+            }
         }
     }, { passive: false });
 
-    // ------------------------------------------------------------------------
-    // Map 315 Camera Zoom (mouse wheel + controller L2/R2)
-    // ------------------------------------------------------------------------
-    // The world map (315) is walked on foot like any other map, so unlike the
-    // fullscreen "M" map sheet (WorldMap.js, its own independent zoomScale) this
-    // zooms the live game camera via the engine's own Game_Screen zoom, centred
-    // on the screen (the player stays centred by MousePan's own scroll-follow).
-    const MAP315_ID = 315;
-    const MAP315_ZOOM_MIN = 0.5;
-    const MAP315_ZOOM_MAX = 2.5;
-    const MAP315_WHEEL_STEP = 0.1;
-    const MAP315_TRIGGER_RATE = 0.03; // zoom change per frame at full trigger pull
-    const MAP315_TRIGGER_DEADZONE = 0.15;
-
-    let map315Zoom = 1;
-    let map315ZoomActive = false;
-
-    function clampMap315Zoom(v) {
-        return Math.max(MAP315_ZOOM_MIN, Math.min(MAP315_ZOOM_MAX, v));
+    // TEMPORARY DIAGNOSTIC - remove once the wheel-zoom report is closed.
+    // console.warn is mirrored into debug-log.txt by Debug/ForceConsole.js, so
+    // this reports which gate a scroll fails from the player's own session.
+    let _zoomDiagCount = 0;
+    function zoomDiag(e, after) {
+        if (_zoomDiagCount >= 16) return;
+        _zoomDiagCount++;
+        const t = e.target;
+        const scene = SceneManager._scene;
+        const parts = [
+            'phase=' + (after ? 'after' : 'before'),
+            'target=' + (t ? (t.tagName || '?') + '#' + (t.id || '-') : 'null'),
+            'scene=' + (scene ? scene.constructor.name : 'null'),
+            'overMap=' + isWheelOverMap(e),
+            'allowed=' + cameraZoomAllowed(),
+            'dataMap=' + !!window.$dataMap,
+            'ascii=' + !!(window.AsciiMode && window.AsciiMode.active),
+            'wmFull=' + !!(window.isWorldMapFullscreen && window.isWorldMapFullscreen()),
+            'split=' + !!(window.$gameSplitScreen && window.$gameSplitScreen.active),
+            'panOff=' + !!($gameSystem && $gameSystem._mousePanDisabled),
+            'cameraZoom=' + cameraZoom,
+            'zoomActive=' + cameraZoomActive,
+            'screenZoom=' + ($gameScreen ? $gameScreen.zoomScale() : 'n/a'),
+            'ssScale=' + (scene && scene._spriteset ? scene._spriteset.scale.x : 'n/a'),
+            'mapId=' + ($gameMap && window.$dataMap ? $gameMap.mapId() : 'n/a'),
+            'minZoom=' + (cameraZoomAllowed() ? minCameraZoom() : 'n/a')
+        ];
+        console.warn('[MousePanDiag] ' + parts.join(' '));
     }
 
-    function isMap315CameraZoomable() {
+    // ------------------------------------------------------------------------
+    // Camera Zoom (mouse wheel + controller L2/R2), every map
+    // ------------------------------------------------------------------------
+    // The live game camera is zoomed through the engine's own Game_Screen zoom,
+    // anchored on the top-left corner rather than the screen centre. With that
+    // anchor a screen pixel is simply a map pixel times the zoom, so redefining
+    // Game_Map.screenTileX/Y to the zoomed tile count is all the engine needs to
+    // scroll, clamp and centre the player exactly as it does at 1x - and
+    // everything derived from those (player centring, display-pos clamping,
+    // light culling, off-screen character culling) stays honest for free.
+    //
+    // The map is never cut when zooming out: the tilemap and the screen-sized
+    // layers riding on it are grown to the enlarged viewport so no band is left
+    // unpainted, and the zoom floor keeps the viewport inside the map (or inside
+    // the current region-30 interior). Fog of war needs nothing special - its
+    // canvas already covers the whole map and rides the same scaled spriteset.
+    //
+    // This is not the fullscreen "M" map sheet (WorldMap.js), which zooms its
+    // own independent zoomScale and is excluded here.
+    const ZOOM_MIN = 0.5;
+    const ZOOM_MAX = 2.5;
+    const ZOOM_WHEEL_STEP = 0.1;
+    const ZOOM_TRIGGER_RATE = 0.03; // zoom change per frame at full trigger pull
+    const ZOOM_TRIGGER_DEADZONE = 0.15;
+    const ZOOM_NEUTRAL = 1;         // the map's native scale: the detent both directions stop on
+    const ZOOM_EPSILON = 0.0005;
+
+    let cameraZoom = 1;             // what the player asked for, kept across maps
+    let cameraZoomActive = false;   // whether it is currently applied to the camera
+    let zoomSnapLatched = false;    // parked on the detent until the trigger is released
+
+    // + and - (row and numpad alike) are the keyboard twin of the wheel: one
+    // wheel-sized step per press, repeating while held.
+    //
+    // Deliberately NOT registered as the 'zoomIn'/'zoomOut' actions:
+    // CustomCommandMapper.js owns those two (rebindable, Q/E by default) and its
+    // rebuildMapper() drops every key bound to an action it manages before
+    // re-applying the configured one - which happens on every Input.clear(), so
+    // a 'zoomIn' entry here would be deleted seconds after the plugin loads.
+    // Under their own names the bindings survive, and the configured zoom keys
+    // are read alongside them below so a rebind works too.
+    const ZOOM_KEY_MAP = { 187: 'mapZoomIn', 107: 'mapZoomIn', 189: 'mapZoomOut', 109: 'mapZoomOut' };
+    for (const code of Object.keys(ZOOM_KEY_MAP)) {
+        if (!Input.keyMapper[code]) Input.keyMapper[code] = ZOOM_KEY_MAP[code];
+    }
+
+    // Input listens on the document, so it hears the keys typed into the HTML
+    // panels other plugins overlay on the map (terminals, search fields, chat).
+    // Typing a minus there must not zoom the map behind it.
+    function typingInHtmlField() {
+        const el = document.activeElement;
+        if (!el || el === document.body) return false;
+        return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable;
+    }
+
+    // The wheel listener is on the document, so it also hears scrolls inside the
+    // HTML panels other plugins overlay on the map (menus, terminals, lists).
+    // Only a scroll on the game canvas itself is a zoom.
+    function isWheelOverMap(e) {
+        const t = e.target;
+        if (!t || t === document.body || t === document.documentElement) return true;
+        return typeof t.id === 'string' && t.id === 'gameCanvas';
+    }
+
+    function cameraZoomAllowed() {
         if (!(SceneManager._scene instanceof Scene_Map)) return false;
-        if (!$gameMap || $gameMap.mapId() !== MAP315_ID) return false;
+        if (!$gameMap || !$gamePlayer) return false;
+        // The wheel listener fires on its own clock, so it can land in the gap
+        // where the next map's Scene_Map has already nulled $dataMap but the old
+        // one is still the current scene: everything below reads the map's size.
+        if (!$dataMap) return false;
+        // ASCII mode has its own font-size zoom, handled by the wheel branch above.
+        if (window.AsciiMode && window.AsciiMode.active) return false;
         if (window.isWorldMapFullscreen && window.isWorldMapFullscreen()) return false;
         if (window.$gameSplitScreen && window.$gameSplitScreen.active) return false;
         if ($gameSystem && $gameSystem._mousePanDisabled) return false;
         return true;
     }
 
-    // Per-frame driver: applies the wheel-set zoom, reads L2/R2 (right trigger
-    // zooms in, left trigger zooms out) through the shared AnalogStickInput
-    // helper (core Input.gamepadMapper does not cover buttons 6/7), and snaps
-    // back to neutral the moment the player leaves map 315 or the world map is
-    // opened, so the zoom never leaks onto another map's camera.
-    Scene_Map.prototype.updateMap315Zoom = function () {
-        if (!isMap315CameraZoomable()) {
-            if (map315ZoomActive) {
-                map315Zoom = 1;
-                map315ZoomActive = false;
-                $gameScreen.setZoom(Graphics.width / 2, Graphics.height / 2, 1);
+    // The zoom currently baked into the camera (1 when off), i.e. the factor
+    // between map pixels and screen pixels.
+    function activeZoom() {
+        return cameraZoomActive ? cameraZoom : 1;
+    }
+
+    // Lowest zoom that still keeps the viewport inside the map, so zooming out
+    // can never show past its edge. Never above 1: a map smaller than the screen
+    // is already letterboxed by the engine at 1x, and forcing a zoom-in there
+    // would change how it has always looked. Interiors fenced off by region-30
+    // dividers do not restrict the zoom - the rooms the player is not in are
+    // painted over instead (see updateInteriorBlackout).
+    function minCameraZoom() {
+        const tilesX = $gameMap.width();
+        const tilesY = $gameMap.height();
+        let lo = ZOOM_MIN;
+        if (!$gameMap.isLoopHorizontal() && tilesX > 0) {
+            lo = Math.max(lo, Graphics.width / (tilesX * $gameMap.tileWidth()));
+        }
+        if (!$gameMap.isLoopVertical() && tilesY > 0) {
+            lo = Math.max(lo, Graphics.height / (tilesY * $gameMap.tileHeight()));
+        }
+        return Math.min(ZOOM_NEUTRAL, lo);
+    }
+
+    function clampCameraZoom(v) {
+        return Math.max(minCameraZoom(), Math.min(ZOOM_MAX, v));
+    }
+
+    // Applies the zoom to Game_Screen (or lifts it again), keeping the state
+    // flag and the engine's zoom in step. Called every frame so a scene change,
+    // a transfer or an event's own clearZoom() cannot leave it half-applied.
+    function applyCameraZoom() {
+        const wanted = cameraZoomAllowed() && Math.abs(cameraZoom - ZOOM_NEUTRAL) > ZOOM_EPSILON;
+        if (wanted) {
+            cameraZoomActive = true;
+            $gameScreen.setZoom(0, 0, cameraZoom);
+        } else if (cameraZoomActive) {
+            cameraZoomActive = false;
+            $gameScreen.setZoom(0, 0, 1);
+        }
+    }
+
+    // Sets a new zoom keeping whatever the camera was centred on centred: the
+    // viewport grows and shrinks around the middle of the screen instead of
+    // sliding the map out from under the player.
+    function setCameraZoom(next) {
+        next = Math.round(clampCameraZoom(next) * 1000) / 1000;
+        if (Math.abs(next - cameraZoom) < ZOOM_EPSILON) return;
+
+        const centerX = $gameMap.displayX() + $gameMap.screenTileX() / 2;
+        const centerY = $gameMap.displayY() + $gameMap.screenTileY() / 2;
+        cameraZoom = next;
+        applyCameraZoom();
+        $gameMap.setDisplayPos(
+            centerX - $gameMap.screenTileX() / 2,
+            centerY - $gameMap.screenTileY() / 2
+        );
+    }
+
+    // One zoom step, with a detent on the map's native scale: a step that would
+    // cross 1x stops exactly on it instead. A held trigger then stays parked
+    // there until it is released (isHeld), so passing 1x is always a deliberate
+    // second pull rather than something the player slides straight through.
+    function stepCameraZoom(delta, isHeld) {
+        if (!delta) return;
+        const target = cameraZoom + delta;
+        const away = Math.abs(cameraZoom - ZOOM_NEUTRAL) > ZOOM_EPSILON;
+        // <= 0, so a step that lands exactly on the detent latches like one that
+        // would have overshot it.
+        if (away && (cameraZoom - ZOOM_NEUTRAL) * (target - ZOOM_NEUTRAL) <= 0) {
+            setCameraZoom(ZOOM_NEUTRAL);
+            if (isHeld) zoomSnapLatched = true;
+            return;
+        }
+        setCameraZoom(target);
+    }
+
+    // Per-frame driver: reads the +/- keys and L2/R2 (right trigger zooms in,
+    // left zooms out) through the shared AnalogStickInput helper (core
+    // Input.gamepadMapper does not cover buttons 6/7), re-clamps a zoom carried
+    // over from a bigger map, and keeps Game_Screen in sync.
+    Scene_Map.prototype.updateCameraZoom = function () {
+        if (!cameraZoomAllowed()) {
+            applyCameraZoom();
+            zoomSnapLatched = false;
+            return;
+        }
+
+        // Keyboard: discrete steps like the wheel's notches, so the detent on 1x
+        // stops one step without latching - the next repeat crosses it. The
+        // player's own zoom binding is read too, but only when it owns its key
+        // outright: its Q/E default is shared with pageup/pagedown, and folding
+        // those in would zoom on the movement keys.
+        if (!typingInHtmlField()) {
+            let keyStep = 0;
+            if (Input.isRepeated('mapZoomIn') || Input.isRepeated('zoomIn')) keyStep += ZOOM_WHEEL_STEP;
+            if (Input.isRepeated('mapZoomOut') || Input.isRepeated('zoomOut')) keyStep -= ZOOM_WHEEL_STEP;
+            if (keyStep) stepCameraZoom(keyStep, false);
+        }
+
+        let pull = 0;
+        if (window.AnalogStickInput) {
+            const rt = window.AnalogStickInput.rightTrigger ? window.AnalogStickInput.rightTrigger() : 0;
+            const lt = window.AnalogStickInput.leftTrigger ? window.AnalogStickInput.leftTrigger() : 0;
+            pull = (rt > ZOOM_TRIGGER_DEADZONE ? rt : 0) - (lt > ZOOM_TRIGGER_DEADZONE ? lt : 0);
+        }
+        if (!pull) {
+            zoomSnapLatched = false;
+        } else if (!zoomSnapLatched) {
+            stepCameraZoom(pull * ZOOM_TRIGGER_RATE, true);
+        }
+
+        // A zoom the player set on a wide map may show past the edge of the one
+        // they just walked into (or of the room they just entered).
+        const clamped = clampCameraZoom(cameraZoom);
+        if (Math.abs(clamped - cameraZoom) > ZOOM_EPSILON) setCameraZoom(clamped);
+
+        applyCameraZoom();
+    };
+
+    // Screen size in tiles, in the zoomed camera's terms.
+    const _Game_Map_screenTileX = Game_Map.prototype.screenTileX;
+    Game_Map.prototype.screenTileX = function () {
+        const z = activeZoom();
+        if (z === 1) return _Game_Map_screenTileX.call(this);
+        return Math.round((Graphics.width / (this.tileWidth() * z)) * 16) / 16;
+    };
+
+    const _Game_Map_screenTileY = Game_Map.prototype.screenTileY;
+    Game_Map.prototype.screenTileY = function () {
+        const z = activeZoom();
+        if (z === 1) return _Game_Map_screenTileY.call(this);
+        return Math.round((Graphics.height / (this.tileHeight() * z)) * 16) / 16;
+    };
+
+    // Canvas -> map with the zoom anchored on the top-left corner: a screen
+    // pixel covers 1/zoom map pixels. Keeps hovering, click-to-move and every
+    // other canvasToMap* caller (furniture placement, map interactions) landing
+    // on the tile actually under the cursor while zoomed.
+    const _Game_Map_canvasToMapX = Game_Map.prototype.canvasToMapX;
+    Game_Map.prototype.canvasToMapX = function (x) {
+        const z = activeZoom();
+        if (z === 1) return _Game_Map_canvasToMapX.call(this, x);
+        const tileWidth = this.tileWidth();
+        return this.roundX(Math.floor((this._displayX * tileWidth + x / z) / tileWidth));
+    };
+
+    const _Game_Map_canvasToMapY = Game_Map.prototype.canvasToMapY;
+    Game_Map.prototype.canvasToMapY = function (y) {
+        const z = activeZoom();
+        if (z === 1) return _Game_Map_canvasToMapY.call(this, y);
+        const tileHeight = this.tileHeight();
+        return this.roundY(Math.floor((this._displayY * tileHeight + y / z) / tileHeight));
+    };
+
+    // Grow the tilemap and the screen-sized layers scrolling with it to the
+    // zoomed viewport (a tilemap left at Graphics size would paint only the
+    // top-left corner of a zoomed-out screen), and cancel the zoom on the truly
+    // screen-space children so pictures, the timer and weather keep their normal
+    // size and position. Cheap and idempotent, so it runs every frame: layers
+    // owned by other plugins (ParallaxOverlay's looping backgrounds) resize
+    // themselves back to Graphics size on their own update.
+    function applyCameraZoomToSpriteset(spriteset) {
+        if (!spriteset) return;
+        const z = activeZoom();
+        const w = Math.ceil(Graphics.width / z);
+        const h = Math.ceil(Graphics.height / z);
+
+        const tilemap = spriteset._tilemap;
+        if (tilemap && (tilemap.width !== w || tilemap.height !== h)) {
+            tilemap.width = w;
+            tilemap.height = h;
+            tilemap.refresh();
+        }
+        if (spriteset._parallax) spriteset._parallax.move(0, 0, w, h);
+        if (spriteset._backgrounds) {
+            for (const bg of spriteset._backgrounds) {
+                if (bg && bg.move && bg.data && bg.data.looping) bg.move(0, 0, w, h);
+            }
+        }
+
+        const inv = 1 / z;
+        const screenSpace = [
+            spriteset._weather,
+            spriteset._customWeatherLayer,
+            spriteset._pictureContainer,
+            spriteset._timerSprite
+        ];
+        for (const layer of screenSpace) {
+            if (layer && layer.scale && layer.scale.x !== inv) layer.scale.set(inv, inv);
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    // Interior Blackout (Region 30)
+    // ------------------------------------------------------------------------
+    // Region-30 dividers run wall to wall, cutting one map sheet into separate
+    // interiors sitting side by side. Panning is already confined to the room
+    // the player is in, but a zoomed-out camera - or a room smaller than the
+    // screen - still reaches past its walls, so everything outside that room is
+    // painted over in black. The zoom is then free to pull all the way out
+    // without ever revealing the neighbours.
+    function updateInteriorBlackout(spriteset) {
+        if (!spriteset || typeof PIXI === 'undefined') return;
+        // The same flag that hands the camera to another system also hands it
+        // the right to look at another room (cutscenes framing a different one).
+        const bounds = ($gameSystem && $gameSystem._mousePanDisabled) ? null : getInteriorBounds();
+        let layer = spriteset._interiorBlackout;
+
+        if (!bounds) {
+            if (layer) layer.visible = false;
+            return;
+        }
+
+        if (!layer) {
+            layer = new PIXI.Graphics();
+            spriteset._interiorBlackout = layer;
+            // Over the map, its lighting and its weather; under the screen-space
+            // layers (pictures, timer) and the fog, which sit above them all.
+            const pictures = spriteset._pictureContainer;
+            const at = pictures ? spriteset.getChildIndex(pictures) : -1;
+            if (at >= 0) spriteset.addChildAt(layer, at);
+            else spriteset.addChild(layer);
+        }
+        layer.visible = true;
+
+        // Room and viewport alike in spriteset-local pixels: the zoom is
+        // anchored on the top-left corner, so the visible window is simply the
+        // screen divided by it.
+        const tw = $gameMap.tileWidth();
+        const th = $gameMap.tileHeight();
+        const z = activeZoom();
+        const vw = Graphics.width / z;
+        const vh = Graphics.height / z;
+        const x0 = (bounds.minX - $gameMap.displayX()) * tw;
+        const x1 = (bounds.maxX + 1 - $gameMap.displayX()) * tw;
+        const y0 = (bounds.minY - $gameMap.displayY()) * th;
+        const y1 = (bounds.maxY + 1 - $gameMap.displayY()) * th;
+
+        // Nothing of the neighbours on screen: leave last frame's shape alone.
+        if (x0 <= 0 && y0 <= 0 && x1 >= vw && y1 >= vh) {
+            if (layer._blackoutKey !== 'none') {
+                layer._blackoutKey = 'none';
+                layer.clear();
             }
             return;
         }
 
-        if (window.AnalogStickInput) {
-            const rt = window.AnalogStickInput.rightTrigger ? window.AnalogStickInput.rightTrigger() : 0;
-            const lt = window.AnalogStickInput.leftTrigger ? window.AnalogStickInput.leftTrigger() : 0;
-            const pull = (rt > MAP315_TRIGGER_DEADZONE ? rt : 0) - (lt > MAP315_TRIGGER_DEADZONE ? lt : 0);
-            if (pull) map315Zoom = clampMap315Zoom(map315Zoom + pull * MAP315_TRIGGER_RATE);
-        }
+        const key = [x0, y0, x1, y1, vw, vh].map(v => Math.round(v)).join(',');
+        if (layer._blackoutKey === key) return;
+        layer._blackoutKey = key;
 
-        map315ZoomActive = true;
-        $gameScreen.setZoom(Graphics.width / 2, Graphics.height / 2, map315Zoom);
+        const left = Math.max(0, Math.min(x0, vw));
+        const right = Math.max(0, Math.min(x1, vw));
+        layer.clear();
+        layer.beginFill(0x000000, 1);
+        if (left > 0) layer.drawRect(0, 0, left, vh);
+        if (right < vw) layer.drawRect(right, 0, vw - right, vh);
+        if (right > left) {
+            const top = Math.max(0, Math.min(y0, vh));
+            const bottom = Math.max(0, Math.min(y1, vh));
+            if (top > 0) layer.drawRect(left, 0, right - left, top);
+            if (bottom < vh) layer.drawRect(left, bottom, right - left, vh - bottom);
+        }
+        layer.endFill();
+    }
+
+    // A zoom asked for by an event command wins: drop the player's camera zoom
+    // rather than have the two fight over Game_Screen every frame.
+    const _Game_Screen_startZoom = Game_Screen.prototype.startZoom;
+    Game_Screen.prototype.startZoom = function (x, y, scale, duration) {
+        cameraZoom = ZOOM_NEUTRAL;
+        cameraZoomActive = false;
+        _Game_Screen_startZoom.call(this, x, y, scale, duration);
+    };
+
+    // Leaving the map scene lifts the zoom, so screenTileX/Y and Game_Screen are
+    // back to their plain values for battles, menus and any other scene. Scene_Map
+    // .start puts it back.
+    const _Scene_Map_terminate = Scene_Map.prototype.terminate;
+    Scene_Map.prototype.terminate = function () {
+        if (cameraZoomActive) {
+            cameraZoomActive = false;
+            $gameScreen.setZoom(0, 0, 1);
+        }
+        _Scene_Map_terminate.call(this);
     };
 
     let isDragging = false;
+    let isStickPanning = false;
     let dragStartX = 0;
     let dragStartY = 0;
     let initialDisplayX = 0;
@@ -233,6 +582,22 @@
         return Math.max(lo, Math.min(disp, (hi + 1) - screenTiles));
     }
 
+    // Shared by both panning routes (mouse drag, right stick): confines the
+    // camera to the current interior when region-30 dividers are present, so
+    // panning can't peek into neighbouring interiors. screenTileX/Y already
+    // carry the camera zoom, so a zoomed-out view is confined just as tightly.
+    function clampPanToInterior(dispX, dispY) {
+        const bounds = getInteriorBounds();
+        if (!bounds) return { x: dispX, y: dispY };
+        const isAscii = window.AsciiMode && window.AsciiMode.active;
+        const screenTilesX = isAscii ? window.innerWidth / window.AsciiMode.fontSize : $gameMap.screenTileX();
+        const screenTilesY = isAscii ? window.innerHeight / window.AsciiMode.fontSize : $gameMap.screenTileY();
+        return {
+            x: clampDisplayAxis(dispX, bounds.minX, bounds.maxX, screenTilesX),
+            y: clampDisplayAxis(dispY, bounds.minY, bounds.maxY, screenTilesY)
+        };
+    }
+
     // ------------------------------------------------------------------------
     // Delayed Click-to-Move (to allow dragging without moving)
     // ------------------------------------------------------------------------
@@ -268,11 +633,23 @@
         _Scene_Map_start.call(this);
         isDragging = false;
         isClicking = false;
-        if ($gameSystem._mousePan && !$gameSystem._mousePanDisabled) {
-            const data = $gameSystem._mousePan;
-            if (data.displayX !== undefined && data.displayX !== null) {
-                $gameMap.setDisplayPos(data.displayX, data.displayY);
-            }
+        isStickPanning = false;
+
+        // Put the camera zoom back before touching the display position: the
+        // engine centred the player on an unzoomed viewport during its own start.
+        if (!$gameSystem._mousePanDisabled) {
+            cameraZoom = clampCameraZoom(cameraZoom);
+            applyCameraZoom();
+            applyCameraZoomToSpriteset(this._spriteset);
+            updateInteriorBlackout(this._spriteset);
+        }
+
+        const data = $gameSystem._mousePan;
+        const restored = data && data.displayX !== undefined && data.displayX !== null;
+        if (restored && !$gameSystem._mousePanDisabled) {
+            $gameMap.setDisplayPos(data.displayX, data.displayY);
+        } else if (cameraZoomActive) {
+            $gamePlayer.center($gamePlayer.x, $gamePlayer.y);
         }
     };
 
@@ -280,12 +657,16 @@
 
     const _Scene_Map_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function () {
+        // Zoom first: the engine's own update (scrolling, spriteset positions)
+        // then runs against the viewport size the player is actually looking at.
+        if ($gameMap && $gamePlayer) this.updateCameraZoom();
+
         _Scene_Map_update.call(this);
         if ($gameMap && $gamePlayer) {
             const isWorldMapFullscreen = window.isWorldMapFullscreen && window.isWorldMapFullscreen();
             if (!$gameSystem._mousePanDisabled && !isWorldMapFullscreen) {
                 this.updateMousePan();
-                this.updateMap315Zoom();
+                this.updateStickPan();
 
                 // Save current state (only write when it actually changed)
                 if (!$gameSystem._mousePan) $gameSystem._mousePan = {};
@@ -295,6 +676,8 @@
                 if (pan.displayX !== dispX) pan.displayX = dispX;
                 if (pan.displayY !== dispY) pan.displayY = dispY;
             }
+            applyCameraZoomToSpriteset(this._spriteset);
+            updateInteriorBlackout(this._spriteset);
         }
         // Event hover (merged here from a second Scene_Map.update alias)
         this.updateEventHover();
@@ -324,25 +707,52 @@
             const dy = TouchInput.y - dragStartY;
 
             const isAscii = window.AsciiMode && window.AsciiMode.active;
-            const tileW = isAscii ? window.AsciiMode.fontSize : $gameMap.tileWidth();
-            const tileH = isAscii ? window.AsciiMode.fontSize : $gameMap.tileHeight();
+            // A screen pixel is 1/zoom map pixels, so the tile stays glued to the
+            // cursor at any zoom.
+            const zoom = isAscii ? 1 : activeZoom();
+            const tileW = (isAscii ? window.AsciiMode.fontSize : $gameMap.tileWidth()) * zoom;
+            const tileH = (isAscii ? window.AsciiMode.fontSize : $gameMap.tileHeight()) * zoom;
 
-            let newDispX = initialDisplayX - (dx / tileW);
-            let newDispY = initialDisplayY - (dy / tileH);
-
-            // Confine the camera to the current interior when region-30 dividers
-            // are present, so dragging can't peek into neighbouring interiors.
-            const bounds = getInteriorBounds();
-            if (bounds) {
-                const screenTilesX = isAscii ? (window.innerWidth / tileW) : (Graphics.width / tileW);
-                const screenTilesY = isAscii ? (window.innerHeight / tileH) : (Graphics.height / tileH);
-                newDispX = clampDisplayAxis(newDispX, bounds.minX, bounds.maxX, screenTilesX);
-                newDispY = clampDisplayAxis(newDispY, bounds.minY, bounds.maxY, screenTilesY);
-            }
+            const panned = clampPanToInterior(
+                initialDisplayX - (dx / tileW),
+                initialDisplayY - (dy / tileH)
+            );
 
             // setDisplayPos automatically handles map boundaries and looping
-            $gameMap.setDisplayPos(newDispX, newDispY);
+            $gameMap.setDisplayPos(panned.x, panned.y);
         }
+    };
+
+    // ------------------------------------------------------------------------
+    // Right Stick Panning (controller twin of click & drag)
+    // ------------------------------------------------------------------------
+    const STICK_PAN_DEADZONE = 0.2;
+    const STICK_PAN_SPEED = 0.35; // tiles per frame at full tilt, before zoom
+
+    Scene_Map.prototype.updateStickPan = function () {
+        const pad = window.AnalogStickInput;
+        if (!pad || !pad.rightX) {
+            isStickPanning = false;
+            return;
+        }
+        const rx = pad.rightX();
+        const ry = pad.rightY();
+        const dx = Math.abs(rx) > STICK_PAN_DEADZONE ? rx : 0;
+        const dy = Math.abs(ry) > STICK_PAN_DEADZONE ? ry : 0;
+        if (!dx && !dy) {
+            isStickPanning = false;
+            return;
+        }
+
+        isStickPanning = true;
+        // Divided by the zoom so the view slides at the same speed on screen
+        // however far out the camera is pulled.
+        const speed = STICK_PAN_SPEED / activeZoom();
+        const panned = clampPanToInterior(
+            $gameMap.displayX() + dx * speed,
+            $gameMap.displayY() + dy * speed
+        );
+        $gameMap.setDisplayPos(panned.x, panned.y);
     };
 
 
@@ -352,13 +762,14 @@
     // ------------------------------------------------------------------------
     const _Game_Player_updateScroll = Game_Player.prototype.updateScroll;
     Game_Player.prototype.updateScroll = function (lastScrolledX, lastScrolledY) {
-        if (isDragging) {
-            if (!TouchInput.isPressed()) {
-                isDragging = false;
-            } else {
-                this._isPanningToCenter = false;
-                return;
-            }
+        if (isDragging && !TouchInput.isPressed()) {
+            isDragging = false;
+        }
+        // Hold the panned view while either pan input is held; releasing it lets
+        // the camera glide back to the player below.
+        if (isDragging || isStickPanning) {
+            this._isPanningToCenter = false;
+            return;
         }
 
 
@@ -701,10 +1112,13 @@
                 const screenY = Math.round(totalOffsetY + (mapY - startY) * activeFontSize);
                 return { x: screenX, y: screenY };
             } else {
+                // The camera zoom is anchored on the top-left corner, so a map
+                // pixel lands on screen at exactly map pixel * zoom.
+                const z = activeZoom();
                 const tw = $gameMap.tileWidth();
                 const th = $gameMap.tileHeight();
-                const screenX = Math.round($gameMap.adjustX(mapX) * tw + tw / 2);
-                const screenY = Math.round($gameMap.adjustY(mapY) * th);
+                const screenX = Math.round(($gameMap.adjustX(mapX) * tw + tw / 2) * z);
+                const screenY = Math.round($gameMap.adjustY(mapY) * th * z);
                 return { x: screenX, y: screenY };
             }
         };

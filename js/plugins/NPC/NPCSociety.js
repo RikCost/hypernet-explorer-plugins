@@ -552,7 +552,13 @@
           ? window.SpriteCatalog.pickNpcKey(rngV.next())
           : null;
         if (!spriteKey) {
-          const fallback = Object.keys(DataLoader.npcData).filter(k => DataLoader.npcData[k].npc === true);
+          // Catalogue-less fallback. It still keeps the Varlenian faces off
+          // everybody who is not standing in Varlenia, the one rule that would
+          // otherwise be lost with the catalogue (see SpriteCatalog.npcKeys).
+          const varlenia = !!window.SpriteCatalog?.isVarlenianPlace?.();
+          const fallback = Object.keys(DataLoader.npcData).filter(k =>
+            DataLoader.npcData[k].npc === true &&
+            (varlenia || DataLoader.npcData[k].varlenian !== true));
           spriteKey = fallback.length ? fallback[rngV.nextInt(0, fallback.length)] : null;
         }
         if (spriteKey) {
@@ -1004,17 +1010,33 @@
     if (!profile || !ev) return;
 
     const evData      = ev.event();
-    const hasAssigned = !!(profile.spriteKey && DataLoader.npcData?.[profile.spriteKey]);
+    // A <Story> event keeps the face the author drew on it, always. In a world
+    // whose seed is not the canon one every citizen is dealt a seeded visual
+    // identity, and painting one of those over a written character would give
+    // the plot a stranger's face, so they are treated as map-designed here
+    // whatever their profile says, and the profile is re-pinned to the sprite
+    // they actually wear (below) so every off-map reader agrees with it.
+    const isStory     = !!window.NPCSystem?.hasStoryTag?.(evData?.note);
+    const hasAssigned = !isStory && !!(profile.spriteKey && DataLoader.npcData?.[profile.spriteKey]);
     // Defining sprite: the society-assigned one, else the sprite the event shows.
     const spriteKey = hasAssigned
       ? profile.spriteKey
       : (evData.characterName ?? evData.pages?.[0]?.image?.characterName ?? null);
-    const entry = spriteKey ? DataLoader.npcData?.[spriteKey] : null;
-    if (!entry) return;
 
     const charIdx = hasAssigned
       ? (profile.bustIndex ?? 0)
       : (evData.characterIndex ?? evData.pages?.[0]?.image?.characterIndex ?? 0);
+
+    // Pinned before the NPCs.json lookup below, so a written character whose
+    // sheet is not in the catalogue still stops the seeded sprite following
+    // them around the panels, the wiki and the bust resolver.
+    if (isStory && spriteKey) {
+      profile.spriteKey = spriteKey;
+      profile.bustIndex = charIdx;
+    }
+
+    const entry = spriteKey ? DataLoader.npcData?.[spriteKey] : null;
+    if (!entry) return;
 
     // Only re-apply the graphic when the society explicitly assigned a sprite;
     // canon / map-designed NPCs keep the sprite they already display.

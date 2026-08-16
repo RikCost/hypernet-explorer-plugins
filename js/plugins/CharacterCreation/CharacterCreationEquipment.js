@@ -313,7 +313,7 @@
     "Rogue": [{ id: 1431, qty: 1 }, { id: 374, qty: 1 }],               // Roguery Skill Book, Lockpick
     "Paladin": [{ id: 1401, qty: 1 }, { id: 662, qty: 1 }],             // Holy Magic Grimoire, Shield Scroll
     "Warlock": [{ id: 1404, qty: 1 }, { id: 666, qty: 1 }],             // Forbidden Magic Grimoire, Scroll of Destruction
-    "Ranger": [{ id: 1424, qty: 1 }, { id: 810, qty: 1 }],              // Natural Skill Book, Elven Rope
+    "Ranger": [{ id: 1433, qty: 1 }, { id: 810, qty: 1 }],              // Pastoral Skill Book, Elven Rope
     "Cleric": [{ id: 1419, qty: 1 }, { id: 648, qty: 2 }],              // Healing Grimoire, Health Potion
     "Samurai": [{ id: 1422, qty: 1 }, { id: 277, qty: 1 }],             // Swordsmanship Skill Book, Etiquette
     "Archmage": [{ id: 1406, qty: 1 }, { id: 657, qty: 1 }],            // Arcanism Grimoire, Archmage's Elixir
@@ -339,7 +339,7 @@
     "Police Officer": [{ id: 143, qty: 1 }, { id: 76, qty: 1 }],        // Pocket Video Recorder, Caltrops
     "Chef": [{ id: 1427, qty: 1 }, { id: 232, qty: 1 }],                // Cooking Skill Book, Chef's Spice Blend
     "Journalist": [{ id: 144, qty: 1 }, { id: 711, qty: 1 }],           // Digital Camera, Newspaper
-    "Construction Worker": [{ id: 138, qty: 1 }, { id: 863, qty: 2 }],  // Shovel, Steel ore
+    "Construction Worker": [{ id: 138, qty: 1 }, { id: 863, qty: 2 }],  // Shovel, Salvaged steel
     "Academic": [{ id: 299, qty: 1 }, { id: 127, qty: 1 }],             // Scholar's Legal Tome, Pocket Notebook
     "Psychologist": [{ id: 722, qty: 1 }, { id: 378, qty: 1 }],         // Mental Focus Training, Truth-Revealing Solution
     "Archaeologist": [{ id: 354, qty: 1 }, { id: 121, qty: 1 }],        // Fake Treasure Map, Lantern

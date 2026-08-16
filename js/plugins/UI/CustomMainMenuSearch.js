@@ -6,7 +6,9 @@
  * @help CustomMainMenuSearch.js
  *
  * Adds a search field above the party cards on the right page of the main menu
- * (UI/CustomMainMenuLayout.js). Typing in it takes over both pages:
+ * (UI/CustomMainMenuLayout.js). Typing in it — or clicking the pockets' Search
+ * tile, which opens the same page on everything unfiltered — takes over both
+ * pages:
  *
  *   Left page   the results, under a bar of kind chips, sort keys and range
  *               filters (weight, price, category).
@@ -39,7 +41,9 @@
  * Keyboard: type to search, Up/Down to walk the results, Enter to run the
  * highlighted result's first action, Escape to clear (again to leave the
  * field). Every key event is stopped at the field, so the menu's own hotkeys
- * never see the typing.
+ * never see the typing. With the page open and nothing focused — the tile's
+ * way in — the same Up/Down/OK are read from Input instead, so a pad walks the
+ * list without ever touching the field.
  *
  * Must be listed AFTER UI/CustomMainMenuLayout.js.
  */
@@ -74,6 +78,11 @@
 
     const state = {
         selected: 0,
+        // The pockets' "Search" tile opens the page outright, with everything
+        // the party has on it and nothing typed yet, so browsing is a way in of
+        // its own rather than something only a query can reach.
+        opened: false,
+        justOpened: false,   // swallow the keypress that opened the page
         wasActive: false,
         results: [],
         resultsKey: '',      // signature the cached results were built from
@@ -608,6 +617,15 @@
         state.selected = 0;
         state.resultsKey = '';
         state.wasActive = false;
+        state.opened = false;
+        state.justOpened = false;
+    }
+
+    // The search field, when it is the thing holding the keyboard.
+    function fieldHasFocus() {
+        const b = ensureBar();
+        const el = document.activeElement;
+        return !!b && !!el && el.id === 'msb-input-' + b.id;
     }
 
     function scene() {
@@ -744,7 +762,14 @@
 
         isActive() {
             const b = ensureBar();
-            return !!b && b.query.trim().length > 0;
+            return !!b && (state.opened || b.query.trim().length > 0);
+        },
+
+        // True while the page is open with the caret somewhere else, which is
+        // when the results answer to the arrow keys rather than to the field.
+        isBrowsing() {
+            if (!this.isActive()) return false;
+            return !(window.MenuSearchBar && window.MenuSearchBar.isTyping());
         },
 
         // Part of the menu's left-page cache key, so any change here redraws.
@@ -788,9 +813,11 @@
         rightPageHTML() {
             gather();
             if (state.pending) {
+                const pendingRow = state.pending.row || {};
+                const pendingObj = pendingRow.kind === 'skill' ? pendingRow.skill : pendingRow.item;
                 const title = state.pending.action === 'equip'
                     ? T('MainMenu.search.pickWearer')
-                    : T('Inventory.ui.targetCompanion');
+                    : T('Inventory.ui.useItemOn', { item: pendingObj ? pendingObj.name : '' });
                 return targetPickerHTML(title);
             }
             return `<div id="menu-search-detail" class="search-detail">${detailHTML()}</div>`;
@@ -824,18 +851,36 @@
             fullRefresh();
         },
 
-        // The pockets' "Search" tile (UI/CustomMainMenuLayout.js). The field is
-        // already on the page — over the party cards while nothing is typed, at
-        // the head of the results once something is — so the tile has nothing to
-        // open: it only puts the caret in the field the player would otherwise
-        // have to click.
-        focus() {
+        // The pockets' "Search" tile (UI/CustomMainMenuLayout.js). It opens the
+        // results page on everything the party has, unfiltered, and leaves the
+        // caret alone: the page itself is the answer to "what have we got", and
+        // the arrow keys walk it (see updateBrowseInput). Handing the tile's
+        // click straight to the field instead only ever moved a caret the player
+        // could not see, and looked like the tile did nothing at all.
+        open() {
             const b = ensureBar();
             if (!b) return;
             SoundManager.playOk();
-            b.restoreFocus();
-            const input = document.activeElement;
-            if (input && input.scrollIntoView) input.scrollIntoView({ block: 'nearest' });
+            state.opened = true;
+            state.selected = 0;
+            state.pending = null;
+            state.wasActive = true;
+            state.resultsKey = '';
+            // The keypress that clicked the tile is still triggered this frame,
+            // and the menu's navigator ran before this call: without the skip it
+            // would arrive at the fresh list as "run the first row".
+            state.justOpened = true;
+            fullRefresh(false);
+        },
+
+        // Kept for anything that really does want the caret (and for saves of
+        // this menu wired to the old name).
+        focus() {
+            const b = ensureBar();
+            if (!b) return;
+            state.opened = true;
+            state.focusInput = true;
+            fullRefresh(true);
         },
 
         // Called from Scene_Menu#terminate: the viewport's WebGL context has to
@@ -880,15 +925,45 @@
             } else if (event.key === 'Enter') {
                 event.preventDefault();
                 event.stopPropagation();
-                const row = currentRow();
-                if (!row) return;
-                // Enter runs whatever the card offers first, which is the thing
-                // the player came to the row for: use it, or wear it.
-                if (row.kind === 'skill') this.act('use');
-                else if (row.kind === 'item') this.act(row.item.occasion === 0 || row.item.occasion === 2 ? 'use' : 'equip');
-                else if (row.kind === 'equip') this.act('unequip');
-                else if (row.kind === 'craft') this.act('openBench');
+                this.runRow();
             }
+        },
+
+        // Whatever the selected row's card offers first, which is the thing the
+        // player came to the row for: use it, or wear it. Enter in the field and
+        // the OK button while browsing both land here.
+        runRow() {
+            const row = currentRow();
+            if (!row) return;
+            if (row.kind === 'skill') this.act('use');
+            else if (row.kind === 'item') this.act(row.item.occasion === 0 || row.item.occasion === 2 ? 'use' : 'equip');
+            else if (row.kind === 'equip') this.act('unequip');
+            else if (row.kind === 'craft') this.act('openBench');
+        },
+
+        // The page opened from the tile has no focused field to answer the
+        // keyboard, and its rows are deliberately not menu tiles (the field owns
+        // them the moment anything is typed), so the arrows are read here. The
+        // menu's own navigator finds nothing focusable on this page, so the two
+        // never fight over a keypress; cancel stays its business, and closes the
+        // search through backOutOneLevel.
+        updateBrowseInput() {
+            if (!state.opened || state.pending || !this.isBrowsing()) return;
+            if (state.justOpened) { state.justOpened = false; return; }
+            const rows = state.results;
+            if (!rows.length) return;
+            const max = Math.min(rows.length, MAX_ROWS);
+            let step = 0;
+            if (Input.isTriggered('down') || Input.isRepeated('down')) step = 1;
+            else if (Input.isTriggered('up') || Input.isRepeated('up')) step = -1;
+            if (step) {
+                state.selected = (state.selected + step + max) % max;
+                SoundManager.playCursor();
+                patchRefresh(false);
+                scrollSelectedIntoView();
+                return;
+            }
+            if (Input.isTriggered('ok')) this.runRow();
         },
 
         // ---- results --------------------------------------------------------
@@ -897,7 +972,9 @@
             if (index === state.selected) return;
             SoundManager.playCursor();
             state.selected = index;
-            fullRefresh(true);
+            // The caret goes back only where it already was: a player browsing
+            // the open page with the mouse or a pad never asked to type.
+            fullRefresh(fieldHasFocus());
         },
 
         act(action) {
@@ -983,6 +1060,15 @@
         _Scene_Menu_terminate.call(this);
     };
 
+    // Runs after the menu's own navigator (this plugin loads after the layout),
+    // which on the results page has no tiles to move and so leaves the keys to
+    // the list.
+    const _Scene_Menu_update = Scene_Menu.prototype.update;
+    Scene_Menu.prototype.update = function () {
+        _Scene_Menu_update.call(this);
+        window.MenuSearch.updateBrowseInput();
+    };
+
     // =========================================================================
     // Styles
     // =========================================================================
@@ -991,43 +1077,4 @@
     // control are the shared strip's own (UI/MenuSearchBar.js). Colours come
     // from the theme tokens so every theme inks these the way it inks the pages
     // around them.
-    (function injectStyles() {
-        if (document.getElementById('menu-search-styles')) return;
-        const style = document.createElement('style');
-        style.id = 'menu-search-styles';
-        style.textContent = `
-            .menu-search-page {
-                display: flex;
-                flex-direction: column;
-                height: 100%;
-                overflow: hidden;
-            }
-            #menu-search-filters {
-                flex-shrink: 0;
-            }
-            .search-detail {
-                flex: 1;
-                min-height: 0;
-                display: flex;
-                flex-direction: column;
-                overflow: hidden;
-            }
-            .search-weapon-viewport {
-                width: 100%;
-                height: 180px;
-                margin: 8px 0;
-                border: 1px solid var(--border-primary-hover-translucent-15);
-                border-radius: 4px;
-                background: var(--shadow-primary-hover-translucent-5);
-                flex-shrink: 0;
-            }
-            .search-weapon-viewport canvas {
-                width: 100%;
-                height: 100%;
-                display: block;
-            }
-        `;
-        document.head.appendChild(style);
-    })();
-
 })();

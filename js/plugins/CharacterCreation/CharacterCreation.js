@@ -189,8 +189,6 @@
   // spare armor pieces so the party always has a backup to fall back on.
   // Low-price healing food / consumables: [itemId, quantity].
   const STARTER_CONSUMABLES = [
-    [421, 3], // Granola Bar (food, restores hunger)
-    [423, 2], // Bruised Apple (food)
     [3, 3],   // Acetaminophen Tablets (heals 20% HP)
     [16, 2],  // Pseudoephedrine Tabs (heals 15% HP)
   ];
@@ -200,9 +198,100 @@
     [2, 1], // Siege Breaker Armor
   ];
 
+  // --- The three staples every party opens on ----------------------------
+  // Whatever the world, the class or the dossier, a party starts able to heal,
+  // to cast and to eat, and starts with those three things one keypress away:
+  // the kit below is granted here and bound to hotbar slots 1, 2 and 3. The
+  // food is one type, rolled per playthrough, so two worlds do not open on the
+  // same packed lunch.
+  const STARTER_HEALING_POTION = [648, 6]; // Health Potion
+  const STARTER_MANA_TONIC = [21, 3];      // Mana Tonic
+  const STARTER_FOOD_QTY = 6;
+  // Ceiling on the rolled food, in gold (100 gold = €1): a starting meal, not a
+  // delicacy. Keeps the roll among the mundane end of the Food category.
+  const STARTER_FOOD_PRICE_CAP = 300;
+  // A packed lunch has to be worth eating: below this the Food category is
+  // water, garnishes and seasonings rather than a meal.
+  const STARTER_FOOD_MIN_CALORIES = 50;
+  // Used when the roll finds nothing (a stripped Items.json, a bad filter).
+  const STARTER_FOOD_FALLBACK = [421, 423]; // Granola Bar, Bruised Apple
+
+  /**
+   * Every cheap, usable, hotbar-able Food item fit to open a game on.
+   *
+   * Beyond price this rules out three kinds of Food entry that are not a meal:
+   * raw produce (anything carrying a <Forage:> tag, i.e. picked, not prepared),
+   * garnishes and drinking water (too few calories to count), and anything that
+   * inflicts a state when eaten (raw meat and its food poisoning).
+   * @returns {array} $dataItems entries (possibly empty)
+   */
+  function starterFoodPool() {
+    const utils = window.ItemSystemUtils;
+    return $dataItems.filter((item) => {
+      if (!item || !item.name || !item.name.trim()) return false;
+      // Slots hold item ids and the bar only takes usable items, so the roll
+      // has to obey the same rule the star does.
+      if (item.occasion !== 0 && item.occasion !== 2) return false;
+      if ((item.price || 0) > STARTER_FOOD_PRICE_CAP) return false;
+      const isFood = utils && utils.isFoodItem
+        ? utils.isFoodItem(item)
+        : /<category:Food>/i.test(item.note || ""); // i18n-ignore: item-category tag
+      if (!isFood) return false;
+      const note = item.note || "";
+      if (/<Forage:/i.test(note)) return false;
+      const calories = note.match(/<calories:\s*([\d.]+)>/i);
+      if (!calories || Number(calories[1]) < STARTER_FOOD_MIN_CALORIES) return false;
+      // Effect code 21 is "add state" — a food that does that is a mistake
+      // waiting to happen on slot 3.
+      return !(item.effects || []).some((effect) => effect && effect.code === 21);
+    });
+  }
+
+  /**
+   * The one food type this playthrough opens on.
+   * @returns {object|null} An $dataItems entry, or null if even the fallback is missing
+   */
+  function rollStarterFood() {
+    const pool = starterFoodPool();
+    if (pool.length > 0) return pool[Math.floor(Math.random() * pool.length)];
+    const fallback = STARTER_FOOD_FALLBACK.map((id) => $dataItems[id]).filter(Boolean);
+    return fallback.length > 0 ? fallback[Math.floor(Math.random() * fallback.length)] : null;
+  }
+
+  /**
+   * Grant the three staples and bind them to hotbar slots 1-3.
+   * The bar is ItemSystemHotbar's; a build without it simply gets the items.
+   */
+  function giveStarterStaples() {
+    const bind = [];
+    [STARTER_HEALING_POTION, STARTER_MANA_TONIC].forEach(([id, qty]) => {
+      const item = $dataItems[id];
+      if (!item) {
+        console.warn(`CharacterCreation: starter staple ${id} not found.`);
+        bind.push(null);
+        return;
+      }
+      $gameParty.gainItem(item, qty);
+      bind.push(item);
+    });
+
+    const food = rollStarterFood();
+    if (food) $gameParty.gainItem(food, STARTER_FOOD_QTY);
+    bind.push(food);
+
+    const hotbar = window.ItemHotbar;
+    if (!hotbar) return;
+    bind.forEach((item, slot) => {
+      if (item) hotbar.assign(slot, item);
+    });
+  }
+
   function giveStartingSupplies() {
     if ($gameSystem._ccStarterSuppliesGiven) return;
     $gameSystem._ccStarterSuppliesGiven = true;
+
+    // Potions, tonics and the rolled food, on hotbar 1-3.
+    giveStarterStaples();
 
     // Healing food / consumables.
     STARTER_CONSUMABLES.forEach(([id, qty]) => {
@@ -239,7 +328,7 @@
   //
   // Handed out once, from markFirstCreationComplete (the end-of-creation hook),
   // so it lands after every class / trait / preset step no matter which path
-  // the player took (full, quick, random, creature, tutorial, preset). Doing it
+  // the player took (full, normal, quick, random, creature, tutorial, preset). Doing it
   // here instead of at class confirmation also means the preset step's gold
   // wipe can no longer swallow it.
   // The class bonus is the raw <Money:> value: it used to be tripled (with a
@@ -357,10 +446,53 @@
   const GAME_START_MAP_ID = 557; // the map every new game / permadeath reset lands on
 
   // Full creation mode is disabled for now: the "Full" choice is hidden from the
-  // creationMode step and every flow behaves as Quick (so the Full-only flavor
+  // creationMode step and every flow behaves as Normal (so the Full-only flavor
   // steps, hometown and birthdate, never come up). Flip this back to true to
-  // restore the two-mode wizard; nothing else needs changing.
+  // restore the mode; nothing else needs changing.
   const FULL_CREATION_MODE_ENABLED = false;
+
+  // --- Creation modes ------------------------------------------------------
+  // How much of the wizard a party walks through. The value is persisted on
+  // $gameSystem._ccCreationMode, since the mode step is asked once per party
+  // and every later member has to be built the same way.
+  //
+  //   QUICK     three questions , name, sprite, class , and nothing else.
+  //             Gender and body archetype are read off the chosen sprite's
+  //             NPCs.json record, the bust is the one that sprite comes with
+  //             (never browsed), traits are rolled. A creature is asked for its
+  //             archetype(s), its monster sprite and its class, and wears the
+  //             3D look that belongs to that sprite.
+  //   NORMAL    the wizard's ordinary per-character flow. This is the mode
+  //             that used to be called Quick.
+  //   FULL      the detailed life sim (FULL_CREATION_MODE_ENABLED).
+  //   DETAILED  the Empathize dossier editor (CharacterCreationFull.js).
+  const CC_MODE = {
+    QUICK: "quick",
+    NORMAL: "normal",
+    FULL: "full",
+    DETAILED: "detailed",
+  };
+
+  // Saves written before the fast Quick mode existed stored the (then only)
+  // board flow under the name "quick"; that flow is called Normal now. The
+  // stamp below is written beside every mode chosen since, so an old save is
+  // read as Normal rather than silently switching to the three-question wizard.
+  const CC_MODE_STAMP = 2;
+
+  function storedCreationMode() {
+    if (!$gameSystem || !$gameSystem._ccCreationMode) return null;
+    const mode = $gameSystem._ccCreationMode;
+    if (mode === CC_MODE.QUICK && $gameSystem._ccCreationModeStamp !== CC_MODE_STAMP) {
+      return CC_MODE.NORMAL;
+    }
+    return mode;
+  }
+
+  function setCreationMode(mode) {
+    Scene_CharacterCreation._creationMode = mode;
+    $gameSystem._ccCreationMode = mode;
+    $gameSystem._ccCreationModeStamp = CC_MODE_STAMP;
+  }
 
   // Starting items handed out by the origins (see ORIGIN_LOADOUTS below).
   const ITEM_LIMINAL_CUFFS = 111; // camper
@@ -585,7 +717,25 @@
   function startStrandedOrigin() {
     const spot = STRANDED_COORDS[Math.floor(Math.random() * STRANDED_COORDS.length)];
     if ($gameTemp) $gameTemp._ccStrandedStart = true;
+    anchorAtSpaceCenter();
     $gamePlayer.reserveTransfer(WORLD_MAP_ID, spot.x, spot.y, 2, 0);
+  }
+
+  // Where the "Distance from spawn" encounter mode measures this party's world
+  // from (BattleSystemEnhancedEncounters, getStartAnchor). Every other origin
+  // has an honest answer - the square it put the party down on - and the
+  // encounter system captures it by itself on the first map. These three do
+  // not: the space and crash-landed origins never stand on an Earth square at
+  // all, and the castaway stands on one that says the opposite of the truth
+  // (the emptiest coast in the world would read as the safest square in it).
+  // All three are pinned to the Green Witch Space Center, the launch site they
+  // left from or were trying to reach. Writing the anchor here also stops the
+  // automatic capture from claiming whatever square they first set foot on.
+  function anchorAtSpaceCenter() {
+    const BSEH = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
+    if (BSEH && typeof BSEH.anchorAtSpaceCenter === "function") {
+      BSEH.anchorAtSpaceCenter();
+    }
   }
 
   // Mayor origin: a huge stockpile (50x of every crafting material, handed out
@@ -928,6 +1078,146 @@
       { id: ITEM_OINTMENT, qty: 2, each: true },
     ],
   };
+
+  // --- The origin's own three, on hotbar 4-6 ------------------------------
+  // Slots 1-3 are the same everywhere (potion, tonic, food; see
+  // giveStarterStaples). Slots 4-6 are where the origin speaks: the three
+  // things from ITS kit that a player of that start reaches for first — the
+  // bike for the cyclist, the flashlight and rope for the delver, the escape
+  // kit for the wanted.
+  //
+  // Every id below must be map-usable, i.e. occasion "always" (0) or "outside
+  // battle" (2), because that is all the favourites bar accepts. This rules out
+  // several origins' signature objects: the low orbit pin, the inflatable
+  // dinghy, the lockpick, the cooking pot, the utensil set and the skeleton key
+  // are all occasion "never", and the ballpoint pen and resonance scanner are
+  // battle-only — so those origins field their next-best three instead.
+  // Staples are never repeated here; bindOriginFavorites skips anything already
+  // sitting on slots 1-3.
+  // Run auditOriginFavorites() from the console after editing this table.
+  const ORIGIN_FAVORITES = {
+    // Reading the line, sleeping on it, patching yourself up on it.
+    origin_train: [ITEM_LOCAL_MAP, ITEM_BEDROLL, ITEM_MEDICAL_SPRAY],
+    // Orbit: know where you are, talk to the ship, close your own wounds.
+    origin_space: [ITEM_STAR_MAP, ITEM_PILOT_PDA, ITEM_NANITES],
+    // The camper itself, what moves it, and where you sleep in it.
+    origin_camper: [ITEM_LIMINAL_CUFFS, ITEM_FUEL_TANK, ITEM_SLEEPING_BAG],
+    // The car itself, what moves it, and what tells it where to go.
+    origin_car: [ITEM_CAR, ITEM_FUEL_TANK, ITEM_GPS],
+    // The bike, the patch kit that keeps it rolling, and the bottle.
+    origin_bike: [ITEM_BIKE, ITEM_SEWING_KIT, ITEM_WATER_BOTTLE],
+    // Breaking ground: dig it, build it, carry it.
+    origin_lot: [ITEM_SHOVEL, ITEM_TOOLMAKER_MULTITOOL, ITEM_CRAFTSMAN_BACKPACK],
+    // Governing: take the note, give the speech, know the ward.
+    origin_mayor: [ITEM_POCKET_NOTEBOOK, ITEM_ORATORS_ELIXIR, ITEM_LOCAL_MAP],
+    // Delving: light first, rope second, the way out third.
+    origin_dungeon: [ITEM_FLASHLIGHT, ITEM_CLIMBING_ROPE, ITEM_ROUTES_MAP],
+    // Wanted: the way out, the untraceable call, the way past a lock.
+    origin_criminal: [ITEM_ESCAPE_KIT, ITEM_BURNER_PHONE, ITEM_LIMINAL_CUFFS],
+    // Castaway: catch it, carry water in it, walk with it.
+    origin_stranded: [ITEM_FISHING_ROD, ITEM_EMPTY_FLASK, ITEM_WALKING_STICK],
+    // Sealed cellar: light, power, and something to dig out with.
+    origin_bunker: [ITEM_FLASHLIGHT, ITEM_PORTABLE_CHARGER, ITEM_SHOVEL],
+    // Corner office: the phone, the watch, and the coffee holding it together.
+    origin_ceo: [ITEM_CELLPHONE, ITEM_WRISTWATCH, ITEM_DEADLINE_COFFEE],
+    // Inheritance: the lens, the amber, and the journal to write it all down.
+    origin_artifact: [ITEM_LENS_OF_REVELATION, ITEM_MEMORY_AMBER, ITEM_TRAVEL_JOURNAL],
+    // Wreck: fix it, see it, heal from it.
+    origin_crash: [ITEM_MULTITOOL, ITEM_FLASHLIGHT, ITEM_REGENERATION_HERB],
+    // Warband: keep the edge, hit harder, feel none of it.
+    origin_warlord: [ITEM_WHETSTONE, ITEM_FIGHTERS_BOOSTER, ITEM_MORPHINE],
+    // Quartermaster: the rope, the stone, the map of what you hold.
+    origin_faction_leader: [ITEM_ELVEN_ROPE, ITEM_WHETSTONE, ITEM_LOCAL_MAP],
+    // Fresh implants: the nanites, the spray, and the charge they run on.
+    origin_augmented: [ITEM_NANITES, ITEM_MEDICAL_SPRAY, ITEM_PORTABLE_CHARGER],
+    // Between tables: the journal of who plays where, the map, the tea.
+    origin_card_collector: [ITEM_TRAVEL_JOURNAL, ITEM_LOCAL_MAP, ITEM_CALMING_TEA],
+    // Gone AWOL: the kit, the stick, and the road home.
+    origin_deserter: [ITEM_ESCAPE_KIT, ITEM_WALKING_STICK, ITEM_LOCAL_MAP],
+    // The library on the move: what to write in, what to cast with, the light.
+    origin_arcanist: [ITEM_EMPTY_SPELLBOOK, ITEM_MANA_POTION, ITEM_CANDLE],
+    // Hired: read the field, keep the edge, know the ground.
+    origin_mercenary: [ITEM_TELESCOPE, ITEM_WHETSTONE, ITEM_LOCAL_MAP],
+    // Rite gone wrong: cast again, light it, and sleep somewhere.
+    origin_lost_convoker: [ITEM_MANA_POTION, ITEM_CANDLE, ITEM_BEDROLL],
+    // Deliberately empty: the key is the whole loadout and it is occasion
+    // "never", so there is nothing here the bar can hold. Slots 4-6 stay free,
+    // which suits a start that has to take everything else off somebody.
+    origin_skeleton_key: [],
+    // Carrying it: seal what leaks, and treat what you catch.
+    origin_plague: [ITEM_MEDICAL_SPRAY, ITEM_PAINKILLERS, ITEM_EMPTY_FLASK],
+    // One terminal is the whole seat; nothing else to reach for.
+    origin_diplomat: [ITEM_ONU_TERMINAL],
+  };
+
+  // Slots 4-6, zero-based. Slots 1-3 belong to the staples.
+  const ORIGIN_FAVORITE_FIRST_SLOT = 3;
+
+  /**
+   * Put an origin's three signature items on hotbar slots 4-6.
+   * A build without ItemSystemHotbar simply gets the items.
+   * @param {string} symbol - Origin symbol, e.g. "origin_bike"
+   */
+  function bindOriginFavorites(symbol) {
+    const hotbar = window.ItemHotbar;
+    if (!hotbar) return;
+    let slot = ORIGIN_FAVORITE_FIRST_SLOT;
+    (ORIGIN_FAVORITES[symbol] || []).forEach((id) => {
+      const item = $dataItems[id];
+      if (!item || !hotbar.isFavoritable(item)) {
+        console.warn(`CharacterCreation: origin favourite ${id} (${symbol}) is missing or not map-usable.`);
+        return;
+      }
+      // Assigning an item that is already on the bar VACATES its old slot, so a
+      // pick that duplicates a staple would empty slot 1-3 rather than fill 4-6.
+      if (hotbar.slotOf(item) >= 0) return;
+      hotbar.assign(slot, item);
+      slot++;
+    });
+  }
+
+  /**
+   * Check every ORIGIN_FAVORITES row against the origin it belongs to and
+   * report what a player would not actually get. Run from the console after
+   * editing the table.
+   * @returns {array} Offending { origin, problems } rows
+   */
+  function auditOriginFavorites() {
+    const offenders = [];
+    Object.keys(ORIGIN_LOADOUTS).forEach((symbol) => {
+      const picks = ORIGIN_FAVORITES[symbol];
+      const problems = [];
+      if (!picks) {
+        problems.push("no favourites row");
+      } else {
+        const granted = {};
+        (ORIGIN_LOADOUTS[symbol] || []).forEach((entry) => {
+          if (!entry.kind || entry.kind === "item") granted[entry.id] = true;
+        });
+        picks.forEach((id) => {
+          const item = $dataItems[id];
+          if (!item || !item.name || !item.name.trim()) {
+            problems.push(`item ${id} missing`);
+            return;
+          }
+          // The bar only takes occasion 0 / 2; anything else silently no-ops.
+          if (item.occasion !== 0 && item.occasion !== 2) {
+            problems.push(`${item.name} is not usable on the map (occasion ${item.occasion})`);
+          }
+          if (!granted[id]) problems.push(`${item.name} is not in the origin's loadout`);
+          if (id === STARTER_HEALING_POTION[0] || id === STARTER_MANA_TONIC[0]) {
+            problems.push(`${item.name} is already a staple on slots 1-3`);
+          }
+        });
+        if (new Set(picks).size !== picks.length) problems.push("duplicate picks");
+      }
+      if (problems.length > 0) {
+        offenders.push({ origin: symbol, problems });
+        console.warn(`CharacterCreation: ${symbol} favourites — ${problems.join("; ")}`);
+      }
+    });
+    return offenders;
+  }
 
   // How many characters the loadout is being sized for. The origin step is the
   // last one in the wizard, so the whole party already exists by then.
@@ -1307,6 +1597,9 @@
         console.warn(`CharacterCreation: starting ${entry.kind} ${entry.id} not found.`);
       }
     }
+    // The party is holding the kit now, so its three signature items can take
+    // hotbar 4-6 (the staples took 1-3 in giveStarterStaples).
+    bindOriginFavorites(symbol);
   }
 
   // Cash the party will be holding once creation ends, in euros: the base
@@ -1620,6 +1913,9 @@
   const CRASH_SHIP_DAMAGE_PERCENT = 70; // heavy damage, several critical parts near/at 0
 
   function startCrashLandedOrigin() {
+    // Wherever the wreck ended up, Earth is measured from the pad they were
+    // trying to get back to (see anchorAtSpaceCenter).
+    anchorAtSpaceCenter();
     const pick = pickRandomCrashPlanet();
     if (!pick) {
       console.warn("CharacterCreation: GalaxySim unavailable; crash-landed origin fell back to a plain space start.");
@@ -1718,8 +2014,8 @@
     });
   }
 
-  // --- Quick mode helpers -------------------------------------------------
-  // The whole sentient roster, which is what the Quick-mode class step lists.
+  // --- Inline class list helpers ------------------------------------------
+  // The whole sentient roster, which is what the board modes' class step lists.
   // A person is built from ids 1-62 alone; the creature classes above them
   // belong to the creature branch, dealt out of the archetype's own
   // creatureClasses list.
@@ -1855,9 +2151,10 @@
       },
     },
     {
-      // Creation Mode - Full vs Quick. Asked once per party (showOnlyOnce);
-      // the chosen mode drives which steps appear and how they behave for
-      // every member. Persisted to $gameSystem so reprise paths keep it.
+      // Creation Mode, how much of the wizard this party walks through (see
+      // CC_MODE). Asked once per party (showOnlyOnce); the chosen mode drives
+      // which steps appear and how they behave for every member. Persisted to
+      // $gameSystem so reprise paths keep it.
       id: "creationMode",
       showOnlyOnce: true,
       get title() {
@@ -1865,7 +2162,10 @@
       },
       get choices() {
         const choices = [
+          // Quick first: it is the shortest way into the game, three questions
+          // and the character is playing.
           getLocalizedChoice(T('CharCreate.choice.modeQuick.name'), "mode_quick", T('CharCreate.choice.modeQuick.desc')),
+          getLocalizedChoice(T('CharCreate.choice.modeNormal.name'), "mode_normal", T('CharCreate.choice.modeNormal.desc')),
         ];
         // Full mode is disabled for now (FULL_CREATION_MODE_ENABLED).
         if (FULL_CREATION_MODE_ENABLED) {
@@ -1873,7 +2173,7 @@
             getLocalizedChoice(T('CharCreate.choice.modeFull.name'), "mode_full", T('CharCreate.choice.modeFull.desc'))
           );
         }
-        // Detailed mode sits between the quick wizard and the pre-made
+        // Detailed mode sits between the wizard and the pre-made
         // dossiers: every field of the character sheet is edited by hand in
         // the Empathize panel. Offered during the tutorial as well.
         if (detailedModeAvailable()) {
@@ -1900,15 +2200,15 @@
         if (symbol === "mode_detailed") {
           // The wizard keeps running; the character-type step hands over to the
           // Empathize editor (see setupStep) for this and every later member.
-          Scene_CharacterCreation._creationMode = "detailed";
-          $gameSystem._ccCreationMode = "detailed";
+          setCreationMode(CC_MODE.DETAILED);
           markStepCompleted(STEP.CREATION_MODE);
           this.nextStep();
           return;
         }
-        const mode = (symbol === "mode_quick" || !FULL_CREATION_MODE_ENABLED) ? "quick" : "full";
-        Scene_CharacterCreation._creationMode = mode;
-        $gameSystem._ccCreationMode = mode;
+        const mode = symbol === "mode_quick" ? CC_MODE.QUICK
+          : (symbol === "mode_full" && FULL_CREATION_MODE_ENABLED) ? CC_MODE.FULL
+            : CC_MODE.NORMAL;
+        setCreationMode(mode);
         markStepCompleted(STEP.CREATION_MODE);
         this.nextStep();
       },
@@ -1916,8 +2216,8 @@
     {
       // Hometown (Full mode only). A party-level question asked once up front
       // (showOnlyOnce), alongside the other once-per-party steps, so members 2/3
-      // never see it again and Back navigation stays clean. Skipped in Quick
-      // mode. Stored on $gameSystem._ccHometown.
+      // never see it again and Back navigation stays clean. Skipped in the
+      // board modes. Stored on $gameSystem._ccHometown.
       id: "hometown",
       showOnlyOnce: true,
       get title() {
@@ -2168,36 +2468,7 @@
           }
         }
 
-        // If in creature mode, skip to creature creator. Both Quick and Full
-        // mode open the full creature scene so the whole archetype roster is
-        // available (single screen: pick one archetype or two for a hybrid).
-        if (Scene_CharacterCreation._isCreatureMode) {
-          // Get the current actor ID (1, 2, or 3)
-          const currentMemberIndex = Scene_CharacterCreation._currentPartyMemberIndex || 0;
-          const actorId = currentMemberIndex + 1;
-
-          // Check if Scene_CreateCreature is available
-          if (typeof Scene_CreateCreature !== 'undefined') {
-            // Save the step to resume at after creature creation (trait selection).
-            // interruptedStep + 1 is the resume step, so CLASS resumes on TRAITS.
-            Scene_CharacterCreation._interruptedStep = STEP.CLASS;
-
-            // Set the target actor ID for Scene_CreateCreature
-            if (Scene_CreateCreature.setTargetActorId) {
-              Scene_CreateCreature.setTargetActorId(actorId);
-            }
-
-            // Open the creature creation UI
-            SceneManager.push(Scene_CreateCreature);
-          } else {
-            console.warn('Scene_CreateCreature not found. Make sure CharacterCreationCreature.js is loaded.');
-            // Skip to trait selection (nextStep increments CLASS -> TRAITS)
-            this._step = STEP.CLASS;
-            this.nextStep();
-          }
-        } else {
-          this.startWaitingForCommonEvent(97, true);
-        }
+        this.leaveGenderStep();
       },
     },
     {
@@ -2212,8 +2483,8 @@
       get choices() {
         const baseChoices = [];
 
-        // Quick mode: the whole sentient roster is listed on one step, with the
-        // highlighted class's dossier on the right page.
+        // Board modes: the whole sentient roster is listed on one step, with
+        // the highlighted class's dossier on the right page.
         if (Scene_CharacterCreation.usesFullClassList()) {
           getSentientClassList().forEach((c) => {
             // Show the class's signature passive skill as its description.
@@ -2244,7 +2515,7 @@
       handler: function (symbol, index) {
         if (symbol && symbol.indexOf("quick_class_") === 0) {
           const classId = this.currentStepData().choices[index].value;
-          // Quick mode: apply the chosen class directly.
+          // Board modes: apply the chosen class directly.
           const currentActor = Scene_CharacterCreation.getCurrentActor();
           if (currentActor) {
             currentActor.changeClass(classId, true);
@@ -2354,7 +2625,7 @@
       },
     },
     {
-      // Birth date (Full mode only). Asked per member; skipped in Quick mode.
+      // Birth date (Full mode only). Asked per member; skipped in the board modes.
       // Stored as an age per member on $gameSystem._ccBirthAge[index].
       id: "birthdate",
       get title() {
@@ -2517,6 +2788,8 @@
         // a shelf below; this is the floor everyone else stands on.
         if (symbol !== "origin_card_collector") grantMinimumCards();
         if (symbol === "origin_space") {
+          // Begun off Earth: measured from the pad they lifted off from.
+          anchorAtSpaceCenter();
           $gamePlayer.reserveTransfer(721, 27, 7, 2, 0);
         } else if (symbol === "origin_camper") {
           startVehicleOrigin("camper", CAMPER_INTERIOR);
@@ -2639,16 +2912,44 @@
     static _lastMemberWasRandom = false; // True when the current member was built via "Total Random" (enables Reroll on the add-member step)
     static _tutorialMode = false; // Tutorial mode: streamlined single-character creation
     static _settingsRowIndex = 0; // Currently focused row in the initial settings step
-    static _creationMode = null; // "full" | "quick" (runtime; mirrors $gameSystem._ccCreationMode)
+    static _creationMode = null; // CC_MODE.* (runtime; mirrors $gameSystem._ccCreationMode)
     static _randomizedAllParty = false; // True after "Randomize all party" jumped straight to origin
 
-    // True when the party is being built in Quick mode. Reads the runtime flag,
-    // falling back to the persisted value so reprise paths behave consistently.
+    // The mode this party is being built in, as one of CC_MODE. Reads the
+    // runtime flag, falling back to the persisted value so reprise paths behave
+    // consistently, and answers Normal for anything it cannot make sense of.
+    static creationMode() {
+      // The tutorial is always a streamlined single-character flow, and it is
+      // never asked which mode to run in.
+      if (this._tutorialMode) return CC_MODE.NORMAL;
+      const mode = this._creationMode || storedCreationMode();
+      if (mode === CC_MODE.FULL && !FULL_CREATION_MODE_ENABLED) return CC_MODE.NORMAL;
+      if (mode === CC_MODE.QUICK || mode === CC_MODE.FULL || mode === CC_MODE.DETAILED) {
+        return mode;
+      }
+      return CC_MODE.NORMAL;
+    }
+
+    // True when the party is being built in Quick mode: the fast three-question
+    // flow (name, sprite, class), everything else settled from those answers.
     static isQuickMode() {
-      if (!FULL_CREATION_MODE_ENABLED) return true; // Full mode disabled: everything runs Quick
-      if (this._tutorialMode) return true; // tutorial is always a quick, single-character flow
-      if (this._creationMode) return this._creationMode === "quick";
-      return !!($gameSystem && $gameSystem._ccCreationMode === "quick");
+      return this.creationMode() === CC_MODE.QUICK;
+    }
+
+    // True when the party is being built in Normal mode, the wizard's ordinary
+    // per-character flow (this is what used to be called Quick, before the
+    // faster mode above took the name).
+    static isNormalMode() {
+      return this.creationMode() === CC_MODE.NORMAL;
+    }
+
+    // True for both of the wizard's own board-driven flows, as opposed to Full
+    // (the detailed life sim) and Detailed (the Empathize dossier editor).
+    // Everything they share , the inline class list and its two-column layout ,
+    // keys off this rather than off one mode.
+    static usesQuickFlow() {
+      const mode = this.creationMode();
+      return mode === CC_MODE.QUICK || mode === CC_MODE.NORMAL;
     }
 
     // True when the party being built right now chose Detailed mode: the
@@ -2666,19 +2967,34 @@
 
     // True when the CLASS step lists the whole sentient roster inline, one
     // class to a card, with the highlighted one's dossier on the right page.
-    // Quick mode only: Full mode opens the detailed class browser, creature
-    // mode has its own base/hybrid picker and the tutorial defaults to Mana
-    // Cyborg.
+    // Quick and Normal only: Full mode opens the detailed class browser,
+    // creature mode has its own base/hybrid picker and the tutorial defaults to
+    // Mana Cyborg.
     static usesFullClassList() {
-      return this.isQuickMode() && !this._isCreatureMode && !this._tutorialMode;
+      return this.usesQuickFlow() && !this._isCreatureMode && !this._tutorialMode;
     }
 
     // Steps that are skipped purely because of the chosen creation mode (as
     // opposed to tutorial/creature/member-index rules). Used by both
     // _stepAutoAdvances (Back/Forward) and setupStep (forward skip).
     static _stepHiddenForMode(step) {
-      if (!this.isQuickMode()) return false;
-      // Quick mode: trait selection is interactive (same as Full, first member
+      if (this.isQuickMode()) {
+        // Quick mode asks three things and settles the rest from them: the
+        // name and the sprite (the gender step hands both to common event 97),
+        // then the class. The portrait is always the bust the sprite comes
+        // with, gender and body archetype are read off that sprite's NPCs.json
+        // record, and traits are rolled.
+        //
+        // The gender step itself is NOT hidden: it is the step that opens the
+        // name / sprite screens (setupStep), so Back must still land on it.
+        if (step === STEP.PORTRAIT) return true;
+        if (step === STEP.TRAITS) return true;
+        if (step === STEP.HOMETOWN) return true;
+        if (step === STEP.BIRTHDATE) return true;
+        return false;
+      }
+      if (!this.isNormalMode()) return false;
+      // Normal mode: trait selection is interactive (same as Full, first member
       // only; members 2/3 still auto-randomize via memberIndex >= 1). Only the
       // Full-only flavor steps are skipped.
       if (step === STEP.HOMETOWN) return true;
@@ -2715,8 +3031,8 @@
         if (step === STEP.CLASS) return true;                // class fixed to Mana Cyborg
         if (step === STEP.ADD_MEMBER) return true;           // single-character party (ends)
       }
-      // Creation mode is never asked during the tutorial: it is always a quick,
-      // single-character flow, so the wizard goes straight to the humanoid /
+      // Creation mode is never asked during the tutorial: it is always a
+      // streamlined single-character flow, so it goes straight to the humanoid /
       // creature choice. Guarded on the switch as well as the in-scene flag
       // (same as the origin step), since the flag is cleared at add-member.
       // The exception is Detailed mode, which the tutorial does offer, so the
@@ -3705,7 +4021,7 @@
 
         // Class/creature class picker uses a two-column grid.
         const isQuickClassStep = this._step === STEP.CLASS &&
-          Scene_CharacterCreation.isQuickMode();
+          Scene_CharacterCreation.usesQuickFlow();
         // Class picker spread: list on the LEFT page, details of the
         // highlighted entry on the RIGHT page (creature mode keeps its layout).
         const isClassPicker = this._isClassPickerStep();
@@ -4140,7 +4456,7 @@
     _isClassPickerStep() {
       return this._step === STEP.CLASS &&
         !Scene_CharacterCreation._isCreatureMode &&
-        Scene_CharacterCreation.isQuickMode();
+        Scene_CharacterCreation.usesQuickFlow();
     }
 
     // True when the ORIGIN step renders the list-left / description-right spread.
@@ -5243,14 +5559,13 @@
       }
       // ── END TUTORIAL MODE skips ──
 
-      // Creation mode: never asked during the tutorial. Quick is applied
+      // Creation mode: never asked during the tutorial. Normal is applied
       // silently and the wizard moves straight on to the humanoid / creature
       // choice. (Guarded on the switch as well as the in-scene flag, like the
       // origin step below.) Detailed mode is the exception, the tutorial offers
       // it, so the step is shown whenever CharacterCreationFull is loaded.
       if (this._step === STEP.CREATION_MODE && isTutorialFlow() && !detailedModeAvailable()) {
-        Scene_CharacterCreation._creationMode = "quick";
-        $gameSystem._ccCreationMode = "quick";
+        setCreationMode(CC_MODE.NORMAL);
         markStepCompleted(STEP.CREATION_MODE);
         this._step++;
         this.setupStep();
@@ -5269,8 +5584,8 @@
         return;
       }
 
-      // Safety: creatures never go through class selection (both Quick and Full
-      // mode build the creature in the full creature scene, then resume here).
+      // Safety: creatures never go through class selection (every mode builds
+      // the creature in the full creature scene, then resumes here).
       if (this._step === STEP.CLASS && Scene_CharacterCreation._isCreatureMode) {
         this._step++;
         this.setupStep();
@@ -5278,10 +5593,13 @@
       }
 
       // Portrait style is only asked of humanoids, and only when the 3D editor
-      // is actually available. Everyone who skips it keeps the bust portrait.
+      // is actually available. Quick mode never asks either: its characters are
+      // portrayed by the bust their sprite comes with. Everyone who skips it
+      // keeps the bust portrait.
       if (this._step === STEP.PORTRAIT &&
           (Scene_CharacterCreation._isCreatureMode ||
            Scene_CharacterCreation._tutorialMode ||
+           Scene_CharacterCreation.isQuickMode() ||
            !portraitModelAvailable())) {
         if (!Scene_CharacterCreation._isCreatureMode) {
           const portraitActor = Scene_CharacterCreation.getCurrentActor();
@@ -5292,9 +5610,21 @@
         return;
       }
 
-      // Auto-randomize traits for characters 2 and 3 (both Quick and Full mode
-      // ask the first member interactively; see the "traits" step above).
-      if (this._step === STEP.TRAITS && currentMemberIndex >= 1) {
+      // Gender is not a question in Quick mode: it is read off the sprite the
+      // player is about to choose (NPCs.json, see applyIdentityFromSprite in
+      // CharacterCreationShared). The step still runs, because it is the one
+      // that hands over to the name / sprite common event or to the creature
+      // builder, so leaving it is all there is left to do here.
+      if (this._step === STEP.GENDER && Scene_CharacterCreation.isQuickMode()) {
+        this.leaveGenderStep();
+        return;
+      }
+
+      // Auto-randomize traits: for characters 2 and 3 in every mode (the first
+      // member is asked interactively; see the "traits" step above), and for
+      // every member in Quick mode, which never asks.
+      if (this._step === STEP.TRAITS &&
+          (currentMemberIndex >= 1 || Scene_CharacterCreation.isQuickMode())) {
         const targetActorId = currentMemberIndex + 1; // Actor IDs are 1-based
 
         // Call randomizeTraits from TraitSelector
@@ -5310,9 +5640,10 @@
         return;
       }
 
-      // Quick mode: skip the Full-only flavor steps (hometown / birth date).
-      if ((this._step === STEP.HOMETOWN || this._step === STEP.BIRTHDATE) &&
-          Scene_CharacterCreation.isQuickMode()) {
+      // Whatever else the chosen mode hides: the Full-only flavor steps
+      // (hometown / birth date) in both board modes, plus Quick's portrait and
+      // trait steps, both already settled above.
+      if (Scene_CharacterCreation._stepHiddenForMode(this._step)) {
         this._step++;
         this.setupStep();
         return;
@@ -5492,6 +5823,43 @@
       SoundManager.playCancel();
       this.previousStep();
     }
+
+    // What the gender step does once it is finished, whichever way it was
+    // reached: a creature is handed to the creature builder, a person to
+    // common event 97 (a generated name, the name input screen, then the
+    // sprite grid). Quick mode never asks the gender question itself , the
+    // sprite answers it , but still comes through here, so this is the one
+    // place that knows where the wizard goes next.
+    leaveGenderStep() {
+      if (!Scene_CharacterCreation._isCreatureMode) {
+        this.startWaitingForCommonEvent(97, true);
+        return;
+      }
+
+      const currentMemberIndex = Scene_CharacterCreation._currentPartyMemberIndex || 0;
+      const actorId = currentMemberIndex + 1;
+
+      if (typeof Scene_CreateCreature === 'undefined') {
+        console.warn('Scene_CreateCreature not found. Make sure CharacterCreationCreature.js is loaded.');
+        // Skip to trait selection (nextStep increments CLASS -> TRAITS)
+        this._step = STEP.CLASS;
+        this.nextStep();
+        return;
+      }
+
+      // Both modes open the full creature scene so the whole archetype roster
+      // is available (single screen: pick one archetype or two for a hybrid);
+      // Quick mode simply asks less of it once the archetypes are settled.
+      //
+      // Save the step to resume at after creature creation (trait selection).
+      // interruptedStep + 1 is the resume step, so CLASS resumes on TRAITS.
+      Scene_CharacterCreation._interruptedStep = STEP.CLASS;
+      if (Scene_CreateCreature.setTargetActorId) {
+        Scene_CreateCreature.setTargetActorId(actorId);
+      }
+      SceneManager.push(Scene_CreateCreature);
+    }
+
     // MODIFIED: Destroys windows before running the common event.
     startWaitingForCommonEvent(commonEventId, showVeil) {
       // Save the current step before interrupting
@@ -5982,11 +6350,12 @@
     }
 
     maxCols() {
-      // Quick-mode class/creature picker renders as a two-column grid, so the
-      // selection cursor must move in two columns too (left/right + up/down).
+      // The board modes' class/creature picker renders as a two-column grid, so
+      // the selection cursor must move in two columns too (left/right +
+      // up/down).
       const sc = this._scene;
       if (sc && sc._step === STEP.CLASS &&
-          Scene_CharacterCreation.isQuickMode()) {
+          Scene_CharacterCreation.usesQuickFlow()) {
         return 2;
       }
       return 1;
@@ -6304,9 +6673,9 @@
     // Detailed is never carried over: the mode step is silenced once a
     // savegame has built a party, so a carried-over Detailed would lock every
     // later party into the editor with no board and no way back.
-    const carriedMode = $gameSystem && $gameSystem._ccCreationMode;
+    const carriedMode = storedCreationMode();
     Scene_CharacterCreation._creationMode =
-      (carriedMode === "detailed" ? null : carriedMode) || null;
+      (carriedMode === CC_MODE.DETAILED ? null : carriedMode) || null;
 
     const startStep = Scene_CharacterCreation.getStartingStep();
     Scene_CharacterCreation.prepare(startStep);
@@ -6340,18 +6709,19 @@
 
     Scene_CharacterCreation._isCreatureMode = false;
     Scene_CharacterCreation._creationMode =
-      ($gameSystem && $gameSystem._ccCreationMode) || Scene_CharacterCreation._creationMode;
+      storedCreationMode() || Scene_CharacterCreation._creationMode;
     Scene_CharacterCreation.prepare(startStep);
     SceneManager.push(Scene_CharacterCreation);
   });
 
   PluginManager.registerCommand(pluginName, "repriseCreationCreature", () => {
     Scene_CharacterCreation._creationMode =
-      ($gameSystem && $gameSystem._ccCreationMode) || Scene_CharacterCreation._creationMode;
+      storedCreationMode() || Scene_CharacterCreation._creationMode;
 
-    // Quick mode has no creatures: fall back to a normal humanoid reprise so
-    // the flow can never strand the player in a disabled creature path.
-    if (Scene_CharacterCreation.isQuickMode()) {
+    // The board modes have no separate creature reprise: fall back to a plain
+    // humanoid one so the flow can never strand the player in a disabled
+    // creature path.
+    if (Scene_CharacterCreation.usesQuickFlow()) {
       let startStep = Scene_CharacterCreation._interruptedStep >= 0
         ? Scene_CharacterCreation._interruptedStep + 1
         : STEP.CLASS;
@@ -6402,6 +6772,50 @@
       console.error("Scene_TraitSelector not available!");
     }
   });
+
+  // ==========================================================================
+  // Naming the member actually being created
+  //
+  // Common event 97 (the name + sprite step) is an event, so every actor id in
+  // it is a fixed 1: the Markov generator writes a suggested name onto actor 1
+  // and the Name Input Processing that follows edits actor 1. The sprite
+  // selector, whose plugin command has the same fixed id, retargets itself
+  // (see Scene_SpriteGridSelector.create); the two naming commands cannot, so
+  // they are retargeted here, and only while the wizard is paused on a member,
+  // which is the only time that event runs. Without this the second and third
+  // party members rename the first one.
+  // ==========================================================================
+
+  // The actor the paused wizard is building, or 0 when no creation is waiting.
+  function pausedCreationActorId() {
+    if (Scene_CharacterCreation._interruptedStep < 0) return 0;
+    return (Scene_CharacterCreation._currentPartyMemberIndex || 0) + 1;
+  }
+
+  const _Game_Interpreter_command303 = Game_Interpreter.prototype.command303;
+  Game_Interpreter.prototype.command303 = function (params) {
+    const actorId = pausedCreationActorId();
+    if (actorId > 1 && params[0] === 1) {
+      params = [actorId, params[1]];
+    }
+    return _Game_Interpreter_command303.call(this, params);
+  };
+
+  // The creation events' own plugin commands only. params is the event's data,
+  // shared by every run of it, so the retargeted arguments are a copy.
+  const CC_NAMING_PLUGINS = ["UI/MarkovTextGenerator"];
+  const _Game_Interpreter_command357 = Game_Interpreter.prototype.command357;
+  Game_Interpreter.prototype.command357 = function (params) {
+    const actorId = pausedCreationActorId();
+    if (actorId > 1 && CC_NAMING_PLUGINS.includes(params[0]) &&
+        params[3] && Number(params[3].actorId) === 1) {
+      params = [
+        params[0], params[1], params[2],
+        Object.assign({}, params[3], { actorId: String(actorId) }),
+      ];
+    }
+    return _Game_Interpreter_command357.call(this, params);
+  };
 
   // ==========================================================================
   // Battle Test: auto-build a random, slightly under-levelled party

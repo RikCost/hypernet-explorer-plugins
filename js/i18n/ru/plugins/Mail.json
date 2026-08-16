@@ -1,0 +1,135 @@
+{
+  "unknownParty": "",
+  "noSubject": "",
+  "partyAlone": "",
+  "partyWith": "",
+  "span": {
+    "days": {
+      "one": "",
+      "other": ""
+    },
+    "months": {
+      "one": "",
+      "other": ""
+    },
+    "years": {
+      "one": "",
+      "other": ""
+    },
+    "none": ""
+  },
+  "ui": {
+    "title": "",
+    "back": "",
+    "tab": {
+      "inbox": "",
+      "compose": ""
+    },
+    "inTransit": {
+      "one": "",
+      "other": ""
+    },
+    "noWorld": ""
+  },
+  "inbox": {
+    "empty": "",
+    "pickOne": "",
+    "fromLine": "",
+    "fromSelf": "",
+    "crossed": "",
+    "crossedFrom": "",
+    "heldBack": "",
+    "written": "",
+    "arrived": "",
+    "mark": {
+      "unread": "",
+      "parcel": ""
+    },
+    "enclosed": "",
+    "moneyLine": "",
+    "nothingEnclosed": "",
+    "collect": "",
+    "collectedAlready": "",
+    "discard": ""
+  },
+  "compose": {
+    "recipient": "",
+    "noRecipient": "",
+    "addressLine": "",
+    "yourself": "",
+    "subject": "",
+    "body": "",
+    "blankField": "",
+    "wordCount": {
+      "one": "",
+      "other": ""
+    },
+    "money": "",
+    "items": "",
+    "pieces": {
+      "one": "",
+      "other": ""
+    },
+    "delayDays": "",
+    "delayMonths": "",
+    "delayYears": "",
+    "send": "",
+    "confirm": "",
+    "thisWorld": "",
+    "otherWorld": "",
+    "noAddresses": "",
+    "nothingToSend": "",
+    "noGoods": "",
+    "held": {
+      "one": "",
+      "other": ""
+    },
+    "memberCount": {
+      "one": "",
+      "other": ""
+    },
+    "seenOn": "",
+    "feeShort": "",
+    "toLine": "",
+    "toNobody": "",
+    "routeHome": "",
+    "routeAcross": "",
+    "arrives": "",
+    "enclosedLine": "",
+    "enclosedNothing": "",
+    "postageFree": "",
+    "postageLine": "",
+    "cannotAfford": "",
+    "subjectPlaceholder": "",
+    "bodyPlaceholder": ""
+  },
+  "toast": {
+    "sent": "",
+    "sentAcross": "",
+    "collected": "",
+    "goods": {
+      "one": "",
+      "other": ""
+    },
+    "arrivedOne": "",
+    "arrivedMany": {
+      "one": "",
+      "other": ""
+    }
+  },
+  "error": {
+    "noWorld": "",
+    "noParty": "",
+    "noRecipient": "",
+    "goneAway": "",
+    "shortStock": "",
+    "tooPoor": "",
+    "blank": "",
+    "notPosted": "",
+    "gone": "",
+    "alreadyTaken": "",
+    "notYet": "",
+    "emptyEnvelope": "",
+    "stillFull": ""
+  }
+}

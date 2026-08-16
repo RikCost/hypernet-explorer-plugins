@@ -637,13 +637,15 @@
       // published by whichever of the skill / item pages is open). A page whose
       // height follows its contents would otherwise leave the description
       // stranded halfway up the screen.
-      const page = window.BattleListPage || { MARGIN: 20, GAP: 10, width: 420, height: 460 };
+      const page = window.BattleListPage || { MARGIN: 20, GAP: 10, TOP: 184, width: 420, height: 460 };
       const fixedW = page.width * sc.sx;
 
       // Anchor the box by its bottom-right corner (just above the skill selector)
       // and let width/height grow with the content so the box autosizes to its text.
+      // Both pages hang from page.TOP, so the box stands on that one line and
+      // does not move when the player switches between them.
       const rightEdgeX = sc.ox + (Graphics.width * sc.sx) - (page.MARGIN * sc.sx);
-      const bottomEdgeY = sc.oy + (Graphics.height - page.height - page.MARGIN - page.GAP) * sc.sy;
+      const bottomEdgeY = sc.oy + (page.TOP - page.GAP) * sc.sy;
 
       const rightStr = Math.max(0, window.innerWidth - rightEdgeX) + 'px';
       const bottomStr = Math.max(0, window.innerHeight - bottomEdgeY) + 'px';
@@ -1106,14 +1108,20 @@
           this._lastSx = sc.sx;
           this._lastSy = sc.sy;
 
-          const ITEM_W = 340, ITEM_H = 460;
+          // The page hangs from the top line both battle lists share
+          // (window.BattleListPage), so switching between items and skills
+          // never moves the panel, and reaches down to the bottom margin.
+          const page = window.BattleListPage;
+          const ITEM_W = 340;
+          const ITEM_H = page ? page.maxHeight() : 420;
+          const ITEM_TOP = page ? page.TOP : 184;
           const scaledW = ITEM_W * sc.sx;
           const scaledH = ITEM_H * sc.sy;
           // The description box stands on this page while it is the open one.
-          if (window.BattleListPage) window.BattleListPage.set(ITEM_W, ITEM_H);
+          if (page) page.set(ITEM_W, ITEM_H);
 
           const targetLeft = sc.ox + (Graphics.width * sc.sx) - scaledW - (20 * sc.sx);
-          const targetTop = sc.oy + (Graphics.height * sc.sy) - scaledH - (20 * sc.sy);
+          const targetTop = sc.oy + (ITEM_TOP * sc.sy);
 
           s.left = targetLeft + 'px';
           s.top = targetTop + 'px';

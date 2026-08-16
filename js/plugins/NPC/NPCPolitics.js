@@ -177,191 +177,188 @@
   // powerLabel() below, from js/i18n/<lang>/plugins/Politics.json.
 
   // ==========================================================================
-  // REAL_PARTIES, historical party rosters for the seven hyperpowers that hold
+  // ROSTER_PARTIES, period party rosters for the seven hyperpowers that hold
   // real European ground (Countries.json `faction`/`controller`). Every entry
-  // is a real party active somewhere between 1984 and 2005 (a handful older,
-  // kept because they were still standing through that window; a handful
-  // "founded" exactly 2001+ on purpose, so a fresh world can seat a party that
-  // did not exist yet). `ideologyId` points at js/db/WorldGen/Ideology.json;
-  // makeParty() reads the creed's own axes for the platform instead of
-  // jittering blindly off the power's baseline, so a party's politics are its
-  // real ones. `founded` is the real founding year where confidently known;
-  // left off where not, so the old random offset stands rather than assert a
-  // wrong date. One name is deliberately not the real one: Forza Italia was a
-  // litigated commercial trademark (Fininvest/Mediaset), so the Berlusconi-era
-  // media-liberal slot is played by a fictionalized "Forza Nazione" instead.
-  // Every other name here is the real, historical one; short political-party
-  // names are not creative works and are used here as the historical record
-  // they are, exactly as in any work of alternate history.
+  // is a *fictionalized analogue* of a party that was standing somewhere
+  // between 1984 and 2005: the name is deliberately distorted off the real one
+  // (a swapped noun, a shifted adjective, an invented banner) so nothing here
+  // reproduces an actual party's name or trademark, while the shape, language
+  // and political slot stay recognisable enough to read as that country's
+  // politics. Treat every name below as this setting's own invention.
+  // `ideologyId` points at js/db/WorldGen/Ideology.json; makeParty() reads the
+  // creed's own axes for the platform instead of jittering blindly off the
+  // power's baseline, so a party's politics follow its creed. `founded` is a
+  // plausible in-world founding year; a handful sit at 2001+ on purpose, so a
+  // fresh world can seat a movement that did not exist yet.
   //
   // At most `arch.partyCount` of a hyperpower's list is ever live on any one
   // world (bootstrapPower shuffles the list per world seed and takes the
   // first partyCount), so a big roster like Italy's is a pool a world draws
   // from, not a claim that all of them govern at once.
-  const REAL_PARTIES = {
+  const ROSTER_PARTIES = {
     "Holy Vatican Empire": [
-      // Italy, First Republic (closed parties, still real and still played)
-      { name: "Democrazia Cristiana", country: "Italy", ideologyId: "christian_democratic", founded: 1943 },
-      { name: "Partito Comunista Italiano", country: "Italy", ideologyId: "reform_communist", founded: 1921 },
-      { name: "Partito Socialista Italiano", country: "Italy", ideologyId: "social_democrat", founded: 1892 },
-      { name: "Movimento Sociale Italiano", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1946 },
-      { name: "Partito Liberale Italiano", country: "Italy", ideologyId: "classical_liberal", founded: 1922 },
-      { name: "Partito Repubblicano Italiano", country: "Italy", ideologyId: "civic_republican", founded: 1895 },
-      { name: "Partito Socialista Democratico Italiano", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1947 },
-      { name: "Partito Radicale", country: "Italy", ideologyId: "classical_liberal", founded: 1955 },
-      { name: "Democrazia Proletaria", country: "Italy", ideologyId: "orthodox_communist", founded: 1978 },
-      { name: "Partito Comunista dei Lavoratori", country: "Italy", ideologyId: "orthodox_communist" },
+      // Italy, First Republic (closed parties, still played)
+      { name: "Concordia Cristiana", country: "Italy", ideologyId: "christian_democratic", founded: 1943 },
+      { name: "Partito Comunista della Penisola", country: "Italy", ideologyId: "reform_communist", founded: 1921 },
+      { name: "Partito Socialista Italico", country: "Italy", ideologyId: "social_democrat", founded: 1892 },
+      { name: "Moto Sociale d'Italia", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1946 },
+      { name: "Partito Liberale Peninsulare", country: "Italy", ideologyId: "classical_liberal", founded: 1922 },
+      { name: "Partito Repubblicano d'Italia", country: "Italy", ideologyId: "civic_republican", founded: 1895 },
+      { name: "Partito Socialdemocratico Peninsulare", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1947 },
+      { name: "Partito Radicalista", country: "Italy", ideologyId: "classical_liberal", founded: 1955 },
+      { name: "Democrazia dei Proletari", country: "Italy", ideologyId: "orthodox_communist", founded: 1978 },
+      { name: "Partito Comunista degli Operai", country: "Italy", ideologyId: "orthodox_communist" },
       // Italy, Second Republic and new-in-2001 arrivals
-      { name: "Alleanza Nazionale", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1995 },
-      { name: "Lega Nord", country: "Italy", ideologyId: "regionalist_separatist", founded: 1991 },
-      { name: "Rifondazione Comunista", country: "Italy", ideologyId: "orthodox_communist", founded: 1991 },
-      { name: "Partito Democratico della Sinistra", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1991 },
-      { name: "Democratici di Sinistra", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1998 },
-      { name: "Partito Popolare Italiano", country: "Italy", ideologyId: "christian_democratic", founded: 1994 },
-      { name: "La Rete", country: "Italy", ideologyId: "civic_republican", founded: 1991 },
-      { name: "Democrazia è Libertà - La Margherita", country: "Italy", ideologyId: "christian_democratic", founded: 2001 },
-      { name: "Italia dei Valori", country: "Italy", ideologyId: "law_and_order_populist", founded: 1998 },
-      { name: "Partito dei Comunisti Italiani", country: "Italy", ideologyId: "orthodox_communist", founded: 1998 },
-      { name: "Centro Cristiano Democratico", country: "Italy", ideologyId: "christian_democratic", founded: 1994 },
-      { name: "Cristiani Democratici Uniti", country: "Italy", ideologyId: "christian_democratic", founded: 1995 },
-      { name: "Unione Democratici per l'Europa", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1999 },
-      { name: "Rinnovamento Italiano", country: "Italy", ideologyId: "technocratic_liberal", founded: 1996 },
-      { name: "Movimento Sociale - Fiamma Tricolore", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1995 },
-      { name: "Forza Nuova", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1997 },
-      { name: "Radicali Italiani", country: "Italy", ideologyId: "classical_liberal", founded: 2001 },
-      { name: "Democrazia Europea", country: "Italy", ideologyId: "christian_democratic", founded: 2001 },
-      { name: "Nuovo PSI", country: "Italy", ideologyId: "social_democrat", founded: 2001 },
+      { name: "Alleanza della Nazione", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1995 },
+      { name: "Lega Settentrionale", country: "Italy", ideologyId: "regionalist_separatist", founded: 1991 },
+      { name: "Rifondazione dei Comunisti", country: "Italy", ideologyId: "orthodox_communist", founded: 1991 },
+      { name: "Fronte Democratico della Sinistra", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1991 },
+      { name: "Sinistra Democratica Unita", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1998 },
+      { name: "Partito Popolare Peninsulare", country: "Italy", ideologyId: "christian_democratic", founded: 1994 },
+      { name: "La Trama", country: "Italy", ideologyId: "civic_republican", founded: 1991 },
+      { name: "Democrazia e Libertà - Il Fiordaliso", country: "Italy", ideologyId: "christian_democratic", founded: 2001 },
+      { name: "Italia dei Giusti", country: "Italy", ideologyId: "law_and_order_populist", founded: 1998 },
+      { name: "Partito dei Comunisti Italici", country: "Italy", ideologyId: "orthodox_communist", founded: 1998 },
+      { name: "Centro Cristiano Popolare", country: "Italy", ideologyId: "christian_democratic", founded: 1994 },
+      { name: "Cristiani Democratici Riuniti", country: "Italy", ideologyId: "christian_democratic", founded: 1995 },
+      { name: "Unione dei Democratici Europei", country: "Italy", ideologyId: "pragmatic_social_democrat", founded: 1999 },
+      { name: "Rinnovamento Peninsulare", country: "Italy", ideologyId: "technocratic_liberal", founded: 1996 },
+      { name: "Moto Sociale - Fiaccola Tricolore", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1995 },
+      { name: "Vigore Nuovo", country: "Italy", ideologyId: "post_fascist_revivalist", founded: 1997 },
+      { name: "Radicali Peninsulari", country: "Italy", ideologyId: "classical_liberal", founded: 2001 },
+      { name: "Democrazia Continentale", country: "Italy", ideologyId: "christian_democratic", founded: 2001 },
+      { name: "Nuovo PSP", country: "Italy", ideologyId: "social_democrat", founded: 2001 },
       { name: "Forza Nazione", country: "Italy", ideologyId: "media_theocrat", founded: 1994 },
-      { name: "Federazione dei Verdi", country: "Italy", ideologyId: "green_ecologist", founded: 1990 },
-      { name: "Südtiroler Volkspartei", country: "Italy", ideologyId: "regionalist_separatist", founded: 1945 },
+      { name: "Federazione Verde", country: "Italy", ideologyId: "green_ecologist", founded: 1990 },
+      { name: "Südtiroler Landespartei", country: "Italy", ideologyId: "regionalist_separatist", founded: 1945 },
       // Germany
-      { name: "Christlich Demokratische Union", country: "Germany", ideologyId: "christian_democrat", founded: 1945 },
-      { name: "Christlich-Soziale Union", country: "Germany", ideologyId: "christian_democrat", founded: 1945 },
-      { name: "Sozialdemokratische Partei Deutschlands", country: "Germany", ideologyId: "social_democrat", founded: 1863 },
-      { name: "Freie Demokratische Partei", country: "Germany", ideologyId: "classical_liberal", founded: 1948 },
-      { name: "Bündnis 90/Die Grünen", country: "Germany", ideologyId: "green_ecologist", founded: 1993 },
-      { name: "Partei des Demokratischen Sozialismus", country: "Germany", ideologyId: "reform_communist", founded: 1990 },
-      { name: "Die Republikaner", country: "Germany", ideologyId: "post_fascist_revivalist", founded: 1983 },
+      { name: "Christlich Demokratische Sammlung", country: "Germany", ideologyId: "christian_democrat", founded: 1945 },
+      { name: "Christlich-Soziale Sammlung", country: "Germany", ideologyId: "christian_democrat", founded: 1945 },
+      { name: "Sozialdemokratische Partei der Lande", country: "Germany", ideologyId: "social_democrat", founded: 1863 },
+      { name: "Freiheitlich Demokratische Partei", country: "Germany", ideologyId: "classical_liberal", founded: 1948 },
+      { name: "Bündnis 91/Die Grünen", country: "Germany", ideologyId: "green_ecologist", founded: 1993 },
+      { name: "Partei des Demokratischen Sozialstaats", country: "Germany", ideologyId: "reform_communist", founded: 1990 },
+      { name: "Die Republikanische Liste", country: "Germany", ideologyId: "post_fascist_revivalist", founded: 1983 },
       // Malta
-      { name: "Partit Nazzjonalista", country: "Malta", ideologyId: "christian_democrat", founded: 1880 },
-      { name: "Malta Labour Party", country: "Malta", ideologyId: "social_democrat", founded: 1920 },
+      { name: "Partit tan-Nazzjon", country: "Malta", ideologyId: "christian_democrat", founded: 1880 },
+      { name: "Maltese Workers' Party", country: "Malta", ideologyId: "social_democrat", founded: 1920 },
       // Portugal
-      { name: "Partido Social Democrata", country: "Portugal", ideologyId: "liberal_conservative", founded: 1974 },
-      { name: "Partido Socialista", country: "Portugal", ideologyId: "social_democrat", founded: 1973 },
-      { name: "Centro Democrático e Social - Partido Popular", country: "Portugal", ideologyId: "christian_democrat", founded: 1974 },
-      { name: "Partido Comunista Português", country: "Portugal", ideologyId: "orthodox_communist", founded: 1921 },
+      { name: "Partido Social Democrático", country: "Portugal", ideologyId: "liberal_conservative", founded: 1974 },
+      { name: "Partido dos Socialistas", country: "Portugal", ideologyId: "social_democrat", founded: 1973 },
+      { name: "Centro Democrático Social - Partido do Povo", country: "Portugal", ideologyId: "christian_democrat", founded: 1974 },
+      { name: "Partido Comunista Lusitano", country: "Portugal", ideologyId: "orthodox_communist", founded: 1921 },
       // Spain
-      { name: "Partido Popular", country: "Spain", ideologyId: "liberal_conservative", founded: 1989 },
-      { name: "Partido Socialista Obrero Español", country: "Spain", ideologyId: "social_democrat", founded: 1879 },
-      { name: "Izquierda Unida", country: "Spain", ideologyId: "orthodox_communist", founded: 1986 },
-      { name: "Convergència i Unió", country: "Spain", ideologyId: "regionalist_separatist", founded: 1978 },
-      { name: "Partido Nacionalista Vasco", country: "Spain", ideologyId: "regionalist_separatist", founded: 1895 },
+      { name: "Partido del Pueblo", country: "Spain", ideologyId: "liberal_conservative", founded: 1989 },
+      { name: "Partido Socialista Obrero Ibérico", country: "Spain", ideologyId: "social_democrat", founded: 1879 },
+      { name: "Izquierda Reunida", country: "Spain", ideologyId: "orthodox_communist", founded: 1986 },
+      { name: "Convergència i Concòrdia", country: "Spain", ideologyId: "regionalist_separatist", founded: 1978 },
+      { name: "Partido Nacionalista Vascón", country: "Spain", ideologyId: "regionalist_separatist", founded: 1895 },
     ],
     "USSR": [
       // Russia
-      { name: "Коммунистическая партия Российской Федерации", country: "Russia", ideologyId: "orthodox_communist", founded: 1993 },
-      { name: "Либерально-демократическая партия России", country: "Russia", ideologyId: "post_fascist_revivalist", founded: 1989 },
-      { name: "Единая Россия", country: "Russia", ideologyId: "managed_democrat", founded: 2001 },
-      { name: "Яблоко", country: "Russia", ideologyId: "social_liberal", founded: 1993 },
-      { name: "Союз правых сил", country: "Russia", ideologyId: "classical_liberal", founded: 1999 },
-      { name: "Наш дом - Россия", country: "Russia", ideologyId: "liberal_clientelist", founded: 1995 },
-      { name: "Коммунистическая партия Советского Союза", country: "Russia", ideologyId: "totalitarian_communist", founded: 1898 },
+      { name: "Коммунистическая партия Российских Земель", country: "Russia", ideologyId: "orthodox_communist", founded: 1993 },
+      { name: "Либерально-демократический союз России", country: "Russia", ideologyId: "post_fascist_revivalist", founded: 1989 },
+      { name: "Единение России", country: "Russia", ideologyId: "managed_democrat", founded: 2001 },
+      { name: "Яблоня", country: "Russia", ideologyId: "social_liberal", founded: 1993 },
+      { name: "Союз правых течений", country: "Russia", ideologyId: "classical_liberal", founded: 1999 },
+      { name: "Наш край - Россия", country: "Russia", ideologyId: "liberal_clientelist", founded: 1995 },
+      { name: "Коммунистическая партия Советских Земель", country: "Russia", ideologyId: "totalitarian_communist", founded: 1898 },
       // Serbia
-      { name: "Socijalistička partija Srbije", country: "Serbia", ideologyId: "welfare_chauvinist", founded: 1990 },
-      { name: "Srpska radikalna stranka", country: "Serbia", ideologyId: "post_fascist_revivalist", founded: 1991 },
-      { name: "Demokratska stranka", country: "Serbia", ideologyId: "civic_republican", founded: 1990 },
-      { name: "Demokratska stranka Srbije", country: "Serbia", ideologyId: "conservative_democrat", founded: 1992 },
-      { name: "Srpski pokret obnove", country: "Serbia", ideologyId: "conservative_democrat", founded: 1990 },
+      { name: "Socijalistička stranka Srbije", country: "Serbia", ideologyId: "welfare_chauvinist", founded: 1990 },
+      { name: "Srpska radikalna liga", country: "Serbia", ideologyId: "post_fascist_revivalist", founded: 1991 },
+      { name: "Demokratska liga", country: "Serbia", ideologyId: "civic_republican", founded: 1990 },
+      { name: "Demokratska zajednica Srbije", country: "Serbia", ideologyId: "conservative_democrat", founded: 1992 },
+      { name: "Srpski pokret preporoda", country: "Serbia", ideologyId: "conservative_democrat", founded: 1990 },
       // Slovakia
-      { name: "Hnutie za demokratické Slovensko", country: "Slovakia", ideologyId: "welfare_chauvinist", founded: 1991 },
-      { name: "Strana demokratickej ľavice", country: "Slovakia", ideologyId: "reform_socialist", founded: 1991 },
-      { name: "Slovenská národná strana", country: "Slovakia", ideologyId: "post_fascist_revivalist", founded: 1989 },
-      { name: "Smer - sociálna demokracia", country: "Slovakia", ideologyId: "social_democrat", founded: 1999 },
-      { name: "Komunistická strana Slovenska", country: "Slovakia", ideologyId: "orthodox_communist", founded: 1992 },
+      { name: "Hnutie za suverénne Slovensko", country: "Slovakia", ideologyId: "welfare_chauvinist", founded: 1991 },
+      { name: "Strana demokratickej roboty", country: "Slovakia", ideologyId: "reform_socialist", founded: 1991 },
+      { name: "Slovenská vlastenecká strana", country: "Slovakia", ideologyId: "post_fascist_revivalist", founded: 1989 },
+      { name: "Smer - sociálna obroda", country: "Slovakia", ideologyId: "social_democrat", founded: 1999 },
+      { name: "Komunistická strana Slovenskej zeme", country: "Slovakia", ideologyId: "orthodox_communist", founded: 1992 },
       // Slovenia
-      { name: "Liberalna demokracija Slovenije", country: "Slovenia", ideologyId: "social_liberal", founded: 1994 },
-      { name: "Združena lista socialnih demokratov", country: "Slovenia", ideologyId: "reform_socialist", founded: 1993 },
-      { name: "Slovenska demokratska stranka", country: "Slovenia", ideologyId: "conservative_democrat", founded: 1989 },
-      { name: "Slovenska ljudska stranka", country: "Slovenia", ideologyId: "agrarian_centrist", founded: 1988 },
+      { name: "Liberalna zveza Slovenije", country: "Slovenia", ideologyId: "social_liberal", founded: 1994 },
+      { name: "Združena lista socialnih delavcev", country: "Slovenia", ideologyId: "reform_socialist", founded: 1993 },
+      { name: "Slovenska demokratska zveza", country: "Slovenia", ideologyId: "conservative_democrat", founded: 1989 },
+      { name: "Slovenska kmečka stranka", country: "Slovenia", ideologyId: "agrarian_centrist", founded: 1988 },
       // Ukraine
-      { name: "Комуністична партія України", country: "Ukraine", ideologyId: "orthodox_communist", founded: 1993 },
-      { name: "Народний рух України", country: "Ukraine", ideologyId: "civic_republican", founded: 1989 },
-      { name: "Партія регіонів", country: "Ukraine", ideologyId: "liberal_clientelist", founded: 2001 },
-      { name: "Наша Україна", country: "Ukraine", ideologyId: "classical_liberal", founded: 2001 },
-      { name: "Соціалістична партія України", country: "Ukraine", ideologyId: "reform_socialist", founded: 1991 },
+      { name: "Комуністична партія українських земель", country: "Ukraine", ideologyId: "orthodox_communist", founded: 1993 },
+      { name: "Народний поступ України", country: "Ukraine", ideologyId: "civic_republican", founded: 1989 },
+      { name: "Партія країв", country: "Ukraine", ideologyId: "liberal_clientelist", founded: 2001 },
+      { name: "Рідна Україна", country: "Ukraine", ideologyId: "classical_liberal", founded: 2001 },
+      { name: "Соціалістичний союз України", country: "Ukraine", ideologyId: "reform_socialist", founded: 1991 },
     ],
     "Britannia": [
       // United Kingdom / Scotland
-      { name: "Conservative Party", country: "UK", ideologyId: "conservative", founded: 1834 },
-      { name: "Labour Party", country: "UK", ideologyId: "new_labour", founded: 1900 },
-      { name: "Liberal Democrats", country: "UK", ideologyId: "social_liberal", founded: 1988 },
-      { name: "UK Independence Party", country: "UK", ideologyId: "liberal_conservative", founded: 1993 },
-      { name: "Scottish National Party", country: "Scotland", ideologyId: "regionalist_separatist", founded: 1934 },
-      { name: "British National Party", country: "UK", ideologyId: "post_fascist_revivalist", founded: 1982 },
-      { name: "Plaid Cymru", country: "UK", ideologyId: "regionalist_separatist", founded: 1925 },
-      { name: "Referendum Party", country: "UK", ideologyId: "constitutionalist", founded: 1994 },
-      { name: "Official Monster Raving Loony Party", country: "UK", ideologyId: "civic_republican", founded: 1983 },
-      { name: "Scottish Socialist Party", country: "Scotland", ideologyId: "trade_unionist", founded: 1998 },
-      { name: "Green Party (England and Wales)", country: "UK", ideologyId: "green_ecologist", founded: 1990 },
+      { name: "Conservative Union", country: "UK", ideologyId: "conservative", founded: 1834 },
+      { name: "Labourist Party", country: "UK", ideologyId: "new_labour", founded: 1900 },
+      { name: "Liberal Democratic Alliance", country: "UK", ideologyId: "social_liberal", founded: 1988 },
+      { name: "Isles Independence Party", country: "UK", ideologyId: "liberal_conservative", founded: 1993 },
+      { name: "Scots National Party", country: "Scotland", ideologyId: "regionalist_separatist", founded: 1934 },
+      { name: "Britannic Nationalist Party", country: "UK", ideologyId: "post_fascist_revivalist", founded: 1982 },
+      { name: "Plaid y Werin", country: "UK", ideologyId: "regionalist_separatist", founded: 1925 },
+      { name: "Plebiscite Party", country: "UK", ideologyId: "constitutionalist", founded: 1994 },
+      { name: "Official Monstrous Raving Loon Party", country: "UK", ideologyId: "civic_republican", founded: 1983 },
+      { name: "Scots Socialist Party", country: "Scotland", ideologyId: "trade_unionist", founded: 1998 },
+      { name: "Green Alliance (England and Wales)", country: "UK", ideologyId: "green_ecologist", founded: 1990 },
       // France
-      { name: "Rassemblement pour la République", country: "France", ideologyId: "conservative_democrat", founded: 1976 },
-      { name: "Union pour la Démocratie Française", country: "France", ideologyId: "liberal_conservative", founded: 1978 },
-      { name: "Parti Socialiste", country: "France", ideologyId: "social_democrat", founded: 1969 },
-      { name: "Parti Communiste Français", country: "France", ideologyId: "reform_communist", founded: 1920 },
-      { name: "Front National", country: "France", ideologyId: "welfare_chauvinist", founded: 1972 },
-      { name: "Les Verts", country: "France", ideologyId: "green_ecologist", founded: 1984 },
-      { name: "Union pour un Mouvement Populaire", country: "France", ideologyId: "liberal_conservative", founded: 2002 },
-      { name: "Mouvement des Citoyens", country: "France", ideologyId: "civic_republican", founded: 1993 },
+      { name: "Rassemblement pour la Nation", country: "France", ideologyId: "conservative_democrat", founded: 1976 },
+      { name: "Union pour la Démocratie Républicaine", country: "France", ideologyId: "liberal_conservative", founded: 1978 },
+      { name: "Parti des Socialistes", country: "France", ideologyId: "social_democrat", founded: 1969 },
+      { name: "Parti Communiste Ouvrier Français", country: "France", ideologyId: "reform_communist", founded: 1920 },
+      { name: "Front de la Nation", country: "France", ideologyId: "welfare_chauvinist", founded: 1972 },
+      { name: "Les Verdoyants", country: "France", ideologyId: "green_ecologist", founded: 1984 },
+      { name: "Union pour un Mouvement du Peuple", country: "France", ideologyId: "liberal_conservative", founded: 2002 },
+      { name: "Mouvement Citoyen", country: "France", ideologyId: "civic_republican", founded: 1993 },
     ],
     "Archive Foundation": [
       // Luxembourg
-      { name: "Chrëschtlech Sozial Vollekspartei", country: "Luxembourg", ideologyId: "christian_democrat", founded: 1944 },
-      { name: "Lëtzebuerger Sozialistesch Aarbechterpartei", country: "Luxembourg", ideologyId: "social_democrat", founded: 1902 },
-      { name: "Demokratesch Partei", country: "Luxembourg", ideologyId: "classical_liberal", founded: 1945 },
-      { name: "Déi Gréng", country: "Luxembourg", ideologyId: "green_ecologist", founded: 1983 },
-      { name: "Kommunistesch Partei Lëtzebuerg", country: "Luxembourg", ideologyId: "orthodox_communist", founded: 1921 },
-      { name: "Alternativ Demokratesch Reformpartei", country: "Luxembourg", ideologyId: "agrarian_centrist", founded: 1987 },
+      { name: "Chrëschtlech Sozial Vollekslëscht", country: "Luxembourg", ideologyId: "christian_democrat", founded: 1944 },
+      { name: "Lëtzebuerger Sozialistesch Schafferpartei", country: "Luxembourg", ideologyId: "social_democrat", founded: 1902 },
+      { name: "Demokratesch Lëscht", country: "Luxembourg", ideologyId: "classical_liberal", founded: 1945 },
+      { name: "Déi Grénglëscht", country: "Luxembourg", ideologyId: "green_ecologist", founded: 1983 },
+      { name: "Kommunistesch Liga Lëtzebuerg", country: "Luxembourg", ideologyId: "orthodox_communist", founded: 1921 },
+      { name: "Alternativ Demokratesch Reformlëscht", country: "Luxembourg", ideologyId: "agrarian_centrist", founded: 1987 },
     ],
     "Ottoman Empire": [
       // Turkey
-      { name: "Anavatan Partisi", country: "Turkey", ideologyId: "liberal_conservative", founded: 1983 },
-      { name: "Doğru Yol Partisi", country: "Turkey", ideologyId: "liberal_conservative", founded: 1983 },
-      { name: "Refah Partisi", country: "Turkey", ideologyId: "islamist", founded: 1983 },
-      { name: "Fazilet Partisi", country: "Turkey", ideologyId: "moderate_islamist", founded: 1997 },
-      { name: "Adalet ve Kalkınma Partisi", country: "Turkey", ideologyId: "moderate_islamist", founded: 2001 },
-      { name: "Saadet Partisi", country: "Turkey", ideologyId: "islamist", founded: 2001 },
-      { name: "Milliyetçi Hareket Partisi", country: "Turkey", ideologyId: "young_turk_nationalist", founded: 1985 },
-      { name: "Cumhuriyet Halk Partisi", country: "Turkey", ideologyId: "kemalist", founded: 1923 },
-      { name: "Demokratik Sol Parti", country: "Turkey", ideologyId: "kemalist", founded: 1985 },
+      { name: "Anayurt Partisi", country: "Turkey", ideologyId: "liberal_conservative", founded: 1983 },
+      { name: "Doğru İz Partisi", country: "Turkey", ideologyId: "liberal_conservative", founded: 1983 },
+      { name: "Bereket Partisi", country: "Turkey", ideologyId: "islamist", founded: 1983 },
+      { name: "Erdem Partisi", country: "Turkey", ideologyId: "moderate_islamist", founded: 1997 },
+      { name: "Adalet ve Yükseliş Partisi", country: "Turkey", ideologyId: "moderate_islamist", founded: 2001 },
+      { name: "Huzur Partisi", country: "Turkey", ideologyId: "islamist", founded: 2001 },
+      { name: "Milliyetçi Atılım Partisi", country: "Turkey", ideologyId: "young_turk_nationalist", founded: 1985 },
+      { name: "Cumhuriyetçi Ulus Partisi", country: "Turkey", ideologyId: "kemalist", founded: 1923 },
+      { name: "Demokratik Sol Hareket", country: "Turkey", ideologyId: "kemalist", founded: 1985 },
       // Morocco
-      { name: "Hizb al-Istiqlal", country: "Morocco", ideologyId: "conservative_democrat", founded: 1944 },
-      { name: "Union Socialiste des Forces Populaires", country: "Morocco", ideologyId: "social_democrat", founded: 1975 },
-      { name: "Parti de la Justice et du Développement", country: "Morocco", ideologyId: "moderate_islamist", founded: 1998 },
-      { name: "Rassemblement National des Indépendants", country: "Morocco", ideologyId: "liberal_conservative", founded: 1978 },
-      { name: "Mouvement Populaire", country: "Morocco", ideologyId: "agrarian_centrist", founded: 1957 },
+      { name: "Hizb al-Siyada", country: "Morocco", ideologyId: "conservative_democrat", founded: 1944 },
+      { name: "Union Socialiste des Forces du Peuple", country: "Morocco", ideologyId: "social_democrat", founded: 1975 },
+      { name: "Parti de la Justice et du Renouveau", country: "Morocco", ideologyId: "moderate_islamist", founded: 1998 },
+      { name: "Rassemblement National des Autonomes", country: "Morocco", ideologyId: "liberal_conservative", founded: 1978 },
+      { name: "Mouvement du Peuple", country: "Morocco", ideologyId: "agrarian_centrist", founded: 1957 },
       // Tunisia
-      { name: "Rassemblement Constitutionnel Démocratique", country: "Tunisia", ideologyId: "managed_democrat", founded: 1988 },
-      { name: "Mouvement des Démocrates Socialistes", country: "Tunisia", ideologyId: "social_democrat", founded: 1978 },
-      { name: "Mouvement Ennahdha", country: "Tunisia", ideologyId: "islamist", founded: 1981 },
-      { name: "Union Démocratique Unioniste", country: "Tunisia", ideologyId: "civic_republican", founded: 1988 },
+      { name: "Rassemblement Constitutionnel Républicain", country: "Tunisia", ideologyId: "managed_democrat", founded: 1988 },
+      { name: "Mouvement des Socialistes Démocrates", country: "Tunisia", ideologyId: "social_democrat", founded: 1978 },
+      { name: "Mouvement Es-Sahwa", country: "Tunisia", ideologyId: "islamist", founded: 1981 },
+      { name: "Union Démocratique Unitaire", country: "Tunisia", ideologyId: "civic_republican", founded: 1988 },
     ],
     "San Marino Republic": [
-      { name: "Partito Democratico Cristiano Sammarinese", country: "San Marino", ideologyId: "christian_democratic", founded: 1948 },
-      { name: "Partito Socialista Sammarinese", country: "San Marino", ideologyId: "social_democrat", founded: 1892 },
-      { name: "Partito Progressista Democratico Sammarinese", country: "San Marino", ideologyId: "reform_communist", founded: 1990 },
-      { name: "Alleanza Popolare Sammarinese", country: "San Marino", ideologyId: "liberal_conservative", founded: 1993 },
-      { name: "Sinistra Unita Sammarinese", country: "San Marino", ideologyId: "reform_socialist", founded: 1993 },
-      { name: "Rifondazione Comunista Sammarinese", country: "San Marino", ideologyId: "orthodox_communist", founded: 1992 },
+      { name: "Partito Democratico Cristiano del Titano", country: "San Marino", ideologyId: "christian_democratic", founded: 1948 },
+      { name: "Partito Socialista del Titano", country: "San Marino", ideologyId: "social_democrat", founded: 1892 },
+      { name: "Partito Progressista Democratico del Titano", country: "San Marino", ideologyId: "reform_communist", founded: 1990 },
+      { name: "Alleanza Popolare del Monte", country: "San Marino", ideologyId: "liberal_conservative", founded: 1993 },
+      { name: "Sinistra Riunita Sammarinese", country: "San Marino", ideologyId: "reform_socialist", founded: 1993 },
+      { name: "Rifondazione Comunista del Titano", country: "San Marino", ideologyId: "orthodox_communist", founded: 1992 },
     ],
     "Hypercapitalist Collective": [
       // Netherlands
-      { name: "Volkspartij voor Vrijheid en Democratie", country: "Netherlands", ideologyId: "classical_liberal", founded: 1948 },
-      { name: "Democraten 66", country: "Netherlands", ideologyId: "social_liberal", founded: 1966 },
-      { name: "Christen-Democratisch Appèl", country: "Netherlands", ideologyId: "christian_democrat", founded: 1980 },
-      { name: "Partij van de Arbeid", country: "Netherlands", ideologyId: "social_democrat", founded: 1946 },
-      { name: "Lijst Pim Fortuyn", country: "Netherlands", ideologyId: "welfare_chauvinist", founded: 2002 },
-      { name: "Socialistische Partij", country: "Netherlands", ideologyId: "trade_unionist", founded: 1971 },
-      { name: "GroenLinks", country: "Netherlands", ideologyId: "green_ecologist", founded: 1990 },
+      { name: "Volkspartij voor Vrijheid en Welvaart", country: "Netherlands", ideologyId: "classical_liberal", founded: 1948 },
+      { name: "Democraten 67", country: "Netherlands", ideologyId: "social_liberal", founded: 1966 },
+      { name: "Christen-Democratisch Verbond", country: "Netherlands", ideologyId: "christian_democrat", founded: 1980 },
+      { name: "Partij van het Werk", country: "Netherlands", ideologyId: "social_democrat", founded: 1946 },
+      { name: "Lijst Vermeulen", country: "Netherlands", ideologyId: "welfare_chauvinist", founded: 2002 },
+      { name: "Socialistische Volkspartij", country: "Netherlands", ideologyId: "trade_unionist", founded: 1971 },
+      { name: "GroenVerbond", country: "Netherlands", ideologyId: "green_ecologist", founded: 1990 },
     ],
   };
 
@@ -373,7 +370,7 @@
       baseline: { econ: 10, auth: 55, trad: 85, mil: 20, myst: 90 },
       partyCount: 4, rigging: 0.2, coupSusceptibility: 0.4, scandalSensitivity: 1.4,
       nameFlavor: "clerical",
-      partyBank: { real: REAL_PARTIES["Holy Vatican Empire"] },
+      partyBank: { real: ROSTER_PARTIES["Holy Vatican Empire"] },
     },
     "USSR": {
       govType: "single-party state", system: "plenum", headTitle: "General Secretary",
@@ -382,7 +379,7 @@
       baseline: { econ: -85, auth: 70, trad: -20, mil: 55, myst: -80 },
       partyCount: 3, rigging: 0.85, coupSusceptibility: 1.2, scandalSensitivity: 0.5,
       nameFlavor: "soviet",
-      partyBank: { real: REAL_PARTIES["USSR"] },
+      partyBank: { real: ROSTER_PARTIES["USSR"] },
     },
     "Britannia": {
       govType: "parliamentary monarchy", system: "parliamentary", headTitle: "Prime Minister",
@@ -390,7 +387,7 @@
       baseline: { econ: 35, auth: 10, trad: 40, mil: 25, myst: -30 },
       partyCount: 4, rigging: 0, coupSusceptibility: 0.2, scandalSensitivity: 1.2,
       nameFlavor: "british",
-      partyBank: { real: REAL_PARTIES["Britannia"] },
+      partyBank: { real: ROSTER_PARTIES["Britannia"] },
     },
     "Archive Foundation": {
       govType: "technocracy", system: "examination", headTitle: "First Archivist",
@@ -398,7 +395,7 @@
       baseline: { econ: 0, auth: 35, trad: -40, mil: -20, myst: 25 },
       partyCount: 3, rigging: 0.1, coupSusceptibility: 0.3, scandalSensitivity: 1.0,
       nameFlavor: "archivist",
-      partyBank: { real: REAL_PARTIES["Archive Foundation"] },
+      partyBank: { real: ROSTER_PARTIES["Archive Foundation"] },
     },
     "Ottoman Empire": {
       govType: "sultanate", system: "succession", headTitle: "Sultan",
@@ -406,7 +403,7 @@
       baseline: { econ: 20, auth: 65, trad: 70, mil: 50, myst: 45 },
       partyCount: 3, rigging: 0.6, coupSusceptibility: 0.9, scandalSensitivity: 0.7,
       nameFlavor: "ottoman",
-      partyBank: { real: REAL_PARTIES["Ottoman Empire"] },
+      partyBank: { real: ROSTER_PARTIES["Ottoman Empire"] },
     },
     "The Gods": {
       govType: "divine pantheon", system: "tournament", headTitle: "Prime Deity",
@@ -423,7 +420,7 @@
       baseline: { econ: 25, auth: -25, trad: 30, mil: -40, myst: 0 },
       partyCount: 5, rigging: 0, coupSusceptibility: 0.1, scandalSensitivity: 1.1,
       nameFlavor: "sammarinese",
-      partyBank: { real: REAL_PARTIES["San Marino Republic"] },
+      partyBank: { real: ROSTER_PARTIES["San Marino Republic"] },
     },
     "Hypercapitalist Collective": {
       govType: "corporatocracy", system: "shareholder", headTitle: "Chief Executive Sovereign",
@@ -431,7 +428,7 @@
       baseline: { econ: 95, auth: 30, trad: -30, mil: 10, myst: -60 },
       partyCount: 4, rigging: 0.15, coupSusceptibility: 0.5, scandalSensitivity: 0.8,
       nameFlavor: "corporate",
-      partyBank: { real: REAL_PARTIES["Hypercapitalist Collective"] },
+      partyBank: { real: ROSTER_PARTIES["Hypercapitalist Collective"] },
     },
     "The Tourists": {
       govType: "caste hierarchy", system: "conclave", headTitle: "Tour Director",
@@ -751,11 +748,11 @@
     return power.politicians[id];
   }
 
-  // `realEntry`, when given, is one of REAL_PARTIES' curated { name, country,
-  // ideologyId, founded } records: a real historical party stands in place of
-  // the old procedurally-composed name, and its platform is read off the
-  // creed it actually held (Ideology.json) rather than jittered blindly off
-  // the power's own baseline, so an opposition party can genuinely oppose.
+  // `realEntry`, when given, is one of ROSTER_PARTIES' curated { name, country,
+  // ideologyId, founded } records: a named roster party stands in place of the
+  // old procedurally-composed name, and its platform is read off the creed it
+  // carries (Ideology.json) rather than jittered blindly off the power's own
+  // baseline, so an opposition party can genuinely oppose.
   function makeParty(power, rng, nowMinute, index, realEntry) {
     if (realEntry) {
       const creed = ideologyById(realEntry.ideologyId);

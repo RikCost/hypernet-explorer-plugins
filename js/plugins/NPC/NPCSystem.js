@@ -231,6 +231,23 @@
     // in NPCSimulationCore.js). Matches as a standalone word, mirroring
     // hasAITag/hasLocalTag's convention (no angle brackets).
     hasShopTag: (note) => /\bshop\b/i.test(note || ""),
+    // "Story" marks a written character rather than a citizen of the crowd:
+    // somebody the plot needs to still be standing, unharmed and uninfected,
+    // on the map they were authored on. Everything that follows from the tag:
+    //   - they never travel. Their template is kept out of the spawn pools, so
+    //     no other map ever deals them into its roster (see getNPCPool), and
+    //     the hourly turnover leaves them where they are.
+    //   - they are on their map at every hour, and survive the passes that
+    //     empty a map of its crowd (an empty world, a zombie world).
+    //   - <Shop> + <Story> is one person, not a rota: that till is theirs at
+    //     every hour, exactly as an author-drawn shopkeeper's is (see
+    //     ShopShiftManager.isShopEvent in NPCSimulationCore.js).
+    //   - the Empathize panel will not let the party fight them or give them
+    //     a disease (see NPCEmpathizeUI's action list).
+    // They still live a life: unless the event's own movement is Fixed they
+    // get a controller like any other NPC, so they roam their map and meet
+    // their needs (see setupNPCControllers).
+    hasStoryTag: (note) => /\bstory\b/i.test(note || ""),
     // True when the map author drew a face on the event themselves. A Shop
     // counter that has one is NOT part of the shift rota: the person drawn on
     // it owns that till and is always found there (see ShopShiftManager
@@ -926,9 +943,13 @@
     // its own (see ShopShiftManager) so it can't serve as a template for a
     // transplanted NPC, and one that does have a graphic is a named shopkeeper
     // anchored to that till, who must never be drawn anywhere else.
+    // <Story> events are excluded for the opposite reason: they are a written
+    // person tied to the map they stand on, so their template must never be
+    // dealt onto another map's roster (see Utils.hasStoryTag).
     buildNPCPool: (mapData) => {
       return (mapData?.events || []).filter(ev =>
         ev && (Utils.hasAITag(ev.note) || Utils.hasLocalTag(ev.note)) &&
+        !Utils.hasStoryTag(ev.note) &&
         ev.pages?.length > 0 && ev.pages.some(p => p?.list?.length > 1)
       ).map(ev => ({ eventData: ev, eventId: ev.id }));
     },
@@ -966,6 +987,9 @@
           // file, because a rota persona is written onto the live event's page
           // data and would read back as an author graphic later on.
           hasGraphic: Utils.hasOwnGraphic(ev),
+          // A <Story> counter is one written person's till, so the world rota
+          // never staffs it either, face drawn on the event or not.
+          story: Utils.hasStoryTag(ev.note),
           hasStandardShop,
           dailyShopCommand,
           shopName: Utils.extractShopName(ev),
@@ -1034,9 +1058,13 @@
 
       const fromManifest = NPCPoolStore.load();
       if (fromManifest && fromManifest[groupName]) {
-        $gameSystem._npcPoolCache[groupName] = fromManifest[groupName];
-        Utils.debug(`NPC pool for "${groupName}" loaded from js/db/WorldGen/NPCPools.json: ${fromManifest[groupName].length} templates.`);
-        return fromManifest[groupName];
+        // A manifest written before <Story> was understood still holds those
+        // templates, and the file is only rebuilt when it is deleted, so the
+        // written characters are dropped on the way out instead.
+        const pool = fromManifest[groupName].filter(t => !Utils.hasStoryTag(t?.eventData?.note));
+        $gameSystem._npcPoolCache[groupName] = pool;
+        Utils.debug(`NPC pool for "${groupName}" loaded from js/db/WorldGen/NPCPools.json: ${pool.length} templates.`);
+        return pool;
       }
 
       const npcPool = [];
@@ -1091,6 +1119,9 @@
           if (!includePlayers && name.match(/^Player\d+$/)) return false; // Ignore player events unless explicitly included
           const note = e?.event()?.note || "";
           if (note.toLowerCase().includes("local")) return false; // Ignore local events from being placeholders!
+          // A written character is a person, not a slot: never hand their event
+          // out to be dealt somebody else's name and face, whatever it is named.
+          if (Utils.hasStoryTag(note)) return false;
           // A slot whose self-switch A is ON is a recruited NPC hidden behind its
           // blank page, i.e. considered part of the player's party. Never reuse it
           // as a spawn placeholder: overwriting it would resurrect / duplicate the
@@ -1184,6 +1215,10 @@
 
     transplantData: (targetEvent, npcData, index) => {
       const originalData = targetEvent.event();
+      // A written character is never handed over to this: getPlaceholders keeps
+      // <Story> events out of the slot pool, which is where every caller draws
+      // its targets from. Guarding again here would be worse than useless,
+      // every caller erases the event when this returns false.
       originalData.pages = JSON.parse(JSON.stringify(npcData.pages));
       originalData.name = npcData.name || `NPC${index + 1}`;
 
@@ -1528,10 +1563,13 @@ initializeGroupNPCs: (groupName, activeMapId = null) => {
       // A visiting party member is neither: they are a particular person who
       // was left standing here by another playthrough, and their name is not in
       // this town's roster, so the turnover would hand their slot to a local
-      // and they would vanish on the hour (NPCSystem VisitingParties).
+      // and they would vanish on the hour (NPCSystem VisitingParties). A
+      // <Story> character is excluded for the same reason from the other side:
+      // they are found on their own map at every hour of the day.
       const controllers = ($gameSystem.npcControllers || []).filter(c => c?.event && !c.event._erased);
       const managed = controllers.filter(
-        c => c.event._npcRosterSpawn && !c.isLocal && !c.event[VisitingParties.EVENT_TAG]);
+        c => c.event._npcRosterSpawn && !c.isLocal && !c.isStory &&
+             !c.event[VisitingParties.EVENT_TAG]);
 
       // The display roster includes main-map visitor borrow, sized to however
       // many roster events we have to fill, so hubs stay busy across the hour
@@ -3662,6 +3700,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         this.pathfinder = new Pathfinder(this.event);
         const note = this.event.event()?.note || "";
         this.isLocal = note.toLowerCase().includes("local");
+        // A written character never leaves their map, so the hourly turnover
+        // must not hand their slot to somebody else (see Utils.hasStoryTag).
+        this.isStory = Utils.hasStoryTag(note);
         this.clearStaleHideSwitch();
       }
     }
@@ -4657,6 +4698,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       // The multiplayer avatar slots are not people of this world.
       if (String(data.name || "").startsWith("Player")) continue; // i18n-ignore: event name matched at runtime
       const note = data.note || "";
+      // A written character is there whatever became of everybody else: an
+      // empty world is still their world, and the plot still needs them.
+      if (Utils.hasStoryTag(note)) continue;
       // An unattended till is still a till: never erased (its stock stays
       // stealable), but stripped of whatever graphic/movement it carries.
       if (Utils.hasShopTag(note)) { blankShopCounter(ev, data); continue; }
@@ -4748,10 +4792,57 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       if (String(data.name || "").startsWith("Player")) continue; // i18n-ignore: event name matched at runtime
       const note = data.note || "";
       if (Utils.hasShopTag(note)) continue;      // a till is not a person
+      if (Utils.hasStoryTag(note)) continue;     // and a written one does not rise
       const isRosterSlot = String(data.name || "").startsWith("NPC"); // i18n-ignore: event name matched at runtime
       if (!isRosterSlot && !Utils.hasAITag(note) && !Utils.hasLocalTag(note)) continue;
       if (ev._npcZombified) continue;
       zombifyEvent(ev);
+    }
+  }
+
+  // <Story> NPCs: written characters who belong to the map they stand on. The
+  // <AI> and <Local> passes in setupNPCControllers have already covered any
+  // that carry those tags too (the by-name guard below means nobody is given a
+  // second brain); this is for a story event that carries neither and would
+  // otherwise stand there inert.
+  //
+  // The author's own movement setting has the last word: an event set to Fixed
+  // was placed deliberately, behind a counter or at a doorway, and is left
+  // exactly there. Anything else (Random, Approach, Custom) is a person who
+  // moves, so they get a controller and live the ordinary NPC life, roaming
+  // this map and meeting their needs, and never leaving it.
+  //
+  // Runs in an empty world too: the crowd is gone, but the written cast is
+  // still there and still living their day.
+  function wakeStoryNPCs() {
+    if (!$gameMap || !$dataMap) return;
+    $gameSystem.npcControllers = $gameSystem.npcControllers || [];
+    // A face of their own is required rather than merely useful here: the
+    // <Shop> exemption in isControllableEvent exists for counters a rota
+    // persona is painted onto, and a <Story> counter is never on the rota, so
+    // walking one would set an invisible body wandering the map.
+    const storyEvents = $gameMap.events().filter(e =>
+      Utils.hasStoryTag(e?.event()?.note) && Utils.isControllableEvent(e) &&
+      Utils.hasOwnGraphic(e?.event()));
+    for (const npc of storyEvents) {
+      if (window.$gameSplitScreen?.active && window.$gameSplitScreen.p2Event === npc) continue;
+      npc.setThrough(false);
+      npc.setPriorityType(1);
+      npc.setOpacity(255);
+      // Read off the page data, not the live event: a controller sets the
+      // event's own move type to Fixed so RMMZ's random walk stops fighting it,
+      // which would read back as "the author wanted them still".
+      const moveType = npc.page()?.moveType ?? npc.event()?.pages?.[0]?.moveType ?? 0;
+      if (moveType === 0) continue;
+      if ($gameSystem.npcControllers.some(c => c.eventName === npc.event().name)) continue;
+      npc.setMoveSpeed(3);
+      npc.setMoveFrequency(5);
+      npc._moveType = 0;
+      const controller = new NPCController(npc.event().name);
+      controller.isStory = true;
+      console.log(`[NPC System] Story NPC roaming: "${npc.event().name}" at (${npc.x}, ${npc.y}) on map ${$gameMap.mapId()}`);
+      $gameSystem.npcControllers.push(controller);
+      controller.decideNextGoal();
     }
   }
 
@@ -4915,6 +5006,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // whatever graphic their event page was authored with.
     if (Config.isEmptyWorld()) {
       eraseUnpeopledEvents();
+      // Except the written cast: an empty world is still their world, and they
+      // still walk it (see wakeStoryNPCs).
+      wakeStoryNPCs();
       return;
     }
 
@@ -5102,7 +5196,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         // authored from an NPC template and still carries an <AI> note.
         if (window.$gameSplitScreen?.active && window.$gameSplitScreen.p2Event === npc) return;
         const isLocal = npc.event()?.note?.toLowerCase().includes("local");
-        if (!isLocal && i < tiles.length) {
+        // A written character stands where they were written, the spread pass
+        // only ever moves the anonymous crowd.
+        const isStory = Utils.hasStoryTag(npc.event()?.note);
+        if (!isLocal && !isStory && i < tiles.length) {
           npc.locate(tiles[i].x, tiles[i].y);
           console.log(`[NPC System] NPC spawned via <AI> tag: "${npc.event().name}" at (${tiles[i].x}, ${tiles[i].y}) on map ${currentMapId}`);
         }
@@ -5133,7 +5230,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       npc.setPriorityType(1);
       npc.setOpacity(255);
 
-      if (passableTiles.length > 0) {
+      // A <Story> local keeps the spot they were authored on, they are part of
+      // a written scene rather than a face in the crowd.
+      if (passableTiles.length > 0 && !Utils.hasStoryTag(npc.event()?.note)) {
         const randIndex = Math.floor(Math.random() * passableTiles.length);
         const tile = passableTiles.splice(randIndex, 1)[0];
         npc.locate(tile.x, tile.y);
@@ -5148,6 +5247,8 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         controller.decideNextGoal();
       }
     });
+
+    wakeStoryNPCs();
 
     // The dead have the last word. The staffing passes above may have painted
     // a face onto a slot before isControllableEvent could refuse it (the
@@ -5361,6 +5462,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     // Residents of a hand-made map, see NPCSociety's local-level sync: their
     // level follows the party's median instead of a one-time roll.
     hasLocalTag: Utils.hasLocalTag,
+    // A written character: never travels, always on their own map, never fought
+    // or infected, and one person behind their till rather than a shift rota.
+    // See Utils.hasStoryTag for the whole of what the tag means.
+    hasStoryTag: Utils.hasStoryTag,
     extractShopName: Utils.extractShopName,
     // Per-map index of shop-like events ( <Shop> tag / Shop Processing /
     // RandomDailyShop commands ), see SpawnManager.buildShopIndex.

@@ -1,0 +1,1496 @@
+{
+  "_comment": "",
+  "disease": {
+    "adenovirus": {
+      "name": "",
+      "desc": ""
+    },
+    "aether-lung": {
+      "name": "",
+      "desc": ""
+    },
+    "aids": {
+      "name": "",
+      "desc": ""
+    },
+    "alzheimers": {
+      "name": "",
+      "desc": ""
+    },
+    "amoebiasis": {
+      "name": "",
+      "desc": ""
+    },
+    "anemia": {
+      "name": "",
+      "desc": ""
+    },
+    "anthrax": {
+      "name": "",
+      "desc": ""
+    },
+    "anxiety": {
+      "name": "",
+      "desc": ""
+    },
+    "arrhythmia": {
+      "name": "",
+      "desc": ""
+    },
+    "ascariasis": {
+      "name": "",
+      "desc": ""
+    },
+    "aspergillosis": {
+      "name": "",
+      "desc": ""
+    },
+    "asphalt-cough": {
+      "name": "",
+      "desc": ""
+    },
+    "asthma": {
+      "name": "",
+      "desc": ""
+    },
+    "athletes-foot": {
+      "name": "",
+      "desc": ""
+    },
+    "b12-deficiency": {
+      "name": "",
+      "desc": ""
+    },
+    "babesiosis": {
+      "name": "",
+      "desc": ""
+    },
+    "bedbugs": {
+      "name": "",
+      "desc": ""
+    },
+    "bells-palsy": {
+      "name": "",
+      "desc": ""
+    },
+    "beriberi": {
+      "name": "",
+      "desc": ""
+    },
+    "bipolar": {
+      "name": "",
+      "desc": ""
+    },
+    "black-mold": {
+      "name": "",
+      "desc": ""
+    },
+    "bloom-fungus": {
+      "name": "",
+      "desc": ""
+    },
+    "botulism": {
+      "name": "",
+      "desc": ""
+    },
+    "brain-eating-amoeba": {
+      "name": "",
+      "desc": ""
+    },
+    "brucellosis": {
+      "name": "",
+      "desc": ""
+    },
+    "campylobacter": {
+      "name": "",
+      "desc": ""
+    },
+    "candidiasis": {
+      "name": "",
+      "desc": ""
+    },
+    "celiac": {
+      "name": "",
+      "desc": ""
+    },
+    "chagas": {
+      "name": "",
+      "desc": ""
+    },
+    "chickenpox": {
+      "name": "",
+      "desc": ""
+    },
+    "chigoe": {
+      "name": "",
+      "desc": ""
+    },
+    "chikungunya": {
+      "name": "",
+      "desc": ""
+    },
+    "chlamydia": {
+      "name": "",
+      "desc": ""
+    },
+    "cholera": {
+      "name": "",
+      "desc": ""
+    },
+    "chronic-lyme": {
+      "name": "",
+      "desc": ""
+    },
+    "chrono-ague": {
+      "name": "",
+      "desc": ""
+    },
+    "cirrhosis": {
+      "name": "",
+      "desc": ""
+    },
+    "cjd": {
+      "name": "",
+      "desc": ""
+    },
+    "cmv": {
+      "name": "",
+      "desc": ""
+    },
+    "cocoon-blight": {
+      "name": "",
+      "desc": ""
+    },
+    "collective-vision": {
+      "name": "",
+      "desc": ""
+    },
+    "common-cold": {
+      "name": "",
+      "desc": ""
+    },
+    "convent-mimicry": {
+      "name": "",
+      "desc": ""
+    },
+    "copd": {
+      "name": "",
+      "desc": ""
+    },
+    "covid": {
+      "name": "",
+      "desc": ""
+    },
+    "crab-lice": {
+      "name": "",
+      "desc": ""
+    },
+    "crimean-congo": {
+      "name": "",
+      "desc": ""
+    },
+    "crohns": {
+      "name": "",
+      "desc": ""
+    },
+    "cryptococcosis": {
+      "name": "",
+      "desc": ""
+    },
+    "cryptosporidiosis": {
+      "name": "",
+      "desc": ""
+    },
+    "dancing-plague": {
+      "name": "",
+      "desc": ""
+    },
+    "data-rot": {
+      "name": "",
+      "desc": ""
+    },
+    "dengue": {
+      "name": "",
+      "desc": ""
+    },
+    "depression": {
+      "name": "",
+      "desc": ""
+    },
+    "diabetes-1": {
+      "name": "",
+      "desc": ""
+    },
+    "diabetes-2": {
+      "name": "",
+      "desc": ""
+    },
+    "diabetic-neuropathy": {
+      "name": "",
+      "desc": ""
+    },
+    "diphtheria": {
+      "name": "",
+      "desc": ""
+    },
+    "doppelganger-panic": {
+      "name": "",
+      "desc": ""
+    },
+    "dream-plague": {
+      "name": "",
+      "desc": ""
+    },
+    "ebola": {
+      "name": "",
+      "desc": ""
+    },
+    "echinococcosis": {
+      "name": "",
+      "desc": ""
+    },
+    "elephantiasis": {
+      "name": "",
+      "desc": ""
+    },
+    "encephalitis-lethargica": {
+      "name": "",
+      "desc": ""
+    },
+    "endocarditis": {
+      "name": "",
+      "desc": ""
+    },
+    "epilepsy": {
+      "name": "",
+      "desc": ""
+    },
+    "fainting-sickness": {
+      "name": "",
+      "desc": ""
+    },
+    "familiar-fever": {
+      "name": "",
+      "desc": ""
+    },
+    "fatal-insomnia": {
+      "name": "",
+      "desc": ""
+    },
+    "fifth-disease": {
+      "name": "",
+      "desc": ""
+    },
+    "fleas": {
+      "name": "",
+      "desc": ""
+    },
+    "gangrene": {
+      "name": "",
+      "desc": ""
+    },
+    "genital-theft-panic": {
+      "name": "",
+      "desc": ""
+    },
+    "gerd": {
+      "name": "",
+      "desc": ""
+    },
+    "giardiasis": {
+      "name": "",
+      "desc": ""
+    },
+    "glossolalia-wave": {
+      "name": "",
+      "desc": ""
+    },
+    "goiter": {
+      "name": "",
+      "desc": ""
+    },
+    "gonorrhea": {
+      "name": "",
+      "desc": ""
+    },
+    "graves": {
+      "name": "",
+      "desc": ""
+    },
+    "gray-static": {
+      "name": "",
+      "desc": ""
+    },
+    "grimoire-tinnitus": {
+      "name": "",
+      "desc": ""
+    },
+    "guinea-worm": {
+      "name": "",
+      "desc": ""
+    },
+    "hand-foot-mouth": {
+      "name": "",
+      "desc": ""
+    },
+    "hantavirus": {
+      "name": "",
+      "desc": ""
+    },
+    "hashimoto": {
+      "name": "",
+      "desc": ""
+    },
+    "hepatitis-a": {
+      "name": "",
+      "desc": ""
+    },
+    "hepatitis-b": {
+      "name": "",
+      "desc": ""
+    },
+    "hepatitis-c": {
+      "name": "",
+      "desc": ""
+    },
+    "herpes-simplex": {
+      "name": "",
+      "desc": ""
+    },
+    "histoplasmosis": {
+      "name": "",
+      "desc": ""
+    },
+    "hiv": {
+      "name": "",
+      "desc": ""
+    },
+    "hollow-shell": {
+      "name": "",
+      "desc": ""
+    },
+    "hollowing": {
+      "name": "",
+      "desc": ""
+    },
+    "hookworm": {
+      "name": "",
+      "desc": ""
+    },
+    "hpv": {
+      "name": "",
+      "desc": ""
+    },
+    "hypertension": {
+      "name": "",
+      "desc": ""
+    },
+    "ibs": {
+      "name": "",
+      "desc": ""
+    },
+    "influenza": {
+      "name": "",
+      "desc": ""
+    },
+    "insomnia-chronic": {
+      "name": "",
+      "desc": ""
+    },
+    "iron-lung-curse": {
+      "name": "",
+      "desc": ""
+    },
+    "japanese-encephalitis": {
+      "name": "",
+      "desc": ""
+    },
+    "kuru": {
+      "name": "",
+      "desc": ""
+    },
+    "kwashiorkor": {
+      "name": "",
+      "desc": ""
+    },
+    "lassa": {
+      "name": "",
+      "desc": ""
+    },
+    "laughing-pox": {
+      "name": "",
+      "desc": ""
+    },
+    "laughter-epidemic": {
+      "name": "",
+      "desc": ""
+    },
+    "leeches": {
+      "name": "",
+      "desc": ""
+    },
+    "legionnaires": {
+      "name": "",
+      "desc": ""
+    },
+    "leishmaniasis": {
+      "name": "",
+      "desc": ""
+    },
+    "leprosy": {
+      "name": "",
+      "desc": ""
+    },
+    "ley-necrosis": {
+      "name": "",
+      "desc": ""
+    },
+    "ley-rot": {
+      "name": "",
+      "desc": ""
+    },
+    "lice": {
+      "name": "",
+      "desc": ""
+    },
+    "listeriosis": {
+      "name": "",
+      "desc": ""
+    },
+    "liver-abscess": {
+      "name": "",
+      "desc": ""
+    },
+    "liver-fluke": {
+      "name": "",
+      "desc": ""
+    },
+    "loop-amnesia": {
+      "name": "",
+      "desc": ""
+    },
+    "lupus": {
+      "name": "",
+      "desc": ""
+    },
+    "lycanthropy": {
+      "name": "",
+      "desc": ""
+    },
+    "lyme": {
+      "name": "",
+      "desc": ""
+    },
+    "mad-cow": {
+      "name": "",
+      "desc": ""
+    },
+    "malaria": {
+      "name": "",
+      "desc": ""
+    },
+    "mana-plague": {
+      "name": "",
+      "desc": ""
+    },
+    "mange": {
+      "name": "",
+      "desc": ""
+    },
+    "marburg": {
+      "name": "",
+      "desc": ""
+    },
+    "measles": {
+      "name": "",
+      "desc": ""
+    },
+    "melioidosis": {
+      "name": "",
+      "desc": ""
+    },
+    "meningitis": {
+      "name": "",
+      "desc": ""
+    },
+    "migraine": {
+      "name": "",
+      "desc": ""
+    },
+    "miliary-tuberculosis": {
+      "name": "",
+      "desc": ""
+    },
+    "mirror-sickness": {
+      "name": "",
+      "desc": ""
+    },
+    "monkeypox": {
+      "name": "",
+      "desc": ""
+    },
+    "mononucleosis": {
+      "name": "",
+      "desc": ""
+    },
+    "mrsa": {
+      "name": "",
+      "desc": ""
+    },
+    "ms": {
+      "name": "",
+      "desc": ""
+    },
+    "mucormycosis": {
+      "name": "",
+      "desc": ""
+    },
+    "mumps": {
+      "name": "",
+      "desc": ""
+    },
+    "myiasis": {
+      "name": "",
+      "desc": ""
+    },
+    "name-theft-panic": {
+      "name": "",
+      "desc": ""
+    },
+    "narcolepsy": {
+      "name": "",
+      "desc": ""
+    },
+    "night-blindness": {
+      "name": "",
+      "desc": ""
+    },
+    "nipah": {
+      "name": "",
+      "desc": ""
+    },
+    "norovirus": {
+      "name": "",
+      "desc": ""
+    },
+    "null-syndrome": {
+      "name": "",
+      "desc": ""
+    },
+    "numbers-compulsion": {
+      "name": "",
+      "desc": ""
+    },
+    "ocd": {
+      "name": "",
+      "desc": ""
+    },
+    "packet-fever": {
+      "name": "",
+      "desc": ""
+    },
+    "parkinsons": {
+      "name": "",
+      "desc": ""
+    },
+    "pellagra": {
+      "name": "",
+      "desc": ""
+    },
+    "pelvic-inflammatory": {
+      "name": "",
+      "desc": ""
+    },
+    "petro-lung": {
+      "name": "",
+      "desc": ""
+    },
+    "phantom-gasser": {
+      "name": "",
+      "desc": ""
+    },
+    "phantom-infestation": {
+      "name": "",
+      "desc": ""
+    },
+    "pinworm": {
+      "name": "",
+      "desc": ""
+    },
+    "plague": {
+      "name": "",
+      "desc": ""
+    },
+    "pneumonia": {
+      "name": "",
+      "desc": ""
+    },
+    "polio": {
+      "name": "",
+      "desc": ""
+    },
+    "possession": {
+      "name": "",
+      "desc": ""
+    },
+    "post-viral-syndrome": {
+      "name": "",
+      "desc": ""
+    },
+    "psoriasis": {
+      "name": "",
+      "desc": ""
+    },
+    "ptsd": {
+      "name": "",
+      "desc": ""
+    },
+    "q-fever": {
+      "name": "",
+      "desc": ""
+    },
+    "rabies": {
+      "name": "",
+      "desc": ""
+    },
+    "recursion-sickness": {
+      "name": "",
+      "desc": ""
+    },
+    "rheumatic-fever": {
+      "name": "",
+      "desc": ""
+    },
+    "rheumatoid": {
+      "name": "",
+      "desc": ""
+    },
+    "rickets": {
+      "name": "",
+      "desc": ""
+    },
+    "ringworm": {
+      "name": "",
+      "desc": ""
+    },
+    "river-blindness": {
+      "name": "",
+      "desc": ""
+    },
+    "rotavirus": {
+      "name": "",
+      "desc": ""
+    },
+    "rubella": {
+      "name": "",
+      "desc": ""
+    },
+    "saints-fire": {
+      "name": "",
+      "desc": ""
+    },
+    "salmonellosis": {
+      "name": "",
+      "desc": ""
+    },
+    "sars": {
+      "name": "",
+      "desc": ""
+    },
+    "satanic-panic": {
+      "name": "",
+      "desc": ""
+    },
+    "scabies": {
+      "name": "",
+      "desc": ""
+    },
+    "scarlet-fever": {
+      "name": "",
+      "desc": ""
+    },
+    "schistosomiasis": {
+      "name": "",
+      "desc": ""
+    },
+    "schizophrenia": {
+      "name": "",
+      "desc": ""
+    },
+    "scrapie": {
+      "name": "",
+      "desc": ""
+    },
+    "scurvy": {
+      "name": "",
+      "desc": ""
+    },
+    "sepsis": {
+      "name": "",
+      "desc": ""
+    },
+    "shigellosis": {
+      "name": "",
+      "desc": ""
+    },
+    "shingles": {
+      "name": "",
+      "desc": ""
+    },
+    "sigil-blight": {
+      "name": "",
+      "desc": ""
+    },
+    "sleeping-sickness": {
+      "name": "",
+      "desc": ""
+    },
+    "sleepwalk-pilgrimage": {
+      "name": "",
+      "desc": ""
+    },
+    "smallpox": {
+      "name": "",
+      "desc": ""
+    },
+    "soul-sickness": {
+      "name": "",
+      "desc": ""
+    },
+    "spanish-flu": {
+      "name": "",
+      "desc": ""
+    },
+    "sporotrichosis": {
+      "name": "",
+      "desc": ""
+    },
+    "star-madness": {
+      "name": "",
+      "desc": ""
+    },
+    "static-communion": {
+      "name": "",
+      "desc": ""
+    },
+    "stone-flesh": {
+      "name": "",
+      "desc": ""
+    },
+    "strep-throat": {
+      "name": "",
+      "desc": ""
+    },
+    "syphilis": {
+      "name": "",
+      "desc": ""
+    },
+    "tapeworm": {
+      "name": "",
+      "desc": ""
+    },
+    "tarantism": {
+      "name": "",
+      "desc": ""
+    },
+    "tertiary-syphilis": {
+      "name": "",
+      "desc": ""
+    },
+    "tetanus": {
+      "name": "",
+      "desc": ""
+    },
+    "the-quiet": {
+      "name": "",
+      "desc": ""
+    },
+    "ticks": {
+      "name": "",
+      "desc": ""
+    },
+    "tower-vertigo": {
+      "name": "",
+      "desc": ""
+    },
+    "toxoplasmosis": {
+      "name": "",
+      "desc": ""
+    },
+    "trachoma": {
+      "name": "",
+      "desc": ""
+    },
+    "trichinosis": {
+      "name": "",
+      "desc": ""
+    },
+    "tuberculosis": {
+      "name": "",
+      "desc": ""
+    },
+    "typhoid": {
+      "name": "",
+      "desc": ""
+    },
+    "typhus": {
+      "name": "",
+      "desc": ""
+    },
+    "ulcer": {
+      "name": "",
+      "desc": ""
+    },
+    "valley-fever": {
+      "name": "",
+      "desc": ""
+    },
+    "void-touch": {
+      "name": "",
+      "desc": ""
+    },
+    "wendigo-hunger": {
+      "name": "",
+      "desc": ""
+    },
+    "west-nile": {
+      "name": "",
+      "desc": ""
+    },
+    "whipworm": {
+      "name": "",
+      "desc": ""
+    },
+    "whisper-fever": {
+      "name": "",
+      "desc": ""
+    },
+    "whooping-cough": {
+      "name": "",
+      "desc": ""
+    },
+    "windscreen-pitting": {
+      "name": "",
+      "desc": ""
+    },
+    "yellow-fever": {
+      "name": "",
+      "desc": ""
+    },
+    "zika": {
+      "name": "",
+      "desc": ""
+    }
+  },
+  "condition": {
+    "broken-arm": {
+      "name": "",
+      "desc": ""
+    },
+    "broken-leg": {
+      "name": "",
+      "desc": ""
+    },
+    "broken-rib": {
+      "name": "",
+      "desc": ""
+    },
+    "concussion": {
+      "name": "",
+      "desc": ""
+    },
+    "sprained-ankle": {
+      "name": "",
+      "desc": ""
+    },
+    "dislocated-shoulder": {
+      "name": "",
+      "desc": ""
+    },
+    "deep-laceration": {
+      "name": "",
+      "desc": ""
+    },
+    "severe-burns": {
+      "name": "",
+      "desc": ""
+    },
+    "frostbite": {
+      "name": "",
+      "desc": ""
+    },
+    "whiplash": {
+      "name": "",
+      "desc": ""
+    },
+    "spinal-injury": {
+      "name": "",
+      "desc": ""
+    },
+    "amputation": {
+      "name": "",
+      "desc": ""
+    },
+    "cataract": {
+      "name": "",
+      "desc": ""
+    },
+    "hearing-loss": {
+      "name": "",
+      "desc": ""
+    },
+    "chronic-back-pain": {
+      "name": "",
+      "desc": ""
+    },
+    "arthritis": {
+      "name": "",
+      "desc": ""
+    },
+    "osteoporosis": {
+      "name": "",
+      "desc": ""
+    },
+    "kidney-stones": {
+      "name": "",
+      "desc": ""
+    },
+    "appendicitis": {
+      "name": "",
+      "desc": ""
+    },
+    "hernia": {
+      "name": "",
+      "desc": ""
+    },
+    "gout": {
+      "name": "",
+      "desc": ""
+    },
+    "chronic-fatigue": {
+      "name": "",
+      "desc": ""
+    },
+    "phantom-limb": {
+      "name": "",
+      "desc": ""
+    },
+    "scar-tissue": {
+      "name": "",
+      "desc": ""
+    },
+    "cybernetic-rejection": {
+      "name": "",
+      "desc": ""
+    },
+    "mana-burn-scars": {
+      "name": "",
+      "desc": ""
+    },
+    "cursed-brand": {
+      "name": "",
+      "desc": ""
+    },
+    "solomon-curse": {
+      "name": "",
+      "desc": ""
+    }
+  },
+  "symptom": {
+    "Bitot spots": "",
+    "abscess": "",
+    "absent grief": "",
+    "absent reflection": "",
+    "accusation": "",
+    "aches": "",
+    "agitation": "",
+    "aliases": "",
+    "allergic risk": "",
+    "altered taste": "",
+    "anemia": "",
+    "anhedonia": "",
+    "anosmia": "",
+    "aortitis": "",
+    "arcane fever": "",
+    "arthralgia": "",
+    "arthritis": "",
+    "ascites": "",
+    "ataxia": "",
+    "auditory hallucination": "",
+    "aura": "",
+    "autoscript": "",
+    "aversion to blessing": "",
+    "behavioral change": "",
+    "bites": "",
+    "biting": "",
+    "black eschar": "",
+    "black sputum": "",
+    "bleeding": "",
+    "bleeding gums": "",
+    "blister": "",
+    "blisters": "",
+    "bloating": "",
+    "blood in urine": "",
+    "blood loss": "",
+    "bloody diarrhea": "",
+    "bloody stool": "",
+    "blue spots": "",
+    "bone pain": "",
+    "borrowed instinct": "",
+    "borrowed voice": "",
+    "bradykinesia": "",
+    "brain fog": "",
+    "breathlessness": "",
+    "broken sleep": "",
+    "bruising": "",
+    "buboes": "",
+    "bullseye rash": "",
+    "burning": "",
+    "burning feet": "",
+    "burning limbs": "",
+    "burning pain": "",
+    "burrow lines": "",
+    "butterfly rash": "",
+    "cardiac damage": "",
+    "carditis": "",
+    "carrier hum": "",
+    "cataplexy": "",
+    "catatonia": "",
+    "chancre": "",
+    "channel collapse": "",
+    "chills": "",
+    "chorea": "",
+    "clouding": "",
+    "cold blood": "",
+    "cold name": "",
+    "cold skin": "",
+    "collapse": "",
+    "coma": "",
+    "compulsions": "",
+    "compulsive dancing": "",
+    "compulsive transcription": "",
+    "confusion": "",
+    "congestion": "",
+    "conjunctivitis": "",
+    "cough": "",
+    "counting floors": "",
+    "cramps": "",
+    "crippling arthralgia": "",
+    "crusted skin": "",
+    "crying": "",
+    "cyanosis": "",
+    "cyclic fever": "",
+    "cyst": "",
+    "deafness": "",
+    "deformity": "",
+    "dehydration": "",
+    "deja vu": "",
+    "delirium": "",
+    "delusions": "",
+    "dementia": "",
+    "depersonalization": "",
+    "depression": "",
+    "dermatitis": "",
+    "diarrhea": "",
+    "diplopia": "",
+    "discharge": "",
+    "dissociation": "",
+    "distension": "",
+    "dizziness": "",
+    "double vision": "",
+    "dread": "",
+    "dropped seconds": "",
+    "dry cough": "",
+    "dry eye": "",
+    "dry eyes": "",
+    "dysautonomia": "",
+    "dyspnea": "",
+    "earache": "",
+    "echolalia": "",
+    "edema": "",
+    "emboli": "",
+    "emerging worm": "",
+    "encephalitis": "",
+    "engorged bites": "",
+    "euphoria": "",
+    "exhaustion": "",
+    "exophthalmos": "",
+    "facial droop": "",
+    "facial rash": "",
+    "facial swelling": "",
+    "fainting": "",
+    "falling upward": "",
+    "fatigue": "",
+    "fever": "",
+    "fits": "",
+    "flashbacks": "",
+    "flat affect": "",
+    "forgetfulness": "",
+    "foul odor": "",
+    "frenzied dance": "",
+    "frontal headache": "",
+    "frostbite": "",
+    "frozen gaze": "",
+    "fruiting bodies": "",
+    "fur in the mouth": "",
+    "gangrene": "",
+    "genital retraction": "",
+    "glitching": "",
+    "glossolalia": "",
+    "grey skin": "",
+    "gummas": "",
+    "hair loss": "",
+    "hallucination": "",
+    "hallucinations": "",
+    "hardening skin": "",
+    "headache": "",
+    "heart risk": "",
+    "heartburn": "",
+    "heat in the chest": "",
+    "heavy breath": "",
+    "helpless laughter": "",
+    "hemolysis": "",
+    "hemorrhage": "",
+    "high fever": "",
+    "hoarseness": "",
+    "hunger": "",
+    "hydrophobia": "",
+    "hypervigilance": "",
+    "hypoxia": "",
+    "immune collapse": "",
+    "in-turned lashes": "",
+    "infertility": "",
+    "insatiable hunger": "",
+    "insomnia": "",
+    "irregularity": "",
+    "irritability": "",
+    "itch": "",
+    "itching": "",
+    "itching palms": "",
+    "jaundice": "",
+    "joint ache": "",
+    "joint pain": "",
+    "joint swelling": "",
+    "laughter": "",
+    "lesions": "",
+    "lethargy": "",
+    "limb swelling": "",
+    "limp": "",
+    "lockjaw": "",
+    "lost hours": "",
+    "lost time": "",
+    "luminous cough": "",
+    "lymph swelling": "",
+    "lymph tracking": "",
+    "malabsorption": "",
+    "malnutrition": "",
+    "mana bleed": "",
+    "mania": "",
+    "melancholy": "",
+    "memory gaps": "",
+    "memory loss": "",
+    "metallic taste": "",
+    "mild flu": "",
+    "mimicry": "",
+    "misread wards": "",
+    "misrecognition": "",
+    "monotone speech": "",
+    "moon dread": "",
+    "moving lump": "",
+    "murmur": "",
+    "muscle pain": "",
+    "mutism": "",
+    "myoclonus": "",
+    "nausea": "",
+    "neck swelling": "",
+    "necrosis": "",
+    "nerve pain": "",
+    "neuropathy": "",
+    "neurosyphilis": "",
+    "night blindness": "",
+    "night hunger": "",
+    "night itch": "",
+    "night sweats": "",
+    "nightmares": "",
+    "nits": "",
+    "no shadow": "",
+    "nodules": "",
+    "non-euclidean dread": "",
+    "nosebleed": "",
+    "numb extremities": "",
+    "numb legs": "",
+    "numb sigils": "",
+    "numbness": "",
+    "obsessions": "",
+    "obsessive inspection": "",
+    "often asymptomatic": "",
+    "often silent": "",
+    "oil sheen": "",
+    "open eyes": "",
+    "opportunistic infection": "",
+    "oral ulcers": "",
+    "organ failure": "",
+    "pain": "",
+    "pain crisis": "",
+    "pallor": "",
+    "palm blisters": "",
+    "palpitations": "",
+    "palsy": "",
+    "panic": "",
+    "paralysis": "",
+    "paranoia": "",
+    "peeling": "",
+    "pelvic pain": "",
+    "photophobia": "",
+    "photosensitivity": "",
+    "plaques": "",
+    "pneumonia": "",
+    "premature aging": "",
+    "pressure pain": "",
+    "psychiatric onset": "",
+    "pulmonary edema": "",
+    "pustules": "",
+    "rash": "",
+    "raw appetite": "",
+    "recall errors": "",
+    "recited fragments": "",
+    "reflection lag": "",
+    "reflux": "",
+    "relentless itch": "",
+    "repetition": "",
+    "resistant infection": "",
+    "restlessness": "",
+    "retinopathy": "",
+    "retry loops": "",
+    "right-sided pain": "",
+    "rigidity": "",
+    "ring rash": "",
+    "ringing": "",
+    "road dreams": "",
+    "scarred lids": "",
+    "scarring": "",
+    "second voice": "",
+    "seizure": "",
+    "seizures": "",
+    "semantic loss": "",
+    "serous discharge": "",
+    "shame": "",
+    "shared hallucination": "",
+    "shared route": "",
+    "sinus pain": "",
+    "skin ulcers": "",
+    "sleep attacks": "",
+    "sleep disruption": "",
+    "sleeplessness": "",
+    "slow wounds": "",
+    "sluggishness": "",
+    "smeared sigils": "",
+    "sneezing": "",
+    "somnambulism": "",
+    "sore throat": "",
+    "spasms": "",
+    "spell misfire": "",
+    "spore cough": "",
+    "stack overflow": "",
+    "staring": "",
+    "stiff neck": "",
+    "stiffening": "",
+    "stiffness": "",
+    "strawberry tongue": "",
+    "stumbling": "",
+    "stupor": "",
+    "stutter": "",
+    "suspicion": "",
+    "sweating": "",
+    "sweats": "",
+    "sweet odor": "",
+    "swelling": "",
+    "swollen glands": "",
+    "syncope": "",
+    "tabes": "",
+    "tall stature": "",
+    "tar cough": "",
+    "tension": "",
+    "terror": "",
+    "thinning shadow": "",
+    "thirst": "",
+    "throat membrane": "",
+    "time-slip": "",
+    "tingling": "",
+    "tinnitus": "",
+    "toe lesion": "",
+    "trance": "",
+    "tremor": "",
+    "ulcers": "",
+    "undulant fever": "",
+    "vision loss": "",
+    "visions": "",
+    "visual snow": "",
+    "vomiting": "",
+    "waking exhaustion": "",
+    "warts": "",
+    "wasting": "",
+    "watery diarrhea": "",
+    "weakness": "",
+    "weeping": "",
+    "weight gain": "",
+    "weight loss": "",
+    "weightlessness": "",
+    "welts": "",
+    "wheeze": "",
+    "whoop": "",
+    "worry": ""
+  },
+  "progressedFrom": "",
+  "toast": {
+    "cured": "",
+    "dosed": "",
+    "dosedManage": "",
+    "needsMedicine": "",
+    "courseLost": "",
+    "progressed": ""
+  },
+  "ui": {
+    "healthy": "",
+    "conditions": "",
+    "recovered": "",
+    "remedies": "",
+    "noRemedy": "",
+    "held": "",
+    "courseDays": "",
+    "suppressive": "",
+    "carriedFor": "",
+    "course": "",
+    "courseProgress": "",
+    "selfCure": "",
+    "never": "",
+    "days": "",
+    "lifelong": "",
+    "becomes": "",
+    "becomesIn": "",
+    "effects": "",
+    "needs": "",
+    "treatment": "",
+    "curableIn": "",
+    "incurable": "",
+    "incurableManaged": "",
+    "generic": "",
+    "category": "",
+    "severity": "",
+    "spread": "",
+    "incubation": "",
+    "windowPeriod": "",
+    "mostInfectious": "",
+    "peakBetween": "",
+    "peakOngoing": "",
+    "runsFor": "",
+    "symptoms": "",
+    "undiagnosed": "",
+    "undiagnosedDesc": "",
+    "unknownIllness": "",
+    "incubating": "",
+    "peakInfectious": "",
+    "latentInfectious": "",
+    "dosedToday": "",
+    "worsening": "",
+    "library": "",
+    "noLibrary": "",
+    "showLibrary": "",
+    "showTimeline": "",
+    "nature": "",
+    "natureMagical": "",
+    "natureMundane": ""
+  },
+  "category": {
+    "viral": "",
+    "bacterial": "",
+    "fungal": "",
+    "parasitic": "",
+    "protozoan": "",
+    "prion": "",
+    "genetic": "",
+    "autoimmune": "",
+    "respiratory": "",
+    "cardiovascular": "",
+    "neurological": "",
+    "digestive": "",
+    "deficiency": "",
+    "mental": "",
+    "chronic": "",
+    "esoteric": "",
+    "cursed": "",
+    "cosmic": "",
+    "digital": "",
+    "anomalous": "",
+    "hysteria": "",
+    "injury": "",
+    "surgical": "",
+    "condition": ""
+  },
+  "severity": {
+    "trivial": "",
+    "mild": "",
+    "moderate": "",
+    "chronic": "",
+    "severe": "",
+    "esoteric": "",
+    "lethal": ""
+  },
+  "vector": {
+    "airborne": "",
+    "saliva": "",
+    "contact": "",
+    "social": "",
+    "bite": "",
+    "sexual": "",
+    "foodwater": "",
+    "fluid": "",
+    "vector": "",
+    "magical": "",
+    "digital": "",
+    "cosmic": "",
+    "none": ""
+  },
+  "param": {
+    "mhp": "",
+    "mmp": "",
+    "atk": "",
+    "def": "",
+    "mat": "",
+    "mdf": "",
+    "agi": "",
+    "luk": ""
+  },
+  "drug": {
+    "generic": "",
+    "analgesic": "",
+    "antibiotic": "",
+    "antibiotic-broad": "",
+    "antiviral": "",
+    "antiretroviral": "",
+    "antifungal": "",
+    "antiparasitic": "",
+    "anthelmintic": "",
+    "antiprotozoal": "",
+    "antimalarial": "",
+    "antitoxin": "",
+    "rehydration": "",
+    "vitamin": "",
+    "hematinic": "",
+    "insulin": "",
+    "immunosuppressant": "",
+    "bronchodilator": "",
+    "cardiac": "",
+    "anticonvulsant": "",
+    "psychiatric": "",
+    "sedative": "",
+    "antiseptic": "",
+    "digestive": "",
+    "holy": "",
+    "arcane": "",
+    "nanite": "",
+    "void": "",
+    "panacea": "",
+    "placebo": ""
+  }
+}

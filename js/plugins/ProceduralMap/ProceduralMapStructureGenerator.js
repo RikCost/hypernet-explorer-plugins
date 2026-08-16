@@ -3116,11 +3116,11 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
 
   // Place one variant of `name` with its top-left at (x, y), whole or not at
   // all. `layer` defaults to the prop layer. Returns true when it went down.
-  function cityPlace(ctx, name, x, y, layer) {
+  function cityPlace(ctx, name, x, y, layer, forcedVariant) {
     const variants = cityVariants(ctx, name);
     if (!variants) return false;
     const z = (layer == null) ? CITY_LAYER_PROP : layer;
-    const v = variants[Math.floor(ctx.rng() * variants.length)];
+    const v = forcedVariant || variants[Math.floor(ctx.rng() * variants.length)];
     const size = cityVariantSize(v);
     if (!size) return false;
     for (let gy = 0; gy < size.h; gy++) {
@@ -3128,6 +3128,10 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
         if (!cityCellFree(ctx, x + gx, y + gy)) return false;
       }
     }
+    // The footprint actually taken, for a caller that has to place something
+    // against it (the bus sign beside its shelter). Variants of one prop can
+    // differ in size, so the size chosen here is the only accurate one.
+    ctx.lastPlacement = { x, y, w: size.w, h: size.h };
     if (v.type === "single") {
       ctx.mapData[calculateIndex(x, y, z, ctx.width, ctx.height)] = v.tileId;
       ctx.mark(x, y);
@@ -3154,7 +3158,9 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     const v = variants[Math.floor(ctx.rng() * variants.length)];
     const size = cityVariantSize(v);
     if (!size) return false;
-    return cityPlace(ctx, name, x, y - (size.h - 1), layer);
+    // The variant that was measured is the variant that must be drawn - letting
+    // cityPlace re-roll would anchor a two-tile sign by a three-tile offset.
+    return cityPlace(ctx, name, x, y - (size.h - 1), layer, v);
   }
 
   // Is any tile of this feature already on the map? A prefab may have stamped
@@ -3246,32 +3252,68 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
   }
 
   // ---- pass: bus stops ------------------------------------------------------
-  // Every settlement gets at least one, because the bus is how the fast-travel
-  // network is boarded (ProceduralHouseSystem's SignBus handler) and a city you
-  // cannot leave by bus is a dead end. The shelter is placed against a road
-  // where there is room for it, and a SignBus goes up beside it; if nothing on
-  // the map can hold the shelter, the sign alone still stands.
+  // Exactly one per map: the bus is how the fast-travel network is boarded
+  // (ProceduralHouseSystem's SignBus handler), so a settlement needs a stop,
+  // but one is all it needs - a second shelter boards the same map from the
+  // same city and only eats a block that a building could have had. The
+  // shelter is placed against a road where there is room for it, and a single
+  // SignBus goes up beside it; if nothing on the map can hold the shelter, the
+  // sign alone still stands.
+  // The sign belongs TO the shelter: it is what the player faces to board, and
+  // one standing on its own down the road reads as a different stop that isn't
+  // there. So it is always raised beside the shelter it serves - the ends of
+  // the shelter first, then the tiles around it, widening a ring at a time -
+  // and a sign is only ever placed away from a shelter when the map could not
+  // fit a shelter at all.
+  function cityBusSignBeside(ctx, x, y, size) {
+    const w = size ? size.w : 5;
+    const h = size ? size.h : 3;
+    const spots = [];
+    // Standing room at either end of the shelter, level with its base.
+    spots.push({ x: x - 1, y: y + h - 1 }, { x: x + w, y: y + h - 1 });
+    // Then the whole ring around the footprint, widening outward.
+    for (let pad = 1; pad <= 3; pad++) {
+      for (let gx = -pad; gx < w + pad; gx++) {
+        spots.push({ x: x + gx, y: y - pad }, { x: x + gx, y: y + h - 1 + pad });
+      }
+      for (let gy = -pad; gy < h + pad; gy++) {
+        spots.push({ x: x - pad, y: y + gy }, { x: x + w - 1 + pad, y: y + gy });
+      }
+    }
+    for (const s of spots) {
+      if (cityPlaceStanding(ctx, "SignBus", s.x, s.y)) return true;
+    }
+    return false;
+  }
+
   function cityBusStops(ctx, verge, want) {
     let shelters = cityHasFeature(ctx, "BusStop") ? 1 : 0;
-    let signs = 0;
+    let signs = cityHasFeature(ctx, "SignBus") ? 1 : 0;
+    // One stop and one sign, never more - whatever the caller asked for and
+    // whatever a prefab already brought onto the map.
+    want = Math.min(want == null ? 1 : want, 1);
     const targets = cityShuffle(verge.slice(), ctx.rng);
     for (const t of targets) {
       if (shelters >= want) break;
       if (!cityPlace(ctx, "BusStop", t.x, t.y)) continue;
       shelters++;
-      // The sign goes at the near end of the shelter, on the verge.
-      const spots = [{ x: t.x - 1, y: t.y }, { x: t.x + 5, y: t.y }, { x: t.x, y: t.y - 1 }];
-      for (const s of spots) if (cityPlaceStanding(ctx, "SignBus", s.x, s.y)) { signs++; break; }
+      const spot = ctx.lastPlacement;
+      if (!signs && cityBusSignBeside(ctx, spot.x, spot.y, spot)) signs++;
     }
     // The guarantee: a settlement always answers the bus.
     if (!shelters) {
       for (let y = 2; y < ctx.height - 4 && !shelters; y++) {
         for (let x = 2; x < ctx.width - 6 && !shelters; x++) {
-          if (cityPlace(ctx, "BusStop", x, y)) shelters++;
+          if (!cityPlace(ctx, "BusStop", x, y)) continue;
+          shelters++;
+          const spot = ctx.lastPlacement;
+          if (!signs && cityBusSignBeside(ctx, spot.x, spot.y, spot)) signs++;
         }
       }
     }
-    if (!signs && !cityHasFeature(ctx, "SignBus")) {
+    // Only when the map could hold no shelter at all does a sign go up on its
+    // own - a stop the bus can still be boarded from.
+    if (!signs && !shelters) {
       for (const t of targets) if (cityPlaceStanding(ctx, "SignBus", t.x, t.y)) { signs++; break; }
     }
     return { shelters, signs };
@@ -3558,6 +3600,11 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
   }
 
   // ---- block dressing: parks, car parks, plazas, vacant lots ---------------
+  // Repaints a block's ground. The marking layer goes with it: a block is laid
+  // over whatever the border-road pass ran through first, and a dashed centre
+  // line left behind on a park or a vacant lot is a road marking with no road
+  // under it - a line sitting at random in the grass. This runs before each
+  // dresser lays its own markings (parking bays), so nothing wanted is lost.
   function cityPaintGround(ctx, rect, tileIds) {
     if (!tileIds || !tileIds.length) return;
     for (let y = rect.y; y < rect.y + rect.h; y++) {
@@ -3566,6 +3613,7 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
         if (ctx.isOccupied(x, y)) continue;
         ctx.mapData[calculateIndex(x, y, 0, ctx.width, ctx.height)] =
           tileIds[Math.floor(ctx.rng() * tileIds.length)];
+        ctx.mapData[calculateIndex(x, y, CITY_LAYER_MARK, ctx.width, ctx.height)] = 0;
       }
     }
   }
@@ -3632,7 +3680,7 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     const o = opts || {};
     const verge = cityVergeTiles(ctx);
     cityStreetTreeRows(ctx, o.streetTrees);
-    cityBusStops(ctx, verge, o.busStops != null ? o.busStops : 2);
+    cityBusStops(ctx, verge, o.busStops != null ? o.busStops : 1);
     cityGreenery(ctx, o.greenery != null ? o.greenery : 0.10);
     // After the greenery (which only plants on ground that was already soft)
     // and before the litter, so a weed can come up through a pavement that has
@@ -3991,7 +4039,7 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
 
     dressCityStreets(ctx, {
       streetTrees: 14,
-      busStops: 1 + Math.floor(rng() * 2),
+      busStops: 1,
       greenery: 0.05,
       litter: 5 + Math.floor(rng() * 6),
     });

@@ -13,10 +13,6 @@
       "name": "AIDS",
       "desc": "Il sistema immunitario e' stato smantellato. Ogni altro patogeno entra come in casa propria."
     },
-    "albinism": {
-      "name": "Albinismo",
-      "desc": "Pigmento assente; pelle e occhi vulnerabili alla luce."
-    },
     "alzheimers": {
       "name": "Malattia di Alzheimer",
       "desc": "La memoria che si sfila mentre le placche soffocano la mente."
@@ -205,10 +201,6 @@
       "name": "Criptosporidiosi",
       "desc": "Il cloro non la scalfisce. Una piscina, un'intera citta'."
     },
-    "cystic-fibrosis": {
-      "name": "Fibrosi cistica",
-      "desc": "Muco denso che annega i polmoni e ostruisce il pancreas."
-    },
     "dancing-plague": {
       "name": "Febbre danzante",
       "desc": "Ballano finché i piedi si spaccano, e non sanno dire perché abbiano cominciato."
@@ -349,10 +341,6 @@
       "name": "Tiroidite di Hashimoto",
       "desc": "La tiroide che si spegne lentamente; freddo e pesantezza."
     },
-    "hemophilia": {
-      "name": "Emofilia",
-      "desc": "Sangue che non coagula; un graffio diventa un pericolo."
-    },
     "hepatitis-a": {
       "name": "Epatite A",
       "desc": "Virus epatico oro-fecale. Ittero e spossatezza."
@@ -392,10 +380,6 @@
     "hpv": {
       "name": "Papillomavirus umano",
       "desc": "Comune virus venereo; alcuni ceppi sono oncogeni."
-    },
-    "huntingtons": {
-      "name": "Malattia di Huntington",
-      "desc": "Un destino ereditario: corea e declino dalla mezza età."
     },
     "hypertension": {
       "name": "Ipertensione",
@@ -516,10 +500,6 @@
     "marburg": {
       "name": "Febbre di Marburg",
       "desc": "Un filovirus uscito da un pozzo di miniera. Sanguinamento da ogni tessuto molle."
-    },
-    "marfan": {
-      "name": "Sindrome di Marfan",
-      "desc": "Tessuto connettivo difettoso; arti lunghi e un'aorta fragile."
     },
     "measles": {
       "name": "Morbillo",
@@ -649,10 +629,6 @@
       "name": "Poliomielite",
       "desc": "Attacca i motoneuroni; può lasciare una paralisi permanente."
     },
-    "porphyria": {
-      "name": "Porfiria",
-      "desc": "La malattia dei vampiri: vesciche al sole, follia, urine color vino."
-    },
     "possession": {
       "name": "Possessione",
       "desc": "Siete in due li' dentro e solo uno dei due tiene il conto dei giorni."
@@ -761,10 +737,6 @@
       "name": "Fuoco di Sant'Antonio",
       "desc": "Varicella riattivata che segue un nervo con dolore bruciante."
     },
-    "sickle-cell": {
-      "name": "Anemia falciforme",
-      "desc": "Globuli rossi a falce che intasano i vasi in crisi atroci."
-    },
     "sigil-blight": {
       "name": "Ruggine dei Sigilli",
       "desc": "Le protezioni scritte si ammorbidiscono vicino a te e ogni sigillo che tocchi da allora si legge un po' storto."
@@ -828,10 +800,6 @@
     "tetanus": {
       "name": "Tetano",
       "desc": "Trisma. Una neurotossina che blocca rigido ogni muscolo."
-    },
-    "thalassemia": {
-      "name": "Talassemia",
-      "desc": "Emoglobina difettosa che lascia il sangue cronicamente povero."
     },
     "the-quiet": {
       "name": "La Quiete",

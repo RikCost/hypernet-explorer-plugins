@@ -383,6 +383,14 @@ body {
 #map-info-hud .mih-temp .mih-region-val {
     font-weight: 700;
 }
+/* The level of what roams this square, shown on the world map in the
+   distance-from-spawn encounter mode (see MapInfoHUD._enemyLevel). It borrows
+   the temperature scale's colours on purpose: the two rows are the same kind of
+   statement about the ground the party is standing on, one about the air and
+   one about what is in it. */
+#map-info-hud .mih-danger .mih-region-val {
+    font-weight: 700;
+}
 #map-info-hud .mih-temp-cold { color: #4fc3f7; }
 #map-info-hud .mih-temp-cool { color: #81d4fa; }
 #map-info-hud .mih-temp-mild { color: var(--text-primary-hover); }
@@ -453,8 +461,9 @@ body {
 /* ==========================================================================
    Party HUD (js/plugins/UI/PartyHud.js)
    One row per party member in the top-left corner: the bordered card carries
-   name, state icons, HP and MP, and the urgent-need chips stand to the right
-   of it, outside the box. Position and card width are written inline by the
+   name, HP and MP, and a chip column stands to the right of it, outside the
+   box — urgent needs first, then states and buffs, all as words rather than
+   icons. Position and card width are written inline by the
    plugin from its parameters (the width as --phud-card-w). Never use the
    `inset` shorthand here: the game runtime does not honour it (see the bar
    fills below).
@@ -497,7 +506,6 @@ body {
 #party-hud .phud-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 6px;
     margin-bottom: 4px;
 }
@@ -512,18 +520,6 @@ body {
 }
 #party-hud .phud-card.phud-down .phud-name {
     color: var(--text-blood-red);
-}
-#party-hud .phud-states {
-    display: flex;
-    flex-shrink: 0;
-    gap: 2px;
-}
-#party-hud .phud-state-icon {
-    display: block;
-    width: 20px;
-    height: 20px;
-    background-repeat: no-repeat;
-    image-rendering: pixelated;
 }
 #party-hud .phud-bar {
     position: relative;
@@ -596,15 +592,22 @@ body {
 #party-hud .phud-bar-val {
     right: 5px;
 }
-#party-hud .phud-alerts {
+#party-hud .phud-chips {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     gap: 3px;
     max-width: 200px;
     padding-top: 4px;
 }
-#party-hud .phud-alerts.phud-alerts-empty {
+#party-hud .phud-alerts,
+#party-hud .phud-states {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
+#party-hud .phud-alerts.phud-alerts-empty,
+#party-hud .phud-states.phud-alerts-empty {
     display: none;
 }
 #party-hud .phud-alert {
@@ -618,6 +621,18 @@ body {
     background: var(--text-primary-hover);
     box-shadow: 0 2px 6px var(--shadow-black-translucent-55);
 }
+/* A state is a standing fact, not an emergency, so it is quieter than a need
+   chip: parchment lettering on the card's own ground. A debuff leans red. */
+#party-hud .phud-state {
+    color: var(--text-primary-hover);
+    background: var(--bg-secondary-hover);
+    border: 1px solid var(--text-primary-hover);
+    padding: 0 5px;
+}
+#party-hud .phud-state-down {
+    color: var(--text-blood-red);
+    border-color: var(--text-blood-red);
+}
 #party-hud .phud-alert-critical {
     color: #ffe9e9;
     background: var(--text-blood-red);
@@ -626,4 +641,64 @@ body {
 @keyframes phud-chip {
     0%, 100% { opacity: 1; }
     50%      { opacity: 0.55; }
+}
+
+/* ==========================================================================
+   BOOT SCREEN (js/main.js, Main#showLoadingSpinner)
+   --------------------------------------------------------------------------
+   The HexDOS fake POST that runs before the engine is up. It used to be built
+   entirely from element.style.cssText plus a <style> appended for the caret,
+   which meant the boot screen was the one surface in the game with no
+   stylesheet at all. It deliberately does NOT use theme tokens: it paints
+   before any theme is applied and must look the same under every preset.
+   ========================================================================== */
+#bootScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: #c0c0c0;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 10000;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+#bootScreen .boot-logo {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    height: auto;
+    z-index: 10001;
+}
+
+/* Every printed line, and the trailing animated dots, inherit the screen's
+   phosphor grey; they were setting it one element at a time. */
+#bootContent,
+#bootContent > * {
+    color: #c0c0c0;
+}
+
+#bootContent::after {
+    content: '█';
+    animation: blink 1s infinite;
+    color: #c0c0c0;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+@media (max-width: 768px) {
+    #bootScreen {
+        font-size: 14px;
+        padding: 10px;
+    }
 }

@@ -386,6 +386,38 @@
     return label || MISC_CATEGORY;
   };
 
+  // Alphabetical is fair but it is not useful: Medical and Tools are what the
+  // backpack gets opened for in a hurry, so they head the row whatever letter
+  // they start with, and Materials and Body Parts trail it — stock and salvage
+  // nobody opens the backpack to reach. Everything else keeps the alphabetical
+  // middle, and this one table orders the tab row and the drawers alike so a
+  // category does not move when the player switches view.
+  const CATEGORY_FIRST = ["medical", "tools"];   // i18n-ignore  item-category ids
+  const CATEGORY_LAST = ["materials", "bodypart"];  // i18n-ignore  item-category ids
+
+  // A tagged item names its category by the raw <category:> tag, an untagged one
+  // by a translated type name, so a caption folds back onto its id before it can
+  // be ranked. Spacing is dropped with it: "Body Parts" ranks as "bodyparts".
+  const categoryRankKey = (label) => {
+    const key = String(label || "").trim().toLowerCase();
+    const named = (id) => String(T(id) || "").trim().toLowerCase();
+    if (key === named('ItemUtils.category.tools')) return "tools";
+    if (key === named('ItemUtils.category.materials')) return "materials";
+    return key.replace(/[\s_-]+/g, "");
+  };
+
+  const categoryRank = (label) => {
+    const key = categoryRankKey(label);
+    const head = CATEGORY_FIRST.findIndex((c) => key.startsWith(c));
+    if (head >= 0) return head;
+    const tail = CATEGORY_LAST.findIndex((c) => key.startsWith(c));
+    if (tail >= 0) return CATEGORY_FIRST.length + 1 + tail;
+    return CATEGORY_FIRST.length;
+  };
+
+  const compareCategories = (a, b) =>
+    (categoryRank(a) - categoryRank(b)) || String(a).localeCompare(String(b));
+
   function matchesUICategory(item, category) {
     if (!item) return false;
     if (category === ALL_CATEGORY) return true;
@@ -396,8 +428,8 @@
   }
 
   // The row itself: the two standing tabs, then a tab per category the pockets
-  // hold, alphabetically. Favourites earns its place whatever is carried — it
-  // is a shelf the player builds rather than one the loot decides.
+  // hold, in the order above. Favourites earns its place whatever is carried —
+  // it is a shelf the player builds rather than one the loot decides.
   Scene_EnhancedItem.prototype.uiCategories = function () {
     const present = new Map();
     for (const item of $gameParty.allItems()) {
@@ -405,7 +437,7 @@
       const key = label.toLowerCase();
       if (!present.has(key)) present.set(key, label);
     }
-    const labels = Array.from(present.values()).sort((a, b) => a.localeCompare(b));
+    const labels = Array.from(present.values()).sort(compareCategories);
     return [ALL_CATEGORY, FAVORITES_CATEGORY, ...labels];
   };
 
@@ -467,9 +499,9 @@
 
     // Under All, one more pass files each item under its heading. Sorting is
     // stable, so the pass above still decides the order INSIDE a heading; the
-    // headings themselves run alphabetically, the order their tabs are in.
+    // headings themselves run in the order their tabs are in.
     if (this.isUIGroupedView()) {
-      items.sort((a, b) => this.uiGroupOf(a).localeCompare(this.uiGroupOf(b)));
+      items.sort((a, b) => compareCategories(this.uiGroupOf(a), this.uiGroupOf(b)));
     }
 
     return items;
@@ -1592,8 +1624,8 @@
     const categories = [
       { key: "favorites", label:T('Inventory.favorites'), count: favCount },
       { key: "medical", label:T('Inventory.medical'), count: utils.countMedicalItems() },
-      { key: "food", label:T('Inventory.food'), count: utils.countFoodItems() },
       { key: "tools", label:T('Inventory.tools'), count: utils.countToolsItems() },
+      { key: "food", label:T('Inventory.food'), count: utils.countFoodItems() },
       { key: "weapon", label:T('Inventory.weapons'), count: utils.countWeapons() },
       { key: "armor", label:T('Inventory.armors'), count: utils.countArmors() },
       { key: "keyItem", label:T('Inventory.materials'), count: utils.countMaterials() }
@@ -1627,6 +1659,17 @@
         count: count
       });
     }
+
+    // The drawers are ranked by the same table as the tab row — Medical and
+    // Tools first, Materials then Body Parts last — so a category sits in the
+    // same place whichever view the player is in. The sort is stable, so
+    // everything in the middle keeps the order it was built in. Favourites
+    // stays above the lot: it is a shelf the player builds, not one the loot
+    // decides.
+    const drawerRank = (cat) => (cat.key === "favorites"
+      ? -1
+      : categoryRank(cat.key === "keyItem" ? "materials" : cat.key));  // i18n-ignore  item-category id
+    categories.sort((a, b) => drawerRank(a) - drawerRank(b));
 
     // Build list with accordion behavior
     for (const cat of categories) {

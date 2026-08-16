@@ -960,13 +960,18 @@
     function _tileScreenPos(ev) {
       // Reuse the character's own screen-projection (screenX is already the
       // sprite's horizontal center; screenY is its anchor near the feet) so the
-      // bubble tracks exactly what's drawn, including any shift/jump/zoom
-      // a movement or camera plugin applies, instead of drifting from a
-      // separately reimplemented tile-to-pixel formula.
-      return {
-        x: ev.screenX(),
-        y: ev.screenY() - $gameMap.tileHeight(),
-      };
+      // bubble tracks exactly what's drawn, including any shift or jump a
+      // movement plugin applies, instead of drifting from a separately
+      // reimplemented tile-to-pixel formula. The camera zoom (MousePan.js) is
+      // the one thing screenX/Y do not carry: the whole spriteset is scaled
+      // about the zoom centre after the fact, so apply that same transform here.
+      const x = ev.screenX();
+      const y = ev.screenY() - $gameMap.tileHeight();
+      const zoom = $gameScreen ? $gameScreen.zoomScale() : 1;
+      if (!zoom || zoom === 1) return { x, y };
+      const zx = $gameScreen.zoomX();
+      const zy = $gameScreen.zoomY();
+      return { x: zx + (x - zx) * zoom, y: zy + (y - zy) * zoom };
     }
 
     // One pooled HTML element with its own show/fade/release lifecycle

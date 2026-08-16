@@ -1066,75 +1066,6 @@
         }
     };
 
-    // In-DOM confirmation window (replaces the native confirm() dialog so it
-    // matches the parchment book theme and never freezes the canvas).
-    const CONFIRM_MODAL_CSS = `
-        .save-modal-overlay {
-            position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1200;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(0, 0, 0, 0.62);
-            font-family: 'Lora', 'Times New Roman', serif;
-            animation: saveModalFade 0.18s ease-out;
-        }
-        @keyframes saveModalFade { from { opacity: 0; } to { opacity: 1; } }
-        .save-modal {
-            width: min(460px, 78vw);
-            padding: 26px 30px 22px 30px;
-            box-sizing: border-box;
-            text-align: center;
-            color: #e6d6ae;
-            border: 3px double #bba16d;
-            border-radius: 4px;
-            background:
-                linear-gradient(rgba(30, 20, 6, 0.94), rgba(20, 13, 4, 0.97));
-            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.7), inset 0 0 60px rgba(255, 204, 102, 0.06);
-            animation: saveModalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes saveModalPop { from { transform: scale(0.94); } to { transform: scale(1); } }
-        .save-modal-title {
-            margin: 0 0 12px 0;
-            font-size: 1.322rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: #ffcc66;
-            border-bottom: 1px dashed rgba(255, 204, 102, 0.3);
-            padding-bottom: 8px;
-        }
-        .save-modal-message {
-            font-size: 1.14rem;
-            font-style: normal;
-            line-height: 1.55;
-            color: #c8b088;
-            margin-bottom: 22px;
-        }
-        .save-modal-buttons { display: flex; gap: 12px; justify-content: center; }
-        .save-modal-btn {
-            min-width: 110px;
-            font-family: 'Lora', serif;
-            font-size: 1.08rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 9px 18px;
-            border-radius: 4px;
-            border: 1.5px solid rgba(255, 204, 102, 0.35);
-            background: rgba(60, 42, 0, 0.5);
-            color: #e6d6ae;
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.15s ease;
-        }
-        .save-modal-btn.danger {
-            background: rgba(130, 45, 45, 0.85);
-            border-color: rgba(130, 45, 45, 0.5);
-            color: #fff;
-        }
-        .save-modal-btn:hover, .save-modal-btn.focused {
-            filter: brightness(1.35);
-            box-shadow: 0 0 12px rgba(255, 204, 102, 0.35);
-        }
-    `;
-
     Scene_File.prototype.showConfirmModal = function (opts) {
         if (!this._dndContainer) return;
         this.closeConfirmModal();
@@ -1142,7 +1073,6 @@
         const overlay = document.createElement('div');
         overlay.className = 'save-modal-overlay';
         overlay.innerHTML = `
-            <style>${CONFIRM_MODAL_CSS}</style>
             <div class="save-modal" role="dialog" aria-modal="true">
                 <h3 class="save-modal-title">${escapeHtml(opts.title)}</h3>
                 <div class="save-modal-message">${escapeHtml(opts.message)}</div>

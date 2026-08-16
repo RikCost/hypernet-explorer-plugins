@@ -1,0 +1,306 @@
+{
+  "title": "",
+  "opening": "",
+  "empty": "",
+  "blankPage": "",
+  "date": {
+    "heading": ""
+  },
+  "month": {
+    "jan": "",
+    "feb": "",
+    "mar": "",
+    "apr": "",
+    "may": "",
+    "jun": "",
+    "jul": "",
+    "aug": "",
+    "sep": "",
+    "oct": "",
+    "nov": "",
+    "dec": ""
+  },
+  "cat": {
+    "all": "",
+    "journey": "",
+    "rest": "",
+    "combat": "",
+    "party": "",
+    "people": "",
+    "health": "",
+    "wealth": "",
+    "law": "",
+    "work": "",
+    "knowledge": "",
+    "leisure": "",
+    "other": ""
+  },
+  "foot": {
+    "ours": "",
+    "theirs": "",
+    "unknown": "",
+    "page": ""
+  },
+  "fmt": {
+    "itemCount": ""
+  },
+  "eris": {
+    "wonderful": "",
+    "warm": "",
+    "awkward": "",
+    "disaster": ""
+  },
+  "surgery": {
+    "success": "",
+    "failure": ""
+  },
+  "worlds": {
+    "tab": "",
+    "none": "",
+    "entry": "",
+    "meta": "",
+    "unknownParty": "",
+    "read": ""
+  },
+  "entry": {
+    "note": "",
+    "travel": {
+      "depart": "",
+      "arrive": "",
+      "refuel": ""
+    },
+    "landing": {
+      "planet": "",
+      "site": ""
+    },
+    "warp": {
+      "system": "",
+      "orbit": "",
+      "galaxy": ""
+    },
+    "place": {
+      "entered": ""
+    },
+    "structure": {
+      "entered": ""
+    },
+    "floor": {
+      "changed": ""
+    },
+    "rest": {
+      "sleep": "",
+      "wait": "",
+      "cryo": ""
+    },
+    "battle": {
+      "won": "",
+      "boss": "",
+      "petrodemon": "",
+      "fled": "",
+      "lost": "",
+      "arena": ""
+    },
+    "party": {
+      "join": "",
+      "leave": "",
+      "death": "",
+      "retire": "",
+      "recall": "",
+      "level": "",
+      "leader": ""
+    },
+    "pet": {
+      "join": "",
+      "follower": "",
+      "abandon": ""
+    },
+    "birth": {
+      "pregnant": "",
+      "born": "",
+      "mitosis": ""
+    },
+    "npc": {
+      "friend": "",
+      "enemy": "",
+      "romance": ""
+    },
+    "eris": {
+      "date": "",
+      "dateEnd": ""
+    },
+    "faction": {
+      "standing": ""
+    },
+    "health": {
+      "disease": "",
+      "epidemic": "",
+      "cured": "",
+      "partLost": "",
+      "augmentLost": "",
+      "augmentFit": "",
+      "surgery": "",
+      "relief": ""
+    },
+    "item": {
+      "found": "",
+      "artifactGot": "",
+      "artifactLost": ""
+    },
+    "container": {
+      "stored": ""
+    },
+    "shop": {
+      "buy": "",
+      "sell": "",
+      "order": ""
+    },
+    "property": {
+      "bought": "",
+      "sold": "",
+      "rented": ""
+    },
+    "bank": {
+      "loan": "",
+      "repaid": ""
+    },
+    "stock": {
+      "trade": ""
+    },
+    "crime": {
+      "committed": "",
+      "settled": ""
+    },
+    "steal": {
+      "success": "",
+      "caught": ""
+    },
+    "law": {
+      "trial": "",
+      "verdict": "",
+      "prison": ""
+    },
+    "work": {
+      "shift": ""
+    },
+    "farm": {
+      "sown": "",
+      "harvested": ""
+    },
+    "animal": {
+      "bought": "",
+      "produce": ""
+    },
+    "apiary": {
+      "harvest": ""
+    },
+    "craft": {
+      "forge": "",
+      "cook": "",
+      "alchemy": "",
+      "brew": ""
+    },
+    "build": {
+      "placed": "",
+      "dismantled": ""
+    },
+    "skill": {
+      "learned": ""
+    },
+    "spec": {
+      "tier": ""
+    },
+    "tech": {
+      "researched": ""
+    },
+    "quest": {
+      "accepted": "",
+      "completed": ""
+    },
+    "bestiary": {
+      "found": ""
+    },
+    "alien": {
+      "identified": ""
+    },
+    "minigame": {
+      "played": ""
+    },
+    "tv": {
+      "watched": ""
+    },
+    "dream": {
+      "had": ""
+    },
+    "mail": {
+      "sent": "",
+      "dimension": ""
+    },
+    "mining": {
+      "stripped": ""
+    }
+  },
+  "game": {
+    "arcade": "",
+    "frogger": "",
+    "snake": "",
+    "bubblePop": "",
+    "slots": "",
+    "bowling": "",
+    "pool": "",
+    "lockpick": "",
+    "tetris": "",
+    "scratchCard": "",
+    "horseRace": "",
+    "tarot": "",
+    "fishing": "",
+    "surfing": "",
+    "targetRange": "",
+    "piano": "",
+    "periodicTable": "",
+    "raman": "",
+    "chess": "",
+    "tournament": "",
+    "hyperTamer": "",
+    "boosters": "",
+    "cardDuel": "",
+    "dream": ""
+  },
+  "romance": {
+    "flirt": "",
+    "admire": "",
+    "loveLetter": "",
+    "serenade": "",
+    "askDance": "",
+    "holdHands": "",
+    "askOut": "",
+    "confess": "",
+    "kiss": ""
+  },
+  "vehicle": {
+    "camper": "",
+    "car": "",
+    "bike": "",
+    "boat": "",
+    "airship": "",
+    "broom": ""
+  },
+  "verdict": {
+    "acquitted": "",
+    "guilty": ""
+  },
+  "term": {
+    "open": "",
+    "fixed": ""
+  },
+  "trade": {
+    "bought": "",
+    "sold": ""
+  },
+  "stock": {
+    "oil": "",
+    "souls": ""
+  },
+  "place": {
+    "stockbusters": ""
+  }
+}

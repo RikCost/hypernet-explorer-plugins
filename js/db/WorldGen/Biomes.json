@@ -1021,10 +1021,6 @@
       {
         "name": "Pebble",
         "density": 0.9
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -1390,10 +1386,6 @@
       {
         "name": "Log",
         "density": 0.18
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -1572,10 +1564,6 @@
       {
         "name": "Pebble",
         "density": 0.6
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -3764,10 +3752,6 @@
       {
         "name": "Rock",
         "density": 0.3
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -4144,10 +4128,6 @@
       {
         "name": "RockDesert",
         "density": 1.2
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -6875,10 +6855,6 @@
       {
         "name": "Leaves",
         "density": 0.48
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -7260,10 +7236,6 @@
       {
         "name": "FlowerIce",
         "density": 0.9
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -8021,10 +7993,6 @@
         "name": "Dirt",
         "terrain": true,
         "density": 0.6
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -8660,10 +8628,6 @@
         "density": 0.18
       },
       {
-        "name": "SnowPile",
-        "density": 0.3
-      },
-      {
         "name": "PebbleIce",
         "density": 0.9
       },
@@ -8678,10 +8642,6 @@
       {
         "name": "WeedIce",
         "density": 0.24
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -8879,10 +8839,6 @@
       {
         "name": "WeedIce",
         "density": 0.24
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -9060,10 +9016,6 @@
       {
         "name": "Mushroom",
         "density": 0.36
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -9390,10 +9342,6 @@
       {
         "name": "Gold",
         "density": 0.24
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -10112,10 +10060,6 @@
         "name": "Moor",
         "terrain": true,
         "density": 0.48
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -10448,10 +10392,6 @@
       {
         "name": "Gold",
         "density": 0.18
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -10652,10 +10592,6 @@
       {
         "name": "Pebble",
         "density": 0.6
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -10844,16 +10780,8 @@
         "density": 1.5
       },
       {
-        "name": "SnowPile",
-        "density": 0.3
-      },
-      {
         "name": "PebbleIce",
         "density": 0.6
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -11032,10 +10960,6 @@
       {
         "name": "Tree",
         "density": 0.3
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -11883,10 +11807,6 @@
       {
         "name": "MoorIce",
         "density": 0.48
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -14191,29 +14111,9 @@
     },
     "features": [
       {
-        "name": "Grass",
+        "name": "GrassJungle",
         "terrain": true,
-        "density": 0.6
-      },
-      {
-        "name": "GrassRock",
-        "terrain": true,
-        "density": 0.18
-      },
-      {
-        "name": "DirtGrass",
-        "terrain": true,
-        "density": 0.18
-      },
-      {
-        "name": "GrassPlant",
-        "terrain": true,
-        "density": 0.48
-      },
-      {
-        "name": "GrassFlower",
-        "terrain": true,
-        "density": 0.9
+        "density": 0.6remove also from all other modes the esclusive enemies from
       },
       {
         "name": "Tree",
@@ -14234,10 +14134,6 @@
       {
         "name": "Crystal",
         "density": 0.24
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -14625,10 +14521,6 @@
         "name": "Moor",
         "terrain": true,
         "density": 0.6
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -14799,10 +14691,6 @@
       {
         "name": "RockIce",
         "density": 0.24
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -15513,16 +15401,8 @@
         "density": 0.6
       },
       {
-        "name": "SnowPile",
-        "density": 0.3
-      },
-      {
         "name": "PebbleIce",
         "density": 0.48
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -15687,10 +15567,6 @@
       {
         "name": "Stalagmite",
         "density": 0.36
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },
@@ -16293,10 +16169,6 @@
         "name": "SnowRock",
         "terrain": true,
         "density": 0.18
-      },
-      {
-        "name": "SnowPile",
-        "density": 0.3
       },
       {
         "name": "PebbleIce",
@@ -17308,10 +17180,6 @@
         "name": "Lava",
         "terrain": true,
         "density": 0.9
-      },
-      {
-        "name": "Cave",
-        "density": 0
       }
     ]
   },

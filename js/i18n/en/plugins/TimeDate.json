@@ -75,7 +75,9 @@
     "noFood": "none",
     "weatherClear": "Clear",
     "awake": "Awake",
-    "eta": "ETA"
+    "eta": "ETA",
+    "enemies": "Enemies",
+    "level": "Lv. {level}"
   },
   "needLabel": {
     "hunger": "Hunger",

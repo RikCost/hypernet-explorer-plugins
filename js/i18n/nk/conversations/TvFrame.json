@@ -1,0 +1,430 @@
+{
+  "open": {
+    "serious": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "solemn": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "wry": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "zany": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "urgent": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "cryptic": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "weird": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "light": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "earnest": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "unsettling": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "close": {
+    "serious": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "solemn": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "wry": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "zany": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "urgent": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "cryptic": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "weird": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "light": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "earnest": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "unsettling": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "lead": {
+    "puppet_show": [
+      "",
+      ""
+    ],
+    "royal_address": [
+      "",
+      ""
+    ],
+    "court_report": [
+      "",
+      ""
+    ],
+    "market_report": [
+      "",
+      ""
+    ],
+    "phone_in": [
+      "",
+      ""
+    ],
+    "sports": [
+      "",
+      ""
+    ],
+    "road_report": [
+      "",
+      ""
+    ],
+    "historical_epic": [
+      "",
+      ""
+    ],
+    "soap_opera": [
+      "",
+      ""
+    ],
+    "test_pattern": [
+      "",
+      ""
+    ],
+    "reality_tv": [
+      "",
+      ""
+    ],
+    "music_video": [
+      "",
+      ""
+    ],
+    "history_obituary": [
+      "",
+      ""
+    ],
+    "educational": [
+      "",
+      ""
+    ],
+    "magic_lesson": [
+      "",
+      ""
+    ],
+    "emergency": [
+      "",
+      ""
+    ],
+    "news_breaking": [
+      "",
+      ""
+    ],
+    "news_desk": [
+      "",
+      ""
+    ],
+    "cooking": [
+      "",
+      ""
+    ],
+    "history_panel": [
+      "",
+      ""
+    ]
+  },
+  "tail": {
+    "history_doc": [
+      "",
+      ""
+    ],
+    "history_panel": [
+      "",
+      ""
+    ],
+    "history_obituary": [
+      "",
+      ""
+    ],
+    "news_breaking": [
+      "",
+      ""
+    ],
+    "weather": [
+      "",
+      ""
+    ],
+    "game_show": [
+      "",
+      ""
+    ],
+    "cooking": [
+      "",
+      ""
+    ],
+    "children_show": [
+      "",
+      ""
+    ],
+    "educational": [
+      "",
+      ""
+    ],
+    "magic_lesson": [
+      "",
+      ""
+    ],
+    "religious": [
+      "",
+      ""
+    ],
+    "road_report": [
+      "",
+      ""
+    ],
+    "sports": [
+      "",
+      ""
+    ],
+    "documentary": [
+      "",
+      ""
+    ],
+    "conspiracy": [
+      "",
+      ""
+    ],
+    "music_video": [
+      "",
+      ""
+    ],
+    "test_pattern": [
+      "",
+      ""
+    ],
+    "reality_tv": [
+      "",
+      ""
+    ],
+    "sitcom": [
+      "",
+      ""
+    ],
+    "drama": [
+      "",
+      ""
+    ],
+    "soap_opera": [
+      "",
+      ""
+    ],
+    "royal_address": [
+      "",
+      ""
+    ],
+    "puppet_show": [
+      "",
+      ""
+    ],
+    "court_report": [
+      "",
+      ""
+    ],
+    "market_report": [
+      "",
+      ""
+    ],
+    "phone_in": [
+      "",
+      ""
+    ],
+    "science_report": [
+      "",
+      ""
+    ],
+    "historical_epic": [
+      "",
+      ""
+    ],
+    "emergency": [
+      "",
+      ""
+    ],
+    "prophetic": [
+      "",
+      ""
+    ],
+    "late_night": [
+      "",
+      ""
+    ]
+  },
+  "gameShowIntro": "",
+  "technicalDifficulties": "",
+  "advertisementSpeaker": "",
+  "narratorSpeaker": "",
+  "tuneInChoices": [
+    "",
+    "",
+    ""
+  ],
+  "technophobesLost": {
+    "one": "",
+    "other": ""
+  },
+  "offAir": "",
+  "weeklySchedule": "",
+  "paidNoticeSpeaker": ""
+}

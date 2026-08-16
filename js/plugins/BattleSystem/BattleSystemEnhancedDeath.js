@@ -174,6 +174,14 @@
         BSE.State.needsRespawn = true;
         this.recoverAll();
 
+        // A death out on the map, away from a battle, never reaches the
+        // post-battle branch in the state module, so the party's needs are
+        // refilled here instead: in Roguelite and Peaceful you get back up
+        // whole, rather than starving on top of having just died.
+        if (BSE.Helpers.isForgivingDeathMode()) {
+            BSE.Helpers.refillPartyNeeds();
+        }
+
         const _resolved = resolveRespawnLocation(1, 21, 23);
         let respawnMapId = _resolved.mapId;
         let respawnX = _resolved.x;

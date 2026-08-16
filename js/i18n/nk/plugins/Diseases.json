@@ -13,10 +13,6 @@
       "name": "AIDS",
       "desc": "DA IMMUNE SYSTEM HAB BEEN DISMANTLED. EVERY OTHER PATHOGEN WALKS STRAIGHT IN!"
     },
-    "albinism": {
-      "name": "ALBINISM",
-      "desc": "ABSENT PIGMENT; SKIN AN' EYES VULNERABLE TA LIGHT!"
-    },
     "alzheimers": {
       "name": "ALZHEIMER'S DISEASE",
       "desc": "MEMORY UNSPOOLIN' AS PLAQUES CHOKE DA MIND!"
@@ -205,10 +201,6 @@
       "name": "CRYPTOSPORIDIOSIS",
       "desc": "CHLORINE DOES NOT TOUCH IT. ONE SWIMMIN' POOL, ONE WHOLE TOWN!"
     },
-    "cystic-fibrosis": {
-      "name": "CYSTIC FIBROSIS",
-      "desc": "THICK MUCUS DROWNIN' LUNGS AN' CLOGGIN' DA PANCREAS!"
-    },
     "dancing-plague": {
       "name": "DANCIN' FEVER",
       "desc": "DEY DANCE UNTIL DA FEET SPLIT, AN' NO CAN SAY WHY DEY STARTED!"
@@ -349,10 +341,6 @@
       "name": "HASHIMOTO'S THYROIDITIS",
       "desc": "DA THYROID SLOWLY EXTINGUISHED; COLD AN' HEAVY!"
     },
-    "hemophilia": {
-      "name": "HEMOPHILIA",
-      "desc": "BLOOD DAT WILL NOT CLOT; A SCRATCH BECOMES A DANGER!"
-    },
     "hepatitis-a": {
       "name": "HEPATITIS A",
       "desc": "FECAL-ORAL LIVER VIRUS. JAUNDICE AN' EXHAUSTION!"
@@ -392,10 +380,6 @@
     "hpv": {
       "name": "HUMAN PAPILLOMAVIRUS",
       "desc": "COMMON VENEREAL VIRUS; SOME STRAINS ONCOGENIC!"
-    },
-    "huntingtons": {
-      "name": "HUNTINGTON'S DISEASE",
-      "desc": "AN INHERITED FATE: CHOREA AN' DECLINE FROM MIDLIFE!"
     },
     "hypertension": {
       "name": "HYPERTENSION",
@@ -516,10 +500,6 @@
     "marburg": {
       "name": "MARBURG FEVER",
       "desc": "A FILOVIRUS OUT OF A ME SHAFT. BLEEDIN' FROM EVERY SOFT TISSUE!"
-    },
-    "marfan": {
-      "name": "MARFAN SYNDROME",
-      "desc": "FAULTY CONNECTIVE TISSUE; LONG LIMBS AN' A FRAGILE AORTA!"
     },
     "measles": {
       "name": "MEASLES",
@@ -649,10 +629,6 @@
       "name": "POLIOMYELITIS",
       "desc": "ATTACKS MOTOR NEURONS; CAN LEAVE PERMANENT PARALYSIS!"
     },
-    "porphyria": {
-      "name": "PORPHYRIA",
-      "desc": "DA VAMPIRE DISEASE: SUN BLISTERS, MADNESS, WINE-DARK URINE!"
-    },
     "possession": {
       "name": "POSSESSION",
       "desc": "DERE IZ TWO OF YOU IN DERE AN' ONLY ONE OF YOU IZ KEEPIN' TRACK OF DA DAYS!"
@@ -761,10 +737,6 @@
       "name": "SHINGLES",
       "desc": "REACTIVATED VARICELLA TRACIN' A NERVE IN SEARIN' PAIN!"
     },
-    "sickle-cell": {
-      "name": "SICKLE CELL ANEMIA",
-      "desc": "CRESCENT RED CELLS JAMMIN' VESSELS IN AGONIZIN' CRISES!"
-    },
     "sigil-blight": {
       "name": "SIGIL BLIGHT",
       "desc": "WRITTEN WARDS GO SOFT NEAR YOU AN' EVERY SEAL YOU TOUCH READS SLIGHTLY WRONG AFTERWARDS!"
@@ -828,10 +800,6 @@
     "tetanus": {
       "name": "TETANUS",
       "desc": "LOCKJAW. NEUROTOXIN LOCKIN' EVERY MUSCLE RIGID!"
-    },
-    "thalassemia": {
-      "name": "THALASSEMIA",
-      "desc": "FAULTY HEMOGLOBIN LEAVIN' DA BLOOD CHRONICALLY THIN!"
     },
     "the-quiet": {
       "name": "DA QUIET",

@@ -647,11 +647,28 @@
         // it: the spawn mode from the options plus the year-driven spawn era.
         const BSEH = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
         const spawnEra = BSEH && BSEH.getSpawnEra ? BSEH.getSpawnEra() : null;
+        // Three modes, and the label names the one that is on: "distance" is
+        // the distance-from-spawn mode (BattleSystemEnhancedEncounters,
+        // section 4b), which used to be called Realistic.
+        const SPAWN_MODE_LABELS = { balanced: "Balanced", distance: "Distance from spawn", chaos: "Chaos" };
         const spawnModeLabel = BSEH && BSEH.getSpawnMode
-            ? (BSEH.getSpawnMode() === 'realistic' ? "Realistic" : "Balanced") : "?";
+            ? (SPAWN_MODE_LABELS[BSEH.getSpawnMode()] || "?") : "?";
         const eraLabel = spawnEra
             ? `${Math.floor(spawnEra.year)}${spawnEra.eliteMin ? ` (Lv. ${spawnEra.eliteMin}+ mixed in)` : ""}`
             : "?";
+        // In the distance-from-spawn mode the ground itself carries a level, and
+        // it is the one number that explains everything the map spawned. Print
+        // the whole measurement: where the party began, how far out they are of
+        // how far they can get, and what that lands on inside the gradient.
+        // BSEH.describePlace() reports the same object to the console.
+        let placeLabel = "";
+        if (BSEH && BSEH.describePlace && BSEH.getSpawnMode && BSEH.getSpawnMode() === "distance") {
+            const p = BSEH.describePlace();
+            placeLabel = p.offWorld
+                ? "off Earth (the world it sits in decides)"
+                : `Lv. ${p.placeLevel} (${p.floorLevel}-${p.ceilingLevel}), ` +
+                  `${p.distance}/${p.maxDistance} tiles from ${p.anchor.x},${p.anchor.y}`;
+        }
 
         let leftPageHTML = "";
         if (isWish) {
@@ -743,6 +760,11 @@
                                 <span style="font-weight: bold">Spawn:</span>
                                 <span>${spawnModeLabel}, ${eraLabel}</span>
                             </div>
+                            ${placeLabel ? `
+                            <div style="display: flex; justify-content: space-between">
+                                <span style="font-weight: bold">Place:</span>
+                                <span>${placeLabel}</span>
+                            </div>` : ""}
                         </div>
                     </div>
                 </div>
@@ -1435,7 +1457,7 @@
                 this.refreshUIDOM();
                 break;
             case "materials":
-                const mats = ['Energy Drink', 'Gender Shake', 'Mana Tonic', 'Medical Spray', 'Cigarette Pack', 'Nun Beer', 'Scroll of Destruction', 'Feather of Levitation', 'Shuriken', 'Caltrops', 'Frost Bomb', 'Morphine', 'Arcade Token', 'Steel ore', 'Lockpick', 'Titanium ore', 'Varlenia ore', 'Crystal', 'Glass', 'Wood', 'Leather', 'Cloth', 'Bone', 'Meat', 'Plant matter', 'Herb extract', 'Oil Flask', 'Acidic Solution', 'Arcane Essence', 'Ethereal Shard', 'Quantum Core', 'Circuit Board', 'Microchip', 'Battery Cell', 'Plastic Polymer', 'Composite Resin', 'Nanotube Module'];
+                const mats = ['Energy Drink', 'Gender Shake', 'Mana Tonic', 'Medical Spray', 'Cigarette Pack', 'Nun Beer', 'Scroll of Destruction', 'Feather of Levitation', 'Shuriken', 'Caltrops', 'Frost Bomb', 'Morphine', 'Arcade Token', 'Salvaged steel', 'Lockpick', 'Titanium ore', 'Varlenia ore', 'Crystal', 'Glass', 'Wood', 'Leather', 'Cloth', 'Bone', 'Meat', 'Plant matter', 'Herb extract', 'Oil Flask', 'Acidic Solution', 'Arcane Essence', 'Ethereal Shard', 'Quantum Core', 'Circuit Board', 'Microchip', 'Battery Cell', 'Plastic Polymer', 'Composite Resin', 'Nanotube Module'];
                 mats.forEach(i => gainItemByName('item', i, 10));
                 gainItemByName('item', 'Fireball Scroll', 5);
                 gainItemByName('item', 'Lightning Bolt Scroll', 5);
@@ -3353,7 +3375,7 @@
         pickRandomIds($dataItems, 20).forEach(id => $gameParty.gainItem($dataItems[id], Math.floor(Math.random() * 5) + 1));
 
         // Generous stock of crafting materials.
-        const mats = ['Steel ore', 'Titanium ore', 'Varlenia ore', 'Crystal', 'Glass', 'Wood', 'Leather', 'Cloth', 'Bone', 'Meat', 'Plant matter', 'Herb extract', 'Oil Flask', 'Acidic Solution', 'Arcane Essence', 'Ethereal Shard', 'Quantum Core', 'Circuit Board', 'Microchip', 'Battery Cell', 'Plastic Polymer', 'Composite Resin', 'Nanotube Module'];
+        const mats = ['Salvaged steel', 'Titanium ore', 'Varlenia ore', 'Crystal', 'Glass', 'Wood', 'Leather', 'Cloth', 'Bone', 'Meat', 'Plant matter', 'Herb extract', 'Oil Flask', 'Acidic Solution', 'Arcane Essence', 'Ethereal Shard', 'Quantum Core', 'Circuit Board', 'Microchip', 'Battery Cell', 'Plastic Polymer', 'Composite Resin', 'Nanotube Module'];
         mats.forEach(name => {
             const itemObj = $dataItems.find(it => it && it.name === name);
             if (itemObj) $gameParty.gainItem(itemObj, MATERIAL_AMOUNT);

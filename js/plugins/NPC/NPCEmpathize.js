@@ -360,6 +360,22 @@
     return m ? Number(m[1]) : null;
   }
 
+  // A <Story> event is a written character the plot still needs (see
+  // Utils.hasStoryTag in NPCSystem.js). The party may talk to them, court them,
+  // rob them and haggle with them like anybody else, but they may not be fought
+  // and they may not be given a disease: Attack, Infect and the three
+  // deliberate-transmission moves (Cough/Spit/Bite) leave the action row, and
+  // the casual transmission rolled on opening the panel is skipped for them.
+  function _isStoryNpc(evId) {
+    if (evId == null) return false;
+    const note = $gameMap?.event(evId)?.event()?.note;
+    return !!window.NPCSystem?.hasStoryTag?.(note);
+  }
+
+  // The moves that would hurt or infect somebody, i.e. exactly what a <Story>
+  // character is protected from. Shared with the UI layer's action row.
+  const STORY_PROTECTED_ACTIONS = ['attack', 'infect', 'cough', 'spit', 'bite'];
+
   // True when the event has a page gated on self-switch A. Recruiting flips that
   // self-switch so the NPC stops standing on the map, which only works if there
   // is a page to fall through to — otherwise the recruit stays visible and the
@@ -629,7 +645,6 @@
   const HYGIENE_TRAIT_MULT = {
     // ── Does not register it ───────────────────────────────────────────────
     189: 0,    // Feral, raised in the wilderness: this is what people smell like
-    195: 0,    // Lycanthrope, half of them lives downwind of the other half
     // ── Tolerates it ───────────────────────────────────────────────────────
     50:  0.25, // Ascetic, mortifying the flesh is rather the point
     124: 0.3,  // Street Urchin, grew up where nobody had a bath either
@@ -647,7 +662,6 @@
     30:  1.6,  // Perfectionist
     123: 1.7,  // Noble, raised to treat it as a moral failing
     56:  1.9,  // Hypochondriac, every unwashed body is a diagnosis
-    78:  2.0,  // OCD
     23:  2.6,  // Germaphobe, the one trait this is really about
   };
 
@@ -2290,6 +2304,10 @@
     _runAction(id) {
       const item = (this._chatActions || []).find(a => a.id === id);
       if (!item) return;
+      // A written character cannot be fought or infected. The action row does
+      // not offer these against one (see the UI layer), this is the backstop
+      // for anything that reaches the dispatcher another way.
+      if (STORY_PROTECTED_ACTIONS.includes(id) && _isStoryNpc(this._eventId)) return;
       // Anything done face to face is another exposure. Cough/Spit/Bite are
       // deliberate and roll at full strength in _confirmTransmit; every other
       // action here (a gift, a trade, a joke, patching up their wounds) rolls
@@ -4541,6 +4559,8 @@
     },
     _helpers: {
       _getNPCName, _getProfile, _extractClassId, _hasJoinPartyCommand, _hasSelfSwitchAPage,
+      // Written characters: never fought, never infected (see _isStoryNpc).
+      _isStoryNpc, STORY_PROTECTED_ACTIONS,
       _resolveBustForActor, _resolveBustPath, _resolveMarkovDb,
       _eventCommentLines, _bustNameFromEvent, _presetFromEvent,
       _computePartyPredisposition, _medianScore, _generatePartyThoughts,

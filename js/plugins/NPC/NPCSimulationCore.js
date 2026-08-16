@@ -2544,12 +2544,18 @@
     // first ask always precedes any such write (every application path filters
     // through here first) and Game_Event objects are rebuilt from the map file
     // on setup, so the cached answer is always the one taken from clean data.
+    // <Story> exempts a counter for the same reason: the tag names one written
+    // person, so <Shop> + <Story> is a single shopkeeper who is found at their
+    // till at every hour, never covered and never swapped at a shift boundary,
+    // whether or not the author drew their face on the event.
     isShopEvent(ev) {
       if (!ev) return false;
       if (ev._npcShopRota === undefined) {
         const data = ev.event();
         const tagged = !!window.NPCSystem?.hasShopTag?.(data?.note);
-        ev._npcShopRota = tagged && !window.NPCSystem?.hasOwnGraphic?.(data);
+        const owned = !!window.NPCSystem?.hasOwnGraphic?.(data)
+          || !!window.NPCSystem?.hasStoryTag?.(data?.note);
+        ev._npcShopRota = tagged && !owned;
         if (tagged && !ev._npcShopRota) this._releaseRota($gameMap?.mapId(), ev.eventId());
       }
       return ev._npcShopRota;
@@ -2988,9 +2994,13 @@
         let entries = [];
         try { entries = NPCSys.getShopIndex(mapId) || []; } catch (e) { entries = []; }
         // Only graphic-less <Shop> counters are staffed by a persona; a plain
-        // Shop Processing event, and a <Shop> counter whose shopkeeper the
-        // author drew, keep whatever face their own page defines.
-        const counters = entries.filter(e => e && e.shopTagged && !e.hasGraphic);
+        // Shop Processing event, a <Shop> counter whose shopkeeper the author
+        // drew, and a <Shop> + <Story> till (one written keeper, always on
+        // duty) keep whatever face their own page defines. An index written
+        // before the tag was understood carries no `story` flag, so such a
+        // till is staffed here and hands the rota back the first time the
+        // player stands on that map (see isShopEvent / _releaseRota).
+        const counters = entries.filter(e => e && e.shopTagged && !e.hasGraphic && !e.story);
         if (!counters.length) continue;
 
         const groupName = NPCSys.findMapGroupByMap?.(mapId) || null;

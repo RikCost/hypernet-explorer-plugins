@@ -4888,7 +4888,7 @@
     {
       "id": "diabetes-1",
       "name": "Type 1 Diabetes",
-      "category": "genetic",
+      "category": "autoimmune",
       "nature": "Mundane",
       "infective": false,
       "transmission": 0,
@@ -4940,11 +4940,11 @@
         "peak": 1.5
       },
       "needs": {
-        "hunger": 1.15,
-        "sleep": 1.15,
-        "hygiene": 1,
-        "social": 1.075,
-        "leisure": 1.075
+        "hunger": 1.225,
+        "sleep": 1.525,
+        "hygiene": 1.075,
+        "social": 1.15,
+        "leisure": 1.225
       },
       "daily": {
         "states": [
@@ -5025,543 +5025,6 @@
         "to": "diabetic-neuropathy",
         "days": 2555,
         "treatedDays": 5475
-      }
-    },
-    {
-      "id": "sickle-cell",
-      "name": "Sickle Cell Anemia",
-      "category": "genetic",
-      "nature": "Mundane",
-      "infective": false,
-      "transmission": 0,
-      "venereal": false,
-      "severity": "severe",
-      "durationDays": -1,
-      "desc": "Crescent red cells jamming vessels in agonizing crises.",
-      "params": {
-        "mhp": -25,
-        "agi": -6,
-        "atk": -3
-      },
-      "onset": {
-        "steps": 9999,
-        "stateId": 0
-      },
-      "symptoms": [
-        "pain crisis",
-        "anemia"
-      ],
-      "vectors": [
-        "none"
-      ],
-      "kind": "medical",
-      "cfr": 0.03,
-      "r0": 0.7,
-      "rarity": "common",
-      "epidemic": false,
-      "stageOnly": false,
-      "treatment": {
-        "curable": false,
-        "classes": [
-          "hematinic"
-        ],
-        "courseDays": 0,
-        "genericDays": 0,
-        "magical": false,
-        "selfCureDays": -1,
-        "manageClasses": [
-          "hematinic"
-        ],
-        "missTolerance": 1
-      },
-      "phases": {
-        "incubation": 0,
-        "window": 14,
-        "peakStart": 0,
-        "peakEnd": 9999,
-        "latent": 0.5,
-        "peak": 1.5
-      },
-      "needs": {
-        "hunger": 1.15,
-        "sleep": 1.15,
-        "hygiene": 1,
-        "social": 1.075,
-        "leisure": 1.075
-      },
-      "daily": {
-        "states": [],
-        "chance": 0.55,
-        "hpLoss": 0.01
-      }
-    },
-    {
-      "id": "hemophilia",
-      "name": "Hemophilia",
-      "category": "genetic",
-      "nature": "Mundane",
-      "infective": false,
-      "transmission": 0,
-      "venereal": false,
-      "severity": "severe",
-      "durationDays": -1,
-      "desc": "Blood that will not clot; a scratch becomes a danger.",
-      "params": {
-        "def": -8
-      },
-      "onset": {
-        "steps": 9999,
-        "stateId": 48
-      },
-      "symptoms": [
-        "bleeding",
-        "bruising"
-      ],
-      "vectors": [
-        "none"
-      ],
-      "kind": "medical",
-      "cfr": 0.03,
-      "r0": 0.7,
-      "rarity": "common",
-      "epidemic": false,
-      "stageOnly": false,
-      "treatment": {
-        "curable": false,
-        "classes": [
-          "hematinic"
-        ],
-        "courseDays": 0,
-        "genericDays": 0,
-        "magical": false,
-        "selfCureDays": -1,
-        "manageClasses": [
-          "hematinic"
-        ],
-        "missTolerance": 1
-      },
-      "phases": {
-        "incubation": 0,
-        "window": 14,
-        "peakStart": 0,
-        "peakEnd": 9999,
-        "latent": 0.5,
-        "peak": 1.5
-      },
-      "needs": {
-        "hunger": 1.15,
-        "sleep": 1.15,
-        "hygiene": 1,
-        "social": 1.075,
-        "leisure": 1.075
-      },
-      "daily": {
-        "states": [
-          48
-        ],
-        "chance": 0.55,
-        "hpLoss": 0.01
-      }
-    },
-    {
-      "id": "cystic-fibrosis",
-      "name": "Cystic Fibrosis",
-      "category": "genetic",
-      "nature": "Mundane",
-      "infective": false,
-      "transmission": 0,
-      "venereal": false,
-      "severity": "severe",
-      "durationDays": -1,
-      "desc": "Thick mucus drowning lungs and clogging the pancreas.",
-      "params": {
-        "mhp": -30,
-        "agi": -6
-      },
-      "onset": {
-        "steps": 9999,
-        "stateId": 0
-      },
-      "symptoms": [
-        "cough",
-        "malnutrition"
-      ],
-      "vectors": [
-        "none"
-      ],
-      "kind": "medical",
-      "cfr": 0.03,
-      "r0": 0.7,
-      "rarity": "common",
-      "epidemic": false,
-      "stageOnly": false,
-      "treatment": {
-        "curable": false,
-        "classes": [],
-        "courseDays": 0,
-        "genericDays": 0,
-        "magical": false,
-        "selfCureDays": -1,
-        "manageClasses": [
-          "bronchodilator"
-        ],
-        "missTolerance": 1
-      },
-      "phases": {
-        "incubation": 0,
-        "window": 14,
-        "peakStart": 0,
-        "peakEnd": 9999,
-        "latent": 0.5,
-        "peak": 1.5
-      },
-      "needs": {
-        "hunger": 1.15,
-        "sleep": 1.15,
-        "hygiene": 1,
-        "social": 1.075,
-        "leisure": 1.075
-      },
-      "daily": {
-        "states": [],
-        "chance": 0.55,
-        "hpLoss": 0.01
-      }
-    },
-    {
-      "id": "huntingtons",
-      "name": "Huntington's Disease",
-      "category": "genetic",
-      "nature": "Mundane",
-      "infective": false,
-      "transmission": 0,
-      "venereal": false,
-      "severity": "lethal",
-      "durationDays": -1,
-      "desc": "An inherited fate: chorea and decline from midlife.",
-      "params": {
-        "agi": -10,
-        "mat": -8,
-        "luk": -5
-      },
-      "onset": {
-        "steps": 9999,
-        "stateId": 38
-      },
-      "symptoms": [
-        "chorea",
-        "dementia"
-      ],
-      "vectors": [
-        "none"
-      ],
-      "kind": "medical",
-      "cfr": 0.35,
-      "r0": 0.7,
-      "rarity": "common",
-      "epidemic": false,
-      "stageOnly": false,
-      "treatment": {
-        "curable": false,
-        "classes": [],
-        "courseDays": 0,
-        "genericDays": 0,
-        "magical": false,
-        "selfCureDays": -1,
-        "manageClasses": [
-          "psychiatric"
-        ],
-        "missTolerance": 1
-      },
-      "phases": {
-        "incubation": 0,
-        "window": 14,
-        "peakStart": 0,
-        "peakEnd": 9999,
-        "latent": 0.5,
-        "peak": 1.5
-      },
-      "needs": {
-        "hunger": 1.22,
-        "sleep": 1.22,
-        "hygiene": 1,
-        "social": 1.11,
-        "leisure": 1.11
-      },
-      "daily": {
-        "states": [
-          38,
-          8
-        ],
-        "chance": 0.8,
-        "hpLoss": 0.03
-      }
-    },
-    {
-      "id": "thalassemia",
-      "name": "Thalassemia",
-      "category": "genetic",
-      "nature": "Mundane",
-      "infective": false,
-      "transmission": 0,
-      "venereal": false,
-      "severity": "moderate",
-      "durationDays": -1,
-      "desc": "Faulty hemoglobin leaving the blood chronically thin.",
-      "params": {
-        "mhp": -18,
-        "atk": -3
-      },
-      "onset": {
-        "steps": 9999,
-        "stateId": 0
-      },
-      "symptoms": [
-        "anemia",
-        "fatigue"
-      ],
-      "vectors": [
-        "none"
-      ],
-      "kind": "medical",
-      "cfr": 0.004,
-      "r0": 0.7,
-      "rarity": "common",
-      "epidemic": false,
-      "stageOnly": false,
-      "treatment": {
-        "curable": false,
-        "classes": [
-          "hematinic"
-        ],
-        "courseDays": 0,
-        "genericDays": 0,
-        "magical": false,
-        "selfCureDays": -1,
-        "manageClasses": [
-          "hematinic"
-        ],
-        "missTolerance": 2
-      },
-      "phases": {
-        "incubation": 0,
-        "window": 14,
-        "peakStart": 0,
-        "peakEnd": 9999,
-        "latent": 0.5,
-        "peak": 1.5
-      },
-      "needs": {
-        "hunger": 1.1,
-        "sleep": 1.1,
-        "hygiene": 1,
-        "social": 1.05,
-        "leisure": 1.05
-      },
-      "daily": {
-        "states": [
-          10
-        ],
-        "chance": 0.35,
-        "hpLoss": 0
-      }
-    },
-    {
-      "id": "albinism",
-      "name": "Albinism",
-      "category": "genetic",
-      "nature": "Mundane",
-      "infective": false,
-      "transmission": 0,
-      "venereal": false,
-      "severity": "mild",
-      "durationDays": -1,
-      "desc": "Absent pigment; skin and eyes vulnerable to light.",
-      "params": {
-        "mdf": -2,
-        "luk": 2
-      },
-      "onset": {
-        "steps": 9999,
-        "stateId": 0
-      },
-      "symptoms": [
-        "photosensitivity"
-      ],
-      "vectors": [
-        "none"
-      ],
-      "kind": "medical",
-      "cfr": 0.0005,
-      "r0": 0.7,
-      "rarity": "common",
-      "epidemic": false,
-      "stageOnly": false,
-      "treatment": {
-        "curable": false,
-        "classes": [],
-        "courseDays": 0,
-        "genericDays": 0,
-        "magical": false,
-        "selfCureDays": -1,
-        "manageClasses": [
-          "vitamin"
-        ],
-        "missTolerance": 2
-      },
-      "phases": {
-        "incubation": 0,
-        "window": 14,
-        "peakStart": 0,
-        "peakEnd": 9999,
-        "latent": 0.5,
-        "peak": 1.5
-      },
-      "needs": {
-        "hunger": 1.05,
-        "sleep": 1.05,
-        "hygiene": 1,
-        "social": 1.025,
-        "leisure": 1.025
-      },
-      "daily": {
-        "states": [],
-        "chance": 0.2,
-        "hpLoss": 0
-      }
-    },
-    {
-      "id": "porphyria",
-      "name": "Porphyria",
-      "category": "genetic",
-      "nature": "Mundane",
-      "infective": false,
-      "transmission": 0,
-      "venereal": false,
-      "severity": "severe",
-      "durationDays": -1,
-      "desc": "The vampire disease: sun blisters, madness, wine-dark urine.",
-      "params": {
-        "mat": -6,
-        "luk": -4,
-        "mmp": -10
-      },
-      "onset": {
-        "steps": 9999,
-        "stateId": 8
-      },
-      "symptoms": [
-        "photosensitivity",
-        "delirium"
-      ],
-      "vectors": [
-        "none"
-      ],
-      "kind": "medical",
-      "cfr": 0.03,
-      "r0": 0.7,
-      "rarity": "common",
-      "epidemic": false,
-      "stageOnly": false,
-      "treatment": {
-        "curable": false,
-        "classes": [],
-        "courseDays": 0,
-        "genericDays": 0,
-        "magical": false,
-        "selfCureDays": -1,
-        "manageClasses": [
-          "vitamin"
-        ],
-        "missTolerance": 1
-      },
-      "phases": {
-        "incubation": 0,
-        "window": 14,
-        "peakStart": 0,
-        "peakEnd": 9999,
-        "latent": 0.5,
-        "peak": 1.5
-      },
-      "needs": {
-        "hunger": 1.15,
-        "sleep": 1.15,
-        "hygiene": 1,
-        "social": 1.075,
-        "leisure": 1.075
-      },
-      "daily": {
-        "states": [
-          8
-        ],
-        "chance": 0.55,
-        "hpLoss": 0.01
-      }
-    },
-    {
-      "id": "marfan",
-      "name": "Marfan Syndrome",
-      "category": "genetic",
-      "nature": "Mundane",
-      "infective": false,
-      "transmission": 0,
-      "venereal": false,
-      "severity": "moderate",
-      "durationDays": -1,
-      "desc": "Faulty connective tissue; long limbs and a fragile aorta.",
-      "params": {
-        "atk": -2,
-        "def": -4,
-        "agi": 3
-      },
-      "onset": {
-        "steps": 9999,
-        "stateId": 0
-      },
-      "symptoms": [
-        "tall stature",
-        "heart risk"
-      ],
-      "vectors": [
-        "none"
-      ],
-      "kind": "medical",
-      "cfr": 0.004,
-      "r0": 0.7,
-      "rarity": "common",
-      "epidemic": false,
-      "stageOnly": false,
-      "treatment": {
-        "curable": false,
-        "classes": [],
-        "courseDays": 0,
-        "genericDays": 0,
-        "magical": false,
-        "selfCureDays": -1,
-        "manageClasses": [
-          "cardiac"
-        ],
-        "missTolerance": 2
-      },
-      "phases": {
-        "incubation": 0,
-        "window": 14,
-        "peakStart": 0,
-        "peakEnd": 9999,
-        "latent": 0.5,
-        "peak": 1.5
-      },
-      "needs": {
-        "hunger": 1.1,
-        "sleep": 1.1,
-        "hygiene": 1,
-        "social": 1.05,
-        "leisure": 1.05
-      },
-      "daily": {
-        "states": [],
-        "chance": 0.35,
-        "hpLoss": 0
       }
     },
     {
@@ -6804,7 +6267,10 @@
         ],
         "chance": 0.35,
         "hpLoss": 0
-      }
+      },
+      "skills": [
+        38
+      ]
     },
     {
       "id": "gerd",
@@ -7902,7 +7368,10 @@
         "states": [],
         "chance": 0.2,
         "hpLoss": 0
-      }
+      },
+      "skills": [
+        57
+      ]
     },
     {
       "id": "ley-rot",
@@ -15923,6 +15392,9 @@
         "chance": 0.55,
         "hpLoss": 0.01
       },
+      "skills": [
+        668
+      ],
       "progression": {
         "to": "hollowing",
         "days": 300,
@@ -16000,7 +15472,11 @@
         ],
         "chance": 0.55,
         "hpLoss": 0.01
-      }
+      },
+      "skills": [
+        313,
+        309
+      ]
     }
   ],
   "conditions": [

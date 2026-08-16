@@ -3029,16 +3029,7 @@
                 "Shop"
               ]
             },
-            {
-              "code": 357,
-              "indent": 1,
-              "parameters": [
-                "Economy/RandomDailyShop",
-                "OpenDailyShop",
-                "Open Daily Shop",
-                {}
-              ]
-            },
+            {"code":357,"indent":1,"parameters":["Economy/RandomDailyShop","openThemedShop","Open Themed Shop",{"shopType":"generalStore"}]},{"code":657,"indent":1,"parameters":["Shop Type = generalStore"]},
             {
               "code": 0,
               "indent": 1,

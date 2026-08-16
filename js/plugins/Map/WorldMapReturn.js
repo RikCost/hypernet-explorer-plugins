@@ -116,6 +116,10 @@
     // down. Kept in step with MovementInteractionSystem.js.
     const DIVING_SUIT_ITEM_ID = 141;
 
+    // Item 138 is the "Shovel": a consumable whose only effect is common event 164,
+    // which calls the goDown command below.
+    const SHOVEL_ITEM_ID = 138;
+
     const VAR_WORLD_X  = 43;
     const VAR_WORLD_Y  = 44;
     const VAR_DEST_MAP = 45;
@@ -1388,6 +1392,23 @@
         return window.BiomeNames.display(displayName);
     }
 
+    // Put the procedural-map state back on the surface: an empty layer stack and
+    // no structure session, which is what "not underground" is spelled as
+    // everywhere it is read. Returns true when it actually had to undo something,
+    // so callers can say so in the log.
+    //
+    // The stack is only ever popped by goUp, and anything that leaves the
+    // procedural map without going back up the way it came in (a shovel used off
+    // the proc map, a border that hands the party to an authored map, a return to
+    // the world map from the menu) used to leave it raised for good.
+    function surfaceProcGenLayers(pg) {
+        if (!pg) return false;
+        const wasUnderground = !!((pg.biomeLayerStack && pg.biomeLayerStack.length) || pg._dungeonSession);
+        pg.biomeLayerStack = [];
+        pg._dungeonSession = null;
+        return wasUnderground;
+    }
+
     Game_System.prototype.clearProcGenData = function() {
         if (!this._procGenData) return;
         this._procGenData.generatedMapData     = null;
@@ -1398,6 +1419,13 @@
         // The square a descent was started from goes with it: the party is
         // leaving the procedural map entirely, so there is nothing to surface to.
         this._procGenData._surfaceSnapshot     = null;
+        // And so does the descent itself. A non-empty layer stack means "we are
+        // underground", and every square built while it is raised is built as a
+        // lower layer (edge crossings swap the neighbour for its biome.lowerLayer,
+        // the seed is depth-salted, events are hidden). Left standing after the
+        // party has gone back to the world map it turns the whole world into a
+        // cave: every square entered from map 315 generates underground.
+        surfaceProcGenLayers(this._procGenData);
         Cache.clear();
         $gameVariables.setValue(110, 0);
         $gameVariables.setValue(111, 0);
@@ -1690,6 +1718,16 @@
     Game_Map.prototype.setup = function(mapId) {
         _Game_Map_setup.call(this, mapId);
         this.setupBorderTags();
+        // Standing on the world map is proof the party is above ground, whatever
+        // the procgen data still says. clearProcGenData already surfaces on the
+        // ordinary way out (proc map -> map 315), but the world map is reachable
+        // by routes that never touch it -- an authored map's border, fast travel,
+        // a vehicle put down, a save made while the stack was stuck -- and any
+        // depth carried across turns the next square entered into a cave. So the
+        // rule is enforced here, at the one place every route arrives through.
+        if (mapId === worldMapId && surfaceProcGenLayers($gameSystem && $gameSystem._procGenData)) {
+            console.log('[WorldMapReturn] Back on the world map: dropped a stale underground layer stack');
+        }
         // Reset screen tint when entering interior from world map
         const previousMapId = $gameVariables.value(VAR_DEST_MAP);
         if (previousMapId === worldMapId || $gamePlayer._transferring) {
@@ -3028,10 +3066,60 @@
         $gamePlayer.reserveTransfer(worldMapId, returnCoords.x, returnCoords.y, 2, 0);
     });
 
+    // The Shovel is consumed by using it, so it must not be usable where the dig
+    // below refuses: greyed out in the item menu on every map that is neither the
+    // world map (dig into the square underfoot) nor the procedural map (dig into
+    // the square the party is standing in), and while already underground, where
+    // there is no second layer to reach.
+    const _Game_BattlerBase_meetsItemConditions = Game_BattlerBase.prototype.meetsItemConditions;
+    Game_BattlerBase.prototype.meetsItemConditions = function(item) {
+        if (item && item.id === SHOVEL_ITEM_ID && DataManager.isItem(item) && $gameMap) {
+            const mapId = $gameMap.mapId();
+            if (mapId !== worldMapId && mapId !== procMapId) return false;
+            const pg = $gameSystem && $gameSystem._procGenData;
+            if (pg && pg.biomeLayerStack && pg.biomeLayerStack.length > 0) return false;
+        }
+        return _Game_BattlerBase_meetsItemConditions.call(this, item);
+    };
+
     PluginManager.registerCommand(PLUGIN_PMT, 'goDown', () => {
         const system      = $gameSystem;
         const procGenData = system._procGenData;
         if (!procGenData) { logWarn('GoDown: no procedural map active.'); return; }
+
+        // Digging needs a world square to dig into. The travel menu only ever
+        // offers "Go underground" on the procedural map (Window_WorldMapChoice),
+        // but the Shovel is a menu item usable on any map and its common event
+        // calls straight in here.
+        //
+        // From the world map the square under the party's feet simply has not
+        // been generated yet: build its surface first (which resolves the biome
+        // off the world-map tile and syncs origin, seed and vars 43/44), then
+        // descend into it, so digging from the overview lands in the same cave
+        // as walking into the square and digging there.
+        //
+        // Anywhere else -- a house, a city, a ship -- there is no square below,
+        // and descending used to push a layer onto whatever stale procgen data
+        // was left over and drop the party into a cave under a square they were
+        // not standing on, with the stack raised for the rest of the game so
+        // every square after it generated underground.
+        if ($gameMap.mapId() === worldMapId) {
+            if (!system.generateProceduralMap()) {
+                $gameMessage.add(T('WorldMapReturn.cannotDigHere'));
+                return;
+            }
+            // The square was just resolved off the world-map tile, so it is the
+            // surface whatever depth the data was still carrying.
+            surfaceProcGenLayers(procGenData);
+            // No door was come down through, so "Go to the surface" surfaces in
+            // the middle of the square -- where the descent puts the party down --
+            // instead of at whatever entrance an older dungeon left behind.
+            procGenData.goDownEventX = Math.floor(PROC_MAP_WIDTH  / 2);
+            procGenData.goDownEventY = Math.floor(PROC_MAP_HEIGHT / 2);
+        } else if ($gameMap.mapId() !== procMapId) {
+            $gameMessage.add(T('WorldMapReturn.cannotDigHere'));
+            return;
+        }
 
         if (procGenData && procGenData.currentBiome === 'Ocean') {  // i18n-ignore  biome id
             const item = $dataItems[DIVING_SUIT_ITEM_ID];
@@ -3044,7 +3132,11 @@
 
         const currentBiome = getBiomeByName(procGenData.currentBiome);
         if (!currentBiome || !currentBiome.lowerLayer) {
-            logWarn(`GoDown: Biome "${procGenData.currentBiome}" has no lower layer`); return;
+            // Said out loud, not just logged: a Shovel used on solid rock (or on
+            // any biome with nothing under it) has to answer for itself.
+            logWarn(`GoDown: Biome "${procGenData.currentBiome}" has no lower layer`);
+            $gameMessage.add(T('WorldMapReturn.cannotDigHere'));
+            return;
         }
 
         // Keep the surface square before the cave overwrites it, so climbing back
@@ -3076,6 +3168,11 @@
         $gameScreen.clearWeather();
         $gameScreen.startFadeOut(10);
         if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
+        // The two "the procedural map is live" flags startProcGen raises. Already
+        // set when the descent starts on map 636, but a dig straight off the world
+        // map has to raise them itself: clearProcGenData zeroed them on the way out.
+        $gameVariables.setValue(110, 1);
+        $gameVariables.setValue(111, 1);
         $gamePlayer.reserveTransfer(procMapId, Math.floor(PROC_MAP_WIDTH / 2), Math.floor(PROC_MAP_HEIGHT / 2), $gamePlayer.direction(), 0);
 
         setTimeout(() => updateEventVisibility(), 100);
@@ -3709,6 +3806,13 @@
         // so the biome track and room tone the party was hearing down in the
         // procedural map must not bleed into it. Clear both.
         if ($gameMap.mapId() === WORLD_MAP_ID) {
+            // The same "the world map is above ground" rule Game_Map.setup applies,
+            // repeated for the one arrival that never runs setup: a savegame is
+            // restored with its Game_Map as it was saved, so a save made while the
+            // layer stack was stuck heals here instead.
+            if (surfaceProcGenLayers($gameSystem && $gameSystem._procGenData)) {
+                console.log('[WorldMapReturn] World map loaded: dropped a stale underground layer stack');
+            }
             if (_lastLoadedMapId === PROC_MAP_ID) AudioManager.stopBgm();
             // Ambience is silenced on arrival from ANY map (house, dungeon, city,
             // vehicle interior, ...), never just the procedural one, so nothing but

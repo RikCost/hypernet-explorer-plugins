@@ -142,19 +142,23 @@
     class ShopScanner {
         static DAILY_SHOP_PROXIMITY = 5; // Tiles
 
-        static DAILY_SHOP_COMMANDS = {
-            'OpenDailyShop':       'getRandomDailyShopItems',
-            'randomDailyTavern':   'getRandomDailyTavernItems',
-            'openDailyArmor':      'getRandomDailyArmorItems',
-            'openDailyWeapon':     'getRandomDailyWeaponItems',
-            'openDailyPharmacy':   'getRandomDailyPharmacyItems',
-            'openDailyMagicShop':  'getRandomDailyMagicItems',
-            'openDailyLuxury':     'getRandomDailyLuxuryItems',
-            'openDailyAdventurer': 'getRandomDailyAdventurerItems',
-            'openDailyLibrary':    'getRandomLibraryItems',
-            'openDailyTools':      'getRandomDailyToolsItems',
-            'openDailyAlchemistry':'getRandomDailyAlchemistryItems',
-        };
+        // Every shop RandomDailyShop runs is one themed shop behind one plugin
+        // command, so a lifted shelf is that command's shopType argument put
+        // back through the plugin's own generator.
+        static DAILY_SHOP_PLUGIN = 'RandomDailyShop';
+        static DAILY_SHOP_COMMAND = 'openThemedShop';
+
+        // Event pages store the plugin's path-prefixed name on newer maps
+        // ("Economy/RandomDailyShop") and the bare one on older ones.
+        static isDailyShopCommand(params) {
+            return !!params &&
+                String(params[0] || '').split('/').pop() === this.DAILY_SHOP_PLUGIN &&
+                params[1] === this.DAILY_SHOP_COMMAND;
+        }
+
+        static shopTypeOf(params) {
+            return String((params[3] && params[3].shopType) || '').trim();
+        }
 
         static scanMapForShops() {
             const items = [];
@@ -193,7 +197,7 @@
             const items = [];
             const pages = event.event().pages;
             let hasStandardShop = false;
-            let dailyShopCommand = null; // stores matched RandomDailyShop command name
+            let dailyShopType = null; // stores the matched themed shop type
 
             // First pass: check what types of shops this event has
             for (const page of pages) {
@@ -202,18 +206,16 @@
                     if (command.code === 302) {
                         hasStandardShop = true;
                     }
-                    if (command.code === 357) {
-                        const params = command.parameters;
-                        if (params && params[0] === 'RandomDailyShop' && this.DAILY_SHOP_COMMANDS[params[1]]) {
-                            dailyShopCommand = params[1];
-                        }
+                    if (command.code === 357 && this.isDailyShopCommand(command.parameters)) {
+                        const shopType = this.shopTypeOf(command.parameters);
+                        if (shopType) dailyShopType = shopType;
                     }
                 }
             }
 
             // Daily shops are only scanned when player is within proximity
-            if (dailyShopCommand && !this.isWithinProximity(event.x, event.y, playerX, playerY, this.DAILY_SHOP_PROXIMITY)) {
-                dailyShopCommand = null;
+            if (dailyShopType && !this.isWithinProximity(event.x, event.y, playerX, playerY, this.DAILY_SHOP_PROXIMITY)) {
+                dailyShopType = null;
             }
 
             const sourceMapId = $gameMap.mapId();
@@ -279,16 +281,15 @@
                     }
 
                     // Command 357: RandomDailyShop plugin command ,  only when within proximity
-                    if (command.code === 357 && dailyShopCommand) {
-                        const params = command.parameters;
-                        if (params && params[0] === 'RandomDailyShop' && params[1] === dailyShopCommand) {
-                            const dailyItems = this.getDailyShopItems(event, dailyShopCommand);
-                            for (const di of dailyItems) {
-                                di.sourceMapId = sourceMapId;
-                                di.sourceEventId = sourceEventId;
-                            }
-                            items.push(...dailyItems);
+                    if (command.code === 357 && dailyShopType &&
+                        this.isDailyShopCommand(command.parameters) &&
+                        this.shopTypeOf(command.parameters) === dailyShopType) {
+                        const dailyItems = this.getDailyShopItems(event, dailyShopType);
+                        for (const di of dailyItems) {
+                            di.sourceMapId = sourceMapId;
+                            di.sourceEventId = sourceEventId;
                         }
+                        items.push(...dailyItems);
                     }
                 }
             }
@@ -373,12 +374,11 @@
             return items;
         }
 
-        static getDailyShopItems(event, commandName = 'OpenDailyShop') {
+        static getDailyShopItems(event, shopType = 'generalStore') {
             const items = [];
 
-            const getterName = this.DAILY_SHOP_COMMANDS[commandName] || 'getRandomDailyShopItems';
-            if (!window[getterName]) {
-                console.warn(`StealingSystem: ${getterName} not found for RandomDailyShop command '${commandName}'.`);
+            if (!window.getRandomThemedShopItems) {
+                console.warn('StealingSystem: getRandomThemedShopItems not found; is RandomDailyShop loaded?');
                 return items;
             }
 
@@ -387,7 +387,7 @@
                 const x = event.x;
                 const y = event.y;
 
-                const dailyShopItems = window[getterName](mapId, x, y);
+                const dailyShopItems = window.getRandomThemedShopItems(shopType, mapId, x, y);
 
                 // Convert items to stealing system format
                 if (dailyShopItems && Array.isArray(dailyShopItems)) {

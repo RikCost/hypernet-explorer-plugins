@@ -557,9 +557,6 @@
         questTipEl.id = 'wm-quest-tip';
         questTipEl.style.cssText =
             'position:fixed; z-index:90; pointer-events:none; width:300px;';
-        const style = document.createElement('style');
-        style.textContent = preview.css;
-        questTipEl.appendChild(style);
         questTipEl.insertAdjacentHTML('beforeend', preview.html);
         document.body.appendChild(questTipEl);
         questTipId = questId;

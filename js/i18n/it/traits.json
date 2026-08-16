@@ -32,10 +32,6 @@
       "name": "Fortunato",
       "description": "La fortuna ti favorisce"
     },
-    "narcoleptic": {
-      "name": "Narcolettico",
-      "description": "Si addormenta casualmente"
-    },
     "hot-headed": {
       "name": "Irascibile",
       "description": "Facile all'ira"
@@ -79,10 +75,6 @@
     "vampire": {
       "name": "Vampiro",
       "description": "Creatura non-morta della notte"
-    },
-    "insomniac": {
-      "name": "Insonne",
-      "description": "Non riesce a dormire bene"
     },
     "alcoholic": {
       "name": "Alcolista",
@@ -300,17 +292,9 @@
       "name": "Sindrome del Savant",
       "description": "Abilità eccezionale in area specifica"
     },
-    "asthmatic": {
-      "name": "Asmatico",
-      "description": "Difficoltà respiratorie sotto stress"
-    },
     "adhd": {
       "name": "ADHD",
       "description": "Deficit di attenzione, impulsi iperattivi"
-    },
-    "ocd": {
-      "name": "DOC",
-      "description": "Schemi ossessivo-compulsivi"
     },
     "dyslexic": {
       "name": "Dislessico",
@@ -772,14 +756,6 @@
       "name": "Marchiato dalla Strega",
       "description": "Porta il marchio di maledizione soprannaturale"
     },
-    "possessed": {
-      "name": "Posseduto",
-      "description": "Condivide il corpo con uno spirito"
-    },
-    "lycanthrope": {
-      "name": "Licantropo",
-      "description": "Si trasforma sotto la luna"
-    },
     "clairvoyant": {
       "name": "Chiaroveggente",
       "description": "Vede oltre la percezione normale"
@@ -807,6 +783,18 @@
     "gun_fu": {
       "name": "Gun-Fu",
       "description": "Le abilità di arti marziali sparate con pistola o arco concatenano un attacco extra gratuito"
+    },
+    "cystic_fibrosis": {
+      "name": "Fibrosi Cistica",
+      "description": "Disturbo genetico di polmoni e pancreas"
+    },
+    "huntingtons_disease": {
+      "name": "Malattia di Huntington",
+      "description": "Declino ereditario di movimento e memoria"
+    },
+    "porphyria": {
+      "name": "Porfiria",
+      "description": "Disturbo del sangue ereditario, vesciche al sole"
     }
   }
 }

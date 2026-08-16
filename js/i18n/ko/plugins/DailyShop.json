@@ -20,6 +20,17 @@
     "techniquesForSale": ""
   },
   "shopType": {
+    "generalStore": "",
+    "tavern": "",
+    "weaponsmith": "",
+    "armorer": "",
+    "clothing": "",
+    "pharmacy": "",
+    "magicShop": "",
+    "luxury": "",
+    "adventurer": "",
+    "alchemistry": "",
+    "organTrader": "",
     "iceCream": "",
     "fastFood": "",
     "gym": "",
@@ -70,8 +81,5 @@
     "junkShop": "",
     "academy": "",
     "grimoire": ""
-  },
-  "venue": {
-    "tavern": ""
   }
 }

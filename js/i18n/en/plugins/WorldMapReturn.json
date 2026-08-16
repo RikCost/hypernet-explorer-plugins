@@ -1,5 +1,6 @@
 {
   "needDivingSuit": "You need a diving suit",
+  "cannotDigHere": "There is no ground to dig into here",
   "returnToWorldMap": "Return to world map",
   "chooseLandingSite": "Choose landing site",
   "goToSurface": "Go to the surface",

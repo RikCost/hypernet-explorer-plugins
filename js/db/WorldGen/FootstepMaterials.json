@@ -127,10 +127,7 @@
       "pitchMax": 112,
       "sounds": [
         "Water/Water1",
-        "Water/Water2",
-        "Water/Water3",
-        "Water/Water4",
-        "Water/Water5"
+        "Water/Water2"
       ]
     }
   },

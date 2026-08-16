@@ -32,10 +32,6 @@
       "name": "Lucky",
       "description": "Fortune favors you"
     },
-    "narcoleptic": {
-      "name": "Narcoleptic",
-      "description": "Falls asleep randomly"
-    },
     "hot-headed": {
       "name": "Hot-headed",
       "description": "Quick to anger"
@@ -79,10 +75,6 @@
     "vampire": {
       "name": "Vampire",
       "description": "Undead creature of the night"
-    },
-    "insomniac": {
-      "name": "Insomniac",
-      "description": "Cannot sleep properly"
     },
     "alcoholic": {
       "name": "Alcoholic",
@@ -300,17 +292,9 @@
       "name": "Savant Syndrome",
       "description": "Exceptional ability in specific area"
     },
-    "asthmatic": {
-      "name": "Asthmatic",
-      "description": "Difficulty breathing under stress"
-    },
     "adhd": {
       "name": "ADHD",
       "description": "Attention deficit, hyperactive impulses"
-    },
-    "ocd": {
-      "name": "OCD",
-      "description": "Obsessive compulsive patterns"
     },
     "dyslexic": {
       "name": "Dyslexic",
@@ -772,14 +756,6 @@
       "name": "Witch-Marked",
       "description": "Bears supernatural curse mark"
     },
-    "possessed": {
-      "name": "Possessed",
-      "description": "Shares body with spirit"
-    },
-    "lycanthrope": {
-      "name": "Lycanthrope",
-      "description": "Transforms under moon"
-    },
     "clairvoyant": {
       "name": "Clairvoyant",
       "description": "Sees beyond normal perception"
@@ -807,6 +783,18 @@
     "gun_fu": {
       "name": "Gun-Fu",
       "description": "Martial arts skills fired through a gun or bow chain into a free follow-up attack"
+    },
+    "cystic_fibrosis": {
+      "name": "Cystic Fibrosis",
+      "description": "Genetic lung and pancreas disorder"
+    },
+    "huntingtons_disease": {
+      "name": "Huntington's Disease",
+      "description": "Inherited movement and memory decline"
+    },
+    "porphyria": {
+      "name": "Porphyria",
+      "description": "Inherited blood disorder, sun blisters"
     }
   }
 }

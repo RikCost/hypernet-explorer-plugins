@@ -1,0 +1,5899 @@
+{
+  "ui": {
+    "investigate": "",
+    "resume": "",
+    "close": "",
+    "investigateHint": "",
+    "where": "",
+    "signalRow": "",
+    "signalUnread": "",
+    "signalLost": "",
+    "mapTitle": "",
+    "walkAway": "",
+    "walkedAway": ""
+  },
+  "reward": {
+    "artifact": "",
+    "gear": "",
+    "materials": "",
+    "gold": "",
+    "schrodingerite": "",
+    "exp": "",
+    "harm": "",
+    "heal": "",
+    "battle": ""
+  },
+  "relic": {
+    "nameTemplate": "",
+    "description": "",
+    "prefix": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "noun": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "descriptionEarth": ""
+  },
+  "tokens": {
+    "instrument": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "maker": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "wrongness": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "tone": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "biomes": {
+    "AlienAcidOcean": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienCTypeAsteroid": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienCarbon": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienCentaur": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienChthonian": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienColdJupiter": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienComet": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienDesert": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienDiamond": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienDwarf": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienEarthLike": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienGasGiant": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienHabitable": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienHotJupiter": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienIce": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienIceGiant": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienLavaOcean": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienLongPeriodComet": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMTypeAsteroid": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMagmaPlanet": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMagnetar": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMegaIron": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMercurian": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMiniNeptune": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienOcean": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienPlanetesimal": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienPlasma": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienPuffy": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienQuarkPlanet": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienRainforest": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienRingedGasGiant": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienRogue": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienSTypeAsteroid": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienShortPeriodComet": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienSubEarth": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienSubMercurian": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienSuperEarth": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienTrojanAsteroid": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienTundra": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienWarmJupiter": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    }
+  },
+  "scenarios": {
+    "bloom": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "castaway": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "derelict": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "descent": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "furnace": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "graveyard": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "slot": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "hollow": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "mirror": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "slot": "",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        }
+      }
+    },
+    "predator": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "slot": "",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "ruins": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "slot": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "shrine": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "signal": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "slot": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "swarm": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_ocean": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 8
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "e_fields": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 8
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "e_meadows": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 8
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_forest": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "e_forestice": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_foresttropical": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_spiritwoods": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "exp": 8
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "e_mountain": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_mountainice": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "e_mountaindesert": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "exp": 14
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "e_desert": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_badlands": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "e_tundra": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_permafrost": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "exp": 16
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_volcano": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_ruins": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_graveyard": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_swamp": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_temple": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "e_castle": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_city": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_docks": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_road": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_beach": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_lake": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "e_wayside": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "e_camp": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    }
+  },
+  "fallbackScenarios": [
+    "",
+    "",
+    "",
+    ""
+  ],
+  "earth": {
+    "fallbackScenarios": [
+      "",
+      ""
+    ],
+    "tokens": {
+      "hour": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "weather": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tool": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "aliases": {
+      "SeaBed": "",
+      "Farm": "",
+      "Savannah": "",
+      "Steppe": "",
+      "Highlands": "",
+      "Park": "",
+      "Taiga": "",
+      "Bamboo": "",
+      "Jungle": "",
+      "Mangrove": "",
+      "SaltFlats": "",
+      "Canyon": "",
+      "Ice": "",
+      "Snow": "",
+      "Abandoned": "",
+      "Landfill": "",
+      "Mushroom": "",
+      "TempleShinto": "",
+      "CityIce": "",
+      "CityDesert": "",
+      "Burg": "",
+      "BurgIce": "",
+      "BurgDesert": "",
+      "Village": "",
+      "VillageIce": "",
+      "VillageMountain": "",
+      "VillageDesert": "",
+      "VillageRiver": "",
+      "VillageSea": "",
+      "Houses": "",
+      "River": "",
+      "River vertical": "",
+      "River horizontal": "",
+      "River cross": "",
+      "RiverBank": "",
+      "Highway": "",
+      "Bridge": "",
+      "Road vertical": "",
+      "Road horizontal": "",
+      "Road cross": "",
+      "Road t-up": "",
+      "Road t-down": "",
+      "Road t-left": "",
+      "Road t-right": "",
+      "Road corner-up-right": "",
+      "Road corner-up-left": "",
+      "Road corner-down-right": "",
+      "Road corner-down-left": ""
+    },
+    "biomes": {
+      "Ocean": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Fields": {
+        "scenarios": [
+          ""
+        ],
+        "tokens": {
+          "sound_field": [
+            "",
+            "",
+            ""
+          ]
+        }
+      },
+      "Meadows": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Forest": {
+        "scenarios": [
+          ""
+        ],
+        "tokens": {
+          "landmark": [
+            "",
+            "",
+            ""
+          ]
+        }
+      },
+      "ForestIce": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "ForestTropical": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "SpiritWoods": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Mountain": {
+        "scenarios": [
+          ""
+        ],
+        "tokens": {
+          "offering": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      },
+      "MountainIce": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "MountainDesert": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Desert": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Badlands": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Tundra": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Permafrost": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Volcano": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Ruins": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Graveyard": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Swamp": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Temple": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Castle": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "City": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Docks": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Road": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Beach": {
+        "scenarios": [
+          ""
+        ]
+      },
+      "Lake": {
+        "scenarios": [
+          ""
+        ]
+      }
+    }
+  }
+}

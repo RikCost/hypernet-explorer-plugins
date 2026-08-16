@@ -3116,5 +3116,38 @@
         "cloudCover": 60, "dayHumidity": 70, "nightHumidity": 82
       }
     }
+  },
+  {
+    "id": 408,
+    "country": "Varlenia",
+    "region": "Europe",
+    "faction": "Neutral",
+    "controller": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "08:35", "sunset": "16:35",
+        "dayTemp": 4.0, "nightTemp": -1.0,
+        "precipitation": 4.2, "windSpeed": 17.0,
+        "cloudCover": 82, "dayHumidity": 86, "nightHumidity": 92
+      },
+      "spring": {
+        "sunrise": "06:35", "sunset": "20:45",
+        "dayTemp": 13.0, "nightTemp": 5.0,
+        "precipitation": 3.1, "windSpeed": 15.0,
+        "cloudCover": 64, "dayHumidity": 71, "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:25", "sunset": "21:55",
+        "dayTemp": 21.0, "nightTemp": 12.0,
+        "precipitation": 2.4, "windSpeed": 12.0,
+        "cloudCover": 48, "dayHumidity": 63, "nightHumidity": 78
+      },
+      "autumn": {
+        "sunrise": "07:45", "sunset": "18:25",
+        "dayTemp": 12.0, "nightTemp": 6.0,
+        "precipitation": 4.6, "windSpeed": 18.0,
+        "cloudCover": 78, "dayHumidity": 82, "nightHumidity": 90
+      }
+    }
   }
 ]

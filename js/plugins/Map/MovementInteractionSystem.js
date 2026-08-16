@@ -2086,9 +2086,8 @@
   // Two pizzerias on one map would otherwise read identically, so a repeated
   // venue name carries its distance from the seat.
   const venueChoiceLabel = (venue, venues) => {
-    const label = venue.kind === "tavern" ? T('Movement.tavern') : venue.label;
     const repeated = venues.filter(v => v.label === venue.label).length > 1;
-    return repeated ? `${label} (${venue.distance} ${T('Movement.tiles')})` : label;
+    return repeated ? `${venue.label} (${venue.distance} ${T('Movement.tiles')})` : venue.label;
   };
 
   // Sitting inside a venue that serves food lets the player order from the table

@@ -26,43 +26,54 @@ class Main {
     }
 
     run() {
+        this.setupNwjsWindow();
         this.showLoadingSpinner();
         this.testXhr();
         this.hookNwjsClose();
         this.loadMainScripts();
     }
 
+    isPlaytest() {
+        // [Note] Utils lives in rmmz_core.js, which has not loaded yet.
+        if (location.search.slice(1).split("&").includes("test")) {
+            return true;
+        }
+        return (
+            typeof nw === "object" &&
+            nw.App.argv.length > 0 &&
+            nw.App.argv[0].split("&").includes("test")
+        );
+    }
+
+    setupNwjsWindow() {
+        // [Note] NW.js opens the window at the size declared in package.json
+        //   before any game code runs, so the boot screen would otherwise show
+        //   in a small window until the fullscreen plugins reach
+        //   Scene_Boot.start several seconds later. Size it natively up front.
+        if (typeof nw !== "object") {
+            return;
+        }
+        const win = nw.Window.get();
+        Main.nwWindow = win;
+        Main.isNwFullscreen = !!win.isFullscreen;
+        win.on("enter-fullscreen", () => (Main.isNwFullscreen = true));
+        win.on("leave-fullscreen", () => (Main.isNwFullscreen = false));
+        if (this.isPlaytest()) {
+            win.maximize();
+        } else {
+            win.enterFullscreen();
+        }
+        win.focus();
+    }
+
     showLoadingSpinner() {
         const bootScreen = document.createElement("div");
         bootScreen.id = "bootScreen";
-        bootScreen.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            color: #c0c0c0;
-            font-family: 'Courier New', monospace;
-            font-size: 18px;
-            padding: 20px;
-            box-sizing: border-box;
-            z-index: 10000;
-            overflow: hidden;
-            line-height: 1.4;
-        `;
-        
+
         // Add Energy logo in top right
         const energyLogo = document.createElement("img");
         energyLogo.src = "img/pictures/energy.png";
-        energyLogo.style.cssText = `
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 300px;
-            height: auto;
-            z-index: 10001;
-        `;
+        energyLogo.className = "boot-logo";
         bootScreen.appendChild(energyLogo);
         
         const bootContent = document.createElement("div");
@@ -102,7 +113,6 @@ class Main {
             if (currentLine >= bootSequence.length) {
                 // Add final loading animation
                 const finalDots = document.createElement("span");
-                finalDots.style.color = "#c0c0c0";
                 let dotCount = 0;
                 const dotInterval = setInterval(() => {
                     finalDots.textContent = '.'.repeat((dotCount % 4));
@@ -121,7 +131,6 @@ class Main {
             
             const line = bootSequence[currentLine];
             const lineElement = document.createElement("div");
-            lineElement.style.color = "#c0c0c0";
             
             if (line.loading) {
                 // Animate loading bar quickly
@@ -154,29 +163,6 @@ class Main {
             currentLine++;
             setTimeout(typeBootLine, 0);
         }
-        
-        // Add blinking cursor effect
-        const style = document.createElement('style');
-        style.textContent = `
-            #bootContent::after {
-                content: '█';
-                animation: blink 1s infinite;
-                color: #c0c0c0;
-            }
-            
-            @keyframes blink {
-                0%, 50% { opacity: 1; }
-                51%, 100% { opacity: 0; }
-            }
-            
-            @media (max-width: 768px) {
-                #bootScreen {
-                    font-size: 14px;
-                    padding: 10px;
-                }
-            }
-        `;
-        document.head.appendChild(style);
         
         // Start boot sequence immediately
         setTimeout(typeBootLine, 0);
@@ -237,8 +223,23 @@ class Main {
 
     onScriptLoad() {
         if (++this.loadCount === this.numScripts) {
+            this.patchFullscreenForNwjs();
             PluginManager.setup($plugins);
         }
+    }
+
+    patchFullscreenForNwjs() {
+        // [Note] Chromium only grants DOM fullscreen requests that originate
+        //   from a user gesture, so the stock Graphics helpers fail silently
+        //   when a plugin goes fullscreen on boot. The native NW.js window API
+        //   has no such restriction.
+        const win = Main.nwWindow;
+        if (!win) {
+            return;
+        }
+        Graphics._isFullScreen = () => Main.isNwFullscreen;
+        Graphics._requestFullScreen = () => win.enterFullscreen();
+        Graphics._cancelFullScreen = () => win.leaveFullscreen();
     }
 
     onScriptError(e) {

@@ -42,6 +42,23 @@
     --bg-tertiary-focus-translucent-45: rgba(255, 235, 156, 0.45);
     --bg-well: #d5dbdb;
 
+    /* === Diary book (Core/DiaryUI.js) ===
+       Lifted out of the plugin, which used to append them to :root as a
+       "diary-tokens" <style> when no theme declared them. The book is a paper
+       object under both presets, so both carry the same values; a future preset
+       can retune it here without touching the plugin. */
+    --paper: #efe4c8;
+    --paper-edge: rgba(226, 212, 182, 0.55);
+    --ink: #2c2418;
+    --ink-alt: #33291a;
+    --ink-deep: #241d13;
+    --ink-strong: #43301c;
+    --rule: rgba(96, 116, 140, 0.30);
+    --rule-margin: rgba(164, 74, 60, 0.42);
+    --highlight-paper: rgba(196, 154, 74, 0.18);
+    --accent-brown: #57391d;
+    --accent-brown-dark: #33220f;
+
     /* === Text Colors === */
     --text-danger-hover: #ecdcb9;
     --text-disabled: #5c4b3d;
@@ -1502,6 +1519,128 @@ body .name-edit-bracket-box .name-display-text {
 #shop-container .detail-effect-chip {
     color: #3a2414 !important;
 }
+
+
+/* ==========================================================================
+   LEGIBILITY SWEEP - no white ink, no bright ink, no ink the colour of its own
+   ground
+   --------------------------------------------------------------------------
+   Every colour pair css/theme.css, css/game.css and css/hypernet.css establish
+   was resolved against this preset's tokens and measured (WCAG contrast). The
+   rules below are the ones that came out under 3:1 and are NOT a deliberate
+   inversion (a chip that takes a dark plate and light ink together is fine and
+   is left alone).
+
+   Two failure modes, and they are the two the preset is prone to:
+
+     - INK TOO LIGHT. The shared sheets were authored against omega_tower, where
+       the ground is black and near-white ink is right. Wherever such a surface
+       takes THIS preset's parchment plate instead, that same ink vanishes.
+     - INK TOO DARK ON A DARK PLATE. The mirror image: a chip that keeps a dark
+       plate under every preset, inked with --text-primary-hover, which is
+       #ffcc66 under omega_tower but the deep red #58180D here.
+
+   Each fix names the measured ratio it replaces so a future retune of the
+   tokens can tell whether the override is still doing anything.
+   ========================================================================== */
+
+/* --- The galaxy HUD's button rail. #gx-ui .gx-btn takes --bg-panel, which is
+       parchment here, and the per-role glyph colours below were picked to glow
+       against black: bookmark 1.07, bio 1.14, ship 1.23, starbase 1.60, land
+       1.88, stop 2.29, and the hover/focus amber 1.08. Re-inked in this
+       preset's own register, keeping each role's hue so the rail still reads
+       at a glance. */
+#gx-ui .gx-btn.gx-bookmark { color: #6b4a00; }
+#gx-ui .gx-btn.gx-bio { color: #14602f; }
+#gx-ui .gx-btn.gx-ship { color: #10486e; }
+#gx-ui .gx-btn.gx-sb { color: #4b2178; }
+#gx-ui .gx-btn.gx-land { color: #245c14; }
+#gx-ui .gx-btn.gx-stop { color: #8f1b12; }
+#gx-ui .gx-btn:hover,
+#gx-ui .gx-btn.focused {
+    color: var(--text-primary-hover);
+}
+
+/* --- Harvest window. The plate is parchment (#e2dac6), so the danger button's
+       salmon (1.70) went with it; and the selected chip inverts to the deep red
+       plate but kept a near-black label (1.35). */
+#hv-mini .cs-actbtn.danger { color: #8f1b12; }
+#hv-mini .cs-actbtn.selected,
+#cs-mini .cs-qty-btn.selected {
+    color: var(--text-highlight-active);
+}
+
+/* --- Map corner readout. #map-info-hud is cream here, and the four state
+       colours are Material palette tints meant for a dark HUD: cool 1.50,
+       warm/insomnia 1.58, cold 1.83. */
+#map-info-hud .mih-temp-cool { color: #10557d; }
+#map-info-hud .mih-temp-cold { color: #0d4a72; }
+#map-info-hud .mih-temp-warm,
+#map-info-hud .mih-insomnia-warn { color: #8a4a00; }
+
+/* --- The pinned clock on the main menu. .pockets-clock takes
+       --bg-pockets-clock, which is the cream #f4edd4 here, and both highlights
+       are pure white on it (1.18). */
+.cash-highlight { color: #1f5c2a; }
+.bounty-highlight { color: var(--text-primary-hover); }
+
+/* --- Skill atlas. The circle is drawn straight onto the parchment spread
+       (.book-spread.skill-fullpage), with no plate of its own, so its white
+       labels and legend had nothing to sit on. The text-shadow the shared sheet
+       gives .sg-name was a dark halo for white ink; it is dropped with it. */
+.sg-name,
+.sg-legend,
+.sg-banner-sub {
+    color: var(--text-muted-hover);
+}
+
+.sg-name {
+    text-shadow: none;
+}
+
+/* --- Party HUD alert chip and the tournament banner: both keep a dark plate
+       under every preset, and both took --text-primary-hover / a near-black
+       label, which is deep red here (1.37 and 1.46). */
+#party-hud .phud-alert { color: var(--text-highlight-active); }
+#mt-banner { color: var(--accent-amber-glow); }
+
+/* --- Hypernet window chrome. The XP titlebar keeps its blue gradient under
+       every preset; #d4c39e on it measured 2.16. Inked down rather than up:
+       white would clear the ratio too, but no surface in this preset is allowed
+       pure white ink, and a dark navy reads just as cleanly on that blue. */
+.hypernet-window-titlebar,
+.hypernet-os-window.active .hypernet-window-titlebar {
+    color: #10233d;
+}
+
+/* --- Battle card hand. The cost badge is cyan under every preset and carried
+       white (2.30); the duel's win chip is a light green on green (2.54). */
+#html-cardhand-overlay .rcs-cost { color: #06323a; }
+.cd-chip.cd-win { color: #06280f; }
+
+
+/* --- Measured and deliberately NOT changed, so the next sweep does not
+       re-open them:
+
+       #apiary-container, #bestiary-container, #blacksmith-container,
+       #brewery-container, #character-creation-container, #cooking-container,
+       #equip-container, #help-container, #history-container, #shop-container,
+       #thinker-container, #travel-overlay, #tt-container
+         Each sets `color: var(--text-muted-hover)` over a dark --gradient-1
+         backdrop, which measures ~1.15. It reads as ink-on-ink only if you stop
+         at the container: that colour is the INHERITED ink for the parchment
+         spread inside it (.book-spread / .left-page / .right-page declare no
+         colour of their own), and the dark gradient is the frame around the
+         page, which carries no text. Lightening the container would turn every
+         page's body copy cream-on-cream. Where a child really does sit on the
+         dark frame it is fixed one at a time -- see #help-container .help-body,
+         .cooking-empty-hint p and .bestiary-list-empty above.
+
+       .toggle-switch.active .toggle-text
+         --text-highlight-active measures 1.28 against the switch's resting
+         plate, but .toggle-switch.active repaints that plate to
+         --text-secondary-active (#8c1d0f) at the same time, which is the
+         inversion the cream ink was chosen for. */
 
 
 /* ==========================================================================

@@ -75,7 +75,9 @@
     "noFood": "niente",
     "weatherClear": "Sereno",
     "awake": "Sveglio",
-    "eta": "ETA"
+    "eta": "ETA",
+    "enemies": "Nemici",
+    "level": "Liv. {level}"
   },
   "needLabel": {
     "hunger": "Fame",

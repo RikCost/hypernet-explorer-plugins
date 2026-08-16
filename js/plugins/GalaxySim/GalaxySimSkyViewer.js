@@ -206,80 +206,6 @@
         return s;
     }
 
-    // --- Style injection ---------------------------------------------------
-
-    const STYLE_ID = "galaxysim-skyviewer-style";
-    function injectStyle() {
-        if (document.getElementById(STYLE_ID)) return;
-        const style = document.createElement("style");
-        style.id = STYLE_ID;
-        style.textContent = `
-#gsv-root { position:fixed; top:0; right:0; bottom:0; left:0; width:100vw; height:100vh;
-  background:#020204; z-index:400; overflow:hidden;
-  font-family:'Segoe UI',Arial,sans-serif; color:var(--text-pure-white,#fff);
-  user-select:none; }
-#gsv-root .gsv-svg { position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;
-  display:block; cursor:grab; }
-#gsv-root .gsv-svg:active { cursor:grabbing; }
-#gsv-root .gsv-bgrect { fill:url(#gsv-bg); }
-#gsv-root .gsv-milkyway { fill:url(#gsv-milkyway); mix-blend-mode:screen; pointer-events:none; }
-#gsv-root .gsv-field-star { fill:#dfe8ff; opacity:calc(var(--gsv-op,0.5) * 0.35);
-  animation:gsv-twinkle linear infinite; pointer-events:none; }
-@keyframes gsv-twinkle { 0%,100% { opacity:calc(var(--gsv-op,0.5) * 0.35); } 50% { opacity:var(--gsv-op,0.5); } }
-#gsv-root .gsv-grid-ring { fill:none; stroke:rgba(140,170,230,0.16); stroke-width:1; }
-#gsv-root .gsv-grid-spoke { stroke:rgba(140,170,230,0.10); stroke-width:1; }
-#gsv-root .gsv-grid-spoke-major { stroke:rgba(160,190,255,0.22); }
-#gsv-root .gsv-line { stroke:${LINE_COLOR_CSS}; stroke-width:${LINE_THICKNESS}; opacity:0.55; fill:none;
-  transition:opacity .2s, stroke-width .2s; vector-effect:non-scaling-stroke; }
-#gsv-root .gsv-line-zodiac { stroke:${ZODIAC_COLOR_CSS}; opacity:0.72;
-  filter:drop-shadow(0 0 3px rgba(255,210,90,0.55)); }
-#gsv-root .gsv-const.gsv-hover .gsv-line { opacity:1; }
-#gsv-root .gsv-const.gsv-hover .gsv-line-zodiac { filter:drop-shadow(0 0 6px rgba(255,224,130,0.95)); }
-#gsv-root .gsv-star-core { fill:${STAR_COLOR_CSS}; }
-#gsv-root .gsv-star-core.gsv-star-zodiac { fill:#fff3c4; }
-#gsv-root .gsv-star-halo { fill:url(#gsv-star-halo); }
-#gsv-root .gsv-star-halo.gsv-star-zodiac { fill:url(#gsv-star-halo-gold); }
-#gsv-root .gsv-const.gsv-hover .gsv-star-core { fill:#ffffff; }
-#gsv-root .gsv-star-labels.gsv-hidden { display:none; }
-#gsv-root .gsv-const-label text { fill:rgba(220,230,255,0.55); font-size:${CONST_LABEL_UNITS}px;
-  letter-spacing:0.12em; text-transform:uppercase; text-anchor:middle; font-family:Georgia,'Times New Roman',serif;
-  paint-order:stroke; stroke:rgba(2,2,6,0.7); stroke-width:${Math.max(2, CONST_LABEL_UNITS * 0.14)}px; }
-#gsv-root .gsv-const-label-zodiac text { fill:rgba(255,224,150,0.8); }
-#gsv-root .gsv-zodiac-mark { fill:#ffd257; transform:rotate(45deg); transform-origin:center; }
-#gsv-root .gsv-star-label { fill:rgba(255,255,255,0.85); font-size:${STAR_LABEL_UNITS}px; text-anchor:middle;
-  paint-order:stroke; stroke:rgba(2,2,6,0.75); stroke-width:${Math.max(2, STAR_LABEL_UNITS * 0.16)}px; }
-#gsv-root .gsv-vignette-rect { fill:url(#gsv-vignette); pointer-events:none; }
-#gsv-root .gsv-scope { position:absolute; top:0; right:0; bottom:0; left:0; z-index:6; pointer-events:none; }
-#gsv-root .gsv-scope::before, #gsv-root .gsv-scope::after { content:""; position:absolute;
-  left:50%; top:50%; width:min(88vmin,760px); height:min(88vmin,760px); transform:translate(-50%,-50%);
-  border-radius:50%; }
-#gsv-root .gsv-scope::before { box-shadow:0 0 0 9999px rgba(0,0,0,0.96); border:6px solid #1c1c1c; }
-#gsv-root .gsv-scope::after { box-shadow:inset 0 0 46px 14px rgba(0,0,0,0.9), inset 0 0 8px 3px rgba(255,255,255,0.06); }
-#gsv-root .gsv-topbar { position:absolute; top:16px; left:16px; display:flex; gap:14px; align-items:flex-end;
-  z-index:2; pointer-events:auto; flex-wrap:wrap; max-width:80vw; }
-#gsv-root .gsv-tabs { display:flex; gap:2px; pointer-events:auto;
-  border-bottom:2px solid var(--border-gold-amber-30,rgba(212,160,80,0.3)); padding-bottom:6px; }
-#gsv-root .gsv-tab { pointer-events:auto; cursor:pointer; padding:6px 16px; margin:0; border-radius:4px 4px 0 0;
-  background:transparent; border:1px solid transparent;
-  color:var(--text-text-alt-12,#aaa); font-size:17px; letter-spacing:0.4px; font-weight:600;
-  transition:all .15s ease; white-space:nowrap; user-select:none; }
-#gsv-root .gsv-tab:hover { background:var(--border-gold-amber-30,rgba(212,160,80,0.15)); color:var(--text-pure-white,#fff); }
-#gsv-root .gsv-tab.gsv-active { color:#1a1206; background:var(--accent-gold-pure,#ffd700);
-  box-shadow:0 4px 10px var(--shadow-black-translucent-55,rgba(0,0,0,0.55)); }
-#gsv-root .gsv-legend { display:flex; align-items:center; gap:6px; padding-bottom:8px; font-size:15px;
-  color:var(--text-text-alt-12,#aaa); }
-#gsv-root .gsv-legend-swatch { width:16px; height:2px; background:${ZODIAC_COLOR_CSS};
-  box-shadow:0 0 4px rgba(255,215,90,.7); display:inline-block; }
-#gsv-root .gsv-bottombar { position:absolute; left:50%; bottom:20px; transform:translateX(-50%);
-  text-align:center; z-index:2; pointer-events:none; max-width:90vw; }
-#gsv-root .gsv-hover-name { font-size:24px; font-weight:600; letter-spacing:0.6px;
-  color:var(--accent-amber-glow,#ffe9a8); text-shadow:0 2px 6px var(--shadow-black-translucent-75,rgba(0,0,0,0.75));
-  opacity:0; transition:opacity .18s; }
-#gsv-root .gsv-hover-name.gsv-visible { opacity:1; }
-`;
-        document.head.appendChild(style);
-    }
-
     // --- Overlay class ------------------------------------------------------
 
     class StarMapOverlay {
@@ -301,7 +227,6 @@
             this._cameraDirty = true;
             this._labelZoom = null;
 
-            injectStyle();
             this._buildDom();
             this._switchTo("western");
         }
@@ -312,6 +237,18 @@
 
             const root = document.createElement("div");
             root.id = "gsv-root";
+            // Star, line and zodiac colours are plugin parameters and the two
+            // label sizes are screen-space constants the layout also reads, so
+            // css/theme.css (#gsv-root) takes them from here rather than
+            // restating them. Everything else about the sky is in that sheet.
+            root.style.setProperty("--gsv-star-color", STAR_COLOR_CSS);
+            root.style.setProperty("--gsv-line-color", LINE_COLOR_CSS);
+            root.style.setProperty("--gsv-zodiac-color", ZODIAC_COLOR_CSS);
+            root.style.setProperty("--gsv-line-thickness", String(LINE_THICKNESS));
+            root.style.setProperty("--gsv-const-label-size", CONST_LABEL_UNITS + "px");
+            root.style.setProperty("--gsv-const-label-stroke", Math.max(2, CONST_LABEL_UNITS * 0.14) + "px");
+            root.style.setProperty("--gsv-star-label-size", STAR_LABEL_UNITS + "px");
+            root.style.setProperty("--gsv-star-label-stroke", Math.max(2, STAR_LABEL_UNITS * 0.16) + "px");
             root.innerHTML = `
 <svg class="gsv-svg">
   <defs>

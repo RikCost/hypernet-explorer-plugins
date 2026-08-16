@@ -32,10 +32,6 @@
       "name": "행운아",
       "description": "운이 따름"
     },
-    "narcoleptic": {
-      "name": "기면증",
-      "description": "예고 없이 잠에 빠짐"
-    },
     "hot-headed": {
       "name": "성급한 성격",
       "description": "쉽게 화를 냄"
@@ -79,10 +75,6 @@
     "vampire": {
       "name": "뱀파이어",
       "description": "밤을 지배하는 언데드"
-    },
-    "insomniac": {
-      "name": "불면증",
-      "description": "잠에 들기 어려움"
     },
     "alcoholic": {
       "name": "알코올 의존증",
@@ -300,17 +292,9 @@
       "name": "서번트 증후군",
       "description": "발달 장애나 뇌 손상이 있으나 특정 인지 분야에서 경이로운 천재성을 보임"
     },
-    "asthmatic": {
-      "name": "천식",
-      "description": "스트레스나 자극을 받으면 호흡 곤란에 빠짐"
-    },
     "adhd": {
       "name": "ADHD",
       "description": "주의력이 결핍되고 충동적인 행동을 제어하지 못함"
-    },
-    "ocd": {
-      "name": "강박장애",
-      "description": "불안을 해소하기 위해 강박적 사고와 행동을 강박적으로 반복함"
     },
     "dyslexic": {
       "name": "난독증",
@@ -772,14 +756,6 @@
       "name": "마녀의 표식",
       "description": "저주받은 흔적이 있음"
     },
-    "possessed": {
-      "name": "빙의됨",
-      "description": "정령과 몸을 공유함"
-    },
-    "lycanthrope": {
-      "name": "늑대인간",
-      "description": "보름달에 늑대의 형태로 변신함"
-    },
     "clairvoyant": {
       "name": "투시 능력자",
       "description": "사물을 관통해 볼 수 있는 인지 능력을 지님"
@@ -807,6 +783,18 @@
     "gun_fu": {
       "name": "건푸",
       "description": "총이나 활로 펼치는 무술 스킬이 추가 공격으로 이어집니다"
+    },
+    "cystic_fibrosis": {
+      "name": "낭포성 섬유증",
+      "description": "폐와 췌장을 막는 유전 질환"
+    },
+    "huntingtons_disease": {
+      "name": "헌팅턴병",
+      "description": "운동과 기억을 앗아가는 유전병"
+    },
+    "porphyria": {
+      "name": "포르피린증",
+      "description": "햇빛에 물집이 잡히는 유전성 혈액 질환"
     }
   }
 }

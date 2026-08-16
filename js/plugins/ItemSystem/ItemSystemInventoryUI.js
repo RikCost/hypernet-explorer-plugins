@@ -704,8 +704,7 @@
       });
       rightPageInnerHTML = `
         <div class="target-overlay">
-          <h3 class="target-title">${T('Inventory.ui.targetCompanion')}</h3>
-          <div style="font-family:'Lora',serif;margin-bottom:15px;color:#58180D;">${T('Inventory.ui.usingSelectRecipient', { item: `<strong>${item.name}</strong>` })}</div>
+          <h3 class="target-title">${T('Inventory.ui.useItemOn', { item: item.name })}</h3>
           <div class="inspect-actions">
             ${targetsHTML}
             <div class="inspect-btn" onclick="SceneManager._scene.cancelUITargeting()" style="margin-top:15px;border-color:#555;color:#555;">${T('Inventory.ui.cancel')}</div>

@@ -1025,17 +1025,6 @@
     container.style.opacity = "1";
     container.style.pointerEvents = "auto";
 
-    // One-time loading-shimmer style for thumbnails still generating.
-    if (!document.getElementById("cc3d-styles")) {
-      const st = document.createElement("style");
-      st.id = "cc3d-styles";
-      st.textContent = `
-        @keyframes cc3dPulse { 0%{opacity:0.35} 50%{opacity:0.7} 100%{opacity:0.35} }
-        .cc3d-loading { animation: cc3dPulse 1.1s ease-in-out infinite; }
-      `;
-      document.head.appendChild(st);
-    }
-
     const rowsHtml = this._rows.map((row, i) => this._rowHtml(row, i)).join("");
     container.innerHTML = `
       <div class="cc-pockets-spread">

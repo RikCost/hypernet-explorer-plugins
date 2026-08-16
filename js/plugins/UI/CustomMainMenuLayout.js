@@ -1886,9 +1886,9 @@
                     this.generateUICommandItemHTML(T('MainMenu.cmd.specializations'), "specializations"),
                     this.generateUICommandItemHTML(emLabel("menuBiologics", T('MainMenu.cmd.biologics')), "biologics"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.augments'), "augments"),
-                    // Not a page of its own: the tile drops the caret into the
-                    // search field the right page already wears over the party
-                    // cards (UI/CustomMainMenuSearch.js).
+                    // Opens the results page on everything the party carries,
+                    // knows and can make, with the field that narrows it at its
+                    // head (UI/CustomMainMenuSearch.js).
                     this.generateUICommandItemHTML(T('MainMenu.cmd.search'), "search"),
                 ],
                 // Party: the people and creatures travelling with you
@@ -2466,10 +2466,12 @@
                     }
                     break;
                 case "search":
-                    // Stays on this page: the field is already rendered, so the
-                    // command only hands it the caret.
+                    // Stays on this page, but opens the results over it: the
+                    // tile shows everything the party has, unfiltered, and the
+                    // field at the head of that page narrows it from there
+                    // (CustomMainMenuSearch.js).
                     if (window.MenuSearch) {
-                        window.MenuSearch.focus();
+                        window.MenuSearch.open();
                     } else {
                         console.warn("MenuSearch is not defined!");
                     }

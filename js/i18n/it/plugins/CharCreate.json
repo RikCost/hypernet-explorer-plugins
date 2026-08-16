@@ -370,6 +370,10 @@
     },
     "modeQuick": {
       "name": "Rapida",
+      "desc": "Tre domande e sei in gioco: nome, aspetto e classe. Genere, corpo e ritratto arrivano con l'aspetto che scegli, e i tratti sono casuali."
+    },
+    "modeNormal": {
+      "name": "Normale",
       "desc": "Creazione rapida per ogni membro: scelta rapida della classe, tratti casuali, niente passaggi narrativi."
     },
     "combatMonsters": {

@@ -2705,11 +2705,12 @@
     }
   };
 
-  MapInfoHUD.prototype._getBiomeName = function () {
-    if ($gamePlayer && window.WorldGen && window.WorldGen.HardcodedBiomeNames) {
-      const loc = window.WorldGen.HardcodedBiomeNames[`${$gamePlayer.x},${$gamePlayer.y}`];
-      if (loc) return loc;
-    }
+  // The biome ID of the square the player is standing on ("ForestTropical"),
+  // which is what every rule keyed on the biome wants; the card itself shows
+  // the readable name below. A hand-named location is deliberately not
+  // consulted here: it is the name of a PLACE, not of a habitat, and the fauna
+  // rules would not recognise it.
+  MapInfoHUD.prototype._getBiomeId = function () {
     let name = 'Unknown'; // i18n-ignore: sentinel compared against cached biome ids
     if ($gameSystem && $gameSystem.getBiomeFromCache && $gamePlayer) {
       const b = $gameSystem.getBiomeFromCache($gamePlayer.x, $gamePlayer.y);
@@ -2719,9 +2720,52 @@
       name = $gameSystem._procGenData.currentBiome;
     }
     if (name.startsWith('Road ')) name = 'Road';
+    return name;
+  };
+
+  MapInfoHUD.prototype._getBiomeName = function () {
+    if ($gamePlayer && window.WorldGen && window.WorldGen.HardcodedBiomeNames) {
+      const loc = window.WorldGen.HardcodedBiomeNames[`${$gamePlayer.x},${$gamePlayer.y}`];
+      if (loc) return loc;
+    }
     // The cached value is a biome id ("ForestTropical"); the card shows the
     // readable name Biomes.json declares for it ("Tropical Forest").
-    return window.BiomeNames.display(name);
+    return window.BiomeNames.display(this._getBiomeId());
+  };
+
+  // How dangerous this square is, in the one unit that means anything: the
+  // level of the creature it usually fields. Drawn ONLY in the distance-from-
+  // spawn encounter mode, where a square's danger is a property of the square
+  // and so is worth reading off the map before walking onto it. In the other
+  // two modes the answer is "whatever level your party is" (Balanced) or
+  // "anything at all" (Chaos), and a number would be a lie in both.
+  //
+  // The figure is the weighted median of the local roster, built by the
+  // encounter system itself (BSE.Helpers.getPlaceEncounterMedianLevel), so it
+  // is what the spawner would actually draw here rather than a restatement of
+  // the difficulty curve. It is coloured against the party: what they are level
+  // for reads cool, what is well over their heads reads hot, on the same scale
+  // the temperature row uses.
+  MapInfoHUD.prototype._enemyLevel = function () {
+    const BSEH = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
+    if (!BSEH || !BSEH.getSpawnMode || !BSEH.getPlaceEncounterMedianLevel) return '';
+    if (BSEH.getSpawnMode() !== 'distance') return '';
+    const level = BSEH.getPlaceEncounterMedianLevel(this._getBiomeId());
+    // Nothing spawnable here at all: an empty world, or a biome whose whole
+    // roster this nation suppresses. Saying "Lv. 0" would be worse than
+    // saying nothing.
+    if (!level) return '';
+    const party = BSEH.getPartyReferenceLevel ? BSEH.getPartyReferenceLevel() : 1;
+    const over = level - party;
+    let cls = 'mih-temp-mild';
+    if (over <= -8) cls = 'mih-temp-cold';
+    else if (over <= -3) cls = 'mih-temp-cool';
+    else if (over >= 15) cls = 'mih-temp-hot';
+    else if (over >= 5) cls = 'mih-temp-warm';
+    return `<div class="mih-region mih-danger">` +
+      `<span class="mih-region-lbl">${T("TimeDate.hud.enemies")}</span>` +
+      `<span class="mih-region-val ${cls}">${T("TimeDate.hud.level", { level: level })}</span>` +
+    `</div>`;
   };
 
   // Country the player is standing in, plus the hyperpower controlling it.
@@ -2937,6 +2981,7 @@
         `<div class="mih-datetime"><span class="mih-star">&#9733;</span>${dt.dateShort} ${dt.time24}</div>` +
         `<div class="mih-location">${loc}</div>` +
         countryHtml +
+        this._enemyLevel() +
         this._temperature() +
         this._food() +
         this._insomnia(needs) +
@@ -3481,6 +3526,8 @@
   window.TimeDateSystem = window.TimeDateSystem || {};
   window.TimeDateSystem.maxHunger = maxHunger;
   window.TimeDateSystem.maxSleep = maxSleep;
+  // Ceiling shared by the extended needs (Hygiene / Social / Fun).
+  window.TimeDateSystem.maxNeed = maxNeed;
   window.TimeDateSystem.getDateTimeFromMinutes = getDateTimeFromMinutes;
   window.TimeDateSystem.getGameTimeMinutes = getGameTimeMinutes;
   // For sequences that run the clock forward themselves, a slice per frame, so

@@ -390,7 +390,6 @@
         const row = this._el.companionRow;
         const members = this.alchemistMembers();
         if (!window.CharSwitcher) { setShown(row, false); return; }
-        window.CharSwitcher.injectStyles();
         const parts = window.CharSwitcher.parts(members.length);
 
         // Built once into three stable slots (hint, tabs, hint) and patched

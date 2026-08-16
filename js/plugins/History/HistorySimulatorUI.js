@@ -220,8 +220,7 @@
             const at = Math.max(0, Math.min(this._diseaseIndex || 0, rows.length - 1));
             const selected = rows[at];
             const listHTML = rows.length ? rows.map((d, idx) => `
-                <div class="event-card ${idx === at ? "focused" : ""}" data-disease-idx="${idx}"
-                     style="border-left:5px solid var(--border-muted-focus, #8b5a2b)">
+                <div class="event-card ${idx === at ? "focused" : ""}" data-disease-idx="${idx}">
                     <div class="card-header">
                         <span class="card-date">${d.name}</span>
                         <span class="card-badge">${T('Diseases.category.' + d.category)}</span>
@@ -387,7 +386,7 @@
                         const artifactTag = isArtifactEvent(evt) ? artifactBadgeHTML : "";
 
                         timelineHTML += `
-                            <div class="event-card ${focused}" data-global-idx="${idx}" style="border-left:5px solid ${cv.color}">
+                            <div class="event-card ${focused}" data-global-idx="${idx}" style="--event-card-accent:${cv.color}">
                                 <div class="card-header">
                                     <span class="card-date">${formattedDate}</span>
                                     <span class="card-badge" style="color:${cv.color}; background:${cv.bg}; border:1px solid ${cv.color}30">${evt.category}</span>

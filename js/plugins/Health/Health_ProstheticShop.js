@@ -182,24 +182,7 @@
         }
         return false;
       },
-      injectStyles() {
-        if (document.getElementById('char-switch-hint-styles')) return;
-        const style = document.createElement('style');
-        style.id = 'char-switch-hint-styles';
-        style.textContent = `
-          .companion-switcher { display:flex; align-items:center; gap:6px; }
-          .char-switch-hint {
-            font-family:'Lora',serif; font-size:0.732rem; font-weight:bold;
-            line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
-            border:1.5px solid var(--text-primary-hover); border-radius:3px;
-            padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
-            text-transform:uppercase; flex-shrink:0;
-          }
-        `;
-        document.head.appendChild(style);
-      },
       parts(memberCount) {
-        this.injectStyles();
         if (!memberCount || memberCount <= 1) return { left: '', right: '' };
         if (this.isControllerConnected()) {
           return {

@@ -198,24 +198,7 @@
                 }
                 return false;
             },
-            injectStyles() {
-                if (document.getElementById('char-switch-hint-styles')) return;
-                const style = document.createElement('style');
-                style.id = 'char-switch-hint-styles';
-                style.textContent = `
-                    .companion-switcher { display:flex; align-items:center; gap:6px; }
-                    .char-switch-hint {
-                        font-family:'Lora',serif; font-size:1.081rem; font-weight:bold;
-                        line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
-                        border:1.5px solid var(--text-primary-hover); border-radius:3px;
-                        padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
-                        text-transform:uppercase; flex-shrink:0;
-                    }
-                `;
-                document.head.appendChild(style);
-            },
             parts(memberCount) {
-                this.injectStyles();
                 if (!memberCount || memberCount <= 1) return { left: '', right: '' };
                 if (this.isControllerConnected()) {
                     return {
@@ -1444,6 +1427,9 @@
 
     const TAU = Math.PI * 2;
 
+    // CIRCLE_NODE and CIRCLE_LABEL_W are also stated in css/theme.css (.sg-ring
+    // and .sg-node / .sg-name, under SKILL ATLAS): the sheet has to size the node
+    // the layout below places. Change one, change the other.
     const CIRCLE_NODE = 42;        // node diameter
     const CIRCLE_MIN_ARC = 118;    // closest two skills may come on one ring
     const CIRCLE_RING_STEP = 116;  // distance between two rings, on a shallow school
@@ -2448,8 +2434,6 @@
     Scene_SkillEncyclopedia.prototype.createUISkillDOM = function () {
         // Styles for the shared skill inspect block (.inspect-*) rendered on the
         // right page; owned by CategorizedBattleSkills' SkillDetails service.
-        if (window.SkillDetails) window.SkillDetails.injectStyles();
-        this.injectAtlasStyles();
 
         this._dndContainer = document.createElement('div');
         this._dndContainer.id = 'menu-container';
@@ -2822,101 +2806,6 @@
             e.stopPropagation();
             e.preventDefault();
         }, true);
-    };
-
-    // The styles the atlas draws itself with. State lives in classes rather than
-    // in inline style, so a curriculum of a thousand nodes is one string to
-    // build and a cursor step is a class toggle instead of a repaint.
-    Scene_SkillEncyclopedia.prototype.injectAtlasStyles = function () {
-        if (document.getElementById('skillmaster-atlas-styles')) return;
-        const style = document.createElement('style');
-        style.id = 'skillmaster-atlas-styles';
-        style.textContent = `
-            #skill-atlas-box { position:relative; overflow:auto; min-height:0; box-sizing:border-box; cursor:grab; touch-action:none; }
-            #skill-atlas-box:active { cursor:grabbing; }
-            #skill-atlas-sizer { margin:0 auto; }
-            #skill-atlas-canvas { position:relative; transform-origin:0 0; }
-            #skill-atlas-canvas svg { position:absolute; left:0; top:0; pointer-events:none; }
-            .sg-circle { color:var(--text-secondary-active); }
-            .sg-node {
-                position:absolute; display:flex; flex-direction:column; align-items:center;
-                width:${CIRCLE_LABEL_W}px; cursor:pointer; font-family:'Lora', serif; user-select:none;
-            }
-            .sg-in { display:flex; flex-direction:column; align-items:center; }
-            .sg-node.sg-locked .sg-in { opacity:0.66; }
-            .sg-ring {
-                width:${CIRCLE_NODE}px; height:${CIRCLE_NODE}px; border-radius:50%; box-sizing:border-box;
-                border:2px solid var(--border-secondary-hover-translucent-15);
-                background:var(--bg-card-translucent-5);
-                display:flex; align-items:center; justify-content:center;
-            }
-            .sg-node.sg-learned .sg-ring { border-color:var(--border-forest-green); background:var(--bg-success-green-15); }
-            .sg-node.sg-open .sg-ring { border-color:var(--text-secondary-active); background:var(--bg-tertiary-focus-translucent-45); }
-            .sg-node.sg-focus .sg-ring { box-shadow:0 0 0 3px var(--text-secondary-active), 0 0 14px var(--shadow-primary-hover-translucent-5); }
-            /* The circle is not a page of a book: while it is up, the spread
-               gives up its 1560x960 plate and takes the whole screen. Scoped to
-               .skill-fullpage, which only this scene ever sets. */
-            #menu-container .book-spread.skill-fullpage {
-                width:100%; height:100%; max-width:none; max-height:none;
-            }
-            .sg-name {
-                margin-top:5px; max-width:${CIRCLE_LABEL_W}px; font-size:1.17rem; line-height:1.14;
-                text-align:center; color:var(--text-pure-white); overflow:hidden;
-                text-shadow:0 1px 2px var(--shadow-black-translucent-75);
-                display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
-            }
-            .sg-node.sg-learned .sg-name, .sg-node.sg-focus .sg-name { font-weight:bold; }
-            .sg-cost { font-size:1.081rem; color:var(--text-text-alt-3); letter-spacing:0.3px; }
-            .sg-banner {
-                position:absolute; text-align:center; pointer-events:none; font-family:'Lora', serif;
-                text-transform:uppercase; letter-spacing:2.5px; font-weight:bold; font-size:1.512rem;
-                color:var(--text-secondary-active); text-shadow:0 1px 3px var(--shadow-black-translucent-75);
-            }
-            /* Stepping back shrinks the whole plate, so the writing on it is
-               grown back by the same amount (up to a ceiling): a school seen
-               whole still reads as a set of named skills rather than a smudge. */
-            .sg-name, .sg-cost { transform:scale(var(--sg-label-scale, 1)); transform-origin:top center; }
-            .sg-ring { transform:scale(var(--sg-icon-scale, 1)); }
-            .sg-banner { transform:scale(var(--sg-banner-scale, 1)); transform-origin:top center; }
-            .sg-banner-sub {
-                display:block; margin-top:2px; font-size:1.081rem; letter-spacing:1px;
-                font-weight:normal; text-transform:none; color:var(--text-pure-white);
-            }
-            .sg-legend {
-                display:flex; align-items:center; gap:16px; justify-content:center; flex-wrap:wrap;
-                font-family:'Lora', serif; font-size:1.234rem; color:var(--text-pure-white); padding:2px 0 8px 0;
-            }
-            .sg-pager {
-                display:flex; align-items:center; justify-content:center; gap:12px; flex:0 0 auto;
-                font-family:'Lora', serif; padding:2px 0 6px 0; user-select:none;
-            }
-            .sg-pager-arrow {
-                display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
-                border:1px solid var(--text-secondary-active); border-radius:50%; color:var(--text-secondary-active);
-                cursor:pointer; font-size:1.512rem; line-height:1; font-weight:bold;
-            }
-            .sg-pager-name {
-                font-size:1.365rem; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase;
-                color:var(--text-secondary-active);
-            }
-            .sg-pager-count { font-size:1.145rem; color:var(--text-card-medium); letter-spacing:0.5px; }
-            .sg-legend-key { display:inline-flex; align-items:center; gap:5px; }
-            .sg-legend-dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
-            .sg-zoom {
-                display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
-                border:1px solid var(--text-secondary-active); border-radius:50%; color:var(--text-secondary-active);
-                cursor:pointer; font-weight:bold; line-height:1; user-select:none;
-            }
-            .sg-hint { opacity:0.65; font-size:1.132rem; }
-            .sg-occult {
-                font-size:1.081rem; letter-spacing:1px; font-weight:bold; padding:1px 6px; border-radius:3px;
-                border:1px solid var(--text-secondary-active); color:var(--text-secondary-active);
-            }
-            .sg-occult.sg-forbidden {
-                border-color:var(--text-primary-hover); color:var(--text-primary-hover);
-            }
-        `;
-        document.head.appendChild(style);
     };
 
     // The pager: which school of the curriculum is on the page, and the way to

@@ -54,121 +54,6 @@
     return h >>> 0;
   }
 
-  // NOTE: the CSS `inset` shorthand is Chromium 87+; this game runs on NW.js
-  // 0.48 (Chromium 84), where it is dropped and an absolutely positioned box
-  // shrink-wraps its content. Every full-bleed layer below therefore spells out
-  // top/left/right/bottom explicitly.
-  const STYLE = `
-#qb-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh;
-  z-index: 60; display: flex; flex-direction: column;
-  font-family: "Lora", serif; user-select: none;
-  background:
-    radial-gradient(circle at 18% 28%, rgba(0,0,0,0.16) 2px, transparent 3px),
-    radial-gradient(circle at 67% 71%, rgba(0,0,0,0.13) 2px, transparent 3px),
-    radial-gradient(circle at 42% 55%, rgba(255,255,255,0.04) 1px, transparent 2px),
-    linear-gradient(135deg, #a8814f 0%, #96703f 34%, #a37c48 62%, #8d6335 100%);
-  background-size: 90px 70px, 70px 90px, 50px 50px, auto;
-  border: 18px solid #4a2c14; box-sizing: border-box; box-shadow: inset 0 0 120px rgba(0,0,0,0.5); }
-#qb-overlay::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none; border: 5px solid #2b1008; box-shadow: inset 0 0 0 2px #6b4423; }
-#qb-overlay::after { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 45%, rgba(20,10,4,0.42) 100%); }
-#qb-header { position: relative; z-index: 1; display: flex; align-items: baseline; gap: 18px;
-  padding: 18px 34px 6px; color: #f5ebd0; text-shadow: 1px 1px 3px #2b1008;
-  border-bottom: 2px solid rgba(43,16,8,0.35); }
-#qb-title { font-size: 2.31rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; }
-#qb-sub { font-size: 1.208rem; opacity: 0.85; }
-#qb-hint { margin-left: auto; font-size: 1.08rem; opacity: 0.72; }
-#qb-tabs { position: relative; z-index: 1; display: flex; gap: 10px; padding: 10px 34px 0; }
-.qb-tab { padding: 8px 30px 9px; font-size: 1.208rem; font-weight: bold; cursor: pointer;
-  color: #f5ebd0; background: #5d3a1c; border: 2px solid #2b1008; border-bottom: none;
-  border-radius: 10px 10px 0 0; box-shadow: 0 -2px 6px rgba(0,0,0,0.35); opacity: 0.75; }
-.qb-tab.active { background: #7a4d24; opacity: 1; transform: translateY(1px); }
-#qb-cards { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; overflow-y: auto;
-  display: flex; flex-wrap: wrap; align-content: flex-start; justify-content: center;
-  gap: 30px 34px; padding: 34px 40px 44px;
-  border-top: 2px solid rgba(43,16,8,0.35); }
-#qb-cards::-webkit-scrollbar { width: 12px; }
-#qb-cards::-webkit-scrollbar-track { background: rgba(43,16,8,0.28); }
-#qb-cards::-webkit-scrollbar-thumb { background: #5d3a1c; border: 2px solid #2b1008; border-radius: 6px; }
-.qb-note { position: relative; flex: 0 0 268px; width: 268px; min-height: 208px; padding: 32px 18px 18px;
-  box-sizing: border-box; cursor: pointer; color: #2b251d;
-  background: var(--note-bg, #faf2d3);
-  box-shadow: 4px 6px 12px rgba(0,0,0,0.5);
-  transform: rotate(var(--rot, 0deg));
-  transition: transform 0.12s ease, box-shadow 0.12s ease; }
-.qb-note.focused, .qb-note:hover { transform: rotate(0deg) scale(1.06); z-index: 5;
-  box-shadow: 7px 10px 20px rgba(0,0,0,0.6); outline: 3px solid #ffd76a; }
-.qb-pin { position: absolute; top: 8px; left: 50%; width: 18px; height: 18px; margin-left: -9px;
-  border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f0f0f0, var(--pin, #b03030) 55%, #501010);
-  box-shadow: 0 3px 4px rgba(0,0,0,0.5); }
-.qb-note-title { font-size: 1.173rem; font-weight: bold; line-height: 1.2; margin-bottom: 8px; }
-.qb-note-giver { font-size: 1.02rem; font-style: normal; opacity: 0.8; margin-bottom: 8px; }
-.qb-note-reward { font-size: 1.104rem; font-weight: bold; color: #5d3a00; }
-.qb-note-deadline { font-size: 1.02rem; color: #8b263e; font-weight: bold; }
-.qb-note-steps { font-size: 0.984rem; color: #444; margin-top: 6px; line-height: 1.3; }
-.qb-seal { position: absolute; right: 12px; bottom: 12px; width: 34px; height: 34px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #f5ebd0; font-size: 1.15rem; font-weight: bold;
-  background: var(--seal, #8b263e); box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  border: 2px solid rgba(245,235,208,0.6); }
-/* Above the title rather than across it: voice-stamped titles ("SURVEY / ...")
-   are long enough to run under a tag pinned beside them. */
-.qb-urgent { position: absolute; top: 6px; right: -10px; padding: 2px 13px; font-size: 0.927rem;
-  font-weight: bold; letter-spacing: 1px; color: #fff; background: #a2242f;
-  transform: rotate(8deg); box-shadow: 1px 2px 4px rgba(0,0,0,0.4); }
-.qb-diff { display: flex; gap: 2px; margin-top: 6px; }
-/* Difficulty as IconSet star (icon 87): sheet is 16 icons wide, 32px native. */
-.qb-star { width: 18px; height: 18px; flex: 0 0 18px;
-  background-image: url('img/system/IconSet.png'); background-size: 288px auto;
-  background-position: -126px -90px; image-rendering: pixelated; }
-.qb-empty { width: 100%; align-self: center; text-align: center; color: #f5ebd0; font-size: 1.61rem;
-  font-style: normal; opacity: 0.85; padding: 60px 30px; text-shadow: 1px 1px 3px #2b1008; }
-.qb-contract { flex: 0 0 392px; width: 392px; min-height: 200px; }
-.qb-status { font-size: 1.032rem; font-weight: bold; }
-.qb-status.claimable { color: #1f6b2f; }
-.qb-status.active { color: #1f4e79; }
-.qb-btnrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-.qb-btn { padding: 6px 18px; font-size: 1.056rem; font-weight: bold; cursor: pointer;
-  background: #5d3a1c; color: #f5ebd0; border: 1px solid #2b1008; border-radius: 3px; }
-.qb-btn:hover { background: #7a4d24; }
-.qb-btn.claim { background: #2f6b3a; }
-.qb-btn.claim:hover { background: #3d8a4b; }
-.qb-btn.danger { background: #7a2430; }
-.qb-btn.danger:hover { background: #97303e; }
-.qb-btn.map { background: #1f4e79; }
-.qb-btn.map:hover { background: #2b6aa3; }
-/* The contract parchment is read, not glanced at, so it takes the whole screen:
-   a full-bleed sheet with the text held in a centred reading column. */
-#qb-detail-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh;
-  z-index: 20; background: rgba(20,10,4,0.68);
-  display: flex; align-items: stretch; justify-content: stretch; }
-#qb-detail { flex: 1 1 auto; width: 100%; height: 100%; overflow-y: auto; position: relative;
-  box-sizing: border-box;
-  background: linear-gradient(160deg, #faf2d3 0%, #f0e4c0 60%, #e6d4aa 100%);
-  border: 14px solid #58180d;
-  box-shadow: inset 0 0 0 3px #a8814f, inset 0 0 120px rgba(139,90,40,0.3);
-  padding: 0; color: #2b251d; }
-#qb-detail .qb-d-page { max-width: 1180px; margin: 0 auto; padding: 46px 60px 60px; }
-#qb-detail h2 { margin: 0 0 8px; font-size: 2.53rem; line-height: 1.15; color: #58180d;
-  border-bottom: 3px double #805d3f; padding-bottom: 12px; }
-#qb-detail .qb-d-giver { font-style: normal; font-size: 1.322rem; margin: 12px 0 26px; opacity: 0.85; }
-#qb-detail .qb-d-body { font-size: 1.495rem; line-height: 1.65; margin-bottom: 24px; text-align: justify; }
-#qb-detail .qb-d-body::first-letter { font-size: 2.86rem; font-weight: bold; color: #58180d;
-  float: left; line-height: 0.9; padding: 4px 8px 0 0; }
-#qb-detail .qb-d-sec { font-size: 1.208rem; font-weight: bold; text-transform: uppercase;
-  letter-spacing: 3px; color: #805d3f; border-bottom: 1px solid #805d3f; margin: 30px 0 12px; }
-#qb-detail .qb-d-line { font-size: 1.322rem; margin: 5px 0; }
-#qb-detail .qb-d-line.warn { color: #8b263e; font-weight: bold; }
-#qb-detail .qb-d-steps { font-size: 1.38rem; white-space: pre-line; margin: 8px 0; line-height: 1.6; }
-#qb-detail .qb-d-btns { display: flex; gap: 20px; margin-top: 40px; }
-#qb-detail .qb-d-btns .qb-btn { font-size: 1.38rem; padding: 14px 40px; }
-#qb-detail::-webkit-scrollbar { width: 14px; }
-#qb-detail::-webkit-scrollbar-track { background: rgba(88,24,13,0.12); }
-#qb-detail::-webkit-scrollbar-thumb { background: #a8814f; border-radius: 7px; }
-`;
-
   // ==========================================================================
   // Scene
   // ==========================================================================
@@ -217,9 +102,6 @@
     _buildDOM() {
       const el = document.createElement("div");
       el.id = "qb-overlay";
-      const style = document.createElement("style");
-      style.textContent = STYLE;
-      el.appendChild(style);
       document.body.appendChild(el);
       this._el = el;
       this._refresh();

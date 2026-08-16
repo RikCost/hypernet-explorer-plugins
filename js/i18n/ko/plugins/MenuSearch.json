@@ -1,0 +1,19 @@
+{
+  "placeholder": "",
+  "clear": "",
+  "anyCategory": "",
+  "showing": "",
+  "min": "",
+  "max": "",
+  "sort": {
+    "name": "",
+    "level": "",
+    "weight": "",
+    "price": "",
+    "cost": ""
+  },
+  "range": {
+    "weight": "",
+    "price": ""
+  }
+}

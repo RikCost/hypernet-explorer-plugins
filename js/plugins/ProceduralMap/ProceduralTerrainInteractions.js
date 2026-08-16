@@ -26,6 +26,20 @@
  * ingot. Rewards are announced with the shared ParchmentToast popup (the same
  * one used for battle rewards).
  *
+ * FORAGING. Picking foliage, herbs and mushrooms pays Plant matter as it always
+ * did AND, roughly two picks in five, a real edible item on top of it. What
+ * turns up depends on the country the party is standing in: acorns and
+ * chanterelles in a forest, cloudberries on the tundra, dates and prickly pear
+ * in a desert, cattail root and samphire on a marsh, blind mushrooms
+ * underground. It is entirely data-driven - a food carries
+ * <Forage: key[:weight], ...> in data/Items.json naming the countries it grows
+ * in, the biome resolves to those same keys (FORAGE_FAMILIES), and the draw is
+ * weighted, so a common berry turns up constantly and a Moonberry hardly ever.
+ * Training Foraging raises the odds. A few features ARE a specific plant
+ * (Wheat, Corn, Sunflower, Cactus, Kelp, Reed, Mushroom) and pay that plant
+ * whatever the country. Alien surfaces forage nothing: another world's flora is
+ * not a hedgerow, and what it offers is butchered off a Tentacle instead.
+ *
  * Removals are persisted to the active world's folder (save/worlds/<name>/
  * terrain.json) keyed by the composite proc-map key (biome + world coordinate
  * + underground depth), so a feature dismantled in one savegame stays gone for
@@ -87,6 +101,10 @@
     LEATHER: 868, HERB: 869, OIL: 870, ACID: 871
   };
   const INGOTS = [MAT.STEEL, MAT.TITANIUM, MAT.VARLENIA];
+  // Salvaged steel is scrap pulled off something somebody built, not something
+  // a pick turns up in the ground, so the mining bonus draws from the two ores
+  // that are actually mined.
+  const MINE_INGOTS = [MAT.TITANIUM, MAT.VARLENIA];
 
   // Interaction verbs.
   const VERB = { FELL: "fell", MINE: "mine", PICK: "pick", DISMANTLE: "dismantle" };
@@ -158,7 +176,9 @@
     verb: VERB.PICK, spec: "Foraging", rewards: [[MAT.WOOD, 1, 2]]
   });
 
-  // --- Plants / foliage: pick up, drop plant matter ---
+  // --- Plants / foliage: pick up, drop plant matter, and often something to
+  // eat: `forage` sends the pick through the wild-food tables further down, so
+  // what comes off a bush depends on the country the bush is standing in. ---
   // ("Lylipad" is the AlienBase tileset's own spelling of a lilypad.)
   assign([
     "Plant", "PlantIce", "Leaves", "LeavesIce", "Lilypad", "Lylipad", "Lily", "Weed", "WeedIce",
@@ -167,11 +187,14 @@
     "Reed", "Rose", "Sedge", "SeaPlant", "Seaweed", "Shrub", "Sprout", "Sunflower", "Thistle",
     "Thorn", "Vine", "Wheat", "Hay", "HayIce", "Soil", "Fruit", "PottedPlant"
   ], {
-    verb: VERB.PICK, spec: "Foraging", rewards: [[MAT.PLANT, 1, 2]]
+    verb: VERB.PICK, spec: "Foraging", forage: true, rewards: [[MAT.PLANT, 1, 2]]
   });
 
-  // --- Herbs: plant matter + a herb extract ---
-  assign(["Herb"], { verb: VERB.PICK, spec: "Herbalism", rewards: [[MAT.PLANT, 1, 2], [MAT.HERB, 1, 1]] });
+  // --- Herbs: plant matter + a herb extract, and the same wild larder ---
+  assign(["Herb"], {
+    verb: VERB.PICK, spec: "Herbalism", forage: true,
+    rewards: [[MAT.PLANT, 1, 2], [MAT.HERB, 1, 1]]
+  });
 
   // --- Shells: picked off the sand, and they are shell rather than leaf ---
   assign(["Seashell"], { verb: VERB.PICK, spec: "Beach Combing", rewards: [[MAT.BONE, 1, 2]] });
@@ -187,17 +210,22 @@
   });
   assign(["RockTentacle"], {
     verb: VERB.DISMANTLE, spec: "Butchery",
-    rewards: [[MAT.MEAT, 1, 2], [MAT.STEEL, 1, 2]], ingot: "low"
+    rewards: [[MAT.MEAT, 1, 2], [MAT.CRYSTAL, 0, 1]], ingot: "low"
   });
   assign(["CrystalTentacle"], {
     verb: VERB.DISMANTLE, spec: "Butchery",
     rewards: [[MAT.MEAT, 1, 2], [MAT.CRYSTAL, 1, 2]]
   });
 
-  // --- Mushrooms: pick up, plant matter ---
-  assign(["Mushroom", "MushroomIce"], { verb: VERB.PICK, spec: "Foraging", rewards: [[MAT.PLANT, 1, 2]] });
+  // --- Mushrooms: pick up, plant matter, and a mushroom (FEATURE_FORAGE pins
+  // these to the "fungus" pool: a mushroom is a mushroom in any country) ---
+  assign(["Mushroom", "MushroomIce"], {
+    verb: VERB.PICK, spec: "Foraging", forage: true, rewards: [[MAT.PLANT, 1, 2]]
+  });
 
-  // --- Rocks & rock-built things: need a pickaxe/heavy tool, drop steel + ingots ---
+  // --- Rocks & rock-built things: need a pickaxe/heavy tool, drop stone-borne
+  // crystal + ingots. No Salvaged steel: that is scrap off something built, and
+  // a boulder was not built by anyone. ---
   // (Statue removed: it now shows a read-only inscription, see CUSTOM_HANDLERS.)
   // ("Rockj" is a typo the AlienBase tileset carries; it is a rock like the rest.)
   assign([
@@ -207,17 +235,19 @@
     "ColumnBroken", "StoneBlock", "Pyramid", "MysticStone", "Marble", "Monument",
     "Podium", "Boulder"
   ], {
-    verb: VERB.MINE, req: REQ.ROCK, spec: "Masonry", rewards: [[MAT.STEEL, 1, 2]], ingot: "low"
+    verb: VERB.MINE, req: REQ.ROCK, spec: "Masonry", rewards: [[MAT.CRYSTAL, 0, 1]], ingot: "low"
   });
 
-  // --- A hole somebody else already dug: shovelled out, not quarried ---
+  // --- A hole somebody else already dug: shovelled out, not quarried. What
+  // comes up is the junk that was buried in it, which is the one place a pick
+  // does turn up Salvaged steel. ---
   assign(["DirtExcavation"], {
     verb: VERB.MINE, req: REQ.ROCK, spec: "Masonry", rewards: [[MAT.STEEL, 0, 1], [MAT.PLASTIC, 0, 1]]
   });
 
   // --- Ore veins / deposits / mine shafts: better ingot odds ---
   assign(["Ore", "Deposit", "MineShaft", "Mineral"], {
-    verb: VERB.MINE, req: REQ.ROCK, spec: "Mining", rewards: [[MAT.STEEL, 1, 2]], ingot: "high"
+    verb: VERB.MINE, req: REQ.ROCK, spec: "Mining", rewards: [[MAT.TITANIUM, 1, 2]], ingot: "high"
   });
 
   // --- Gems / crystals: crystal + ingot chance ---
@@ -457,7 +487,7 @@
     else list.push({ id, qty });
   }
 
-  function rollRewards(cfg) {
+  function rollRewards(cfg, name) {
     const gained = [];
     for (const [id, min, max] of cfg.rewards) {
       const q = min + Math.floor(Math.random() * (max - min + 1));
@@ -466,10 +496,15 @@
     if (cfg.ingot) {
       const chance = cfg.ingot === "high" ? 0.6 : 0.25;
       if (Math.random() < chance) {
-        const r = Math.random();
-        const ingot = r < 0.7 ? INGOTS[0] : (r < 0.9 ? INGOTS[1] : INGOTS[2]);
+        const ingot = Math.random() < 0.75 ? MINE_INGOTS[0] : MINE_INGOTS[1];
         addGain(gained, ingot, 1);
       }
+    }
+    // Foliage is not only biomatter: a bush that grows where the party is
+    // standing quite often has something on it worth eating (see below).
+    if (cfg.forage) {
+      const food = rollForage(name, cfg.forage);
+      if (food) addGain(gained, food, 1);
     }
     return gained;
   }
@@ -479,6 +514,178 @@
       const item = itemData(g.id);
       if (item) $gameParty.gainItem(item, g.qty);
     }
+  }
+
+  // ==========================================================================
+  // Wild food: what a plant IS, as opposed to what it is made of
+  // ==========================================================================
+  // Picking foliage has always paid Plant matter, the crafting token. It now
+  // also, often, pays the thing the plant actually is: a real, edible
+  // <category:Food> item taken off the ground. Which one depends entirely on
+  // WHERE the party is standing - a bilberry does not grow on a salt flat and
+  // a date palm does not grow on a glacier - so:
+  //
+  //   - every forageable food in data/Items.json carries a note tag
+  //         <Forage: key[:weight], key[:weight], ...>
+  //     naming the countries it belongs to. The weight is optional and is
+  //     relative WITHIN one pool, which is how a Cloudberry can be common on
+  //     the tundra while a Moonberry stays a once-in-a-long-while find.
+  //   - the biome the party is standing in resolves to those same keys
+  //     (FORAGE_FAMILIES below), and the roll is taken from the union of the
+  //     pools it names.
+  //
+  // Nothing here is hard-coded to an item id: tagging a new food <Forage: ...>
+  // in the database is the whole of adding it to the wild.
+  //
+  // Alien surfaces deliberately resolve to NOTHING. Another world's flora is
+  // not a hedgerow, and what an alien square offers is butchered off a
+  // Tentacle, not picked off a bush.
+
+  const FORAGE_DEFAULT_WEIGHT = 6;
+  // How often a pick turns up food at all, before training. Foraging pushes it
+  // up by the usual 8% a tier (Untrained 0.40 -> Master 0.53), which is what
+  // being good at this is supposed to mean.
+  const FORAGE_BASE_CHANCE = 0.40;
+
+  // i18n-ignore-start  Biomes.json ids and <Forage:> pool keys, never labels
+  const FORAGE_FAMILIES = [
+    // Frozen country: nothing ripens here except what the cold made itself.
+    { key: "ice", test: /^(ice|snow|permafrost|tundra|glacier|taiga|caveice|cavefrozen|mountainice|forestice|villageice|cityice|burgice)/i },
+    // Burnt ground: the fungus that fruits in ash and the fruit that likes heat.
+    { key: "volcanic", test: /^(volcano|hell|ember|lava)/i },
+    // Dry country, where the food stores water or sugar and nothing else.
+    { key: "desert", test: /^(desert|saltflats|saltworks|badlands|canyon|steppe|savannah|mountaindesert|citydesert|villagedesert|burgdesert)/i },
+    // The water's edge, fresh or salt.
+    { key: "wet", test: /^(swamp|mangrove|lake|river|riverbank|beach|ocean|docks|seabed|caveflooded|cistern|seagrotto|bridge|villageriver|villagesea)/i },
+    // Temperate woods: the richest larder on the list.
+    { key: "woodland", test: /^(forest|bamboo|spiritwoods|park|fairy|taiga)/i },
+    // Hot woods.
+    { key: "tropical", test: /^(jungle|foresttropical|mangrove)/i },
+    // Worked land, and the verges that feed better than the field does. The
+    // steppe and the savannah are in here as well as in the desert: open
+    // grassland is dry country with a hedgerow running through it.
+    { key: "rural", test: /^(farm|fields|meadows|village|highlands|orchard|road|park|steppe|savannah)/i },
+    // Rock and altitude.
+    { key: "mountain", test: /^(mountain|highlands|canyon|cliff|mines|lair|crystals)/i },
+    // Underground, where a plant has to manage without the sun. Everything
+    // built down there and buried since (a sunken library, a cold-war bunker,
+    // a buried lab) counts: whatever is growing in it grew in the dark.
+    { key: "cave", test: /^(cave|underdark|mines|mineshaft|crystals|crystalcavern|fungalwarren|mushroom|catacombs|crypt|dungeon|barrow|grotto|smugglertunnel|oubliette|lootcellar|sewer|lair|sunkenlibrary|underforge|coldwarbunker|buriedlab|profaneshrine|patronvault)/i },
+    // Damp and dark enough that the fungus is the crop.
+    { key: "fungus", test: /^(mushroom|fungalwarren)/i },
+    // Pavement, and whatever is winning against it.
+    { key: "urban", test: /^(city|burg|metro|highway|office|omegatower|houses|factory|landfill|train|arena|prison|sewer|spacecenter|laboratory|abandoned|ruins|graveyard|villa|castle|temple|church|park)/i },
+    // Places that are not really countries at all.
+    { key: "weird", test: /^(eldritch|limbo|dreamscape|abstract|digital|heaven|space|spiritwoods|fairy)/i },
+  ];
+
+  // A feature that IS one particular plant overrides the biome table: wheat is
+  // wheat wherever the field stands, and a mushroom is a mushroom. A number is
+  // an item id, a string is a pool key.
+  const FEATURE_FORAGE = {
+    Wheat: 1728, Corn: 1735, Sunflower: 1733, Cactus: 1743,
+    Kelp: 1783, Seaweed: 1783, SeaPlant: 1783,
+    Cattail: 1777, Reed: 1777,
+    Mushroom: "fungus", MushroomIce: "fungus",
+  };
+  // i18n-ignore-end
+
+  // pool key -> [{ id, weight }], and item id -> the set of keys it claims.
+  // Scanned once out of $dataItems, which does not change during a session.
+  let _forageIndex = null;
+  function forageIndex() {
+    if (_forageIndex) return _forageIndex;
+    const pools = {};
+    const keysById = {};
+    if (typeof $dataItems !== "undefined" && $dataItems) {
+      for (let i = 1; i < $dataItems.length; i++) {
+        const it = $dataItems[i];
+        if (!it || !it.name || !it.note) continue;
+        const tag = it.note.match(/<Forage:\s*([^>]*)>/i);
+        if (!tag) continue;
+        for (const part of tag[1].split(",")) {
+          const [rawKey, rawWeight] = part.split(":");
+          const key = (rawKey || "").trim().toLowerCase();
+          if (!key) continue;
+          const weight = Math.max(1, parseInt(rawWeight, 10) || FORAGE_DEFAULT_WEIGHT);
+          (pools[key] = pools[key] || []).push({ id: i, weight });
+          (keysById[i] = keysById[i] || new Set()).add(key);
+        }
+      }
+    }
+    _forageIndex = { pools, keysById };
+    return _forageIndex;
+  }
+
+  // The pool keys the square the party is standing on answers to. Empty for an
+  // alien surface, and empty for a biome no family recognises, which is the
+  // signal to hand out no food at all.
+  function currentForageKeys() {
+    const pg = $gameSystem && $gameSystem._procGenData;
+    const biome = pg && pg.currentBiome ? String(pg.currentBiome) : "";
+    if (!biome || /^alien/i.test(biome)) return [];
+    const keys = [];
+    for (const fam of FORAGE_FAMILIES) {
+      if (fam.test.test(biome) && keys.indexOf(fam.key) < 0) keys.push(fam.key);
+    }
+    return keys;
+  }
+
+  // One weighted draw across every pool in `keys`, as a single item id, or 0.
+  // `narrowTo`, when it is given and has anything to say, keeps only the
+  // candidates that ALSO belong to one of those keys: it is how a pool named by
+  // the feature is still pulled back to the country the party is standing in,
+  // so a mushroom picked in a forest does not come up a blind cave mushroom.
+  // If the country has none of them, the whole pool stands.
+  function drawFromPools(keys, narrowTo) {
+    const { pools, keysById } = forageIndex();
+    let candidates = [];
+    for (const key of keys) {
+      for (const entry of pools[key] || []) candidates.push(entry);
+    }
+    if (narrowTo && narrowTo.length) {
+      const local = candidates.filter(e =>
+        keysById[e.id] && narrowTo.some(k => keysById[e.id].has(k)));
+      if (local.length) candidates = local;
+    }
+    let total = 0;
+    for (const entry of candidates) total += entry.weight;
+    if (total <= 0) return 0;
+    let roll = Math.random() * total;
+    for (const entry of candidates) {
+      roll -= entry.weight;
+      if (roll <= 0) return entry.id;
+    }
+    return 0;
+  }
+
+  // The food a single pick turns up, or 0 for the times it turns up nothing.
+  // `spec` is the feature's own `forage` value: true means "whatever grows
+  // here", and FEATURE_FORAGE can override it with a fixed plant or pool.
+  function rollForage(name, spec) {
+    const keys = currentForageKeys();
+    // No country, no larder. An alien surface forages nothing at all - what it
+    // offers is butchered off a Tentacle - and so does any biome the table does
+    // not recognise, which is the safe answer rather than a hedgerow on Mars.
+    if (!keys.length) return 0;
+
+    const override = name && Object.prototype.hasOwnProperty.call(FEATURE_FORAGE, name)
+      ? FEATURE_FORAGE[name] : null;
+    const target = override !== null ? override : spec;
+
+    let chance = FORAGE_BASE_CHANCE;
+    if (window.SpecializationXP && typeof window.SpecializationXP.multiplier === "function") {
+      chance *= window.SpecializationXP.multiplier("Foraging");  // i18n-ignore  Specialization.json id
+    }
+    if (Math.random() >= Math.min(0.95, chance)) return 0;
+
+    // A named plant is itself, in any country - but only if it is real.
+    if (typeof target === "number") return itemData(target) ? target : 0;
+    // A named pool keeps its kind and takes the country as a filter.
+    if (typeof target === "string") {
+      return drawFromPools([target], keys.filter(k => k !== target));
+    }
+    return drawFromPools(keys);
   }
 
   // ==========================================================================
@@ -689,7 +896,7 @@
     for (const t of tiles) clearFeatureTileData(t.x, t.y);
     if ($gameMap) $gameMap.requestRefresh();
     recordDismantled(tiles, name);
-    const gained = rollRewards(cfg);
+    const gained = rollRewards(cfg, name);
     grantRewards(gained);
     playActionSe(cfg.verb);
     showRewardPopup(gained);

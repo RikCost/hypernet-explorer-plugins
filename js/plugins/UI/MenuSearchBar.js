@@ -76,83 +76,6 @@
     // id -> controller, so the inline handlers in the markup can find their bar.
     const bars = new Map();
 
-    function injectStyles() {
-        if (document.getElementById('menu-search-bar-styles')) return;
-        const style = document.createElement('style');
-        style.id = 'menu-search-bar-styles';
-        style.textContent = `
-            .msb {
-                display: flex;
-                flex-direction: column;
-                gap: 6px;
-                margin-bottom: 10px;
-                flex-shrink: 0;
-            }
-            .msb-field {
-                position: relative;
-                display: flex;
-                align-items: center;
-            }
-            .msb-clear {
-                position: absolute;
-                right: 8px;
-                cursor: pointer;
-                font-family: 'Lora', serif;
-                font-size: 0.892em;
-                color: var(--text-card-medium);
-                padding: 0 4px;
-                user-select: none;
-            }
-            .msb-clear:hover { color: var(--text-primary-hover); }
-            .msb-row {
-                display: flex;
-                flex-wrap: wrap;
-                align-items: center;
-                gap: 6px;
-            }
-            .msb-row .backpack-sort-tags {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-            }
-            .msb-label {
-                font-family: 'Lora', serif;
-                font-size: 0.878rem;
-                font-weight: bold;
-                color: var(--text-card-medium);
-            }
-            .msb-sep {
-                color: var(--text-card-medium);
-                font-size: 0.878rem;
-            }
-            .msb-num,
-            .msb-select {
-                box-sizing: border-box;
-                background: var(--bg-primary-hover-translucent-35);
-                border: 1px solid var(--border-primary-hover-translucent-15);
-                border-radius: 4px;
-                padding: 3px 6px;
-                font-family: 'Lora', serif;
-                font-size: 0.878rem;
-                color: var(--text-success-active);
-                outline: none;
-            }
-            .msb-num { width: 60px; }
-            .msb-select { margin-left: auto; max-width: 55%; }
-            .msb-num:focus,
-            .msb-select:focus { border-color: var(--text-primary-hover); }
-            /* The count of what survived the filters, so an empty page reads as
-               "nothing matched" rather than "this menu is broken". */
-            .msb-count {
-                font-family: 'Lora', serif;
-                font-size: 0.878rem;
-                color: var(--text-card-medium);
-                margin-left: auto;
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
     // The one thing every host needs to ask before it moves a cursor.
     function isTyping() {
         const el = document.activeElement;
@@ -168,7 +91,6 @@
     };
 
     function create(config) {
-        injectStyles();
         const cfg = config || {};
         const id = cfg.id || ('bar' + bars.size);
 

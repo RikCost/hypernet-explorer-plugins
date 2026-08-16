@@ -215,162 +215,6 @@
         </div>`;
     }
 
-    // The whole board is styled here rather than in css/theme.css: it has to
-    // match QuestBoardUI.js's cork board exactly, and the theme presets used to
-    // fight it (one of them forced position:relative on the overlay, which broke
-    // its fullscreen positioning outright).
-    const STYLE = `
-#kb-board-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh;
-  z-index: 80; display: flex; flex-direction: column; box-sizing: border-box;
-  font-family: "Lora", "IM Fell English", serif; user-select: none; overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 28%, rgba(0,0,0,0.16) 2px, transparent 3px),
-    radial-gradient(circle at 67% 71%, rgba(0,0,0,0.13) 2px, transparent 3px),
-    radial-gradient(circle at 42% 55%, rgba(255,255,255,0.04) 1px, transparent 2px),
-    linear-gradient(135deg, #a8814f 0%, #96703f 34%, #a37c48 62%, #8d6335 100%);
-  background-size: 90px 70px, 70px 90px, 50px 50px, auto;
-  border: 18px solid #4a2c14; box-shadow: inset 0 0 120px rgba(0,0,0,0.5); }
-#kb-board-overlay.kb-app-mode { position: relative; width: 100%; height: 100%; border-width: 8px; }
-#kb-board-overlay::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none; border: 5px solid #2b1008; box-shadow: inset 0 0 0 2px #6b4423; }
-#kb-board-overlay::after { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 45%, rgba(20,10,4,0.42) 100%); }
-#kb-board-header { position: relative; z-index: 1; flex: 0 0 auto;
-  display: flex; align-items: center; gap: 18px; padding: 18px 34px 14px;
-  min-height: 2.6rem; /* the title is out of flow: keep the room it used to take */
-  color: #f5ebd0; text-shadow: 1px 1px 3px #2b1008;
-  border-bottom: 2px solid rgba(43,16,8,0.35); }
-/* Centred on the board itself, not on whatever is left over between the back
-   button and the hint, so the two flanking items never push it off centre. */
-.kb-board-title { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  pointer-events: none; white-space: nowrap;
-  font-size: 2.31rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; }
-/* Shared .back-button look, but kept in the header's flex flow: the global rule
-   pins it position:absolute;left:0, which here would resolve against the whole
-   board overlay and land on top of the To Do column. */
-#kb-board-header .back-button { position: relative; left: auto; flex: 0 0 auto;
-  align-self: center; text-shadow: none; }
-.kb-board-hint { margin-left: auto; font-size: 1.08rem; opacity: 0.72; text-align: right; }
-#kb-columns { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0;
-  display: flex; gap: 0; padding: 22px 26px 30px;
-  border-top: 2px solid rgba(43,16,8,0.35); }
-.kb-col-divider { flex: 0 0 2px; margin: 12px 10px;
-  background: rgba(43,16,8,0.4); box-shadow: 1px 0 0 rgba(255,255,255,0.06); }
-.kb-column { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; padding: 0 10px; }
-.kb-col-header { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between;
-  gap: 10px; padding: 8px 22px 9px; margin: 0 0 16px;
-  color: #f5ebd0; background: #7a4d24; border: 2px solid #2b1008;
-  border-radius: 10px 10px 0 0; box-shadow: 0 -2px 6px rgba(0,0,0,0.35), 0 3px 8px rgba(0,0,0,0.4); }
-.kb-col-title { font-size: 1.265rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;
-  text-shadow: 1px 1px 2px #2b1008; }
-.kb-col-count { font-size: 1.14rem; font-weight: bold; color: #f5ebd0;
-  background: rgba(43,16,8,0.45); border: 1px solid #2b1008; border-radius: 3px;
-  padding: 1px 10px; min-width: 30px; text-align: center; }
-.kb-cards-wrap { flex: 1 1 auto; min-height: 0; overflow-y: auto;
-  display: flex; flex-direction: column; align-items: center; gap: 26px;
-  padding: 12px 8px 24px; }
-.kb-cards-wrap::-webkit-scrollbar { width: 12px; }
-.kb-cards-wrap::-webkit-scrollbar-track { background: rgba(43,16,8,0.28); }
-.kb-cards-wrap::-webkit-scrollbar-thumb { background: #5d3a1c; border: 2px solid #2b1008; border-radius: 6px; }
-.kb-empty-col { color: #f5ebd0; font-size: 1.208rem; font-style: normal; opacity: 0.8;
-  text-align: center; padding: 26px 12px; text-shadow: 1px 1px 3px #2b1008; }
-.kb-card { position: relative; width: 100%; max-width: 300px; min-height: 132px; flex: 0 0 auto;
-  padding: 32px 18px 18px; box-sizing: border-box; cursor: pointer; color: #2b251d;
-  background: var(--note-bg, #faf2d3);
-  box-shadow: 4px 6px 12px rgba(0,0,0,0.5);
-  transform: rotate(var(--rot, 0deg));
-  transition: transform 0.12s ease, box-shadow 0.12s ease; }
-.kb-card.focused, .kb-card:hover { transform: rotate(0deg) scale(1.04); z-index: 5;
-  box-shadow: 7px 10px 20px rgba(0,0,0,0.6); outline: 3px solid #ffd76a; }
-.kb-card.kb-done { filter: sepia(0.35) brightness(0.92); }
-.kb-pin { position: absolute; top: 8px; left: 50%; width: 18px; height: 18px; margin-left: -9px;
-  border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f0f0f0, var(--pin, #b03030) 55%, #501010);
-  box-shadow: 0 3px 4px rgba(0,0,0,0.5); }
-/* The map-marker identity: the same icon+colour this quest is pinned with on
-   every compass/map indicator (WorldMapReturn.js, WorldMap.js). */
-.kb-quest-icon { position: absolute; top: 8px; left: 10px;
-  background-image: url('img/system/IconSet.png'); image-rendering: pixelated;
-  border-radius: 5px; background-color: rgba(43,16,8,0.55);
-  outline: 2px solid var(--marker, #7a4d24); box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
-.kb-card-title { display: block; font-size: 1.173rem; font-weight: bold; line-height: 1.2; margin-bottom: 8px; }
-.kb-card-giver { display: block; font-size: 1.02rem; font-style: normal; opacity: 0.8; margin-bottom: 8px; }
-.kb-card-reward { display: block; font-size: 1.104rem; font-weight: bold; color: #5d3a00; }
-.kb-card-meta { display: block; font-size: 0.984rem; color: #444; margin-top: 6px; line-height: 1.3;
-  overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3;
-  line-clamp: 3; -webkit-box-orient: vertical; }
-.kb-diff { display: flex; gap: 2px; margin-top: 6px; }
-/* Difficulty as IconSet star (icon 87), same plate the quest board uses. */
-.kb-star { width: 18px; height: 18px; flex: 0 0 18px;
-  background-image: url('img/system/IconSet.png'); background-size: 288px auto;
-  background-position: -126px -90px; image-rendering: pixelated; }
-.kb-progress { margin-top: 8px; }
-.kb-progress-track { height: 7px; background: rgba(43,16,8,0.22); border: 1px solid rgba(43,16,8,0.45);
-  border-radius: 4px; overflow: hidden; }
-.kb-progress-fill { height: 100%; background: linear-gradient(90deg, #7a4d24, #b8860b); }
-.kb-progress-label { display: block; margin-top: 3px; font-size: 0.952rem; font-weight: bold; color: #5d3a00; }
-.kb-checklist { font-size: 1.322rem; line-height: 1.6; margin: 8px 0; }
-.kb-check-row { padding: 2px 0; }
-.kb-check-row.done { color: #3e6b2f; }
-.kb-check-row.current { font-weight: bold; }
-.kb-check-mark { display: inline-block; width: 1.5em; color: #58180d; }
-.kb-check-count { font-weight: bold; color: #5d3a00; }
-.kb-check-order { margin-top: 6px; font-style: normal; font-size: 1.15rem; opacity: 0.75; }
-.kb-urgent { position: absolute; top: 34px; right: -10px; padding: 2px 13px; font-size: 0.927rem;
-  font-weight: bold; letter-spacing: 1px; color: #fff; background: #a2242f;
-  transform: rotate(8deg); box-shadow: 1px 2px 4px rgba(0,0,0,0.4); }
-.kb-seal { position: absolute; right: 12px; bottom: 12px; width: 34px; height: 34px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #f5ebd0; font-size: 1.15rem; font-weight: bold;
-  background: var(--seal, #8b263e); box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  border: 2px solid rgba(245,235,208,0.6); }
-.kb-resolved-stamp { position: absolute; left: 14px; bottom: 14px; padding: 2px 10px;
-  font-size: 0.96rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;
-  color: #8b263e; border: 2px solid #8b263e; border-radius: 3px; opacity: 0.7;
-  transform: rotate(-6deg); }
-.kb-resolved-stamp.failed { color: #41414d; border-color: #41414d; }
-
-/* Detail parchment: full screen, text held in a centred reading column, the
-   same sheet the quest board opens for a contract. */
-#kb-detail-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh;
-  z-index: 20; background: rgba(20,10,4,0.68); display: flex; align-items: stretch; justify-content: stretch; }
-#kb-board-overlay.kb-app-mode #kb-detail-backdrop { position: absolute; width: 100%; height: 100%; }
-#kb-detail-panel { flex: 1 1 auto; width: 100%; height: 100%; overflow-y: auto; position: relative;
-  box-sizing: border-box; display: block;
-  background: linear-gradient(160deg, #faf2d3 0%, #f0e4c0 60%, #e6d4aa 100%);
-  border: 14px solid #58180d;
-  box-shadow: inset 0 0 0 3px #a8814f, inset 0 0 120px rgba(139,90,40,0.3);
-  color: #2b251d; }
-#kb-detail-panel::-webkit-scrollbar { width: 14px; }
-#kb-detail-panel::-webkit-scrollbar-track { background: rgba(88,24,13,0.12); }
-#kb-detail-panel::-webkit-scrollbar-thumb { background: #a8814f; border-radius: 7px; }
-.kb-detail-page { max-width: 1180px; margin: 0 auto; padding: 46px 60px 60px; }
-.kb-detail-header { margin: 0 0 8px; font-size: 2.53rem; font-weight: bold; line-height: 1.15;
-  color: #58180d; border-bottom: 3px double #805d3f; padding-bottom: 12px;
-  font-family: "Lora", "IM Fell English", serif; background: none; }
-.kb-detail-giver { font-style: normal; font-size: 1.322rem; margin: 12px 0 26px; opacity: 0.85; }
-.kb-detail-body { font-size: 1.495rem; line-height: 1.65; margin-bottom: 24px; text-align: justify; }
-.kb-detail-body::first-letter { font-size: 2.86rem; font-weight: bold; color: #58180d;
-  float: left; line-height: 0.9; padding: 4px 8px 0 0; }
-.kb-detail-sec { font-size: 1.208rem; font-weight: bold; text-transform: uppercase; letter-spacing: 3px;
-  color: #805d3f; border-bottom: 1px solid #805d3f; margin: 30px 0 12px; }
-.kb-detail-steps { font-size: 1.38rem; white-space: pre-line; margin: 8px 0; line-height: 1.6; }
-.kb-detail-line { font-size: 1.322rem; margin: 5px 0; }
-.kb-detail-line.warn { color: #8b263e; font-weight: bold; }
-.kb-upd-row { border-bottom: 1px dotted rgba(88,24,13,0.35); padding: 10px 0 12px; }
-.kb-upd-row:last-child { border-bottom: none; }
-.kb-upd-date { display: block; font-size: 1.08rem; font-weight: bold; color: #805d3f; margin-bottom: 4px; }
-.kb-upd-text { font-size: 1.322rem; line-height: 1.55; margin: 0; white-space: pre-wrap; }
-.kb-detail-btns { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 40px; }
-.kb-detail-close { display: inline-block; padding: 14px 40px;
-  font-size: 1.38rem; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
-  background: #5d3a1c; color: #f5ebd0; border: 1px solid #2b1008; border-radius: 3px;
-  font-family: "Lora", "IM Fell English", serif; }
-.kb-detail-close:hover { background: #7a4d24; }
-.kb-detail-close.kb-detail-map { background: #1f4e79; }
-.kb-detail-close.kb-detail-map:hover { background: #2b6aa3; }
-`;
-
     // Helper function to get date string with year 2001
     function getFixedDateString() {
         const now = new Date();
@@ -800,9 +644,6 @@
             const el = document.createElement('div');
             el.id = 'kb-board-overlay';
             if (this._isAppMode) el.classList.add('kb-app-mode');
-            const style = document.createElement('style');
-            style.textContent = STYLE;
-            el.appendChild(style);
             parent.appendChild(el);
             this._el = el;
             this._refresh();
@@ -1121,7 +962,6 @@
         let progressHTML = '';
         try { progressHTML = scene._progressBarHTML(quest, useIt); } catch (e) { }
         return {
-            css: STYLE,
             html: buildNoteHTML(quest, useIt, { flat: true, progressHTML }),
         };
     };

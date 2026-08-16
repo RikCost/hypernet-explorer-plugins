@@ -1,0 +1,3632 @@
+{
+  "moodLabels": {
+    "playful": "",
+    "romantic": "",
+    "chaotic": "",
+    "nervous": "",
+    "confident": "",
+    "caring": "",
+    "guilty": "",
+    "crazed": "",
+    "psychedOut": "",
+    "solipsist": "",
+    "eldritch": "",
+    "melancholy": "",
+    "smug": "",
+    "paranoid": "",
+    "prophetic": "",
+    "bored": ""
+  },
+  "traitLabels": {
+    "romantic": "",
+    "chaotic": "",
+    "thoughtful": "",
+    "bold": ""
+  },
+  "dateWeather": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "dateErisLook": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "dateGifts": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "dateIncidents": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "dateSmallTalk": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "emDateOpenings": [
+    [
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      "",
+      "",
+      "",
+      ""
+    ]
+  ],
+  "emSecretReplies": [
+    [
+      "",
+      "",
+      ""
+    ],
+    [
+      "",
+      "",
+      ""
+    ],
+    [
+      "",
+      "",
+      ""
+    ]
+  ],
+  "emSecrets": {
+    "cList": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "route666": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "paradox": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "bubba": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "jealousy": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "throne": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "futureSelf": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "bank": {
+    "emDate": {
+      "replies": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "emFinale": {
+      "lines": [
+        "",
+        "",
+        ""
+      ],
+      "lines2": [
+        "",
+        "",
+        ""
+      ],
+      "lines3": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "romanticEvent": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "romanticConversation": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "specialRomanticMoment": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "chaoticEvent": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "chaoticChallenge": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "philosophicalDebate": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "intellectualChallenge": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "standardActivity": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "gettingToKnowYou": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "unexpectedMoment": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "perfectRomanticFinale": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "chaoticLoveFinale": {
+      "finale": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "intellectualConnectionFinale": {
+      "finale": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "loveConfession": {
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "romanticMoment": {
+      "romantic": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "friendlyMoment": {
+      "friendly": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "awkwardMoment": {
+      "awkward": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "hostileMoment": {
+      "hostile": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "wildRomanceEnding": {
+      "ending": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "intellectualEnding": {
+      "ending": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "chaosChampionEnding": {
+      "ending": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "perfectEnding": {
+      "ending": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "goodEnding": {
+      "ending": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "neutralEnding": {
+      "ending": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "badEnding": {
+      "ending": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "terribleEnding": {
+      "ending": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "getOpeningDialogue": {
+      "lines2": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lines3": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "playful": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "chaotic": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "nervous": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "confident": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "caring": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "guilty": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "crazed": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "psychedOut": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "solipsist": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "melancholy": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "smug": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "paranoid": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "prophetic": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "bored": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "getFirstChoices": {
+      "lines2": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "finale": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "confession": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "firstGift": {
+      "lines": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    }
+  },
+  "line": {
+    "en": "",
+    "erisAppearsWithAnEnigmatic": "",
+    "ohNotManyTrulyAppreciate": "",
+    "erisSEyesLightUp": "",
+    "hmmYouPreferOrderHow": "",
+    "erisSeemsToAcceptThe": "",
+    "ohBoldILikeMortals": "",
+    "aMischievousSmileSpreadsAcross": "",
+    "flattererButItSSweet": "",
+    "erisBlushesSlightlyClearlyFlattered": "",
+    "theAtmosphereSoftensErisSeems": "",
+    "nobodyNobodyHasEverTold": "",
+    "youKnowBeingAGoddess": "",
+    "butYouYouSeeMe": "",
+    "itSBeenALong": "",
+    "erisMovesCloserHerScent": "",
+    "canICanITry": "",
+    "erisClosesHerEyesAnd": "",
+    "theEnergyAroundYouBecomes": "",
+    "youKnowWhatSWrong": "",
+    "letMeShowYouHow": "",
+    "hereSAChallengeFor": "",
+    "erisCreatesThreePortalsBefore": "",
+    "ahahahahaYouReInsaneI": "",
+    "erisSExcitementReachesIts": "",
+    "wantToSeeRealChaos": "",
+    "everythingAroundYouExplodesInto": "",
+    "erisTiltsHerHeadIntrigued": "",
+    "interestingNotManyMortalsTake": "",
+    "tellMeWhatDoYou": "",
+    "ohIDidnTExpect": "",
+    "hereSARiddleFor": "",
+    "brilliantILikeHowYour": "",
+    "erisSitsBesideYouUnusually": "",
+    "youKnowInAllMy": "",
+    "youMakeMeQuestionThings": "",
+    "theDateProceedsMoreTraditionally": "",
+    "whatAboutYouWhatDoes": "",
+    "anAdventureSeekerThenWe": "",
+    "blushesFlattererButDoGo": "",
+    "suddenlySomethingUnexpectedHappens": "",
+    "aGroupOfSmallChaotic": "",
+    "ohNoMyGremlinsExcuse": "",
+    "anotherDeityPassesByAnd": "",
+    "thatWasUmLetS": "",
+    "youAccidentallyTripButEris": "",
+    "carefulCanTLoseMy": "",
+    "timeSeemsToSlowDown": "",
+    "erisLooksAtYouWith": "",
+    "theEnergyAroundYouExplodes": "",
+    "sheLiftsYouAndSpins": "",
+    "erisStudiesYouWithAn": "",
+    "erisMovesCloserHerEyes": "",
+    "thereSSomethingInThe": "",
+    "theAtmosphereIsComfortableLike": "",
+    "anAwkwardSilenceFallsBetween": "",
+    "theTensionIsPalpableEris": "",
+    "theDateComesToAn": "",
+    "erisEmbracesYouAsReality": "",
+    "specialEndingWildRomanceLove": "",
+    "erisTakesYourHandHer": "",
+    "specialEndingMentalConnectionTwo": "",
+    "erisLaughsAsTheWorld": "",
+    "specialEndingChaosChampionPartners": "",
+    "erisTakesYourHandHer2": "",
+    "perfectEndingTheChaosOf": "",
+    "erisSmilesWarmlyARare": "",
+    "goodEndingAPromisingConnection": "",
+    "neutralEndingAnUncertainNew": "",
+    "badEndingDisharmoniousChaos": "",
+    "erisTurnsAwayWithObvious": "",
+    "terribleEndingTheChaosOf": "",
+    "donTDonTBe": "",
+    "fineAllRightIfYou": "",
+    "noYouReRightIt": "",
+    "forALongMomentNeither": "",
+    "theGoddessOfDiscordHas": "",
+    "somethingHasLoosenedTheNext": "",
+    "nothingHasChangedTheOdds": "",
+    "theGoddessOfJusticeHas": "",
+    "theBenchWillLeanYour": "",
+    "sheWillRememberThisEvening": "",
+    "theDate": "",
+    "opinion": "",
+    "rapport": "",
+    "impressions": "",
+    "you": "",
+    "pressEnterToContinue": "",
+    "erisWatchesYou": "",
+    "giftOffered": "",
+    "giftReceived": ""
+  },
+  "genderTerms": {
+    "1": {
+      "they": "",
+      "them": "",
+      "their": "",
+      "theyre": "",
+      "address": "",
+      "formal": ""
+    },
+    "2": {
+      "they": "",
+      "them": "",
+      "their": "",
+      "theyre": "",
+      "address": "",
+      "formal": ""
+    },
+    "3": {
+      "they": "",
+      "them": "",
+      "their": "",
+      "theyre": "",
+      "address": "",
+      "formal": ""
+    },
+    "4": {
+      "they": "",
+      "them": "",
+      "their": "",
+      "theyre": "",
+      "address": "",
+      "formal": ""
+    }
+  },
+  "biomes": {
+    "Abandoned": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "AbandonedInside": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Abstract": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "AlienPlanet": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Arena": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Badlands": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Bamboo": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Beach": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Bridge": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Burg": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "BurgDesert": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "BurgIce": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Canyon": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Castle": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "CastleInside": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Cave": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "CaveDen": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "CaveFlooded": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "CaveIce": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "ChurchInside": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "City": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "CityDesert": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "CityIce": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Crypt": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Crystals": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Desert": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Digital": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Docks": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Dreamscape": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Dungeon": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Eldritch": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Factory": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "FactoryInside": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Fairy": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Farm": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Fields": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Forest": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "ForestIce": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "ForestTropical": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Graveyard": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Heaven": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Hell": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Highlands": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Highway": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Houses": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "HousesInside": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Ice": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Jungle": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Laboratory": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Lair": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Lake": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Landfill": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Limbo": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "LootCellar": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Mangrove": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Meadows": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Metro": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Mines": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Mountain": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "MountainDesert": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "MountainIce": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Mushroom": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Ocean": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Office": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "OmegaTower": {
+      "label": "",
+      "intro": "",
+      "opening": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "question": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "choices": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Park": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "PatronVault": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Permafrost": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "River": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "RiverBank": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Road": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Ruins": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "SaltFlats": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Savannah": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "SeaBed": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Sewer": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Snow": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Space": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Spacecenter": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "SpiritWoods": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Steppe": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Swamp": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Taiga": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Temple": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "TempleInside": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "TempleShinto": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Train": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Tundra": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Underdark": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Villa": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Village": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "VillageDesert": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "VillageIce": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "VillageMountain": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "VillageRiver": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "VillageSea": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    },
+    "Volcano": {
+      "label": "",
+      "intro": "",
+      "question": [
+        "",
+        ""
+      ],
+      "romantic": [
+        "",
+        "",
+        ""
+      ],
+      "chaotic": "",
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        ""
+      ]
+    }
+  },
+  "toneLabels": {
+    "serious": "",
+    "normal": "",
+    "bonkers": ""
+  },
+  "hud": {
+    "tone": "",
+    "you": "",
+    "her": "",
+    "bpm": ""
+  },
+  "toneIntros": {
+    "serious": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "normal": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "bonkers": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "wildChoices": {
+    "weird": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "awkward": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "chaotic": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "blunt": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "wildReactions": {
+    "weird": {
+      "good": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "bad": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "awkward": {
+      "good": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "bad": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "chaotic": {
+      "good": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "bad": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "blunt": {
+      "good": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "bad": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    }
+  },
+  "moodSwingNarration": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "moodSwings": {
+    "playful": [
+      "",
+      "",
+      ""
+    ],
+    "romantic": [
+      "",
+      "",
+      ""
+    ],
+    "chaotic": [
+      "",
+      "",
+      ""
+    ],
+    "nervous": [
+      "",
+      "",
+      ""
+    ],
+    "confident": [
+      "",
+      "",
+      ""
+    ],
+    "caring": [
+      "",
+      "",
+      ""
+    ],
+    "guilty": [
+      "",
+      "",
+      ""
+    ],
+    "crazed": [
+      "",
+      "",
+      ""
+    ],
+    "psychedOut": [
+      "",
+      "",
+      ""
+    ],
+    "solipsist": [
+      "",
+      "",
+      ""
+    ],
+    "eldritch": [
+      "",
+      "",
+      ""
+    ],
+    "melancholy": [
+      "",
+      "",
+      ""
+    ],
+    "smug": [
+      "",
+      "",
+      ""
+    ],
+    "paranoid": [
+      "",
+      "",
+      ""
+    ],
+    "prophetic": [
+      "",
+      "",
+      ""
+    ],
+    "bored": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "moodQuips": {
+    "playful": [
+      "",
+      "",
+      ""
+    ],
+    "romantic": [
+      "",
+      "",
+      ""
+    ],
+    "chaotic": [
+      "",
+      "",
+      ""
+    ],
+    "nervous": [
+      "",
+      "",
+      ""
+    ],
+    "confident": [
+      "",
+      "",
+      ""
+    ],
+    "caring": [
+      "",
+      "",
+      ""
+    ],
+    "guilty": [
+      "",
+      "",
+      ""
+    ],
+    "crazed": [
+      "",
+      "",
+      ""
+    ],
+    "psychedOut": [
+      "",
+      "",
+      ""
+    ],
+    "solipsist": [
+      "",
+      "",
+      ""
+    ],
+    "eldritch": [
+      "",
+      "",
+      ""
+    ],
+    "melancholy": [
+      "",
+      "",
+      ""
+    ],
+    "smug": [
+      "",
+      "",
+      ""
+    ],
+    "paranoid": [
+      "",
+      "",
+      ""
+    ],
+    "prophetic": [
+      "",
+      "",
+      ""
+    ],
+    "bored": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "dares": {
+    "intro": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "tasks": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "options": [
+      "",
+      "",
+      ""
+    ],
+    "acceptReaction": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "deflectReaction": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "refuseReaction": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "refuseRespect": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "callbacks": {
+    "general": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "sameBiome": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "wentWell": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "wentBad": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "dareAccepted": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "dareRefused": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "eldritch": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "partyMoments": {
+    "narration": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "likes": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "neutral": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "dislikes": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "beloved": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "nemesis": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "options": [
+      "",
+      "",
+      ""
+    ],
+    "defendGood": [
+      "",
+      "",
+      ""
+    ],
+    "defendBad": [
+      "",
+      "",
+      ""
+    ],
+    "laughReaction": [
+      "",
+      "",
+      ""
+    ],
+    "stayOutReaction": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "scenarios": {
+    "picnic": {
+      "intro": [
+        "",
+        ""
+      ],
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "stargazing": {
+      "intro": [
+        "",
+        ""
+      ],
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "contest": {
+      "intro": [
+        "",
+        ""
+      ],
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "seance": {
+      "intro": [
+        "",
+        ""
+      ],
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "mischief": {
+      "intro": [
+        "",
+        ""
+      ],
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "stakeout": {
+      "intro": [
+        "",
+        ""
+      ],
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "cookoff": {
+      "intro": [
+        "",
+        ""
+      ],
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "treasureHunt": {
+      "intro": [
+        "",
+        ""
+      ],
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "danceOff": {
+      "intro": [
+        "",
+        ""
+      ],
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "interview": {
+      "intro": [
+        "",
+        ""
+      ],
+      "activity": [
+        "",
+        ""
+      ],
+      "incidents": [
+        "",
+        "",
+        ""
+      ]
+    }
+  },
+  "eldritch": {
+    "arrival": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "openings": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "interjections": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "speech": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "incidents": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "pulse": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "tasks": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "endNote": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "sandbox": {
+    "menu": "",
+    "mood": "",
+    "moodRandom": "",
+    "here": "",
+    "random": ""
+  }
+}

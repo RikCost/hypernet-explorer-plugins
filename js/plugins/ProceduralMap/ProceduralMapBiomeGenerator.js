@@ -105,6 +105,7 @@
     generateCaveWithCellularAutomata,
     generateCaveWithVoronoi,
     generateMountainBiomeTerrain,
+    generateMountainRangeTerrain,
     getTerrainFeatures,
     getFeaturesByLayer,
     getFeatureNameFromTileId,
@@ -209,22 +210,31 @@
   // Once a settlement (village / burg / city) has its roads and buildings, drop
   // a few civic signs on the grass verge beside its roads:
   //   SignPost -> readable place name + dismantle (villages only, 1-3)
-  //   SignBus  -> boards the fast-travel map in Bus mode (near roads)
+  //   SignBus  -> boards the fast-travel map in Bus mode (one per map, at the
+  //               bus stop it serves - never a second one down the road)
   //   SignPark -> recalls the camper (one per settlement)
   // They sit on feature layer 2 so the interaction plugins detect them when the
   // player faces them from the adjacent road tile. Placement is deterministic
   // for a given map seed, so the same tile always shows the same signs.
-  function _civicFeatureTile(featureName, allFeatures, rng) {
+  // The sign a civic feature is drawn with, as a grid anchored on the tile it
+  // STANDS on (its bottom row).
+  //
+  // These signs are tall: SignBus is a 1x3 strip - cap, bus board, pole - and
+  // SignPark and SignPost are the same shape. Taking only grid[0][0] (as this
+  // used to) painted the cap on its own, so a city's bus signs were a row of
+  // one-tile stubs with the bus board and the post missing.
+  function _civicSignVariant(featureName, allFeatures, rng) {
     const variants = allFeatures[featureName];
-    if (!variants || variants.length === 0) return 0;
-    // Prefer single-tile variants so we never leave a partial multi-tile sign.
+    if (!variants || variants.length === 0) return null;
+    // A single-tile variant is a whole sign by itself.
     const singles = variants.filter((v) => v.type === "single" && v.tileId);
-    if (singles.length) return singles[Math.floor(rng() * singles.length)].tileId;
-    // Fall back to a single-cell grid (SignBus / SignPark are 1x1 grids).
-    for (const v of variants) {
-      if (v.type === "grid" && v.grid && v.grid[0] && v.grid[0][0]) return v.grid[0][0];
+    if (singles.length) {
+      return { w: 1, h: 1, grid: [[singles[Math.floor(rng() * singles.length)].tileId]] };
     }
-    return 0;
+    const grids = variants.filter((v) => v.type === "grid" && v.grid && v.grid.length);
+    if (!grids.length) return null;
+    const grid = grids[Math.floor(rng() * grids.length)].grid;
+    return { w: Math.max(...grid.map((row) => row.length)), h: grid.length, grid };
   }
 
   function _collectSingleTileIds(names, allFeatures, out) {
@@ -293,14 +303,107 @@
     const tooClose = (c) =>
       placed.some((p) => Math.abs(p.x - c.x) + Math.abs(p.y - c.y) < MIN_SPACING);
 
+    // Every tile a named feature is drawn with, single or grid, so the map can
+    // be asked where (and whether) that feature already stands on it.
+    const _featureTileIds = (name) => {
+      const ids = new Set();
+      for (const v of allFeatures[name] || []) {
+        if (v.type === "single" && v.tileId) ids.add(v.tileId);
+        else if (v.grid) for (const row of v.grid) for (const t of row) if (t) ids.add(t);
+      }
+      return ids;
+    };
+    const _featureCells = (name) => {
+      const ids = _featureTileIds(name);
+      const cells = [];
+      if (!ids.size) return cells;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          for (let layer = 1; layer <= 3; layer++) {
+            if (ids.has(mapData[calculateIndex(x, y, layer, width, height)])) {
+              cells.push({ x, y });
+              break;
+            }
+          }
+        }
+      }
+      return cells;
+    };
+    const _mapHasFeature = (name) => _featureCells(name).length > 0;
+
+    // Where the bus shelters stand. A bus sign belongs AT the stop it serves -
+    // a sign on its own three streets away is not a stop, it is litter - so
+    // SignBus is anchored to the nearest shelter whenever the map has one
+    // (the city generator's own pass, or a prefab that came with one).
+    const busStopCells = _featureCells("BusStop");
+    // Group those cells into shelters (one shelter is a 5x3 block of them) so
+    // several bus signs spread over the stops the city has instead of crowding
+    // around whichever one happens to be nearest.
+    const shelters = [];
+    for (const cell of busStopCells) {
+      const near = shelters.find((s) => Math.abs(s.x - cell.x) <= 6 && Math.abs(s.y - cell.y) <= 6);
+      if (near) {
+        near.n++;
+        near.x = Math.round(near.x + (cell.x - near.x) / near.n);
+        near.y = Math.round(near.y + (cell.y - near.y) / near.n);
+      } else {
+        shelters.push({ x: cell.x, y: cell.y, n: 1, signs: 0 });
+      }
+    }
+
+    // A tall sign is drawn upward from the tile it stands on, so every cell of
+    // the strip has to be free. Only the tile it stands on must be a verge; the
+    // board above it may overhang the street.
+    const signFits = (variant, x, y) => {
+      for (let gy = 0; gy < variant.h; gy++) {
+        const ty = y - (variant.h - 1) + gy;
+        for (let gx = 0; gx < variant.w; gx++) {
+          const tx = x + gx;
+          if (tx < 1 || tx >= width - 1 || ty < 1 || ty >= height - 1) return false;
+          const base = mapData[idx0(tx, ty)];
+          if (base === 0 || blockedBaseIds.has(base)) return false;
+          if (!featureLayersEmpty(tx, ty)) return false;
+        }
+      }
+      return true;
+    };
+
+    const drawSign = (variant, x, y) => {
+      for (let gy = 0; gy < variant.grid.length; gy++) {
+        const row = variant.grid[gy];
+        const ty = y - (variant.h - 1) + gy;
+        for (let gx = 0; gx < row.length; gx++) {
+          if (row[gx]) mapData[calculateIndex(x + gx, ty, 2, width, height)] = row[gx];
+        }
+      }
+    };
+
     function placeOne(featureName) {
-      const tileId = _civicFeatureTile(featureName, allFeatures, rng);
-      if (!tileId) return false;
-      for (const c of candidates) {
-        if (c._used || tooClose(c)) continue;
-        mapData[calculateIndex(c.x, c.y, 2, width, height)] = tileId;
+      const variant = _civicSignVariant(featureName, allFeatures, rng);
+      if (!variant) return false;
+
+      // A bus sign goes up at a shelter - the least-served one - and the
+      // spacing rule (which is what keeps signs apart on an open street) must
+      // not push it away from the stop it belongs to.
+      let shelter = null;
+      if (featureName === "SignBus" && shelters.length) {
+        shelter = shelters.reduce((a, b) => (b.signs < a.signs ? b : a), shelters[0]);
+      }
+      const order = shelter
+        ? candidates
+          .filter((c) => !c._used)
+          .sort((a, b) =>
+            (Math.abs(a.x - shelter.x) + Math.abs(a.y - shelter.y)) -
+            (Math.abs(b.x - shelter.x) + Math.abs(b.y - shelter.y)))
+        : candidates;
+
+      for (const c of order) {
+        if (c._used || (!shelter && tooClose(c))) continue;
+        if (!signFits(variant, c.x, c.y)) continue;
+        drawSign(variant, c.x, c.y);
         c._used = true;
         placed.push(c);
+        if (shelter) shelter.signs++;
         return true;
       }
       return false;
@@ -312,7 +415,10 @@
       return min + Math.floor(rng() * (max - min + 1));
     };
 
-    const busN = pick(counts.bus);
+    // One bus sign per map, and no more: the city generator raises its own
+    // beside the shelter it serves, and a prefab may arrive with one already
+    // standing. A second sign is a second stop that boards the same map.
+    const busN = _mapHasFeature("SignBus") ? 0 : Math.min(pick(counts.bus), 1);
     const parkN = pick(counts.park);
     const postN = pick(counts.post);
     for (let i = 0; i < busN; i++) placeOne("SignBus");
@@ -2058,7 +2164,7 @@
     // Get only the features specified in the biome definition
     const biomeFeatureNames = biome.features
       .map(f => typeof f === 'string' ? f : f.name)
-      .filter(name => !["Ceiling", "MountainWall"].includes(name));
+      .filter(name => !["Ceiling", "MountainWall", "MountainLeft", "MountainCenter", "MountainRight"].includes(name));
 
     // For each feature in the biome, select 1-4 variants
     for (const featureName of biomeFeatureNames) {
@@ -2483,9 +2589,18 @@
   }
 
   /**
-   * Generate mountain biome terrain using Perlin noise
-   * Creates cliff walls and peaks with variable heights based on noise elevation
-   * This is a wrapper that prepares data for the core mountain terrain generator
+   * Generate mountain biome terrain from a heightfield.
+   *
+   * Rock is drawn only with MountainLeft / MountainCenter / MountainRight (the
+   * three shades the generator hillshades with). Ceiling and MountainWall are
+   * deliberately NOT used any more: most mountain tilesets never declared
+   * either, so the old inverted-cellular-automata pass painted whole massifs
+   * with tile id 0 (bare void) and only the rims came out as rock.
+   *
+   * This is a wrapper that prepares tiles for generateMountainRangeTerrain,
+   * which picks a range style (alpine ridges, glacial troughs, mesas, canyon
+   * country, caldera basin, ...) from the world coordinates and carves the
+   * valleys, cliff tiers and lakes.
    */
   function generateMountainSurfaceTerrainForBiome(
     biome,
@@ -2499,52 +2614,67 @@
     const width = PROC_MAP_WIDTH;
     const height = PROC_MAP_HEIGHT;
 
-    // Get Ceiling and MountainWall tiles
-    const mountainCeilingTiles = allFeatures["Ceiling"] || [];
-    const mountainWallTiles = allFeatures["MountainWall"] || [];
-
-    const mountainCeilingTile = mountainCeilingTiles.length > 0 ?
-      (mountainCeilingTiles[0].type === "single" ? mountainCeilingTiles[0].tileId : mountainCeilingTiles[0].tiles[0][0]) :
-      0;
-    const mountainWallTile = mountainWallTiles.length > 0 ?
-      (mountainWallTiles[0].type === "single" ? mountainWallTiles[0].tileId : mountainWallTiles[0].tiles[0][0]) :
-      0;
-
-    // Directional cliff-wall tiles that give each mountain face proper left/right
-    // corners instead of a flat rock blob. The Ceiling tile still caps the top.
     const firstTileId = (variants) =>
       variants && variants.length > 0
         ? (variants[0].type === "single" ? variants[0].tileId : variants[0].tiles[0][0])
         : 0;
+
+    // Directional rock tiles. Ceiling/MountainWall are only consulted as a last
+    // resort, for a tileset that declares neither of the three.
+    const fallbackRock = firstTileId(allFeatures["Ceiling"]) || firstTileId(allFeatures["MountainWall"]);
     const cliffTiles = {
-      left:   firstTileId(allFeatures["MountainLeft"]),
-      center: firstTileId(allFeatures["MountainCenter"]),
-      right:  firstTileId(allFeatures["MountainRight"]),
+      left: firstTileId(allFeatures["MountainLeft"]) || fallbackRock,
+      center: firstTileId(allFeatures["MountainCenter"]) || fallbackRock,
+      right: firstTileId(allFeatures["MountainRight"]) || fallbackRock,
     };
 
-    // First, generate base terrain (normal biome terrain)
+    // Lakes are filled with the biome's own Water feature, so region 99 (water
+    // detection) and prefab water-avoidance both pick them up for free.
+    const lakeTile = firstTileId(allFeatures["Water"]);
+    // Shoreline: sand on temperate/desert ranges, none on ice (a frozen tarn
+    // meets its rock directly).
+    const biomeName = biome.name || "Mountain";
+    const isIceMountain = /ice|snow|frozen|glacier|permafrost/i.test(biomeName);
+    const isDesertMountain = /desert|dune|sand|badland|mesa/i.test(biomeName);
+    const shoreTile = isIceMountain ? 0 : firstTileId(allFeatures["Beach"]) || firstTileId(allFeatures["Sand"]);
+    // Scree at the foot of the cliffs, in the biome's own rubble ground.
+    const apronCandidates = isIceMountain
+      ? ["SnowRock", "GrassRock", "Dirt"]
+      : isDesertMountain
+        ? ["SandRock", "BadlandRock", "Sand", "Dirt"]
+        : ["GrassRock", "BadlandRock", "Dirt"];
+    let apronTile = 0;
+    for (const name of apronCandidates) {
+      apronTile = firstTileId(allFeatures[name]);
+      if (apronTile) break;
+    }
+
+    // First, generate base terrain (normal biome terrain) for the valley floor
     const baseMapData = new Array(width * height * 4).fill(0);
     fillTerrainLayer(baseMapData, biome, allFeatures, width, height, createSeededRandom(seed), adjacentBiomes);
 
-    // Apply mountain terrain on top of base terrain
-    // Pass worldCoords to randomize generation parameters for regional variety
-    const mapData = generateMountainBiomeTerrain(
-      width,
-      height,
-      width,
-      seed,
-      mountainCeilingTile,
-      mountainWallTile,
-      baseMapData,
+    // Apply mountain relief on top of base terrain. worldCoords selects the
+    // range style, so neighbouring squares of the same biome look like
+    // different country.
+    const mapData = generateMountainRangeTerrain(width, height, width, seed, {
+      tiles: cliffTiles,
+      baseTerrainData: baseMapData,
       worldCoords,
-      cliffTiles
-    );
+      biomeName,
+      waterTile: lakeTile,
+      shoreTile,
+      apronTile,
+    });
+
+    // Every tile id the relief pass owns: features must not be scattered on top
+    // of rock or on a lake.
+    const mountainTileIds = [cliffTiles.left, cliffTiles.center, cliffTiles.right, lakeTile].filter(Boolean);
 
     // Prefab placement runs later still (DataManager.loadMapData,
-    // ProceduralMapPrefabs), after the cliff pass has already carved its rock
+    // ProceduralMapPrefabs), after the relief pass has already carved its rock
     // into this array. mapData.mountainMask (attached by
-    // generateMountainBiomeTerrain) names by POSITION, not by tile id, which
-    // cells are genuine mountain, so that pass can re-stamp the mountain back
+    // generateMountainRangeTerrain) names by POSITION, not by tile id, which
+    // cells are genuine mountain or lake, so that pass can re-stamp them back
     // over whatever a prefab just painted there: the mountain cuts through
     // the building, the building does not displace the mountain.
 
@@ -2636,7 +2766,7 @@
     }
 
     // Block mountain tiles and all water-related tiles from feature placement
-    let blockedWaterTiles = [...new Set([...actualWaterTiles, ...waterTiles, mountainCeilingTile, mountainWallTile])];
+    let blockedWaterTiles = [...new Set([...actualWaterTiles, ...waterTiles, ...mountainTileIds])];
 
     // Collect path tiles to NEVER overwrite them (Path, PathDesert, PathIce, Road)
     let pathTiles = [];
@@ -3055,9 +3185,9 @@
       // Crop plots for a biome that farms (see placeTilledFields).
       placeTilledFields(mapData, biome, allFeatures, seed, PROC_MAP_WIDTH, PROC_MAP_HEIGHT);
 
-      // Civic signs: readable signposts (1-3), roadside bus stops, one camper park.
+      // Civic signs: readable signposts (1-3), one bus stop, one camper park.
       placeCivicSigns(mapData, biome, allFeatures, seed, {
-        post: [1, 3], bus: [2, 3], park: [1, 1],
+        post: [1, 3], bus: [1, 1], park: [1, 1],
       });
 
       return mapData;
@@ -3068,9 +3198,9 @@
       const cityData = { worldCoords };
       const mapData = generateCityBiomeUtil(biome, seed, allFeatures, adjacentBiomes, cityData);
       _persistStructureHints(cityData);
-      // Civic signs: roadside bus stops + one camper park (no readable signposts).
+      // Civic signs: one roadside bus stop + one camper park (no readable signposts).
       placeCivicSigns(mapData, biome, allFeatures, seed, {
-        bus: [3, 5], park: [1, 1],
+        bus: [1, 1], park: [1, 1],
       });
       return mapData;
     }
@@ -3080,9 +3210,9 @@
       const burgData = { worldCoords };
       const mapData = generateBurgBiomeUtil(biome, seed, allFeatures, adjacentBiomes, burgData);
       _persistStructureHints(burgData);
-      // Civic signs: roadside bus stops + one camper park (no readable signposts).
+      // Civic signs: one roadside bus stop + one camper park (no readable signposts).
       placeCivicSigns(mapData, biome, allFeatures, seed, {
-        bus: [2, 4], park: [1, 1],
+        bus: [1, 1], park: [1, 1],
       });
       return mapData;
     }

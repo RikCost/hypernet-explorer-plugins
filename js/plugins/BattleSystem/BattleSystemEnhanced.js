@@ -293,6 +293,45 @@
     };
 
     /**
+     * Roguelite and Peaceful are the modes a death is walked off in: the party
+     * gets back up and the run continues. Hardcore / Blood and Oil (switch 9)
+     * end it instead, so nothing is handed back there.
+     */
+    BSE.Helpers.isForgivingDeathMode = function() {
+        if (window.PeacefulMode && window.PeacefulMode.isActive()) return true;
+        return !$gameSwitches.value(9);
+    };
+
+    /**
+     * Every need meter of every party member back to full: hunger and sleep,
+     * which live on the actor, and hygiene / social / leisure, which live on
+     * the actor for the player and on the society profile for a recruited
+     * companion (setExtendedNeed resolves that). Called on a death the party
+     * walks away from, so nobody gets back up already starving or filthy.
+     */
+    BSE.Helpers.refillPartyNeeds = function() {
+        const TDS = window.TimeDateSystem || {};
+        const maxHunger = TDS.maxHunger || 100;
+        const maxSleep  = TDS.maxSleep  || 100;
+        const maxNeed   = TDS.maxNeed   || 100;
+        for (const member of $gameParty.members()) {
+            if (!member) continue;
+            if (member._hunger !== undefined) member._hunger = maxHunger;
+            if (member._sleep !== undefined) member._sleep = maxSleep;
+            if (member.setExtendedNeed) {
+                member.setExtendedNeed('hygiene', maxNeed);
+                member.setExtendedNeed('social', maxNeed);
+                member.setExtendedNeed('leisure', maxNeed);
+            }
+            // The low-need warnings only fire on the way INTO a low band, so
+            // forget the bands the party was in or the next dip stays silent.
+            member._prevHungerState = 'normal';
+            member._prevSleepState = 'normal';
+            member._prevExtNeedStates = {};
+        }
+    };
+
+    /**
      * Check if a tile is aquatic (region 99 or MovementSystem water)
      */
     BSE.Helpers.isAquaticTile = function(x, y) {

@@ -135,26 +135,32 @@
   //  PLANT DATABASE
   // ============================================================
 
+  // `itemId` is what the plot actually pays out, and it is the plant itself:
+  // a tomato plant gives tomatoes. Every one of these is a real, edible
+  // <category:Food> item (data/Items.json 1726-1744), so a harvest feeds the
+  // party instead of handing them a crafting token. They all used to be item
+  // 575 (Royal Meat Honey), which is neither a vegetable nor something a
+  // cabbage patch should be producing.
   const PLANT_DB = {
-    Tomato: { sprite: "Plants/!$Tomato", itemId: 575, cost: 200, seasons: ["SPRING", "SUMMER"], growthDays: 14, yieldMin: 2, yieldMax: 5 },
-    Watermelon: { sprite: "Plants/!$Watermelon", itemId: 575, cost: 800, seasons: ["SUMMER"], growthDays: 30, yieldMin: 1, yieldMax: 3 },
-    Wheat: { sprite: "Plants/!$Wheat", itemId: 575, cost: 150, seasons: ["SPRING", "SUMMER"], growthDays: 20, yieldMin: 3, yieldMax: 6 },
-    Pumpkin: { sprite: "Plants/!$Pumpkin", itemId: 575, cost: 300, seasons: ["AUTUMN"], growthDays: 25, yieldMin: 1, yieldMax: 2 },
-    Carrot: { sprite: "Plants/!$Carrot", itemId: 575, cost: 100, seasons: ["SPRING", "AUTUMN"], growthDays: 10, yieldMin: 3, yieldMax: 7 },
-    Potato: { sprite: "Plants/!$Potato", itemId: 575, cost: 120, seasons: ["SPRING", "AUTUMN"], growthDays: 12, yieldMin: 4, yieldMax: 8 },
-    Mushroom: { sprite: "Plants/!$Mushroom", itemId: 575, cost: 250, seasons: ["AUTUMN", "WINTER"], growthDays: 7, yieldMin: 2, yieldMax: 5 },
-    Sunflower: { sprite: "Plants/!$Sunflower", itemId: 575, cost: 200, seasons: ["SUMMER"], growthDays: 15, yieldMin: 2, yieldMax: 4 },
-    Strawberry: { sprite: "Plants/!$Strawberry", itemId: 575, cost: 350, seasons: ["SPRING"], growthDays: 18, yieldMin: 3, yieldMax: 8 },
-    Corn: { sprite: "Plants/!$Corn", itemId: 575, cost: 400, seasons: ["SUMMER"], growthDays: 25, yieldMin: 2, yieldMax: 5 },
-    Lavender: { sprite: "Plants/!$Lavender", itemId: 575, cost: 300, seasons: ["SPRING", "SUMMER"], growthDays: 21, yieldMin: 2, yieldMax: 6 },
-    Onion: { sprite: "Plants/!$Onion", itemId: 575, cost: 80, seasons: ["SPRING", "AUTUMN", "WINTER"], growthDays: 10, yieldMin: 4, yieldMax: 8 },
-    Cabbage: { sprite: "Plants/!$Cabbage", itemId: 575, cost: 100, seasons: ["SPRING", "AUTUMN"], growthDays: 15, yieldMin: 2, yieldMax: 5 },
-    Eggplant: { sprite: "Plants/!$Eggplant", itemId: 575, cost: 250, seasons: ["SUMMER"], growthDays: 20, yieldMin: 2, yieldMax: 4 },
-    Pepper: { sprite: "Plants/!$Pepper", itemId: 193, cost: 200, seasons: ["SUMMER"], growthDays: 18, yieldMin: 3, yieldMax: 6 },
-    Ananas: { sprite: "Plants/!$Ananas", itemId: 575, cost: 600, seasons: ["SUMMER"], growthDays: 28, yieldMin: 1, yieldMax: 2 },
-    Grapes: { sprite: "Plants/!$Grapes", itemId: 575, cost: 300, seasons: ["SUMMER", "AUTUMN"], growthDays: 22, yieldMin: 4, yieldMax: 8 },
-    Cactus: { sprite: "Plants/!$Cactus", itemId: 575, cost: 150, seasons: ["SUMMER"], growthDays: 35, yieldMin: 1, yieldMax: 3 },
-    Beanstalk: { sprite: "Plants/!$Beanstalk", itemId: 575, cost: 1000, seasons: ["SPRING", "SUMMER"], growthDays: 45, yieldMin: 5, yieldMax: 10 }
+    Tomato: { sprite: "Plants/!$Tomato", itemId: 1726, cost: 200, seasons: ["SPRING", "SUMMER"], growthDays: 14, yieldMin: 2, yieldMax: 5 },
+    Watermelon: { sprite: "Plants/!$Watermelon", itemId: 1727, cost: 800, seasons: ["SUMMER"], growthDays: 30, yieldMin: 1, yieldMax: 3 },
+    Wheat: { sprite: "Plants/!$Wheat", itemId: 1728, cost: 150, seasons: ["SPRING", "SUMMER"], growthDays: 20, yieldMin: 3, yieldMax: 6 },
+    Pumpkin: { sprite: "Plants/!$Pumpkin", itemId: 1729, cost: 300, seasons: ["AUTUMN"], growthDays: 25, yieldMin: 1, yieldMax: 2 },
+    Carrot: { sprite: "Plants/!$Carrot", itemId: 1730, cost: 100, seasons: ["SPRING", "AUTUMN"], growthDays: 10, yieldMin: 3, yieldMax: 7 },
+    Potato: { sprite: "Plants/!$Potato", itemId: 1731, cost: 120, seasons: ["SPRING", "AUTUMN"], growthDays: 12, yieldMin: 4, yieldMax: 8 },
+    Mushroom: { sprite: "Plants/!$Mushroom", itemId: 1732, cost: 250, seasons: ["AUTUMN", "WINTER"], growthDays: 7, yieldMin: 2, yieldMax: 5 },
+    Sunflower: { sprite: "Plants/!$Sunflower", itemId: 1733, cost: 200, seasons: ["SUMMER"], growthDays: 15, yieldMin: 2, yieldMax: 4 },
+    Strawberry: { sprite: "Plants/!$Strawberry", itemId: 1734, cost: 350, seasons: ["SPRING"], growthDays: 18, yieldMin: 3, yieldMax: 8 },
+    Corn: { sprite: "Plants/!$Corn", itemId: 1735, cost: 400, seasons: ["SUMMER"], growthDays: 25, yieldMin: 2, yieldMax: 5 },
+    Lavender: { sprite: "Plants/!$Lavender", itemId: 1736, cost: 300, seasons: ["SPRING", "SUMMER"], growthDays: 21, yieldMin: 2, yieldMax: 6 },
+    Onion: { sprite: "Plants/!$Onion", itemId: 1737, cost: 80, seasons: ["SPRING", "AUTUMN", "WINTER"], growthDays: 10, yieldMin: 4, yieldMax: 8 },
+    Cabbage: { sprite: "Plants/!$Cabbage", itemId: 1738, cost: 100, seasons: ["SPRING", "AUTUMN"], growthDays: 15, yieldMin: 2, yieldMax: 5 },
+    Eggplant: { sprite: "Plants/!$Eggplant", itemId: 1739, cost: 250, seasons: ["SUMMER"], growthDays: 20, yieldMin: 2, yieldMax: 4 },
+    Pepper: { sprite: "Plants/!$Pepper", itemId: 1740, cost: 200, seasons: ["SUMMER"], growthDays: 18, yieldMin: 3, yieldMax: 6 },
+    Ananas: { sprite: "Plants/!$Ananas", itemId: 1741, cost: 600, seasons: ["SUMMER"], growthDays: 28, yieldMin: 1, yieldMax: 2 },
+    Grapes: { sprite: "Plants/!$Grapes", itemId: 1742, cost: 300, seasons: ["SUMMER", "AUTUMN"], growthDays: 22, yieldMin: 4, yieldMax: 8 },
+    Cactus: { sprite: "Plants/!$Cactus", itemId: 1743, cost: 150, seasons: ["SUMMER"], growthDays: 35, yieldMin: 1, yieldMax: 3 },
+    Beanstalk: { sprite: "Plants/!$Beanstalk", itemId: 1744, cost: 1000, seasons: ["SPRING", "SUMMER"], growthDays: 45, yieldMin: 5, yieldMax: 10 }
   };
 
   // ============================================================

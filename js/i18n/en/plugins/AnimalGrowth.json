@@ -16,5 +16,6 @@
     "other": "A young \\c[14]{animal}\\c[0]. Fully grown in about {count} days."
   },
   "pleased": "The \\c[14]{animal}\\c[0] is pleased to see you.",
-  "nothingReady": "The \\c[14]{animal}\\c[0] has nothing ready yet."
+  "nothingReady": "The \\c[14]{animal}\\c[0] has nothing ready yet.",
+  "company": "You spend a while with the \\c[14]{animal}\\c[0]. The company does everyone good."
 }

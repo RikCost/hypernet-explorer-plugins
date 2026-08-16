@@ -30,20 +30,25 @@
  *     high-level encounter is placed per world map tile: a boss above the top
  *     of that band and never over level 100.
  *
- *   Realistic (1, default)
- *     Everything the biome holds is on the table, whatever its level: a wood
- *     holds fawns and it holds the thing that eats them, and the party does not
- *     decide which of the two is at home. What decides how hard the place is is
- *     the PLACE: the level everything is pitched around comes from how far the
- *     world square under the party lies from the square they started the game
- *     on, reaching the ceiling around 200 tiles out. Near where they began the
- *     world is gentle and far from it lethal, whatever level the party has
- *     reached, so a run is a journey outward rather than a treadmill. That
- *     level only decides what is LIKELY - a creature near it is by far the
- *     commonest sight, and distance from it thins a creature out without ever
- *     ruling it out. The roster is seeded on the nation AND the biome together,
- *     so one country's Fields hold a different set of animals from the next
- *     country's. Places the same per-tile boss Balanced does.
+ *   Distance from spawn (1, default)
+ *     What decides how hard a place is is the PLACE: the level everything is
+ *     pitched around comes from how far the world square under the party lies
+ *     from the square they started the game on. The gradient is radial and it
+ *     runs the whole roster - level 1 on the starting square itself (or the
+ *     year's floor, or the level the world creates its characters at, where
+ *     either of those is higher), the top of the roster on the farthest square
+ *     that party can reach, and a smooth climb between the two. Near where they
+ *     began the world is gentle and far from it lethal, whatever level the
+ *     party has reached, so a run is a journey outward rather than a treadmill.
+ *
+ *     What a square actually fields is every enemy whose <Biome:> tag names the
+ *     biome and whose level falls in the ten-level bracket the place level sits
+ *     in - 1-10 at home, 91-100 at the far corner. The nation is not consulted:
+ *     no country is missing any of its habitat's fauna. Where a biome has
+ *     nobody in the bracket the search climbs to the next bracket up rather
+ *     than reaching back down, so a place with no level 1 residents opens on
+ *     the weakest ones it does have. Places the same per-tile boss Balanced
+ *     does.
  *
  *     Every kind of map answers for a world square: a procedural map its origin
  *     tile, an authored one the `base` of the place it belongs to
@@ -51,14 +56,21 @@
  *     at all - out there the world's own level decides instead (see
  *     getWorldPosition and getOffWorldLevel).
  *
+ *     The start square itself is captured once, on the first map the party
+ *     stands on after character creation, and never moves afterwards. The
+ *     origins that begin off Earth (space, crash-landed) and the castaway are
+ *     pinned by character creation to the Green Witch Space Center instead
+ *     (61,138). Setting a respawn point in the wait menu does not touch it.
+ *
  *   Chaos (2)
  *     Nothing is held back and nothing is remembered. The pool is the whole
  *     fauna table, flat random, level 1 to 110, and every entrance to a
  *     procedural map re-deals its monsters from scratch.
  *
- * Every mode keeps the nation-seeded distribution intact: the country the player
- * is in still decides which enemies are absent, rare, normal or common there,
- * and the mode decides which slice of that weighted pool is on the table.
+ * No enemy is exclusive to a country. Every nation holds every creature its
+ * biomes hold, and the nation seed only tints how common each of them is where
+ * the party is standing (rare / normal / common - never absent). Which slice of
+ * the biome's roster is on the table is the spawn mode's decision alone.
  *
  * ----------------------------------------------------------------------------
  * The calendar (the one rule above every mode)
@@ -530,13 +542,16 @@
         return (h >>> 0) / 4294967296;
     }
 
-    // Frequency class -> relative spawn weight. Tuned so a nation sees a slice
-    // of enemies it never encounters, a rare tier, a normal core, and a few
-    // common ones.
+    // Frequency class -> relative spawn weight. A nation TINTS its fauna, it
+    // does not own it: every enemy tagged for a biome can be met in every
+    // country that has that biome, and the nation only decides whether it is a
+    // rare sight there or the commonest one. Nothing here returns 0 - there is
+    // no such thing as an enemy a nation excludes, and which slice of the
+    // roster is actually on the table is the spawn mode's decision (section 4b)
+    // rather than the map's country.
     function nationFrequencyWeight(r) {
-        if (r < 0.15) return 0;    // absent in this nation
-        if (r < 0.45) return 0.25; // rare
-        if (r < 0.85) return 1.0;  // normal
+        if (r < 0.30) return 0.25; // rare here
+        if (r < 0.80) return 1.0;  // normal
         return 3.0;                // common
     }
 
@@ -556,11 +571,13 @@
         return h >>> 0;
     };
 
-    // Realistic mode draws from the WHOLE fauna table, so the nation alone is
-    // not enough to keep one place feeling different from the next: without the
-    // biome in the seed every Fields, Forest and Badlands tile of a country
-    // would hold the same animals. Nation AND biome together mean a country has
-    // its own fauna and each of its habitats its own slice of it.
+    // The same tint, seeded on the nation AND the biome together, so a Fields
+    // tile of a country does not field its Forest tile's animals at the same
+    // frequencies. Like the nation weight above it never returns 0: it makes a
+    // creature rarer or commoner in one habitat of one country, never absent.
+    // Distance mode does not use it at all (its roster is flat, see
+    // buildFromTroops); it is the balanced-mode tint and what the world-map
+    // card reads to describe a square.
     BSE.Helpers.getNationBiomeEnemyWeight = function(enemyId, biomeName) {
         const nation = BSE.Helpers.getNationId();
         const biome = BSE.Helpers.getBiomeSeed(biomeName);
@@ -573,13 +590,45 @@
     };
 
     // Max enemy level in a troop (0 if none / invalid).
+    // Every candidate scan in this file walks the whole troop table asking the
+    // same three questions of every row: how strong is it, where does it live,
+    // is it one of the exclusives. Each answer is a regex over a note, and the
+    // table is ~1500 rows, so a scan that asks them fresh costs milliseconds -
+    // which the map-load spawner could afford and the world-map card, which
+    // asks again on every step the party takes, could not.
+    //
+    // They are parsed once and kept on the shared $dataTroops object, the same
+    // trick getEnemyArchetype uses. The cache is validated against the members
+    // ARRAY, not against a flag: the handful of slots that are rewritten at
+    // runtime (the reinforcement scratch slot, the petrodemon, the arena's
+    // group troop) all assign a fresh array when they are rebuilt, so a
+    // rewritten slot fails the identity check and is re-read.
+    function troopFacts(troop) {
+        let facts = troop._bseFacts;
+        if (facts && facts.members === troop.members) return facts;
+        let level = 0;
+        let special = false;
+        const biomes = new Set();
+        for (const member of troop.members) {
+            const enemyData = $dataEnemies[member.enemyId];
+            if (!enemyData) continue;
+            const lvl = BSE.Helpers.getEnemyLevel(enemyData.note);
+            if (lvl > level) level = lvl;
+            if (BSE.Helpers.isSpecialEnemyData(enemyData)) special = true;
+            const biomeMatch = enemyData.note && enemyData.note.match(/<Biome:\s*(.+?)>/i);
+            if (biomeMatch) {
+                biomeMatch[1].split(',').forEach(b => biomes.add(b.trim().toLowerCase()));
+            }
+        }
+        facts = { members: troop.members, level: level, special: special, biomes: biomes };
+        troop._bseFacts = facts;
+        return facts;
+    }
+
     BSE.Helpers.getTroopMaxLevel = function(troopId) {
         const troop = $dataTroops[troopId];
         if (!troop || !troop.members.length) return 0;
-        return Math.max(...troop.members.map(m => {
-            const ed = $dataEnemies[m.enemyId];
-            return ed ? BSE.Helpers.getEnemyLevel(ed.note) : 0;
-        }));
+        return troopFacts(troop).level;
     };
 
     // Is a troop spawnable under the current level cap?
@@ -587,9 +636,11 @@
         return BSE.Helpers.getTroopMaxLevel(troopId) <= BSE.Helpers.getSpawnLevelCap();
     };
 
-    // Nation-seeded spawn weight for a troop (its first member is the
-    // representative enemy). Returns 0 for troops the current nation never
-    // spawns or that exceed the current level cap.
+    // Nation-tinted spawn weight for a troop (its first member is the
+    // representative enemy). The nation only makes a troop rarer or commoner,
+    // never absent; the zeroes here are the rules that are not about the
+    // country: the era's level cap, the special-biome residents and the
+    // scratch slots.
     BSE.Helpers.getTroopSpawnWeight = function(troopId) {
         const troop = $dataTroops[troopId];
         if (!troop || !troop.members.length) return 0;
@@ -608,8 +659,10 @@
     };
 
     // The nations where an enemy is most likely to be encountered (for the
-    // Bestiary). Ranks every country by this enemy's frequency class, drops
-    // nations where it is absent, and returns up to `count` {id, name} entries.
+    // Bestiary). Ranks every country by this enemy's frequency class and
+    // returns up to `count` {id, name} entries. Every country keeps every
+    // creature its biomes hold, so this is "where it is commonest", not "the
+    // only places it lives".
     BSE.Helpers.getTopNationsForEnemy = function(enemyId, count) {
         count = count || 3;
         const countries = (window.WorldGen && window.WorldGen.Countries) || [];
@@ -831,7 +884,7 @@
     BSE.Helpers.isSpecialTroop = function(troopId) {
         const troop = $dataTroops[troopId];
         if (!troop || !troop.members.length) return false;
-        return troop.members.some(m => BSE.Helpers.isSpecialEnemyData($dataEnemies[m.enemyId]));
+        return troopFacts(troop).special;
     };
 
     // ------------------------------------------------------------------
@@ -840,14 +893,24 @@
     //
     //   monster , nothing that reads as a person roams the map either, so a
     //             troop holding a Humanoid, DoubleHeadedHumanoid, Elven,
-    //             Goblin or Dwarf creature is not spawnable anywhere.
+    //             Goblin, Dwarf or Ogre creature is not spawnable anywhere.
     //   empty   , a <Talk> creature is one that can be spoken to and recruited
     //             (EnemyTalkSystem), which makes it a person as far as an empty
     //             world is concerned: there is nobody left to talk to, so none
-    //             of them is placed. Everything mute still roams.
+    //             of them is placed. The folk archetypes go with them, talkers
+    //             or not - an empty world is empty of PEOPLE, and a mute ogre
+    //             is still one of the peoples. Everything else mute still roams.
+    //   zombie  , the plague ate everything that thinks. What is left is the
+    //             dead that walk (Undead), the animals that did not catch it
+    //             (Beast), and whatever the outbreak made of the rest - which
+    //             is anything with "zombie" in its name, at any archetype.
+    //             Nothing else is placed.
     //   goblin  , nothing is forbidden, but goblins are what this world is
     //             made of, so they are weighted far above everything else
     //             (see populationSpawnBoost).
+    //   death   , nothing roams at all; handled at placement time by erasing
+    //             every Enemy event (see the spawnEnemiesFromEncounters hook
+    //             at the bottom of this file), not by this filter.
     // ------------------------------------------------------------------
     BSE.Helpers.getPopulationMode = function() {
         const WM = window.WorldManager;
@@ -863,8 +926,36 @@
         return people.includes(archetype);
     };
 
+    // The peoples, for the purpose of who is allowed to roam a world. This is
+    // the sprite catalog's list of people PLUS the ogres: a wardrobe question
+    // ("does this creature wear clothes") and a population question ("is this
+    // creature one of the peoples") are not the same question, and an ogre is
+    // a folk with a camp and a name even though it is not dressed like one.
+    // Kept here rather than pushed into SpriteCatalog so the wardrobe and the
+    // creature-creation board are untouched by it.
+    const EXTRA_FOLK_ARCHETYPES = ["Ogre"];
+
+    BSE.Helpers.isFolkArchetype = function(archetype) {
+        if (!archetype) return false;
+        return BSE.Helpers.isPeopleArchetype(archetype) ||
+            EXTRA_FOLK_ARCHETYPES.includes(archetype);
+    };
+
     BSE.Helpers.isGoblinEnemyData = function(data) {
         return !!data && BSE.Helpers.getEnemyArchetype(data) === "Goblin";
+    };
+
+    // What a zombie world still holds. The archetypes are the two that survive
+    // an outbreak in kind; the name test is what catches everything the
+    // outbreak CONVERTED, which the database spells out in the enemy's own name
+    // ("Zombie Miner", "Zombified Hound") rather than in its archetype.
+    const ZOMBIE_WORLD_ARCHETYPES = ["Beast", "Undead"];
+    const ZOMBIE_NAME_RE = /zombie|zombif/i;
+
+    BSE.Helpers.isZombieWorldEnemyData = function(data) {
+        if (!data) return false;
+        if (ZOMBIE_NAME_RE.test(String(data.name || ""))) return true;
+        return ZOMBIE_WORLD_ARCHETYPES.includes(BSE.Helpers.getEnemyArchetype(data));
     };
 
     // Can this troop be placed at all in the world being played? Taken on the
@@ -873,15 +964,19 @@
     // rule) is handed the object rather than the id.
     BSE.Helpers.troopDataAllowedInPopulation = function(troop) {
         const mode = BSE.Helpers.getPopulationMode();
-        if (mode !== "monster" && mode !== "empty") return true;
+        if (mode !== "monster" && mode !== "empty" && mode !== "zombie") return true;
         if (!troop || !troop.members || !troop.members.length) return true;
         // One disallowed member disqualifies the troop: a troop is spawned
         // whole, so there is no way to place "most" of it.
         return !troop.members.some(m => {
             const data = $dataEnemies[m.enemyId];
             if (!data) return false;
-            if (mode === "empty") return String(data.note || "").includes("<Talk>");
-            return BSE.Helpers.isPeopleArchetype(BSE.Helpers.getEnemyArchetype(data));
+            const archetype = BSE.Helpers.getEnemyArchetype(data);
+            if (mode === "zombie") return !BSE.Helpers.isZombieWorldEnemyData(data);
+            // Both remaining modes bar the peoples; the empty world bars
+            // everything that can be spoken to on top of them.
+            if (BSE.Helpers.isFolkArchetype(archetype)) return true;
+            return mode === "empty" && String(data.note || "").includes("<Talk>");
         });
     };
 
@@ -943,25 +1038,29 @@
     // 4b. SPAWN MODE (level selection on top of the nation-weighted pool)
     // ========================================================================
     // Spawn mode (ConfigManager.enemySpawnMode): 0 = Balanced,
-    // 1 = Realistic (default), 2 = Chaos.
+    // 1 = Distance from spawn (default), 2 = Chaos.
     //
     //   Balanced  - the biome's own fauna, out of a band opening upward from
     //               the party's own median level (see getBalancedLevelBand),
     //               plus a single boss above that band once per world map tile.
-    //   Realistic - EVERYTHING the biome holds is on the table, whatever its
-    //               level: a wood holds fawns and it holds the thing that eats
-    //               them, and the party's level does not decide which of them
-    //               is at home. What the place is pitched at is decided by the
-    //               PLACE - how far the world square underfoot lies from the
-    //               square the party started the game on (see getPlaceLevel) -
-    //               and that level only decides what is LIKELY: a creature near
-    //               it is far the commonest sight and the distance from it
-    //               thins a creature out without ever ruling it out. The same
-    //               occasional boss balanced places is placed here too. What
-    //               keeps a place a place is the seed: the roster is drawn from
-    //               the nation AND the biome together, so a Fields tile in one
-    //               country holds a different set of animals from a Fields tile
-    //               in the next.
+    //   Distance  - "distance from spawn", and the name is the whole rule: what
+    //               a place fields is decided by the PLACE, which is to say by
+    //               how far the world square underfoot lies from the square the
+    //               party started the game on (see getPlaceLevel). The gradient
+    //               is radial and it runs the full width of the roster: level 1
+    //               on the starting square, the top of the roster at the
+    //               farthest square that party can reach, and a smooth climb
+    //               between the two.
+    //               The roster of a square is every enemy whose <Biome:> tag
+    //               names the biome and whose level falls in the bracket that
+    //               place level sits in (see getDistanceBracket) - the nation
+    //               is not consulted at all, so no country is missing any of
+    //               its habitat's fauna. A bracket the biome has nobody in is
+    //               not a reason to spawn something wildly out of place: the
+    //               search climbs to the next bracket up, and the one above
+    //               that, and only reaches back downward when there is nothing
+    //               above it at all. The same occasional boss balanced places
+    //               is placed here too.
     //   Chaos     - nothing is held back and nothing is remembered. Every
     //               entrance to a procedural map re-deals its monsters, flat
     //               random out of the whole table, level 1 to 110.
@@ -972,15 +1071,17 @@
     // then put through the calendar (applyEraToBand), and the special-biome
     // guarantee (section 4a) sits above all three.
     // ------------------------------------------------------------------
-    const SPAWN_MODES = ['balanced', 'realistic', 'chaos'];
-    // Realistic is what the world is written for: the one mode where the map
-    // itself says how dangerous a place is. GameOptions defaults the stored
-    // setting to the same index.
+    // The stored setting is the INDEX, not the name, so renaming a mode here
+    // costs no migration (see GameOptions.js, enemySpawnMode).
+    const SPAWN_MODES = ['balanced', 'distance', 'chaos'];
+    // Distance from spawn is what the world is written for: the one mode where
+    // the map itself says how dangerous a place is. GameOptions defaults the
+    // stored setting to the same index.
     const DEFAULT_SPAWN_MODE = 1;
 
     // The modes that hide one encounter far above the band on each world tile.
     // Chaos needs no help.
-    const BOSS_MODES = ['balanced', 'realistic'];
+    const BOSS_MODES = ['balanced', 'distance'];
 
     BSE.Helpers.getSpawnMode = function() {
         const v = window.ConfigManager ? ConfigManager.enemySpawnMode : DEFAULT_SPAWN_MODE;
@@ -988,18 +1089,22 @@
     };
 
     // The reference level a mode builds its band and its weighting around.
-    // Balanced and Chaos read the party; Realistic reads the ground, and only
-    // falls back to the party where no world square can be resolved at all.
+    // Balanced and Chaos read the party; Distance reads the ground, and only
+    // falls back to the party where no world square can be resolved at all -
+    // and that fallback carries the calendar itself (the gradient it is
+    // standing in for has the year built into both its ends), so a party that
+    // cannot be placed on the map is still not handed 2001's monsters in 2007.
     BSE.Helpers.getModeRefLevel = function(mode, partyLevel) {
-        if (mode !== 'realistic') return partyLevel;
-        return BSE.Helpers.getPlaceLevel() || partyLevel;
+        if (mode !== 'distance') return partyLevel;
+        return BSE.Helpers.getPlaceLevel() ||
+            (partyLevel + BSE.Helpers.getYearLevelShift());
     };
 
     // The level window the current mode draws from, calendar already applied.
     BSE.Helpers.getSpawnBand = function(mode, refLevel) {
         switch (mode) {
-            case 'realistic':
-                return BSE.Helpers.getRealisticLevelBand(refLevel);
+            case 'distance':
+                return BSE.Helpers.getDistanceLevelBand(refLevel);
             case 'chaos':
                 return BSE.Helpers.getChaosLevelBand();
             default:
@@ -1009,17 +1114,9 @@
 
     // Narrow a candidate list to the mode's band. Every branch ends in a
     // nearest-level fallback, so a list is never emptied.
-    //
-    // Realistic is the mode with no ceiling: it cuts nothing off the top, and
-    // the only cut it makes at all is the calendar's floor, which is the one
-    // rule that outranks every mode. What it does instead of filtering is
-    // weight (see levelAffinityWeight), applied when the list is built.
     BSE.Helpers.filterTroopsForMode = function(encList, mode, band) {
-        if (mode === 'realistic') {
-            if (!encList || !encList.length || !band || band.min <= 1) return encList;
-            const above = encList.filter(enc =>
-                BSE.Helpers.getTroopMaxLevel(enc.troopId) >= band.min);
-            return above.length > 0 ? above : encList;
+        if (mode === 'distance') {
+            return BSE.Helpers.filterTroopsInDistanceBracket(encList, band);
         }
         if (mode === 'chaos') {
             return BSE.Helpers.filterTroopsInLevelBand(encList, band);
@@ -1028,12 +1125,12 @@
     };
 
     // How likely a creature of `troopLevel` is to be the one met by a party of
-    // `refLevel`. Never zero: in realistic mode every resident of the biome
+    // `refLevel`. Never zero: in distance mode every resident of the biome
     // stays possible, the far-off ones just turn rare.
-    const REALISTIC_FALLOFF = 12; // levels of slack before a creature thins out
+    const DISTANCE_FALLOFF = 12; // levels of slack before a creature thins out
 
     BSE.Helpers.levelAffinityWeight = function(troopLevel, refLevel) {
-        const d = Math.abs((troopLevel || 1) - (refLevel || 1)) / REALISTIC_FALLOFF;
+        const d = Math.abs((troopLevel || 1) - (refLevel || 1)) / DISTANCE_FALLOFF;
         return 1 / (1 + d * d);
     };
 
@@ -1062,15 +1159,77 @@
         return BSE.Helpers.applyEraToBand({ min: lvl, max: Math.max(lvl, max) });
     };
 
-    // Realistic mode has no band in the sense the others do: everything the
-    // biome holds is spawnable. What comes back is the calendar's floor alone
-    // (`min`), with no ceiling, so the only thing ever cut is what the year has
-    // left behind. `center` is where the level-affinity weighting is aimed.
-    BSE.Helpers.getRealisticLevelBand = function(refLevel) {
+    // Distance mode's band is the BRACKET the place level falls in. Ten levels
+    // wide, laid out from level 1 (1-10, 11-20, 21-30 ...), so a square pitched
+    // at level 3 fields the biome's level 1-10 fauna and a square pitched at 74
+    // fields its 71-80. The bracket is the whole roster of a place: the party's
+    // own level has no say in it and neither has the nation.
+    //
+    // `min` is still floored by the calendar, which is the one rule that
+    // outranks every mode, and `center` is the place level itself, which is
+    // where the level-affinity weighting inside the bracket is aimed.
+    //
+    // The year is NOT added on top of `refLevel` here. It is already in both
+    // ends of the gradient that produced it (getPlaceLevel builds from the
+    // year's floor up to the era's ceiling), and adding the shift again would
+    // count the calendar twice - a 2007 world would pitch its far side at 60
+    // levels above its own ceiling. getModeRefLevel applies the shift itself in
+    // the one case where the level did NOT come from the gradient.
+    const DISTANCE_BRACKET_SIZE = 10;
+
+    // The bracket a level belongs to, as {index, min, max}.
+    BSE.Helpers.getDistanceBracket = function(level) {
+        const lvl = Math.max(1, Math.round(level || 1));
+        const index = Math.floor((lvl - 1) / DISTANCE_BRACKET_SIZE);
+        return {
+            index: index,
+            min: index * DISTANCE_BRACKET_SIZE + 1,
+            max: (index + 1) * DISTANCE_BRACKET_SIZE
+        };
+    };
+
+    BSE.Helpers.getDistanceLevelBand = function(refLevel) {
         const lvl = Math.max(1, Math.round(refLevel || 1));
         const floor = BSE.Helpers.getYearLevelFloor();
-        const center = Math.max(floor, lvl + BSE.Helpers.getYearLevelShift());
-        return { min: Math.max(1, floor), max: Infinity, center: center };
+        const center = Math.max(1, floor, lvl);
+        const bracket = BSE.Helpers.getDistanceBracket(center);
+        return {
+            min: Math.max(1, floor, bracket.min),
+            max: bracket.max,
+            center: center
+        };
+    };
+
+    // Distance mode: keep only the troops inside the place's own bracket.
+    //
+    // The bracket a biome has nobody in is the case the whole function exists
+    // for. It climbs: the next bracket up, then the one above that, to the top
+    // of what the list holds - being handed the weakest thing ABOVE your
+    // altitude is what "there are no level 1 crystals fauna, so you meet the
+    // level 14 ones" should feel like. Only when there is nothing above the
+    // place level anywhere in the list does it reach back downward, bracket by
+    // bracket, so a map is never left with nothing to spawn.
+    BSE.Helpers.filterTroopsInDistanceBracket = function(encList, band) {
+        if (!encList || !encList.length || !band) return encList;
+        const levels = encList.map(enc => BSE.Helpers.getTroopMaxLevel(enc.troopId));
+        const size = DISTANCE_BRACKET_SIZE;
+        const floor = Math.max(1, band.min || 1);
+        const start = BSE.Helpers.getDistanceBracket(Math.max(floor, band.center || floor));
+        const inRange = (lo, hi, atLeast) => encList.filter((enc, i) =>
+            levels[i] >= Math.max(lo, atLeast) && levels[i] <= hi);
+
+        const top = Math.max(...levels);
+        for (let lo = start.min; lo <= top; lo += size) {
+            // The calendar's floor holds inside the starting bracket too: in
+            // 2012 a bracket that straddles level 80 fields only its top half.
+            const found = inRange(lo, lo + size - 1, floor);
+            if (found.length > 0) return found;
+        }
+        for (let lo = start.min - size; lo >= 1; lo -= size) {
+            const found = inRange(lo, lo + size - 1, 1);
+            if (found.length > 0) return found;
+        }
+        return encList;
     };
 
     // Chaos mode: the whole ladder, every time. The era cap does not apply
@@ -1226,19 +1385,41 @@
     // ------------------------------------------------------------------
     // How dangerous a place is: how far it lies from where the party began
     // ------------------------------------------------------------------
-    // Realistic mode measures the world from the square the party started the
-    // game on - the city the train put them down in, the overland square the
-    // bike start rolled, the tower for anyone who began off Earth - and levels
-    // everything by the straight-line distance out from it. Home ground is
-    // gentle and the far side of the map is lethal, and neither answer moves as
-    // the party grows: what changes is where they dare to walk.
+    // "Distance from spawn" measures the world from the square the party
+    // started the game on - the city the train put them down in, the overland
+    // square the bike start rolled, the space center for anyone who began off
+    // Earth - and levels everything by the straight-line distance out from it.
+    // Home ground is gentle and the far side of the map is lethal, and neither
+    // answer moves as the party grows: what changes is where they dare to walk.
+    //
+    // The gradient runs the full width of the roster. Its two ends are:
+    //
+    //   distance 0        the calendar's floor, or the level the world creates
+    //                     its characters at, whichever is higher (see
+    //                     getPlaceFloorLevel) - a world begun by level 50
+    //                     people does not open on rats;
+    //   the far corner    the top of the roster the era allows (see
+    //                     getPlaceCeilingLevel). "The far corner" is the
+    //                     farthest square of the world map from THIS party's
+    //                     own anchor, computed per anchor rather than assumed,
+    //                     so the maximum distance always reaches the maximum
+    //                     level wherever the party began.
     //
     // The anchor is captured once, the first time the party stands anywhere
     // that resolves to a world square after character creation is finished (see
-    // the Game_Map.setup hook), and kept in the save from then on.
+    // the Game_Map.setup hook), and kept in the save from then on. Nothing
+    // moves it afterwards: setting a respawn point in the wait menu
+    // (TimeDateSystemUI -> TimeDateSystem.setSleepRespawnPoint) writes
+    // Variables 25/26/27 and $gameSystem._respawnPointSet, which are where the
+    // party wakes up after a defeat and have no bearing on where they BEGAN.
+    // Where you started the game is a fact about the game; where you sleep is
+    // not.
 
     const OMEGA_TOWER_FALLBACK = { x: 79, y: 125 }; // world map (315) tile
-    const PLACE_FULL_RANGE = 200;  // tiles from the start square at which the ceiling is reached
+    // Green Witch Space Center: the launch site, and the square every start
+    // that begins off Earth is measured from (see getOffEarthAnchor).
+    const SPACE_CENTER_FALLBACK = { x: 61, y: 138 };
+    const WORLD_MAP_TILES  = 256;  // map 315 is 256x256; the gradient's own extent
     const PLACE_CURVE      = 1.2;  // >1 keeps the neighbourhood of home gentle
 
     // Top of the gradient: the highest level any biome-tagged enemy reaches.
@@ -1259,14 +1440,31 @@
         return _biomeRosterCeiling;
     }
 
-    // World map position of the Omega Tower, read from the shared destination
-    // table so moving it there moves the difficulty gradient with it.
-    BSE.Helpers.getOmegaTowerCoords = function() {
+    // World map position of a named place, read from the shared destination
+    // table so moving a place there moves the difficulty gradient with it.
+    function destinationBase(key, fallback) {
         const dest = window.WorkSystem && window.WorkSystem.Destinations;
-        const tower = dest && dest['Omega Tower'];
-        const base = tower && tower.base;
-        if (base && typeof base.x === 'number' && typeof base.y === 'number') return base;
-        return OMEGA_TOWER_FALLBACK;
+        const entry = dest && dest[key];
+        const base = entry && entry.base;
+        if (base && typeof base.x === 'number' && typeof base.y === 'number') {
+            return { x: base.x, y: base.y };
+        }
+        return fallback;
+    }
+
+    BSE.Helpers.getOmegaTowerCoords = function() {
+        return destinationBase('Omega Tower', OMEGA_TOWER_FALLBACK);
+    };
+
+    // The square a party that never stood on Earth is measured from: the Green
+    // Witch Space Center, 61,138. The space origin lifted off from it, the
+    // crash-landed origin was on its way back to it, and the castaway origin is
+    // pinned to it as well - a castaway's "home" is the place they were trying
+    // to reach, not the beach the sea left them on, which is what makes a
+    // remote coast a dangerous place to wash up rather than the safest square
+    // in the world.
+    BSE.Helpers.getSpaceCenterCoords = function() {
+        return destinationBase('GreenWitchSpaceCenter', SPACE_CENTER_FALLBACK);
     };
 
     // A map that is nowhere on the world map at all: a spaceship cabin (any
@@ -1313,7 +1511,7 @@
     };
 
     // The world square (map 315 tile) the party's CURRENT map stands on. It is
-    // both ends of Realistic's measurement: frozen once as the start anchor,
+    // both ends of the distance measurement: frozen once as the start anchor,
     // and read live as where they have walked to. Every kind of map answers it,
     // and each answers it differently:
     //
@@ -1360,22 +1558,61 @@
     // The world square the party started the game on. Everything is measured
     // from here. A party that began off Earth (the space and crash-landed
     // origins) never stood on a world square at all, and neither does a save
-    // whose anchor was never captured: both answer with the Omega Tower, the
-    // one square that is always defined.
+    // whose anchor was never captured: both answer with the space center, the
+    // square those starts are pinned to anyway (see setStartAnchor).
     BSE.Helpers.getStartAnchor = function() {
         const rec = $gameSystem && $gameSystem._bseStartAnchor;
         if (rec && (rec.x || rec.y)) return rec;
-        return BSE.Helpers.getOmegaTowerCoords();
+        return BSE.Helpers.getSpaceCenterCoords();
+    };
+
+    // Write the anchor down deliberately. Character creation calls this for the
+    // origins whose starting SQUARE says nothing about where they are from -
+    // the two that begin off Earth and the castaway, who is measured from the
+    // place they were trying to reach (see getSpaceCenterCoords). Called at the
+    // end of the origin step, which is also what stops captureStartAnchor from
+    // overwriting it later: an anchor that is already set is never touched
+    // again, so a space start that eventually lands in Tokyo does not quietly
+    // adopt Tokyo as the place it grew up.
+    BSE.Helpers.setStartAnchor = function(x, y) {
+        if (!$gameSystem) return;
+        if (typeof x !== 'number' || typeof y !== 'number') return;
+        $gameSystem._bseStartAnchor = { x: x, y: y };
+    };
+
+    BSE.Helpers.anchorAtSpaceCenter = function() {
+        const c = BSE.Helpers.getSpaceCenterCoords();
+        BSE.Helpers.setStartAnchor(c.x, c.y);
     };
 
     // Remember where the world was entered, once. Called on every map load; it
     // takes the first square the party stands on after character creation has
     // finished ($gameSystem._hasCompletedFirstCreation, set at the end of the
     // origin step), which is where their origin put them. Nothing captured
-    // during creation itself, and nothing recaptured for a later party.
+    // during creation itself, nothing recaptured for a later party, and nothing
+    // ever overwritten - not by walking, not by fast travel, and not by the
+    // respawn point the wait menu sets.
+    // Has character creation finished putting the party down? The origin step
+    // marks the creation itself complete before its landing has happened, and
+    // several origins land in two moves: the picker origins pop back onto the
+    // starting train (map 557, which answers for a world square of its own)
+    // and only open their destination picker a frame later, and the vehicle
+    // origins go on to a parked camper. Anything captured in between would
+    // record the train the wizard was run on as the place the party is from.
+    // Every one of those landings is in flight for exactly as long as one of
+    // these flags is up.
+    function creationLandingPending() {
+        const t = $gameTemp;
+        if (!t) return false;
+        return !!(t._openCharacterCreationTrainTravel || t._characterCreationTravelMode ||
+            t._ccVehicleStart || t._ccEmptyLotStart || t._ccLostConvokerStart ||
+            t._ccStrandedStart || t._ccBikeStart);
+    }
+
     BSE.Helpers.captureStartAnchor = function() {
         if (!$gameSystem || $gameSystem._bseStartAnchor) return;
         if (!$gameSystem._hasCompletedFirstCreation) return;
+        if (creationLandingPending()) return;
         // Off Earth there is no world square to remember; wait for one rather
         // than writing down a landing-grid cell or the tower by accident.
         if (BSE.Helpers.isOffWorldMap()) return;
@@ -1394,17 +1631,211 @@
         return Math.sqrt(Math.pow(here.x - home.x, 2) + Math.pow(here.y - home.y, 2));
     };
 
+    // The greatest distance this party CAN be from home: the farthest of the
+    // world map's four corners, measured from their own anchor. This is what
+    // makes the promise exact - the maximum distance from the starting point is
+    // the maximum level - however near an edge the party began. A start in the
+    // middle of the map has a shorter longest walk than one in a corner, and
+    // both reach the top of the roster at the end of it.
+    BSE.Helpers.getMaxStartDistance = function() {
+        const home = BSE.Helpers.getStartAnchor();
+        const edge = worldMapTiles() - 1;
+        const dx = Math.max(Math.abs(home.x - 0), Math.abs(edge - home.x));
+        const dy = Math.max(Math.abs(home.y - 0), Math.abs(edge - home.y));
+        return Math.max(1, Math.sqrt(dx * dx + dy * dy));
+    };
+
+    // The world map's own extent. Read off map 315 while the party is standing
+    // on it, so a resized world map resizes the gradient with it, and the
+    // constant otherwise (the map's dimensions are not loaded from anywhere
+    // else, and the answer has to hold on every map).
+    function worldMapTiles() {
+        if ($gameMap && $gameMap.mapId() === 315) {
+            return Math.max($gameMap.width(), $gameMap.height()) || WORLD_MAP_TILES;
+        }
+        return WORLD_MAP_TILES;
+    }
+
+    // The bottom of the gradient: what home ground itself is pitched at.
+    // Two world-creation options meet here (WorldManagerUI's creation form):
+    //
+    //   the starting DATE  through the calendar's floor - from 2002 the world
+    //                      has left its weakest fauna behind (+10 a year), and
+    //                      from 2012 nothing under level 80 is left at all;
+    //   the starting LEVEL through WorldManager.startingLevel() - a world whose
+    //                      characters are created at level 50 was made to be
+    //                      begun by people who are already somebody, and its
+    //                      home ground is pitched at them rather than at the
+    //                      level 1 party it will never hold.
+    //
+    // Whichever is higher wins; both are the same kind of statement about what
+    // this world has stopped bothering to spawn.
+    BSE.Helpers.getWorldStartingLevel = function() {
+        const WM = window.WorldManager;
+        const lvl = (WM && typeof WM.startingLevel === 'function') ? WM.startingLevel() : 1;
+        return Math.max(1, Math.round(lvl || 1));
+    };
+
+    BSE.Helpers.getPlaceFloorLevel = function() {
+        return Math.max(1, BSE.Helpers.getYearLevelFloor(),
+            BSE.Helpers.getWorldStartingLevel());
+    };
+
+    // The top of the gradient: the strongest thing the era lets roam, and never
+    // above what the roster actually holds. In 2012+ the era cap is Infinity,
+    // so the roster ceiling is the whole answer.
+    BSE.Helpers.getPlaceCeilingLevel = function() {
+        const ceiling = Math.min(BSE.Helpers.getSpawnLevelCap(), biomeRosterCeiling());
+        return Math.max(BSE.Helpers.getPlaceFloorLevel(), Math.round(ceiling));
+    };
+
     // The level the ground under the party is pitched at: how far this square
-    // lies from the one they started on, run through the curve. 0 where no
-    // world square resolves at all, which is the caller's cue to fall back to
-    // the party's own level (see getModeRefLevel).
+    // lies from the one they started on, as a fraction of the farthest they
+    // could be, run through the curve and laid across the floor-to-ceiling
+    // range above. 0 where no world square resolves at all, which is the
+    // caller's cue to fall back to the party's own level (getModeRefLevel).
     BSE.Helpers.getPlaceLevel = function() {
         const here = BSE.Helpers.getWorldPosition();
         if (!here || (!here.x && !here.y)) return 0;
-        const ceiling = Math.min(BSE.Helpers.getSpawnLevelCap(), biomeRosterCeiling());
-        const t = Math.max(0, Math.min(1, BSE.Helpers.getStartDistance() / PLACE_FULL_RANGE));
+        const floor = BSE.Helpers.getPlaceFloorLevel();
+        const ceiling = BSE.Helpers.getPlaceCeilingLevel();
+        const t = Math.max(0, Math.min(1,
+            BSE.Helpers.getStartDistance() / BSE.Helpers.getMaxStartDistance()));
         return Math.max(1, Math.min(ceiling,
-            Math.round(1 + Math.pow(t, PLACE_CURVE) * (ceiling - 1))));
+            Math.round(floor + Math.pow(t, PLACE_CURVE) * (ceiling - floor))));
+    };
+
+    // Everything the gradient is currently built out of, in one object: what
+    // the mode is, where home is, where the party is standing, how far that is
+    // out of how far it could be, and the level that comes out at both ends of
+    // the range. Meant to be read from the console (or a debug scene) while
+    // standing somewhere that looks wrong - every number the mode uses is here,
+    // so a surprising encounter can be traced to the term that produced it.
+    // What the party would actually meet on this square, as a level: the
+    // weighted median of the local roster.
+    //
+    // The place level (above) is where the mode AIMS; this is where the roster
+    // it is aiming at actually sits, and the two are not the same number. A
+    // Snow tile 40 tiles from home is pitched at level 12, but if the coldest
+    // thing the country keeps is a level 30 wolf then 30 is what walks up to
+    // you. The whole distribution the spawner uses is rebuilt here - biome
+    // match, the place's own level bracket (with the same climb to the next
+    // bracket up when this one is empty), the level affinity around the place
+    // level - and the median of it is the honest one-number answer to "how
+    // dangerous is it here".
+    //
+    // Cached on everything that can change the answer, because the caller is a
+    // HUD that asks again on every step (see MapInfoHUD in TimeDateSystem.js).
+    let _placeProfileCache = null;
+
+    BSE.Helpers.getPlaceEncounterProfile = function(biomeName) {
+        const here = BSE.Helpers.getWorldPosition() || { x: 0, y: 0 };
+        const place = BSE.Helpers.getPlaceLevel() || BSE.Helpers.getPartyReferenceLevel();
+        const era = BSE.Helpers.getSpawnEra();
+        const key = [here.x, here.y, biomeName || '', place, Math.floor(era.year),
+            BSE.Helpers.getNationId(), BSE.Helpers.getPopulationMode()].join('|');
+        if (_placeProfileCache && _placeProfileCache.key === key) return _placeProfileCache.value;
+
+        const band = BSE.Helpers.getDistanceLevelBand(place);
+        const candidates = [];
+        for (let i = 1; i < $dataTroops.length; i++) {
+            const troop = $dataTroops[i];
+            if (!BSE.Helpers.isSpawnableTroopData(troop)) continue;
+            if (biomeName && !BSE.Helpers.troopMatchesBiome(i, biomeName)) continue;
+            if (!BSE.Helpers.troopAllowedInBiome(i, biomeName)) continue;
+            if (!BSE.Helpers.getTroopMaxLevel(i)) continue;
+            candidates.push({ troopId: i });
+        }
+        // The bracket, exactly as the spawner applies it - including the climb
+        // to the next bracket up where the biome has nobody at this altitude.
+        const local = [];
+        let localTotal = 0;
+        BSE.Helpers.filterTroopsInDistanceBracket(candidates, band).forEach(enc => {
+            const lvl = BSE.Helpers.getTroopMaxLevel(enc.troopId);
+            const weight = BSE.Helpers.levelAffinityWeight(lvl, place) *
+                BSE.Helpers.populationSpawnBoost(enc.troopId);
+            if (weight <= 0) return;
+            local.push({ level: lvl, weight: weight });
+            localTotal += weight;
+        });
+
+        // From 2010 a quarter of what roams (two fifths from 2012) is drawn
+        // from the era's high-level pool instead of from the local roster, and
+        // a median that ignored them would tell the party a place is safe on
+        // the strength of fauna that only fills three spawns in four. The two
+        // pools are mixed here in the same proportion the spawner mixes them.
+        const elitePool = BSE.Helpers.getEraElitePool(biomeName, era);
+        const eliteShare = (elitePool.length && localTotal > 0) ? era.eliteShare : 0;
+        let eliteTotal = 0;
+        elitePool.forEach(e => { eliteTotal += e.weight; });
+
+        const entries = [];
+        if (localTotal > 0) {
+            const scale = (1 - eliteShare) / localTotal;
+            local.forEach(e => entries.push({ level: e.level, weight: e.weight * scale }));
+        }
+        if (eliteShare > 0 && eliteTotal > 0) {
+            const scale = eliteShare / eliteTotal;
+            elitePool.forEach(e => entries.push({
+                level: BSE.Helpers.getTroopMaxLevel(e.troopId),
+                weight: e.weight * scale
+            }));
+        }
+
+        let value = { median: 0, min: 0, max: 0, count: 0, placeLevel: place };
+        if (entries.length) {
+            entries.sort((a, b) => a.level - b.level);
+            const totalWeight = entries.reduce((sum, e) => sum + e.weight, 0);
+            let seen = 0;
+            let median = entries[entries.length - 1].level;
+            for (const e of entries) {
+                seen += e.weight;
+                if (seen >= totalWeight / 2) { median = e.level; break; }
+            }
+            value = {
+                median: median,
+                min: entries[0].level,
+                max: entries[entries.length - 1].level,
+                count: entries.length,
+                placeLevel: place
+            };
+        }
+        _placeProfileCache = { key: key, value: value };
+        return value;
+    };
+
+    // The one number a HUD wants: the level of the creature this square usually
+    // fields, or 0 where nothing is spawnable here at all (an empty world, a
+    // biome with no fauna of its own).
+    BSE.Helpers.getPlaceEncounterMedianLevel = function(biomeName) {
+        return BSE.Helpers.getPlaceEncounterProfile(biomeName).median;
+    };
+
+    BSE.Helpers.describePlace = function() {
+        const home = BSE.Helpers.getStartAnchor();
+        const here = BSE.Helpers.getWorldPosition();
+        const dist = BSE.Helpers.getStartDistance();
+        const maxDist = BSE.Helpers.getMaxStartDistance();
+        const era = BSE.Helpers.getSpawnEra();
+        return {
+            mode: BSE.Helpers.getSpawnMode(),
+            anchor: home,
+            anchorSet: !!($gameSystem && $gameSystem._bseStartAnchor),
+            here: here,
+            offWorld: BSE.Helpers.isOffWorldMap(),
+            distance: Math.round(dist * 10) / 10,
+            maxDistance: Math.round(maxDist * 10) / 10,
+            fraction: Math.round((dist / maxDist) * 1000) / 1000,
+            year: Math.floor(era.year),
+            era: era.key,
+            worldStartLevel: BSE.Helpers.getWorldStartingLevel(),
+            population: BSE.Helpers.getPopulationMode(),
+            floorLevel: BSE.Helpers.getPlaceFloorLevel(),
+            ceilingLevel: BSE.Helpers.getPlaceCeilingLevel(),
+            placeLevel: BSE.Helpers.getPlaceLevel(),
+            partyLevel: BSE.Helpers.getPartyReferenceLevel(),
+            roster: BSE.Helpers.getPlaceEncounterProfile(BSE.Helpers.getMapBiome())
+        };
     };
 
     // ------------------------------------------------------------------
@@ -1471,16 +1902,7 @@
         if (!targetBiome) return false;
         const troop = $dataTroops[troopId];
         if (!troop || !troop.members.length) return false;
-        const targetBiomeLower = targetBiome.toLowerCase().trim();
-        for (const member of troop.members) {
-            const enemyData = $dataEnemies[member.enemyId];
-            if (!enemyData || !enemyData.note) continue;
-            const biomeMatch = enemyData.note.match(/<Biome:\s*(.+?)>/i);
-            if (!biomeMatch) continue;
-            const enemyBiomes = biomeMatch[1].split(',').map(b => b.trim().toLowerCase());
-            if (enemyBiomes.includes(targetBiomeLower)) return true;
-        }
-        return false;
+        return troopFacts(troop).biomes.has(targetBiome.toLowerCase().trim());
     };
 
     /**
@@ -1534,7 +1956,7 @@
             .map((t, i) => ({ troop: t, id: i + 1 }))
             .filter(x => x.troop && x.troop.members.length)
             .map(x => ({ ...x, weight: BSE.Helpers.getTroopSpawnWeight(x.id) }))
-            .filter(x => x.weight > 0); // drop nation-absent & over-cap troops
+            .filter(x => x.weight > 0); // drop over-cap & wrong-biome troops
         if (!pool.length) return; // no valid troops: leave troops array untouched
         for (let i = 0; i < 4 && pool.length > 0; i++) {
             const totalWeight = pool.reduce((sum, x) => sum + x.weight, 0);
@@ -1590,8 +2012,25 @@
         if ($gameSystem) {
             $gameSystem._chaosSpawnVisit = (($gameSystem._chaosSpawnVisit || 0) + 1) % 1000000;
         }
-        // Every transfer is a chance to learn where the party began, until one
-        // of them answers (see captureStartAnchor); it is written down once.
+    };
+
+    // Every arrival on a map is a chance to learn where the party began, until
+    // one of them answers (see captureStartAnchor); it is written down once.
+    //
+    // This asks at Scene_Map#start rather than at Game_Map#setup, and the
+    // difference matters for every origin that lands on the world map itself.
+    // Game_Map#setup runs from inside performTransfer BEFORE the player is
+    // moved, so on map 315 - where the party's own tile IS the world square -
+    // it would read the coordinates of the map they just left. Worse, three
+    // origins are placed by hand only after the map has loaded: the empty lot
+    // and the lost convoker are dropped on a random land tile in
+    // CharacterCreation's onMapLoaded hook, and the castaway is re-landed there
+    // if their hand-written spot has drifted over water. Scene_Map#start runs
+    // after all of it, so what is written down is where the party is actually
+    // standing.
+    const _BSE_Scene_Map_start_anchor = Scene_Map.prototype.start;
+    Scene_Map.prototype.start = function() {
+        _BSE_Scene_Map_start_anchor.call(this);
         BSE.Helpers.captureStartAnchor();
     };
 
@@ -1720,7 +2159,7 @@
         const towerFloorLevel = BSE.Helpers.getTowerFloorLevel();
         const spawnModeForPool = towerFloorLevel ? 'chaos' : BSE.Helpers.getSpawnMode();
         // What the mode measures everything against: the party's own level in
-        // Balanced and Chaos, the ground the party is standing on in Realistic
+        // Balanced and Chaos, the ground the party is standing on in Distance
         // (how far it lies from where they began, see getPlaceLevel).
         const poolRefLevel = towerFloorLevel ||
             BSE.Helpers.getModeRefLevel(spawnModeForPool, BSE.Helpers.getPartyReferenceLevel());
@@ -1756,11 +2195,13 @@
 
             // Build the encounter list from the candidate troops. The weight is
             // the mode's:
-            //   balanced - the nation's per-enemy frequency, dropping what the
-            //     nation never spawns or the era caps out;
-            //   realistic - nation AND biome seeded, times how near the creature
-            //     stands to the level of the ground itself, so the whole roster
-            //     is reachable and the fitting part of it is what is usually met;
+            //   balanced - the nation's per-enemy frequency (a tint, never an
+            //     exclusion), dropping only what the era caps out;
+            //   distance - the nation is not consulted at all. Every creature
+            //     the biome holds is in the pool, weighted only by how near it
+            //     stands to the level of the ground itself; which levels are
+            //     actually on the table is the bracket's decision, applied
+            //     below by filterTroopsForMode;
             //   chaos - flat, because that is the mode.
             const buildFromTroops = candidateIds => {
                 const list = [];
@@ -1768,13 +2209,12 @@
                     let weight;
                     if (spawnModeForPool === 'chaos') {
                         weight = 1;
-                    } else if (spawnModeForPool === 'realistic') {
-                        // No level cap here on purpose: realistic cuts nothing
-                        // off the top, it only makes the far-off rare.
-                        weight = BSE.Helpers.getNationBiomeEnemyWeight(
-                            $dataTroops[id].members[0].enemyId, encounterBiome) *
-                            BSE.Helpers.levelAffinityWeight(
-                                BSE.Helpers.getTroopMaxLevel(id), poolRefLevel);
+                    } else if (spawnModeForPool === 'distance') {
+                        // No level cap here on purpose: what distance cuts off
+                        // the top is the bracket, not the cap.
+                        weight = BSE.Helpers.levelAffinityWeight(
+                            BSE.Helpers.getTroopMaxLevel(id), poolRefLevel) *
+                            BSE.Helpers.populationSpawnBoost(id);
                     } else {
                         weight = BSE.Helpers.getTroopSpawnWeight(id);
                     }
@@ -1798,18 +2238,31 @@
             }
         }
 
-        // Nothing matched at all (a biome with no fauna of its own, or a nation
-        // that suppresses every one of them): fall back to the old weighted
-        // draw rather than leave the map empty.
+        // Nothing matched at all (a biome with no fauna of its own, or a world
+        // whose population rule leaves none of it standing): fall back to the
+        // old weighted draw rather than leave the map empty.
         if (!encounterList.length && !onAlienSurface) {
             const fallbackIds = [];
             BSE.Helpers.ensureTroops(fallbackIds, $gameParty.members(), $dataEnemies);
             encounterList = fallbackIds.map(id => ({ troopId: id, weight: 1 }));
         }
 
+        // Who the world is populated with, as a last gate, and this one has NO
+        // fallback: an empty world is empty, a monster world has no people in
+        // it and a zombie world holds nothing that is not dead, walking or an
+        // animal, even where obeying that leaves a map with nothing at all to
+        // spawn. The authored lists and the ensureTroops fallback above are the
+        // two paths that reach here without having been asked (see section on
+        // populationMode), which is exactly why the question is asked again.
+        encounterList = encounterList.filter(enc =>
+            BSE.Helpers.troopAllowedInPopulation(enc.troopId));
+
         // Rule 1 (section 4a) as a last gate. Everything above is generated and
         // has already been through troopAllowedInBiome, but a static map's own
         // encounter list is authored, so nothing has necessarily looked at it.
+        // Unlike the population rule this one falls back: a special creature
+        // standing in the wrong biome is a mistake worth correcting, but it is
+        // not worth emptying a map over.
         const allowedHere = encounterList.filter(enc =>
             BSE.Helpers.troopAllowedInBiome(enc.troopId, currentBiome));
         if (allowedHere.length > 0) encounterList = allowedHere;
@@ -1893,7 +2346,7 @@
         // or special-biome rule is laid over it.
         const spawnMode = onAlienSurface ? null : spawnModeForPool;
         // The level everything on this map is measured against - the party's in
-        // Balanced and Chaos, the ground's in Realistic. The boss and the
+        // Balanced and Chaos, the ground's in Distance. The boss and the
         // `deadly` filter below read it too, so a place far from home hides a
         // boss to match the place rather than to match the party.
         const baseRefLevel = poolRefLevel;
@@ -2016,7 +2469,7 @@
                     }
 
                     if (chosenTroopId === null && bossDue) {
-                        // Balanced and Realistic: the single high-level
+                        // Balanced and Distance: the single high-level
                         // encounter of this world map tile, much higher than the
                         // level the map is pitched at and capped at 100. Chaos
                         // needs no such exception. A structure that says it
@@ -2048,8 +2501,9 @@
                             else validTroops = encounterList;
                         }
                         // Narrow the (already weighted) candidates to the mode's
-                        // level range: the party band in Balanced, the calendar
-                        // floor alone in Realistic, the whole ladder in Chaos.
+                        // level range: the party band in Balanced, the place's
+                        // own level bracket in Distance, the whole ladder in
+                        // Chaos.
                         // A `deadly` structure overrides every mode: its
                         // guardians are always far above the level the map is
                         // pitched at, which is the rule the temple has always used

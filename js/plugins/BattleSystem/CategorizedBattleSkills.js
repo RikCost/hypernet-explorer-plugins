@@ -425,31 +425,6 @@
                 return html;
             }
 
-            // The card's own stylesheet, and the whole of it: everything else the
-            // card wears is the backpack's (css/theme.css, ".inspect-pockets"),
-            // so the two inspect pages are one page drawn twice. Only the greyed
-            // Use button has no counterpart there.
-            function injectStyles() {
-                if (document.getElementById("skill-details-styles")) return;
-                const style = document.createElement("style");
-                style.id = "skill-details-styles";
-                style.textContent = `
-                    /* The Use button is never taken away: a skill the character
-                       cannot pay for greys out where it stood and still takes the
-                       click, which answers with a buzzer. */
-                    .inspect-btn.unusable {
-                        opacity: 0.45;
-                        border-style: dashed;
-                    }
-                    .inspect-btn.unusable:hover {
-                        background: var(--bg-secondary-hover);
-                        color: var(--text-primary-hover);
-                        box-shadow: 0 2px 5px var(--shadow-primary-hover-translucent-5);
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-
             // The whole right-page card for a skill: header, cost gauges,
             // scrolling reading, buttons. The Skills scene and the main menu's
             // search page both draw THIS, so the two can never drift apart.
@@ -459,7 +434,6 @@
             //   opts.actionsHTML the button strip under the card
             function card(skill, actor, opts) {
                 if (!skill || !actor) return "";
-                injectStyles();
                 const o = opts || {};
                 const canvasId = o.canvasId || "inspect-canvas";
                 const subtitle = o.subtitle || typeLabelOf(skill);
@@ -512,7 +486,6 @@
             return {
                 build,
                 card,
-                injectStyles,
                 costTextOf,
                 scaleOf,
                 categoryOf,
@@ -540,24 +513,7 @@
                 }
                 return false;
             },
-            injectStyles() {
-                if (document.getElementById('char-switch-hint-styles')) return;
-                const style = document.createElement('style');
-                style.id = 'char-switch-hint-styles';
-                style.textContent = `
-                    .companion-switcher { display:flex; align-items:center; gap:6px; }
-                    .char-switch-hint {
-                        font-family:'Lora',serif; font-size:0.732rem; font-weight:bold;
-                        line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
-                        border:1.5px solid var(--text-primary-hover); border-radius:3px;
-                        padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
-                        text-transform:uppercase; flex-shrink:0;
-                    }
-                `;
-                document.head.appendChild(style);
-            },
             parts(memberCount) {
-                this.injectStyles();
                 if (!memberCount || memberCount <= 1) return { left: '', right: '' };
                 if (this.isControllerConnected()) {
                     return {
@@ -990,8 +946,18 @@
         window.BattleListPage = {
             MARGIN: 20,   // from the screen's right and bottom edges
             GAP: 10,      // between the description box and the page below it
+            // Both pages hang from one top edge instead of standing on the
+            // bottom one. They are not the same height , the item page is a
+            // fixed roll, the skill page shrinks to the loadout it shows , so
+            // bottom-anchored they started at two different lines and the
+            // panel jumped every time the player switched between them.
+            TOP: 184,
             width: 420,
             height: 460,
+            // How tall a page may be before it runs into the bottom margin.
+            maxHeight() {
+                return Graphics.height - this.TOP - this.MARGIN;
+            },
             set(width, height) {
                 this.width = width;
                 this.height = height;
@@ -1494,16 +1460,16 @@
             // Border-box: the 3px frame on both sides counts toward the height.
             const frameH = padY * 2 + 6;
             const minH = Math.round(120 * sc.sy);
-            const maxH = (Graphics.height - 40) * sc.sy;
+            const maxH = page.maxHeight() * sc.sy;
             const scaledH = Math.max(minH, Math.min(rowsH + frameH, maxH));
 
             // The description box sits on top of this page, so it is told the
             // corner the page ended up occupying.
             page.set(PAGE_WIDTH, scaledH / sc.sy);
 
-            // Position bottom-right, aligned with bottom-right commands
+            // Right edge, hanging from the shared top line the item page uses.
             const targetLeft = sc.ox + (Graphics.width * sc.sx) - scaledW - (page.MARGIN * sc.sx);
-            const targetTop = sc.oy + (Graphics.height * sc.sy) - scaledH - (page.MARGIN * sc.sy);
+            const targetTop = sc.oy + (page.TOP * sc.sy);
 
             s.left = targetLeft + 'px';
             s.top = targetTop + 'px';
@@ -1775,42 +1741,6 @@
     // --- UI UI Overlay Engine for Skills ---
 
     Scene_Skill.prototype.createUISkillOverlay = function () {
-        window.SkillDetails.injectStyles();
-
-        // Dynamic companions and spellbook styles
-        let companionStyles = document.getElementById("companion-styles");
-        if (!companionStyles) {
-            companionStyles = document.createElement("style");
-            companionStyles.id = "companion-styles";
-            document.head.appendChild(companionStyles);
-        }
-        // The one thing the skills page wears that the backpack does not: a
-        // "cast outside a fight" flag on a list row. Everything else on this
-        // page , the header, the tabs, the list cards, the loadout strip and the
-        // inspect card , is the backpack's own markup wearing the backpack's own
-        // rules (css/theme.css, ".inspect-pockets"), so the two menus cannot
-        // drift apart.
-        companionStyles.innerHTML = `
-            .skill-field-flag {
-                color: var(--text-success-active);
-                font-weight: bold;
-                letter-spacing: 0.5px;
-            }
-
-            /* The shared strip (UI/MenuSearchBar.js) laid into the backpack's
-               one-line toolbar: field left, sort tags right. */
-            #menu-container .backpack-search .msb {
-                margin-bottom: 0;
-                min-width: 0;
-            }
-            #menu-container .backpack-search .msb-field-only {
-                flex: 1 1 auto;
-            }
-            #menu-container .backpack-search .msb-row {
-                flex: 0 0 auto;
-            }
-        `;
-
         // Create overlay container
         this._dndContainer = document.createElement("div");
         this._dndContainer.id = "menu-container";

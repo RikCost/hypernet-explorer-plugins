@@ -1804,7 +1804,8 @@
         Scene_FishingMinigame: 'fishing', Scene_SurfingGame: 'surfing', Scene_VisualPiano: 'piano',
         Scene_PeriodicTable: 'periodicTable', Scene_RamanScan: 'raman', Scene_Chess: 'chess',
         Scene_MonsterTournament: 'tournament', Scene_HyperTamer: 'hyperTamer',
-        Scene_BoosterPack: 'boosters', Scene_CardDuel: 'cardDuel', Scene_DreamFreeplay: 'dream'
+        Scene_BoosterPack: 'boosters', Scene_CardDuel: 'cardDuel', Scene_DreamFreeplay: 'dream',
+        Scene_TargetRange: 'targetRange'
     };
 
     whenReady(() => typeof SceneManager !== 'undefined' && SceneManager.push,

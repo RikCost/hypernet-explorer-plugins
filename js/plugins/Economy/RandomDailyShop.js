@@ -3,67 +3,25 @@
  * @plugindesc Opens a shop with a fixed-per-location item set (seeded by map coordinates and world seed) whose daily stock is rerolled each in-game day.
  * @author OmniLex
  *
- * @command OpenDailyShop
- * @text Open Daily Shop
- * @desc Opens the randomized shop based on event location and date. Excludes food items.
- *
- * @command randomDailyTavern
- * @text Open Daily Tavern
- * @desc Opens the randomized tavern with only food items based on event location and date.
- *
- * @command openDailyArmor
- * @text Open Daily Armor Shop
- * @desc Opens the randomized armor shop with only armor items based on event location and date.
- *
- * @command openDailyWeapon
- * @text Open Daily Weapon Shop
- * @desc Opens the randomized weapon shop with only weapon items based on event location and date.
- *
- * @command openDailyPharmacy
- * @text Open Daily Pharmacy
- * @desc Opens the randomized pharmacy with only medical category items based on event location and date.
- *
- * @command openDailyMagicShop
- * @text Open Daily Magic Shop
- * @desc Opens the randomized magic shop with only potion, magic, and monster category items based on event location and date.
- *
- * @command openDailyLuxury
- * @text Open Daily Luxury Shop
- * @desc Opens the randomized luxury shop with artisan category items or high-price items (>300000 gold) based on event location and date.
- *
- * @command openDailyAdventurer
- * @text Open Daily Adventurer Shop
- * @desc Opens the randomized adventurer shop with medical, food, weapons, armor, counterfeits, and magic category items based on event location and date.
- *
- * @command openDailyLibrary
- * @text Open Daily Library Shop
- * @desc Opens the randomized adventurer shop with book items based on event location and date.
- *
- * @command openDailyTools
- * @text Open Daily Tools Shop
- * @desc Opens the randomized tools shop with items tagged <Category: Essential> based on event location and date.
- *
- * @command openDailyAlchemistry
- * @text Open Daily Alchemistry Shop
- * @desc Opens the randomized alchemistry shop with only alchemistry category items based on event location and date.
- *
- * @command openOrganTrader
- * @text Open Organ Trader
- * @desc Opens the organ trader shop selling only BodyPart category items based on event location and date.
- *
  * @command openThemedShop
- * @text Open Themed Shop (ID based)
- * @desc Opens a themed shop whose pool is a hand-picked set of item IDs. Selection rerolls daily.
+ * @text Open Themed Shop
+ * @desc Opens a themed shop. Each type draws from its own staples, hand-picked list and item categories. Selection rerolls daily.
  *
  * @arg shopType
  * @text Shop Type
  * @type select
  * @option Academy Bookstore
  * @value academy
+ * @option Adventurer's Outfitter
+ * @value adventurer
+ * @option Alchemist
+ * @value alchemistry
  * @option Antiques Dealer
  * @value antiques
  * @option Arctic Outfitter
  * @value arcticOutfitter
+ * @option Armorer
+ * @value armorer
  * @option Augmentation Clinic
  * @value cyberClinic
  * @option Bakery
@@ -78,6 +36,8 @@
  * @value casalinghi
  * @option Cheese & Deli
  * @value deli
+ * @option Clothing Store
+ * @value clothing
  * @option Coffee House
  * @value cafe
  * @option Drogheria
@@ -96,6 +56,8 @@
  * @value florist
  * @option Garage
  * @value garage
+ * @option General Store
+ * @value generalStore
  * @option Gift Shop
  * @value giftShop
  * @option Greengrocer
@@ -118,6 +80,10 @@
  * @value junkShop
  * @option Liquor Store
  * @value liquor
+ * @option Luxury Boutique
+ * @value luxury
+ * @option Magic Shop
+ * @value magicShop
  * @option Materials Depot
  * @value materials
  * @option Music Store
@@ -128,8 +94,12 @@
  * @value occult
  * @option Optician
  * @value optician
+ * @option Organ Trader
+ * @value organTrader
  * @option Pet Shop
  * @value petShop
+ * @option Pharmacy
+ * @value pharmacy
  * @option Pizzeria
  * @value pizzeria
  * @option Reliquary
@@ -150,12 +120,16 @@
  * @value tabaccheria
  * @option Tailor
  * @value tailor
+ * @option Tavern
+ * @value tavern
  * @option Toy Store
  * @value toyStore
- * @option Trattoria
- * @value trattoria
  * @option Travel Agency
  * @value travelAgency
+ * @option Trattoria
+ * @value trattoria
+ * @option Weaponsmith
+ * @value weaponsmith
  * @option Wellness Boutique
  * @value wellness
  * @default supermarket
@@ -172,68 +146,6 @@
 
 (() => {
   const pluginName = "RandomDailyShop";
-
-  // Items always stocked in the tavern, regardless of the daily random selection
-  const TAVERN_FIXED_IDS = [499, 179, 573, 22, 39, 24, 438, 535, 430, 439, 460, 518, 468, 529, 188, 182, 183, 184];
-
-  // Staples a shop of a given kind is never out of: a pharmacy always has
-  // painkillers, a weaponsmith always has a plain knife on the rack. They are
-  // listed before the daily random draw and kept out of its pool, so a shelf slot
-  // is never spent on something the shop is guaranteed to carry anyway. Ids read
-  // from $dataItems unless the shop trades in another database (see FIXED_SOURCES).
-  // The themed (ID-based) shops further down declare their own `fixed` list.
-  const CATEGORY_FIXED_IDS = {
-    shop: [115, 179],              // candle, batteries
-    tavern: TAVERN_FIXED_IDS,
-    library: [262, 128],           // blank spellbook, travel journal
-    // A pharmacy is never out of the four things a pharmacy is for: a kit, an
-    // antibiotic course, rehydration salts and a multivitamin, on top of the
-    // three over-the-counter staples it always had.
-    pharmacy: [1, 3, 19, 1443, 1446, 1464, 1465],
-    magic: [648, 651],             // health potion, mana potion
-    luxury: [543, 535],            // gourmet chocolate, aged wine
-    adventurer: [648, 125, 121],   // health potion, bedroll, lantern
-    tools: [814, 136],             // multi-tool, flashlight
-    alchemistry: [884, 898],       // distilled water, ethanol
-    organTrader: [1014, 1017],     // heart, liver
-    weapon: [11, 46],              // knife, cheap sword
-    armor: [53, 48, 762]           // homespun tunic, iron helm, patrol shield
-  };
-
-  // Shops whose stock is not drawn from $dataItems.
-  const FIXED_SOURCES = {
-    weapon: () => $dataWeapons,
-    armor: () => $dataArmors
-  };
-
-  function fixedDatabaseFor(shopKey) {
-    return FIXED_SOURCES[shopKey] ? FIXED_SOURCES[shopKey]() : $dataItems;
-  }
-
-  // The always-stocked entries of a shop kind, as database objects.
-  function fixedItemsFor(shopKey) {
-    const db = fixedDatabaseFor(shopKey);
-    return (CATEGORY_FIXED_IDS[shopKey] || [])
-      .map(id => db[id])
-      .filter(entry => entry && entry.name);
-  }
-
-  // Drop the staples from a random pool so they cannot take a second slot. The
-  // comparison is by object, not id: a mixed pool holds items, weapons and armors
-  // that share id numbers across their databases.
-  function withoutFixed(shopKey, pool) {
-    const ids = CATEGORY_FIXED_IDS[shopKey];
-    if (!ids || !ids.length) return pool;
-    const db = fixedDatabaseFor(shopKey);
-    const fixedSet = new Set(ids);
-    return pool.filter(entry => !(entry && fixedSet.has(entry.id) && db[entry.id] === entry));
-  }
-
-  // One shelf: the staples first, then the location's random draw.
-  function stockWithFixed(shopKey, pool, seed) {
-    const shuffled = seededShuffle(withoutFixed(shopKey, pool), seed);
-    return [...fixedItemsFor(shopKey), ...shuffled.slice(0, pickShopItemCount(seed, shopKey))];
-  }
 
   // Parse game date from variable 113
   function getGameDateFromVariable() {
@@ -298,8 +210,11 @@
     return (base ^ getWorldSeed()) >>> 0;
   }
 
-  // Seeded shuffle using the generated seed
+  // Seeded shuffle using the generated seed. The seed is forced unsigned first:
+  // a negative one makes the modulo negative, which turns the swap index into a
+  // negative array slot and punches undefined holes through the result.
   function seededShuffle(array, seed) {
+    seed = seed >>> 0;
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
       seed = (seed * 9301 + 49297) % 233280;
@@ -326,100 +241,159 @@
     return (base ^ getWorldSeed() ^ hashString(kind)) >>> 0;
   }
 
-  // How many items a shop stocks: fixed per-location, drawn once from 6-12.
-  // A pharmacy is the exception. It is the one shop the disease system sends
-  // the player to by name, and a six-slot shelf could not carry a tenth of the
-  // pharmacopoeia, so it draws several times as deep.
-  const SHELF_DEPTH = { pharmacy: [26, 40] };
-
-  function pickShopItemCount(seed, shopKey) {
+  // How many items a shop stocks: fixed per-location, drawn once from 6-12,
+  // unless the shop declares a deeper `shelf` band of its own.
+  function pickShopItemCount(seed, band) {
     seed = (seed * 9301 + 49297) % 233280;
-    const band = SHELF_DEPTH[shopKey];
     if (band) return band[0] + Math.floor((seed / 233280) * (band[1] - band[0] + 1));
     return 6 + Math.floor((seed / 233280) * 7);
   }
 
-  // Category detection functions
-  function isFoodItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: food>') ||
-           item.note.toLowerCase().includes('<category:food>');
+  //=========================================================================
+  // Item pools
+  //-------------------------------------------------------------------------
+  // Everything a shop can put on a shelf comes from one of three places: a
+  // hand-picked list of database ids, a sweep of the item categories the shop
+  // trades in, or the whole of a database (an armorer sells armor, full stop).
+  //=========================================================================
+
+  const DATABASES = {
+    items: () => $dataItems,
+    weapons: () => $dataWeapons,
+    armors: () => $dataArmors
+  };
+
+  // Category notes are matched with a cached regex per category: the sweep runs
+  // over every row of a database, so rebuilding the pattern per item is waste.
+  const categoryPatterns = {};
+
+  function hasCategory(entry, category) {
+    if (!entry || !entry.note) return false;
+    if (!categoryPatterns[category]) {
+      categoryPatterns[category] = new RegExp(`<category:\\s*${category}\\s*>`, "i");
+    }
+    return categoryPatterns[category].test(entry.note);
   }
 
-  // A real drug, as opposed to a bandage or a tonic: it carries the note the
-  // disease system reads, which is the same test the item panels use.
-  function isMedicineItem(item) {
-    return !!(item && item.note && /<Medicine:\s*[\w-]+\s*>/i.test(item.note));
+  // Merchandise no shop stocks by category sweep. Culture vials are a plot
+  // device, not stock; a shop that wants one still lists its id by hand.
+  const NEVER_SWEPT = ["diseases"];
+
+  // Named tests a shop definition can reach for beyond a plain category.
+  const ENTRY_TESTS = {
+    // A real drug, as opposed to a bandage or a tonic: it carries the note the
+    // disease system reads, which is the same test the item panels use.
+    medicine: entry => !!(entry && entry.note && /<Medicine:\s*[\w-]+\s*>/i.test(entry.note)),
+    highValue: entry => !!(entry && entry.price && entry.price > 300000)
+  };
+
+  function isArtifact(entry) {
+    if (!entry) return false;
+    return entry.id >= 1500 || (entry.note && hasCategory(entry, "artifact"));
   }
 
-  function isMedicalItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: medical>') ||
-           item.note.toLowerCase().includes('<category:medical>');
+  // The databases are divided by named separator rows ("<-- Whip -->"), which
+  // are real entries as far as the engine is concerned and would otherwise end
+  // up priced on a shelf.
+  function isSellableEntry(entry) {
+    return !!(entry && entry.name && !entry.name.trim().startsWith("<"));
   }
 
-  function isPotionItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: potion>') ||
-           item.note.toLowerCase().includes('<category:potion>');
+  function entriesFor(ids, db) {
+    return (ids || []).map(id => db[id]).filter(isSellableEntry);
   }
 
-  function isMagicItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: magic>') ||
-           item.note.toLowerCase().includes('<category:magic>');
+  // The staples a shop is never out of: a pharmacy always has painkillers, a
+  // weaponsmith always has a plain knife on the rack. They lead the shelf and
+  // are kept out of every random draw, so a slot is never spent on something
+  // the shop is guaranteed to carry anyway.
+  function fixedEntries(def) {
+    return [
+      ...entriesFor(def.fixed, $dataItems),
+      ...entriesFor(def.fixedWeapons, $dataWeapons),
+      ...entriesFor(def.fixedArmors, $dataArmors)
+    ];
   }
 
-  function isMonsterItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: monsters>') ||
-           item.note.toLowerCase().includes('<category:monsters>');
+  // The shop's hand-picked list: things it can be found carrying, drawn from.
+  function curatedEntries(def) {
+    return [
+      ...entriesFor([...new Set(def.ids || [])], $dataItems),
+      ...entriesFor([...new Set(def.weaponIds || [])], $dataWeapons),
+      ...entriesFor([...new Set(def.armorIds || [])], $dataArmors)
+    ];
   }
 
-  function isArtisanItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: artisan>') ||
-           item.note.toLowerCase().includes('<category:artisan>');
+  // The shop's trade, swept out of the database: every medical item for a
+  // pharmacy, every armor for an armorer.
+  function categoryEntries(def) {
+    const sources = def.from || (def.categories || def.include ? ["items"] : []);
+    if (!sources.length) return [];
+    const everything = def.all || [];
+    const pool = [];
+
+    for (const source of sources) {
+      const db = DATABASES[source]();
+      for (let i = 1; i < db.length; i++) {
+        const entry = db[i];
+        if (!isSellableEntry(entry)) continue;
+        if (isArtifact(entry)) continue;
+        if (NEVER_SWEPT.some(category => hasCategory(entry, category))) continue;
+        if (def.exclude && def.exclude.some(category => hasCategory(entry, category))) continue;
+        // Armor types split the two trades that sell armor: a clothier hangs
+        // Clothes and Robes, an armorer works everything harder than that.
+        if (def.atypes && source === "armors" && !def.atypes.includes(entry.atypeId)) continue;
+        const wanted = everything.includes(source) ||
+          (def.categories && def.categories.some(category => hasCategory(entry, category))) ||
+          (def.include && ENTRY_TESTS[def.include](entry));
+        if (wanted) pool.push(entry);
+      }
+    }
+    return pool;
   }
 
-  function isCounterfeitItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: counterfeits>') ||
-           item.note.toLowerCase().includes('<category:counterfeits>');
-  }
-  function isBookItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: books>') ||
-           item.note.toLowerCase().includes('<category:books>');
-  }
-  function isEssentialItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: tools>') ||
-            item.note.toLowerCase().includes('<category:tools>');
+  // The category draw, with an optional slice reserved for what the shop is
+  // actually for: two thirds of a pharmacy shelf is real drugs, so one stocked
+  // at random out of the whole medical category cannot come out holding nothing
+  // but cough drops on the morning somebody needs an antibiotic.
+  function drawFromCategories(def, pool, count, seed) {
+    if (count <= 0 || !pool.length) return [];
+    const priority = def.priority && ENTRY_TESTS[def.priority.test];
+    if (!priority) return seededShuffle(pool, seed).slice(0, count);
+
+    const wanted = Math.ceil(count * def.priority.share);
+    const preferred = seededShuffle(pool.filter(priority), seed).slice(0, wanted);
+    const rest = seededShuffle(pool.filter(entry => !priority(entry)), (seed ^ 0x9e3779b9) >>> 0);
+    return [...preferred, ...rest.slice(0, count - preferred.length)];
   }
 
-  function isAlchemistryItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: alchemistry>') ||
-           item.note.toLowerCase().includes('<category:alchemistry>');
-  }
+  // One shelf: staples first, then a draw split between the hand-picked list
+  // and the category sweep. `curatedShare` is how much of the draw the list
+  // gets when the shop has both — a bakery leans on its own recipes, a
+  // pharmacy on the pharmacopoeia.
+  function buildShelf(def, seed) {
+    const fixed = fixedEntries(def);
+    const taken = new Set(fixed);
 
-  function isBodyPartItem(item) {
-    if (!item || !item.note) return false;
-    return item.note.toLowerCase().includes('<category: bodypart>') ||
-           item.note.toLowerCase().includes('<category:bodypart>');
-  }
-  function isHighValueItem(item) {
-    return item && item.price && item.price > 300000;
-  }
+    const curated = curatedEntries(def).filter(entry => !taken.has(entry));
+    curated.forEach(entry => taken.add(entry));
+    const swept = categoryEntries(def).filter(entry => !taken.has(entry));
 
-  function isArtifact(item) {
-    if (!item) return false;
-    return item.id >= 1500 || (item.note && item.note.toLowerCase().includes('<category: artifact>'));
+    const count = pickShopItemCount(seed, def.shelf);
+    if (!swept.length) return [...fixed, ...seededShuffle(curated, seed).slice(0, count)];
+    if (!curated.length) return [...fixed, ...drawFromCategories(def, swept, count, seed)];
+
+    const share = def.curatedShare === undefined ? 0.6 : def.curatedShare;
+    const fromList = Math.min(curated.length, Math.round(count * share));
+    return [
+      ...fixed,
+      ...seededShuffle(curated, seed).slice(0, fromList),
+      ...drawFromCategories(def, swept, count - fromList, (seed ^ 0x5bf03635) >>> 0)
+    ];
   }
 
   function injectRareArtifact(items, seed, typeStr) {
-    const isSandbox = (typeof $gameSystem !== 'undefined' && $gameSystem._isSandboxMode) || 
+    const isSandbox = (typeof $gameSystem !== 'undefined' && $gameSystem._isSandboxMode) ||
                       (typeof $gameParty !== 'undefined' && $gameParty.leader() && $gameParty.leader().name().toLowerCase() === "test");
 
     if (isSandbox || seededRandom(seed + 999) < 0.02) { // 100% in sandbox, 2% otherwise
@@ -461,314 +435,6 @@
     return items;
   }
 
-  // Get all available items from database
-  function getAllItems(excludeFood = false) {
-    const allItems = [];
-
-    // Collect all valid item entries
-    for (let i = 1; i < $dataItems.length; i++) {
-      const item = $dataItems[i];
-      if (item && item.name) {
-        if (excludeFood && isFoodItem(item)) continue;
-        if (isArtifact(item)) continue;
-        if (isBodyPartItem(item)) continue;
-        allItems.push(item);
-      }
-    }
-    for (let i = 1; i < $dataWeapons.length; i++) {
-      const weapon = $dataWeapons[i];
-      if (weapon && weapon.name && !isArtifact(weapon)) allItems.push(weapon);
-    }
-    for (let i = 1; i < $dataArmors.length; i++) {
-      const armor = $dataArmors[i];
-      if (armor && armor.name && !isArtifact(armor)) allItems.push(armor);
-    }
-
-    return allItems;
-  }
-
-  // Get only food items from database
-  function getFoodItems() {
-    const foodItems = [];
-
-    // Collect all valid food item entries
-    for (let i = 1; i < $dataItems.length; i++) {
-      const item = $dataItems[i];
-      if (item && item.name && isFoodItem(item)) {
-        foodItems.push(item);
-      }
-    }
-
-    return foodItems;
-  }
-  function getFoodItems() {
-    const foodItems = [];
-
-    // Collect all valid food item entries
-    for (let i = 1; i < $dataItems.length; i++) {
-      const item = $dataItems[i];
-      if (item && item.name && isFoodItem(item)) {
-        foodItems.push(item);
-      }
-    }
-
-    return foodItems;
-  }
-  function getBookItems() {
-    const bookItems = [];
-
-    // Collect all valid medical item entries
-    for (let i = 1; i < $dataItems.length; i++) {
-      const item = $dataItems[i];
-      if (item && item.name && isBookItem(item)) {
-        bookItems.push(item);
-      }
-    }
-
-    return bookItems;
-  }
-
-  function getMedicalItems() {
-    const medicalItems = [];
-
-    // Collect all valid medical item entries
-    for (let i = 1; i < $dataItems.length; i++) {
-      const item = $dataItems[i];
-      if (item && item.name && isMedicalItem(item)) {
-        medicalItems.push(item);
-      }
-    }
-
-    return medicalItems;
-  }
-
-  function getAlchemistryItems() {
-    const alchemistryItems = [];
-    for (let i = 1; i < $dataItems.length; i++) {
-      const item = $dataItems[i];
-      if (item && item.name && isAlchemistryItem(item)) {
-        alchemistryItems.push(item);
-      }
-    }
-    return alchemistryItems;
-  }
-
-  function getMagicShopItems() {
-    const magicItems = [];
-
-    // Collect all valid potion, magic, and monster items
-    for (let i = 1; i < $dataItems.length; i++) {
-      const item = $dataItems[i];
-      if (item && item.name && (isPotionItem(item) || isMagicItem(item) || isMonsterItem(item))) {
-        magicItems.push(item);
-      }
-    }
-
-    return magicItems;
-  }
-
-  // Fixed item selection per shop, cached by location only (mapId_x_y) so the
-  // assortment never changes; only the daily stock rolled by ItemSystemShop does.
-  const shopInventoryCache = {};
-  const tavernInventoryCache = {};
-  const libraryInventoryCache = {};
-
-  const armorShopCache = {};
-  const weaponShopCache = {};
-  const pharmacyCache = {};
-  const magicShopCache = {};
-  const luxuryShopCache = {};
-  const adventurerShopCache = {};
-  const toolsShopCache = {};
-  const alchemistryShopCache = {};
-  const organTraderCache = {};
-
-  function getShopItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!shopInventoryCache[locKey]) {
-      const allItems = getAllItems(true); // Exclude food items
-      const seed = generateLocationSeed(mapId, x, y, 'shop');
-      shopInventoryCache[locKey] = stockWithFixed('shop', allItems, seed);
-    }
-
-    const items = [...shopInventoryCache[locKey]];
-    const dailySeed = generateSeed(mapId, x, y, getCurrentDateKey());
-    return injectRareArtifact(items, dailySeed, 'all');
-  }
-
-  function getTavernItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!tavernInventoryCache[locKey]) {
-      const seed = generateLocationSeed(mapId, x, y, 'tavern');
-      tavernInventoryCache[locKey] = stockWithFixed('tavern', getFoodItems(), seed);
-    }
-
-    return tavernInventoryCache[locKey];
-  }
-
-
-  
-  function getLibraryItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!libraryInventoryCache[locKey]) {
-      const bookItems = getBookItems();
-      const seed = generateLocationSeed(mapId, x, y, 'library');
-      libraryInventoryCache[locKey] = stockWithFixed('library', bookItems, seed);
-    }
-
-    return libraryInventoryCache[locKey];
-  }
-
-  function getArmorShopItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!armorShopCache[locKey]) {
-      const allArmors = [];
-      for (let i = 1; i < $dataArmors.length; i++) {
-        const armor = $dataArmors[i];
-        if (armor && armor.name && !isArtifact(armor)) allArmors.push(armor);
-      }
-      const seed = generateLocationSeed(mapId, x, y, 'armor');
-      armorShopCache[locKey] = stockWithFixed('armor', allArmors, seed);
-    }
-
-    const items = [...armorShopCache[locKey]];
-    const dailySeed = generateSeed(mapId, x, y, getCurrentDateKey());
-    return injectRareArtifact(items, dailySeed, 'armor');
-  }
-
-  function getWeaponShopItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!weaponShopCache[locKey]) {
-      const allWeapons = [];
-      for (let i = 1; i < $dataWeapons.length; i++) {
-        const weapon = $dataWeapons[i];
-        if (weapon && weapon.name && !isArtifact(weapon)) allWeapons.push(weapon);
-      }
-      const seed = generateLocationSeed(mapId, x, y, 'weapon');
-      weaponShopCache[locKey] = stockWithFixed('weapon', allWeapons, seed);
-    }
-
-    const items = [...weaponShopCache[locKey]];
-    const dailySeed = generateSeed(mapId, x, y, getCurrentDateKey());
-    return injectRareArtifact(items, dailySeed, 'weapon');
-  }
-
-  function getPharmacyItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!pharmacyCache[locKey]) {
-      const seed = generateLocationSeed(mapId, x, y, 'pharmacy');
-      // Real drugs first, sundries after: two thirds of the shelf is drawn
-      // from what carries a <Medicine:> tag, so a pharmacy stocked at random
-      // out of the whole medical category cannot come out holding nothing but
-      // cough drops on the morning somebody needs an antibiotic.
-      const medicalItems = getMedicalItems();
-      const drugs = medicalItems.filter(isMedicineItem);
-      const sundries = medicalItems.filter(item => !isMedicineItem(item));
-      const drugCount = Math.ceil(pickShopItemCount(seed, 'pharmacy') * 0.7);
-      const shelf = [
-        ...seededShuffle(withoutFixed('pharmacy', drugs), seed).slice(0, drugCount),
-        ...seededShuffle(withoutFixed('pharmacy', sundries), seed ^ 0x5bf03635),
-      ];
-      pharmacyCache[locKey] = stockWithFixed('pharmacy', shelf, seed);
-    }
-
-    return pharmacyCache[locKey];
-  }
-
-  function getMagicShopInventory(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!magicShopCache[locKey]) {
-      const magicItems = getMagicShopItems();
-      const seed = generateLocationSeed(mapId, x, y, 'magic');
-      magicShopCache[locKey] = stockWithFixed('magic', magicItems, seed);
-    }
-
-    return magicShopCache[locKey];
-  }
-
-
-
-  function getLuxuryShopItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!luxuryShopCache[locKey]) {
-      const luxuryItems = [];
-
-      // Collect artisan items and high-value items from all sources
-      for (let i = 1; i < $dataItems.length; i++) {
-        const item = $dataItems[i];
-        if (item && item.name && (isArtisanItem(item) || isHighValueItem(item))) {
-          if (!isArtifact(item)) luxuryItems.push(item);
-        }
-      }
-      for (let i = 1; i < $dataWeapons.length; i++) {
-        const weapon = $dataWeapons[i];
-        if (weapon && weapon.name && isHighValueItem(weapon)) {
-          if (!isArtifact(weapon)) luxuryItems.push(weapon);
-        }
-      }
-      for (let i = 1; i < $dataArmors.length; i++) {
-        const armor = $dataArmors[i];
-        if (armor && armor.name && isHighValueItem(armor)) {
-          if (!isArtifact(armor)) luxuryItems.push(armor);
-        }
-      }
-
-      const seed = generateLocationSeed(mapId, x, y, 'luxury');
-      luxuryShopCache[locKey] = stockWithFixed('luxury', luxuryItems, seed);
-    }
-
-    const items = [...luxuryShopCache[locKey]];
-    const dailySeed = generateSeed(mapId, x, y, getCurrentDateKey());
-    return injectRareArtifact(items, dailySeed, 'all');
-  }
-
-  function getAdventurerShopItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!adventurerShopCache[locKey]) {
-      const adventurerItems = [];
-
-      // Collect medical, food, counterfeits, potion, magic, monster items
-      for (let i = 1; i < $dataItems.length; i++) {
-        const item = $dataItems[i];
-        if (item && item.name && (isMedicalItem(item) || isFoodItem(item) ||
-            isCounterfeitItem(item) || isPotionItem(item) ||
-            isMagicItem(item) || isMonsterItem(item))) {
-          if (!isArtifact(item)) adventurerItems.push(item);
-        }
-      }
-
-      // Also add all weapons and armor for adventurer shop
-      for (let i = 1; i < $dataWeapons.length; i++) {
-        const weapon = $dataWeapons[i];
-        if (weapon && weapon.name && !isArtifact(weapon)) {
-          adventurerItems.push(weapon);
-        }
-      }
-      for (let i = 1; i < $dataArmors.length; i++) {
-        const armor = $dataArmors[i];
-        if (armor && armor.name && !isArtifact(armor)) {
-          adventurerItems.push(armor);
-        }
-      }
-
-      const seed = generateLocationSeed(mapId, x, y, 'adventurer');
-      adventurerShopCache[locKey] = stockWithFixed('adventurer', adventurerItems, seed);
-    }
-
-    const items = [...adventurerShopCache[locKey]];
-    const dailySeed = generateSeed(mapId, x, y, getCurrentDateKey());
-    return injectRareArtifact(items, dailySeed, 'all');
-  }
-
   // Where the shop being opened stands. Callers that pass explicit coordinates
   // (remote orders placed from a seat) get that venue's own stock; everyone else
   // is located from the event that ran the plugin command, as before.
@@ -784,376 +450,166 @@
     return { mapId: $gameMap.mapId(), x: event.x, y: event.y };
   }
 
-  // Open the shop with location-based random inventory (excluding food)
-  function openDailyShop() {
-    // Get the event's coordinates
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getShopItems(mapId, x, y);
-
-    const goods = items.map(item => {
-      let type;
-      if (DataManager.isItem(item)) type = 0;
-      else if (DataManager.isWeapon(item)) type = 1;
-      else if (DataManager.isArmor(item)) type = 2;
-      else return null;
-      return [type, item.id, 0, 0];
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-  // Open the tavern with location-based random food inventory
-  function openDailyTavern(mapId, x, y) {
-    const loc = resolveShopLocation(mapId, x, y);
-    if (!loc) return;
-
-    // Always-stocked items already lead the shelf (stockWithFixed)
-    const items = getTavernItems(loc.mapId, loc.x, loc.y);
-
-    const goods = items.map(item => {
-      let type;
-      if (DataManager.isItem(item)) type = 0;
-      else if (DataManager.isWeapon(item)) type = 1;
-      else if (DataManager.isArmor(item)) type = 2;
-      else return null;
-      return [type, item.id, 0, 0];
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-  // Open the armor shop with location-based random armor
-  function openDailyArmor() {
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getArmorShopItems(mapId, x, y);
-
-    const goods = items.map(item => {
-      let type = 2; // Armor type
-      return [type, item.id, 0, 0];
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-  // Open the weapon shop with location-based random weapons
-  function openDailyWeapon() {
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getWeaponShopItems(mapId, x, y);
-
-    const goods = items.map(item => {
-      let type = 1; // Weapon type
-      return [type, item.id, 0, 0];
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-  // Open the pharmacy with location-based random medical items
-  function openDailyPharmacy() {
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getPharmacyItems(mapId, x, y);
-
-    const goods = items.map(item => {
-      let type = 0; // Item type
-      return [type, item.id, 0, 0];
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-  // Open the magic shop with location-based random potions, magic, and monster items
-  function openDailyMagicShop() {
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getMagicShopInventory(mapId, x, y);
-
-    const goods = items.map(item => {
-      let type = 0; // Item type
-      return [type, item.id, 0, 0];
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-    function openDailyLibrary() {
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getLibraryItems(mapId, x, y);
-
-    const goods = items.map(item => {
-      let type = 0; // Item type
-      return [type, item.id, 0, 0];
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-
-  // Open the luxury shop with location-based random luxury items
-  function openDailyLuxury() {
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getLuxuryShopItems(mapId, x, y);
-
-    const goods = items.map(item => {
-      let type;
-      if (DataManager.isItem(item)) type = 0;
-      else if (DataManager.isWeapon(item)) type = 1;
-      else if (DataManager.isArmor(item)) type = 2;
-      else return null;
-      return [type, item.id, 0, 0];
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-  function getToolsShopItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!toolsShopCache[locKey]) {
-      const toolsItems = [];
-      for (let i = 1; i < $dataItems.length; i++) {
-        const item = $dataItems[i];
-        if (item && item.name && isEssentialItem(item)) {
-          toolsItems.push(item);
-        }
-      }
-      const seed = generateLocationSeed(mapId, x, y, 'tools');
-      toolsShopCache[locKey] = stockWithFixed('tools', toolsItems, seed);
-    }
-
-    return toolsShopCache[locKey];
-  }
-
-  // Open the adventurer shop with location-based random adventurer supplies
-  function openDailyAdventurer() {
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getAdventurerShopItems(mapId, x, y);
-
-    const goods = items.map(item => {
-      let type;
-      if (DataManager.isItem(item)) type = 0;
-      else if (DataManager.isWeapon(item)) type = 1;
-      else if (DataManager.isArmor(item)) type = 2;
-      else return null;
-      return [type, item.id, 0, 0];
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-  function openDailyTools() {
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getToolsShopItems(mapId, x, y);
-
-    const goods = items.map(item => {
-      return [0, item.id, 0, 0]; // All tools are items
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-  function getOrganTraderItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!organTraderCache[locKey]) {
-      const bodyParts = [];
-      for (let i = 1; i < $dataItems.length; i++) {
-        const item = $dataItems[i];
-        if (item && item.name && isBodyPartItem(item)) bodyParts.push(item);
-      }
-      const seed = generateLocationSeed(mapId, x, y, 'organTrader');
-      organTraderCache[locKey] = stockWithFixed('organTrader', bodyParts, seed);
-    }
-
-    return organTraderCache[locKey];
-  }
-
-  function openOrganTrader() {
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getOrganTraderItems(mapId, x, y);
-
-    const goods = items.map(item => [0, item.id, 0, 0]);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
-  function getAlchemistryShopItems(mapId, x, y) {
-    const locKey = `${mapId}_${x}_${y}`;
-
-    if (!alchemistryShopCache[locKey]) {
-      const items = getAlchemistryItems();
-      const seed = generateLocationSeed(mapId, x, y, 'alchemistry');
-      alchemistryShopCache[locKey] = stockWithFixed('alchemistry', items, seed);
-    }
-
-    return alchemistryShopCache[locKey];
-  }
-
-  function openDailyAlchemistryShop() {
-    const eventId = $gameMap._interpreter.eventId();
-    const event = $gameMap.event(eventId);
-
-    if (!event) {
-      console.warn("RandomDailyShop: Could not find event to determine location.");
-      return;
-    }
-
-    const mapId = $gameMap.mapId();
-    const x = event.x;
-    const y = event.y;
-
-    const items = getAlchemistryShopItems(mapId, x, y);
-
-    const goods = items.map(item => {
-      return [0, item.id, 0, 0]; // All are items
-    }).filter(Boolean);
-
-    SceneManager.push(Scene_Shop);
-    SceneManager.prepareNextScene(goods, false);
-  }
-
   //=========================================================================
-  // ID-based themed shops
+  // Themed shops
   //-------------------------------------------------------------------------
-  // Unlike the category-driven shops above, these draw from a hand-picked set
-  // of item IDs. A fixed 6-12 of them are chosen once per location (seeded by
-  // map/coords/world seed/shop type) and never change; only the daily stock
-  // of each chosen item varies.
-  //   stockMult:  multiplies the per-item stock rolled by ItemSystemShop
-  //   fixed:      IDs always on the shelf at every location of that shop type,
-  //               listed first, on top of the random draw (same idea as
-  //               CATEGORY_FIXED_IDS). What the trade itself guarantees: a
-  //               fishmonger has rods, a cafe has coffee, plus the items a
-  //               mechanic depends on being buyable somewhere (the lockpick).
+  // Every shop in the game is one of these. A shelf is chosen once per
+  // location (seeded by map/coords/world seed/shop type) and never changes;
+  // only the daily stock of each chosen entry varies. A shop can describe its
+  // trade three ways at once, and most do:
+  //   fixed:      ids always on the shelf at every location of that type,
+  //               listed first, on top of the random draw. What the trade
+  //               itself guarantees: a fishmonger has rods, a cafe has coffee,
+  //               a pharmacy has surgical spirit, plus the items another system
+  //               depends on being buyable somewhere (the lockpick).
+  //   ids:        the hand-picked list the shop can be found carrying.
+  //   categories: the categories the shop deals in, swept out of the database,
+  //               so a pharmacy offers any <Category: Medical> item and not
+  //               only the ones named here.
+  // Then, to shape the draw:
+  //   fixedWeapons / fixedArmors / weaponIds / armorIds
+  //               the same two lists against $dataWeapons / $dataArmors.
+  //   from:       databases the category sweep covers (default ["items"]).
+  //   all:        databases the sweep takes wholesale, category or not.
+  //   include:    an extra named test (ENTRY_TESTS) the sweep accepts.
+  //   exclude:    categories the sweep skips.
+  //   atypes:     armor types the sweep accepts, splitting the clothier
+  //               (Clothes, Robe) from the armorer (everything harder).
+  //   priority:   {test, share} reserving part of the sweep for the heart of
+  //               the trade (a pharmacy's actual drugs).
+  //   curatedShare: how much of the draw the hand-picked list takes when the
+  //               shop has both lists (default 0.6).
+  //   shelf:      [min, max] slots, overriding the usual 6-12.
+  //   stockMult:  multiplies the per-item stock rolled by ItemSystemShop.
+  //   artifacts:  'item' | 'weapon' | 'armor' | 'all' — the shop can turn up a
+  //               rare artifact in its last slot.
   //   dining:     venue that serves prepared food and drink, so a seated player
   //               can order from it remotely (see the remote-ordering section
   //               below). Grocers selling only raw supplies are left out.
   //=========================================================================
   const THEMED_SHOPS = {
+    // The broad trades. Each one's shelf is mostly its category swept out of
+    // the database, with a hand-picked list on top of the staples so the same
+    // recognisable goods turn up wherever the trade is practised.
+    generalStore: {
+      get label() { return T('DailyShop.shopType.generalStore'); },
+      ids: [418, 1, 3, 113, 118, 120, 121, 126, 127, 130, 132, 136, 149, 161,
+            178, 244, 390, 711, 804, 807, 811, 870],
+      fixed: [115, 179],        // candle, batteries
+      from: ["items", "weapons", "armors"],
+      all: ["items", "weapons", "armors"],
+      exclude: ["food", "bodypart"],
+      curatedShare: 0.35,
+      artifacts: "all"
+    },
+    tavern: {
+      get label() { return T('DailyShop.shopType.tavern'); },
+      ids: [480, 535, 544, 486, 465, 479, 447, 518, 459, 467, 434, 442, 510,
+            473, 456, 454, 549, 541, 550, 567],
+      // A tavern's whole board, not a sample of it: everything a house is
+      // expected to be able to pour or plate at any hour.
+      fixed: [499, 179, 573, 22, 39, 24, 438, 535, 430, 439, 460, 518, 468,
+              529, 188, 182, 183, 184],
+      categories: ["food"],
+      curatedShare: 0.5,
+      dining: true
+    },
+    weaponsmith: {
+      get label() { return T('DailyShop.shopType.weaponsmith'); },
+      ids: [811, 870, 816, 863],    // whetstone, oil flask, eternal whetstone, salvaged steel
+      fixedWeapons: [11, 46],       // knife, cheap sword
+      from: ["weapons"],
+      all: ["weapons"],
+      curatedShare: 0.25,
+      artifacts: "weapon"
+    },
+    armorer: {
+      get label() { return T('DailyShop.shopType.armorer'); },
+      ids: [868, 863, 811, 870],        // leather, salvaged steel, whetstone, oil flask
+      fixedArmors: [762, 555, 557],     // patrol shield, skull cap, salvage vest
+      from: ["armors"],
+      all: ["armors"],
+      atypes: [3, 4, 5, 6],             // light, heavy, equipment, shields
+      curatedShare: 0.25,
+      artifacts: "armor"
+    },
+    clothing: {
+      get label() { return T('DailyShop.shopType.clothing'); },
+      ids: [861, 132, 152, 117, 142, 235, 239, 231],
+      fixedArmors: [53, 458],           // homespun tunic, comfort robe
+      from: ["armors"],
+      all: ["armors"],
+      atypes: [1, 2],                   // clothes and robes
+      curatedShare: 0.25
+    },
+    pharmacy: {
+      get label() { return T('DailyShop.shopType.pharmacy'); },
+      ids: [4, 5, 9, 12, 13, 16, 17, 25, 1444, 1445, 1450, 1453, 1466, 1468,
+            1469, 1470, 1462],
+      // Never out of the things a pharmacy is for: a kit, an antibiotic
+      // course, rehydration salts, a multivitamin and the surgical tools,
+      // on top of the three over-the-counter staples.
+      fixed: [1, 3, 19, 1443, 1446, 1464, 1465, 244],
+      categories: ["medical"],
+      // The one shop the disease system sends the player to by name, so it
+      // draws several times as deep and reserves most of that for real drugs.
+      shelf: [26, 40],
+      priority: { test: "medicine", share: 0.7 },
+      curatedShare: 0.25
+    },
+    magicShop: {
+      get label() { return T('DailyShop.shopType.magicShop'); },
+      ids: [649, 650, 652, 653, 654, 655, 656, 657, 658, 661, 662, 663, 664,
+            673, 675, 679, 685, 686],
+      fixed: [648, 651],        // health potion, mana potion
+      categories: ["magic", "monsters", "potion"],
+      curatedShare: 0.5,
+      artifacts: "item"
+    },
+    luxury: {
+      get label() { return T('DailyShop.shopType.luxury'); },
+      ids: [230, 232, 233, 234, 235, 236, 241, 242, 245, 246, 247, 249, 866,
+            865, 691],
+      fixed: [543, 535],        // gourmet chocolate, aged wine
+      categories: ["artisan"],
+      include: "highValue",
+      from: ["items", "weapons", "armors"],
+      curatedShare: 0.5,
+      artifacts: "all"
+    },
+    adventurer: {
+      get label() { return T('DailyShop.shopType.adventurer'); },
+      ids: [1443, 136, 810, 813, 126, 129, 161, 512, 465, 466, 811, 870, 808,
+            806, 815, 145],
+      fixed: [648, 125, 121],   // health potion, bedroll, lantern
+      categories: ["medical", "food", "counterfeits", "potion", "magic", "monsters"],
+      from: ["items", "weapons", "armors"],
+      all: ["weapons", "armors"],
+      curatedShare: 0.5,
+      artifacts: "all"
+    },
+    alchemistry: {
+      get label() { return T('DailyShop.shopType.alchemistry'); },
+      ids: [883, 886, 889, 890, 891, 893, 896, 897, 899, 900, 903, 904, 905,
+            871, 390, 805],
+      fixed: [884, 898],        // distilled water, ethanol
+      categories: ["alchemistry"],
+      curatedShare: 0.4
+    },
+    organTrader: {
+      get label() { return T('DailyShop.shopType.organTrader'); },
+      ids: [999, 1000, 1005, 1006, 1011, 1012, 1015, 1018, 1020, 1063, 1064, 244],
+      fixed: [1014, 1017],      // heart, liver
+      categories: ["bodypart"],
+      curatedShare: 0.35
+    },
+
     iceCream: {
       get label() { return T('DailyShop.shopType.iceCream'); },
       ids: [458, 469, 511, 540, 488, 543, 560, 589, 562, 432, 443, 439, 461,
             471, 472, 477, 719, 485, 467, 492, 448, 476, 590],
       fixed: [469, 458, 461],   // ice cream, sundae, shake
+      categories: ["food"],
       dining: true
     },
     fastFood: {
@@ -1161,6 +617,7 @@
       ids: [481, 519, 450, 451, 460, 462, 474, 500, 447, 457, 442, 445, 461,
             439, 458, 433, 468, 453, 720, 464, 441, 440, 436, 432],
       fixed: [481, 450, 442],   // burger, fries, soda
+      categories: ["food"],
       dining: true
     },
     gym: {
@@ -1168,12 +625,14 @@
       ids: [52, 53, 36, 40, 41, 33, 55, 54, 26, 47, 17, 18, 23, 431, 463, 195,
             315, 325, 331, 832, 833, 834, 50, 723, 728, 91, 87, 38],
       fixed: [431, 315],        // protein bar, grip powder
+      categories: ["lifestyle"],
     },
     fisherman: {
       get label() { return T('DailyShop.shopType.fisherman'); },
       ids: [123, 167, 141, 425, 507, 523, 508, 501, 513, 576, 569, 531, 532,
             581, 120, 811, 813, 810, 155, 161, 116, 121, 807, 78, 805, 870],
       fixed: [123, 78],         // fishing rod, net
+      categories: ["survival", "tools"],
     },
     supermarket: {
       get label() { return T('DailyShop.shopType.supermarket'); },
@@ -1183,6 +642,8 @@
             862, 858, 1, 3, 5, 25, 115, 118, 119, 120, 127, 132, 136,
             177, 178, 179, 185, 711, 804, 806, 807],
       fixed: [418, 438, 454],   // bottled water, milk, bread
+      categories: ["food"],
+      curatedShare: 0.7,
       stockMult: 6
     },
     cafe: {
@@ -1190,6 +651,7 @@
       ids: [459, 528, 564, 547, 585, 467, 434, 455, 516, 574, 471, 439, 540,
             560, 468, 473, 196, 543, 511, 589, 719, 178, 711],
       fixed: [459, 528, 439],   // coffee, cup of coffee, donut
+      categories: ["food"],
       dining: true
     },
     liquor: {
@@ -1197,6 +659,7 @@
       ids: [480, 498, 517, 535, 544, 572, 587, 552, 557, 568, 37, 178, 466,
             441, 440, 442, 445, 444, 449, 461, 898],
       fixed: [480, 535, 544],   // ale, wine, whiskey
+      categories: ["food"],
     },
     electronics: {
       get label() { return T('DailyShop.shopType.electronics'); },
@@ -1204,12 +667,16 @@
             179, 185, 186, 190, 193, 721, 726, 394, 852, 853, 854, 135, 130,
             388, 387],
       fixed: [179, 122],        // batteries, charger
+      categories: ["tools", "lifestyle"],
     },
+    // The hardware store absorbed the old tools shop, so anything tagged Tools
+    // can be found here on top of its own stock.
     hardware: {
       get label() { return T('DailyShop.shopType.hardware'); },
       ids: [138, 156, 814, 811, 813, 132, 119, 807, 118, 121, 115, 870, 859,
             863, 867, 855, 856, 146, 406, 151, 374, 739, 861, 868, 805, 804],
-      fixed: [374, 814, 138],   // lockpick, multi-tool, shovel
+      fixed: [374, 814, 138, 136],   // lockpick, multi-tool, shovel, flashlight
+      categories: ["tools"],
     },
     camping: {
       get label() { return T('DailyShop.shopType.camping'); },
@@ -1217,18 +684,21 @@
             136, 137, 142, 116, 117, 152, 159, 161, 512, 421, 465, 466, 418,
             123, 811],
       fixed: [125, 136, 813],   // bedroll, flashlight, climbing rope
+      categories: ["survival"],
     },
     butcher: {
       get label() { return T('DailyShop.shopType.butcher'); },
       ids: [862, 430, 465, 452, 479, 486, 496, 497, 514, 522, 527, 529, 538,
             548, 573, 577, 550, 524, 493, 860, 575, 500, 505, 539],
       fixed: [862, 430],        // meat, mystery meat
+      categories: ["food"],
     },
     bakery: {
       get label() { return T('DailyShop.shopType.bakery'); },
       ids: [454, 424, 419, 533, 456, 471, 439, 443, 488, 540, 511, 562, 560,
             589, 719, 539, 505, 536, 432, 428],
       fixed: [454, 439],        // fresh bread, donut
+      categories: ["food"],
       dining: true
     },
     greengrocer: {
@@ -1236,12 +706,14 @@
       ids: [423, 437, 448, 476, 499, 435, 546, 554, 555, 583, 584, 591, 590,
             551, 578, 563, 565, 792, 858, 406, 660, 240, 492, 429],
       fixed: [437, 448],        // apple, wild berries
+      categories: ["food", "plants"],
     },
     deli: {
       get label() { return T('DailyShop.shopType.deli'); },
       ids: [510, 542, 828, 456, 462, 440, 524, 479, 438, 473, 550, 567, 535,
             452, 465, 493, 587, 466],
       fixed: [510, 524],        // cheese wheel, prosciutto
+      categories: ["food"],
       dining: true
     },
     streetFood: {
@@ -1249,6 +721,7 @@
       ids: [470, 478, 482, 484, 489, 490, 491, 494, 495, 502, 503, 504, 520,
             521, 525, 475, 477, 485, 501, 508, 530, 483, 487, 433],
       fixed: [442, 490],        // soda, pad thai
+      categories: ["food"],
       dining: true
     },
     trattoria: {
@@ -1256,6 +729,7 @@
       ids: [518, 541, 549, 545, 553, 536, 531, 532, 540, 511, 473, 550, 524,
             720, 719, 535, 459, 510, 567, 573],
       fixed: [518, 535],        // bolognese, house wine
+      categories: ["food"],
       dining: true
     },
     giftShop: {
@@ -1263,12 +737,14 @@
       ids: [114, 192, 316, 318, 313, 311, 321, 322, 710, 128, 127, 113, 144,
             150, 163, 185, 189, 180, 211, 326, 332],
       fixed: [114, 316],        // rose, keychain
+      categories: ["collectibles"],
     },
     newsstand: {
       get label() { return T('DailyShop.shopType.newsstand'); },
       ids: [711, 178, 181, 182, 183, 187, 442, 445, 441, 436, 431, 418, 113,
             127, 159, 161, 179, 124, 528, 185],
       fixed: [711, 178],        // newspaper, cigarettes
+      categories: ["books", "lifestyle"],
     },
     tabaccheria: {
       get label() { return T('DailyShop.shopType.tabaccheria'); },
@@ -1276,72 +752,85 @@
             441, 466, 179, 122, 153, 161, 159, 130, 185, 543, 459, 719, 184,
             535, 544, 480, 115],
       fixed: [178, 181, 711],   // cigarettes, scratch card, newspaper
+      categories: ["lifestyle"],
     },
     hunter: {
       get label() { return T('DailyShop.shopType.hunter'); },
       ids: [78, 79, 712, 465, 486, 514, 515, 811, 145, 138, 121, 813, 129,
             774, 758, 766, 806, 868, 860, 512, 147, 76],
       fixed: [78, 465, 811],    // hunting net, jerky, whetstone
+      categories: ["survival"],
     },
     occult: {
       get label() { return T('DailyShop.shopType.occult'); },
       ids: [352, 354, 346, 675, 676, 683, 673, 724, 725, 650, 652, 97, 98,
             262, 264, 680, 349, 359, 360, 355, 679, 682, 348],
       fixed: [262, 115],        // empty spellbook, candle
+      categories: ["monsters"],
+      artifacts: "item",
     },
     streetDealer: {
       get label() { return T('DailyShop.shopType.streetDealer'); },
       ids: [178, 22, 29, 30, 31, 35, 37, 380, 43, 39, 24, 32, 2, 356, 358,
             361, 376, 375, 381, 714],
       fixed: [178, 380],        // cigarettes, street blend
+      categories: ["counterfeits", "homeopathy"],
     },
     spy: {
       get label() { return T('DailyShop.shopType.spy'); },
       ids: [374, 375, 377, 378, 379, 381, 382, 383, 384, 385, 386, 387, 388,
             389, 390, 391, 392, 393, 394, 148, 157, 158, 718],
       fixed: [374, 388, 384],   // lockpick, recorder, disguise kit
+      categories: ["espionage"],
     },
     stationery: {
       get label() { return T('DailyShop.shopType.stationery'); },
       ids: [113, 127, 128, 148, 230, 647, 672, 386, 262, 711, 394, 393, 130,
             185, 159, 161, 145, 277],
       fixed: [113, 127],        // pen, notebook
+      categories: ["books"],
     },
     toyStore: {
       get label() { return T('DailyShop.shopType.toyStore'); },
       ids: [124, 318, 726, 180, 710, 348, 347, 316, 432, 446, 181, 182, 183,
             187, 193, 192, 114, 186],
       fixed: [318, 180],        // action figure, board game
+      categories: ["collectibles"],
     },
     arcticOutfitter: {
       get label() { return T('DailyShop.shopType.arcticOutfitter'); },
       ids: [208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 155, 579, 529,
             815, 812, 655, 678, 121, 120, 467],
       fixed: [208, 815],        // pemmican, sleeping bag
+      categories: ["arctic"],
     },
     jungleTrader: {
       get label() { return T('DailyShop.shopType.jungleTrader'); },
       ids: [623, 624, 625, 626, 627, 628, 629, 630, 631, 632, 633, 634, 588,
             476, 472, 141, 810, 869],
       fixed: [810, 869],        // rope, herb extract
+      categories: ["jungle"],
     },
     wellness: {
       get label() { return T('DailyShop.shopType.wellness'); },
       ids: [604, 605, 606, 607, 608, 609, 610, 611, 177, 184, 434, 516, 574,
             869, 42, 229, 192, 4, 15, 13],
       fixed: [177, 516],        // bath kit, herbal tea
+      categories: ["homeopathy", "lifestyle"],
     },
     materials: {
       get label() { return T('DailyShop.shopType.materials'); },
       ids: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861,
             862, 863, 864, 865, 866, 867, 868, 869, 870, 871],
-      fixed: [859, 861, 863],   // wood, cloth, steel ore
+      fixed: [859, 861, 863],   // wood, cloth, salvaged steel
+      categories: ["crafting"],
     },
     enoteca: {
       get label() { return T('DailyShop.shopType.enoteca'); },
       ids: [535, 587, 517, 572, 544, 568, 552, 557, 480, 498, 524, 510, 542,
             581, 550, 543, 466, 473, 567, 501, 528, 585],
       fixed: [535, 587],        // aged wine, house wine
+      categories: ["food"],
       dining: true
     },
     pizzeria: {
@@ -1349,6 +838,7 @@
       ids: [536, 460, 462, 720, 473, 451, 450, 442, 445, 480, 535, 540, 719,
             510, 456, 532, 539, 505, 549, 518, 458, 481],
       fixed: [536, 460, 442],   // margherita, slice, soda
+      categories: ["food"],
       dining: true
     },
     optician: {
@@ -1356,108 +846,138 @@
       ids: [233, 142, 217, 242, 679, 683, 150, 249, 158, 144, 143, 867, 234,
             135, 676, 388, 390, 130],
       fixed: [233, 142],        // lens, sunglasses
+      categories: ["artisan", "tools"],
     },
     jeweler: {
       get label() { return T('DailyShop.shopType.jeweler'); },
       ids: [242, 334, 332, 322, 328, 866, 865, 864, 211, 214, 649, 659, 685,
             675, 681, 677, 678, 674, 673, 316, 241, 663],
       fixed: [242, 866],        // loupe, crystal
+      categories: ["artisan", "collectibles"],
     },
     tailor: {
       get label() { return T('DailyShop.shopType.tailor'); },
       ids: [132, 861, 868, 235, 231, 239, 246, 212, 682, 384, 91, 330, 325,
             834, 326, 329, 152, 117, 116, 815],
       fixed: [132, 861],        // sewing kit, cloth
+      // What a tailor sells is not a category but a type: the same two racks
+      // the clothing store hangs, cut by the same hands.
+      from: ["armors"],
+      all: ["armors"],
+      atypes: [1, 2],           // clothes and robes
+      curatedShare: 0.4,
     },
     musicStore: {
       get label() { return T('DailyShop.shopType.musicStore'); },
       ids: [236, 133, 134, 154, 185, 186, 190, 321, 213, 1428, 193, 726, 179,
             122, 184, 187, 543],
       fixed: [185, 133],        // CD case, mp3 player
+      categories: ["lifestyle", "collectibles"],
     },
     antiques: {
       get label() { return T('DailyShop.shopType.antiques'); },
       ids: [331, 324, 313, 327, 333, 97, 249, 241, 234, 150, 320, 710, 675,
             289, 262, 317, 312, 323, 294, 290],
       fixed: [320, 324],        // old chair, ancient coin
+      categories: ["collectibles"],
+      artifacts: "all",
     },
     florist: {
       get label() { return T('DailyShop.shopType.florist'); },
       ids: [114, 671, 792, 757, 681, 192, 240, 660, 670, 406, 858, 869, 690,
             165, 674, 626, 229, 119, 546],
       fixed: [114, 792],        // rose, dandelion
+      // Two growing things is all the database has, so the shelf leans on what
+      // else a florist actually sells: gifts and small comforts.
+      categories: ["plants", "farming", "lifestyle"],
     },
     petShop: {
       get label() { return T('DailyShop.shopType.petShop'); },
       ids: [27, 710, 145, 147, 680, 777, 752, 862, 78, 1423, 311, 121, 126,
             807, 869, 858, 32],
       fixed: [710, 862],        // pet rock, feed meat
+      categories: ["food", "monsters"],
     },
     fertilityClinic: {
       get label() { return T('DailyShop.shopType.fertilityClinic'); },
       ids: [716, 717, 729, 730, 738, 737, 32, 733, 734, 887, 962, 958, 1, 884,
             19, 59, 949],
       fixed: [729, 737],        // human sample, gestation accelerator
+      categories: ["medical", "bodypart"],
     },
     cyberClinic: {
       get label() { return T('DailyShop.shopType.cyberClinic'); },
       ids: [731, 732, 733, 734, 735, 736, 59, 763, 768, 769, 857, 851, 853,
             727, 722, 715, 852, 961, 960],
       fixed: [59, 731],         // repair nanites, neural amplifier
+      categories: ["bodypart", "medical"],
     },
     travelAgency: {
       get label() { return T('DailyShop.shopType.travelAgency'); },
       ids: [159, 161, 163, 155, 137, 135, 128, 129, 130, 152, 142, 164, 131,
             166, 668, 696, 234, 162, 120],
       fixed: [159, 161],        // routes map, local map
+      categories: ["survival", "lifestyle"],
     },
     garage: {
       get label() { return T('DailyShop.shopType.garage'); },
       ids: [164, 131, 146, 909, 917, 854, 863, 928, 855, 814, 156, 167, 668,
             852, 870, 138, 811, 856, 864],
       fixed: [146, 870],        // fuel tank, oil flask
+      categories: ["vehicles"],
     },
     drogheria: {
       get label() { return T('DailyShop.shopType.drogheria'); },
       ids: [1, 177, 884, 890, 896, 883, 886, 894, 901, 905, 893, 115, 132,
             861, 118, 13, 11, 7, 867],
       fixed: [1, 883, 115],     // sanitizer, salt, candle
+      categories: ["food", "alchemistry"],
     },
     casalinghi: {
       get label() { return T('DailyShop.shopType.casalinghi'); },
       ids: [118, 119, 807, 804, 809, 120, 232, 1427, 542, 811, 115, 867, 805,
             121, 136, 179, 132, 870],
       fixed: [118, 119, 804],   // utensils, clay pot, bowl set
+      categories: ["tools"],
     },
     bettingParlor: {
       get label() { return T('DailyShop.shopType.bettingParlor'); },
       ids: [181, 182, 183, 187, 124, 311, 313, 323, 1437, 178, 544, 568,
             26, 346, 312, 322, 445],
       fixed: [181, 182, 183],   // the three scratch cards
+      categories: ["lifestyle", "collectibles"],
     },
     reliquary: {
       get label() { return T('DailyShop.shopType.reliquary'); },
       ids: [45, 265, 278, 282, 293, 263, 275, 276, 115, 692, 1401, 498, 229,
             230, 673, 681, 355, 267, 266, 264],
       fixed: [115, 45],         // votive candle, holy remedy
+      categories: ["magic", "collectibles"],
+      artifacts: "all",
     },
     surplusArmory: {
       get label() { return T('DailyShop.shopType.surplusArmory'); },
       ids: [512, 718, 76, 78, 80, 73, 79, 77, 712, 88, 1430, 1426, 136, 129,
             808, 141, 715, 940, 957, 811],
       fixed: [512, 808],        // field ration, escape kit
+      categories: ["combat"],
     },
     junkShop: {
       get label() { return T('DailyShop.shopType.junkShop'); },
       ids: [836, 828, 829, 830, 831, 832, 833, 834, 835, 710, 320, 317, 312,
             424, 709, 349, 346, 347, 356, 358, 361, 419, 423],
       fixed: [374, 836, 709],   // lockpick, rubbish, unidentified item
+      categories: ["trash"],
+      artifacts: "all",
     },
+    // The bookshop absorbed the old library: its textbooks stay hand-picked,
+    // but it now carries anything shelved under Books as well.
     academy: {
       get label() { return T('DailyShop.shopType.academy'); },
-      ids: [1421, 1422, 1423, 1424, 1425, 1426, 1427, 1428, 1429, 1430, 1431,
+      ids: [1421, 1422, 1423, 1425, 1426, 1427, 1428, 1429, 1430, 1431,
             1433, 1436, 1437, 1441, 145, 147],
-      fixed: [113, 127],        // pen, notebook
+      fixed: [113, 127, 262, 128],   // pen, notebook, blank spellbook, travel journal
+      categories: ["books"],
     },
     grimoire: {
       get label() { return T('DailyShop.shopType.grimoire'); },
@@ -1465,6 +985,8 @@
             1412, 1413, 1414, 1415, 1416, 1417, 1418, 1419, 1420, 1434, 1435,
             1438, 1439, 262],
       fixed: [262, 1400],       // empty spellbook, pyromancy grimoire
+      categories: ["books", "magic"],
+      artifacts: "item",
     }
   };
 
@@ -1482,23 +1004,25 @@
     const cache = themedShopCaches[shopType];
 
     if (!cache[locKey]) {
-      // Always-stocked items come first and are kept out of the random draw so
-      // they cannot show up twice.
-      const fixedSet = new Set(def.fixed || []);
-      const fixedItems = [...fixedSet]
-        .map(id => $dataItems[id])
-        .filter(item => item && item.name);
-      // Dedupe the ID list so a typo'd repeat cannot eat two shelf slots.
-      const pool = [...new Set(def.ids)]
-        .filter(id => !fixedSet.has(id))
-        .map(id => $dataItems[id])
-        .filter(item => item && item.name);
-      const seed = generateLocationSeed(mapId, x, y, shopType);
-      const shuffled = seededShuffle(pool, seed);
-      cache[locKey] = [...fixedItems, ...shuffled.slice(0, pickShopItemCount(seed))];
+      cache[locKey] = buildShelf(def, generateLocationSeed(mapId, x, y, shopType));
     }
 
-    return cache[locKey];
+    // The assortment is fixed per location; only the artifact that may turn up
+    // in the last slot is a daily roll, so it is applied on the way out.
+    if (!def.artifacts) return cache[locKey];
+    const dailySeed = generateSeed(mapId, x, y, getCurrentDateKey());
+    return injectRareArtifact([...cache[locKey]], dailySeed, def.artifacts);
+  }
+
+  // Shop goods are [type, id, priceOverride, price]; a mixed shelf has to say
+  // which database each entry came from.
+  function goodsFor(items) {
+    return items.map(item => {
+      if (DataManager.isItem(item)) return [0, item.id, 0, 0];
+      if (DataManager.isWeapon(item)) return [1, item.id, 0, 0];
+      if (DataManager.isArmor(item)) return [2, item.id, 0, 0];
+      return null;
+    }).filter(Boolean);
   }
 
   // ItemSystemShop rolls the per-item stock; a shop can ask for a fatter roll
@@ -1530,8 +1054,7 @@
     const loc = resolveShopLocation(mapId, x, y);
     if (!loc) return;
 
-    const items = getThemedShopItems(shopType, loc.mapId, loc.x, loc.y);
-    const goods = items.map(item => [0, item.id, 0, 0]);
+    const goods = goodsFor(getThemedShopItems(shopType, loc.mapId, loc.x, loc.y));
 
     $gameTemp._dailyShopStockMult = def.stockMult || 1;
 
@@ -1558,15 +1081,11 @@
   }
 
   function diningVenueForCommand(command, args) {
-    if (command === "randomDailyTavern") {
-      return { kind: "tavern", shopType: "", label: T('DailyShop.venue.tavern') };
-    }
-    if (command === "openThemedShop") {
-      const shopType = String((args && args.shopType) || "").trim();
-      const def = THEMED_SHOPS[shopType];
-      if (def && def.dining) return { kind: "themed", shopType: shopType, label: def.label };
-    }
-    return null;
+    if (command !== "openThemedShop") return null;
+    const shopType = String((args && args.shopType) || "").trim();
+    const def = THEMED_SHOPS[shopType];
+    if (!def || !def.dining) return null;
+    return { shopType: shopType, label: def.label };
   }
 
   // Every dining venue on the current map, nearest first. Each entry carries the
@@ -1610,10 +1129,6 @@
 
   function openDiningVenue(venue) {
     if (!venue) return;
-    if (venue.kind === "tavern") {
-      openDailyTavern(venue.mapId, venue.x, venue.y);
-      return;
-    }
     openThemedShop(venue.shopType, venue.mapId, venue.x, venue.y);
   }
 
@@ -1695,45 +1210,6 @@
     if (!rec.includes(skillId)) rec.push(skillId);
   }
 
-  //----- Scene -------------------------------------------------------------
-  // Parchment two-page spread, styled with the same shared classes the other
-  // book-like menus use (#menu-container / .book-spread / .left-page).
-  function injectTeachShopStyle() {
-    if (document.getElementById("daily-teach-shop-style")) return;
-    const el = document.createElement("style");
-    el.id = "daily-teach-shop-style";
-    el.textContent = `
-    #menu-container .teach-list { display:flex; flex-direction:column; gap:8px; overflow-y:auto; padding-right:6px; flex-grow:1; }
-    #menu-container .teach-actor, #menu-container .teach-card {
-        font-family:'Lora',serif; cursor:pointer; border-radius:5px;
-        border:1.5px solid var(--border-primary-hover-translucent-15,#bba16d);
-        background:var(--bg-card-translucent-5, rgba(43,28,17,0.05));
-        transition:all .15s ease; color:var(--text-primary-hover,#2b251d);
-    }
-    #menu-container .teach-actor { padding:8px 12px; display:flex; justify-content:space-between; align-items:center; }
-    #menu-container .teach-card  { padding:10px 14px; display:flex; flex-direction:column; gap:4px; }
-    #menu-container .teach-actor.sel, #menu-container .teach-card.sel {
-        border-color:var(--accent-gold-pure,#b8860b);
-        background:var(--bg-tertiary-focus-translucent-45, rgba(184,134,11,0.18));
-        box-shadow:0 0 8px var(--border-primary-hover-translucent-15,rgba(184,134,11,0.4));
-    }
-    #menu-container .teach-card.taught { border-color:#2e7d32; background:rgba(46,125,50,0.18); }
-    #menu-container .teach-card.locked { opacity:0.45; cursor:not-allowed; }
-    #menu-container .teach-name { font-weight:bold; font-size:1.019em; display:flex; justify-content:space-between; gap:8px; }
-    #menu-container .teach-price { color:var(--accent-gold-pure,#b8860b); font-weight:bold; }
-    #menu-container .teach-meta { font-size:0.798em; text-transform:uppercase; letter-spacing:0.5px; opacity:0.8; }
-    #menu-container .teach-forbidden { color:#a01818; font-weight:bold; }
-    #menu-container .teach-desc { font-size:0.87em; opacity:0.85; line-height:1.35; }
-    #menu-container .teach-empty { text-align:center; padding:40px 20px; font-style: normal; opacity:0.7; font-family:'Lora',serif; color:var(--text-primary-hover,#5d483b); }
-    #menu-container .teach-info { padding:10px 12px; border-radius:4px; margin-top:auto;
-        background:var(--bg-card-translucent-5, rgba(184,134,11,0.05));
-        border:1px solid var(--border-primary-hover-translucent-15, rgba(184,134,11,0.2));
-        font-family:'Lora',serif; font-size:0.87em; color:var(--text-primary-hover,#2b251d); }
-    #menu-container .teach-info .row { display:flex; justify-content:space-between; margin-top:4px; gap:10px; }
-    `;
-    document.head.appendChild(el);
-  }
-
   const TeachInput = {
     init(scene) { this.scene = scene; this.active = false; },
     activate() { this.active = true; },
@@ -1802,7 +1278,6 @@
     this._busy = false;
     this._actor = $gameParty.members()[0] || $gameParty.leader();
 
-    injectTeachShopStyle();
     TeachInput.init(this);
     this.createDOM();
   };
@@ -1981,54 +1456,6 @@
   }
 
   // Plugin command registration
-  PluginManager.registerCommand(pluginName, "OpenDailyShop", () => {
-    openDailyShop();
-  });
-
-  PluginManager.registerCommand(pluginName, "randomDailyTavern", () => {
-    openDailyTavern();
-  });
-
-  PluginManager.registerCommand(pluginName, "openDailyArmor", () => {
-    openDailyArmor();
-  });
-
-  PluginManager.registerCommand(pluginName, "openDailyWeapon", () => {
-    openDailyWeapon();
-  });
-
-  PluginManager.registerCommand(pluginName, "openDailyPharmacy", () => {
-    openDailyPharmacy();
-  });
-
-  PluginManager.registerCommand(pluginName, "openDailyMagicShop", () => {
-    openDailyMagicShop();
-  });
-
-  PluginManager.registerCommand(pluginName, "openDailyLuxury", () => {
-    openDailyLuxury();
-  });
-
-  PluginManager.registerCommand(pluginName, "openDailyAdventurer", () => {
-    openDailyAdventurer();
-  });
-
-    PluginManager.registerCommand(pluginName, "openDailyLibrary", () => {
-    openDailyLibrary();
-  });
-
-  PluginManager.registerCommand(pluginName, "openDailyTools", () => {
-    openDailyTools();
-  });
-
-  PluginManager.registerCommand(pluginName, "openDailyAlchemistry", () => {
-    openDailyAlchemistryShop();
-  });
-
-  PluginManager.registerCommand(pluginName, "openOrganTrader", () => {
-    openOrganTrader();
-  });
-
   PluginManager.registerCommand(pluginName, "openThemedShop", args => {
     openThemedShop(String(args.shopType || "").trim());
   });
@@ -2042,37 +1469,8 @@
   });
 
 
-  // Optional: script call for events
-  window.openRandomDailyShop = openDailyShop;
-  window.openRandomDailyTavern = openDailyTavern;
-  window.openRandomDailyArmor = openDailyArmor;
-  window.openRandomDailyWeapon = openDailyWeapon;
-  window.openRandomDailyPharmacy = openDailyPharmacy;
-  window.openRandomDailyMagicShop = openDailyMagicShop;
-  window.openRandomDailyLuxury = openDailyLuxury;
-  window.openRandomDailyAdventurer = openDailyAdventurer;
-  window.openRandomDailyLibrary = openDailyLibrary;
-  window.openRandomDailyTools = openDailyTools;
-  window.openRandomDailyAlchemistry = openDailyAlchemistryShop;
-
-  // Expose getShopItems for compatibility with other plugins (e.g., StealingSystem)
-  window.getRandomDailyShopItems = getShopItems;
-  window.getRandomDailyTavernItems = getTavernItems;
-  window.getRandomLibraryItems = getLibraryItems;
-
-  window.getRandomDailyArmorItems = getArmorShopItems;
-  window.getRandomDailyWeaponItems = getWeaponShopItems;
-  window.getRandomDailyPharmacyItems = getPharmacyItems;
-  window.getRandomDailyMagicItems = getMagicShopInventory;
-  window.getRandomDailyLuxuryItems = getLuxuryShopItems;
-  window.getRandomDailyAdventurerItems = getAdventurerShopItems;
-  window.getRandomDailyToolsItems = getToolsShopItems;
-  window.getRandomDailyAlchemistryItems = getAlchemistryShopItems;
-  window.openRandomOrganTrader = openOrganTrader;
-  window.getRandomOrganTraderItems = getOrganTraderItems;
-
-  // Themed (ID-based) shops: generic entry points plus one convenience
-  // wrapper per type, e.g. openRandomDailySupermarket() / getRandomDailySupermarketItems().
+  // Themed shops: generic entry points plus one convenience wrapper per type,
+  // e.g. openRandomDailySupermarket() / getRandomDailySupermarketItems().
   window.openRandomThemedShop = openThemedShop;
   window.getRandomThemedShopItems = getThemedShopItems;
   window.RandomDailyThemedShops = THEMED_SHOPS;

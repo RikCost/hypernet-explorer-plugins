@@ -1,0 +1,19 @@
+{
+  "optionName": "",
+  "mode": {
+    "firstTime": "",
+    "cassette": "",
+    "minimal": "",
+    "off": ""
+  },
+  "byLine": "",
+  "artist": {
+    "custom": "",
+    "procedural": "",
+    "unknown": ""
+  },
+  "cassette": {
+    "sideA": "",
+    "stereo": ""
+  }
+}

@@ -20,6 +20,17 @@
     "techniquesForSale": "TECHNIQUES FOR SALE"
   },
   "shopType": {
+    "generalStore": "GENERAL STORE",
+    "tavern": "TAVERN",
+    "weaponsmith": "WEAPONSMITH",
+    "armorer": "ARMORER",
+    "clothing": "CLOTHING STORE",
+    "pharmacy": "PHARMACY",
+    "magicShop": "MAGIC SHOP",
+    "luxury": "LUXURY BOUTIQUE",
+    "adventurer": "ADVENTURER'S OUTFITTER",
+    "alchemistry": "ALCHEMIST",
+    "organTrader": "ORGAN TRADER",
     "iceCream": "ICE CREAM PARLOR",
     "fastFood": "FAST FOOD JOINT",
     "gym": "GYM SUPPLIES",
@@ -70,8 +81,5 @@
     "junkShop": "JUNK SHOP",
     "academy": "ACADEMY BOOKSTORE",
     "grimoire": "GRIMOIRE EMPORIUM"
-  },
-  "venue": {
-    "tavern": "TAVERN"
   }
 }

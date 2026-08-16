@@ -44,7 +44,9 @@
     "food": "Еда",
     "temp": "Темп.",
     "noFood": "",
-    "weatherClear": ""
+    "weatherClear": "",
+    "enemies": "Враги",
+    "level": "Ур. {level}"
   },
   "needLabel": {
     "hunger": "",

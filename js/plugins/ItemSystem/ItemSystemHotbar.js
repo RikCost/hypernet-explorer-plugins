@@ -167,8 +167,10 @@
     /**
      * Use the slot's item from the map. An item that wants to know who it is
      * for asks on the spot, over the map, rather than throwing the backpack
-     * open; everything else is used where the player stands. Either way the
-     * use itself is window.ItemUse's, the same code the backpack uses.
+     * open — and does not ask at all when the party is one person, since the
+     * answer is already known; everything else is used where the player
+     * stands. Either way the use itself is window.ItemUse's, the same code the
+     * backpack uses.
      */
     use(index) {
       const item = this.itemAt(index);
@@ -180,6 +182,21 @@
       }
 
       if (window.ItemUse && window.ItemUse.needsTarget(item)) {
+        // A question with one possible answer is not worth asking: travelling
+        // alone, the bandage is yours, and the card would be a keypress in the
+        // way of a wound.
+        const rows = pickerRows(item);
+        if (rows.length === 1) {
+          const actor = rows[0].actor;
+          if (actor && actor.canUse && !actor.canUse(item)) {
+            SoundManager.playBuzzer();
+            return false;
+          }
+          const result = actor
+            ? window.ItemUse.onActor(actor, item)
+            : window.ItemUse.onAllParty(item);
+          return result.used;
+        }
         SoundManager.playOk();
         openTargetPicker(item);
         return true;
@@ -204,97 +221,13 @@
   // A bandage is for somebody. Asked from the quick bar, that question used to
   // be answered by opening the whole backpack; it is answered here instead, on
   // a small card over the map that names each companion and what they have
-  // left. Arrows or the number keys choose, OK uses, Cancel walks away.
+  // left. Arrows or the number keys choose, OK uses, Cancel walks away. Alone,
+  // the card never opens: the item goes straight to the one person there is.
   //===========================================================================
 
   const PICKER_ID = 'hotbar-target-picker';
 
   let _picker = null;   // { item, index, rows }
-
-  function injectPickerStyles() {
-    if (document.getElementById('hotbar-target-picker-styles')) return;
-    const style = document.createElement('style');
-    style.id = 'hotbar-target-picker-styles';
-    style.textContent = `
-      #${PICKER_ID} {
-        position: fixed;
-        inset: 0;
-        z-index: 400;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--bg-dark-overlay-90, rgba(0,0,0,0.55));
-        user-select: none;
-      }
-      #${PICKER_ID} .htp-panel {
-        min-width: 340px;
-        max-width: 70vw;
-        padding: 16px 20px;
-        background: var(--bg-panel);
-        border: 2px solid var(--border-gold-amber);
-        border-radius: 6px;
-        box-shadow: 0 10px 30px var(--shadow-heavy, rgba(0,0,0,0.6));
-        font-family: 'Lora', serif;
-      }
-      #${PICKER_ID} .htp-title {
-        font-size: 1.14rem;
-        font-weight: bold;
-        color: var(--text-primary-hover);
-        border-bottom: 1.5px dashed var(--border-gold-amber-30);
-        padding-bottom: 6px;
-        margin-bottom: 10px;
-        text-align: center;
-      }
-      #${PICKER_ID} .htp-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 6px 10px;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        cursor: pointer;
-        color: var(--text-success-active);
-      }
-      #${PICKER_ID} .htp-row:hover,
-      #${PICKER_ID} .htp-row.selected {
-        background: var(--bg-primary-hover-translucent-35);
-        border-color: var(--text-primary-hover);
-      }
-      #${PICKER_ID} .htp-num {
-        flex: 0 0 auto;
-        width: 18px;
-        text-align: center;
-        font-weight: bold;
-        color: var(--text-primary-hover);
-        opacity: 0.8;
-      }
-      #${PICKER_ID} .htp-name {
-        flex: 1 1 auto;
-        font-weight: bold;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      #${PICKER_ID} .htp-vitals {
-        flex: 0 0 auto;
-        display: flex;
-        gap: 12px;
-        font-size: 0.9rem;
-        font-weight: bold;
-      }
-      #${PICKER_ID} .htp-hp { color: var(--text-danger-hover); }
-      #${PICKER_ID} .htp-mp { color: var(--text-info, var(--text-primary-hover)); }
-      #${PICKER_ID} .htp-hint {
-        margin-top: 10px;
-        padding-top: 6px;
-        border-top: 1px dashed var(--border-gold-amber-30);
-        text-align: center;
-        font-size: 0.85rem;
-        color: var(--text-card-medium);
-      }
-    `;
-    document.head.appendChild(style);
-  }
 
   // A severed-magic world has no magic to spend, so no MP is printed.
   function showMp() {
@@ -306,7 +239,8 @@
   // item is scoped to all of them.
   function pickerRows(item) {
     const rows = $gameParty.members().map((actor) => ({ actor }));
-    if (item.scope === 8 || item.scope === 10) rows.push({ actor: null });
+    // "Everyone" is not a second answer when there is only one of you.
+    if ((item.scope === 8 || item.scope === 10) && rows.length > 1) rows.push({ actor: null });
     return rows;
   }
 
@@ -334,14 +268,12 @@
 
     el.innerHTML = `
       <div class="htp-panel">
-        <div class="htp-title">${T('Inventory.ui.targetCompanion')}</div>
+        <div class="htp-title">${T('Inventory.ui.useItemOn', { item: _picker.item.name })}</div>
         ${rowsHTML}
-        <div class="htp-hint">${T('Inventory.ui.usingSelectRecipient', { item: `<strong>${_picker.item.name}</strong>` })}</div>
       </div>`;
   }
 
   function openTargetPicker(item) {
-    injectPickerStyles();
     closeTargetPicker();
 
     const rows = pickerRows(item);

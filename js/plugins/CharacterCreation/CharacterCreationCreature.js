@@ -81,6 +81,21 @@
   // The archetype a goblin world builds everybody on. Named once, here.
   const GOBLIN_ARCHETYPE = "Goblin";
 
+  // True while this builder is running for a paused Quick-mode creation. A
+  // creature is asked for three things there and no more: its archetype(s),
+  // its monster sprite and (in the class selector afterwards) its class. The
+  // 3D look is the one that belongs to the chosen sprite, so the custom model
+  // editor is not offered, and the overworld sprite is dealt from the same
+  // archetypes the sprite step would have listed.
+  //
+  // The builder is also reachable from its own plugin command, with no wizard
+  // waiting behind it (_interruptedStep < 0), which always runs in full.
+  function isQuickCreation() {
+    const wizard = window.Scene_CharacterCreation;
+    return !!(wizard && wizard._interruptedStep >= 0 &&
+      wizard.isQuickMode && wizard.isQuickMode());
+  }
+
   function archetypeOfferedInPopulation(key) {
     if (populationMode() !== "monster") return true;
     const people = (window.SpriteCatalog && window.SpriteCatalog.PEOPLE_ARCHETYPES) ||
@@ -190,8 +205,11 @@
 
     // Offer a fully custom 3D creature as the first option (when the 3D editor
     // is available). Selecting it opens the part-mixing model editor seeded from
-    // the chosen archetype(s) instead of picking a fixed battler image.
-    if (window.CC3DModel && window.CC3DModel.isAvailable && window.CC3DModel.isAvailable() && window.Scene_CC3DModel) {
+    // the chosen archetype(s) instead of picking a fixed battler image. Quick
+    // mode does not offer it: there the 3D look is whatever the chosen monster
+    // sprite already wears.
+    if (!isQuickCreation() &&
+        window.CC3DModel && window.CC3DModel.isAvailable && window.CC3DModel.isAvailable() && window.Scene_CC3DModel) {
       this._data.unshift({ id: 0, custom: true, battlerName: null, name: T('Creature.custom3D') });
     }
   };
@@ -2005,11 +2023,7 @@
         break;
       case 3: // Battler
         this._helpWindow.setText(T('Creature.selectABattlerImage'));
-        const archsForBattlers = [this._selectedArchetype1];
-        if (this._mode === 'hybrid' && this._selectedArchetype2) {
-          archsForBattlers.push(this._selectedArchetype2);
-        }
-        this._battlerListWindow.setArchetypes(archsForBattlers);
+        this._battlerListWindow.setArchetypes(this.selectedArchetypes());
         this._battlerListWindow.show();
         this._battlerListWindow.activate();
         this._battlerPreviewWindow.show();
@@ -2018,16 +2032,22 @@
         break;
       case 4: // Character
         this._helpWindow.setText(T('Creature.selectACharacterSprite'));
-        const archetypes = [this._selectedArchetype1];
-        if (this._mode === 'hybrid' && this._selectedArchetype2) {
-          archetypes.push(this._selectedArchetype2);
-        }
-        this._characterWindow.setArchetypes(archetypes);
+        this._characterWindow.setArchetypes(this.selectedArchetypes());
         this._characterWindow.show();
         this._characterWindow.activate();
         this._characterWindow.select(0);
         break;
     }
+  };
+
+  // What this creature is built out of: one archetype, or both of a hybrid's.
+  // The battler list and the sprite list are both scoped to it.
+  Scene_CreateCreature.prototype.selectedArchetypes = function () {
+    const archetypes = [this._selectedArchetype1];
+    if (this._mode === 'hybrid' && this._selectedArchetype2) {
+      archetypes.push(this._selectedArchetype2);
+    }
+    return archetypes;
   };
 
   // --- Event Handlers ---
@@ -2148,7 +2168,7 @@
       if (this._creatureGenSeed && window.CC3DModel && window.CC3DModel.setCreatureSeed) {
         window.CC3DModel.setCreatureSeed(this._targetActorId, this._creatureGenSeed);
       }
-      this.showStep(4); // Go to Character
+      this.proceedToCharacterStep();
     }
   };
 
@@ -2156,22 +2176,44 @@
     this.showStep(1); // Back to Archetype selection screen
   };
 
+  // Where the battler step goes once a monster sprite is settled. Ordinarily
+  // to the overworld sprite board; in Quick mode that board is never shown and
+  // one of its own entries is dealt instead, so the monster sprite is the last
+  // thing this scene asks for.
+  Scene_CreateCreature.prototype.proceedToCharacterStep = function () {
+    if (!isQuickCreation()) {
+      this.showStep(4);
+      return;
+    }
+    this._characterWindow.setArchetypes(this.selectedArchetypes());
+    const sprites = this._characterWindow._images || [];
+    this._selectedCharacter = sprites.length
+      ? sprites[Math.floor(Math.random() * sprites.length)]
+      : null;
+    this.finishCreature();
+  };
+
   Scene_CreateCreature.prototype.onCharacterOk = function () {
     const entry = this._characterWindow.item();
-    if (entry) {
-      this._selectedCharacter = entry;
-      // Custom creature: the 3D model was already built and saved (config lives
-      // in CC3DModel), so clear the 2D battler image and the status screen
-      // renders the custom model instead of a flat enemy portrait.
-      if (this._customModel) {
-        const modelActor = $gameActors.actor(this._targetActorId);
-        if (modelActor) modelActor.setVnBattler("");
-      }
-      this.applyCreatureSettings();
-      if (this.startNameInput()) return;
-      if (this.startClassSelection()) return;
-      this.popScene();
+    if (!entry) return;
+    this._selectedCharacter = entry;
+    this.finishCreature();
+  };
+
+  // The creature is settled: write it onto the actor, then name it and pick
+  // its class, both of which take over the scene when the wizard is waiting.
+  Scene_CreateCreature.prototype.finishCreature = function () {
+    // Custom creature: the 3D model was already built and saved (config lives
+    // in CC3DModel), so clear the 2D battler image and the status screen
+    // renders the custom model instead of a flat enemy portrait.
+    if (this._customModel) {
+      const modelActor = $gameActors.actor(this._targetActorId);
+      if (modelActor) modelActor.setVnBattler("");
     }
+    this.applyCreatureSettings();
+    if (this.startNameInput()) return;
+    if (this.startClassSelection()) return;
+    this.popScene();
   };
 
   // Pre-fill the name field with a generated name, the way the humanoid branch
@@ -2294,13 +2336,24 @@
   // interactive step rather than falling through to traits with a half-built
   // creature.
   Scene_CreateCreature.prototype.onCreationCancel = function () {
-    if (window.Scene_CharacterCreation) {
-      // interruptedStep + 1 is the resume step, so CHARACTER_TYPE resumes on
-      // the gender step.
-      window.Scene_CharacterCreation._interruptedStep =
-        (window.CCSteps && window.CCSteps.CHARACTER_TYPE) != null
-          ? window.CCSteps.CHARACTER_TYPE
-          : 3;
+    const wizard = window.Scene_CharacterCreation;
+    if (wizard) {
+      const characterType = (window.CCSteps && window.CCSteps.CHARACTER_TYPE) != null
+        ? window.CCSteps.CHARACTER_TYPE
+        : 3;
+      if (wizard.isQuickMode && wizard.isQuickMode()) {
+        // Quick mode never asks for a gender, so its gender step exists only to
+        // open this builder: resuming there would push the player straight back
+        // in with no way out. Back out to the humanoid / creature question
+        // instead , the last thing the wizard actually asked , and let it be
+        // answered again.
+        wizard._interruptedStep = characterType - 1;
+        wizard._isCreatureMode = false;
+      } else {
+        // interruptedStep + 1 is the resume step, so CHARACTER_TYPE resumes on
+        // the gender step.
+        wizard._interruptedStep = characterType;
+      }
     }
     this.popScene();
   };

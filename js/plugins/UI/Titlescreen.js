@@ -749,6 +749,9 @@
             // where the sleeper was standing when it started.
             { name: T('Titlescreen.minigame.dream'),                   avail: () => hasScene('Scene_DreamFreeplay'),     run: s => SceneManager.push(window.Scene_DreamFreeplay) },
             { name: T('Titlescreen.minigame.surfing'),                 avail: () => hasScene('Scene_SurfingGame'),       run: s => SceneManager.push(window.Scene_SurfingGame), setup: true },
+            // No venue step: the range builds its own lane and reads nothing
+            // off the map the player was standing on.
+            { name: T('Titlescreen.minigame.targetRange'),             avail: () => hasScene('Scene_TargetRange'),       run: s => SceneManager.push(window.Scene_TargetRange) },
             { name: T('Titlescreen.minigame.pool'),                    avail: () => hasScene('Scene_Pool'),              run: s => SceneManager.push(window.Scene_Pool) },
             { name: T('Titlescreen.minigame.chess'),                   avail: () => hasCmd('ChessGame', 'startNormalChess'), run: s => PluginManager.callCommand(s, 'ChessGame', 'startNormalChess', {}) },
             { name: T('Titlescreen.minigame.bowling'),                 avail: () => hasScene('Scene_BowlingMinigame'),   run: s => SceneManager.push(window.Scene_BowlingMinigame) },

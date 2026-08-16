@@ -91,6 +91,23 @@
     --bg-gold-panel-95: rgba(80, 62, 0, 0.95);
     --bg-brown-vignette-10: rgba(78, 38, 12, 0.10);
 
+    /* === Diary book (Core/DiaryUI.js) ===
+       Lifted out of the plugin, which used to append them to :root as a
+       "diary-tokens" <style> when no theme declared them. The book is a paper
+       object under both presets, so both carry the same values; a future preset
+       can retune it here without touching the plugin. */
+    --paper: #efe4c8;
+    --paper-edge: rgba(226, 212, 182, 0.55);
+    --ink: #2c2418;
+    --ink-alt: #33291a;
+    --ink-deep: #241d13;
+    --ink-strong: #43301c;
+    --rule: rgba(96, 116, 140, 0.30);
+    --rule-margin: rgba(164, 74, 60, 0.42);
+    --highlight-paper: rgba(196, 154, 74, 0.18);
+    --accent-brown: #57391d;
+    --accent-brown-dark: #33220f;
+
     /* === Text Colors === */
     --text-danger-hover: #000000;
     --text-disabled: #777777;

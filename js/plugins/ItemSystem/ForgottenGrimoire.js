@@ -157,50 +157,6 @@
     }
 
     // ---------------------------------------------------------------------
-    // One-time scoped style (themed via CSS tokens, with safe fallbacks)
-    // ---------------------------------------------------------------------
-    function injectGrimoireStyle() {
-        if (document.getElementById("grimoire-style")) return;
-        const css = `
-        #menu-container .grim-list { display:flex; flex-direction:column; gap:8px; overflow-y:auto; padding-right:6px; flex-grow:1; }
-        #menu-container .grim-actor, #menu-container .grim-card {
-            font-family:'Lora',serif; cursor:pointer; border-radius:5px;
-            border:1.5px solid var(--border-primary-hover-translucent-15,#bba16d);
-            background:var(--bg-card-translucent-5, rgba(43,28,17,0.05));
-            transition:all .15s ease; color:var(--text-primary-hover,#2b251d);
-        }
-        #menu-container .grim-actor { padding:8px 12px; display:flex; justify-content:space-between; align-items:center; }
-        #menu-container .grim-card  { padding:10px 14px; display:flex; flex-direction:column; gap:4px; }
-        #menu-container .grim-actor.sel, #menu-container .grim-card.sel {
-            border-color:var(--accent-gold-pure,#b8860b);
-            background:var(--bg-tertiary-focus-translucent-45, rgba(184,134,11,0.18));
-            box-shadow:0 0 8px var(--border-primary-hover-translucent-15,rgba(184,134,11,0.4));
-        }
-        #menu-container .grim-card.learned { border-color:#2e7d32; background:rgba(46,125,50,0.18); }
-        #menu-container .grim-card.blocked { opacity:0.45; }
-        #menu-container .grim-card.blocked.sel { opacity:0.7; }
-        #menu-container .grim-blocked { font-size:0.798em; text-transform:uppercase; letter-spacing:0.5px; font-style: normal; opacity:0.9; }
-        /* the span is always in the card so it can be rewritten in place; an
-           unblocked card must not pay for it with a blank row + flex gap */
-        #menu-container .grim-blocked:empty { display:none; }
-        #menu-container .grim-name { font-weight:bold; font-size:1.019em; display:flex; justify-content:space-between; gap:8px; }
-        #menu-container .grim-mp   { color:var(--accent-gold-pure,#b8860b); font-weight:bold; }
-        #menu-container .grim-desc { font-size:0.87em; opacity:0.85; line-height:1.35; }
-        #menu-container .grim-forbidden { color:#a01818; font-weight:bold; letter-spacing:0.5px; font-size:0.798em; text-transform:uppercase; }
-        #menu-container .grim-empty { text-align:center; padding:40px 20px; font-style: normal; opacity:0.7; font-family:'Lora',serif; color:var(--text-primary-hover,#5d483b); }
-        #menu-container .grim-psi { padding:10px 12px; border-radius:4px; margin-top:auto;
-            background:var(--bg-card-translucent-5, rgba(184,134,11,0.05));
-            border:1px solid var(--border-primary-hover-translucent-15, rgba(184,134,11,0.2));
-            font-family:'Lora',serif; font-size:0.87em; color:var(--text-primary-hover,#2b251d); }
-        #menu-container .grim-psi .row { display:flex; justify-content:space-between; margin-top:4px; }
-        `;
-        const el = document.createElement("style");
-        el.id = "grimoire-style";
-        el.textContent = css;
-        document.head.appendChild(el);
-    }
-
-    // ---------------------------------------------------------------------
     // Input manager (keyboard / gamepad), two focus panels
     // ---------------------------------------------------------------------
     const GrimInput = {
@@ -271,7 +227,6 @@
         this._actor = $gameParty.members()[0] || $gameParty.leader();
         this.rollOffers();
 
-        injectGrimoireStyle();
         GrimInput.init(this);
         this.createDOM();
     };

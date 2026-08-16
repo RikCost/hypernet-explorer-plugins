@@ -43,8 +43,8 @@
  * @default 4
  *
  * @param maxStates
- * @text Max State Icons
- * @desc How many state/buff icons are shown per member.
+ * @text Max State Labels
+ * @desc How many state/buff labels are shown per member.
  * @type number
  * @min 0
  * @max 12
@@ -60,9 +60,12 @@
  *
  * Draws the party HUD in the top-left corner of the map as HTML (#party-hud,
  * styled in css/game.css) rather than as a canvas window: one row per party
- * member, the bordered card carrying their name, HP and MP bars and the icons
- * of every state and buff on them, and the urgent-need chips standing to the
- * right of that card, outside the box.
+ * member, the bordered card carrying their name and their HP and MP bars, and
+ * a column of chips standing to the right of that card, outside the box.
+ *
+ * The chips read as one list: first the urgent needs, then every state and
+ * buff on the member, all spelled out as words rather than drawn as icons, so
+ * nothing on the HUD has to be recognised from a 20px picture.
  *
  * A chip appears whenever something needs seeing to: low health, hunger,
  * sleep, hygiene, social or fun below the warning line (and a second, louder
@@ -101,8 +104,6 @@
     const MAX_STATES = Number(parameters['maxStates'] || 6);
     const HIDE_ON_MESSAGE = parameters['hideDuringMessages'] !== 'false';
 
-    const ICON_PX = 20;             // on-screen size of a state icon
-    const ICON_COLS = 16;           // IconSet columns
     const MAX_ALERTS = 3;           // urgent-need chips per member
     const NEED_REFRESH_FRAMES = 30; // needs move slowly; don't read them per frame
     const FLASH_MS = 420;           // damage / healing wash on the HP bar
@@ -231,6 +232,38 @@
     };
 
     //=========================================================================
+    // States and buffs
+    //=========================================================================
+    // States are named on the card in words, not drawn as icons. A state with
+    // no icon is database plumbing the party is not meant to read, and the
+    // death state already has its own "Down" chip, so both are left out.
+    // Buffs have no name of their own, so they are written as the parameter
+    // they move with an arrow for the direction: "ATK ▲", "DEF ▼▼".
+    const dbName = (name) =>
+        (typeof window.translateText === 'function' ? window.translateText(name) : name) || '';
+
+    const stateLabelsFor = (actor) => {
+        const out = [];
+        if (!actor) return out;
+        for (const state of actor.states()) {
+            if (!state || state.id === actor.deathStateId()) continue;
+            if (!state.iconIndex || !state.name) continue;
+            out.push({ key: 'state:' + state.id, text: dbName(state.name) });
+        }
+        for (let paramId = 0; paramId < 8; paramId++) {
+            const level = actor.buff(paramId);
+            if (!level) continue;
+            const arrow = (level > 0 ? '▲' : '▼').repeat(Math.min(2, Math.abs(level)));
+            out.push({
+                key: 'buff:' + paramId + ':' + level,
+                text: TextManager.param(paramId) + ' ' + arrow,
+                debuff: level < 0
+            });
+        }
+        return out.slice(0, MAX_STATES);
+    };
+
+    //=========================================================================
     // PartyHudOverlay
     //=========================================================================
     // The cards are built once per party and then written into in place, so a
@@ -292,8 +325,9 @@
     };
 
     PartyHudOverlay.prototype._makeCard = function () {
-        // A member is a row: the bordered card, and the urgent-need chips
-        // standing to the right of it, outside the box.
+        // A member is a row: the bordered card, and the chip column standing to
+        // the right of it, outside the box — urgent needs first, then the
+        // states and buffs the member is carrying.
         const row = document.createElement('div');
         row.className = 'phud-row';
 
@@ -304,22 +338,26 @@
         head.className = 'phud-head';
         const name = document.createElement('span');
         name.className = 'phud-name';
-        const states = document.createElement('span');
-        states.className = 'phud-states';
         head.appendChild(name);
-        head.appendChild(states);
 
         const hp = this._makeBar('hp');
         const mp = this._makeBar('mp');
+
+        const chips = document.createElement('div');
+        chips.className = 'phud-chips';
         const alerts = document.createElement('div');
         alerts.className = 'phud-alerts';
+        const states = document.createElement('div');
+        states.className = 'phud-states';
+        chips.appendChild(alerts);
+        chips.appendChild(states);
 
         root.appendChild(head);
         root.appendChild(hp.bar);
         root.appendChild(mp.bar);
 
         row.appendChild(root);
-        row.appendChild(alerts);
+        row.appendChild(chips);
 
         return { row, root, name, states, hp, mp, alerts, statesKey: null, alertsKey: null, deadKey: null };
     };
@@ -363,22 +401,18 @@
 
     PartyHudOverlay.prototype._writeStates = function (card, actor) {
         if (MAX_STATES <= 0) return;
-        const icons = actor.allIcons().slice(0, MAX_STATES);
-        const key = icons.join(',');
+        const labels = stateLabelsFor(actor);
+        const key = labels.map(s => s.key + s.text).join('|');
         if (key === card.statesKey) return;
         card.statesKey = key;
         card.states.innerHTML = '';
-        // The sheet is scaled so one 32px IconSet cell lands on ICON_PX pixels.
-        const sheetW = ICON_COLS * ICON_PX;
-        for (const icon of icons) {
-            const span = document.createElement('span');
-            span.className = 'phud-state-icon';
-            span.style.backgroundImage = "url('img/system/IconSet.png')";
-            span.style.backgroundSize = sheetW + 'px auto';
-            span.style.backgroundPosition =
-                -((icon % ICON_COLS) * ICON_PX) + 'px ' + -(Math.floor(icon / ICON_COLS) * ICON_PX) + 'px';
-            card.states.appendChild(span);
+        for (const label of labels) {
+            const chip = document.createElement('span');
+            chip.className = 'phud-alert phud-state' + (label.debuff ? ' phud-state-down' : '');
+            chip.textContent = label.text;
+            card.states.appendChild(chip);
         }
+        card.states.classList.toggle('phud-alerts-empty', labels.length === 0);
     };
 
     PartyHudOverlay.prototype._writeAlerts = function (card, actor, needs) {

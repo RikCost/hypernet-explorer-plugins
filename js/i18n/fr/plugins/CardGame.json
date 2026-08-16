@@ -1,0 +1,114 @@
+{
+  "stat": {
+    "str": "",
+    "wis": "",
+    "dex": "",
+    "psi": "",
+    "con": ""
+  },
+  "rarity": {
+    "common": "",
+    "rare": "",
+    "epic": "",
+    "legendary": ""
+  },
+  "type": {
+    "monster": "",
+    "weapon": "",
+    "armor": "",
+    "effect": ""
+  },
+  "duel": {
+    "you": "",
+    "opponent": "",
+    "houseDeck": "",
+    "yourTurn": "",
+    "theirTurn": "",
+    "clash": "",
+    "deckCounts": "",
+    "quitBtn": "",
+    "stakeNone": "",
+    "stakeMoney": "",
+    "stakeItem": "",
+    "wonMoney": "",
+    "lostMoney": "",
+    "wonItem": "",
+    "lostItem": "",
+    "gamblerFun": "",
+    "cravingEased": "",
+    "victory": "",
+    "defeat": "",
+    "draw": "",
+    "streak": "",
+    "packWon": "",
+    "pickSecondTile": "",
+    "art3D": "",
+    "art2D": ""
+  },
+  "col": {
+    "title": "",
+    "owned": "",
+    "tab": {
+      "all": "",
+      "monsters": "",
+      "weapons": "",
+      "armor": "",
+      "effects": ""
+    },
+    "tabDeck": "",
+    "empty": "",
+    "pickACard": "",
+    "power": "",
+    "saveDeck": "",
+    "newDeck": "",
+    "prevDeck": "",
+    "nextDeck": "",
+    "autoDeck": "",
+    "shuffleDeck": "",
+    "reroll": "",
+    "practice": "",
+    "close": "",
+    "deckName": "",
+    "unsavedDeck": "",
+    "deckLegal": "",
+    "deckTooFew": "",
+    "deckTooMany": "",
+    "deckNotOwned": "",
+    "deckEmpty": ""
+  },
+  "pack": {
+    "title": "",
+    "sealed": "",
+    "newCard": "",
+    "summary": ""
+  },
+  "effect": {
+    "halve": {
+      "name": "",
+      "desc": ""
+    },
+    "double": {
+      "name": "",
+      "desc": ""
+    },
+    "cull": {
+      "name": "",
+      "desc": ""
+    },
+    "swap": {
+      "name": "",
+      "desc": ""
+    },
+    "ward": {
+      "name": "",
+      "desc": ""
+    }
+  },
+  "capture": {
+    "bound": "",
+    "boundNew": "",
+    "failed": "",
+    "tooStrong": "",
+    "noCard": ""
+  }
+}

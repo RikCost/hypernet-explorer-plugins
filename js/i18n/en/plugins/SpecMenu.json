@@ -2,9 +2,11 @@
   "ui": {
     "back": "Back",
     "specializations": "Specializations",
+    "searchPlaceholder": "Search specializations…",
     "trained": "Trained",
     "all": "All",
     "noneTrained": "No specializations trained yet.",
+    "noMatches": "Nothing under that name.",
     "untrained": "Untrained",
     "noneSelected": "No specialization selected.",
     "classes": "Classes",

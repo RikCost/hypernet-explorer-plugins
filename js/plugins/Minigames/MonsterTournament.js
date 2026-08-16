@@ -955,7 +955,6 @@
         // CSS variable tokens (omega_tower.css / archive_foundation.css), so it
         // matches every other DOM menu instead of using RPG Maker windows.
         createHud() {
-            injectHudStyle();
             const root = document.createElement('div');
             root.id = 'mt-hud';
             root.innerHTML = `
@@ -1403,115 +1402,6 @@
                 this._hud = null;
             }
         }
-    }
-
-    //=========================================================================
-    // HUD stylesheet (themed via CSS variable tokens shared by every theme:
-    // omega_tower.css, archive_foundation.css, vars.css). Injected once.
-    //=========================================================================
-
-    function injectHudStyle() {
-        if (document.getElementById('mt-hud-style')) return;
-        const css = `
-        #mt-hud {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100;
-            pointer-events: none; /* mouse stays free to orbit the 3D camera */
-            font-family: 'Lora', serif;
-            user-select: none;
-        }
-        #mt-hud .mt-panel {
-            position: absolute;
-            background: var(--bg-panel, #111);
-            border: 1px solid var(--border-focus-hover, #caa44a);
-            border-radius: 8px;
-            box-shadow: 0 6px 22px var(--shadow-black-translucent-55, rgba(0,0,0,.55));
-            color: var(--text-text-alt-2, #cdbb99);
-            padding: 12px 18px;
-        }
-        #mt-hud .mt-panel.mt-active {
-            border-color: var(--accent-gold-pure, #ffd700);
-            box-shadow: 0 0 16px var(--shadow-gold-amber-50, rgba(200,160,80,.5));
-        }
-        #mt-title {
-            top: 14px; left: 50%; transform: translateX(-50%);
-            white-space: nowrap; text-align: center;
-            font-size: 22px; font-weight: bold;
-            color: var(--text-primary-hover, #ffcc66);
-            padding: 9px 26px;
-        }
-        #mt-announce {
-            position: absolute; top: 86px; left: 50%; transform: translateX(-50%);
-            font-size: 20px; font-weight: bold; white-space: nowrap;
-            color: var(--accent-amber-glow, #ffe9a8);
-            background: var(--bg-dark-overlay-78, rgba(10,10,18,.78));
-            border: 1px solid var(--border-gold-amber-30, rgba(160,120,60,.35));
-            padding: 6px 20px; border-radius: 20px;
-            opacity: 0; transition: opacity .3s ease;
-            text-shadow: 0 1px 4px var(--shadow-black-translucent-75, rgba(0,0,0,.75));
-        }
-        #mt-stats {
-            bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 72%; max-width: 760px;
-        }
-        #mt-stats .mt-stats-head {
-            display: flex; justify-content: space-between; align-items: baseline;
-            margin-bottom: 8px;
-        }
-        #mt-stats .mt-name {
-            font-size: 24px; font-weight: bold;
-            color: var(--text-primary-hover, #ffcc66);
-        }
-        #mt-stats .mt-sub { font-size: 14px; color: var(--text-info, #b89060); }
-        #mt-stats .mt-statgrid {
-            display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 8px 0;
-        }
-        #mt-stats .mt-stat { text-align: center; }
-        #mt-stats .mt-stat .lbl { font-size: 12px; color: var(--text-info, #b89060); letter-spacing: .5px; }
-        #mt-stats .mt-stat .val { font-size: 21px; font-weight: bold; color: var(--text-primary-hover, #ffcc66); }
-        #mt-stats .mt-stats-foot {
-            display: flex; justify-content: space-between; align-items: center; margin-top: 6px;
-        }
-        #mt-stats .mt-power { font-weight: bold; color: var(--text-primary-hover, #ffcc66); }
-        #mt-bet, #mt-addbet {
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center; min-width: 300px;
-        }
-        #mt-bet .mt-bet-amount { font-size: 26px; margin-bottom: 4px; color: var(--text-text-alt-2, #cdbb99); }
-        #mt-bet .mt-bet-amount b { color: var(--text-primary-hover, #ffcc66); }
-        #mt-bet .mt-bet-avail { font-size: 18px; margin-bottom: 8px; color: var(--text-info, #b89060); }
-        #mt-addbet .mt-addbet-title {
-            font-size: 20px; font-weight: bold; margin-bottom: 10px;
-            color: var(--text-primary-hover, #ffcc66);
-        }
-        #mt-addbet { pointer-events: auto; }
-        #mt-addbet .mt-opt {
-            padding: 8px 16px; margin: 6px 0; border-radius: 6px;
-            border: 1px solid var(--border-subtle, rgba(160,120,60,.35));
-            color: var(--text-text-alt-2, #cdbb99);
-            cursor: pointer;
-        }
-        #mt-addbet .mt-opt:hover,
-        #mt-addbet .mt-opt.sel {
-            border-color: var(--accent-gold-pure, #ffd700);
-            background: var(--bg-tertiary-focus-translucent-45, rgba(255,204,102,.18));
-            color: var(--text-primary-hover, #ffcc66);
-        }
-        #mt-banner {
-            position: absolute; top: 38%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 32px; font-weight: bold; text-align: center;
-            padding: 16px 34px; border-radius: 10px;
-            background: var(--bg-dark-overlay-78, rgba(10,10,18,.82));
-            border: 2px solid var(--border-focus-hover, #caa44a);
-            box-shadow: 0 8px 28px var(--shadow-black-translucent-75, rgba(0,0,0,.75));
-            color: var(--text-primary-hover, #ffcc66);
-        }
-        #mt-banner.mt-win { color: var(--text-forest-complete, #5aaa44); border-color: var(--accent-green-3, #60b345); }
-        #mt-banner.mt-lose { color: var(--accent-red-3, #ff5252); border-color: var(--accent-red-2, #d32f2f); }
-        `;
-        const style = document.createElement('style');
-        style.id = 'mt-hud-style';
-        style.textContent = css;
-        document.head.appendChild(style);
     }
 
     // Export the scene class.

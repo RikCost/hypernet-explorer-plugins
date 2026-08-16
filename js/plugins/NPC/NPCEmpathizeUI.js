@@ -32,6 +32,7 @@
     _emPlaythrough, _isEmActor, _isBubbaNpc, _emContext, _emStanceKey, _emStanceData,
     _bubbaPlaythrough, _isBubbaActor, _bubbaContext, _bubbaDb,
     _isNonSentientActor, FERAL_ACTIONS, FUN_ACTIONS,
+    _isStoryNpc, STORY_PROTECTED_ACTIONS,
   } = window.NPCEmpathize._helpers;
   const _getT = window.NPCEmpathize._getT;
 
@@ -785,11 +786,16 @@
       window.NPCSocietyRegistry.ensureProfile(shiftInfo.name, null);
     const profile = shiftInfo ? (_getProfile(shiftInfo.name) ?? {}) : (_getProfile(npcName) ?? {});
 
+    // A written character (<Story>) is never given a disease, by the party's
+    // hand or by standing next to them, so the roll below is skipped for them
+    // and the moves that would infect them leave the action row further down.
+    const storyNpc = !actorMode && !remoteMode && _isStoryNpc(evId);
+
     // Casual disease transmission (party <-> this NPC) is rolled once per panel
     // open, before anything renders, so the Health tab shows the fresh state.
     // Venereal diseases never spread this way; they only pass through NPC
     // romantic relations (resolved inside onEmpathizeOpen).
-    if (!actorMode && !remoteMode && npcName && window.DiseaseSystem && !this._diseaseRolled) {
+    if (!actorMode && !remoteMode && !storyNpc && npcName && window.DiseaseSystem && !this._diseaseRolled) {
       this._diseaseRolled = true;
       try { window.DiseaseSystem.onEmpathizeOpen(npcName, profile); } catch (e) { console.warn('[NPCEmpathize] disease roll failed', e); }
     }
@@ -921,17 +927,13 @@
       ? []
       : actorMode
       ? [
-          { id: 'freeChat',   label: T.freeChatLabel },
           { id: 'socialize',  label: T.socializeLabel },
           { id: 'romance',    label: T.courtLabel },
           { id: 'directions', label: T.directionsLabel },
           infectAction,
+          { id: 'freeChat',   label: T.freeChatLabel },
         ]
       : [
-          // Opening the text field is an interaction like any other, never a
-          // bare keypress: the panel is navigated with the same keys one types
-          // with, so a stray direction must not drop the player into a textbox.
-          { id: 'freeChat',   label: T.freeChatLabel },
           { id: 'socialize',  label: T.socializeLabel },
           { id: 'romance',    label: T.courtLabel },
           { id: 'directions', label: T.directionsLabel },
@@ -964,6 +966,11 @@
           ...(partyFull || !canVanishOnJoin || !joinLevelOk
             ? []
             : [{ id: 'join', label: `${T.joinParty} (~${joinChance}%)` }]),
+          // Free chat closes the list. Opening the text field is an interaction
+          // like any other, never a bare keypress: the panel is navigated with
+          // the same keys one types with, so a stray direction must not drop
+          // the player into a textbox.
+          { id: 'freeChat',   label: T.freeChatLabel },
         ];
     if (bubbaOnly) this._chatActions = this._chatActions.filter(a => !BUBBA_HIDDEN.has(a.id));
 
@@ -984,12 +991,12 @@
       // out rather than missing. It goes only once they have actually joined.
       const joinBlocked = _travellingPartyCount() >= 3 || !canVanishOnJoin || !joinLevelOk;
       this._chatActions = [
-        ...kept.filter(a => a.id === 'freeChat'),
         ...noises,
         ...kept.filter(a => a.id !== 'freeChat'),
         ...(this._justJoined === true
           ? []
           : [{ id: 'join', label: `${T.joinParty} (~${joinChance}%)`, disabled: joinBlocked }]),
+        ...kept.filter(a => a.id === 'freeChat'),
       ];
     }
 
@@ -1001,6 +1008,14 @@
     // pickpocketing, no bargaining, no infecting them. What is left is what
     // costs their journey nothing, talking, and the standing that earns is
     // remembered in the world folder like everybody else's.
+    // A <Story> character: everything the plot needs them alive and well for.
+    // They are talked to, courted, robbed and haggled with like anybody else,
+    // but the party cannot come to blows with them and cannot hand them a
+    // disease, by vial or by mouth (see _isStoryNpc).
+    if (storyNpc) {
+      this._chatActions = this._chatActions.filter(a => !STORY_PROTECTED_ACTIONS.includes(a.id));
+    }
+
     if (!actorMode && window.PartyPresence?.isVisitorName?.(npcName)) {
       const VISITOR_KEEP = new Set(['freeChat', 'socialize', 'directions']);
       this._chatActions = this._chatActions.filter(a => VISITOR_KEEP.has(a.id));
@@ -1522,6 +1537,34 @@
     step();
   };
 
+  // One palette for every verb the panel offers, so the standing menu reads the
+  // same way its submenus already do: kind moves green, business-like ones
+  // amber, cruel ones red, performances purple, courting the Romance pink.
+  const TONE_COLOR = {
+    positive:    '#2a6e4a',
+    neutral:     '#8a6a30',
+    negative:    '#b01010',
+    performance: '#6a3fbf',
+    romance:     '#8a2f5a',
+  };
+
+  // Tone of each top-level action. Anything unlisted (a feral noise, a future
+  // verb) falls back to neutral rather than going uncoloured, so the row never
+  // mixes tinted and plain buttons.
+  const ACTION_TONE = {
+    freeChat: 'neutral',   socialize: 'positive',  romance:  'romance',
+    directions: 'neutral', gift:      'positive',  bribe:    'neutral',
+    attack:   'negative',  pickpocket:'negative',  trade:    'neutral',
+    cardDuel: 'performance', cardTrade: 'performance',
+    cough:    'negative',  spit:      'negative',  bite:     'negative',
+    infect:   'negative',  treat:     'positive',  buyHouse: 'neutral',
+    join:     'positive',
+    // Feral noises: the same split by what they do to an animal's standing.
+    growl: 'negative', roar: 'negative', drool: 'negative',
+    sniff: 'positive', nuzzle: 'positive', beg: 'positive',
+  };
+  const _actionColor = id => TONE_COLOR[ACTION_TONE[id] || 'neutral'];
+
   Scene_NPCEmpathize.prototype._buildChatHTML = function (displayName, T, profile, opinion, npcName, remoteMode) {
     const bubblesHTML = this._chatHistory.map(entry => {
       if (entry.role === 'convo') return this._buildConvoBubble(entry);
@@ -1576,7 +1619,8 @@
       actionsHTML = (this._chatActions || []).map((item, i) => {
         const focused  = i === this._menuIndex ? ' npc-action-focused' : '';
         const disabled = item.disabled ? ' npc-action-disabled' : '';
-        return `<div class="npc-chat-action-btn${focused}${disabled}" onmousedown="event.stopPropagation();SceneManager._scene._runAction('${item.id}')">${_escapeHtml(item.label)}</div>`;
+        return `<div class="npc-chat-action-btn${focused}${disabled}" onmousedown="event.stopPropagation();SceneManager._scene._runAction('${item.id}')">` +
+          `<span style="color:${_actionColor(item.id)}">${_escapeHtml(item.label)}</span></div>`;
       }).join('');
     }
 
@@ -1773,7 +1817,7 @@
     // Neither can Bubba be cruel to anybody: the man has never insulted a
     // stranger in his life and is not starting in this menu.
     if (this._bubbaCtx?.()) cat = cat.filter(c => c.tone !== 'negative');
-    const toneColor = { positive: '#2a6e4a', neutral: '#8a6a30', negative: '#b01010', performance: '#6a3fbf' };
+    const toneColor = TONE_COLOR;
     // The entertainment moves carry a ☺ in the Fun colour: those are the ones
     // that top up the Fun meter of the party AND of the NPC when they land.
     let html = cat.map(c => {
@@ -3350,8 +3394,8 @@
   const _ROM_TIER_PENALTY = 11;
   // Courting happens at arm's length or closer, so the hygiene reading that
   // already dulled the disposition is felt a second time here, at full weight
-  // in percentage points. Traits still rule it: a Feral or Lycanthrope suitor
-  // never notices, a Germaphobe cannot get past it. See _hygienePenalty
+  // in percentage points. Traits still rule it: a Feral suitor never notices,
+  // a Germaphobe cannot get past it. See _hygienePenalty
   // (NPCEmpathize.js) for the whole table.
   const _ROM_HYGIENE_WEIGHT = 1;
   function _romanceChance(profile, npcName, actor, def, opinion, attraction) {

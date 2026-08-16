@@ -370,6 +370,10 @@
     },
     "modeQuick": {
       "name": "QUICK",
+      "desc": "THREE QUESTIONS AN' YA PLAYIN': A NAME, A FACE AN' A CLASS! GENDER, BODY AN' PORTRAIT COME WIV DA FACE YA PICK, AN' TRAITS IS ROLLED FOR YA!"
+    },
+    "modeNormal": {
+      "name": "NORMAL",
       "desc": "FAST CREATION FOR EACH MEMBER!"
     },
     "combatMonsters": {

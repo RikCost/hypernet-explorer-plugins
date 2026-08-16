@@ -513,10 +513,12 @@ window.GameOptions = GameOptions;
     const ENEMY_DIFFICULTY_SCALE = 2;
 
     // Enemy spawn modes, in the order the option cycles them and the order
-    // GameOptions.enemySpawn names them: 0 Balanced, 1 Realistic, 2 Chaos.
-    // Realistic is the default - it is the mode the world is written for, where
-    // how far a place lies from where the party started decides what lives
-    // there (BattleSystemEnhancedEncounters.js, section 4b).
+    // GameOptions.enemySpawn names them: 0 Balanced, 1 Distance from spawn,
+    // 2 Chaos. Distance from spawn is the default - it is the mode the world is
+    // written for, where how far a place lies from where the party started
+    // decides what lives there (BattleSystemEnhancedEncounters.js, section 4b).
+    // Only the LABEL changed when it was renamed from "Realistic": the stored
+    // setting is the index, so no save or config needed migrating.
     const ENEMY_SPAWN_MODE_COUNT = 3;
     const ENEMY_SPAWN_MODE_DEFAULT = 1;
 
@@ -618,14 +620,16 @@ window.GameOptions = GameOptions;
         this.cardBoard3D = config.cardBoard3D !== undefined ? config.cardBoard3D : false;
         // Enemy spawn mode (BattleSystemEnhancedEncounters.js): 0 = Balanced
         // (roaming enemies at/below party level + one much-higher boss per proc
-        // map), 1 = Realistic (default; the whole biome roster, pitched at how
-        // far the ground lies from where the party started), 2 = Chaos.
+        // map), 1 = Distance from spawn (default; the whole biome roster,
+        // pitched at how far the ground lies from where the party started),
+        // 2 = Chaos.
         //
         // The list used to hold a fourth mode, Tower Distance, at index 2, with
         // Chaos at 3. A config written before it was removed is migrated once -
-        // Tower Distance becomes Realistic, which is the mode that inherited its
-        // idea of danger-by-place, and 3 becomes Chaos where it now sits - and
-        // the migration marker is saved so a later 2 is read as Chaos.
+        // Tower Distance becomes Distance from spawn, which is the mode that
+        // inherited its idea of danger-by-place, and 3 becomes Chaos where it
+        // now sits - and the migration marker is saved so a later 2 is read as
+        // Chaos.
         const spawnModes = ENEMY_SPAWN_MODE_COUNT;
         let spawnMode = config.enemySpawnMode !== undefined
             ? config.enemySpawnMode : ENEMY_SPAWN_MODE_DEFAULT;
@@ -1965,7 +1969,7 @@ window.GameOptions = GameOptions;
         }
     );
 
-    // Enemy Spawn Mode select (0 Balanced, 1 Realistic default, 2 Chaos).
+    // Enemy Spawn Mode select (0 Balanced, 1 Distance from spawn default, 2 Chaos).
     // Consumed by BattleSystemEnhancedEncounters.js via BSE.Helpers.getSpawnMode().
     const enemySpawnNames = () => T.list('GameOptions.enemySpawn');
     GameOptions.registerOption('enemySpawnMode', T('GameOptions.label.enemySpawn'),

@@ -13,10 +13,6 @@
       "name": "AIDS",
       "desc": "The immune system has been dismantled. Every other pathogen walks straight in."
     },
-    "albinism": {
-      "name": "Albinism",
-      "desc": "Absent pigment; skin and eyes vulnerable to light."
-    },
     "alzheimers": {
       "name": "Alzheimer's Disease",
       "desc": "Memory unspooling as plaques choke the mind."
@@ -205,10 +201,6 @@
       "name": "Cryptosporidiosis",
       "desc": "Chlorine does not touch it. One swimming pool, one whole town."
     },
-    "cystic-fibrosis": {
-      "name": "Cystic Fibrosis",
-      "desc": "Thick mucus drowning lungs and clogging the pancreas."
-    },
     "dancing-plague": {
       "name": "Dancing Fever",
       "desc": "They dance until the feet split, and cannot say why they started."
@@ -349,10 +341,6 @@
       "name": "Hashimoto's Thyroiditis",
       "desc": "The thyroid slowly extinguished; cold and heavy."
     },
-    "hemophilia": {
-      "name": "Hemophilia",
-      "desc": "Blood that will not clot; a scratch becomes a danger."
-    },
     "hepatitis-a": {
       "name": "Hepatitis A",
       "desc": "Fecal-oral liver virus. Jaundice and exhaustion."
@@ -392,10 +380,6 @@
     "hpv": {
       "name": "Human Papillomavirus",
       "desc": "Common venereal virus; some strains oncogenic."
-    },
-    "huntingtons": {
-      "name": "Huntington's Disease",
-      "desc": "An inherited fate: chorea and decline from midlife."
     },
     "hypertension": {
       "name": "Hypertension",
@@ -516,10 +500,6 @@
     "marburg": {
       "name": "Marburg Fever",
       "desc": "A filovirus out of a mine shaft. Bleeding from every soft tissue."
-    },
-    "marfan": {
-      "name": "Marfan Syndrome",
-      "desc": "Faulty connective tissue; long limbs and a fragile aorta."
     },
     "measles": {
       "name": "Measles",
@@ -649,10 +629,6 @@
       "name": "Poliomyelitis",
       "desc": "Attacks motor neurons; can leave permanent paralysis."
     },
-    "porphyria": {
-      "name": "Porphyria",
-      "desc": "The vampire disease: sun blisters, madness, wine-dark urine."
-    },
     "possession": {
       "name": "Possession",
       "desc": "There are two of you in there and only one of you is keeping track of the days."
@@ -761,10 +737,6 @@
       "name": "Shingles",
       "desc": "Reactivated varicella tracing a nerve in searing pain."
     },
-    "sickle-cell": {
-      "name": "Sickle Cell Anemia",
-      "desc": "Crescent red cells jamming vessels in agonizing crises."
-    },
     "sigil-blight": {
       "name": "Sigil Blight",
       "desc": "Written wards go soft near you and every seal you touch reads slightly wrong afterwards."
@@ -828,10 +800,6 @@
     "tetanus": {
       "name": "Tetanus",
       "desc": "Lockjaw. Neurotoxin locking every muscle rigid."
-    },
-    "thalassemia": {
-      "name": "Thalassemia",
-      "desc": "Faulty hemoglobin leaving the blood chronically thin."
     },
     "the-quiet": {
       "name": "The Quiet",

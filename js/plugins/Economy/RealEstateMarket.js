@@ -1250,7 +1250,6 @@
             if (!spread || this._builtViewMode !== this._viewMode) {
                 this._builtViewMode = this._viewMode;
                 this._dndContainer.innerHTML = `<div class="book-spread">${this.buildLeftPageHTML()}${this.buildRightPageHTML()}</div>`;
-                this.injectRealEstateStyles();
                 this._reListDataKey = this.currentListDataKey();
                 this.scrollSelectedIntoView();
                 return;
@@ -1491,87 +1490,6 @@
                     ${desc ? `<div class="inspect-bullet-item" style="margin-top:10px">${desc}</div>` : ''}
                     <div class="inspect-actions" style="margin-top:16px">${commandsHTML}</div>
                 </div>`;
-        }
-
-        injectRealEstateStyles() {
-            if (document.getElementById('real-estate-styles')) return;
-            const style = document.createElement('style');
-            style.id = 'real-estate-styles';
-            style.textContent = `
-                .re-stats {
-                    display: flex;
-                    justify-content: space-between;
-                    background: var(--border-primary-hover-translucent-15);
-                    border: 1px solid var(--border-primary-hover-translucent-15);
-                    border-radius: 4px;
-                    padding: 10px 16px;
-                    margin-bottom: 14px;
-                    font-family: 'Lora', serif;
-                    box-sizing: border-box;
-                }
-                .re-stat { display: flex; flex-direction: column; gap: 4px; }
-                .re-stat-lbl {
-                    font-size: 0.878rem;
-                    color: var(--text-text-alt-4);
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                }
-                .re-stat-val { font-size: 1.265rem; font-weight: bold; color: var(--text-primary-hover); }
-                .re-list {
-                    flex: 1;
-                    overflow-y: auto;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                    padding-right: 5px;
-                }
-                .re-list::-webkit-scrollbar { width: 6px; }
-                .re-list::-webkit-scrollbar-track { background: var(--shadow-primary-hover-translucent-5); }
-                .re-list::-webkit-scrollbar-thumb { background: var(--scroll-thumb-hover-translucent-60); border-radius: 3px; }
-                .re-nav-hint {
-                    margin-top: 12px;
-                    padding-top: 10px;
-                    border-top: 2px dashed var(--border-success);
-                    font-size: 0.96rem;
-                    color: var(--text-text-alt-4);
-                    font-family: 'Lora', serif;
-                    text-align: center;
-                }
-                .re-tabs {
-                    display: flex;
-                    gap: 6px;
-                    margin-bottom: 12px;
-                }
-                .re-tab {
-                    flex: 1;
-                    text-align: center;
-                    padding: 7px 10px;
-                    font-family: 'Lora', serif;
-                    font-size: 1.032rem;
-                    font-weight: bold;
-                    letter-spacing: 0.5px;
-                    text-transform: uppercase;
-                    color: var(--text-text-alt-4);
-                    background: var(--shadow-primary-hover-translucent-5);
-                    border: 1px solid var(--border-primary-hover-translucent-15);
-                    border-radius: 4px;
-                    cursor: pointer;
-                    user-select: none;
-                }
-                .re-tab--active {
-                    color: var(--text-primary-hover);
-                    background: var(--border-primary-hover-translucent-15);
-                    border-color: var(--text-primary-hover);
-                }
-                .re-co-bar {
-                    width: 4px;
-                    align-self: stretch;
-                    border-radius: 2px;
-                    margin-right: 6px;
-                }
-            `;
-            document.head.appendChild(style);
         }
 
         selectPropertyItem(index) {

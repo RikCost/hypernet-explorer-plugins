@@ -270,6 +270,22 @@
         const ALIEN_SHARE_OFFWORLD = 0.90;
         const TRANSPORT_GROUP = "PublicTransport"; // i18n-ignore: MapGroups.json key
 
+        // Varlenia, and the people who are from there. A sheet flagged
+        // `varlenian` in NPCs.json is a Varlenian face, and a Varlenian face is
+        // only dealt on Varlenian ground: an authored map in the <MapGroup:
+        // Varlenia> group, or a procedural square standing in the country
+        // Varlenia (js/db/WorldGen/Countries.json). Everywhere else those
+        // sheets are simply not in the pool, so nobody is ever dealt one by
+        // accident, in a town on the other side of the map or in a dream.
+        //
+        // The country is matched by NAME rather than by id: Varlenia's id in
+        // Countries.json is the region id the world map would paint for it, and
+        // it can be changed there (to put Varlenia on real painted ground)
+        // without touching a line of this.
+        const VARLENIA_GROUP = "Varlenia";   // i18n-ignore: MapGroups.json key
+        const VARLENIA_COUNTRY = "varlenia"; // i18n-ignore: Countries.json name, lowercased
+        const PROC_MAP_ID = 636;             // the one map id every procedural square reuses
+
         function db() {
             return (window.WorldGen && window.WorldGen.NPCs) || {};
         }
@@ -579,6 +595,10 @@
             // The population mode is part of the cache key: a goblin world and
             // a normal one are two different pools off the same file, and the
             // cache outlives a world switch inside one session.
+            // Where the pick is being made is part of the answer too: the
+            // Varlenian sheets are in the pool on Varlenian ground and out of
+            // it everywhere else (see isVarlenianPlace), which is why that
+            // answer is part of the cache key rather than a filter on top.
             npcKeys(options) {
                 const includeBeta = (options && options.includeBeta !== undefined)
                     ? !!options.includeBeta
@@ -587,13 +607,18 @@
                     ? options.populationMode
                     : this.populationMode();
                 const magic = (window.MagicNature && window.MagicNature.level()) || "normal";
-                const slot = (includeBeta ? "all" : "stable") + ":" + mode + ":" + magic;
+                const varlenia = (options && options.varlenia !== undefined)
+                    ? !!options.varlenia
+                    : this.isVarlenianPlace(options && options.mapId);
+                const slot = (includeBeta ? "all" : "stable") + ":" + mode + ":" + magic +
+                    (varlenia ? ":varlenia" : "");
                 if (!poolCache[slot]) {
                     const data = db();
                     poolCache[slot] = Object.keys(data).filter(k => {
                         const e = data[k];
                         if (!e || e.npc !== true || e.aliens === true) return false;
                         if (!includeBeta && e.beta === true) return false;
+                        if (e.varlenian === true && !varlenia) return false;
                         if (!this.allowedInMagic(k, e)) return false;
                         return this.allowedInPopulation(k, e, mode);
                     });
@@ -642,6 +667,43 @@
                 if (Array.isArray(maps)) return maps.indexOf(id) >= 0;
                 return !!(window.NPCSystem && window.NPCSystem.findMapGroupByMap &&
                     window.NPCSystem.findMapGroupByMap(id) === TRANSPORT_GROUP);
+            },
+
+            // The Countries.json entry the party is standing in, or null. The
+            // weather system owns the answer (it sets it off the world map's
+            // painted regions and off a map's own <Country: x> tag), with
+            // Variable 86 as the id it also writes it to.
+            countryHere() {
+                const w = window.$gameWeather;
+                if (w && w.currentCountry) return w.currentCountry;
+                const list = (window.WorldGen && window.WorldGen.Countries) || null;
+                if (!Array.isArray(list)) return null;
+                const id = window.$gameVariables ? $gameVariables.value(86) : 0;
+                return list.find(c => c && c.id === id) || null;
+            },
+
+            // Is this Varlenian ground, i.e. may a Varlenian face be dealt here?
+            // Either the map belongs to the Varlenia map group, or it is a
+            // procedural square and the country under it is Varlenia. Read
+            // fresh every time rather than cached on the map: the party can
+            // walk out of the country without the map id changing (every
+            // procedural square is map 636).
+            isVarlenianPlace(mapId) {
+                const id = (mapId !== undefined && mapId !== null)
+                    ? Number(mapId)
+                    : (window.$gameMap && $gameMap.mapId ? $gameMap.mapId() : NaN);
+                if (!Number.isFinite(id)) return false;
+
+                const groups = (window.WorldGen && window.WorldGen.MapGroups) || null;
+                const maps = groups && groups[VARLENIA_GROUP] && groups[VARLENIA_GROUP].maps;
+                if (Array.isArray(maps) && maps.indexOf(id) >= 0) return true;
+                if (window.NPCSystem && window.NPCSystem.findMapGroupByMap &&
+                    window.NPCSystem.findMapGroupByMap(id) === VARLENIA_GROUP) return true;
+
+                if (id !== PROC_MAP_ID) return false;
+                const country = this.countryHere();
+                return !!country &&
+                    String(country.country || "").toLowerCase() === VARLENIA_COUNTRY;
             },
 
             // A hand-authored landing site on a world that is not Earth. Asked

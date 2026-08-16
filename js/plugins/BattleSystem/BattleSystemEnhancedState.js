@@ -931,18 +931,16 @@
                     }
                 }
             } else if ($gameSystem.isActor1Died()) {
-                // Roguelite KO: restore the WHOLE party to full (HP/MP via
-                // recoverAll, which also clears death), not just the leader (#59).
+                // Roguelite / Peaceful KO: restore the WHOLE party to full
+                // (HP/MP via recoverAll, which also clears death), not just the
+                // leader (#59), and every need meter with it.
                 for (const member of $gameParty.members()) {
                     member.recoverAll();
                     if (window.HealthCore && window.HealthCore.restoreAllBodyParts) {
                         window.HealthCore.restoreAllBodyParts(member);
                     }
-                    const maxHunger = (window.TimeDateSystem && window.TimeDateSystem.maxHunger) || 100;
-                    const maxSleep = (window.TimeDateSystem && window.TimeDateSystem.maxSleep) || 100;
-                    if (member._hunger !== undefined) member._hunger = maxHunger;
-                    if (member._sleep !== undefined) member._sleep = maxSleep;
                 }
+                BSE.Helpers.refillPartyNeeds();
                 this.handleActor1Respawn();
                 hasRespawned = true;
             }

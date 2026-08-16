@@ -77,7 +77,7 @@
       "Switchboard"
     ]
   },
-  "caption": "  -  SPACE: jump, hold it for height, again in mid-air off a wall you face  -  double-tap SPACE standing to fly, hold it to climb  -  action button: use the weapon  -  wheel / L1 R1: another weapon  -  Esc: wake",
+  "caption": "  -  SPACE: jump, hold it for height, again in mid-air off a wall you face  -  double-tap SPACE standing to fly, hold it to climb  -  action button: use the weapon  -  R1: shoot  -  wheel / L2 R2: another weapon  -  Esc: wake",
   "wakeUp": "Pinch cheeks (wake up)",
   "keepDreaming": "Keep dreaming",
   "dreamThins": "The dream thins...",

@@ -149,7 +149,7 @@
         860: { name: "Bone", icon: 298 },
         861: { name: "Cloth", icon: 138 },
         862: { name: "Meat", icon: 259 },
-        863: { name: "Steel ore", icon: 305 },
+        863: { name: "Salvaged steel", icon: 305 },
         864: { name: "Titanium ore", icon: 306 },
         865: { name: "Varlenia ore", icon: 306 },
         866: { name: "Crystal", icon: 300 },

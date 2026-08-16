@@ -886,24 +886,7 @@
                 }
                 return false;
             },
-            injectStyles() {
-                if (document.getElementById('char-switch-hint-styles')) return;
-                const style = document.createElement('style');
-                style.id = 'char-switch-hint-styles';
-                style.textContent = `
-                    .companion-switcher { display:flex; align-items:center; gap:6px; }
-                    .char-switch-hint {
-                        font-family:'Lora',serif; font-size:0.732rem; font-weight:bold;
-                        line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
-                        border:1.5px solid var(--text-primary-hover); border-radius:3px;
-                        padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
-                        text-transform:uppercase; flex-shrink:0;
-                    }
-                `;
-                document.head.appendChild(style);
-            },
             parts(memberCount) {
-                this.injectStyles();
                 if (!memberCount || memberCount <= 1) return { left: '', right: '' };
                 if (this.isControllerConnected()) {
                     return {
@@ -961,6 +944,20 @@
             this._categoryIndex = 0;
             this._activeArea = 'categories'; // 'categories' | 'list'
 
+            // The shared search + filter strip (UI/MenuSearchBar.js). With 800+
+            // specializations on the sheet, typing a name is the only sane way
+            // to reach one that is not already trained.
+            this._specBar = window.MenuSearchBar ? window.MenuSearchBar.create({
+                id: 'specializations',
+                placeholder: T('SpecMenu.ui.searchPlaceholder'),
+                sorts: ['name', 'level'],
+                onChange: () => {
+                    this._selectedIndex = 0;
+                    this.refreshSpecDOM();
+                    if (this._specBar) this._specBar.restoreFocus();
+                }
+            }) : null;
+
             window.CharSwitcher.installTabKey(this, (dir) => {
                 if (dir > 0) this.switchToNextCharacter();
                 else this.switchToPreviousCharacter();
@@ -985,10 +982,13 @@
                 wait();
                 return;
             }
+            // A focused search field owns the keyboard (UI/MenuSearchBar.js).
+            if (window.MenuSearchBar && window.MenuSearchBar.isTyping()) return;
             this.updateSpecInput();
         }
 
         terminate() {
+            if (this._specBar) { this._specBar.dispose(); this._specBar = null; }
             window.CharSwitcher.removeTabKey(this);
             const container = document.getElementById('specialization-container');
             if (container) container.remove();
@@ -1040,6 +1040,7 @@
                             <div class="back-button focusable">${T('SpecMenu.ui.back')}</div>
                             <h2 class="title">${T('SpecMenu.ui.specializations')}</h2>
                         </div>
+                        <div id="spec-search-slot"></div>
                         <div id="spec-category-row" style="display:flex; flex-wrap:wrap; gap:5px; padding:6px 0 10px"></div>
                         <div id="spec-list-content" style="display:flex; flex-direction:column; height:100%; overflow-y:auto"></div>
                     </div>
@@ -1071,14 +1072,41 @@
 
         buildListOrder(actor) {
             const category = this._categoryTabs[this._categoryIndex] || 'Trained';  // i18n-ignore  category id
-            const trainedOnly = category === 'Trained';  // i18n-ignore  category id
+            // A typed query searches the whole book: the menu opens on "Trained",
+            // and hiding the 800 untrained ones from a search would answer
+            // "Beekeeping" with an empty page.
+            const searching = !!(this._specBar && this._specBar.query.trim());
+            const trainedOnly = category === 'Trained' && !searching;  // i18n-ignore  category id
             const trained = [];
             const untrained = [];
             window.Specializations.list.forEach(spec => {
-                if (category !== 'All' && !trainedOnly && spec.category !== category) return;  // i18n-ignore  category id
+                if (category !== 'All' && category !== 'Trained' && spec.category !== category) return;  // i18n-ignore  category ids
                 if (actor.specializationLevel(spec.id) > 1) trained.push(spec);
                 else if (!trainedOnly) untrained.push(spec);
             });
+            // The search strip does the narrowing and the ordering when it is
+            // there; the two sections keep their own order so a search still
+            // reads "what you know" first and "what you could learn" after.
+            if (this._specBar) {
+                const describe = spec => ({
+                    name: window.Specializations.displayName(spec),
+                    category: spec.category,
+                    subtitle: window.Specializations.describe(spec),
+                    level: actor.specializationLevel(spec.id)
+                });
+                // One apply() over the whole list, so the strip's "showing N"
+                // counts both sections; the two are split back out afterwards
+                // keeping the order it settled on.
+                const kept = this._specBar.apply([...trained, ...untrained], describe);
+                const trainedSet = new Set(trained);
+                const keptTrained = kept.filter(s => trainedSet.has(s));
+                const keptUntrained = kept.filter(s => !trainedSet.has(s));
+                return {
+                    trained: keptTrained,
+                    untrained: keptUntrained,
+                    order: [...keptTrained, ...keptUntrained]
+                };
+            }
             trained.sort((a, b) => a.name.localeCompare(b.name));
             untrained.sort((a, b) => a.name.localeCompare(b.name));
             return { trained, untrained, order: [...trained, ...untrained] };
@@ -1103,6 +1131,18 @@
             // finishes loading, so recompute every refresh rather than once.
             this._categoryTabs = ['Trained', 'All', ...window.Specializations.categories];  // i18n-ignore  category ids
             if (this._categoryIndex >= this._categoryTabs.length) this._categoryIndex = 0;
+
+            // Rebuilt in place with the page, then handed its caret back - but
+            // only when the player was already typing in it. The page redraws on
+            // every cursor move, and a field that grabs focus back each time
+            // would swallow the arrow keys it just took them from.
+            const searchSlot = document.getElementById('spec-search-slot');
+            if (searchSlot && this._specBar) {
+                const active = document.activeElement;
+                const wasTyping = !!active && active.id === 'msb-input-' + this._specBar.id;
+                searchSlot.innerHTML = this._specBar.html();
+                if (wasTyping) this._specBar.restoreFocus();
+            }
 
             const categoryRow = document.getElementById('spec-category-row');
             if (categoryRow) {
@@ -1178,10 +1218,18 @@
                     </div>`;
             };
 
+            // A search answers with what it found, so it never prints "nothing
+            // trained yet" under a heading the query itself emptied.
+            const searching = !!(this._specBar && this._specBar.query.trim());
             let listHTML = '';
-            listHTML += `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:var(--text-secondary-active); padding:8px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15)">${T('SpecMenu.ui.trained')}</div>`;
+            if (searching && !order.length) {
+                listHTML += `<div style="opacity:0.6; padding:8px 10px; font-family:'Lora',serif">${T('SpecMenu.ui.noMatches')}</div>`;
+            }
+            if (trained.length > 0 || !searching) {
+                listHTML += `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:var(--text-secondary-active); padding:8px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15)">${T('SpecMenu.ui.trained')}</div>`;
+            }
             if (trained.length === 0) {
-                listHTML += `<div style="opacity:0.6; padding:8px 10px; font-family:'Lora',serif">${T('SpecMenu.ui.noneTrained')}</div>`;
+                if (!searching) listHTML += `<div style="opacity:0.6; padding:8px 10px; font-family:'Lora',serif">${T('SpecMenu.ui.noneTrained')}</div>`;
             } else {
                 trained.forEach((spec, i) => { listHTML += rowHTML(spec, i); });
             }

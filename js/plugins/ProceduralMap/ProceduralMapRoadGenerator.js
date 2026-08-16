@@ -224,6 +224,9 @@
    * @returns {{horizontal: number|null, vertical: number|null}}
    */
   function getDashedLineTileIds(allFeatures) {
+    // Every road-drawing path resolves its dash tiles through here, so this is
+    // where the surface those dashes may be laid on is learned (see putDash).
+    recordMarkingSurface(allFeatures);
     const legacy = getSingleFeatureTileId(allFeatures, "DashedLine");
     return {
       horizontal: getSingleFeatureTileId(allFeatures, "DashedLineHorizontal") ?? legacy,
@@ -310,12 +313,48 @@
   // Dashed center lines: 1-tile dash followed by a 1-tile gap.
   const DASH_GAP_STEP = 2;
 
+  // The ground a road marking is allowed to sit on. A dashed centre line is
+  // paint ON a carriageway: laid anywhere else - a verge the road stopped
+  // short of, a corner a later pass turned back into grass - it reads as a
+  // stray line dropped at random on the map, because that is what it is.
+  // Filled in from the tileset whenever the dash tiles are resolved, which
+  // every road-drawing path does before it draws a single tile.
+  const MARKING_SURFACE = new Set();
+
+  const MARKING_SURFACE_FEATURES = [
+    "Road", "RoadLine", "Asphalt", "Pavement",
+    "Sidewalk", "SidewalkDesert", "SidewalkIce",
+    "Path", "PathDesert", "PathIce",
+    "DashedLine", "DashedLineHorizontal", "DashedLineVertical",
+  ];
+
+  function recordMarkingSurface(allFeatures) {
+    MARKING_SURFACE.clear();
+    if (!allFeatures) return;
+    for (const name of MARKING_SURFACE_FEATURES) {
+      for (const variant of allFeatures[name] || []) {
+        if (variant.type === "single" && variant.tileId) {
+          MARKING_SURFACE.add(variant.tileId);
+        } else if (variant.grid) {
+          for (const row of variant.grid) {
+            for (const t of row) if (t) MARKING_SURFACE.add(t);
+          }
+        }
+      }
+    }
+  }
+
   /**
-   * Place a dashed center-line tile (layer 1) at a position. No-op for null tileId.
+   * Place a dashed center-line tile (layer 1) at a position. No-op for null
+   * tileId, and no-op wherever the ground below is not a carriageway - the
+   * road generators draw the road first and the paint after, so a dash that
+   * lands off the tarmac is a dash the road never actually reached.
    */
   function putDash(mapData, x, y, tileId, width, height) {
     if (tileId == null) return;
     if (x < 0 || x >= width || y < 0 || y >= height) return;
+    if (MARKING_SURFACE.size &&
+      !MARKING_SURFACE.has(mapData[calculateIndex(x, y, 0, width, height)])) return;
     const idx = calculateIndex(x, y, 1, width, height);
     mapData[idx] = tileId;
   }

@@ -370,6 +370,10 @@
     },
     "modeQuick": {
       "name": "Quick",
+      "desc": "Three questions and you are playing: a name, a face and a class. Gender, body and portrait come with the face you pick, and traits are rolled for you."
+    },
+    "modeNormal": {
+      "name": "Normal",
       "desc": "Fast creation for each member."
     },
     "combatMonsters": {

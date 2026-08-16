@@ -1986,6 +1986,1077 @@
     return mapData;
   }
 
+  // ===== MOUNTAIN RANGE TERRAIN (multi-elevation relief) =====
+  //
+  // The Mountain family of surface biomes is generated from a real heightfield
+  // instead of an inverted cellular-automata blob:
+  //
+  //   1. warped fBm + ridged noise      -> ridgelines, spurs and hollows
+  //   2. thermal erosion / smoothing    -> scree slopes, rounded or glacial forms
+  //   3. terracing                      -> mesas and tablelands
+  //   4. steepest-descent channels      -> valleys, canyons and gorges
+  //   5. elevation banding + extrusion  -> cliff faces whose height IS the band
+  //   6. basin flooding                 -> tarns and caldera lakes ringed by rock
+  //   7. connectivity repair            -> a pass through the lowest saddle
+  //
+  // Rock is drawn with MountainLeft / MountainCenter / MountainRight only
+  // (MountainWall and Ceiling are no longer used by this path - most mountain
+  // tilesets never declared them, which is why the old generator painted whole
+  // massifs with tile id 0). Those three tiles are three shades of the same
+  // rock, so they are used as a three-step hillshade: Center is the lit face,
+  // Left the half-shaded one, Right the shadow.
+
+  /**
+   * Smooth (bilinear + quintic fade) value noise on an integer lattice.
+   * Cache.getNoise floors its inputs, so it cannot be sampled at the
+   * fractional coordinates a heightfield needs - this one can.
+   */
+  function createMountainNoise(seed) {
+    const s = (seed | 0) || 1;
+    const lattice = (xi, yi) => {
+      let n = Math.imul(xi | 0, 374761393) ^ Math.imul(yi | 0, 668265263) ^ Math.imul(s, 1442695041);
+      n = Math.imul(n ^ (n >>> 13), 1274126177);
+      n ^= n >>> 16;
+      return (n >>> 0) / 4294967295;
+    };
+    const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10);
+    return function (x, y) {
+      const xi = Math.floor(x);
+      const yi = Math.floor(y);
+      const tx = fade(x - xi);
+      const ty = fade(y - yi);
+      const a = lattice(xi, yi);
+      const b = lattice(xi + 1, yi);
+      const c = lattice(xi, yi + 1);
+      const d = lattice(xi + 1, yi + 1);
+      const top = a + (b - a) * tx;
+      const bottom = c + (d - c) * tx;
+      return top + (bottom - top) * ty;
+    };
+  }
+
+  /** Standard fractal sum: broad landmass shapes. Returns 0..1. */
+  function mountainFbm(noise, x, y, octaves, lacunarity, persistence) {
+    let amp = 1, freq = 1, sum = 0, norm = 0;
+    for (let i = 0; i < octaves; i++) {
+      sum += noise(x * freq + i * 17.13, y * freq + i * 31.7) * amp;
+      norm += amp;
+      amp *= persistence;
+      freq *= lacunarity;
+    }
+    return sum / norm;
+  }
+
+  /**
+   * Ridged multifractal: folding the noise about its midpoint turns the smooth
+   * hills into creases, and feeding each octave's crest into the next one
+   * concentrates detail along the ridgelines - which is what makes a range read
+   * as arêtes and spurs rather than as lumps. Returns 0..1.
+   */
+  function mountainRidged(noise, x, y, octaves, lacunarity, persistence) {
+    let amp = 1, freq = 1, sum = 0, norm = 0, weight = 1;
+    for (let i = 0; i < octaves; i++) {
+      let n = noise(x * freq + i * 5.7, y * freq + i * 9.1);
+      n = 1 - Math.abs(n * 2 - 1);
+      n *= n;
+      n *= weight;
+      weight = Math.max(0, Math.min(1, n * 1.7));
+      sum += n * amp;
+      norm += amp;
+      amp *= persistence;
+      freq *= lacunarity;
+    }
+    return sum / norm;
+  }
+
+  /**
+   * The shapes a mountain map can take. One is chosen per world square (see
+   * pickMountainStyle), so neighbouring squares of the same biome still look
+   * like different country.
+   *
+   *   freq/octaves/lacunarity/persistence - noise shape
+   *   ridge          0..1 blend of ridged over plain fBm (1 = pure arêtes)
+   *   warp/warpFreq  domain warp: bends ridgelines instead of leaving them straight
+   *   gamma          >1 pushes terrain down (sparser rock), <1 raises it
+   *   rockCoverage   share of the square that ends up as impassable rock. Taken
+   *                  as a quantile of the finished heightfield rather than an
+   *                  absolute height, so erosion and channel carving cannot
+   *                  accidentally leave a "Mountain" square with no mountains
+   *   bands          number of elevation bands (a band IS the cliff height)
+   *   terrace        height quantum for flat tops (0 = off)
+   *   talus/erosionIters  thermal erosion: slope limit and pass count
+   *   smooth         box-blur passes (glacial rounding)
+   *   channels/channelDepth/channelWidth/channelU  drainage carving; U = 0 V-notch, 1 flat-floored trough
+   *   extrudeMax     tallest cliff face drawn below a south-facing rim
+   *   lakeChance/lakes/lakeArea  basin flooding
+   *   radial         optional large-scale form (caldera ring / lone massif)
+   */
+  const MOUNTAIN_STYLES = {
+    alpineRidges: {
+      label: "alpine ridges",
+      freq: 0.055, octaves: 5, lacunarity: 2.05, persistence: 0.52,
+      ridge: 0.82, warp: 1.6, warpFreq: 0.55, gamma: 1.05,
+      rockCoverage: 0.46, bands: 5, extrudeMax: 3,
+      terrace: 0, talus: 0.055, erosionIters: 3, smooth: 0,
+      channels: 5, channelDepth: 0.24, channelWidth: 1.8, channelU: 0.15,
+      lakeChance: 0.45, lakes: 1, lakeArea: [24, 64],
+      radial: null,
+    },
+    glacialTroughs: {
+      label: "glacial troughs",
+      freq: 0.045, octaves: 4, lacunarity: 1.95, persistence: 0.55,
+      ridge: 0.55, warp: 1.2, warpFreq: 0.45, gamma: 1.0,
+      rockCoverage: 0.42, bands: 6, extrudeMax: 3,
+      terrace: 0, talus: 0.07, erosionIters: 2, smooth: 2,
+      channels: 4, channelDepth: 0.3, channelWidth: 3.4, channelU: 0.85,
+      lakeChance: 0.7, lakes: 2, lakeArea: [26, 80],
+      radial: null,
+    },
+    highPlateau: {
+      label: "high plateau",
+      freq: 0.035, octaves: 4, lacunarity: 2.1, persistence: 0.48,
+      ridge: 0.25, warp: 0.9, warpFreq: 0.4, gamma: 0.72,
+      rockCoverage: 0.5, bands: 4, extrudeMax: 4,
+      terrace: 0.075, talus: 0.09, erosionIters: 2, smooth: 1,
+      channels: 3, channelDepth: 0.36, channelWidth: 1.5, channelU: 0.35,
+      lakeChance: 0.25, lakes: 1, lakeArea: [20, 50],
+      radial: null,
+    },
+    mesaButtes: {
+      label: "mesas and buttes",
+      freq: 0.075, octaves: 4, lacunarity: 2.2, persistence: 0.45,
+      ridge: 0.35, warp: 0.7, warpFreq: 0.5, gamma: 0.9,
+      rockCoverage: 0.4, bands: 4, extrudeMax: 4,
+      terrace: 0.11, talus: 0.12, erosionIters: 2, smooth: 0,
+      channels: 4, channelDepth: 0.3, channelWidth: 1.3, channelU: 0.5,
+      lakeChance: 0.12, lakes: 1, lakeArea: [14, 34],
+      radial: null,
+    },
+    deepCanyon: {
+      label: "canyon country",
+      freq: 0.04, octaves: 5, lacunarity: 2.0, persistence: 0.5,
+      ridge: 0.45, warp: 1.1, warpFreq: 0.45, gamma: 0.62,
+      rockCoverage: 0.56, bands: 5, extrudeMax: 4,
+      terrace: 0.05, talus: 0.1, erosionIters: 2, smooth: 0,
+      channels: 8, channelDepth: 0.42, channelWidth: 2.2, channelU: 0.45,
+      lakeChance: 0.3, lakes: 1, lakeArea: [16, 44],
+      radial: null,
+    },
+    rollingFoothills: {
+      label: "rolling foothills",
+      freq: 0.07, octaves: 4, lacunarity: 2.0, persistence: 0.55,
+      ridge: 0.3, warp: 1.3, warpFreq: 0.6, gamma: 1.55,
+      rockCoverage: 0.26, bands: 3, extrudeMax: 2,
+      terrace: 0, talus: 0.075, erosionIters: 3, smooth: 1,
+      channels: 4, channelDepth: 0.2, channelWidth: 3.0, channelU: 0.7,
+      lakeChance: 0.55, lakes: 2, lakeArea: [20, 56],
+      radial: null,
+    },
+    karstSpires: {
+      label: "karst spires",
+      freq: 0.115, octaves: 4, lacunarity: 2.3, persistence: 0.42,
+      ridge: 0.7, warp: 1.9, warpFreq: 0.7, gamma: 1.25,
+      rockCoverage: 0.3, bands: 5, extrudeMax: 3,
+      terrace: 0, talus: 0.14, erosionIters: 1, smooth: 0,
+      channels: 3, channelDepth: 0.22, channelWidth: 3.2, channelU: 0.8,
+      lakeChance: 0.45, lakes: 2, lakeArea: [18, 46],
+      radial: null,
+    },
+    calderaBasin: {
+      label: "caldera basin",
+      freq: 0.06, octaves: 4, lacunarity: 2.0, persistence: 0.5,
+      ridge: 0.5, warp: 1.0, warpFreq: 0.5, gamma: 1.0,
+      rockCoverage: 0.38, bands: 5, extrudeMax: 3,
+      terrace: 0, talus: 0.07, erosionIters: 2, smooth: 1,
+      channels: 3, channelDepth: 0.22, channelWidth: 2.2, channelU: 0.5,
+      lakeChance: 1.0, lakes: 1, lakeArea: [70, 150],
+      radial: { type: "caldera", radius: [11, 17], sigma: 4.2, strength: 0.62 },
+    },
+    loneMassif: {
+      label: "lone massif",
+      freq: 0.05, octaves: 5, lacunarity: 2.1, persistence: 0.5,
+      ridge: 0.7, warp: 1.4, warpFreq: 0.5, gamma: 1.3,
+      rockCoverage: 0.4, bands: 6, extrudeMax: 4,
+      terrace: 0, talus: 0.06, erosionIters: 3, smooth: 0,
+      channels: 4, channelDepth: 0.24, channelWidth: 2.4, channelU: 0.4,
+      lakeChance: 0.4, lakes: 1, lakeArea: [18, 48],
+      radial: { type: "massif", radius: [16, 24], sigma: 6, strength: 0.7 },
+    },
+  };
+
+  // Which styles each mountain family draws from. Ice country is glacial and
+  // lake-rich, desert country is dry table-and-canyon, a village needs enough
+  // flat ground to stand on.
+  const MOUNTAIN_STYLE_WEIGHTS = {
+    temperate: { alpineRidges: 26, glacialTroughs: 10, highPlateau: 13, deepCanyon: 12, rollingFoothills: 16, karstSpires: 9, calderaBasin: 8, loneMassif: 6 },
+    ice: { glacialTroughs: 34, alpineRidges: 24, calderaBasin: 13, highPlateau: 12, rollingFoothills: 10, loneMassif: 7 },
+    desert: { mesaButtes: 32, deepCanyon: 27, highPlateau: 17, karstSpires: 12, rollingFoothills: 7, loneMassif: 5 },
+    village: { rollingFoothills: 40, highPlateau: 18, alpineRidges: 16, glacialTroughs: 12, calderaBasin: 8, karstSpires: 6 },
+  };
+
+  function mountainFamilyForBiome(biomeName) {
+    const name = String(biomeName || "").toLowerCase();
+    if (/village|town|city/.test(name)) return "village";
+    if (/ice|snow|frozen|glacier|permafrost|tundra|arctic/.test(name)) return "ice";
+    if (/desert|dune|sand|badland|mesa|arid|volcan|lava|ash/.test(name)) return "desert";
+    return "temperate";
+  }
+
+  /**
+   * Climate pass over the chosen style. Two maps can share a style and still
+   * behave differently because of where they sit: ice rounds everything off and
+   * ponds meltwater, desert bakes it into terraces and dries the basins out,
+   * and a village square keeps more buildable ground.
+   */
+  function applyMountainClimate(style, family) {
+    const s = Object.assign({}, style);
+    if (family === "ice") {
+      s.smooth += 1;
+      s.channelU = Math.max(s.channelU, 0.65);
+      s.channelWidth *= 1.25;
+      s.talus *= 0.8;
+      s.rockCoverage *= 0.95;
+      s.lakeChance = Math.min(1, s.lakeChance * 1.3 + 0.12);
+      s.lakeArea = [s.lakeArea[0], Math.round(s.lakeArea[1] * 1.25)];
+    } else if (family === "desert") {
+      s.terrace = Math.max(s.terrace, 0.07);
+      s.rockCoverage *= 1.05;
+      s.talus *= 1.4;
+      s.erosionIters += 1;
+      s.channelDepth *= 1.15;
+      s.channelWidth *= 0.85;
+      s.channelU = Math.min(1, s.channelU + 0.15);
+      s.lakeChance *= 0.12;
+      s.lakeArea = [Math.round(s.lakeArea[0] * 0.6), Math.round(s.lakeArea[1] * 0.5)];
+    } else if (family === "village") {
+      s.rockCoverage *= 0.6;
+      s.extrudeMax = Math.min(s.extrudeMax, 2);
+      s.channels += 1;
+      s.channelWidth *= 1.2;
+      s.lakeChance *= 0.85;
+    }
+    return s;
+  }
+
+  /**
+   * Pick (and jitter) the style for one world square. Deterministic in the
+   * world coordinates, so the same square always generates the same range.
+   */
+  function pickMountainStyle(biomeName, worldCoords, seed) {
+    const wx = (worldCoords && worldCoords.x) || 0;
+    const wy = (worldCoords && worldCoords.y) || 0;
+    const family = mountainFamilyForBiome(biomeName);
+    const styleSeed = (Math.imul(wx, 73856093) ^ Math.imul(wy, 19349663) ^ Math.imul(seed | 0, 83492791)) >>> 0;
+    const rng = createSeededRandom(styleSeed);
+
+    const weights = MOUNTAIN_STYLE_WEIGHTS[family] || MOUNTAIN_STYLE_WEIGHTS.temperate;
+    let total = 0;
+    for (const key of Object.keys(weights)) total += weights[key];
+    let roll = rng() * total;
+    let chosen = Object.keys(weights)[0];
+    for (const key of Object.keys(weights)) {
+      roll -= weights[key];
+      if (roll <= 0) { chosen = key; break; }
+    }
+
+    const style = applyMountainClimate(MOUNTAIN_STYLES[chosen] || MOUNTAIN_STYLES.alpineRidges, family);
+    style.id = chosen;
+    style.family = family;
+
+    // Per-square jitter: same style, different mountain.
+    const jitter = (v, amount) => v * (1 - amount + rng() * amount * 2);
+    style.freq = jitter(style.freq, 0.16);
+    style.rockCoverage = Math.max(0.16, Math.min(0.62, style.rockCoverage + (rng() - 0.5) * 0.1));
+    style.gamma = jitter(style.gamma, 0.12);
+    style.ridge = Math.max(0, Math.min(1, style.ridge + (rng() - 0.5) * 0.14));
+    style.channels = Math.max(2, style.channels + (rng() < 0.5 ? -1 : 1));
+    style.channelDepth = jitter(style.channelDepth, 0.18);
+    return style;
+  }
+
+  /**
+   * Generate a mountain surface map from a heightfield.
+   *
+   * options:
+   *   tiles          { left, center, right } rock tiles (MountainLeft/Center/Right)
+   *   baseTerrainData  layer data the open valley floor keeps
+   *   worldCoords    world square, selects the style
+   *   biomeName      selects the climate family
+   *   waterTile      lake fill tile (biome Water feature); 0 disables lakes
+   *   shoreTile      optional tile ringing a lake (Beach/Sand)
+   *   apronTile      optional scree/rubble ground tile laid at the foot of cliffs
+   *
+   * Returns the map data array with .mountainMask (by position, authoritative),
+   * .mountainWaterMask, .mountainElevation and .mountainStyle attached.
+   */
+  function generateMountainRangeTerrain(width, height, tileWidth, seed, options) {
+    const opt = options || {};
+    const tiles = opt.tiles || {};
+    const baseTerrainData = opt.baseTerrainData || null;
+    const worldCoords = opt.worldCoords || null;
+    const biomeName = opt.biomeName || "Mountain";
+
+    const rockCenter = tiles.center || tiles.left || tiles.right || 0;
+    const rockLeft = tiles.left || rockCenter;
+    const rockRight = tiles.right || rockCenter;
+    const waterTile = opt.waterTile || 0;
+    const shoreTile = opt.shoreTile || 0;
+    const apronTile = opt.apronTile || 0;
+
+    const style = pickMountainStyle(biomeName, worldCoords, seed);
+    const rng = createSeededRandom((seed ^ 0x4d0f21) >>> 0);
+
+    const N = width * height;
+    const idxOf = (x, y) => y * width + x;
+    const inBounds = (x, y) => x >= 0 && x < width && y >= 0 && y < height;
+    const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+    // ---- 1. heightfield --------------------------------------------------
+    const h = new Float64Array(N);
+    const noise = createMountainNoise((seed ^ 0x5f3a21) >>> 0);
+    const warpNoise = createMountainNoise((seed ^ 0x2c9143) >>> 0);
+
+    // A caldera rim or a lone massif is placed OFF the map centre: the centre
+    // is where the player is teleported in, and it has to stay open ground
+    // (a caldera lake centred there would strand them in impassable water).
+    let radial = null;
+    if (style.radial) {
+      const ang = rng() * Math.PI * 2;
+      const dist = 10 + rng() * 8;
+      radial = {
+        type: style.radial.type,
+        x: width / 2 + Math.cos(ang) * dist,
+        y: height / 2 + Math.sin(ang) * dist,
+        radius: style.radial.radius[0] + rng() * (style.radial.radius[1] - style.radial.radius[0]),
+        sigma: style.radial.sigma,
+        strength: style.radial.strength,
+      };
+    }
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const nx = x * style.freq;
+        const ny = y * style.freq;
+        const wx = (warpNoise(nx * style.warpFreq, ny * style.warpFreq) - 0.5) * style.warp;
+        const wy = (warpNoise(nx * style.warpFreq + 4.7, ny * style.warpFreq + 9.3) - 0.5) * style.warp;
+        const px = nx + wx;
+        const py = ny + wy;
+
+        const base = mountainFbm(noise, px, py, style.octaves, style.lacunarity, style.persistence);
+        const ridge = style.ridge > 0
+          ? mountainRidged(noise, px + 11.3, py + 4.7, style.octaves, style.lacunarity, style.persistence)
+          : 0;
+        let v = base * (1 - style.ridge) + ridge * style.ridge;
+
+        if (radial) {
+          const dx = x - radial.x;
+          const dy = y - radial.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (radial.type === "caldera") {
+            // Ring of rock around a hollow: a crater wall the lake sits inside.
+            const ring = Math.exp(-((d - radial.radius) * (d - radial.radius)) / (2 * radial.sigma * radial.sigma));
+            const inner = radial.radius * 0.62;
+            const bowl = 1 - Math.exp(-(d * d) / (2 * inner * inner));
+            v = v * (0.45 + 0.35 * bowl) + ring * radial.strength;
+            if (d < inner) {
+              // The crater floor is a floor: nearly flat and rising gently to
+              // the wall. Flooding it therefore pools into a round crater lake
+              // instead of snaking down whatever gully the noise left behind.
+              v = Math.min(v, 0.1 + 0.12 * (d / inner) + v * 0.08);
+            }
+          } else if (radial.type === "massif") {
+            // One big mountain that dominates the square, foothills around it.
+            const falloff = Math.max(0, 1 - d / radial.radius);
+            v = v * 0.78 + falloff * falloff * radial.strength;
+          }
+        }
+
+        h[idxOf(x, y)] = clamp01(Math.pow(clamp01(v), style.gamma));
+      }
+    }
+
+    // ---- 2. erosion ------------------------------------------------------
+    // Thermal erosion: anything steeper than the talus angle slides into its
+    // lowest neighbour, which rounds the ridges off and piles scree at the foot
+    // of every face instead of leaving noise-sharp walls everywhere.
+    const NB4X = [1, -1, 0, 0];
+    const NB4Y = [0, 0, 1, -1];
+    for (let iter = 0; iter < style.erosionIters; iter++) {
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          const i = idxOf(x, y);
+          let lowest = i;
+          let lowestH = h[i];
+          for (let k = 0; k < 4; k++) {
+            const j = idxOf(x + NB4X[k], y + NB4Y[k]);
+            if (h[j] < lowestH) { lowestH = h[j]; lowest = j; }
+          }
+          const diff = h[i] - lowestH;
+          if (diff > style.talus) {
+            const move = (diff - style.talus) * 0.5;
+            h[i] -= move;
+            h[lowest] += move;
+          }
+        }
+      }
+    }
+
+    // Glacial rounding: an ice sheet planes the crests down and leaves broad
+    // shoulders, so smoothed maps read as U-shaped troughs, not V-notches.
+    for (let s = 0; s < style.smooth; s++) {
+      const src = h.slice();
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          let sum = 0;
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) sum += src[idxOf(x + dx, y + dy)];
+          }
+          h[idxOf(x, y)] = sum / 9;
+        }
+      }
+    }
+
+    // Terracing: quantising height into steps gives flat tops meeting abrupt
+    // rims - the mesa / tableland silhouette. A little residue is kept so the
+    // tops are not dead flat.
+    if (style.terrace > 0) {
+      for (let i = 0; i < N; i++) {
+        const q = Math.floor(h[i] / style.terrace) * style.terrace;
+        h[i] = q + (h[i] - q) * 0.25;
+      }
+    }
+
+    // The flat crater floor, kept out of the drainage network below.
+    let craterFloor = null;
+    if (radial && radial.type === "caldera") {
+      craterFloor = new Uint8Array(N);
+      const inner = radial.radius * 0.62;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const dx = x - radial.x, dy = y - radial.y;
+          if (Math.sqrt(dx * dx + dy * dy) < inner) craterFloor[idxOf(x, y)] = 1;
+        }
+      }
+    }
+
+    // ---- 3. drainage: valleys, canyons, gorges ---------------------------
+    // Water runs downhill: following steepest descent from a summit to the map
+    // edge and cutting the terrain along that line produces the valley network
+    // a range actually has, and guarantees the mass is drained (and crossable)
+    // rather than a solid wall.
+    const carveChannel = (startX, startY, depth, halfWidth, uShape) => {
+      const path = [];
+      const visited = new Uint8Array(N);
+      let x = startX;
+      let y = startY;
+      const maxSteps = (width + height) * 2;
+      for (let step = 0; step < maxSteps; step++) {
+        path.push(x, y);
+        visited[idxOf(x, y)] = 1;
+        if (x <= 1 || y <= 1 || x >= width - 2 || y >= height - 2) break;
+
+        let bestX = -1, bestY = -1, bestH = Infinity;
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            if (!dx && !dy) continue;
+            const nx2 = x + dx, ny2 = y + dy;
+            if (!inBounds(nx2, ny2) || visited[idxOf(nx2, ny2)]) continue;
+            // A touch of noise on the comparison makes the course meander
+            // instead of running dead straight down the gradient.
+            const cand = h[idxOf(nx2, ny2)] + (rng() - 0.5) * 0.012;
+            if (cand < bestH) { bestH = cand; bestX = nx2; bestY = ny2; }
+          }
+        }
+
+        if (bestX < 0 || bestH >= h[idxOf(x, y)]) {
+          // Sink or dead end: head for the nearest edge so the channel always
+          // leaves the map instead of pooling in a hollow forever.
+          const toWest = x, toEast = width - 1 - x, toNorth = y, toSouth = height - 1 - y;
+          const m = Math.min(toWest, toEast, toNorth, toSouth);
+          if (m === toWest) x -= 1;
+          else if (m === toEast) x += 1;
+          else if (m === toNorth) y -= 1;
+          else y += 1;
+        } else {
+          x = bestX;
+          y = bestY;
+        }
+      }
+
+      // Cut the channel profile, but never inside a crater: a caldera has no
+      // outlet, and a gully cut across its floor would drain the crater lake
+      // into a puddle at the bottom of the trench.
+      // uShape 0 = narrow V notch (gorge), 1 = wide flat-floored trough.
+      const flat = uShape * 0.8;
+      const r = Math.ceil(halfWidth) + 1;
+      for (let p = 0; p < path.length; p += 2) {
+        const cx = path[p], cy = path[p + 1];
+        for (let dy = -r; dy <= r; dy++) {
+          for (let dx = -r; dx <= r; dx++) {
+            const nx2 = cx + dx, ny2 = cy + dy;
+            if (!inBounds(nx2, ny2)) continue;
+            const d = Math.sqrt(dx * dx + dy * dy) / halfWidth;
+            if (d > 1) continue;
+            const t = d <= flat ? 1 : 1 - (d - flat) / (1 - flat);
+            const shaped = Math.pow(t, 1 + (1 - uShape) * 1.2);
+            const j = idxOf(nx2, ny2);
+            if (craterFloor && craterFloor[j]) continue;
+            h[j] = Math.max(0, h[j] - depth * shaped);
+          }
+        }
+      }
+    };
+
+    for (let c = 0; c < style.channels; c++) {
+      // Source the channel at a high point: sample the map and keep the summit.
+      let sx = 2, sy = 2, sh = -1;
+      for (let t = 0; t < 24; t++) {
+        const cx = 2 + Math.floor(rng() * (width - 4));
+        const cy = 2 + Math.floor(rng() * (height - 4));
+        if (h[idxOf(cx, cy)] > sh) { sh = h[idxOf(cx, cy)]; sx = cx; sy = cy; }
+      }
+      carveChannel(
+        sx, sy,
+        style.channelDepth * (0.8 + rng() * 0.45),
+        Math.max(1, style.channelWidth * (0.75 + rng() * 0.6)),
+        style.channelU
+      );
+    }
+
+    // ---- 4. edges and landing clearing -----------------------------------
+    // The outer band stays open so the square joins its neighbours, and the
+    // centre stays open because that is where the player arrives.
+    const borderWidth = (position, span) => {
+      const t = position / span;
+      const w = Math.sin(t * Math.PI * 2) * 0.15 + Math.sin(t * Math.PI * 5) * 0.08;
+      return 3 + Math.floor(((w + 0.23) / 0.46) * 3); // 3-6 tiles, undulating
+    };
+
+    const protectedCell = new Uint8Array(N); // must stay open, walkable ground
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        if (y < borderWidth(x, width) || y >= height - borderWidth(x, width) ||
+          x < borderWidth(y, height) || x >= width - borderWidth(y, height)) {
+          protectedCell[idxOf(x, y)] = 1;
+        }
+      }
+    }
+
+    const centreX = Math.floor(width / 2);
+    const centreY = Math.floor(height / 2);
+    const clearingRadius = 6 + Math.floor(rng() * 4);
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const dx = x - centreX, dy = y - centreY;
+        if (dx * dx + dy * dy <= clearingRadius * clearingRadius) protectedCell[idxOf(x, y)] = 1;
+      }
+    }
+
+    // ---- 5. rock mass and elevation bands --------------------------------
+    // The rock line is a quantile of the finished heightfield, not a fixed
+    // height: erosion, terracing and channel carving all move the terrain
+    // around, and an absolute threshold could leave a Mountain square with no
+    // mountains on it at all. Bands are quantiles too, weighted so each tier is
+    // smaller than the one below it - a range narrowing toward its summits.
+    const rock = new Uint8Array(N);
+    const level = new Uint8Array(N);
+    const face = new Uint8Array(N);
+    {
+      const open = [];
+      for (let i = 0; i < N; i++) if (!protectedCell[i]) open.push(h[i]);
+      open.sort((a, b) => a - b);
+      const rockLine = open.length
+        ? open[Math.min(open.length - 1, Math.floor((1 - style.rockCoverage) * open.length))]
+        : 1;
+
+      const rockHeights = [];
+      for (let i = 0; i < N; i++) {
+        if (protectedCell[i] || h[i] < rockLine) continue;
+        rock[i] = 1;
+        rockHeights.push(h[i]);
+      }
+      rockHeights.sort((a, b) => a - b);
+
+      const cutoffs = [];
+      for (let k = 1; k <= style.bands; k++) {
+        const f = 1 - Math.pow(1 - k / style.bands, 1.6);
+        cutoffs.push(rockHeights.length
+          ? rockHeights[Math.min(rockHeights.length - 1, Math.floor(f * (rockHeights.length - 1)))]
+          : 1);
+      }
+      for (let i = 0; i < N; i++) {
+        if (!rock[i]) continue;
+        let band = style.bands;
+        for (let k = 0; k < cutoffs.length; k++) {
+          if (h[i] <= cutoffs[k]) { band = k + 1; break; }
+        }
+        level[i] = band;
+      }
+
+      // De-speckle: a lone boulder sitting in the middle of a meadow is noise,
+      // not relief, and it reads as dirt on the map. Rock needs company.
+      const speckles = [];
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const i = idxOf(x, y);
+          if (!rock[i]) continue;
+          let neighbours = 0;
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              if (!dx && !dy) continue;
+              const nx2 = x + dx, ny2 = y + dy;
+              if (inBounds(nx2, ny2) && rock[idxOf(nx2, ny2)]) neighbours++;
+            }
+          }
+          if (neighbours <= 1) speckles.push(i);
+        }
+      }
+      for (const i of speckles) { rock[i] = 0; level[i] = 0; }
+    }
+
+    // ---- 6. tarns, caldera lakes and valley pools -------------------------
+    // A lake is grown from the lowest point of an enclosed hollow, always
+    // taking the lowest cell on its shoreline next, so the water follows the
+    // contour of the basin and stops dead against the surrounding rock.
+    const water = new Uint8Array(N);
+    const lakes = [];
+
+    const enclosureScore = (x, y) => {
+      // How many of eight directions run into rock within 9 tiles: a tarn
+      // wants mountains all around it, not an open hillside.
+      let walled = 0;
+      for (let k = 0; k < 8; k++) {
+        const ax = Math.cos((k * Math.PI) / 4);
+        const ay = Math.sin((k * Math.PI) / 4);
+        for (let step = 2; step <= 9; step++) {
+          const nx2 = Math.round(x + ax * step);
+          const ny2 = Math.round(y + ay * step);
+          if (!inBounds(nx2, ny2)) break;
+          if (rock[idxOf(nx2, ny2)]) { walled++; break; }
+        }
+      }
+      return walled;
+    };
+
+    // A perfectly smooth bowl (a caldera especially) has no lowest neighbour to
+    // pick between, and a plain flood of it comes out a geometric diamond. A
+    // fixed per-cell wobble breaks those ties into a natural shoreline without
+    // costing determinism.
+    const shoreWobble = new Float64Array(N);
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        shoreWobble[idxOf(x, y)] = (noise(x * 0.55 + 71.3, y * 0.55 + 23.9) - 0.5) * 0.016;
+      }
+    }
+
+    const growLake = (startIdx, targetArea) => {
+      const seen = new Uint8Array(N);
+      const frontier = [startIdx];
+      const cells = [];
+      seen[startIdx] = 1;
+      const shoreDepth = (i) => h[i] + shoreWobble[i];
+      while (frontier.length > 0 && cells.length < targetArea) {
+        let best = 0;
+        for (let k = 1; k < frontier.length; k++) {
+          if (shoreDepth(frontier[k]) < shoreDepth(frontier[best])) best = k;
+        }
+        const cur = frontier.splice(best, 1)[0];
+        if (rock[cur] || protectedCell[cur] || water[cur]) continue; // shoreline
+        cells.push(cur);
+        const cx = cur % width;
+        const cy = (cur - cx) / width;
+        for (let k = 0; k < 4; k++) {
+          const nx2 = cx + NB4X[k], ny2 = cy + NB4Y[k];
+          if (!inBounds(nx2, ny2)) continue;
+          const j = idxOf(nx2, ny2);
+          if (seen[j]) continue;
+          seen[j] = 1;
+          frontier.push(j);
+        }
+      }
+      if (cells.length < 10) return null;
+      for (const c of cells) water[c] = 1;
+      return cells;
+    };
+
+    if (waterTile) {
+      const lakeCount = rng() < style.lakeChance ? style.lakes : 0;
+      for (let l = 0; l < lakeCount; l++) {
+        let seedIdx = -1;
+        let bestScore = -Infinity;
+
+        if (radial && radial.type === "caldera" && l === 0) {
+          // The caldera floor is the lake, by construction.
+          const cx = Math.max(2, Math.min(width - 3, Math.round(radial.x)));
+          const cy = Math.max(2, Math.min(height - 3, Math.round(radial.y)));
+          const i = idxOf(cx, cy);
+          if (!rock[i] && !protectedCell[i]) seedIdx = i;
+        }
+
+        if (seedIdx < 0) {
+          for (let t = 0; t < 500; t++) {
+            const cx = 5 + Math.floor(rng() * (width - 10));
+            const cy = 5 + Math.floor(rng() * (height - 10));
+            const i = idxOf(cx, cy);
+            if (rock[i] || protectedCell[i] || water[i]) continue;
+            const walled = enclosureScore(cx, cy);
+            if (walled < 5) continue; // not ringed by mountains
+            const score = walled * 0.6 - h[i] * 2.5;
+            if (score > bestScore) { bestScore = score; seedIdx = i; }
+          }
+        }
+
+        if (seedIdx < 0) continue;
+        const area = style.lakeArea[0] + Math.floor(rng() * (style.lakeArea[1] - style.lakeArea[0] + 1));
+        const cells = growLake(seedIdx, area);
+        if (cells) lakes.push(cells);
+      }
+    }
+
+    // ---- 7. the shore that closes the ring --------------------------------
+    // A basin only reads as "a lake in the mountains" if the mountains actually
+    // go all the way round it. Wherever the shoreline opens onto flat ground,
+    // it is raised into rock - except across one arc, which is left as the
+    // approach the player walks in by (and the outlet the water drains through).
+    for (const cells of lakes) {
+      let sumX = 0, sumY = 0;
+      const belongs = new Uint8Array(N);
+      for (const c of cells) {
+        belongs[c] = 1;
+        sumX += c % width;
+        sumY += (c - (c % width)) / width;
+      }
+      const lakeX = sumX / cells.length;
+      const lakeY = sumY / cells.length;
+      const outletAngle = rng() * Math.PI * 2;
+      const outletHalfWidth = 0.5 + rng() * 0.35; // ~60-100 degrees left open
+
+      // Walk the shore band of THIS lake (cells within two tiles of its water).
+      const shore = new Set();
+      for (const c of cells) {
+        const cx = c % width;
+        const cy = (c - cx) / width;
+        for (let dy = -2; dy <= 2; dy++) {
+          for (let dx = -2; dx <= 2; dx++) {
+            const nx2 = cx + dx, ny2 = cy + dy;
+            if (!inBounds(nx2, ny2)) continue;
+            const j = idxOf(nx2, ny2);
+            if (belongs[j] || water[j] || rock[j] || protectedCell[j]) continue;
+            shore.add(j);
+          }
+        }
+      }
+
+      for (const j of shore) {
+        const jx = j % width;
+        const jy = (j - jx) / width;
+        let delta = Math.atan2(jy - lakeY, jx - lakeX) - outletAngle;
+        while (delta > Math.PI) delta -= Math.PI * 2;
+        while (delta < -Math.PI) delta += Math.PI * 2;
+        if (Math.abs(delta) < outletHalfWidth) continue; // the way in
+
+        rock[j] = 1;
+        level[j] = 1 + Math.floor(rng() * 2);
+      }
+    }
+
+    // ---- 8. cliff faces ---------------------------------------------------
+    // On a top-down map height is only visible as the wall drawn below a rim,
+    // so every south-facing rim is extruded downward by its own elevation band:
+    // a band-1 foothill shows a one-tile step, a band-5 summit a five-tile
+    // precipice. Walking north to south the massif therefore reads as tiers.
+    // Bottom-up iteration keeps the newly drawn face out of the rim test.
+    for (let y = height - 1; y >= 0; y--) {
+      for (let x = 0; x < width; x++) {
+        const i = idxOf(x, y);
+        if (!rock[i] || face[i]) continue;
+        if (y + 1 < height && rock[idxOf(x, y + 1)]) continue; // not a rim
+        const faceHeight = Math.min(style.extrudeMax, level[i]);
+        for (let d = 1; d <= faceHeight; d++) {
+          const yy = y + d;
+          if (yy >= height) break;
+          const j = idxOf(x, yy);
+          if (protectedCell[j] || rock[j] || water[j]) break;
+          rock[j] = 1;
+          level[j] = level[i];
+          face[j] = 1;
+        }
+      }
+    }
+
+    // ---- 9. guarantee the square can be crossed ---------------------------
+    // Natural drainage usually leaves a way through, but a dense range plus a
+    // lake can still box the centre in. Where it does, the cheapest route out
+    // is opened - which follows the lowest saddle, so the repair looks like a
+    // mountain pass rather than a corridor punched through the rock.
+    const openAt = (i) => !rock[i] && !water[i];
+
+    // Walkable ground reachable from the landing clearing. Recomputed after
+    // each repair, because one new pass often opens two edges at once.
+    const walkableFromCentre = () => {
+      const seen = new Uint8Array(N);
+      const queue = [idxOf(centreX, centreY)];
+      seen[queue[0]] = 1;
+      for (let qi = 0; qi < queue.length; qi++) {
+        const cur = queue[qi];
+        const cx = cur % width;
+        const cy = (cur - cx) / width;
+        for (let k = 0; k < 4; k++) {
+          const nx2 = cx + NB4X[k], ny2 = cy + NB4Y[k];
+          if (!inBounds(nx2, ny2)) continue;
+          const j = idxOf(nx2, ny2);
+          if (seen[j] || !openAt(j)) continue;
+          seen[j] = 1;
+          queue.push(j);
+        }
+      }
+      return seen;
+    };
+    let reachable = walkableFromCentre();
+
+    const carveCheapestPath = (targetIdx) => {
+      const dist = new Float64Array(N).fill(Infinity);
+      const prev = new Int32Array(N).fill(-1);
+      const startIdx = idxOf(centreX, centreY);
+      // Small binary heap of [cost, index] pairs.
+      const heap = [];
+      const push = (cost, i) => {
+        heap.push(cost, i);
+        let c = heap.length / 2 - 1;
+        while (c > 0) {
+          const p = (c - 1) >> 1;
+          if (heap[p * 2] <= heap[c * 2]) break;
+          const tc = heap[c * 2], ti = heap[c * 2 + 1];
+          heap[c * 2] = heap[p * 2]; heap[c * 2 + 1] = heap[p * 2 + 1];
+          heap[p * 2] = tc; heap[p * 2 + 1] = ti;
+          c = p;
+        }
+      };
+      const pop = () => {
+        const topCost = heap[0], topIdx = heap[1];
+        const lastCost = heap[heap.length - 2], lastIdx = heap[heap.length - 1];
+        heap.length -= 2;
+        if (heap.length > 0) {
+          heap[0] = lastCost; heap[1] = lastIdx;
+          let p = 0;
+          for (;;) {
+            const l = p * 2 + 1, r = p * 2 + 2;
+            let m = p;
+            if (l * 2 < heap.length && heap[l * 2] < heap[m * 2]) m = l;
+            if (r * 2 < heap.length && heap[r * 2] < heap[m * 2]) m = r;
+            if (m === p) break;
+            const tc = heap[m * 2], ti = heap[m * 2 + 1];
+            heap[m * 2] = heap[p * 2]; heap[m * 2 + 1] = heap[p * 2 + 1];
+            heap[p * 2] = tc; heap[p * 2 + 1] = ti;
+            p = m;
+          }
+        }
+        return [topCost, topIdx];
+      };
+
+      dist[startIdx] = 0;
+      push(0, startIdx);
+      while (heap.length > 0) {
+        const [cost, cur] = pop();
+        if (cost > dist[cur]) continue;
+        if (cur === targetIdx) break;
+        const cx = cur % width;
+        const cy = (cur - cx) / width;
+        for (let k = 0; k < 4; k++) {
+          const nx2 = cx + NB4X[k], ny2 = cy + NB4Y[k];
+          if (!inBounds(nx2, ny2)) continue;
+          const j = idxOf(nx2, ny2);
+          // Prefer open ground, then low rock, and only wade through a lake as
+          // a last resort.
+          const step = water[j] ? 26 : rock[j] ? 4 + level[j] * 2.5 : 1;
+          const nd = cost + step;
+          if (nd < dist[j]) { dist[j] = nd; prev[j] = cur; push(nd, j); }
+        }
+      }
+
+      let cur = targetIdx;
+      let guard = 0;
+      while (cur >= 0 && guard++ < N) {
+        const cx = cur % width;
+        const cy = (cur - cx) / width;
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx2 = cx + dx, ny2 = cy + dy;
+            if (!inBounds(nx2, ny2)) continue;
+            const j = idxOf(nx2, ny2);
+            rock[j] = 0;
+            face[j] = 0;
+            level[j] = 0;
+            water[j] = 0;
+            protectedCell[j] = 1;
+          }
+        }
+        if (cur === startIdx) break;
+        cur = prev[cur];
+      }
+    };
+
+    // One list of border cells per edge. The square is crossable when the
+    // centre can walk to at least one cell of each; where it cannot, the pass
+    // is cut to the lowest cell on that edge (the saddle).
+    const edgeCells = [[], [], [], []];
+    for (let x = 1; x < width - 1; x++) {
+      edgeCells[0].push(idxOf(x, 1));
+      edgeCells[1].push(idxOf(x, height - 2));
+    }
+    for (let y = 1; y < height - 1; y++) {
+      edgeCells[2].push(idxOf(1, y));
+      edgeCells[3].push(idxOf(width - 2, y));
+    }
+
+    for (const cells of edgeCells) {
+      if (cells.some((i) => reachable[i])) continue;
+      let target = -1, lowest = Infinity;
+      for (const i of cells) if (h[i] < lowest) { lowest = h[i]; target = i; }
+      if (target < 0) continue;
+      carveCheapestPath(target);
+      reachable = walkableFromCentre();
+    }
+
+    // ---- 9. paint ---------------------------------------------------------
+    const mapData = new Array(tileWidth * height * 4);
+    mapData.fill(0);
+    if (baseTerrainData) {
+      const len = Math.min(baseTerrainData.length, mapData.length);
+      for (let i = 0; i < len; i++) mapData[i] = baseTerrainData[i];
+    }
+
+    const mountainMask = new Array(N).fill(false);
+    const clearUpperLayers = (x, y) => {
+      for (let layer = 1; layer <= 3; layer++) {
+        mapData[calculateIndex(x, y, layer, width, height)] = 0;
+      }
+    };
+
+    // Three shades of rock, lit from the north-west: a slope whose height rises
+    // to the east/south faces the light and takes the bright Center tile, one
+    // falling away from it takes the shadow Right tile. Elevation nudges the
+    // score up, so summits stay lit and gorge floors stay dark - that gradient
+    // is what makes the relief legible from directly above.
+    //
+    // The two cut points are quantiles of this square's own scores rather than
+    // fixed numbers: a gently-sloped foothill square has a far narrower spread
+    // of gradients than an alpine one, and against fixed thresholds it would
+    // come out a single flat shade.
+    const shadeScoreAt = (x, y, i) => {
+      const dzdx = h[idxOf(Math.min(width - 1, x + 1), y)] - h[idxOf(Math.max(0, x - 1), y)];
+      const dzdy = h[idxOf(x, Math.min(height - 1, y + 1))] - h[idxOf(x, Math.max(0, y - 1))];
+      const lit = (dzdx + dzdy) * 4;
+      const elevation = (level[i] / Math.max(1, style.bands)) * 0.35;
+      const grain = (noise(x * 0.9, y * 0.9) - 0.5) * 0.1;
+      return lit + elevation + grain;
+    };
+
+    let shadowCut = -0.1;
+    let litCut = 0.2;
+    if (rockCenter) {
+      const scores = [];
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const i = idxOf(x, y);
+          if (rock[i] && !face[i]) scores.push(shadeScoreAt(x, y, i));
+        }
+      }
+      if (scores.length > 8) {
+        scores.sort((a, b) => a - b);
+        shadowCut = scores[Math.floor(scores.length * 0.36)];
+        litCut = scores[Math.floor(scores.length * 0.68)];
+      }
+    }
+
+    if (rockCenter) {
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const i = idxOf(x, y);
+          if (!rock[i]) continue;
+          let tile;
+          if (face[i]) {
+            // Cliff face: the ends of each horizontal run get the darker corner
+            // tiles so the wall has edges instead of dissolving into its
+            // neighbours.
+            const leftFace = x > 0 && face[idxOf(x - 1, y)];
+            const rightFace = x < width - 1 && face[idxOf(x + 1, y)];
+            if (!leftFace && rightFace) tile = rockLeft;
+            else if (leftFace && !rightFace) tile = rockRight;
+            else tile = rockCenter;
+          } else {
+            const score = shadeScoreAt(x, y, i);
+            tile = score >= litCut ? rockCenter : score <= shadowCut ? rockRight : rockLeft;
+          }
+          mapData[calculateIndex(x, y, 0, width, height)] = tile;
+          mountainMask[i] = true;
+          clearUpperLayers(x, y);
+        }
+      }
+    } else {
+      logWarn("generateMountainRangeTerrain: no MountainLeft/Center/Right tiles in tileset, rock not drawn");
+    }
+
+    if (waterTile) {
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const i = idxOf(x, y);
+          if (!water[i]) continue;
+          mapData[calculateIndex(x, y, 0, width, height)] = waterTile;
+          // A lake is terrain, not scenery: it holds its ground against prefabs
+          // and scattered features exactly like the rock does.
+          mountainMask[i] = true;
+          clearUpperLayers(x, y);
+        }
+      }
+    }
+
+    // Shoreline and scree apron: the ground immediately below a cliff is
+    // rubble, and the ground around a tarn is its beach. Both are painted only
+    // on open valley floor, so they never eat into rock or water.
+    if (shoreTile || apronTile) {
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const i = idxOf(x, y);
+          if (rock[i] || water[i]) continue;
+          let nearWater = false;
+          let rockDistance = 99;
+          for (let dy = -2; dy <= 2; dy++) {
+            for (let dx = -2; dx <= 2; dx++) {
+              const nx2 = x + dx, ny2 = y + dy;
+              if (!inBounds(nx2, ny2)) continue;
+              const j = idxOf(nx2, ny2);
+              const cheb = Math.max(Math.abs(dx), Math.abs(dy));
+              if (water[j] && cheb <= 1) nearWater = true;
+              if (rock[j] && cheb < rockDistance) rockDistance = cheb;
+            }
+          }
+          if (nearWater && shoreTile) {
+            mapData[calculateIndex(x, y, 0, width, height)] = shoreTile;
+          } else if (apronTile && rockDistance <= 2) {
+            const chance = rockDistance === 1 ? 0.8 : 0.3;
+            if (noise(x * 0.7 + 40.5, y * 0.7 + 12.5) < chance) {
+              mapData[calculateIndex(x, y, 0, width, height)] = apronTile;
+            }
+          }
+        }
+      }
+    }
+
+    mapData.mountainMask = mountainMask;
+    mapData.mountainWaterMask = water;
+    mapData.mountainElevation = h;
+    mapData.mountainLevels = level;
+    mapData.mountainStyle = style.id;
+
+    log(
+      `Mountain relief: ${biomeName} at ${(worldCoords && worldCoords.x) || 0},${(worldCoords && worldCoords.y) || 0} ` +
+      `-> ${style.label} (${style.family})`
+    );
+
+    return mapData;
+  }
+
   // ===== BSP DUNGEON GENERATOR =====
 
   /**
@@ -2949,6 +4020,9 @@
     generateCaveWithCellularAutomata,
     generateCaveWithVoronoi,
     generateMountainBiomeTerrain,
+    generateMountainRangeTerrain,
+    pickMountainStyle,
+    MOUNTAIN_STYLES,
     generateDungeonBSP,
     generateDungeonWithBSP,
     getTerrainFeatures,

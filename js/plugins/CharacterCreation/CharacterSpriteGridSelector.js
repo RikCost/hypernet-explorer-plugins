@@ -605,7 +605,7 @@
       const back = document.createElement("button");
       back.className = "cc-btn-treaty";
       back.textContent = window.CCButtons.backLabel();
-      back.addEventListener("click", () => this.popScene());
+      back.addEventListener("click", () => this.leaveWithoutPicking());
       slots.back.appendChild(back);
       const confirm = document.createElement("button");
       confirm.className = "cc-btn-treaty confirm";
@@ -892,7 +892,7 @@
         return;
       } else if (Input.isTriggered("cancel")) {
         SoundManager.playCancel();
-        this.popScene();
+        this.leaveWithoutPicking();
         return;
       }
 
@@ -934,6 +934,30 @@
 
       SoundManager.playOk();
 
+      // Quick mode: this pick is the whole of the character's appearance and
+      // half of who they are. The bust is the one the sheet comes with rather
+      // than one browsed for, and the sheet's own NPCs.json record settles
+      // gender and body archetype, so the wizard never has to ask. Leaving
+      // here pops straight back to the map, where the creation common event
+      // resumes at the class step.
+      if (this._isQuickCreation()) {
+        const bust = bustForSprite(entry.name, entry.index);
+        if (bust) {
+          actor.setVnBust(bust);
+          if (actor.setPortraitMode) actor.setPortraitMode("bust");
+        } else if (window.selectRandomBustForActor) {
+          // A sheet with no portrait of its own still needs a face to be read
+          // by, and the gallery is not on offer here.
+          window.selectRandomBustForActor(this._actorId);
+        }
+        const utils = window.CharacterCreationUtils;
+        if (utils && utils.applyIdentityFromSprite) {
+          utils.applyIdentityFromSprite(this._actorId - 1, entry.name);
+        }
+        this.popScene();
+        return;
+      }
+
       // Portrait style is exclusive (chosen on the wizard's portrait step): a
       // "model" character skips the bust gallery entirely and goes straight to
       // the 3D editor, a "bust" character never sees the editor.
@@ -952,6 +976,31 @@
       }
 
       this.createBustSelectionScene(bustForSprite(entry.name, entry.index));
+    }
+
+    // Backing out of the board. The character keeps the sheet they already
+    // had, which in Quick mode still has to answer for gender and body: this
+    // board is the only place that question is ever put, so leaving it unasked
+    // would strand the member with whatever the one before them settled on.
+    leaveWithoutPicking() {
+      if (this._isQuickCreation()) {
+        const actor = $gameActors.actor(this._actorId);
+        const utils = window.CharacterCreationUtils;
+        if (actor && utils && utils.applyIdentityFromSprite) {
+          utils.applyIdentityFromSprite(this._actorId - 1, actor.characterName());
+        }
+      }
+      this.popScene();
+    }
+
+    // True when this board was opened by a paused Quick-mode creation run, the
+    // one flow that takes the sprite as the answer to more than one question.
+    // The board is also reachable from menus and from the other creation
+    // modes, which all still browse busts afterwards.
+    _isQuickCreation() {
+      const wizard = window.Scene_CharacterCreation;
+      return !!(wizard && wizard._interruptedStep >= 0 &&
+        wizard.isQuickMode && wizard.isQuickMode());
     }
 
     createBustSelectionScene(preselectedBust) {

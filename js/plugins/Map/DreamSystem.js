@@ -3518,10 +3518,10 @@
         },
 
         /**
-         * Another weapon, on the wheel or the shoulder buttons. A dream does not
-         * carry a rack: what is in the sleeper's hand is simply something else
-         * now, and it is announced because the swap is otherwise only visible
-         * once they swing.
+         * Another weapon, on the wheel, on L1 or on either analog trigger. A
+         * dream does not carry a rack, and it is never shown one: what is in the
+         * sleeper's hand is simply something else now, and it is announced
+         * because the swap is otherwise only visible once they swing.
          */
         swap() {
             const now = performance.now();
@@ -3540,6 +3540,26 @@
             const scene = DreamSystem._scene;
             if (scene && scene._menuOpen) return;
             DreamWeapon.swap();
+        },
+
+        /**
+         * L2 and R2, the wheel's other twin on a pad. Core's gamepad mapper
+         * does not carry the analog triggers, so they are read through the
+         * shared helper and edged here: one weapon per pull, not one a frame
+         * for as long as the trigger is held down.
+         */
+        _updateTriggers() {
+            const pads = window.AnalogStickInput;
+            if (!pads || !pads.leftTrigger) return;
+            const scene = DreamSystem._scene;
+            if (scene && scene._menuOpen) return;
+            const pulled = Math.max(pads.leftTrigger(), pads.rightTrigger ? pads.rightTrigger() : 0);
+            if (!this._trigDown && pulled > 0.55) {
+                this._trigDown = true;
+                this.swap();
+            } else if (this._trigDown && pulled < 0.30) {
+                this._trigDown = false;
+            }
         },
 
         /** Melee or ranged, for anything that wants to know before swinging. */
@@ -3567,9 +3587,12 @@
             if (!s) return;
             if (typeof Input !== 'undefined') {
                 if (!blockAction && Input.isTriggered('ok')) this.swing();
-                // L1 / R1 (pageup / pagedown), the wheel's twin on a pad.
-                if (Input.isTriggered('pageup') || Input.isTriggered('pagedown')) this.swap();
+                // R1 (pagedown) is the trigger, here and on the shooting range
+                // both. L1 is the wheel's twin on a pad and changes the weapon.
+                if (Input.isTriggered('pagedown')) this.swing();
+                if (Input.isTriggered('pageup')) this.swap();
             }
+            this._updateTriggers();
             // Nothing to aim at out here: the weapon rests, breathes and swings
             // its own arc rather than turning on a battlefield target.
             s._aimPoint = null;

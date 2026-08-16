@@ -2256,7 +2256,7 @@
   "description": "Unlocks a door"
  },
  "565": {
-  "name": "Steel ore",
+  "name": "Salvaged steel",
   "description": "Crafting material"
  },
  "566": {
@@ -2891,6 +2891,10 @@
   "name": "Flying broom",
   "description": "A besom that answers a summons and flies."
  },
+ "946": {
+  "name": "Lithium Carbonate",
+  "description": "A salt from a rock. Half a gram either way is the difference between well and poisoned."
+ },
  "1443": {
   "name": "First Aid Kit",
   "description": "Gauze, tape, tweezers and a leaflet. Sees an ordinary illness through, slowly."
@@ -3102,10 +3106,6 @@
  "1495": {
   "name": "Panacea Draught",
   "description": "The alchemist's answer to everything. Nearly everything. It has a list of exceptions and knows it."
- },
- "946": {
-  "name": "Lithium Carbonate",
-  "description": "A salt from a rock. Half a gram either way is the difference between well and poisoned."
  },
  "1497": {
   "name": "Culture Vial: Influenza",
@@ -3388,44 +3388,12 @@
   "description": "A sealed prion ampoule of Fatal Familial Insomnia. Opening it gives the disease to somebody in the party."
  },
  "1567": {
-  "name": "Gene Ampoule: Type 1 Diabetes",
-  "description": "A sealed gene ampoule of Type 1 Diabetes. Opening it gives the disease to somebody in the party."
+  "name": "Culture Vial: Type 1 Diabetes",
+  "description": "A sealed culture vial of Type 1 Diabetes. Opening it gives the disease to somebody in the party."
  },
  "1568": {
   "name": "Culture Vial: Type 2 Diabetes",
   "description": "A sealed culture vial of Type 2 Diabetes. Opening it gives the disease to somebody in the party."
- },
- "1569": {
-  "name": "Gene Ampoule: Sickle Cell Anemia",
-  "description": "A sealed gene ampoule of Sickle Cell Anemia. Opening it gives the disease to somebody in the party."
- },
- "1570": {
-  "name": "Gene Ampoule: Hemophilia",
-  "description": "A sealed gene ampoule of Hemophilia. Opening it gives the disease to somebody in the party."
- },
- "1571": {
-  "name": "Gene Ampoule: Cystic Fibrosis",
-  "description": "A sealed gene ampoule of Cystic Fibrosis. Opening it gives the disease to somebody in the party."
- },
- "1572": {
-  "name": "Gene Ampoule: Huntington's Disease",
-  "description": "A sealed gene ampoule of Huntington's Disease. Opening it gives the disease to somebody in the party."
- },
- "1573": {
-  "name": "Gene Ampoule: Thalassemia",
-  "description": "A sealed gene ampoule of Thalassemia. Opening it gives the disease to somebody in the party."
- },
- "1574": {
-  "name": "Gene Ampoule: Albinism",
-  "description": "A sealed gene ampoule of Albinism. Opening it gives the disease to somebody in the party."
- },
- "1575": {
-  "name": "Gene Ampoule: Porphyria",
-  "description": "A sealed gene ampoule of Porphyria. Opening it gives the disease to somebody in the party."
- },
- "1576": {
-  "name": "Gene Ampoule: Marfan Syndrome",
-  "description": "A sealed gene ampoule of Marfan Syndrome. Opening it gives the disease to somebody in the party."
  },
  "1577": {
   "name": "Culture Vial: Lupus",
@@ -4018,5 +3986,277 @@
  "1724": {
   "name": "Reliquary: Lycanthropy",
   "description": "A sealed reliquary of Lycanthropy. Opening it gives the disease to somebody in the party."
+ },
+ "1726": {
+  "name": "Tomato",
+  "description": "A ripe tomato, still warm from the vine. 22 cal."
+ },
+ "1727": {
+  "name": "Watermelon",
+  "description": "Half a watermelon, more water than melon. 85 cal."
+ },
+ "1728": {
+  "name": "Wheat Sheaf",
+  "description": "A bound sheaf of ripe wheat, chewable raw. 180 cal."
+ },
+ "1729": {
+  "name": "Pumpkin",
+  "description": "A field pumpkin, heavy as a helmet. 110 cal."
+ },
+ "1730": {
+  "name": "Carrot",
+  "description": "A pulled carrot with the dirt still on it. 41 cal."
+ },
+ "1731": {
+  "name": "Potato",
+  "description": "An earthy potato, best not eaten raw. 160 cal."
+ },
+ "1732": {
+  "name": "Wild Mushroom",
+  "description": "A brown-capped mushroom of the edible kind. 30 cal."
+ },
+ "1733": {
+  "name": "Sunflower Seeds",
+  "description": "Striped seeds prised out of a spent flower head. 280 cal."
+ },
+ "1734": {
+  "name": "Strawberries",
+  "description": "A handful of small, dark red strawberries. 48 cal."
+ },
+ "1735": {
+  "name": "Corn Cob",
+  "description": "A cob of sweetcorn stripped of its husk. 125 cal."
+ },
+ "1736": {
+  "name": "Lavender Sprig",
+  "description": "A cut sprig of lavender. Steeps into a calm tea. 5 cal."
+ },
+ "1737": {
+  "name": "Onion",
+  "description": "A papery onion that fights back. 44 cal."
+ },
+ "1738": {
+  "name": "Cabbage",
+  "description": "A dense head of cabbage. 50 cal."
+ },
+ "1739": {
+  "name": "Eggplant",
+  "description": "A glossy purple aubergine. 35 cal."
+ },
+ "1740": {
+  "name": "Bell Pepper",
+  "description": "A sweet pepper, crisp and hollow. 30 cal."
+ },
+ "1741": {
+  "name": "Pineapple",
+  "description": "An armoured tropical fruit worth the trouble. 90 cal."
+ },
+ "1742": {
+  "name": "Grapes",
+  "description": "A bunch of dusty vineyard grapes. 70 cal."
+ },
+ "1743": {
+  "name": "Prickly Pear",
+  "description": "Cactus fruit, once the spines are off. 60 cal."
+ },
+ "1744": {
+  "name": "Green Beans",
+  "description": "A fistful of beans picked off the stalk. 55 cal."
+ },
+ "1745": {
+  "name": "Acorns",
+  "description": "Oak mast, bitter until leached. Famine food. 110 cal."
+ },
+ "1746": {
+  "name": "Sweet Chestnuts",
+  "description": "Spiny husks hiding sweet chestnuts. 130 cal."
+ },
+ "1747": {
+  "name": "Hazelnuts",
+  "description": "Hazelnuts, if the squirrels left any. 180 cal."
+ },
+ "1748": {
+  "name": "Wild Garlic",
+  "description": "Broad leaves that announce themselves by smell. 20 cal."
+ },
+ "1749": {
+  "name": "Fiddlehead Ferns",
+  "description": "Coiled fern shoots, picked before they open. 34 cal."
+ },
+ "1750": {
+  "name": "Morel Mushrooms",
+  "description": "Honeycombed caps that hide in plain sight. 31 cal."
+ },
+ "1751": {
+  "name": "Chanterelles",
+  "description": "Golden trumpets smelling faintly of apricot. 38 cal."
+ },
+ "1752": {
+  "name": "Elderberries",
+  "description": "Heavy black umbels. Cook them, don't gorge. 73 cal."
+ },
+ "1753": {
+  "name": "Rose Hips",
+  "description": "Scarlet hips off a wild briar. 45 cal."
+ },
+ "1754": {
+  "name": "Pine Nuts",
+  "description": "Prised out of cones one resinous nut at a time. 190 cal."
+ },
+ "1755": {
+  "name": "Wood Sorrel",
+  "description": "Clover-leaved and sharply sour. 18 cal."
+ },
+ "1756": {
+  "name": "Dandelion Greens",
+  "description": "Bitter young leaves from a roadside rosette. 25 cal."
+ },
+ "1757": {
+  "name": "Blackberries",
+  "description": "Bramble fruit, paid for in scratches. 62 cal."
+ },
+ "1758": {
+  "name": "Wild Onion",
+  "description": "A thin field onion pulled up by the stem. 30 cal."
+ },
+ "1759": {
+  "name": "Chicory Root",
+  "description": "A pale taproot that roasts into fake coffee. 72 cal."
+ },
+ "1760": {
+  "name": "Nettle Tops",
+  "description": "Young nettle tips. They stop stinging once boiled. 42 cal."
+ },
+ "1761": {
+  "name": "Bilberries",
+  "description": "Small dark berries off a low moorland bush. 57 cal."
+ },
+ "1762": {
+  "name": "Juniper Berries",
+  "description": "Resinous blue berries. A seasoning, not a meal. 30 cal."
+ },
+ "1763": {
+  "name": "Mountain Thyme",
+  "description": "A wiry, fragrant herb growing out of bare rock. 10 cal."
+ },
+ "1764": {
+  "name": "Coconut",
+  "description": "A fallen coconut, still full of water. 350 cal."
+ },
+ "1765": {
+  "name": "Wild Papaya",
+  "description": "Soft orange flesh around a nest of seeds. 60 cal."
+ },
+ "1766": {
+  "name": "Jungle Banana",
+  "description": "A short, seedy wild banana. 105 cal."
+ },
+ "1767": {
+  "name": "Cacao Pod",
+  "description": "A ridged pod packed with bitter beans. 220 cal."
+ },
+ "1768": {
+  "name": "Palm Heart",
+  "description": "The pale core of a young palm. Costs the tree. 115 cal."
+ },
+ "1769": {
+  "name": "Date Cluster",
+  "description": "Sticky dates still on the stalk. 280 cal."
+ },
+ "1770": {
+  "name": "Mesquite Pods",
+  "description": "Dry sweet pods that grind into flour. 150 cal."
+ },
+ "1771": {
+  "name": "Desert Gourd",
+  "description": "A hard-skinned gourd, mostly water inside. 40 cal."
+ },
+ "1772": {
+  "name": "Agave Heart",
+  "description": "The roasted core of an agave. Sweet and fibrous. 180 cal."
+ },
+ "1773": {
+  "name": "Cloudberries",
+  "description": "Amber berries that only ripen where it freezes. 51 cal."
+ },
+ "1774": {
+  "name": "Crowberries",
+  "description": "Black tundra berries, watery and faintly sweet. 30 cal."
+ },
+ "1775": {
+  "name": "Snow Moss",
+  "description": "Pale moss scraped from under the snow. 22 cal."
+ },
+ "1776": {
+  "name": "Reindeer Lichen",
+  "description": "Grey lichen. Edible boiled, and only just. 60 cal."
+ },
+ "1777": {
+  "name": "Cattail Roots",
+  "description": "Starchy reed rhizomes dug out of the mud. 95 cal."
+ },
+ "1778": {
+  "name": "Watercress",
+  "description": "Peppery leaves off a clean running stream. 11 cal."
+ },
+ "1779": {
+  "name": "Marsh Samphire",
+  "description": "Salty green fingers growing out of tidal mud. 25 cal."
+ },
+ "1780": {
+  "name": "Sea Grapes",
+  "description": "Beaded seaweed that pops like caviar. 40 cal."
+ },
+ "1781": {
+  "name": "Wild Rice",
+  "description": "Dark grain shaken loose over a canoe. 165 cal."
+ },
+ "1782": {
+  "name": "Water Chestnuts",
+  "description": "Crunchy corms raked up from the shallows. 97 cal."
+ },
+ "1783": {
+  "name": "Edible Kelp",
+  "description": "A cut frond of kelp, salt and iodine. 43 cal."
+ },
+ "1784": {
+  "name": "Cave Mushroom",
+  "description": "A blind white mushroom grown without sun. 28 cal."
+ },
+ "1785": {
+  "name": "Glowcap Mushroom",
+  "description": "Faintly luminous. Keeps glowing after chewing. 35 cal."
+ },
+ "1786": {
+  "name": "Black Truffle",
+  "description": "A knuckle of black truffle worth its weight. 60 cal."
+ },
+ "1787": {
+  "name": "Pale Cave Root",
+  "description": "A root that found its way down through the rock. 85 cal."
+ },
+ "1788": {
+  "name": "Ash Morels",
+  "description": "Morels that fruit in burnt ground, and only there. 40 cal."
+ },
+ "1789": {
+  "name": "Sulfur Fungus",
+  "description": "Yellow shelf fungus off a steaming vent. 55 cal."
+ },
+ "1790": {
+  "name": "Roadside Greens",
+  "description": "Whatever grows in the cracks, picked anyway. 20 cal."
+ },
+ "1791": {
+  "name": "Chicken Egg",
+  "description": "A warm brown egg, straight out of the coop. 72 cal."
+ },
+ "1792": {
+  "name": "Duck Egg",
+  "description": "Bigger and richer than a hen's, and twice the yolk. 130 cal."
+ },
+ "1793": {
+  "name": "Goat Milk",
+  "description": "A pail of goat's milk, tangy and still warm. 168 cal."
  }
 }

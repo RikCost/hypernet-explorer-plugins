@@ -33,6 +33,18 @@
  * - Sprite sheets use rows as growth stages:
  *   Baby = direction DOWN (row 0), Adult = direction LEFT (row 1).
  *
+ * --- Produce ---
+ * What an animal pays out is what a LIVING animal gives: an egg, a pail of
+ * milk, a fleece. Never what you would get by killing it - see the note over
+ * ANIMAL_DB, which lists what changed and why.
+ *
+ * --- Company ---
+ * Every animal also carries a `company` value, paid into the party's Social
+ * need (TimeDateSystem's extended needs) whenever the player interacts with it:
+ * the leader in full, everyone else at half, once per in-game day per animal so
+ * it cannot be farmed by holding the action button down. A dog, a donkey and a
+ * rooster produce nothing at all and are kept for exactly this.
+ *
  * --- Legacy "Animal" events ---
  * An event named "Animal" still works as a single animal slot driven by the
  * SellAnimal / CollectProduce / RemoveAnimal plugin commands; AnimalMenu and
@@ -91,9 +103,28 @@
   // ============================================================
 
   // produces: array of { itemId, interval (in days), yieldMin, yieldMax }
-  // Produce ids are real database items: 438 Fresh Milk, 861 Cloth (wool),
-  // 862 Meat, 868 Leather. (They used to all point at 575, which the
-  // 565-587 -> 849-871 material migration turned into a food item.)
+  // company: how much Social a round with this animal is worth (0-100 scale,
+  //          once per in-game day per animal - see keepCompany below)
+  //
+  // WHAT A LIVE ANIMAL GIVES. Produce is what the animal hands over while it
+  // goes on living: an egg, a pail of milk, a fleece. It is NOT what you get by
+  // killing it, which is what several of these entries used to pay out - a hen
+  // yielding Raw Meat every single day, a live cow shedding Leather every five,
+  // a rabbit doing the same every three. Those are slaughter drops on a
+  // producing animal's timer, so they are gone:
+  //
+  //   Chicken -> Chicken Egg (1791)   was Raw Meat  (862) daily
+  //   Duck    -> Duck Egg    (1792)   was Raw Meat  (862)
+  //   Goat    -> Goat Milk   (1793)   was Fresh Milk (438), a cow's milk
+  //   Cow     -> Fresh Milk  (438)    keeps the milk, loses the Leather
+  //   Rabbit  -> Cloth       (861)    angora, in place of skinning it alive
+  //   Pig     -> nothing              was Raw Meat (862); a pig is a slaughter
+  //                                   animal, not a producing one, so it earns
+  //                                   its keep on the sale and on the company
+  //   Sheep   -> Cloth       (861)    unchanged: the fleece, as the material
+  //
+  // Every animal pays `company` whether or not it produces anything, which for
+  // a dog, a donkey and a rooster is the entire point of keeping one.
 
   const ANIMAL_DB = {
     Chicken: {
@@ -108,8 +139,9 @@
       sellValueBaby: 1000,
       sellValueAdult: 2500,
       growthDays: 7,
+      company: 3,
       produces: [
-        { itemId: 862, interval: 1, yieldMin: 1, yieldMax: 3 }
+        { itemId: 1791, interval: 1, yieldMin: 1, yieldMax: 2 }
       ]
     },
     Cow: {
@@ -124,9 +156,9 @@
       sellValueBaby: 5000,
       sellValueAdult: 15000,
       growthDays: 14,
+      company: 5,
       produces: [
-        { itemId: 438, interval: 2, yieldMin: 1, yieldMax: 2 },
-        { itemId: 868, interval: 5, yieldMin: 1, yieldMax: 1 }
+        { itemId: 438, interval: 2, yieldMin: 1, yieldMax: 2 }
       ]
     },
     Dog: {
@@ -139,6 +171,9 @@
       buyCostAdult: 20000,
       sellValueAdult: 10000,
       growthDays: 0,
+      // A dog produces nothing and is worth keeping anyway: it is the best
+      // company on the list by a distance.
+      company: 14,
       produces: []
     },
     Donkey: {
@@ -153,6 +188,7 @@
       sellValueBaby: 4000,
       sellValueAdult: 10000,
       growthDays: 14,
+      company: 8,
       produces: []
     },
     Duck: {
@@ -166,8 +202,9 @@
       sellValueBaby: 750,
       sellValueAdult: 2000,
       growthDays: 5,
+      company: 3,
       produces: [
-        { itemId: 862, interval: 2, yieldMin: 1, yieldMax: 2 }
+        { itemId: 1792, interval: 2, yieldMin: 1, yieldMax: 2 }
       ]
     },
     Goat: {
@@ -181,8 +218,9 @@
       sellValueBaby: 3000,
       sellValueAdult: 7500,
       growthDays: 10,
+      company: 6,
       produces: [
-        { itemId: 438, interval: 2, yieldMin: 1, yieldMax: 2 }
+        { itemId: 1793, interval: 2, yieldMin: 1, yieldMax: 2 }
       ]
     },
     Pig: {
@@ -197,9 +235,11 @@
       sellValueBaby: 2500,
       sellValueAdult: 6000,
       growthDays: 10,
-      produces: [
-        { itemId: 862, interval: 3, yieldMin: 1, yieldMax: 2 }
-      ]
+      // Nothing comes off a pig until the pig is gone, so it pays its way on
+      // the sale price and on being far better company than it is given credit
+      // for.
+      company: 7,
+      produces: []
     },
     Rabbit: {
       adultSkins: [
@@ -213,8 +253,9 @@
       sellValueBaby: 500,
       sellValueAdult: 1500,
       growthDays: 5,
+      company: 8,
       produces: [
-        { itemId: 868, interval: 3, yieldMin: 1, yieldMax: 2 }
+        { itemId: 861, interval: 4, yieldMin: 1, yieldMax: 1 }
       ]
     },
     Rooster: {
@@ -227,6 +268,7 @@
       buyCostAdult: 4000,
       sellValueAdult: 2000,
       growthDays: 0,
+      company: 2,
       produces: []
     },
     Sheep: {
@@ -242,6 +284,7 @@
       sellValueBaby: 2000,
       sellValueAdult: 5000,
       growthDays: 10,
+      company: 5,
       produces: [
         { itemId: 861, interval: 3, yieldMin: 1, yieldMax: 3 }
       ]
@@ -507,6 +550,47 @@
 
   function hasReadyProduce(rec, def) {
     return checkProduce(rec, def, false).length > 0;
+  }
+
+  // ============================================================
+  //  COMPANY
+  // ============================================================
+
+  // An animal is not only a factory. Standing about with one does a person
+  // good, and for the animals that produce nothing at all - a dog, a donkey, a
+  // rooster - it is the only reason to keep them. Every interaction pays the
+  // animal's `company` into the party's Social need (TimeDateSystem's extended
+  // needs, the same meter conversation and the society simulation move).
+  //
+  // Paid once per in-game day per animal, so it cannot be farmed by standing in
+  // front of the dog and holding the action button down. The whole party is
+  // stood there, so the whole party benefits - the leader, who is the one
+  // actually crouched down scratching its ears, gets the full amount and
+  // everyone else half of it.
+  const COMPANY_COOLDOWN_MINUTES = MINUTES_PER_DAY;
+
+  function keepCompany(rec, def) {
+    const amount = def && def.company;
+    if (!amount || !$gameParty) return 0;
+    const now = gameMinutes();
+    const last = rec.lastCompanyMinutes;
+    // `last > now` means game time was reset under us; resync rather than
+    // locking the animal out until the clock climbs back past the old value.
+    if (last !== undefined && last <= now && now - last < COMPANY_COOLDOWN_MINUTES) return 0;
+    rec.lastCompanyMinutes = now;
+
+    const leader = $gameParty.leader();
+    for (const member of $gameParty.members()) {
+      if (!member || typeof member.addSocial !== "function") continue;
+      member.addSocial(member === leader ? amount : amount / 2);
+    }
+    return amount;
+  }
+
+  function reportCompany(animalId) {
+    window.skipLocalization = true;
+    $gameMessage.add(T('AnimalGrowth.company', { animal: animalId }));
+    window.skipLocalization = false;
   }
 
   // Announces a collection through the message window, in the caller's voice.
@@ -1184,15 +1268,19 @@
     const def = ANIMAL_DB[rec.animalId];
     if (!def) return;
     const items = collectProduce(rec, def);
+    const company = keepCompany(rec, def);
     if (items.length > 0) {
       SoundManager.playShop();
       reportCollected(items);
-      saveRecord(mapId, eventId, rec);
-    } else {
+    } else if (!company) {
       window.skipLocalization = true;
       $gameMessage.add(T('AnimalGrowth.nothingToCollect'));
       window.skipLocalization = false;
     }
+    if (company) reportCompany(rec.animalId);
+    // Saved either way: keepCompany stamps the record even when there was
+    // nothing to collect.
+    saveRecord(mapId, eventId, rec);
   });
 
   PluginManager.registerCommand(pluginName, "RemoveAnimal", function () {
@@ -1215,9 +1303,18 @@
     if (!def) return;
     updateRecordGrowth(rec);
     const items = collectProduce(rec, def);
+    // Company is paid whatever else happened: an animal with nothing ready is
+    // still worth going to see, and one that produces nothing at all is worth
+    // going to see for that reason alone.
+    const company = keepCompany(rec, def);
     if (items.length > 0) {
       SoundManager.playShop();
       reportCollected(items);
+      if (company) reportCompany(rec.animalId);
+      return;
+    }
+    if (company) {
+      reportCompany(rec.animalId);
       return;
     }
     window.skipLocalization = true;

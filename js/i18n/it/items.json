@@ -3384,44 +3384,12 @@
   "description": "Un fiala prionica sigillato di Fatal Familial Insomnia. Aprirlo trasmette la malattia a qualcuno nel gruppo."
  },
  "1567": {
-  "name": "Fiala Genica: Type 1 Diabetes",
-  "description": "Un fiala genica sigillato di Type 1 Diabetes. Aprirlo trasmette la malattia a qualcuno nel gruppo."
+  "name": "Fiala di Coltura: Type 1 Diabetes",
+  "description": "Un fiala di coltura sigillato di Type 1 Diabetes. Aprirlo trasmette la malattia a qualcuno nel gruppo."
  },
  "1568": {
   "name": "Fiala di Coltura: Type 2 Diabetes",
   "description": "Un fiala di coltura sigillato di Type 2 Diabetes. Aprirlo trasmette la malattia a qualcuno nel gruppo."
- },
- "1569": {
-  "name": "Fiala Genica: Sickle Cell Anemia",
-  "description": "Un fiala genica sigillato di Sickle Cell Anemia. Aprirlo trasmette la malattia a qualcuno nel gruppo."
- },
- "1570": {
-  "name": "Fiala Genica: Hemophilia",
-  "description": "Un fiala genica sigillato di Hemophilia. Aprirlo trasmette la malattia a qualcuno nel gruppo."
- },
- "1571": {
-  "name": "Fiala Genica: Cystic Fibrosis",
-  "description": "Un fiala genica sigillato di Cystic Fibrosis. Aprirlo trasmette la malattia a qualcuno nel gruppo."
- },
- "1572": {
-  "name": "Fiala Genica: Huntington's Disease",
-  "description": "Un fiala genica sigillato di Huntington's Disease. Aprirlo trasmette la malattia a qualcuno nel gruppo."
- },
- "1573": {
-  "name": "Fiala Genica: Thalassemia",
-  "description": "Un fiala genica sigillato di Thalassemia. Aprirlo trasmette la malattia a qualcuno nel gruppo."
- },
- "1574": {
-  "name": "Fiala Genica: Albinism",
-  "description": "Un fiala genica sigillato di Albinism. Aprirlo trasmette la malattia a qualcuno nel gruppo."
- },
- "1575": {
-  "name": "Fiala Genica: Porphyria",
-  "description": "Un fiala genica sigillato di Porphyria. Aprirlo trasmette la malattia a qualcuno nel gruppo."
- },
- "1576": {
-  "name": "Fiala Genica: Marfan Syndrome",
-  "description": "Un fiala genica sigillato di Marfan Syndrome. Aprirlo trasmette la malattia a qualcuno nel gruppo."
  },
  "1577": {
   "name": "Fiala di Coltura: Lupus",

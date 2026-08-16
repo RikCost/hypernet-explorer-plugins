@@ -1245,12 +1245,12 @@
     applySelectedDiseases(actor) {
       const api = window.DiseaseSystem;
       if (!api || !api.infectActor) return;
-      // Two entries in the trait list were illnesses all along: Possessed and
-      // Lycanthrope are caught, they run a course and the right rite answers
-      // them, so they carry a `disease` pointer and are handed over here
-      // instead of being folded into paramPlus.
-      const wanted = this._selectedDiseases.map((card) => card.diseaseId)
-        .concat(this._selectedTraits.map((trait) => trait.disease).filter(Boolean));
+      // Everything that is caught, runs a course and answers to a treatment
+      // now lives in the illness library and is picked here — Possession and
+      // Lycanthropy among them, which spent a while masquerading as traits.
+      // Whatever a disease grants (skills, param deltas) comes from the library
+      // too, so nothing on this path is folded into paramPlus.
+      const wanted = this._selectedDiseases.map((card) => card.diseaseId);
       for (const entry of [...(actor._diseases || [])]) {
         if ((actor._ccDiseases || []).includes(entry.id) && !wanted.includes(entry.id)) {
           api.cureActor(actor, entry.id);

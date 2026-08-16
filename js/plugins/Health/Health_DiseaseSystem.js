@@ -814,6 +814,21 @@
     return best;
   }
 
+  // A few illnesses hand the body something it did not have before and take it
+  // back when they are lifted: the lycanthrope's shift, the possessed's
+  // borrowed voice, the drill an obsessive has worn into their hands. They are
+  // the ones that used to sit in the trait list (Traits.json) and moved to the
+  // library when it became clear they were illnesses; `skills` on the disease
+  // is what came across with them.
+  function _grantSkills(actor, disease, learn) {
+    if (!actor || !disease || !disease.skills) return;
+    for (const skillId of disease.skills) {
+      if (!window.$dataSkills || !$dataSkills[skillId]) continue;
+      if (learn) actor.learnSkill(skillId);
+      else actor.forgetSkill(skillId);
+    }
+  }
+
   // ── Public API ────────────────────────────────────────────────────────────
   const API = {
     ready() { return ensureDb(); },
@@ -848,6 +863,7 @@
         dosed: 0, need: null, missed: 0, lastDoseDay: null,
         treatedDays: 0, suppressedUntilDay: null,
       });
+      _grantSkills(actor, d, true);
       if (actor.refresh) actor.refresh();
       // Catching something is the one health event that has to be announced
       // wherever it happens: no screen the player is looking at would show it.
@@ -857,8 +873,12 @@
 
     cureActor(actor, id) {
       if (!actor || !actor._diseases) return;
+      const dropped = id === 'all'
+        ? actor._diseases.slice()
+        : actor._diseases.filter(e => e.id === id);
       if (id === 'all') { actor._diseases = []; }
       else actor._diseases = actor._diseases.filter(e => e.id !== id);
+      dropped.forEach(e => _grantSkills(actor, DB.byId[e.id], false));
       if (actor.refresh) actor.refresh();
     },
 

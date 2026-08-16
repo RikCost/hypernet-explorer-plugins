@@ -1,0 +1,36 @@
+{
+  "ui": {
+    "back": "",
+    "title": "",
+    "tab": {
+      "fitted": "",
+      "catalogue": ""
+    },
+    "noneFitted": "",
+    "noCatalogue": "",
+    "noneSelected": "",
+    "wornBy": "",
+    "type": {
+      "biological": "",
+      "technological": "",
+      "magical": ""
+    },
+    "damagedHost": "",
+    "effects": "",
+    "noStatChange": "",
+    "grantedSkill": "",
+    "alwaysCarried": "",
+    "sockets": "",
+    "noSocket": "",
+    "fittedTo": "",
+    "damagedWarning": "",
+    "severWarning": "",
+    "need": {
+      "halted": "",
+      "slowed": "",
+      "hastened": "",
+      "restores": ""
+    },
+    "searchPlaceholder": ""
+  }
+}

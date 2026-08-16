@@ -32,10 +32,6 @@
       "name": "Chanceux",
       "description": "La fortune vous sourit"
     },
-    "narcoleptic": {
-      "name": "Narcoleptique",
-      "description": "S’endort au hasard"
-    },
     "hot-headed": {
       "name": "Sanguin",
       "description": "Prompt à la colère"
@@ -79,10 +75,6 @@
     "vampire": {
       "name": "Vampire",
       "description": "Créature morte-vivante de la nuit"
-    },
-    "insomniac": {
-      "name": "Insomniaque",
-      "description": "Ne dort pas correctement"
     },
     "alcoholic": {
       "name": "Alcoolique",
@@ -300,17 +292,9 @@
       "name": "Syndrome du savant",
       "description": "Capacité exceptionnelle dans un domaine précis"
     },
-    "asthmatic": {
-      "name": "Asthmatique",
-      "description": "Difficulté à respirer sous stress"
-    },
     "adhd": {
       "name": "TDAH",
       "description": "Trouble de l’attention avec impulsivité et hyperactivité"
-    },
-    "ocd": {
-      "name": "TOC",
-      "description": "Troubles obsessionnels compulsifs"
     },
     "dyslexic": {
       "name": "Dyslexique",
@@ -772,14 +756,6 @@
       "name": "Marqué par une sorcière",
       "description": "Porte une marque de malédiction surnaturelle"
     },
-    "possessed": {
-      "name": "Possédé",
-      "description": "Partage son corps avec un esprit"
-    },
-    "lycanthrope": {
-      "name": "Lycanthrope",
-      "description": "Se transforme sous la lune"
-    },
     "clairvoyant": {
       "name": "Clairvoyant",
       "description": "Voit au-delà de la perception normale"
@@ -807,6 +783,18 @@
     "gun_fu": {
       "name": "Gun-Fu",
       "description": "Les techniques d'arts martiaux tirees a l'arme a feu ou a l'arc enchainent une attaque supplementaire gratuite"
+    },
+    "cystic_fibrosis": {
+      "name": "Mucoviscidose",
+      "description": "Trouble génétique des poumons et du pancréas"
+    },
+    "huntingtons_disease": {
+      "name": "Maladie de Huntington",
+      "description": "Déclin héréditaire du mouvement et de la mémoire"
+    },
+    "porphyria": {
+      "name": "Porphyrie",
+      "description": "Trouble sanguin héréditaire, cloques au soleil"
     }
   }
 }

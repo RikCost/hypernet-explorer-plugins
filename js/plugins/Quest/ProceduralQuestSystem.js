@@ -17,7 +17,8 @@
  * the rest of the game:
  *
  *   goto_site      arrive at world coordinates (proc map 636, vars 43/44)
- *   goto_dest      arrive in a destination's map group (MapGroups.json)
+ *   goto_dest      arrive at a destination (map group, one of its maps, or the
+ *                  world tile its map is tagged with - see placeMatchesHere)
  *   cache / dig    open an auto-spawned chest / dig site (dig needs Shovel)
  *   planet_cache   land on a GalaxySim planet and open the sample cache
  *   bounty         kill a specific high-level enemy force-spawned at a tile
@@ -224,7 +225,11 @@
     if (_boardKeyCacheMapId === mapId && _boardKeyCache) return _boardKeyCache;
     const g = groupOfMap(mapId);
     const info = window.$dataMapInfos?.[mapId];
-    _boardKeyCache = g || ((info && info.name) ? info.name : ("Map" + mapId)); // i18n-ignore: board record key
+    // A town without a MapGroups group is still a place: the world tile its map
+    // is tagged with names it, so its board is "Brusselles" and not the editor's
+    // "400 - Brusselles", which no contract could ever address.
+    _boardKeyCache = g || destinationHere()
+      || ((info && info.name) ? info.name : ("Map" + mapId)); // i18n-ignore: board record key
     _boardKeyCacheMapId = mapId;
     return _boardKeyCache;
   }
@@ -292,20 +297,90 @@
   }
 
   // Is the party at `place` right now? Arrival is recognised through every
-  // identity a map can have: its MapGroups group, its own name, a transport
-  // arrival map from Destinations.json, or (for the many destinations that are
-  // only a world coordinate) standing on that coordinate.
-  const ARRIVAL_TILES = 1;
+  // identity a map can have: its MapGroups group, its own name, one of the maps
+  // Destinations.json names for it (entrance, edge coords, transport arrivals),
+  // or the world tile the map stands on.
+  //
+  // The last one is what makes hand-authored towns work. Only seven places have
+  // a MapGroups group, so walking into "400 - Brusselles" used to match nothing
+  // at all: the group is missing, the map's own name is not the spoken name
+  // ("Bruxelles"), and the coordinate test only ever ran on the world and
+  // procedural maps. Every authored map instead carries its world tile in a
+  // <Coords x y> notetag, so that tile is compared with the destination's
+  // `base` and a quest to go to Bruxelles completes on arrival.
+  //
+  // A procedural destination is generated around its base and its authored
+  // gateway, station and outskirts sit a tile or two off it, so it is reached
+  // from anywhere inside ARRIVAL_RADIUS. A non-procedural one is a fixed set of
+  // hand-drawn maps that the map-id test above already recognises, so its
+  // coordinate has to match exactly - its neighbours (Antwerpen is 3 tiles from
+  // Brusselles) stay separate places.
+  const ARRIVAL_RADIUS = 3;
+  const COORDS_TAG = /<Coords\s*(\d+)\s+(\d+)>/i;
 
-  function destTransportMapIds(name) {
+  function destMapIds(name) {
     const entry = destEntry(name);
     if (!entry) return [];
     const out = [];
+    if (entry.entrance && entry.entrance.id) out.push(entry.entrance.id);
+    if (Array.isArray(entry.coords)) {
+      for (const c of entry.coords) if (c && c.id) out.push(c.id);
+    }
     for (const key of ["train", "bus", "helicopter"]) {
       const t = entry[key];
       if (t && t.mapId) out.push(t.mapId);
     }
     return out;
+  }
+
+  // The world-map tile (map 315 space) the party is standing on, whatever kind
+  // of map they are on: the world map itself, the procedural map (vars 43/44),
+  // or an authored map through its <Coords x y> notetag. Interiors are usually
+  // untagged, so they fall back to vars 43/44 - WorldMap.js writes the tag of
+  // every tagged map into them on entry, which is the town the room is in.
+  function currentWorldCoords() {
+    if (!$gameMap) return null;
+    const mapId = $gameMap.mapId();
+    if (mapId === WORLD_MAP_ID) return { wx: $gamePlayer.x, wy: $gamePlayer.y };
+    if (mapId !== PROC_MAP_ID && window.$dataMap && $dataMap.note) {
+      const m = $dataMap.note.match(COORDS_TAG);
+      if (m) return { wx: Number(m[1]), wy: Number(m[2]) };
+    }
+    const wx = $gameVariables.value(43), wy = $gameVariables.value(44);
+    return (wx || wy) ? { wx, wy } : null;
+  }
+
+  // How far from its base a destination still counts as reached.
+  function arrivalRadius(entry) {
+    return (entry && entry.procedural === false) ? 0 : ARRIVAL_RADIUS;
+  }
+
+  // Distance from a world tile to a destination's base, or Infinity when the
+  // destination has no usable base.
+  function distToDest(name, w) {
+    const c = destCoords(name);
+    if (!c || !w) return Infinity;
+    return Math.sqrt((w.wx - c.wx) ** 2 + (w.wy - c.wy) ** 2);
+  }
+
+  // The destination whose ground the party is standing on: the nearest one that
+  // claims the tile. Towns crowd together (Roma, Rome, Latina and the Vatican
+  // Citadel all sit within 2 tiles), and a tile is only ever one place, so
+  // standing in Roma never ticks off "travel to Latina".
+  //
+  // Also what names an authored town's quest board: "Brusselles", the name the
+  // rest of the world addresses it by, instead of the editor's "400 -
+  // Brusselles", which no courier contract could ever be sent to.
+  function destinationHere() {
+    const here = currentWorldCoords();
+    const d = destinations();
+    if (!here || !d) return null;
+    let best = null, bestDist = Infinity;
+    for (const [key, entry] of Object.entries(d)) {
+      const dist = distToDest(key, here);
+      if (dist <= arrivalRadius(entry) && dist < bestDist) { best = key; bestDist = dist; }
+    }
+    return best;
   }
 
   function placeMatchesHere(place) {
@@ -320,19 +395,14 @@
     const info = window.$dataMapInfos?.[mapId];
     if (info && info.name && norm(info.name) === target) return true;
 
-    if (destTransportMapIds(place).includes(mapId)) return true;
+    if (destMapIds(place).includes(mapId)) return true;
 
-    // Coordinate-only destinations: arriving means standing on their world tile.
-    const c = destCoords(place);
-    if (c) {
-      let wx = null, wy = null;
-      if (mapId === WORLD_MAP_ID) { wx = $gamePlayer.x; wy = $gamePlayer.y; }
-      else if (mapId === PROC_MAP_ID) { wx = $gameVariables.value(43); wy = $gameVariables.value(44); }
-      if (wx != null && Math.abs(wx - c.wx) <= ARRIVAL_TILES && Math.abs(wy - c.wy) <= ARRIVAL_TILES) {
-        return true;
-      }
-    }
-    return false;
+    // Standing on the tile this place owns. Compared as entries, so whichever
+    // spelling the quest was written with ("Brusselles", "Bruxelles", or the
+    // name as the current language prints it) is the same place.
+    const wanted = destEntry(place);
+    const hereKey = wanted ? destinationHere() : null;
+    return !!hereKey && destinations()[hereKey] === wanted;
   }
 
   // The key a board being opened should actually use. An override is honoured
@@ -2235,6 +2305,9 @@
     // Taming happens on the way back from a battle, which is not a map load, so
     // the pet registry is polled here too.
     checkPetSteps();
+    // Walking onto a destination's tile on the world map is an arrival with no
+    // map load behind it, so travel steps are polled as well.
+    checkArrivalSteps();
     for (const q of activeQuests()) {
       if (q.status === "failed") continue;
 
@@ -2274,13 +2347,17 @@
   // ==========================================================================
   // Arrival detection (goto_dest steps)
   // ==========================================================================
-  function onMapEntered(mapId) {
+  function checkArrivalSteps() {
     for (const { q, s, i } of activeSteps()) {
       if (s.kind === "goto_dest" && placeMatchesHere(s.dest)) {
         completeStep(q, i, T('Quests.youReached') + s.dest + ".");
         toast(T('Quests.destinationReached') + s.dest);
       }
     }
+  }
+
+  function onMapEntered(mapId) {
+    checkArrivalSteps();
     checkPetSteps();
   }
 
@@ -2962,6 +3039,7 @@
     // map side
     questMarkers, questLocation, destCoords, sitePlace, siteText,
     // social side
-    npcQuestHistory, placeMatchesHere, knownBoards, partyArtifacts,
+    npcQuestHistory, placeMatchesHere, currentWorldCoords, destinationHere,
+    knownBoards, partyArtifacts,
   };
 })();
