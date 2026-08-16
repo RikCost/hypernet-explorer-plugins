@@ -12878,6 +12878,86 @@
 }
 
 /* ==========================================================================
+   VEHICLE STATUS CARD (Vehicle/VehicleSystem.js)
+   --------------------------------------------------------------------------
+   Fuel and condition of the vehicle whose action menu is open, drawn at the
+   top of the screen for as long as the choices are. The choice list anchors
+   itself to the message window at the bottom, and the map info card owns the
+   bottom-right, so the top strip is the one place the card never covers what
+   it is explaining.
+   ========================================================================== */
+
+#vehicle-status-card {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 502;
+    pointer-events: none;
+    box-sizing: border-box;
+    min-width: 320px;
+    font-family: 'Lora', serif;
+    background: var(--bg-secondary-hover);
+    border: 3px double var(--text-primary-hover);
+    border-radius: 6px;
+    box-shadow: 0 10px 28px var(--shadow-black-translucent-55);
+    padding: 12px 20px;
+}
+#vehicle-status-card .vsc-title {
+    font-size: 21px;
+    font-weight: 600;
+    color: var(--text-primary-hover);
+    letter-spacing: 0.4px;
+    text-align: center;
+    padding-bottom: 8px;
+}
+#vehicle-status-card .vsc-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 6px;
+}
+#vehicle-status-card .vsc-lbl {
+    flex: 0 0 auto;
+    min-width: 96px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-success-active);
+}
+/* Same track as the map info card's need bars, so a fuel gauge reads the same
+   whichever card it is on. */
+#vehicle-status-card .vsc-bar {
+    flex: 1 1 auto;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    background: var(--shadow-black-translucent-55);
+}
+#vehicle-status-card .vsc-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.2s ease-out;
+}
+#vehicle-status-card .vsc-green { background: #6bbf59; }
+#vehicle-status-card .vsc-amber { background: #e8c840; }
+#vehicle-status-card .vsc-red   { background: var(--text-blood-red); }
+#vehicle-status-card .vsc-val {
+    flex: 0 0 auto;
+    min-width: 104px;
+    text-align: right;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary-hover);
+}
+#vehicle-status-card .vsc-warn {
+    padding-top: 9px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-blood-red);
+}
+
+/* ==========================================================================
    Scene_GameEnd, parchment DOM overlay (matches html-choice-overlay style)
    ========================================================================== */
 
@@ -14640,14 +14720,14 @@ padding: 2px 10px;
 .spec-badge--t1 .spec-badge-level { color: var(--border-subtle); }
 .spec-badge--t4, .spec-badge--t5 { border-color: var(--text-gold-dark); }
 
-/* Toast stack (ParchmentToast.js) — top-left transient notifications */
+/* Toast stack (ParchmentToast.js) — top-right transient notifications */
 #html-toast-stack {
     position: fixed;
     z-index: 491;
     pointer-events: none;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 6px;
 }
 #html-toast-stack .html-toast {
@@ -20339,7 +20419,7 @@ cursor:pointer; font-size:16px; line-height:1.4;
   position: fixed;
   /* Long-hand rather than `inset: 0`: the shipped NW.js runtime is older than
      that shorthand, and dropping it left the card hugging the top-left corner
-     at content size instead of dimming the screen and centring the panel. */
+     at content size instead of centring the panel over the map. */
   top: 0;
   left: 0;
   right: 0;
@@ -20350,7 +20430,12 @@ cursor:pointer; font-size:16px; line-height:1.4;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-dark-overlay-90, rgba(0,0,0,0.55));
+  /* Deliberately unpainted: the sheet still covers the screen so no click
+     reaches the map underneath, but a bandage handed out mid-step is a
+     half-second question, and dimming the whole world for it made every use
+     from the quick bar read as a scene change. The panel carries its own
+     background and shadow, so it stands off the map without one. */
+  background: transparent;
   user-select: none;
 }
 #hotbar-target-picker .htp-panel {

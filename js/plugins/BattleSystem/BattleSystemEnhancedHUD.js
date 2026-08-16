@@ -13,7 +13,7 @@
   const pluginName = "BattleSystemEnhancedHUD";
   const parameters = PluginManager.parameters(pluginName);
   const barWidth = 600;
-  const enemyLargeBarWidth = 480;
+  const enemyLargeBarWidth = 620;
   const barHeight = Number(parameters["BarHeight"] || 25);
   const barSpacing = 70;
   const playerBarX = Number(parameters["PlayerBarX"] || 60);
@@ -51,7 +51,7 @@
   // under each monster's own feet, which put text over the creatures, moved with
   // every lunge and stagger, and left the troop unreadable the moment two of
   // them stood close together.
-  const miniBarWidth = 200;
+  const miniBarWidth = 260;
   const miniBarBitmapHeight = 78;
   const miniBarRightMargin = 40; // matches the large single-enemy bar's margin
   const miniBarColumnTop = 35; // top edge of the highest compact bar
@@ -350,6 +350,9 @@
       el.style.padding = '';
       el.style.height = '';
       el.style.boxSizing = '';
+      // Rows that laid a name and a level tag side by side leave flex behind
+      el.style.alignItems = '';
+      el.style.gap = '';
       return el;
     }
 
@@ -2398,9 +2401,8 @@
     }
     else {
       const level = getEnemyLevel(b);
-      const nameText = level
-        ? `${window.translateText(b.name())} ${level}`
-        : window.translateText(b.name());
+      const rawName = window.translateText(b.name());
+      const nameText = level ? `${rawName} ${level}` : rawName;
 
       this.bitmap.fontSize = 12;
       this.bitmap.fontBold = true;
@@ -2436,11 +2438,37 @@
       }
 
       if (this._htmlOverlay) {
-        // Reserve a right-hand column for the HP number so long names truncate instead of colliding
-        const nameEl = this._htmlOverlay.addText(nameText, 15, 0, w - 170, "left", 24, "#ffffff", true, "black", 1, "Lora, serif", barHeight);
+        // Reserve a right-hand column for the HP number so long names truncate
+        // instead of colliding, sized to the number actually on screen rather
+        // than to the longest one imaginable, so the name keeps the rest.
+        this.bitmap.fontSize = 24;
+        const hpRoom = Math.max(
+          40,
+          Math.ceil(this.bitmap.measureTextWidth(String(Math.floor(b.hp)))) + 16
+        );
+        this.bitmap.fontSize = 12;
+        // Box ends where the HP number's own column begins (its right edge sits
+        // at w - 60, see rightPadding below).
+        const nameBoxW = Math.max(60, w - 60 - hpRoom - 15);
+        const nameEl = this._htmlOverlay.addText(
+          level ? `<span>${rawName}</span><span>${level}</span>` : rawName,
+          15, 0, nameBoxW, "left", 24, "#ffffff", true, "black", 1, "Lora, serif", barHeight
+        );
         if (nameEl) {
           nameEl.style.overflow = "hidden";
           nameEl.style.textOverflow = "ellipsis";
+          if (level) {
+            // The level is not part of what gets cut: the name shrinks to an
+            // ellipsis on its own and "L.12" always stays beside it.
+            nameEl.style.display = "flex";
+            nameEl.style.alignItems = "baseline";
+            nameEl.style.gap = "6px";
+            const nameSpan = nameEl.children[0];
+            const lvSpan = nameEl.children[1];
+            nameSpan.style.cssText =
+              "overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;";
+            lvSpan.style.cssText = "flex:0 0 auto;";
+          }
         }
       }
     }
@@ -2686,7 +2714,6 @@
 
     const level = getEnemyLevel(b);
     const rawName = window.translateText ? window.translateText(b.name()) : b.name();
-    const nameText = level ? `${rawName} ${level}` : rawName;
     const liveRate = b.hp / Math.max(1, b.mhp);
     let hpNumColor = isTargeted ? "#ffd700" : "#ffffff";
     if (!isTargeted) {
@@ -2695,11 +2722,19 @@
     }
 
     if (this._htmlOverlay) {
+      // The name runs up to the HP number's column, which is only as wide as
+      // the number standing in it.
+      bitmap.fontSize = 16;
+      const hpRoom = Math.max(
+        30,
+        Math.ceil(bitmap.measureTextWidth(String(Math.floor(b.hp)))) + 12
+      );
+      const nameBoxW = Math.max(40, geo.w + MINI.ang - hpRoom);
       const nameEl = this._htmlOverlay.addText(
-        nameText,
+        level ? `<span>${rawName}</span><span>${level}</span>` : rawName,
         geo.x - MINI.ang,
         -2,
-        Math.floor(geo.w * 0.68),
+        nameBoxW,
         "left",
         15,
         isTargeted ? "#ffd700" : "#ffffff",
@@ -2712,6 +2747,15 @@
       if (nameEl) {
         nameEl.style.overflow = "hidden";
         nameEl.style.textOverflow = "ellipsis";
+        if (level) {
+          // Only the name is allowed to shorten; the level tag always shows.
+          nameEl.style.display = "flex";
+          nameEl.style.alignItems = "baseline";
+          nameEl.style.gap = "5px";
+          nameEl.children[0].style.cssText =
+            "overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;";
+          nameEl.children[1].style.cssText = "flex:0 0 auto;";
+        }
       }
       this._htmlOverlay.addText(
         String(Math.floor(b.hp)),
@@ -4307,13 +4351,14 @@
   // Battle Hotbar , Daggerfall-style quickbar of the acting member's first
   // nine synced (carried) skills. Numbers 1-9 cast instantly; the bar itself
   // can take keyboard/gamepad focus away from the actor command window with
-  // Left/Right, since that vertical list never uses horizontal input of its
-  // own (Window_ActorCommand.maxCols() is 1, so cursorLeft/cursorRight are
-  // already no-ops there). See window.BattleHotbar.
+  // Left/Right or L1/R1 (pageup/pagedown), since that vertical list never uses
+  // horizontal input of its own (Window_ActorCommand.maxCols() is 1, so
+  // cursorLeft/cursorRight are already no-ops there) and its few rows fit on
+  // one page (so cursorPageup/Pagedown are no-ops too). See window.BattleHotbar.
   //=============================================================================
   const HOTBAR_SLOTS = 9;
   const HOTBAR_SLOT_PX = 52;
-  const HOTBAR_MARGIN_BOTTOM = 12; // how close the bar itself sits to the bottom edge
+  const HOTBAR_MARGIN_BOTTOM = 2; // how close the bar itself sits to the bottom edge
   const HOTBAR_LOG_GAP = 56; // extra clearance kept between the log's own reserve and the bar
 
   // MPP_SmoothBattleLog2.js reads this to keep the log clear of the bar.
@@ -4467,10 +4512,11 @@
       } else if (Input.isTriggered('cancel') || Input.isTriggered('up')) {
         _hotbarActive = false;
         SoundManager.playCancel();
-      } else if (Input.isRepeated('left')) {
+      } else if (Input.isRepeated('left') || Input.isRepeated('pageup')) {
+        // pageup/pagedown are the shoulder buttons L1/R1 (CustomCommandMapper.js).
         _hotbarIndex = (_hotbarIndex - 1 + skills.length) % skills.length;
         SoundManager.playCursor();
-      } else if (Input.isRepeated('right')) {
+      } else if (Input.isRepeated('right') || Input.isRepeated('pagedown')) {
         _hotbarIndex = (_hotbarIndex + 1) % skills.length;
         SoundManager.playCursor();
       } else if (Input.isTriggered('ok')) {
@@ -4489,21 +4535,23 @@
     _Scene_Battle_terminate_hotbar.call(this);
   };
 
-  // Left/Right hand focus to the bar from the actor command list, entering
-  // on its last carried skill or its first respectively; every other key
-  // (up/down/ok/cancel) is untouched. While the bar holds focus the list's
-  // own cursor movement and OK/Cancel are suspended so the two never fight
-  // over the same key press.
+  // Left/Right (and L1/R1, i.e. pageup/pagedown) hand focus to the bar from
+  // the actor command list, entering on its last carried skill or its first
+  // respectively; every other key (up/down/ok/cancel) is untouched. While the
+  // bar holds focus the list's own cursor movement and OK/Cancel are suspended
+  // so the two never fight over the same key press.
   const _Window_ActorCommand_processCursorMove_hotbar = Window_ActorCommand.prototype.processCursorMove;
   Window_ActorCommand.prototype.processCursorMove = function () {
     if (_hotbarActive) return;
     const cardMode = window.isCardCombatMode && window.isCardCombatMode();
-    if (!cardMode && this.isCursorMovable() && (Input.isTriggered('left') || Input.isTriggered('right'))) {
+    const back = Input.isTriggered('left') || Input.isTriggered('pageup');
+    const fwd = Input.isTriggered('right') || Input.isTriggered('pagedown');
+    if (!cardMode && this.isCursorMovable() && (back || fwd)) {
       const skills = _hotbarSkills(this._actor);
       if (skills.length > 0) {
         _hotbarActive = true;
         _hotbarJustActivated = true;
-        _hotbarIndex = Input.isTriggered('left') ? skills.length - 1 : 0;
+        _hotbarIndex = back ? skills.length - 1 : 0;
         SoundManager.playCursor();
         return;
       }

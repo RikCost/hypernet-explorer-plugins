@@ -193,6 +193,11 @@
   // The front of a car, out of VehicleSystemRepair's part table.
   const FRONT_PARTS = ["Body", "Radiator", "Engine", "Battery", "Air Filter", "Alternator"];  // i18n-ignore  part ids
   const RAM_VEHICLE_DAMAGE = 4;    // per cent, over one or two front parts
+  // Most of what goes under the bumper leaves nothing behind but a mark on the
+  // paint: a creature is soft, and a car that lost a radiator to every animal
+  // it hit would be in the workshop after one drive. Only now and then does one
+  // land badly enough to cost anything, so a ram damages the vehicle this often.
+  const RAM_VEHICLE_DAMAGE_CHANCE = 0.12;
   const CRASH_VEHICLE_DAMAGE = 24; // per cent, over the 3-7 parts a crash reaches
 
   // ── Pulling over ────────────────────────────────────────────────────────
@@ -1596,8 +1601,9 @@
     if (!outcome) return false;
     const name = enemyDisplayName(ev);
 
-    // Something soft under the bumper only ever marks the front of the car.
-    if (byPlayer) {
+    // Something soft under the bumper only ever marks the front of the car, and
+    // only rarely marks it at all (RAM_VEHICLE_DAMAGE_CHANCE).
+    if (byPlayer && Math.random() < RAM_VEHICLE_DAMAGE_CHANCE) {
       damageOwnVehicle(
         RAM_VEHICLE_DAMAGE,
         { parts: FRONT_PARTS, count: 1 + (Math.random() < 0.4 ? 1 : 0) },

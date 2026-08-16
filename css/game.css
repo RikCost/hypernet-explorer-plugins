@@ -499,6 +499,17 @@ body {
     box-shadow: 0 6px 18px var(--shadow-black-translucent-55);
     padding: 5px 8px 6px;
 }
+/* The vehicle the party is aboard: the same card as a crew member's, in the
+   purple its fuel gauge is drawn in, so the row above the party reads as a
+   machine rather than as another face. A vehicle with its critical parts gone
+   wears .phud-down exactly as a downed member does, and the rules below take
+   this one's colours off it. */
+#party-hud .phud-card.phud-vehicle {
+    border-color: #a05ce0;
+}
+#party-hud .phud-card.phud-vehicle .phud-name {
+    color: #d8b4ff;
+}
 #party-hud .phud-card.phud-down {
     filter: grayscale(0.7);
     border-color: var(--text-blood-red);
@@ -543,6 +554,14 @@ body {
 }
 #party-hud .phud-mp .phud-fill {
     background: linear-gradient(to right, #16386e, #4a86d9);
+}
+/* The vehicle the party is aboard takes the magic bar for its fuel gauge, in a
+   purple nothing else on the card uses, so a tank is never read as mana. */
+#party-hud .phud-fuel .phud-fill {
+    background: linear-gradient(to right, #3d1466, #a05ce0);
+}
+#party-hud .phud-card.phud-vehicle .phud-bar-lbl {
+    color: #d8b4ff;
 }
 #party-hud .phud-bar-low .phud-fill {
     background: linear-gradient(to right, #7a4a10, #e0a63a);

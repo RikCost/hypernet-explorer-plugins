@@ -87,7 +87,9 @@
       this.slotPx = o.slotPx || 52;
       this.gapPx = o.gapPx || 6;
       this.iconPx = o.iconPx || 32;
-      this.marginBottom = o.marginBottom !== undefined ? o.marginBottom : 12;
+      // The bars ride right along the bottom edge of the box, so they eat as
+      // little of the play area as possible.
+      this.marginBottom = o.marginBottom !== undefined ? o.marginBottom : 2;
       this.zIndex = o.zIndex || 352;
       this.inline = !!o.inline;
       // Bars that only fire filled slots (the battle and map ones) leave empty

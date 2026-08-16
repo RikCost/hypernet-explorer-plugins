@@ -426,6 +426,54 @@
     }
   }
 
+  /**
+   * One number for how sound a vehicle is: the average of its parts' health,
+   * 0-100, or null when the vehicle keeps no health record (the broom). A
+   * critical part weighs double, so a cracked engine block reads worse than a
+   * scuffed bumper, the way the 3D drive's condition chip already counts it.
+   */
+  function vehicleCondition(vehicleType) {
+    const health = getVehicleHealth(vehicleType);
+    if (!health) return null;
+
+    const partsConfig = getPartsConfig(vehicleType);
+    let sum = 0;
+    let weight = 0;
+    for (const part in partsConfig) {
+      const w = partsConfig[part].critical ? 2 : 1;
+      const value = health[part] != null ? health[part] : partsConfig[part].maxHealth;
+      sum += value * w;
+      weight += w;
+    }
+    return weight ? sum / weight : null;
+  }
+
+  /**
+   * The vehicle's condition as a health BAR rather than a percentage: every
+   * part's health added up against every part's maximum, so a sixteen-part car
+   * reads 1600/1600 sound and a wreck reads what is left of it. Returns
+   * { current, max } or null when the vehicle keeps no health record.
+   *
+   * Unweighted on purpose, where vehicleCondition() above weighs the critical
+   * parts double: a bar is a quantity of vehicle left, and the party HUD draws
+   * it beside the crew's own HP.
+   */
+  function totalHealth(vehicleType) {
+    const health = getVehicleHealth(vehicleType);
+    if (!health) return null;
+
+    const partsConfig = getPartsConfig(vehicleType);
+    let current = 0;
+    let max = 0;
+    for (const part in partsConfig) {
+      const partMax = partsConfig[part].maxHealth;
+      const value = health[part] != null ? health[part] : partMax;
+      current += Math.max(0, Math.min(partMax, value));
+      max += partMax;
+    }
+    return max ? { current, max } : null;
+  }
+
   function checkCriticalParts(vehicleType) {
     const health = getVehicleHealth(vehicleType);
     if (!health) return false;
@@ -508,6 +556,10 @@
     applyDamage,
     checkCriticalParts,
     updateVehicleStatus,
+    // Read-only: the vehicle action menu prints this beside the fuel.
+    vehicleCondition,
+    // Read-only: the party HUD draws this as the vehicle's HP bar.
+    totalHealth,
   };
 
   function repairVehicle(vehicleType, repairPercent) {

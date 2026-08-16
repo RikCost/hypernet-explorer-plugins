@@ -40,5 +40,10 @@
   "vehicleNotHere": "{vehicle} non è qui",
   "cannotFindLocation": "Non riesco a trovare dove si trova {vehicle}",
   "pickedUpVehicle": "Hai raccolto {vehicle}.",
-  "cannotLandHere": "Non c’è posto per atterrare qui"
+  "cannotLandHere": "Non c’è posto per atterrare qui",
+  "status": {
+    "fuel": "Carburante",
+    "condition": "Condizioni",
+    "broken": "Fuori uso — servono riparazioni"
+  }
 }

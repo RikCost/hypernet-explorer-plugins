@@ -107,18 +107,12 @@
     const sx = r.width / Graphics.width;
     const sy = r.height / Graphics.height;
     const s = _stackEl.style;
-    s.left = r.left + 20 * sx + "px";
+    // Anchored to the canvas' top-right corner: the party HUD (PartyHud.js)
+    // owns the top-left one, so the two never have to dodge each other.
+    s.left = "auto";
+    s.right = (window.innerWidth - r.right) + 20 * sx + "px";
+    s.top = r.top + 20 * sy + "px";
     s.fontSize = Math.round(18 * sy) + "px";
-
-    // The party HUD (PartyHud.js) occupies the same top-left corner when it is
-    // on, so toasts drop below its last member row instead of covering it.
-    const hud = document.getElementById("party-hud");
-    if (hud && hud.classList.contains("phud-visible")) {
-      const hr = hud.getBoundingClientRect();
-      s.top = hr.bottom + 12 * sy + "px";
-    } else {
-      s.top = r.top + 20 * sy + "px";
-    }
   }
 
   function tick() {

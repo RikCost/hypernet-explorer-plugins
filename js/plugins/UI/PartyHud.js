@@ -24,7 +24,7 @@
  * @type number
  * @min 0
  * @max 400
- * @default 12
+ * @default 40
  *
  * @param panelWidth
  * @text Panel Width
@@ -74,6 +74,12 @@
  * cravings from window.AddictionSystem, so the HUD reads the same meters the
  * menu and the status screen do.
  *
+ * While the party is aboard a vehicle — at the wheel, or on foot inside its
+ * cabin — that vehicle stands above the crew as a row of its own, carrying its
+ * name, its condition as an HP bar (every maintenance part added up) and its
+ * fuel where a member's magic would be, in purple. The row comes down again
+ * the moment they get out. See MergedVehicleSystem.getHudVehicleStatus().
+ *
  * The HUD is ON by default and is switched off from Options -> Video
  * ("Party HUD") or on the first step of character creation. The setting is
  * stored in ConfigManager.partyHud.
@@ -98,7 +104,9 @@
     const parameters = PluginManager.parameters(pluginName);
 
     const HUD_X = Number(parameters['hudX'] || 12);
-    const HUD_Y = Number(parameters['hudY'] || 12);
+    // The FPS / frame-time counter sits in the same top-left corner, so the
+    // first card starts below it rather than underneath it.
+    const HUD_Y = Number(parameters['hudY'] || 40);
     const PANEL_W = Number(parameters['panelWidth'] || 224);
     const MAX_MEMBERS = Number(parameters['maxMembers'] || 4);
     const MAX_STATES = Number(parameters['maxStates'] || 6);
@@ -232,6 +240,21 @@
     };
 
     //=========================================================================
+    // The vehicle the party is aboard
+    //=========================================================================
+    // Reads whatever the party is riding in or standing inside, or null on
+    // foot. The vehicle plugin owns the question of what counts (see
+    // MergedVehicleSystem.getHudVehicleStatus); the HUD only draws the answer.
+    const vehicleStatus = () => {
+        const status = window.MergedVehicleSystem?.getHudVehicleStatus?.();
+        return status || null;
+    };
+
+    // A card key of its own, so the vehicle's HP never shares the flash /
+    // last-value bookkeeping with an actor id.
+    const vehicleCardKey = (status) => 'vehicle:' + status.key;
+
+    //=========================================================================
     // States and buffs
     //=========================================================================
     // States are named on the card in words, not drawn as icons. A state with
@@ -272,10 +295,12 @@
     function PartyHudOverlay() {
         this._el = null;
         this._cards = new Map();    // actorId -> { root, name, states, hp, mp, alerts, ... }
+        this._vehicleCard = null;   // the row above them, while the party is aboard one
+        this._vehicleCardKey = '';  // which vehicle that row is drawing
         this._layoutKey = '';
         this._needs = new Map();    // actorId -> needs object
         this._needTimer = NEED_REFRESH_FRAMES;
-        this._lastHp = new Map();
+        this._lastHp = new Map();   // actorId | 'vehicle:<key>' -> last HP seen
         this._visible = false;
         this._create();
     }
@@ -296,6 +321,8 @@
         if (this._el && this._el.parentNode) this._el.parentNode.removeChild(this._el);
         this._el = null;
         this._cards.clear();
+        this._vehicleCard = null;
+        this._vehicleCardKey = '';
     };
 
     PartyHudOverlay.prototype.members = function () {
@@ -362,13 +389,42 @@
         return { row, root, name, states, hp, mp, alerts, statesKey: null, alertsKey: null, deadKey: null };
     };
 
+    // The vehicle's card is a member card with the crew's furniture taken off
+    // it: no chips (a car has no needs and no buffs), and the magic bar turned
+    // into a fuel gauge, which is what the purple `phud-fuel` colours.
+    PartyHudOverlay.prototype._makeVehicleCard = function () {
+        const card = this._makeCard();
+        card.root.classList.add('phud-vehicle');
+        card.mp.bar.classList.add('phud-fuel');
+        card.alerts.classList.add('phud-alerts-empty');
+        card.states.classList.add('phud-alerts-empty');
+        return card;
+    };
+
     // Rebuild the card list when the party itself changes (a member joins,
-    // leaves, or the whole roster is swapped out).
-    PartyHudOverlay.prototype._syncCards = function (members) {
-        const key = members.map(m => m.actorId()).join(',');
+    // leaves, or the whole roster is swapped out), or when the party gets in or
+    // out of a vehicle: that row is built and dropped with the same rebuild.
+    PartyHudOverlay.prototype._syncCards = function (members, vehicle) {
+        const key = (vehicle ? vehicleCardKey(vehicle) + '|' : '') +
+            members.map(m => m.actorId()).join(',');
         if (key === this._layoutKey) return;
         this._layoutKey = key;
         this._el.innerHTML = '';
+
+        // The vehicle carries the party, so it stands above them. Getting out
+        // (or changing vehicle) forgets the card entirely, so climbing back in
+        // starts its bars and its damage flash from a clean sheet.
+        const vehicleKey = vehicle ? vehicleCardKey(vehicle) : '';
+        if (this._vehicleCardKey && this._vehicleCardKey !== vehicleKey) {
+            this._lastHp.delete(this._vehicleCardKey);
+            this._vehicleCard = null;
+        }
+        this._vehicleCardKey = vehicleKey;
+        if (vehicle) {
+            if (!this._vehicleCard) this._vehicleCard = this._makeVehicleCard();
+            this._el.appendChild(this._vehicleCard.row);
+        }
+
         const kept = new Map();
         for (const actor of members) {
             const id = actor.actorId();
@@ -432,12 +488,13 @@
 
     // A change in HP washes the bar: white for a hit, green for a heal. Applied
     // as a class with a timer rather than a redraw, so it rides the animation.
-    PartyHudOverlay.prototype._writeFlash = function (card, actor) {
-        const id = actor.actorId();
+    // Keyed by actor id, or by vehicle key for the vehicle's own bar, so a
+    // scraped wing flashes exactly the way a wounded member does.
+    PartyHudOverlay.prototype._writeFlash = function (card, id, hp) {
         const prev = this._lastHp.get(id);
-        this._lastHp.set(id, actor.hp);
-        if (prev === undefined || prev === actor.hp) return;
-        const healing = actor.hp > prev;
+        this._lastHp.set(id, hp);
+        if (prev === undefined || prev === hp) return;
+        const healing = hp > prev;
         const flash = card.hp.flash;
         flash.classList.remove('phud-flash-hit', 'phud-flash-heal');
         void flash.offsetWidth; // restart the CSS animation
@@ -446,6 +503,42 @@
         card.flashTimer = setTimeout(() => {
             flash.classList.remove('phud-flash-hit', 'phud-flash-heal');
         }, FLASH_MS);
+    };
+
+    // The vehicle row: its name, its condition summed over every maintenance
+    // part as the HP bar, and its tank in place of the magic bar. A vehicle
+    // that keeps no health record (the Broom) draws no HP line, and one that
+    // burns no fuel (the Bike, the Boat, the Broom) draws no fuel line.
+    PartyHudOverlay.prototype._writeVehicle = function (card, status) {
+        if (card.nameKey !== status.name) {
+            card.nameKey = status.name;
+            card.name.textContent = status.name;
+        }
+
+        const hasHealth = status.mhp > 0;
+        card.hp.bar.style.display = hasHealth ? '' : 'none';
+        if (hasHealth) {
+            const hp = Math.round(status.hp);
+            const mhp = Math.round(status.mhp);
+            // Damage arrives from anywhere (a ram, a crash, a splash-down); the
+            // bar simply follows the maintenance record, and washes red when it
+            // drops the way a member's does.
+            this._writeFlash(card, vehicleCardKey(status), hp);
+            this._writeBar(card.hp, TextManager.hpA, hp, mhp, 'hp');
+            // A vehicle with every critical part gone is not driveable, which
+            // reads the same way a downed member does.
+            const broken = window.VehicleSystemRepair?.checkCriticalParts?.(status.key);
+            if (card.deadKey !== broken) {
+                card.deadKey = broken;
+                card.root.classList.toggle('phud-down', !!broken);
+            }
+        }
+
+        card.mp.bar.style.display = status.usesFuel ? '' : 'none';
+        if (status.usesFuel) {
+            this._writeBar(card.mp, T('PartyHud.fuel'),
+                Math.round(status.fuel), Math.round(status.maxFuel), 'fuel');
+        }
     };
 
     PartyHudOverlay.prototype._needsFor = function (actor) {
@@ -461,7 +554,9 @@
     PartyHudOverlay.prototype.refresh = function () {
         if (!this._el) return;
         const members = this.members();
-        this._syncCards(members);
+        const vehicle = vehicleStatus();
+        this._syncCards(members, vehicle);
+        if (vehicle && this._vehicleCard) this._writeVehicle(this._vehicleCard, vehicle);
         for (const actor of members) {
             const card = this._cards.get(actor.actorId());
             if (!card) continue;
@@ -475,7 +570,7 @@
                 card.nameKey = actor.name();
                 card.name.textContent = actor.name();
             }
-            this._writeFlash(card, actor);
+            this._writeFlash(card, actor.actorId(), actor.hp);
             this._writeBar(card.hp, TextManager.hpA, actor.hp, actor.mhp, 'hp');
             // A severed world has nothing to spend magic on, so the bar itself
             // is taken out of the card (`_makeBar` returns the element as

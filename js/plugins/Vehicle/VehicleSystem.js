@@ -2761,11 +2761,90 @@
     return !!(config && config.name === 'Camper' && window.CamperDrivingSystem);  // i18n-ignore  vehicle id
   }
 
+  // ============================================================================
+  // The vehicle status card
+  // ============================================================================
+  //
+  // The action menu is a column of verbs — "Refuel", "Repairs", "Start driving"
+  // — and none of them say whether the tank is nearly dry or the brakes are
+  // gone, which is exactly what somebody deciding between them wants to know.
+  // The card rides above the choices for as long as they are open and answers
+  // both, as the pair of bars the fuel HUD already draws, so the menu reads like
+  // the instrument panel it stands in for.
+
+  const STATUS_CARD_ID = 'vehicle-status-card';
+
+  let statusCardEl = null;
+
+  // Colour by what is left: the last quarter of a tank, or a vehicle a quarter
+  // of the way to scrap, is the part worth catching the eye.
+  function statusFillClass(pct) {
+    if (pct <= 25) return 'vsc-red';
+    if (pct <= 50) return 'vsc-amber';
+    return 'vsc-green';
+  }
+
+  function statusCardRow(label, pct, valueText) {
+    const width = Math.max(0, Math.min(100, pct));
+    return `<div class="vsc-row">` +
+      `<span class="vsc-lbl">${label}</span>` +
+      `<div class="vsc-bar"><div class="vsc-fill ${statusFillClass(pct)}" style="width:${width}%"></div></div>` +
+      `<span class="vsc-val">${valueText}</span>` +
+    `</div>`;
+  }
+
+  function hideVehicleStatusCard() {
+    const el = statusCardEl || document.getElementById(STATUS_CARD_ID);
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+    statusCardEl = null;
+  }
+
+  /**
+   * Draws the card for `config`. A vehicle with neither a tank nor a health
+   * record (the flying broom) has nothing to report, and gets no card rather
+   * than an empty one.
+   */
+  function showVehicleStatusCard(config) {
+    hideVehicleStatusCard();
+    if (!config) return;
+
+    const key = upgradeTypeForConfig(config);
+    const repair = window.VehicleSystemRepair;
+    const condition = (key && repair && repair.vehicleCondition)
+      ? repair.vehicleCondition(key) : null;
+
+    let rows = '';
+    if (key && config.usesFuel && window.VehicleFuel) {
+      const fuel = window.VehicleFuel.get(key);
+      const max = window.VehicleFuel.max(key) || 1;
+      rows += statusCardRow(T('VehicleSystem.status.fuel'), fuel / max * 100,
+        `${fuel.toFixed(1)} / ${Math.round(max)} L`);
+    }
+    if (condition != null) {
+      rows += statusCardRow(T('VehicleSystem.status.condition'), condition,
+        `${Math.round(condition)}%`);
+    }
+    if (!rows) return;
+
+    // A dead critical part is not a low bar but a vehicle that will not move, so
+    // it is said in words on top of the percentage.
+    const broken = !!(key && repair && repair.checkCriticalParts && repair.checkCriticalParts(key));
+    const warning = broken ? `<div class="vsc-warn">${T('VehicleSystem.status.broken')}</div>` : '';
+
+    const el = document.createElement('div');
+    el.id = STATUS_CARD_ID;
+    el.innerHTML =
+      `<div class="vsc-title">${vehicleDisplayName(config)}</div>` + rows + warning;
+    document.body.appendChild(el);
+    statusCardEl = el;
+  }
+
   /**
    * Context-aware vehicle menu.
    *   isRiding === true  -> opened while driving (cancel key): first option "Stop driving".
    *   isRiding === false -> opened by interacting from outside: first option "Start driving".
-   * No "What would you like to do?" prompt is shown; live fuel is on the HUD instead.
+   * No "What would you like to do?" prompt is shown; the fuel and the condition
+   * of the vehicle being decided about are on the status card above the choices.
    */
   Game_Player.prototype.showVehicleActionMenu = function (vehicle, isRiding) {
     const config = vehicleManager.getConfig(vehicle);
@@ -2931,9 +3010,12 @@
     choices.push(isRiding ? T('VehicleSystem.continueDriving') : T('VehicleSystem.leave'));
     handlers.push(() => { });
 
+    showVehicleStatusCard(config);
     const cancelIndex = choices.length - 1;
     $gameMessage.setChoices(choices, 0, cancelIndex);
     $gameMessage.setChoiceCallback((choice) => {
+      // Cancelling picks the last row, so this runs however the menu is left.
+      hideVehicleStatusCard();
       const handler = handlers[choice];
       if (handler) handler();
     });
@@ -2996,9 +3078,11 @@
     choices.push(T('VehicleSystem.cancel'));
     handlers.push(() => { });
 
+    showVehicleStatusCard(config);
     const cancelIndex = choices.length - 1;
     $gameMessage.setChoices(choices, 0, cancelIndex);
     $gameMessage.setChoiceCallback((choice) => {
+      hideVehicleStatusCard();
       const handler = handlers[choice];
       if (handler) handler();
     });
@@ -3418,6 +3502,12 @@
   Scene_Map.prototype.update = function () {
     _Scene_Map_update.call(this);
 
+    // The card belongs to the choice list it explains. The choice callback
+    // normally takes it down, but a message cleared out from under the menu
+    // (an interpreter starting, a common event) never calls that back, and the
+    // card would be left hanging over the map.
+    if (statusCardEl && !$gameMessage.isChoice()) hideVehicleStatusCard();
+
     // A vehicle chosen from the "which one?" list opens its action menu here,
     // once the choice list it was picked from has finished closing.
     if (pendingVehicleMenu && !$gameMessage.isBusy()) {
@@ -3709,6 +3799,11 @@
   Scene_Map.prototype.terminate = function () {
     _Scene_Map_terminate.call(this);
 
+    // The choice callback normally takes the card down, but a scene that ends
+    // under an open menu (a load, an interpreter transfer) never gets there,
+    // and a stranded card would hang over the next map.
+    hideVehicleStatusCard();
+
     if ($gameMap.mapId() % 10 === 0) {
       mapCache.clear();
     }
@@ -3880,6 +3975,50 @@
       const max = configMaxFuel(config) || 1;
       const fuel = FuelSystem.getFuel(vehicle);
       return { name: vehicleDisplayName(config), fuel, max, pct: Math.round(Math.max(0, Math.min(1, fuel / max)) * 100) };
+    },
+
+    // The vehicle the party is ABOARD, for the party HUD (PartyHud.js): the one
+    // they are at the wheel of, or — on foot inside its cabin — the one whose
+    // interior map they are standing on (the Camper, the Car and the Starship
+    // each have one). Null anywhere else, which is how the HUD knows to take
+    // the vehicle row down again the moment they step out.
+    //
+    // Health is the whole vehicle summed part by part out of its maintenance
+    // record, so one bar says what the workshop panel lists line by line. Fuel
+    // is the vehicle's OWN tank: for the Starship that is its rocket fuel, not
+    // the Hyperflux or the Schrodingerite the star map runs on.
+    getHudVehicleStatus() {
+      if (typeof $gameMap === 'undefined' || !$gameMap) return null;
+      const ridden = isPlayerRidingCustomVehicle() ? $gamePlayer.vehicle() : null;
+      const config = ridden
+        ? vehicleManager.getConfig(ridden)
+        : getConfigByInteriorMapId($gameMap.mapId());
+      if (!config) return null;
+      const key = upgradeTypeForConfig(config);
+      if (!key) return null;
+
+      const health = window.VehicleSystemRepair?.totalHealth?.(key) || null;
+      const usesFuel = !!config.usesFuel;
+      return {
+        key,
+        name: vehicleDisplayName(config),
+        driving: !!ridden,
+        // A vehicle with no maintenance record of its own (the Broom) has no
+        // bar to draw; the HUD reads null as "no health line".
+        hp: health ? health.current : null,
+        mhp: health ? health.max : null,
+        usesFuel,
+        fuel: usesFuel ? VehicleFuel.get(key) : 0,
+        maxFuel: usesFuel ? VehicleFuel.max(key) : 0
+      };
+    },
+
+    // True while the party is standing inside a vehicle's own cabin. Their load
+    // is off their backs in there, so the encumbrance speed penalty is waived
+    // (see ItemSystemUtils#realMoveSpeed).
+    isOnVehicleInteriorMap() {
+      if (typeof $gameMap === 'undefined' || !$gameMap) return false;
+      return !!getConfigByInteriorMapId($gameMap.mapId());
     },
 
     // Puts the party out of whatever they are riding on the spot, without the

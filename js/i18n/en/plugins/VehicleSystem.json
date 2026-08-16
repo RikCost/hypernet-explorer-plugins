@@ -40,5 +40,10 @@
   "vehicleNotHere": "The {vehicle} is not here",
   "cannotFindLocation": "Cannot find {vehicle} location",
   "pickedUpVehicle": "You picked up the {vehicle}.",
-  "cannotLandHere": "There is nowhere to set down here"
+  "cannotLandHere": "There is nowhere to set down here",
+  "status": {
+    "fuel": "Fuel",
+    "condition": "Condition",
+    "broken": "Out of order — needs repairs"
+  }
 }

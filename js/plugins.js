@@ -226,7 +226,7 @@ var $plugins =
 {"name":"Minigames/MonsterTournament","status":true,"description":"Monster Tournament Betting v1.0.6","parameters":{"bettingItemId":"124"}},
 {"name":"Minigames/AnimatedHorseRace","status":true,"description":"Animated Horse Race v3.0.0 - A real turf course in 3D (three.js / PSXShader) with procedural runners.","parameters":{"minBet":"1","maxBet":"9999","tokenItemId":"124"}},
 {"name":"UI/PlayerHealthHearts","status":false,"description":"Player Health Hearts Display v1.0.0","parameters":{"displayDuration":"180","heartEmpty":"♡","heartFull":"♥","fontSize":"24"}},
-{"name":"UI/PartyHud","status":true,"description":"Party HUD v2.0.0","parameters":{"hudX":"12","hudY":"12","panelWidth":"224","maxMembers":"4","maxStates":"6","hideDuringMessages":"true"}},
+{"name":"UI/PartyHud","status":true,"description":"Party HUD v2.0.0","parameters":{"hudX":"12","hudY":"40","panelWidth":"224","maxMembers":"4","maxStates":"6","hideDuringMessages":"true"}},
 {"name":"Minigames/ScratchingCardSystem","status":true,"description":"Scratching Card System v1.0.0","parameters":{"defaultStyle":"esoteric"}},
 {"name":"UI/CustomSceneStatus","status":true,"description":"Custom Scene Status v1.0.0","parameters":{}},
 {"name":"Battler3D/PSXShader","status":true,"description":"PSX-style retro shader for 3D weapons and 3D enemies","parameters":{}},

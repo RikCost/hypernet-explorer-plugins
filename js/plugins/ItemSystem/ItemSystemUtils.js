@@ -740,11 +740,22 @@
         $gameParty.leader().name() === "Test"));  // i18n-ignore  debug account name
   }
 
+  // A vehicle carries the load, not the party: nothing they are hauling slows a
+  // camper down, and inside its cabin the packs are on the floor rather than on
+  // anybody's back. So the penalty is waived both at the wheel and on a
+  // vehicle's own interior map (MergedVehicleSystem.isOnVehicleInteriorMap).
+  function isLoadCarriedByVehicle() {
+    if (typeof $gamePlayer !== "undefined" && $gamePlayer &&
+      $gamePlayer.isInVehicle && $gamePlayer.isInVehicle()) return true;
+    return !!window.MergedVehicleSystem?.isOnVehicleInteriorMap?.();
+  }
+
   const _Game_Player_realMoveSpeed = Game_Player.prototype.realMoveSpeed;
   Game_Player.prototype.realMoveSpeed = function () {
     let speed = _Game_Player_realMoveSpeed.call(this);
 
-    if (!isSandboxParty() && window.ItemSystemUtils && window.ItemSystemUtils.isOverencumbered()) {
+    if (!isSandboxParty() && !isLoadCarriedByVehicle() &&
+      window.ItemSystemUtils && window.ItemSystemUtils.isOverencumbered()) {
       speed = Math.max(1, speed * OVERENCUMBERED_SPEED_PENALTY);
     }
 
