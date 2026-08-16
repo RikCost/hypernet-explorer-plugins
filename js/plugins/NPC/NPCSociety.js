@@ -391,7 +391,15 @@
       // Same bands the generator hands out starting money from (wealthGoldBase),
       // split at the midpoint between one tier's base and the next.
       const edges = [25000, 250000, 2500000, 25000000];
-      profile.wealthTierBase = edges.filter(edge => gold >= edge).length;
+      const fromPurse = edges.filter(edge => gold >= edge).length;
+      // A band chosen at character creation (wealthTierChosen, written by the
+      // detailed editor) outranks an EMPTY purse. The money each member brings
+      // in is only handed over once creation finishes, so until then the purse
+      // reports everybody destitute, and this sync , which runs on every read of
+      // the profile , would undo the pick the moment it was made.
+      profile.wealthTierBase = (fromPurse === 0 && profile.wealthTierChosen != null)
+        ? profile.wealthTierChosen
+        : fromPurse;
     }
   }
 

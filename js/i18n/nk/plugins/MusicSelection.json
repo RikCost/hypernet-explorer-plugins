@@ -1,8 +1,10 @@
 {
   "trackNone": "NONE",
+  "trackRandom": "RANDOM!",
   "trackMap": "CONTINUE MAP MUSIC",
   "battleMusic": "BATTLE MUSIC",
   "noMusic": "NO MUSIC DURIN' BATTLES.",
+  "randomEachBattle": "A DIFFERENT TUNE GETS PICKED AT DA START OF EVERY SCRAP!",
   "continueMap": "CONTINUE PLAYIN' DA CURRENT MAP BGM!",
   "playingAsBattle": "PLAYIN' AS BATTLE BACKGROUND MUSIC!",
   "composer": "COMPOSER",

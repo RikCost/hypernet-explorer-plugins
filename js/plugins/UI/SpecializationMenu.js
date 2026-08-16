@@ -244,11 +244,43 @@
         return best;
     };
 
+    // How much of a class/trait head start this character actually took. It is
+    // normally all of it, and undefined means exactly that. Character creation
+    // (CharacterCreationFull) lets a free level be handed back for a point
+    // spent somewhere else, and this is where that trade is recorded.
+    Game_Actor.prototype.specializationGrantKept = function (id) {
+        return this._specGrantsKept ? this._specGrantsKept[id] : undefined;
+    };
+
+    // Pass null to take the whole grant again.
+    Game_Actor.prototype.setSpecializationGrantKept = function (id, level) {
+        if (!this._specGrantsKept) this._specGrantsKept = {};
+        if (level == null) delete this._specGrantsKept[id];
+        else this._specGrantsKept[id] = Math.max(1, Math.min(5, level));
+    };
+
+    Game_Actor.prototype.clearSpecializationGrantsKept = function () {
+        this._specGrantsKept = {};
+    };
+
+    // The free head start the class and the traits are giving right now, as
+    // taken: the full grant, or the part of it the character kept.
+    Game_Actor.prototype.specializationGrantedLevel = function (id) {
+        const granted = Math.max(
+            this.specializationClassBonus(id),
+            this.specializationTraitBonus(id)
+        );
+        const kept = this.specializationGrantKept(id);
+        return kept == null ? granted : Math.min(granted, kept);
+    };
+
+    // Capping the grant deliberately leaves the trained level alone: signing a
+    // head start away at creation is giving up something the character was
+    // handed, not a promise never to learn the thing.
     Game_Actor.prototype.specializationLevel = function (id) {
         return Math.max(
             this.specializationTrainedLevel(id),
-            this.specializationClassBonus(id),
-            this.specializationTraitBonus(id)
+            this.specializationGrantedLevel(id)
         );
     };
 
@@ -327,9 +359,12 @@
 
         // Give points for an activity. `opts.actor` names the member doing it
         // (defaults to the party leader); `opts.soloist` limits the award to
-        // that member alone; `opts.silent` skips the toast and hands the gained
-        // tiers back, for callers that want to group the level up with their
-        // own notification (see MinigameFun). Returns the list of tiers gained.
+        // that member alone; `opts.shared` says everybody is doing it together
+        // (swimming across a lake), so no one is a mere onlooker and the whole
+        // party earns the full amount; `opts.silent` skips the toast and hands
+        // the gained tiers back, for callers that want to group the level up
+        // with their own notification (see MinigameFun). Returns the list of
+        // tiers gained.
         award(spec, points, opts) {
             opts = opts || {};
             const def = this.resolve(spec);
@@ -342,7 +377,7 @@
                 if (!actor) return;
                 const isLead = actor === lead;
                 if (!isLead && opts.soloist) return;
-                const share = isLead ? points : points * ONLOOKER_SHARE;
+                const share = (isLead || opts.shared) ? points : points * ONLOOKER_SHARE;
                 const newLevel = actor.gainSpecializationExp(def.id, share);
                 // `name` rides along on the record rather than on announce(),
                 // so a caller that defers the toast (see CookingSystem) still

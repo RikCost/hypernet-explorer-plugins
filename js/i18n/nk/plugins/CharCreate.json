@@ -234,7 +234,7 @@
     },
     "originStranded": {
       "name": "STRANDED",
-      "desc": "BEGIN ON FOOT AT A RANDOM REMOTE SPOT SOMEWHERE ON DA WORLD MAP!"
+      "desc": "START ON FOOT AT A RANDOM REMOTE SPOT, MILES FROM ANYWHERE ANYONE'D LOOK!"
     },
     "originCriminal": {
       "name": "CRIMINAL",
@@ -250,19 +250,19 @@
     },
     "originLot": {
       "name": "EMPTY LOT",
-      "desc": "BEGIN ON A RANDOM PATCH OF DA WORLD MAP WIT A LARGE STOCKPILE OF CRAFTIN' MATERIALS!"
+      "desc": "START STANDIN' ON A RANDOM PATCH O' OPEN COUNTRY WIV A BIG PILE O' CRAFTIN' STUFF!"
     },
     "originBike": {
       "name": "START ON BIKE",
-      "desc": "BEGIN RIDIN' A BIKE SOMEWHERE ON DA WORLD MAP!"
+      "desc": "START OUT IN DA WILDS WIV A BIKE PARKED NEXT TA YA!"
     },
     "originCar": {
       "name": "START IN CAR",
-      "desc": "PICK A CITY, DEN BEGIN IN YA CAR PARKED DERE!"
+      "desc": "YA WAKE UP OUT IN DA WILDS NEXT TA YA CAR, KEYS IN HAND! WHERE YA DRIVE IT IS UP TA YOU!"
     },
     "originCamper": {
       "name": "START IN CAMPER",
-      "desc": "PICK A CITY, DEN BEGIN IN YA CAMPER PARKED DERE!"
+      "desc": "YA WAKE UP OUT IN DA WILDS NEXT TA YA CAMPER, KEYS IN HAND! WHERE YA DRIVE IT IS UP TA YOU!"
     },
     "originSpace": {
       "name": "START IN SPACE",
@@ -511,17 +511,17 @@
   "start": "START",
   "trainPickADestination": "TRAIN, PICK A DESTINATION",
   "deepSpace": "DEEP SPACE",
-  "yourCamperParkedInACity": "YA CAMPER, PARKED IN A CITY",
-  "yourCarParkedInACity": "YA CAR, PARKED IN A CITY",
+  "yourCamperParkedInACity": "YA CAMPER, PARKED NEXT TA YA OUT IN DA WILDS",
+  "yourCarParkedInACity": "YA CAR, PARKED NEXT TA YA OUT IN DA WILDS",
   "aRandomOverlandBiome": "A RANDOM OVERLAND BIOME",
-  "aRandomWorldMapTile": "A RANDOM WORLD-MAP TILE",
+  "aRandomWorldMapTile": "A RANDOM PATCH O' OPEN COUNTRY",
   "theTowerGate": "DA TOWER GATE",
   "aCityOfYourChoice": "A CITY OF YA CHOICE",
   "bounty": "BOUNTY",
   "10000OnYourHead": "10,000€ ON YA HEAD",
   "stock": "STOCK",
   "sealedVials": "{count} SEALED CULTURE VIALS, ONE ILLNESS EACH",
-  "aRandomRemoteWorldMapSpot": "A RANDOM REMOTE WORLD-MAP SPOT",
+  "aRandomRemoteWorldMapSpot": "A RANDOM REMOTE SPOT, MILES FROM ANYWHERE",
   "aLootCellarUnderARandomBiome": "A LOOT CELLAR UNDER A RANDOM BIOME",
   "hoards": "HOARDS",
   "wayBack": "WAY BACK",
@@ -635,7 +635,8 @@
       "rerollLife": "DEAL A DIFFERENT LIFE",
       "randomizeAll": "RANDOMIZE EVERYTHIN'",
       "done": "DONE, DIS CHARACTER IZ READY",
-      "specsRandom": "ROLL NEW SPECIALIZATIONS"
+      "specsRandom": "ROLL NEW SPECIALIZATIONS",
+      "specPoints": "POINTS"
     },
     "kind": {
       "humanoid": "HUMANOID",
@@ -651,7 +652,13 @@
     "specCost": "COSTS {n}",
     "specRefund": "CLICK TA GIVE DA POINTS BACK",
     "specGranted": "(FREE TA {level})",
-    "specsRandomHint": "SPEND DA WHOLE BUDGET AT RANDOM, ON TOP OF WHAT DA CLASS AN' TRAITS ALREADY GRANT!"
+    "specsRandomHint": "SPEND DA WHOLE BUDGET AT RANDOM, ON TOP OF WHAT DA CLASS AN' TRAITS ALREADY GRANT!",
+    "search": "SEARCH…",
+    "noMatches": "NUFFIN' 'ERE MATCHES DAT!",
+    "specLower": "GIVE BACK {n}",
+    "specPointsShort": "{left} / {total} PTS",
+    "wealthNote": "WOT DIS ONE CHUCKS IN DA GANG PURSE!",
+    "moreMatches": "{n} MORE , NARROW DA SEARCH TA SEE 'EM!"
   },
   "augments": "AUGMENTS",
   "augmentsPerMember": "{min}-{max} PER MEMBER, FITTED TA DEY OWN SOCKETS",

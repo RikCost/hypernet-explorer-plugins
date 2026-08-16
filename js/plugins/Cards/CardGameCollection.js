@@ -80,10 +80,9 @@
   //===========================================================================
   // Shared card art helper
   //===========================================================================
-  // Draws a monster's snapshot (falling back to its walking sprite) or an
-  // equipment glyph into a host element.
+  // Draws a monster's walking sprite or an equipment glyph into a host element.
 
-  function fillArt(host, key, seed, px) {
+  function fillArt(host, key, px) {
     if (!host) return;
     const CGx = CG();
     host.innerHTML = "";
@@ -93,15 +92,8 @@
       host.appendChild(glyph);
       return;
     }
-    const fallback = CGx.Art.spriteArt(key, px || 96);
-    if (fallback) host.appendChild(fallback);
-    CGx.Art.face(key, seed, 192).then((url) => {
-      if (!url || !host.isConnected) return;
-      host.innerHTML = "";
-      const img = document.createElement("img");
-      img.src = url;
-      host.appendChild(img);
-    });
+    const sprite = CGx.Art.spriteArt(key, px || 96);
+    if (sprite) host.appendChild(sprite);
   }
 
   //===========================================================================
@@ -146,7 +138,6 @@
     terminate() {
       const container = document.getElementById("cardcol-container");
       if (container) container.remove();
-      CG().Art.releaseRenderer();
       super.terminate();
     }
 
@@ -507,7 +498,7 @@
           ${CGx.STATS.map((id) => `<div>${escapeHtml(CGx.statLabel(id))}<b>${stats[id]}</b></div>`).join("")}
         </div>`}
         <div class="cc-lore">${escapeHtml(CGx.cardText(key, seed))}</div>`;
-      fillArt(host.querySelector("#cc-art"), key, seed, 96);
+      fillArt(host.querySelector("#cc-art"), key, 96);
     }
 
     renderDeck(container) {
@@ -611,7 +602,6 @@
     terminate() {
       const container = document.getElementById("cardpack-container");
       if (container) container.remove();
-      CG().Art.releaseRenderer();
       super.terminate();
     }
 
@@ -715,7 +705,6 @@
       const el = container.querySelector(`.cp-card[data-i="${index}"]`);
       if (!el || !entry) return;
 
-      const seed = CGx.rollSeed();
       const stats = CGx.statsFor(entry.key);
       const front = el.querySelector(".cp-front");
       front.innerHTML = `
@@ -724,7 +713,7 @@
         <div class="cp-stats">
           ${CGx.STATS.map((id) => `<div>${escapeHtml(CGx.statLabel(id))}<b>${stats[id]}</b></div>`).join("")}
         </div>`;
-      fillArt(front.querySelector(".cp-art"), entry.key, seed, 56);
+      fillArt(front.querySelector(".cp-art"), entry.key, 56);
       el.classList.remove("cp-back");
       el.classList.add("cp-flip");
       if (entry.isNew) {

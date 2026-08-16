@@ -3277,28 +3277,37 @@
       }
     }
 
-    // Character-creation "bike" origin: the player is dropped into a freshly
-    // generated procedural biome (picked in CharacterCreation.startBikeOrigin).
-    // Place them in a passable 4x4 zone and park the bike on the tile beside them
-    // (not mounted) so they can choose to ride off.
-    if ($gameTemp._ccBikeStart && $gameMap.mapId() === proceduralMapId()) {
-      $gameTemp._ccBikeStart = false;
-      $gameSystem._boatType = 'bike';
-      const boat = vehicleManager.getVehicle('boat');
-      const zone = PositionFinder.findPassable4x4(boat);
+    // Character-creation vehicle origins (bike, car, camper): the player is
+    // dropped into a freshly generated procedural biome (picked in
+    // CharacterCreation.startVehicleOrigin / startBikeOrigin). Place them in a
+    // passable 4x4 zone and park the vehicle on the tile BESIDE them, unmounted
+    // and with nobody inside its interior, so the first thing they do is decide
+    // whether to get in.
+    //
+    // The camper is the engine's ship; the car and the bike share its boat, so
+    // that slot is pointed at the right sub-type before the vehicle is moved,
+    // or the move would be recorded against whichever one it last stood for.
+    const ccFieldStart = $gameTemp._ccVehicleFieldStart;
+    if (ccFieldStart && $gameMap.mapId() === proceduralMapId()) {
+      $gameTemp._ccVehicleFieldStart = null;
+      const slot = ccFieldStart === 'camper' ? 'ship' : 'boat';
+      if (slot === 'boat') $gameSystem._boatType = ccFieldStart; // 'bike' | 'car'
+      const vehicle = vehicleManager.getVehicle(slot);
+      const zone = PositionFinder.findPassable4x4(vehicle);
       if (zone) {
-        const px = zone.x + 1;
-        const py = zone.y + 1;
-        $gamePlayer.locate(px, py);
+        $gamePlayer.locate(zone.x + 1, zone.y + 1);
         $gamePlayer.setDirection(2);
       }
-      if (boat) {
-        // Park the bike on a passable tile beside the player (not mounted).
-        const bikePos = PositionFinder.findNearPlayer(boat);
-        if (bikePos) {
-          boat.setLocation($gameMap.mapId(), bikePos.x, bikePos.y);
-          vehicleManager.savePosition(boat);
-          boat.refresh();
+      // The clearing is only tested for passability, and none may have been
+      // found at all: CharacterCreation has the last word on whether the party
+      // is standing in the scenery, and moves them off it if they are.
+      if (window.CCOriginPlacement) window.CCOriginPlacement.placeOnStandableTile();
+      if (vehicle) {
+        const pos = PositionFinder.findNearPlayer(vehicle);
+        if (pos) {
+          vehicle.setLocation($gameMap.mapId(), pos.x, pos.y);
+          vehicleManager.savePosition(vehicle);
+          vehicle.refresh();
         }
       }
     }

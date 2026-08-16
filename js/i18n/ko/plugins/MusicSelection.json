@@ -1,8 +1,10 @@
 {
   "trackNone": "없음",
+  "trackRandom": "무작위",
   "trackMap": "",
   "battleMusic": "",
   "noMusic": "",
+  "randomEachBattle": "전투가 시작될 때마다 다른 곡이 무작위로 선택됩니다.",
   "continueMap": "",
   "playingAsBattle": "",
   "composer": "",

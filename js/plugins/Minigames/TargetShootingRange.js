@@ -120,6 +120,12 @@
     const SIM_DT      = 1 / 60;
     const RENDER_FPS  = 30;      // the 3D pass; the simulation stays at 60
 
+    // The bottle rail. Near and low: the bottles must clear neither the eye
+    // line to the closest plate (z -17, face bottom y 1.15) nor the popper
+    // berms behind it, or a moving target would screen every still one.
+    const RAIL_Z      = -10;     // rail distance from the firing line
+    const RAIL_Y      = 0.55;    // rail top; a bottle stands ~0.7 above it
+
     const PITCH_MIN   = -0.62;
     const PITCH_MAX   = 0.42;
     const YAW_LIM     = 0.95;    // the lane is a lane: you cannot turn around

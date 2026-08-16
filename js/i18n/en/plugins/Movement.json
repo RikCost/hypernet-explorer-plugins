@@ -14,7 +14,8 @@
   "fish": "Fish",
   "useBoat": "Use boat",
   "swim": "Swim",
-  "drinkSaltWater": "You drink some salt water and immediately feel nauseous!",
-  "drinkWater": "You drink some water, easing your hunger a little.",
+  "drinkSaltWaterChoice": "Drink salt water",
+  "drankSaltWater": "You drank salt water",
+  "drankWater": "You drank water",
   "cannotSwimHere": "You can't swim here."
 }

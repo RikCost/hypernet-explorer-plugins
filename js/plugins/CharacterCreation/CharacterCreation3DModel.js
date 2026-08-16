@@ -1273,8 +1273,9 @@
     setConfig(this._actorId, this._config);
     SoundManager.playOk();
     // Creature mode was PUSHED over the creature scene: pop once back to it and
-    // let it resume the flow. Humanoid mode mirrors the bust selector's exit
-    // (double pop to the map so the creation common event resumes).
+    // let it resume the flow. Humanoid mode mirrors the bust selector's exit:
+    // a double pop past the sprite board it was opened from, landing on the
+    // wizard, which resumes on the step after the one that opened the chain.
     if (this._creatureMode) { Scene_CC3DModel._creatureResult = "confirm"; SceneManager.pop(); return; }
     const pops = Scene_CC3DModel._confirmPops || 2;
     for (let i = 0; i < pops; i++) SceneManager.pop();

@@ -229,8 +229,7 @@
       for (const enemy of $dataEnemies) {
         if (isDivider(enemy) || !enemy.id) continue;
         // A monster with no walking sprite has nothing to stand on a tile as,
-        // so it is not dealt as a card. That is also exactly the set with a
-        // bespoke 3D model.
+        // so it is not dealt as a card.
         if (!charSheetOf(enemy)) continue;
         monsters.push(monsterKey(enemy.id));
       }
@@ -918,304 +917,13 @@
   // Art
   //===========================================================================
 
-  // The 3D archetype this monster is grown from, or null when the procedural
-  // system has nothing registered for it.
-  function archetypeOf(key) {
-    if (!isMonster(key) || !window.Battler3D || !window.Battler3D.resolveKey) return null;
-    const data = dataOf(key);
-    if (!data) return null;
-    try { return window.Battler3D.resolveKey(data); } catch (e) { return null; }
-  }
-
   function charSheetFor(key) {
     if (!isMonster(key)) return null;
     return charSheetOf(dataOf(key));
   }
 
-  // Whether card faces should be drawn as 3D snapshots at all. Switch 70 is the
-  // game's own "3D battlers" master toggle.
-  function use3DFaces() {
-    if (typeof THREE === "undefined" || !window.Battler3D || !window.Battler3D.create) return false;
-    return typeof $gameSwitches !== "undefined" && $gameSwitches.value(70);
-  }
-
-  // Whether the BOARD puts live models on its tiles: the experimental option,
-  // off by default, on top of everything a face needs.
-  function use3DBoard() {
-    if (!use3DFaces()) return false;
-    return typeof ConfigManager !== "undefined" && ConfigManager.cardBoard3D === true;
-  }
-
-  //---------------------------------------------------------------------------
-  // Snapshot service.
-  //---------------------------------------------------------------------------
-  // ONE offscreen renderer for the whole plugin, working through a queue. Never
-  // one context per card: the browser caps live WebGL contexts and force-loses
-  // the OLDEST past the cap, which is the game's own canvas, and the picture
-  // then freezes until the game is restarted.
-
-  const FACE_CACHE_MAX = 64;
-  const _faceCache = new Map();
-  const _facePending = new Map();
-  let _renderer = null;
-  let _rendererCanvas = null;
-  let _queue = Promise.resolve();
-
-  function ensureRenderer(px) {
-    if (_renderer) {
-      _renderer.setSize(px, px, false);
-      return _renderer;
-    }
-    _rendererCanvas = document.createElement("canvas");
-    _rendererCanvas.width = px;
-    _rendererCanvas.height = px;
-    _renderer = new THREE.WebGLRenderer({
-      canvas: _rendererCanvas, alpha: true, antialias: true, preserveDrawingBuffer: true
-    });
-    _renderer.setSize(px, px, false);
-    _renderer.setPixelRatio(1);
-    return _renderer;
-  }
-
-  function releaseRenderer() {
-    if (!_renderer) return;
-    try { _renderer.dispose(); } catch (e) { /* already gone */ }
-    try { if (_renderer.forceContextLoss) _renderer.forceContextLoss(); } catch (e) { /* already gone */ }
-    _renderer = null;
-    _rendererCanvas = null;
-  }
-
-  function cacheFace(cacheKey, url) {
-    _faceCache.set(cacheKey, url);
-    if (_faceCache.size > FACE_CACHE_MAX) {
-      _faceCache.delete(_faceCache.keys().next().value);
-    }
-    return url;
-  }
-
-  // Build one model under `seed`, frame it and hand back a data URL. The
-  // generation seed is what makes two copies of one monster look different, and
-  // it is restored the moment the model is built, exactly as the Bestiary's
-  // portrait does it.
-  function renderFace(key, seed, px) {
-    return new Promise((resolve) => {
-      const archKey = archetypeOf(key);
-      if (!archKey) return resolve(null);
-      const data = dataOf(key);
-      let renderer;
-      try { renderer = ensureRenderer(px); } catch (e) { return resolve(null); }
-
-      const scene = new THREE.Scene();
-      scene.add(new THREE.AmbientLight(0xffffff, 1.15));
-      const keyLight = new THREE.DirectionalLight(0xfff2d0, 1.4); keyLight.position.set(3, 5, 4); scene.add(keyLight);
-      const fill = new THREE.DirectionalLight(0xbcd4ff, 0.7); fill.position.set(-3, -2, 2); scene.add(fill);
-      const camera = new THREE.PerspectiveCamera(38, 1, 0.05, 300);
-
-      const fakeBattler = { enemyId: () => data.id, index: () => 0 };
-      const previous = window.Battler3D.getGenSeed ? window.Battler3D.getGenSeed() : null;
-      let battler = null;
-      try {
-        if (window.Battler3D.setGenSeed) window.Battler3D.setGenSeed(String(seed >>> 0));
-        battler = window.Battler3D.create(archKey, 0, 0, fakeBattler);
-      } catch (e) {
-        battler = null;
-      } finally {
-        if (window.Battler3D.setGenSeed && previous != null) window.Battler3D.setGenSeed(previous);
-      }
-      if (!battler) return resolve(null);
-
-      const finish = (url) => {
-        try { if (battler.dispose) battler.dispose(); } catch (e) { /* nothing held */ }
-        resolve(url);
-      };
-
-      Promise.resolve(battler.load(null, 0, 0, 0)).then(() => {
-        if (!battler.model) return finish(null);
-        try { battler.update(1 / 60); } catch (e) { /* first frame only */ }
-        const holder = new THREE.Group();
-        const box = new THREE.Box3().setFromObject(battler.model);
-        const size = new THREE.Vector3(); box.getSize(size);
-        const centre = new THREE.Vector3(); box.getCenter(centre);
-        // The family idle animations rewrite model.position every frame, so the
-        // centring offset rides a parent holder instead of the model itself.
-        holder.position.copy(centre).multiplyScalar(-1);
-        holder.add(battler.model);
-        scene.add(holder);
-        const maxDim = Math.max(size.x, size.y, size.z) || 1;
-        const dist = maxDim / (2 * Math.tan((38 * Math.PI / 180) / 2));
-        camera.position.set(dist * 0.28, dist * 0.16, dist * 1.12);
-        camera.lookAt(0, 0, 0);
-        try {
-          renderer.render(scene, camera);
-          finish(_rendererCanvas.toDataURL("image/png"));
-        } catch (e) {
-          finish(null);
-        }
-      }).catch(() => finish(null));
-    });
-  }
-
-  // The card face for one instance. Resolves to a data URL, or to null when
-  // there is nothing to snapshot and the caller should fall back to the 2D
-  // battler image.
-  function face(key, seed, px) {
-    const size = px || 192;
-    const cacheKey = key + ":" + (seed >>> 0) + ":" + size;
-    if (_faceCache.has(cacheKey)) return Promise.resolve(_faceCache.get(cacheKey));
-    if (_facePending.has(cacheKey)) return _facePending.get(cacheKey);
-    if (!use3DFaces() || !isMonster(key)) return Promise.resolve(null);
-
-    // Serialised: one model is built, framed and read back at a time, so a hand
-    // of six cards never has six models resident at once.
-    const job = _queue.then(() => renderFace(key, seed >>> 0, size))
-      .then((url) => {
-        _facePending.delete(cacheKey);
-        return url ? cacheFace(cacheKey, url) : null;
-      })
-      .catch(() => { _facePending.delete(cacheKey); return null; });
-    _queue = job.catch(() => { });
-    _facePending.set(cacheKey, job);
-    return job;
-  }
-
-  //---------------------------------------------------------------------------
-  // Live faces: the creature moving INSIDE the card.
-  //---------------------------------------------------------------------------
-  // A snapshot is a photograph; this is the animal. Each live face owns a
-  // scene and a model but NOT a context: every one of them is drawn through
-  // ONE shared renderer and blitted onto its own 2D canvas, so a hand of seven
-  // cards costs a single WebGL context however many creatures are in it.
-
-  const LIVE_PX = 224;
-  let _liveRenderer = null;
-  let _liveCanvas = null;
-
-  function ensureLiveRenderer() {
-    if (_liveRenderer) return _liveRenderer;
-    if (typeof THREE === "undefined") return null;
-    try {
-      _liveCanvas = document.createElement("canvas");
-      _liveCanvas.width = LIVE_PX;
-      _liveCanvas.height = LIVE_PX;
-      _liveRenderer = new THREE.WebGLRenderer({
-        canvas: _liveCanvas, alpha: true, antialias: true, preserveDrawingBuffer: true
-      });
-      _liveRenderer.setSize(LIVE_PX, LIVE_PX, false);
-      _liveRenderer.setPixelRatio(1);
-    } catch (e) {
-      _liveRenderer = null;
-      _liveCanvas = null;
-    }
-    return _liveRenderer;
-  }
-
-  function releaseLiveRenderer() {
-    if (!_liveRenderer) return;
-    try { _liveRenderer.dispose(); } catch (e) { /* already gone */ }
-    try { if (_liveRenderer.forceContextLoss) _liveRenderer.forceContextLoss(); } catch (e) { /* already gone */ }
-    _liveRenderer = null;
-    _liveCanvas = null;
-  }
-
-  class LiveFace {
-    constructor(key, seed) {
-      this.canvas = document.createElement("canvas");
-      this.canvas.width = LIVE_PX;
-      this.canvas.height = LIVE_PX;
-      this.ctx = this.canvas.getContext("2d");
-      this.ready = false;
-      this.dead = false;
-      this.battler = null;
-
-      const archKey = archetypeOf(key);
-      const data = dataOf(key);
-      if (!archKey || !data || typeof THREE === "undefined") { this.dead = true; return; }
-
-      this.scene = new THREE.Scene();
-      this.scene.add(new THREE.AmbientLight(0xffffff, 1.15));
-      const keyLight = new THREE.DirectionalLight(0xfff2d0, 1.4); keyLight.position.set(3, 5, 4);
-      this.scene.add(keyLight);
-      const fill = new THREE.DirectionalLight(0xbcd4ff, 0.7); fill.position.set(-3, -2, 2);
-      this.scene.add(fill);
-      this.camera = new THREE.PerspectiveCamera(38, 1, 0.05, 300);
-
-      // The turntable rotates about the world origin, and the model is hung off
-      // an inner group translated by its own centre so the origin IS the
-      // creature's middle; rotating the centring group instead would swing the
-      // model around a point somewhere off in space.
-      this.spinner = new THREE.Group();
-      this.scene.add(this.spinner);
-
-      const fake = { enemyId: () => data.id, index: () => 0 };
-      const previous = window.Battler3D && window.Battler3D.getGenSeed ? window.Battler3D.getGenSeed() : null;
-      let battler = null;
-      try {
-        if (window.Battler3D.setGenSeed) window.Battler3D.setGenSeed(String(seed >>> 0));
-        battler = window.Battler3D.create(archKey, 0, 0, fake);
-      } catch (e) {
-        battler = null;
-      } finally {
-        if (window.Battler3D.setGenSeed && previous != null) window.Battler3D.setGenSeed(previous);
-      }
-      if (!battler) { this.dead = true; return; }
-      this.battler = battler;
-
-      Promise.resolve(battler.load(null, 0, 0, 0)).then(() => {
-        if (this.dead || !battler.model) return;
-        try { battler.update(1 / 60); } catch (e) { /* first frame only */ }
-        const holder = new THREE.Group();
-        const box = new THREE.Box3().setFromObject(battler.model);
-        const size = new THREE.Vector3(); box.getSize(size);
-        const centre = new THREE.Vector3(); box.getCenter(centre);
-        holder.position.copy(centre).multiplyScalar(-1);
-        holder.add(battler.model);
-        this.spinner.add(holder);
-        const maxDim = Math.max(size.x, size.y, size.z) || 1;
-        // Far enough back that the widest bearing of the turn still fits.
-        const dist = maxDim / (2 * Math.tan((38 * Math.PI / 180) / 2));
-        this.camera.position.set(0, dist * 0.14, dist * 1.2);
-        this.camera.lookAt(0, 0, 0);
-        this.ready = true;
-      }).catch(() => { this.dead = true; });
-    }
-
-    update(dt) {
-      if (!this.ready || this.dead) return false;
-      try { this.battler.update(dt); } catch (e) { /* a stuck model never stops the hand */ }
-      this.spinner.rotation.y += dt * 0.55;
-      const renderer = ensureLiveRenderer();
-      if (!renderer) return false;
-      try {
-        renderer.render(this.scene, this.camera);
-        this.ctx.clearRect(0, 0, LIVE_PX, LIVE_PX);
-        this.ctx.drawImage(_liveCanvas, 0, 0);
-      } catch (e) {
-        return false;
-      }
-      return true;
-    }
-
-    dispose() {
-      this.dead = true;
-      this.ready = false;
-      try { if (this.battler && this.battler.dispose) this.battler.dispose(); } catch (e) { /* nothing held */ }
-      this.battler = null;
-      this.scene = null;
-      this.spinner = null;
-    }
-  }
-
-  // A live face for one played instance, or null when the monster has no
-  // registered archetype and the caller should fall back to its sprite.
-  function liveFace(key, seed) {
-    if (!use3DFaces() || !isMonster(key)) return null;
-    const face = new LiveFace(key, seed >>> 0);
-    return face.dead ? null : face;
-  }
-
-  // The stand-in while a model is still building, and the whole picture for a
-  // monster that has no model at all: its own walking sprite. The flat battler
-  // illustration this used to return retired with the 2D battler mode.
+  // The whole picture on a monster card: its own walking sprite. The flat
+  // battler illustration this used to return retired with the 2D battler mode.
   function spriteArt(key, px) {
     if (!isMonster(key) || !charSheetFor(key)) return null;
     const canvas = document.createElement("canvas");
@@ -1237,7 +945,10 @@
     }
     const bitmap = ImageManager.loadCharacter("Monsters/" + sheet);
     bitmap.addLoadListener(() => {
-      if (!canvas.isConnected) return;
+      // Deliberately NOT gated on the canvas being in the page: a hand card is
+      // drawn before it is appended, and a sheet already in the cache fires
+      // this listener on the spot, which is what used to leave those cards
+      // blank. Painting a canvas nobody ends up showing costs one drawImage.
       const single = sheet.startsWith("$");
       const pw = single ? bitmap.width / 3 : bitmap.width / 12;
       const ph = single ? bitmap.height / 4 : bitmap.height / 8;
@@ -1311,9 +1022,7 @@
 
     // art
     Art: {
-      archetypeOf, charSheetFor, use3DFaces, use3DBoard,
-      face, liveFace, spriteArt, drawTileSprite, iconStyle,
-      releaseRenderer, releaseLiveRenderer
+      charSheetFor, spriteArt, drawTileSprite, iconStyle
     }
   };
 

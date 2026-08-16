@@ -22,9 +22,7 @@
  * armour is bolted onto a monster of yours already standing (one of each per
  * monster, its values added and clamped back to 13).
  *
- * The table is dressed either in the monsters' walking sprites or in the real
- * 3D creatures, which turn on the spot inside the cards themselves. The button
- * in the footer says which, and remembers the answer for the next duel.
+ * The table is dressed in the monsters' own walking sprites.
  *
  * The moment the last tile is taken every monster looks at its four orthogonal
  * neighbours, picks the weakest enemy among them and fights it. Every pairing
@@ -84,154 +82,6 @@
   // no new renderer, no per-frame JavaScript layout.
 
   //===========================================================================
-  // The live 3D board (experimental option)
-  //===========================================================================
-  // ONE scene, ONE renderer, one model per occupied tile, built under that
-  // card's own instance seed so the creature standing on the tile is the
-  // creature pictured on the card. Falls silently back to the sprite when the
-  // monster has no registered archetype.
-
-  class Board3D {
-    constructor(canvas, cellPx, gapPx) {
-      this.canvas = canvas;
-      this.cell = cellPx;
-      this.gap = gapPx;
-      this.models = new Map(); // tile index -> { battler, holder, offset }
-      this.ok = false;
-      this.side = CG().BOARD_SIZE;
-      const size = cellPx * this.side + gapPx * (this.side - 1);
-      canvas.width = size;
-      canvas.height = size;
-      canvas.style.width = size + "px";
-      canvas.style.height = size + "px";
-      try {
-        this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        this.renderer.setSize(size, size, false);
-        this.renderer.setPixelRatio(1);
-      } catch (e) {
-        return;
-      }
-      // The frustum is the board itself: one world unit is one tile, so a model
-      // scaled to 0.8 units stands 80% of a tile tall wherever it is put.
-      const half = this.side / 2 + (gapPx / cellPx) * ((this.side - 1) / 2);
-      this.scene = new THREE.Scene();
-      this.scene.add(new THREE.AmbientLight(0xffffff, 1.1));
-      const key = new THREE.DirectionalLight(0xfff2d0, 1.3); key.position.set(2, 4, 5); this.scene.add(key);
-      const fill = new THREE.DirectionalLight(0xbcd4ff, 0.6); fill.position.set(-3, -1, 3); this.scene.add(fill);
-      this.camera = new THREE.OrthographicCamera(-half, half, half, -half, 0.1, 200);
-      this.camera.position.set(0, 0, 40);
-      this.camera.lookAt(0, 0, 0);
-      this.clock = new THREE.Clock();
-      this.ok = true;
-    }
-
-    // Tile centre in board units, origin at the middle of the grid.
-    tilePos(index) {
-      const step = 1 + this.gap / this.cell;
-      const mid = (this.side - 1) / 2;
-      return { x: ((index % this.side) - mid) * step, y: (mid - ((index / this.side) | 0)) * step };
-    }
-
-    add(index, cardKey, seed) {
-      if (!this.ok || this.models.has(index)) return;
-      const CGx = CG();
-      const archKey = CGx.Art.archetypeOf(cardKey);
-      if (!archKey) return;
-      const data = CGx.dataOf(cardKey);
-      const fake = { enemyId: () => data.id, index: () => 0 };
-      const previous = window.Battler3D.getGenSeed ? window.Battler3D.getGenSeed() : null;
-      let battler = null;
-      try {
-        if (window.Battler3D.setGenSeed) window.Battler3D.setGenSeed(String(seed >>> 0));
-        battler = window.Battler3D.create(archKey, 0, 0, fake);
-      } catch (e) {
-        battler = null;
-      } finally {
-        if (window.Battler3D.setGenSeed && previous != null) window.Battler3D.setGenSeed(previous);
-      }
-      if (!battler) return;
-
-      const holder = new THREE.Group();
-      const entry = { battler, holder, offset: { x: 0, y: 0 }, dying: false, fade: 1 };
-      this.models.set(index, entry);
-      this.scene.add(holder);
-
-      Promise.resolve(battler.load(null, 0, 0, 0)).then(() => {
-        if (!battler.model || !this.models.has(index)) return;
-        try { battler.update(1 / 60); } catch (e) { /* first frame */ }
-        // Measured, not guessed: a coyote is three units across where a bat is
-        // half of one, so each model is fitted to its own tile by its own box.
-        const box = new THREE.Box3().setFromObject(battler.model);
-        const size = new THREE.Vector3(); box.getSize(size);
-        const biggest = Math.max(size.x, size.y, size.z) || 1;
-        const scale = 0.82 / biggest;
-        const inner = new THREE.Group();
-        inner.scale.setScalar(scale);
-        inner.position.y = -((box.min.y + box.max.y) / 2) * scale;
-        inner.add(battler.model);
-        holder.add(inner);
-        const at = this.tilePos(index);
-        holder.position.set(at.x, at.y, 0);
-      }).catch(() => { });
-    }
-
-    remove(index) {
-      const entry = this.models.get(index);
-      if (!entry) return;
-      this.scene.remove(entry.holder);
-      try { if (entry.battler.dispose) entry.battler.dispose(); } catch (e) { /* nothing held */ }
-      this.models.delete(index);
-    }
-
-    // The clash: shove a model a fraction of the way toward its target.
-    lunge(index, targetIndex) {
-      const entry = this.models.get(index);
-      if (!entry) return;
-      const from = this.tilePos(index), to = this.tilePos(targetIndex);
-      entry.lunge = { x: (to.x - from.x) * 0.42, y: (to.y - from.y) * 0.42, t: 0 };
-    }
-
-    kill(index) {
-      const entry = this.models.get(index);
-      if (entry) entry.dying = true;
-    }
-
-    update() {
-      if (!this.ok) return;
-      const dt = Math.min(0.05, this.clock.getDelta());
-      for (const [index, entry] of this.models) {
-        try { entry.battler.update(dt); } catch (e) { /* a stuck model never stops the board */ }
-        const at = this.tilePos(index);
-        let dx = 0, dy = 0;
-        if (entry.lunge) {
-          entry.lunge.t = Math.min(1, entry.lunge.t + dt * 2.6);
-          const wave = Math.sin(entry.lunge.t * Math.PI);
-          dx = entry.lunge.x * wave; dy = entry.lunge.y * wave;
-          if (entry.lunge.t >= 1) entry.lunge = null;
-        }
-        entry.holder.position.set(at.x + dx, at.y + dy, 0);
-        if (entry.dying) {
-          entry.fade = Math.max(0, entry.fade - dt * 2.2);
-          entry.holder.scale.setScalar(Math.max(0.02, entry.fade));
-          entry.holder.visible = entry.fade > 0.02;
-        }
-      }
-      try { this.renderer.render(this.scene, this.camera); } catch (e) { /* context lost */ }
-    }
-
-    dispose() {
-      for (const index of Array.from(this.models.keys())) this.remove(index);
-      if (!this.renderer) return;
-      // dispose() alone leaves the context alive, and the browser force-loses
-      // the OLDEST context past its cap, which would be the game's own canvas.
-      try { this.renderer.dispose(); } catch (e) { /* already gone */ }
-      try { if (this.renderer.forceContextLoss) this.renderer.forceContextLoss(); } catch (e) { /* already gone */ }
-      this.renderer = null;
-      this.ok = false;
-    }
-  }
-
-  //===========================================================================
   // Scene_CardDuel
   //===========================================================================
 
@@ -285,11 +135,6 @@
       this._aiTimer = 0;
       this._spriteFrame = 1;
       this._spriteTimer = 0;
-      this._board3D = null;
-      // Which art the table is dressed in. The option is only the opening
-      // answer: the button in the footer changes it mid-match.
-      this._art3D = CGx.Art.use3DBoard();
-      this._liveFaces = new Map(); // card object -> LiveFace
 
       for (let i = 0; i < CGx.HAND_START; i++) { this.drawCard(0, true); this.drawCard(1, true); }
       // An opening hand always holds one of the five tricks, so the first turn
@@ -308,8 +153,6 @@
     update() {
       super.update();
       this.updateSpriteFrames();
-      this.updateLiveFaces();
-      if (this._board3D) this._board3D.update();
       if (this._phase === "play") {
         if (this._turn === 1) this.updateAI();
         else this.updateInput();
@@ -319,12 +162,8 @@
     }
 
     terminate() {
-      if (this._board3D) { this._board3D.dispose(); this._board3D = null; }
-      this.clearLiveFaces();
       const container = document.getElementById("cardduel-container");
       if (container) container.remove();
-      CG().Art.releaseRenderer();
-      CG().Art.releaseLiveRenderer();
       try { window.SpecBadge && window.SpecBadge.hide && window.SpecBadge.hide(); } catch (e) { /* cosmetic */ }
       super.terminate();
     }
@@ -477,7 +316,6 @@
         else if (mod === "double") cell.mult = 2;
         this._tileMods[index] = null;
         this._board[index] = cell;
-        if (this._board3D) this._board3D.add(index, card.key, card.seed);
         playSe(CARD_PLACE(), 75, 100);
         if (mod === "trap") this.springTrap(index);
         return true;
@@ -517,7 +355,6 @@
         case "cull":
           if (cell) {
             this.shatter(tile);
-            if (this._board3D) { this._board3D.kill(index); setTimeout(() => this._board3D && this._board3D.remove(index), 600); }
             this._board[index] = null;
             playSe("Collapse1", 85, 110);
             const container = document.getElementById("cardduel-container");
@@ -556,12 +393,6 @@
       const modA = this._tileMods[a];
       this._tileMods[a] = this._tileMods[b];
       this._tileMods[b] = modA;
-      if (this._board3D) {
-        this._board3D.remove(a);
-        this._board3D.remove(b);
-        if (this._board[a]) this._board3D.add(a, this._board[a].key, this._board[a].seed);
-        if (this._board[b]) this._board3D.add(b, this._board[b].key, this._board[b].seed);
-      }
       this.invalidateTile(a);
       this.invalidateTile(b);
       const ta = this.tileEl(a), tb = this.tileEl(b);
@@ -574,7 +405,6 @@
       setTimeout(() => {
         if (!this._board[index]) return;
         this.shatter(this.tileEl(index));
-        if (this._board3D) { this._board3D.kill(index); setTimeout(() => this._board3D && this._board3D.remove(index), 600); }
         this._board[index] = null;
         this.invalidateTile(index);
         playSe("Collapse2", 85, 105);
@@ -898,7 +728,6 @@
         for (const index of result.deaths) {
           const el = tileEl(index);
           this.shatter(el);
-          if (this._board3D) this._board3D.kill(index);
         }
         for (let i = 0; i < this._board.length; i++) {
           if (!this._board[i] || result.deaths.includes(i)) continue;
@@ -916,7 +745,6 @@
       setTimeout(() => {
         if (this._phase !== "clash") return;
         for (const index of result.deaths) this._board[index] = null;
-        if (this._board3D) for (const index of result.deaths) this._board3D.remove(index);
         this._phase = "over";
         this.settle(result.winner);
         this.showBanner(result.winner);
@@ -930,7 +758,6 @@
       el.style.setProperty("--lx", (dx * 30) + "px");
       el.style.setProperty("--ly", (dy * 30) + "px");
       el.classList.remove("cd-lunge"); void el.offsetWidth; el.classList.add("cd-lunge");
-      if (this._board3D) this._board3D.lunge(from, to);
     }
 
     popChip(el, value, cls) {
@@ -1205,14 +1032,12 @@
           </div>
         </div>
         <div class="cd-boardwrap">
-          <canvas id="cd-3d" style="display:none"></canvas>
           <div class="cd-grid" id="cd-grid"></div>
         </div>
         <div class="cd-hand" id="cd-hand"></div>
         <div class="cd-foot">
           <span></span>
           <span>
-            <button class="cd-btn" id="cd-art"></button>
             <button class="cd-btn" id="cd-quit">${escapeHtml(T("CardGame.duel.quitBtn"))}</button>
           </span>
         </div>
@@ -1241,9 +1066,6 @@
       container.querySelector("#cd-quit").addEventListener("click", () => {
         if (this._phase === "play") this.confirmQuit(); else this.leave();
       });
-      container.querySelector("#cd-art").addEventListener("click", () => this.toggleArt());
-
-      this.applyArtMode();
     }
 
     // How big the table is drawn. Everything is measured off the window rather
@@ -1268,124 +1090,6 @@
       const boardSize = cell * side + gap * (side - 1);
       const boardTop = headH + Math.max(0, (roomH - boardSize) / 2);
       return { cell, gap, cardW, cardH, boardSize, boardTop };
-    }
-
-    //-------------------------------------------------------------------------
-    // 2D sprites or live 3D models
-    //-------------------------------------------------------------------------
-
-    // Whether the table CAN be dressed in 3D at all: no three.js, no registered
-    // battlers or the game's own 3D switch off and the button is not offered.
-    canUse3D() {
-      return CG().Art.use3DFaces();
-    }
-
-    toggleArt() {
-      if (!this.canUse3D()) { SoundManager.playBuzzer(); return; }
-      this._art3D = !this._art3D;
-      // The button is the setting: what the player picks at the table is what
-      // the next duel opens with.
-      try { ConfigManager.cardBoard3D = this._art3D; ConfigManager.save(); } catch (e) { /* cosmetic */ }
-      SoundManager.playOk();
-      this.applyArtMode();
-      // Every tile and every card is drawn from a different source now.
-      for (let i = 0; i < this._board.length; i++) this.invalidateTile(i);
-      this.renderAll();
-    }
-
-    // Build or tear down the live board to match the mode, and put the button
-    // in the state that says what pressing it would do.
-    applyArtMode() {
-      const container = document.getElementById("cardduel-container");
-      if (!container) return;
-      if (!this.canUse3D()) this._art3D = false;
-      const grid = container.querySelector("#cd-grid");
-
-      if (this._art3D && !this._board3D) {
-        const metrics = this.layoutMetrics();
-        const canvas = container.querySelector("#cd-3d");
-        canvas.style.display = "block";
-        const board = new Board3D(canvas, metrics.cell, metrics.gap);
-        if (board.ok) {
-          this._board3D = board;
-          grid.classList.add("cd-3dmode");
-          // A mode flipped mid-match has a board to catch up with.
-          for (let i = 0; i < this._board.length; i++) {
-            const cell = this._board[i];
-            if (cell) board.add(i, cell.key, cell.seed);
-          }
-        } else {
-          board.dispose();
-          this.replaceBoardCanvas();
-          this._art3D = false;
-        }
-      } else if (!this._art3D && this._board3D) {
-        this._board3D.dispose();
-        this._board3D = null;
-        // A canvas whose context has been force-lost never gives out another
-        // one, so turning 3D back on needs a canvas that has never held one.
-        this.replaceBoardCanvas();
-        grid.classList.remove("cd-3dmode");
-      }
-
-      if (!this._art3D) this.clearLiveFaces();
-
-      const button = container.querySelector("#cd-art");
-      if (button) {
-        button.textContent = T(this._art3D ? "CardGame.duel.art3D" : "CardGame.duel.art2D");
-        button.style.display = this.canUse3D() ? "" : "none";
-      }
-    }
-
-    replaceBoardCanvas() {
-      const container = document.getElementById("cardduel-container");
-      const old = container && container.querySelector("#cd-3d");
-      if (!old) return;
-      const fresh = document.createElement("canvas");
-      fresh.id = "cd-3d";
-      fresh.style.display = "none";
-      old.parentNode.replaceChild(fresh, old);
-    }
-
-    // The live model on one card, kept alive across every redraw of the hand:
-    // rebuilding it per frame would rebuild the creature per frame.
-    liveFaceFor(card) {
-      if (this._liveFaces.has(card)) return this._liveFaces.get(card);
-      const face = CG().Art.liveFace(card.key, card.seed);
-      this._liveFaces.set(card, face); // null is an answer too: never ask twice
-      return face;
-    }
-
-    updateLiveFaces() {
-      if (!this._liveFaces.size) return;
-      const dt = 1 / 60;
-      for (const face of this._liveFaces.values()) {
-        if (!face || !face.canvas.isConnected) continue;
-        face.update(dt);
-        // The still picture the card was dealt with steps aside once the
-        // creature is up and moving.
-        if (face.ready) {
-          const still = face.canvas.parentNode && face.canvas.parentNode.querySelector("img");
-          if (still) still.remove();
-        }
-      }
-    }
-
-    // Drop every model whose card has left the hand, so a long match does not
-    // end up holding a creature per card it has ever played.
-    pruneLiveFaces() {
-      if (!this._liveFaces.size) return;
-      const held = new Set(this._hands[0]);
-      for (const [card, face] of Array.from(this._liveFaces)) {
-        if (held.has(card)) continue;
-        if (face) face.dispose();
-        this._liveFaces.delete(card);
-      }
-    }
-
-    clearLiveFaces() {
-      for (const face of this._liveFaces.values()) if (face) face.dispose();
-      this._liveFaces.clear();
     }
 
     onTileClick(index) {
@@ -1451,7 +1155,6 @@
       const CGx = CG();
       const card = this._phase === "play" && this._turn === 0 ? this._hands[0][this._handIndex] : null;
       const legal = card ? new Set(this.legalTilesFor(0, card)) : new Set();
-      const use3D = !!this._board3D;
 
       const MARKS = { halve: "▼", double: "▲", trap: "☠", block: "✖" };
 
@@ -1490,17 +1193,13 @@
           tile.appendChild(ring);
         }
 
-        // The 3D board draws the creature itself on its own canvas, so the tile
-        // keeps only its labels and lets the model show through.
-        if (!use3D || !CGx.Art.archetypeOf(cell.key)) {
-          const canvas = document.createElement("canvas");
-          canvas.className = "cd-sprite";
-          canvas.width = 48; canvas.height = 48;
-          const px = Math.round(tile.clientWidth * 0.62) || 56;
-          canvas.style.width = px + "px"; canvas.style.height = px + "px";
-          tile.appendChild(canvas);
-          CGx.Art.drawTileSprite(canvas, cell.key, this._spriteFrame);
-        }
+        const canvas = document.createElement("canvas");
+        canvas.className = "cd-sprite";
+        canvas.width = 48; canvas.height = 48;
+        const px = Math.round(tile.clientWidth * 0.62) || 56;
+        canvas.style.width = px + "px"; canvas.style.height = px + "px";
+        tile.appendChild(canvas);
+        CGx.Art.drawTileSprite(canvas, cell.key, this._spriteFrame);
 
         const stats = CGx.cellStats(cell);
         const power = document.createElement("div");
@@ -1537,7 +1236,6 @@
       const wrap = container.querySelector("#cd-hand");
       const CGx = CG();
       const hand = this._hands[0];
-      this.pruneLiveFaces();
       wrap.innerHTML = "";
 
       hand.forEach((card, index) => {
@@ -1573,9 +1271,7 @@
       });
     }
 
-    // A monster's art is the creature itself, grown from this instance's own
-    // seed and MOVING inside the card, so two copies of one card never look the
-    // same; without a model it is the walking sprite, and gear shows its glyph.
+    // A monster's art is its walking sprite; gear and tricks show their glyph.
     fillArt(host, card) {
       if (!host) return;
       const CGx = CG();
@@ -1585,17 +1281,8 @@
         host.appendChild(glyph);
         return;
       }
-      const face = this._art3D ? this.liveFaceFor(card) : null;
-      // The sprite stands in until the model is built, and is taken away by
-      // updateLiveFaces the moment it is.
-      if (!face || !face.ready) {
-        const fallback = CGx.Art.spriteArt(card.key, 96);
-        if (fallback) host.appendChild(fallback);
-      }
-      if (face) {
-        face.canvas.className = "cd-live";
-        host.appendChild(face.canvas);
-      }
+      const sprite = CGx.Art.spriteArt(card.key, 96);
+      if (sprite) host.appendChild(sprite);
     }
 
     renderDetail() {
@@ -1625,7 +1312,6 @@
     }
 
     updateSpriteFrames() {
-      if (this._board3D) return;
       this._spriteTimer++;
       if (this._spriteTimer < 16) return;
       this._spriteTimer = 0;

@@ -2887,6 +2887,13 @@
     // re-derives _characterName/_characterIndex from page().image every refresh.
     _applyPersonaSprite(ev, persona) {
       const eventData = ev.event();
+      // A counter noted "Shop Hidden" is staffed like any other (the persona
+      // still works the shift, and still answers when talked to), it just never
+      // shows their face. Game_Event.setImage refuses the graphic anyway, but
+      // writing it into the page data would leave the event reading as one the
+      // author drew a face on (hasOwnGraphic) for anything looking at the raw
+      // data afterwards.
+      if (window.NPCSystem?.hasHiddenTag?.(eventData?.note)) return;
       for (const page of (eventData?.pages || [])) {
         if (page?.image) {
           page.image.characterName = persona.spriteName;

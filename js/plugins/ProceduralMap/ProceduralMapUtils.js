@@ -672,6 +672,39 @@
   }
 
   /**
+   * The parent biome a special-biome name was rolled out of ("SpiritWoods" ->
+   * "Forest"), or the name itself when it is not a special biome.
+   *
+   * The roll is per WORLD SEED, and the biome coordinate cache is not: it can be
+   * preloaded from BiomesMap.json, a snapshot exported from whichever world was
+   * being playtested, so the specials frozen into it belong to THAT world and
+   * not to the one being played. Reading them back as-is is how a square could
+   * be reported as SpiritWoods everywhere the cache is consulted while the map
+   * actually generated on entry - which rolls live - came out plain Forest.
+   * Unwrapping first lets the roll be made again for the world in hand.
+   *
+   * Only unwrapped where the parent is unambiguous. Crystals is reachable from
+   * four different cold biomes, so a cached Crystals square cannot say which one
+   * it came from and keeps the name it has.
+   */
+  let _specialParent = null;
+  function unwrapSpecialBiome(biomeName) {
+    if (!biomeName) return biomeName;
+    if (!_specialParent) {
+      const parents = new Map();
+      for (const biome of Biomes) {
+        for (const special of biome.specialBiomes || []) {
+          const seen = parents.get(special);
+          if (seen === undefined) parents.set(special, biome.name);
+          else if (seen !== biome.name) parents.set(special, null); // ambiguous
+        }
+      }
+      _specialParent = parents;
+    }
+    return _specialParent.get(biomeName) || biomeName;
+  }
+
+  /**
    * Resolve the effective biome for a world tile, applying the specialBiomes
    * override (e.g. Forest -> SpiritWoods, Snow -> Crystals).
    *
@@ -3652,6 +3685,12 @@
           if (loaded.bridgeCoords) {
             gameSystem._procGenData.bridgeCoordMap = loaded.bridgeCoords;
           }
+          // The terrain under a road / crossing, per square. Absent in older
+          // snapshots, in which case road verges are dressed from the live
+          // column on entry as before.
+          if (loaded.underBiomes) {
+            gameSystem._procGenData.underBiomeMap = loaded.underBiomes;
+          }
         }
         log(`buildBiomeCoordinateCache: Loaded from BiomesMap.json (${Object.keys(cache).length} biomes)`);
         return cache;
@@ -3826,7 +3865,7 @@
     }
   }
 
-  function exportBiomesMapToFile(cache, riverCoordMap, bridgeCoordMap) {
+  function exportBiomesMapToFile(cache, riverCoordMap, bridgeCoordMap, underBiomeMap) {
     try {
       const Roads = window.ProcGenRoads;
       const Rivers = window.ProcGenRivers;
@@ -3865,6 +3904,12 @@
         // "x,y" -> "vertical" / "horizontal" for every bridge marker. Without it
         // a preloaded snapshot reports no river crossings at all.
         bridgeCoords: bridgeCoordMap || {},
+        // "x,y" -> the terrain a road or a crossing is painted OVER, for the
+        // squares that have one. The cache holds a single biome per square, so
+        // without this a road square read off the snapshot has no verges to
+        // dress and generates differently from the same square entered off the
+        // live world map.
+        underBiomes: underBiomeMap || {},
       };
 
       const fs = require("fs");
@@ -4000,6 +4045,7 @@
     procMapSeed,
     normalizeLatitudeBiome,
     resolveSpecialBiome,
+    unwrapSpecialBiome,
     randomChoice,
     normalizeBiomeForEdge,
     getNonProceduralDestination,

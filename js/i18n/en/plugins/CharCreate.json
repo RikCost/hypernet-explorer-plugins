@@ -234,7 +234,7 @@
     },
     "originStranded": {
       "name": "Stranded",
-      "desc": "Begin on foot at a random remote spot somewhere on the world map."
+      "desc": "Begin on foot at a random remote spot, far from anywhere anyone would look."
     },
     "originCriminal": {
       "name": "Criminal",
@@ -250,19 +250,19 @@
     },
     "originLot": {
       "name": "Empty lot",
-      "desc": "Begin on a random patch of the world map with a large stockpile of crafting materials."
+      "desc": "Begin standing on a random patch of open country with a large stockpile of crafting materials."
     },
     "originBike": {
       "name": "Start on bike",
-      "desc": "Begin riding a bike somewhere on the world map."
+      "desc": "Begin out in the country with a bike parked beside you."
     },
     "originCar": {
       "name": "Start in car",
-      "desc": "Pick a city, then begin in your car parked there."
+      "desc": "Wake up out in the country beside your car, keys in hand. Where you drive it is up to you."
     },
     "originCamper": {
       "name": "Start in camper",
-      "desc": "Pick a city, then begin in your camper parked there."
+      "desc": "Wake up out in the country beside your camper, keys in hand. Where you drive it is up to you."
     },
     "originSpace": {
       "name": "Start in space",
@@ -516,10 +516,10 @@
   "start": "Start",
   "trainPickADestination": "Train, pick a destination",
   "deepSpace": "Deep space",
-  "yourCamperParkedInACity": "Your camper, parked in a city",
-  "yourCarParkedInACity": "Your car, parked in a city",
+  "yourCamperParkedInACity": "Your camper, parked beside you out in the country",
+  "yourCarParkedInACity": "Your car, parked beside you out in the country",
   "aRandomOverlandBiome": "A random overland biome",
-  "aRandomWorldMapTile": "A random world-map tile",
+  "aRandomWorldMapTile": "A random patch of open country",
   "theTowerGate": "The tower gate",
   "theOnuAssemblyInBrussels": "The ONU assembly, Brussels",
   "aCityOfYourChoice": "A city of your choice",
@@ -527,7 +527,7 @@
   "10000OnYourHead": "10,000€ on your head",
   "stock": "Stock",
   "sealedVials": "{count} sealed culture vials, one illness each",
-  "aRandomRemoteWorldMapSpot": "A random remote world-map spot",
+  "aRandomRemoteWorldMapSpot": "A random remote spot, far from anywhere",
   "aLootCellarUnderARandomBiome": "A loot cellar under a random biome",
   "hoards": "Hoards",
   "wayBack": "Way back",
@@ -643,7 +643,8 @@
       "randomizeKeepBuild": "Randomize (keep kind & class)",
       "randomizeAll": "Randomize everything",
       "done": "Done, this character is ready",
-      "specsRandom": "Randomize specializations"
+      "specsRandom": "Randomize specializations",
+      "specPoints": "Points"
     },
     "kind": {
       "humanoid": "Humanoid",
@@ -659,7 +660,13 @@
     "specCost": "costs {n}",
     "specRefund": "click to give the points back",
     "specGranted": "(free to {level})",
-    "specsRandomHint": "Spend the whole budget at random, on top of what the class and traits already grant."
+    "specsRandomHint": "Spend the whole budget at random, on top of what the class and traits already grant.",
+    "search": "Search…",
+    "noMatches": "Nothing here matches that.",
+    "specLower": "give back {n}",
+    "specPointsShort": "{left} / {total} pts",
+    "wealthNote": "What this character brings to the party purse.",
+    "moreMatches": "{n} more , narrow the search to see them."
   },
   "augments": "Augments",
   "augmentsPerMember": "{min}-{max} per member, fitted to their own sockets",

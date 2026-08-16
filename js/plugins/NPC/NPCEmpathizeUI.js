@@ -729,6 +729,12 @@
 
   Scene_NPCEmpathize.prototype._render = function () {
     if (!this._overlay) return;
+    // While a picker is open (Socialize, Court, gifts, steal, ...) its list IS
+    // what the player is reading, so the cursor belongs to it however it was
+    // opened. Clicking "Socialize" with the mouse used to leave the focus on
+    // the tab bar, which showed the submenu with no selected row at all.
+    if (this._inListSubMode?.() && this._activeArea !== 'input' && !this._chatModalOpen)
+      this._activeArea = 'actions';
     // Talking to somebody uses a different skill depending on what is being
     // asked of them, so the badge follows the mode the panel is in rather than
     // sitting there naming all of them. Trade leaves for the shop, which raises
@@ -1537,33 +1543,12 @@
     step();
   };
 
-  // One palette for every verb the panel offers, so the standing menu reads the
-  // same way its submenus already do: kind moves green, business-like ones
-  // amber, cruel ones red, performances purple, courting the Romance pink.
-  const TONE_COLOR = {
-    positive:    '#2a6e4a',
-    neutral:     '#8a6a30',
-    negative:    '#b01010',
-    performance: '#6a3fbf',
-    romance:     '#8a2f5a',
-  };
-
-  // Tone of each top-level action. Anything unlisted (a feral noise, a future
-  // verb) falls back to neutral rather than going uncoloured, so the row never
-  // mixes tinted and plain buttons.
-  const ACTION_TONE = {
-    freeChat: 'neutral',   socialize: 'positive',  romance:  'romance',
-    directions: 'neutral', gift:      'positive',  bribe:    'neutral',
-    attack:   'negative',  pickpocket:'negative',  trade:    'neutral',
-    cardDuel: 'performance', cardTrade: 'performance',
-    cough:    'negative',  spit:      'negative',  bite:     'negative',
-    infect:   'negative',  treat:     'positive',  buyHouse: 'neutral',
-    join:     'positive',
-    // Feral noises: the same split by what they do to an animal's standing.
-    growl: 'negative', roar: 'negative', drool: 'negative',
-    sniff: 'positive', nuzzle: 'positive', beg: 'positive',
-  };
-  const _actionColor = id => TONE_COLOR[ACTION_TONE[id] || 'neutral'];
+  // Every offered line wears one colour — the theme's option gold (crimson ink
+  // under Archive Foundation), from --npc-option-fg via .npc-opt-label. The
+  // verbs used to be tinted by tone (kind green, cruel red, courting pink),
+  // which made a five-colour patchwork of what is really a single menu; the
+  // tone of a move is already in its wording and in its ♥ badges.
+  const OPT = 'npc-opt-label';
 
   Scene_NPCEmpathize.prototype._buildChatHTML = function (displayName, T, profile, opinion, npcName, remoteMode) {
     const bubblesHTML = this._chatHistory.map(entry => {
@@ -1620,7 +1605,7 @@
         const focused  = i === this._menuIndex ? ' npc-action-focused' : '';
         const disabled = item.disabled ? ' npc-action-disabled' : '';
         return `<div class="npc-chat-action-btn${focused}${disabled}" onmousedown="event.stopPropagation();SceneManager._scene._runAction('${item.id}')">` +
-          `<span style="color:${_actionColor(item.id)}">${_escapeHtml(item.label)}</span></div>`;
+          `<span class="${OPT}">${_escapeHtml(item.label)}</span></div>`;
       }).join('');
     }
 
@@ -1817,14 +1802,13 @@
     // Neither can Bubba be cruel to anybody: the man has never insulted a
     // stranger in his life and is not starting in this menu.
     if (this._bubbaCtx?.()) cat = cat.filter(c => c.tone !== 'negative');
-    const toneColor = TONE_COLOR;
     // The entertainment moves carry a ☺ in the Fun colour: those are the ones
     // that top up the Fun meter of the party AND of the NPC when they land.
     let html = cat.map(c => {
       const fun = (FUN_ACTIONS && FUN_ACTIONS[c.id])
         ? ` <span style="color:#d4a64e" title="${_escapeHtml(T.funHint || '')}">☺</span>` : '';
       return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._socialInteract('${c.id}')">` +
-        `<span style="color:${toneColor[c.tone] || '#333'}">${_escapeHtml(c.label)}</span>${fun}</div>`;
+        `<span class="${OPT}">${_escapeHtml(c.label)}</span>${fun}</div>`;
     }).join('');
     html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelSubMode()">${_escapeHtml(T.cancel)}</div>`;
     return html;
@@ -3553,11 +3537,11 @@
       const open = `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._romanceInteract('${o.id}')">`;
       // Bubba's single row: no odds to weigh, only the damage it will do.
       if (o.id === BUBBA_DECLINE_ID) {
-        return `${open}<span style="color:#8a2f5a">${_escapeHtml(o.label)}</span>` +
+        return `${open}<span class="${OPT}">${_escapeHtml(o.label)}</span>` +
           `<span style="color:#b01010; margin-left:6px">${o.loss}♥</span></div>`;
       }
       if (o.reason) {
-        return `${open}<span style="color:#8a2f5a; opacity:0.7">${_escapeHtml(o.label)}</span>` +
+        return `${open}<span class="${OPT}" style="opacity:0.7">${_escapeHtml(o.label)}</span>` +
           `<span style="color:#b01010; margin-left:6px">0%</span>` +
           (o.reasonLabel ? `<span style="opacity:0.55; margin-left:4px; font-size:0.964em">${_escapeHtml(o.reasonLabel)}</span>` : '') +
           `</div>`;
@@ -3565,11 +3549,11 @@
       // Propose carries no single chance of its own: it opens a further page,
       // one row per relationship style, each with its own odds.
       if (o.submenu) {
-        return `${open}<span style="color:#8a2f5a">${_escapeHtml(o.label)}</span>` +
+        return `${open}<span class="${OPT}">${_escapeHtml(o.label)}</span>` +
           `<span style="opacity:0.6; margin-left:6px">&rsaquo;</span></div>`;
       }
       const cc = o.chance >= 60 ? '#2a6e4a' : o.chance >= 30 ? '#b8860b' : '#c02020';
-      return `${open}<span style="color:#8a2f5a">${_escapeHtml(o.label)}</span>` +
+      return `${open}<span class="${OPT}">${_escapeHtml(o.label)}</span>` +
         `<span style="color:#2a6e4a; margin-left:6px">+${o.gain}♥</span>` +
         `<span style="color:#b01010; margin-left:3px">${o.loss}♥</span>` +
         `<span style="color:${cc}; margin-left:6px; font-weight:bold">${o.chance}%</span></div>`;
@@ -3614,7 +3598,7 @@
     html += this._proposeOptions().map(o => {
       const cc = o.chance >= 60 ? '#2a6e4a' : o.chance >= 30 ? '#b8860b' : '#c02020';
       return `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._proposeInteract('${o.key}')">` +
-        `<span style="color:#8a2f5a">${_escapeHtml(o.label)}</span>` +
+        `<span class="${OPT}">${_escapeHtml(o.label)}</span>` +
         `<span style="color:${cc}; margin-left:6px; font-weight:bold">${o.chance}%</span></div>`;
     }).join('');
     html += `<div class="npc-chat-action-btn" style="opacity:0.65" onmousedown="event.stopPropagation();SceneManager._scene._cancelPropose()">${_escapeHtml(T.cancel)}</div>`;

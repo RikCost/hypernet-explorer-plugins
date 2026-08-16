@@ -70,8 +70,9 @@
     "Camper"
   ],
   "enemySpawn": [
-    "Équilibré",
     "Distance du départ",
+    "Niveau du Groupe",
+    "Biome",
     "Chaos"
   ],
   "enemyBattler": [
@@ -85,13 +86,14 @@
   "languageProgress": "{name} traduit à 1%",
   "settingsInSection": "{count} réglages dans cette section.",
   "desc": {
-    "enemySpawnMode": "Détermine la force des ennemis qui parcourent le monde. Quel que soit le mode, l'année relève tous les niveaux : +10 par an jusqu'en 2010, toute la table libre jusqu'au niveau 110 en 2010-2011, et plus rien sous le niveau 80 à partir de 2012."
+    "enemySpawnMode": "La force des ennemis errants. L'année relève les niveaux quoi qu'il arrive : +10 par an jusqu'en 2010, jusqu'à 110 en 2010-2011, plus rien sous 80 à partir de 2012."
   },
   "descState": {
     "enemySpawnMode": [
-      "Équilibré : les ennemis s'adaptent à votre groupe. Les rôdeurs restent à votre niveau ou en dessous, et chaque case du monde cache un boss bien plus puissant.",
-      "",
-      "Chaos : plus aucune retenue. N'importe quoi du niveau 1 au 110 rôde partout, et chaque entrée sur une carte procédurale redistribue ses monstres."
+      "Distance du départ : la difficulté vient du lieu, pas de vous. Les niveaux montent à mesure qu'une case s'éloigne de votre point de départ. Chaque nation et chaque biome a sa propre liste, et chaque case cache un boss.",
+      "Niveau du Groupe : les ennemis s'adaptent à votre groupe. Les rôdeurs restent à votre niveau ou en dessous ; chaque case cache un boss plus fort. L'option la plus sûre.",
+      "Biome : toute créature qui vit ici peut apparaître, à n'importe quel niveau jusqu'à 100, toutes également probables. Le lieu décide ce que vous rencontrez, jamais la difficulté.",
+      "Chaos : du niveau 1 à 110, partout, quel que soit le biome. Les cartes procédurales redistribuent leurs monstres à chaque entrée."
     ]
   }
 }

@@ -179,8 +179,12 @@
     BSE.Data._currentMapId         = null;
     // `title` / `lines` are the spoils popup's extra copy (a felled petrodemon
     // names itself and reports the OIL options it paid out); both are cleared
-    // at the start of every victory.
-    BSE.Data._battleRewards        = { exp: 0, gold: 0, items: [], knowledge: 0, title: null, lines: [] };
+    // at the start of every victory. `levelUps` are the levels the fight paid
+    // for, held back from the battle's message box and shown as toasts on the
+    // map once the spoils have been read out.
+    BSE.Data._battleRewards        = {
+        exp: 0, gold: 0, items: [], knowledge: 0, title: null, lines: [], levelUps: []
+    };
     BSE.Data._needsRespawn         = false;
     BSE.Data._enemyCharSprites     = {};
     BSE.Data._mapCorpses           = [];
@@ -708,8 +712,14 @@
     const _Scene_Map_stopAudio = Scene_Map.prototype.stopAudioOnBattleStart;
     Scene_Map.prototype.stopAudioOnBattleStart = function() {
         if ($gameSystem && typeof $gameSystem.battleBgm === 'function') {
+            // Resolve first: the selection may be the Random sentinel, which is
+            // no more a bgm file name than __none__ or __map__ are.
+            const mss = window.MusicSelectionSystem;
+            const sel = (mss && mss.resolveBattleBgmName)
+                ? mss.resolveBattleBgmName()
+                : ConfigManager.battleMusicName;
             $gameSystem._battleBgm = {
-                name: ConfigManager.battleMusicName || 'RandomMind/Battle',
+                name: sel || 'RandomMind/Battle',
                 volume: 90, pitch: 100, pan: 0
             };
         }

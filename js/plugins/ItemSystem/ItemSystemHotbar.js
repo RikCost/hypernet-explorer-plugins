@@ -244,6 +244,15 @@
     return rows;
   }
 
+  // A ration is eaten, not administered: the card asking who gets it says so.
+  function pickerTitle(item) {
+    const isFood = !!(window.ItemSystemUtils &&
+      window.ItemSystemUtils.hasItemCategory(item, 'Food' /* i18n-ignore: category tag */));
+    return isFood
+      ? T('Inventory.ui.eatItem', { item: item.name })
+      : T('Inventory.ui.useItemOn', { item: item.name });
+  }
+
   function renderPicker() {
     if (!_picker) return;
     const el = document.getElementById(PICKER_ID);
@@ -268,7 +277,7 @@
 
     el.innerHTML = `
       <div class="htp-panel">
-        <div class="htp-title">${T('Inventory.ui.useItemOn', { item: _picker.item.name })}</div>
+        <div class="htp-title">${pickerTitle(_picker.item)}</div>
         ${rowsHTML}
       </div>`;
   }
@@ -352,7 +361,7 @@
       _picker.index = (_picker.index - 1 + _picker.rows.length) % _picker.rows.length;
       renderPicker();
     } else if (Input.isTriggered('ok')) {
-      _suppressActionFrame = Graphics.frameCount;
+      spendOkPress();
       applyPicker(_picker.index);
     } else if (Input.isTriggered('cancel') || Input.isTriggered('escape') ||
                Input.isTriggered('menu') || TouchInput.isCancelled()) {
@@ -378,6 +387,16 @@
   let _mapIndex = 0;
   let _mapIdle = 0;
   let _suppressActionFrame = -1; // frame whose OK the bar has already spent
+
+  // The bar and the target card are HTML, not Window_Selectable, so nothing
+  // takes the OK press off the input state the way updateInputData() does for a
+  // real window. Everything the map reads later in the same frame — the door in
+  // front of the player, the swim/dive/drink prompt on the water it faces —
+  // would otherwise answer the very press that used the item.
+  function spendOkPress() {
+    _suppressActionFrame = Graphics.frameCount;
+    Input.update();
+  }
 
   const _mapBar = new HotbarUI({
     id: 'html-item-hotbar-overlay',
@@ -456,7 +475,7 @@
     if (!_mapArmed) return;
 
     if (Input.isTriggered('ok')) {
-      _suppressActionFrame = Graphics.frameCount;
+      spendOkPress();
       disarmMapBar();
       ItemHotbar.use(_mapIndex);
       return;

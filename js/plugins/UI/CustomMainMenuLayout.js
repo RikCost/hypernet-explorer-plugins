@@ -41,10 +41,11 @@
 
     // Escape user-controllable text (player/party/pet names) before innerHTML
     // injection so a `<` in a name can't break or inject markup.
+    const HTML_ESCAPES = {
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    };
     function escapeHtml(str) {
-        return String(str ?? "").replace(/[&<>"']/g, c => ({
-            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-        })[c]);
+        return String(str ?? "").replace(/[&<>"']/g, c => HTML_ESCAPES[c]);
     }
 
     // While Em travels with the party the menu picks up her vocabulary: the
@@ -433,6 +434,40 @@
     }
 
     // =========================================================================
+    // Canvas window paint deferral
+    // =========================================================================
+    // Scene_Menu still builds the engine's own windows, because that is where
+    // every other plugin hangs its command handlers (see triggerUICommand), and
+    // create() hides all of them in the same frame since the parchment draws the
+    // menu itself. Painting them into their contents bitmaps is therefore pure
+    // waste on every open: Window_MenuStatus blits a 144x144 face plus three
+    // gauges per party member (and pulls those faces through ImageManager to do
+    // it), and Window_MenuCommand lays out a couple of dozen rows of text.
+    //
+    // Only the drawing is skipped, never makeCommandList or anything else a
+    // plugin might read back, and a window that is ever actually shown paints
+    // itself on its next update, so nothing is permanently blank.
+    let deferringMenuWindowPaint = false;
+
+    const _Window_Selectable_drawAllItems = Window_Selectable.prototype.drawAllItems;
+    Window_Selectable.prototype.drawAllItems = function () {
+        if (deferringMenuWindowPaint) {
+            this._dndPaintPending = true;
+            return;
+        }
+        _Window_Selectable_drawAllItems.call(this);
+    };
+
+    const _Window_Selectable_update = Window_Selectable.prototype.update;
+    Window_Selectable.prototype.update = function () {
+        if (this._dndPaintPending && this.visible) {
+            this._dndPaintPending = false;
+            this.paint();
+        }
+        _Window_Selectable_update.call(this);
+    };
+
+    // =========================================================================
     // Scene_Menu - Intercept and replace layout with D&D HTML Overlay
     // =========================================================================
     const _Scene_Menu_create = Scene_Menu.prototype.create;
@@ -459,7 +494,12 @@
         this._isVehiclesPage = false;
         this._rightClickStartedOnMenu = false;
 
-        _Scene_Menu_create.call(this);
+        deferringMenuWindowPaint = true;
+        try {
+            _Scene_Menu_create.call(this);
+        } finally {
+            deferringMenuWindowPaint = false;
+        }
 
         // Hide ALL default game canvas windows to clean the screen
         if (this._commandWindow) this._commandWindow.visible = false;
@@ -907,7 +947,10 @@
     };
 
     Scene_Menu.prototype.drawAllPetPortraits = function () {
-        if (!window.PetSystem) return;
+        // The canvases only exist on the Pets page, so anywhere else this was
+        // one getElementById plus a character-sheet load per pet, child and
+        // follower on every refresh, all of it landing on nothing.
+        if (!this._isPetsPage || !window.PetSystem) return;
         window.PetSystem.getPets().forEach(pet => {
             this.drawPetPortrait(pet, `pet-canvas-${pet.id}`);
         });
@@ -1406,11 +1449,57 @@
         }
     };
 
-    Scene_Menu.prototype.refreshUIMenuDOM = function (useTransitions = false) {
-        if (!this._dndContainer) return;
+    // The left page's identity: which page is showing, plus everything about
+    // that page's own state that changes what it says. It is worked out before
+    // the page itself is built so an unchanged page can be left alone instead of
+    // rendered into a string that is then thrown away: clicking a party card
+    // redraws only the right page, but used to rebuild all ~45 pockets tiles
+    // (and every T() lookup behind them) to compare a key and discard the result.
+    Scene_Menu.prototype.uiLeftPageKey = function () {
+        // The Dynamics sub-view is part of the key so hub/roster/history swaps
+        // actually redraw the page. Roster edits (a promotion, an armed or
+        // completed retirement, someone called back off the bench) change the
+        // page without changing the view, so they are folded in too.
+        const dynamicsKey = this._isDynamicsPage
+            ? [
+                this._dynamicsView || 'hub',
+                this._dynamicsPendingRetireId || 0,
+                $gameParty.members().map(mem => mem.actorId()).join('-'),
+                (window.CharacterPresets?.getAvailableRetiredPresets?.() ?? []).map(p => p.id).join('-'),
+                // Reordering the turn order leaves the party itself untouched,
+                // so the pinned order has to be part of the key of its own.
+                (window.BattleTurnOrder?.pinned?.() ?? []).join('-')
+            ].join(':')
+            : '';
+        // Abandoning a pet, handing the leash to another one, renaming one or
+        // opening the name field or the abandonment warning changes the page
+        // without changing which page it is, so all of it is part of the key.
+        const petsKey = this._isPetsPage
+            ? [
+                (window.PetSystem?.getPets?.() ?? []).map(p => `${p.id}.${p.name}`).join('-'),
+                window.PetSystem?.getActivePet?.()?.id ?? 0,
+                this._petRenameId || 0,
+                this._petAbandonId || 0
+            ].join(':')
+            : '';
+        // A search takes over the left page, and every change to the query, the
+        // filters or the selected row redraws it, so the whole search state is
+        // part of the key.
+        const searchKey = window.MenuSearch ? window.MenuSearch.stateKey() : '';
+        return `${this._isToolsPage}_${this._isWorldMapPage}_${this._isDynamicsPage}${dynamicsKey}_${this._isPetsPage}${petsKey}_${this._isVehiclesPage}_${searchKey}`;
+    };
 
-        const actor = this.selectedActor();
-        if (!actor) return;
+    Scene_Menu.prototype.generateUIRightPageHTML = function () {
+        // The world map codex and the search result card are self-contained, so
+        // the party cards, the needs bars and the clock block below are only
+        // gathered when the sheet they belong to is the one being drawn.
+        if (this._isWorldMapPage) return this.generateUITravelCodexHTML();
+        if (window.MenuSearch && window.MenuSearch.isActive()) {
+            // While searching, the right page is the selected result's own
+            // detail card. The field that found it is on the left page with the
+            // results, as it is in every other list menu.
+            return window.MenuSearch.rightPageHTML();
+        }
 
         // Parse survival parameters safely
         const weatherName = (window.WeatherNames && window.weatherName)
@@ -1457,11 +1546,6 @@
         const dateTime = this.getUIDateTime(gameMinutes);
 
         const members = $gameParty.members();
-
-        // Clamp selected actor index in case the party shrank since last render.
-        if (this._selectedActorIndex >= members.length) {
-            this._selectedActorIndex = 0;
-        }
 
         // Party bio cards: every member is rendered as a full portrait + name/class
         // + HP/MP/AP block (same template as the old single header). The active
@@ -1559,7 +1643,38 @@
             }
         }
 
-        // Left Page: Commands Pockets, Tools Pockets, or Travel Pockets
+        return `
+            <div class="party-bio-list">
+                ${partyBioHTML}
+            </div>
+
+            <div class="survival-box">
+                ${needsCardsHTML}
+            </div>
+
+            <div class="pockets-clock">
+                <div class="clock-row">
+                    <span class="clock-label">${T('MainMenu.label.timeDate')}</span>
+                    <span class="clock-value">${dateTime.dateShort} | ${dateTime.time24}</span>
+                </div>
+                <div class="clock-row">
+                    <span class="clock-label">${T('MainMenu.label.weather')}</span>
+                    <span class="clock-value">${weatherName} (${temperature}°C)</span>
+                </div>
+                <div class="clock-row">
+                    <span class="clock-label">${T('MainMenu.label.currentCash')}</span>
+                    <span class="clock-value cash-highlight">${formattedGold} ${currencyUnit}</span>
+                </div>${armyUpkeepHTML}
+                <div class="clock-row">
+                    <span class="clock-label">${T('MainMenu.label.currentBounty')}</span>
+                    <span class="clock-value bounty-highlight">${formattedBounty}</span>
+                </div>${wantedHTML}
+            </div>
+        `;
+    };
+
+    // Left Page: Commands Pockets, Tools Pockets, or Travel Pockets
+    Scene_Menu.prototype.generateUILeftPageHTML = function () {
         let leftPageHTML = "";
         if (window.MenuSearch && window.MenuSearch.isActive()) {
             // A live query takes the whole left page: the results list and its
@@ -1961,32 +2076,35 @@
             `;
         }
 
-        // Right Page: Character Sheet or World Map Details
-        let rightPageHTML = "";
-        if (this._isWorldMapPage) {
-            // Get current coordinate and biome details
-            const worldX = ($gameMap.mapId() === 315) ? ($gamePlayer.x || 0) : ($gameVariables.value(43) || 0);
-            const worldY = ($gameMap.mapId() === 315) ? ($gamePlayer.y || 0) : ($gameVariables.value(44) || 0);
+        return leftPageHTML;
+    };
 
-            // Calculate which 8x8 block we are in (each block is 32x32 units)
-            const col = Math.max(1, Math.min(8, Math.floor(worldX / 32) + 1));
-            const row = Math.max(1, Math.min(8, Math.floor(worldY / 32) + 1));
+    // The right page while the Travel pockets are open: where the party is
+    // standing, and the world-map segment it is standing on.
+    Scene_Menu.prototype.generateUITravelCodexHTML = function () {
+        // Get current coordinate and biome details
+        const worldX = ($gameMap.mapId() === 315) ? ($gamePlayer.x || 0) : ($gameVariables.value(43) || 0);
+        const worldY = ($gameMap.mapId() === 315) ? ($gamePlayer.y || 0) : ($gameVariables.value(44) || 0);
 
-            let currentRegionName = T('MainMenu.place.unknownLand');
+        // Calculate which 8x8 block we are in (each block is 32x32 units)
+        const col = Math.max(1, Math.min(8, Math.floor(worldX / 32) + 1));
+        const row = Math.max(1, Math.min(8, Math.floor(worldY / 32) + 1));
 
-            if ($gameMap.mapId() === 315) {
-                currentRegionName = T('MainMenu.place.worldWilderness');
-            } else if ($gameMap.mapId() === 636) {
-                // The procedural map tracks the square's biome as `currentBiome`;
-                // the codex shows the name that biome declares for itself.
-                const procGenData = $gameSystem._procGenData;
-                const biome = procGenData && procGenData.currentBiome;
-                currentRegionName = biome ? window.BiomeNames.display(biome) : T('MainMenu.place.proceduralSector');
-            } else {
-                currentRegionName = ($dataMap && $dataMap.displayName) || T('MainMenu.place.localSector');
-            }
+        let currentRegionName = T('MainMenu.place.unknownLand');
 
-            rightPageHTML = `
+        if ($gameMap.mapId() === 315) {
+            currentRegionName = T('MainMenu.place.worldWilderness');
+        } else if ($gameMap.mapId() === 636) {
+            // The procedural map tracks the square's biome as `currentBiome`;
+            // the codex shows the name that biome declares for itself.
+            const procGenData = $gameSystem._procGenData;
+            const biome = procGenData && procGenData.currentBiome;
+            currentRegionName = biome ? window.BiomeNames.display(biome) : T('MainMenu.place.proceduralSector');
+        } else {
+            currentRegionName = ($dataMap && $dataMap.displayName) || T('MainMenu.place.localSector');
+        }
+
+        return `
                 <div class="travel-codex" style="font-family: 'Lora', serif; color: #1a1a1a; display: flex; flex-direction: column; justify-content: space-between; height: 100%">
                     
                     <div style="background: rgba(88, 24, 13, 0.04); border: 1px solid rgba(88, 24, 13, 0.15); border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05)">
@@ -2022,87 +2140,36 @@
                     </style>
                 </div>
             `;
-        } else if (window.MenuSearch && window.MenuSearch.isActive()) {
-            // While searching, the right page is the selected result's own
-            // detail card. The field that found it is on the left page with the
-            // results, as it is in every other list menu.
-            rightPageHTML = window.MenuSearch.rightPageHTML();
-        } else {
-            rightPageHTML = `
-                <div class="party-bio-list">
-                    ${partyBioHTML}
-                </div>
+    };
 
-                <div class="survival-box">
-                    ${needsCardsHTML}
-                </div>
+    Scene_Menu.prototype.refreshUIMenuDOM = function (useTransitions = false) {
+        if (!this._dndContainer) return;
 
-                <div class="pockets-clock">
-                    <div class="clock-row">
-                        <span class="clock-label">${T('MainMenu.label.timeDate')}</span>
-                        <span class="clock-value">${dateTime.dateShort} | ${dateTime.time24}</span>
-                    </div>
-                    <div class="clock-row">
-                        <span class="clock-label">${T('MainMenu.label.weather')}</span>
-                        <span class="clock-value">${weatherName} (${temperature}°C)</span>
-                    </div>
-                    <div class="clock-row">
-                        <span class="clock-label">${T('MainMenu.label.currentCash')}</span>
-                        <span class="clock-value cash-highlight">${formattedGold} ${currencyUnit}</span>
-                    </div>${armyUpkeepHTML}
-                    <div class="clock-row">
-                        <span class="clock-label">${T('MainMenu.label.currentBounty')}</span>
-                        <span class="clock-value bounty-highlight">${formattedBounty}</span>
-                    </div>${wantedHTML}
-                </div>
-            `;
+        const actor = this.selectedActor();
+        if (!actor) return;
+
+        // Clamp selected actor index in case the party shrank since last render.
+        if (this._selectedActorIndex >= $gameParty.members().length) {
+            this._selectedActorIndex = 0;
         }
 
-        // Determine left page key to see if left page needs full render. The
-        // Dynamics sub-view is part of the key so hub/roster/history swaps
-        // actually redraw the page.
-        // Roster edits (a promotion, an armed or completed retirement, someone
-        // called back off the bench) change the page without changing the view,
-        // so they are folded into the key too.
-        const dynamicsKey = this._isDynamicsPage
-            ? [
-                this._dynamicsView || 'hub',
-                this._dynamicsPendingRetireId || 0,
-                $gameParty.members().map(mem => mem.actorId()).join('-'),
-                (window.CharacterPresets?.getAvailableRetiredPresets?.() ?? []).map(p => p.id).join('-'),
-                // Reordering the turn order leaves the party itself untouched,
-                // so the pinned order has to be part of the key of its own.
-                (window.BattleTurnOrder?.pinned?.() ?? []).join('-')
-            ].join(':')
-            : '';
-        // Abandoning a pet, handing the leash to another one, renaming one or
-        // opening the name field or the abandonment warning changes the page
-        // without changing which page it is, so all of it is part of the key.
-        const petsKey = this._isPetsPage
-            ? [
-                (window.PetSystem?.getPets?.() ?? []).map(p => `${p.id}.${p.name}`).join('-'),
-                window.PetSystem?.getActivePet?.()?.id ?? 0,
-                this._petRenameId || 0,
-                this._petAbandonId || 0
-            ].join(':')
-            : '';
-        // A search takes over the left page, and every change to the query, the
-        // filters or the selected row redraws it, so the whole search state is
-        // part of the key.
-        const searchKey = window.MenuSearch ? window.MenuSearch.stateKey() : '';
-        const leftPageKey = `${this._isToolsPage}_${this._isWorldMapPage}_${this._isDynamicsPage}${dynamicsKey}_${this._isPetsPage}${petsKey}_${this._isVehiclesPage}_${searchKey}`;
+        const leftPageKey = this.uiLeftPageKey();
         let spread = this._dndContainer.querySelector(".book-spread");
 
         if (!spread) {
-            // Initial load - Render instantly
-            this._dndLastLeftPageKey = leftPageKey;
+            // Initial load - Render instantly. Building the page can settle the
+            // state it was built from (the search results clamp their own
+            // selection, see gather() in CustomMainMenuSearch), so the key that
+            // is remembered is always read back afterwards.
+            const leftHTML = this.generateUILeftPageHTML();
+            this._dndLastLeftPageKey = this.uiLeftPageKey();
             this._dndContainer.innerHTML = `
                 <div class="book-spread">
                     <div class="left-page">
-                        ${leftPageHTML}
+                        ${leftHTML}
                     </div>
                     <div class="right-page">
-                        ${rightPageHTML}
+                        ${this.generateUIRightPageHTML()}
                     </div>
                 </div>
             `;
@@ -2118,25 +2185,28 @@
             UIMenuInputManager.activate(this._isWorldMapPage ? 1 : 3);
             if (window.MenuSearch) window.MenuSearch.afterRender(this);
         } else {
-            // Subsequent updates
+            // Subsequent updates. The left page is only built when it is going
+            // to be used: most refreshes come from the right page (a party card
+            // picked, a need ticking over) and leave the pockets untouched.
             if (useTransitions) {
                 // Smooth transition switching
                 if (this._dndLastLeftPageKey !== leftPageKey) {
-                    this.fadeTransitionLeftPage(leftPageHTML, leftPageKey);
+                    const leftHTML = this.generateUILeftPageHTML();
+                    this.fadeTransitionLeftPage(leftHTML, this.uiLeftPageKey());
                 }
-                this.fadeTransitionRightPage(rightPageHTML, actor);
+                this.fadeTransitionRightPage(this.generateUIRightPageHTML(), actor);
             } else {
                 // Direct updates (e.g. for simple state reflows if any)
                 const leftPageContainer = spread.querySelector(".left-page");
                 const rightPageContainer = spread.querySelector(".right-page");
 
                 if (this._dndLastLeftPageKey !== leftPageKey || !leftPageContainer.innerHTML.trim()) {
-                    this._dndLastLeftPageKey = leftPageKey;
-                    leftPageContainer.innerHTML = leftPageHTML;
+                    leftPageContainer.innerHTML = this.generateUILeftPageHTML();
+                    this._dndLastLeftPageKey = this.uiLeftPageKey();
                 }
 
                 if (rightPageContainer) {
-                    rightPageContainer.innerHTML = rightPageHTML;
+                    rightPageContainer.innerHTML = this.generateUIRightPageHTML();
                 }
 
                 // Render Canvases for portraits

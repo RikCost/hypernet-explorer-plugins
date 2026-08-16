@@ -1319,7 +1319,13 @@ Scene_Name.prototype.prepare = function(actorId, maxLength) {
 const _Scene_Name_create = Scene_Name.prototype.create;
 Scene_Name.prototype.create = function() {
     _Scene_Name_create.call(this);
-    
+
+    // Snapshot of the name the screen opened with, so the Space key can tell
+    // "player hasn't touched the name yet" (Space skips the whole step) from
+    // "player is writing a name" (Space types a space). See _spaceGuard.
+    this._initialName = this._editWindow.name();
+    this._nameTouched = false;
+
     // Hide standard windows completely to render in background
     this._editWindow.hide();
     this._editWindow.deactivate();
@@ -1355,6 +1361,33 @@ Scene_Name.prototype.start = function() {
             delete Input.keyMapper[key];
         }
     }
+    // Space does one of two things on this screen, decided by whether the name has
+    // been edited yet: on an untouched name it is the one-key "keep this name and
+    // move on" skip, and from the first edit onward it types a space into the name.
+    // Dropping keyCode 32 from Input.keyMapper above is not enough on its own,
+    // because the mapper is rebuilt from the player's bindings on every
+    // Input.clear() (CustomCommandMapper hooks it), and any rebuild that happens
+    // while the spread is open restores the engine default 32 -> 'ok'. The polled
+    // OK in UIAltNameInputManager then fires whatever option holds focus , which
+    // starts on Continue , so a space in the middle of a name sealed it instead.
+    // Swallowing the key in the CAPTURE phase, at the document, gets in front of
+    // the engine's own document-level keydown handler and every other listener,
+    // and leaves exactly one consumer: the browser's default action, which puts
+    // the character into the focused hidden input. Hence no preventDefault here.
+    this._spaceGuard = (event) => {
+        if (event.key !== " " && event.code !== "Space" && event.keyCode !== 32) return;
+        event.stopImmediatePropagation();
+        // Untouched name: skip the step with the default name. preventDefault here
+        // (unlike the typing case below) so the hidden input does not also receive
+        // the character on the way out. onInputOk's _nameInputClosing guard absorbs
+        // key repeat, and the matching keyup is swallowed without acting.
+        if (!this._nameTouched) {
+            event.preventDefault();
+            if (event.type === "keydown") this.onInputOk();
+        }
+    };
+    document.addEventListener("keydown", this._spaceGuard, true);
+    document.addEventListener("keyup", this._spaceGuard, true);
     UIAltNameInputManager.activate(this);
 };
 
@@ -1375,6 +1408,12 @@ Scene_Name.prototype.terminate = function() {
         }
         this._savedKeyMapping = null;
     }
+    // The Space swallower is naming-only: everywhere else Space is a normal 'ok'.
+    if (this._spaceGuard) {
+        document.removeEventListener("keydown", this._spaceGuard, true);
+        document.removeEventListener("keyup", this._spaceGuard, true);
+        this._spaceGuard = null;
+    }
     this.removeHtmlNameInput();
     _Scene_Name_terminate.call(this);
 };
@@ -1388,6 +1427,23 @@ Scene_Name.prototype.update = function() {
 //-----------------------------------------------------------------------------
 // HTML Spread overlay construction & events mapping
 //-----------------------------------------------------------------------------
+
+// The portrait shown on the identity card. Same order the rest of the game
+// resolves an actor's bust in: the one it owns, then the one its walking sprite
+// implies, then the 7.png placeholder. Never returns an empty name, so the card
+// cannot ask for 'img/busts/.png'.
+Scene_Name.prototype.portraitBustName = function(actor) {
+    if (!actor) return "7";
+    const own = actor.vnBust ? actor.vnBust() : null;
+    if (own && own !== "7" && own !== 0) return String(own);
+    const charName = actor.characterName();
+    const assoc = window.Sprites && window.Sprites.SpritesAssociation;
+    if (charName && assoc) {
+        const bust = (assoc[charName.split(".")[0]] || [])[actor.characterIndex()];
+        if (bust && bust !== "7") return String(bust);
+    }
+    return "7";
+};
 
 Scene_Name.prototype.createHtmlNameInput = function() {
     // 1. Create full screen backdrop wrapper overlay
@@ -1413,15 +1469,12 @@ Scene_Name.prototype.createHtmlNameInput = function() {
     // 2. Fetch actor metadata
     const actor = this._actor;
     const className = actor.currentClass() ? actor.currentClass().name : "Class";
-    const faceName = actor.faceName();
-    const faceIndex = actor.faceIndex();
     const maxLength = this._maxLength;
-
-    // Face spritesheet position percentage calculations
-    const col = faceIndex % 4;
-    const row = Math.floor(faceIndex / 4);
-    const xPercent = (col * 100 / 3).toFixed(2);
-    const yPercent = (row * 100).toFixed(2);
+    // img/faces is empty in this project: portraits all live in img/busts as
+    // whole 883x1200 images, so there is no 4x2 sheet to crop into. A fresh
+    // actor renamed during character creation has no bust of its own yet, which
+    // used to build the path 'img/busts/.png' and 404.
+    const bustName = this.portraitBustName(actor);
 
     // 3. Inject asymmetric double parchment layout frame
     this._htmlContainer.innerHTML = `
@@ -1446,7 +1499,7 @@ Scene_Name.prototype.createHtmlNameInput = function() {
             <div class="name-right-page">
                 <!-- Identity Sync Card -->
                 <div class="actor-sync-card">
-                    <div class="actor-portrait-frame" style="background-image: url('img/busts/${faceName}.png'); background-size: 400% 200%; background-position: ${xPercent}% ${yPercent}%"></div>
+                    <div class="actor-portrait-frame" style="background-image: url('img/busts/${encodeURIComponent(bustName)}.png'); background-size: cover; background-position: center top"></div>
                     <div class="actor-info-box">
                         <h3 class="actor-name-title">${actor.name()}</h3>
                         <span class="actor-class-subtitle">${className}</span>
@@ -1521,6 +1574,13 @@ Scene_Name.prototype.createHtmlNameInput = function() {
     setTimeout(() => {
         if (this._htmlContainer) this._htmlContainer.style.opacity = "1";
     }, 16);
+
+    // Character creation covers the brief return to the map with a full-screen
+    // black veil (CCTransitionVeil, z-index above every menu) and leaves it to
+    // the destination scene to take off. The name spread is that destination on
+    // the way in, so without this the screen stays black over a finished name
+    // input until the veil's own 8s safety timeout fires.
+    if (window.CCTransitionVeil) window.CCTransitionVeil.hide();
 };
 
 Scene_Name.prototype.setupHardwareInputListeners = function() {
@@ -1583,6 +1643,15 @@ Scene_Name.prototype.getFilteredKeys = function() {
 
 Scene_Name.prototype.refreshHtmlNameInput = function() {
     if (!this._htmlContainer) return;
+
+    // Every path that changes the name buffer (hardware typing, virtual keys,
+    // space/backspace/clear/default buttons) ends here, so this is the single
+    // place that has to notice the first edit and flip Space from "skip this
+    // step" to "type a space". Sticky: deleting back to the original name still
+    // counts as having taken over the field.
+    if (!this._nameTouched && this._editWindow.name() !== this._initialName) {
+        this._nameTouched = true;
+    }
 
     const pageTable = this._inputWindow.pageTable();
     const activeSection = this._dndActiveSection;
@@ -1916,6 +1985,11 @@ Scene_Name.prototype.onInputCancel = function() {
     if (this._nameInputClosing) return; // guard against double-trigger (Escape + polled cancel)
     this._nameInputClosing = true;
     this.removeHtmlNameInput();
+    // Abort during character creation is a step BACK: the wizard opens this
+    // screen as the last link of a chain (sprite board, then name), and without
+    // this it would read the abort as "done" and carry on to the next step.
+    const wizard = window.Scene_CharacterCreation;
+    if (wizard && wizard.cancelSubScreens) wizard.cancelSubScreens();
     this.popScene();
 };
 

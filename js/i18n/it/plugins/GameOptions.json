@@ -38,7 +38,6 @@
     "showFps": "Mostra Contatore FPS",
     "activeTheme": "Tema Attivo",
     "cardCombat": "Combattimento a Carte",
-    "cardBoard3D": "Grafica 3D del gioco di carte",
     "mapBattle": "Battaglia sulla Mappa",
     "retroShader": "Shader Retro",
     "renderResolution": "Risoluzione di Render",
@@ -71,8 +70,9 @@
     "Camper"
   ],
   "enemySpawn": [
-    "Bilanciato",
     "Distanza dalla partenza",
+    "Livello del Gruppo",
+    "Bioma",
     "Caos"
   ],
   "enemyBattler": [
@@ -86,26 +86,27 @@
   "languageProgress": "{name} tradotto all'1%",
   "settingsInSection": "{count} impostazioni in questa sezione.",
   "desc": {
-    "cardBoard3D": "Mostra creature 3D al posto degli sprite nel gioco di carte: modelli sul tabellone 3x3 e la creatura che ruota nella carta. Ogni copia dello stesso mostro ha un aspetto diverso. Più pesante da renderizzare; si cambia con il pulsante nel piede del duello.",
-    "enemySpawnMode": "Decide quanto sono forti i nemici nel mondo. L'anno di gioco alza comunque tutti i livelli: +10 all'anno fino al 2010, poi libero fino al 110, e dal 2012 nessun nemico sotto livello 80.",
-    "weatherVolume": "Regola i suoni ambientali esterni: pioggia, temporali, vento e i rumori del bioma. Non tocca gli interni né i suoni specifici di una mappa.",
-    "partyHud": "Mostra una scheda per ogni membro del gruppo in alto a sinistra: HP, MP, stati attivi e le urgenze (salute, fame, sonno, igiene, socialità, svago, astinenza).",
+    "enemySpawnMode": "Quanto sono forti i nemici vaganti. L'anno alza comunque i livelli: +10 all'anno fino al 2010, fino a 110 nel 2010-2011, niente sotto l'80 dal 2012.",
+    "weatherVolume": "Volume dei suoni ambientali esterni: pioggia, temporali, vento e rumori del bioma. Non tocca gli interni.",
+    "partyHud": "Una scheda per ogni membro del gruppo in alto a sinistra: HP, MP, stati e bisogni urgenti.",
     "partyFormation": "Come il resto del gruppo cammina dietro al capogruppo sulla mappa.",
-    "musicArtistDisplay": "Se mostrare titolo e autore della musica in riproduzione."
+    "musicArtistDisplay": "Se mostrare titolo e autore della musica in riproduzione.",
+    "battleMusicName": "Quale brano parte quando inizia uno scontro. Casuale ne estrae uno diverso tra quelli sotto all'inizio di ogni battaglia."
   },
   "descState": {
     "partyFormation": [
-      "Stretta: il gruppo cammina in fila, un passo dietro il capogruppo, senza mai fermarsi.",
-      "Libera: i compagni si muovono liberamente, esplorano, mangiano, chiacchierano con la gente del posto o camminano con te. Corri per due secondi per farli riformare in fila. Si radunano dopo una battaglia o un cambio mappa. Guardali e premi OK per parlargli."
+      "Stretta: il gruppo cammina in fila, un passo dietro il capogruppo.",
+      "Libera: i compagni vagano e vivono di vita propria. Corri per due secondi per farli tornare in fila; si radunano dopo una battaglia o un cambio mappa. Guardali e premi OK per parlargli."
     ],
     "enemySpawnMode": [
-      "Bilanciato: i nemici restano al tuo livello o sotto, con un boss più forte nascosto in ogni casella.",
-      "",
-      "Caos: nemici di qualsiasi livello (1-110) ovunque, ridistribuiti a ogni ingresso in una mappa procedurale."
+      "Distanza dalla partenza: la difficoltà viene dal luogo, non da te. I livelli salgono più una casella dista da dove hai iniziato. Ogni nazione e bioma ha il proprio elenco, e ogni casella nasconde un boss.",
+      "Livello del Gruppo: i nemici si adattano al gruppo. I vaganti restano al tuo livello o sotto; ogni casella nasconde un boss più forte. L'opzione più sicura.",
+      "Bioma: può comparire qualunque creatura viva qui, a qualsiasi livello fino a 100, tutte con la stessa probabilità. Il luogo decide cosa incontri, mai quanto sarà difficile.",
+      "Caos: livelli da 1 a 110 ovunque, bioma o no. Le mappe procedurali ridistribuiscono i mostri a ogni ingresso."
     ],
     "musicArtistDisplay": [
       "Prima volta: annuncia un brano solo la prima volta che lo senti.",
-      "Ogni volta: mostra la cassetta ogni volta che la musica cambia (mai in combattimento, mai due volte in 5 minuti).",
+      "Ogni volta: mostra la cassetta ogni volta che il brano torna (mai in combattimento, mai due volte in 5 minuti).",
       "Minimale: titolo e artista nella solita notifica d'angolo.",
       "No: nessun annuncio."
     ]

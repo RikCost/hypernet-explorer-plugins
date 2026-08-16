@@ -141,8 +141,13 @@
         } else if (actorId === 3) {
             $gameActors.actor(3).setPvArcane(stats.arcane);
             $gameActors.actor(3).setPvSubstance(stats.substance);
-            $gameVariables.setValue(131, stats.stealth);
-            $gameVariables.setValue(132, stats.intimidation);
+            // Actor 3's last two stats used to be dumped into Variables 131 and
+            // 132, left over from before the pv* actor fields existed. 131 is
+            // the police heat (CrimeSystem), so every equip change re-wrote the
+            // party's wanted level to actor 3's stealth percentage and the
+            // police were after a party that had never committed a crime.
+            $gameActors.actor(3).setPvStealth(stats.stealth);
+            $gameActors.actor(3).setPvIntimidation(stats.intimidation);
         }
     };
 

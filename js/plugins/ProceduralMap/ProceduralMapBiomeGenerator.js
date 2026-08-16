@@ -85,6 +85,7 @@
     procMapSeed,
     normalizeLatitudeBiome,
     resolveSpecialBiome,
+    unwrapSpecialBiome,
     randomChoice,
     normalizeBiomeForEdge,
     getNonProceduralDestination,
@@ -138,7 +139,6 @@
   const {
     isWaterBiome,
     drawWaterEdges,
-    drawWaterCorners,
   } = BeachGen;
 
   // Import road generation functions from ProceduralMapRoadGenerator
@@ -1652,54 +1652,28 @@
       }
     }
 
-    // Only draw water edges on non-cave biomes
-    if (
-      !isCaveBiome(biome.name) &&
-      adjacentBiomes &&
-      Object.values(adjacentBiomes).some((b) => b && isWaterBiome(b))
-    ) {
-      if (waterTiles.length > 0) {
-        drawWaterEdges(
-          mapData,
-          waterTiles,
-          adjacentBiomes,
-          seed,
-          width,
-          height,
-          rng,
-          cacheInfo,
-          allFeatures,
-          biome.name
-        );
-      }
-    }
-
-    // Draw water corners if adjacent diagonals contain water biomes (only on non-cave biomes)
-    if (!isCaveBiome(biome.name) && cacheInfo && cache) {
-      const diagonalBiomes = checkDiagonalMapBiomesFromCache(
-        worldCoords?.x || 0,
-        worldCoords?.y || 0,
-        cache
+    // Coastlines: sea, sand and the diagonal corners are drawn in one pass, so
+    // the shore is a single curve the neighbouring squares reproduce tile for
+    // tile at the seam. Only on non-cave biomes.
+    if (!isCaveBiome(biome.name) && waterTiles.length > 0) {
+      drawWaterEdges(
+        mapData,
+        waterTiles,
+        adjacentBiomes,
+        seed,
+        width,
+        height,
+        rng,
+        cacheInfo,
+        allFeatures,
+        biome.name,
+        {
+          worldCoords,
+          diagonalBiomes: cache
+            ? checkDiagonalMapBiomesFromCache(worldCoords?.x || 0, worldCoords?.y || 0, cache)
+            : null,
+        }
       );
-      if (
-        waterTiles.length > 0 &&
-        (diagonalBiomes.topLeft.length > 0 ||
-          diagonalBiomes.topRight.length > 0 ||
-          diagonalBiomes.bottomLeft.length > 0 ||
-          diagonalBiomes.bottomRight.length > 0)
-      ) {
-        drawWaterCorners(
-          mapData,
-          waterTiles,
-          width,
-          height,
-          seed,
-          rng,
-          diagonalBiomes,
-          allFeatures,
-          biome.name
-        );
-      }
     }
 
     // After drawing water edges and corners, collect actual beach/water tile IDs
@@ -1709,7 +1683,7 @@
     if (beachCoords) {
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          // Only protect tiles that are specifically at beach coordinates
+          // Only protect tiles the coastline pass actually drew (sea + sand)
           if (beachCoords.has(`${x},${y}`)) {
             const baseIdx = calculateIndex(x, y, 0, width, height);
             const tileId = mapData[baseIdx];
@@ -2059,7 +2033,7 @@
     if (beachCoords) {
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          // Only protect tiles that are specifically at beach coordinates
+          // Only protect tiles the coastline pass actually drew (sea + sand)
           if (beachCoords.has(`${x},${y}`)) {
             const baseIdx = calculateIndex(x, y, 0, width, height);
             const tileId = mapData[baseIdx];
@@ -2694,50 +2668,27 @@
     // Create RNG for water and feature placement
     const rng = createSeededRandom(seed + 100);
 
-    // Draw water edges and beaches BEFORE placing features
-    // This ensures features won't be placed where water will be drawn
-    if (adjacentBiomes && Object.values(adjacentBiomes).some((b) => b && isWaterBiome(b))) {
-      if (waterTiles.length > 0) {
-        drawWaterEdges(
-          mapData,
-          waterTiles,
-          adjacentBiomes,
-          seed,
-          width,
-          height,
-          rng,
-          cacheInfo,
-          allFeatures,
-          biome.name
-        );
-      }
-    }
-
-    // Draw water corners if adjacent diagonals contain water biomes
-    if (cacheInfo && cache) {
-      const diagonalBiomes = checkDiagonalMapBiomesFromCache(
-        worldCoords?.x || 0,
-        worldCoords?.y || 0,
-        cache
+    // Draw the coastline (sea, sand, diagonal corners) BEFORE placing features
+    // so features never land where the water will be drawn.
+    if (waterTiles.length > 0) {
+      drawWaterEdges(
+        mapData,
+        waterTiles,
+        adjacentBiomes,
+        seed,
+        width,
+        height,
+        rng,
+        cacheInfo,
+        allFeatures,
+        biome.name,
+        {
+          worldCoords,
+          diagonalBiomes: cache
+            ? checkDiagonalMapBiomesFromCache(worldCoords?.x || 0, worldCoords?.y || 0, cache)
+            : null,
+        }
       );
-      if (
-        waterTiles.length > 0 &&
-        (diagonalBiomes.topLeft.length > 0 ||
-          diagonalBiomes.topRight.length > 0 ||
-          diagonalBiomes.bottomLeft.length > 0 ||
-          diagonalBiomes.bottomRight.length > 0)
-      ) {
-        drawWaterCorners(
-          mapData,
-          waterTiles,
-          diagonalBiomes,
-          seed,
-          width,
-          height,
-          cacheInfo,
-          allFeatures
-        );
-      }
     }
 
     // Now collect ALL water tile IDs actually placed on the map
@@ -3288,54 +3239,26 @@
       }
     }
 
-    // Only draw water edges on non-cave biomes (road biome path)
-    if (
-      !isCaveBiome(biome.name) &&
-      adjacentBiomes &&
-      Object.values(adjacentBiomes).some((b) => b && isWaterBiome(b))
-    ) {
-      if (waterTiles.length > 0) {
-        drawWaterEdges(
-          mapData,
-          waterTiles,
-          adjacentBiomes,
-          seed,
-          width,
-          height,
-          rng,
-          cacheInfo,
-          allFeatures,
-          biome.name
-        );
-      }
-    }
-
-    // Draw water corners if adjacent diagonals contain water biomes (only on non-cave biomes)
-    if (!isCaveBiome(biome.name) && cacheInfo && cache) {
-      const diagonalBiomes = checkDiagonalMapBiomesFromCache(
-        worldCoords?.x || 0,
-        worldCoords?.y || 0,
-        cache
+    // Only draw the coastline on non-cave biomes (road biome path)
+    if (!isCaveBiome(biome.name) && waterTiles.length > 0) {
+      drawWaterEdges(
+        mapData,
+        waterTiles,
+        adjacentBiomes,
+        seed,
+        width,
+        height,
+        rng,
+        cacheInfo,
+        allFeatures,
+        biome.name,
+        {
+          worldCoords,
+          diagonalBiomes: cache
+            ? checkDiagonalMapBiomesFromCache(worldCoords?.x || 0, worldCoords?.y || 0, cache)
+            : null,
+        }
       );
-      if (
-        waterTiles.length > 0 &&
-        (diagonalBiomes.topLeft.length > 0 ||
-          diagonalBiomes.topRight.length > 0 ||
-          diagonalBiomes.bottomLeft.length > 0 ||
-          diagonalBiomes.bottomRight.length > 0)
-      ) {
-        drawWaterCorners(
-          mapData,
-          waterTiles,
-          width,
-          height,
-          seed,
-          rng,
-          diagonalBiomes,
-          allFeatures,
-          biome.name
-        );
-      }
     }
 
     // After drawing water edges and corners, collect actual beach/water tile IDs
@@ -3345,7 +3268,7 @@
     if (beachCoords) {
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          // Only protect tiles that are specifically at beach coordinates
+          // Only protect tiles the coastline pass actually drew (sea + sand)
           if (beachCoords.has(`${x},${y}`)) {
             const baseIdx = calculateIndex(x, y, 0, width, height);
             const tileId = mapData[baseIdx];
@@ -3544,16 +3467,23 @@
     let coordsAdded = 0;
     const riverCoordMap = {};
     const bridgeCoordMap = {};
+    // The terrain a road or a crossing runs across, kept only for the squares
+    // that have one: it is what dresses a road's verges, and a square read back
+    // out of the snapshot has no column left to read it off.
+    const underBiomeMap = {};
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
         const cls = classifyWorldColumn((z) => $gameMap.tileId(x, y, z));
-        // Resolve the effective biome up front (Ice -> Permafrost/Tundra, then
-        // the specialBiomes roll) so the cache holds "SpiritWoods"/"Crystals"
-        // for every tile, not just the ones the player has already generated.
-        // The cache is what the travel HUD reads, and it previously stored only
-        // parent biomes, so special biomes never surfaced there.
+        // Latitude is a fact about the square (Ice -> Permafrost/Tundra), so it
+        // is resolved up front. The specialBiomes roll is NOT: it depends on the
+        // world seed, and this cache is shared across worlds - it is exported to
+        // BiomesMap.json and preloaded by every other one. Storing the roll
+        // froze one world's SpiritWoods into every world that read the snapshot,
+        // and the map generated on entry (which rolls live) disagreed with it.
+        // getBiomeFromCache makes the roll on read instead, so the cache still
+        // reports specials, and reports the ones THIS world has.
         const biomeName = cls.biome
-          ? resolveSpecialBiome(normalizeLatitudeBiome(cls.biome, y), x, y)
+          ? normalizeLatitudeBiome(cls.biome, y)
           : cls.biome;
         if (biomeName) {
           if (!cache[biomeName]) {
@@ -3565,18 +3495,22 @@
         if (cls.riverTileId) riverCoordMap[`${x},${y}`] = cls.riverTileId;
         // Bridge markers drive the river+road crossing generation.
         if (cls.bridge) bridgeCoordMap[`${x},${y}`] = cls.bridge;
+        if (cls.underBiome && cls.underBiome !== cls.biome) {
+          underBiomeMap[`${x},${y}`] = cls.underBiome;
+        }
       }
     }
 
     this._procGenData.biomeCoordinateCache = cache;
     this._procGenData.riverCoordMap = riverCoordMap;
     this._procGenData.bridgeCoordMap = bridgeCoordMap;
+    this._procGenData.underBiomeMap = underBiomeMap;
 
     // Playtesting as "Test" republishes js/db/WorldGen/BiomesMap.json from what
     // was just scanned, so the snapshot shipped to normal players tracks the
     // edits instead of drifting out of date with map 315.
     if (isTestPlayer() && exportBiomesMapToFile) {
-      exportBiomesMapToFile(cache, riverCoordMap, bridgeCoordMap);
+      exportBiomesMapToFile(cache, riverCoordMap, bridgeCoordMap, underBiomeMap);
     }
 
     const totalCoords = Object.values(cache).reduce(
@@ -3671,11 +3605,18 @@
       const biomeName = index.get(biomeKey(x, y));
       // Resolve on read as well as on build. The cache may predate this logic
       // (old saves) or come straight from BiomesMap.json, and either can hold
-      // the bare parent biome. Resolving is idempotent -- SpiritWoods/Crystals
-      // define no specialBiomes of their own -- so an already-resolved entry
-      // passes through unchanged.
+      // the bare parent biome.
+      //
+      // A special biome already IN the cache is unwrapped back to its parent
+      // before the roll (see unwrapSpecialBiome): the roll belongs to a world
+      // seed, the snapshot does not, so a SpiritWoods frozen into BiomesMap.json
+      // by the world it was exported from must be rolled again for the world
+      // being played - otherwise the cache says SpiritWoods everywhere it is
+      // read while the map generated on entry, which rolls live, comes out
+      // Forest.
       if (biomeName) {
-        return resolveSpecialBiome(normalizeLatitudeBiome(biomeName, y), x, y);
+        return resolveSpecialBiome(
+          normalizeLatitudeBiome(unwrapSpecialBiome(biomeName), y), x, y);
       }
     }
 
@@ -3954,30 +3895,16 @@
       : resolveSpecialBiome(biomeName, originX, originY);
     if (specialBiomeName !== biomeName) {
       log(`[ProceduralMap] Assigning special biome "${specialBiomeName}" to coordinates (${originX}, ${originY})`);
-
-      // Update cache to reflect the special biome override
-      if (this._procGenData.biomeCoordinateCache) {
-        // Remove from old biome's coordinate list
-        if (this._procGenData.biomeCoordinateCache[biomeName]) {
-          this._procGenData.biomeCoordinateCache[biomeName] =
-            this._procGenData.biomeCoordinateCache[biomeName].filter(
-              coord => !(coord.x === originX && coord.y === originY)
-            );
-        }
-
-        // Add to new special biome's coordinate list
-        if (!this._procGenData.biomeCoordinateCache[specialBiomeName]) {
-          this._procGenData.biomeCoordinateCache[specialBiomeName] = [];
-        }
-        this._procGenData.biomeCoordinateCache[specialBiomeName].push({ x: originX, y: originY });
-
-        // Cache mutated in place (same object identity), so the O(1) index
-        // must be rebuilt on its next use.
-        invalidateBiomeIndex();
-
-        log(`[ProceduralMap] Cache updated: moved (${originX}, ${originY}) from "${biomeName}" to "${specialBiomeName}"`);
-      }
-
+      // The cache is NOT rewritten to match. It records what the world map
+      // holds, one entry per square, and the roll is not that: it is made from
+      // the world seed and getBiomeFromCache makes it again on every read, so
+      // the cache already reports this square as SpiritWoods without being
+      // touched. Moving the coordinate into the special biome's list used to
+      // look harmless and was not - it changed what the NEIGHBOURING squares
+      // read as their adjacent biome, so a square generated before its
+      // neighbour had ever been entered came out different from the same
+      // square generated after. Squares have to regenerate identically however
+      // the party got to them (see scripts/test_originsquare.js).
       biomeName = specialBiomeName;
     }
 
@@ -4145,9 +4072,95 @@
     "Permafrost", "MountainDesert",
   ];
 
+  // The world snapshot every origin is resolved against. The world map is not
+  // the map being stood on while a character is created, so its live tile
+  // columns cannot be read: BiomesMap.json is the only record of what the world
+  // holds where, and it is loaded into the save's own cache the first time one
+  // of these is asked for.
+  //
+  // The WHOLE snapshot is installed, exactly as the world-map preload installs
+  // it (ProcGenUtils.buildBiomeCoordinateCache): the biome coordinates, the
+  // river overlays, the bridge markers, the terrain under roads and the
+  // precomputed road/river intersections. Loading the biome list alone was how
+  // an origin square ended up a different place from the same square entered
+  // off the world map - no river through it, no crossing on it, bare verges
+  // along its roads - even though both were generated from the same seed.
+  const SNAPSHOT_FIELDS = ["riverCoordMap", "bridgeCoordMap", "underBiomeMap",
+    "precomputedRoadDirections", "precomputedRiverDirections"];
+
+  function ensureBiomeCoordinateCache(procGenData) {
+    let cache = procGenData && procGenData.biomeCoordinateCache;
+    if (cache && Object.keys(cache).length > 0) return cache;
+    const loaded = Utils2.loadBiomesMapFromFile ? Utils2.loadBiomesMapFromFile() : null;
+    if (loaded && loaded.biomeCoordinateCache) {
+      cache = loaded.biomeCoordinateCache;
+      if (procGenData) {
+        procGenData.biomeCoordinateCache = cache;
+        procGenData.riverCoordMap = loaded.riverCoords || {};
+        // Absent in snapshots exported before bridges existed: left undefined
+        // rather than empty, so the generator rescans the tiles instead of
+        // reporting a world with no river crossings in it.
+        if (loaded.bridgeCoords) procGenData.bridgeCoordMap = loaded.bridgeCoords;
+        if (loaded.underBiomes) procGenData.underBiomeMap = loaded.underBiomes;
+        if (loaded.roadDirections) procGenData.precomputedRoadDirections = loaded.roadDirections;
+        if (loaded.riverDirections) procGenData.precomputedRiverDirections = loaded.riverDirections;
+      }
+    }
+    return cache;
+  }
+
+  // Everything the world-map entry reads off the live tile column, read off the
+  // snapshot instead, in the same order and with the same rules
+  // (generateProceduralMap): a bridge marker wins over everything, then a
+  // hardcoded override, then the square's own biome - which the cache already
+  // holds latitude-normalized and special-biome-resolved, and which carries its
+  // direction in its name for roads ("Road east").
+  function resolveSquareFromSnapshot(gameSystem, x, y) {
+    const bridgeDirection = gameSystem.getBridgeDirectionAt(x, y);
+    if (bridgeDirection) {
+      // A bridge is never rerolled into a special biome: swapping it would drop
+      // the crossing.
+      return { biomeName: "Bridge", roadDirection: bridgeDirection, bridgeDirection };
+    }
+
+    const override = getHardcodedBiomeOverride(x, y);
+    if (override) {
+      return {
+        biomeName: resolveSpecialBiome(normalizeLatitudeBiome(override.biome, y), x, y),
+        roadDirection: override.roadDirection || null,
+        bridgeDirection: null,
+      };
+    }
+
+    let biomeName = gameSystem.getBiomeFromCache(x, y);
+    let roadDirection = null;
+    if (typeof biomeName === "string" && biomeName.startsWith("Road ")) {
+      roadDirection = biomeName.substring(5).toLowerCase();
+      biomeName = "Road";
+    }
+    return { biomeName, roadDirection, bridgeDirection: null };
+  }
+
+  // The terrain a road or a crossing is painted over, off the snapshot, filtered
+  // by the rules the world-map entry applies to the live column: a road dresses
+  // its verges with that terrain's own features, and a road through a
+  // settlement keeps the plain civic look.
+  function snapshotUnderBiome(gameSystem, biomeName, x, y) {
+    if (!isRoadBiome(biomeName)) return null;
+    const map = gameSystem._procGenData && gameSystem._procGenData.underBiomeMap;
+    const raw = map && map[`${x},${y}`];
+    if (!raw) return null;
+    const under = resolveSpecialBiome(
+      normalizeLatitudeBiome(unwrapSpecialBiome(raw), y), x, y);
+    if (
+      !under || under === biomeName || isRoadBiome(under) ||
+      isCityBiome(under) || isVillageBiome(under) || isBurgBiome(under)
+    ) return null;
+    return under;
+  }
+
   // A world square one of those biomes actually occupies, read from the biome
-  // coordinate cache (loaded from BiomesMap.json when the player has not stood
-  // on the world map yet).
+  // coordinate cache.
   //
   // An origin must NEVER anchor on an Ocean square. Roughly half of world map
   // 315 is open sea, so a blind coordinate roll strands the party's world
@@ -4159,14 +4172,7 @@
   // `rng` decides how reproducible the pick is: pass a seeded stream for an
   // origin that must come back identical, Math.random for one rolled per save.
   function pickOverlandWorldCoord(rng, procGenData) {
-    let cache = procGenData && procGenData.biomeCoordinateCache;
-    if (!cache || Object.keys(cache).length === 0) {
-      const loaded = Utils2.loadBiomesMapFromFile ? Utils2.loadBiomesMapFromFile() : null;
-      if (loaded && loaded.biomeCoordinateCache) {
-        cache = loaded.biomeCoordinateCache;
-        if (procGenData) procGenData.biomeCoordinateCache = cache;
-      }
-    }
+    const cache = ensureBiomeCoordinateCache(procGenData);
 
     const named = OVERLAND_ORIGIN_BIOMES.filter(
       (n) => getBiomeByName(n) && !isWaterBiome(n) && n !== "Ocean"
@@ -4192,66 +4198,145 @@
     };
   }
 
-  // Bike origin (character creation): set up _procGenData for a RANDOM non-ocean
-  // overland biome and generate its terrain WITHOUT requiring the world map to be
-  // loaded. Returns true on success. The caller transfers the player to
-  // PROC_MAP_ID; the performTransfer / loadMapData hooks in WorldMapReturn then
-  // inject the generated terrain into $dataMap.
-  Game_System.prototype.generateRandomBikeBiomeMap = function () {
-    // Seed biome + world anchor from the world seed so the bike origin is
-    // reproducible across revisits and consistent with the rest of the overland
-    // pipeline (the salt keeps this RNG stream distinct from terrain streams).
-    const bikeRng = createSeededRandom(hashCoords(getWorldSeed(), 0xb17e, 0xa9c0));
+  // Character-creation origins that begin OUT IN THE WORLD rather than on the
+  // world map looking at it: build the procedural square the party wakes up on,
+  // with no world map loaded and nothing generated yet.
+  //
+  //   worldX / worldY  the square to build. Omitted, one is rolled out of the
+  //                    overland biomes , a real land square the world map
+  //                    really holds there, never a stretch of ocean.
+  //   rng              the stream the roll comes from: a seeded one for an
+  //                    origin that must land in the same place every time,
+  //                    Math.random for one rolled per playthrough.
+  //
+  // The terrain itself goes through generateProceduralMap, the same pass that
+  // resolves a square walked into from a neighbour, so the square reads its
+  // biome and its neighbours off the coordinate cache instead of being told to
+  // pretend it is surrounded by copies of itself. The caller transfers the
+  // player to PROC_MAP_ID; the performTransfer / loadMapData hooks in
+  // WorldMapReturn then inject the generated terrain into $dataMap.
+  //
+  // Answers { worldX, worldY, biome }, or null when nothing could be built.
+  //
+  // It cannot go through generateProceduralMap itself - that resolves a square
+  // by reading the LIVE world-map tile column, and the world map is not the map
+  // being stood on while a character is created - so it does the same work off
+  // the snapshot instead, step for step: bridge marker, hardcoded override,
+  // biome (latitude-normalized, special-biome-resolved), road direction, the
+  // four neighbours, the beach and island flags, the same procMapSeed, the same
+  // call into generateProceduralTerrain.
+  //
+  // That is the whole point of the exercise. The square an origin puts the
+  // party down on has to BE the square the world holds at those coordinates:
+  // walk out of it onto the world map, walk back in - or arrive by any of the
+  // "Visit X" routes - and generateProceduralMap regenerates it from the same
+  // seed and the same inputs, and the same map comes back. This used to build a
+  // stripped-down square instead (no neighbours, so every axis ran border to
+  // border; no rivers, no crossings, no roads, no beach or island), which is
+  // why the shore a castaway woke up on was nowhere to be found when they
+  // returned to it.
+  //
+  // The snapshot's own accuracy is the one limit left: it is republished from
+  // map 315 on every Test playthrough (buildBiomeCoordinateCache), so a repaint
+  // that is never playtested would drift from what the live column says.
+  Game_System.prototype.generateOriginBiomeMap = function (options) {
+    const opts = options || {};
+    // The snapshot is installed on the record that is live NOW, because the
+    // lookups below (bridges, biomes) read it through $gameSystem before the
+    // fresh record is built.
+    if (!this._procGenData) this._procGenData = {};
+    const cache = ensureBiomeCoordinateCache(this._procGenData) || {};
 
-    // A real land square, never a stretch of ocean.
-    const pick = pickOverlandWorldCoord(bikeRng, this._procGenData);
-    if (!pick) return false;
+    let originX = opts.worldX;
+    let originY = opts.worldY;
 
-    const biomeName = pick.biome;
+    if (Number.isFinite(originX) && Number.isFinite(originY)) {
+      // A named square: whatever the snapshot says is there. An origin must
+      // never anchor on water, so a square that turns out to be sea is refused
+      // and the caller rolls somewhere else.
+      const named = this.getBiomeFromCache(originX, originY);
+      if (!named || isWaterBiome(named) || named === "Ocean") return null;
+    } else {
+      const pick = pickOverlandWorldCoord(opts.rng || Math.random, this._procGenData);
+      if (!pick) return null;
+      originX = pick.worldX;
+      originY = pick.worldY;
+    }
+
+    // Resolved through the same rules the world-map entry applies, not read
+    // straight out of the cache: a bridge square is a crossing, a road square
+    // carries its direction, and an override is an override wherever it is
+    // entered from.
+    const square = resolveSquareFromSnapshot(this, originX, originY);
+    const biomeName = square.biomeName;
     const biome = getBiomeByName(biomeName);
-    if (!biome) return false;
+    if (!biome) return null;
 
-    const originX = pick.worldX;
-    const originY = pick.worldY;
-    // Keep whatever coordinate cache the pick loaded: the terrain pass below
-    // reads it for adjacency.
-    const loadedCache =
-      (this._procGenData && this._procGenData.biomeCoordinateCache) || {};
+    // The four neighbours the generators blend their edges into, exactly as the
+    // world-map entry resolves them: that path reads the live tiles and then
+    // overrides every one of them with the cache's own answer where it has one,
+    // which for a square the snapshot covers is this same answer.
+    const neighbours = getAdjacentBiomesFromCache(originX, originY, cache);
+    const adjacentBiomes = {
+      north: normalizeBiomeForEdge(neighbours.north),
+      south: normalizeBiomeForEdge(neighbours.south),
+      east: normalizeBiomeForEdge(neighbours.east),
+      west: normalizeBiomeForEdge(neighbours.west),
+    };
+    const cacheInfo = checkAdjacentMapBiomesFromCache(originX, originY, cache);
+    const diagonalBiomes = checkDiagonalMapBiomesFromCache(originX, originY, cache);
 
+    const pg = this._procGenData || {};
     this._procGenData = {
       originX,
       originY,
       currentBiome: biomeName,
-      currentRoadDirection: null,
-      currentUnderBiome: null,
+      currentRoadDirection: square.roadDirection,
+      currentBridgeDirection: square.bridgeDirection,
+      currentUnderBiome: snapshotUnderBiome(this, biomeName, originX, originY),
       currentBiomeTileset: biome.tilesetId,
       generatedMapData: null,
       biomeToTileset: {},
       mapPreloaded: false,
       seed: getWorldSeed(),
-      biomeCoordinateCache: loadedCache,
+      biomeCoordinateCache: cache,
       lastLoadedProcMapX: null,
       lastLoadedProcMapY: null,
-      displayAsBeach: false,
-      displayAsIsland: false,
+      displayAsBeach: shouldDisplayAsBeach(biomeName, adjacentBiomes, diagonalBiomes),
+      displayAsIsland: shouldDisplayAsIsland(biomeName, adjacentBiomes),
       biomeLayerStack: [],
       biomeDayTemperature: biome.dayTemperature || 20,
       biomeNightTemperature: biome.nightTemperature || 10,
     };
+    // The rest of the snapshot rides along into the fresh record: the rivers
+    // this square may be crossed by, the bridges, and the precomputed road and
+    // river intersections the generators read.
+    for (const field of SNAPSHOT_FIELDS) {
+      if (pg[field] !== undefined) this._procGenData[field] = pg[field];
+    }
 
     const seed = procMapSeed(originX, originY);
-    const adjacentBiomes = { north: biomeName, south: biomeName, east: biomeName, west: biomeName };
-    const worldCoords = { x: originX, y: originY };
-
     this._procGenData.generatedMapData = generateProceduralTerrain(
-      biome, seed, null, adjacentBiomes, null, worldCoords, this._procGenData.biomeCoordinateCache
+      biome, seed, square.roadDirection, adjacentBiomes, cacheInfo,
+      { x: originX, y: originY }, cache
     );
+    if (!this._procGenData.generatedMapData) return null;
 
     // Sync world-coordinate vars so edge-exit return coords stay consistent.
     $gameVariables.setValue(43, originX);
     $gameVariables.setValue(44, originY);
 
-    return !!this._procGenData.generatedMapData;
+    return { worldX: originX, worldY: originY, biome: biomeName };
+  };
+
+  // Bike origin (character creation): a RANDOM non-ocean overland square, the
+  // same one every time in a given world , the salt keeps this RNG stream
+  // distinct from the terrain streams. Answers the same { worldX, worldY,
+  // biome } record generateOriginBiomeMap does (null when nothing could be
+  // built), so the caller can anchor the party's start on the square it rolled.
+  Game_System.prototype.generateRandomBikeBiomeMap = function () {
+    const bikeRng = createSeededRandom(hashCoords(getWorldSeed(), 0xb17e, 0xa9c0));
+    return this.generateOriginBiomeMap({ rng: bikeRng });
   };
 
   // ==========================================================================

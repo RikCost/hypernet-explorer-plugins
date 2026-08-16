@@ -1,8 +1,10 @@
 {
   "trackNone": "Nessuna",
+  "trackRandom": "Casuale",
   "trackMap": "Continua la musica della mappa",
   "battleMusic": "Musica di battaglia",
   "noMusic": "Nessuna musica durante le battaglie.",
+  "randomEachBattle": "A ogni battaglia viene estratto un brano diverso.",
   "continueMap": "Continua a suonare la BGM della mappa attuale.",
   "playingAsBattle": "In riproduzione come musica di sottofondo delle battaglie.",
   "composer": "Compositore",

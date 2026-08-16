@@ -990,6 +990,11 @@
           utils.applyIdentityFromSprite(this._actorId - 1, actor.characterName());
         }
       }
+      // Opened by a paused creation run: Back means back. Drop the rest of the
+      // chain (the name prompt) and tell the wizard to reopen the step that
+      // sent the player here rather than move on to the next one.
+      const wizard = window.Scene_CharacterCreation;
+      if (wizard && wizard.cancelSubScreens) wizard.cancelSubScreens();
       this.popScene();
     }
 
@@ -1808,10 +1813,11 @@
       // chained after a bust pick.
       //
       // Two pops by default: this gallery is opened from the sprite grid, so
-      // confirming leaves both and lands back on the map, where the creation
-      // common event resumes. A caller that pushed the gallery straight over
-      // its own scene (the Detailed creation editor) sets _confirmPops to 1
-      // and gets its scene back instead.
+      // confirming leaves both and lands on whatever opened the grid - the
+      // creation wizard, which then opens the name prompt and carries on. A
+      // caller that pushed the gallery straight over its own scene (the
+      // Detailed creation editor) sets _confirmPops to 1 and gets its scene
+      // back instead.
       const pops = Scene_BustSelector._confirmPops || 2;
       Scene_BustSelector._confirmPops = 0;
       for (let i = 0; i < pops; i++) SceneManager.pop();
@@ -1887,6 +1893,14 @@
     bustFor: bustForSprite,
     sheetUrl: spriteSheetUrl,
     paintFrame: paintSpriteFrame,
+    // Build the board (and start the bust folder scan) ahead of the scene that
+    // needs them. Character creation calls this the moment the wizard opens, so
+    // the sprite step has nothing left to wait for by the time it is reached;
+    // both are cached, so the call is free once it has been made.
+    warm() {
+      rebuildSpriteBoard();
+      BustCatalogue.load();
+    },
   };
 
   // The gallery's catalogue, for anyone who wants the bust list without

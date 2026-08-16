@@ -59,6 +59,13 @@
     --accent-brown: #57391d;
     --accent-brown-dark: #33220f;
 
+    /* === Empathize dialogue options (NPC/NPCEmpathizeUI.js) ===
+       The gold of the Omega Tower preset would vanish on this cream page, so
+       the option rows take the parchment pair instead: crimson ink inside a
+       tooled leather border. Same job, same single family, different palette. */
+    --npc-option-fg: #58180D;
+    --npc-option-border: #8b5a2b;
+
     /* === Text Colors === */
     --text-danger-hover: #ecdcb9;
     --text-disabled: #5c4b3d;

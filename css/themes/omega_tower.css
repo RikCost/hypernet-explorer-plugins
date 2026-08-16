@@ -108,6 +108,14 @@
     --accent-brown: #57391d;
     --accent-brown-dark: #33220f;
 
+    /* === Empathize dialogue options (NPC/NPCEmpathizeUI.js) ===
+       Every row in the chat panel (the standing verbs and every submenu:
+       Socialize, Court, Propose, gifts, bribes...) reads as one gold family
+       instead of being tinted per tone, so the list scans as a single menu.
+       Archive Foundation retunes these to its own ink on parchment. */
+    --npc-option-fg: #ffcc66;
+    --npc-option-border: #d4a64e;
+
     /* === Text Colors === */
     --text-danger-hover: #000000;
     --text-disabled: #777777;

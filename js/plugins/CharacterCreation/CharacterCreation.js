@@ -54,11 +54,65 @@
     return SETTINGS_ICON_POOL[h % SETTINGS_ICON_POOL.length];
   };
 
-  // Full-screen black veil used to hide the brief return to the map while a
-  // reserved common event spins up the next scene (e.g. the sprite/bust
-  // selector). Without it the map flashes for a frame and the selector shows
-  // an empty list until its async asset scan finishes. The veil is removed by
-  // the destination scene once it has finished loading, with a safety timeout.
+  // Preview plate per enemy spawn mode, indexed by the stored setting value
+  // (0 Distance from spawn, 1 Party Level, 2 Biome, 3 Chaos). The same files
+  // the options menu shows for this setting; see GameOptions.js, OPTION_IMAGES.
+  const ENEMY_SPAWN_IMAGES = [
+    "EnemySpawnDistance", "EnemySpawnPartyLevel", "EnemySpawnBiome", "EnemySpawnChaos",
+  ];
+
+  // ==========================================================================
+  // What the naming step carries besides its screens
+  // ==========================================================================
+  // Common event 97 opened the name and sprite screens, and did three other
+  // things on the way past. They are done here now, in the same order the event
+  // did them, so removing the event changed nothing about what a new character
+  // starts with.
+  const CREATION_PAGE_TURN_SE = { name: "PixelUI/PixelUI (1)", volume: 90, pitch: 100, pan: 0 };
+  const CREATION_START_GOLD = 2000; // per humanoid member, as the event gave it
+  const SWITCH_CREATION_NAMED = 12;
+  // Switch 100 is the tutorial's own: while it is on, the name is not the
+  // player's to type (the event asked the same question before its Name Input).
+  const SWITCH_TUTORIAL = 100;
+  // The Markov call the event made, argument for argument. Plugin commands are
+  // registered under the bare file name (Utils.extractFileName), which is why
+  // this says MarkovTextGenerator where the event said UI/MarkovTextGenerator.
+  const CREATION_NAME_MARKOV = {
+    plugin: "MarkovTextGenerator",
+    command: "generateName",
+    args: {
+      databaseId: "names", chainOrder: "2", minChars: "4", maxChars: "12",
+      useWordMode: "false", variableId: "4", displayInMessage: "false",
+    },
+  };
+
+  // Open one queued sub-screen for `actorId`. False when its scene is missing,
+  // so the queue can move on rather than strand the wizard.
+  function openCreationSubScreen(screen, actorId) {
+    if (screen === "sprite") {
+      if (!window.Scene_SpriteGridSelector) return false;
+      SceneManager.push(window.Scene_SpriteGridSelector);
+      if (SceneManager._nextScene && SceneManager._nextScene.setActor) {
+        SceneManager._nextScene.setActor(actorId);
+      }
+      return true;
+    }
+    if (screen === "name") {
+      if (typeof Scene_Name === "undefined" || !$dataActors[actorId]) return false;
+      SceneManager.push(Scene_Name);
+      // Length is overridden by AltNameInput's own prepare; the event passed 8.
+      SceneManager.prepareNextScene(actorId, 8);
+      return true;
+    }
+    return false;
+  }
+
+  // Full-screen black veil used to hide the brief return to the map while the
+  // wizard steps out to a screen that has to run on the MAP (the hometown
+  // picker, which is the fast-travel city list). Without it the map flashes for
+  // a frame. The veil is removed by the destination scene once it has finished
+  // loading, with a safety timeout. The name/sprite screens no longer need it:
+  // they are pushed straight from the wizard and the map is never visited.
   window.CCTransitionVeil = window.CCTransitionVeil || {
     _el: null,
     _timeout: null,
@@ -337,6 +391,15 @@
   const CC_BASE_START_EUROS = 100;
   const CC_BASE_START_GOLD = CC_BASE_START_EUROS * 100; // 100 gold = €1
 
+  // What the wealth band a character was raised in is worth on the day they
+  // leave home, in gold, indexed by tier (destitute .. wealthy). It is money
+  // they BRING, so it is added to the party purse alongside their class's
+  // <Money:> and their traits', and every member pays in their own.
+  //
+  // The top of the band sits about where the richest classes do (CEO, €10,000):
+  // being born to money is worth as much as having made it, and no more.
+  const CC_WEALTH_START_GOLD = [0, 25000, 100000, 300000, 1000000];
+
   function classStartingMoney(classId) {
     const classData = $dataClasses[classId];
     const match = classData && classData.note && classData.note.match(/<Money:(\d+)>/i);
@@ -348,16 +411,47 @@
     return traits.reduce((sum, trait) => sum + (Number(trait && trait.money) || 0), 0);
   }
 
+  // A member's wealth band, and what it pays in. Only the detailed editor asks
+  // the question (profile.wealthTierChosen); a character who was never asked
+  // brings nothing extra, so every other creation path is left exactly as it
+  // was. The society store is read directly rather than through
+  // NPCSocietyRegistry.getProfile, which would MINT a profile for a member who
+  // has none , a whole rolled stranger, on the last step of creation, for an
+  // answer that is only ever there when it was written by hand.
+  function wealthStartingMoney(actor) {
+    const society = $gameSystem && $gameSystem._npcSociety;
+    const profile = actor && society ? society[actor.name()] : null;
+    const tier = profile && profile.wealthTierChosen;
+    if (tier == null) return 0;
+    return CC_WEALTH_START_GOLD[Math.max(0, Math.min(4, tier))] || 0;
+  }
+
   function giveStartingMoney() {
     if ($gameSystem._ccStartingMoneyGiven) return;
     $gameSystem._ccStartingMoneyGiven = true;
 
     let gold = CC_BASE_START_GOLD;
     $gameParty.members().forEach((actor) => {
-      gold += classStartingMoney(actor._classId) + traitStartingMoney(actor);
+      gold += classStartingMoney(actor._classId) +
+        traitStartingMoney(actor) +
+        wealthStartingMoney(actor);
     });
     $gameParty.gainGold(gold);
   }
+
+  // The detailed editor names each wealth band with what it pays in, so the row
+  // and the payout are read off one table.
+  window.CharacterCreationMoney = {
+    wealthGold(tier) {
+      return CC_WEALTH_START_GOLD[Math.max(0, Math.min(4, Number(tier) || 0))] || 0;
+    },
+    formatWealth(tier) {
+      const gold = this.wealthGold(tier);
+      const shared = window.NPCShared;
+      return shared && shared.formatMoney ? shared.formatMoney(gold) : String(gold);
+    },
+  };
+
   const { Scene_ClassSelection } = window.ClassSelection || {};
 
   // --- Trait i18n resolution ---------------------------------------------
@@ -427,22 +521,26 @@
     });
   }
 
-  // CC_MUSIC_TRACKS plus any player tracks dropped into audio/bgm/BattleMusic.
+  // CC_MUSIC_TRACKS plus any player tracks dropped into audio/bgm/BattleMusic,
+  // led by the Random entry so a Random pick made in the options menu still
+  // reads back here instead of silently showing the first track.
   // Resolved at runtime since MusicSelectionSystem.js loads after this plugin.
   function getCCMusicTracks() {
     const mss = window.MusicSelectionSystem;
     const custom = (mss && mss.scanCustomTracks) ? mss.scanCustomTracks() : [];
-    return ccMusicTracks().concat(custom);
+    const random = (mss && mss.MUSIC_RANDOM)
+      ? [{ name: T('MusicSelection.trackRandom'), value: mss.MUSIC_RANDOM }]
+      : [];
+    return random.concat(ccMusicTracks(), custom);
   }
 
-  // Vehicle interiors the camper / car origins drop the player into. The
-  // matching world-map position (where the vehicle is parked) is chosen by the
-  // player through the fast-travel city picker; FastTravelSystem parks the
-  // vehicle there and sends the player here, and stepping out of the interior
-  // (returnToCamper / returnToCar) spawns the vehicle beside them at that city.
-  const CAMPER_INTERIOR = { mapId: 327, x: 4, y: 6 };
-  const CAR_INTERIOR = { mapId: 1094, x: 7, y: 8 };
-  const WORLD_MAP_ID = 315;
+  // No origin begins inside a vehicle any more: the camper and the car are
+  // parked out in the world with the party standing beside them (see
+  // startVehicleOrigin), so their interiors are somewhere to climb into rather
+  // than somewhere to wake up. Nor does any origin end on world map 315 — the
+  // ones that begin "somewhere in the world" begin on the ground of that
+  // somewhere (startOnProceduralSquare). The space origin is the one exception
+  // to both, and it is not on Earth at all.
   const GAME_START_MAP_ID = 557; // the map every new game / permadeath reset lands on
 
   // Full creation mode is disabled for now: the "Full" choice is hidden from the
@@ -596,26 +694,62 @@
   const ITEM_HONEY_MEAD = 517;        // faction leader
   const ITEM_ROCK_HARD_BREAD = 424;   // deserter
   const ITEM_EMPTY_SPELLBOOK = 262;   // arcanist (to copy what they learn into)
-  const ITEM_TELESCOPE = 150;         // mercenary (reading a field before crossing it)
+  const ITEM_TELESCOPE = 150;         // mercenary / space / crash / stranded (reading a distance before crossing it)
   const ITEM_SKELETON_KEY = 739;      // skeleton key holder (the whole loadout)
   const ITEM_ONU_TERMINAL = 379;      // diplomat (remote access into the assembly)
 
-  // Camper / car origin: open the fast-travel city picker (carsharing for the
-  // car, camper network for the camper). The keys item comes from the origin's
-  // loadout. Picking a city is handled by FastTravelSystem in characterCreation
-  // mode: it parks the vehicle at that city on the world map and transfers the
-  // player into the vehicle interior instead of charging fuel/time.
-  function startVehicleOrigin(transportType, interior) {
-    if (!$gameTemp) return;
-    $gameTemp._openCharacterCreationTrainTravel = true;     // opens the picker
-    $gameTemp._characterCreationTravelType = transportType; // which network
-    $gameTemp._characterCreationTravelMode = true;          // free, uncancellable
-    $gameTemp._ccVehicleStart = {
-      transport: transportType,
-      interiorMapId: interior.mapId,
-      interiorX: interior.x,
-      interiorY: interior.y,
-    };
+  // --- Beginning out in the world ----------------------------------------
+  // No origin ends its wizard standing on the world map (315). The world map is
+  // the thing you look at a journey on, not a place to be put down in: an origin
+  // that begins "somewhere in the world" begins INSIDE that somewhere, on the
+  // procedural square at those world coordinates, exactly as walking onto the
+  // square from the map would put you there. The space origin is the one
+  // exception in the whole table, and it is not on Earth at all.
+  //
+  // Answers false when the square could not be built, so a caller can fall back
+  // rather than reserving a transfer into an empty map.
+  const PROC_MAP_START = { x: 32, y: 32 }; // centre of the 64x64 procedural map
+
+  function proceduralMapId() {
+    return (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
+  }
+
+  function startOnProceduralSquare(options) {
+    if (!$gameSystem || !$gameSystem.generateOriginBiomeMap) return false;
+    const built = $gameSystem.generateOriginBiomeMap(options || {});
+    if (!built) return false;
+    // The square that was actually built is where this party is from, whether
+    // it was named by the origin or rolled here (see the start anchor above).
+    anchorAt(built.worldX, built.worldY);
+    // The two "the procedural map is live" flags WorldMapReturn's startProcGen
+    // raises; without them the square loads as a dead map with no borders and
+    // no way back out to the world map.
+    $gameVariables.setValue(110, 1);
+    $gameVariables.setValue(111, 1);
+    // The centre is only where the party is aimed. Which tile they are actually
+    // set down on is settled once the square exists (ccPlaceOnPassableTile).
+    if ($gameTemp) $gameTemp._ccProcSquareLanding = true;
+    $gamePlayer.reserveTransfer(proceduralMapId(), PROC_MAP_START.x, PROC_MAP_START.y, 2, 0);
+    return true;
+  }
+
+  // Camper / car origin: the party wakes up beside their vehicle out in the
+  // world, not sitting inside it and not at a city they were asked to name. A
+  // procedural square is built for them (the same landing the bike origin gets)
+  // and VehicleSystem parks the vehicle on a passable tile next to the player
+  // once the map has loaded, unmounted, so the first thing they do is decide
+  // whether to get in. The keys item comes from the origin's own loadout.
+  //
+  // `kind` is one of the flags VehicleSystem answers to: "camper" (the ship
+  // slot), "car" or "bike" (the boat slot, via $gameSystem._boatType).
+  function startVehicleOrigin(kind) {
+    if ($gameTemp) $gameTemp._ccVehicleFieldStart = kind;
+    if (startOnProceduralSquare({ rng: Math.random })) return;
+    // Nothing could be generated (no biome data at all): the tower gate is the
+    // one landing that needs no world behind it.
+    if ($gameTemp) $gameTemp._ccVehicleFieldStart = null;
+    console.warn(`CharacterCreation: no overland square for the ${kind} origin; starting at the tower gate instead.`);
+    startDungeonOrigin();
   }
 
   // Criminal origin: same camper start as origin_camper, but the party begins
@@ -631,8 +765,8 @@
     } else {
       console.warn("CharacterCreation: CrimeSystem unavailable; criminal start bounty not applied.");
     }
-    // Same landing as the camper origin: keys + city picker + vehicle interior.
-    startVehicleOrigin("camper", CAMPER_INTERIOR);
+    // Same landing as the camper origin: keys, and the van parked beside them.
+    startVehicleOrigin("camper");
   }
 
   // CEO origin: start rich and in charge. Hand the party €1,000,000 in cash
@@ -644,6 +778,7 @@
   const CEO_COMPANY_KEY = "LemonCorp";
   const CEO_OWNERSHIP = 0.8;                  // 80% controlling stake
   const CEO_START = { mapId: 1036, x: 25, y: 31, dir: 2 }; // facing down
+  const CEO_PLACE = "Ghent";                  // HQ's town: the anchor's world square
 
   function startCEOOrigin() {
     $gameParty.gainGold(CEO_START_GOLD);
@@ -661,51 +796,59 @@
       console.warn("CharacterCreation: AssetRegistry unavailable; CEO stake not granted.");
     }
 
+    // Home ground is the town the HQ stands in.
+    anchorAtPlace(CEO_PLACE, { x: 84, y: 120 });
     $gamePlayer.reserveTransfer(CEO_START.mapId, CEO_START.x, CEO_START.y, CEO_START.dir, 0);
   }
 
   // Bike origin: give the bike item and drop the player into a RANDOM non-ocean
-  // procedural biome (never onto the world map). We generate the biome map up
-  // front, then transfer to the procedural map (636); VehicleSystem places the
-  // player in a passable 4x4 zone with the bike beside them on map load (see
-  // _ccBikeStart handling).
+  // procedural biome (never onto the world map). Unlike the camper and the car
+  // the square is picked from the world seed, so a bike start lands in the same
+  // place every time in a given world. VehicleSystem places the player in a
+  // passable 4x4 zone with the bike beside them on map load (see
+  // _ccVehicleFieldStart handling there).
   function startBikeOrigin() {
     $gameSystem._boatType = "bike";
-    if ($gameTemp) $gameTemp._ccBikeStart = true;
+    if ($gameTemp) $gameTemp._ccVehicleFieldStart = "bike";
 
-    const procMapId =
-      (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
-    if ($gameSystem.generateRandomBikeBiomeMap && $gameSystem.generateRandomBikeBiomeMap()) {
-      // Proc map is 64x64; start near the center. VehicleSystem repositions the
-      // player into a passable 4x4 zone once the map is loaded.
-      $gamePlayer.reserveTransfer(procMapId, 32, 32, 2, 0);
-    } else {
-      // Fallback: old world-map bike start if procedural generation is unavailable.
-      $gamePlayer.reserveTransfer(WORLD_MAP_ID, 88, 130, 2, 0);
+    const built = $gameSystem.generateRandomBikeBiomeMap
+      ? $gameSystem.generateRandomBikeBiomeMap() : null;
+    if (built) {
+      // The seeded square the bike rolled is this party's home ground.
+      anchorAt(built.worldX, built.worldY);
+      // Proc map is 64x64; aimed at the center. VehicleSystem repositions the
+      // player into a passable 4x4 zone once the map is loaded, and
+      // ccPlaceOnPassableTile catches them if it cannot find one.
+      $gameVariables.setValue(110, 1);
+      $gameVariables.setValue(111, 1);
+      if ($gameTemp) $gameTemp._ccProcSquareLanding = true;
+      $gamePlayer.reserveTransfer(proceduralMapId(), PROC_MAP_START.x, PROC_MAP_START.y, 2, 0);
+      return;
     }
+    if ($gameTemp) $gameTemp._ccVehicleFieldStart = null;
+    console.warn("CharacterCreation: no overland square for the bike origin; starting at the tower gate instead.");
+    startDungeonOrigin();
   }
 
-  // Empty-lot origin: drop the party onto a RANDOM passable, non-water tile of
-  // the world map (315) with a big pile of crafting materials (handed out by the
-  // origin's loadout). The exact tile is chosen once the world map is loaded
-  // (see the Scene_Map.onMapLoaded hook near the bottom of this file); here we
-  // flag the start and reserve a provisional landing tile.
+  // Empty-lot origin: a RANDOM land square of the world, standing on the ground
+  // of it, with a big pile of crafting materials (handed out by the origin's
+  // loadout) and nothing built on it yet.
   const MATERIAL_ITEM_ID_MIN = 849; // first <category:Crafting> material
   const MATERIAL_ITEM_ID_MAX = 871; // last  <category:Crafting> material
   const EMPTY_LOT_MATERIAL_QTY = 40; // of every material
 
   function startEmptyLotOrigin() {
-    if ($gameTemp) $gameTemp._ccEmptyLotStart = true;
-    // Provisional tile, repositioned to a random land tile in onMapLoaded.
-    $gamePlayer.reserveTransfer(WORLD_MAP_ID, 88, 130, 2, 0);
+    if (startOnProceduralSquare({ rng: Math.random })) return;
+    console.warn("CharacterCreation: no overland square for the empty-lot origin; starting at the tower gate instead.");
+    startDungeonOrigin();
   }
 
-  // Stranded origin: drop the party on foot at a RANDOM one of these hand-picked
-  // world-map (315) coordinates — remote spots scattered across the map, with
-  // nothing but the castaway kit its loadout lists. Every one of them is a land
-  // square (Fields / ForestTropical / Mountain / City); never add an Ocean
-  // coordinate here, and see the onMapLoaded hook that re-lands one that drifts
-  // over water after a world-map repaint.
+  // Stranded origin: drop the party on foot on the ground of a RANDOM one of
+  // these hand-picked world squares — remote spots scattered across the map,
+  // with nothing but the castaway kit its loadout lists. Every one of them is a
+  // land square (Fields / ForestTropical / Mountain / City); never add an Ocean
+  // coordinate here. A square that drifts over water after a world-map repaint
+  // simply fails to build, and the castaway is rolled somewhere else instead.
   const STRANDED_COORDS = [
     { x: 115, y: 89 }, { x: 84, y: 46 }, { x: 86, y: 50 }, { x: 85, y: 53 },
     { x: 71, y: 61 }, { x: 67, y: 63 }, { x: 69, y: 64 }, { x: 70, y: 68 },
@@ -714,23 +857,55 @@
     { x: 120, y: 228 },
   ];
 
+  // The castaway is measured from the shore they washed up on, like everybody
+  // else is measured from where they began: startOnProceduralSquare anchors the
+  // square it builds, so the coast the party opens their eyes on is level 1
+  // ground and the world grows more dangerous the further inland they walk. It
+  // used to be pinned to the space center instead - the place they were trying
+  // to reach - which put a party that landed on 213,230 half a world away from
+  // its own anchor and opened the game on level 79 wildlife.
   function startStrandedOrigin() {
     const spot = STRANDED_COORDS[Math.floor(Math.random() * STRANDED_COORDS.length)];
-    if ($gameTemp) $gameTemp._ccStrandedStart = true;
-    anchorAtSpaceCenter();
-    $gamePlayer.reserveTransfer(WORLD_MAP_ID, spot.x, spot.y, 2, 0);
+    if (startOnProceduralSquare({ worldX: spot.x, worldY: spot.y })) return;
+    // The written square is no longer land (or there is no biome data for it):
+    // any other coast will do for somebody who did not choose this one either.
+    if (startOnProceduralSquare({ rng: Math.random })) return;
+    console.warn("CharacterCreation: no overland square for the stranded origin; starting at the tower gate instead.");
+    startDungeonOrigin();
   }
 
-  // Where the "Distance from spawn" encounter mode measures this party's world
-  // from (BattleSystemEnhancedEncounters, getStartAnchor). Every other origin
-  // has an honest answer - the square it put the party down on - and the
-  // encounter system captures it by itself on the first map. These three do
-  // not: the space and crash-landed origins never stand on an Earth square at
-  // all, and the castaway stands on one that says the opposite of the truth
-  // (the emptiest coast in the world would read as the safest square in it).
-  // All three are pinned to the Green Witch Space Center, the launch site they
-  // left from or were trying to reach. Writing the anchor here also stops the
-  // automatic capture from claiming whatever square they first set foot on.
+  // --- The start anchor ----------------------------------------------------
+  // The world square the "Distance from spawn" encounter mode measures this
+  // party's whole world from (BattleSystemEnhancedEncounters, getStartAnchor):
+  // level 1 standing on it, the top of the roster at the farthest square from
+  // it. It belongs to the savegame, it is written once, and nothing that
+  // happens afterwards moves it - so EVERY origin states it here, at the moment
+  // it settles where the party begins, rather than leaving the encounter system
+  // to pick it up off whichever map happens to load first. An origin that says
+  // nothing is an origin measured from a square it may never have stood on.
+  //
+  // Three kinds of answer, one per kind of landing:
+  //   anchorAt(x, y)        a square this origin knows now - the procedural
+  //                         square it just built, or the world tile of the
+  //                         authored map it is transferring into.
+  //   anchorAtSpaceCenter() the two starts that never stand on an Earth square
+  //                         at all (space, crash-landed): the Green Witch Space
+  //                         Center, the pad they lifted off from or were trying
+  //                         to get back to.
+  //   deferred              the picker origins, which do not know where they
+  //                         are going until the player says: FastTravelSystem
+  //                         writes the anchor as it lands them (ccAnchorStart).
+  //
+  // captureStartAnchor over in the encounter plugin stays as the net under all
+  // of it (a preset dossier, the tutorial, a save whose origin predates this),
+  // and it never overwrites an anchor that is already set.
+  function anchorAt(x, y) {
+    const BSEH = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
+    if (BSEH && typeof BSEH.setStartAnchor === "function") {
+      BSEH.setStartAnchor(x, y);
+    }
+  }
+
   function anchorAtSpaceCenter() {
     const BSEH = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
     if (BSEH && typeof BSEH.anchorAtSpaceCenter === "function") {
@@ -738,14 +913,36 @@
     }
   }
 
+  // The world square of a named place, for the origins that transfer straight
+  // into an authored map. Read from the shared destination table (the same
+  // `base` the encounter plugin resolves a map's <MapGroup> through), so moving
+  // a town on the world map moves the anchor of the origins that begin in it,
+  // and the fallback only stands in when the table has not been published yet.
+  function anchorAtPlace(key, fallback) {
+    const dest = window.WorkSystem && window.WorkSystem.Destinations;
+    const entry = dest && dest[key];
+    const base = entry && entry.base;
+    if (base && typeof base.x === "number" && typeof base.y === "number") {
+      anchorAt(base.x, base.y);
+      return;
+    }
+    if (fallback) anchorAt(fallback.x, fallback.y);
+  }
+
+  // The Omega Tower's own world square: where every origin is anchored once
+  // Earth is gone and the tower is the only ground left (startAtOmegaTower).
+  function anchorAtOmegaTower() {
+    const BSEH = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
+    if (BSEH && typeof BSEH.getOmegaTowerCoords === "function") {
+      const c = BSEH.getOmegaTowerCoords();
+      if (c) anchorAt(c.x, c.y);
+    }
+  }
+
   // Mayor origin: a huge stockpile (50x of every crafting material, handed out
-  // by the loadout) and the choice of a starting city through the picker, just
-  // like the camper / car origins. Unlike those vehicle origins the mayor starts
-  // on foot on the world map at the chosen city (no vehicle, no interior): we
-  // open the character-creation picker on the camper network (which lists every
-  // city and lands on world map 315) but WITHOUT an _ccVehicleStart, so
-  // FastTravelSystem uses its plain character-creation transfer to the picked
-  // city instead of parking a vehicle and dropping into its interior.
+  // by the loadout) and the choice of a starting city through the picker. The
+  // mayor arrives on foot and with nothing to drive: see
+  // startWorldMapPickerOrigin for where the picked place actually puts them.
   const MAYOR_MATERIAL_QTY = 50; // of every material (id 849-871)
 
   // --- Beginning after the end -------------------------------------------
@@ -767,25 +964,26 @@
       ? WMT.towerLanding() : { mapId: 635, x: 13, y: 38, dir: 8 };
     if ($gameTemp) {
       // Every "say where you begin" flag names a place on a planet that is not
-      // there, and so does every flag that repositions the party once the world
-      // map has loaded (the empty lot, the castaway, the bike).
+      // there, and so does the vehicle that would have been parked beside the
+      // party on one of its squares.
       $gameTemp._openCharacterCreationTrainTravel = false;
       $gameTemp._characterCreationTravelMode = false;
       $gameTemp._characterCreationTravelType = null;
-      $gameTemp._ccVehicleStart = null;
-      $gameTemp._ccEmptyLotStart = false;
-      $gameTemp._ccStrandedStart = false;
-      $gameTemp._ccBikeStart = false;
+      $gameTemp._ccVehicleFieldStart = null;
     }
+    // Runs after the origin's own branch, and overrules its anchor along with
+    // its destination: a square of a planet that is not there is not where this
+    // party is from. The tower is, because it is the only place left.
+    anchorAtOmegaTower();
     $gamePlayer.reserveTransfer(t.mapId, t.x, t.y, t.dir, 0);
   }
 
-  // The full destination picker with no vehicle behind it: the camper network
-  // lists every place on the map, and WITHOUT an _ccVehicleStart record
-  // FastTravelSystem uses its plain character-creation transfer, so the party
-  // lands on foot on the world map (315) at the place the player chose. Shared
-  // by every origin that begins nowhere in particular but still lets the player
-  // say where.
+  // The full destination picker: the camper network lists every place on the
+  // map, and FastTravelSystem's plain character-creation transfer walks the
+  // party into the place they picked , through its own door where it has one,
+  // and onto the ground of its own square where it has not (ccCreationLanding
+  // there). Never onto the world map itself. Shared by every origin that begins
+  // nowhere in particular but still lets the player say where.
   function startWorldMapPickerOrigin() {
     if (!$gameTemp) return;
     // Nothing to pick from: the cities went with the planet. This also catches
@@ -842,6 +1040,7 @@
       { id: ITEM_LOW_ORBIT_PIN, qty: 1 },
       { id: ITEM_STAR_MAP, qty: 1 },
       { id: ITEM_PILOT_PDA, qty: 1 },
+      { id: ITEM_TELESCOPE, qty: 1 },
       { id: ITEM_PORTABLE_CHARGER, qty: 1 },
       { id: ITEM_UV_SUNGLASSES, qty: 1 },
       { id: ITEM_NANITES, qty: 1, each: true },
@@ -931,6 +1130,7 @@
       { id: ITEM_COOKING_POT, qty: 1 },
       { id: ITEM_WALKING_STICK, qty: 1 },
       { id: ITEM_EMPTY_FLASK, qty: 1 },
+      { id: ITEM_TELESCOPE, qty: 1 },
       { id: ITEM_VENISON_JERKY, qty: 3, each: true },
       { id: ITEM_SPRING_WATER, qty: 2, each: true },
       { id: ITEM_WILD_BERRIES, qty: 2, each: true },
@@ -969,6 +1169,7 @@
       { id: ITEM_LOW_ORBIT_PIN, qty: 1 },
       { id: ITEM_FUEL_TANK, qty: 1 },
       { id: ITEM_MULTITOOL, qty: 1 },
+      { id: ITEM_TELESCOPE, qty: 1 },
       { id: ITEM_FLASHLIGHT, qty: 1 },
       { id: ITEM_EMPTY_FLASK, qty: 1 },
       { id: ITEM_RATION_BAR, qty: 3, each: true },
@@ -1087,19 +1288,19 @@
   // kit for the wanted.
   //
   // Every id below must be map-usable, i.e. occasion "always" (0) or "outside
-  // battle" (2), because that is all the favourites bar accepts. This rules out
-  // several origins' signature objects: the low orbit pin, the inflatable
-  // dinghy, the lockpick, the cooking pot, the utensil set and the skeleton key
-  // are all occasion "never", and the ballpoint pen and resonance scanner are
-  // battle-only — so those origins field their next-best three instead.
+  // battle" (2), because that is all the favourites bar accepts. This still
+  // rules out a few origins' signature objects: the lockpick, the cooking pot,
+  // the utensil set and the skeleton key are occasion "never", and the
+  // ballpoint pen and resonance scanner are battle-only — so those origins
+  // field their next-best three instead.
   // Staples are never repeated here; bindOriginFavorites skips anything already
   // sitting on slots 1-3.
   // Run auditOriginFavorites() from the console after editing this table.
   const ORIGIN_FAVORITES = {
     // Reading the line, sleeping on it, patching yourself up on it.
     origin_train: [ITEM_LOCAL_MAP, ITEM_BEDROLL, ITEM_MEDICAL_SPRAY],
-    // Orbit: know where you are, talk to the ship, close your own wounds.
-    origin_space: [ITEM_STAR_MAP, ITEM_PILOT_PDA, ITEM_NANITES],
+    // Orbit: call the ship down, know where you are, talk to it.
+    origin_space: [ITEM_LOW_ORBIT_PIN, ITEM_STAR_MAP, ITEM_PILOT_PDA],
     // The camper itself, what moves it, and where you sleep in it.
     origin_camper: [ITEM_LIMINAL_CUFFS, ITEM_FUEL_TANK, ITEM_SLEEPING_BAG],
     // The car itself, what moves it, and what tells it where to go.
@@ -1114,16 +1315,16 @@
     origin_dungeon: [ITEM_FLASHLIGHT, ITEM_CLIMBING_ROPE, ITEM_ROUTES_MAP],
     // Wanted: the way out, the untraceable call, the way past a lock.
     origin_criminal: [ITEM_ESCAPE_KIT, ITEM_BURNER_PHONE, ITEM_LIMINAL_CUFFS],
-    // Castaway: catch it, carry water in it, walk with it.
-    origin_stranded: [ITEM_FISHING_ROD, ITEM_EMPTY_FLASK, ITEM_WALKING_STICK],
+    // Castaway: get off the shore, catch dinner, carry water.
+    origin_stranded: [ITEM_INFLATABLE_DINGHY, ITEM_FISHING_ROD, ITEM_EMPTY_FLASK],
     // Sealed cellar: light, power, and something to dig out with.
     origin_bunker: [ITEM_FLASHLIGHT, ITEM_PORTABLE_CHARGER, ITEM_SHOVEL],
     // Corner office: the phone, the watch, and the coffee holding it together.
     origin_ceo: [ITEM_CELLPHONE, ITEM_WRISTWATCH, ITEM_DEADLINE_COFFEE],
     // Inheritance: the lens, the amber, and the journal to write it all down.
     origin_artifact: [ITEM_LENS_OF_REVELATION, ITEM_MEMORY_AMBER, ITEM_TRAVEL_JOURNAL],
-    // Wreck: fix it, see it, heal from it.
-    origin_crash: [ITEM_MULTITOOL, ITEM_FLASHLIGHT, ITEM_REGENERATION_HERB],
+    // Wreck: call the ship down, fix what is left, see in the dark.
+    origin_crash: [ITEM_LOW_ORBIT_PIN, ITEM_MULTITOOL, ITEM_FLASHLIGHT],
     // Warband: keep the edge, hit harder, feel none of it.
     origin_warlord: [ITEM_WHETSTONE, ITEM_FIGHTERS_BOOSTER, ITEM_MORPHINE],
     // Quartermaster: the rope, the stone, the map of what you hold.
@@ -1770,13 +1971,13 @@
 
   // Lost Convoker origin: the rite worked, and it put them down somewhere
   // nobody picked. Unlike the castaway's hand-written spots this is a genuinely
-  // random square of the world map, chosen once the map is loaded so it can be
-  // tested for water: ccFindRandomLandTile walks passable, event-free, non-ocean
-  // tiles, which is the same landing the empty-lot origin uses.
+  // random square of the world, which is the same landing the empty-lot origin
+  // gets.
   function startLostConvokerOrigin() {
     applyRolledPersonalGear("origin_lost_convoker");
-    if ($gameTemp) $gameTemp._ccLostConvokerStart = true;
-    $gamePlayer.reserveTransfer(WORLD_MAP_ID, 0, 0, 2, 0);
+    if (startOnProceduralSquare({ rng: Math.random })) return;
+    console.warn("CharacterCreation: no overland square for the lost-convoker origin; starting at the tower gate instead.");
+    startDungeonOrigin();
   }
 
   // Dungeon-entrance origin: the OmegaTower interior gate (map 635), facing up.
@@ -1786,7 +1987,14 @@
   // loadout lists (extra potions, routes map, flashlight, climbing rope). It
   // used to hand out random items until the party's carry limit was full, which
   // no dossier could state honestly.
+  //
+  // Also the fallback landing of every origin whose own square could not be
+  // built, so the anchor is written here too: whoever ends up at the gate is
+  // from the gate. Those fallbacks are only ever reached before anything was
+  // anchored (the square that failed to build never wrote one), so this cannot
+  // move an anchor another origin already meant.
   function startDungeonOrigin() {
+    anchorAtOmegaTower();
     $gamePlayer.reserveTransfer(
       DUNGEON_ORIGIN.mapId, DUNGEON_ORIGIN.x, DUNGEON_ORIGIN.y, DUNGEON_ORIGIN.dir, 0
     );
@@ -1794,10 +2002,12 @@
 
   // Diplomat origin: the ONU assembly's seat of business, Brussels (map 400).
   const DIPLOMAT_ORIGIN = { mapId: 400, x: 41, y: 15, dir: 2 }; // facing down
+  const DIPLOMAT_PLACE = "Brusselles";  // the assembly's town: the anchor's world square
 
   // Diplomat origin: start in Brussels with the ONU Terminal its loadout lists,
   // remote access into the assembly (see ONUAssembly.js).
   function startDiplomatOrigin() {
+    anchorAtPlace(DIPLOMAT_PLACE, { x: 89, y: 121 });
     $gamePlayer.reserveTransfer(
       DIPLOMAT_ORIGIN.mapId, DIPLOMAT_ORIGIN.x, DIPLOMAT_ORIGIN.y, DIPLOMAT_ORIGIN.dir, 0
     );
@@ -1845,6 +2055,10 @@
       record.entranceX = null;
       record.entranceY = null;
     }
+    // Anchored on the square the cellar was actually dug under, after the
+    // re-anchor above has had its say, so home ground is the hatch they climb
+    // out of rather than the square the bunker was first proposed for.
+    anchorAt(record.worldX, record.worldY);
     pg._dungeonSession = { type: "bunker" };
   }
 
@@ -2008,6 +2222,7 @@
       return;
     }
     Scene_CharacterCreation._interruptedStep = STEP.ORIGIN;
+    Scene_CharacterCreation._resumeOnStep = false;
     SceneManager.push(window.Scene_FactionStatus);
     SceneManager.prepareNextScene("select", (factionId) => {
       finishFactionOrigin(factionId, isPositive);
@@ -2239,10 +2454,9 @@
         }
         // "Pick on map": open the same fast-travel city picker the Mayor/
         // Camper/Car origins use, but in a non-travelling "hometown pick"
-        // mode (see FastTravelSystem.js's executeTravel). Popping out of the
-        // wizard here and resuming it afterward via repriseCreation mirrors
-        // startWaitingForCommonEvent's pause/resume pattern; passing 0 as the
-        // common event id means no common event is reserved, only the pause.
+        // mode (see FastTravelSystem.js's executeTravel). That picker lives on
+        // the map, so this is the one step that still steps out to it; it
+        // resumes through repriseCreation when the pick is made.
         markStepCompleted(STEP.HOMETOWN);
         if ($gameTemp) {
           $gameTemp._openCharacterCreationTrainTravel = true;
@@ -2250,7 +2464,7 @@
           $gameTemp._characterCreationTravelMode = true;     // free, uncancellable
           $gameTemp._ccHometownPick = true;
         }
-        this.startWaitingForCommonEvent(0, true);
+        this.pauseForMapScreen();
       },
     },
     {
@@ -2532,6 +2746,7 @@
         if (symbol === "select_class") {
           window.$ccArchetypeClassFilter = null;
           window.$ccCreatureClassFlow = null;
+          this.closeStepUI();
           SceneManager.goto(Scene_ClassSelection);
         } else if (symbol === "mana_cyborg") {
           const currentActor = Scene_CharacterCreation.getCurrentActor();
@@ -2583,44 +2798,38 @@
           getLocalizedChoice(T('CharCreate.choice.randomTraits.name'), "random_traits", T('CharCreate.choice.randomTraits.desc'), 136),
         ];
       },
-      handler: function (symbol, index) {
+      handler: function (symbol) {
         if (symbol === "pick_traits") {
           // Open trait selector scene directly
-          const currentMemberIndex = Scene_CharacterCreation._currentPartyMemberIndex || 0;
-          const targetActorId = currentMemberIndex + 1; // Actor IDs are 1-based
+          const targetActorId = Scene_CharacterCreation.getCurrentActorId();
 
           // Save current step so we can resume after trait selection.
           // interruptedStep + 1 is the resume step, so TRAITS resumes on ADD_MEMBER.
           Scene_CharacterCreation._interruptedStep = STEP.TRAITS;
+          Scene_CharacterCreation._resumeOnStep = false;
 
           // Prepare TraitSelector to return to character creation
           if (window.Scene_TraitSelector) {
             window.Scene_TraitSelector.prepare(true, targetActorId);
+            this.closeStepUI();
             SceneManager.push(window.Scene_TraitSelector);
           } else {
             console.error("Scene_TraitSelector not loaded!");
             this.nextStep();
           }
-        } else if (symbol === "random_traits") {
-          // Apply random traits using the TraitSelector plugin command
-          const currentMemberIndex = Scene_CharacterCreation._currentPartyMemberIndex || 0;
-          const targetActorId = currentMemberIndex + 1; // Actor IDs are 1-based
-
-          // Call randomizeTraits from TraitSelector
+        } else {
+          // "Roll them for me", and anything a future choice adds here. The
+          // fallback used to hand `choice.value` to a common event, but that
+          // field is the choice's ICON index, so it reserved whatever event
+          // happened to share a number with the icon. There is nothing to fall
+          // back to: without the trait plugin the member simply keeps none.
+          const targetActorId = Scene_CharacterCreation.getCurrentActorId();
           if (window.randomizeTraitsForActor) {
             window.randomizeTraitsForActor(targetActorId);
           } else {
-            console.warn("TraitSelector randomizeTraitsForActor not available, using common event fallback");
-            const choice = this.currentStepData().choices[index];
-            this.startWaitingForCommonEvent(choice.value);
-            return;
+            console.warn("TraitSelector randomizeTraitsForActor not available; no traits applied");
           }
-
-          // Move to next step
           this.nextStep();
-        } else {
-          const choice = this.currentStepData().choices[index];
-          this.startWaitingForCommonEvent(choice.value);
         }
       },
     },
@@ -2748,6 +2957,7 @@
       get choices() {
         return [
           getLocalizedChoice(T('CharCreate.choice.originTrain.name'), "origin_train", T('CharCreate.choice.originTrain.desc')),
+          getLocalizedChoice(T('CharCreate.choice.originStranded.name'), "origin_stranded", T('CharCreate.choice.originStranded.desc')),
           getLocalizedChoice(T('CharCreate.choice.originSpace.name'), "origin_space", T('CharCreate.choice.originSpace.desc')),
           getLocalizedChoice(T('CharCreate.choice.originCamper.name'), "origin_camper", T('CharCreate.choice.originCamper.desc')),
           getLocalizedChoice(T('CharCreate.choice.originCar.name'), "origin_car", T('CharCreate.choice.originCar.desc')),
@@ -2756,7 +2966,6 @@
           getLocalizedChoice(T('CharCreate.choice.originDungeon.name'), "origin_dungeon", T('CharCreate.choice.originDungeon.desc')),
           getLocalizedChoice(T('CharCreate.choice.originMayor.name'), "origin_mayor", T('CharCreate.choice.originMayor.desc')),
           getLocalizedChoice(T('CharCreate.choice.originCriminal.name'), "origin_criminal", T('CharCreate.choice.originCriminal.desc')),
-          getLocalizedChoice(T('CharCreate.choice.originStranded.name'), "origin_stranded", T('CharCreate.choice.originStranded.desc')),
           getLocalizedChoice(T('CharCreate.choice.originBunker.name'), "origin_bunker", T('CharCreate.choice.originBunker.desc')),
           getLocalizedChoice(T('CharCreate.choice.originCeo.name'), "origin_ceo", T('CharCreate.choice.originCeo.desc')),
           getLocalizedChoice(T('CharCreate.choice.originArtifact.name'), "origin_artifact", T('CharCreate.choice.originArtifact.desc')),
@@ -2792,9 +3001,9 @@
           anchorAtSpaceCenter();
           $gamePlayer.reserveTransfer(721, 27, 7, 2, 0);
         } else if (symbol === "origin_camper") {
-          startVehicleOrigin("camper", CAMPER_INTERIOR);
+          startVehicleOrigin("camper");
         } else if (symbol === "origin_car") {
-          startVehicleOrigin("carsharing", CAR_INTERIOR);
+          startVehicleOrigin("car");
         } else if (symbol === "origin_bike") {
           startBikeOrigin();
         } else if (symbol === "origin_lot") {
@@ -2914,6 +3123,104 @@
     static _settingsRowIndex = 0; // Currently focused row in the initial settings step
     static _creationMode = null; // CC_MODE.* (runtime; mirrors $gameSystem._ccCreationMode)
     static _randomizedAllParty = false; // True after "Randomize all party" jumped straight to origin
+    static _subScreens = [];      // The chain of screens one step hands over to
+    static _subScreenIndex = 0;   // Position in that chain: the next one to open
+    static _resumeOnStep = false; // Resume ON the interrupted step (Back), not after it
+
+    // ========================================================================
+    // Sub-screens: the separate scenes a step hands the player to
+    // ========================================================================
+    // The name / sprite step used to be common event 97. Reaching it meant
+    // popping the wizard off the scene stack, loading the MAP back, waiting for
+    // its interpreter to pick the reserved event up, and only then pushing the
+    // sprite board; the event pushed the name prompt after it and called back
+    // into the wizard through the repriseCreation plugin command. A whole map
+    // load in the middle of creation, papered over with a black veil so the
+    // player would not see it, and the return trip always landed one step
+    // FORWARD - so backing out of either screen skipped the very step the
+    // player was trying to get back to.
+    //
+    // The screens are opened directly now, as a chain with a cursor in it.
+    // SceneManager stacks scene CLASSES rather than instances, so closing one
+    // always builds a fresh wizard; while the cursor still has somewhere to go
+    // that fresh wizard opens the next screen instead of drawing anything (see
+    // create), which costs one frame and shows nothing.
+    //
+    // The cursor is what makes Back mean Back. Confirming a screen advances it;
+    // backing out of one rewinds it by two, so the screen BEFORE the one being
+    // left is opened again - the player walks the chain backwards exactly as
+    // they walked it forwards. Backing out of the first screen has nothing left
+    // to rewind to, so the chain ends and the wizard is told to reopen the step
+    // that started it.
+    static openSubScreens(fromStep, screens) {
+      this._interruptedStep = fromStep;
+      this._resumeOnStep = false;
+      this._subScreens = screens.slice();
+      this._subScreenIndex = 0;
+      return this._openNextSubScreen();
+    }
+
+    // True while the chain still has a screen to open.
+    static hasPendingSubScreen() {
+      return this._subScreenIndex < this._subScreens.length;
+    }
+
+    // Opens the next screen in the chain, skipping any whose scene is not
+    // loaded. True when one was opened, false when the wizard should resume.
+    static _openNextSubScreen() {
+      const actorId = (this._currentPartyMemberIndex || 0) + 1;
+      while (this.hasPendingSubScreen()) {
+        const screen = this._subScreens[this._subScreenIndex++];
+        if (openCreationSubScreen(screen, actorId)) return true;
+      }
+      return false;
+    }
+
+    // Called by a sub-screen the player backed out of instead of confirming.
+    static cancelSubScreens() {
+      if (this._interruptedStep < 0) return false;
+      // The cursor sits one past the screen being left, so -2 lands on the one
+      // before it. Below zero there is no earlier screen: end the chain and
+      // resume on the step that opened it.
+      this._subScreenIndex -= 2;
+      if (this._subScreenIndex < 0) {
+        this._subScreenIndex = this._subScreens.length;
+        this._resumeOnStep = true;
+      }
+      return true;
+    }
+
+    // Drop any chain in progress, for the paths that abandon the whole run.
+    static clearSubScreens() {
+      this._subScreens = [];
+      this._subScreenIndex = 0;
+      this._resumeOnStep = false;
+    }
+
+    // True while a chain is open, i.e. while the wizard is paused on a member
+    // waiting for one of these screens to close.
+    static isInSubScreen() {
+      return this._interruptedStep >= 0;
+    }
+
+    // Where a Back should land, given the step that opened the screen being
+    // backed out of. Walks past anything setupStep() would immediately skip,
+    // and past a step that does not ask a question of its own but hands
+    // straight over to the screen just left - Quick mode's gender step is one,
+    // it exists only to open the sprite board, so landing on it would put the
+    // player right back where they came from and there would be no way out.
+    static backLandingStep(step) {
+      const first = this.getStartingStep();
+      let s = step;
+      while (s > first && (this._stepAutoAdvances(s) || this._stepHandsOverImmediately(s))) {
+        s--;
+      }
+      return Math.max(first, s);
+    }
+
+    static _stepHandsOverImmediately(step) {
+      return step === STEP.GENDER && this.isQuickMode() && !this._isCreatureMode;
+    }
 
     // The mode this party is being built in, as one of CC_MODE. Reads the
     // runtime flag, falling back to the persisted value so reprise paths behave
@@ -2980,7 +3287,7 @@
     static _stepHiddenForMode(step) {
       if (this.isQuickMode()) {
         // Quick mode asks three things and settles the rest from them: the
-        // name and the sprite (the gender step hands both to common event 97),
+        // name and the sprite (the gender step opens both screens itself),
         // then the class. The portrait is always the bust the sprite comes
         // with, gender and body archetype are read off that sprite's NPCs.json
         // record, and traits are rolled.
@@ -3100,7 +3407,7 @@
     // Back past them for the same reason. Answers true when it has taken over.
     startDetailedEditor(memberIndex) {
       if (!Scene_CharacterCreation.isDetailedMode() || !detailedModeAvailable()) return false;
-      this._ccDetailedHandover = true;
+      this._ccHandingOver = true;
       this.hideUI();
       // The board's DOM overlay is separate from the RMMZ windows and would sit
       // over the panel until terminate() fades it out, so it is dropped here,
@@ -3468,32 +3775,72 @@
 
     initialize() {
       super.initialize();
+      const SC = Scene_CharacterCreation;
 
-      // Check if we're resuming from an interrupted step (e.g., after creature creation)
-      if (Scene_CharacterCreation._interruptedStep >= 0) {
-        this._step = Scene_CharacterCreation._interruptedStep + 1;
-        Scene_CharacterCreation._interruptedStep = -1;
-      } else {
-        this._step = Scene_CharacterCreation._startStep;
-        Scene_CharacterCreation._startStep = 0;
+      // The chain still has a screen to open, so this instance exists only to
+      // open it (see create). The resume point belongs to the instance that
+      // will actually use it, so leave it alone.
+      this._isSubScreenRelay = SC.hasPendingSubScreen();
+      if (this._isSubScreenRelay) {
+        this._step = SC._interruptedStep;
+        return;
       }
 
-      this._waitingForCommonEvent = false;
-      this._interpreter = null;
+      // Resuming from a screen the step handed the player to (the sprite board,
+      // the name prompt, the creature builder, the trait selector). Confirming
+      // one moves the wizard on; BACKING OUT of the first screen of a chain
+      // sets _resumeOnStep, and then the wizard reopens the step that started
+      // it - or the last real question before it, where that step is one that
+      // would only hand straight back over (see backLandingStep).
+      if (SC._interruptedStep >= 0) {
+        if (SC._resumeOnStep) {
+          this._step = SC.backLandingStep(SC._interruptedStep);
+        } else {
+          this._step = SC._interruptedStep + 1;
+        }
+        SC._interruptedStep = -1;
+        SC._resumeOnStep = false;
+      } else {
+        this._step = SC._startStep;
+        SC._startStep = 0;
+      }
 
       // Reset traits flag for a fresh character creation, i.e. when starting at
       // (or before) the first interactive step rather than resuming mid-flow.
-      if (this._step <= Scene_CharacterCreation.getStartingStep()) {
-        Scene_CharacterCreation._traitsProcessed = false;
+      if (this._step <= SC.getStartingStep()) {
+        SC._traitsProcessed = false;
       }
     }
 
     create() {
+      // Relay: a queued sub-screen is opened before anything is built, so this
+      // instance draws nothing at all and is gone on the next frame. Only the
+      // bare scene skeleton is set up - no background snapshot, no windows, no
+      // DOM overlay - which is what keeps the hop invisible.
+      if (this._isSubScreenRelay) {
+        Scene_Base.prototype.create.call(this);
+        this.createWindowLayer();
+        if (!Scene_CharacterCreation._openNextSubScreen()) {
+          // Every remaining screen turned out to be unavailable: fall through
+          // and build the wizard normally, on the step after the one that
+          // opened the chain (what it was waiting for is simply not there).
+          this._isSubScreenRelay = false;
+          this._step = Scene_CharacterCreation._interruptedStep + 1;
+          Scene_CharacterCreation._interruptedStep = -1;
+          Scene_CharacterCreation._resumeOnStep = false;
+        } else {
+          return;
+        }
+      }
+
       super.create();
       // Ambient loops carried over from wherever the game was before (a biome
       // BGS from the previous playthrough, a map ambience behind the title)
       // would keep running under the whole wizard, so silence them on entry.
       AudioManager.stopBgs();
+      // Cached after the first call, so every entry point into the wizard can
+      // ask for it and only the first one pays.
+      warmCreationAssets();
       this.createTitleWindow();
       this.createGridWindow();
       if (Scene_CharacterCreation._tutorialMode) {
@@ -3531,34 +3878,34 @@
       this.showPresetSelection();
     }
 
+    // Leaving the wizard, whether for good or only as far as one of the screens
+    // a step opens. The overlay is torn down at once rather than faded: the
+    // screen that follows shares the very same #character-creation-container
+    // and starts filling it on the same frame, so a 200ms fade-out was 200ms of
+    // the NEXT screen sitting there half transparent, which read as the wizard
+    // being slow. A scene change is already its own transition.
     terminate() {
       super.terminate();
-      if (this._dndContainer) {
-        const container = this._dndContainer;
-        container.style.transition = "opacity 0.2s ease-out";
-        container.style.opacity = "0";
-        container.style.pointerEvents = "none";
-        
-        if (window._ccOverlayTimeout) {
-          clearTimeout(window._ccOverlayTimeout);
-        }
-        window._ccOverlayTimeout = setTimeout(() => {
-          if (container) {
-            container.innerHTML = "";
-            container.style.display = "none";
-            container.style.opacity = "1";
-            container.style.pointerEvents = "auto";
-          }
-          window._ccOverlayTimeout = null;
-        }, 200);
+      const container = this._dndContainer;
+      if (!container) return;
+      if (window._ccOverlayTimeout) {
+        clearTimeout(window._ccOverlayTimeout);
+        window._ccOverlayTimeout = null;
       }
+      container.style.transition = "none";
+      container.innerHTML = "";
+      container.style.display = "none";
+      container.style.opacity = "1";
+      container.style.pointerEvents = "auto";
     }
 
     createUIOverlay() {
-      // Detailed mode handed this member over to the Empathize editor from
-      // setupStep(), which runs before this: paint nothing, or the wizard's
-      // board would flash for the frame before the scene change lands.
-      if (this._ccDetailedHandover) return;
+      // A step handed this member over to another screen from setupStep(),
+      // which runs before this - the Empathize editor in Detailed mode, or the
+      // sprite board in Quick mode, where the gender question is never put.
+      // Paint nothing, or the wizard's board would flash for the frame before
+      // the scene change lands.
+      if (this._ccHandingOver) return;
       // 1. Mute native windows
       if (this._titleWindow) {
         this._titleWindow.visible = false;
@@ -3726,7 +4073,7 @@
     }
 
     refreshUIOverlayDOM() {
-      if (this._ccDetailedHandover) return; // the Empathize editor is taking over
+      if (this._ccHandingOver) return; // another screen is taking over
       if (!this._dndContainer) return;
 
       // Settings step uses its own renderer
@@ -4034,10 +4381,11 @@
         let gridClass = "cc-select-grid";
         if (isQuickClassStep) gridClass += " cc-two-col";
         if (isClassPicker || isOriginPicker) gridClass += " cc-compact";
-        // The origins are a list to be read down, not a row of posters: the
-        // names are long and centring them left every entry starting at a
-        // different x, so the column is ragged and slow to scan.
-        if (isOriginPicker) gridClass += " cc-align-left";
+        // Two dozen origins do not fit down one column without scrolling past
+        // most of them, so they are laid out three across. Each entry is still
+        // left-aligned: the names are long, and centring them left every entry
+        // starting at a different x, so a column was ragged and slow to scan.
+        if (isOriginPicker) gridClass += " cc-three-col cc-align-left";
         if (isHometownStep) gridClass += " cc-dropdown-list";
 
         // Every wizard step ends with the same bar, so Back and Continue never
@@ -4781,8 +5129,11 @@
           `
         : "";
 
-      // Level-up skill roadmap (everything unlocked past level 1).
-      const roadmapRows = learnings
+      // Level-up skill roadmap (everything unlocked past level 1). Quick mode
+      // is the three-question flow, and a class dossier that scrolls on for
+      // forty levels is exactly the reading it exists to skip: the card is left
+      // out there and the dossier ends on the starting skills and items.
+      const roadmapRows = Scene_CharacterCreation.isQuickMode() ? "" : learnings
         .filter((l) => l.level > 1)
         .sort((a, b) => a.level - b.level)
         .map((l) => {
@@ -5101,7 +5452,12 @@
             const next = (this.currentIndex + delta + tracks.length) % tracks.length;
             ConfigManager.battleMusicName = tracks[next].value;
             const val = ConfigManager.battleMusicName;
-            if (val && val !== "__none__" && val !== "__map__") {
+            const mss = window.MusicSelectionSystem;
+            // Random must not reach playBgm as a file name: it auditions one of
+            // its draws instead.
+            if (mss && mss.previewTrackValue) {
+              mss.previewTrackValue(val, 90);
+            } else if (val && val !== "__none__" && val !== "__map__") {
               AudioManager.playBgm({ name: val, volume: 90, pitch: 100, pan: 0 });
             }
           },
@@ -5206,11 +5562,24 @@
           <p style="text-align:center; font-size:1.585rem; font-weight:bold; margin:8px 0">${currentRow.currentLabel}</p>
         `;
       } else if (currentRow.key === 'enemySpawnMode') {
-        // No before/after picture to show: the mode's own blurb above is the
-        // preview, so this only names the mode being described.
+        // One plate per mode, the same files the options menu uses
+        // (GameOptions.js, OPTION_IMAGES.enemySpawnMode). Any of them that is
+        // still an empty stub fails to load and hides itself, leaving the skull
+        // and the mode's own blurb, which is all this panel showed before.
+        const plate = ENEMY_SPAWN_IMAGES[currentRow.currentIndex];
+        const plateHtml = plate ? `
+          <img src="img/pictures/Settings/${plate}.png" class="cc-settings-preview-img"
+               alt="${currentRow.currentLabel}"
+               onload="if(this.naturalWidth<8){this.style.display='none'}else{this.previousElementSibling.style.display='none'}"
+               onerror="this.style.display='none'">` : '';
         previewHtml = `
-          <div style="text-align:center; font-size:4.081rem; margin:16px 0">☠</div>
-          <p style="text-align:center; font-size:1.585rem; font-weight:bold; margin:8px 0">${currentRow.currentLabel}</p>
+          <div class="cc-settings-img-stack">
+            <div class="cc-settings-img-entry">
+              <div style="text-align:center; font-size:4.081rem; margin:16px 0">☠</div>
+              ${plateHtml}
+              <p style="text-align:center; font-size:1.585rem; font-weight:bold; margin:8px 0">${currentRow.currentLabel}</p>
+            </div>
+          </div>
         `;
       } else if (currentRow.key === 'globalLighting') {
         const on = currentRow.currentIndex === 0;
@@ -5227,7 +5596,7 @@
           <h2 class="cc-header-gothic">${T('CharCreate.settingsPreview')}</h2>
           <div class="cc-dossier-card" style="flex:1; display:flex; flex-direction:column; align-items:center; background:transparent; border:none; box-shadow:none">
             <h3 class="cc-subheader" style="text-align:center; color:#ffcc66">${currentRow.label}</h3>
-            <p style="font-size:1.268rem; color:var(--text-card-dark); margin-bottom:8px; text-align:center">${currentRow.description}</p>
+            <p class="cc-settings-desc">${currentRow.description}</p>
             ${previewHtml}
           </div>
         </div>
@@ -5610,12 +5979,18 @@
         return;
       }
 
-      // Gender is not a question in Quick mode: it is read off the sprite the
-      // player is about to choose (NPCs.json, see applyIdentityFromSprite in
-      // CharacterCreationShared). The step still runs, because it is the one
-      // that hands over to the name / sprite common event or to the creature
-      // builder, so leaving it is all there is left to do here.
-      if (this._step === STEP.GENDER && Scene_CharacterCreation.isQuickMode()) {
+      // Gender is not a question Quick mode puts to a person: it is read off
+      // the sprite the player is about to choose (NPCs.json, see
+      // applyIdentityFromSprite in CharacterCreationShared). The step still
+      // runs, because it is the one that hands over to the name / sprite common
+      // event, so leaving it is all there is left to do here.
+      //
+      // A creature has no such sheet to be read off , its sprite is a monster
+      // battler picked in the creature builder, which answers for nothing about
+      // gender , so Quick mode asks creatures the question outright, the same as
+      // every other mode. (The handler leaves the step the same way.)
+      if (this._step === STEP.GENDER && Scene_CharacterCreation.isQuickMode() &&
+          !Scene_CharacterCreation._isCreatureMode) {
         this.leaveGenderStep();
         return;
       }
@@ -5799,6 +6174,7 @@
       SoundManager.playCancel();
       Scene_CharacterCreation._interruptedStep = -1;
       Scene_CharacterCreation._startStep = 0;
+      Scene_CharacterCreation.clearSubScreens();
       Scene_CharacterCreation._isCreatureMode = false;
       Scene_CharacterCreation._traitsProcessed = false;
       Scene_CharacterCreation._currentPartyMemberIndex = 0;
@@ -5825,14 +6201,13 @@
     }
 
     // What the gender step does once it is finished, whichever way it was
-    // reached: a creature is handed to the creature builder, a person to
-    // common event 97 (a generated name, the name input screen, then the
-    // sprite grid). Quick mode never asks the gender question itself , the
-    // sprite answers it , but still comes through here, so this is the one
-    // place that knows where the wizard goes next.
+    // reached: a creature is handed to the creature builder, a person to the
+    // sprite board and the name prompt. Quick mode never asks the gender
+    // question itself , the sprite answers it , but still comes through here,
+    // so this is the one place that knows where the wizard goes next.
     leaveGenderStep() {
       if (!Scene_CharacterCreation._isCreatureMode) {
-        this.startWaitingForCommonEvent(97, true);
+        this.startNamingScreens();
         return;
       }
 
@@ -5854,23 +6229,52 @@
       // Save the step to resume at after creature creation (trait selection).
       // interruptedStep + 1 is the resume step, so CLASS resumes on TRAITS.
       Scene_CharacterCreation._interruptedStep = STEP.CLASS;
+      Scene_CharacterCreation._resumeOnStep = false;
       if (Scene_CreateCreature.setTargetActorId) {
         Scene_CreateCreature.setTargetActorId(actorId);
       }
+      this.closeStepUI();
       SceneManager.push(Scene_CreateCreature);
     }
 
-    // MODIFIED: Destroys windows before running the common event.
-    startWaitingForCommonEvent(commonEventId, showVeil) {
-      // Save the current step before interrupting
-      Scene_CharacterCreation._interruptedStep = this._step;
+    // Naming a person: a suggested name off the Markov generator, the sprite
+    // board, then the name prompt with that suggestion already in it. This was
+    // common event 97; see the sub-screen block on Scene_CharacterCreation for
+    // why it no longer is.
+    startNamingScreens() {
+      const actorId = Scene_CharacterCreation.getCurrentActorId();
 
-      // Cover the brief map flash while the reserved CE pushes the next scene.
-      if (showVeil && window.CCTransitionVeil) {
-        window.CCTransitionVeil.show();
+      AudioManager.playSe(CREATION_PAGE_TURN_SE);
+      $gameParty.gainGold(CREATION_START_GOLD);
+      $gameSwitches.setValue(SWITCH_CREATION_NAMED, true);
+      // The suggestion has to exist before the prompt opens, so it is generated
+      // here rather than between the two screens. Aimed at the member actually
+      // being built: the event could only ever name actor 1, which is why it
+      // needed the interpreter hooks that used to sit at the bottom of this file.
+      PluginManager.callCommand(this, CREATION_NAME_MARKOV.plugin, CREATION_NAME_MARKOV.command,
+        Object.assign({ actorId: String(actorId) }, CREATION_NAME_MARKOV.args));
+
+      this.closeStepUI();
+
+      const screens = ["sprite"];
+      if (!$gameSwitches.value(SWITCH_TUTORIAL)) screens.push("name");
+      if (!Scene_CharacterCreation.openSubScreens(this._step, screens)) {
+        // Neither screen is loaded: nothing to wait for, so carry straight on
+        // and put the board back, since nothing is taking the screen after all.
+        Scene_CharacterCreation._interruptedStep = -1;
+        this.reopenStepUI();
+        this.nextStep();
       }
+    }
 
-      // Hide/close UI first to avoid overlap or input issues
+    // Put the step's UI away before handing the screen to something else, so
+    // the wizard's windows and overlay cannot show through or eat input. The
+    // flag also stops createUIOverlay/refreshUIOverlayDOM painting a board that
+    // is about to be replaced, for the case where the handover happens during
+    // setupStep(), i.e. before the overlay has been built at all.
+    closeStepUI() {
+      this._ccHandingOver = true;
+      if (this._dndContainer) this._dndContainer.style.display = "none";
       this.hideUI();
       if (this._titleWindow) {
         this._titleWindow.deactivate();
@@ -5880,13 +6284,27 @@
         this._gridWindow.deactivate();
         this._gridWindow.close();
       }
+    }
 
-      // Reserve CE for Scene_Map so event commands run safely on the map interpreter
-      if ($dataCommonEvents[commonEventId]) {
-        $gameTemp.reserveCommonEvent(commonEventId);
-      }
+    // Undo closeStepUI for the rare case where the hand-over did not happen
+    // after all, so the step it was leaving stays usable.
+    reopenStepUI() {
+      this._ccHandingOver = false;
+      if (this._dndContainer) this._dndContainer.style.display = "flex";
+      if (this._titleWindow) this._titleWindow.open();
+      if (this._gridWindow) this._gridWindow.open();
+      this.showUI();
+    }
 
-      // Return to the map; the reserved CE will start as soon as the map interpreter is free
+    // Step out of the wizard to a screen that has to run on the MAP: the
+    // hometown picker is the fast-travel city list, which is a map overlay.
+    // FastTravelSystem calls repriseCreation when it is done, which is what
+    // brings the wizard back. No common event is involved.
+    pauseForMapScreen() {
+      Scene_CharacterCreation._interruptedStep = this._step;
+      Scene_CharacterCreation._resumeOnStep = false;
+      if (window.CCTransitionVeil) window.CCTransitionVeil.show();
+      this.closeStepUI();
       SceneManager.pop();
     }
 
@@ -6141,7 +6559,7 @@
         this.refreshUIOverlayDOM();
       } else if (Input.isTriggered('ok')) {
         this.onSettingsConfirm();
-      } else if (Input.isTriggered('cancel')) {
+      } else if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
         SoundManager.playCancel();
         this.onCancel();
       }
@@ -6163,7 +6581,7 @@
       if (maxItems <= 0) {
         // Nothing to move between, but Back must still work: an empty preset
         // board would otherwise trap the player with no way out.
-        if (Input.isTriggered('cancel') && isPreset) {
+        if ((Input.isTriggered('cancel') || TouchInput.isCancelled()) && isPreset) {
           SoundManager.playCancel();
           this.onPresetCancel();
         }
@@ -6225,7 +6643,13 @@
         } else {
           this.onGridOk();
         }
-      } else if (Input.isTriggered('cancel')) {
+      } else if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
+        // ESC, the pad's B/Circle, and a RIGHT-CLICK anywhere on the page all
+        // mean the same thing here: one step back. The right button used to be
+        // read by nobody (the grid window's processTouch is stubbed out so the
+        // DOM cards can own the mouse), so it fell through to RMMZ's default
+        // handling and was as likely to confirm the highlighted card as to do
+        // nothing - which is how backing out could walk the wizard FORWARD.
         const firstStep = Scene_CharacterCreation.getStartingStep();
         if (isPreset) {
           SoundManager.playCancel();
@@ -6246,38 +6670,21 @@
       }
     }
 
-    // MODIFIED: Recreates windows after common event completion.
     update() {
       super.update();
 
-      if (this._waitingForCommonEvent) {
-        if (this._interpreter) this._interpreter.update();
-
-        // When the CE completes, resume the flow
-        if (!this._interpreter || !this._interpreter.isRunning()) {
-          this._interpreter = null;
-          this._waitingForCommonEvent = false;
-
-          // Advance to the step after the CE (you were doing this already)
-          this._step++;
-          this.showUI();
-          this.setupStep();
-          if (this._dndContainer) {
-            this._dndContainer.style.display = "flex";
-            this.refreshUIOverlayDOM();
-          }
-        }
-      }
+      // A relay instance has no UI and is replaced on the next frame; a scene
+      // that has handed over is on its way out and its board is already down.
+      // Either way there is nothing to draw and no input of ours to read - the
+      // frames between a hand-over and the scene change are exactly where a
+      // stale board would flash back up and eat the next screen's first click.
+      if (this._isSubScreenRelay || this._ccHandingOver) return;
 
       if (this._dndContainer) {
-        if (this._waitingForCommonEvent) {
-          this._dndContainer.style.display = "none";
-        } else {
-          this._dndContainer.style.display = "flex";
-          this.updateUIInput();
-          if (window.CCScroll) window.CCScroll.update(this._dndContainer);
-          this.refreshUIOverlayDOM();
-        }
+        this._dndContainer.style.display = "flex";
+        this.updateUIInput();
+        if (window.CCScroll) window.CCScroll.update(this._dndContainer);
+        this.refreshUIOverlayDOM();
       }
     }
   }
@@ -6357,6 +6764,12 @@
       if (sc && sc._step === STEP.CLASS &&
           Scene_CharacterCreation.usesQuickFlow()) {
         return 2;
+      }
+      // The origin step renders three across (cc-three-col), so the cursor has
+      // to move in three columns or left/right would do nothing and up/down
+      // would skip two entries at a time.
+      if (sc && sc._step === STEP.ORIGIN) {
+        return 3;
       }
       return 1;
     }
@@ -6656,9 +7069,23 @@
     }
   };
 
+  // The heaviest thing any step opens is the sprite board: it builds its sheet
+  // list and scans img/busts (hundreds of files) the first time it is entered.
+  // Both are cached for the session, so doing it here - while the player is
+  // still reading the first page of the wizard - means the sprite step has
+  // nothing left to wait for. (The old call here was to preloadBustData, a
+  // function no plugin has defined for a long time.)
+  function warmCreationAssets() {
+    if (window.SpriteBoard && window.SpriteBoard.warm) window.SpriteBoard.warm();
+    else if (window.BustGallery && window.BustGallery.load) window.BustGallery.load();
+  }
+
   // Plugin Commands
   PluginManager.registerCommand(pluginName, "characterCreation", () => {
-    if (typeof window.preloadBustData === 'function') window.preloadBustData();
+    warmCreationAssets();
+    // A brand new party: nothing of a previous run's hand-over is still owed.
+    Scene_CharacterCreation._interruptedStep = -1;
+    Scene_CharacterCreation.clearSubScreens();
 
     // Tutorial mode: Switch 100 ON and player is on map 1414
     const isTutorial = $gameSwitches.value(100) && $gameMap.mapId() === 1414;
@@ -6689,12 +7116,27 @@
     SceneManager.push(Scene_CharacterCreation);
   });
 
+  // Where a reprise picks the flow back up: one step past the one that was
+  // interrupted, or back on the last real question before it when the screen in
+  // between was backed out of rather than confirmed (see cancelSubScreens).
+  // Consumes both markers.
+  function resumeStepAfterInterrupt() {
+    const SC = Scene_CharacterCreation;
+    const step = SC._resumeOnStep
+      ? SC.backLandingStep(SC._interruptedStep)
+      : SC._interruptedStep + 1;
+    SC._interruptedStep = -1;
+    // A reprise re-enters the wizard from outside, so whatever chain was open
+    // is over whether or not it ran to the end.
+    SC.clearSubScreens();
+    return step;
+  }
+
   PluginManager.registerCommand(pluginName, "repriseCreation", () => {
     let startStep;
 
     if (Scene_CharacterCreation._interruptedStep >= 0) {
-      startStep = Scene_CharacterCreation._interruptedStep + 1;
-      Scene_CharacterCreation._interruptedStep = -1;
+      startStep = resumeStepAfterInterrupt();
     } else {
       startStep = STEP.CLASS; // resume a humanoid at class selection
       while (startStep < CharacterCreationData.length) {
@@ -6723,9 +7165,8 @@
     // creature path.
     if (Scene_CharacterCreation.usesQuickFlow()) {
       let startStep = Scene_CharacterCreation._interruptedStep >= 0
-        ? Scene_CharacterCreation._interruptedStep + 1
+        ? resumeStepAfterInterrupt()
         : STEP.CLASS;
-      Scene_CharacterCreation._interruptedStep = -1;
       while (startStep < CharacterCreationData.length) {
         const stepData = CharacterCreationData[startStep];
         if (stepData.showOnlyOnce && isStepCompleted(startStep)) {
@@ -6735,6 +7176,7 @@
         }
       }
       Scene_CharacterCreation._isCreatureMode = false;
+      Scene_CharacterCreation.clearSubScreens();
       Scene_CharacterCreation.prepare(startStep);
       SceneManager.push(Scene_CharacterCreation);
       return;
@@ -6743,8 +7185,7 @@
     let startStep;
 
     if (Scene_CharacterCreation._interruptedStep >= 0) {
-      startStep = Scene_CharacterCreation._interruptedStep + 1;
-      Scene_CharacterCreation._interruptedStep = -1;
+      startStep = resumeStepAfterInterrupt();
     } else {
       startStep = STEP.GENDER; // resume a creature at gender selection
       while (startStep < CharacterCreationData.length) {
@@ -6773,49 +7214,12 @@
     }
   });
 
-  // ==========================================================================
-  // Naming the member actually being created
-  //
-  // Common event 97 (the name + sprite step) is an event, so every actor id in
-  // it is a fixed 1: the Markov generator writes a suggested name onto actor 1
-  // and the Name Input Processing that follows edits actor 1. The sprite
-  // selector, whose plugin command has the same fixed id, retargets itself
-  // (see Scene_SpriteGridSelector.create); the two naming commands cannot, so
-  // they are retargeted here, and only while the wizard is paused on a member,
-  // which is the only time that event runs. Without this the second and third
-  // party members rename the first one.
-  // ==========================================================================
-
-  // The actor the paused wizard is building, or 0 when no creation is waiting.
-  function pausedCreationActorId() {
-    if (Scene_CharacterCreation._interruptedStep < 0) return 0;
-    return (Scene_CharacterCreation._currentPartyMemberIndex || 0) + 1;
-  }
-
-  const _Game_Interpreter_command303 = Game_Interpreter.prototype.command303;
-  Game_Interpreter.prototype.command303 = function (params) {
-    const actorId = pausedCreationActorId();
-    if (actorId > 1 && params[0] === 1) {
-      params = [actorId, params[1]];
-    }
-    return _Game_Interpreter_command303.call(this, params);
-  };
-
-  // The creation events' own plugin commands only. params is the event's data,
-  // shared by every run of it, so the retargeted arguments are a copy.
-  const CC_NAMING_PLUGINS = ["UI/MarkovTextGenerator"];
-  const _Game_Interpreter_command357 = Game_Interpreter.prototype.command357;
-  Game_Interpreter.prototype.command357 = function (params) {
-    const actorId = pausedCreationActorId();
-    if (actorId > 1 && CC_NAMING_PLUGINS.includes(params[0]) &&
-        params[3] && Number(params[3].actorId) === 1) {
-      params = [
-        params[0], params[1], params[2],
-        Object.assign({}, params[3], { actorId: String(actorId) }),
-      ];
-    }
-    return _Game_Interpreter_command357.call(this, params);
-  };
+  // The naming step used to be an event, and an event's actor id is a fixed 1:
+  // the Markov generator wrote its suggestion onto actor 1 and the Name Input
+  // that followed edited actor 1, so two Game_Interpreter hooks used to sit
+  // here rewriting both to point at the member actually being built. The wizard
+  // opens those screens itself now (startNamingScreens), aimed at the right
+  // actor to begin with, so the hooks are gone with the event.
 
   // ==========================================================================
   // Battle Test: auto-build a random, slightly under-levelled party
@@ -7140,79 +7544,81 @@
     giveStartingMoney();
   };
 
-  // --- Overland origin placement -----------------------------------------
-  // An origin must never put the party on an Ocean square: about half the world
-  // map is open sea, and the procedural map behind such a square is water with
-  // no land to stand on. Water is identified by region 99 or terrain tag 3 (see
-  // CLAUDE.md) AND by the biome the procedural generator reads at that column,
-  // which is the classification that actually decides what the square becomes.
-  const CC_WATER_BIOME_RE = /^(ocean|lake|seabed|sea\b)/i;
-
-  function ccIsWaterWorldTile(x, y) {
-    if ($gameMap.regionId(x, y) === 99) return true;
-    if ($gameMap.terrainTag(x, y) === 3) return true;
-    const biome =
-      $gameSystem && $gameSystem.getBiomeFromWorldCoordinates
-        ? $gameSystem.getBiomeFromWorldCoordinates(x, y)
-        : null;
-    return typeof biome === "string" && CC_WATER_BIOME_RE.test(biome);
+  // --- Where an origin actually sets the party down --------------------------
+  // The overland origins used to land on world map 315 and be walked onto a
+  // passable tile of it once it had loaded. They begin on the ground of a
+  // procedural square now (startOnProceduralSquare), which picks the SQUARE out
+  // of the biome cache before the transfer is even reserved , but not the tile.
+  // The square does not exist until it is generated, and the middle of a fresh
+  // one is as likely to be the inside of a boulder, a tree trunk, a wall or a
+  // pond as it is to be open ground. A party set down there is stuck in the
+  // scenery, so the landing tile is settled here, once the terrain is real.
+  //
+  // A tile is somewhere to stand only if it can be walked off in every
+  // direction (so no party member is boxed in by a feature drawn around them),
+  // has nothing already standing on it, and is not a floor that hurts.
+  function ccIsStandableTile(x, y) {
+    if (x < 0 || y < 0 || x >= $gameMap.width() || y >= $gameMap.height()) return false;
+    if (!$gameMap.checkPassage(x, y, 0x0f)) return false;
+    if ($gameMap.eventsXy(x, y).length > 0) return false;
+    if ($gameMap.isDamageFloor(x, y)) return false;
+    return true;
   }
 
-  // Once the world map is loaded, drop the player onto a random passable,
-  // non-water land tile (Empty-lot origin). A passable tile must be walkable in
-  // every direction and free of events.
-  function ccFindRandomLandTile() {
-    if (!$gameMap) return null;
-    const w = $gameMap.width();
-    const h = $gameMap.height();
-    for (let i = 0; i < 500; i++) {
-      const x = Math.floor(Math.random() * w);
-      const y = Math.floor(Math.random() * h);
-      if (ccIsWaterWorldTile(x, y)) continue;
-      if (!$gameMap.checkPassage(x, y, 0x0f)) continue;
-      if ($gameMap.eventsXy(x, y).length > 0) continue;
-      return { x, y };
+  // The nearest tile to (cx, cy) that answers to the above, walking outward in
+  // square rings so the party lands as close to where they were aimed as the
+  // terrain allows. Answers null on a square with nowhere to stand at all.
+  function ccFindStandableTile(cx, cy) {
+    if (ccIsStandableTile(cx, cy)) return { x: cx, y: cy };
+    const reach = Math.max($gameMap.width(), $gameMap.height());
+    for (let ring = 1; ring < reach; ring++) {
+      for (let dx = -ring; dx <= ring; dx++) {
+        for (let dy = -ring; dy <= ring; dy++) {
+          // The ring itself, not the filled square inside it.
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== ring) continue;
+          if (ccIsStandableTile(cx + dx, cy + dy)) return { x: cx + dx, y: cy + dy };
+        }
+      }
     }
     return null;
   }
 
-  // Move the player onto the landing tile and keep the fast-travel world coords
-  // (variables 43/44) in sync with it.
-  function ccLocateOnWorldMap(x, y) {
-    $gamePlayer.locate(x, y);
-    $gameVariables.setValue(43, x);
-    $gameVariables.setValue(44, y);
+  // Move the party onto a tile they can stand on, if they are not on one
+  // already. Deliberately a no-op when the tile is fine, so it does not fight
+  // VehicleSystem, which puts the vehicle origins down in a 4x4 clearing of its
+  // own choosing (and leaves the player alone when it cannot find one, which is
+  // the case this catches).
+  function ccPlaceOnPassableTile() {
+    if (ccIsStandableTile($gamePlayer.x, $gamePlayer.y)) return;
+    const tile = ccFindStandableTile($gamePlayer.x, $gamePlayer.y);
+    if (!tile) {
+      console.warn("CharacterCreation: nowhere to stand on the origin's square; the party was left where it landed.");
+      return;
+    }
+    $gamePlayer.locate(tile.x, tile.y);
   }
+
+  // VehicleSystem places the vehicle origins itself, in a 4x4 clearing wide
+  // enough to park in, and its own test is the looser of the two (it asks
+  // whether a tile is passable, not whether anything is standing on it). It
+  // calls this once it is done so the last word on where the party is standing
+  // is always the same one. Read off window at call time, so which of the two
+  // plugins loaded first does not matter.
+  window.CCOriginPlacement = {
+    placeOnStandableTile: ccPlaceOnPassableTile,
+    isStandableTile: ccIsStandableTile,
+  };
 
   const _CC_SceneMap_onMapLoaded = Scene_Map.prototype.onMapLoaded;
   Scene_Map.prototype.onMapLoaded = function () {
     const enteringGameStartMap =
       $gamePlayer.isTransferring() && $gamePlayer.newMapId() === GAME_START_MAP_ID;
     _CC_SceneMap_onMapLoaded.call(this);
-    if ($gameTemp && $gameTemp._ccEmptyLotStart && $gameMap.mapId() === WORLD_MAP_ID) {
-      $gameTemp._ccEmptyLotStart = false;
-      const tile = ccFindRandomLandTile();
-      if (tile) ccLocateOnWorldMap(tile.x, tile.y);
-    }
-    // The rite put them down without asking: any land square of the world will
-    // do, and no ocean one will.
-    if ($gameTemp && $gameTemp._ccLostConvokerStart && $gameMap.mapId() === WORLD_MAP_ID) {
-      $gameTemp._ccLostConvokerStart = false;
-      const tile = ccFindRandomLandTile();
-      if (tile) ccLocateOnWorldMap(tile.x, tile.y);
-    }
-    // The stranded spots are hand-picked land, but they are coordinates written
-    // by hand against a world map that can be repainted: if one of them ever
-    // ends up over water, land the castaway somewhere else rather than at sea.
-    if ($gameTemp && $gameTemp._ccStrandedStart && $gameMap.mapId() === WORLD_MAP_ID) {
-      $gameTemp._ccStrandedStart = false;
-      if (ccIsWaterWorldTile($gamePlayer.x, $gamePlayer.y)) {
-        const tile = ccFindRandomLandTile();
-        if (tile) ccLocateOnWorldMap(tile.x, tile.y);
-      } else {
-        $gameVariables.setValue(43, $gamePlayer.x);
-        $gameVariables.setValue(44, $gamePlayer.y);
-      }
+    // The square an origin begins on has just been built: put the party on a
+    // tile of it they can actually stand on.
+    if ($gameTemp && $gameTemp._ccProcSquareLanding && $gameMap.mapId() === proceduralMapId()) {
+      $gameTemp._ccProcSquareLanding = false;
+      ccPlaceOnPassableTile();
     }
     // Hide the player sprite the instant it lands on the game-start map, so it
     // never pops in mid-fade; Scene_Map.update below reveals it the moment the

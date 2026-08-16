@@ -1,8 +1,10 @@
 {
   "trackNone": "Нет",
+  "trackRandom": "Случайно",
   "trackMap": "",
   "battleMusic": "",
   "noMusic": "",
+  "randomEachBattle": "В начале каждого боя выбирается другой трек.",
   "continueMap": "",
   "playingAsBattle": "",
   "composer": "",

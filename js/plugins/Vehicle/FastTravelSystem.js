@@ -850,6 +850,52 @@
         return entrance;
     }
 
+    // Where a character being CREATED actually lands, given the arrival the
+    // ordinary rules worked out. Anything that is not the world map is already
+    // a place to stand and is taken as it is. The world map is not: the party is
+    // put on the ground of the square instead, either through the place's own
+    // door or, where it has none, on the procedural square itself , which is
+    // exactly what walking onto that square from the map would give them.
+    //
+    // Answers null when neither is possible, leaving the caller to fall back.
+    function ccCreationLanding(destination, actualDest) {
+        if (!actualDest || actualDest.mapId !== 315) return actualDest;
+
+        const entrance = entranceFor(destination);
+        if (entrance) {
+            return { mapId: entrance.id, x: entrance.x, y: entrance.y, direction: entrance.direction };
+        }
+
+        const built = $gameSystem && $gameSystem.generateOriginBiomeMap
+            ? $gameSystem.generateOriginBiomeMap({ worldX: actualDest.x, worldY: actualDest.y })
+            : null;
+        if (!built) return null;
+        // The two "the procedural map is live" flags (see WorldMapReturn's
+        // startProcGen); without them the square loads with no borders out of it.
+        $gameVariables.setValue(110, 1);
+        $gameVariables.setValue(111, 1);
+        // The centre is only where the party is aimed: which tile they are set
+        // down on is settled once the terrain exists, by CharacterCreation's
+        // map-load hook, so nobody begins the game inside a boulder.
+        $gameTemp._ccProcSquareLanding = true;
+        return { mapId: 636, x: 32, y: 32, direction: 2 };
+    }
+
+    // The world square a character-creation arrival begins the game on, written
+    // down once as this savegame's start anchor. It is a fact about the party
+    // that nothing afterwards may move - not walking, not fast travel, not the
+    // respawn point the wait menu sets - so an anchor that is already there
+    // (every origin that knew its own square wrote one in the origin step) is
+    // left exactly as it is.
+    function ccAnchorStart(actualDest) {
+        const BSEH = window.BattleSystemEnhanced && window.BattleSystemEnhanced.Helpers;
+        if (!BSEH || typeof BSEH.setStartAnchor !== 'function') return;
+        if ($gameSystem && $gameSystem._bseStartAnchor) return;
+        const world = destWorld(actualDest);
+        if (!world || (!world.x && !world.y)) return;
+        BSEH.setStartAnchor(world.x, world.y);
+    }
+
     function getActualDestination(destination, transportType) {
         // One arrival, whatever was picked and whatever it was picked on: the
         // stations, the stops and the helipads were all on the ground.
@@ -962,28 +1008,6 @@
         return $gameParty.gold() >= cost;
     }
 
-    // Character-creation vehicle origin: pick a tile a few steps away from the
-    // chosen city instead of parking the vehicle directly on the city/teleport
-    // tile. Map 315 is not loaded here so passability cannot be checked; the
-    // offset is kept small so the spot stays in the city's walkable surroundings.
-    // A deterministic per-city pick (seeded from the world history seed) keeps it
-    // varied yet stable across reloads.
-    function getNearbyParkingSpot(dest) {
-        const candidates = [
-            { dx: 0, dy: 3 }, { dx: 3, dy: 0 }, { dx: -3, dy: 0 },
-            { dx: 0, dy: -3 }, { dx: 2, dy: 2 }, { dx: -2, dy: 2 },
-            { dx: 2, dy: -2 }, { dx: -2, dy: -2 },
-        ];
-        let pick = candidates[0];
-        try {
-            const seed = (window.HistoryManager && window.HistoryManager.getSeed)
-                ? window.HistoryManager.getSeed() : 0;
-            const idx = Math.abs(seed + dest.x * 31 + dest.y * 17) % candidates.length;
-            pick = candidates[idx];
-        } catch (e) { /* keep default offset */ }
-        return { x: Math.max(0, dest.x + pick.dx), y: Math.max(0, dest.y + pick.dy) };
-    }
-
     function executeTravel(destination, cost) {
         const data = getFastTravelData();
 
@@ -1003,53 +1027,40 @@
             return;
         }
 
-        // Character-creation vehicle origin: instead of travelling, park the
-        // chosen vehicle near the picked city on the world map (315) and drop the
-        // player into the vehicle interior. Stepping out of the interior
-        // (returnToCamper / returnToCar) then spawns the vehicle beside them.
-        if ($gameTemp && $gameTemp._ccVehicleStart) {
-            const vs = $gameTemp._ccVehicleStart;
-            $gameTemp._ccVehicleStart = null;
-            $gameTemp._characterCreationTravelMode = false;
-            const actualDest = getActualDestination(destination, data.selectedTransport);
-            // Park a few tiles off the city centre rather than on top of it.
-            const park = getNearbyParkingSpot(actualDest);
-            // Game_Vehicle objects persist across maps, so place the vehicle on
-            // the world map (315) now. The interior's EndTravelCamper/EndTravelCar
-            // exit just transfers the player back to the parked position (vars
-            // below); without an actual setLocation the vehicle would stay at its
-            // default spot and never appear near the chosen city.
-            const vehicleType = data.selectedTransport === 'camper' ? 'ship' : 'boat';
-            // The Car, Bike and Boat share one engine vehicle: point that slot at
-            // the car BEFORE moving it, so the move is recorded against the car
-            // and not against whichever sub-type the slot last stood for.
-            if (vehicleType === 'boat') $gameSystem._boatType = 'car';
-            const vehicle = $gameMap.vehicle(vehicleType);
-            if (vehicle) vehicle.setLocation(315, park.x, park.y);
-            if (data.selectedTransport === 'camper') {
-                setVehiclePos('camper', 315, park.x, park.y);
-            } else { // carsharing -> car
-                setVehiclePos('car', 315, park.x, park.y);
-            }
-            // Keep the player's world-map position in sync with the parked spot.
-            $gameVariables.setValue(playerXVar, park.x);
-            $gameVariables.setValue(playerYVar, park.y);
-            $gamePlayer.reserveTransfer(vs.interiorMapId, vs.interiorX, vs.interiorY, 2, 0);
-            clearFastTravelData();
-            SceneManager._scene.closeTravelUIOverlay(true);
-            return;
-        }
-
         if ($gameTemp && $gameTemp._characterCreationTravelMode) {
             $gameTemp._characterCreationTravelMode = false;
             $gamePlayer.setMovementLock(true);
             $gameScreen.startFadeOut(24);
             const actualDest = getActualDestination(destination, data.selectedTransport);
             setTimeout(() => {
-                $gamePlayer.reserveTransfer(actualDest.mapId, actualDest.x, actualDest.y, actualDest.direction || 2, 0);
+                // A character being created is never put down ON the world map:
+                // it is what a journey is looked at on, not a place to begin
+                // standing in. A picked place that has a door of its own is
+                // walked through it; one that has not is begun on the ground of
+                // its own square, the way walking onto that square from the map
+                // would put the party there. See ccCreationLanding below.
+                const landing = ccCreationLanding(destination, actualDest);
+                if (!landing) {
+                    // Its square could not be built and it has no door: the plain
+                    // arrival is all that is left, world map or not.
+                    $gamePlayer.reserveTransfer(actualDest.mapId, actualDest.x, actualDest.y, actualDest.direction || 2, 0);
+                    setPlayerWorldFromDest(actualDest);
+                    $gameVariables.setValue(45, actualDest.mapId);
+                } else {
+                    $gamePlayer.reserveTransfer(landing.mapId, landing.x, landing.y, landing.direction || 2, 0);
+                    setPlayerWorldFromDest(actualDest);
+                    $gameVariables.setValue(45, landing.mapId);
+                }
+                // The picker origins (train, mayor, warlord, the factions, and
+                // everything else that ends in "say where you begin") do not
+                // know their own starting square until this moment, so this is
+                // where they write it down: the square the place they picked
+                // stands on becomes the anchor the "Distance from spawn"
+                // encounter mode measures their whole world from
+                // (BattleSystemEnhancedEncounters, getStartAnchor). Every other
+                // origin anchors itself in CharacterCreation's own origin step.
+                ccAnchorStart(actualDest);
                 clearFastTravelData();
-                setPlayerWorldFromDest(actualDest);
-                $gameVariables.setValue(45, actualDest.mapId);
                 $gameScreen.startFadeIn(24);
                 $gamePlayer.setMovementLock(false);
             }, 500);

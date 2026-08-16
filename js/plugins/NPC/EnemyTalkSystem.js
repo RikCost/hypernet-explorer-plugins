@@ -969,7 +969,10 @@
         if (!actor || !enemyData) return;
         const slot = actor.actorId();
         if (actor.setVnBust) actor.setVnBust("");
-        if (actor.setPortraitMode) actor.setPortraitMode(0);
+        // "sprite" = portrayed by an existing monster species (its procedural 3D
+        // model, with the flat battler image as the fallback), as opposed to the
+        // bust or custom model a person in this slot may have been given.
+        if (actor.setPortraitMode) actor.setPortraitMode("sprite");
         if (actor.setVnBattler) actor.setVnBattler(enemyData.battlerName || "");
         actor._recruitedEnemyId = enemyData.id;
         // Switches 77/78/79 say whether Actor 1/2/3 is portrayed by a battler

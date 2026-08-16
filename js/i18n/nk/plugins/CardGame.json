@@ -41,9 +41,7 @@
     "draw": "A DRAW",
     "streak": "{count} IN A ROW.",
     "packWon": "A BOOSTER PACK FOR DA WIN!",
-    "pickSecondTile": "NOW PICK DA TILE IT MOVES TA!",
-    "art3D": "ART: 3D",
-    "art2D": "ART: 2D"
+    "pickSecondTile": "NOW PICK DA TILE IT MOVES TA!"
   },
   "col": {
     "title": "CARD COLLECTION",

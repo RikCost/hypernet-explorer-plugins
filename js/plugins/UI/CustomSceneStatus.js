@@ -1488,47 +1488,69 @@
     // battler image resolves to a procedural archetype.
     //=============================================================================
 
+    // True when this actor is portrayed by a monster rather than by a person:
+    // a creature built in the creature wizard, an enemy recruited through the
+    // talk menu, a summon, or a protagonist in monster form. Their portrait is
+    // the creature itself, never a bust or a walking sprite.
+    //
+    // Both tests are rewritten every time a slot is filled — the monster-form
+    // switch (77/78/79) by every character-creation path, "sprite" by the three
+    // monster paths alone — so a person built into a slot that once held a
+    // creature is never mistaken for one. `_isCreatureActor` is deliberately NOT
+    // consulted: nothing ever clears it, so it outlives the creature that set it.
+    function isMonsterPortraitActor(actor) {
+        if (!actor) return false;
+        if (typeof actor.portraitMode === 'function' && actor.portraitMode() === 'sprite') return true;
+        const slot = actor.actorId();
+        return !!($gameSwitches && slot >= 1 && slot <= 3 && $gameSwitches.value(76 + slot));
+    }
+
     Scene_Status.prototype.getStatus3DInfo = function (actor) {
         if (!actor) return null;
         if (!(typeof THREE !== 'undefined' && window.Battler3D && window.Battler3D.create && window.Battler3D.resolveKey)) return null;
-        // Portrait style is an exclusive choice made at character creation and
-        // stored on the actor: a humanoid is EITHER a drawn bust OR a 3D model,
-        // a creature EITHER a 2D battler image OR a 3D model. Anything but
-        // "model" renders flat art, even when a stale 3D config is still around.
-        // An unset value (characters made before the choice existed) keeps the
-        // old behaviour of preferring the 3D model when one resolves.
-        const portraitMode = typeof actor.portraitMode === 'function' ? actor.portraitMode() : 0;
-        if (portraitMode === 'bust' || portraitMode === 'sprite') return null;
-        // A monster recruited through the talk system records the enemy it came
+
+        const battlerField = typeof actor.vnBattler === 'function' ? actor.vnBattler() : null;
+
+        // A monster recruited through the talk system (and a creature whose
+        // species was picked in the creature wizard) records the enemy it came
         // from, so its own bespoke model is built instead of the first enemy
-        // that happens to share the same battler art. The record is ignored once
-        // the slot's portrait no longer matches it (a later character rewrote
-        // the slot and never cleared the id).
+        // that happens to share the same battler art. This is checked BEFORE the
+        // portrait style: the recruit rewrote the slot's portrait, but a slot
+        // filled before that record existed still carries the art style its
+        // previous occupant chose, and the monster must not be drawn as them.
+        // The record is ignored once the slot's portrait no longer matches it (a
+        // later character rewrote the slot and never cleared the id).
         const recruitedId = actor._recruitedEnemyId;
         const recruited = recruitedId ? $dataEnemies[recruitedId] : null;
-        const battlerField = typeof actor.vnBattler === 'function' ? actor.vnBattler() : null;
         if (recruited && battlerField && recruited.battlerName === battlerField) {
             const recruitKey = window.Battler3D.resolveKey(recruited);
             if (recruitKey) {
                 return { kind: 'enemy', archKey: recruitKey, enemyId: recruited.id, actorId: actor.actorId() };
             }
         }
-        // Creature monster form: getActorBustImagePath returns an img/enemies/
-        // path precisely in that case, and the flat 2D enemy battler is
-        // replaced by its procedural 3D model.
-        const bustPath = getActorBustImagePath(actor);
-        const marker = 'img/enemies/';
-        if (bustPath && bustPath.includes(marker)) {
-            const battlerName = bustPath.substring(bustPath.indexOf(marker) + marker.length);
-            if (!battlerName) return null;
-            // Resolve the procedural model from the enemy whose battler image matches.
+
+        // Creature / monster form: the actor carries the battler image of the
+        // species it was built from. That species is ALWAYS shown as its
+        // procedural 3D model — the same model previewed when the battler was
+        // picked — so the flat enemy image (and any bust left on the slot by a
+        // previous occupant) never stands in for it. The 2D battler art is only
+        // the fallback for a species no archetype resolves for.
+        if (battlerField && typeof battlerField === 'string' && isMonsterPortraitActor(actor)) {
             for (const enemy of $dataEnemies) {
-                if (!enemy || enemy.battlerName !== battlerName) continue;
+                if (!enemy || enemy.battlerName !== battlerField) continue;
                 const key = window.Battler3D.resolveKey(enemy);
                 if (key) return { kind: 'enemy', archKey: key, enemyId: enemy.id, actorId: actor.actorId() };
             }
             return null;
         }
+
+        // Humanoids: the portrait style is an exclusive choice made at character
+        // creation and stored on the actor — EITHER a drawn bust OR a 3D model.
+        // "bust" renders flat art even when a stale 3D config is still around.
+        // An unset value (characters made before the choice existed) keeps the
+        // old behaviour of preferring the 3D model when one resolves.
+        const portraitMode = typeof actor.portraitMode === 'function' ? actor.portraitMode() : 0;
+        if (portraitMode === 'bust' || portraitMode === 'sprite') return null;
         // Humanoid actors with a saved character-creation 3D model config
         // render their customized procedural model instead of the flat bust.
         if (window.CC3DModel && window.CC3DModel.isAvailable && window.CC3DModel.isAvailable()) {

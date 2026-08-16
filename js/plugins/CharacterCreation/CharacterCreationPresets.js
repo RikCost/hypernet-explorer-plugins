@@ -119,7 +119,7 @@
         { id: 1, amount: 5 },   // Potion x5
         { id: 111, amount: 1 }, // Liminal cuffs - summons The Beast
       ],
-      weapons: [{ id: 12, amount: 1 }], // Axe x1
+      weapons: [{ id: 459, amount: 1 }], // Axe x1
       armors: [{ id: 4, amount: 1 }], // Ring x1
       equips: [null, null, null, null, null],
       skills: [10],
@@ -160,7 +160,7 @@
         { id: 111, amount: 1 }, // Liminal cuffs
         { id: 168, amount: 1 }, // Flying broom
       ],
-      weapons: [{ id: 6, amount: 1 }],
+      weapons: [{ id: 525, amount: 1 }],
       armors: [
         { id: 434, amount: 1 },
         { id: 435, amount: 1 },

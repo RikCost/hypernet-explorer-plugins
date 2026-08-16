@@ -234,7 +234,7 @@
     },
     "originStranded": {
       "name": "Naufrago",
-      "desc": "Inizia a in un isola deserta, con un gommone e una canna da pesca."
+      "desc": "Inizi a piedi in un luogo remoto a caso, lontano da dove chiunque ti cercherebbe."
     },
     "originCriminal": {
       "name": "Criminale",
@@ -249,20 +249,20 @@
       "desc": "Inizia al cancello della torre con un kit da esplorazione: pozioni extra, la mappa dei percorsi della torre, una torcia e una corda da arrampicata."
     },
     "originLot": {
-      "name": "Palazzinaro",
-      "desc": "Inizia in un punto casuale della mappa del mondo con una grande scorta di materiali."
+      "name": "Terreno libero",
+      "desc": "Inizi in un tratto di campagna a caso con una grande scorta di materiali da costruzione."
     },
     "originBike": {
-      "name": "Parti in bici",
-      "desc": "Inizia in sella a una bici da qualche parte sulla mappa del mondo."
+      "name": "Inizia in bici",
+      "desc": "Inizi in aperta campagna con una bici parcheggiata accanto a te."
     },
     "originCar": {
-      "name": "Parti in auto",
-      "desc": "Scegli una città e inizia nella tua auto parcheggiata lì."
+      "name": "Inizia in auto",
+      "desc": "Ti svegli in aperta campagna accanto alla tua auto, con le chiavi in mano. Dove andare sta a te."
     },
     "originCamper": {
-      "name": "Parti in camper",
-      "desc": "Scegli una città e inizia nel tuo camper parcheggiato lì."
+      "name": "Inizia nel camper",
+      "desc": "Ti svegli in aperta campagna accanto al tuo camper, con le chiavi in mano. Dove andare sta a te."
     },
     "originSpace": {
       "name": "Parti nello spazio",
@@ -516,10 +516,10 @@
   "start": "Inizio",
   "trainPickADestination": "Treno, scegli la destinazione",
   "deepSpace": "Spazio profondo",
-  "yourCamperParkedInACity": "Il tuo camper, in una città",
-  "yourCarParkedInACity": "La tua auto, in una città",
+  "yourCamperParkedInACity": "Il tuo camper, parcheggiato accanto a te in campagna",
+  "yourCarParkedInACity": "La tua auto, parcheggiata accanto a te in campagna",
   "aRandomOverlandBiome": "Un bioma casuale",
-  "aRandomWorldMapTile": "Un punto casuale della mappa",
+  "aRandomWorldMapTile": "Un tratto di campagna a caso",
   "theTowerGate": "Il cancello della torre",
   "theOnuAssemblyInBrussels": "L'assemblea ONU, Bruxelles",
   "aCityOfYourChoice": "Una città a tua scelta",
@@ -527,7 +527,7 @@
   "10000OnYourHead": "10.000€ sulla tua testa",
   "stock": "Scorte",
   "sealedVials": "{count} fiale sigillate, una malattia ciascuna",
-  "aRandomRemoteWorldMapSpot": "Un punto remoto casuale della mappa",
+  "aRandomRemoteWorldMapSpot": "Un luogo remoto a caso, lontano da tutto",
   "aLootCellarUnderARandomBiome": "Una cantina sotto un bioma casuale",
   "hoards": "Tesori",
   "wayBack": "Ritorno",
@@ -643,7 +643,8 @@
       "randomizeKeepBuild": "Randomizza (natura e classe invariate)",
       "randomizeAll": "Randomizza tutto",
       "done": "Fatto, questo personaggio è pronto",
-      "specsRandom": "Randomizza specializzazioni"
+      "specsRandom": "Randomizza specializzazioni",
+      "specPoints": "Punti"
     },
     "kind": {
       "humanoid": "Umanoide",
@@ -659,7 +660,13 @@
     "specCost": "costa {n}",
     "specRefund": "clicca per riavere i punti",
     "specGranted": "(gratis fino a {level})",
-    "specsRandomHint": "Spendi tutto il budget a caso, sopra a quello che classe e tratti già concedono."
+    "specsRandomHint": "Spendi tutto il budget a caso, sopra a quello che classe e tratti già concedono.",
+    "search": "Cerca…",
+    "noMatches": "Nessun risultato.",
+    "specLower": "restituisci {n}",
+    "specPointsShort": "{left} / {total} punti",
+    "wealthNote": "Quanto questo personaggio porta alla cassa del gruppo.",
+    "moreMatches": "Altri {n} , affina la ricerca per vederli."
   },
   "augments": "Innesti",
   "augmentsPerMember": "{min}-{max} a testa, montati sulle proprie sedi",

@@ -71,7 +71,9 @@
         //=====================================================================
 
         // ── Corvids (small perching birds: slim body, tail, short wings) ──────
-        brd_backwardsbird: { variant: 'brd_backwardsbird', family: 'corvid', scale: 1.9, posture: 'hover', texturePool: 'pale', bodyColor: 0x33302a, wingColor: 0x22201c, accent: 0xd4a24a, beak: 'straight', bodyR: 0.26, bodyTall: 1.25, headR: 0.18, wingLen: 0.66, wingZ: 0.16, feathers: 0, legs: 'thin', tail: 0.6, neck: 0, eyeFwd: 0, fierce: 0, headBack: 1, crest: 0, hue: [0.09, 0.05], sat: [0.20, 0.10], lit: [0.20, 0.08] },
+        // Inside-out corvid: own builder (organs worn on the outside), bypasses
+        // the parametric flyer path.
+        brd_backwardsbird: { variant: 'brd_backwardsbird', family: 'corvid', scale: 1.9, posture: 'hover', texturePool: 'pale', bodyColor: 0x8a3a40, wingColor: 0x22201c, accent: 0xb0505c, beak: 'straight', bodyR: 0.3, bodyTall: 1.2, headR: 0.17, wingLen: 0.7, wingZ: 0.16, feathers: 0, legs: 'thin', tail: 0.6, neck: 0, eyeFwd: 0, fierce: 0, headBack: 1, insideOut: 1, crest: 0, hue: [0.98, 0.04], sat: [0.45, 0.12], lit: [0.30, 0.08] },
         brd_bluejay:       { variant: 'brd_bluejay',       family: 'corvid', scale: 1.7, posture: 'hover', texturePool: 'pale', bodyColor: 0x2f6fd6, wingColor: 0x1f4fa8, accent: 0xffffff, beak: 'straight', bodyR: 0.23, bodyTall: 1.2,  headR: 0.17, wingLen: 0.6,  wingZ: 0.16, feathers: 0, legs: 'thin', tail: 0.62, neck: 0, eyeFwd: 0, fierce: 0, crest: 1, hue: [0.6, 0.06], sat: [0.55, 0.12], lit: [0.5, 0.1] },
         brd_tinychick:     { variant: 'brd_tinychick',     family: 'corvid', scale: 1.15, posture: 'stand', texturePool: 'pale', bodyColor: 0xffe27a, wingColor: 0xf2cf5a, accent: 0x2a2a2a, beak: 'flat', bodyR: 0.3, bodyTall: 1.35, headR: 0.22, wingLen: 0.3, wingZ: 0.4, feathers: 0, legs: 'thin', tail: 0.14, neck: 0, eyeFwd: 0, fierce: 0, crest: 0, fluffy: 1, hue: [0.13, 0.03], sat: [0.6, 0.1], lit: [0.7, 0.08] },
         brd_tundracrow:    { variant: 'brd_tundracrow',    family: 'corvid', scale: 1.85, posture: 'hover', texturePool: 'pale', bodyColor: 0x1a1c22, wingColor: 0x101218, accent: 0xbfe3ff, beak: 'straight', bodyR: 0.26, bodyTall: 1.25, headR: 0.18, wingLen: 0.66, wingZ: 0.16, feathers: 0, legs: 'thin', tail: 0.6, neck: 0, eyeFwd: 0, fierce: 0, crest: 0, frost: 1, hue: [0.6, 0.1], sat: [0.1, 0.1], lit: [0.18, 0.08] },
@@ -148,10 +150,12 @@
             this.physicsWorld = physicsWorld; // unused (no ragdoll)
             const p = this.profile;
 
-            // Bespoke firebirds bypass the shared parametric flyer build.
-            if (this.variant === 'sacredphoenix' || this.variant === 'pyroclastphoenix') {
+            // Bespoke firebirds / the inside-out corvid bypass the shared
+            // parametric flyer build.
+            if (this.variant === 'sacredphoenix' || this.variant === 'pyroclastphoenix' || this.variant === 'brd_backwardsbird') {
                 if (this.variant === 'sacredphoenix') this._buildSacredPhoenix();
-                else this._buildPyroclastPhoenix();
+                else if (this.variant === 'pyroclastphoenix') this._buildPyroclastPhoenix();
+                else this._buildBackwardsBird();
                 this.model = this.bodyGroup;
                 this.applyModelScale();
                 this.loaded = true;
@@ -422,6 +426,222 @@
             g.position.set(side * 0.34, 1.34, -0.03); g._side = side; this.bodyGroup.add(g); return g;
         }
 
+        // Back-faced material: only the INSIDE of a shell is drawn, so a sphere
+        // reads as a hollow cavity rather than a solid body.
+        _innerMat(color) {
+            const m = new THREE.MeshStandardMaterial({ color, roughness: 0.45, side: THREE.BackSide, transparent: true });
+            this._materials.push(m); return m;
+        }
+
+        // ── Backwards Bird: a corvid turned inside out. The plumage lines a
+        //    hollow cavity where the torso should be, the ribcage is worn as a
+        //    cage on the outside with heart, lungs, liver, gizzard and gut slung
+        //    off it, and the skull rides on backwards with the brain exposed and
+        //    the throat everted through a split beak. ────────────────────────
+        // Source archetype Bird: HEAD/BODY/BEAK/LEFT_WING/RIGHT_WING/TALONS.
+        // The torso organ keys (HEART/LEFT_LUNG/RIGHT_LUNG/LIVER/STOMACH/
+        // INTESTINES) map to real meshes here, since they are all on the outside.
+        _buildBackwardsBird() {
+            const p = this.profile;
+            const R = 0.3, bodyY = 1.0;
+            this._bodyY = bodyY; this._wingY = bodyY + 0.06;
+            const bone    = this._mat(0xd6cbaa, 1.0, 0.75);
+            const muscle  = this._skinMat(0x83303a, 0.28);
+            const viscera = this._mat(0xb0505c, 1.0, 0.2);
+            const heartM  = this._mat(0x9c1e27, 1.0, 0.15, 0x2a0206);
+            const lungM   = this._mat(0xc78e94, 1.0, 0.3);
+            const gutM    = this._mat(0xa87a5e, 1.0, 0.32);
+            const sinew   = this._mat(0xe2cba6, 1.0, 0.5);
+            const feather = this._mat(p.wingColor, 1.0, 0.9);
+            const inner   = this._innerMat(0x2c1013);
+
+            // BODY: the bird's own skin, everted — a back-faced shell whose wet
+            // interior is all that is left facing the world.
+            this.body = new THREE.Mesh(new THREE.SphereGeometry(R, 16, 14), inner);
+            this.body.scale.set(1, p.bodyTall, 1); this.body.position.y = bodyY;
+            this.bodyGroup.add(this.body);
+            // Plumage now grows INWARD, quills rooted in the shell wall and tips
+            // pointing at the cavity's centre.
+            this.innerPlumage = new THREE.Group();
+            for (let i = 0; i < 20; i++) {
+                const a = this.idRand() * Math.PI * 2, e = 0.4 + this.idRand() * 2.3;
+                const dir = new THREE.Vector3(Math.sin(e) * Math.cos(a), Math.cos(e) * p.bodyTall, Math.sin(e) * Math.sin(a));
+                const q = new THREE.Mesh(new THREE.ConeGeometry(0.032, 0.18 + this.idRand() * 0.12, 4), feather);
+                q.position.set(dir.x * R * 0.9, bodyY + dir.y * R * 0.9, dir.z * R * 0.9);
+                q.lookAt(0, bodyY, 0); q.rotateX(Math.PI / 2); // tip toward the cavity centre
+                this.innerPlumage.add(q);
+            }
+            this.bodyGroup.add(this.innerPlumage);
+
+            // RIBCAGE: hoops worn outside the shell, split open at the rear.
+            this.ribs = new THREE.Group();
+            for (let i = 0; i < 6; i++) {
+                const t = i / 5;
+                const hoop = new THREE.Group();
+                const rr = R * (0.95 + Math.sin(t * Math.PI) * 0.45); // always clear of the shell
+                const rib = new THREE.Mesh(new THREE.TorusGeometry(rr, 0.02, 4, 14, Math.PI * 1.5), bone);
+                rib.rotation.x = Math.PI / 2; hoop.add(rib);
+                hoop.rotation.y = Math.PI / 4; // swing the gap around to the back
+                hoop.position.y = bodyY + R * p.bodyTall * 0.95 - t * R * p.bodyTall * 1.9;
+                this.ribs.add(hoop);
+            }
+            // Sternum keel down the front, spine column up the back.
+            const keel = new THREE.Mesh(new THREE.BoxGeometry(0.05, R * 1.5, 0.09), bone);
+            keel.position.set(0, bodyY, R * 1.02); this.ribs.add(keel);
+            const spine = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, R * 2.0, 6), bone);
+            spine.position.set(0, bodyY, -R * 0.95); this.ribs.add(spine);
+            this.bodyGroup.add(this.ribs);
+
+            // HEART: slung on the front-left of the cage, still beating.
+            this.heart = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 10), heartM);
+            this.heart.scale.set(0.9, 1.15, 0.9);
+            this.heart.position.set(-0.2, bodyY + 0.16, R * 0.78); this.bodyGroup.add(this.heart);
+            for (const s of [-1, 1]) { const vessel = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.014, 0.2, 5), viscera); vessel.position.set(-0.2 + s * 0.05, bodyY + 0.3, R * 0.7); vessel.rotation.z = s * 0.4; vessel.rotation.x = -0.35; this.bodyGroup.add(vessel); }
+
+            // LUNGS: a pair of spongy sacs clamped over the rib hoops.
+            this.leftLung  = this._insideOutLung(-1, bodyY, R, lungM, viscera);
+            this.rightLung = this._insideOutLung( 1, bodyY, R, lungM, viscera);
+
+            // LIVER: a dark flat lobe on the right flank.
+            this.liver = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), this._mat(0x6e2a2e, 1.0, 0.25));
+            this.liver.scale.set(1.1, 0.55, 0.8);
+            this.liver.position.set(0.22, bodyY - 0.16, R * 0.55); this.liver.rotation.z = -0.3; this.bodyGroup.add(this.liver);
+
+            // STOMACH / gizzard: a taut grit-filled sac under the keel.
+            this.stomach = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), gutM);
+            this.stomach.scale.set(1.0, 0.85, 0.9);
+            this.stomach.position.set(-0.04, bodyY - 0.3, R * 0.5); this.bodyGroup.add(this.stomach);
+
+            // INTESTINES: a loose coil hanging below, swinging as it flies.
+            this.guts = new THREE.Group();
+            for (let i = 0; i < 11; i++) {
+                const a = i * 0.85, rad = 0.12 - i * 0.005;
+                const loop = new THREE.Mesh(new THREE.SphereGeometry(0.05 - i * 0.002, 8, 6), gutM);
+                loop.position.set(Math.cos(a) * rad, -i * 0.026, Math.sin(a) * rad * 0.7 + 0.08);
+                this.guts.add(loop);
+            }
+            this._gutY = bodyY - R * p.bodyTall - 0.05;
+            this.guts.position.set(0, this._gutY, 0); this.bodyGroup.add(this.guts);
+            // Mesentery threads tethering the gut back up to the cage.
+            for (const s of [-1, 1]) { const th = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.22, 4), sinew); th.position.set(s * 0.08, this._gutY + 0.1, 0.08); this.bodyGroup.add(th); }
+
+            // HEAD: skull on backwards, brain worn on top, eyes on optic cords,
+            // throat everted through a beak split open from the inside.
+            const headY = bodyY + R * p.bodyTall * 0.9 + 0.16;
+            this.head = new THREE.Group();
+            const skull = new THREE.Mesh(new THREE.SphereGeometry(p.headR, 12, 12), bone); this.head.add(skull);
+            this.brain = new THREE.Group();
+            for (const s of [-1, 1]) { const lobe = new THREE.Mesh(new THREE.SphereGeometry(0.095, 10, 8), viscera); lobe.scale.set(0.85, 0.7, 1.1); lobe.position.set(s * 0.05, 0.14, -0.02); this.brain.add(lobe); }
+            for (let i = 0; i < 3; i++) { const gyrus = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.011, 4, 8, Math.PI), viscera); gyrus.position.set(0, 0.19, -0.07 + i * 0.06); gyrus.rotation.y = Math.PI / 2; this.brain.add(gyrus); }
+            this.head.add(this.brain);
+            // Eyes pushed out of their sockets, dangling on optic nerves.
+            for (const s of [-1, 1]) {
+                const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.16, 4), viscera);
+                cord.position.set(s * 0.12, -0.02, 0.09); cord.rotation.x = 0.5; cord.rotation.z = -s * 0.4; this.head.add(cord);
+                const eye = this._eye(this.head, s * 0.17, -0.1, 0.15, 0.055, p.accent, false);
+                if (s < 0) this.leftEye = eye; else this.rightEye = eye;
+            }
+            // Everted throat: a ridged gullet pushed out through the split beak.
+            this.gullet = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.075, 0.24, 8), muscle);
+            this.gullet.rotation.x = Math.PI / 2; this.gullet.position.set(0, -0.02, p.headR + 0.1); this.head.add(this.gullet);
+            for (let i = 0; i < 3; i++) { const ring = new THREE.Mesh(new THREE.TorusGeometry(0.062 + i * 0.006, 0.012, 4, 10), viscera); ring.position.set(0, -0.02, p.headR + 0.03 + i * 0.07); this.head.add(ring); }
+            const maw = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.14, 8, 1, true), this._innerMat(0x481216));
+            maw.rotation.x = -Math.PI / 2; maw.position.set(0, -0.02, p.headR + 0.02); this.head.add(maw);
+            // The beak sheath, peeled open into two halves around the throat.
+            const beakM = this._mat(0xc8b48a, 1.0, 0.5);
+            this.beak = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.24, 5), beakM);
+            this.beak.position.set(0, 0.08, p.headR + 0.08); this.beak.rotation.x = Math.PI * 0.36; this.head.add(this.beak);
+            const lower = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.22, 5), beakM);
+            lower.position.set(0, -0.12, p.headR + 0.08); lower.rotation.x = Math.PI * 0.64; this.head.add(lower);
+            this.head.position.set(0, headY, R * 0.2);
+            this.head.rotation.y = Math.PI; // ... and it faces the way it came from
+            this.bodyGroup.add(this.head);
+            // Bare neck vertebrae between skull and cage.
+            for (let i = 0; i < 3; i++) { const v = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), bone); v.position.set(0, headY - 0.1 - i * 0.07, R * 0.15); this.bodyGroup.add(v); }
+
+            // WINGS: bare arm bones, muscle strands laid over them, and flight
+            // feathers rooted the wrong way round so they curl back inward.
+            this.lwing = this._insideOutWing(-1, bone, muscle, feather, sinew);
+            this.rwing = this._insideOutWing( 1, bone, muscle, feather, sinew);
+
+            // TALONS: scaleless legs, tendons on show.
+            this.legs = new THREE.Group();
+            for (const s of [-1, 1]) {
+                const shank = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.026, 0.34, 6), bone);
+                shank.position.set(s * 0.13, bodyY - R * p.bodyTall - 0.12, 0.02); this.legs.add(shank);
+                const tendon = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.3, 4), sinew);
+                tendon.position.set(s * 0.13, bodyY - R * p.bodyTall - 0.12, 0.06); this.legs.add(tendon);
+                for (let i = -1; i <= 1; i++) { const claw = new THREE.Mesh(new THREE.ConeGeometry(0.024, 0.13, 5), bone); claw.position.set(s * 0.13 + i * 0.05, bodyY - R * p.bodyTall - 0.33, 0.05); claw.rotation.x = Math.PI * 0.9; this.legs.add(claw); }
+            }
+            this.bodyGroup.add(this.legs);
+
+            // TAIL: exposed caudal vertebrae with the tail feathers curling back
+            // under themselves toward the body.
+            this.tail = new THREE.Group();
+            for (let i = 0; i < 4; i++) { const v = new THREE.Mesh(new THREE.SphereGeometry(0.04 - i * 0.005, 8, 6), bone); v.position.set(0, i * 0.02, -i * 0.09); this.tail.add(v); }
+            for (let i = 0; i < 3; i++) { const f = new THREE.Mesh(new THREE.ConeGeometry(p.tail * 0.11, p.tail * 0.75, 4), feather); f.position.set((i - 1) * 0.07, 0.12, -0.3); f.rotation.x = 1.05; f.rotation.z = (i - 1) * 0.2; f.scale.set(1, 1, 0.3); this.tail.add(f); }
+            this.tail.position.set(0, bodyY - R * 0.2, -R * 0.95); this.tail.rotation.x = 0.35;
+            this.bodyGroup.add(this.tail);
+
+            const m = {}, set = (ks, mesh) => { if (mesh) ks.forEach(k => m[k] = mesh); };
+            set(['HEAD', 'SKULL', 'FACE', 'EYE', 'EYES'], this.head);
+            set(['BRAIN'], this.brain);
+            set(['LEFT_EYE'], this.leftEye); set(['RIGHT_EYE'], this.rightEye);
+            set(['BEAK', 'BILL'], this.beak);
+            set(['BODY', 'TORSO', 'CORE', 'MASS', 'SPINE'], this.body);
+            set(['RIBCAGE'], this.ribs);
+            set(['HEART'], this.heart);
+            set(['LEFT_LUNG'], this.leftLung); set(['RIGHT_LUNG'], this.rightLung);
+            set(['LIVER', 'SPLEEN'], this.liver);
+            set(['STOMACH', 'GIZZARD'], this.stomach);
+            set(['INTESTINES', 'GUTS'], this.guts);
+            set(['LEFT_WING', 'LEFT_ARM'], this.lwing);
+            set(['RIGHT_WING', 'RIGHT_ARM'], this.rwing);
+            set(['TALONS', 'LEFT_LEG', 'RIGHT_LEG', 'FEET', 'LEFT_THIGH', 'RIGHT_THIGH'], this.legs);
+            set(['TAIL'], this.tail);
+            this._partMeshMap = m;
+            this._cascadeRules = [
+                { gone: ['BODY', 'TORSO', 'CORE', 'MASS', 'SPINE'], hide: [this.body, this.innerPlumage, this.ribs, this.heart, this.leftLung, this.rightLung, this.liver, this.stomach, this.guts, this.head, this.lwing, this.rwing, this.legs, this.tail] },
+                { gone: ['HEAD', 'SKULL', 'FACE'], hide: [this.head] },
+                { gone: ['BRAIN'], hide: [this.brain] },
+                { gone: ['BEAK', 'BILL'], hide: [this.beak] },
+                { gone: ['HEART'], hide: [this.heart] },
+                { gone: ['LEFT_LUNG'], hide: [this.leftLung] },
+                { gone: ['RIGHT_LUNG'], hide: [this.rightLung] },
+                { gone: ['LIVER'], hide: [this.liver] },
+                { gone: ['STOMACH'], hide: [this.stomach] },
+                { gone: ['INTESTINES'], hide: [this.guts] },
+                { gone: ['LEFT_WING', 'LEFT_ARM'], hide: [this.lwing] },
+                { gone: ['RIGHT_WING', 'RIGHT_ARM'], hide: [this.rwing] },
+                { gone: ['TALONS', 'LEFT_LEG', 'RIGHT_LEG'], hide: [this.legs] },
+                { gone: ['TAIL'], hide: [this.tail] },
+            ];
+        }
+        _insideOutLung(side, bodyY, R, lungM, viscera) {
+            const g = new THREE.Group();
+            for (let i = 0; i < 3; i++) { const lobe = new THREE.Mesh(new THREE.SphereGeometry(0.085 - i * 0.012, 8, 8), lungM); lobe.position.set(0, 0.09 - i * 0.09, i * 0.02); g.add(lobe); }
+            const bronchus = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.18, 5), viscera);
+            bronchus.position.set(-side * 0.06, 0.12, 0); bronchus.rotation.z = side * 0.7; g.add(bronchus);
+            g.position.set(side * (R + 0.17), bodyY + 0.06, -0.02); g.rotation.z = -side * 0.15;
+            this.bodyGroup.add(g); return g;
+        }
+        _insideOutWing(side, bone, muscle, feather, sinew) {
+            const g = new THREE.Group();
+            const humerus = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.028, 0.34, 6), bone);
+            humerus.rotation.z = side * Math.PI / 2; humerus.position.x = side * 0.17; g.add(humerus);
+            const radius = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.02, 0.36, 6), bone);
+            radius.rotation.z = side * Math.PI / 2; radius.position.set(side * 0.5, -0.03, 0); g.add(radius);
+            const joint = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), bone); joint.position.set(side * 0.34, -0.015, 0); g.add(joint);
+            // Flight muscle laid over the bone instead of under the skin.
+            for (let i = 0; i < 3; i++) { const strand = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.3 - i * 0.05, 5), muscle); strand.rotation.z = side * Math.PI / 2; strand.position.set(side * (0.2 + i * 0.1), -0.05 - i * 0.02, 0.04); g.add(strand); }
+            // Feathers rooted backwards, tips curling in toward the body.
+            for (let i = 0; i < 5; i++) { const f = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.32 - i * 0.02, 4), feather); f.position.set(side * (0.16 + i * 0.14), -0.12, -0.02); f.rotation.z = side * 2.25; f.scale.set(1, 1, 0.35); g.add(f); }
+            // Tendon threads trailing off the wrist.
+            for (let i = 0; i < 2; i++) { const th = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.16, 4), sinew); th.position.set(side * (0.62 + i * 0.05), -0.12, 0.02); g.add(th); }
+            g.position.set(side * 0.16, this._wingY, -0.04); g._side = side;
+            this.bodyGroup.add(g); return g;
+        }
+
         animatePose(deltaTime) {
             if (this._baseY === null) this._baseY = this.model.position.y;
             // (sacredphoenix / pyroclastphoenix previously called an unimplemented
@@ -457,6 +677,29 @@
             }
             if (this.head && this.head.visible) this.head.rotation.x = Math.sin(t * (stand ? 2.5 : 2)) * 0.1 + ((fast || sp) ? 0.15 : 0);
             if (this.tail && this.tail.visible) this.tail.rotation.x = 0.35 + Math.sin(t * 2) * 0.08;
+            if (this.variant === 'brd_backwardsbird') this._insideOutPose(t, fast || sp);
+        }
+
+        // Organs on the outside keep working in open air: the heart beats, the
+        // lungs bellow, the gut coil swings under the cage.
+        _insideOutPose(t, excited) {
+            const rate = excited ? 7.5 : 4.2;
+            if (this.heart && this.heart.visible) {
+                const beat = 1 + Math.pow(Math.max(0, Math.sin(t * rate)), 8) * 0.28;
+                this.heart.scale.set(0.9 * beat, 1.15 * beat, 0.9 * beat);
+            }
+            const breath = 1 + Math.sin(t * (excited ? 4.0 : 2.2)) * 0.1;
+            if (this.leftLung && this.leftLung.visible) this.leftLung.scale.set(breath, 1 / breath, breath);
+            if (this.rightLung && this.rightLung.visible) this.rightLung.scale.set(breath, 1 / breath, breath);
+            if (this.guts && this.guts.visible) {
+                this.guts.rotation.z = Math.sin(t * 1.7) * 0.16;
+                this.guts.rotation.x = Math.sin(t * 1.3 + 0.8) * 0.1;
+                this.guts.position.y = this._gutY + Math.sin(t * 2.4) * 0.02;
+            }
+            // Loose eyeballs swing on their optic cords.
+            const swing = Math.sin(t * 2.8) * 0.03;
+            if (this.leftEye && this.leftEye.visible) this.leftEye.position.x = -0.17 + swing;
+            if (this.rightEye && this.rightEye.visible) this.rightEye.position.x = 0.17 + swing;
         }
 
         deathPose(deltaTime) {

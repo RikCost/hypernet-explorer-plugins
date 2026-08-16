@@ -77,7 +77,7 @@
   "category": {
     "All": "Tutte"
   },
-  "forgeBlurb": "Scegli un incantesimo dominante e un componente recessivo (incantesimo o abilità) di {actor} per fonderli in una nuova abilità. Il costo in MP e AP è la somma dei componenti; la fusione stessa si paga in Conoscenza, in base a quanto varrebbe insegnare i componenti. Se il recessivo è un'abilità, il risultato sarà un'abilità. I componenti vengono dimenticati. Hai {knowledge} KP.",
+  "forgeBlurb": "Fondi un incantesimo dominante con un incantesimo o un'abilità di {actor}; se il recessivo è un'abilità, esce un'abilità. Costa la somma di MP e AP dei componenti più Conoscenza, ed entrambi si dimenticano. Hai {knowledge} KP.",
   "kpMultiplier3x": "3.0X KC",
   "kpMultiplier15x": "1.5X KC",
   "foreignSchool": "DA AUTODIDATTA (costo 3x)",

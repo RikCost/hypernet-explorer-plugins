@@ -85,6 +85,24 @@
 
   _loadStatsI18n();
 
+  // The level-up skill roadmap is a forty-line read, which is the one thing
+  // Quick mode exists to spare the player: while a paused Quick-mode creation
+  // run is waiting behind this scene (the creature branch is the only one that
+  // opens it) the tab is left out of the confirmation spread entirely, the same
+  // way the inline class dossier drops its roadmap card. Every other caller ,
+  // the other creation modes, and a class change from the menu , keeps it.
+  function roadmapOffered() {
+    const wizard = window.Scene_CharacterCreation;
+    return !(wizard && wizard._interruptedStep >= 0 &&
+      wizard.isQuickMode && wizard.isQuickMode());
+  }
+
+  // The confirmation spread's tabs, in order, minus whatever this flow hides.
+  function convergenceTabs() {
+    const tabs = roadmapOffered() ? ["levelUpList"] : [];
+    return tabs.concat(["stats", "skillCategories"]);
+  }
+
   //=============================================================================
   // Class skill categories , single source of truth: js/db/Skills/Categories.json
   //=============================================================================
@@ -330,7 +348,9 @@
     }
 
     makeCommandList() {
-      this.addCommand(T('ClassSelect.levelUpList'), "levelUpList");
+      if (roadmapOffered()) {
+        this.addCommand(T('ClassSelect.levelUpList'), "levelUpList");
+      }
       this.addCommand(T('ClassSelect.stats'), "stats");
       this.addCommand(T('ClassSelect.skillCategories'), "skillCategories");
       if (this._classLevel > 30) {
@@ -699,29 +719,35 @@
       let rightHtml = "";
       let overlayHtml = "";
 
-      const activeCategory = isConfOpen ? (this._lastSoulConvergenceCategory || 'levelUpList') : '';
+      const tabCategories = convergenceTabs();
+      const defaultCategory = tabCategories[0];
+      const activeCategory = isConfOpen
+        ? (tabCategories.includes(this._lastSoulConvergenceCategory)
+          ? this._lastSoulConvergenceCategory : defaultCategory)
+        : '';
 
       if (isConfOpen) {
         // --- COVENANT / SOUL CONVERGENCE SPREAD VIEW (Split between two pages) ---
         const cmdSymbol = this._confirmationWindow.commandSymbol(this._confirmationWindow.index());
-        let activeCategoryTemp = this._lastSoulConvergenceCategory || 'levelUpList';
-        if (['levelUpList', 'stats', 'skillCategories'].includes(cmdSymbol)) {
+        let activeCategoryTemp = activeCategory;
+        if (tabCategories.includes(cmdSymbol)) {
           activeCategoryTemp = cmdSymbol;
           this._lastSoulConvergenceCategory = activeCategoryTemp;
         }
 
+        const tabLabels = {
+          levelUpList: T('CharCreate.skillRoadmap2'),
+          stats: T('CharCreate.attributeBreakdown'),
+          skillCategories: T('CharCreate.skillsSpecialties'),
+        };
         const activeClass = (cat) => activeCategoryTemp === cat ? "selected" : "";
         const tabsHtml = `
           <div class="cc-select-grid" style="grid-template-columns: 1fr; gap: 12px; margin-bottom: 24px">
-            <div class="cc-card-option ${activeClass('levelUpList')}" onclick="SceneManager._scene.onSoulConvergenceTabClick('levelUpList')">
-              <div class="cc-option-title" style="font-size: 1.585rem; margin: 0">${T('CharCreate.skillRoadmap2')}</div>
+            ${tabCategories.map((cat) => `
+            <div class="cc-card-option ${activeClass(cat)}" onclick="SceneManager._scene.onSoulConvergenceTabClick('${cat}')">
+              <div class="cc-option-title" style="font-size: 1.585rem; margin: 0">${tabLabels[cat]}</div>
             </div>
-            <div class="cc-card-option ${activeClass('stats')}" onclick="SceneManager._scene.onSoulConvergenceTabClick('stats')">
-              <div class="cc-option-title" style="font-size: 1.585rem; margin: 0">${T('CharCreate.attributeBreakdown')}</div>
-            </div>
-            <div class="cc-card-option ${activeClass('skillCategories')}" onclick="SceneManager._scene.onSoulConvergenceTabClick('skillCategories')">
-              <div class="cc-option-title" style="font-size: 1.585rem; margin: 0">${T('CharCreate.skillsSpecialties')}</div>
-            </div>
+            `).join("")}
           </div>
         `;
 
@@ -1046,7 +1072,6 @@
           if (rightPage) {
             const tabs = rightPage.querySelectorAll(".cc-card-option");
             tabs.forEach((tab, idx) => {
-              const tabCategories = ['levelUpList', 'stats', 'skillCategories'];
               if (tabCategories[idx] === activeCategory) {
                 tab.classList.add("selected");
               } else {
@@ -1275,7 +1300,13 @@
         const isConfOpen = this._confirmationWindow && this._confirmationWindow.isOpen();
         const confIndex = isConfOpen ? (this._confirmationWindow ? this._confirmationWindow.index() : 0) : -1;
         const showSub = !!(this._levelUpListWindow || this._skillCategoriesWindow || this._statsWindow);
-        const activeCategory = isConfOpen ? (this._lastSoulConvergenceCategory || 'levelUpList') : '';
+        // Same resolution refreshUIOverlayDOM uses, so a flow that hides a tab
+        // (see convergenceTabs) does not read as a change on every frame.
+        const tabs = convergenceTabs();
+        const activeCategory = isConfOpen
+          ? (tabs.includes(this._lastSoulConvergenceCategory)
+            ? this._lastSoulConvergenceCategory : tabs[0])
+          : '';
 
         if (this._lastIndex !== currentIndex ||
           this._lastConfOpen !== isConfOpen ||

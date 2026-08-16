@@ -34,7 +34,7 @@
     "other": "{count} accuse saldate per {total}."
   },
   "voluntaryDeclaration": "Dichiarazione volontaria",
-  "declarationBlurb": "Confessa qualcosa che l'Ufficio non ha ancora scoperto. Un'accusa autodenunciata viene registrata a <b>metà</b> della multa consueta, e l'impiegato ti ringrazia per le scartoffie. Resta comunque un'accusa: rimane sulla tua fedina e alza la taglia finché non la saldi o non la sconti.",
+  "declarationBlurb": "Confessa qualcosa che l'Ufficio non ha ancora scoperto: l'accusa viene registrata a <b>metà</b> della multa. Resta comunque sulla fedina e alza la taglia finché non la saldi o non la sconti.",
   "searchOffences": "Cerca tra i reati...",
   "noOffenceMatch": "Nessun reato corrisponde alla ricerca.",
   "confess": "Confessa",
@@ -42,9 +42,9 @@
   "custodyHearings": "Custodia &amp; udienze",
   "custodyBlurb": "Taglia pendente: <b>{bounty}</b>. Entrambe le opzioni qui sotto ti disconnettono da questo terminale: le celle e l'aula di tribunale non sono in rete.",
   "turnYourselfIn": "Costituisciti",
-  "surrenderBlurb": "Un furgone viene a prenderti e ti registrano nelle celle. Il tempo scontato erode la taglia da solo; esci nel momento in cui arriva a zero, ovunque ti avessero preso. Nessuna udienza, nessun giudice, nessuna discussione.",
+  "surrenderBlurb": "Un furgone ti porta in cella. Il tempo scontato erode la taglia da solo ed esci appena arriva a zero. Nessuna udienza, nessun giudice.",
   "requestHearing": "Chiedi un'udienza",
-  "hearingBlurb": "Il tuo fascicolo finisce davanti a Eris, dea della giustizia, che deciderà quanto valgono oggi le tue accuse. Un'assoluzione cancella la fedina. Una condanna no.",
+  "hearingBlurb": "Il tuo fascicolo finisce davanti a Eris, dea della giustizia. Un'assoluzione cancella la fedina. Una condanna no.",
   "alreadyInCustody": "Sei già in custodia. L'Ufficio apprezza l'entusiasmo.",
   "surrenderBtn": "Costituisciti",
   "surrenderConfirmTitle": "Vuoi costituirti?",
@@ -59,6 +59,6 @@
   "cancel": "Annulla",
   "record": {
     "heading": "Fascicolo &mdash; {name}",
-    "blurb": "Ogni capo d'accusa che il Bureau ha su di te, con la relativa multa. Pagare un capo d'accusa lo cancella dalla fedina; la multa esce subito dal portafogli."
+    "blurb": "Ogni capo d'accusa che il Bureau ha su di te, con la sua multa. Saldarne uno lo cancella dalla fedina e preleva subito i soldi."
   }
 }

@@ -193,10 +193,10 @@
     "WorldMap": "WorldMap"
   },
   "help": {
-    "mouse": "<b>Mouse:</b> click a piece, then click the map to place (or drag it across). <b>Hold</b> the button and sweep to lay a run of walls or terrain. Click a placed piece to remove it, or hold and sweep to clear a run.",
-    "pad": "<b>Pad / Keys:</b> <b>D-pad/Arrows</b> browse · <b>L/R</b> change tab · <b>A/Enter</b> pick · then aim with <b>D-pad/Arrows</b>, <b>A/Enter</b> place (hold it while aiming to paint), <b>X/Shift</b> flip, <b>B/Esc</b> back · <b>Esc</b> exits.",
+    "mouse": "<b>Mouse:</b> click a piece, then click the map to place it. <b>Hold</b> and sweep to lay a run of walls or terrain. Click a placed piece to remove it, or sweep to clear a run.",
+    "pad": "<b>Pad / Keys:</b> <b>D-pad/Arrows</b> browse · <b>L/R</b> tab · <b>A/Enter</b> pick, then aim and place (hold to paint) · <b>X/Shift</b> flip · <b>B/Esc</b> back · <b>Esc</b> exits.",
     "armed": "D-pad/Arrows aim &nbsp;·&nbsp; L1/R1 or Wheel swap piece &nbsp;·&nbsp; X/Shift flip &nbsp;·&nbsp; B/right-click cancel",
-    "idle": "<b>Click</b> a piece, then <b>click the map</b> to place it (or drag it across). <b>Hold and sweep</b> to lay a run of walls or terrain · <b>Shift</b> flips · <b>Click</b> a placed piece to remove it for a partial refund · <b>Esc</b> to exit."
+    "idle": "<b>Click</b> a piece, then <b>click the map</b> to place it. <b>Hold and sweep</b> to lay a run · <b>Shift</b> flips · <b>Click</b> a placed piece to remove it for a partial refund · <b>Esc</b> exits."
   },
   "freeBadge": "FREE",
   "buildMode": "Build Mode",

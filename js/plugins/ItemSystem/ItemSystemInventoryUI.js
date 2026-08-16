@@ -696,6 +696,13 @@
         const allFocused = (this._dndActiveSection === 'targets' && this._selectedTargetIndex === $gameParty.members().length) ? 'selected' : '';
         targetsHTML += `<div class="target-option ${allFocused}" onclick="SceneManager._scene.applyUITarget(${$gameParty.members().length})">${T('Inventory.ui.allPartyCompanions')}</div>`;
       }
+      // A ration is eaten, not administered; the heading says so, exactly as the
+      // hotbar's own target card does.
+      const isFood = !!(window.ItemSystemUtils &&
+        window.ItemSystemUtils.hasItemCategory(item, 'Food' /* i18n-ignore: category tag */));
+      const targetTitle = isFood
+        ? T('Inventory.ui.eatItem', { item: item.name })
+        : T('Inventory.ui.useItemOn', { item: item.name });
       const specialCommands = this.parseSpecialCommands(item);
       specialCommands.forEach((specCmd, sIdx) => {
         const globalIdx = $gameParty.members().length + (item.scope === 8 || item.scope === 10 ? 1 : 0) + sIdx;
@@ -704,7 +711,7 @@
       });
       rightPageInnerHTML = `
         <div class="target-overlay">
-          <h3 class="target-title">${T('Inventory.ui.useItemOn', { item: item.name })}</h3>
+          <h3 class="target-title">${targetTitle}</h3>
           <div class="inspect-actions">
             ${targetsHTML}
             <div class="inspect-btn" onclick="SceneManager._scene.cancelUITargeting()" style="margin-top:15px;border-color:#555;color:#555;">${T('Inventory.ui.cancel')}</div>

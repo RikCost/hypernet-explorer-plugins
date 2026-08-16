@@ -22,9 +22,13 @@
  *   pvArcane/pvSubstance/pvStealth/pvIntimidation() + setters ... equip-derived stats
  *
  * portraitMode is the exclusive art style chosen at character creation. A
- * humanoid picks "bust" (hand-drawn portrait) or "model" (procedural 3D); a
- * creature picks "sprite" (2D enemy battler image) or "model". Only the chosen
- * one is ever built or displayed, so the two never compete.
+ * humanoid picks "bust" (hand-drawn portrait) or "model" (a procedural 3D model
+ * built in the creation wizard); only the chosen one is ever displayed, so the
+ * two never compete. "sprite" marks a monster instead: a creature built on an
+ * existing species, an enemy recruited through the talk menu, or a summon. Those
+ * are always shown as the procedural 3D model of that species (vnBattler names
+ * its art, _recruitedEnemyId the exact enemy when it is known), and the flat
+ * battler image only stands in when no 3D model resolves for the species.
  *
  * All plugins and events that used the old variables (gender 38-40, battler
  * 106-108, bust 109/117/118, stats 121-130) were rewritten to call these

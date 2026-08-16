@@ -163,10 +163,11 @@
             $gameTemp._pendingAutosaveIcon = false;
             this._showAutosaveIcon();
         }
-        // Origins that end in the travel picker (train, camper, car) are not
-        // finished until the player has chosen a destination and landed on it,
-        // so the save waits: it - and the creation start location it records -
-        // must point at the real starting map, not the departure placeholder.
+        // Origins that end in the travel picker (the train, and every origin
+        // that lets the player name where they begin) are not finished until a
+        // destination has been chosen and landed on, so the save waits: it - and
+        // the creation start location it records - must point at the real
+        // starting map, not the departure placeholder.
         const creationTravelPending = $gameTemp &&
             ($gameTemp._openCharacterCreationTrainTravel ||
                 $gameTemp._characterCreationTravelMode);

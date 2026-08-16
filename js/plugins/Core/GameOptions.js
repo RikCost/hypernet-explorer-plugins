@@ -266,7 +266,9 @@ const GameOptions = {
             // Language leads the page: it is the setting that decides how every
             // other one reads, so it must stay first.
             symbols: [
-                'language', 'fowEnabled', 'enemySpawnMode', 'enemySpawnModeV2', 'enemyDifficulty',
+                // enemySpawnModeV2/V3 are migration markers on the config, not
+                // options, so they are not listed here.
+                'language', 'fowEnabled', 'enemySpawnMode', 'enemyDifficulty',
                 'mapBattleMode', 'cpuPartyMembers', 'fogOfWar', 'commandRemember',
                 'smoothBattleLog'
             ]
@@ -299,7 +301,7 @@ const GameOptions = {
             nameKey: 'experimental',
             categories: ['experimental'],
             symbols: [
-                'cardCombat', 'cardBoard3D', 'asciiModeEnabled', 'asciiHudEnabled'
+                'cardCombat', 'asciiModeEnabled', 'asciiHudEnabled'
             ]
         }
     ]
@@ -513,14 +515,13 @@ window.GameOptions = GameOptions;
     const ENEMY_DIFFICULTY_SCALE = 2;
 
     // Enemy spawn modes, in the order the option cycles them and the order
-    // GameOptions.enemySpawn names them: 0 Balanced, 1 Distance from spawn,
-    // 2 Chaos. Distance from spawn is the default - it is the mode the world is
-    // written for, where how far a place lies from where the party started
-    // decides what lives there (BattleSystemEnhancedEncounters.js, section 4b).
-    // Only the LABEL changed when it was renamed from "Realistic": the stored
-    // setting is the index, so no save or config needed migrating.
-    const ENEMY_SPAWN_MODE_COUNT = 3;
-    const ENEMY_SPAWN_MODE_DEFAULT = 1;
+    // GameOptions.enemySpawn names them: 0 Distance from spawn, 1 Party Level,
+    // 2 Biome, 3 Chaos. Distance from spawn leads the list and is the default -
+    // it is the mode the world is written for, where how far a place lies from
+    // where the party started decides what lives there
+    // (BattleSystemEnhancedEncounters.js, section 4b).
+    const ENEMY_SPAWN_MODE_COUNT = 4;
+    const ENEMY_SPAWN_MODE_DEFAULT = 0;
 
     // Slider value -> signed stat percentage shown to the player.
     const enemyDifficultyPercent = function (value) {
@@ -614,30 +615,38 @@ window.GameOptions = GameOptions;
         // somehow carries both on is resolved in favour of card combat here so
         // the menu never shows two "on" rows that fight over the next battle.
         if (this.cardCombat && this.mapBattleMode) this.mapBattleMode = false;
-        // Live 3D battlers standing on the card game's board (Cards/
-        // CardGameDuel.js) instead of the walking sprites. Off by default: it
-        // is a whole three.js scene behind a menu.
-        this.cardBoard3D = config.cardBoard3D !== undefined ? config.cardBoard3D : false;
-        // Enemy spawn mode (BattleSystemEnhancedEncounters.js): 0 = Balanced
-        // (roaming enemies at/below party level + one much-higher boss per proc
-        // map), 1 = Distance from spawn (default; the whole biome roster,
-        // pitched at how far the ground lies from where the party started),
-        // 2 = Chaos.
+        // Enemy spawn mode (BattleSystemEnhancedEncounters.js): 0 = Distance
+        // from spawn (default; the whole biome roster, pitched at how far the
+        // ground lies from where the party started), 1 = Party Level (roaming
+        // enemies at/below party level + one much-higher boss per proc map),
+        // 2 = Biome (the biome's whole roster, flat, any level to 100),
+        // 3 = Chaos.
         //
-        // The list used to hold a fourth mode, Tower Distance, at index 2, with
-        // Chaos at 3. A config written before it was removed is migrated once -
-        // Tower Distance becomes Distance from spawn, which is the mode that
-        // inherited its idea of danger-by-place, and 3 becomes Chaos where it
-        // now sits - and the migration marker is saved so a later 2 is read as
-        // Chaos.
+        // Two migrations, each with its own marker, applied oldest first:
+        //
+        // V2 - the list used to hold a fourth mode, Tower Distance, at index 2,
+        //   with Chaos at 3. Tower Distance becomes Distance from spawn, the
+        //   mode that inherited its idea of danger-by-place, and 3 becomes
+        //   Chaos where it then sat.
+        // V3 - Distance from spawn and Party Level swapped places so the
+        //   default leads the list, and Biome was inserted ahead of Chaos. So a
+        //   config from before the swap has its 0 and 1 exchanged and its
+        //   Chaos moved up from 2 to 3.
         const spawnModes = ENEMY_SPAWN_MODE_COUNT;
+        const OLD_DISTANCE_INDEX = 1; // index Distance from spawn held pre-V3
         let spawnMode = config.enemySpawnMode !== undefined
             ? config.enemySpawnMode : ENEMY_SPAWN_MODE_DEFAULT;
         if (!config.enemySpawnModeV2) {
-            if (spawnMode === 2) spawnMode = ENEMY_SPAWN_MODE_DEFAULT; // was Tower Distance
-            else if (spawnMode === 3) spawnMode = 2;                   // was Chaos
+            if (spawnMode === 2) spawnMode = OLD_DISTANCE_INDEX; // was Tower Distance
+            else if (spawnMode === 3) spawnMode = 2;             // was Chaos
+        }
+        if (!config.enemySpawnModeV3 && config.enemySpawnMode !== undefined) {
+            if (spawnMode === 0) spawnMode = 1;      // Balanced -> Party Level
+            else if (spawnMode === 1) spawnMode = 0; // Distance from spawn
+            else if (spawnMode === 2) spawnMode = 3; // Chaos, now behind Biome
         }
         this.enemySpawnModeV2 = true;
+        this.enemySpawnModeV3 = true;
         this.enemySpawnMode = (spawnMode >= 0 && spawnMode < spawnModes)
             ? spawnMode : ENEMY_SPAWN_MODE_DEFAULT;
         // Enemy difficulty slider: 0..100 with 50 = untouched stats. Anything
@@ -698,10 +707,10 @@ window.GameOptions = GameOptions;
         config.titleBackground = this.titleBackground;
         config.cpuPartyMembers = this.cpuPartyMembers;
         config.cardCombat = this.cardCombat;
-        config.cardBoard3D = this.cardBoard3D;
         config.mapBattleMode = this.mapBattleMode;
         config.enemySpawnMode = this.enemySpawnMode;
         config.enemySpawnModeV2 = true;
+        config.enemySpawnModeV3 = true;
         config.enemyDifficulty = this.enemyDifficulty;
         config.retroTune = RETRO_TUNE;
         config.retroEnabled = this.retroEnabled;
@@ -1031,15 +1040,32 @@ window.GameOptions = GameOptions;
         // page (inspect) to that row without committing the selection; leaving
         // the list reverts to the currently selected option. Delegated on the
         // list element so it survives the innerHTML rebuilds in renderOptions.
+        //
+        // Bound to mousemove, not mouseover, and gated on the pointer actually
+        // having moved: changing a value rebuilds the whole list markup, and the
+        // fresh row built under a parked cursor fires a mouseover of its own.
+        // That phantom hover fired after updateHighlight() had already drawn the
+        // selected option, so every keyboard edit yanked the right page onto
+        // whatever row the mouse happened to be resting on (the last one, party
+        // formation, more often than not). A rebuild moves no pointer, so
+        // mousemove does not fire for it. Scroll-generated mousemoves repeat the
+        // last coordinates, hence the position check rather than a bare guard.
         const optionsList = this._dndContainer.querySelector('#options-list');
         if (optionsList) {
-            optionsList.addEventListener('mouseover', (e) => {
+            let lastX = null, lastY = null;
+            optionsList.addEventListener('mousemove', (e) => {
+                if (e.clientX === lastX && e.clientY === lastY) return;
+                lastX = e.clientX;
+                lastY = e.clientY;
                 const row = e.target.closest && e.target.closest('.option-row');
                 if (!row || !optionsList.contains(row)) return;
                 const idx = parseInt(row.dataset.idx, 10);
                 if (!isNaN(idx)) this.previewOption(idx);
             });
-            optionsList.addEventListener('mouseleave', () => this.clearPreview());
+            optionsList.addEventListener('mouseleave', () => {
+                lastX = lastY = null;
+                this.clearPreview();
+            });
         }
 
         // Force reflow and trigger smooth fade-in once painted
@@ -1079,8 +1105,12 @@ window.GameOptions = GameOptions;
         autoIdle:        { on: 'AutoIdleON',        off: 'AutoIdleOFF' },
         commandRemember: { on: 'CommandRememberON', off: 'CommandRememberOFF' },
         autosaveEnabled: { on: 'AutoSaveON',        off: 'AutoSaveOFF' },
-        // Enemy spawn mode has no art on purpose: an abstract chart explained it
-        // worse than words did, so it relies on the written explanation below.
+        // One plate per spawn mode, indexed by the stored value (0 Distance,
+        // 1 Party Level, 2 Biome, 3 Chaos). Any of these that is still a stub
+        // simply shows nothing and leaves the written blurb to explain the
+        // mode, which is how the option worked before it had art at all.
+        enemySpawnMode:  { states: ['EnemySpawnDistance', 'EnemySpawnPartyLevel',
+                                    'EnemySpawnBiome', 'EnemySpawnChaos'] },
         enemyDifficulty: { img: 'EnemyDifficulty' },
         combatMode:      { on: 'CombatModeON',      off: 'CombatModeOFF' },
         autosaveInterval: { img: 'SaveInterval' },
@@ -1837,16 +1867,6 @@ window.GameOptions = GameOptions;
             ConfigManager.cardCombat = !!value;
             if (value) ConfigManager.mapBattleMode = false;
         },
-        'experimental', 'boolean');
-
-    // The card game draws the creatures themselves instead of their walking
-    // sprites: one three.js scene behind the 3x3 grid, and the creature turning
-    // inside its own card, each grown from the same seed as the card that was
-    // played. Off by default; the duel's own footer button flips it at the
-    // table and writes the answer back here.
-    GameOptions.registerOption('cardBoard3D', T('GameOptions.label.cardBoard3D'),
-        () => ConfigManager.cardBoard3D === true,
-        (value) => { ConfigManager.cardBoard3D = !!value; },
         'experimental', 'boolean');
 
     // Map Battle replaces the standard battle scene, so it belongs with the rest

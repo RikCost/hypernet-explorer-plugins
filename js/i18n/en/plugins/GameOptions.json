@@ -38,7 +38,6 @@
     "showFps": "Show FPS Counter",
     "activeTheme": "Active Theme",
     "cardCombat": "Card Combat",
-    "cardBoard3D": "Card Game 3D Art",
     "mapBattle": "Map Battle",
     "retroShader": "Retro Shader",
     "renderResolution": "Render Resolution",
@@ -71,8 +70,9 @@
     "Camper Drive"
   ],
   "enemySpawn": [
-    "Balanced",
     "Distance from spawn",
+    "Party Level",
+    "Biome",
     "Chaos"
   ],
   "enemyBattler": [
@@ -86,28 +86,29 @@
   "languageProgress": "{name} 1% done",
   "settingsInSection": "{count} settings in this section.",
   "desc": {
-    "cardBoard3D": "Dresses the card game in the real 3D creatures instead of their walking sprites: models on the 3x3 board, and the creature turning on the spot inside its own card. Each one is grown from the same seed as the card that played it, so two copies of a monster never look the same. Costs a whole three.js scene behind the menu, and the button in the duel's footer changes it at the table.",
-    "enemySpawnMode": "Decides how strong the enemies wandering the world are. Whichever you pick, the year pushes every level up: +10 a year to 2010, the whole table loose to level 110 in 2010-2011, and nothing under level 80 left from 2012.",
-    "weatherVolume": "Scales the outdoor ambience: rain, storms, wind, the night chorus and the ambient bed of the biome you are standing in. It rides on top of the BGS volume, and leaves interiors and a map's own authored sounds alone.",
-    "partyHud": "A card for every party member in the top-left corner of the map: their HP, MP, the states on them, and a chip for anything urgent, low health, hunger, sleep, hygiene, company, fun or a craving.",
+    "enemySpawnMode": "How strong wandering enemies are. The year raises levels regardless: +10 a year to 2010, up to 110 in 2010-2011, nothing under 80 from 2012.",
+    "weatherVolume": "Volume of outdoor ambience: rain, storms, wind and biome sounds. Interiors are unaffected.",
+    "partyHud": "A card per party member in the top-left: HP, MP, states and urgent needs.",
     "partyFormation": "How the rest of the party walks behind the leader on the map.",
-    "musicArtistDisplay": "Whether the game tells you what music is playing and who made it."
+    "musicArtistDisplay": "Whether the game tells you what music is playing and who made it.",
+    "battleMusicName": "Which track plays when a fight starts. Random draws a different one of the tracks below at the start of every battle."
   },
   "descState": {
     "partyFormation": [
-      "Close: the old marching column. Everyone walks in the leader's exact footsteps, one tile apart, and never stops for anything.",
-      "Loose: they live their own lives around you, wandering, looking at things, washing, eating, playing and striking up conversations with the locals, and sometimes simply walking along with you. Walking near them leaves them to it; only someone carried off the screen comes back, and they swim after you if there is water in the way. Sprint for two seconds and they form the column behind you, until you stop sprinting. They are gathered up again after a battle, a transfer or a change of map. Face one and press OK to talk to them."
+      "Close: everyone marches in the leader's footsteps, one tile apart.",
+      "Loose: they wander and live their own lives around you. Sprint for two seconds to form the column; they regroup after a battle or a map change. Face one and press OK to talk."
     ],
     "enemySpawnMode": [
-      "Balanced: enemies match your party. Roamers stay at or below your level, and each world tile hides one boss well above it.",
-      "Distance from spawn: the whole local wildlife is out there, at any level. How hard a place is comes from the place itself - how far it lies from the square you started the game on - so the ground you began on stays as gentle as the year allows, the far side of the map is lethal however strong you get, and the farthest square from your own start is the top of the roster. What is near that level is what you usually meet, and anything else stays possible but rare. Each nation and each biome holds its own roster, and a tile still hides one boss. A world begun by higher-level characters starts its gradient at their level instead of at 1.",
-      "Chaos: nothing is held back. Anything from level 1 to 110 roams anywhere, and every time you step onto a procedural map its monsters are dealt again."
+      "Distance from spawn: difficulty comes from the place, not from you. Levels rise the further a tile lies from where you started. Each nation and biome has its own roster, and every tile hides a boss.",
+      "Party Level: enemies match your party. Roamers stay at or below your level; each tile hides one boss above it. The safest option.",
+      "Biome: anything living here can appear, any level up to 100, all equally likely. The place decides what you meet, never how hard it is.",
+      "Chaos: levels 1-110 roam anywhere, any biome. Procedural maps redeal their monsters on every entry."
     ],
     "musicArtistDisplay": [
-      "First time: the cassette, but only the first time you ever hear a track. Anything it has already introduced plays unannounced. Changing this setting wipes the list of tracks it remembers, so the whole library introduces itself again.",
-      "Every time: a tape with the track handwritten on its label winds itself into the corner of the screen for a few seconds, whenever the music comes round again. Never in a fight, and never twice for the same track inside five minutes.",
-      "Minimal: the track and its artist appear in the usual corner notification.",
-      "Off: the music plays unannounced."
+      "First time: announced only the first time you hear a track. Changing this setting resets what it remembers.",
+      "Every time: a labelled tape slides in whenever the track returns. Never in battle, never twice within five minutes.",
+      "Minimal: track and artist in the usual corner notification.",
+      "Off: no announcement."
     ]
   }
 }

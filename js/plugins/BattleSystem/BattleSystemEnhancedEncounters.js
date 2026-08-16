@@ -1037,12 +1037,19 @@
     // ========================================================================
     // 4b. SPAWN MODE (level selection on top of the nation-weighted pool)
     // ========================================================================
-    // Spawn mode (ConfigManager.enemySpawnMode): 0 = Balanced,
-    // 1 = Distance from spawn (default), 2 = Chaos.
+    // Spawn mode (ConfigManager.enemySpawnMode): 0 = Distance from spawn
+    // (default), 1 = Party Level, 2 = Biome, 3 = Chaos.
     //
-    //   Balanced  - the biome's own fauna, out of a band opening upward from
+    //   PartyLevel- the biome's own fauna, out of a band opening upward from
     //               the party's own median level (see getBalancedLevelBand),
     //               plus a single boss above that band once per world map tile.
+    //               Called 'balanced' internally, which is what it does: it is
+    //               the one mode that keeps the world matched to the party.
+    //   Biome     - the biome's whole roster, flat. Every creature whose
+    //               <Biome:> tag names this place is equally likely, at any
+    //               level up to 100, and neither the party nor the ground has
+    //               any say in it. The calendar is the only limit that still
+    //               bites (nothing under level 80 from 2012).
     //   Distance  - "distance from spawn", and the name is the whole rule: what
     //               a place fields is decided by the PLACE, which is to say by
     //               how far the world square underfoot lies from the square the
@@ -1068,19 +1075,20 @@
     // Every mode keeps the nation-seeded distribution: the country the player is
     // in decides which enemies are absent / rare / common there, and the mode
     // decides which slice of that weighted pool is on the table. Every mode is
-    // then put through the calendar (applyEraToBand), and the special-biome
-    // guarantee (section 4a) sits above all three.
+    // then put through the calendar, and the special-biome guarantee
+    // (section 4a) sits above all four.
     // ------------------------------------------------------------------
     // The stored setting is the INDEX, not the name, so renaming a mode here
-    // costs no migration (see GameOptions.js, enemySpawnMode).
-    const SPAWN_MODES = ['balanced', 'distance', 'chaos'];
+    // costs no migration - REORDERING one does (see GameOptions.js,
+    // enemySpawnMode, and its enemySpawnModeV3 marker).
+    const SPAWN_MODES = ['distance', 'balanced', 'biome', 'chaos'];
     // Distance from spawn is what the world is written for: the one mode where
-    // the map itself says how dangerous a place is. GameOptions defaults the
-    // stored setting to the same index.
-    const DEFAULT_SPAWN_MODE = 1;
+    // the map itself says how dangerous a place is, so it leads the list.
+    // GameOptions defaults the stored setting to the same index.
+    const DEFAULT_SPAWN_MODE = 0;
 
     // The modes that hide one encounter far above the band on each world tile.
-    // Chaos needs no help.
+    // Biome and Chaos need no help: neither holds anything back to begin with.
     const BOSS_MODES = ['balanced', 'distance'];
 
     BSE.Helpers.getSpawnMode = function() {
@@ -1089,7 +1097,8 @@
     };
 
     // The reference level a mode builds its band and its weighting around.
-    // Balanced and Chaos read the party; Distance reads the ground, and only
+    // Party Level reads the party, and so do Biome and Chaos on paper - their
+    // bands ignore the number they are handed. Distance reads the ground, and only
     // falls back to the party where no world square can be resolved at all -
     // and that fallback carries the calendar itself (the gradient it is
     // standing in for has the year built into both its ends), so a party that
@@ -1105,6 +1114,8 @@
         switch (mode) {
             case 'distance':
                 return BSE.Helpers.getDistanceLevelBand(refLevel);
+            case 'biome':
+                return BSE.Helpers.getBiomeLevelBand();
             case 'chaos':
                 return BSE.Helpers.getChaosLevelBand();
             default:
@@ -1118,7 +1129,7 @@
         if (mode === 'distance') {
             return BSE.Helpers.filterTroopsInDistanceBracket(encList, band);
         }
-        if (mode === 'chaos') {
+        if (mode === 'chaos' || mode === 'biome') {
             return BSE.Helpers.filterTroopsInLevelBand(encList, band);
         }
         return BSE.Helpers.filterTroopsInBalancedBand(encList, band);
@@ -1230,6 +1241,30 @@
             if (found.length > 0) return found;
         }
         return encList;
+    };
+
+    // Biome mode: the place's whole roster, with no level window at all.
+    //
+    // The band is deliberately the widest one any mode produces - level 1 to
+    // BIOME_MODE_CEILING - because the mode's whole idea is that a biome fields
+    // everything that lives in it and nothing above decides which of it you are
+    // "ready" for. The pool it is applied to is still the biome's own fauna
+    // (see the candidate list in spawnEnemiesFromEncounters), so what widens is
+    // the level range, never the roster.
+    //
+    // The calendar is the one rule it does not escape: from 2012 nothing under
+    // level 80 is left standing anywhere, so the collapse band is handed back
+    // unchanged. Before that the floor stays at 1 - a biome mode that pushed
+    // its own floor up with the year would be Party Level wearing a different
+    // name.
+    const BIOME_MODE_CEILING = 100;
+
+    BSE.Helpers.getBiomeLevelBand = function() {
+        const era = BSE.Helpers.getSpawnEra();
+        if (era.key === 'collapse') {
+            return { min: ERA_COLLAPSE_FLOOR, max: Infinity, center: ERA_COLLAPSE_FLOOR * 1.6 };
+        }
+        return { min: 1, max: BIOME_MODE_CEILING, center: BIOME_MODE_CEILING / 2 };
     };
 
     // Chaos mode: the whole ladder, every time. The era cap does not apply
@@ -1405,10 +1440,20 @@
     //                     so the maximum distance always reaches the maximum
     //                     level wherever the party began.
     //
-    // The anchor is captured once, the first time the party stands anywhere
-    // that resolves to a world square after character creation is finished (see
-    // the Game_Map.setup hook), and kept in the save from then on. Nothing
-    // moves it afterwards: setting a respawn point in the wait menu
+    // The anchor is written once, by the origin the player picked, at the
+    // moment that origin settles where the party begins: every origin in
+    // CharacterCreation states its own square (the procedural one it just
+    // built, the town of the map it transfers into, the space center for the
+    // starts that never touch Earth), and the picker origins - which do not
+    // know their square until the player names a place - are anchored by
+    // FastTravelSystem as it lands them (ccAnchorStart there). captureStartAnchor
+    // below is the net under all of it, for a save with no origin behind it (a
+    // preset dossier, the tutorial, a save made before origins wrote anchors):
+    // it takes the first square the party stands on that resolves at all, and
+    // never touches an anchor that is already there.
+    //
+    // Once written it is kept in the save and nothing moves it: setting a
+    // respawn point in the wait menu
     // (TimeDateSystemUI -> TimeDateSystem.setSleepRespawnPoint) writes
     // Variables 25/26/27 and $gameSystem._respawnPointSet, which are where the
     // party wakes up after a defeat and have no bearing on where they BEGAN.
@@ -1457,12 +1502,12 @@
     };
 
     // The square a party that never stood on Earth is measured from: the Green
-    // Witch Space Center, 61,138. The space origin lifted off from it, the
-    // crash-landed origin was on its way back to it, and the castaway origin is
-    // pinned to it as well - a castaway's "home" is the place they were trying
-    // to reach, not the beach the sea left them on, which is what makes a
-    // remote coast a dangerous place to wash up rather than the safest square
-    // in the world.
+    // Witch Space Center, 61,138. The space origin lifted off from it and the
+    // crash-landed origin was on its way back to it, so it is the one square on
+    // Earth either of them can honestly call home. Every origin that DOES stand
+    // on an Earth square is measured from that square instead, the castaway's
+    // remote coast included: where a party begins is where the world is gentle,
+    // whether or not they chose to begin there.
     BSE.Helpers.getSpaceCenterCoords = function() {
         return destinationBase('GreenWitchSpaceCenter', SPACE_CENTER_FALLBACK);
     };
@@ -1566,14 +1611,19 @@
         return BSE.Helpers.getSpaceCenterCoords();
     };
 
-    // Write the anchor down deliberately. Character creation calls this for the
-    // origins whose starting SQUARE says nothing about where they are from -
-    // the two that begin off Earth and the castaway, who is measured from the
-    // place they were trying to reach (see getSpaceCenterCoords). Called at the
-    // end of the origin step, which is also what stops captureStartAnchor from
-    // overwriting it later: an anchor that is already set is never touched
+    // Write the anchor down deliberately. This is how every origin states where
+    // its party is from, in the origin step itself (CharacterCreation's anchorAt
+    // / anchorAtSpaceCenter / anchorAtPlace) or at the landing for the picker
+    // origins that only learn their square there (FastTravelSystem's
+    // ccAnchorStart). Writing it also stops captureStartAnchor from claiming
+    // whatever map loads first: an anchor that is already set is never touched
     // again, so a space start that eventually lands in Tokyo does not quietly
     // adopt Tokyo as the place it grew up.
+    //
+    // The only callers are those creation paths. Nothing in play calls it: the
+    // anchor belongs to the savegame and cannot be changed once the party has
+    // begun, which is what makes the gradient a map of the world rather than a
+    // reading of where the party happens to be standing.
     BSE.Helpers.setStartAnchor = function(x, y) {
         if (!$gameSystem) return;
         if (typeof x !== 'number' || typeof y !== 'number') return;
@@ -1585,10 +1635,13 @@
         BSE.Helpers.setStartAnchor(c.x, c.y);
     };
 
-    // Remember where the world was entered, once. Called on every map load; it
-    // takes the first square the party stands on after character creation has
-    // finished ($gameSystem._hasCompletedFirstCreation, set at the end of the
-    // origin step), which is where their origin put them. Nothing captured
+    // Remember where the world was entered, once - the net under the origins,
+    // which write their own anchor as they land (see setStartAnchor), for the
+    // starts that go through no origin step at all: a preset dossier, the
+    // tutorial, a save made before origins wrote anchors. Called on every map
+    // load; it takes the first square the party stands on after character
+    // creation has finished ($gameSystem._hasCompletedFirstCreation, set at the
+    // end of the origin step), which is where their origin put them. Nothing captured
     // during creation itself, nothing recaptured for a later party, and nothing
     // ever overwritten - not by walking, not by fast travel, and not by the
     // respawn point the wait menu sets.
@@ -1597,16 +1650,15 @@
     // several origins land in two moves: the picker origins pop back onto the
     // starting train (map 557, which answers for a world square of its own)
     // and only open their destination picker a frame later, and the vehicle
-    // origins go on to a parked camper. Anything captured in between would
-    // record the train the wizard was run on as the place the party is from.
-    // Every one of those landings is in flight for exactly as long as one of
-    // these flags is up.
+    // origins go on to a procedural square with the vehicle parked beside them.
+    // Anything captured in between would record the train the wizard was run on
+    // as the place the party is from. Every one of those landings is in flight
+    // for exactly as long as one of these flags is up.
     function creationLandingPending() {
         const t = $gameTemp;
         if (!t) return false;
         return !!(t._openCharacterCreationTrainTravel || t._characterCreationTravelMode ||
-            t._ccVehicleStart || t._ccEmptyLotStart || t._ccLostConvokerStart ||
-            t._ccStrandedStart || t._ccBikeStart);
+            t._ccVehicleFieldStart);
     }
 
     BSE.Helpers.captureStartAnchor = function() {
@@ -2159,8 +2211,10 @@
         const towerFloorLevel = BSE.Helpers.getTowerFloorLevel();
         const spawnModeForPool = towerFloorLevel ? 'chaos' : BSE.Helpers.getSpawnMode();
         // What the mode measures everything against: the party's own level in
-        // Balanced and Chaos, the ground the party is standing on in Distance
-        // (how far it lies from where they began, see getPlaceLevel).
+        // Party Level and Chaos, the ground the party is standing on in
+        // Distance (how far it lies from where they began, see getPlaceLevel).
+        // Biome measures against nothing, so the reference level it is handed
+        // never reaches its band.
         const poolRefLevel = towerFloorLevel ||
             BSE.Helpers.getModeRefLevel(spawnModeForPool, BSE.Helpers.getPartyReferenceLevel());
         if (!useAuthoredList && $gameParty.members().length > 0) {
@@ -2202,12 +2256,15 @@
             //     stands to the level of the ground itself; which levels are
             //     actually on the table is the bracket's decision, applied
             //     below by filterTroopsForMode;
+            //   biome - flat over the biome's own roster: the nation is not
+            //     consulted and no level is preferred over another, so every
+            //     resident of the place is drawn as often as every other;
             //   chaos - flat, because that is the mode.
             const buildFromTroops = candidateIds => {
                 const list = [];
                 candidateIds.forEach(id => {
                     let weight;
-                    if (spawnModeForPool === 'chaos') {
+                    if (spawnModeForPool === 'chaos' || spawnModeForPool === 'biome') {
                         weight = 1;
                     } else if (spawnModeForPool === 'distance') {
                         // No level cap here on purpose: what distance cuts off

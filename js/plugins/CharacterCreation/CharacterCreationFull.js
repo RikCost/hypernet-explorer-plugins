@@ -26,7 +26,7 @@
  * hands the member over to the Empathize panel (NPC/NPCEmpathizeUI.js) opened
  * on their own profile, with an extra "Create" tab that makes every field of
  * that profile editable: humanoid or creature, name, gender, class, level,
- * portrait, sprite, hometown, age, nation of birth, traits, specializations,
+ * portrait, sprite, age, nation of birth, traits, specializations,
  * personality, ideology, faction, wealth, morality, romantic and sexual
  * orientation, reproduction, and a re-roll of the backstory and life history.
  * Every other tab of the panel (Info, History, Biologics, Health, Romance,
@@ -97,6 +97,15 @@
   // already has its own dedicated "specsRandom" row right below it.
   const RAND_ROW_EXCLUDE = new Set(["specializations"]);
 
+  // A picker with more options than this gets a search box over its list. Below
+  // it the whole list is on screen at once and a box would only be in the way.
+  const PICKER_SEARCH_MIN_OPTIONS = 10;
+
+  // Rows a picker builds at once. The specialization search answers out of all
+  // 800 of them, and a one-letter query still leaves hundreds: past this the
+  // list is asking for a narrower query rather than a longer page.
+  const PICKER_MAX_ROWS = 60;
+
   //===========================================================================
   // Localization + small HTML helpers
   //===========================================================================
@@ -108,6 +117,19 @@
     return String(str ?? "")
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  // Search over a picker's options. Both halves of a row are matched, since the
+  // subtitle is where a specialization's tier and a nation's description live,
+  // and every word of the query has to land somewhere so "master cook" finds
+  // the cooking a character has mastered.
+  function filterOptions(options, query) {
+    const terms = String(query).toLowerCase().split(/\s+/).filter(Boolean);
+    if (!terms.length) return options;
+    return options.filter((option) => {
+      const haystack = `${option.label || ""} ${option.sub || ""}`.toLowerCase();
+      return terms.every((term) => haystack.includes(term));
+    });
   }
 
   function iconSpan(iconIndex, size) {
@@ -139,6 +161,9 @@
     resumeStep: -1,
     // Name the profile is filed under, so a rename can carry the edits over.
     profileName: "",
+    // Class + traits the specialization budget was last spent against, or null
+    // before the member has been opened once. See resetSpecPointsIfBuildChanged.
+    specBuild: null,
   };
 
   // The wizard is still underneath the panel on the scene stack. A session that
@@ -246,6 +271,40 @@
     if (!actor) return;
     actor.changeLevel(level, false);
     actor.recoverAll();
+  }
+
+  //---------------------------------------------------------------------------
+  // Wealth
+  //---------------------------------------------------------------------------
+  // The band a character was raised in, which is a fact about them and not a
+  // reading of the party purse. It is written to BOTH fields: wealthTierChosen
+  // is the choice, kept forever, and wealthTierBase is what every other reader
+  // of the profile already looks at. NPCSociety's party-member sync recomputes
+  // wealthTierBase from the purse on every read, and defers to the chosen band
+  // while the purse is still empty, which is the whole of character creation.
+  function applyWealth(profile, tier) {
+    if (!profile) return;
+    const clamped = Math.max(0, Math.min(4, Number(tier) || 0));
+    profile.wealthTierChosen = clamped;
+    profile.wealthTierBase = clamped;
+  }
+
+  function wealthTier(profile) {
+    if (!profile) return 0;
+    return profile.wealthTierChosen != null ? profile.wealthTierChosen : (profile.wealthTierBase || 0);
+  }
+
+  function wealthLabel(tier) {
+    return [TE("destitute"), TE("poor"), TE("workingClass"), TE("middleClass"), TE("wealthy")][tier] || "";
+  }
+
+  // What this band puts into the party purse at the end of creation, spelled the
+  // way the game spells money. window.CharacterCreationMoney is the wizard's own
+  // table, so the row and the payout can never drift apart.
+  function wealthMoneyLabel(tier) {
+    const money = window.CharacterCreationMoney;
+    if (!money || !money.formatWealth) return "";
+    return money.formatWealth(tier);
   }
 
   // Blood type is otherwise rolled once from the actor's name the first time
@@ -430,12 +489,13 @@
     return profile._specOverrides;
   }
 
-  // The level this specialization is already at for free, from the class the
-  // character has and the traits they carry (SpecializationMenu's classStart /
-  // traitStart tables). It costs nothing and is a floor: points buy levels
-  // above it, and a character can never be taken below what their class and
-  // traits already grant them.
-  function specFloor(specId) {
+  // The free head start this specialization comes with, whole: what the class
+  // the character has and the traits they carry grant it (SpecializationMenu's
+  // classStart / traitStart tables). It is handed over for nothing, and it is
+  // what a level is measured against , levels above it are bought with points,
+  // and levels below it are SOLD BACK for points, which is the only way a
+  // character ends up knowing less than their class and traits would give them.
+  function specGrant(specId) {
     const actor = editedActor();
     if (!actor) return 1;
     const fromClass = actor.specializationClassBonus ? actor.specializationClassBonus(specId) : 1;
@@ -443,67 +503,93 @@
     return Math.max(1, fromClass || 1, fromTraits || 1);
   }
 
-  // Effective level: the floor, or whatever was bought on top of it.
+  // How much of that head start is currently taken (see
+  // Game_Actor#specializationGrantedLevel): the whole of it until some of it is
+  // traded away.
+  function specKeptGrant(specId) {
+    const actor = editedActor();
+    if (actor && actor.specializationGrantedLevel) return actor.specializationGrantedLevel(specId);
+    return specGrant(specId);
+  }
+
+  // Effective level: the kept head start, or whatever was bought on top of it.
   function specLevel(specId) {
     const actor = editedActor();
     if (actor && actor.specializationLevel) return actor.specializationLevel(specId);
-    return Math.max(specFloor(specId), specOverrides()[specId] || 1);
+    return Math.max(specKeptGrant(specId), specOverrides()[specId] || 1);
   }
 
   // Leaving a level costs that level's number of points, so the ladder from
   // Untrained to Master is 1 + 2 + 3 + 4 = 10 and the last steps are the dear
-  // ones. Starting from a class or trait floor, the steps below it are free.
+  // ones. Dropping back down a level refunds exactly what it cost.
   function specStepCost(level) {
     return Math.max(1, level);
   }
 
-  function specSpanCost(from, to) {
+  // What standing at `level` is worth, counted from Untrained. The difference
+  // between two of these is the price of moving between them, in either
+  // direction.
+  function specTotalCost(level) {
     let total = 0;
-    for (let level = from; level < to; level++) total += specStepCost(level);
+    for (let step = 1; step < level; step++) total += specStepCost(step);
     return total;
   }
 
-  function specPointsSpent() {
+  // Every specialization this character has spent or refunded points on: the
+  // ones trained above their grant, and the ones whose grant was signed away.
+  function touchedSpecIds() {
     const actor = editedActor();
-    if (!actor || !actor._specLevels) return 0;
+    if (!actor) return [];
+    const ids = new Set();
+    Object.keys(actor._specLevels || {}).forEach((key) => ids.add(Number(key)));
+    Object.keys(actor._specGrantsKept || {}).forEach((key) => ids.add(Number(key)));
+    return Array.from(ids);
+  }
+
+  // Net spend: what every touched specialization is worth now, less what it was
+  // worth for free. A specialization taken below its grant contributes a
+  // negative number, which is the refund that pays for another one.
+  function specPointsSpent() {
     let spent = 0;
-    Object.keys(actor._specLevels).forEach((key) => {
-      const specId = Number(key);
-      const bought = actor._specLevels[key] || 1;
-      const floor = specFloor(specId);
-      if (bought > floor) spent += specSpanCost(floor, bought);
+    touchedSpecIds().forEach((specId) => {
+      spent += specTotalCost(specLevel(specId)) - specTotalCost(specGrant(specId));
     });
     return spent;
   }
 
   function specPointsLeft() {
-    return Math.max(0, SPEC_POINT_BUDGET - specPointsSpent());
+    return SPEC_POINT_BUDGET - specPointsSpent();
   }
 
-  // Writes the bought level. Anything at or below the free floor is stored as
-  // nothing, so the floor is never paid for and never counted as spent.
+  // Writes a specialization's level, from either side of its free grant: below
+  // it the grant itself is what is being given up (nothing is trained), at or
+  // above it the grant is taken whole and the levels over it are bought.
   function applySpecLevel(specId, level) {
     const actor = editedActor();
-    const floor = specFloor(specId);
+    if (!actor) return;
+    const grant = specGrant(specId);
     const target = Math.max(1, Math.min(5, level));
-    if (actor && actor.setSpecializationTrainedLevel) {
-      actor.setSpecializationTrainedLevel(specId, target <= floor ? 1 : target);
+    if (actor.setSpecializationGrantKept) {
+      actor.setSpecializationGrantKept(specId, target < grant ? target : null);
+    }
+    if (actor.setSpecializationTrainedLevel) {
+      actor.setSpecializationTrainedLevel(specId, target > grant ? target : 1);
     }
     const overrides = specOverrides();
-    if (target <= floor) delete overrides[specId];
+    if (target === grant) delete overrides[specId];
     else overrides[specId] = target;
     const profile = editedProfile();
     if (profile) delete profile._specCache;
   }
 
   // One click raises a specialization by one level if the points are there;
-  // clicking a Master hands every point back and drops it to its free floor.
-  // Answers false when the step could not be paid for.
-  function cycleSpecLevel(specId) {
-    const floor = specFloor(specId);
+  // clicking a Master hands every point back, the bought levels and the free
+  // head start alike, and leaves it Untrained. Answers false when the step
+  // could not be paid for.
+  function raiseSpecLevel(specId) {
     const current = specLevel(specId);
     if (current >= 5) {
-      applySpecLevel(specId, floor);
+      applySpecLevel(specId, 1);
       return true;
     }
     if (specStepCost(current) > specPointsLeft()) return false;
@@ -511,43 +597,70 @@
     return true;
   }
 
-  // Changing the class or the traits moves the free floors underneath what was
-  // already bought, which can leave a character overspent. Walk the dearest
-  // levels back down until the budget balances again; a floor that rose simply
-  // absorbs the level for free.
-  function reconcileSpecPoints() {
-    const actor = editedActor();
-    if (!actor || !actor._specLevels) return;
-    let guard = 200;
-    while (specPointsSpent() > SPEC_POINT_BUDGET && guard-- > 0) {
-      let dearestId = null;
-      let dearest = 0;
-      Object.keys(actor._specLevels).forEach((key) => {
-        const specId = Number(key);
-        const level = specLevel(specId);
-        if (level > specFloor(specId) && level > dearest) {
-          dearest = level;
-          dearestId = specId;
-        }
-      });
-      if (dearestId == null) break;
-      applySpecLevel(dearestId, dearest - 1);
-    }
+  // The other direction, which is how a free level is turned into points spent
+  // elsewhere. Answers false at Untrained, where there is nothing left to give.
+  function lowerSpecLevel(specId) {
+    const current = specLevel(specId);
+    if (current <= 1) return false;
+    applySpecLevel(specId, current - 1);
+    return true;
   }
 
-  // Spend the whole budget at random, on top of whatever the class and traits
-  // already grant: floors are never touched, only levels above them are bought.
-  function randomizeSpecializations() {
+  // Everything the character was given back to what it was given as, and every
+  // point back in hand. The class and the traits are what the free grants are
+  // read off, so changing either makes every trade made against the old ones
+  // meaningless: the budget starts again rather than being patched up.
+  function resetSpecPoints() {
     const actor = editedActor();
-    if (!actor || !window.Specializations || !window.Specializations.ready) return;
+    if (!actor) return;
     Object.keys(actor._specLevels || {}).forEach((key) => {
       actor.setSpecializationTrainedLevel(Number(key), 1);
     });
+    if (actor.clearSpecializationGrantsKept) actor.clearSpecializationGrantsKept();
     const profile = editedProfile();
     if (profile) {
       profile._specOverrides = {};
       delete profile._specCache;
     }
+    // The budget now stands against whatever the build is right now, so a
+    // reset made from inside the panel is not taken for a change on the way
+    // back in.
+    Session.specBuild = specBuildSignature();
+  }
+
+  // The class and the trait set the current spend was budgeted against. A
+  // change to either resets the points (see resetSpecPoints).
+  function specBuildSignature() {
+    const actor = editedActor();
+    if (!actor) return "";
+    const classId = actor.currentClass() ? actor.currentClass().id : 0;
+    const traits = actorTraits()
+      .map((trait) => trait && trait.id)
+      .filter((id) => id != null)
+      .sort((a, b) => a - b);
+    return classId + ":" + traits.join(",");
+  }
+
+  // Resets the budget when, and only when, the build it was spent against has
+  // moved. Called on every return into the panel (a class browser or trait
+  // selector visit rebuilds the scene) and after the in-panel trait reroll.
+  function resetSpecPointsIfBuildChanged() {
+    const signature = specBuildSignature();
+    if (Session.specBuild === signature) return false;
+    // Nothing to reset the first time a member is opened: the signature is
+    // simply being recorded.
+    const known = Session.specBuild !== null;
+    Session.specBuild = signature;
+    if (known) resetSpecPoints();
+    return known;
+  }
+
+  // Spend the whole budget at random, on top of whatever the class and traits
+  // already grant: grants are taken whole, only levels above them are bought.
+  function randomizeSpecializations() {
+    const actor = editedActor();
+    if (!actor || !window.Specializations || !window.Specializations.ready) return;
+    resetSpecPoints();
     const pool = window.Specializations.list;
     if (!pool.length) return;
     // Each pass buys one level of a random specialization it can still afford.
@@ -634,6 +747,8 @@
     // floors those two just settled.
     randomizeSpecializations();
     randomizeBloodType();
+    // The hometown is no longer a row the player picks, but NPCSociety and the
+    // dossiers still read $gameSystem._ccHometown, so it is rolled here.
     const towns = hometownList();
     if (towns.length) $gameSystem._ccHometown = pick(towns);
     const band = pick(AGE_BANDS);
@@ -652,7 +767,7 @@
         profile.factionIndex = Math.random() < 0.25
           ? Math.floor(Math.random() * data.factions.length) : -1;
       }
-      profile.wealthTierBase = Math.floor(Math.random() * 5);
+      applyWealth(profile, Math.floor(Math.random() * 5));
       profile.moralityScore = Math.floor(Math.random() * 201) - 100;
     }
     const nations = nationList();
@@ -734,10 +849,6 @@
       title: T("detailed.section.origins"),
       rows: [
         {
-          id: "hometown", label: TE("hometownLbl"),
-          value: $gameSystem._ccHometown || T("detailed.unset"), kind: "pick",
-        },
-        {
           id: "age", label: T("detailed.row.age"),
           value: currentAge() != null ? `${currentAge()} ${TE("yearsAbbr")}` : T("detailed.unset"),
           kind: "pick",
@@ -755,7 +866,25 @@
       rows: [
         { id: "traits", label: TE("traits"), value: traitList, kind: "open" },
         { id: "traitsRandom", label: T("detailed.row.traitsRandom"), value: "", kind: "run" },
-        { id: "specializations", label: TE("specializations"), value: specSummary(), kind: "pick" },
+      ],
+    });
+
+    // Its own section, and deliberately downstream of both the class (Identity)
+    // and the traits (Talents): those two are what the free head starts are read
+    // off, so changing either hands every point back and the spend has to be
+    // made again. Spending first and picking a class after would only be work
+    // thrown away.
+    sections.push({
+      title: TE("specializations"),
+      rows: [
+        {
+          id: "specializations", label: T("detailed.row.specPoints"),
+          // The points left lead the row: they are what the section is for, and
+          // the summary of what they went on follows them.
+          value: T("detailed.specPointsShort", { left: specPointsLeft(), total: SPEC_POINT_BUDGET }) +
+            " · " + specSummary(),
+          kind: "pick",
+        },
         { id: "specsRandom", label: T("detailed.row.specsRandom"), value: "", kind: "run" },
       ],
     });
@@ -771,7 +900,6 @@
     const personalities = (data && data.personalities) || [];
     const ideologies = (data && data.ideologies) || [];
     const factions = (data && data.factions) || [];
-    const wealthLabels = [TE("destitute"), TE("poor"), TE("workingClass"), TE("middleClass"), TE("wealthy")];
     sections.push({
       title: T("detailed.section.society"),
       rows: [
@@ -787,7 +915,11 @@
         },
         {
           id: "wealth", label: T("detailed.row.wealth"),
-          value: wealthLabels[(profile && profile.wealthTierBase) || 0] || "", kind: "pick",
+          // Named with the money it brings to the party purse, since that is
+          // what choosing it actually does (see wealthStartingMoney in
+          // CharacterCreation.js).
+          value: `${wealthLabel(wealthTier(profile))} · ${wealthMoneyLabel(wealthTier(profile))}`,
+          kind: "pick",
         },
         {
           id: "morality", label: T("detailed.row.morality"),
@@ -870,25 +1002,57 @@
     }).filter(Boolean).join(" / ") || String(archetype);
   }
 
+  // What this character is actually good at, best first. Only what they are
+  // trained in is named: a specialization whose free head start was signed away
+  // has been touched, but the character is Untrained in it and there is nothing
+  // to boast about.
   function specSummary() {
-    const overrides = specOverrides();
-    const ids = Object.keys(overrides);
-    if (!ids.length || !window.Specializations || !window.Specializations.ready) {
-      return T("detailed.unset");
-    }
-    return ids.slice(0, 3).map((id) => {
-      const spec = window.Specializations.byId.get(Number(id));
+    if (!window.Specializations || !window.Specializations.ready) return T("detailed.unset");
+    const trained = touchedSpecIds()
+      .map((specId) => ({ specId: specId, level: specLevel(specId) }))
+      .filter((entry) => entry.level > 1)
+      .sort((a, b) => b.level - a.level);
+    if (!trained.length) return T("detailed.unset");
+    const named = trained.slice(0, 3).map((entry) => {
+      const spec = window.Specializations.byId.get(entry.specId);
       return spec ? window.Specializations.displayName(spec) : "";
-    }).filter(Boolean).join(", ") + (ids.length > 3 ? ` +${ids.length - 3}` : "");
+    }).filter(Boolean).join(", ");
+    return named + (trained.length > 3 ? ` +${trained.length - 3}` : "");
   }
 
   //===========================================================================
   // Pickers
   //===========================================================================
 
+  // One specialization as a picker row. Where the character stands, what the
+  // next level up costs, and what their class and traits handed them for free,
+  // which is the part the "−" chip can sell back.
+  function specOption(spec) {
+    const level = specLevel(spec.id);
+    const grant = specGrant(spec.id);
+    const cost = level >= 5
+      ? T("detailed.specRefund")
+      : T("detailed.specCost", { n: specStepCost(level) });
+    const granted = grant > 1
+      ? " " + T("detailed.specGranted", { level: window.Specializations.levelName(grant) })
+      : "";
+    return {
+      key: String(spec.id),
+      label: window.Specializations.displayName(spec),
+      sub: `${window.Specializations.levelName(level)} · ${cost}${granted}`,
+      disabled: level < 5 && specStepCost(level) > specPointsLeft(),
+      // Anything above Untrained can be given back, whether it was bought or
+      // handed over, and the points go back in the pot.
+      lower: level > 1 ? T("detailed.specLower", { n: specStepCost(level - 1) }) : null,
+    };
+  }
+
   // Every picker answers with a flat list of { key, label, sub }. The scene
   // keeps the open picker in _ccPicker and calls back into apply() with the key.
-  function buildPicker(id, arg) {
+  // `query` is whatever is in the picker's search box: only the specialization
+  // list looks at it (a search there crosses categories), and everything else
+  // is filtered on the answer rather than building a different one.
+  function buildPicker(id, arg, query) {
     const bank = orientationBank();
     const data = societyData();
     switch (id) {
@@ -929,17 +1093,6 @@
           }),
         };
       }
-      case "hometown":
-        return {
-          title: TE("hometownLbl"),
-          options: [{ key: "__random", label: T("detailed.random") }].concat(
-            hometownList().map((town) => ({
-              key: town,
-              label: window.WorkSystem && window.WorkSystem.destinationName
-                ? window.WorkSystem.destinationName(town) : town,
-            }))
-          ),
-        };
       case "age":
         return {
           title: T("detailed.row.age"),
@@ -982,8 +1135,13 @@
       case "wealth":
         return {
           title: T("detailed.row.wealth"),
-          options: [TE("destitute"), TE("poor"), TE("workingClass"), TE("middleClass"), TE("wealthy")]
-            .map((label, index) => ({ key: String(index), label: label, icon: 314 })),
+          note: T("detailed.wealthNote"),
+          options: [0, 1, 2, 3, 4].map((tier) => ({
+            key: String(tier),
+            label: wealthLabel(tier),
+            sub: wealthMoneyLabel(tier),
+            icon: 314,
+          })),
         };
       case "morality":
         return {
@@ -1023,6 +1181,17 @@
         // they are being spent.
         const budget = T("detailed.specPoints", { left: specPointsLeft(), total: SPEC_POINT_BUDGET });
         if (!arg) {
+          // Searching the categories would only ever find one of seventeen
+          // words, which is not what somebody typing "cooking" is after: as
+          // soon as there is a query the screen becomes the whole roster of
+          // 800, and the categories are the way in when there is not.
+          if (query) {
+            return {
+              title: T("detailed.pickCategory"),
+              note: budget,
+              options: window.Specializations.list.map(specOption),
+            };
+          }
           const categories = window.Specializations.categories && window.Specializations.categories.length
             ? window.Specializations.categories
             : [...new Set(window.Specializations.list.map((s) => s.category).filter(Boolean))];
@@ -1039,20 +1208,7 @@
           note: budget,
           options: window.Specializations.list
             .filter((spec) => spec.category === arg)
-            .map((spec) => {
-              const level = specLevel(spec.id);
-              const floor = specFloor(spec.id);
-              const cost = level >= 5
-                ? T("detailed.specRefund")
-                : T("detailed.specCost", { n: specStepCost(level) });
-              const granted = floor > 1 ? " " + T("detailed.specGranted", { level: window.Specializations.levelName(floor) }) : "";
-              return {
-                key: String(spec.id),
-                label: window.Specializations.displayName(spec),
-                sub: `${window.Specializations.levelName(level)} · ${cost}${granted}`,
-                disabled: level < 5 && specStepCost(level) > specPointsLeft(),
-              };
-            }),
+            .map(specOption),
         };
       }
       default:
@@ -1082,11 +1238,6 @@
       case "bloodType":
         applyBloodType(key);
         return false;
-      case "hometown": {
-        const towns = hometownList();
-        $gameSystem._ccHometown = key === "__random" ? pick(towns) : key;
-        return false;
-      }
       case "age": {
         const band = key === "__random" ? pick(AGE_BANDS) : AGE_BANDS.find((b) => b.key === key);
         if (band) applyAge(band.lo + Math.floor(Math.random() * (band.hi - band.lo + 1)));
@@ -1109,7 +1260,7 @@
         if (profile) profile.factionIndex = Number(key);
         return false;
       case "wealth":
-        if (profile) profile.wealthTierBase = Number(key);
+        applyWealth(profile, Number(key));
         return false;
       case "morality":
         if (profile) profile.moralityScore = Number(key);
@@ -1122,14 +1273,17 @@
         applyReproduction(Number(key));
         return false;
       case "specializations": {
-        if (!arg) {
+        if (!arg && !/^\d+$/.test(key)) {
           if (key === "__randomize") {
             randomizeSpecializations();
             return true; // stay on the category list, points readout refreshes
           }
           return { arg: key }; // drilled into a category
         }
-        if (!cycleSpecLevel(Number(key))) SoundManager.playBuzzer();
+        // A specialization, either from inside a category or straight off the
+        // search results the category screen shows while a query is typed
+        // (buildPicker), which is why a numeric key is taken here too.
+        if (!raiseSpecLevel(Number(key))) SoundManager.playBuzzer();
         return true; // stay in the list so several can be raised in a row
       }
       default:
@@ -1146,7 +1300,13 @@
   // decide whether they are being driven by a paused wizard, and here they are
   // not, they are being driven by this editor and must simply pop back to it.
   function clearWizardResume() {
-    if (window.Scene_CharacterCreation) window.Scene_CharacterCreation._interruptedStep = -1;
+    const SC = window.Scene_CharacterCreation;
+    if (!SC) return;
+    SC._interruptedStep = -1;
+    // A chain of screens the wizard was still owed belongs to the run this
+    // editor took over from; leaving one queued would have the next rebuilt
+    // wizard open it out of nowhere.
+    if (SC.clearSubScreens) SC.clearSubScreens();
   }
 
   function openNameInput() {
@@ -1249,6 +1409,9 @@
       Session.resumeStep = CCSteps.BIRTHDATE != null ? CCSteps.BIRTHDATE : -1;
       const actor = editedActor();
       Session.profileName = actor ? actor.name() : "";
+      // A member of their own: whatever the one before them spent their points
+      // against says nothing about this one.
+      Session.specBuild = null;
       // The creature switch can still be carrying a previous playthrough's
       // answer, so it is squared with the class this member actually has
       // before the first row is drawn.
@@ -1281,6 +1444,8 @@
       Session.active = false;
       if (window.Scene_CharacterCreation && Session.resumeStep >= 0) {
         window.Scene_CharacterCreation._interruptedStep = Session.resumeStep;
+        // Forward, not Back: the editor was finished, not backed out of.
+        window.Scene_CharacterCreation._resumeOnStep = false;
       }
     },
   };
@@ -1307,9 +1472,9 @@
         Session.profileName = actor.name();
       }
       syncTraitsToProfile();
-      // A class change (the class browser) or a new trait set moves the free
-      // specialization floors, so the budget is squared up on the way back in.
-      reconcileSpecPoints();
+      // A class change (the class browser) or a new trait set moves every free
+      // grant the points were spent against, so the budget starts over.
+      resetSpecPointsIfBuildChanged();
     }
     _create.call(this);
   };
@@ -1339,6 +1504,8 @@
   const _setTab = Scene_NPCEmpathize.prototype._setTab;
   Scene_NPCEmpathize.prototype._setTab = function (tab) {
     this._ccPicker = null;
+    this._ccPickerQuery = "";
+    this._ccSearchFocused = false;
     if (isEditing(this)) Session.tab = tab;
     _setTab.call(this, tab);
   };
@@ -1381,7 +1548,7 @@
 
   Scene_NPCEmpathize.prototype._buildCCPickerHTML = function () {
     const picker = this._ccPicker;
-    const data = buildPicker(picker.id, picker.arg);
+    const data = buildPicker(picker.id, picker.arg, this._ccPickerQuery || "");
     if (!data) return this._buildCCEditorHTML();
 
     let html = `<div class="npc-back-btn"
@@ -1393,19 +1560,54 @@
     if (!data.options.length) {
       return html + `<p style="opacity:0.6;font-style: normal;">${esc(T("detailed.noOptions"))}</p>`;
     }
-    data.options.forEach((option) => {
+
+    // A list long enough to have to be hunted through gets a search box. The
+    // nations, the ideologies, the factions and every
+    // specialization category are all in the hundreds; the four-option pickers
+    // are not, and a box over them would only be in the way.
+    const query = this._ccPickerQuery || "";
+    const searchable = data.options.length > PICKER_SEARCH_MIN_OPTIONS;
+    if (searchable) {
+      html += `<input type="text" class="npc-cc-search" id="npc-cc-search"
+           placeholder="${esc(T("detailed.search"))}" value="${esc(query)}"
+           oninput="SceneManager._scene._ccPickerSearch(this.value)"
+           onmousedown="event.stopPropagation()">`;
+    }
+    const matches = searchable && query ? filterOptions(data.options, query) : data.options;
+    if (!matches.length) {
+      return html + `<p style="opacity:0.6;font-style: normal;">${esc(T("detailed.noMatches"))}</p>`;
+    }
+    // Searching the specializations from the category screen has all 800 of
+    // them to answer with, and a broad query still leaves hundreds. Only the
+    // first screenful is built; anything past that is asking for a better
+    // query, not a longer page.
+    const options = matches.slice(0, PICKER_MAX_ROWS);
+    const hidden = matches.length - options.length;
+
+    options.forEach((option) => {
       // Town and nation keys carry spaces and apostrophes, so the key travels
       // through the inline handler encoded and is decoded on the way back.
       // encodeURIComponent leaves an apostrophe alone, which would close the
       // handler's string literal ("Ma'at City"), so that one is forced.
       const key = encodeURIComponent(String(option.key)).replace(/'/g, "%27");
+      // A level that can be given back carries its own chip, the way the
+      // editor rows carry their reroll button: the row itself always raises.
+      const lowerBtn = option.lower
+        ? `<span class="npc-cc-row-rand"
+             onmousedown="event.stopPropagation();SceneManager._scene._ccLowerOption('${key}')"
+             title="${esc(option.lower)}">−</span>`
+        : "";
       html += `<div class="npc-cc-row${option.disabled ? " npc-cc-row--spent" : ""}"
            onmousedown="event.stopPropagation();SceneManager._scene._ccPickOption('${key}')">
         <span class="npc-cc-row-lbl">${option.icon ? iconSpan(option.icon, 16) + " " : ""}${esc(option.label)}</span>
         ${option.sub ? `<span class="npc-cc-row-sub">${esc(option.sub)}</span>` : ""}
+        ${lowerBtn}
         <span class="npc-cc-row-arrow">✓</span>
       </div>`;
     });
+    if (hidden > 0) {
+      html += `<div class="npc-cc-hint">${esc(T("detailed.moreMatches", { n: hidden }))}</div>`;
+    }
     return html;
   };
 
@@ -1427,7 +1629,7 @@
       case "traitsRandom":
         if (window.randomizeTraitsForActor) window.randomizeTraitsForActor(Session.actorId);
         syncTraitsToProfile();
-        reconcileSpecPoints();
+        resetSpecPointsIfBuildChanged();
         break;
       case "specsRandom": randomizeSpecializations(); break;
       case "bloodTypeRandom": randomizeBloodType(); break;
@@ -1439,6 +1641,8 @@
       default:
         if (buildPicker(id, null)) {
           this._ccPicker = { id: id, arg: null };
+          this._ccPickerQuery = "";
+          this._ccSearchFocused = false;
           this._contentIndex = 0;
         }
     }
@@ -1467,12 +1671,37 @@
     const result = applyPick(this._ccPicker.id, key, this._ccPicker.arg);
     if (result && result.arg !== undefined) {
       this._ccPicker = { id: this._ccPicker.id, arg: result.arg };
+      // Drilling into a category is a new list, so the search starts clean.
+      this._ccPickerQuery = "";
       this._contentIndex = 0;
     } else if (!result) {
       this._ccPicker = null;
+      this._ccPickerQuery = "";
       this._contentIndex = 0;
     }
-    // A picker that stays open (specializations) keeps its cursor where it is.
+    // A picker that stays open (specializations) keeps its cursor, and its
+    // search, where they are.
+    this._render();
+  };
+
+  // The "−" chip on a specialization row: one level back down, the points
+  // returned to the pot. Levels a class or a trait granted go the same way,
+  // which is how they are turned into points spent somewhere else.
+  Scene_NPCEmpathize.prototype._ccLowerOption = function (encodedKey) {
+    if (!isEditing(this) || !this._ccPicker || this._ccPicker.id !== "specializations") return;
+    let key = encodedKey;
+    try { key = decodeURIComponent(encodedKey); } catch (e) { /* raw key */ }
+    if (lowerSpecLevel(Number(key))) SoundManager.playOk();
+    else SoundManager.playBuzzer();
+    this._render();
+  };
+
+  // Typing in a picker's search box. The list is rebuilt around the query and
+  // the caret is put back where it was, since _render() replaces the field.
+  Scene_NPCEmpathize.prototype._ccPickerSearch = function (value) {
+    if (!isEditing(this) || !this._ccPicker) return;
+    this._ccPickerQuery = value || "";
+    this._ccSearchFocused = true;
     this._render();
   };
 
@@ -1481,6 +1710,8 @@
     SoundManager.playCancel();
     // Drilled into a specialization category: back up to the category list.
     this._ccPicker = this._ccPicker.arg ? { id: this._ccPicker.id, arg: null } : null;
+    this._ccPickerQuery = "";
+    this._ccSearchFocused = false;
     this._contentIndex = 0;
     this._render();
   };
@@ -1499,9 +1730,28 @@
   Scene_NPCEmpathize.prototype._contentItems = function () {
     if (isEditing(this) && this._activeTab === CC_TAB) {
       if (!this._rightEl) return [];
-      return Array.from(this._rightEl.querySelectorAll(".npc-cc-row, .npc-back-btn"));
+      // The search box is one of the stops, so a long list can be narrowed
+      // without a mouse.
+      return Array.from(this._rightEl.querySelectorAll(".npc-cc-row, .npc-back-btn, .npc-cc-search"));
     }
     return _contentItems.call(this);
+  };
+
+  // Confirming a row dispatches a mousedown, which a text field does nothing
+  // with: the search box wants focus instead, and typing takes over from there
+  // (the panel's input loop stands down while a field inside it is focused).
+  const _activateContent = Scene_NPCEmpathize.prototype._activateContent;
+  Scene_NPCEmpathize.prototype._activateContent = function () {
+    if (isEditing(this) && this._activeTab === CC_TAB) {
+      const el = this._contentItems()[this._contentIndex];
+      if (el && el.classList.contains("npc-cc-search")) {
+        SoundManager.playOk();
+        this._ccSearchFocused = true;
+        el.focus();
+        return;
+      }
+    }
+    _activateContent.call(this);
   };
 
   const _contentBack = Scene_NPCEmpathize.prototype._contentBack;
@@ -1520,7 +1770,34 @@
   const _render = Scene_NPCEmpathize.prototype._render;
   Scene_NPCEmpathize.prototype._render = function () {
     _render.call(this);
-    if (!isEditing(this) || !this._leftEl) return;
+    if (!isEditing(this)) return;
+    // Every keystroke in a picker's search box rebuilds the list, and with it
+    // the field: put the focus and the caret back, or the second letter of a
+    // query would be typed into nothing. Escape hands the panel back its keys.
+    const search = this._rightEl && this._rightEl.querySelector(".npc-cc-search");
+    if (search && this._ccSearchFocused) {
+      // Keep the in-panel cursor on the field being typed into, so the
+      // highlight (and the scroll it drags along) does not walk off to the row
+      // at index 0 on every keystroke.
+      const index = this._contentItems().indexOf(search);
+      if (index >= 0) this._contentIndex = index;
+      if (document.activeElement !== search) {
+        search.focus();
+        const end = search.value.length;
+        try { search.setSelectionRange(end, end); } catch (e) { /* not selectable */ }
+      }
+    }
+    if (search) {
+      search.onkeydown = (event) => {
+        if (event.key !== "Escape" && event.key !== "Enter") return;
+        event.preventDefault();
+        event.stopPropagation();
+        this._ccSearchFocused = false;
+        search.blur();
+      };
+      search.onblur = () => { this._ccSearchFocused = false; };
+    }
+    if (!this._leftEl) return;
     // Clicking the portrait is the shortest way into the sprite grid, which is
     // also where the bust gallery and the 3D editor are reached from.
     const wrap = this._leftEl.querySelector(".npc-portrait-wrap");

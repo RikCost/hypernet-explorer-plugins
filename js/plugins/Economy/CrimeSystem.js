@@ -310,6 +310,10 @@
     const legacyHeatVariableId = parseInt(parameters['legacyHeatVariable'] || 0);
     const displayDuration = parseInt(parameters['displayDuration'] || 300);
 
+    // Raised only for the duration of CrimeSystem's own write to the heat
+    // variable; see the Game_Variables.setValue guard at the bottom of the file.
+    let writingHeat = false;
+
     // ======================================================================
     // Wanted heat
     // ======================================================================
@@ -680,7 +684,7 @@
                 this.syncLegacyHeat();
                 return next;
             }
-            $gameVariables.setValue(heatVariableId, next);
+            this.writeHeat(next);
             this.syncLegacyHeat();
             // The officer pages are conditioned on it, so the map has to
             // re-read them for a chase to start or stop.
@@ -697,8 +701,28 @@
             if ($gameMap) $gameMap.requestRefresh();
         }
 
+        // The only door through the setValue guard. Everything that moves the
+        // wanted level goes through setHeat, and setHeat goes through here.
+        static writeHeat(value) {
+            writingHeat = true;
+            try {
+                $gameVariables.setValue(heatVariableId, value);
+            } finally {
+                writingHeat = false;
+            }
+        }
+
         static clearHeat() {
             return this.setHeat(0);
+        }
+
+        // A new party is cold, and so is one whose savegame was written while
+        // some other system was scribbling in the variable.
+        static resetHeat() {
+            if (!$gameVariables) return;
+            this.writeHeat(0);
+            if ($gameSystem) $gameSystem._crimeHeatMinute = this.worldMinute();
+            this.syncLegacyHeat();
         }
 
         static isWanted() {
@@ -1175,6 +1199,9 @@
         // A new party starts with a clean sheet even when the session has one
         // loaded already: playerCrimes is a window global, not save data.
         window.playerCrimes = [];
+        // ...and cold. Variables come up at 0 on a new game, but say it out
+        // loud so a new party is never born wanted.
+        CrimeSystem.resetHeat();
     };
 
     // The record travels in the binary save; the variable, the heat and the
@@ -1183,6 +1210,31 @@
     DataManager.extractSaveContents = function (contents) {
         _DataManager_extractSaveContents.call(this, contents);
         CrimeSystem.syncBounty();
+    };
+
+    // ----------------------------------------------------------------------
+    // The heat variable belongs to CrimeSystem and to nothing else
+    // ----------------------------------------------------------------------
+    // A plain project variable is writable by anything, and something did:
+    // ItemSystemEquipment stored actor 3's stealth in 131 (a leftover from
+    // before the pv* actor fields), so equipping a jacket set the party's
+    // wanted level and the police chased a party with an empty record. That
+    // call is gone, but the wanted level is not the sort of thing that should
+    // be one stray setValue away from a manhunt: from here it only moves for a
+    // crime committed, an officer's line of sight, or a sentence served, all
+    // of which come through setHeat. Anyone else is refused and told why.
+    const _Game_Variables_setValue = Game_Variables.prototype.setValue;
+    Game_Variables.prototype.setValue = function (variableId, value) {
+        if (variableId === heatVariableId && !writingHeat) {
+            console.warn(
+                `CrimeSystem: blocked a write of ${value} to the police heat ` +
+                `(Variable ${heatVariableId}) from outside the crime system. ` +
+                `Use CrimeSystem.setHeat()/clearHeat(), or move whatever wants ` +
+                `this variable onto one of its own.`
+            );
+            return;
+        }
+        _Game_Variables_setValue.apply(this, arguments);
     };
 
     const _DataManager_makeSaveContents = DataManager.makeSaveContents;

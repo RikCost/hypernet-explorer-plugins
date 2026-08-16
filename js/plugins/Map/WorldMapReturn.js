@@ -1409,6 +1409,21 @@
         return wasUnderground;
     }
 
+    // Biomes that exist only at the top: nothing in Biomes.json names them as
+    // its lowerLayer, so standing in one means standing on the surface however
+    // the layer stack reads. Computed once off the biome table.
+    let _surfaceOnlyCache = null;
+    function isSurfaceOnlyBiome(biomeName) {
+        if (!biomeName) return false;
+        if (!_surfaceOnlyCache) {
+            const list = (window.WorldGen && window.WorldGen.Biomes) || [];
+            if (!list.length) return false;
+            _surfaceOnlyCache = new Set();
+            list.forEach(b => { if (b && b.lowerLayer) _surfaceOnlyCache.add(b.lowerLayer); });
+        }
+        return !_surfaceOnlyCache.has(biomeName);
+    }
+
     Game_System.prototype.clearProcGenData = function() {
         if (!this._procGenData) return;
         this._procGenData.generatedMapData     = null;
@@ -3126,7 +3141,19 @@
             if (!$gameParty.hasItem(item)) { $gameMessage.add(T('WorldMapReturn.needDivingSuit')); return; }
         }
         if (procGenData.biomeLayerStack && procGenData.biomeLayerStack.length > 0) {
-            logWarn('GoDown: Already underground.'); return;
+            // A raised stack under a surface-only biome (Ocean, Fields, ...) is
+            // stale data, not a party underground: an ascent that never popped,
+            // an older save. Taken at face value it refuses every descent from
+            // that square for the rest of the game -- diving off an Ocean square
+            // stops working with nothing but a console line to say why. The
+            // party is demonstrably standing on the surface, so believe the
+            // biome and flatten the stack instead of refusing.
+            if (isSurfaceOnlyBiome(procGenData.currentBiome)) {
+                logWarn(`GoDown: stale layer stack under surface biome "${procGenData.currentBiome}" -- surfacing it.`);
+                surfaceProcGenLayers(procGenData);
+            } else {
+                logWarn('GoDown: Already underground.'); return;
+            }
         }
         if (!procGenData.currentBiome) procGenData.currentBiome = 'Cave';
 

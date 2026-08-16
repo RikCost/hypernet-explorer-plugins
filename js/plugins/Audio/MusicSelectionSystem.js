@@ -19,6 +19,10 @@
  * - Persistent music selection via ConfigManager
  * - Bilingual support (English/Italian)
  *
+ * Battle music can also be left to chance: the "Random" entry (right under
+ * "None") draws a different one of the tracks below, custom ones included, at
+ * the start of every battle.
+ *
  * Available Battle Music:
  * - Drums (RandomMind/Battle)
  * - Shortcuts (ZaneMusic/shortcuts)
@@ -38,6 +42,7 @@
 
   // Special sentinel values
   const MUSIC_NONE     = "__none__";
+  const MUSIC_RANDOM   = "__random__";
   const MUSIC_MAP      = "__map__";
 
   // Folder (under audio/bgm/) players can drop their own battle tracks into.
@@ -46,6 +51,7 @@
   // Music tracks available for selection
   const MUSIC_TRACKS = [
     { get name() { return T('MusicSelection.trackNone'); },              value: MUSIC_NONE, composer: "" },
+    { get name() { return T('MusicSelection.trackRandom'); },            value: MUSIC_RANDOM, composer: "" },
     { get name() { return T('MusicSelection.trackMap'); }, value: MUSIC_MAP,  composer: "" },
     { name: "Drums", value: "RandomMind/Battle", composer: "RandomMind" },  // i18n-ignore  bgm track, named after its file
     { name: "Shortcuts", value: "ZaneMusic/shortcuts", composer: "ZaneMusic" },  // i18n-ignore  bgm track, named after its file
@@ -124,10 +130,56 @@
       : "RandomMind/Battle";
   };
 
+  // ---------------------------------------------------------------------------
+  // Random track ("Random" entry, sits right under None)
+  // ---------------------------------------------------------------------------
+  // Every real file in the list, sentinels excluded. Player-supplied tracks in
+  // audio/bgm/BattleMusic are already in MUSIC_TRACKS by now, so they take part
+  // in the draw like any shipped one.
+  function playableTracks() {
+    return MUSIC_TRACKS.filter(t =>
+      t.value !== MUSIC_NONE && t.value !== MUSIC_MAP && t.value !== MUSIC_RANDOM);
+  }
+
+  // What Random resolved to for the battle currently starting. Drawn once per
+  // battle, in BattleManager.setup: playBattleBgm runs twice for a normal
+  // encounter (once under the encounter flash, once in Scene_Battle.start), and
+  // drawing per call would swap the track mid-transition.
+  let _randomPick = null;
+
+  function rollRandomTrack() {
+    let pool = playableTracks().map(t => t.value);
+    if (pool.length === 0) { _randomPick = null; return null; }
+    // Never twice in a row while there is anything else to pick.
+    if (pool.length > 1 && _randomPick) {
+      const rest = pool.filter(v => v !== _randomPick);
+      if (rest.length) pool = rest;
+    }
+    _randomPick = pool[Math.randomInt(pool.length)];
+    return _randomPick;
+  }
+
+  // Turn a stored selection into something playable. None and Map pass through
+  // as themselves (their callers special-case them); Random becomes this
+  // battle's draw. Anything else is already a bgm file name.
+  function resolveBattleBgmName(selection) {
+    const sel = selection !== undefined ? selection : ConfigManager.battleMusicName;
+    if (sel !== MUSIC_RANDOM) return sel;
+    return _randomPick || rollRandomTrack();
+  }
+
+  // One draw per battle. MapBattleMode's in-place fights go through setup too,
+  // so both battle paths reroll.
+  const _BattleManager_setup = BattleManager.setup;
+  BattleManager.setup = function (troopId, canEscape, canLose) {
+    _BattleManager_setup.call(this, troopId, canEscape, canLose);
+    if (ConfigManager.battleMusicName === MUSIC_RANDOM) rollRandomTrack();
+  };
+
   // Apply battle music when battle starts
   const _BattleManager_playBattleBgm = BattleManager.playBattleBgm;
   BattleManager.playBattleBgm = function () {
-    const sel = ConfigManager.battleMusicName;
+    const sel = resolveBattleBgmName();
     if (sel === MUSIC_NONE) {
       AudioManager.stopBgm();
     } else if (sel === MUSIC_MAP) {
@@ -139,6 +191,15 @@
     }
   };
 
+  // Audition a selection from a menu. Random draws a fresh example so the entry
+  // demonstrates itself instead of going silent.
+  function previewTrackValue(value, volume) {
+    const sel = value === MUSIC_RANDOM ? rollRandomTrack() : value;
+    if (sel === MUSIC_NONE) AudioManager.stopBgm();
+    else if (sel === MUSIC_MAP || !sel) { /* leave whatever is playing */ }
+    else AudioManager.playBgm({ name: sel, volume: volume, pitch: 100, pan: 0 });
+  }
+
   // Plugin command
   PluginManager.registerCommand(pluginName, "openMusicSelectionWindow", () => {
     if (window.Scene_MusicSelection) SceneManager.push(window.Scene_MusicSelection);
@@ -146,23 +207,16 @@
 
   // Add Battle Music option to Options menu
   if (window.GameOptions) {
-    window.GameOptions.registerOption('battleMusicName', T('MusicSelection.battleMusic'),
+    // The label is passed as a getter, not a resolved string: the option is
+    // registered once at boot, and a fixed string would keep the boot language
+    // after the player switches language in the very same menu.
+    window.GameOptions.registerOption('battleMusicName', () => T('MusicSelection.battleMusic'),
       () => ConfigManager.battleMusicName,
       function(value) { ConfigManager.battleMusicName = value; ConfigManager.save(); },
       'audio', 'custom',
       function(value) { return this.battleMusicStatusText(); },
-      function() { this.changeBattleMusic(); },
-      function() {
-        const currentIndex = MUSIC_TRACKS.findIndex(t => t.value === ConfigManager.battleMusicName);
-        const nextIndex = (currentIndex - 1 + MUSIC_TRACKS.length) % MUSIC_TRACKS.length;
-        const next = MUSIC_TRACKS[nextIndex];
-        ConfigManager.battleMusicName = next.value;
-        ConfigManager.save();
-        if (next.value === MUSIC_NONE) { AudioManager.stopBgm(); }
-        else if (next.value !== MUSIC_MAP) { AudioManager.playBgm({ name: next.value, volume: 60, pitch: 100, pan: 0 }); }
-        this.redrawItem(this.findSymbol('battleMusicName'));
-        this.playCursorSound();
-      }
+      function() { this.changeBattleMusic(1); },
+      function() { this.changeBattleMusic(-1); }
     );
   } else {
     const _Window_Options_addGeneralOptions = Window_Options.prototype.addGeneralOptions;
@@ -191,17 +245,26 @@
     return track ? track.name : "RandomMind/Battle";
   };
 
-  Window_Options.prototype.changeBattleMusic = function () {
-    const currentIndex = MUSIC_TRACKS.findIndex(t => t.value === ConfigManager.battleMusicName);
-    const nextIndex = (currentIndex + 1) % MUSIC_TRACKS.length;
-    const next = MUSIC_TRACKS[nextIndex];
+  // Step the selection one entry either way. A stored value that is no longer in
+  // the list (a custom file the player deleted) reads as index -1, which would
+  // step to the second entry going forwards and the second-to-last going back,
+  // so it is pinned to the head of the list first.
+  Window_Options.prototype.changeBattleMusic = function (dir) {
+    const step = dir === -1 ? -1 : 1;
+    let currentIndex = MUSIC_TRACKS.findIndex(t => t.value === ConfigManager.battleMusicName);
+    if (currentIndex < 0) currentIndex = 0;
+    const next = MUSIC_TRACKS[(currentIndex + step + MUSIC_TRACKS.length) % MUSIC_TRACKS.length];
     ConfigManager.battleMusicName = next.value;
-    if (next.value === MUSIC_NONE) { AudioManager.stopBgm(); }
-    else if (next.value !== MUSIC_MAP) { AudioManager.playBgm({ name: next.value, volume: 60, pitch: 100, pan: 0 }); }
+    ConfigManager.save();
+    previewTrackValue(next.value, 60);
     this.redrawItem(this.findSymbol("battleMusicName"));
     this.playCursorSound();
   };
 
   // Public API for MusicSelectionSystemUI.js and CharacterCreation.js
-  window.MusicSelectionSystem = { MUSIC_TRACKS, MUSIC_NONE, MUSIC_MAP, getLocalizedText, scanCustomTracks };
+  window.MusicSelectionSystem = {
+    MUSIC_TRACKS, MUSIC_NONE, MUSIC_MAP, MUSIC_RANDOM,
+    getLocalizedText, scanCustomTracks,
+    playableTracks, resolveBattleBgmName, rollRandomTrack, previewTrackValue
+  };
 })();

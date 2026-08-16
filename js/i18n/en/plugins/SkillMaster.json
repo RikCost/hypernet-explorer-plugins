@@ -77,7 +77,7 @@
   "category": {
     "All": "All"
   },
-  "forgeBlurb": "Choose a dominant spell and a recessive component (spell or skill) known by {actor} to fuse them into a new ability. Its MP and AP cost is the sum of the components; the forging itself is paid in Knowledge, priced off what teaching those components would cost. If the recessive is a skill, the result is a skill. Components are forgotten. You hold {knowledge} KP.",
+  "forgeBlurb": "Fuse a dominant spell with a recessive spell or skill from {actor}; a skill recessive makes a skill. Costs the components' MP and AP combined, plus Knowledge to forge, and both are forgotten. You hold {knowledge} KP.",
   "kpMultiplier3x": "3.0X KP",
   "kpMultiplier15x": "1.5X KP",
   "foreignSchool": "SELF-TAUGHT (3x cost)",

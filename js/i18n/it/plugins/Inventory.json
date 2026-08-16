@@ -196,12 +196,12 @@
   "mythic": "Mitico"
  },
  "blurb": {
-  "remedy": "Un'antica estrazione alchemica lavorata da speziali autorizzati. Le diagnostiche standard indicano una concentrazione di erbe vitali sospese in acqua sorgiva purificata, che agisce ricostruendo rapidamente le membrane cellulari e riparando la stabilita neurale sotto stress ambientale severo.",
-  "provision": "Una razione da campo conservata con puri elementi di salgemma. Le linee guida di sopravvivenza raccomandano questa conserva culinaria per prevenire lo sfinimento, soddisfacendo le soglie di apporto calorico senza rischiare pericolose complicazioni da abbuffata.",
-  "armament": "Un pezzo di equipaggiamento marziale da campo, temprato e fuso in forge geotermiche industriali. Inciso con vene runiche interne progettate per accelerare il flusso di Ley direttamente ai riflessi di destrezza e forza a fini di mitigazione in combattimento.",
-  "shield": "Un intreccio composito protettivo stratificato con pesanti strutture di attenuazione degli urti. Formulato per distribuire in sicurezza gli impatti cinetici o termici in arrivo su tutta la biologia organica.",
-  "apparatus": "Un apparato di utilità per esploratori progettato da tecnici esoterici. Combina ingranaggi di precisione e sistemi di scasso delle serrature, assistendo negli scavi ambientali o nelle riparazioni meccaniche in condizioni meteorologiche difficili.",
-  "specimen": "Un esemplare fisico esotico recuperato dalle rovine dei settori profondi. I cataloghi naturalistici standard registrano questo elemento come dotato di frequenze di risonanza ley stabili, assai pregiato tanto dagli alchimisti quanto dai collezionisti tecnici per la sua struttura fisica unica."
+  "remedy": "Un'antica estrazione alchemica di speziali autorizzati: erbe vitali sospese in acqua sorgiva purificata, che ricostruiscono le membrane cellulari e calmano i nervi.",
+  "provision": "Una razione da campo conservata con puro salgemma. Dotazione standard di sopravvivenza contro lo sfinimento, calorica senza rischio di abbuffata.",
+  "armament": "Equipaggiamento marziale da campo temprato in forge geotermiche industriali, inciso con vene runiche che portano il Ley dritto ai riflessi.",
+  "shield": "Un intreccio composito protettivo con pesanti strutture di attenuazione degli urti, che distribuisce sul corpo gli impatti cinetici e termici.",
+  "apparatus": "Un apparato da esploratore fatto di ingranaggi di precisione e sistemi di scasso, pensato per scavi e riparazioni meccaniche col brutto tempo.",
+  "specimen": "Un esemplare esotico recuperato dalle rovine dei settori profondi, catalogato per la sua risonanza ley stabile e pregiato da alchimisti e collezionisti."
  },
  "items": "Oggetti",
  "weight": "Peso",
@@ -255,6 +255,7 @@
   "allPartyCompanions": "Tutti i compagni del gruppo",
   "special": "✦ Speciale: {command}",
   "useItemOn": "Usa {item} su",
+  "eatItem": "Mangia {item}",
   "cancel": "Annulla",
   "inspectionLog": "Registro di ispezione",
   "inspectionPlaceholder": "Seleziona un oggetto dallo zaino a sinistra per esaminarne le proprietà naturali, la composizione chimica e i dettagli meccanici.",

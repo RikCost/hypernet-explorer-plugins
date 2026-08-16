@@ -238,11 +238,12 @@
         r.exp = this._rewards.exp || 0;
         r.gold = this._rewards.gold || 0;
         r.items = this._rewards.items ? this._rewards.items.slice() : [];
-        // The headline and the extra lines belong to the fight that just ended,
-        // never to the one before it.
+        // The headline, the extra lines and the levels gained belong to the
+        // fight that just ended, never to the one before it.
         r.title = null;
         r.lines = [];
         r.entries = [];
+        r.levelUps = [];
     };
 
     // Knowledge from a win is priced by how far above the party the troop was,
@@ -1004,22 +1005,33 @@
         const kp = r ? (r.knowledge || 0) : 0;
         const extra = (r && r.entries) ? r.entries : [];
         const lines = (r && r.lines) ? r.lines : [];
-        if (!r || (r.exp <= 0 && r.gold <= 0 && r.items.length === 0 && kp <= 0 &&
-            !extra.length && !lines.length)) return;
+        const levelUps = (r && r.levelUps) ? r.levelUps : [];
+        const hasSpoils = !!r && (r.exp > 0 || r.gold > 0 || r.items.length > 0 || kp > 0 ||
+            extra.length > 0 || lines.length > 0);
+        if (!r || (!hasSpoils && !levelUps.length)) return;
 
         if (window.ParchmentToast) {
-            window.ParchmentToast.reward({
-                title: r.title || null,
-                exp: r.exp || 0,
-                gold: r.gold || 0,
-                knowledge: kp,
-                lines: lines,
-                entries: (r.items || []).filter(Boolean).map(item => ({ obj: item, qty: 1 })).concat(extra)
+            // Spoils first, the levels they bought after, staggered so they
+            // animate in one at a time instead of landing as a block.
+            const popups = [];
+            if (hasSpoils) {
+                popups.push(() => window.ParchmentToast.reward({
+                    title: r.title || null,
+                    exp: r.exp || 0,
+                    gold: r.gold || 0,
+                    knowledge: kp,
+                    lines: lines,
+                    entries: (r.items || []).filter(Boolean).map(item => ({ obj: item, qty: 1 })).concat(extra)
+                }));
+            }
+            levelUps.forEach(up => {
+                popups.push(() => window.ParchmentToast.levelUp(up.name, up.level, up.skills));
             });
+            window.ParchmentToast.group(popups);
         }
 
         r.exp = 0; r.gold = 0; r.items = []; r.knowledge = 0;
-        r.title = null; r.lines = []; r.entries = [];
+        r.title = null; r.lines = []; r.entries = []; r.levelUps = [];
     };
 
     const _Scene_Map_update = Scene_Map.prototype.update;
@@ -1031,6 +1043,27 @@
     // ========================================================================
     // 12. Game_Actor - onBattleEnd
     // ========================================================================
+
+    // A level gained in a fight is not read out in a message box over the
+    // battle background - with a full party that is a paragraph of "level rose
+    // to" the player has to click through before the map comes back. The lines
+    // are held here and shown on the map as toasts, right after the spoils.
+    // Levels gained anywhere else (quests, tech tree, training) keep the
+    // engine's message box, since nothing is queued to flush them.
+    const _Game_Actor_displayLevelUp = Game_Actor.prototype.displayLevelUp;
+    Game_Actor.prototype.displayLevelUp = function(newSkills) {
+        if (!$gameParty.inBattle()) {
+            _Game_Actor_displayLevelUp.call(this, newSkills);
+            return;
+        }
+        const r = BSE.State.battleRewards;
+        if (!r.levelUps) r.levelUps = [];
+        r.levelUps.push({
+            name: this.name(),
+            level: this.level,
+            skills: (newSkills || []).filter(Boolean)
+        });
+    };
 
     const _Game_Actor_onBattleEnd = Game_Actor.prototype.onBattleEnd;
     Game_Actor.prototype.onBattleEnd = function() {

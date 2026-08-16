@@ -75,14 +75,16 @@
       const saved  = ConfigManager.battleMusicName;
       if (!t) return '';
 
-      const isNone  = t.value === MSS().MUSIC_NONE;
-      const isMap   = t.value === MSS().MUSIC_MAP;
-      const isSaved = t.value === saved;
+      const isNone   = t.value === MSS().MUSIC_NONE;
+      const isMap    = t.value === MSS().MUSIC_MAP;
+      const isRandom = t.value === MSS().MUSIC_RANDOM;
+      const isSaved  = t.value === saved;
 
       let descHTML;
-      if (isNone)     descHTML = `<p class="inspect-lore">${T('MusicSelection.noMusic')}</p>`;
-      else if (isMap) descHTML = `<p class="inspect-lore">${T('MusicSelection.continueMap')}</p>`;
-      else            descHTML = `<p class="inspect-lore">${T('MusicSelection.playingAsBattle')}</p>`;
+      if (isNone)        descHTML = `<p class="inspect-lore">${T('MusicSelection.noMusic')}</p>`;
+      else if (isRandom) descHTML = `<p class="inspect-lore">${T('MusicSelection.randomEachBattle')}</p>`;
+      else if (isMap)    descHTML = `<p class="inspect-lore">${T('MusicSelection.continueMap')}</p>`;
+      else               descHTML = `<p class="inspect-lore">${T('MusicSelection.playingAsBattle')}</p>`;
 
       const compHTML = t.composer
         ? `<div class="inspect-spec-row"><span class="inspect-spec-label">${T('MusicSelection.composer')}</span><span class="inspect-spec-value">${t.composer}</span></div>`
@@ -145,9 +147,8 @@
 
     _previewTrack(track) {
       if (!track) return;
-      if      (track.value === MSS().MUSIC_NONE) AudioManager.stopBgm();
-      else if (track.value === MSS().MUSIC_MAP)  { /* leave map BGM */ }
-      else AudioManager.playBgm({ name: track.value, volume: 60, pitch: 100, pan: 0 });
+      // Random auditions one of its draws rather than staying silent.
+      MSS().previewTrackValue(track.value, 60);
     }
 
     // ── Confirm and save ──────────────────────────────────────
@@ -158,8 +159,7 @@
       ConfigManager.battleMusicName = track.value;
       ConfigManager.save();
       SoundManager.playOk();
-      if      (track.value === MSS().MUSIC_NONE) AudioManager.stopBgm();
-      else if (track.value !== MSS().MUSIC_MAP)  AudioManager.playBgm({ name: track.value, volume: 90, pitch: 100, pan: 0 });
+      MSS().previewTrackValue(track.value, 90);
       // Rebuild left to show new ► marker
       const left = this._el ? this._el.querySelector('.left-page') : null;
       if (left) {

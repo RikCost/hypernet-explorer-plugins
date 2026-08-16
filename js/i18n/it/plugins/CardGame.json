@@ -41,9 +41,7 @@
     "draw": "Pareggio",
     "streak": "{count} di fila.",
     "packWon": "Un pacchetto di carte per la vittoria.",
-    "pickSecondTile": "Ora scegli la casella di destinazione.",
-    "art3D": "Grafica: 3D",
-    "art2D": "Grafica: 2D"
+    "pickSecondTile": "Ora scegli la casella di destinazione."
   },
   "col": {
     "title": "Collezione di carte",

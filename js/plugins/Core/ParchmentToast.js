@@ -255,7 +255,13 @@
     if (!persist) {
       const log = activeBattleLogWindow();
       if (log && typeof log.addToast === "function") {
-        log.addToast(toLogText(text, opts));
+        // plainLog: the line reads as an ordinary combat line in the log, with
+        // no purple toast background behind it.
+        if (opts.plainLog) {
+          log.addText(toLogText(text, opts));
+        } else {
+          log.addToast(toLogText(text, opts));
+        }
         return;
       }
     }
@@ -546,7 +552,43 @@
       severity: opts.severity || "good",
       duration: opts.duration || 180,
       icon: opts.icon,
+      // In battle these arrive between attack lines, so they are drawn like
+      // any other log line instead of as a purple toast.
+      plainLog: true,
       key: `spec:${who}:${name}:${newLevel}`  // i18n-ignore  dedupe key
+    });
+  }
+
+  /**
+   * "Wasmir level rose to 3!" with a line an ability the level taught. A
+   * character level is otherwise read out in a message box, which at the end
+   * of a fight means a wall of text over the battle background: the battle
+   * plugin holds these until the map is back and fires them here, one toast an
+   * actor, right after the spoils.
+   *
+   * levelUp(name, level, newSkills)  - newSkills are skill records or names.
+   */
+  function levelUp(actorName, level, newSkills, opts = {}) {
+    const who = localized(actorName);
+    if (!who || !level) return;
+    const tm = typeof TextManager !== "undefined" ? TextManager : null;
+    const head = tm && tm.levelUp
+      ? tm.levelUp.format(who, tm.level, level)
+      : `${who} ${level}`;
+    let html = `<div class="toast-title">${escapeHtml(head)}</div>`;
+    for (const skill of (newSkills || [])) {
+      const name = localized(typeof skill === "string" ? skill : (skill && skill.name));
+      if (!name) continue;
+      const learned = tm && tm.obtainSkill ? tm.obtainSkill.format(name) : name;
+      const iconIndex = (skill && skill.iconIndex) || 0;
+      html += `<div class="toast-row">${iconIndex ? icon(iconIndex) : ""}` +
+        `<span>${escapeHtml(learned)}</span></div>`;
+    }
+    show(html, {
+      severity: opts.severity || "good",
+      duration: opts.duration || 240,
+      html: true,
+      key: `levelup:${who}:${level}`  // i18n-ignore  dedupe key
     });
   }
 
@@ -561,6 +603,7 @@
     gold,
     need,
     specUp,
+    levelUp,
     icon,
     money
   };

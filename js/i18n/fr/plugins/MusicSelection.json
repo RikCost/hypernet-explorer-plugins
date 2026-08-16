@@ -1,8 +1,10 @@
 {
   "trackNone": "Aucun",
+  "trackRandom": "Aléatoire",
   "trackMap": "",
   "battleMusic": "",
   "noMusic": "",
+  "randomEachBattle": "Un morceau différent est tiré au sort au début de chaque combat.",
   "continueMap": "",
   "playingAsBattle": "",
   "composer": "",

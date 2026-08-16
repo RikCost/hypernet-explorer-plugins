@@ -1512,9 +1512,11 @@
         actor._battlerName = spec.battlerName || '';
         actor._faceName = '';
         actor._faceIndex = 0;
-        // A creature is portrayed by its own battler art rather than by whatever
-        // bust the slot last carried.
+        // A creature is portrayed by its own species — the procedural 3D model
+        // of the enemy it is, falling back to that enemy's battler art — rather
+        // than by whatever bust or custom model the slot last carried.
         if (actor.setVnBust) actor.setVnBust('');
+        if (actor.setPortraitMode) actor.setPortraitMode('sprite');
         if (actor.setVnBattler) actor.setVnBattler(spec.battlerName || '');
         actor._recruitedEnemyId = spec.enemyId || 0;
 

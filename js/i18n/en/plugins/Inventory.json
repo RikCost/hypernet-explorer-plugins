@@ -213,12 +213,12 @@
   "mythic": "Mythic"
  },
  "blurb": {
-  "remedy": "An antique alchemical extraction processed by licensed apothecaries. Standard diagnostics indicate a concentration of vital herbs suspended in purified spring water, acting to rapidly rebuild cellular membranes and repair neural stability under rough environment stress.",
-  "provision": "A field nutrient packet cured with pure rock salt elements. Standard survival guidelines recommend this culinary preservation to prevent exhaustion, satisfying calorie intake thresholds without risking dangerous overeating complications.",
-  "armament": "A tempered piece of martial field equipment cast in industrial geothermal hearths. Etched with internal runic veins designed to accelerate Ley flow directly to dex/strength reflexes for combat mitigation.",
-  "shield": "A protective composite weave layered with heavy shock-mitigation structures. Formulated to spread incoming kinetic or thermal impacts safely across organic biology.",
-  "apparatus": "An explorer utility apparatus designed by esoteric technicians. Combines fine gears and key locks bypass systems, assisting in environmental excavations or mechanical repairs in rough weather conditions.",
-  "specimen": "An exotic physical specimen recovered from deep sector ruins. Standard naturalist catalogs list this element as possessing stable ley-resonance frequencies, highly prized by alchemists and technical collectors alike for its unique physical structure."
+  "remedy": "An antique alchemical extraction from licensed apothecaries: vital herbs suspended in purified spring water, rebuilding cell membranes and steadying the nerves.",
+  "provision": "A field nutrient packet cured with pure rock salt. Standard survival issue against exhaustion, calorie-dense without the risk of overeating.",
+  "armament": "Martial field equipment tempered in industrial geothermal hearths, etched with runic veins that feed Ley straight to the reflexes.",
+  "shield": "A protective composite weave layered with heavy shock-mitigation structures, spreading kinetic and thermal impacts across the body.",
+  "apparatus": "An explorer's utility apparatus of fine gears and lock-bypass systems, built for excavation and mechanical repair in rough weather.",
+  "specimen": "An exotic specimen recovered from deep sector ruins, catalogued for its stable ley-resonance and prized by alchemists and collectors alike."
  },
  "items": "Items",
  "weight": "Weight",
@@ -272,6 +272,7 @@
   "allPartyCompanions": "All Party Companions",
   "special": "✦ Special: {command}",
   "useItemOn": "Use {item} on",
+  "eatItem": "Eat {item}",
   "cancel": "Cancel",
   "inspectionLog": "Inspection Log",
   "inspectionPlaceholder": "Select an item from the backpack on the left to inspect its natural properties, chemical composition, and mechanical details.",

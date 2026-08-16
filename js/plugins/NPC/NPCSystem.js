@@ -4413,6 +4413,49 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     catch (e) { return -1; }
   };
 
+  // The "Hidden" note tag (e.g. a counter noted "Shop Hidden") means: this
+  // event takes part in the simulation but never shows a person on the map.
+  // Blanking the graphic at the point it is written is not enough, because
+  // several passes write one AFTER the spawn transplant did its blanking:
+  // ShopShiftManager stamps the shift persona (and, before the rota exists, a
+  // stand-in face) onto every page and calls setImage, NPCSociety re-applies
+  // the society-assigned sprite, and any page refresh re-derives the graphic
+  // from the page data those passes wrote. Each of them put the face straight
+  // back. Enforce the tag on the event instead, at the two doors every graphic
+  // has to pass through, so whatever writes a sprite the tag still wins.
+  // Deliberately not cached on the event: a placeholder slot's note is
+  // rewritten when an NPC is transplanted onto it (see transplantData), so a
+  // flag decided once would answer for the previous occupant.
+  Game_Event.prototype.isNPCHidden = function () {
+    return Utils.hasHiddenTag(this.event()?.note);
+  };
+
+  // A tile graphic is set dressing (a stall, a crate), not a person, so a
+  // hidden event that carries one keeps it: only the character sheet goes.
+  // Resolved at call time, not captured here: Game_Event has no setImage of its
+  // own, so this hangs a new one off it, and a plugin loaded after this one may
+  // still patch the Game_Character implementation it delegates to.
+  Game_Event.prototype.setImage = function (characterName, characterIndex) {
+    if (this.isNPCHidden()) {
+      if (this._tileId) return;
+      characterName = "";
+      characterIndex = 0;
+    }
+    Game_Character.prototype.setImage.call(this, characterName, characterIndex);
+  };
+
+  const _Game_Event_setupPageSettings = Game_Event.prototype.setupPageSettings;
+  Game_Event.prototype.setupPageSettings = function () {
+    _Game_Event_setupPageSettings.call(this);
+    // setImage above already covers the ordinary path; this catches a page
+    // whose graphic was applied by some other plugin's setupPageSettings
+    // override running after ours.
+    if (!this._tileId && this._characterName && this.isNPCHidden()) {
+      this._characterName = "";
+      this._characterIndex = 0;
+    }
+  };
+
   // Action-button interaction with NPCs that are mid-step.
   // A roster NPC paths continuously (no pause between steps), so a walking NPC's
   // logical tile (_x/_y, advanced immediately by moveStraight or by RMMZ's own

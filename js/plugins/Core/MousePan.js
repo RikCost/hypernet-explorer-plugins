@@ -14,8 +14,8 @@
  * - Standard "Click to move" destination pathfinding is disabled.
 
  * - Click and Drag the mouse to Pan the camera around the map.
- * - Mouse wheel, the + and - keys, or L2/R2 on a controller zoom the camera
- *   on any map.
+ * - Mouse wheel, the + and - keys, or L2/R2 on a controller zoom the camera,
+ *   on the world map (315) only.
  * - Right stick pans the camera, the controller twin of click & drag.
  *
  * Note: If you move the player character using the keyboard or a gamepad
@@ -24,6 +24,11 @@
  */
 
 (() => {
+
+    // The world map sheet. The camera zoom is confined to it, and the event
+    // hover is suppressed on it (WorldMap.js / MapLabels draw their own place
+    // names over the teleport markers).
+    const WORLD_MAP_ID = 315;
 
     // Prevent default context menu to stop browser-like menus appearing on right click
     document.addEventListener('contextmenu', (e) => {
@@ -49,48 +54,14 @@
 
             // Prevent default scrolling behavior
             e.preventDefault();
-        } else {
-            zoomDiag(e);
-            if (isWheelOverMap(e) && cameraZoomAllowed()) {
-                stepCameraZoom(e.deltaY < 0 ? ZOOM_WHEEL_STEP : -ZOOM_WHEEL_STEP, false);
-                zoomDiag(e, true);
-                e.preventDefault();
-            }
+        } else if (isWheelOverMap(e) && cameraZoomAllowed()) {
+            stepCameraZoom(e.deltaY < 0 ? ZOOM_WHEEL_STEP : -ZOOM_WHEEL_STEP, false);
+            e.preventDefault();
         }
     }, { passive: false });
 
-    // TEMPORARY DIAGNOSTIC - remove once the wheel-zoom report is closed.
-    // console.warn is mirrored into debug-log.txt by Debug/ForceConsole.js, so
-    // this reports which gate a scroll fails from the player's own session.
-    let _zoomDiagCount = 0;
-    function zoomDiag(e, after) {
-        if (_zoomDiagCount >= 16) return;
-        _zoomDiagCount++;
-        const t = e.target;
-        const scene = SceneManager._scene;
-        const parts = [
-            'phase=' + (after ? 'after' : 'before'),
-            'target=' + (t ? (t.tagName || '?') + '#' + (t.id || '-') : 'null'),
-            'scene=' + (scene ? scene.constructor.name : 'null'),
-            'overMap=' + isWheelOverMap(e),
-            'allowed=' + cameraZoomAllowed(),
-            'dataMap=' + !!window.$dataMap,
-            'ascii=' + !!(window.AsciiMode && window.AsciiMode.active),
-            'wmFull=' + !!(window.isWorldMapFullscreen && window.isWorldMapFullscreen()),
-            'split=' + !!(window.$gameSplitScreen && window.$gameSplitScreen.active),
-            'panOff=' + !!($gameSystem && $gameSystem._mousePanDisabled),
-            'cameraZoom=' + cameraZoom,
-            'zoomActive=' + cameraZoomActive,
-            'screenZoom=' + ($gameScreen ? $gameScreen.zoomScale() : 'n/a'),
-            'ssScale=' + (scene && scene._spriteset ? scene._spriteset.scale.x : 'n/a'),
-            'mapId=' + ($gameMap && window.$dataMap ? $gameMap.mapId() : 'n/a'),
-            'minZoom=' + (cameraZoomAllowed() ? minCameraZoom() : 'n/a')
-        ];
-        console.warn('[MousePanDiag] ' + parts.join(' '));
-    }
-
     // ------------------------------------------------------------------------
-    // Camera Zoom (mouse wheel + controller L2/R2), every map
+    // Camera Zoom (mouse wheel + controller L2/R2), world map only
     // ------------------------------------------------------------------------
     // The live game camera is zoomed through the engine's own Game_Screen zoom,
     // anchored on the top-left corner rather than the screen centre. With that
@@ -102,12 +73,15 @@
     //
     // The map is never cut when zooming out: the tilemap and the screen-sized
     // layers riding on it are grown to the enlarged viewport so no band is left
-    // unpainted, and the zoom floor keeps the viewport inside the map (or inside
-    // the current region-30 interior). Fog of war needs nothing special - its
-    // canvas already covers the whole map and rides the same scaled spriteset.
+    // unpainted, and the zoom floor keeps the viewport inside the map. Fog of
+    // war needs nothing special - its canvas already covers the whole map and
+    // rides the same scaled spriteset.
     //
-    // This is not the fullscreen "M" map sheet (WorldMap.js), which zooms its
-    // own independent zoomScale and is excluded here.
+    // Only the world map (315) zooms. Everywhere else the camera stays at the
+    // map's native scale: interiors, procedural squares and dungeons are all
+    // authored to be read at 1x, and pulling out there only showed the seams.
+    // This is also not the fullscreen "M" map sheet (WorldMap.js), which zooms
+    // its own independent zoomScale and is excluded here.
     const ZOOM_MIN = 0.5;
     const ZOOM_MAX = 2.5;
     const ZOOM_WHEEL_STEP = 0.1;
@@ -160,6 +134,8 @@
         // where the next map's Scene_Map has already nulled $dataMap but the old
         // one is still the current scene: everything below reads the map's size.
         if (!$dataMap) return false;
+        // The world map is the only map that zooms.
+        if ($gameMap.mapId() !== WORLD_MAP_ID) return false;
         // ASCII mode has its own font-size zoom, handled by the wheel branch above.
         if (window.AsciiMode && window.AsciiMode.active) return false;
         if (window.isWorldMapFullscreen && window.isWorldMapFullscreen()) return false;
@@ -177,9 +153,7 @@
     // Lowest zoom that still keeps the viewport inside the map, so zooming out
     // can never show past its edge. Never above 1: a map smaller than the screen
     // is already letterboxed by the engine at 1x, and forcing a zoom-in there
-    // would change how it has always looked. Interiors fenced off by region-30
-    // dividers do not restrict the zoom - the rooms the player is not in are
-    // painted over instead (see updateInteriorBlackout).
+    // would change how it has always looked.
     function minCameraZoom() {
         const tilesX = $gameMap.width();
         const tilesY = $gameMap.height();
@@ -487,6 +461,17 @@
         if (_dividerMapId === $gameMap.mapId()) return _mapHasDividers;
         _dividerMapId = $gameMap.mapId();
         _mapHasDividers = false;
+        // The world map's region plane holds one country id per tile (see
+        // Countries.json / getWorldRegionId), so its ~320 region-30 tiles are a
+        // nation, not interior walls. Scanning it would fence the camera into
+        // whatever slab of the globe a flood fill happened to reach and black
+        // out the rest - and it is exactly the map the zoom lives on.
+        if ($gameMap.mapId() === WORLD_MAP_ID) {
+            _interiorBounds = null;
+            _interiorTileX = -1;
+            _interiorTileY = -1;
+            return false;
+        }
         const w = $gameMap.width();
         const h = $gameMap.height();
         for (let y = 0; y < h && !_mapHasDividers; y++) {
@@ -855,10 +840,6 @@
 
     // Default horizontal offset. Can be overridden in event notes with <xOffset: number>
     const X_OFFSET = 0;
-
-    // The world map draws its own place names (WorldMap.js / MapLabels), so the
-    // event hover would only repeat them over the teleport markers.
-    const WORLD_MAP_ID = 315;
 
     // Canvas element + scale are cached: getElementById/getBoundingClientRect
     // every frame is expensive. Invalidated on window resize and when the

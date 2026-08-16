@@ -318,6 +318,15 @@
       return $gameMap.regionId(x, y) === 10;
     },
 
+    // Ocean and beach squares are salt water. Both the drink prompt (which says
+    // which of the two is on offer) and the mouthful itself ask this, so they
+    // can never disagree about what the party just drank.
+    isSaltWaterHere() {
+      const biome = $gameSystem._procGenData ? $gameSystem._procGenData.currentBiome : null;
+      const biomeLower = biome ? biome.toLowerCase() : "";
+      return biomeLower.includes("ocean") || biomeLower.includes("beach");
+    },
+
     isClimbableTile(x, y) {
       if (Config.disableClimbing) return false;
       return $gameMap.terrainTag(x, y) === 4;
@@ -820,36 +829,38 @@
     // Ocean/Beach biomes are salt water: drinking makes the party nauseous and
     // takes hunger off the drinker instead of easing it, the way a mouthful of
     // brine actually works on a body. Anywhere else the water is drinkable and
-    // eases hunger a little. What it did to the meters is reported through the
-    // shared toast, since the message box only ever says how it tasted.
+    // eases hunger a little. The whole mouthful is reported through the shared
+    // toast — what was drunk and what it did to the meters — rather than in a
+    // message box the player has to dismiss for every sip.
     performDrinkWater(character) {
-      const currentBiome = $gameSystem._procGenData ? $gameSystem._procGenData.currentBiome : null;
-      const biomeLower = currentBiome ? currentBiome.toLowerCase() : "";
-      const isSaltWater = biomeLower.includes("ocean") || biomeLower.includes("beach");
+      const isSaltWater = Utils.isSaltWaterHere();
       const leader = $gameParty.leader();
 
-      $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
-      window.skipLocalization = true;
       if (isSaltWater) {
         $gameParty.members().forEach(actor => actor.addState(SALT_WATER_STATE_ID));
         if (leader && leader.reduceHunger) leader.reduceHunger(SALT_WATER_HUNGER_COST);
-        $gameMessage.add(T('Movement.drinkSaltWater'));
-        MovementSystem.announceDrink(leader, -SALT_WATER_HUNGER_COST, SALT_WATER_STATE_ID);
+        MovementSystem.announceDrink(leader, T('Movement.drankSaltWater'),
+          -SALT_WATER_HUNGER_COST, SALT_WATER_STATE_ID);
       } else {
         if (leader && leader.addHunger) leader.addHunger(DRINK_HUNGER_GAIN);
-        $gameMessage.add(T('Movement.drinkWater'));
-        MovementSystem.announceDrink(leader, DRINK_HUNGER_GAIN, 0);
+        MovementSystem.announceDrink(leader, T('Movement.drankWater'), DRINK_HUNGER_GAIN, 0);
       }
-      window.skipLocalization = false;
     },
 
-    // The mouthful, read as meters: the hunger the drinker gained or lost, and
-    // (salt water only) the state it left them in, one toast after the other.
-    announceDrink(actor, hungerDelta, stateId) {
+    // The mouthful, read as meters: what was drunk, the hunger the drinker
+    // gained or lost, and (salt water only) the state it left them in, one
+    // toast after the other.
+    announceDrink(actor, text, hungerDelta, stateId) {
       const toast = window.ParchmentToast;
       if (!toast || !toast.need) return;
       const state = stateId ? $dataStates[stateId] : null;
       const popups = [];
+      if (text) {
+        popups.push(() => toast.show(text, {
+          severity: stateId ? 'warning' : 'info',
+          duration: 150
+        }));
+      }
       if (hungerDelta) {
         popups.push(() => toast.need('hunger', hungerDelta, {
           value: actor && actor.hungerPercent ? actor.hungerPercent() : null
@@ -1695,8 +1706,10 @@
       }
 
       // Time actually spent in the water trains Swimming (specialization 267).
+      // The whole party is in the water, not watching the leader swim from the
+      // bank, so everybody earns the full points rather than an onlooker's cut.
       if (this.isMoving() && window.SpecializationXP) {
-        window.SpecializationXP.tick("Swimming", 1, 30, { key: "swim" });
+        window.SpecializationXP.tick("Swimming", 1, 30, { key: "swim", shared: true });
       }
     }
 
@@ -1883,6 +1896,13 @@
 
   Scene_Map.prototype.checkMovementInteraction = function (character) {
     if (!character) return;
+    // Whoever already has the screen keeps the keypress: a message or choice
+    // that is up (including a prompt this very function opened), and the
+    // hotbar's target card, which is HTML and hands its OK back to the map.
+    // Without this, using an item off the quick bar in front of water opened
+    // the swim/dive/drink prompt on the same press that used the item.
+    if ($gameMessage.isBusy()) return;
+    if ($gamePlayer._hotbarTargeting) return;
     const isPlayer = character === $gamePlayer;
 
     if (character._isSwimming) {
@@ -2167,18 +2187,35 @@
     });
   };
 
+  // Sea water is not water: the prompt says so before the mouthful rather than
+  // after it, so "Drink" is never a trap on the coast.
+  const drinkChoiceLabel = () =>
+    Utils.isSaltWaterHere() ? T('Movement.drinkSaltWaterChoice') : T('Movement.drink');
+
   Scene_Map.prototype.showDiveOption = function (character) {
-    const choices = [T('Movement.dive'), T('Movement.drink'), T('Movement.cancel')];
+    const drinkLabel = drinkChoiceLabel();
+    const choices = [T('Movement.dive'), drinkLabel, T('Movement.cancel')];
     $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
     $gameMessage.setChoices(choices, 0, choices.length - 1);
     $gameMessage.setChoiceCallback((index) => {
-      if (index === choices.indexOf(T('Movement.drink'))) {
+      if (index === choices.indexOf(drinkLabel)) {
         MovementSystem.performDrinkWater(character);
         return;
       }
       if (index === choices.indexOf(T('Movement.dive'))) {
+        const interpreter = SceneManager._scene._interpreter || $gameMap._interpreter;
+        if (interpreter && PluginManager.callCommand) {
+          PluginManager.callCommand(interpreter, "WorldMapReturn", "goDown", {});
+        }
 
-        // Hide events on proc map (Ocean biome) except monsters
+        // Hide events on proc map (Ocean biome) except monsters — but only once
+        // the descent has actually been accepted. goDown refuses on its own
+        // terms (no diving suit, no lower layer), and hiding the square's events
+        // before asking left the party standing on an emptied-looking map.
+        if (!$gamePlayer.isTransferring()) {
+          console.warn("MovementInteractionSystem: dive refused - WorldMapReturn goDown reserved no transfer.");
+          return;
+        }
         if (!window.SplitScreenManager || !window.SplitScreenManager.active) {
           $gameMap.events().forEach(event => {
             if (event && event.event()) {
@@ -2189,11 +2226,6 @@
               }
             }
           });
-        }
-
-        const interpreter = SceneManager._scene._interpreter || $gameMap._interpreter;
-        if (interpreter && PluginManager.callCommand) {
-          PluginManager.callCommand(interpreter, "WorldMapReturn", "goDown", {});
         }
       }
     });
@@ -2379,11 +2411,12 @@
     // In split-screen, walking into water auto-starts swimming for both players
     // (see Game_Player.moveByInput override / Player 2 auto-swim entry), so the
     // redundant "Swim" menu option is dropped.
+    const drinkLabel = drinkChoiceLabel();
     const choices = [];
     if (!isMultiplayer) choices.push(T('Movement.swim'));
     if (Utils.hasFishingRod()) choices.push(T('Movement.fish'));
     if ((!isMultiplayer || $gameMap.mapId() !== 636) && $gameParty.hasItem($dataItems[DIVING_SUIT_ITEM_ID])) choices.push(T('Movement.dive'));
-    choices.push(T('Movement.drink'));
+    choices.push(drinkLabel);
     if (canBoat) choices.push(T('Movement.useBoat'));
     choices.push(T('Movement.cancel'));
 
@@ -2394,7 +2427,7 @@
         MovementSystem.enterSwimMode(character);
         // FIX: Move forward into water to prevent immediate exit
         character.moveStraight(character.direction());
-      } else if (index === choices.indexOf(T('Movement.drink'))) {
+      } else if (index === choices.indexOf(drinkLabel)) {
         MovementSystem.performDrinkWater(character);
       } else if (index === choices.indexOf(T('Movement.fish')) && Utils.hasFishingRod()) {
         MovementSystem.performFishing(character);

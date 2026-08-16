@@ -14113,7 +14113,7 @@
       {
         "name": "GrassJungle",
         "terrain": true,
-        "density": 0.6remove also from all other modes the esclusive enemies from
+        "density": 0.6
       },
       {
         "name": "Tree",

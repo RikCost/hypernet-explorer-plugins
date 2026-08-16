@@ -41,9 +41,7 @@
     "draw": "A draw",
     "streak": "{count} in a row.",
     "packWon": "A booster pack for the win.",
-    "pickSecondTile": "Now pick the tile it moves to.",
-    "art3D": "Art: 3D",
-    "art2D": "Art: 2D"
+    "pickSecondTile": "Now pick the tile it moves to."
   },
   "col": {
     "title": "Card Collection",

@@ -1723,9 +1723,17 @@
       // no navigation, cancel, or tab cycling can steal focus from the field.
       if (scene._chatModalOpen) return;
 
+      // Any text field the panel is showing, not the chat box alone: the
+      // detailed creation editor puts a search box over its longer pickers, and
+      // it needs the keyboard for exactly the same reason.
       const ae = document.activeElement;
-      scene._inputFocused = !!(ae && ae.id === 'npc-dlg-ask-input');
-      if (scene._inputFocused) return;
+      const typing = !!ae && (
+        ae.id === 'npc-dlg-ask-input' ||
+        (!!scene._overlay && scene._overlay.contains(ae) &&
+          (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA'))
+      );
+      scene._inputFocused = typing;
+      if (typing) return;
 
       const cancelled = Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled();
 
@@ -2214,8 +2222,18 @@
     _updateSelectionHighlight() {
       if (!this._overlay) return;
       const inActions = this._activeArea === 'actions';
-      this._overlay.querySelectorAll('.npc-chat-action-btn').forEach((el, i) => {
-        el.classList.toggle('npc-action-focused', inActions && i === this._menuIndex);
+      const btns      = this._overlay.querySelectorAll('.npc-chat-action-btn');
+      // A submenu is usually shorter than the verb list it was opened from, so
+      // pull the cursor back onto the last row rather than leave it past the
+      // end of the list, where nothing at all would look selected.
+      if (inActions && this._menuIndex >= btns.length)
+        this._menuIndex = Math.max(0, btns.length - 1);
+      btns.forEach((el, i) => {
+        const on = inActions && i === this._menuIndex;
+        el.classList.toggle('npc-action-focused', on);
+        // The pickers are capped at 45% of the panel and scroll, so the cursor
+        // can walk off the bottom of the visible strip; keep it in the strip.
+        if (on && btns.length > 1) el.scrollIntoView({ block: 'nearest' });
       });
       const inContent = this._activeArea === 'content';
       const items = this._contentItems();

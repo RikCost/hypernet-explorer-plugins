@@ -1045,15 +1045,16 @@
       }
     }
 
-    // Leave without a build. Character creation resumes at
-    // `_interruptedStep + 1`, so stepping that back by one lands the player on
-    // the trait step itself rather than skipping past it: Back means "let me
-    // choose again", not "go on without traits".
+    // Leave without a build. Character creation normally resumes one step AFTER
+    // the one that opened this screen, so backing out asks it to resume ON that
+    // step instead: Back means "let me choose again", not "go on without
+    // traits". (This used to decrement _interruptedStep by hand, which quietly
+    // did nothing when the trait step was the flow's very first one.)
     onTraitsBack() {
       SoundManager.playCancel();
       const SC = window.Scene_CharacterCreation;
-      if (Scene_TraitSelector._returnToCharacterCreation && SC && SC._interruptedStep > 0) {
-        SC._interruptedStep -= 1;
+      if (Scene_TraitSelector._returnToCharacterCreation && SC && SC.cancelSubScreens) {
+        SC.cancelSubScreens();
       }
       Scene_TraitSelector._returnToCharacterCreation = false;
       Scene_TraitSelector._targetActorId = null;

@@ -650,7 +650,7 @@
         // Three modes, and the label names the one that is on: "distance" is
         // the distance-from-spawn mode (BattleSystemEnhancedEncounters,
         // section 4b), which used to be called Realistic.
-        const SPAWN_MODE_LABELS = { balanced: "Balanced", distance: "Distance from spawn", chaos: "Chaos" };
+        const SPAWN_MODE_LABELS = { distance: "Distance from spawn", balanced: "Party Level", biome: "Biome", chaos: "Chaos" };
         const spawnModeLabel = BSEH && BSEH.getSpawnMode
             ? (SPAWN_MODE_LABELS[BSEH.getSpawnMode()] || "?") : "?";
         const eraLabel = spawnEra

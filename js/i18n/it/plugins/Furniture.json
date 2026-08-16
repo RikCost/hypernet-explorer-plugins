@@ -193,10 +193,10 @@
     "WorldMap": "Mappa del mondo"
   },
   "help": {
-    "mouse": "<b>Mouse:</b> fai clic su un pezzo, poi sulla mappa per posarlo (oppure trascinalo). <b>Tieni premuto</b> e trascina per stendere una fila di muri o terreno. Fai clic su un pezzo posato per rimuoverlo, o tieni premuto e trascina per cancellarne una fila.",
-    "pad": "<b>Pad / Tasti:</b> <b>D-pad/Frecce</b> sfoglia · <b>L/R</b> cambia scheda · <b>A/Invio</b> scegli · poi mira con <b>D-pad/Frecce</b>, <b>A/Invio</b> posa (tienilo premuto mentre miri per dipingere), <b>X/Shift</b> capovolgi, <b>B/Esc</b> indietro · <b>Esc</b> esce.",
+    "mouse": "<b>Mouse:</b> clic su un pezzo, poi sulla mappa per posarlo. <b>Tieni premuto</b> e trascina per stendere una fila di muri o terreno. Clic su un pezzo posato per rimuoverlo, o trascina per cancellarne una fila.",
+    "pad": "<b>Pad / Tasti:</b> <b>D-pad/Frecce</b> sfoglia · <b>L/R</b> scheda · <b>A/Invio</b> scegli, poi mira e posa (tieni premuto per dipingere) · <b>X/Shift</b> capovolgi · <b>B/Esc</b> indietro · <b>Esc</b> esce.",
     "armed": "D-pad/Frecce mira &nbsp;·&nbsp; L1/R1 o Rotellina cambia pezzo &nbsp;·&nbsp; X/Shift capovolgi &nbsp;·&nbsp; B/clic destro annulla",
-    "idle": "<b>Clic</b> su un pezzo, poi <b>clic sulla mappa</b> per posarlo (oppure trascinalo). <b>Tieni premuto e trascina</b> per stendere una fila di muri o terreno · <b>Shift</b> capovolge · <b>Clic</b> su un pezzo posato per rimuoverlo con rimborso parziale · <b>Esc</b> per uscire."
+    "idle": "<b>Clic</b> su un pezzo, poi <b>clic sulla mappa</b> per posarlo. <b>Tieni premuto e trascina</b> per stendere una fila · <b>Shift</b> capovolge · <b>Clic</b> su un pezzo posato per rimuoverlo con rimborso parziale · <b>Esc</b> esce."
   },
   "freeBadge": "GRATIS",
   "buildMode": "Modalità costruzione",

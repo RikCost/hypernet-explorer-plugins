@@ -103,11 +103,18 @@
     return !people.includes(key);
   }
 
+  // Plain Humanoid is what the wizard's other branch builds: a creature made on
+  // it is just a person with a monster's sheet, so it is never offered here.
+  // (DoubleHeadedHumanoid and the rest of the people archetypes stay , they are
+  // shapes a creature can plausibly be built on.)
+  const HIDDEN_ARCHETYPES = ["Humanoid"];
+
   Window_ArchetypeSelect.prototype.makeItemList = function () {
     this._data = [];
     const { EnemyArchetypes } = window.Health || {};
     if (EnemyArchetypes) {
       for (const key in EnemyArchetypes) {
+        if (HIDDEN_ARCHETYPES.includes(key)) continue;
         if (!archetypeOfferedInPopulation(key)) continue;
         this._data.push({
           key: key,
@@ -1168,10 +1175,13 @@
           </div>
         `;
       } else if (canShow3D) {
-        const hint = T('CharCreate.dragToRotateWheelToZoomMiddleDragToPan');
+        // The model IS this page, so the viewport takes the height the page can
+        // spare (the header above it is all that shares the column) instead of a
+        // fixed 380px box that left the creature small in a mostly empty page.
+        // No caption under it: the drag/zoom controls are discovered by grabbing
+        // the model, and the hint line only ate viewport height.
         previewImgHtml = `
-          <canvas id="creature-3d-canvas" style="width: 100%; height: 380px; min-height: 380px; display: block; cursor: grab; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4))"></canvas>
-          <div style="text-align: center; font-size: 15px; color: rgba(94,47,23,0.55); margin-top: 6px">${hint}</div>
+          <canvas id="creature-3d-canvas" style="width: 100%; height: 68vh; min-height: 380px; max-height: 720px; display: block; cursor: grab; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4))"></canvas>
         `;
       } else if (activeItem && activeItem.battlerName) {
         previewImgHtml = `
@@ -2156,12 +2166,21 @@
       this._customModel = false;
       this._selectedBattler = battlerName;
       // Save the battler image name on the actor (portrait fields moved off the
-      // old global variables) and mark this creature as 2D-portrayed, so no 3D
-      // model is built for it.
+      // old global variables) and mark this creature as portrayed by an existing
+      // species rather than by a custom-built model ("sprite"), so no CC3DModel
+      // config is looked up for it. The portrait itself is still the species'
+      // procedural 3D model — the very one previewed on this step — with the
+      // battler image only standing in when no model resolves.
       const battlerActor = $gameActors.actor(this._targetActorId);
       if (battlerActor) {
         battlerActor.setVnBattler(battlerName);
+        // A creature is not portrayed by the bust of whoever held the slot.
+        if (battlerActor.setVnBust) battlerActor.setVnBust("");
         if (battlerActor.setPortraitMode) battlerActor.setPortraitMode("sprite");
+        // Which enemy exactly: several enemies can share one battler image, and
+        // the model previewed here was built from THIS entry, so record it
+        // instead of leaving the status screen to guess from the image name.
+        battlerActor._recruitedEnemyId = (item && item.id) || 0;
       }
       // Keep the randomized 3D look previewed for this creature: the status
       // screen rebuilds the model with this same seed.
@@ -2208,7 +2227,13 @@
     // renders the custom model instead of a flat enemy portrait.
     if (this._customModel) {
       const modelActor = $gameActors.actor(this._targetActorId);
-      if (modelActor) modelActor.setVnBattler("");
+      if (modelActor) {
+        modelActor.setVnBattler("");
+        if (modelActor.setVnBust) modelActor.setVnBust("");
+        // Drop any species recorded by an earlier creature or talk-menu recruit
+        // in this slot: the portrait is the custom model, not that monster.
+        modelActor._recruitedEnemyId = 0;
+      }
     }
     this.applyCreatureSettings();
     if (this.startNameInput()) return;
@@ -2241,10 +2266,11 @@
     }
   }
 
-  // The humanoid branch of the wizard is named by common event 97 (a generated
-  // suggestion, then the name input screen) between gender and class; creatures
-  // never run that event, so the name is asked for here instead, once the
-  // creature is built and before its class is picked.
+  // The humanoid branch of the wizard names its character between gender and
+  // class (a generated suggestion, the sprite board, then the name input
+  // screen; see startNamingScreens in CharacterCreation.js). Creatures never go
+  // down that branch, so the name is asked for here instead, once the creature
+  // is built and before its class is picked.
   //
   // Only the wizard flow names anything: a creature built from the
   // CreateCreature plugin command is an existing character changing shape, and
@@ -2341,19 +2367,11 @@
       const characterType = (window.CCSteps && window.CCSteps.CHARACTER_TYPE) != null
         ? window.CCSteps.CHARACTER_TYPE
         : 3;
-      if (wizard.isQuickMode && wizard.isQuickMode()) {
-        // Quick mode never asks for a gender, so its gender step exists only to
-        // open this builder: resuming there would push the player straight back
-        // in with no way out. Back out to the humanoid / creature question
-        // instead , the last thing the wizard actually asked , and let it be
-        // answered again.
-        wizard._interruptedStep = characterType - 1;
-        wizard._isCreatureMode = false;
-      } else {
-        // interruptedStep + 1 is the resume step, so CHARACTER_TYPE resumes on
-        // the gender step.
-        wizard._interruptedStep = characterType;
-      }
+      // interruptedStep + 1 is the resume step, so CHARACTER_TYPE resumes on
+      // the gender step. Every mode asks a creature for its gender (Quick
+      // included), so that is an interactive step to land back on rather than
+      // one that would open this builder again on sight.
+      wizard._interruptedStep = characterType;
     }
     this.popScene();
   };
@@ -2609,8 +2627,14 @@
     const targetActor = $gameActors.actor(actorId);
     if (battlerName && targetActor) {
       targetActor.setVnBattler(battlerName);
-      // Inline picker creatures are portrayed by their 2D battler image.
+      if (targetActor.setVnBust) targetActor.setVnBust("");
+      // Inline picker creatures are portrayed by an existing species (its 3D
+      // model, with the battler image as fallback), not by a custom model.
       if (targetActor.setPortraitMode) targetActor.setPortraitMode("sprite");
+      // The picker hands over an image name, not an enemy id, so let the status
+      // screen resolve the species from the image; a stale id from whoever held
+      // the slot before would name the wrong monster.
+      targetActor._recruitedEnemyId = 0;
     }
     ctx.applyCreatureSettings();
     return ctx;
