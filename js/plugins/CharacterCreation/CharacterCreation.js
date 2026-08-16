@@ -432,6 +432,15 @@
 
     let gold = CC_BASE_START_GOLD;
     $gameParty.members().forEach((actor) => {
+      // A non-sentient creature (one of the creature classes, see NPCCreature)
+      // brings nothing into the purse. It was never asked its wealth band , the
+      // detailed editor does not offer the row to a beast , and it has no use
+      // for what its class or its traits would otherwise have paid in. All
+      // three contributions are dropped rather than only the band, so a
+      // character switched to a creature class after the fact cannot carry a
+      // banker's purse in on four legs.
+      const NC = window.NPCCreature;
+      if (NC && NC.isNonSentientActor(actor)) return;
       gold += classStartingMoney(actor._classId) +
         traitStartingMoney(actor) +
         wealthStartingMoney(actor);

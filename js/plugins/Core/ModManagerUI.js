@@ -401,6 +401,10 @@
         _wireRightPageEvents() {
             this._container.querySelectorAll('.inspect-btn[data-action]').forEach((btn, i) => {
                 btn.addEventListener('mouseover', () => {
+                    // Hover steers only while the mouse is what is moving: a
+                    // scrolled or rebuilt row slides under a resting pointer and
+                    // fires this too (PointerSteering, Core/AnalogStickInput.js).
+                    if (window.PointerSteering && !window.PointerSteering.isSteering()) return;
                     if (this._activeSection !== 'actions') return;
                     this._selectedActionIndex = i;
                     this._updateActionsHighlight();

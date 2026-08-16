@@ -296,9 +296,19 @@
       return Math.floor(hour / SHIFT_HOURS) === profile.workShift;
     },
 
+    // A non-sentient creature (NPCCreature) wants none of the things money is
+    // for. It does not earn, does not save toward a better address and never
+    // moves up a housing tier; hunger, sleep and company still pull at it,
+    // which is the whole of what a beast wants.
+    _isNonSentient(profile) {
+      const NC = window.NPCCreature;
+      return !!(NC && NC.isNonSentientProfile(profile));
+    },
+
     // Below ~5% of their current wealth tier's ceiling, go earn or find money.
     // Reuses WEALTH_THRESHOLDS (section 11a) so the floor scales with tier.
     _needsMoney(profile, rng) {
+      if (this._isNonSentient(profile)) return false;
       const idx  = Math.min(profile.wealthTierBase ?? 0, WEALTH_THRESHOLDS.length - 1);
       const tier = WEALTH_THRESHOLDS[idx];
       const floor = isFinite(tier.max) ? tier.max * 0.05 : 3000;
@@ -316,6 +326,7 @@
     // Has the savings to move up a home tier but hasn't, occasionally seeks
     // out comfort (a rentable room, better furniture...) instead of wandering.
     _wantsComfort(profile, rng) {
+      if (this._isNonSentient(profile)) return false;
       const curIdx = WEALTH_THRESHOLDS.findIndex(t => t.pool === profile.homePoolType);
       const next = WEALTH_THRESHOLDS[curIdx + 1];
       if (!next) return false; // already at the top tier

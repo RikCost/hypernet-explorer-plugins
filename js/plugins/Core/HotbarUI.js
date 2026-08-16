@@ -87,9 +87,9 @@
       this.slotPx = o.slotPx || 52;
       this.gapPx = o.gapPx || 6;
       this.iconPx = o.iconPx || 32;
-      // The bars ride right along the bottom edge of the box, so they eat as
+      // The bars ride right on the bottom edge of the box, so they eat as
       // little of the play area as possible.
-      this.marginBottom = o.marginBottom !== undefined ? o.marginBottom : 2;
+      this.marginBottom = o.marginBottom !== undefined ? o.marginBottom : 0;
       this.zIndex = o.zIndex || 352;
       this.inline = !!o.inline;
       // Bars that only fire filled slots (the battle and map ones) leave empty
@@ -235,6 +235,10 @@
       const y = Graphics.height - this.slotPx - this.marginBottom - yOffset;
       root.style.left = (sc.ox + x * sc.sx) + 'px';
       root.style.top = (sc.oy + y * sc.sy) + 'px';
+      // Scale from the corner the left/top above describe: the default
+      // (centre) origin shifts the box by half its unscaled size, which is
+      // what kept the bar floating short of the bottom edge.
+      root.style.transformOrigin = '0 0';
       root.style.transform = `scale(${sc.sx}, ${sc.sy})`;
     }
 

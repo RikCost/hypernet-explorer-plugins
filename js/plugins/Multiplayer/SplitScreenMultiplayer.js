@@ -946,6 +946,11 @@
             // Mouse: hover highlights, click confirms.
             this._container.querySelectorAll(".item-slot").forEach((el) => {
                 el.addEventListener("mouseenter", () => {
+                    // Hover steers only while the mouse is what is moving: the
+                    // list scrolls its selection into view, so a pad press
+                    // slides a different slot under a resting pointer and fires
+                    // this (PointerSteering, Core/AnalogStickInput.js).
+                    if (window.PointerSteering && !window.PointerSteering.isSteering()) return;
                     const idx = parseInt(el.dataset.index, 10);
                     if (idx !== this._selectedIndex) {
                         this._selectedIndex = idx;

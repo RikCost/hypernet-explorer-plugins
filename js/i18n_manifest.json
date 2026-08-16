@@ -139,6 +139,7 @@
     "plugins/ONUMenu.json",
     "plugins/ObjectIndex.json",
     "plugins/ParchmentToast.json",
+    "plugins/PartyBanter.json",
     "plugins/PartyHud.json",
     "plugins/Patron.json",
     "plugins/PeacefulMode.json",

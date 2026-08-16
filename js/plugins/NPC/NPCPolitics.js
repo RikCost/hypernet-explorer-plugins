@@ -1593,6 +1593,13 @@
     if (state.identities[npcName]) return state.identities[npcName];
     const rng = new PolRng(worldSeed() ^ nameHash("identity:" + npcName));
     const profile = getProfile(npcName);
+    // A non-sentient creature (NPCCreature) holds no allegiance. Nothing is
+    // written for it at all, rather than a blank identity: every reader here
+    // walks the identities map, so an absent one simply never votes, never
+    // stands, never radicalizes and never appears in a citizen roll, and
+    // getIdentity() answers null the way it always did for a stranger.
+    const NC = window.NPCCreature;
+    if (NC && NC.isNonSentientByName(npcName)) return null;
     // Somebody who is not from this world answers to the power that sent them,
     // not to whichever nation the town they are standing in belongs to. They
     // hold no citizenship here, so the country stays null.
@@ -1658,8 +1665,10 @@
     for (const [npcName, groupName] of Object.entries(population)) {
       if (state.identities[npcName]) continue;
       if (created >= MAX_NEW_IDENTITIES_PER_PASS) break;
-      ensureIdentity(state, npcName, groupName, nowMinute);
-      created++;
+      // Only a real identity counts against the per-pass budget. A creature
+      // that will never have one is refused every pass, and must not spend a
+      // slot a citizen behind it in the walk is waiting for.
+      if (ensureIdentity(state, npcName, groupName, nowMinute)) created++;
     }
     return created;
   }

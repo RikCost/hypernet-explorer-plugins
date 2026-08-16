@@ -213,6 +213,33 @@
     return !!($gameSwitches && $gameSwitches.value(CREATURE_SWITCHES[Session.memberIndex] || 77));
   }
 
+  // A creature played as one of the creature classes (Feral, Mimic, Monster,
+  // Mana Cyborg, Ghost, Zombie, Mutant, Drone) is not a person and is not asked
+  // a person's questions. It holds no creed and no banner, and it brings no
+  // money in (see giveStartingMoney in CharacterCreation.js), so the rows that
+  // ask about those are not offered to it at all rather than offered and then
+  // quietly ignored. Everything a body has , anatomy, biology, talents ,
+  // stays: those are questions a beast has answers to.
+  function isNonSentient() {
+    const NC = window.NPCCreature;
+    return !!(NC && NC.isNonSentientActor(editedActor()));
+  }
+
+  // Strip the three things a beast cannot hold off a profile. Used when the
+  // sheet turns out to belong to one, so a creed picked before the class was
+  // changed does not survive as an answer to a question that is no longer
+  // asked. The "no creed" shape is the one NPCShared.ideologyFor reads as
+  // none: index -1 and no id.
+  function clearSocialTies(profile) {
+    if (!profile) return;
+    profile.ideologyIndex = -1;
+    profile.ideologyId = null;
+    profile.factionIndex = -1;
+    profile.wealthTierChosen = 0;
+    profile.wealthTierBase = 0;
+    profile.money = 0;
+  }
+
   function model3DAvailable() {
     return !!(window.Scene_CC3DModel && window.CC3DModel && window.CC3DModel.isAvailable());
   }
@@ -756,18 +783,27 @@
 
     const profile = editedProfile();
     const data = societyData();
+    const feral = isNonSentient();
     if (profile && data) {
       if (data.personalities && data.personalities.length) {
         profile.personalityIndex = Math.floor(Math.random() * data.personalities.length);
       }
-      if (data.ideologies && data.ideologies.length) {
-        setIdeology(profile, Math.floor(Math.random() * data.ideologies.length));
+      // Nothing a beast does not have is rolled for it, and anything a
+      // previous pass over this sheet left behind is cleared: the rows are
+      // gone from the panel, so a stale creed would be unreachable as well as
+      // wrong.
+      if (feral) {
+        clearSocialTies(profile);
+      } else {
+        if (data.ideologies && data.ideologies.length) {
+          setIdeology(profile, Math.floor(Math.random() * data.ideologies.length));
+        }
+        if (data.factions && data.factions.length) {
+          profile.factionIndex = Math.random() < 0.25
+            ? Math.floor(Math.random() * data.factions.length) : -1;
+        }
+        applyWealth(profile, Math.floor(Math.random() * 5));
       }
-      if (data.factions && data.factions.length) {
-        profile.factionIndex = Math.random() < 0.25
-          ? Math.floor(Math.random() * data.factions.length) : -1;
-      }
-      applyWealth(profile, Math.floor(Math.random() * 5));
       profile.moralityScore = Math.floor(Math.random() * 201) - 100;
     }
     const nations = nationList();
@@ -794,20 +830,30 @@
     const profile = editedProfile();
     const data = societyData();
     const creature = isCreature();
+    const feral = isNonSentient();
+    // Enforced here rather than on the class row's callback: the class can be
+    // changed from the wizard's own selector, which returns to this panel
+    // without telling it what happened. The panel is rebuilt on every return,
+    // so this is the one place that always sees the current class, and the
+    // clear is idempotent.
+    if (feral) clearSocialTies(profile);
     const sections = [];
 
     // Asked first, ahead of name, class or anything else: a creed is the
     // lens the rest of the sheet is read through, so it is what the panel
-    // opens on rather than one more row buried in Standing.
-    sections.push({
-      title: T("detailed.section.ideology"),
-      rows: [
-        {
-          id: "ideology", label: T("detailed.row.ideology"),
-          value: ideologyName(profile ? window.NPCShared.ideologyFor(profile) : null), kind: "pick",
-        },
-      ],
-    });
+    // opens on rather than one more row buried in Standing. A beast is not
+    // asked at all , it has no creed to hold.
+    if (!feral) {
+      sections.push({
+        title: T("detailed.section.ideology"),
+        rows: [
+          {
+            id: "ideology", label: T("detailed.row.ideology"),
+            value: ideologyName(profile ? window.NPCShared.ideologyFor(profile) : null), kind: "pick",
+          },
+        ],
+      });
+    }
 
     const identity = [
       { id: "name", label: T("detailed.row.name"), value: actor.name(), kind: "open" },
@@ -900,13 +946,18 @@
     const personalities = (data && data.personalities) || [];
     const ideologies = (data && data.ideologies) || [];
     const factions = (data && data.factions) || [];
-    sections.push({
-      title: T("detailed.section.society"),
-      rows: [
-        {
-          id: "personality", label: T("detailed.row.personality"),
-          value: personalityName(personalities[profile ? profile.personalityIndex : -1]), kind: "pick",
-        },
+    // A beast keeps its temperament (a personality is a disposition, which an
+    // animal plainly has) and its morality (whether it is vicious or gentle),
+    // and loses the two rows that are a society's business: the banner it
+    // stands under and the money it was born into.
+    const societyRows = [
+      {
+        id: "personality", label: T("detailed.row.personality"),
+        value: personalityName(personalities[profile ? profile.personalityIndex : -1]), kind: "pick",
+      },
+    ];
+    if (!feral) {
+      societyRows.push(
         {
           id: "faction", label: T("detailed.row.faction"),
           value: (profile && profile.factionIndex >= 0)
@@ -920,14 +971,15 @@
           // CharacterCreation.js).
           value: `${wealthLabel(wealthTier(profile))} · ${wealthMoneyLabel(wealthTier(profile))}`,
           kind: "pick",
-        },
-        {
-          id: "morality", label: T("detailed.row.morality"),
-          value: `${moralityLabel(profile ? profile.moralityScore : 0)} (${(profile && profile.moralityScore) || 0})`,
-          kind: "pick",
-        },
-      ],
+        }
+      );
+    }
+    societyRows.push({
+      id: "morality", label: T("detailed.row.morality"),
+      value: `${moralityLabel(profile ? profile.moralityScore : 0)} (${(profile && profile.moralityScore) || 0})`,
+      kind: "pick",
     });
+    sections.push({ title: T("detailed.section.society"), rows: societyRows });
 
     sections.push({
       title: T("detailed.section.romance"),

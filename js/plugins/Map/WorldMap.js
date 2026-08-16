@@ -1754,8 +1754,13 @@
             focusWorldMapAt(req.x, req.y);
         }
 
-        // Toggle Map
-        if (Input.isTriggered('world_map_toggle')) {
+        // Toggle Map. START (gamepad button 9) mirrors the M key: it has no
+        // Input.gamepadMapper action of its own, so it is polled raw through
+        // AnalogStickInput rather than bound to 'world_map_toggle' (binding it
+        // there would make every keyboard key sharing that action fire twice).
+        const padStart = window.AnalogStickInput &&
+            window.AnalogStickInput.isButtonTriggered(window.AnalogStickInput.BUTTON.START);
+        if (Input.isTriggered('world_map_toggle') || padStart) {
             // A manual toggle means the player took control; don't auto-hide later.
             autoOpenedForTravel = false;
             toggleMapState();

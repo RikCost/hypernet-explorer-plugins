@@ -256,6 +256,18 @@
   // SleepMenuInputManager
   //=============================================================================
 
+  // Hover may only steer the selection while the mouse is the thing actually
+  // being moved. This menu is a DOM dialog in the middle of the screen, so on a
+  // pad the pointer sits wherever it was left -- very often right on the option
+  // list. Every up/down scrolls the list under that stationary pointer (see the
+  // scrollIntoView in _updateSleepMenuHighlight) and every mode change rebuilds
+  // it; both move a DIFFERENT button under the pointer, which fires mouseenter,
+  // and the hover handler used to snap the selection to it. That is why the
+  // cursor sprang back to the first option on every press and OK then ran the
+  // wrong command. PointerSteering (Core/AnalogStickInput.js) is the shared
+  // answer; the same guard is on every other hover-selects menu.
+  const steering = () => !window.PointerSteering || window.PointerSteering.isSteering();
+
   const SleepMenuInputManager = {
     _scene: null,
     _active: false,
@@ -294,6 +306,8 @@
         window.addEventListener("keydown", this._keydownListener);
         window.addEventListener("keyup", this._keyupListener);
       }
+      // Opened by a key or a button, so the pointer is not steering yet.
+      if (window.PointerSteering) window.PointerSteering.release();
     },
 
     deactivate() {
@@ -479,6 +493,8 @@
         this.execSleepMenuCommand(btn.dataset.cmd);
       });
       btn.addEventListener("mouseenter", () => {
+        // Only while the mouse is the thing being moved: see steering() above.
+        if (!steering()) return;
         if (this._sleepMenuIndex !== i) {
           this._sleepMenuIndex = i;
           this._updateSleepMenuHighlight();

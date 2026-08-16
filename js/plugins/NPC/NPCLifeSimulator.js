@@ -274,6 +274,70 @@
       : String(place ?? "");
   }
 
+  // ── Where a beast has lived ────────────────────────────────────────────────
+  // A non-sentient creature did not live IN the town. It lived in the country
+  // around it, and the town is only the nearest thing on a map with names on
+  // it: "Forest near Bologna". The stop still carries the destination as its
+  // `place`, so every comparison, every move event and the settled-in line go
+  // on working unchanged; the biome is a second field the label composes in.
+  //
+  // Only wilderness is drawn on. A creature is never "Factory near Bologna",
+  // which would be a person's address with a monster's name on it; these are
+  // the Biomes.json entries something could actually have been living in.
+  // i18n-ignore-start: Biomes.json ids, named through NPCLife.wildBiome.<id>
+  const WILD_BIOMES = [
+    "Forest", "ForestTropical", "ForestIce", "Jungle", "Swamp", "Mangrove",
+    "Cave", "CaveDen", "CaveIce", "Mountain", "MountainIce", "Highlands",
+    "Taiga", "Tundra", "Permafrost", "Steppe", "Savannah", "Badlands",
+    "Canyon", "Desert", "Meadows", "Fields", "Lake", "River", "RiverBank",
+    "Beach", "Ocean", "SeaBed", "Ice", "Snow", "Volcano", "Mushroom",
+    "Bamboo", "SpiritWoods", "Underdark", "Crystals", "SaltFlats",
+  ];
+  // i18n-ignore-end
+
+  // The wilderness this world actually has, so a biome that was cut from
+  // Biomes.json is never the place somebody grew up in.
+  let _wildBiomes = null;
+  function wildBiomes() {
+    if (_wildBiomes) return _wildBiomes;
+    const list = window.WorldGen && window.WorldGen.Biomes;
+    if (!Array.isArray(list) || !list.length) return (_wildBiomes = WILD_BIOMES);
+    const known = new Set(list.map((b) => b && b.name));
+    const kept = WILD_BIOMES.filter((b) => known.has(b));
+    _wildBiomes = kept.length ? kept : WILD_BIOMES;
+    return _wildBiomes;
+  }
+
+  // A language that has not been given these words yet carries the key as an
+  // empty string, so a blank is treated as untranslated and the biome id is
+  // shown rather than nothing at all.
+  function wildBiomeLabel(id) {
+    const key = "NPCLife.wildBiome." + id;
+    const text = T.has(key) ? T(key) : "";
+    return text || String(id || "");
+  }
+
+  // How one stop on a life's path reads. A person's is the place itself; a
+  // beast's is the country near it.
+  function stopLabel(stop) {
+    if (!stop) return "";
+    if (typeof stop === "string") return placeLabel(stop);
+    const place = placeLabel(stop.place);
+    if (!stop.wild) return place;
+    const text = T.has("NPCLife.wildsNear")
+      ? T("NPCLife.wildsNear", { biome: wildBiomeLabel(stop.wild), city: place })
+      : "";
+    return text.trim() || place;
+  }
+
+  // Whether this NPC is one of the non-sentient creatures (NPCCreature). Such
+  // a life has no savings, no move up the housing ladder and no address, only
+  // a range it has drifted around.
+  function isNonSentient(profile) {
+    const NC = window.NPCCreature;
+    return !!(NC && NC.isNonSentientProfile(profile));
+  }
+
   // A life event as a sentence. Records written before the log was keyed hold
   // a finished English string, which is returned as it stands.
   function lifeEventText(entry) {
@@ -282,7 +346,11 @@
     if (!entry.key || !T.has(entry.key)) return entry.desc || "";
     const params = entry.params || {};
     if (params.place == null) return T(entry.key, params);
-    return T(entry.key, Object.assign({}, params, { place: placeLabel(params.place) }));
+    // `wild` is only ever on a non-sentient creature's events, and turns the
+    // place into the country around it (see stopLabel).
+    return T(entry.key, Object.assign({}, params, {
+      place: stopLabel({ place: params.place, wild: params.wild || null }),
+    }));
   }
 
   function rollHonesty(name, profile, rng) {
@@ -321,7 +389,7 @@
   // a place (Bologna's own Bolognesi) is dealt a 1 and is native by definition;
   // an NPC met on the road is dealt nothing and keeps the old flat roll over
   // every destination in the world.
-  function rollLocationHistory(record, homeGroup, rng, nativeChance) {
+  function rollLocationHistory(record, homeGroup, rng, nativeChance, wild) {
     const destinations = getDestinations();
     const homeDest = destinationForGroup(homeGroup);
     const fallback = homeDest || (destinations.length ? rng.pick(destinations) : T('NPCLife.partsUnknown'));
@@ -348,20 +416,29 @@
     }
     stops.push(fallback); // final stop is always the current home
 
+    // A beast's stops are the country around each town rather than the town.
+    // Drawn off the same stream, once per stop, so the range it drifted through
+    // is as fixed as everything else on the record.
+    const biomes = wild ? wildBiomes() : null;
+    const wildAt = () => (biomes ? rng.pick(biomes) : null);
+
     for (let i = 0; i < stops.length; i++) {
       if (stops[i] === cursorPlace) continue;
       const remainingYears = nowYear - cursorYear;
       if (remainingYears <= 1) break;
       const moveYear = cursorYear + rng.int(Math.max(1, Math.floor(remainingYears * 0.2)), Math.max(2, remainingYears - 1));
-      history.push({ place: cursorPlace, fromYear: cursorYear, toYear: moveYear, reason: i === 0 ? BORN_HERE : record._lastMoveReason });
+      history.push({ place: cursorPlace, wild: wildAt(), fromYear: cursorYear, toYear: moveYear, reason: i === 0 ? BORN_HERE : record._lastMoveReason });
       record._lastMoveReason = rng.pick(MOVE_REASONS);
       cursorYear = moveYear;
       cursorPlace = stops[i];
     }
-    history.push({ place: cursorPlace, fromYear: cursorYear, toYear: null, reason: history.length ? (record._lastMoveReason || rng.pick(MOVE_REASONS)) : BORN_HERE });
+    history.push({ place: cursorPlace, wild: wildAt(), fromYear: cursorYear, toYear: null, reason: history.length ? (record._lastMoveReason || rng.pick(MOVE_REASONS)) : BORN_HERE });
     delete record._lastMoveReason;
 
     record.birthplace = birthplace;
+    // The birthplace reads the same way the stops do, so a beast is born in
+    // the wilds it went on living in rather than in a town it never entered.
+    record.birthWild = history.length ? history[0].wild : null;
     record.locationHistory = history;
     record.currentPlace = cursorPlace;
   }
@@ -578,8 +655,12 @@
     };
 
     record.honesty = rollHonesty(name, profile, rng);
+    // A beast has no address and no career. Its stops are the country around
+    // each town (see stopLabel), and it is marked on the record so the readers
+    // that quote a life do not have to reach for the society profile.
+    record.nonSentient = isNonSentient(profile);
     Object.assign(record, rollBirth(name, profile, rng, nowMinute));
-    rollLocationHistory(record, record.homeGroup, rng, opts && opts.nativeChance);
+    rollLocationHistory(record, record.homeGroup, rng, opts && opts.nativeChance, record.nonSentient);
     rollCareerHistory(record, profile, rng);
     rollCriminalHistory(record, rng);
     // Some low-morality NPCs start the game already wanted, a seeded bounty
@@ -594,7 +675,7 @@
     for (const stop of record.locationHistory) {
       if (stop.reason !== BORN_HERE) {
         pushLifeEvent(record, minuteOfYear(stop.fromYear), "move", "NPCLife.event.moved",
-          { place: stop.place, reason: moveReasonLabel(stop.reason) });
+          { place: stop.place, wild: stop.wild || null, reason: moveReasonLabel(stop.reason) });
       }
     }
     delete record._nowMinute;
@@ -1096,21 +1177,25 @@
     const age = ageAt(record, nowMinute);
     const lines = [];
 
+    // Every place on a life reads through stopLabel, so a beast's whole path
+    // comes out as the country it ranged over ("Forest near Bologna") while a
+    // person's is unchanged.
+    const birthStop = { place: record.birthplace, wild: record.birthWild || null };
     lines.push(T('NPCLife.bio.header', {
-      name: name, age: age, date: record.birthDate, place: placeLabel(record.birthplace),
+      name: name, age: age, date: record.birthDate, place: stopLabel(birthStop),
     }));
 
     const stops = record.locationHistory || [];
     if (stops.length > 1) {
-      lines.push(T('NPCLife.bio.hasLivedIn', { path: stops.map(s => placeLabel(s.place)).join(" → ") }));
+      lines.push(T('NPCLife.bio.hasLivedIn', { path: stops.map(stopLabel).join(" → ") }));
       const lastMove = stops[stops.length - 1];
       if (lastMove.reason && lastMove.reason !== BORN_HERE) {
         lines.push(T('NPCLife.bio.settledIn', {
-          place: placeLabel(lastMove.place), year: lastMove.fromYear, reason: moveReasonLabel(lastMove.reason),
+          place: stopLabel(lastMove), year: lastMove.fromYear, reason: moveReasonLabel(lastMove.reason),
         }));
       }
     } else {
-      lines.push(T('NPCLife.bio.neverLeft', { place: placeLabel(record.birthplace) }));
+      lines.push(T('NPCLife.bio.neverLeft', { place: stopLabel(birthStop) }));
     }
 
     const openJob = (record.careerHistory || []).find(seg => seg.toYear === null);

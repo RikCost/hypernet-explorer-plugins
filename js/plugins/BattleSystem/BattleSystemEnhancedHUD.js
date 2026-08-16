@@ -4358,8 +4358,8 @@
   //=============================================================================
   const HOTBAR_SLOTS = 9;
   const HOTBAR_SLOT_PX = 52;
-  const HOTBAR_MARGIN_BOTTOM = 2; // how close the bar itself sits to the bottom edge
-  const HOTBAR_LOG_GAP = 56; // extra clearance kept between the log's own reserve and the bar
+  const HOTBAR_MARGIN_BOTTOM = 0; // how close the bar itself sits to the bottom edge
+  const HOTBAR_LOG_GAP = 8; // extra clearance kept between the log's own reserve and the bar
 
   // MPP_SmoothBattleLog2.js reads this to keep the log clear of the bar.
   window.BattleHotbar = window.BattleHotbar || {};

@@ -81,6 +81,9 @@
  *   5. The game must be closed and reopened for the new files to load. The
  *      updater warns the player and closes it for them; it never reloads in
  *      place, since that leaves some replaced files loaded from the old copy.
+ *      A full-screen notice saying the game is closing to apply the update is
+ *      held for a second first, so the window going away is plainly the update
+ *      finishing rather than a crash.
  *
  *   A build that turns out to hold nothing this copy lacks stops after step 2
  *   and says so, and "Check this build" still compares a build without touching
@@ -117,6 +120,14 @@
  *   Everything it finds is reported through GameUpdater.autoResult(); nothing is
  *   downloaded and no local file is touched.
  *
+ *   The answer is kept for the whole session, so entering the title again costs
+ *   nothing, with one exception: coming back to the title after playing. A
+ *   session can last hours and the branch may well have moved while it ran, so
+ *   the first check made after any time on the map reads the branch afresh. A
+ *   build already compared in this session is not compared again, since the
+ *   files it was measured against have not changed, so that second read
+ *   ordinarily costs the one request as well.
+ *
  * Requires the desktop (NW.js) build. On the web build the command is hidden
  * because there is no local file system to write to.
  *
@@ -151,6 +162,8 @@
     // How much of a build's commit message the version badge can carry before it
     // starts crowding the corner of the title screen.
     const BUILD_NAME_MAX = 42;
+    // How long the closing notice stands before the process actually goes.
+    const CLOSING_NOTICE_MS = 1000;
 
     // Downloading and installing. Set this to false to leave the screen as a
     // read-only report of what the branch holds, touching no local file.
@@ -439,6 +452,38 @@
     }
 
     // =========================================================================
+    // The closing notice
+    // =========================================================================
+    // Everything on screen at that point is about to go with the window, so the
+    // notice is deliberately its own layer over all of it, plain enough to be
+    // read in the second it stands for. It never throws: nothing here may come
+    // between the update and the close it was asked for.
+    function showClosingNotice() {
+        try {
+            if (typeof document === 'undefined' || !document.body) return;
+            if (document.getElementById('gu-closing-notice')) return;
+            const box = document.createElement('div');
+            box.id = 'gu-closing-notice';
+            box.textContent = getT().closingNotice || 'Closing the game to apply update';
+            Object.assign(box.style, {
+                position: 'fixed', left: '0', top: '0', width: '100%', height: '100%',
+                zIndex: '100000', display: 'flex',
+                alignItems: 'center', justifyContent: 'center', textAlign: 'center',
+                padding: '0 6%', boxSizing: 'border-box',
+                background: 'rgba(0, 0, 0, 0.92)', color: '#FFD700',
+                fontFamily: "'Square', monospace", fontSize: '28px',
+                fontWeight: 'bold', letterSpacing: '2px',
+                textShadow: '0 0 6px #000', userSelect: 'none',
+                opacity: '0', transition: 'opacity 0.18s ease-out'
+            });
+            document.body.appendChild(box);
+            requestAnimationFrame(() => { box.style.opacity = '1'; });
+        } catch (e) {
+            console.warn(PLUGIN_NAME + ': could not show the closing notice', e);
+        }
+    }
+
+    // =========================================================================
     // GameUpdater, the model behind the scene
     // =========================================================================
     const GameUpdater = {
@@ -453,8 +498,10 @@
         _busy: false,
         _cancelled: false,
         _restartPending: false,
+        _closing: false,     // the game is on its way out, notice already up
         _auto: null,         // last launch check result
         _autoPromise: null,
+        _sessionPlayed: false, // something was played since the last branch read
 
         isAvailable,
         downloadsEnabled: () => DOWNLOADS_ENABLED,
@@ -708,9 +755,32 @@
             return !!this._autoPromise && !this._auto;
         },
 
+        // A session has been played since the branch was last read, so the next
+        // check will read it again rather than answer from the cache. The title
+        // screen asks so it can hold that second read back the way it holds the
+        // first, instead of starting it while the screen is still building.
+        recheckPending() {
+            return this._sessionPlayed;
+        },
+
+        // Time on the map is the one thing that can leave the cached answer
+        // stale: a session runs for hours and the branch may move under it.
+        noteSessionPlayed() {
+            this._sessionPlayed = true;
+        },
+
         // Idempotent: every caller after the first gets the same promise, so the
         // branch is read once however many times the title screen is entered.
+        // The exception is the first check after a session was played: that one
+        // drops the cached answer and reads the branch again, which is what
+        // makes coming back to the title from a game see a build published
+        // while it was running.
         autoCheck() {
+            if (this._sessionPlayed) {
+                this._sessionPlayed = false;
+                this._autoPromise = null;
+                this._auto = null;
+            }
             if (this._autoPromise) return this._autoPromise;
             this._autoPromise = this._runAutoCheck().catch((err) => {
                 this._auto = { ran: true, available: false, error: err && err.message ? err.message : String(err) };
@@ -748,7 +818,10 @@
             const installed = this.installedInfo();
             let plan = null;
             if (!installed || installed.sha !== latest.sha) {
-                plan = await this.check(latest.sha);
+                // A build already compared in this session was measured against
+                // the files that are still here, so a second read of the branch
+                // takes that answer rather than hashing the folder again.
+                plan = this._plans[latest.sha] || await this.check(latest.sha);
             }
 
             let latestBuild = null;
@@ -1166,7 +1239,18 @@
         // module loader had already cached (a required plugin file among them)
         // reading from the old copy, so the only way every replaced file is
         // guaranteed to load is a real close, with the player reopening it.
+        //
+        // Whatever asked for the close, the last thing on screen is the same
+        // full-screen notice, held for a second: the window disappearing under
+        // the player is then plainly the update finishing and not a crash.
         restart() {
+            if (this._closing) return;
+            this._closing = true;
+            showClosingNotice();
+            setTimeout(() => this._quit(), CLOSING_NOTICE_MS);
+        },
+
+        _quit() {
             try {
                 if (typeof nw !== 'undefined' && nw.App && typeof nw.App.quit === 'function') {
                     nw.App.quit();
@@ -1184,6 +1268,20 @@
     };
 
     window.GameUpdater = GameUpdater;
+
+    // Playing is what makes the cached branch answer old news: the map is where
+    // a session spends its time, so entering it is the mark that the next visit
+    // to the title has to read the branch again. Coming back from the options,
+    // the credits or the updater screen itself rebuilds the title just the same
+    // and is deliberately NOT marked, since nothing can have changed in the
+    // second the player spent there.
+    if (isAvailable() && typeof Scene_Map !== 'undefined') {
+        const _sceneMapStart = Scene_Map.prototype.start;
+        Scene_Map.prototype.start = function () {
+            _sceneMapStart.call(this);
+            GameUpdater.noteSessionPlayed();
+        };
+    }
 
     // =========================================================================
     // Input manager
@@ -2017,6 +2115,10 @@
         _wireActions() {
             this._dom.actions.querySelectorAll('.inspect-btn[data-action]').forEach((btn, i) => {
                 btn.addEventListener('mouseover', () => {
+                    // Hover steers only while the mouse is what is moving: a
+                    // scrolled or rebuilt row slides under a resting pointer and
+                    // fires this too (PointerSteering, Core/AnalogStickInput.js).
+                    if (window.PointerSteering && !window.PointerSteering.isSteering()) return;
                     if (this._section !== 'actions') return;
                     this._actionIndex = i;
                     this._updateActionHighlight();

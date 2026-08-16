@@ -1015,9 +1015,12 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         const yOffset = Math.floor((Graphics.height - Graphics.boxHeight) / 2);
         const pad = this.padding || 12;
 
-        // Bottom, left edge aligned with the party sprite column, pinned every frame
+        // Bottom, left edge aligned with the party sprite column, pinned every frame.
+        // The same hotbar reserve initialize() uses has to be applied here too,
+        // or this per-frame pin drops the log straight back onto the bar.
+        const hotbarReserve = (window.BattleHotbar && window.BattleHotbar.reservedHeight) || 90;
         const logH = this._originalHeight || this.fittingHeight(this.maxLines());
-        this._originalY = Graphics.height - logH - 20 - yOffset - pad;
+        this._originalY = Graphics.height - logH - 20 - hotbarReserve - yOffset - pad;
         if (this.y !== this._originalY) {
             this.y = this._originalY;
         }

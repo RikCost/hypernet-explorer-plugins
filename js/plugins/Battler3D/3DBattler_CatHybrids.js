@@ -117,7 +117,7 @@
             this.body = new THREE.Mesh(new THREE.SphereGeometry(0.4, 16, 12), fur); this.body.scale.set(1.0, 0.78, 2.0); this.body.position.set(0, 1.0, -0.15); this.bodyGroup.add(this.body);
             this.head = this._catHead(0.28); this.head.position.set(0, 1.04, 0.78); this.bodyGroup.add(this.head);
             this.dorsalFin = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.45, 3), finMat); this.dorsalFin.position.set(0, 1.42, -0.25); this.dorsalFin.scale.set(0.3, 1, 1.4); this.bodyGroup.add(this.dorsalFin);
-            this.tailFin = new THREE.Group(); const tf = new THREE.Mesh(new THREE.ConeGeometry(0.34, 0.55, 3), finMat); tf.scale.set(1, 1, 0.12); this.tailFin.add(tf); this.tailFin.position.set(0, 1.0, -1.05); this.bodyGroup.add(this.tailFin);
+            this.tailFin = new THREE.Group(); const tf = new THREE.Mesh(new THREE.ConeGeometry(0.34, 0.55, 3), finMat); tf.scale.set(1, 1, 0.12); this.tailFin.add(tf); this.tailFin.position.set(0, 1.0, -0.92); this.bodyGroup.add(this.tailFin);  // overlaps the body's rear tip (z -0.95) rather than trailing behind it
             this.lPec = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.3, 3), finMat); this.lPec.scale.set(1, 1, 0.1); this.lPec.position.set(-0.34, 0.86, 0.2); this.lPec.rotation.z = 1.4; this.bodyGroup.add(this.lPec);
             this.rPec = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.3, 3), finMat); this.rPec.scale.set(1, 1, 0.1); this.rPec.position.set(0.34, 0.86, 0.2); this.rPec.rotation.z = -1.4; this.bodyGroup.add(this.rPec);
             this._partMeshMap = { BODY: this.body, TORSO: this.body, CORE: this.body, HEAD: this.head, TAIL_FIN: this.tailFin, TAIL: this.tailFin, DORSAL_FIN: this.dorsalFin, LEFT_PECTORAL_FIN: this.lPec, RIGHT_PECTORAL_FIN: this.rPec };
@@ -212,9 +212,13 @@
         }
         _lizLeg(mat, x, z) {
             const g = new THREE.Group();
-            const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.05, 0.34, 7), mat); upper.rotation.z = x > 0 ? -0.8 : 0.8; upper.position.set(x > 0 ? 0.1 : -0.1, -0.1, 0); g.add(upper);
-            const foot = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.05, 0.2), mat); foot.position.set(x > 0 ? 0.22 : -0.22, -0.32, 0.04); g.add(foot);
-            g.position.set(x, 0.78, z); this.bodyGroup.add(g); return g;
+            const side = x > 0 ? 1 : -1;
+            // Splayed lizard leg: the thigh leans OUTWARD going down, so its top
+            // tucks under the flank (the body is only ~0.2 wide this far along
+            // +/-z) and its bottom end is where the foot sits.
+            const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.05, 0.42, 7), mat); upper.rotation.z = side * 0.7; upper.position.set(0, -0.19, 0); g.add(upper);
+            const foot = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.05, 0.2), mat); foot.position.set(side * 0.135, -0.37, 0.04); g.add(foot);
+            g.position.set(side * 0.16, 0.86, z); this.bodyGroup.add(g); return g;
         }
 
         animatePose(deltaTime) {

@@ -46,6 +46,73 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  // ============================================================================
+  // Creature portraits
+  // ============================================================================
+  // A creature has no bust and never will: the busts are photographs of people.
+  // What it has is a body, so the portrait frame shows the 3D model of it
+  // instead , always one its own archetype supports, resolved through
+  // NPCCreature from a $dataEnemies entry carrying that archetype. This holds
+  // for an NPC met in the street and for a creature party member inspected from
+  // the party panel, in any world, not only a monster one.
+
+  // Who the panel is looking at, as { keys, seed, name } , or null when it is a
+  // person and the bust is right. `actor` is set in party-member mode, the
+  // profile in NPC mode.
+  function _creatureSubject(actor, profile, name) {
+    const NC = window.NPCCreature;
+    if (!NC) return null;
+    if (actor) {
+      const keys = NC.archetypeKeysOf(actor);
+      // A party member is a creature when the creature builder said so, or when
+      // it is played as one of the creature classes, or when it simply carries
+      // an anatomy that is not a person's.
+      const isCreature = !!actor._isCreatureActor ||
+        NC.isNonSentientActor(actor) ||
+        (keys.length > 0 && !(keys.length === 1 && keys[0] === 'Humanoid'));
+      if (!isCreature || !keys.length) return null;
+      return { keys, seed: actor.actorId ? actor.actorId() : 0, name: actor.name() };
+    }
+    if (!profile || !profile.isCreature) return null;
+    const keys = NC.archetypeKeysOf(profile);
+    if (!keys.length) return null;
+    return { keys, seed: _hashName(name || ''), name };
+  }
+
+  // The anatomy row on the Info tab. Everybody has one: somebody with nothing
+  // stored is a plain Humanoid, which is what Health_Core assumes for them
+  // everywhere else, so saying so is the truth rather than a blank.
+  function _archetypeRowLabel(actor, profile) {
+    const NC = window.NPCCreature;
+    if (!NC) return '';
+    const source = actor || profile;
+    if (!source) return '';
+    const keys = NC.archetypeKeysOf(source);
+    const label = NC.archetypeLabel(keys.length ? keys.join(' / ') : 'Humanoid');
+    return label || '';
+  }
+
+  function _hashName(str) {
+    if (window.NPCShared && window.NPCShared.nameHash) return window.NPCShared.nameHash(str);
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i);
+    return h >>> 0;
+  }
+
+  // The model this subject is portrayed by, plus the identity string that says
+  // whether a live viewer is still showing the right thing.
+  function _creatureModelSpec(subject) {
+    if (!subject) return null;
+    const NC = window.NPCCreature;
+    const model = NC && NC.modelForArchetypes(subject.keys, subject.seed);
+    if (!model) return null;
+    return {
+      key: model.key,
+      enemyData: model.enemyData,
+      id: `${subject.name}|${subject.keys.join('/')}|${model.key}|${model.enemyData.id}`,
+    };
+  }
+
   // Every box in the panel that is allowed to scroll, in the order they should
   // be preferred when nothing is under the cursor.
   const _SCROLL_BOXES =
@@ -653,7 +720,135 @@
     document.body.appendChild(div);
   };
 
+  // ============================================================================
+  // Creature portrait viewer (Battler3D in the portrait frame)
+  // ============================================================================
+  // The same shape as the Bestiary's viewer, cut down to what a portrait needs:
+  // no orbiting, no zoom, a slow turn so the body reads, and an occasional
+  // attack so it is plainly alive. The canvas is kept ACROSS refreshes: the
+  // left column is rebuilt with innerHTML on every tab change, and standing up
+  // a fresh WebGL context each time would burn through the browser's context
+  // limit and take the game's own canvas down with it (see cleanup below).
+
+  Scene_NPCEmpathize.prototype._syncPortrait3D = function (spec) {
+    const wrap = this._leftEl && this._leftEl.querySelector('.npc-portrait-3d');
+    if (!spec || !wrap) { this._destroyPortrait3D(); return; }
+    // Same creature as the live viewer: move the canvas into the new frame and
+    // leave the context, the model and the animation loop alone.
+    if (this._portrait3D && this._portrait3D.id === spec.id && !this._portrait3D.disposed) {
+      wrap.appendChild(this._portrait3D.canvas);
+      return;
+    }
+    this._destroyPortrait3D();
+    this._initPortrait3D(wrap, spec);
+  };
+
+  Scene_NPCEmpathize.prototype._initPortrait3D = function (wrap, spec) {
+    if (typeof THREE === 'undefined' || !window.Battler3D || !window.Battler3D.create) return;
+    const canvas = document.createElement('canvas');
+    canvas.className = 'npc-portrait-canvas';
+    wrap.appendChild(canvas);
+
+    const rect   = wrap.getBoundingClientRect();
+    const width  = Math.max(1, Math.round(rect.width)  || 220);
+    const height = Math.max(1, Math.round(rect.height) || 220);
+
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    } catch (e) {
+      return; // no context to be had; the frame stays empty rather than crashing
+    }
+    renderer.setSize(width, height, false);
+    renderer.setPixelRatio(1); // a small frame: hi-DPI costs 4x and shows nothing
+
+    const scene = new THREE.Scene();
+    scene.add(new THREE.AmbientLight(0xffffff, 1.1));
+    const keyLight  = new THREE.DirectionalLight(0xfff2d0, 1.4); keyLight.position.set(3, 5, 4);   scene.add(keyLight);
+    const fillLight = new THREE.DirectionalLight(0xbcd4ff, 0.7); fillLight.position.set(-3, -2, 2); scene.add(fillLight);
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.05, 300);
+    camera.position.set(0, 0, 8);
+    const pivot = new THREE.Group();
+    scene.add(pivot);
+
+    const state = {
+      id: spec.id, canvas, renderer, scene, camera, pivot,
+      model: null, rafId: 0, disposed: false, attackTimer: 2.0,
+      frameAcc: 0, clock: new THREE.Clock(),
+    };
+    this._portrait3D = state;
+
+    // The model's look is rolled off the enemy id, exactly as the Bestiary
+    // rolls it, so the same creature is the same colours every time.
+    const enemyData = spec.enemyData;
+    const fake = { enemyId: () => enemyData.id, index: () => 0, enemy: () => enemyData };
+    const battler = window.Battler3D.create(spec.key, 0, 0, fake);
+    if (!battler) { this._destroyPortrait3D(); return; }
+
+    Promise.resolve(battler.load(null, 0, 0, 0)).then(() => {
+      if (state.disposed || !battler.model) return;
+      try { battler.update(1 / 60); } catch (e) {}
+      const box    = new THREE.Box3().setFromObject(battler.model);
+      const size   = new THREE.Vector3(); box.getSize(size);
+      const center = new THREE.Vector3(); box.getCenter(center);
+      // Centre on a holder rather than on the model: the idle animations
+      // rewrite model.position every frame with an absolute value, and would
+      // undo an offset written onto the model itself.
+      const holder = new THREE.Group();
+      holder.position.copy(center).multiplyScalar(-1);
+      holder.add(battler.model);
+      if (window.PSXShader) window.PSXShader.applyToObject(battler.model);
+      pivot.add(holder);
+      const maxDim = Math.max(size.x, size.y, size.z) || 1;
+      const fitDist = maxDim / (2 * Math.tan((40 * Math.PI / 180) / 2));
+      camera.position.set(0, 0, fitDist * 1.25);
+      camera.lookAt(0, 0, 0);
+      state.model = battler;
+    }).catch(() => {});
+
+    const FRAME = 1 / 30;
+    const animate = () => {
+      if (state.disposed) return;
+      state.rafId = requestAnimationFrame(animate);
+      state.frameAcc += Math.min(state.clock.getDelta(), 0.05);
+      if (state.frameAcc < FRAME) return;
+      const dt = state.frameAcc;
+      state.frameAcc = 0;
+      // A slow turn, so a body plan the player has never seen reads as a shape
+      // rather than as a silhouette.
+      pivot.rotation.y += dt * 0.45;
+      if (state.model) {
+        state.attackTimer -= dt;
+        if (state.attackTimer <= 0 && state.model.currentAnimation === 'idle') {
+          try { state.model.playAnimation('attack', false); } catch (e) {}
+          state.attackTimer = 4.5 + Math.random() * 3;
+        }
+        try { state.model.update(dt); } catch (e) {}
+      }
+      if (window.PSXShader) window.PSXShader.render(renderer, scene, camera);
+      else renderer.render(scene, camera);
+    };
+    animate();
+  };
+
+  Scene_NPCEmpathize.prototype._destroyPortrait3D = function () {
+    const s = this._portrait3D;
+    if (!s) return;
+    this._portrait3D = null;
+    s.disposed = true;
+    cancelAnimationFrame(s.rafId);
+    // dispose() alone leaves the WebGL context alive, and the browser force-
+    // loses the OLDEST context past its cap , which is the game's own canvas.
+    // Release it explicitly, then drop the element: a canvas that lost a
+    // context can never host another one.
+    try { s.renderer.dispose(); } catch (e) {}
+    try { if (s.renderer.forceContextLoss) s.renderer.forceContextLoss(); } catch (e) {}
+    if (s.canvas && s.canvas.parentNode) s.canvas.parentNode.removeChild(s.canvas);
+  };
+
   Scene_NPCEmpathize.prototype._removeOverlay = function () {
+    this._destroyPortrait3D();
     if (this._wheelGuard) {
       window.removeEventListener('wheel', this._wheelGuard, { capture: true });
       this._wheelGuard = null;
@@ -1076,7 +1271,14 @@
       className,
       age: npcAge,
     };
-    const leftHTML = this._buildLeftPanelHTML(bustPath, profile, predispositions, T, leftIdent, attractions);
+    // A creature is portrayed by its own body rather than by a bust. In
+    // party-member mode that is the actor being inspected; in NPC mode it is
+    // whoever is standing there. Resolved before the panel is built so the
+    // frame is laid out for a canvas from the start.
+    const modelSpec = _creatureModelSpec(
+      _creatureSubject(actorMode ? actorObj : null, profile, displayName));
+    const leftHTML = this._buildLeftPanelHTML(
+      bustPath, profile, predispositions, T, leftIdent, attractions, modelSpec);
 
     const showingChatUI = this._activeTab === 'chat';
 
@@ -1112,6 +1314,9 @@
       this._tabBarEl.classList.toggle('npc-tab-bar--focused', this._activeArea === 'tabs');
     }
     this._leftEl.innerHTML = leftHTML;
+    // The frame is in the DOM now, so the viewer can be moved into it (or
+    // stood up, if this is a different creature from the one it was showing).
+    this._syncPortrait3D(modelSpec);
 
     if (showingChatUI) {
       this._rightEl.style.padding       = '0';
@@ -1190,19 +1395,34 @@
     // non-sentient one), so the bar is drawn from it rather than beside it.
     const order = this._tabOrder?.() ?? null;
     const shown = Array.isArray(order) ? tabs.filter(t => order.includes(t.id)) : tabs;
-    return this._buildBackBtnHTML(T) + shown.map(tab => `
+    return this._buildBackBtnHTML(T) + this._buildTabHintHTML() + shown.map(tab => `
       <div class="npc-tab${this._activeTab === tab.id ? ' active' : ''}"
            onmousedown="event.stopPropagation();SceneManager._scene._setTab('${tab.id}')">${_escapeHtml(tab.label)}</div>
     `).join('');
   };
 
-  // "← Back" returns to the previous profile in the wiki navigation stack;
-  // shown whenever this panel was reached through a hyperlink.
+  // "←" returns to the previous profile in the wiki navigation stack; shown
+  // whenever this panel was reached through a hyperlink. The arrow carries the
+  // meaning on its own and the word beside it ("Back" / "Indietro") only ate
+  // room the tab bar needs for the tabs, so the label lives in the tooltip.
   Scene_NPCEmpathize.prototype._buildBackBtnHTML = function (T) {
     if (!Scene_NPCEmpathize._returnStack.length) return '';
     return `
-      <div class="npc-tab npc-wiki-back"
-           onmousedown="event.stopPropagation();SceneManager._scene._leave()">← ${_escapeHtml(T.back)}</div>`;
+      <div class="npc-tab npc-wiki-back" title="${_escapeHtml(T.back)}"
+           onmousedown="event.stopPropagation();SceneManager._scene._leave()">←</div>`;
+  };
+
+  // The chip that sits in front of the first tab and names the button that
+  // changes tab: the shoulder buttons when a pad is plugged in, TAB otherwise.
+  // Directions deliberately no longer walk the tab bar (they stay inside the
+  // open tab), so without this the control is invisible.
+  Scene_NPCEmpathize.prototype._buildTabHintHTML = function () {
+    const pad = window.AnalogStickInput;
+    const onPad = !!(pad && typeof pad.hasPad === 'function' && pad.hasPad());
+    // i18n-ignore-start: physical controller / keyboard button ids
+    const label = onPad ? 'L1 R1' : 'TAB';
+    // i18n-ignore-end
+    return `<div class="npc-tab-hint" data-pad="${onPad ? '1' : '0'}">${label}</div>`;
   };
 
   // ============================================================================
@@ -1283,7 +1503,7 @@
     return html;
   }
 
-  Scene_NPCEmpathize.prototype._buildLeftPanelHTML = function (bustPath, profile, predispositions, T, ident, attractions) {
+  Scene_NPCEmpathize.prototype._buildLeftPanelHTML = function (bustPath, profile, predispositions, T, ident, attractions, modelSpec) {
     let hpmpHTML = '';
     if (profile?.mhp !== undefined || profile?.mmp !== undefined) {
       const mhp    = profile.mhp ?? 0;
@@ -1438,10 +1658,16 @@
         `</div>`;
     }
 
-    return `
-      <div class="npc-portrait-wrap">
+    // A creature's frame is an empty box the viewer's canvas is placed into
+    // (see _syncPortrait3D); everybody else keeps the bust.
+    const portraitHTML = modelSpec
+      ? `<div class="npc-portrait-wrap npc-portrait-3d"></div>`
+      : `<div class="npc-portrait-wrap">
         <img src="${bustPath}" alt="" onerror="this.src='img/busts/7.png'">
-      </div>
+      </div>`;
+
+    return `
+      ${portraitHTML}
       ${identHTML}
       ${switcherHTML}
       <div class="npc-vitals-footer">
@@ -1962,9 +2188,24 @@
          (ideology.name || '').split('.').pop().split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))
       : null;
 
+    // What body this is, always , a person is a Humanoid and that is worth
+    // saying, not only worth saying when it is something else. A hybrid reads
+    // as both halves ("Spider / Humanoid"). Read off the actor when the panel
+    // is inspecting a party member, off the society profile otherwise.
+    const archetypeName = _archetypeRowLabel(actorObj, profile);
+
     let identHTML = '';
     if (profile) {
-      if (persName)     identHTML += `<div class="npc-ident-row">${_iconSpan(persIcon, 17)}<span>${_escapeHtml(persName)}</span></div>`;
+      if (persName)      identHTML += `<div class="npc-ident-row">${_iconSpan(persIcon, 17)}<span>${_escapeHtml(persName)}</span></div>`;
+      if (archetypeName) {
+        // A language that has not been given the word yet carries it as an
+        // empty string; the row then reads as the archetype alone rather than
+        // as a stray colon in front of it.
+        const archLbl = T.archetypeLbl || '';
+        identHTML += `<div class="npc-ident-row">${_iconSpan(84, 17)}` +
+          (archLbl ? `<span style="opacity:0.65">${_escapeHtml(archLbl)}:</span>&nbsp;` : '') +
+          `<span>${_escapeHtml(archetypeName)}</span></div>`;
+      }
       if (wealthLabel)  identHTML += `<div class="npc-ident-row">${_iconSpan(314, 17)}<span>${_escapeHtml(wealthLabel)}</span></div>`;
       if (ideologyName) identHTML += `<div class="npc-ident-row">${_iconSpan(186, 17)}<span>${_escapeHtml(ideologyName)}</span></div>`;
       if (faction)      identHTML += `<div class="npc-ident-row">${_iconSpan(faction.iconIndex || 187, 17)}${_wikiLink('faction', _factionDisplayName(faction))}</div>`;
@@ -4138,9 +4379,9 @@
 
     if (this._tabBarEl) {
       const backHTML = Scene_NPCEmpathize._returnStack.length
-        ? `<div class="npc-tab npc-wiki-back" onmousedown="event.stopPropagation();SceneManager._scene._leave()">← ${_escapeHtml(T.back)}</div>`
-        : `<div class="npc-tab npc-wiki-back" onmousedown="event.stopPropagation();SceneManager._scene._leave(true)">✕ ${_escapeHtml(T.close)}</div>`;
-      this._tabBarEl.innerHTML = backHTML + tabs.map(tab => `
+        ? `<div class="npc-tab npc-wiki-back" title="${_escapeHtml(T.back)}" onmousedown="event.stopPropagation();SceneManager._scene._leave()">←</div>`
+        : `<div class="npc-tab npc-wiki-back" title="${_escapeHtml(T.close)}" onmousedown="event.stopPropagation();SceneManager._scene._leave(true)">✕</div>`;
+      this._tabBarEl.innerHTML = backHTML + this._buildTabHintHTML() + tabs.map(tab => `
         <div class="npc-tab${this._activeTab === tab.id ? ' active' : ''}"
              onmousedown="event.stopPropagation();SceneManager._scene._setTab('${tab.id}')">${_escapeHtml(tab.label)}</div>`).join('');
       this._tabBarEl.classList.toggle('npc-tab-bar--focused', this._activeArea === 'tabs');
@@ -4827,8 +5068,10 @@
 
     // ── Category grid ─────────────────────────────────────────────────────────
     if (!this._wikiCategory) {
+      // The category last opened keeps a golden border while the grid is up, so
+      // coming back out of a category still shows which one you were reading.
       const cards = WIKI_CATEGORIES.map(cat => `
-        <div class="npc-wiki-card" onmousedown="event.stopPropagation();SceneManager._scene._setWikiCategory('${cat.id}')">
+        <div class="npc-wiki-card${this._lastWikiCategory === cat.id ? ' npc-wiki-card-selected' : ''}" onmousedown="event.stopPropagation();SceneManager._scene._setWikiCategory('${cat.id}')">
           <span class="npc-wiki-card-glyph">${cat.glyph}</span>
           <span class="npc-wiki-card-label">${_escapeHtml(T[cat.labelKey] || cat.fallback)}</span>
           <span class="npc-wiki-card-count">${counts[cat.id]}</span>

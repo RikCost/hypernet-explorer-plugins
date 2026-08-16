@@ -1091,13 +1091,21 @@
         data.finalDestination = getActualDestination(destination, data.selectedTransport);
         data.originalMap = { mapId: $gameMap.mapId(), x: $gamePlayer.x, y: $gamePlayer.y };
 
-        // A bus into a procedural town has a second leg: the arrival above is on
-        // the world map at the town's own square, and the party is then taken
-        // down into the town itself, to its bus shelter. It is booked here and
-        // taken on the next map load, because the square has to be arrived at
-        // before it can be generated (the generator reads the tile the party is
-        // standing on). Booked only on the real travel path - the character
+        // A procedural place has no map to walk into, so the arrival worked out
+        // above is the world square it stands on. The journey does not end
+        // there: the transport that carried the party is remembered on the
+        // arrival, and the square is built and stepped into when they get there
+        // (arrivalLanding). Marked only on the real travel path - the character
         // creation and vehicle paths above all return before this line.
+        if (landsOnProcSquare(destination, data.finalDestination, data.selectedTransport)) {
+            data.finalDestination.procTown = data.selectedTransport;
+        }
+
+        // The bus's own second leg, kept as the backstop for the one case the
+        // descent above cannot cover: a square the biome snapshot refuses to
+        // build, where the coach really does put the party down on the world
+        // map. It is taken on the next map load, and arrivalLanding cancels it
+        // whenever the direct descent worked.
         $gameSystem._busTownArrival =
             (data.selectedTransport === 'bus' && isProceduralTown(destination))
                 ? { name: destination.name,
@@ -1142,16 +1150,19 @@
         }
 
         // Check for specific map teleport overrides
-        // Teleport immediately to original destination
+        // Teleport immediately to original destination. A procedural place is
+        // arrived INSIDE, on the square built from its own base coordinates,
+        // rather than on the world map above it.
+        const arrival = arrivalLanding(data.finalDestination);
         $gamePlayer.reserveTransfer(
-            data.finalDestination.mapId,
-            data.finalDestination.x,
-            data.finalDestination.y,
-            data.finalDestination.direction || 2, 0
+            arrival.mapId,
+            arrival.x,
+            arrival.y,
+            arrival.direction || 2, 0
         );
 
-        setPlayerWorldFromDest(data.finalDestination);
-        $gameVariables.setValue(45, data.finalDestination.mapId);
+        setPlayerWorldFromDest(arrival);
+        $gameVariables.setValue(45, arrival.mapId);
         clearFastTravelData();
     }
     function completeTravelCamper() {
@@ -1310,21 +1321,22 @@
             return;
         }
 
+        const arrival = arrivalLanding(data.finalDestination);
         $gamePlayer.reserveTransfer(
-            data.finalDestination.mapId,
-            data.finalDestination.x,
-            data.finalDestination.y,
-            data.finalDestination.direction || 2, 0
+            arrival.mapId,
+            arrival.x,
+            arrival.y,
+            arrival.direction || 2, 0
         );
-        setPlayerWorldFromDest(data.finalDestination);
+        setPlayerWorldFromDest(arrival);
         clearFastTravelData();
     }
 
-    // ── The second leg of a bus ride into a procedural town ─────────────────
-    // The coach has put the party down on the town's world square; now they get
-    // off at the shelter. The map does not exist until the square is generated,
-    // which is why this waits for the arrival rather than being folded into the
-    // arrival itself.
+    // ── Landing inside a procedural town ────────────────────────────────────
+    // A procedural place is a square the world generates rather than a map
+    // somebody drew, so a journey to one ends on the ground of that square: at
+    // the bus shelter when a coach brought the party, in the middle of it when
+    // anything else did, and always on a tile they can stand on.
     const PROC_MAP_ID_FT = 636;
 
     // Every tile id the tileset draws a bus shelter with, single and grid alike.
@@ -1378,25 +1390,168 @@
                 }
             }
         }
-        return null;
+        // A shelter hemmed in on every side the terrain knew about: aimed at it
+        // anyway, because getting off the coach beside the stop is the point and
+        // the post-load pass (placeOnStandableTile) settles the exact tile once
+        // the houses and events are on the square. Only a town with no shelter
+        // at all answers null, and the caller then walks in at the middle.
+        return shelters[0];
     }
 
-    function descendIntoBusTown() {
-        if (!$gameSystem.generateProceduralMap || !$gameSystem.generateProceduralMap()) return false;
+    // The middle of a procedural square: where walking into a town from the
+    // world map puts the party, and the arrival for everything that is not a
+    // coach pulling into a shelter.
+    function procSquareCentre() {
         const U = window.ProcGenUtils;
-        const tile = busStopArrivalTile() || {
+        return {
             x: Math.floor(((U && U.PROC_MAP_WIDTH) || 64) / 2),
             y: Math.floor(((U && U.PROC_MAP_HEIGHT) || 64) / 2),
         };
+    }
+
+    // The tile a journey ends on inside the square, read off the terrain that
+    // was just generated: the open ground beside the bus shelter for a coach,
+    // the middle of the square for every other way in.
+    function procArrivalTile(transportType) {
+        return (transportType === 'bus' && busStopArrivalTile()) || procSquareCentre();
+    }
+
+    // Book the "put them somewhere they can actually stand" pass below. The
+    // tiles read out of the generator are the terrain as it left them; the
+    // houses, the prefabs and the events are stamped onto the square during the
+    // map load that follows, so whether a tile can be stood on is only settled
+    // once that load is done.
+    function bookProcLandingFixup() {
+        if ($gameTemp) $gameTemp._ftProcLanding = true;
+    }
+
+    // ── Arriving inside a procedural town, without the world map ────────────
+    //
+    // A procedural place has no authored map to walk into: no `entrance`, only
+    // the world square it stands on. Journeys to one used to END on that square
+    // - map 315, the thing a journey is looked at ON rather than a place to be
+    // put down in - and the party then walked in themselves. Only the bus went
+    // further, and only on the map load after the arrival.
+    //
+    // Now every such journey goes straight in. The square is built from the
+    // entry's own `base` coordinates through generateOriginBiomeMap, which reads
+    // the biome snapshot rather than the live map-315 tile column and so does
+    // not need the party standing there, the world coordinate vars are moved
+    // onto it, and the arrival lands on the ground of the town itself.
+    function isProceduralDest(destination) {
+        const o = destination && destination.transportOverrides;
+        return !!(o && o.procedural === true);
+    }
+
+    // Transports the party arrives WITH a vehicle on: the vehicle lives on the
+    // world map and cannot follow anybody down into a square, so these keep the
+    // old world-map arrival and park it there. (See the vehicle completions,
+    // which set the camper, car and airship down on the arrival tile.)
+    const VEHICLE_TRANSPORTS = ['camper', 'carsharing', 'bicycle'];
+
+    // Does an arrival worked out by getActualDestination end on the open world
+    // map at a procedural place's own square?
+    function landsOnProcSquare(destination, dest, transportType) {
+        if (!dest || dest.mapId !== 315) return false;
+        if (earthLost()) return false;
+        if (VEHICLE_TRANSPORTS.includes(transportType)) return false;
+        return isProceduralDest(destination);
+    }
+
+    // Build the square and answer the arrival inside it, or null when it cannot
+    // be built (a coordinate the biome snapshot has nothing for, or one it calls
+    // water), leaving the caller with the plain world-map arrival it started
+    // from.
+    function proceduralTownLanding(dest) {
+        if (!$gameSystem || !$gameSystem.generateOriginBiomeMap) return null;
+        const world = destWorld(dest);
+        const built = $gameSystem.generateOriginBiomeMap({ worldX: world.x, worldY: world.y });
+        if (!built) return null;
+        // The two "the procedural map is live" flags (see WorldMapReturn's
+        // startProcGen); without them the square loads with no borders out of it.
         $gameVariables.setValue(110, 1);
         $gameVariables.setValue(111, 1);
+        const tile = procArrivalTile(dest.procTown);
+        bookProcLandingFixup();
+        return {
+            mapId: PROC_MAP_ID_FT, x: tile.x, y: tile.y, direction: 2,
+            worldX: world.x, worldY: world.y, name: dest.name,
+        };
+    }
+
+    // Where a stored arrival really puts the party: inside the town when the
+    // trip ends at a procedural square, the stored arrival itself otherwise.
+    function arrivalLanding(dest) {
+        if (!dest || !dest.procTown) return dest;
+        // Riding something at the moment of arrival (a boat, the bike) means the
+        // party lands on the world map with it, whatever they booked: a vehicle
+        // cannot be taken down into a square, and stepping off one that is not
+        // there strands them.
+        if ($gamePlayer.isInVehicle()) return dest;
+        const landing = proceduralTownLanding(dest);
+        if (!landing) return dest;
+        // The descent has happened, so the bus's own second leg must not be
+        // left booked: the party never touches the town's world square now, and
+        // a booking nobody spends would pull them back down into the town the
+        // next time they happened to walk onto it.
+        if ($gameSystem) $gameSystem._busTownArrival = null;
+        return landing;
+    }
+
+    // The bus's second leg, for a trip booked before arrivals went straight in
+    // (a save made mid-journey) or one whose square could not be built: the
+    // coach has put the party down on the town's world square, and they get off
+    // at the shelter on the map load that follows.
+    function descendIntoBusTown() {
+        if (!$gameSystem.generateProceduralMap || !$gameSystem.generateProceduralMap()) return false;
+        const tile = procArrivalTile('bus');
+        $gameVariables.setValue(110, 1);
+        $gameVariables.setValue(111, 1);
+        bookProcLandingFixup();
         $gamePlayer.reserveTransfer(PROC_MAP_ID_FT, tile.x, tile.y, 2, 0);
         return true;
+    }
+
+    // Nobody is set down in a boulder, a wall, a pond or the inside of the very
+    // shelter they got off at. CharacterCreation settles its own origins on a
+    // square the same way and its test is the stricter one (passable in every
+    // direction, nothing standing on it, no floor that hurts), so it is used
+    // where it is loaded and the plain passability test stands in where it is
+    // not.
+    function placeOnStandableTile() {
+        const CCP = window.CCOriginPlacement;
+        if (CCP && typeof CCP.placeOnStandableTile === 'function') {
+            CCP.placeOnStandableTile();
+            return;
+        }
+        const passable = (x, y) =>
+            x >= 0 && y >= 0 && x < $gameMap.width() && y < $gameMap.height() &&
+            $gameMap.checkPassage(x, y, 0x0f) && $gameMap.eventsXy(x, y).length === 0;
+        if (passable($gamePlayer.x, $gamePlayer.y)) return;
+        const reach = Math.max($gameMap.width(), $gameMap.height());
+        for (let ring = 1; ring < reach; ring++) {
+            for (let dx = -ring; dx <= ring; dx++) {
+                for (let dy = -ring; dy <= ring; dy++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dy)) !== ring) continue;
+                    if (passable($gamePlayer.x + dx, $gamePlayer.y + dy)) {
+                        $gamePlayer.locate($gamePlayer.x + dx, $gamePlayer.y + dy);
+                        return;
+                    }
+                }
+            }
+        }
+        console.warn("FastTravel: nowhere to stand on the arrival square; the party was left where it landed.");
     }
 
     const _Scene_Map_onMapLoaded_FTBus = Scene_Map.prototype.onMapLoaded;
     Scene_Map.prototype.onMapLoaded = function () {
         _Scene_Map_onMapLoaded_FTBus.call(this);
+        // The square a journey arrived on is real now, events and all: settle
+        // which tile of it the party is standing on.
+        if ($gameTemp && $gameTemp._ftProcLanding && $gameMap.mapId() === PROC_MAP_ID_FT) {
+            $gameTemp._ftProcLanding = false;
+            placeOnStandableTile();
+        }
         const booking = $gameSystem && $gameSystem._busTownArrival;
         if (!booking) return;
         // Only on the town's own world square, and only once. The square is

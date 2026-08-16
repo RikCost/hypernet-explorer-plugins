@@ -548,6 +548,7 @@
 
                 // ── PER-CREATURE BULK (visual only; varied per monster id) ───
                 const bb = (this.profile.bodyBulk || 1.0) * this.bulkMul;
+                this._bulk = bb;   // animatePose anchors the shoulders on it
                 if (bb !== 1.0) {
                     this.torso.scale.set(bb, 1, bb);
                     [this.leftUpperArm, this.leftForearm, this.rightUpperArm, this.rightForearm,
@@ -1036,6 +1037,7 @@
         animatePose(deltaTime) {
             const s  = this.scale;
             const t  = this.animTime;
+            const prone = this._updateProne(deltaTime);
 
             // ── TORSO (kinematic) ────────────────────────────────────────────
             // Stand the torso at its nominal height and let the FK below pose
@@ -1170,8 +1172,13 @@
             // ── ARMS ─────────────────────────────────────────────────────────
             if (lElb === undefined) lElb = elbB;
             if (rElb === undefined) rElb = elbB;
-            const lSh = { x: tx - 0.42, y: ty + 0.2, z: tz };
-            const rSh = { x: tx + 0.42, y: ty + 0.2, z: tz };
+            // Shoulders ride on the torso's ACTUAL width: load() scales the torso
+            // and the limbs by (bb,1,bb) for the per-creature bulk, so a fixed
+            // +/-0.42 anchor left every gaunt profile's arms (skeleton bodyBulk
+            // 0.68, undead, vampire, fairy) hanging in the air beside the chest.
+            const shX = 0.42 * (this._bulk || 1);
+            const lSh = { x: tx - shX, y: ty + 0.2, z: tz };
+            const rSh = { x: tx + shX, y: ty + 0.2, z: tz };
             // A held weapon is aligned to the forearm only while it is actively
             // swinging (attack); otherwise it keeps its own gentle upright sway.
             const weaponFollowsArm = !!armIK;
@@ -1307,6 +1314,10 @@
                 }
             }
 
+            // ── PRONE (both legs severed) ────────────────────────────────────
+            // Last, so the finished pose is laid down as a whole. Untouched
+            // while the creature still has a leg to stand on.
+            if (prone > 0) this._applyProne(prone);
         }
     }
 

@@ -203,6 +203,12 @@
                 this._confirmFloorSelection();
             });
             btn.addEventListener("mouseenter", () => {
+                // Hover steers only while the mouse is what is moving. This list
+                // scrolls its selection into view (_scrollSelectionIntoView), so
+                // stepping it with a pad slides a different floor under a resting
+                // pointer and used to snap the choice back to it
+                // (PointerSteering, Core/AnalogStickInput.js).
+                if (window.PointerSteering && !window.PointerSteering.isSteering()) return;
                 if (this._selectedIndex !== i && FloorListData.isEnabled(this._floorItems[i])) {
                     this._selectedIndex = i;
                     this._updateFloorListHighlight();

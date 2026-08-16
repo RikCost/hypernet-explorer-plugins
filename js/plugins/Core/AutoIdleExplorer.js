@@ -38,6 +38,17 @@
  *     them comes away thinking a little more (or a little less) of the other,
  *     on the same per-member standing the Empathize panel shows. How much they
  *     have in common and how either of them smells decide which way it goes.
+ *     What is actually SAID between two of their own comes from
+ *     NPC/PartyBanter.js, which is a bank written for people who already know
+ *     each other rather than the greeting the town gets: a discussion of two to
+ *     four beats about where they are standing, what the party diary says just
+ *     happened to them, what they just spent the money on, or simply what these
+ *     two personalities do to each other. A third member standing close enough
+ *     when it starts is in the conversation and gets lines of their own. Every
+ *     other bubble a member pops on their own, a thought, a look, a sit-down, a
+ *     cry after the leader, is drawn from THEIR personality first and falls back
+ *     to the plain pool here. None of that applies to a party of one, who has
+ *     the plain pools and nothing else.
  *   • They look after themselves, off the very same capability registry the
  *     town's NPCs use (NPC/NPCSimulationCore.js), so a party member and a
  *     townsperson recognise a washroom by one rule and the table that teaches
@@ -329,6 +340,9 @@
     // leader or whoever else is walking with them, rather than to the town. A
     // party that only ever talks to strangers reads as a column of strangers.
     const PARTY_TALK_ODDS = 0.45;
+    // A third member standing this close when two of their own start talking is
+    // in the conversation, not next to it: they get a line and they get faced.
+    const PARTY_THIRD_RANGE = 3;
     const VISIT_COOLDOWN = 1200; // frames before a member calls on the same face again
     const BUBBLE_MS = 3400;   // how long one line of chatter stays up
 
@@ -2014,6 +2028,9 @@
                 s = this._states[i] = {
                     act: "idle", wait: 0, gx: null, gy: null, partner: null, beat: 0, tries: 0,
                     need: null, rent: false, until: 0, dash: false,
+                    // The discussion in progress (PartyBanter beats) and the
+                    // characters saying it, speaker-index aligned.
+                    talk: null, talkChars: null,
                     // Who this member has already been over to see, and when. A
                     // party standing in a village would otherwise queue up in
                     // front of the one villager nearest the leader all evening.
@@ -2042,6 +2059,8 @@
             s.act = "idle";
             s.gx = s.gy = null;
             s.partner = null;
+            s.talk = null;
+            s.talkChars = null;
             s.beat = 0;
             s.tries = 0;
             s.need = null;
@@ -2144,9 +2163,26 @@
             // child walking with them wanders and stops to look at things like
             // everyone else, but it says none of it.
             if (this.isAlwaysLoose(char)) return;
+            // A party of two or more says it in their OWN voice: PartyBanter
+            // answers out of this member's personality bank (NPC/PartyBanter.js).
+            // A lone traveller has no banter to be part of and falls back to the
+            // plain pool below, which is what they always had.
+            const actor = this.partyActorOf(char);
+            const own = (actor && window.PartyBanter) ? window.PartyBanter.solo(actor, key) : null;
+            if (own) {
+                Bubbles.show(char, own);
+                return;
+            }
             const lines = T.pool(key);
             if (!lines.length) return;
             Bubbles.show(char, lines[Math.floor(Math.random() * lines.length)]);
+        },
+
+        // A line already chosen elsewhere (a scripted party discussion), said
+        // by this character. Same bubble, no bank lookup.
+        sayText(char, text) {
+            if (!text || this.isAlwaysLoose(char)) return;
+            Bubbles.show(char, text);
         },
 
         // Switching the option mid-game: close ranks (or let go) immediately
@@ -2556,16 +2592,21 @@
             }
             // Two travellers who have been on the same road all week do not
             // talk to each other the way they talk to a stranger in a village,
-            // so the party has a bank of its own.
+            // so the party has a bank of its own (NPC/PartyBanter.js): a real
+            // discussion of two to four beats, about where they are standing,
+            // what the diary says just happened to them, what they just spent
+            // the money on, or simply what these two personalities do to each
+            // other. A stranger still gets the old greeting and answer.
             const own = !!this.partyActorOf(p);
+            if (own) return this.stepPartyTalk(f, p, s);
             if (s.beat === 0) {
-                this.say(f, own ? "AutoIdle.loose.partyGreet" : "AutoIdle.loose.greet");
+                this.say(f, "AutoIdle.loose.greet");
                 s.beat = 1;
                 s.wait = 100;
                 return;
             }
             if (s.beat === 1) {
-                this.say(p, own ? "AutoIdle.loose.partyReply" : "AutoIdle.loose.reply");
+                this.say(p, "AutoIdle.loose.reply");
                 s.beat = 2;
                 s.wait = 110;
                 return;
@@ -2576,6 +2617,92 @@
             this.settleTalk(f, p);
             this.clearGoal(s);
             s.wait = 60;
+        },
+
+        // Two (or three) of their own, holding an actual discussion. The whole
+        // exchange is drawn at once from PartyBanter so it hangs together, and
+        // then played out one beat at a time with everybody turning to whoever
+        // has the floor. A member standing close by when it starts is IN it:
+        // that is what makes a party of three sound like a party rather than
+        // like two people and a spectator.
+        stepPartyTalk(f, p, s) {
+            if (!s.talk) {
+                const cast = [];
+                const chars = [];
+                const add = (char) => {
+                    const actor = this.partyActorOf(char);
+                    if (!actor || cast.includes(actor)) return;
+                    cast.push(actor);
+                    chars.push(char);
+                };
+                add(f);
+                add(p);
+                if (cast.length < 2) {
+                    this.clearGoal(s);
+                    return;
+                }
+                const third = this.nearbyPartyChar(f, [f, p]);
+                if (third) add(third);
+
+                const beats = window.PartyBanter ? window.PartyBanter.discussion(cast) : null;
+                // No bank to draw on (the plugin is off, or its i18n file is
+                // missing): they still walked over and it still counts as
+                // company, they simply have nothing scripted to say.
+                if (!beats || !beats.length) {
+                    this.settleTalk(f, p);
+                    this.clearGoal(s);
+                    s.wait = 60;
+                    return;
+                }
+                s.talk = beats;
+                s.talkChars = chars;
+                s.beat = 0;
+            }
+
+            if (s.beat < s.talk.length) {
+                const beat = s.talk[s.beat++];
+                const speaker = s.talkChars[beat.who] || f;
+                for (const listener of s.talkChars) {
+                    if (listener === speaker || listener.isMoving() || listener.isDirectionFixed()) continue;
+                    const facing = dirBetween(listener.x, listener.y, speaker.x, speaker.y);
+                    if (facing > 0) listener.setDirection(facing);
+                }
+                this.sayText(speaker, beat.text);
+                // A long line is read for longer, so nobody talks over anybody.
+                s.wait = 95 + Math.min(80, Math.round(String(beat.text).length * 1.4));
+                return;
+            }
+
+            // The discussion happened, so it counted, and it counted for
+            // everybody who stood in it.
+            const chars = s.talkChars || [];
+            this.settleTalk(f, p);
+            if (chars[2]) this.settleTalk(f, chars[2]);
+            this.clearGoal(s);
+            s.wait = 70;
+        },
+
+        // Another of their own close enough to be part of a conversation that
+        // is starting here.
+        nearbyPartyChar(f, exclude) {
+            if (!$gamePlayer || $gamePlayer.isInVehicle()) return null;
+            let best = null;
+            let bestD = PARTY_THIRD_RANGE + 1;
+            const consider = (c) => {
+                if (!c || exclude.includes(c)) return;
+                if (c.isTransparent && c.isTransparent()) return;
+                if (!this.partyActorOf(c)) return;
+                const d = this.dist(f, c);
+                if (d <= PARTY_THIRD_RANGE && d < bestD) {
+                    best = c;
+                    bestD = d;
+                }
+            };
+            consider($gamePlayer);
+            for (const other of $gamePlayer.followers().data()) {
+                if (other.isVisible()) consider(other);
+            }
+            return best;
         },
 
         // What one exchange did to their opinion. A person is not a vending

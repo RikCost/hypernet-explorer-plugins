@@ -56,6 +56,7 @@
   "logMajorCleared": "Major update notice cleared.",
   "logCancel": "Update cancelled. Nothing was replaced.",
   "logError": "Failed, %1",
+  "closingNotice": "Closing the game to apply update",
   "restartNote": "Close and reopen required",
   "logClosing": "Closing the game now. Reopen it to play the updated build.",
   "olderNote": "This build is older than the newest one. Installing it puts the game back.",

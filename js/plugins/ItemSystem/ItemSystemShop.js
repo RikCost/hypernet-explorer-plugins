@@ -1009,15 +1009,32 @@
     };
   }
 
-  // The six keys the shop borrows while it is open.
+  // The keys the shop borrows while it is open.
   const SHOP_KEY_BINDINGS = {
     87: 'up',        // W
     65: 'shopBack',  // A → always go back to buy tab
     83: 'down',      // S
     68: 'right',     // D
     81: 'pageup',    // Q → L1 (switch to Buy)
-    69: 'pagedown'   // E → R1 (switch to Sell)
+    69: 'pagedown',  // E → R1 (switch to Sell)
+    // The keyboard's half of the per-line quantity steppers on a picked card.
+    // Both rows of minus/plus, so it works with or without a numpad. MousePan
+    // owns these four on the map (mapZoomIn/Out); borrowing is what this table
+    // is for, and releaseShopKeys puts them back when the shop closes.
+    189: 'shopQtyDown', // -
+    187: 'shopQtyUp',   // =/+
+    109: 'shopQtyDown', // numpad -
+    107: 'shopQtyUp'    // numpad +
   };
+
+  // How far a fully pulled analog trigger has to travel before it counts as a
+  // press, and how many frames apart it repeats while it is held. The triggers
+  // are the pad's half of the same steppers: they have no Input.gamepadMapper
+  // entry (buttons 6/7), so they are read raw through AnalogStickInput, the
+  // same way the empathize panel reads them.
+  const QTY_TRIGGER_THRESHOLD = 0.5;
+  const QTY_REPEAT_WAIT = 24;
+  const QTY_REPEAT_INTERVAL = 5;
 
   // What those keys meant before a shop borrowed them, kept module-wide rather
   // than per scene. A scene-local copy looked right but a shop that opened while
@@ -1058,6 +1075,9 @@
     _Scene_Shop_create.call(this);
     this.createItemDetailWindow();
     this.initStock();
+    // Analog-trigger hold state for the cart quantity steppers (readShopQtyStep).
+    this._qtyTriggerDir = 0;
+    this._qtyTriggerHold = 0;
     // The buy list was built while the engine created its windows, before
     // today's stock was rolled, so a shelf filtered against yesterday's numbers
     // is rebuilt now that the record is current.
@@ -1251,8 +1271,11 @@
     }
 
     // Tab takes the whole category the cursor is standing in, or puts it back:
-    // the keyboard's half of the press on a category header.
-    if (Input.isTriggered('tab') && !this._numberWindow.active) {
+    // the keyboard's half of the press on a category header. TAB has no entry
+    // in Input.gamepadMapper, so a pad reaches it through Y ('menu'), the one
+    // face button the shop leaves free: A is OK, B is cancel, X is the
+    // single-line multi-select above, and the bumpers switch Buy/Sell.
+    if ((Input.isTriggered('tab') || Input.isTriggered('menu')) && !this._numberWindow.active) {
       const buying = this._buyWindow.active;
       const selling = this._sellWindow.active && !this._chipFocus;
       if (buying || selling) {
@@ -1265,6 +1288,34 @@
           SoundManager.playBuzzer();
         }
         return;
+      }
+    }
+
+    // The per-line quantity on a card already sitting on the counter. The mouse
+    // has the little -/+ steppers inside the card; without this the only way a
+    // pad or keyboard could change an amount was to take the line off the
+    // counter and put it back, so every multi-line cart was stuck at one each.
+    // Minus/plus on the keyboard, L2/R2 on a pad, both auto-repeating; SHIFT
+    // steps by ten and CTRL goes the whole way, matching the stepper's clicks.
+    if (!this._numberWindow.active) {
+      const step = this.readShopQtyStep();
+      if (step) {
+        const buying = this._buyWindow.active;
+        const selling = this._sellWindow.active && !this._chipFocus;
+        if (buying || selling) {
+          const item = buying ? this._buyWindow.item() : this._sellWindow.item();
+          // Only a line already on the counter has a quantity to change; on any
+          // other line X ('shift') is what puts it there in the first place.
+          if (item && this.shopCart(buying).has(item)) {
+            const scale = Input.isPressed('control') ? 9999 : (Input.isPressed('shift') ? 10 : 1);
+            this.changeCartQty(item, step * scale, buying);
+            SoundManager.playCursor();
+            this.refreshUIShop();
+          } else if (item) {
+            SoundManager.playBuzzer();
+          }
+          return;
+        }
       }
     }
 
@@ -3215,6 +3266,33 @@
   Scene_Shop.prototype.changeCartQty = function (item, delta, buying) {
     if (buying) this.changeBuySelectionQty(item, delta);
     else this.changeSellSelectionQty(item, delta);
+  };
+
+  // -1, +1 or 0 for this frame's quantity step, from either input the steppers
+  // answer to. The keyboard half rides Input's own key-repeat; the pad half is
+  // the analog triggers, which Input does not see at all (no gamepadMapper
+  // entry for buttons 6/7), so their hold has to be counted here to get the
+  // same auto-repeat rather than one step per pull.
+  Scene_Shop.prototype.readShopQtyStep = function () {
+    if (Input.isRepeated('shopQtyUp')) return 1;
+    if (Input.isRepeated('shopQtyDown')) return -1;
+
+    const pads = window.AnalogStickInput;
+    if (!pads || typeof pads.rightTrigger !== 'function') return 0;
+    const up = pads.rightTrigger() >= QTY_TRIGGER_THRESHOLD;
+    const down = !up && pads.leftTrigger() >= QTY_TRIGGER_THRESHOLD;
+    const dir = up ? 1 : (down ? -1 : 0);
+    if (dir === 0 || dir !== this._qtyTriggerDir) {
+      // Direction changed (or let go): restart the hold so the new pull steps
+      // once immediately instead of inheriting the old one's repeat rhythm.
+      this._qtyTriggerDir = dir;
+      this._qtyTriggerHold = 0;
+      if (dir === 0) return 0;
+    }
+    const t = ++this._qtyTriggerHold;
+    const fires = t === 1 ||
+      (t >= QTY_REPEAT_WAIT && (t - QTY_REPEAT_WAIT) % QTY_REPEAT_INTERVAL === 0);
+    return fires ? dir : 0;
   };
 
   Scene_Shop.prototype.clearCart = function (buying) {

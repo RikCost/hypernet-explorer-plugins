@@ -307,6 +307,11 @@
 
       this._el.querySelectorAll('.item-slot').forEach((el, i) => {
         el.addEventListener('mouseenter', () => {
+          // Hover steers only while the mouse is what is moving: the list
+          // scrolls its selection into view, so a pad press slides a different
+          // slot under a resting pointer and fires this -- which also meant a
+          // cursor SE on every press (PointerSteering, Core/AnalogStickInput.js).
+          if (window.PointerSteering && !window.PointerSteering.isSteering()) return;
           if (this._selectedIndex !== i) {
             this._selectedIndex = i;
             SoundManager.playCursor();

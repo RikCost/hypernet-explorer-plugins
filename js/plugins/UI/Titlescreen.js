@@ -6282,6 +6282,12 @@ Window_TitleCommand.prototype.makeCommandList = function () {
     // for the session, so entering the title again costs nothing and answers at
     // once; the badge is rebuilt afterwards because the answer may have numbered
     // this build.
+    //
+    // Coming back here from a game is the one re-entry that is not free: the
+    // session may have run for hours, so the updater reads the branch again and
+    // that read is held back exactly like the launch one, rather than starting
+    // while this screen is still building itself. The button keeps showing
+    // whatever the last check said until the new answer lands.
     Scene_Title.prototype.beginUpdateCheck = function () {
         const api = updaterApi();
         if (!api || typeof api.autoCheck !== 'function') return;
@@ -6298,9 +6304,9 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             }).catch(() => { /* the updater already reports its own failures */ });
         };
 
-        // Already answered this session: no reason to make the player wait for
-        // the notice a second time.
-        if (updaterCall('autoResult')) run();
+        // Already answered this session and nothing played since: no reason to
+        // make the player wait for the notice a second time.
+        if (updaterCall('autoResult') && !updaterCall('recheckPending')) run();
         else setTimeout(run, UPDATE_CHECK_DELAY);
     };
 

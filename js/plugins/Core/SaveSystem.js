@@ -1008,9 +1008,15 @@
         const detailsContainer = this._dndContainer.querySelector('.save-details-container');
         if (detailsContainer) {
             detailsContainer.innerHTML = rightPageHTML;
-            // Sync mouse hover into the controller/keyboard focus model
+            // Sync mouse hover into the controller/keyboard focus model, but
+            // only while the mouse is the thing being moved: this container is
+            // rebuilt on every slot change, so walking the save list with a pad
+            // dropped a fresh button under a resting pointer and yanked focus
+            // out of the list into the action row (PointerSteering, defined in
+            // Core/AnalogStickInput.js).
             detailsContainer.querySelectorAll('.action-btn.focusable').forEach((btn, i) => {
                 btn.addEventListener('mouseenter', () => {
+                    if (window.PointerSteering && !window.PointerSteering.isSteering()) return;
                     UIFileInputManager._focusMode = 'actions';
                     UIFileInputManager._actionIndex = i;
                     UIFileInputManager.updateFocus();

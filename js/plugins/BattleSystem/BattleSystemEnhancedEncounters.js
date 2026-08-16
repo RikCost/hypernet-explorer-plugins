@@ -140,9 +140,9 @@
  * Reinforcements (Scene_Battle fights only)
  * ----------------------------------------------------------------------------
  * A fight started against a map "Enemy" event drags in every other roaming
- * monster of the SAME enemy type standing less than JOIN_RANGE (8) tiles from
- * the party, up to a total of BATTLE_MAX_MEMBERS (3) fighters across the whole
- * battle (base troop + joiners). Joiners are taken nearest-first. Their troops
+ * monster standing less than JOIN_RANGE (8) tiles from the party, whatever
+ * species it is, up to a total of BATTLE_MAX_MEMBERS (6) fighters across the
+ * whole battle (base troop + joiners). Joiners are taken nearest-first. Their troops
  * are appended to the one the battle was started with and the combined troop is
  * written into a single scratch $dataTroops slot, reused for every reinforced
  * battle. Each joiner's map event is settled the way the triggering one is:
@@ -2637,8 +2637,8 @@
     // reaching this code.
 
     BSE.Data.JOIN_RANGE = 8;  // tiles; a monster closer than this joins in
-    BSE.Data.JOIN_MAX   = 2;  // at most this many extra troops per battle
-    BSE.Data.BATTLE_MAX_MEMBERS = 3; // hard cap: base + joiners combined
+    BSE.Data.JOIN_MAX   = 4;  // at most this many extra troops per battle
+    BSE.Data.BATTLE_MAX_MEMBERS = 6; // hard cap: base + joiners combined
 
     // The scratch $dataTroops slot the combined troop is written into. One slot
     // is reserved per session and rewritten for every reinforced battle rather
@@ -2683,23 +2683,22 @@
     };
 
     // The enemy events that join a battle started against `triggerEventId`.
-    // Only same-troop-type enemies within JOIN_RANGE tiles join. Joiners are
-    // capped so the total troop-member count (base + all joiners) never
-    // exceeds BATTLE_MAX_MEMBERS. Nearest first.
+    // EVERY live enemy event within JOIN_RANGE tiles joins, whatever species it
+    // is: a wolf standing next to a bandit is in the same fight as the bandit,
+    // and a battle is a brawl between whoever happens to be standing there
+    // rather than a duel against copies of one monster. Joiners are capped so
+    // the total troop-member count (base + all joiners) never exceeds
+    // BATTLE_MAX_MEMBERS. Nearest first.
     BSE.Functions.getJoiningEnemyEvents = function(triggerEventId) {
         if (!$gameMap || !$gamePlayer) return [];
         const range = BSE.Data.JOIN_RANGE;
         const maxMembers = BSE.Data.BATTLE_MAX_MEMBERS || 3;
 
-        // Get the base troop so we can match type and count its members.
+        // Get the base troop so we can count the slots it already occupies.
         const triggerEvent = $gameMap.event(triggerEventId);
         const baseTroopId  = triggerEvent ? triggerEvent._fixedTroopId : 0;
         const baseTroop    = baseTroopId ? $dataTroops[baseTroopId] : null;
         if (!baseTroop || !baseTroop.members.length) return [];
-
-        // The lead enemy species of the triggering troop — only events whose
-        // first enemy matches join (same-enemy-type grouping).
-        const baseTroopFirstEnemyId = baseTroop.members[0].enemyId;
 
         let usedSlots = baseTroop.members.length; // slots already occupied by base
         const near = [];
@@ -2708,8 +2707,6 @@
             if (!isLiveEnemyEvent(ev)) continue;
             const troop = $dataTroops[ev._fixedTroopId];
             if (!troop || !troop.members.length) continue;
-            // Only same-type troops join (matching lead enemy id).
-            if (troop.members[0].enemyId !== baseTroopFirstEnemyId) continue;
             const dx = ev.x - $gamePlayer.x, dy = ev.y - $gamePlayer.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist >= range) continue;
@@ -2717,11 +2714,14 @@
         }
         near.sort((a, b) => a.dist - b.dist);
 
-        // Pick nearest joiners until the battle cap is reached.
+        // Pick nearest joiners until the battle cap is reached. A troop too big
+        // for the slots left is skipped rather than ending the scan, so a lone
+        // straggler further out still gets in behind a crowded pack.
         const joiners = [];
         for (const n of near) {
             if (joiners.length >= BSE.Data.JOIN_MAX) break;
-            if (usedSlots + n.memberCount > maxMembers) break;
+            if (usedSlots >= maxMembers) break;
+            if (usedSlots + n.memberCount > maxMembers) continue;
             joiners.push(n.event);
             usedSlots += n.memberCount;
         }

@@ -662,6 +662,12 @@
     // enemy freezes its pose and fades the whole model off over this long.
     const PART_DESTROY_TIME = 0.5;
     const DEATH_FADE_TIME = 1.1;
+    // A biped that has lost BOTH legs cannot stand: its model topples to the
+    // ground over this long, and is lifted by this much (in local units, i.e.
+    // scaled by the model scale) so the flattened body rests ON the ground
+    // instead of half inside it. See _updateProne / _applyProne.
+    const PRONE_FALL_TIME = 0.7;
+    const PRONE_LIFT = 0.30;
 
     // Perf caches: skin textures are shared across same-profile/colour models
     // (keyed by texture file + quantised HSL) so we don't regenerate a 64x64
@@ -698,6 +704,11 @@
             // Hit-stop: on impact the pose freezes for a brief window (scaled by
             // the size of the hit) like a fighting game, giving blows weight.
             this._hitStop = 0;
+
+            // Prone (biped families only): 0 = standing, 1 = flat on the ground
+            // after losing both legs. See _updateProne / _applyProne.
+            this._proneT = 0;
+            this._proneBaseY = null;
 
             // Two seeded RNG streams:
             //   idRand  - keyed to the MONSTER ID only, so every enemy id of an
@@ -1584,6 +1595,51 @@
             if (!this._isAsleep()) return;
             if (this.leftEyeMesh) this.leftEyeMesh.scale.y = 0.06;
             if (this.rightEyeMesh) this.rightEyeMesh.scale.y = 0.06;
+        }
+
+        // ── Prone: a BIPED that has lost both legs ───────────────────────────
+        // Only the two-legged families call these (a spider that loses two of
+        // eight legs still stands); they pose in their own local space, so the
+        // whole rig keeps animating - arms, head and face - while it lies there.
+        //
+        // Is the whole leg chain on one side gone? Read from the battler's own
+        // part map so every schema a biped rig serves is covered: the goblin's
+        // THIGH/SHIN split and the simple LEFT_LEG/RIGHT_LEG one alike. A lost
+        // foot does not count - the creature can still prop itself on the stump.
+        _legLost(side) {
+            const parts = this.battler && this.battler._bodyParts;
+            if (!parts) return false;
+            return [side + '_THIGH', side + '_LEG', side + '_SHIN']
+                .some(k => parts[k] && parts[k].destroyed);
+        }
+
+        // Advance the topple (and the righting again, should a leg come back via
+        // a regenerating part or a prosthetic), returning the progress 0..1.
+        _updateProne(deltaTime) {
+            const step = (deltaTime || 0) / PRONE_FALL_TIME;
+            const down = this._legLost('LEFT') && this._legLost('RIGHT');
+            this._proneT = down
+                ? Math.min(1, (this._proneT || 0) + step)
+                : Math.max(0, (this._proneT || 0) - step);
+            return this._proneT;
+        }
+
+        // Lay the model out on the ground, applied at the MODEL ROOT (which sits
+        // at the creature's ground point, so it tips over its own hips). Call it
+        // LAST in animatePose, once the family's local pose is finished.
+        // `baseY` is the model's standing height (families that drive
+        // position.y themselves pass their own _baseY).
+        _applyProne(p, baseY) {
+            if (!this.model) return;
+            if (baseY === undefined || baseY === null) {
+                if (this._proneBaseY === null || this._proneBaseY === undefined) this._proneBaseY = this.model.position.y;
+                baseY = this._proneBaseY;
+            }
+            const e = p * p * (3 - 2 * p);                 // smoothstep: falls, settles
+            this.model.rotation.z = -Math.PI * 0.5 * e;    // topples sideways
+            // Rolled flat the body's long axis sits right on the pivot, which
+            // would bury half the torso: lift it by roughly half a torso.
+            this.model.position.y = baseY + PRONE_LIFT * this.scale * e;
         }
 
         // Subclass hooks (no-ops by default). The base death visual is the

@@ -944,6 +944,15 @@
     return id >= NONSENTIENT_CLASS_MIN;
   }
 
+  // The same question asked of the other side of the conversation: is the NPC
+  // being spoken TO a beast? Read off the society profile's class, which is
+  // where NPCCreature wrote it when the settlement was populated.
+  function _isNonSentientNpc(npcName) {
+    const NC = window.NPCCreature;
+    if (!NC || !npcName) return false;
+    return NC.isNonSentientByName(npcName);
+  }
+
   // What the NPC sees standing in front of them: the creature's archetype
   // ("Beast", "Spider / Humanoid" reads as its first half), falling back to the
   // class it is played as when it carries no anatomy.
@@ -1679,9 +1688,29 @@
 
   const NPCEmpathizeInputManager = {
     _scene: null, _active: false,
+    // Last pad-present state the tab-bar hint chip was drawn for; null forces
+    // the first sync.
+    _hintPad: null,
 
-    activate(scene)  { this._scene = scene; this._active = true; },
-    deactivate()     { this._active = false; this._scene = null; },
+    activate(scene)  { this._scene = scene; this._active = true; this._hintPad = null; },
+    deactivate()     { this._active = false; this._scene = null; this._hintPad = null; },
+
+    // The chip in front of the first tab names L1/R1 or TAB depending on
+    // whether a pad is plugged in, and a pad can be plugged in (or its battery
+    // die) while the panel is open. The tab bar itself only redraws on a tab
+    // change, so keep the chip in step here instead of re-rendering the bar.
+    _syncTabHint(scene) {
+      const pads  = window.AnalogStickInput;
+      const onPad = !!(pads && typeof pads.hasPad === 'function' && pads.hasPad());
+      if (onPad === this._hintPad) return;
+      this._hintPad = onPad;
+      const el = scene._overlay?.querySelector('.npc-tab-hint');
+      if (!el) return;
+      el.dataset.pad  = onPad ? '1' : '0';
+      // i18n-ignore-start: physical controller / keyboard button ids
+      el.textContent  = onPad ? 'L1 R1' : 'TAB';
+      // i18n-ignore-end
+    },
 
     // L2/R2 scroll the open tab's pane, the controller's mouse wheel. MZ's
     // gamepadMapper does not cover the analog triggers (buttons 6/7), so they
@@ -1707,6 +1736,7 @@
     update() {
       if (!this._active || !this._scene) return;
       const scene = this._scene;
+      this._syncTabHint(scene);
       // Scope to the live overlay so a stale/duplicate #menu-container copy can
       // never hand us the wrong input element.
       const inp   = scene._overlay?.querySelector('#npc-dlg-ask-input')
@@ -1753,14 +1783,19 @@
       // L2/R2 scroll whatever the open tab is showing, every frame they are held
       this._updateTriggerScroll(scene);
 
-      // L1/R1 tab cycling, fires from anywhere in the scene. On a controller
-      // this is the ONLY way to change tab: the d-pad and the stick stay inside
-      // the tab that is open.
-      if (Input.isTriggered('pageup') || Input.isTriggered('pagedown')) {
+      // Tab cycling, from anywhere in the scene: L1/R1 on a pad, TAB (SHIFT+TAB
+      // backwards) on a keyboard. These are the ONLY way to change tab -- the
+      // d-pad, the stick and WASD all stay inside the tab that is open, where
+      // they drive the chat's dialogue options and the Wiki grid. The chip the
+      // tab bar draws in front of the first tab names whichever of the two
+      // applies (see _buildTabHintHTML in NPCEmpathizeUI.js).
+      const tabKey  = Input.isTriggered('tab');
+      const tabPrev = Input.isTriggered('pageup');
+      if (tabPrev || Input.isTriggered('pagedown') || tabKey) {
         const tabs = scene._tabOrder();
-        const dir  = Input.isTriggered('pageup') ? -1 : 1;
+        const back = tabPrev || (tabKey && Input.isPressed('shift'));
         const cur  = tabs.indexOf(scene._activeTab);
-        const next = (cur + dir + tabs.length) % tabs.length;
+        const next = (cur + (back ? -1 : 1) + tabs.length) % tabs.length;
         scene._setTab(tabs[next]); // plays cursor SE, resets area/index, re-renders
         return;
       }
@@ -1790,23 +1825,21 @@
       // move between whatever it offers: the chat actions, the Wiki grid, or,
       // on a plain reading page with nothing to select, the page itself.
       if (area === 'tabs') {
-        // On the tab bar itself Left/Right walk the tabs, so A and D (and the
-        // d-pad) change tab without the shoulder buttons; Down/OK drops into
-        // whatever the open tab holds.
-        if (isLeft || isRight) {
-          const tabs = scene._tabOrder();
-          const cur  = tabs.indexOf(scene._activeTab);
-          const next = (cur + (isRight ? 1 : -1) + tabs.length) % tabs.length;
-          scene._setTab(tabs[next]); // plays cursor SE, resets area/index, re-renders
-        } else if ((isDown || Input.isTriggered('ok')) && isChatTab) {
+        // Directions no longer walk the tab bar; they drop straight into what
+        // the open tab offers, which on the two tabs that have anything to
+        // select is the chat's dialogue options and the Wiki grid. Up is left
+        // out of the drop-in so it can still scroll the page back up from here.
+        const enter = isDown || isLeft || isRight || Input.isTriggered('ok');
+        if (enter && isChatTab) {
           SoundManager.playCursor();
           scene._activeArea = 'actions';
           scene._menuIndex  = 0;
           scene._updateSelectionHighlight();
-        } else if ((isDown || Input.isTriggered('ok')) && scene._contentNavEnabled()) {
+        } else if (enter && scene._contentNavEnabled()) {
           // Drop into the in-panel grid (Wiki cards / entries).
           scene._enterContentArea();
         } else if (isUp || isDown) {
+          // Every other tab is a reading page: directions just scroll it.
           scene._scrollActivePane?.(isUp ? -SCROLL_KEY_STEP : SCROLL_KEY_STEP);
         }
 
@@ -1827,26 +1860,27 @@
 
       } else if (area === 'actions') {
         const btns  = scene._overlay?.querySelectorAll('.npc-chat-action-btn');
-        const total = btns?.length ?? 0;
         const idx   = scene._menuIndex;
 
-        if (isLeft && idx > 0) {
-          scene._menuIndex = idx - 1;
-          SoundManager.playCursor();
-          scene._updateSelectionHighlight();
-        } else if (isRight && idx < total - 1) {
-          scene._menuIndex = idx + 1;
-          SoundManager.playCursor();
-          scene._updateSelectionHighlight();
+        // The dialogue options wrap into as many rows as they need, so all four
+        // directions walk them geometrically: Down lands on the option below
+        // rather than on the one after it in DOM order.
+        if (isLeft || isRight || isDown) {
+          const dir = isLeft ? 'left' : (isRight ? 'right' : 'down');
+          // Nothing below the bottom row: read further down the log instead.
+          // (The text field is reached through the "Free Chat" action, never by
+          // a direction.)
+          if (!scene._moveAction(dir) && isDown) {
+            scene._scrollActivePane?.(SCROLL_KEY_STEP);
+          }
         } else if (isUp) {
-          SoundManager.playCursor();
-          scene._activeArea = 'tabs';
-          scene._menuIndex  = 0;
-          scene._updateSelectionHighlight();
-        } else if (isDown) {
-          // The text field is reached through the "Free Chat" action, never by a
-          // direction, so Down just reads further down the log.
-          scene._scrollActivePane?.(SCROLL_KEY_STEP);
+          // From the top row, fall back up to the tab bar.
+          if (!scene._moveAction('up')) {
+            SoundManager.playCursor();
+            scene._activeArea = 'tabs';
+            scene._menuIndex  = 0;
+            scene._updateSelectionHighlight();
+          }
         } else if (Input.isTriggered('ok')) {
           const btn = btns?.[idx];
           if (btn && !btn.classList.contains('npc-action-disabled')) {
@@ -2013,9 +2047,21 @@
       });
 
       NPCEmpathizeInputManager.activate(this);
-      // Tab / bumper cycling of the focused (interacting) party member, using
-      // the shared character-switcher helper (same as inventory/equip/biologics).
-      window.CharSwitcher?.installTabKey?.(this, dir => this._cycleFocusActor(dir));
+      // TAB belongs to the panel's own tab bar here (NPCEmpathizeInputManager
+      // reads it, alongside L1/R1), not to CharSwitcher's party-member cycling
+      // the way it does in inventory/equip/biologics: this scene is built out of
+      // tabs and that is the control players reach for. The interacting member
+      // is still switched by clicking their row in the left panel
+      // (_selectFocusActor). All the browser has to be told is to keep its own
+      // focus traversal off the key.
+      this._tabKeyGuard = (e) => {
+        if (e.key !== 'Tab') return; // i18n-ignore: DOM key name
+        // A focused text field owns the keyboard outright, caret and all.
+        const ae = document.activeElement;
+        if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
+        e.preventDefault();
+      };
+      window.addEventListener('keydown', this._tabKeyGuard);
       // _buildOverlay and _render are called by NPCEmpathizeUI.js
     }
 
@@ -2128,7 +2174,10 @@
         window.removeEventListener('keypress', this._chatKeyGuard, true);
         this._chatKeyGuard = null;
       }
-      window.CharSwitcher?.removeTabKey?.(this);
+      if (this._tabKeyGuard) {
+        window.removeEventListener('keydown', this._tabKeyGuard);
+        this._tabKeyGuard = null;
+      }
       NPCEmpathizeInputManager.deactivate();
       this._removeOverlay();
       Scene_MenuBase.prototype.terminate.call(this);
@@ -2194,6 +2243,9 @@
     _setWikiCategory(category) {
       SoundManager.playCursor();
       this._wikiCategory = category || null;
+      // Remembered across the step back out to the grid so the card that was
+      // just read keeps its golden border (see the card markup in the UI file).
+      if (category) this._lastWikiCategory = category;
       this._contentIndex = 0;
       this._render(); // innerHTML is rebuilt synchronously, so tiles exist below
       // When drilling into a category with the keyboard/controller, move the
@@ -2294,6 +2346,38 @@
       });
       if (best === -1) return false;
       this._contentIndex = best;
+      SoundManager.playCursor();
+      this._updateSelectionHighlight();
+      return true;
+    }
+
+    // Same geometric move as _moveContent, over the chat's dialogue options.
+    // They live in a flex-wrap strip whose row breaks depend on how long each
+    // verb's label is, so "the option below" cannot be found by DOM index; it
+    // has to be found by where the buttons actually landed. Returns false when
+    // nothing lies that way, which is how the caller knows to leave the strip.
+    _moveAction(dir) {
+      const btns = this._overlay?.querySelectorAll('.npc-chat-action-btn');
+      if (!btns || btns.length === 0) return false;
+      const curEl = btns[this._menuIndex] || btns[0];
+      const cur   = curEl.getBoundingClientRect();
+      const cx = cur.left + cur.width / 2, cy = cur.top + cur.height / 2;
+      let best = -1, bestScore = Infinity;
+      btns.forEach((el, i) => {
+        if (i === this._menuIndex) return;
+        const r  = el.getBoundingClientRect();
+        const ex = r.left + r.width / 2, ey = r.top + r.height / 2;
+        const dx = ex - cx, dy = ey - cy;
+        let primary, cross;
+        if (dir === 'left')       { if (dx >= -1) return; primary = -dx; cross = Math.abs(dy); }
+        else if (dir === 'right') { if (dx <=  1) return; primary =  dx; cross = Math.abs(dy); }
+        else if (dir === 'up')    { if (dy >= -1) return; primary = -dy; cross = Math.abs(dx); }
+        else                      { if (dy <=  1) return; primary =  dy; cross = Math.abs(dx); }
+        const score = primary + cross * 2; // cross-axis penalty keeps moves in-line
+        if (score < bestScore) { bestScore = score; best = i; }
+      });
+      if (best === -1) return false;
+      this._menuIndex = best;
       SoundManager.playCursor();
       this._updateSelectionHighlight();
       return true;
@@ -2614,6 +2698,15 @@
     _focusActor() {
       return $gameParty?.members()?.[this._focusIndex()] ?? $gameParty?.leader() ?? null;
     }
+    // Is the one being talked to a beast? In actor mode the panel is about a
+    // party member, everywhere else about the NPC standing there.
+    _isNonSentientSubject() {
+      if (this._actorId != null) {
+        return _isNonSentientActor($gameActors.actor(this._actorId));
+      }
+      const name = this._eventId != null ? _getNPCName(this._eventId) : this._npcName;
+      return _isNonSentientNpc(name);
+    }
     _focusOpinion(profile) {
       return _npcEffectiveOpinion(profile, this._focusActor());
     }
@@ -2663,11 +2756,6 @@
       if (!this._tabOrder().includes(this._activeTab)) this._activeTab = 'chat';
       SoundManager.playCursor();
       this._render();
-    }
-    _cycleFocusActor(dir) {
-      const n = $gameParty?.members()?.length ?? 1;
-      if (n <= 1) return;
-      this._selectFocusActor((((this._focusIndex() + dir) % n) + n) % n);
     }
 
     // ── Non-sentient interactions (growl / roar / drool / sniff / ...) ───────
@@ -3775,6 +3863,9 @@
         }
         if (!response || /^ERROR:/i.test(response)) response = '...';
         if (response.length > 280) response = response.slice(0, 277) + '…';
+        // And a beast answers the way it was spoken to: whatever the chain
+        // wrote, what actually comes back out is noise the length of it.
+        if (this._isNonSentientSubject()) response = _feralGrowlFor(response);
         this._isTyping = false;
         this._chatHistory.push({ role: 'npc', text: response });
         if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
@@ -4547,6 +4638,18 @@
     },
     Scene_NPCEmpathize,
     Wiki,
+    // ── Speaking for the beasts ────────────────────────────────────────────
+    // The other half of the feral rule. A non-sentient PARTY member's words
+    // come out as noise on their way to an NPC (_submitAsk); a non-sentient
+    // NPC's come out as noise on their way back. Both go through the same
+    // bank, so a growl sounds like a growl whichever throat it is in.
+    //
+    // Public because the line an NPC says on the map is drawn somewhere else
+    // entirely (MarkovTextGenerator's "Generate NPC Dialogue" command), and it
+    // has to be able to ask both questions without reaching into the panel's
+    // private helpers.
+    isNonSentientNPC(npcName) { return _isNonSentientNpc(npcName); },
+    growlFor(text) { return _feralGrowlFor(text); },
     // Log a line an NPC said outside this panel (e.g. MarkovTextGenerator's
     // "Generate NPC Dialogue" plugin command drawing a message box) so it shows
     // up in that NPC's chat history the next time the panel is opened. Stored on
@@ -4611,6 +4714,7 @@
       // Non-sentient members (classes 63+): the UI layer builds their action
       // list out of these and hides everything a beast cannot do.
       _isNonSentientActor, _feralKind, _feralBand, _feralCanGift, FERAL_ACTIONS,
+      _feralGrowlFor, _isNonSentientNpc,
     },
     _getT,
   };

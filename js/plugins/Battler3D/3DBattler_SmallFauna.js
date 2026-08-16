@@ -204,9 +204,9 @@
             }
             this.bodyGroup.add(this.abdomen);
             this.clawL = this._claw(-1, shell, wide); this.clawR = this._claw(1, shell, wide);
-            this.frontLeg = this._crustLeg(-1, 0.2, shell); this.rearLeg = this._crustLeg(1, 0.2, shell);
+            this.frontLeg = this._crustLeg(-1, 0.2, shell, wide); this.rearLeg = this._crustLeg(1, 0.2, shell, wide);
             this._legsExtra = [];
-            for (const side of [-1, 1]) for (const lz of [0.0, -0.2]) this._legsExtra.push(this._crustLeg(side, lz, shell));
+            for (const side of [-1, 1]) for (const lz of [0.0, -0.2]) this._legsExtra.push(this._crustLeg(side, lz, shell, wide));
             this._partMeshMap = { CARAPACE: this.carapace, ABDOMEN: this.abdomen, CLAW_LEFT: this.clawL, CLAW_RIGHT: this.clawR, FRONT_LEG: this.frontLeg, REAR_LEG: this.rearLeg, ANTENNAE: this.antennae };
             this._cascadeRules = [
                 { gone: ['CARAPACE'], hide: [this.carapace, this.abdomen, this.clawL, this.clawR, this.frontLeg, this.rearLeg, this.antennae, ...this._legsExtra] },
@@ -226,9 +226,13 @@
             const lower = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.2, 5), mat); lower.position.set(side * 0.34, 0.16, 0.2); lower.rotation.x = -1.5; g.add(lower);
             g.position.set(side * 0.3, 0.6, wide ? 0.35 : 0.45); g._side = side; this.bodyGroup.add(g); return g;
         }
-        _crustLeg(side, z, mat) {
-            const g = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.018, 0.4, 5), mat);
-            g.position.set(side * 0.45, 0.4, z); g.rotation.z = side * 1.1; g._side = side; this.bodyGroup.add(g); return g;
+        _crustLeg(side, z, mat, wide) {
+            // The lobster's shell is barely half the crab's width, so a hip this
+            // far out left the rear pair hanging in the air alongside the tail.
+            // Tuck the hip under the body and lengthen the leg to keep the stance.
+            const hipX = wide ? 0.45 : 0.34, len = wide ? 0.4 : 0.5;
+            const g = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.018, len, 5), mat);
+            g.position.set(side * hipX, 0.4, z); g.rotation.z = side * 1.1; g._side = side; this.bodyGroup.add(g); return g;
         }
 
         // ── Desert Scorpion: sand chitin, crystalline pincers + stinger ───

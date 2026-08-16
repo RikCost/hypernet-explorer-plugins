@@ -585,6 +585,32 @@
         }
       }
 
+      // 3b. Not everybody in a settlement is a person. A share of them , most
+      //     of them in a monster world, one in twenty anywhere else , are
+      //     creatures: one or two archetypes, a walking sprite that archetype
+      //     actually has a body for, and a class off the archetype's own
+      //     roster (see NPCCreature). Dealt on its own stream so an existing
+      //     world's people are not reshuffled by the roll being added, and
+      //     after the catalogue step so it replaces the face rather than
+      //     competing with it.
+      let creature = null;
+      const NC = window.NPCCreature;
+      if (NC) {
+        const rngC = new SeededRng(nameToSeed(eventName + "_creature" + worldSeed));
+        if (rngC.next() < NC.creatureChance()) {
+          creature = NC.rollIdentity(rngC);
+          if (creature) {
+            spriteKey = creature.spriteKey;   // "Monsters/$Beetle"
+            bustIndex = 0;                    // monster sheets are single-character
+            npcArchetype = creature.archetype;
+            assignedClassId = creature.classId;
+          }
+        }
+      }
+      // A creature played as one of the creature classes holds no conversation
+      // and no politics (see the overrides on the returned profile below).
+      const nonSentient = !!creature && NC.isNonSentientClassId(assignedClassId);
+
       // 4. Ideology (picked early to bias trait selection). An alien is only
       //    ever dealt an alien creed and a citizen is never dealt one, which is
       //    what the `alien` flag in Ideology.json is there to say. Which alien
@@ -791,19 +817,31 @@
         }
       }
 
+      // A beast holds no creed, stands under no banner and owns nothing. The
+      // rolls above still happened , the stream must not move , but none of
+      // what they produced belongs to something that cannot hold an opinion
+      // about it. NPCPolitics skips a non-sentient profile outright, and the
+      // life simulator neither has it save nor move (see NPCLifeSimulator).
       return {
-        personalityIndex, wealthTierBase, traitIds, skillIds, itemIds, factionIndex, ideologyIndex,
+        personalityIndex, wealthTierBase, traitIds, skillIds, itemIds,
+        factionIndex:  nonSentient ? -1 : factionIndex,
+        ideologyIndex: nonSentient ? -1 : ideologyIndex,
         // The creed by name as well as by slot, so a roster that grows can
         // never hand an existing person somebody else's beliefs.
-        ideologyId: ideology?.id ?? null,
+        ideologyId: nonSentient ? null : (ideology?.id ?? null),
         // Visual identity
         spriteKey, bustIndex, gender: npcGender, archetype: npcArchetype,
+        // Whether this is a creature at all, and whether it is one of the
+        // non-sentient ones. Both are read all over the NPC suite, so they are
+        // stored rather than re-derived from the class id every time.
+        isCreature: !!creature,
+        nonSentient,
         // Class (null = use event-note classId; set when seed ≠ 19002001 and classes[] non-empty)
         assignedClassId,
         // Home
         homeMapId, homePoolType, homeSeed,
         // Needs
-        hunger: 100, sleep: 100, money,
+        hunger: 100, sleep: 100, money: nonSentient ? 0 : money,
         // Work
         currentJobId: null, workStart, workEnd, lastWorkMinute: 0,
         // Behaviour
@@ -1025,7 +1063,15 @@
     // whatever their profile says, and the profile is re-pinned to the sprite
     // they actually wear (below) so every off-map reader agrees with it.
     const isStory     = !!window.NPCSystem?.hasStoryTag?.(evData?.note);
-    const hasAssigned = !isStory && !!(profile.spriteKey && DataLoader.npcData?.[profile.spriteKey]);
+    // A creature's sheet lives in img/characters/Monsters and is not in the
+    // NPCs.json catalogue, so it is assigned on the profile's own say-so.
+    // Everything below the graphic (the bust, the catalogue gender) is a
+    // person's business and is skipped for it: a creature has no bust at all
+    // (the panel draws its 3D model instead, see NPCEmpathizeUI) and its
+    // gender was rolled with the rest of it.
+    const isCreature  = !isStory && !!profile.isCreature && !!profile.spriteKey;
+    const hasAssigned = isCreature ||
+      (!isStory && !!(profile.spriteKey && DataLoader.npcData?.[profile.spriteKey]));
     // Defining sprite: the society-assigned one, else the sprite the event shows.
     const spriteKey = hasAssigned
       ? profile.spriteKey
@@ -1044,7 +1090,7 @@
     }
 
     const entry = spriteKey ? DataLoader.npcData?.[spriteKey] : null;
-    if (!entry) return;
+    if (!entry && !isCreature) return;
 
     // Only re-apply the graphic when the society explicitly assigned a sprite;
     // canon / map-designed NPCs keep the sprite they already display.
@@ -1059,6 +1105,7 @@
       ev.setupPage();
     }
 
+    if (!entry) return;
     profile._bustName = entry.busts?.[charIdx] ?? entry.busts?.[0] ?? "7";
     // Gender follows the character sprite (0=Male,1=Female,2=Non-binary,3=Xe).
     if (entry.Gender != null) profile.gender = entry.Gender;

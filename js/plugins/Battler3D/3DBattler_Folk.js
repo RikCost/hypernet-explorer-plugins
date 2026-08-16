@@ -922,6 +922,9 @@
             this.applyModelScale(growth);
             const fast = (anim === 'attack' || anim === 'specialattack');
             this.model.position.y = this._baseY + Math.sin(t * 1.6) * 0.02 * this.scale;
+            // Both legs severed: this biped topples and keeps animating on the
+            // ground (applied at the end, once the pose below is finished).
+            const prone = this._updateProne(deltaTime);
             // Idle breathing; the arms/weapons are posed as a chain.
             if (this.torso) this.torso.rotation.z = (this._leanZ || 0) + Math.sin(t * 1.4) * 0.02;
             this._poseArms(anim, t, deltaTime);
@@ -933,6 +936,7 @@
             // Caster glow.
             if (this.rightArm && this.rightArm._weapon && this.rightArm._weapon._orb) this.rightArm._weapon._orb.material.emissiveIntensity = (fast ? 1.6 : 0.7) + Math.sin(t * 5) * 0.4;
             if (cfg && cfg.glow && this.torso) { /* faint shimmer handled by emissive on accents */ }
+            if (prone > 0) this._applyProne(prone, this._baseY);
         }
 
         deathPose(deltaTime) {
@@ -940,7 +944,9 @@
             for (const mat of this._materials) mat.opacity = Math.min(mat.opacity, 1.0 - prog);
             if (this._baseY === null) this._baseY = this.model.position.y;
             this.model.position.y = this._baseY - prog * 0.3 * this.scale;
-            this.model.rotation.z = prog * 1.2; // crumples
+            // Already lying down (both legs severed): keep the prone roll rather
+            // than crumpling a second time from upright.
+            if (!this._proneT) this.model.rotation.z = prog * 1.2; // crumples
         }
     }
 

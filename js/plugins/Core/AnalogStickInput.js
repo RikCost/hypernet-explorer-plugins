@@ -227,10 +227,117 @@
 
     window.AnalogStickInput = AnalogStickInput;
 
+    // ------------------------------------------------------------------------
+    // Input.clear() must not resurrect a button that is still held
+    // ------------------------------------------------------------------------
+    // Core's Input.clear() blanks _currentState, _previousState AND
+    // _gamepadStates together. On the very next Input.update(),
+    // _updateGamepadState compares the live pad against an empty last-state, so
+    // every button the player is STILL physically holding reads as a fresh edge
+    // and lands in _currentState with nothing behind it in _previousState --
+    // i.e. Input.isTriggered() fires again for a press that was never released.
+    //
+    // Keyboard does not have this problem: _currentState is only re-armed by a
+    // real DOM keydown, so a held key stays cleared. That asymmetry is why the
+    // symptom is controller-only, and it breaks the very common pattern of
+    // "open a choice window, then Input.clear() so the button that opened it is
+    // not also read as its answer": on a pad the held A button re-triggers one
+    // frame later and instantly confirms the first choice. The world map's
+    // travel menu (Visit / Make a camp / Cancel) is the visible case -- it
+    // appeared to be skipped entirely.
+    //
+    // Re-seed both halves from the live pad instead. A held button is recorded
+    // as already-pressed in current AND previous state, so isPressed() stays
+    // true (held movement keeps working) while isTriggered() stays false until
+    // the player actually releases and presses again.
+    const _Input_clear = Input.clear;
+    Input.clear = function () {
+        _Input_clear.call(this);
+        if (!navigator.getGamepads) return;
+        const pads = navigator.getGamepads();
+        if (!pads) return;
+        for (const pad of pads) {
+            if (!pad || !pad.connected) continue;
+            const state = [];
+            const buttons = pad.buttons || [];
+            for (let i = 0; i < buttons.length; i++) {
+                state[i] = !!(buttons[i] && buttons[i].pressed);
+            }
+            // Mirror core's stick-to-d-pad fold, reading the same latch our
+            // _updateGamepadState hook feeds it (see snapAxes), so a held
+            // direction is seeded exactly as core would have recorded it.
+            state[12] = _latch.y < 0;
+            state[13] = _latch.y > 0;
+            state[14] = _latch.x < 0;
+            state[15] = _latch.x > 0;
+            for (let j = 0; j < state.length; j++) {
+                const name = Input.gamepadMapper[j];
+                if (name && state[j]) {
+                    this._currentState[name] = true;
+                    this._previousState[name] = true;
+                }
+            }
+            this._gamepadStates[pad.index] = state;
+        }
+    };
+
+    // ------------------------------------------------------------------------
+    // PointerSteering: is the mouse the thing currently being moved?
+    // ------------------------------------------------------------------------
+    // Every DOM menu in the project mirrors mouse hover into its keyboard /
+    // controller focus, so pointing at a row selects it. That is right while the
+    // player is using the mouse and wrong the moment they are not, because a
+    // menu that scrolls its selection into view (or rebuilds its list) moves a
+    // DIFFERENT row under a pointer that never moved. The browser fires
+    // mouseenter/mouseover for that -- content moving under a still pointer
+    // counts as entering it -- and the hover handler then drags the selection
+    // back to wherever the mouse happens to be resting. On a pad, where the
+    // pointer just sits in the middle of the screen over the dialog, the cursor
+    // springs back on every press and OK runs the wrong row.
+    //
+    // The distinguishing signal is mousemove: browsers fire it only when the
+    // POINTER moves, never when content moves beneath it. So steering belongs to
+    // the mouse from a mousemove until the next key or pad input, and menus
+    // guard their hover handler with `if (!PointerSteering.isSteering()) return;`
+    // -- see TimeDateSystemUI (sleep menu), SaveSystem, FloorListWindowUI,
+    // ShopManagementUI, ModManagerUI, TitleScreenGameUpdater and
+    // SplitScreenMultiplayer.
+    const PointerSteering = {
+        _steering: false,
+        isSteering() { return this._steering; },
+        // For a menu that wants to hand steering over explicitly (a scene
+        // opening on a keypress, say). Rarely needed: update() below does it.
+        grab()    { this._steering = true; },
+        release() { this._steering = false; },
+    };
+    window.PointerSteering = PointerSteering;
+
+    window.addEventListener('mousemove', () => { PointerSteering.grab(); }, { passive: true });
+    // A touch is a pointer too, and it lands directly on the row it means.
+    window.addEventListener('touchstart', () => { PointerSteering.grab(); }, { passive: true });
+
+    // Any fresh key / pad press hands steering back. _pressedTime === 0 is the
+    // frame a button was first seen down, which is exactly Input's own
+    // definition of "triggered" for whatever the latest button was, so this
+    // catches every mapped key and pad button without naming any of them.
+    function releaseOnDeviceInput() {
+        if (Input._latestButton && Input._pressedTime === 0) {
+            PointerSteering.release();
+            return;
+        }
+        // The sticks and the analog triggers, neither of which sets
+        // _latestButton on its own for every menu that reads them raw.
+        if (AnalogStickInput.isActive() ||
+            AnalogStickInput.leftTrigger() > 0.5 || AnalogStickInput.rightTrigger() > 0.5) {
+            PointerSteering.release();
+        }
+    }
+
     // Poll once per frame, in lockstep with the rest of input.
     const _Input_update = Input.update;
     Input.update = function () {
         _Input_update.call(this);
         AnalogStickInput.update();
+        releaseOnDeviceInput();
     };
 })();

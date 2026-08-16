@@ -223,6 +223,13 @@
             this._constEls = new Map();
             this._mouseX = window.innerWidth / 2;
             this._mouseY = window.innerHeight / 2;
+            // Where the constellation readout is aimed. "pointer" follows the
+            // mouse; "crosshair" reads whatever the middle of the screen is
+            // pointed at, which is the only thing a pad or the arrow keys can
+            // aim -- they pan the sky under a fixed point rather than moving a
+            // cursor over it. Starts on the crosshair so the readout works
+            // before the mouse has ever been touched.
+            this._aimMode = "crosshair";
             this._pointerDirty = true;
             this._cameraDirty = true;
             this._labelZoom = null;
@@ -292,6 +299,7 @@
   </div>
   <div class="gsv-legend" id="gsv-legend"><span class="gsv-legend-swatch"></span>${T('Galaxy.sky.zodiac')}</div>
 </div>
+<div class="gsv-crosshair" id="gsv-crosshair"></div>
 <div class="gsv-bottombar">
   <div class="gsv-hover-name" id="gsv-hover-name"></div>
 </div>
@@ -303,6 +311,7 @@ ${this._isTelescope ? '<div class="gsv-scope"></div>' : ""}
             this._svgEl = root.querySelector(".gsv-svg");
             this._cameraEl = root.querySelector(".gsv-camera");
             this._hoverNameEl = root.querySelector("#gsv-hover-name");
+            this._crosshairEl = root.querySelector("#gsv-crosshair");
             this._legendEl = root.querySelector("#gsv-legend");
             this._btnWestern = root.querySelector("#gsv-btn-western");
             this._btnChinese = root.querySelector("#gsv-btn-chinese");
@@ -325,6 +334,7 @@ ${this._isTelescope ? '<div class="gsv-scope"></div>' : ""}
             this._onWindowMouseMove = (e) => {
                 this._mouseX = e.clientX;
                 this._mouseY = e.clientY;
+                this._aimMode = "pointer";
                 this._pointerDirty = true;
                 if (this._dragging) {
                     this._camX = this._dragCamX + (e.clientX - this._dragStartX);
@@ -516,9 +526,17 @@ ${this._isTelescope ? '<div class="gsv-scope"></div>' : ""}
                 this._pointerDirty = true;
             }
             if (this._pointerDirty) {
-                this._updateHover(this._mouseX, this._mouseY);
+                // On the crosshair the readout names whatever the middle of the
+                // screen is over. Aiming at the last known mouse position
+                // instead (which is what this did) left a pad player naming a
+                // constellation under a cursor they cannot see and did not put
+                // there, and panning never changed the answer in the way they
+                // expected -- the readout is the whole point of the viewer.
+                const aim = this._aimPoint();
+                this._updateHover(aim.x, aim.y);
                 this._pointerDirty = false;
             }
+            this._updateCrosshair();
             // Standing under the sky picking out constellations is how anyone
             // ever learned astronomy (see SpecializationXP.tick).
             if (window.SpecializationXP) {
@@ -535,9 +553,39 @@ ${this._isTelescope ? '<div class="gsv-scope"></div>' : ""}
         }
 
         _updateKeyboardShortcuts() {
-            if (Input.isTriggered("tab")) {
+            // TAB flips between the Western and Chinese sky. TAB has no entry in
+            // Input.gamepadMapper, so on a pad the toggle had no button at all
+            // and the only way to switch was clicking the on-screen chips; X
+            // ("shift") is the free face button here -- A recentres, B closes,
+            // the bumpers zoom -- so it doubles as the pad's flip.
+            if (Input.isTriggered("tab") || Input.isTriggered("shift")) {
                 this._switchTo(this._view === "western" ? "chinese" : "western");
             }
+        }
+
+        // The screen point the constellation readout is aimed at.
+        _aimPoint() {
+            if (this._aimMode === "pointer") return { x: this._mouseX, y: this._mouseY };
+            return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        }
+
+        // The reticle is only drawn while the crosshair is what is being aimed,
+        // so a mouse player never gets a mark in the middle of their sky.
+        _updateCrosshair() {
+            if (!this._crosshairEl) return;
+            const on = this._aimMode === "crosshair";
+            if (on === this._crosshairOn) return;
+            this._crosshairOn = on;
+            this._crosshairEl.classList.toggle("gsv-visible", on);
+        }
+
+        // Panning by key, d-pad or stick moves the sky under a fixed aim point
+        // rather than moving an aim point over the sky, so any of them hands the
+        // readout back to the crosshair.
+        _aimAtCrosshair() {
+            if (this._aimMode === "crosshair") return;
+            this._aimMode = "crosshair";
+            this._pointerDirty = true;
         }
 
         _updateWASD() {
@@ -546,17 +594,33 @@ ${this._isTelescope ? '<div class="gsv-scope"></div>' : ""}
             if (Input.isPressed("d") || Input.isPressed("right")) dx -= SKY_SCROLL_SPEED;
             if (Input.isPressed("w") || Input.isPressed("up")) dy += SKY_SCROLL_SPEED;
             if (Input.isPressed("s") || Input.isPressed("down")) dy -= SKY_SCROLL_SPEED;
+
+            // Both sticks pan, read raw so the sky drifts as far as the stick is
+            // pushed instead of stepping at the one speed the d-pad fold gives.
+            // The left stick is already folded into the directions above, so its
+            // analog reading replaces that step rather than adding to it.
+            const pads = window.AnalogStickInput;
+            if (pads && typeof pads.leftX === "function") {
+                const ax = pads.leftX() + pads.rightX();
+                const ay = pads.leftY() + pads.rightY();
+                if (ax || ay) {
+                    dx = -ax * SKY_SCROLL_SPEED;
+                    dy = -ay * SKY_SCROLL_SPEED;
+                }
+            }
+
             if (dx !== 0 || dy !== 0) {
                 this._camX += dx;
                 this._camY += dy;
                 this._cameraDirty = true;
+                this._aimAtCrosshair();
             }
         }
 
         _updateZoomKeys() {
-            const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-            if (Input.isPressed("pageup")) this._zoomAt(1.02, cx, cy);
-            if (Input.isPressed("pagedown") || Input.isPressed("zoomOut")) this._zoomAt(0.98, cx, cy);
+            const aim = this._aimPoint();
+            if (Input.isPressed("pageup")) this._zoomAt(1.02, aim.x, aim.y);
+            if (Input.isPressed("pagedown") || Input.isPressed("zoomOut")) this._zoomAt(0.98, aim.x, aim.y);
         }
 
         close() {

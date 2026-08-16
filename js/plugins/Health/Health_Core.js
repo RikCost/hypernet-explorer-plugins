@@ -210,7 +210,17 @@
       : dataObject[propertyName];
   }
 
-  // Initialize actor body parts
+  // Initialize actor body parts.
+  //
+  // The anatomy is the actor's OWN archetype, not the humanoid one: a creature
+  // party member (an NPCCreature recruit, or one built in the creature creator)
+  // carries "Beast" or "Spider / Humanoid" on _currentArchetype, and filling it
+  // with arms and legs it does not have would give it a human body in the
+  // health menu and a human body's prosthetics in the shop. A hybrid takes
+  // both halves' parts, its first archetype winning any key they share, which
+  // is what applyHybridArchetype writes for a creature built in the wizard.
+  // Anything with no archetype on file is a person, and gets the humanoid set
+  // exactly as it always did.
   function initializeBodyParts(actor) {
     if (actor && !actor._bodyParts) {
       actor._bodyParts = {};
@@ -219,7 +229,23 @@
 
       const { EnemyArchetypes } = window.Health;
       const humanoid = EnemyArchetypes && EnemyArchetypes.Humanoid;
-      const sourceParts = humanoid ? humanoid.parts : {};
+      let source = humanoid;
+      const sourceParts = {};
+      if (EnemyArchetypes) {
+        // Reversed, so the first archetype's version of a shared part is the
+        // one left standing.
+        const keys = getActorArchetypeKeys(actor).slice().reverse();
+        for (const key of keys) {
+          const entry = EnemyArchetypes[key];
+          if (!entry || !entry.parts) continue;
+          Object.assign(sourceParts, entry.parts);
+          source = entry; // hit locations come from the primary (last assigned)
+        }
+      }
+      if (!Object.keys(sourceParts).length) {
+        Object.assign(sourceParts, (humanoid && humanoid.parts) || {});
+        source = humanoid;
+      }
 
       for (const partKey in sourceParts) {
         const archetypePart = sourceParts[partKey];
@@ -240,13 +266,16 @@
         };
       }
 
-      // Initialize HitLocations from the humanoid archetype
-      if (humanoid && humanoid.hitLocations) {
+      // Hit locations come from the same archetype the parts did, and only for
+      // parts this body actually has (changeArchetype applies the same rule).
+      const hitSource = (source && source.hitLocations) ? source
+                      : (humanoid && humanoid.hitLocations) ? humanoid : null;
+      if (hitSource) {
         HitLocations = {};
-        for (const locationKey in humanoid.hitLocations) {
+        for (const locationKey in hitSource.hitLocations) {
           if (actor._bodyParts[locationKey]) {
             HitLocations[locationKey] = {
-              weight: humanoid.hitLocations[locationKey].weight,
+              weight: hitSource.hitLocations[locationKey].weight,
               parts: [locationKey],
             };
           }

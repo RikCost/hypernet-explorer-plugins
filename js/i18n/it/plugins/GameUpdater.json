@@ -56,6 +56,7 @@
   "logMajorCleared": "Avviso di aggiornamento major rimosso.",
   "logCancel": "Aggiornamento annullato. Nessun file sostituito.",
   "logError": "Errore, %1",
+  "closingNotice": "Chiusura del gioco per applicare l'aggiornamento",
   "restartNote": "Chiusura e riapertura necessarie",
   "logClosing": "Chiusura del gioco in corso. Riaprilo per giocare con la versione aggiornata.",
   "olderNote": "Questa versione è precedente alla più recente. Installarla riporta il gioco indietro.",

@@ -11788,6 +11788,20 @@
     pointer-events: none;
 }
 
+/* Controller / keyboard focus ring for the save-load screen's Save / Load /
+   Delete buttons (UIFileInputManager toggles .focused on them). SaveSystem.js
+   paints Load and Delete with INLINE background colors, which no stylesheet
+   rule can override, so the ring is drawn with outline + box-shadow instead of
+   a background swap. Without this the buttons were reachable by pad but gave no
+   visible feedback, so they read as unreachable. */
+#save-menu-container .action-btn.focused,
+#save-menu-container .back-button.focused {
+    outline: 2px solid var(--text-primary-hover);
+    outline-offset: 2px;
+    box-shadow: 0 0 12px var(--shadow-gold-amber-50);
+    transform: translateY(-2px);
+}
+
 /* ==========================================================================
    Extracted Inline Styles from CharacterCreationCreature.js
    ========================================================================== */
@@ -13658,6 +13672,16 @@
       display: block;
       background: var(--bg-secondary-hover);
     }
+    /* A creature's frame: the Battler3D viewer's canvas, sized to the same
+       290px box the bust fills so the panel below it never shifts. */
+    .npc-portrait-3d {
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg-secondary-hover);
+    }
+    .npc-portrait-canvas {
+      width: 100%; height: 100%;
+      display: block;
+    }
     .npc-vitals-footer {
       padding: 7px 10px 12px;
       background: var(--bg-secondary-hover);
@@ -14088,6 +14112,24 @@ padding: 2px 8px; font-size: 1.368rem;
     .npc-tab-bar--focused .npc-tab.active {
       box-shadow: inset 0 0 0 2px var(--border-focus-hover);
     }
+    /* "L1 R1" / "TAB" chip in front of the first tab: names the only control
+       that changes tab, now that the directions stay inside the open one. Not
+       clickable, so it is skipped by every focus ring. */
+    .npc-tab-hint {
+      align-self: flex-end;
+      margin-right: 6px;
+      padding: 5px 9px 6px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+      color: var(--text-text-alt-4);
+      border: 1px dashed var(--border-primary-hover-translucent-15);
+      border-radius: 4px;
+      background: var(--bg-primary-hover-translucent-35);
+      user-select: none; -webkit-user-select: none;
+      pointer-events: none;
+      white-space: nowrap;
+    }
     .npc-chat-send.npc-zone-focused {
       outline: 2px solid var(--border-focus-hover);
       outline-offset: 2px;
@@ -14268,11 +14310,19 @@ padding: 2px 10px;
       padding: 3px 12px;
       box-shadow: 0 0 6px var(--border-focus-hover);
     }
+    /* The category currently open (or last opened) keeps a gold border on the
+       card grid, so stepping back out of a category still shows where you were.
+       --accent-gold-pure rather than --border-focus-hover: the latter is brown
+       in the parchment themes, and this marker has to read as gold everywhere. */
+    .npc-wiki-card.npc-wiki-card-selected {
+      border-color: var(--accent-gold-pure);
+      box-shadow: 0 0 6px var(--accent-gold-pure);
+    }
     /* Keyboard / controller focus ring for in-panel grid navigation */
     .npc-wiki-card.npc-content-focused,
     .npc-wiki-entry.npc-content-focused {
-      border-color: var(--border-focus-hover);
-      box-shadow: inset 0 0 0 2px var(--border-focus-hover);
+      border-color: var(--accent-gold-pure);
+      box-shadow: inset 0 0 0 2px var(--accent-gold-pure);
       transform: translateY(-2px);
     }
     .npc-back-btn.npc-content-focused {
@@ -19799,6 +19849,26 @@ cursor:pointer; font-size:16px; line-height:1.4;
   color:var(--accent-amber-glow,#ffe9a8); text-shadow:0 2px 6px var(--shadow-black-translucent-75,rgba(0,0,0,0.75));
   opacity:0; transition:opacity .18s; }
 #gsv-root .gsv-hover-name.gsv-visible { opacity:1; }
+/* Aim reticle for pad / keyboard: those pan the sky under a fixed point rather
+   than moving a cursor over it, so the point has to be visible. Hidden while
+   the mouse is what is aiming (see _updateCrosshair). Sits under the scope
+   vignette (z-index 6) so a telescope still frames it. */
+#gsv-root .gsv-crosshair { position:absolute; left:50%; top:50%; width:34px; height:34px;
+  transform:translate(-50%,-50%); z-index:3; pointer-events:none;
+  opacity:0; transition:opacity .18s; }
+#gsv-root .gsv-crosshair.gsv-visible { opacity:0.75; }
+#gsv-root .gsv-crosshair::before, #gsv-root .gsv-crosshair::after { content:""; position:absolute;
+  filter:drop-shadow(0 0 3px rgba(0,0,0,0.9)); }
+/* Each arm is one gradient with a transparent band across its middle, so the
+   reticle leaves a hole where the star it is naming sits. */
+#gsv-root .gsv-crosshair::before { left:50%; top:0; width:1px; height:100%; margin-left:-0.5px;
+  background:linear-gradient(to bottom,
+    var(--accent-amber-glow,#ffe9a8) 0 34%, transparent 34% 66%,
+    var(--accent-amber-glow,#ffe9a8) 66% 100%); }
+#gsv-root .gsv-crosshair::after { top:50%; left:0; height:1px; width:100%; margin-top:-0.5px;
+  background:linear-gradient(to right,
+    var(--accent-amber-glow,#ffe9a8) 0 34%, transparent 34% 66%,
+    var(--accent-amber-glow,#ffe9a8) 66% 100%); }
 
 
 /* ==========================================================================

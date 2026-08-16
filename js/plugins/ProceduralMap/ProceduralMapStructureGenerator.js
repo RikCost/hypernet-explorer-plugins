@@ -3356,16 +3356,55 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
   // by the tide (ProceduralBeachGenerator.getTideDependentSeed).
   function cityDayIndex() {
     if (typeof $gameVariables === "undefined" || !$gameVariables) return 0;
-    // Nobody drops litter and nobody collects it in an empty world, so the
-    // street is strewn exactly as it was strewn the day everyone went and is
-    // never re-dealt: a constant day means one deal, for good.
-    if (isEmptyWorld()) return 0;
+    // Nobody drops litter and nobody collects it in a world whose decay is
+    // fixed, so the street is strewn exactly as it was strewn the day the
+    // world stopped and is never re-dealt: a constant day means one deal, for
+    // good.
+    if (isFixedDecayWorld()) return 0;
     return Math.floor(($gameVariables.value(114) | 0) / 1440);
   }
 
   function isEmptyWorld() {
     const WM = window.WorldManager;
     return !!(WM && typeof WM.isEmptyWorld === "function" && WM.isEmptyWorld());
+  }
+
+  function isZombieWorld() {
+    const WM = window.WorldManager;
+    return !!(WM && typeof WM.isZombieWorld === "function" && WM.isZombieWorld());
+  }
+
+  // The worlds whose decay does not follow a timeline. A zombie apocalypse, an
+  // empty world and a death world are not "2009, clean; 2012, buried": they are
+  // already however far gone they are on the day the player arrives, and they
+  // stay exactly that far gone forever. So instead of a year curve they get one
+  // level, rolled once off the world seed and never moved again.
+  function isFixedDecayWorld() {
+    return isEmptyWorld() || isZombieWorld();
+  }
+
+  // A value fixed for the lifetime of one world. Off the WORLD seed, not the
+  // map seed: every map of the same world has to agree on how far gone that
+  // world is, or one street would be knee-deep in green and the next one clean.
+  function worldDecaySeed() {
+    if (typeof Utils2.getWorldSeed === "function") return Utils2.getWorldSeed() >>> 0;
+    return 0;
+  }
+
+  function fixedDecayLevel(salt, min, max) {
+    let h = (worldDecaySeed() ^ salt) >>> 0;
+    h = Math.imul(h ^ (h >>> 16), 0x7feb352d) >>> 0;
+    h = Math.imul(h ^ (h >>> 15), 0x846ca68b) >>> 0;
+    h = (h ^ (h >>> 16)) >>> 0;
+    return min + (h / 4294967296) * (max - min);
+  }
+
+  // Litter is an artificial thing: somebody has to drop it. In an empty world
+  // and a death world there is nobody to have dropped any, so the streets get
+  // nothing strewn on them at all - only what can GROW there (the overgrowth
+  // pass below) is allowed to appear.
+  function cityLitterAllowed() {
+    return !isEmptyWorld();
   }
 
   // The in-game year, on the same clock and the same 1 January 2001 epoch the
@@ -3384,11 +3423,18 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
   const LITTER_RISE_YEAR = 2010;    // the year the collections start failing
   const LITTER_FULL_YEAR = 2012;    // the year the city is buried in it
   const LITTER_COLLAPSE_FACTOR = 14;
+  const LITTER_FIXED_MIN = 4;       // how strewn a fixed-decay world can be
   function cityLitterFactor() {
-    // The amount must not drift either: an empty world's streets hold what
-    // they held, whatever year the clock says, because the collections did not
-    // fail gradually there, they simply stopped.
-    if (isEmptyWorld()) return LITTER_COLLAPSE_FACTOR;
+    // Nothing artificial is scattered in an empty or a death world at all.
+    if (!cityLitterAllowed()) return 0;
+    // A fixed-decay world (the zombie apocalypse) never drifts: its streets
+    // hold what they hold, whatever year the clock says, because the
+    // collections did not fail gradually there, they simply stopped. How badly
+    // is rolled once off the world seed, so one apocalypse is ankle-deep and
+    // the next is merely grubby - but each stays as it is forever.
+    if (isFixedDecayWorld()) {
+      return fixedDecayLevel(0x11ACE5, LITTER_FIXED_MIN, LITTER_COLLAPSE_FACTOR);
+    }
     const year = cityGameYear();
     if (year < LITTER_RISE_YEAR) return 1;
     if (year >= LITTER_FULL_YEAR) return LITTER_COLLAPSE_FACTOR;
@@ -3398,12 +3444,13 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
   }
 
   // ---- pass: overgrowth -----------------------------------------------------
-  // Nature does not wait for the Squishing. Rubbish needs somebody to STOP
-  // collecting it, which is why the litter curve above only starts in 2010; a
-  // weed only needs to be left alone, so this one starts on day one. Year by
-  // year from 2001 the cracks in the pavement open, the verges spread over the
-  // kerb and the vines get into the brickwork, until by the collapse the street
-  // grid is something you can only just make out under the green.
+  // The green comes in on the same schedule as the rubbish. A street that is
+  // still being swept is still being weeded, so nothing grows through the
+  // pavement while the city is being looked after: the cracks only start to
+  // open once the maintenance goes with the collections, in 2010. From there
+  // year by year the verges spread over the kerb and the vines get into the
+  // brickwork, until by the collapse the street grid is something you can only
+  // just make out under the green.
   //
   // Modelled on cityLitterFactor, with two differences that matter:
   //
@@ -3417,13 +3464,18 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
   //     the tileset's own passage flags rather than assumed, so a city cannot
   //     be sealed off by its own weeds. (Bush and PottedPlant are impassable in
   //     both city tilesets, which is exactly the trap this avoids.)
-  const OVERGROWTH_START_YEAR = 2001;  // the year the maintenance stops
+  const OVERGROWTH_START_YEAR = 2010;  // the year the maintenance stops
   const OVERGROWTH_FULL_YEAR = 2012;   // the year the green has won
   const OVERGROWTH_MAX_FACTOR = 10;
+  const OVERGROWTH_FIXED_MIN = 3;      // how green a fixed-decay world can be
   function cityOvergrowthFactor() {
-    // An empty world is at the far end of the curve whatever the clock says:
-    // there was never anybody to cut it back.
-    if (isEmptyWorld()) return OVERGROWTH_MAX_FACTOR;
+    // A fixed-decay world sits at one point on the curve whatever the clock
+    // says: there is nobody to cut it back and there never will be, so the
+    // year it stopped being cut back is the only thing that decides how deep
+    // the green is - rolled once off the world seed, and then it is that.
+    if (isFixedDecayWorld()) {
+      return fixedDecayLevel(0x9EEDED, OVERGROWTH_FIXED_MIN, OVERGROWTH_MAX_FACTOR);
+    }
     const year = cityGameYear();
     if (year <= OVERGROWTH_START_YEAR) return 1;
     if (year >= OVERGROWTH_FULL_YEAR) return OVERGROWTH_MAX_FACTOR;
@@ -3618,6 +3670,17 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     }
   }
 
+  // Rubbish dropped on a dressed block, behind the same gate as the street
+  // litter pass: nothing artificial is scattered in an empty or a death world,
+  // where there was never anybody to drop any. The count is still rolled by the
+  // caller either way, so the roll stays where it is in the map's stream.
+  function cityScatterTrash(ctx, tiles, want) {
+    if (!cityLitterAllowed()) return;
+    for (let n = 0; n < want; n++) {
+      for (const t of tiles) if (cityPlace(ctx, "Trash", t.x, t.y)) break;
+    }
+  }
+
   function cityRectTiles(ctx, rect) {
     const out = [];
     for (let y = rect.y; y < rect.y + rect.h; y++) {
@@ -3637,9 +3700,7 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     const grass = [...cityTileSet(["Grass", "GrassFlower", "GrassDark"], ctx.allFeatures)];
     cityPaintGround(ctx, rect, grass);
     const tiles = cityShuffle(cityRectTiles(ctx, rect), ctx.rng);
-    for (let n = 0, want = 1 + Math.floor(ctx.rng() * 2); n < want; n++) {
-      for (const t of tiles) if (cityPlace(ctx, "Trash", t.x, t.y)) break;
-    }
+    cityScatterTrash(ctx, tiles, 1 + Math.floor(ctx.rng() * 2));
     for (let n = 0, want = 1 + Math.floor(ctx.rng() * 3); n < want; n++) {
       for (const t of tiles) if (cityPlace(ctx, ctx.rng() < 0.5 ? "Flower" : "Bush", t.x, t.y)) break;
     }
@@ -3649,18 +3710,14 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     const pavement = [...cityTileSet(["Pavement", "Sidewalk"], ctx.allFeatures)];
     cityPaintGround(ctx, rect, pavement);
     const tiles = cityShuffle(cityRectTiles(ctx, rect), ctx.rng);
-    for (let n = 0, want = 1 + Math.floor(ctx.rng() * 2); n < want; n++) {
-      for (const t of tiles) if (cityPlace(ctx, "Trash", t.x, t.y)) break;
-    }
+    cityScatterTrash(ctx, tiles, 1 + Math.floor(ctx.rng() * 2));
   }
 
   function cityDressPlaza(ctx, rect) {
     const pavement = [...cityTileSet(["Pavement", "Sidewalk"], ctx.allFeatures)];
     cityPaintGround(ctx, rect, pavement);
     const tiles = cityShuffle(cityRectTiles(ctx, rect), ctx.rng);
-    for (let n = 0, want = 1 + Math.floor(ctx.rng() * 2); n < want; n++) {
-      for (const t of tiles) if (cityPlace(ctx, "Trash", t.x, t.y)) break;
-    }
+    cityScatterTrash(ctx, tiles, 1 + Math.floor(ctx.rng() * 2));
     for (const t of tiles) if (cityPlaceStanding(ctx, "PottedPlant", t.x, t.y)) break;
   }
 
@@ -3668,9 +3725,7 @@ function generateVillageBiome(biome, seed, allFeatures, adjacentBiomes, allOther
     const dirt = [...cityTileSet(["Dirt", "DirtGrass", "Mud"], ctx.allFeatures)];
     cityPaintGround(ctx, rect, dirt);
     const tiles = cityShuffle(cityRectTiles(ctx, rect), ctx.rng);
-    for (let n = 0, want = 1 + Math.floor(ctx.rng() * 2); n < want; n++) {
-      for (const t of tiles) if (cityPlace(ctx, "Trash", t.x, t.y)) break;
-    }
+    cityScatterTrash(ctx, tiles, 1 + Math.floor(ctx.rng() * 2));
   }
 
   // The whole street-level pass, cut down to bus stops, street trees, litter

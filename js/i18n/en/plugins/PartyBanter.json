@@ -1,0 +1,1765 @@
+{
+  "script": {
+    "general": [
+      [
+        "Tell me honestly. Do you know where we are going?",
+        "I know where we have been. That has to count for something."
+      ],
+      [
+        "We have been walking since before it was light.",
+        "And we will be walking after it is dark. That is the arrangement."
+      ],
+      [
+        "If this all ends badly, I want it written down that I said so.",
+        "It is written down. You say it every week."
+      ],
+      [
+        "Do you ever think about going home?",
+        "Home is wherever the packs are.",
+        "That is a very sad thing to be at peace with."
+      ],
+      [
+        "You have been quiet all day.",
+        "I was thinking. It happens."
+      ],
+      [
+        "Tell me again why we took this road.",
+        "Because you asked, and I said yes. Fool that I am."
+      ],
+      [
+        "I would not have made it this far alone.",
+        "Nor I. Do not let it go to your head."
+      ],
+      [
+        "How is that wound of yours holding up?",
+        "It has stopped bleeding, which is something."
+      ],
+      [
+        "If we get paid, I am buying the first round.",
+        "You said that in the last three towns."
+      ],
+      [
+        "Do you trust the people we met back there?",
+        "I trust nobody I cannot outrun."
+      ],
+      [
+        "You carry too much. Give me half.",
+        "I can manage. Ask me again on the hill."
+      ],
+      [
+        "One of these days we should stop for a whole week.",
+        "A week. Listen to us."
+      ],
+      [
+        "What did you do before all this?",
+        "Something quieter. I do not miss it as much as I should."
+      ],
+      [
+        "How much money have we actually got?",
+        "{gold} gold, and half of it is spoken for.",
+        "So the answer is no, then."
+      ],
+      [
+        "Say we found somewhere decent tomorrow. Would you stop?",
+        "Ask me tomorrow. I am too tired to be honest tonight."
+      ],
+      [
+        "Who is leading this, exactly?",
+        "{leader} walks in front. That is not quite the same thing."
+      ],
+      [
+        "I dreamed we were still walking.",
+        "That is not a dream, that is a memory arriving early."
+      ],
+      [
+        "I had a dream about this place. Do not ask.",
+        "You always dream about the wrong things.",
+        "One of these days I will dream about the right one and you will owe me an apology."
+      ],
+      [
+        "Do you think anyone is looking for us?",
+        "Somebody always is. It is who that changes."
+      ],
+      [
+        "We should agree on what we do if it goes wrong.",
+        "We run. That is the plan. It has never let us down."
+      ],
+      [
+        "I have been counting the days.",
+        "How many?",
+        "I lost count. That is my point."
+      ],
+      [
+        "Nobody warned me the boring parts would be the worst.",
+        "Nobody warned me about any of it."
+      ],
+      [
+        "Your boots are finished.",
+        "My boots have been finished since spring. They have not been told."
+      ],
+      [
+        "I keep expecting somebody to come and take charge.",
+        "That was the job nobody applied for."
+      ],
+      [
+        "What is the first thing you buy, if we ever come out of this rich?",
+        "Silence. A whole room of it."
+      ],
+      [
+        "We are getting good at this.",
+        "We are getting used to it. Do not confuse the two."
+      ],
+      [
+        "If I go down, do not carry me. Take the pack and go.",
+        "I will carry you and complain the entire way."
+      ],
+      [
+        "I have stopped asking what is over the next hill.",
+        "Good. The answer has been disappointing four times running."
+      ],
+      [
+        "Say something interesting. Anything.",
+        "The word for a group of crows is a murder.",
+        "I regret asking."
+      ],
+      [
+        "Are we the good ones in this?",
+        "We are the ones still walking. Ask a historian about the rest."
+      ],
+      [
+        "Do you remember the name of that town? The one with the bells?",
+        "No. But I remember the bells."
+      ],
+      [
+        "I want one day where nothing at all happens.",
+        "You would be unbearable by noon."
+      ],
+      [
+        "We have not talked properly in weeks.",
+        "We are talking now.",
+        "This is not talking. This is walking with noise."
+      ],
+      [
+        "What would you be doing right now, if none of this had happened?",
+        "Something with fewer hills in it.",
+        "That is not an answer. That is a complaint with a hat on."
+      ],
+      [
+        "You have not asked me a single question about myself in a month.",
+        "I assumed you would say it when you wanted to.",
+        "That is either very considerate or very lazy."
+      ],
+      [
+        "Who taught you to fight like that?",
+        "Nobody. That is rather the problem."
+      ],
+      [
+        "I have been keeping a list of everything we are owed.",
+        "By whom?",
+        "That is the weakness in the list, yes."
+      ],
+      [
+        "Do you think we have changed?",
+        "You have got quieter and I have got worse. So yes."
+      ],
+      [
+        "If you could take one thing back out of all of it, what would it be?",
+        "Ask me something easier. Ask me about the weather."
+      ],
+      [
+        "Nobody out here knows our names.",
+        "That has been the single best part of the last year."
+      ],
+      [
+        "We are going to run out of money before we run out of road.",
+        "We have been in that state since the day we met. Keep walking."
+      ],
+      [
+        "Watch out for that one. They are pleasant, and pleasant is expensive.",
+        "Noted. And if they are simply pleasant?",
+        "Then I will have been wrong twice this year."
+      ],
+      [
+        "How do you sleep, out here, with all of it?",
+        "Badly, and then all at once.",
+        "That is the most honest thing you have said to me."
+      ],
+      [
+        "We should decide now who carries what if we have to run.",
+        "You take the money, I take the water. Neither of us takes the tent."
+      ],
+      [
+        "Say we finish this. Say it actually ends. Then what?",
+        "Then I find out whether I am any good at ordinary days."
+      ],
+      [
+        "I do not think either of us is doing this for the money any more.",
+        "Speak for yourself. I am doing it entirely for the money.",
+        "You could at least pretend to think about it before answering."
+      ],
+      [
+        "Every town we pass is somebody's whole life.",
+        "And we are two strangers walking through the middle of it. Try to be polite."
+      ],
+      [
+        "There is something I should have told you a while ago.",
+        "Then tell me on the road. I would rather hear it moving."
+      ]
+    ],
+    "battered": [
+      [
+        "Nobody here is in a fit state to fight anything.",
+        "Then we do not fight. We sit down and we mend."
+      ],
+      [
+        "Look at us. All three of us, if we are counting.",
+        "I would rather not be counted just now."
+      ],
+      [
+        "We are one bad afternoon from being buried in a field.",
+        "Then let us have a good afternoon. For once."
+      ],
+      [
+        "Everyone is hurt. Not one of us is pretending otherwise any more.",
+        "That is the first honest thing said all day."
+      ],
+      [
+        "If something comes at us now, it takes us.",
+        "Then we stop. Here. Whatever it costs us in hours."
+      ],
+      [
+        "Say it. Somebody say it.",
+        "We are in a bad way and we need to stop.",
+        "Thank you."
+      ]
+    ],
+    "needAll": [
+      [
+        "Hungry, filthy, and none of us has slept. Have I missed anything?",
+        "You have missed that we are also broke."
+      ],
+      [
+        "When did this stop being an expedition and start being an ordeal?",
+        "Two towns back. Nobody wanted to say."
+      ],
+      [
+        "We are running the whole party on nothing.",
+        "People last longer on nothing than you would think. Not much longer."
+      ],
+      [
+        "I want a bath, a bed and a meal, in whichever order they arrive.",
+        "Pick one. That is the budget."
+      ],
+      [
+        "We are not in a state to meet anybody.",
+        "Then we meet nobody. We find a roof and we lie down."
+      ],
+      [
+        "This is how parties disappear, you know. Not in battles.",
+        "I know. Find us somewhere."
+      ]
+    ],
+    "need": {
+      "hunger": [
+        [
+          "When did we last eat properly?",
+          "Define properly.",
+          "That is an answer, and I hate it."
+        ],
+        [
+          "My stomach has started making decisions for me.",
+          "Then let it choose the next town."
+        ],
+        [
+          "I would eat something I could not name right now.",
+          "You already have. Twice."
+        ],
+        [
+          "Is there anything left in the pack?",
+          "There is something in the pack. Whether it is food is a matter of opinion."
+        ]
+      ],
+      "sleep": [
+        [
+          "I have not slept properly in days.",
+          "None of us have. You are just the one saying it."
+        ],
+        [
+          "I could sleep standing up, and I think I have been.",
+          "You have. You walked into a fence."
+        ],
+        [
+          "Wake me at the next town.",
+          "You are the one walking in front."
+        ],
+        [
+          "Talk to me. If I stop hearing a voice I am going down.",
+          "Then I will talk. About anything. Do not fall over."
+        ]
+      ],
+      "hygiene": [
+        [
+          "Do not stand downwind of me.",
+          "I have not stood upwind of you since the marsh."
+        ],
+        [
+          "We smell like something died on the road behind us.",
+          "Something did. We stepped over it."
+        ],
+        [
+          "I want water. Not to drink. To stand in.",
+          "The next river we cross, we stop. I promise."
+        ],
+        [
+          "No town is letting us in looking like this.",
+          "Then we wash in the next stream, like animals with standards."
+        ]
+      ],
+      "social": [
+        [
+          "I have not spoken to anyone but you in a week.",
+          "And how is that going?",
+          "It has been mixed."
+        ],
+        [
+          "We should go somewhere with people in it.",
+          "People come with prices and questions."
+        ],
+        [
+          "I miss the noise of a room full of strangers.",
+          "You will change your mind in the first tavern."
+        ],
+        [
+          "Say something. Anything. I need a voice that is not the wind.",
+          "You are talking to the wrong person for company, but I will try."
+        ]
+      ],
+      "leisure": [
+        [
+          "Everything we do lately is either walking or bleeding.",
+          "There is also carrying. You forgot carrying."
+        ],
+        [
+          "I want to play something. Cards, dice, anything with rules that do not kill you.",
+          "Find me a table and I will lose to you honestly."
+        ],
+        [
+          "When did we stop enjoying any of this?",
+          "Around the third ambush. It crept up."
+        ],
+        [
+          "One evening. One evening where we are not preparing for something.",
+          "I will hold you to that."
+        ]
+      ]
+    },
+    "biome": {
+      "forest": [
+        [
+          "Nothing in here makes the noise it should.",
+          "It is the trees. They take the edges off everything, footsteps included."
+        ],
+        [
+          "We have passed that same crooked trunk twice.",
+          "Trees repeat themselves. That is their whole trick."
+        ],
+        [
+          "I have never trusted a place where you cannot see the horizon.",
+          "The horizon is overrated. It is what is at knee height that gets you."
+        ],
+        [
+          "Something is following us through the undergrowth.",
+          "Probably. Keep walking and do not look interesting."
+        ],
+        [
+          "It smells green in here. Green and old.",
+          "That is rot doing its work. It is the same smell either way."
+        ]
+      ],
+      "plains": [
+        [
+          "Nowhere to hide out here.",
+          "Nowhere for anyone else either. I will take that trade."
+        ],
+        [
+          "This is farmland. Somebody works this.",
+          "Then somebody will want to know who is walking through it."
+        ],
+        [
+          "I can see for an hour in every direction and there is nothing in it.",
+          "Enjoy it. It will not last."
+        ],
+        [
+          "The grass has been flattened along there. Cart, I think.",
+          "Then there is a road, and where there is a road there is a bed."
+        ]
+      ],
+      "desert": [
+        [
+          "The heat is doing something to my judgement.",
+          "Your judgement was doing badly before the heat."
+        ],
+        [
+          "We should have filled everything at the last water.",
+          "We should have. Say it once and then stop."
+        ],
+        [
+          "There is nothing out here. Not even a bird.",
+          "Something eats out here. It just does not do it in daylight."
+        ],
+        [
+          "Every stone looks the same as the last.",
+          "Then walk towards the low sun and stop reading the stones."
+        ]
+      ],
+      "ice": [
+        [
+          "I cannot feel the ends of my fingers.",
+          "Then keep them moving. Numb is the warning, not the injury."
+        ],
+        [
+          "Snow covers everything. Tracks, holes, whatever is under the crust.",
+          "So walk where I walk and do not improvise."
+        ],
+        [
+          "It is very beautiful and it is trying to kill us.",
+          "Most beautiful things are managing both."
+        ],
+        [
+          "How long can a person walk in this?",
+          "Longer than they think. Once. Never twice."
+        ]
+      ],
+      "mountain": [
+        [
+          "I can hear my own heart in my ears.",
+          "That is the height. It passes, or you do."
+        ],
+        [
+          "One bad step here is the whole story.",
+          "Then take good ones. Slowly."
+        ],
+        [
+          "Look at the drop. Just look at it.",
+          "I have looked. Now face the rock and keep going."
+        ],
+        [
+          "Whatever is over this ridge had better be worth the climb.",
+          "It is another ridge. It is always another ridge."
+        ]
+      ],
+      "water": [
+        [
+          "I do not like water I cannot see the bottom of.",
+          "Then do not look down. Problem solved."
+        ],
+        [
+          "The packs will not thank us for this crossing.",
+          "Neither will the boots. Hold them over your head."
+        ],
+        [
+          "Salt in the air. We are close to something.",
+          "Close to somewhere with a harbour, and harbours have inns."
+        ],
+        [
+          "Something moved out there. Big.",
+          "Then we go along the shore, not through it."
+        ]
+      ],
+      "wetland": [
+        [
+          "Every step here takes something back out of me.",
+          "The ground is drinking. Lift your knees."
+        ],
+        [
+          "My boots are full of the swamp.",
+          "Your boots were full of the swamp an hour ago. This is the swamp getting acquainted."
+        ],
+        [
+          "The air in here is thick enough to chew.",
+          "Breathe through your sleeve and do not drink anything standing still."
+        ],
+        [
+          "Fever country, this.",
+          "Then we cross it quickly and we do not sleep here."
+        ]
+      ],
+      "underground": [
+        [
+          "Keep your voice down. Sound travels strangely down here.",
+          "It travels perfectly. That is the problem."
+        ],
+        [
+          "Somebody dug this. That is what bothers me.",
+          "Somebody dug it and then somebody stopped digging. Ask why."
+        ],
+        [
+          "I have lost all sense of which way is out.",
+          "Follow the draught. Air knows the way."
+        ],
+        [
+          "The dark down here is a different dark.",
+          "It is the same dark. There is just more of it and no morning coming."
+        ],
+        [
+          "Watch the ceiling as much as the floor.",
+          "Now I am watching both and enjoying neither."
+        ]
+      ],
+      "ruins": [
+        [
+          "People lived here. Properly lived here.",
+          "And then they did not. That is the part worth studying."
+        ],
+        [
+          "Somebody took the doors. Every single door.",
+          "Doors are worth money. Grief is not."
+        ],
+        [
+          "This was somebody's whole world.",
+          "And now it is a place we walk through on the way somewhere else."
+        ],
+        [
+          "Do not take anything out of a grave. I mean it.",
+          "I was not going to.",
+          "You were considering it. I watched you consider it."
+        ]
+      ],
+      "urban": [
+        [
+          "Too many eyes here.",
+          "Eyes are fine. It is the ones that follow you into the next street."
+        ],
+        [
+          "Everything costs money in a place like this. Even standing still.",
+          "Then let us stand still somewhere cheaper."
+        ],
+        [
+          "I had forgotten what a crowd sounds like.",
+          "Give it an hour. You will be sick of it."
+        ],
+        [
+          "Stay where I can see you. Cities eat people.",
+          "Cities eat people who look lost. So stop staring upwards."
+        ]
+      ],
+      "road": [
+        [
+          "A proper road. I could weep.",
+          "Do not. It will only be mud again by evening."
+        ],
+        [
+          "Roads mean traffic, and traffic means somebody to ask.",
+          "And somebody to be asked by. Keep the answers short."
+        ],
+        [
+          "Somebody maintains this. Recently.",
+          "Then somebody collects for it. Have a story ready."
+        ],
+        [
+          "We have made better time today than the last three days together.",
+          "Say that quietly. The road will hear you."
+        ]
+      ],
+      "industrial": [
+        [
+          "Whatever was made here, they made a great deal of it.",
+          "And then they left in a hurry. Look at the benches."
+        ],
+        [
+          "The air tastes of metal.",
+          "Do not lick anything and we will be fine."
+        ],
+        [
+          "I do not trust a floor with that much machinery under it.",
+          "Then walk near the walls."
+        ],
+        [
+          "Somebody could still be running this.",
+          "Somebody or something. Assume the worse one."
+        ]
+      ],
+      "interior": [
+        [
+          "Feels wrong being inside after so long out.",
+          "Give it ten minutes. Then it will feel wrong to leave."
+        ],
+        [
+          "Somebody keeps this place. Look how clean the sills are.",
+          "So we behave, and we do not open the locked one."
+        ],
+        [
+          "Low ceilings make me anxious.",
+          "Everything makes you anxious. At least this one is warm."
+        ],
+        [
+          "Do not sit on anything until we know whose it is.",
+          "Too late, and it is very comfortable."
+        ]
+      ],
+      "otherworldly": [
+        [
+          "I do not think we should be here.",
+          "I do not think here should be here."
+        ],
+        [
+          "The light is coming from the wrong direction.",
+          "The light is coming from no direction. Stop looking at it."
+        ],
+        [
+          "My eyes keep sliding off the edges of things.",
+          "Then look at your own boots and keep walking."
+        ],
+        [
+          "If I start saying strange things, hit me.",
+          "Gladly. And if I do?",
+          "You already are. I let it pass."
+        ],
+        [
+          "Nothing here has a shadow.",
+          "I noticed an hour ago. I was hoping you would not."
+        ]
+      ]
+    },
+    "recent": {
+      "battle_won": [
+        [
+          "That was closer than the last one.",
+          "They are all closer than the last one. That is the shape of it."
+        ],
+        [
+          "{ev_enemies}. I will be seeing that for a while.",
+          "Then look at me instead. It is over."
+        ],
+        [
+          "{ev_gold} out of it, after all that.",
+          "It buys bread. Bread is not nothing."
+        ],
+        [
+          "Did you see what it did before it went down?",
+          "I saw. I would rather not go over it while we are still out here."
+        ]
+      ],
+      "battle_boss": [
+        [
+          "{ev_name} is dead. I still do not quite believe it.",
+          "Believe it in the morning. Walk now."
+        ],
+        [
+          "Level {ev_level}, that thing. And we are standing here.",
+          "Barely. Do not let it make us brave."
+        ],
+        [
+          "Somebody kept {ev_name} down there on purpose.",
+          "Then somebody is going to notice it is gone."
+        ]
+      ],
+      "battle_lost": [
+        [
+          "We should not have taken that fight.",
+          "No. We should not. It is said. Now leave it."
+        ],
+        [
+          "{ev_enemies} took us apart.",
+          "And we are still here to say so. Only just."
+        ],
+        [
+          "I keep going back over it.",
+          "Go back over it later. Out loud, with a drink. Not now."
+        ]
+      ],
+      "battle_fled": [
+        [
+          "Running was the right call.",
+          "It usually is. It never feels like it."
+        ],
+        [
+          "We left something behind at {ev_place}.",
+          "We left nothing that was worth what it would have cost."
+        ],
+        [
+          "I do not enjoy running.",
+          "Nobody enjoys running. That is what makes it a decision."
+        ]
+      ],
+      "battle_arena": [
+        [
+          "A streak of {ev_streak}. People were shouting our names.",
+          "People were shouting. The names were approximate."
+        ],
+        [
+          "We could make a living in there.",
+          "We could make a short and popular living in there."
+        ]
+      ],
+      "party_join": [
+        [
+          "What do you make of {ev_name}, honestly?",
+          "Ask me in a month. Everyone is pleasant in the first week."
+        ],
+        [
+          "{ev_name} came in at level {ev_level}. That is not nothing.",
+          "Levels are not the part I worry about."
+        ],
+        [
+          "A {ev_cls} is exactly what we were short of.",
+          "We were short of everything. Do not oversell it."
+        ]
+      ],
+      "party_leave": [
+        [
+          "Has anyone actually said {ev_name}'s name since?",
+          "You just did. That is the first time."
+        ],
+        [
+          "I keep leaving room in the line for {ev_name}.",
+          "I know. I have been walking around the gap too."
+        ]
+      ],
+      "party_death": [
+        [
+          "{ev_name} should not have been in front.",
+          "{ev_name} was always in front. That was the whole of them."
+        ],
+        [
+          "I have nothing useful to say about {ev_name}.",
+          "Then say something useless. It is better than the quiet."
+        ],
+        [
+          "We buried {ev_name} at {ev_place} and walked on the same hour.",
+          "That is what we had. It was not disrespect."
+        ]
+      ],
+      "party_retire": [
+        [
+          "{ev_name} got out. Properly out.",
+          "Somebody had to prove it could be done."
+        ]
+      ],
+      "party_level": [
+        [
+          "{ev_name} came out of that different. Sharper.",
+          "Level {ev_level} does that. Give it a week to settle."
+        ],
+        [
+          "Something clicked for {ev_name} back there.",
+          "It happens all at once, or it does not happen."
+        ]
+      ],
+      "shop_buy": [
+        [
+          "{ev_items}. Was that everything on the list?",
+          "There was no list. That was the problem."
+        ],
+        [
+          "{ev_total} at {ev_place}. I watched it go.",
+          "And we would spend it again. That is the annoying part."
+        ]
+      ],
+      "shop_sell": [
+        [
+          "We got {ev_total} for that lot.",
+          "Less than it was worth. More than it weighed."
+        ],
+        [
+          "I miss some of what we sold.",
+          "You miss the idea of it. You never once used it."
+        ]
+      ],
+      "item_found": [
+        [
+          "{ev_item}. Just lying there at {ev_place}.",
+          "Nothing is just lying there. Somebody put it down and did not come back."
+        ],
+        [
+          "Do we split what we find, or does it go in the pack?",
+          "In the pack. We are not doing ledgers on a hillside."
+        ]
+      ],
+      "item_artifactGot": [
+        [
+          "That thing we picked up. {ev_item}.",
+          "I know. I can feel it through the canvas."
+        ],
+        [
+          "Should we be carrying {ev_item} at all?",
+          "Somebody is going to. Better us than whoever wanted it."
+        ],
+        [
+          "People will come looking for {ev_item}.",
+          "Let them come. We will be somewhere else."
+        ]
+      ],
+      "rest_sleep": [
+        [
+          "{ev_hours} hours. I had forgotten what that feels like.",
+          "You looked almost human at breakfast."
+        ],
+        [
+          "Best sleep in weeks and I still woke up tired.",
+          "That is the road catching up. It takes more than one night."
+        ]
+      ],
+      "place_entered": [
+        [
+          "So this is {ev_place}.",
+          "It was bigger in the telling. They always are."
+        ],
+        [
+          "We walked into {ev_place} at {ev_time}. Remember that.",
+          "Why?",
+          "Because one of us should be writing this down."
+        ]
+      ],
+      "floor_changed": [
+        [
+          "Floor {ev_floor}. We are a long way in.",
+          "The way out is the same length. Save something for it."
+        ],
+        [
+          "Every floor down is warmer. Have you noticed?",
+          "I noticed. I have been trying not to think about why."
+        ]
+      ],
+      "health_disease": [
+        [
+          "{ev_name} is sick. Properly sick.",
+          "Then we slow down, and we do not argue about it."
+        ],
+        [
+          "How long does this one take to turn?",
+          "Days, if we are lucky. Hours if we are not."
+        ]
+      ],
+      "health_partLost": [
+        [
+          "{ev_name} lost something back there that does not grow back.",
+          "I was there. I do not need it summarised."
+        ],
+        [
+          "Nobody has asked {ev_name} how they are.",
+          "Nobody has asked because nobody has an answer ready for it."
+        ]
+      ],
+      "health_augmentFit": [
+        [
+          "How does it feel? The new one.",
+          "Like borrowing a hand. It will be mine eventually."
+        ],
+        [
+          "I still cannot look at it directly.",
+          "Then look at my face. It has not changed."
+        ]
+      ],
+      "crime_committed": [
+        [
+          "That was {ev_bounty} on our heads for nothing.",
+          "Not for nothing. For {ev_crime}. Say it properly."
+        ],
+        [
+          "Are we the sort who do that now?",
+          "We are the sort who did it once. Let us leave it at once."
+        ]
+      ],
+      "quest_accepted": [
+        [
+          "Do we even know what we agreed to back at {ev_place}?",
+          "We agreed to {ev_quest}. The details are somebody else's job."
+        ],
+        [
+          "Every job sounds simple in the room where it is offered.",
+          "Then let us hear it again outside, in the rain."
+        ]
+      ],
+      "quest_completed": [
+        [
+          "{ev_quest}. Done, finished, off the list.",
+          "Do not say finished. Say finished for now."
+        ],
+        [
+          "That is one thing that went the way it was meant to.",
+          "Mark the day. It does not happen often."
+        ]
+      ],
+      "skill_learned": [
+        [
+          "{ev_name} picked up something new. {ev_skill}.",
+          "Good. I would rather learn it now than need it later."
+        ],
+        [
+          "Where did you learn {ev_skill}?",
+          "Watching somebody better at it than me. Repeatedly."
+        ]
+      ],
+      "npc_romance": [
+        [
+          "So. {ev_npc}.",
+          "Do not. Whatever you were about to say, do not."
+        ],
+        [
+          "I am not going to ask about {ev_npc}.",
+          "You have asked twice already, without words."
+        ]
+      ],
+      "pet_join": [
+        [
+          "Are we keeping it?",
+          "It has decided it is keeping us. There is a difference."
+        ],
+        [
+          "We can barely feed ourselves.",
+          "It eats what we do not. Have you seen what we do not?"
+        ]
+      ],
+      "property_rented": [
+        [
+          "{ev_price} for one night under a roof at {ev_place}.",
+          "Worth every coin. Ask my back."
+        ],
+        [
+          "A room. An actual room with a door.",
+          "Enjoy it. Tomorrow is a hedge again."
+        ]
+      ],
+      "work_shift": [
+        [
+          "{ev_hours} hours for {ev_pay}. Honest work.",
+          "Honest and slow. I felt every hour of it."
+        ],
+        [
+          "I did not think I would end up doing {ev_job} for money.",
+          "Nobody ever thinks that. Then rent happens."
+        ]
+      ],
+      "minigame_played": [
+        [
+          "That was the most fun I have had in a month.",
+          "That is a bleak thing to hear and I agree with it."
+        ],
+        [
+          "I lost more than I should have at {ev_game}.",
+          "You always do. That is why you enjoy it."
+        ]
+      ],
+      "travel_arrive": [
+        [
+          "Well. We are here, wherever here turned out to be.",
+          "Give it an hour before you form an opinion."
+        ],
+        [
+          "The road took longer than they said it would.",
+          "The road always takes longer than they said."
+        ]
+      ]
+    }
+  },
+  "shop": {
+    "opener": [
+      "So we own {item} now. {price} gold, gone.",
+      "{item}. That is what we spent it on, in case anyone is keeping score.",
+      "Anyone want to talk about {item} and the {price} gold it cost us?",
+      "We bought {item}. It is in the pack. It is done.",
+      "{price} gold lighter, one {item} heavier. Discuss."
+    ],
+    "opinion": {
+      "nervous": [
+        "And if we need that money before the next town? Because we might.",
+        "I would have kept the coin. Coin does not go wrong on you."
+      ],
+      "calm": [
+        "It was needed. We will not think about the price in a week.",
+        "Fine. It is bought. Let us not spend the evening on it."
+      ],
+      "aggressive": [
+        "Does it help us hit things? No? Then it was a waste.",
+        "I would have spent that on something with an edge."
+      ],
+      "melancholic": [
+        "We will lose it in a field somewhere and never speak of it again.",
+        "Everything we buy ends up somewhere behind us. But go on, be pleased."
+      ],
+      "sanguine": [
+        "Good. We were owed something that was not strictly necessary.",
+        "I like it. That is my whole opinion and I am sticking to it."
+      ],
+      "cautious": [
+        "What are we now short of, exactly? That is the question nobody asked.",
+        "Was there a cheaper one? There is always a cheaper one."
+      ],
+      "impulsive": [
+        "Why only one? We were already standing there.",
+        "I would have bought two and worked it out afterwards."
+      ],
+      "stoic": [
+        "It changes nothing about tomorrow. Pack it and walk.",
+        "Bought is bought. The debating is the only wasted part."
+      ],
+      "paranoid": [
+        "That merchant was too pleased with the sale. Think about why.",
+        "Check it before you rely on it. Check it twice."
+      ],
+      "empathetic": [
+        "You wanted it. That is reason enough, and nobody here is going to say otherwise.",
+        "I saw your face when you picked it up. Keep it."
+      ],
+      "authoritative": [
+        "Next time the purchase goes past me first. That is not a punishment, it is an arrangement.",
+        "Acceptable. But we are keeping a running total from now on."
+      ],
+      "scholarly": [
+        "Do we actually know what it does, or did we buy the shopkeeper's description?",
+        "The price was above the market. I have been keeping the figures."
+      ],
+      "artistic": [
+        "It is a beautiful thing. That is worth something even if it never gets used.",
+        "Look at the work in it. Somebody cared, once."
+      ],
+      "adventurous": [
+        "It will earn its weight the first time we need it. Everything does out here.",
+        "Good. Buying things means we intend to still be here to use them."
+      ],
+      "nurturing": [
+        "As long as it keeps somebody standing, it was cheap.",
+        "I would rather that in the pack than the coin in it. Coin never healed anyone."
+      ],
+      "mischievous": [
+        "Did you haggle? You did not haggle. I can see it on you.",
+        "We could sell it two towns over for more. Just an observation."
+      ],
+      "cynical": [
+        "We were robbed and we thanked them for it.",
+        "It will break, and we will buy another, and we will call that progress."
+      ],
+      "disciplined": [
+        "That was not in the budget. There is a budget.",
+        "We eat on what is left. I hope it was worth the meals."
+      ],
+      "fatalistic": [
+        "Spend it. None of it comes with us in the end.",
+        "It will not save us. But it will not hurt, and that is the standard now."
+      ],
+      "grumpy": [
+        "Wonderful. More weight for me to carry.",
+        "Nobody asked me. Nobody ever asks me. Carry on."
+      ],
+      "loyal": [
+        "If you thought we needed it, we needed it. That is the end of it.",
+        "I will carry it. Do not make a thing of the price."
+      ],
+      "brave": [
+        "It is a tool. Tools are for using, so let us go and use it.",
+        "Stop counting coins and point me at whatever we bought it for."
+      ],
+      "timid": [
+        "Was it all right to spend that much? Nobody minds? Really?",
+        "I would not have dared. I am glad somebody did."
+      ],
+      "hedonistic": [
+        "A fine purchase. Now find me something to eat with the rest.",
+        "Money is for spending. This is the first sensible thing we have done all week."
+      ],
+      "apathetic": [
+        "Whatever it was, it is bought. Wake me when we walk.",
+        "I have no opinion on {item}. I would like that on the record."
+      ],
+      "any": [
+        "It is bought. Let us not stand here about it.",
+        "We will find out soon enough whether that was clever."
+      ]
+    }
+  },
+  "opener": {
+    "nervous": [
+      "Did you hear that, or is it me again?",
+      "Tell me the plan. Just once more, out loud.",
+      "I keep checking the pack for something I know is in it."
+    ],
+    "calm": [
+      "We are further on than we were this morning. That is the whole measure.",
+      "Sit down for a moment. The road will still be there.",
+      "You are winding yourself up over something that has not happened."
+    ],
+    "aggressive": [
+      "Next thing that comes at us, I am not waiting to be asked.",
+      "You went easy back there. I saw it.",
+      "I am tired of being polite to people who would rob us."
+    ],
+    "melancholic": [
+      "I was thinking about how few of us there are now.",
+      "Do you think anybody remembers the last place we stayed?",
+      "It is going to be one of those evenings. Ignore me."
+    ],
+    "sanguine": [
+      "Say what you like, it is a good day to be out of doors.",
+      "We are alive, fed and moving. Three out of three.",
+      "I have decided this is going to go well. Do not argue."
+    ],
+    "cautious": [
+      "Before we go any further. What is our way out of here?",
+      "I want to walk it once before we commit to it.",
+      "We are trusting a great deal to somebody we met yesterday."
+    ],
+    "impulsive": [
+      "Let us just do it. Now, before anybody thinks about it.",
+      "I have had an idea and you are going to hate it.",
+      "Why are we still standing here discussing it?"
+    ],
+    "stoic": [
+      "It is weather. It will pass or it will not.",
+      "Complaining costs the same as walking and gets you less far.",
+      "We knew what this was when we started."
+    ],
+    "paranoid": [
+      "Do not turn round. Two behind us since the last corner.",
+      "Somebody has been through my pack. Things are in the wrong order.",
+      "Why did they help us? Nobody helps for nothing."
+    ],
+    "empathetic": [
+      "You have not been yourself since yesterday. Do not tell me you have.",
+      "Whatever it is, you can say it out here where nobody is listening.",
+      "You took that harder than you let on."
+    ],
+    "authoritative": [
+      "We need an order of march and we need it before dark.",
+      "I want to hear everyone's objection now, not halfway across.",
+      "Somebody has to make the decision. It may as well be out loud."
+    ],
+    "scholarly": [
+      "The stonework here is at least two centuries older than the rest.",
+      "I have been keeping notes. Do you want to hear them or shall I stop?",
+      "There is a pattern to where we keep finding these. I am nearly sure of it."
+    ],
+    "artistic": [
+      "Look at the light on that. Just for a second. Look at it.",
+      "Somebody made that by hand, and then somebody else left it out here to rot.",
+      "I would like to remember this place properly, not just as somewhere we passed."
+    ],
+    "adventurous": [
+      "There is a way up. I have already found it.",
+      "We could take the long road, or we could find out what is down there.",
+      "Aren't you even a little curious?"
+    ],
+    "nurturing": [
+      "You have not eaten since this morning. Do not think I did not notice.",
+      "Give me that arm. I am not asking.",
+      "Sit. I will take the next watch."
+    ],
+    "mischievous": [
+      "I have not told you what I did in that last shop.",
+      "Say nothing when we get there. Follow my lead and try to look honest.",
+      "I bet you the next round I can get us in for free."
+    ],
+    "cynical": [
+      "Let me guess how this ends. Badly, and we walk away with less.",
+      "They said the same thing in the last town. Word for word, almost.",
+      "Everyone out here is selling something. Even the ones giving it away."
+    ],
+    "disciplined": [
+      "Kit check. Now, while there is light.",
+      "We keep the pace or we lose the day. It is arithmetic.",
+      "We agreed on a routine. We have not kept it in four days."
+    ],
+    "fatalistic": [
+      "It will go the way it goes. It always has.",
+      "One of us is not going to make it out of this. Statistically speaking.",
+      "I stopped planning a long time ago and I have been happier."
+    ],
+    "grumpy": [
+      "Whose idea was this road? I want a name.",
+      "I have been carrying this since dawn and nobody has offered.",
+      "Wake me when there is something worth waking for."
+    ],
+    "loyal": [
+      "Whatever gets decided, I am with it.",
+      "I would not be standing here for anybody else. I hope that is understood.",
+      "You went back for me. I have not forgotten."
+    ],
+    "brave": [
+      "I will go first. It is not a discussion.",
+      "If something is in there, better it meets me than you.",
+      "Stop looking for the safe way. There is not one."
+    ],
+    "timid": [
+      "Could I walk in the middle? Just for this bit.",
+      "I do not want to be difficult, but I do not like this at all.",
+      "Is it all right if I say I am frightened?"
+    ],
+    "hedonistic": [
+      "The first thing I want in that town is a table and something hot on it.",
+      "We have money. Money is meant to leave.",
+      "Life is short and this road is long. Let us at least eat well."
+    ],
+    "apathetic": [
+      "Do what you like. I am walking either way.",
+      "You are asking the wrong person for an opinion.",
+      "I stopped having preferences somewhere around the second town."
+    ],
+    "any": [
+      "Long day.",
+      "Anything on your mind?"
+    ]
+  },
+  "reply": {
+    "nervous": [
+      "Do not say things like that out here.",
+      "Now I am going to be thinking about that all night.",
+      "Can we walk while we talk about this? Please."
+    ],
+    "calm": [
+      "All right. And what would you like to do about it?",
+      "Noted. It is still not worth this much of your evening.",
+      "Breathe. Then say it again slower."
+    ],
+    "aggressive": [
+      "Then somebody should have done something about it.",
+      "Talk is fine. I would rather have hit it.",
+      "Say the word and it stops being a problem."
+    ],
+    "melancholic": [
+      "It will not matter in a year. None of this will.",
+      "You say that as though it is comforting.",
+      "I have been thinking the same thing and saying nothing."
+    ],
+    "sanguine": [
+      "Well, I am choosing to enjoy it anyway.",
+      "That is one way to see it. Mine is nicer.",
+      "You worry beautifully. It is almost a talent."
+    ],
+    "cautious": [
+      "And what happens if you are wrong?",
+      "Let us wait a day before we do anything about that.",
+      "I would like more than one way out before I agree."
+    ],
+    "impulsive": [
+      "Then let us go now, while it is still true.",
+      "You think too long about everything.",
+      "Fine. Decided. Moving."
+    ],
+    "stoic": [
+      "It changes nothing. Keep walking.",
+      "Then it is so. What next?",
+      "I have heard worse and eaten dinner after."
+    ],
+    "paranoid": [
+      "Who told you that? Think about who told you that.",
+      "That is exactly what somebody would want us to believe.",
+      "Keep your voice down. Everything out here has ears."
+    ],
+    "empathetic": [
+      "That is not really what you meant, though, is it.",
+      "You do not have to carry that on your own.",
+      "I hear you. I am not going to pretend I have a fix."
+    ],
+    "authoritative": [
+      "Then that is settled, and we do not revisit it.",
+      "I will decide. You will not like it and we will move on.",
+      "Bring it to me before it becomes everybody's problem."
+    ],
+    "scholarly": [
+      "That is not quite right, and the correct version is more interesting.",
+      "I would want to see it written down before I believed it.",
+      "There is a word for that. It will come to me."
+    ],
+    "artistic": [
+      "You describe everything like a ledger. It was not like that.",
+      "There was something almost lovely in it, if you were not being hit.",
+      "I will remember it differently. That is allowed."
+    ],
+    "adventurous": [
+      "Then it is worth doing. That is usually how it works.",
+      "You are describing an excellent reason to go and look.",
+      "Good. I was getting bored of easy days."
+    ],
+    "nurturing": [
+      "And when did you last sleep? Answer honestly.",
+      "Come here. You are shaking and pretending you are not.",
+      "None of that matters if you fall over. Eat something."
+    ],
+    "mischievous": [
+      "Or, and hear me out, we do the interesting thing instead.",
+      "I am going to remember you said that. At the worst moment.",
+      "You are far too easy to wind up."
+    ],
+    "cynical": [
+      "And you believed them.",
+      "It is always going to work out, right up until it does not.",
+      "Give it a week. Then tell me how it went."
+    ],
+    "disciplined": [
+      "Then it goes on the list, in order, like everything else.",
+      "We do it properly or we do not do it.",
+      "Feelings later. Kit, food, watch, sleep. In that order."
+    ],
+    "fatalistic": [
+      "It was always going to end up like this.",
+      "Say it or do not say it. The road does not care either way.",
+      "I have made my peace with worse before breakfast."
+    ],
+    "grumpy": [
+      "Marvellous. Anything else while we are sharing?",
+      "I did not ask, and yet here we are.",
+      "Every time. Every single time."
+    ],
+    "loyal": [
+      "Then I am with you, and that is the end of the discussion.",
+      "You do not have to convince me. You never have.",
+      "Whatever it costs, we do it together or not at all."
+    ],
+    "brave": [
+      "Then we go and meet it head on.",
+      "Being afraid of it does not make it smaller.",
+      "Stand up. We are not doing this sitting down."
+    ],
+    "timid": [
+      "Oh. Must we?",
+      "I will do it. I just need a moment first.",
+      "You are much braver about that than I am."
+    ],
+    "hedonistic": [
+      "All of which sounds better with a drink in front of it.",
+      "You are describing a problem for tomorrow.",
+      "Life is short. Let us not spend it on this conversation."
+    ],
+    "apathetic": [
+      "Right.",
+      "If you say so.",
+      "That is a lot of words for a thing that will not change."
+    ],
+    "any": [
+      "Fair enough.",
+      "I suppose so."
+    ]
+  },
+  "closer": {
+    "nervous": [
+      "Can we go now? I would like to go now.",
+      "I am going to worry about that for days."
+    ],
+    "calm": [
+      "Either way. We keep walking.",
+      "Then it is fine, and we are fine."
+    ],
+    "aggressive": [
+      "Waste of breath, all of it.",
+      "Point me at something and I will feel better."
+    ],
+    "melancholic": [
+      "None of it lasts. Not even this bit.",
+      "It was better before. Whatever it was."
+    ],
+    "sanguine": [
+      "I still say it is a good day.",
+      "Cheer up. We are not dead."
+    ],
+    "cautious": [
+      "I want it looked at again before we commit.",
+      "Let us not decide anything tonight."
+    ],
+    "impulsive": [
+      "Too much talking. I am going.",
+      "Decided. Come on."
+    ],
+    "stoic": [
+      "It is what it is.",
+      "Walk."
+    ],
+    "paranoid": [
+      "Somebody is going to hear about this. They always do.",
+      "Keep it between us. All of it."
+    ],
+    "empathetic": [
+      "Are you all right? Really?",
+      "Whatever either of you needs. Just say."
+    ],
+    "authoritative": [
+      "Enough. We move.",
+      "That is settled, then."
+    ],
+    "scholarly": [
+      "I should write that down before I lose it.",
+      "There is a precedent for this, you know."
+    ],
+    "artistic": [
+      "There is a song in that, badly told.",
+      "I will remember the light more than the words."
+    ],
+    "adventurous": [
+      "Well. Onwards.",
+      "Something better is over the next rise. It always is."
+    ],
+    "nurturing": [
+      "Both of you. Eat something before we go on.",
+      "Nobody is walking any further hungry."
+    ],
+    "mischievous": [
+      "I am absolutely repeating this later.",
+      "You have both been very entertaining."
+    ],
+    "cynical": [
+      "Wonderful. Truly.",
+      "And that is how it will be remembered, wrongly."
+    ],
+    "disciplined": [
+      "We are behind. Move.",
+      "None of that gets the miles done."
+    ],
+    "fatalistic": [
+      "It ends how it ends.",
+      "Say what you like. The road decides."
+    ],
+    "grumpy": [
+      "Are we finished?",
+      "Somebody carry something for once."
+    ],
+    "loyal": [
+      "Whatever we do, we do together.",
+      "I am with whichever of you is right."
+    ],
+    "brave": [
+      "Enough talk. Let us get on with it.",
+      "I will go first, as usual."
+    ],
+    "timid": [
+      "I will just be here. At the back.",
+      "If nobody minds, I would rather not."
+    ],
+    "hedonistic": [
+      "I want a drink and a chair with a back on it.",
+      "All of this would be better fed."
+    ],
+    "apathetic": [
+      "Mm.",
+      "Are we walking or not?"
+    ],
+    "any": [
+      "Right. On we go.",
+      "Enough of that."
+    ]
+  },
+  "stranger": {
+    "nervous": [
+      "We are only passing through. We will not be any trouble.",
+      "Is it safe on that road? Honestly?"
+    ],
+    "calm": [
+      "Evening. We are walking through, that is all.",
+      "Anything we should know before we go on?"
+    ],
+    "aggressive": [
+      "We want the road and no argument. Which way?",
+      "Point us out of here and there is no problem."
+    ],
+    "melancholic": [
+      "Quiet place. Was it always?",
+      "How long have you been out here on your own?"
+    ],
+    "sanguine": [
+      "Good evening to you. Fine spot you have.",
+      "Any news worth hearing? Good news for preference."
+    ],
+    "cautious": [
+      "Before we come any closer. Is there trouble here?",
+      "We keep to ourselves. Do you?"
+    ],
+    "impulsive": [
+      "Where is the nearest place with a fire and a table?",
+      "You there. What is worth seeing round here?"
+    ],
+    "stoic": [
+      "We are passing through. Nothing more.",
+      "Road north. Is it open?"
+    ],
+    "paranoid": [
+      "Who else has come through here today?",
+      "You have not seen us. Can we agree on that?"
+    ],
+    "empathetic": [
+      "You look like you have had a long day of it.",
+      "How are things here, really?"
+    ],
+    "authoritative": [
+      "Who speaks for this place?",
+      "We will not be long. Who should I be talking to?"
+    ],
+    "scholarly": [
+      "What is the history of this place? Anything written down?",
+      "Do you know how old that structure is?"
+    ],
+    "artistic": [
+      "Somebody built this beautifully, and a long time ago.",
+      "Do people still sing anything here?"
+    ],
+    "adventurous": [
+      "What is out past the ridge?",
+      "Anywhere round here nobody has been in a while?"
+    ],
+    "nurturing": [
+      "Do you need anything? We have a little to spare.",
+      "Is anyone here unwell?"
+    ],
+    "mischievous": [
+      "Tell me the thing you are not supposed to tell travellers.",
+      "Who runs the interesting business round here?"
+    ],
+    "cynical": [
+      "Let me guess. Nothing ever happens here.",
+      "What does a stranger get charged for a bed in this place?"
+    ],
+    "disciplined": [
+      "Distance to the next settlement, and the state of the road.",
+      "We need water and directions. Nothing else."
+    ],
+    "fatalistic": [
+      "Bad road ahead, I expect. There usually is.",
+      "Everyone tells us to turn back. Do you?"
+    ],
+    "grumpy": [
+      "Is there anywhere in this place to sit down?",
+      "Do not tell me it is another hour's walk."
+    ],
+    "loyal": [
+      "We are looking after our own. Have you seen anyone matching us?",
+      "We travel together. Is that a problem here?"
+    ],
+    "brave": [
+      "If there is something on that road, we will deal with it. Where is it?",
+      "We are not turning back. What are we walking into?"
+    ],
+    "timid": [
+      "Sorry. Sorry to bother you. Which way is the road?",
+      "We do not want any trouble. Truly."
+    ],
+    "hedonistic": [
+      "Where is the best food in this place? Not the cheapest. The best.",
+      "Is there anywhere warm to eat nearby?"
+    ],
+    "apathetic": [
+      "Road. Which way.",
+      "We are passing through. That is all I have."
+    ],
+    "any": [
+      "Evening. Seen anything strange around here?",
+      "We are only passing through."
+    ]
+  },
+  "solo": {
+    "thought": {
+      "nervous": [
+        "Something is wrong and I cannot name it yet.",
+        "I should have said something back there.",
+        "Counting the ways this goes badly. Again."
+      ],
+      "calm": [
+        "Good ground. Good light. No complaints.",
+        "Whatever comes, comes.",
+        "This is a decent place to stand for a while."
+      ],
+      "aggressive": [
+        "Somebody is going to try something today. I can feel it.",
+        "I have been civil for too long.",
+        "Let them start it."
+      ],
+      "melancholic": [
+        "Everyone I have walked with is somewhere behind me.",
+        "It was better before. I cannot say when before was.",
+        "Nobody will remember this hour but me."
+      ],
+      "sanguine": [
+        "Not a bad life, if you squint.",
+        "I have been in worse and enjoyed it less.",
+        "Something good is going to happen. It is owed."
+      ],
+      "cautious": [
+        "Two ways out of here. That is enough.",
+        "Nobody has checked behind us in an hour.",
+        "Slow is fine. Slow gets there."
+      ],
+      "impulsive": [
+        "We should be moving. Now, ideally.",
+        "Standing still is the worst thing we do.",
+        "I want to see what is round that corner."
+      ],
+      "stoic": [
+        "Feet. Road. Nothing else required.",
+        "It is only weather.",
+        "Complaining would not shorten it."
+      ],
+      "paranoid": [
+        "Somebody has been here recently. The grass says so.",
+        "The party is short one thing and nobody will admit taking it.",
+        "I do not like how quiet the birds have gone."
+      ],
+      "empathetic": [
+        "Somebody here is not all right and is hiding it well.",
+        "I should ask. Later, when it is quieter.",
+        "Everyone is carrying more than the packs."
+      ],
+      "authoritative": [
+        "This party needs a plan for tonight.",
+        "Nobody is watching the flanks. I will have to say it again.",
+        "Somebody has to hold this together."
+      ],
+      "scholarly": [
+        "That formation should not occur at this altitude.",
+        "Three of these now. That is not coincidence.",
+        "I need paper more than I need dinner."
+      ],
+      "artistic": [
+        "The colour of that sky is impossible and there it is.",
+        "I would give a week's pay for a stretch of canvas.",
+        "Nobody else is looking at any of this."
+      ],
+      "adventurous": [
+        "There has to be a way up that.",
+        "Nobody has been down there in years. Tempting.",
+        "The map stops being useful about here. Good."
+      ],
+      "nurturing": [
+        "Somebody needs to eat. I will make it happen.",
+        "Their hands were shaking earlier. I noticed.",
+        "One of us has to keep everyone standing."
+      ],
+      "mischievous": [
+        "I could get away with it. That is the trouble.",
+        "Nobody has checked their pack since this morning.",
+        "This place needs livening up."
+      ],
+      "cynical": [
+        "Another glorious day of being lied to by strangers.",
+        "Somebody is making money out of this and it is not us.",
+        "It will go wrong. It is only a question of which part."
+      ],
+      "disciplined": [
+        "Kit, water, watch order. In that order.",
+        "We are behind where we should be by two hours.",
+        "Standards slip quietly. That is how they slip."
+      ],
+      "fatalistic": [
+        "It will happen when it happens.",
+        "I have stopped expecting to see next year.",
+        "The road decides. It always has."
+      ],
+      "grumpy": [
+        "My feet have opinions about this road.",
+        "Nobody has offered to carry anything. Noted.",
+        "One day I will be paid for this."
+      ],
+      "loyal": [
+        "I would not be out here for anyone else.",
+        "As long as they are all still walking, it is a good day.",
+        "Whatever they decide, I am in it."
+      ],
+      "brave": [
+        "Let it come. I am ready and I would rather it was now.",
+        "Someone has to go first. Fine.",
+        "Fear is just information. I have read it."
+      ],
+      "timid": [
+        "I hope nobody asks me to go in front.",
+        "If I stay quiet, perhaps it passes.",
+        "Everyone else seems so sure."
+      ],
+      "hedonistic": [
+        "I am thinking about a hot meal in enormous detail.",
+        "There had better be a tavern at the end of this.",
+        "What is the point of any of it without a good evening?"
+      ],
+      "apathetic": [
+        "Still walking. Still here.",
+        "I could not tell you what day it is.",
+        "One place is much like another."
+      ],
+      "any": [
+        "A good spot to catch my breath.",
+        "Still no idea where we are going.",
+        "Someone has to keep watch. Might as well be me."
+      ]
+    },
+    "look": {
+      "any": [
+        "Somebody made this by hand, and a long time ago.",
+        "That has been here longer than the road has.",
+        "Best not to touch it until somebody else has.",
+        "Worth something, maybe. Worth carrying, no.",
+        "I have seen one of these before. Somewhere worse.",
+        "Nobody has cleaned that in a lifetime.",
+        "Odd. Everything else here is falling down and that is not."
+      ],
+      "scholarly": [
+        "The joinery is older than the rest of it by a century.",
+        "I should record this before we move on."
+      ],
+      "paranoid": [
+        "Somebody left this here on purpose.",
+        "That was moved. Recently."
+      ],
+      "artistic": [
+        "Somebody cared about this once. You can see the hand in it.",
+        "It is beautiful and nobody is looking at it."
+      ],
+      "mischievous": [
+        "I wonder what happens if I move it.",
+        "Nobody would notice if this went missing."
+      ]
+    },
+    "rest": {
+      "any": [
+        "Five minutes. That is all I am asking of anyone.",
+        "My feet have earned this and they know it.",
+        "Do not tell the others I sat down.",
+        "Just resting my eyes. Keep walking around me.",
+        "This is the best seat in the country and it is a rock."
+      ]
+    },
+    "recall": {
+      "any": [
+        "Wait for me.",
+        "Right behind you.",
+        "Where are we going now?",
+        "Slow down, some of us are carrying things.",
+        "Coming. Coming."
+      ]
+    },
+    "need": {
+      "hunger": {
+        "any": [
+          "I was starting to chew my own strap.",
+          "That will hold me until evening. Just.",
+          "Cold, but it is food and we have had neither.",
+          "Do not look at me like that. I was hungry."
+        ]
+      },
+      "sleep": {
+        "any": [
+          "A bed. An actual bed with nobody else in it.",
+          "Wake me if the world ends. Only then.",
+          "I could sleep for a week and start again.",
+          "Somewhere flat will do. Somewhere flat and dry."
+        ]
+      },
+      "hygiene": {
+        "any": [
+          "I had forgotten what my own hands looked like.",
+          "Three days of road, off at last.",
+          "Now I am fit to stand near people again.",
+          "That water was colder than the grave and worth it."
+        ]
+      },
+      "social": {
+        "any": [
+          "Good to hear a voice that is not my own.",
+          "People. I had missed people, which surprises me.",
+          "That is the most I have said all week."
+        ]
+      },
+      "leisure": {
+        "any": [
+          "One more go. Just one.",
+          "I needed that more than I knew.",
+          "Nobody tell the party how much I lost.",
+          "For a moment there I forgot the road entirely."
+        ]
+      }
+    }
+  }
+}

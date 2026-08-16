@@ -994,7 +994,17 @@
         const model = getMarkovModel(modelKey, () => new MarkovChain(selectedLanguage, chainOrder));
 
         const generatedText = model.generateText(minLength, maxLength);
-        const cleanText = generatedText.replace(/\s+/g, ' ').trim();
+        let cleanText = generatedText.replace(/\s+/g, ' ').trim();
+
+        // A non-sentient creature (NPCCreature: an NPC played as one of the
+        // creature classes) has no words. The chain still runs , the length of
+        // what it wrote is what decides how long the noise is , but what comes
+        // out of the message box is barks and growls, exactly as it is when a
+        // non-sentient PARTY member does the talking (see NPCEmpathize).
+        const EM = window.NPCEmpathize;
+        if (npcName && EM?.isNonSentientNPC?.(npcName)) {
+            cleanText = EM.growlFor(cleanText) || cleanText;
+        }
 
         // Keep the line on the NPC's society profile so it shows up in their
         // chat history in the Empathize panel, not just in this message box.

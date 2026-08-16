@@ -1388,6 +1388,56 @@
         }
     };
 
+    // -------------------------------------------------------------------------
+    // Picking a target closes the list the skill was picked from
+    // -------------------------------------------------------------------------
+    // An enemy-scoped skill hands over to Window_BattleEnemy, which the engine's
+    // startEnemySelection opens without hiding the skill list first (it hides
+    // only the status window). This panel was therefore left standing over the
+    // field the target is being pointed at, still showing the choice the player
+    // had already made. It is closed on the way in and reopened on the way back,
+    // on the row it was left on.
+    //
+    // The ally-scoped case is deliberately the opposite: there the panel is
+    // repurposed into the party list by _buildActorTargetItems, so it stays.
+    const _Scene_Battle_startEnemySelection_CBS = Scene_Battle.prototype.startEnemySelection;
+    Scene_Battle.prototype.startEnemySelection = function () {
+        if (this._skillWindow && this._skillWindow.visible) {
+            this._skillWindowReturnIndex = this._skillWindow.index();
+            this._skillWindow.deactivate();
+            this._skillWindow.hide();
+        } else {
+            this._skillWindowReturnIndex = -1;
+        }
+        _Scene_Battle_startEnemySelection_CBS.call(this);
+    };
+
+    // Backing out of the target picker reopens the list. The engine's own
+    // onEnemyCancel does this for the "skill" command, but the command window
+    // here opens this same list under "basic" too
+    // (BattleSystemEnhanchedCommands.js), a symbol the engine knows nothing
+    // about - which, now that the list is genuinely hidden, would leave no
+    // window active at all.
+    const _Scene_Battle_onEnemyCancel_CBS = Scene_Battle.prototype.onEnemyCancel;
+    Scene_Battle.prototype.onEnemyCancel = function () {
+        const symbol = this._actorCommandWindow ? this._actorCommandWindow.currentSymbol() : "";
+        if (symbol === "basic") {
+            this._enemyWindow.hide();
+            this._skillWindow.show();
+            this._skillWindow.activate();
+        } else {
+            _Scene_Battle_onEnemyCancel_CBS.call(this);
+        }
+        // Window_BattleSkill.show() selects the first row; the player left the
+        // list on the skill they were aiming, so put the cursor back on it.
+        const idx = this._skillWindowReturnIndex;
+        if (idx >= 0 && this._skillWindow && this._skillWindow.visible &&
+            idx < this._skillWindow.maxItems()) {
+            this._skillWindow.select(idx);
+        }
+        this._skillWindowReturnIndex = -1;
+    };
+
     const _Window_BattleSkill_update = Window_BattleSkill.prototype.update;
     Window_BattleSkill.prototype.update = function () {
         _Window_BattleSkill_update.call(this);

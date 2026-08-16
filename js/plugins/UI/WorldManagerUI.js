@@ -1034,9 +1034,17 @@
                 </div>
             `;
 
+            // The name field is deliberately NOT auto-focused. It is focus index
+            // 0 of the "create" section, so a controller/WASD player lands on it
+            // either way; giving it real DOM focus on open would swallow WASD as
+            // typed characters instead of navigation. Press OK on it to type
+            // (see handleOk, which focuses INPUT/SELECT elements).
             if (creating) {
-                const input = document.getElementById("wm-name-input");
-                if (input) setTimeout(() => { input.focus(); input.select(); }, 50);
+                const active = document.activeElement;
+                if (active && typeof active.blur === "function" &&
+                    (active.tagName === "INPUT" || active.tagName === "SELECT")) {
+                    active.blur();
+                }
             }
         }
 
