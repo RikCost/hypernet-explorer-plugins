@@ -1385,7 +1385,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Varlenian/!$CarPilot1",
+            "characterName": "NPCs/!$WarPilot1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -3062,7 +3062,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Varlenian/!$CarPilot1",
+            "characterName": "NPCs/!$WarPilot1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0

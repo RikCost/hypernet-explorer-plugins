@@ -106,7 +106,7 @@
       name: "Bubba",
       characterType: "humanoid",
       classId: 54,
-      sprite: "Varlenian/!$Bubba1",
+      sprite: "NPCs/!$Bubba1",
       spriteIndex: 0,
       mapId: 722,
       x: 55,
