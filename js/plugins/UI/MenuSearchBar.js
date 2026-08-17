@@ -49,6 +49,11 @@
  *     // after the host has rebuilt the DOM around the field
  *     this._bar.restoreFocus();
  *
+ * The list under the strip is mounted in a window rather than built whole
+ * (UI/MenuVirtualList.js): a query that matches eight hundred rows costs the
+ * dozen the page can actually show. A menu wearing this strip should mount its
+ * list through that plugin rather than assigning innerHTML itself.
+ *
  * A focused field owns the keyboard: every key event is stopped at the element,
  * so neither Input.keyMapper nor a scene's own window-level WASD listener ever
  * sees the typing. Scenes that read Input directly should still bail out of

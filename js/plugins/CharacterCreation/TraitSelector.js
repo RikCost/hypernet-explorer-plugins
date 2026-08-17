@@ -427,7 +427,7 @@
       this._dndContainer.innerHTML = ""; // Wipe clean to prevent stale DOM layout leaking
 
       this._sig = { category: null, selection: null, cursor: -1, hover: -1, specsReady: null, confirm: null };
-      this._cardEls = [];
+      this._gridCount = 0;
       // Wheel + L2/R2 scrolling for the pages. See CCScroll.
       if (window.CCScroll) window.CCScroll.bindWheel(this._dndContainer);
       this.buildOverlayDOM();
@@ -660,27 +660,46 @@
       slots.next.appendChild(this._confirmEl);
     }
 
-    // Rebuilds the card grid. Only ever called on a category switch.
-    renderGrid() {
-      const traits = this.currentTraits();
-      const frag = document.createDocumentFragment();
-      this._cardEls = traits.map((trait, idx) => {
-        const el = document.createElement("div");
-        el.className = "cc-card-option";
-        // Illnesses are browsed in the same grid but are not bought with
-        // points, so only a real trait carries a price on its card.
-        el.innerHTML = `
+    // One card. Illnesses are browsed in the same grid but are not bought with
+    // points, so only a real trait carries a price on its card.
+    traitCardHTML(trait, idx) {
+      if (!trait) return "";
+      const state = this.traitState(trait);
+      const classes = ["cc-card-option"];
+      if (state.selected) classes.push("selected");
+      if (state.blocked) classes.push("disabled");
+      if (idx === this._cursor) classes.push("highlighted");
+      return `
+        <div class="${classes.join(" ")}" data-idx="${idx}">
           <span style="${this.getIconStyle(trait.icon, 22)}"></span>
           <div class="cc-option-title">${getTraitText(trait, "name")}</div>
           ${trait.diseaseId ? "" : costBadgeHTML(traitCost(trait))}
-        `;
-        el.addEventListener("click", () => this.onTraitCardClick(idx));
-        el.addEventListener("mouseenter", () => this.onTraitCardHover(idx));
-        frag.appendChild(el);
-        return el;
+        </div>`;
+    }
+
+    // Draws (or redraws) the window onto the card grid: with every nature,
+    // affliction and illness in the game on offer, only the cards the page can
+    // show are ever built (UI/MenuVirtualList.js).
+    mountGrid() {
+      const traits = this.currentTraits();
+      this._gridCount = traits.length;
+      window.MenuVirtualList.render(this._el.grid, {
+        key: `${this._currentCategory}|${this._traitBar ? this._traitBar.query : ""}`,
+        count: traits.length,
+        renderItem: (idx) => this.traitCardHTML(traits[idx], idx),
+        onWindow: (win) => {
+          win.querySelectorAll(".cc-card-option").forEach((el) => {
+            const idx = parseInt(el.dataset.idx, 10);
+            el.addEventListener("click", () => this.onTraitCardClick(idx));
+            el.addEventListener("mouseenter", () => this.onTraitCardHover(idx));
+          });
+        }
       });
-      this._el.grid.innerHTML = "";
-      this._el.grid.appendChild(frag);
+    }
+
+    // Rebuilds the card grid. Only ever called on a category switch.
+    renderGrid() {
+      this.mountGrid();
       this._el.grid.scrollTop = 0;
 
       this._el.tabs.querySelectorAll(".ts-tab").forEach((el) => {
@@ -699,19 +718,13 @@
       this._sig.cursor = -1;
     }
 
-    // Toggles state classes in place, no markup is recreated.
+    // Repaints the cards on screen with their current state. Only the window's
+    // worth of markup is rebuilt, so this stays as cheap as toggling classes
+    // was when the whole grid lived in the DOM.
     syncCards(scrollToCursor) {
-      const traits = this.currentTraits();
-      this._cardEls.forEach((el, idx) => {
-        const trait = traits[idx];
-        if (!trait) return;
-        const state = this.traitState(trait);
-        el.classList.toggle("selected", state.selected);
-        el.classList.toggle("disabled", state.blocked);
-        el.classList.toggle("highlighted", idx === this._cursor);
-      });
-      if (scrollToCursor && this._keyboardCursor && this._cardEls[this._cursor]) {
-        this._cardEls[this._cursor].scrollIntoView({ block: "nearest", behavior: "auto" });
+      this.mountGrid();
+      if (scrollToCursor && this._keyboardCursor) {
+        window.MenuVirtualList.scrollToIndex(this._el.grid, this._cursor);
       }
     }
 
@@ -936,7 +949,7 @@
 
       // The grid also rebuilds when window.Health lands after the first render
       // (the category was empty at build time).
-      const starved = this._cardEls.length === 0 && this.currentTraits().length > 0;
+      const starved = this._gridCount === 0 && this.currentTraits().length > 0;
       if (force || starved || sig.category !== this._currentCategory) this.renderGrid();
 
       const selectionSig = this._selectedTraits.map((trait) => trait.id).join(",") +

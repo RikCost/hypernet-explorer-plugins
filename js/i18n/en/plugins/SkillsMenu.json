@@ -98,7 +98,11 @@
   "benched": "Desynced",
   "always": "Always",
   "hint": "Shift syncs or desyncs the selected skill",
-  "full": "{group} loadout is full ({max} synced). Desync one first."
+  "full": "{group} loadout is full ({max} synced). Desync one first.",
+  "best": "Best",
+  "random": "Random",
+  "bestApplied": "Synced the {n} most useful skills.",
+  "randomApplied": "Synced {n} random skills."
  },
  "tag": {
   "field": "Field"

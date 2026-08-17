@@ -293,6 +293,33 @@
     };
 
     /**
+     * Is (x, y) open water, for the purpose of standing a creature on it?
+     *
+     * Region 99 is the hand-painted answer and the only one a static map has.
+     * On the procedural map (636) that paint is applied by matching exact tile
+     * ids (see the regiondata pass in ProceduralMapBiomeGenerator), and the
+     * coastline defeats it from both ends: the sea is drawn as
+     * `baseTileId + autotileOffset`, which matches no declared tile id and so
+     * stays unpainted, while the dry sand band IS a declared "Beach" tile id
+     * and gets painted 99. Left at region 99 alone, a beach therefore has no
+     * water an enemy may be placed in and a fish may be placed on the sand.
+     * Terrain tag 3 is what water really carries there (the same test
+     * MovementInteractionSystem swims, fishes and dives on), so on 636 the tag
+     * decides, and region 99 only counts where the tile is impassable too -
+     * which the sand band never is.
+     */
+    BSE.Helpers.isWaterSpawnTile = function(x, y) {
+        if (!$gameMap) return false;
+        if ($gameMap.mapId() === 636) {
+            if ($gameMap.terrainTag(x, y) === 3) return true;
+            return $gameMap.regionId(x, y) === 99 && !$gameMap.isPassable(x, y, 2);
+        }
+        // A hand-made map paints its own water and means it (region 99, or the
+        // dive system's cached underwater tiles): its answer is taken as given.
+        return BSE.Helpers.isAquaticTile(x, y);
+    };
+
+    /**
      * Is (x, y) part of the road surface or its dashed center line in the
      * current procedural road biome? Roaming enemies keep off the carriageway.
      */
@@ -1969,14 +1996,33 @@
         if (!enemyData) return true;
         const archetype = BSE.Helpers.getEnemyArchetype(enemyData);
         if (!archetype) return true;
-        if (BSE.Helpers.getAquaticArchetype(archetype)) return regionId === 99;
-        if (x !== undefined && y !== undefined && $gameMap) {
-            const regionId2 = $gameMap.regionId(x, y);
-            const isWater = regionId2 === 99 ||
-                (window.MovementSystem && window.MovementSystem.isWaterTile && window.MovementSystem.isWaterTile(x, y));
-            if (isWater && !BSE.Helpers.getAmphibiousArchetype(archetype)) return false;
-        }
+        // One water answer for both halves of the rule, so a tile can never be
+        // wet enough to bar a wolf and dry enough to bar a fish at the same
+        // time. Without coordinates (a caller that has only a region id left)
+        // region 99 is all there is to go on.
+        const isWater = (x !== undefined && y !== undefined && $gameMap)
+            ? BSE.Helpers.isWaterSpawnTile(x, y)
+            : regionId === 99;
+        if (BSE.Helpers.getAquaticArchetype(archetype)) return isWater;
+        if (isWater && !BSE.Helpers.getAmphibiousArchetype(archetype)) return false;
         return true;
+    };
+
+    /**
+     * Does this troop belong in the water - either because it can live nowhere
+     * else (aquatic) or because it swims better than it walks (amphibious)?
+     * Read off the first member, exactly as canTroopSpawnInRegion is.
+     */
+    BSE.Helpers.troopIsWaterDwelling = function(troopId) {
+        const troop = $dataTroops[troopId];
+        if (!troop || !troop.members || !troop.members.length) return false;
+        const firstMember = troop.members[0];
+        const enemyData = firstMember && $dataEnemies[firstMember.enemyId];
+        if (!enemyData) return false;
+        const archetype = BSE.Helpers.getEnemyArchetype(enemyData);
+        if (!archetype) return false;
+        return BSE.Helpers.getAquaticArchetype(archetype) ||
+            BSE.Helpers.getAmphibiousArchetype(archetype);
     };
 
     // Did a designer write this map's encounter list, or is it the template's?
@@ -2188,6 +2234,14 @@
                 enemyCap = 2;
             } else if (lowerBiome.includes('cave')) {
                 enemyCap = 3;
+            } else if (lowerBiome.includes('beach') || lowerBiome.includes('island')) {
+                // A shore is half sea: the dry half of the square carries the
+                // whole roaming population, and the full template's worth of
+                // them on that much land reads as a crowd rather than a coast.
+                // Ten instead of the template's fifteen - a step down, not an
+                // emptying, and the sea's own residents are part of the ten
+                // (see the water-capable guarantee in the placement loop).
+                enemyCap = 10;
             }
             // The Bunker origin's own cellar (CharacterCreation.startBunkerOrigin,
             // WorldMapReturn's 'bunker' dungeon session) is a guaranteed-safe wake-up
@@ -2365,11 +2419,15 @@
                 if (tooClose) continue;
                 const terrainTag = $gameMap.terrainTag(x, y);
                 const regionId = $gameMap.regionId(x, y);
-                const isWaterTile = regionId === 99;
+                // Water is a habitat, not an obstacle: the sea is impassable to
+                // anything that walks, so it is exempted from the passability
+                // test and only the creatures that live in it are placed there
+                // (canTroopSpawnInRegion, and the wet/dry split below).
+                const isWaterTile = BSE.Helpers.isWaterSpawnTile(x, y);
                 if (!isWaterTile && !$gameMap.isPassable(x, y, 2)) continue;
                 if (terrainTag === 0 || terrainTag === 4 || terrainTag === 7) continue;
                 if ($gameMap.events().some(ev => ev.x === x && ev.y === y && !enemyEvents.includes(ev))) continue;
-                spawnTiles.push({ x, y, regionId });
+                spawnTiles.push({ x, y, regionId, isWater: isWaterTile });
             }
         }
 
@@ -2448,6 +2506,21 @@
         const specialPool = spawnMode ? BSE.Helpers.getSpecialBiomeTroops(currentBiome) : [];
         let specialPlaced = false;
 
+        // The sea's own residents. A shore (Beach, Island, Ocean, a flooded
+        // cave) is half water, and the fauna that lives in that half must
+        // actually be seen in it: an aquatic species can stand nowhere else at
+        // all, and an amphibious one is faster there than on the sand. The tile
+        // is drawn before the species is, so the guarantee has to be made on the
+        // tile - while nothing has been placed in the water yet, one event's
+        // draw is restricted to the wet tiles. It is the LAST event that is
+        // restricted, so the boss and the special-biome resident keep their
+        // first claim on the map (the same order the guarantee above uses).
+        // Every other event still draws freely, which is what keeps the split
+        // between sea and land roughly in proportion to the square's own.
+        const wantsWaterSpawn = spawnTiles.some(t => t.isWater) &&
+            encounterList.some(enc => BSE.Helpers.troopIsWaterDwelling(enc.troopId));
+        let waterPlaced = false;
+
         for (let evIdx = 0; evIdx < enemyEvents.length; evIdx++) {
             const ev = enemyEvents[evIdx];
             const isLastEnemyEvent = evIdx === enemyEvents.length - 1;
@@ -2467,6 +2540,15 @@
                     // when the current layout provides one (Dungeon/Crypt/Sewer
                     // BSP/room layouts); every other roaming enemy stays random.
                     let pickIdx = Math.floor(Math.random() * spawnTiles.length);
+                    // The water-dweller guarantee: the last event goes into the
+                    // sea if none of the earlier draws happened to.
+                    if (wantsWaterSpawn && !waterPlaced && isLastEnemyEvent) {
+                        const wetIdxs = [];
+                        spawnTiles.forEach((t, ti) => { if (t.isWater) wetIdxs.push(ti); });
+                        if (wetIdxs.length > 0) {
+                            pickIdx = wetIdxs[Math.floor(Math.random() * wetIdxs.length)];
+                        }
+                    }
                     if (isProcGenMap && BOSS_MODES.includes(spawnMode) && isFirstEnemyEvent) {
                         const genData = $gameSystem._procGenData && $gameSystem._procGenData.generatedMapData;
                         const hint = genData && genData.bossRoomHint;
@@ -2487,6 +2569,10 @@
 
                 ev.locate(loc.x, loc.y);
                 const currentRegion = loc.regionId;
+                // Whether this tile is water is the tile's own answer, not its
+                // region id's: on the procedural map the sea is often unpainted
+                // and the sand band is sometimes painted (see isWaterSpawnTile).
+                const locIsWater = !!loc.isWater;
                 let validTroops = encounterList.filter(enc =>
                     BSE.Helpers.canTroopSpawnInRegion(enc.troopId, currentRegion, loc.x, loc.y)
                 );
@@ -2503,7 +2589,7 @@
                     // boss: a cellar holds a lurker, a den holds one species,
                     // a hoard holds keepers, and none of them gets one.
                     const bossDue = BOSS_MODES.includes(spawnMode) && isProcGenMap &&
-                        isFirstEnemyEvent && currentRegion !== 99 && structBossAllowed;
+                        isFirstEnemyEvent && !locIsWater && structBossAllowed;
 
                     // The special-biome resident, placed before anything else
                     // can claim the event so neither the level band, the boss
@@ -2554,7 +2640,11 @@
 
                     if (chosenTroopId === null) {
                         if (validTroops.length === 0) {
-                            if (currentRegion === 99) { ev.erase(); continue; }
+                            // Nothing in the roster can stand here. On water that
+                            // is the end of it - the fallback below would drop a
+                            // land animal into the sea - so the event is dropped
+                            // instead.
+                            if (locIsWater) { ev.erase(); continue; }
                             else validTroops = encounterList;
                         }
                         // Narrow the (already weighted) candidates to the mode's
@@ -2600,6 +2690,14 @@
                 // the per-tile cache satisfies the guarantee too.
                 if (chosenTroopId !== null && BSE.Helpers.isSpecialTroop(chosenTroopId)) {
                     specialPlaced = true;
+                }
+                // Same reason: a water-dweller restored from the per-tile cache
+                // settles the guarantee just as a freshly drawn one does, so a
+                // revisited shore is not re-stocked with an extra fish every
+                // time the party walks back onto it.
+                if (chosenTroopId !== null && locIsWater &&
+                    BSE.Helpers.troopIsWaterDwelling(chosenTroopId)) {
+                    waterPlaced = true;
                 }
 
                 if (chosenTroopId !== null) {
@@ -3789,17 +3887,21 @@
                     const isAmphibious = BSE.Helpers.getAmphibiousArchetype(archetype);
 
                     if (isAquatic) {
-                        const srcIsWater = $gameMap.regionId(x, y) === 99;
+                        // The same water test the creature was PLACED by: read on
+                        // region 99 alone, a fish standing in the procedural
+                        // sea (which region 99 largely misses, see
+                        // isWaterSpawnTile) would be unable to move at all.
+                        const srcIsWater = BSE.Helpers.isWaterSpawnTile(x, y);
                         if (!srcIsWater) return false;
                         const x2 = $gameMap.roundXWithDirection(x, d);
                         const y2 = $gameMap.roundYWithDirection(y, d);
                         if (!$gameMap.isValid(x2, y2)) return false;
-                        const destIsWater = $gameMap.regionId(x2, y2) === 99;
+                        const destIsWater = BSE.Helpers.isWaterSpawnTile(x2, y2);
                         if (!destIsWater) return false;
                         return !$gameMap.events().some(ev => ev !== this && ev.x === x2 && ev.y === y2 && !ev.isThrough());
                     }
 
-                    const srcIsWater = BSE.Helpers.isAquaticTile(x, y);
+                    const srcIsWater = BSE.Helpers.isWaterSpawnTile(x, y);
                     if (srcIsWater) {
                         if (!isAmphibious) return false;
                         const x2 = $gameMap.roundXWithDirection(x, d);
@@ -3833,7 +3935,7 @@
                 const enemyData = $dataEnemies[troop.members[0].enemyId];
                 if (enemyData) {
                     const archetype = BSE.Helpers.getEnemyArchetype(enemyData);
-                    const currentIsWater = BSE.Helpers.isAquaticTile(this.x, this.y);
+                    const currentIsWater = BSE.Helpers.isWaterSpawnTile(this.x, this.y);
                     const regionId = $gameMap.regionId(this.x, this.y);
                     if (BSE.Helpers.getFlyingArchetype(archetype)) return speed;
                     if (BSE.Helpers.getAquaticArchetype(archetype)) return speed;

@@ -2290,6 +2290,63 @@
     return !!(window.CC3DModel && window.CC3DModel.isAvailable && window.CC3DModel.isAvailable());
   }
 
+  // --- Personality --------------------------------------------------------
+  // A character's disposition is one of the archetypes in
+  // js/db/Health/PersonalityData.json, stored as an index on their NPC society
+  // profile (personalityIndex). Everything downstream reads it from there: the
+  // party's own banter (PartyBanter), the thoughts they think (NPCConversation),
+  // the biologic sim's stress response and the Empathize dossier. Left alone,
+  // the profile carries the one the society generator rolled from the name
+  // seed, which is why the step can simply be skipped rather than randomized
+  // when a mode does not ask.
+  //
+  // Whichever shape the file is in, and whichever loader got there first, the
+  // same list PartyBanter reads (see personalityList there).
+  function personalityCatalog() {
+    const loader = window._NPCSocietyDataLoader;
+    if (loader && Array.isArray(loader.personalities)) return loader.personalities;
+    const data = window.Health && window.Health.PersonalityData;
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.list)) return data.list;
+    return [];
+  }
+
+  // The archetype's name / description in the active language. These live in
+  // js/i18n/<lang>/personality.json as English-source replacements, so they go
+  // through the same translator database names use (this page is DOM and never
+  // reaches the draw-time hooks). Italian also carries them inline on the
+  // record, which is what the Empathize dossier reads, so that wins when set.
+  function personalityLabel(entry) {
+    if (!entry) return "";
+    if (ConfigManager && ConfigManager.language === "it" && entry.name_it) return entry.name_it;
+    return window.CCDbName(entry.name || "");
+  }
+
+  function personalityDescription(entry) {
+    if (!entry) return "";
+    if (ConfigManager && ConfigManager.language === "it" && entry.description_it) {
+      return entry.description_it;
+    }
+    return window.CCDbName(entry.description || "");
+  }
+
+  // Writes the pick onto the member's society profile, minting one if this name
+  // has none yet (the name is settled well before this step: it is typed on the
+  // gender step's name screen). Silent when the NPC system is not loaded, the
+  // same way the trait step is silent without TraitSelector.
+  function applyPersonalityIndex(actorId, index) {
+    const actor = $gameActors ? $gameActors.actor(actorId) : null;
+    if (!actor || !actor.name() || !window.NPCSocietyRegistry) return;
+    try {
+      const cls = actor.currentClass();
+      window.NPCSocietyRegistry.ensureProfile(actor.name(), cls ? cls.id : null);
+      const profile = window.NPCSocietyRegistry.getProfile(actor.name());
+      if (profile) profile.personalityIndex = index;
+    } catch (e) {
+      console.warn("CharacterCreation: could not set personality", e);
+    }
+  }
+
   const CharacterCreationData = [
     {
       // Initial Settings (options) - now shown FIRST, before difficulty.
@@ -2843,6 +2900,45 @@
       },
     },
     {
+      // Personality. Asked of every member in Normal mode (and Full), of
+      // creatures as much as of people - a beast has a temperament, which is
+      // what a personality is. Quick mode never asks: its characters keep the
+      // disposition the society generator rolled for their name, which is
+      // exactly what this step overrides.
+      id: "personality",
+      get title() {
+        return T('CharCreate.selectYourPersonality');
+      },
+      get choices() {
+        const list = personalityCatalog();
+        const choices = list.map((entry, index) => ({
+          name: personalityLabel(entry),
+          symbol: "personality_" + index,
+          description: personalityDescription(entry),
+          value: index,
+        }));
+        choices.push(getLocalizedChoice(
+          T('CharCreate.choice.randomPersonality.name'), "personality_random",
+          T('CharCreate.choice.randomPersonality.desc')
+        ));
+        return choices;
+      },
+      handler: function (symbol, index) {
+        const list = personalityCatalog();
+        let picked = -1;
+        if (symbol === "personality_random") {
+          if (list.length) picked = Math.floor(Math.random() * list.length);
+        } else {
+          const choice = this.currentStepData().choices[index];
+          picked = choice ? choice.value : -1;
+        }
+        if (picked >= 0) {
+          applyPersonalityIndex(Scene_CharacterCreation.getCurrentActorId(), picked);
+        }
+        this.nextStep();
+      },
+    },
+    {
       // Birth date (Full mode only). Asked per member; skipped in the board modes.
       // Stored as an age per member on $gameSystem._ccBirthAge[index].
       id: "birthdate",
@@ -3112,6 +3208,7 @@
       GENDER: byId.gender,
       CLASS: byId.class,
       TRAITS: byId.traits,
+      PERSONALITY: byId.personality,
       HOMETOWN: byId.hometown,
       BIRTHDATE: byId.birthdate,
       ADD_MEMBER: byId.addMember,
@@ -3299,12 +3396,14 @@
         // name and the sprite (the gender step opens both screens itself),
         // then the class. The portrait is always the bust the sprite comes
         // with, gender and body archetype are read off that sprite's NPCs.json
-        // record, and traits are rolled.
+        // record, traits are rolled and the personality stays the one the
+        // society generator dealt this name.
         //
         // The gender step itself is NOT hidden: it is the step that opens the
         // name / sprite screens (setupStep), so Back must still land on it.
         if (step === STEP.PORTRAIT) return true;
         if (step === STEP.TRAITS) return true;
+        if (step === STEP.PERSONALITY) return true;
         if (step === STEP.HOMETOWN) return true;
         if (step === STEP.BIRTHDATE) return true;
         return false;
@@ -3344,6 +3443,7 @@
         if (step === STEP.DIFFICULTY) return true;           // difficulty auto-applied
         if (step === STEP.COMBAT_MODE) return true;          // combat mode default (RPG)
         if (step === STEP.TRAITS) return true;               // traits skipped
+        if (step === STEP.PERSONALITY) return true;          // personality left as rolled
         if (step === STEP.CLASS) return true;                // class fixed to Mana Cyborg
         if (step === STEP.ADD_MEMBER) return true;           // single-character party (ends)
       }
@@ -3359,7 +3459,7 @@
       // the Empathize editor, so every step it covers is walked past by
       // Back/Forward and the editor is the only landing point per member.
       if (Scene_CharacterCreation.isDetailedMode() && detailedModeAvailable() &&
-          [STEP.PORTRAIT, STEP.GENDER, STEP.CLASS, STEP.TRAITS,
+          [STEP.PORTRAIT, STEP.GENDER, STEP.CLASS, STEP.TRAITS, STEP.PERSONALITY,
            STEP.HOMETOWN, STEP.BIRTHDATE].includes(step)) {
         return true;
       }
@@ -3382,6 +3482,9 @@
       // choose between.
       if (step === STEP.PORTRAIT && (isCreature || isTutorial || !portraitModelAvailable())) return true;
       if (step === STEP.TRAITS && memberIndex >= 1) return true;      // members 2/3 auto traits
+      // Nothing to choose between without PersonalityData.json loaded; the
+      // profile keeps whatever the society generator rolled.
+      if (step === STEP.PERSONALITY && personalityCatalog().length === 0) return true;
       if (step === STEP.ADD_MEMBER && $gameParty.size() >= 3) return true; // party already full
       if (step === STEP.ORIGIN && $gameSwitches.value(100)) return true;   // tutorial switch ends at origin
 
@@ -4383,18 +4486,23 @@
         const isClassPicker = this._isClassPickerStep();
         // Origin step: same list-left / details-right spread as the class picker.
         const isOriginPicker = this._isOriginPickerStep();
+        // Personality step: two dozen archetypes, so the same spread again.
+        const isPersonalityPicker = this._isPersonalityPickerStep();
         // Hometown step lists every destination, so it renders as a compact
         // scrollable dropdown (keyboard / controller / mouse / wheel) instead of
         // big cards.
         const isHometownStep = stepData.id === "hometown";
         let gridClass = "cc-select-grid";
         if (isQuickClassStep) gridClass += " cc-two-col";
-        if (isClassPicker || isOriginPicker) gridClass += " cc-compact";
+        if (isClassPicker || isOriginPicker || isPersonalityPicker) gridClass += " cc-compact";
         // Two dozen origins do not fit down one column without scrolling past
         // most of them, so they are laid out three across. Each entry is still
         // left-aligned: the names are long, and centring them left every entry
         // starting at a different x, so a column was ragged and slow to scan.
         if (isOriginPicker) gridClass += " cc-three-col cc-align-left";
+        // The personality list is as long as the origin list and its names are
+        // single words, so it reads better centred three across.
+        if (isPersonalityPicker) gridClass += " cc-three-col";
         if (isHometownStep) gridClass += " cc-dropdown-list";
 
         // Every wizard step ends with the same bar, so Back and Continue never
@@ -4434,6 +4542,20 @@
             </div>
           `;
           rightHtml = this._originStepDetailsHtml(stepData, activeIndex, buttonPanelHtml);
+        } else if (isPersonalityPicker) {
+          // Personality step: the archetypes fill the LEFT page; the RIGHT page
+          // reads out what the highlighted disposition is and what it does to
+          // the body that carries it.
+          leftHtml = `
+            <div class="cc-page cc-page-left" style="display: flex">
+              <h2 class="cc-header-gothic">${stepData.title}</h2>
+
+              <div class="${gridClass}" style="flex: 1; min-height: 0; overflow-y: auto; align-content: start">
+                ${optionCards}
+              </div>
+            </div>
+          `;
+          rightHtml = this._personalityStepDetailsHtml(stepData, activeIndex, buttonPanelHtml);
         } else {
           rightHtml = `
           <div class="cc-page cc-page-right">
@@ -4490,10 +4612,11 @@
               }
             });
           }
-        } else if (this._isClassPickerStep() || this._isOriginPickerStep()) {
-          // Class / origin picker: the list lives on the LEFT page (only the
-          // highlight moves), while the RIGHT page re-renders the highlighted
-          // entry's details.
+        } else if (this._isClassPickerStep() || this._isOriginPickerStep() ||
+                   this._isPersonalityPickerStep()) {
+          // Class / origin / personality picker: the list lives on the LEFT page
+          // (only the highlight moves), while the RIGHT page re-renders the
+          // highlighted entry's details.
           if (rightPage && rightHtml) {
             const rightInnerHtml = rightHtml.replace(/^\s*<div[^>]*>/, '').replace(/<\/div>\s*$/, '');
             rightPage.innerHTML = rightInnerHtml;
@@ -4821,6 +4944,14 @@
       return this._step === STEP.ORIGIN;
     }
 
+    // True when the PERSONALITY step renders the same spread. Guarded on the
+    // catalogue as well: with no archetypes loaded the step is skipped before it
+    // ever draws, and the one remaining "Random" card belongs on the ordinary
+    // right page rather than alone on a two-page spread.
+    _isPersonalityPickerStep() {
+      return this._step === STEP.PERSONALITY && personalityCatalog().length > 0;
+    }
+
     // One row per member naming the spells the rolled deal taught them, so a
     // party can read exactly which esoteric skills they are being handed rather
     // than a count. Empty for an origin that teaches nothing.
@@ -4984,6 +5115,79 @@
 
           <div style="flex: 1; min-height: 0; overflow-y: auto">
             ${dossierHtml}
+          </div>
+          ${buttonsHtml || ""}
+        </div>
+      `;
+    }
+
+    // Builds the right page for the personality step: what the highlighted
+    // disposition is, one line it puts in the character's head, and what it does
+    // to the body carrying it (PersonalityData.json `modifiers`, which the
+    // biologic sim multiplies the baselines by). The Random card has no
+    // archetype to read, so it shows its own description alone.
+    _personalityStepDetailsHtml(stepData, activeIndex, buttonsHtml) {
+      const choice = (stepData.choices && stepData.choices[activeIndex]) || {};
+      const entry = choice.symbol === "personality_random"
+        ? null : personalityCatalog()[choice.value];
+
+      const row = (label, value) =>
+        `<div class="cc-dossier-row"><span class="cc-dossier-label">${label}</span><span class="cc-dossier-value">${value}</span></div>`;
+
+      // "prefrontalCortex" -> "Prefrontal Cortex", then through the translators:
+      // the vitals and hormones are named in the biologic panel's own strings,
+      // the brain regions in js/i18n/<lang>/brain.json (an English-source file,
+      // so it is the database translator that answers for those).
+      const statLabel = (key) => {
+        if (T.has('Biologic.' + key)) return T('Biologic.' + key);
+        const words = String(key)
+          .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+          .split(" ")
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" ");
+        return window.CCDbName(words);
+      };
+
+      // A modifier is a multiplier on the baseline: 1.3 reads as +30%, 0.9 as
+      // -10%, and the sign is what the player is actually reading for.
+      const modRows = [];
+      const modifiers = (entry && entry.modifiers) || {};
+      Object.keys(modifiers).forEach((group) => {
+        const stats = modifiers[group] || {};
+        Object.keys(stats).forEach((key) => {
+          const pct = Math.round((Number(stats[key]) - 1) * 100);
+          if (!pct) return;
+          modRows.push(row(statLabel(key), (pct > 0 ? "+" : "") + pct + "%"));
+        });
+      });
+
+      // The archetype's own voice: PersonalityData.json carries its thoughts in
+      // English and Italian only, so anything else reads the English bank.
+      const thoughts = (entry && entry.thoughts) || null;
+      const voice = thoughts
+        ? (thoughts[T.language()] || thoughts.en || [])[0] || "" : "";
+
+      const voiceHtml = voice
+        ? `<div class="cc-dossier-card"><h3 class="cc-subheader">${T('CharCreate.personalityVoice')}</h3>
+             <p class="cc-text-desc" style="margin-bottom: 0; font-style: italic">"${this.cleanText(voice)}"</p>
+           </div>`
+        : "";
+      const modsHtml = modRows.length
+        ? `<div class="cc-dossier-card"><h3 class="cc-subheader">${T('CharCreate.personalityBody')}</h3>
+             <div class="cc-dossier-grid">${modRows.join("")}</div>
+           </div>`
+        : "";
+
+      return `
+        <div class="cc-page cc-page-right" style="display: flex">
+          <h2 class="cc-header-gothic">${choice.name || ""}</h2>
+          <p style="font-size: 1.329rem; line-height: 1.45; color: var(--text-card-dark); text-align: center; margin-bottom: 16px">
+            ${this.cleanText(choice.description || "")}
+          </p>
+
+          <div style="flex: 1; min-height: 0; overflow-y: auto">
+            ${voiceHtml}
+            ${modsHtml}
           </div>
           ${buttonsHtml || ""}
         </div>
@@ -6024,9 +6228,19 @@
         return;
       }
 
+      // Personality: nothing to pick from without PersonalityData.json, and the
+      // tutorial does not ask (like traits and class). Either way the member
+      // keeps the disposition their society profile was rolled with.
+      if (this._step === STEP.PERSONALITY &&
+          (isTutorial || personalityCatalog().length === 0)) {
+        this._step++;
+        this.setupStep();
+        return;
+      }
+
       // Whatever else the chosen mode hides: the Full-only flavor steps
-      // (hometown / birth date) in both board modes, plus Quick's portrait and
-      // trait steps, both already settled above.
+      // (hometown / birth date) in both board modes, plus Quick's portrait,
+      // trait and personality steps, all already settled above.
       if (Scene_CharacterCreation._stepHiddenForMode(this._step)) {
         this._step++;
         this.setupStep();
@@ -6776,8 +6990,12 @@
       }
       // The origin step renders three across (cc-three-col), so the cursor has
       // to move in three columns or left/right would do nothing and up/down
-      // would skip two entries at a time.
+      // would skip two entries at a time. The personality list is laid out the
+      // same way, and only while it actually renders as the picker.
       if (sc && sc._step === STEP.ORIGIN) {
+        return 3;
+      }
+      if (sc && sc._isPersonalityPickerStep && sc._isPersonalityPickerStep()) {
         return 3;
       }
       return 1;

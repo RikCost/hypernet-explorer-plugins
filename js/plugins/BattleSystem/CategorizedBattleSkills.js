@@ -722,6 +722,128 @@
         return picked;
     }
 
+    // Presets ,  filling the carried row without picking nine skills by hand
+    //-------------------------------------------------------------------------
+    // What a character would take into a fight if they thought about it: four
+    // ways to hurt something, two to bend the fight, three to stay standing, in
+    // that order along the row. Anything always carried is left out, since it
+    // spends no slot.
+    const PRESET_PLAN = [
+        // i18n-ignore-start: role bucket ids, see ROLE_KEYS
+        { role: 'Offensive', slots: 4 },
+        { role: 'Support', slots: 2 },
+        { role: 'Healing', slots: 3 }
+        // i18n-ignore-end
+    ];
+
+    function presetCandidates(actor) {
+        if (!actor) return [];
+        const seen = new Set();
+        return actor.skills().filter(skill => {
+            if (!skill || isDummySkill(skill) || isAlwaysCarried(actor, skill)) return false;
+            if (seen.has(skill.id)) return false;
+            seen.add(skill.id);
+            return true;
+        });
+    }
+
+    // What a skill DOES, as one number. A damaging or healing formula is rolled
+    // with the engine's own evaluator against the caster themself, so the answer
+    // is in the character's real numbers; everything else is priced off max HP,
+    // which keeps a buff and a heal in the same units.
+    function skillPower(actor, skill) {
+        const dmg = skill.damage || {};
+        const formula = dmg.formula ? String(dmg.formula).trim() : '';
+        const repeats = Math.max(1, skill.repeats || 1);
+        // Something that lands on the whole enemy party is worth more than the
+        // same numbers on one target.
+        const sweep = [2, 8, 10].includes(skill.scope) ? 1.5 : 1;
+        if (dmg.type > 0 && formula && formula !== '0' && formula !== '0.0') {
+            try {
+                const action = new Game_Action(actor);
+                action.setSkill(skill.id);
+                // Signed for a heal, so the size of the effect is the magnitude.
+                const value = Math.abs(action.evalDamageFormula(actor));
+                if (isFinite(value) && value > 0) return value * repeats * sweep;
+            } catch (err) { /* a formula reaching for a fight this menu has not got */ }
+        }
+        const mhp = Math.max(1, actor.mhp);
+        let power = 0;
+        for (const eff of skill.effects || []) {
+            if (!eff) continue;
+            const chance = eff.code === 21 ? Math.min(1, eff.value1 || 0) : 1;
+            switch (eff.code) {
+                case 11: power += (eff.value1 || 0) * mhp + (eff.value2 || 0); break;
+                case 12: power += ((eff.value1 || 0) * Math.max(1, actor.mmp) + (eff.value2 || 0)) * 0.5; break;
+                case 13: power += (eff.value1 || 0) * 3; break;
+                case 21: power += 0.25 * mhp * chance; break;
+                case 22: power += 0.15 * mhp; break;
+                case 31: case 32: power += 0.12 * mhp * Math.min(2, (eff.value1 || 5) / 5); break;
+                case 33: case 34: power += 0.08 * mhp; break;
+                case 41: case 42: case 43: power += 0.2 * mhp; break;
+                case 44: power += 0.1 * mhp; break;
+                default: break;
+            }
+        }
+        return power * repeats * sweep;
+    }
+
+    // What it is worth carrying: what it does, against what a cast takes out of
+    // the pools it is paid from. A cheap move that can be thrown all fight beats
+    // an expensive one that lands once, and one the character could never pay
+    // for at full MP is all but struck off.
+    function skillValue(actor, skill) {
+        const power = skillPower(actor, skill);
+        if (power <= 0) return 0;
+        const mpCost = actor.skillMpCost(skill);
+        const tpCost = actor.skillTpCost(skill);
+        const maxMp = Math.max(1, actor.mmp);
+        const maxAp = Math.max(1, actor.maxTp ? actor.maxTp() : 100);
+        const load = mpCost / maxMp + tpCost / maxAp;
+        const value = power / (1 + 2 * load);
+        return mpCost > maxMp ? value * 0.05 : value;
+    }
+
+    function bestLoadoutIds(actor) {
+        const byRole = { Offensive: [], Healing: [], Support: [] };
+        for (const skill of presetCandidates(actor)) {
+            const roll = byRole[getSkillRole(skill)] || byRole.Support;
+            roll.push({ skill, score: skillValue(actor, skill) });
+        }
+        // The ranking inside a roll is what the plan asks for, so each roll is
+        // sorted on its own. Scoring every entry against its own roll's best
+        // then gives the one number leftovers from different roles can be
+        // ordered by when a role comes up short and its slots need filling.
+        for (const role of Object.keys(byRole)) {
+            const roll = byRole[role];
+            roll.sort((a, b) => b.score - a.score);
+            const top = roll.length ? roll[0].score : 0;
+            roll.forEach(entry => { entry.norm = top > 0 ? entry.score / top : 0; });
+        }
+        const picked = [];
+        const rest = [];
+        for (const step of PRESET_PLAN) {
+            const roll = byRole[step.role] || [];
+            for (const entry of roll.slice(0, step.slots)) picked.push(entry.skill.id);
+            for (const entry of roll.slice(step.slots)) rest.push(entry);
+        }
+        rest.sort((a, b) => b.norm - a.norm);
+        for (const entry of rest) {
+            if (picked.length >= LOADOUT_MAX) break;
+            picked.push(entry.skill.id);
+        }
+        return picked.slice(0, LOADOUT_MAX);
+    }
+
+    function randomLoadoutIds(actor) {
+        const pool = presetCandidates(actor).map(skill => skill.id);
+        for (let i = pool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
+        return pool.slice(0, LOADOUT_MAX);
+    }
+
     const BattleLoadout = {
         MAX: LOADOUT_MAX,
 
@@ -809,6 +931,25 @@
             if (list.length >= LOADOUT_MAX) return false;
             list.push(skillId);
             return true;
+        },
+
+        // Put down everything carried and take up this row instead. The ids are
+        // stored in the order given, since that order is what the row shows.
+        setAll(actor, ids) {
+            if (!actor) return [];
+            const list = (ids || []).slice(0, LOADOUT_MAX);
+            loadoutStore()[actor.actorId()] = list;
+            return list;
+        },
+
+        // The row a character would pack for themself: see PRESET_PLAN.
+        best(actor) {
+            return actor ? this.setAll(actor, bestLoadoutIds(actor)) : [];
+        },
+
+        // Nine of whatever they know, drawn out of the hat.
+        randomize(actor) {
+            return actor ? this.setAll(actor, randomLoadoutIds(actor)) : [];
         },
 
         drop(actor, skillId) {
@@ -2094,6 +2235,30 @@
         this.toggleUILoadout(skill);
     };
 
+    // Fill the whole carried row in one go, from the buttons under the list:
+    // 'best' packs the row a character would pack for themself, 'random' draws
+    // it out of the hat. Either way whatever was carried is put down first.
+    Scene_Skill.prototype.applyUILoadoutPreset = function (kind) {
+        const actor = this.actor();
+        if (!actor) return;
+        const ids = kind === 'random' ? BattleLoadout.randomize(actor) : BattleLoadout.best(actor);
+        if (!ids.length) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        // Packing the row is the same act as changing what is worn, so it is the
+        // equip sound rather than the menu's own OK.
+        SoundManager.playEquip();
+        // The right page may have been reading a skill that has just left the row.
+        if (this._dndInspectSkillId && !ids.includes(this._dndInspectSkillId)) this.clearUIInspect();
+        this._itemWindow.refresh();
+        this.refreshUISkill();
+        if (window.ParchmentToast) {
+            const key = kind === 'random' ? 'SkillsMenu.loadout.randomApplied' : 'SkillsMenu.loadout.bestApplied';
+            window.ParchmentToast.show(T(key, { n: ids.length }));
+        }
+    };
+
     // A cell of the carried row. The first click opens that skill on the right
     // page; clicking the cell of the skill already open puts it down, which
     // takes it off the row.
@@ -2321,11 +2486,20 @@
         }
         // The tabs are the backpack's category chips: same class, same block,
         // same two-row shape, so a filter reads the same in both menus.
+        // The two presets that fill the whole carried row ride the same rail,
+        // between the overview tab and the roles: they act on the loadout rather
+        // than filter the list, so they are inked apart from the tabs proper.
+        const presetTagsHTML = `
+            <div class="backpack-tab preset-tab" onclick="SceneManager._scene.applyUILoadoutPreset('best')">${escapeHtml(T('SkillsMenu.loadout.best'))}</div>
+            <div class="backpack-tab preset-tab" onclick="SceneManager._scene.applyUILoadoutPreset('random')">${escapeHtml(T('SkillsMenu.loadout.random'))}</div>
+        `;
         let typesRowHTML = "";
         types.forEach((type, idx) => {
             const isActive = this._dndSelectedTypeIndex === idx ? "active" : "";
             const isFocused = (this._dndActiveSection === "types" && this._dndSelectedTypeIndex === idx) ? "selected" : "";
             typesRowHTML += `<div class="backpack-tab ${isActive} ${isFocused}" onclick="SceneManager._scene.selectUISkillType(${idx})">${escapeHtml(type.name)}</div>`;
+            // After "All Skills", before the roles.
+            if (type.ext === "all") typesRowHTML += presetTagsHTML;
         });
 
         const skillTypesRowHTML = `
@@ -2359,86 +2533,21 @@
         const skillsTitle = T('SkillsMenu.title');
         const backBtnText = T('SkillsMenu.back');
 
-        // Every row is one of the backpack's pocket cards: rarity stripe, icon,
-        // name, and a meta line reading cost on the left and the stack chip on
-        // the right. What the chip says is whether the skill is synced.
-        let skillsGridHTML = "";
-        if (list.length === 0) {
-            skillsGridHTML = `<div class="item-grid-empty">${T('SkillsMenu.empty.section')}</div>`;
-        } else {
-            list.forEach((entry, idx) => {
-                const item = isLevelUp ? entry.skill : entry;
-                if (!item) return;
-
-                const isLearned = isLevelUp ? entry.isLearned : true;
-                const isFocused = (this._dndActiveSection === "skills" && this._dndSelectedIndex === idx) ? "selected" : "";
-                const costText = this.getUISkillCostText(item);
-                const canvasId = `skill-canvas-${idx}`;
-                const dimStyle = (isLevelUp && !isLearned) ? ' style="opacity:0.6;"' : '';
-
-                // The chip in the stack-count corner. On the ledger it is the
-                // level the skill is learned at; everywhere else it says
-                // whether the skill is in hand, and whether that is the
-                // player's to decide , the basic kit and anything worn are
-                // simply carried, and say so without offering a click.
-                let chipHTML = "";
-                if (isLevelUp) {
-                    chipHTML = `<span class="item-slot-count">Lv ${entry.level}</span>`;
-                } else if (BattleLoadout.isAlwaysCarried(actor, item)) {
-                    chipHTML = `<span class="item-slot-count">${T('SkillsMenu.loadout.always')}</span>`;
-                } else if (BattleLoadout.isActive(actor, item)) {
-                    chipHTML = `<span class="item-slot-count" onclick="event.stopPropagation(); SceneManager._scene.clickUILoadout(${idx})">${T('SkillsMenu.loadout.carried')}</span>`;
-                }
-                // A skill out of sync wears no chip at all: the bare card says
-                // it, and the row stays as legible as any other.
-
-                // A skill that can be cast away from a fight is worth knowing at
-                // a glance, since it is the only kind this menu can actually use.
-                const fieldFlag = actor.isOccasionOk(item)
-                    ? `<span class="skill-field-flag">${costText ? ' · ' : ''}${escapeHtml(T('SkillsMenu.tag.field'))}</span>` : "";
-
-                skillsGridHTML += `
-                    <div class="item-slot ${isFocused}"${dimStyle} data-skill-idx="${idx}" onclick="SceneManager._scene.clickUISkill(${idx})" ondblclick="SceneManager._scene.dblClickUISkill(${idx})">
-                        <div class="item-rarity-bar" style="background:${skillStripeColor(item)};"></div>
-                        <div class="item-slot-icon">
-                            <canvas id="${canvasId}" width="32" height="32" style="width:32px;height:32px;"></canvas>
-                        </div>
-                        <div class="item-slot-info">
-                            <div class="item-slot-name">${escapeHtml(item.name)}</div>
-                            <div class="item-slot-meta">
-                                <span>${escapeHtml(costText)}${fieldFlag}</span>
-                                ${chipHTML}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        const leftPageContentHTML = `<div class="backpack-grid" id="skill-grid">${skillsGridHTML}</div>`;
+        // The pockets are filled by the windowed list further down: a spellbook
+        // runs to hundreds of cards, each with its own icon canvas, and only the
+        // handful on screen is ever built (UI/MenuVirtualList.js).
+        const leftPageContentHTML = `<div class="backpack-grid" id="skill-grid"></div>`;
 
         // What the character carries, in the backpack's own quick-slot strip:
-        // nine numbered slots under a header line whose gauge counts the synced
-        // skills against the loadout's capacity, exactly where the backpack
-        // counts carried weight against what can be borne.
-        const loadoutIds = BattleLoadout.ids(actor);
+        // nine numbered slots under a header line naming the strip. The row
+        // itself already says how much of it is taken, so nothing counts it in
+        // words; the presets that fill it ride the tab rail at the top.
         let loadoutGridHTML = "";
         if (!isLevelUp) {
-            const carriedCount = loadoutIds.length;
-            const loadoutPct = Math.min(100, Math.floor((carriedCount / LOADOUT_MAX) * 100));
             loadoutGridHTML = `
                 <div class="backpack-hotbar">
                     <div class="backpack-hotbar-head">
                         <div class="backpack-hotbar-label">${T('SkillsMenu.loadout.skills')}</div>
-                        <div class="weight-status">
-                            <div class="weight-lbl-row">
-                                <span>${T('SkillsMenu.loadout.carried')}</span>
-                                <span>${carriedCount} / ${LOADOUT_MAX}</span>
-                            </div>
-                            <div class="weight-progress">
-                                <div class="weight-progress-fill" style="width:${loadoutPct}%;"></div>
-                            </div>
-                        </div>
                     </div>
                     <div class="backpack-hotbar-mount" id="skill-loadout-mount"></div>
                 </div>
@@ -2533,16 +2642,10 @@
         if (this._dndLastLeftPageKey !== leftPageKey) {
             this._dndLastLeftPageKey = leftPageKey;
             leftPageContainer.innerHTML = leftPageHTML;
-
-            // Render every row's icon
-            list.forEach((entry, idx) => {
-                const item = isLevelUp ? entry.skill : entry;
-                if (item) this.drawUISkillIcon(item.iconIndex, `skill-canvas-${idx}`);
-            });
         } else {
-            // Left page already drawn! Update only selection classes in-place
-            // (companion tabs live on the right page and are rebuilt above).
-            // 1. Skill type tabs
+            // Left page already drawn! Update only the type tabs' classes
+            // in-place (companion tabs live on the right page and are rebuilt
+            // above; the cards themselves are repainted with the window below).
             const typeTabs = leftPageContainer.querySelectorAll(".backpack-tab");
             typeTabs.forEach((tab, idx) => {
                 if (idx === this._dndSelectedTypeIndex) {
@@ -2556,15 +2659,24 @@
                     tab.classList.remove("selected");
                 }
             });
+        }
 
-            // 2. Skill cards
-            const skillSlots = leftPageContainer.querySelectorAll(".item-slot");
-            skillSlots.forEach((slot) => {
-                const sIdx = parseInt(slot.getAttribute("data-skill-idx"), 10);
-                if (sIdx === this._dndSelectedIndex && this._dndActiveSection === "skills") {
-                    slot.classList.add("selected");
-                } else {
-                    slot.classList.remove("selected");
+        // The pockets themselves: only the cards the page can show are built,
+        // and their icons are drawn as they come into the window
+        // (UI/MenuVirtualList.js).
+        this._uiSkillGrid = leftPageContainer.querySelector("#skill-grid");
+        if (this._uiSkillGrid) {
+            window.MenuVirtualList.render(this._uiSkillGrid, {
+                key: leftPageKey,
+                count: list.length,
+                renderItem: (idx) => this._uiSkillCardHTML(actor, list[idx], idx, isLevelUp),
+                emptyHTML: `<div class="item-grid-empty">${T('SkillsMenu.empty.section')}</div>`,
+                onWindow: (win, from, to) => {
+                    for (let idx = from; idx < to; idx++) {
+                        const entry = list[idx];
+                        const item = isLevelUp ? (entry && entry.skill) : entry;
+                        if (item) this.drawUISkillIcon(item.iconIndex, `skill-canvas-${idx}`);
+                    }
                 }
             });
         }
@@ -2582,13 +2694,60 @@
             this.drawUISkillIcon(selectedItem.iconIndex, "inspect-canvas");
         }
 
-        // Scroll active item into view
-        if (this._dndActiveSection === "skills") {
-            const selectedElem = this._dndContainer.querySelector(".item-slot.selected");
-            if (selectedElem) {
-                selectedElem.scrollIntoView({ block: "nearest", behavior: "smooth" });
-            }
+        // Scroll active item into view, by index: the card being moved onto is
+        // only built once the window reaches it.
+        if (this._dndActiveSection === "skills" && this._uiSkillGrid) {
+            window.MenuVirtualList.scrollToIndex(this._uiSkillGrid, this._dndSelectedIndex);
         }
+    };
+
+    // One pocket card: rarity stripe, icon, name, and a meta line reading cost
+    // on the left and the stack chip on the right. What the chip says is
+    // whether the skill is synced.
+    Scene_Skill.prototype._uiSkillCardHTML = function (actor, entry, idx, isLevelUp) {
+        const item = isLevelUp ? (entry && entry.skill) : entry;
+        if (!item) return "";
+
+        const isLearned = isLevelUp ? entry.isLearned : true;
+        const isFocused = (this._dndActiveSection === "skills" && this._dndSelectedIndex === idx) ? "selected" : "";
+        const costText = this.getUISkillCostText(item);
+        const dimStyle = (isLevelUp && !isLearned) ? ' style="opacity:0.6;"' : '';
+
+        // The chip in the stack-count corner. On the ledger it is the level the
+        // skill is learned at; everywhere else it says whether the skill is in
+        // hand, and whether that is the player's to decide , the basic kit and
+        // anything worn are simply carried, and say so without offering a click.
+        let chipHTML = "";
+        if (isLevelUp) {
+            chipHTML = `<span class="item-slot-count">Lv ${entry.level}</span>`;
+        } else if (BattleLoadout.isAlwaysCarried(actor, item)) {
+            chipHTML = `<span class="item-slot-count">${T('SkillsMenu.loadout.always')}</span>`;
+        } else if (BattleLoadout.isActive(actor, item)) {
+            chipHTML = `<span class="item-slot-count" onclick="event.stopPropagation(); SceneManager._scene.clickUILoadout(${idx})">${T('SkillsMenu.loadout.carried')}</span>`;
+        }
+        // A skill out of sync wears no chip at all: the bare card says it, and
+        // the row stays as legible as any other.
+
+        // A skill that can be cast away from a fight is worth knowing at a
+        // glance, since it is the only kind this menu can actually use.
+        const fieldFlag = actor.isOccasionOk(item)
+            ? `<span class="skill-field-flag">${costText ? ' · ' : ''}${escapeHtml(T('SkillsMenu.tag.field'))}</span>` : "";
+
+        return `
+            <div class="item-slot ${isFocused}"${dimStyle} data-skill-idx="${idx}" onclick="SceneManager._scene.clickUISkill(${idx})" ondblclick="SceneManager._scene.dblClickUISkill(${idx})">
+                <div class="item-rarity-bar" style="background:${skillStripeColor(item)};"></div>
+                <div class="item-slot-icon">
+                    <canvas id="skill-canvas-${idx}" width="32" height="32" style="width:32px;height:32px;"></canvas>
+                </div>
+                <div class="item-slot-info">
+                    <div class="item-slot-name">${escapeHtml(item.name)}</div>
+                    <div class="item-slot-meta">
+                        <span>${escapeHtml(costText)}${fieldFlag}</span>
+                        ${chipHTML}
+                    </div>
+                </div>
+            </div>
+        `;
     };
 
     Scene_Skill.prototype.drawUISkillIcon = function (iconIndex, canvasId) {

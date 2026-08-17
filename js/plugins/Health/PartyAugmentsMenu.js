@@ -253,18 +253,27 @@
         });
       }
 
+      // The catalogue is the whole of ProstheticTypes.json, so the list is
+      // windowed: only the rows the page can show are ever built
+      // (UI/MenuVirtualList.js).
       const listBox = document.getElementById("aug-list-content");
       if (listBox) {
-        const savedScroll = listBox.scrollTop;
-        listBox.innerHTML = this.buildListHTML();
-        listBox.scrollTop = savedScroll;
-        listBox.querySelectorAll(".aug-row").forEach((row) => {
-          row.addEventListener("click", () => {
-            this._selectedIndex = parseInt(row.getAttribute("data-idx"), 10);
-            this._activeArea = "list";
-            SoundManager.playCursor();
-            this.refreshAugmentDOM();
-          });
+        const empty = this._tab === 0 ? T('Augments.ui.noneFitted') : T('Augments.ui.noCatalogue');
+        window.MenuVirtualList.render(listBox, {
+          key: `${this._tab}|${this._augBar ? this._augBar.query : ''}`,
+          count: this._rows.length,
+          renderItem: (idx) => this.buildRowHTML(this._rows[idx], idx),
+          emptyHTML: `<div style="opacity:0.6; padding:14px 10px; font-family:'Lora',serif">${empty}</div>`,
+          onWindow: (win) => {
+            win.querySelectorAll(".aug-row").forEach((row) => {
+              row.addEventListener("click", () => {
+                this._selectedIndex = parseInt(row.getAttribute("data-idx"), 10);
+                this._activeArea = "list";
+                SoundManager.playCursor();
+                this.refreshAugmentDOM();
+              });
+            });
+          }
         });
       }
 
@@ -272,30 +281,25 @@
       if (detail) detail.innerHTML = this.buildDetailHTML(this._rows[this._selectedIndex]);
     }
 
-    buildListHTML() {
-      if (!this._rows.length) {
-        const empty = this._tab === 0 ? T('Augments.ui.noneFitted') : T('Augments.ui.noCatalogue');
-        return `<div style="opacity:0.6; padding:14px 10px; font-family:'Lora',serif">${empty}</div>`;
-      }
-      return this._rows.map((row, idx) => {
-        const isSel = idx === this._selectedIndex;
-        const isFocused = isSel && this._activeArea === "list";
-        const name = augmentName(row.key, row.prosthetic);
-        const sub = this._tab === 0
-          ? T('Augments.ui.wornBy', { actor: row.actor.name(), part: row.partName })
-          : T('Augments.ui.type.' + (row.prosthetic.type || "biological"));
-        const flag = this._tab === 0 && row.damaged
-          ? `<span style="font-size:0.83rem; color:var(--text-text-alt-17)">${T('Augments.ui.damagedHost')}</span>`
-          : `<span style="font-size:0.878rem; opacity:0.7">${escapeHtml(priceLabel(row.prosthetic.cost))}</span>`;
-        return `
-          <div class="aug-row focusable ${isFocused ? 'focused' : ''}" data-idx="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'transparent'}">
-            <span style="display:flex; flex-direction:column">
-              <span style="font-family:'Lora',serif; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(name)}</span>
-              <span style="font-size:0.878rem; opacity:0.7">${escapeHtml(sub)}</span>
-            </span>
-            ${flag}
-          </div>`;
-      }).join("");
+    buildRowHTML(row, idx) {
+      if (!row) return "";
+      const isSel = idx === this._selectedIndex;
+      const isFocused = isSel && this._activeArea === "list";
+      const name = augmentName(row.key, row.prosthetic);
+      const sub = this._tab === 0
+        ? T('Augments.ui.wornBy', { actor: row.actor.name(), part: row.partName })
+        : T('Augments.ui.type.' + (row.prosthetic.type || "biological"));
+      const flag = this._tab === 0 && row.damaged
+        ? `<span style="font-size:0.83rem; color:var(--text-text-alt-17)">${T('Augments.ui.damagedHost')}</span>`
+        : `<span style="font-size:0.878rem; opacity:0.7">${escapeHtml(priceLabel(row.prosthetic.cost))}</span>`;
+      return `
+        <div class="aug-row focusable ${isFocused ? 'focused' : ''}" data-idx="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'transparent'}">
+          <span style="display:flex; flex-direction:column">
+            <span style="font-family:'Lora',serif; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}">${escapeHtml(name)}</span>
+            <span style="font-size:0.878rem; opacity:0.7">${escapeHtml(sub)}</span>
+          </span>
+          ${flag}
+        </div>`;
     }
 
     buildDetailHTML(row) {
@@ -462,9 +466,11 @@
       }
     }
 
+    // The row moved onto may not be in the DOM at all, so the viewport is moved
+    // by index rather than by element (UI/MenuVirtualList.js).
     scrollSelectedIntoView() {
-      const focused = document.querySelector("#aug-list-content .aug-row.focused");
-      if (focused) focused.scrollIntoView({ block: "nearest" });
+      const listBox = document.getElementById("aug-list-content");
+      if (listBox) window.MenuVirtualList.scrollToIndex(listBox, this._selectedIndex);
     }
   }
 

@@ -1981,7 +1981,7 @@
             // logical groups separated by a full-width rule, so the 3-column
             // pockets reads as coherent blocks instead of one long alphabet soup:
             //   character (self)  ·  party (companions)  ·  travel & rest  ·
-            //   activities  ·  records & standing  ·  network  ·  system.
+            //   activities  ·  records & standing  ·  system.
             // The character block is always first; the travel block leads with
             // whichever escape hatch applies to the current map ("Stop travel"
             // on the world map, "Return to map" on the procedural map).
@@ -2023,6 +2023,7 @@
                 ],
                 // Activities: things you do in the world
                 [
+                    this.generateUICommandItemHTML(T('MainMenu.cmd.tools'), "tools"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.cooking'), "cooking"),
                     // The workbench sits with the other benches, immediately
                     // ahead of the anvil it shares its recipes with.
@@ -2037,22 +2038,18 @@
                 [
                     this.generateUICommandItemHTML(T('MainMenu.cmd.questLog'), "quest_log"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.diary'), "diary"),
+                    this.generateUICommandItemHTML(T('MainMenu.cmd.hypernet'), "hypernet"),
                     this.generateUICommandItemHTML(emLabel("menuBestiary", T('MainMenu.cmd.bestiary')), "bestiary"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.cards'), "cards"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.archive'), "help"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.factions'), "factions"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.assets'), "assets"),
                 ],
-                // Network: online features
-                [
-                    this.generateUICommandItemHTML(T('MainMenu.cmd.hypernet'), "hypernet"),
-                    this.generateUICommandItemHTML(T('MainMenu.cmd.multiplayer'), "multiplayer"),
-                ],
                 // System: meta / out-of-world
                 [
                     this.generateUICommandItemHTML(T('MainMenu.cmd.save'), "save"),
+                    this.generateUICommandItemHTML(T('MainMenu.cmd.multiplayer'), "multiplayer"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.preferences'), "options"),
-                    this.generateUICommandItemHTML(T('MainMenu.cmd.tools'), "tools"),
                     this.generateUICommandItemHTML(emLabel("menuResign", T('MainMenu.cmd.resign')), "gameEnd"),
                 ],
             ];

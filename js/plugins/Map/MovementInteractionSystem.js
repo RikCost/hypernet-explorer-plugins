@@ -1958,7 +1958,7 @@
 
       if ($gameMap.mapId() === 636) {
         // Interactive TERRAIN FEATURES (house / inn / shop / skyscraper / dungeon
-        // doors, and SignPark camper recall / SignBus fast-travel) are used by facing
+        // doors, and SignPark vehicle recall / SignBus fast-travel) are used by facing
         // them, replacing the old tile-id -> common-event matching below. Runs
         // first so a feature is never dismantled or double-fired.
         if (isPlayer && window.ProceduralHouseSystem && window.ProceduralHouseSystem.tryProcMapInteract
@@ -2009,6 +2009,11 @@
         this.showSitOptions(character);
         return;
       }
+
+      // Casting a line over the side. The water menu below never opens for a
+      // crew afloat (it needs the faced tile to be impassable, and a hull passes
+      // over water freely), so fishing from a boat gets its own prompt first.
+      if (this.showBoatFishingOption(character)) return;
 
       if (Utils.isWaterTile(frontTile.x, frontTile.y) && !Utils.isBlockedWaterTile(frontTile.x, frontTile.y) && !Utils.hasEventOnTile(frontTile.x, frontTile.y) && !Utils.isWallTile(frontTile.x, frontTile.y) && !character.canPass(character.x, character.y, character.direction())) {
         if (character.isInVehicle && character.isInVehicle() && character.vehicle().isShip()) return;
@@ -2194,10 +2199,20 @@
 
   Scene_Map.prototype.showDiveOption = function (character) {
     const drinkLabel = drinkChoiceLabel();
-    const choices = [T('Movement.dive'), drinkLabel, T('Movement.cancel')];
+    // Same "Use boat" entry the ordinary water menu offers: the ocean prompt is
+    // what a player facing open sea actually gets, so the dinghy has to be
+    // launchable from here too (see canUseBoatOn for when it shows).
+    const canBoat = canUseBoatOn(character);
+    const choices = [T('Movement.dive')];
+    if (canBoat) choices.push(T('Movement.useBoat'));
+    choices.push(drinkLabel, T('Movement.cancel'));
     $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
     $gameMessage.setChoices(choices, 0, choices.length - 1);
     $gameMessage.setChoiceCallback((index) => {
+      if (canBoat && index === choices.indexOf(T('Movement.useBoat'))) {
+        useBoatOn(character);
+        return;
+      }
       if (index === choices.indexOf(drinkLabel)) {
         MovementSystem.performDrinkWater(character);
         return;
@@ -2350,8 +2365,11 @@
 
   // "Use boat" only shows for Player 1 on foot, while carrying item 167, and when
   // VehicleSystem considers the faced water tile navigable by the dinghy.
+  // Someone already in the water is excluded: boarding pulls the dinghy under a
+  // swimmer who is standing on the very tile it has to be dropped on.
   function canUseBoatOn(character) {
     if (character !== $gamePlayer) return false;
+    if (character._isSwimming) return false;
     if (character.isInVehicle && character.isInVehicle()) return false;
     if (!$dataItems[BOAT_ITEM_ID] || !$gameParty.hasItem($dataItems[BOAT_ITEM_ID])) return false;
     const vs = window.MergedVehicleSystem;
@@ -2364,6 +2382,36 @@
     const tile = facedWaterTile(character);
     window.MergedVehicleSystem.deployBoatAt(tile.x, tile.y, true);
   }
+
+  // Riding something that floats (the dinghy or a ship), as opposed to looking
+  // at the water from the bank. The airship is not a boat, it only flies over.
+  function isAfloat(character) {
+    if (!character.isInVehicle || !character.isInVehicle()) return false;
+    const vehicle = character.vehicle();
+    return !!vehicle && (vehicle.isBoat() || vehicle.isShip());
+  }
+
+  // Fishing over the side of a boat. Offered only when the hull faces open water
+  // and the party carries a rod; facing anything else (a bank, an event, a
+  // jetty) is left to the engine's own disembark handling on the same press.
+  Scene_Map.prototype.showBoatFishingOption = function (character) {
+    if (!isAfloat(character)) return false;
+    if (!Utils.hasFishingRod()) return false;
+    const tile = facedWaterTile(character);
+    if (!Utils.isWaterTile(tile.x, tile.y)) return false;
+    if (Utils.isBlockedWaterTile(tile.x, tile.y)) return false;
+    if (Utils.hasEventOnTile(tile.x, tile.y)) return false;
+
+    const choices = [T('Movement.fish'), T('Movement.cancel')];
+    $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      if (index === choices.indexOf(T('Movement.fish'))) {
+        MovementSystem.performFishing(character);
+      }
+    });
+    return true;
+  };
 
   Scene_Map.prototype.showSwimFishOptions = function (character) {
     const currentBiome = $gameSystem._procGenData ? $gameSystem._procGenData.currentBiome : null;

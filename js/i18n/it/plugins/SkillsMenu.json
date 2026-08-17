@@ -91,7 +91,11 @@
     "benched": "Desincronizzata",
     "always": "Sempre",
     "hint": "Shift sincronizza o desincronizza l’abilità selezionata",
-    "full": "Le {group} sincronizzate sono al completo ({max}). Desincronizzane una prima."
+    "full": "Le {group} sincronizzate sono al completo ({max}). Desincronizzane una prima.",
+    "best": "Migliori",
+    "random": "Casuali",
+    "bestApplied": "Sincronizzate le {n} abilità più utili.",
+    "randomApplied": "Sincronizzate {n} abilità casuali."
   },
   "tag": {
     "field": "Campo"

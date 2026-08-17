@@ -317,9 +317,6 @@
 
         terminate() {
             if (this._bestiaryBar) { this._bestiaryBar.dispose(); this._bestiaryBar = null; }
-            if (this._intersectionObserver) {
-                this._intersectionObserver.disconnect();
-            }
             this.cleanupBestiary3D();
             const container = document.getElementById("bestiary-container");
             if (container) container.remove();
@@ -571,14 +568,16 @@
         }
 
         // Switch the left-page pockets between Earth, petrodemons and alien
-        // species. Forces the cached list DOM to rebuild for the newly active tab.
+        // species.
         switchBestiaryPageTab(tab) {
             if (tab === this._pageTab) return;
             this._pageTab = tab;
             this._selectedIndex = 0;
             this.buildUIBestiaryData();
+            // A different page is a different list: the window starts at its top
+            // again, and its row measurements are dropped with the key.
             const vp = document.getElementById("bestiary-list-viewport");
-            if (vp) vp.innerHTML = "";
+            if (vp) vp.scrollTop = 0;
             if (window.SoundManager) SoundManager.playCursor();
             this.refreshUIBestiary();
         }
@@ -667,75 +666,30 @@
                 tabEl.style.color = active ? "#f0e0c0" : "#5e2f17";
             });
 
-            // 2. Build the left scrollable pockets cards once
+            // 2. The left pockets, windowed: a codex with every creature ever
+            // met in it builds only the cards the page can show, and draws only
+            // their sprites (UI/MenuVirtualList.js). That windowing is what used
+            // to need an IntersectionObserver over a full list of canvases.
             const listViewport = document.getElementById("bestiary-list-viewport");
-            if (listViewport && listViewport.children.length === 0) {
-                let leftListHTML = "";
-                if (this._monsterList.length === 0) {
-                    leftListHTML = `
-                        <div class="bestiary-list-empty">
-                            ${T('Bestiary.noMonstersEncountered')}
-                        </div>
-                    `;
-                } else {
-
-
+            if (listViewport) {
+                if (this._monsterList.length > 0) {
                     this._selectedIndex = Math.max(0, Math.min(this._monsterList.length - 1, this._selectedIndex));
-
-                    this._monsterList.forEach((mon, idx) => {
-                        const levelBadge = mon.noteData.level ? `LV: ${mon.noteData.level}` : "";
-                        const archetype = mon.noteData.archetype ? `| ${mon.noteData.archetype}` : "";
-
-                        leftListHTML += `
-                            <div class="monster-card" id="monster-card-${idx}" data-idx="${idx}">
-                                <div class="monster-sprite-frame">
-                                    <canvas class="monster-sprite-canvas" id="bestiary-canvas-${idx}" data-idx="${idx}" width="32" height="32"></canvas>
-                                </div>
-                                <div class="monster-meta">
-                                    <span class="monster-name">${mon.name}</span>
-                                    <span class="monster-subtitle">${levelBadge} ${archetype}</span>
-                                </div>
-                            </div>
-                        `;
-                    });
                 }
-
-                listViewport.innerHTML = leftListHTML;
-
-                // Bind card click handlers
-                const cards = listViewport.querySelectorAll(".monster-card");
-                cards.forEach(card => {
-                    card.addEventListener("click", () => {
-                        const idx = parseInt(card.getAttribute("data-idx"));
-                        this._selectedIndex = idx;
-                        this._activeArea = 'list';
-                        SoundManager.playOk();
-                        this.refreshUIBestiary();
-                    });
-                });
-
-                // Set up Intersection Observer for scroll-based dynamic canvas loading
-                this.setupUIBestiaryIntersectionObserver();
-            }
-
-            // 3. Update left list card active classes dynamically (no DOM recreation)
-            if (this._monsterList.length > 0) {
-                this._monsterList.forEach((mon, idx) => {
-                    const card = document.getElementById(`monster-card-${idx}`);
-                    if (card) {
-                        const isSelected = idx === this._selectedIndex;
-                        const isFocused = isSelected && this._activeArea === 'list';
-
-                        if (isSelected) {
-                            card.classList.add("selected");
-                        } else {
-                            card.classList.remove("selected");
-                        }
-                        if (isFocused) {
-                            card.classList.add("focused");
-                        } else {
-                            card.classList.remove("focused");
-                        }
+                window.MenuVirtualList.render(listViewport, {
+                    key: `${this._pageTab}|${this._bestiaryBar ? this._bestiaryBar.query : ''}`,
+                    count: this._monsterList.length,
+                    renderItem: idx => this.bestiaryCardHTML(this._monsterList[idx], idx),
+                    emptyHTML: `<div class="bestiary-list-empty">${T('Bestiary.noMonstersEncountered')}</div>`,
+                    onWindow: (win, from, to) => {
+                        win.querySelectorAll(".monster-card").forEach(card => {
+                            card.addEventListener("click", () => {
+                                this._selectedIndex = parseInt(card.getAttribute("data-idx"));
+                                this._activeArea = 'list';
+                                SoundManager.playOk();
+                                this.refreshUIBestiary();
+                            });
+                        });
+                        for (let idx = from; idx < to; idx++) this.drawUIBestiaryCanvas(idx);
                     }
                 });
             }
@@ -1137,34 +1091,25 @@
             }
         }
 
-        // =============================================================================
-        // Dynamic Intersection Observer Scroll Loader
-        // =============================================================================
-        setupUIBestiaryIntersectionObserver() {
-            if (this._intersectionObserver) {
-                this._intersectionObserver.disconnect();
-            }
-
-            // Create IntersectionObserver to dynamically draw canvases only when visible in viewport
-            this._intersectionObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const canvas = entry.target;
-                        const idx = parseInt(canvas.getAttribute("data-idx"));
-                        this.drawUIBestiaryCanvas(idx);
-                    }
-                });
-            }, {
-                root: document.getElementById("bestiary-list-viewport"),
-                rootMargin: "50px", // Preload slightly before scrolling into viewport
-                threshold: 0.05
-            });
-
-            // Observe all card canvases
-            const canvases = document.querySelectorAll(".monster-sprite-canvas");
-            canvases.forEach(canvas => {
-                this._intersectionObserver.observe(canvas);
-            });
+        // One pocket card: the creature's sprite frame, its name, and the level
+        // and archetype it was catalogued with.
+        bestiaryCardHTML(mon, idx) {
+            if (!mon) return "";
+            const levelBadge = mon.noteData.level ? `LV: ${mon.noteData.level}` : "";
+            const archetype = mon.noteData.archetype ? `| ${mon.noteData.archetype}` : "";
+            const isSelected = idx === this._selectedIndex;
+            const isFocused = isSelected && this._activeArea === 'list';
+            return `
+                <div class="monster-card${isSelected ? " selected" : ""}${isFocused ? " focused" : ""}" id="monster-card-${idx}" data-idx="${idx}">
+                    <div class="monster-sprite-frame">
+                        <canvas class="monster-sprite-canvas" id="bestiary-canvas-${idx}" data-idx="${idx}" width="32" height="32"></canvas>
+                    </div>
+                    <div class="monster-meta">
+                        <span class="monster-name">${mon.name}</span>
+                        <span class="monster-subtitle">${levelBadge} ${archetype}</span>
+                    </div>
+                </div>
+            `;
         }
 
         // The Lexicon portrait when no 3D model stands in for the creature:
@@ -1289,21 +1234,19 @@
                     SoundManager.playCursor();
                     this.refreshUIBestiary();
 
-                    const container = document.getElementById("bestiary-container");
-                    if (container) {
-                        const focused = container.querySelector(".monster-card.focused");
-                        if (focused) focused.scrollIntoView({ block: "nearest" });
-                    }
+                    // By index: the card moved onto is built only once the
+                    // window reaches it (UI/MenuVirtualList.js).
+                    const viewport = document.getElementById("bestiary-list-viewport");
+                    if (viewport) window.MenuVirtualList.scrollToIndex(viewport, this._selectedIndex);
                 } else if (Input.isRepeated('up')) {
                     this._selectedIndex = (this._selectedIndex - 1 + this._monsterList.length) % this._monsterList.length;
                     SoundManager.playCursor();
                     this.refreshUIBestiary();
 
-                    const container = document.getElementById("bestiary-container");
-                    if (container) {
-                        const focused = container.querySelector(".monster-card.focused");
-                        if (focused) focused.scrollIntoView({ block: "nearest" });
-                    }
+                    // By index: the card moved onto is built only once the
+                    // window reaches it (UI/MenuVirtualList.js).
+                    const viewport = document.getElementById("bestiary-list-viewport");
+                    if (viewport) window.MenuVirtualList.scrollToIndex(viewport, this._selectedIndex);
                 } else if (Input.isRepeated('left')) {
                     this._activeArea = 'tabs';
                     this._activeTab = 3; // Focus rightmost tab (Extraction) on left page

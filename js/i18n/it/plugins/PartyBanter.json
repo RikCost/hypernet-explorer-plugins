@@ -1,0 +1,2318 @@
+{
+  "said": "{name}: {line}",
+  "script": {
+    "general": [
+      [
+        "Dimmi la verità. Lo sai dove stiamo andando?",
+        "So dove siamo stati. Qualcosa varrà pure."
+      ],
+      [
+        "Camminiamo da prima che facesse luce.",
+        "E cammineremo anche dopo il buio. Questi sono i patti."
+      ],
+      [
+        "Se finisce male, voglio che resti scritto che l'avevo detto.",
+        "È scritto. Lo dici ogni settimana."
+      ],
+      [
+        "Ci pensi mai a tornare a casa?",
+        "Casa è dove sono gli zaini.",
+        "È una cosa molto triste con cui essere in pace."
+      ],
+      [
+        "Sei stato zitto tutto il giorno.",
+        "Stavo pensando. Capita."
+      ],
+      [
+        "Ripetimi perché abbiamo preso questa strada.",
+        "Perché me l'hai chiesto e io ho detto di sì. Che sciocco."
+      ],
+      [
+        "Da solo non sarei arrivato fin qui.",
+        "Nemmeno io. Non montarti la testa."
+      ],
+      [
+        "Come va quella tua ferita?",
+        "Ha smesso di sanguinare, che è già qualcosa."
+      ],
+      [
+        "Se ci pagano, il primo giro lo offro io.",
+        "L'hai detto negli ultimi tre paesi."
+      ],
+      [
+        "Ti fidi della gente che abbiamo incontrato là dietro?",
+        "Non mi fido di nessuno che non riuscirei a seminare."
+      ],
+      [
+        "Porti troppo peso. Dammene metà.",
+        "Ce la faccio. Richiedimelo in salita."
+      ],
+      [
+        "Uno di questi giorni dovremmo fermarci per una settimana intera.",
+        "Una settimana. Senti come parliamo."
+      ],
+      [
+        "Cosa facevi, prima di tutto questo?",
+        "Qualcosa di più tranquillo. Mi manca meno di quanto dovrebbe."
+      ],
+      [
+        "Quanti soldi abbiamo davvero?",
+        "{gold} monete d'oro, e metà sono già impegnate.",
+        "Quindi la risposta è no."
+      ],
+      [
+        "Mettiamo che domani troviamo un posto decente. Ti fermeresti?",
+        "Chiedimelo domani. Stasera sono troppo stanco per essere sincero."
+      ],
+      [
+        "Chi comanda qui, esattamente?",
+        "{leader} cammina davanti. Non è proprio la stessa cosa."
+      ],
+      [
+        "Ho sognato che stavamo ancora camminando.",
+        "Quello non è un sogno, è un ricordo arrivato in anticipo."
+      ],
+      [
+        "Ho fatto un sogno su questo posto. Non chiedere.",
+        "Sogni sempre le cose sbagliate.",
+        "Uno di questi giorni sognerò quella giusta e mi dovrai delle scuse."
+      ],
+      [
+        "Credi che qualcuno ci stia cercando?",
+        "Qualcuno lo fa sempre. È il chi che cambia."
+      ],
+      [
+        "Dovremmo metterci d'accordo su cosa fare se va storta.",
+        "Scappiamo. Quello è il piano. Non ci ha mai delusi."
+      ],
+      [
+        "Ho contato i giorni.",
+        "Quanti?",
+        "Ho perso il conto. È proprio questo che intendo."
+      ],
+      [
+        "Nessuno mi aveva avvertito che le parti noiose sarebbero state le peggiori.",
+        "Nessuno mi aveva avvertito di niente."
+      ],
+      [
+        "I tuoi stivali sono a pezzi.",
+        "I miei stivali sono a pezzi dalla primavera. Non gliel'ha detto nessuno."
+      ],
+      [
+        "Continuo ad aspettarmi che arrivi qualcuno a prendere in mano la situazione.",
+        "Quello era il posto per cui non ha fatto domanda nessuno."
+      ],
+      [
+        "Qual è la prima cosa che compri, se mai ne usciamo ricchi?",
+        "Il silenzio. Una stanza intera piena di silenzio."
+      ],
+      [
+        "Ci stiamo prendendo la mano.",
+        "Ci stiamo abituando. Non confondere le due cose."
+      ],
+      [
+        "Se crollo, non caricarmi in spalla. Prendi lo zaino e vai.",
+        "Ti porterò e mi lamenterò per tutto il tragitto."
+      ],
+      [
+        "Ho smesso di chiedermi cosa ci sia oltre la prossima collina.",
+        "Bene. La risposta è stata deludente quattro volte di fila."
+      ],
+      [
+        "Dimmi qualcosa di interessante. Qualsiasi cosa.",
+        "In certe lingue un gruppo di corvi si chiama \"un omicidio\".",
+        "Mi pento di aver chiesto."
+      ],
+      [
+        "Siamo noi i buoni, in questa storia?",
+        "Siamo quelli che camminano ancora. Per il resto chiedi a uno storico."
+      ],
+      [
+        "Ti ricordi il nome di quel paese? Quello con le campane?",
+        "No. Ma ricordo le campane."
+      ],
+      [
+        "Voglio un giorno in cui non succeda proprio niente.",
+        "Saresti insopportabile già a mezzogiorno."
+      ],
+      [
+        "Non parliamo sul serio da settimane.",
+        "Stiamo parlando adesso.",
+        "Questo non è parlare. Questo è camminare facendo rumore."
+      ],
+      [
+        "Cosa staresti facendo adesso, se niente di tutto questo fosse successo?",
+        "Qualcosa con dentro meno colline.",
+        "Quella non è una risposta. È una lamentela col cappello."
+      ],
+      [
+        "Non mi hai fatto una sola domanda su di me in un mese.",
+        "Davo per scontato che l'avresti detto quando volevi.",
+        "O sei molto premuroso o sei molto pigro."
+      ],
+      [
+        "Chi ti ha insegnato a combattere così?",
+        "Nessuno. È proprio questo il problema."
+      ],
+      [
+        "Tengo una lista di tutto quello che ci devono.",
+        "E chi ce lo deve?",
+        "Sì, il punto debole della lista è quello."
+      ],
+      [
+        "Credi che siamo cambiati?",
+        "Tu sei diventato più silenzioso e io sono peggiorato. Quindi sì."
+      ],
+      [
+        "Se potessi riprenderti una sola cosa di tutto questo, quale sarebbe?",
+        "Chiedimi qualcosa di più facile. Chiedimi del tempo."
+      ],
+      [
+        "Qui fuori nessuno sa i nostri nomi.",
+        "È stata la cosa migliore dell'ultimo anno."
+      ],
+      [
+        "Finiremo i soldi prima di finire la strada.",
+        "Siamo in quello stato dal giorno in cui ci siamo conosciuti. Cammina."
+      ],
+      [
+        "Occhio a quello. È gentile, e la gentilezza costa cara.",
+        "Annotato. E se fosse gentile e basta?",
+        "Allora mi sarò sbagliato due volte quest'anno."
+      ],
+      [
+        "Come fai a dormire, qui fuori, con tutto questo?",
+        "Male, e poi tutto in una volta.",
+        "È la cosa più sincera che tu mi abbia mai detto."
+      ],
+      [
+        "Decidiamo adesso chi porta cosa se dobbiamo scappare.",
+        "Tu prendi i soldi, io prendo l'acqua. La tenda non la prende nessuno."
+      ],
+      [
+        "Mettiamo che la finiamo. Che finisca davvero. E poi?",
+        "E poi scoprirò se sono capace di vivere giorni normali."
+      ],
+      [
+        "Non credo che nessuno di noi due lo faccia più per i soldi.",
+        "Parla per te. Io lo faccio esclusivamente per i soldi.",
+        "Potresti almeno fingere di pensarci prima di rispondere."
+      ],
+      [
+        "Ogni paese che attraversiamo è la vita intera di qualcuno.",
+        "E noi siamo due estranei che ci passano in mezzo. Cerca di essere educato."
+      ],
+      [
+        "C'è una cosa che avrei dovuto dirti tempo fa.",
+        "Allora dimmela per strada. Preferisco ascoltarla in movimento."
+      ]
+    ],
+    "battered": [
+      [
+        "Qui nessuno è in condizione di combattere alcunché.",
+        "Allora non combattiamo. Ci sediamo e ci rimettiamo in sesto."
+      ],
+      [
+        "Guardaci. Tutti e tre, se stiamo contando.",
+        "Preferirei non essere contato adesso."
+      ],
+      [
+        "Siamo a un brutto pomeriggio dall'essere sepolti in un campo.",
+        "Allora facciamoci un buon pomeriggio. Per una volta."
+      ],
+      [
+        "Sono tutti feriti. Nessuno di noi finge più il contrario.",
+        "È la prima cosa sincera detta oggi."
+      ],
+      [
+        "Se ci arriva addosso qualcosa adesso, ci prende.",
+        "Allora ci fermiamo. Qui. Costi quel che costi in ore."
+      ],
+      [
+        "Ditelo. Che qualcuno lo dica.",
+        "Siamo messi male e dobbiamo fermarci.",
+        "Grazie."
+      ]
+    ],
+    "needAll": [
+      [
+        "Affamati, sporchi e nessuno ha dormito. Mi sfugge qualcosa?",
+        "Ti sfugge che siamo anche al verde."
+      ],
+      [
+        "Quando ha smesso di essere una spedizione ed è diventata un calvario?",
+        "Due paesi fa. Nessuno voleva dirlo."
+      ],
+      [
+        "Stiamo mandando avanti tutto il gruppo con niente.",
+        "Con niente la gente dura più di quanto pensi. Non molto di più."
+      ],
+      [
+        "Voglio un bagno, un letto e un pasto, nell'ordine in cui arrivano.",
+        "Scegline uno. Il budget è quello."
+      ],
+      [
+        "Non siamo in condizione di incontrare nessuno.",
+        "Allora non incontriamo nessuno. Troviamo un tetto e ci stendiamo."
+      ],
+      [
+        "È così che spariscono le compagnie, sai. Non in battaglia.",
+        "Lo so. Trovaci un posto."
+      ]
+    ],
+    "need": {
+      "hunger": [
+        [
+          "Quand'è stata l'ultima volta che abbiamo mangiato come si deve?",
+          "Definisci come si deve.",
+          "Quella è una risposta, e la detesto."
+        ],
+        [
+          "Il mio stomaco ha cominciato a prendere decisioni al posto mio.",
+          "Allora lascia che scelga lui il prossimo paese."
+        ],
+        [
+          "Adesso mangerei qualcosa di cui non so nemmeno il nome.",
+          "L'hai già fatto. Due volte."
+        ],
+        [
+          "È rimasto qualcosa nello zaino?",
+          "Nello zaino c'è qualcosa. Se sia cibo è materia opinabile."
+        ]
+      ],
+      "sleep": [
+        [
+          "Non dormo come si deve da giorni.",
+          "Nessuno di noi. Sei solo tu quello che lo dice."
+        ],
+        [
+          "Potrei dormire in piedi, e credo di averlo fatto.",
+          "L'hai fatto. Sei andato addosso a uno steccato."
+        ],
+        [
+          "Svegliami al prossimo paese.",
+          "Sei tu quello che cammina davanti."
+        ],
+        [
+          "Parlami. Se smetto di sentire una voce, crollo.",
+          "Allora parlo. Di qualunque cosa. Tu non cadere."
+        ]
+      ],
+      "hygiene": [
+        [
+          "Non metterti sottovento rispetto a me.",
+          "Non mi metto sopravvento rispetto a te dalla palude in poi."
+        ],
+        [
+          "Puzziamo come qualcosa che è morto sulla strada dietro di noi.",
+          "Qualcosa è morto davvero. Ci siamo passati sopra."
+        ],
+        [
+          "Voglio dell'acqua. Non da bere. Per starci dentro.",
+          "Al prossimo fiume che attraversiamo ci fermiamo. Promesso."
+        ],
+        [
+          "Conciati così, in nessun paese ci fanno entrare.",
+          "Allora ci laviamo al prossimo ruscello, come animali con un minimo di dignità."
+        ]
+      ],
+      "social": [
+        [
+          "Da una settimana non parlo con nessuno tranne te.",
+          "E come sta andando?",
+          "Alterne fortune."
+        ],
+        [
+          "Dovremmo andare in un posto con della gente dentro.",
+          "La gente arriva con prezzi e domande."
+        ],
+        [
+          "Mi manca il rumore di una stanza piena di sconosciuti.",
+          "Cambierai idea alla prima taverna."
+        ],
+        [
+          "Di' qualcosa. Qualsiasi cosa. Mi serve una voce che non sia il vento.",
+          "Hai scelto la persona sbagliata per farti compagnia, ma ci provo."
+        ]
+      ],
+      "leisure": [
+        [
+          "Ultimamente tutto quello che facciamo è camminare o sanguinare.",
+          "C'è anche portare pesi. Ti sei dimenticato di portare pesi."
+        ],
+        [
+          "Voglio giocare a qualcosa. Carte, dadi, qualsiasi cosa con regole che non ti ammazzano.",
+          "Trovami un tavolo e perderò contro di te onestamente."
+        ],
+        [
+          "Quando abbiamo smesso di divertirci in tutto questo?",
+          "Verso la terza imboscata. È arrivato di soppiatto."
+        ],
+        [
+          "Una sera. Una sera in cui non ci prepariamo per qualcosa.",
+          "Ti prendo in parola."
+        ]
+      ]
+    },
+    "biome": {
+      "forest": [
+        [
+          "Qui dentro niente fa il rumore che dovrebbe.",
+          "Sono gli alberi. Smussano tutto, passi compresi."
+        ],
+        [
+          "Siamo passati due volte davanti a quello stesso tronco storto.",
+          "Gli alberi si ripetono. È tutto il loro trucco."
+        ],
+        [
+          "Non mi sono mai fidato di un posto dove non vedi l'orizzonte.",
+          "L'orizzonte è sopravvalutato. È quello all'altezza del ginocchio che ti frega."
+        ],
+        [
+          "Qualcosa ci segue nel sottobosco.",
+          "Probabile. Cammina e non sembrare interessante."
+        ],
+        [
+          "Qui dentro sa di verde. Verde e vecchio.",
+          "È il marcio che fa il suo lavoro. L'odore è lo stesso in ogni caso."
+        ]
+      ],
+      "plains": [
+        [
+          "Qui fuori non c'è dove nascondersi.",
+          "E nemmeno per gli altri. Lo scambio mi sta bene."
+        ],
+        [
+          "Questa è terra coltivata. Qualcuno la lavora.",
+          "Allora qualcuno vorrà sapere chi ci sta camminando in mezzo."
+        ],
+        [
+          "Vedo per un'ora di cammino in ogni direzione e non c'è niente.",
+          "Goditela. Non durerà."
+        ],
+        [
+          "L'erba è schiacciata lungo quella linea. Un carro, direi.",
+          "Allora c'è una strada, e dove c'è una strada c'è un letto."
+        ]
+      ],
+      "desert": [
+        [
+          "Il caldo mi sta facendo qualcosa al giudizio.",
+          "Il tuo giudizio se la passava male già prima del caldo."
+        ],
+        [
+          "Avremmo dovuto riempire tutto all'ultima acqua.",
+          "Avremmo dovuto. Dillo una volta e poi basta."
+        ],
+        [
+          "Qui fuori non c'è niente. Nemmeno un uccello.",
+          "Qui fuori qualcosa mangia. Solo che non lo fa di giorno."
+        ],
+        [
+          "Ogni pietra è identica alla precedente.",
+          "Allora cammina verso il sole basso e smettila di leggere le pietre."
+        ]
+      ],
+      "ice": [
+        [
+          "Non sento più la punta delle dita.",
+          "Allora continua a muoverle. L'intorpidimento è l'avviso, non il danno."
+        ],
+        [
+          "La neve copre tutto. Tracce, buche, qualunque cosa ci sia sotto la crosta.",
+          "Quindi cammina dove cammino io e non improvvisare."
+        ],
+        [
+          "È bellissimo e sta cercando di ucciderci.",
+          "Quasi tutte le cose bellissime riescono a fare entrambe."
+        ],
+        [
+          "Quanto può camminare una persona qui dentro?",
+          "Più di quanto creda. Una volta. Mai due."
+        ]
+      ],
+      "mountain": [
+        [
+          "Mi sento il cuore nelle orecchie.",
+          "È la quota. Passa lei, o passi tu."
+        ],
+        [
+          "Un passo sbagliato qui è tutta la storia.",
+          "Allora falli giusti. Piano."
+        ],
+        [
+          "Guarda che salto. Guardalo e basta.",
+          "L'ho guardato. Adesso girati verso la roccia e vai avanti."
+        ],
+        [
+          "Qualunque cosa ci sia oltre questo crinale, spero valga la salita.",
+          "È un altro crinale. È sempre un altro crinale."
+        ]
+      ],
+      "water": [
+        [
+          "Non mi piace l'acqua di cui non vedo il fondo.",
+          "Allora non guardare giù. Problema risolto."
+        ],
+        [
+          "Gli zaini non ci ringrazieranno per questa traversata.",
+          "Nemmeno gli stivali. Tienili sopra la testa."
+        ],
+        [
+          "Sale nell'aria. Siamo vicini a qualcosa.",
+          "Vicini a un posto con un porto, e i porti hanno locande."
+        ],
+        [
+          "Là fuori si è mosso qualcosa. Grosso.",
+          "Allora andiamo lungo la riva, non dentro."
+        ]
+      ],
+      "wetland": [
+        [
+          "Ogni passo qui mi porta via qualcosa.",
+          "Il terreno beve. Alza le ginocchia."
+        ],
+        [
+          "Ho gli stivali pieni di palude.",
+          "I tuoi stivali erano pieni di palude un'ora fa. Questa è la palude che fa conoscenza."
+        ],
+        [
+          "L'aria qui dentro è così densa che la mastichi.",
+          "Respira attraverso la manica e non bere niente di fermo."
+        ],
+        [
+          "Terra da febbri, questa.",
+          "Allora la attraversiamo in fretta e qui non ci dormiamo."
+        ]
+      ],
+      "underground": [
+        [
+          "Abbassa la voce. Quaggiù il suono viaggia in modo strano.",
+          "Viaggia benissimo. Il problema è quello."
+        ],
+        [
+          "Qualcuno ha scavato tutto questo. È quello che mi inquieta.",
+          "Qualcuno ha scavato e poi qualcuno ha smesso di scavare. Chiediti perché."
+        ],
+        [
+          "Ho perso completamente il senso di dove sia l'uscita.",
+          "Segui la corrente d'aria. L'aria la strada la sa."
+        ],
+        [
+          "Il buio quaggiù è un buio diverso.",
+          "È lo stesso buio. Ce n'è solo di più e non arriva nessun mattino."
+        ],
+        [
+          "Guarda il soffitto quanto il pavimento.",
+          "Adesso li guardo entrambi e non mi piace nessuno dei due."
+        ]
+      ],
+      "ruins": [
+        [
+          "Qui viveva gente. Ci viveva davvero.",
+          "E poi non più. È quella la parte che vale la pena studiare."
+        ],
+        [
+          "Qualcuno ha portato via le porte. Tutte quante.",
+          "Le porte valgono soldi. Il dolore no."
+        ],
+        [
+          "Questo era il mondo intero di qualcuno.",
+          "E adesso è un posto che attraversiamo mentre andiamo altrove."
+        ],
+        [
+          "Non prendere niente da una tomba. Dico sul serio.",
+          "Non avevo intenzione.",
+          "Ci stavi pensando. Ti ho visto pensarci."
+        ]
+      ],
+      "urban": [
+        [
+          "Troppi occhi qui.",
+          "Gli occhi vanno bene. Il problema sono quelli che ti seguono nella via dopo."
+        ],
+        [
+          "In un posto così tutto costa. Anche stare fermi.",
+          "Allora stiamo fermi da qualche parte dove costa meno."
+        ],
+        [
+          "Mi ero dimenticato il suono di una folla.",
+          "Dagli un'ora. Ne avrai la nausea."
+        ],
+        [
+          "Resta dove posso vederti. Le città mangiano la gente.",
+          "Le città mangiano chi sembra perso. Quindi smettila di guardare in su."
+        ]
+      ],
+      "road": [
+        [
+          "Una strada vera. Mi verrebbe da piangere.",
+          "Non farlo. Per stasera sarà di nuovo fango."
+        ],
+        [
+          "Strade vuol dire traffico, e traffico vuol dire qualcuno a cui chiedere.",
+          "E qualcuno che chiede a noi. Tieni le risposte corte."
+        ],
+        [
+          "Qualcuno la mantiene. Di recente.",
+          "Allora qualcuno riscuote per farlo. Tieni pronta una storia."
+        ],
+        [
+          "Oggi abbiamo fatto più strada che negli ultimi tre giorni messi insieme.",
+          "Dillo piano. La strada ti sente."
+        ]
+      ],
+      "industrial": [
+        [
+          "Qualunque cosa facessero qui, ne facevano moltissima.",
+          "E poi se ne sono andati di fretta. Guarda i banchi da lavoro."
+        ],
+        [
+          "L'aria sa di metallo.",
+          "Non leccare niente e andrà tutto bene."
+        ],
+        [
+          "Non mi fido di un pavimento con tutti quei macchinari sotto.",
+          "Allora cammina rasente i muri."
+        ],
+        [
+          "Potrebbe esserci ancora qualcuno che manda avanti tutto questo.",
+          "Qualcuno o qualcosa. Parti dal presupposto peggiore."
+        ]
+      ],
+      "interior": [
+        [
+          "Fa uno strano effetto stare al chiuso dopo tanto tempo fuori.",
+          "Dagli dieci minuti. Poi ti farà strano uscire."
+        ],
+        [
+          "Qualcuno tiene in ordine questo posto. Guarda come sono puliti i davanzali.",
+          "Quindi ci comportiamo bene, e quella chiusa a chiave non la apriamo."
+        ],
+        [
+          "I soffitti bassi mi mettono ansia.",
+          "Tutto ti mette ansia. Almeno qui si sta al caldo."
+        ],
+        [
+          "Non sederti su niente finché non sappiamo di chi è.",
+          "Troppo tardi, ed è molto comodo."
+        ]
+      ],
+      "otherworldly": [
+        [
+          "Non credo che dovremmo essere qui.",
+          "Non credo che qui dovrebbe essere qui."
+        ],
+        [
+          "La luce arriva dalla direzione sbagliata.",
+          "La luce non arriva da nessuna direzione. Smetti di guardarla."
+        ],
+        [
+          "Gli occhi mi scivolano via dai bordi delle cose.",
+          "Allora guardati gli stivali e continua a camminare."
+        ],
+        [
+          "Se comincio a dire cose strane, colpiscimi.",
+          "Volentieri. E se lo faccio io?",
+          "Lo stai già facendo. Ho lasciato correre."
+        ],
+        [
+          "Qui niente ha un'ombra.",
+          "L'ho notato un'ora fa. Speravo che tu non lo notassi."
+        ]
+      ]
+    },
+    "recent": {
+      "battle_won": [
+        [
+          "È stata più tirata dell'ultima.",
+          "Sono tutte più tirate dell'ultima. È così che funziona."
+        ],
+        [
+          "{ev_enemies}. Me li vedrò davanti per un pezzo.",
+          "Allora guarda me. È finita."
+        ],
+        [
+          "{ev_gold}, dopo tutto quello.",
+          "Ci compri il pane. E il pane non è poco."
+        ],
+        [
+          "Hai visto cosa ha fatto prima di cadere?",
+          "Ho visto. Preferirei non ripassarlo mentre siamo ancora qui fuori."
+        ]
+      ],
+      "battle_boss": [
+        [
+          "{ev_name} è morto. Ancora non ci credo del tutto.",
+          "Ci crederai domattina. Adesso cammina."
+        ],
+        [
+          "Livello {ev_level}, quella cosa. E noi siamo ancora in piedi.",
+          "A malapena. Non lasciamo che ci faccia sentire coraggiosi."
+        ],
+        [
+          "Qualcuno teneva {ev_name} là sotto di proposito.",
+          "Allora qualcuno si accorgerà che non c'è più."
+        ]
+      ],
+      "battle_lost": [
+        [
+          "Non avremmo dovuto accettare quello scontro.",
+          "No. Non avremmo dovuto. L'hai detto. Adesso lascia stare."
+        ],
+        [
+          "{ev_enemies} ci hanno fatti a pezzi.",
+          "E siamo ancora qui a dirlo. Per un soffio."
+        ],
+        [
+          "Continuo a ripensarci.",
+          "Ripensaci dopo. Ad alta voce, con un bicchiere in mano. Non adesso."
+        ]
+      ],
+      "battle_fled": [
+        [
+          "Scappare è stata la scelta giusta.",
+          "Di solito lo è. Non sembra mai così."
+        ],
+        [
+          "Abbiamo lasciato qualcosa a {ev_place}.",
+          "Non abbiamo lasciato niente che valesse quanto ci sarebbe costato."
+        ],
+        [
+          "Non mi diverte scappare.",
+          "Non diverte nessuno. È per questo che è una decisione."
+        ]
+      ],
+      "battle_arena": [
+        [
+          "Una serie di {ev_streak}. La gente urlava i nostri nomi.",
+          "La gente urlava. I nomi erano approssimativi."
+        ],
+        [
+          "Potremmo camparci, là dentro.",
+          "Potremmo camparci una vita breve e molto applaudita."
+        ]
+      ],
+      "party_join": [
+        [
+          "Che ne pensi di {ev_name}, sinceramente?",
+          "Chiedimelo fra un mese. Nella prima settimana sono tutti simpatici."
+        ],
+        [
+          "{ev_name} è arrivato al livello {ev_level}. Non è poco.",
+          "Non sono i livelli a preoccuparmi."
+        ],
+        [
+          "Un {ev_cls} è esattamente quello che ci mancava.",
+          "Ci mancava tutto. Non venderla troppo bene."
+        ]
+      ],
+      "party_leave": [
+        [
+          "Qualcuno ha davvero pronunciato il nome di {ev_name} da allora?",
+          "L'hai appena fatto tu. È la prima volta."
+        ],
+        [
+          "Continuo a lasciare spazio in fila per {ev_name}.",
+          "Lo so. Anch'io giro intorno a quel vuoto."
+        ]
+      ],
+      "party_death": [
+        [
+          "{ev_name} non doveva stare davanti.",
+          "{ev_name} stava sempre davanti. Era tutto lì."
+        ],
+        [
+          "Non ho niente di utile da dire su {ev_name}.",
+          "Allora di' qualcosa di inutile. Meglio del silenzio."
+        ],
+        [
+          "Abbiamo sepolto {ev_name} a {ev_place} e siamo ripartiti entro l'ora.",
+          "Era quello che avevamo. Non è stata mancanza di rispetto."
+        ]
+      ],
+      "party_retire": [
+        [
+          "{ev_name} ne è uscito. Uscito davvero.",
+          "Qualcuno doveva pur dimostrare che si poteva fare."
+        ]
+      ],
+      "party_level": [
+        [
+          "{ev_name} è uscito da quella cosa diverso. Più affilato.",
+          "Il livello {ev_level} fa questo effetto. Dagli una settimana per assestarsi."
+        ],
+        [
+          "Là dietro qualcosa è scattato in {ev_name}.",
+          "Succede tutto in una volta, oppure non succede."
+        ]
+      ],
+      "shop_buy": [
+        [
+          "{ev_items}. Era tutto quello che c'era sulla lista?",
+          "Non c'era nessuna lista. Il problema era quello."
+        ],
+        [
+          "{ev_total} a {ev_place}. Li ho visti andarsene.",
+          "E li spenderemmo di nuovo. È quella la parte fastidiosa."
+        ]
+      ],
+      "shop_sell": [
+        [
+          "Abbiamo preso {ev_total} per tutta quella roba.",
+          "Meno di quanto valesse. Più di quanto pesasse."
+        ],
+        [
+          "Mi manca qualcosa di quello che abbiamo venduto.",
+          "Ti manca l'idea. Non l'hai usato nemmeno una volta."
+        ]
+      ],
+      "item_found": [
+        [
+          "{ev_item}. Lì per terra a {ev_place}.",
+          "Niente sta lì per terra e basta. Qualcuno l'ha posato e non è più tornato."
+        ],
+        [
+          "Ci dividiamo quello che troviamo o finisce nello zaino?",
+          "Nello zaino. Non ci mettiamo a tenere i conti su una collina."
+        ]
+      ],
+      "item_artifactGot": [
+        [
+          "Quella cosa che abbiamo raccolto. {ev_item}.",
+          "Lo so. La sento attraverso la tela."
+        ],
+        [
+          "Dovremmo portarci dietro {ev_item}, in generale?",
+          "Qualcuno lo farà. Meglio noi di chi la voleva."
+        ],
+        [
+          "Verranno a cercare {ev_item}.",
+          "Che vengano pure. Noi saremo altrove."
+        ]
+      ],
+      "rest_sleep": [
+        [
+          "{ev_hours} ore. Avevo dimenticato che effetto facesse.",
+          "A colazione sembravi quasi umano."
+        ],
+        [
+          "Il sonno migliore da settimane e mi sono svegliato lo stesso stanco.",
+          "È la strada che presenta il conto. Ci vuole più di una notte."
+        ]
+      ],
+      "place_entered": [
+        [
+          "Quindi questa è {ev_place}.",
+          "Nei racconti era più grande. Lo sono sempre."
+        ],
+        [
+          "Siamo entrati a {ev_place} alle {ev_time}. Ricordatelo.",
+          "Perché?",
+          "Perché uno di noi due dovrebbe mettere tutto per iscritto."
+        ]
+      ],
+      "floor_changed": [
+        [
+          "Piano {ev_floor}. Siamo scesi parecchio.",
+          "La strada per uscire è lunga uguale. Tieni da parte qualcosa."
+        ],
+        [
+          "Ogni piano più in basso è più caldo. L'hai notato?",
+          "L'ho notato. Sto cercando di non pensare al perché."
+        ]
+      ],
+      "health_disease": [
+        [
+          "{ev_name} è malato. Malato sul serio.",
+          "Allora rallentiamo, e non se ne discute."
+        ],
+        [
+          "Quanto ci mette questa a peggiorare?",
+          "Giorni, se siamo fortunati. Ore, se non lo siamo."
+        ]
+      ],
+      "health_partLost": [
+        [
+          "{ev_name} là dietro ha perso qualcosa che non ricresce.",
+          "C'ero. Non ho bisogno del riassunto."
+        ],
+        [
+          "Nessuno ha chiesto a {ev_name} come sta.",
+          "Nessuno l'ha chiesto perché nessuno ha pronta una risposta."
+        ]
+      ],
+      "health_augmentFit": [
+        [
+          "Che effetto fa? Quello nuovo.",
+          "Come avere una mano in prestito. Prima o poi sarà mia."
+        ],
+        [
+          "Ancora non riesco a guardarlo direttamente.",
+          "Allora guardami in faccia. Quella non è cambiata."
+        ]
+      ],
+      "crime_committed": [
+        [
+          "Sono {ev_bounty} sulle nostre teste per niente.",
+          "Non per niente. Per {ev_crime}. Dillo come si deve."
+        ],
+        [
+          "Adesso siamo quel genere di gente?",
+          "Siamo quelli che l'hanno fatto una volta. Fermiamoci a una volta."
+        ]
+      ],
+      "quest_accepted": [
+        [
+          "Ma lo sappiamo a cosa abbiamo detto di sì a {ev_place}?",
+          "Abbiamo accettato {ev_quest}. I dettagli sono affare di qualcun altro."
+        ],
+        [
+          "Ogni incarico sembra semplice nella stanza in cui te lo offrono.",
+          "Allora facciamocelo ripetere fuori, sotto la pioggia."
+        ]
+      ],
+      "quest_completed": [
+        [
+          "{ev_quest}. Fatto, chiuso, via dalla lista.",
+          "Non dire chiuso. Di' chiuso per adesso."
+        ],
+        [
+          "Ecco una cosa andata come doveva andare.",
+          "Segnati la data. Non capita spesso."
+        ]
+      ],
+      "skill_learned": [
+        [
+          "{ev_name} ha imparato qualcosa di nuovo. {ev_skill}.",
+          "Bene. Meglio impararlo adesso che averne bisogno dopo."
+        ],
+        [
+          "Dove hai imparato {ev_skill}?",
+          "Guardando qualcuno più bravo di me. Ripetutamente."
+        ]
+      ],
+      "npc_romance": [
+        [
+          "Allora. {ev_npc}.",
+          "Non farlo. Qualunque cosa stessi per dire, non dirla."
+        ],
+        [
+          "Non ho intenzione di chiedere di {ev_npc}.",
+          "L'hai già chiesto due volte, senza parole."
+        ]
+      ],
+      "pet_join": [
+        [
+          "Lo teniamo?",
+          "Ha deciso lui di tenere noi. C'è una differenza."
+        ],
+        [
+          "Riusciamo a stento a sfamare noi stessi.",
+          "Mangia quello che non mangiamo noi. Hai visto cosa non mangiamo noi?"
+        ]
+      ],
+      "property_rented": [
+        [
+          "{ev_price} per una notte sotto un tetto a {ev_place}.",
+          "Valeva ogni moneta. Chiedi alla mia schiena."
+        ],
+        [
+          "Una stanza. Una stanza vera con una porta.",
+          "Godila. Domani si torna sotto una siepe."
+        ]
+      ],
+      "work_shift": [
+        [
+          "{ev_hours} ore per {ev_pay}. Lavoro onesto.",
+          "Onesto e lento. Le ho sentite tutte, una per una."
+        ],
+        [
+          "Non pensavo che avrei finito a fare {ev_job} per soldi.",
+          "Non lo pensa mai nessuno. Poi arriva l'affitto."
+        ]
+      ],
+      "minigame_played": [
+        [
+          "È la cosa più divertente che ho fatto in un mese.",
+          "È una frase desolante e sono d'accordo."
+        ],
+        [
+          "Ho perso più del dovuto a {ev_game}.",
+          "Ti succede sempre. È per questo che ti piace."
+        ]
+      ],
+      "travel_arrive": [
+        [
+          "Bene. Siamo arrivati, qualunque posto sia questo.",
+          "Aspetta un'ora prima di farti un'opinione."
+        ],
+        [
+          "Il viaggio è durato più di quanto avessero detto.",
+          "Dura sempre più di quanto abbiano detto."
+        ]
+      ]
+    },
+    "driving": [
+      [
+        "A chi tocca guardare la strada? Guardarla davvero.",
+        "A me, a quanto pare, visto che sono io a tenere il volante."
+      ],
+      [
+        "Potrei dormire seduto. L'ho dimostrato due volte questa settimana.",
+        "Russi seduto. Hai dimostrato anche quello."
+      ],
+      [
+        "Ogni chilometro qui dentro è un chilometro che non facciamo a piedi.",
+        "Ridillo fra un'ora, quando la tua schiena avrà un'opinione."
+      ],
+      [
+        "Rallenta in curva. Solo in curva.",
+        "Rallento in quelle che lo richiedono.",
+        "Lo richiedono tutte. È proprio quello che sto dicendo."
+      ],
+      [
+        "C'è un rumore. Sotto il pianale, a sinistra.",
+        "C'è un rumore sotto il pianale da quando l'abbiamo comprato.",
+        "Allora è un rumore di nostra proprietà. Splendido."
+      ],
+      [
+        "Là fuori non c'è niente per chilometri e controlliamo ancora gli specchietti.",
+        "È per questo che là fuori non c'è niente. Perché controlliamo."
+      ],
+      [
+        "Vuoi che dia il cambio? Di' di sì prima di esserne costretto.",
+        "Chiedimelo al prossimo rettilineo. Avrò una risposta migliore."
+      ],
+      [
+        "Nessun altro trova strano stare fermi mentre il terreno si muove?",
+        "Dagli una settimana. Poi sarà camminare a sembrare strano."
+      ],
+      [
+        "Passami qualcosa da mangiare che non richieda due mani.",
+        "Tutto quello che abbiamo richiede due mani. È lo stato della dispensa."
+      ],
+      [
+        "Avremmo dovuto darle un nome. Ci ha portati abbastanza lontano da meritarselo.",
+        "Si è rotta abbastanza volte da meritarsene uno peggiore."
+      ]
+    ],
+    "transit": [
+      [
+        "Guida qualcun altro. Non so cosa fare delle mani.",
+        "Siediti sopra. È quello che stiamo facendo tutti."
+      ],
+      [
+        "Abbiamo pagato e siamo comunque seduti sugli zaini.",
+        "Abbiamo pagato la distanza. Il posto a sedere era ottimismo."
+      ],
+      [
+        "Guardali tutti. Ognuno di loro va da qualche parte di normale.",
+        "Non fissarli. La gente normale si accorge di essere guardata."
+      ],
+      [
+        "Non riesco a stare comodo e mi rifiuto di smettere di provarci.",
+        "Hai provato quattro posizioni. Non ce n'è una quinta."
+      ],
+      [
+        "Ferma a ogni singola stazione della linea.",
+        "Allora dormiamo negli intervalli. Due minuti alla volta è comunque sonno."
+      ],
+      [
+        "Strano, farsi trasportare. Niente da fare tranne arrivare.",
+        "Godila. Dove andiamo dopo non ci trasporta niente."
+      ]
+    ],
+    "cabin": [
+      [
+        "Dentro è più piccolo di quanto sembri da fuori.",
+        "Tutto lo è. Compresi i piani che facciamo qui dentro."
+      ],
+      [
+        "Di chi è questa roba sulla mia cuccetta?",
+        "È roba del gruppo. Dorme dove c'è posto, come noi."
+      ],
+      [
+        "La pioggia su un tetto tuo è un suono completamente diverso.",
+        "Non è nostro. Siamo a due rate dal tornare in strada."
+      ],
+      [
+        "Prima sera tranquilla in una settimana. Nessuno si muova.",
+        "Non ne avevo intenzione. Non ci riesco proprio. Le gambe si sono arrese."
+      ],
+      [
+        "Ne parliamo, di quello che è successo là fuori, o no?",
+        "Non stasera. Stasera stiamo dentro e lo lasciamo alle spalle."
+      ],
+      [
+        "Qualcuno dovrebbe cucinare. Lo dico, non mi offro.",
+        "Annotato, ignorato, e lo farò lo stesso io."
+      ]
+    ]
+  },
+  "shop": {
+    "opener": [
+      "Quindi adesso {item} è nostro. {price} monete d'oro, sparite.",
+      "{item}. Ecco su cosa li abbiamo spesi, se qualcuno tiene il conto.",
+      "Qualcuno vuole parlare di {item} e delle {price} monete d'oro che abbiamo lasciato lì?",
+      "Abbiamo comprato {item}. È nello zaino. È fatta.",
+      "{price} monete d'oro in meno, {item} in più. Discutiamone."
+    ],
+    "opinion": {
+      "nervous": [
+        "E se ci servissero quei soldi prima del prossimo paese? Perché potrebbe succedere.",
+        "Io avrei tenuto le monete. Le monete non ti si guastano."
+      ],
+      "calm": [
+        "Serviva. Fra una settimana non penseremo al prezzo.",
+        "Va bene. È comprato. Non passiamoci la serata."
+      ],
+      "aggressive": [
+        "Ci aiuta a colpire qualcosa? No? Allora era uno spreco.",
+        "Io li avrei spesi in qualcosa di affilato."
+      ],
+      "melancholic": [
+        "Lo perderemo in un campo da qualche parte e non ne parleremo mai più.",
+        "Tutto quello che compriamo finisce alle nostre spalle. Ma vai, sii contento."
+      ],
+      "sanguine": [
+        "Bene. Ci meritavamo qualcosa che non fosse strettamente necessario.",
+        "Mi piace. È tutta la mia opinione e la mantengo."
+      ],
+      "cautious": [
+        "E adesso cosa ci manca, di preciso? È la domanda che non ha fatto nessuno.",
+        "Ce n'era uno più economico? Ce n'è sempre uno più economico."
+      ],
+      "impulsive": [
+        "Perché uno solo? Eravamo già lì davanti.",
+        "Io ne avrei comprati due e ci avrei ragionato dopo."
+      ],
+      "stoic": [
+        "Non cambia niente di domani. Mettilo nello zaino e cammina.",
+        "Comprato è comprato. L'unica parte sprecata è discuterne."
+      ],
+      "paranoid": [
+        "Quel mercante era troppo contento della vendita. Pensa al perché.",
+        "Controllalo prima di farci affidamento. Controllalo due volte."
+      ],
+      "empathetic": [
+        "Lo volevi. È una ragione sufficiente, e qui nessuno dirà il contrario.",
+        "Ho visto la tua faccia quando l'hai preso in mano. Tienilo."
+      ],
+      "authoritative": [
+        "La prossima volta l'acquisto passa prima da me. Non è una punizione, è un accordo.",
+        "Accettabile. Ma d'ora in poi teniamo il conto aggiornato."
+      ],
+      "scholarly": [
+        "Sappiamo davvero cosa fa, o abbiamo comprato la descrizione del bottegaio?",
+        "Il prezzo era sopra mercato. Ho tenuto i numeri."
+      ],
+      "artistic": [
+        "È una cosa bellissima. Vale qualcosa anche se non verrà mai usata.",
+        "Guarda che lavoro. Qualcuno ci teneva, una volta."
+      ],
+      "adventurous": [
+        "Si ripagherà la prima volta che ci servirà. Qui fuori succede a tutto.",
+        "Bene. Comprare roba vuol dire che contiamo di essere ancora qui a usarla."
+      ],
+      "nurturing": [
+        "Se tiene in piedi qualcuno, era a buon mercato.",
+        "Preferisco averlo nello zaino piuttosto che le monete. Le monete non hanno mai guarito nessuno."
+      ],
+      "mischievous": [
+        "Hai tirato sul prezzo? Non hai tirato sul prezzo. Te lo leggo in faccia.",
+        "Potremmo rivenderlo due paesi più in là a un prezzo più alto. Tanto per dire."
+      ],
+      "cynical": [
+        "Ci hanno derubati e li abbiamo pure ringraziati.",
+        "Si romperà, ne compreremo un altro, e lo chiameremo progresso."
+      ],
+      "disciplined": [
+        "Non era previsto dal bilancio. Un bilancio c'è.",
+        "Mangiamo con quello che resta. Spero valesse i pasti."
+      ],
+      "fatalistic": [
+        "Spendili. Alla fine non ci viene dietro niente.",
+        "Non ci salverà. Ma non farà male, e ormai il criterio è quello."
+      ],
+      "grumpy": [
+        "Meraviglioso. Altro peso da portare per me.",
+        "Nessuno me l'ha chiesto. Non me lo chiede mai nessuno. Continuate pure."
+      ],
+      "loyal": [
+        "Se pensavi che ci servisse, ci serviva. Fine del discorso.",
+        "Lo porto io. Non farne una questione di prezzo."
+      ],
+      "brave": [
+        "È uno strumento. Gli strumenti si usano, quindi andiamo a usarlo.",
+        "Smettila di contare monete e indicami quello per cui l'abbiamo comprato."
+      ],
+      "timid": [
+        "Andava bene spendere così tanto? Nessuno se la prende? Davvero?",
+        "Io non avrei osato. Sono contento che qualcuno l'abbia fatto."
+      ],
+      "hedonistic": [
+        "Ottimo acquisto. Adesso trovami qualcosa da mangiare col resto.",
+        "I soldi servono per essere spesi. È la prima cosa sensata che facciamo da una settimana."
+      ],
+      "apathetic": [
+        "Qualunque cosa fosse, è comprata. Svegliatemi quando si cammina.",
+        "Non ho opinioni su {item}. Vorrei che restasse agli atti."
+      ],
+      "any": [
+        "È comprato. Non stiamo qui a discuterne.",
+        "Scopriremo presto se è stata una mossa intelligente."
+      ]
+    }
+  },
+  "opener": {
+    "nervous": [
+      "L'hai sentito anche tu, o sono di nuovo io?",
+      "Dimmi il piano. Solo un'altra volta, ad alta voce.",
+      "Continuo a frugare nello zaino in cerca di una cosa che so di avere."
+    ],
+    "calm": [
+      "Siamo più avanti di stamattina. La misura è tutta lì.",
+      "Siediti un attimo. La strada resta dov'è.",
+      "Ti stai agitando per una cosa che non è successa."
+    ],
+    "aggressive": [
+      "La prossima cosa che ci viene addosso, non aspetto che me lo chiedano.",
+      "Là dietro ci sei andato leggero. L'ho visto.",
+      "Sono stanco di essere educato con gente che ci deruberebbe."
+    ],
+    "melancholic": [
+      "Stavo pensando a quanti pochi siamo rimasti.",
+      "Credi che qualcuno si ricordi dell'ultimo posto in cui siamo stati?",
+      "Sarà una di quelle serate. Non darmi retta."
+    ],
+    "sanguine": [
+      "Di' quello che vuoi, è una bella giornata per stare all'aperto.",
+      "Siamo vivi, sazi e in movimento. Tre su tre.",
+      "Ho deciso che andrà bene. Non discutere."
+    ],
+    "cautious": [
+      "Prima di andare oltre. Qual è la nostra via d'uscita da qui?",
+      "Voglio percorrerla una volta prima di impegnarci.",
+      "Stiamo affidando moltissimo a qualcuno che abbiamo conosciuto ieri."
+    ],
+    "impulsive": [
+      "Facciamolo e basta. Adesso, prima che qualcuno ci pensi su.",
+      "Ho avuto un'idea e la odierai.",
+      "Perché siamo ancora qui fermi a discuterne?"
+    ],
+    "stoic": [
+      "È il tempo. Passerà o non passerà.",
+      "Lamentarsi costa quanto camminare e ti porta meno lontano.",
+      "Sapevamo cos'era quando abbiamo cominciato."
+    ],
+    "paranoid": [
+      "Non voltarti. Due dietro di noi dall'ultimo angolo.",
+      "Qualcuno ha frugato nel mio zaino. Le cose sono nell'ordine sbagliato.",
+      "Perché ci hanno aiutati? Nessuno aiuta per niente."
+    ],
+    "empathetic": [
+      "Da ieri non sei te stesso. Non dirmi di sì.",
+      "Qualunque cosa sia, puoi dirla qui fuori dove non ascolta nessuno.",
+      "L'hai presa peggio di quanto hai lasciato intendere."
+    ],
+    "authoritative": [
+      "Ci serve un ordine di marcia e ci serve prima del buio.",
+      "Voglio sentire le obiezioni di tutti adesso, non a metà strada.",
+      "Qualcuno deve decidere. Tanto vale farlo ad alta voce."
+    ],
+    "scholarly": [
+      "La muratura qui è almeno due secoli più vecchia del resto.",
+      "Ho preso appunti. Vuoi sentirli o smetto?",
+      "C'è uno schema nei posti dove continuiamo a trovarle. Ne sono quasi certo."
+    ],
+    "artistic": [
+      "Guarda la luce lì sopra. Solo un secondo. Guardala.",
+      "Qualcuno l'ha fatto a mano, e poi qualcun altro l'ha lasciato qui a marcire.",
+      "Vorrei ricordarmi questo posto per bene, non solo come un luogo di passaggio."
+    ],
+    "adventurous": [
+      "C'è un modo per salire. L'ho già trovato.",
+      "Possiamo fare la strada lunga, oppure scoprire cosa c'è là sotto.",
+      "Non sei nemmeno un po' curioso?"
+    ],
+    "nurturing": [
+      "Non mangi da stamattina. Non credere che non l'abbia notato.",
+      "Dammi quel braccio. Non è una richiesta.",
+      "Siediti. Il prossimo turno di guardia lo faccio io."
+    ],
+    "mischievous": [
+      "Non ti ho raccontato cosa ho fatto nell'ultima bottega.",
+      "Quando arriviamo non dire niente. Seguimi e cerca di sembrare onesto.",
+      "Ti scommetto il prossimo giro che ci faccio entrare gratis."
+    ],
+    "cynical": [
+      "Lascia che indovini come finisce. Male, e ce ne andiamo con meno di prima.",
+      "Hanno detto la stessa cosa nell'ultimo paese. Parola per parola, quasi.",
+      "Qui fuori vendono tutti qualcosa. Anche quelli che la regalano."
+    ],
+    "disciplined": [
+      "Controllo dell'equipaggiamento. Adesso, finché c'è luce.",
+      "O teniamo il passo o perdiamo la giornata. È aritmetica.",
+      "Ci eravamo dati una routine. Non la rispettiamo da quattro giorni."
+    ],
+    "fatalistic": [
+      "Andrà come deve andare. È sempre stato così.",
+      "Uno di noi non ne uscirà. Statisticamente parlando.",
+      "Ho smesso di fare piani parecchio tempo fa e da allora sto meglio."
+    ],
+    "grumpy": [
+      "Di chi è stata l'idea di questa strada? Voglio un nome.",
+      "Porto questo dall'alba e non si è offerto nessuno.",
+      "Svegliatemi quando ci sarà qualcosa per cui valga la pena svegliarsi."
+    ],
+    "loyal": [
+      "Qualunque cosa si decida, io ci sto.",
+      "Non sarei qui per nessun altro. Spero sia chiaro.",
+      "Sei tornato indietro a prendermi. Non me lo sono dimenticato."
+    ],
+    "brave": [
+      "Vado io per primo. Non è una discussione.",
+      "Se là dentro c'è qualcosa, meglio che incontri me che te.",
+      "Smettila di cercare la via sicura. Non ce n'è una."
+    ],
+    "timid": [
+      "Posso camminare in mezzo? Solo per questo tratto.",
+      "Non voglio fare il difficile, ma questa cosa non mi piace per niente.",
+      "Va bene se dico che ho paura?"
+    ],
+    "hedonistic": [
+      "La prima cosa che voglio in quel paese è un tavolo con sopra qualcosa di caldo.",
+      "Abbiamo dei soldi. I soldi sono fatti per andarsene.",
+      "La vita è breve e questa strada è lunga. Almeno mangiamo bene."
+    ],
+    "apathetic": [
+      "Fate come volete. Io cammino comunque.",
+      "Stai chiedendo un'opinione alla persona sbagliata.",
+      "Ho smesso di avere preferenze verso il secondo paese."
+    ],
+    "any": [
+      "Giornata lunga.",
+      "Hai qualcosa per la testa?"
+    ]
+  },
+  "reply": {
+    "nervous": [
+      "Non dire cose del genere qui fuori.",
+      "Adesso ci penserò tutta la notte.",
+      "Possiamo camminare mentre ne parliamo? Ti prego."
+    ],
+    "calm": [
+      "Va bene. E cosa vorresti fare al riguardo?",
+      "Annotato. Non merita comunque tutta la tua serata.",
+      "Respira. Poi ridillo più piano."
+    ],
+    "aggressive": [
+      "Allora qualcuno avrebbe dovuto farci qualcosa.",
+      "Parlare va bene. Io avrei preferito colpirlo.",
+      "Di' una parola e smette di essere un problema."
+    ],
+    "melancholic": [
+      "Fra un anno non conterà niente. Niente di tutto questo.",
+      "Lo dici come se fosse consolante.",
+      "Stavo pensando la stessa cosa senza dire niente."
+    ],
+    "sanguine": [
+      "Be', io scelgo di godermela lo stesso.",
+      "È un modo di vederla. Il mio è più gradevole.",
+      "Ti preoccupi splendidamente. È quasi un talento."
+    ],
+    "cautious": [
+      "E se ti sbagliassi cosa succede?",
+      "Aspettiamo un giorno prima di muoverci su questo.",
+      "Vorrei più di una via d'uscita prima di dire di sì."
+    ],
+    "impulsive": [
+      "Allora andiamo adesso, finché è ancora vero.",
+      "Pensi troppo a lungo a ogni cosa.",
+      "Bene. Deciso. Si va."
+    ],
+    "stoic": [
+      "Non cambia niente. Cammina.",
+      "Allora è così. E adesso?",
+      "Ho sentito di peggio e poi ho cenato."
+    ],
+    "paranoid": [
+      "Chi te l'ha detto? Pensa a chi te l'ha detto.",
+      "È esattamente quello che qualcuno vorrebbe farci credere.",
+      "Abbassa la voce. Qui fuori tutto ha orecchie."
+    ],
+    "empathetic": [
+      "Però non è davvero quello che intendevi, vero.",
+      "Non devi portartelo addosso da solo.",
+      "Ti ascolto. Non farò finta di avere una soluzione."
+    ],
+    "authoritative": [
+      "Allora è deciso, e non ci torniamo sopra.",
+      "Decido io. Non ti piacerà e andremo avanti lo stesso.",
+      "Portalo a me prima che diventi un problema di tutti."
+    ],
+    "scholarly": [
+      "Non è del tutto esatto, e la versione corretta è più interessante.",
+      "Vorrei vederlo scritto prima di crederci.",
+      "C'è una parola per quella cosa. Mi verrà in mente."
+    ],
+    "artistic": [
+      "Descrivi tutto come un libro mastro. Non era così.",
+      "C'era qualcosa di quasi bello, se non ti stavano colpendo.",
+      "Io me lo ricorderò diversamente. È permesso."
+    ],
+    "adventurous": [
+      "Allora vale la pena farlo. Di solito funziona così.",
+      "Mi stai dando un'ottima ragione per andare a vedere.",
+      "Bene. Cominciavo ad annoiarmi dei giorni facili."
+    ],
+    "nurturing": [
+      "E quand'è l'ultima volta che hai dormito? Rispondi sinceramente.",
+      "Vieni qui. Stai tremando e fai finta di no.",
+      "Niente di tutto questo conta se svieni. Mangia qualcosa."
+    ],
+    "mischievous": [
+      "Oppure, e ascoltami fino in fondo, facciamo invece la cosa interessante.",
+      "Mi ricorderò che l'hai detto. Nel momento peggiore.",
+      "Sei fin troppo facile da far arrabbiare."
+    ],
+    "cynical": [
+      "E tu ci hai creduto.",
+      "Va sempre tutto bene, fino al momento in cui non va più.",
+      "Dagli una settimana. Poi raccontami com'è andata."
+    ],
+    "disciplined": [
+      "Allora finisce sulla lista, in ordine, come tutto il resto.",
+      "O lo facciamo come si deve o non lo facciamo.",
+      "I sentimenti dopo. Equipaggiamento, cibo, guardia, sonno. In quest'ordine."
+    ],
+    "fatalistic": [
+      "Sarebbe finita così comunque.",
+      "Dillo o non dirlo. Alla strada non cambia niente.",
+      "Ho fatto pace con cose peggiori prima di colazione."
+    ],
+    "grumpy": [
+      "Magnifico. Altro da condividere, già che ci siamo?",
+      "Non l'ho chiesto, eppure eccoci qui.",
+      "Ogni volta. Ogni singola volta."
+    ],
+    "loyal": [
+      "Allora sto con te, e la discussione finisce qui.",
+      "Non devi convincermi. Non hai mai dovuto.",
+      "Qualunque cosa costi, lo facciamo insieme o non lo facciamo."
+    ],
+    "brave": [
+      "Allora andiamo ad affrontarlo di petto.",
+      "Averne paura non lo rende più piccolo.",
+      "Alzati. Non lo facciamo da seduti."
+    ],
+    "timid": [
+      "Oh. Dobbiamo proprio?",
+      "Lo faccio. Mi serve solo un momento prima.",
+      "Su quella cosa sei molto più coraggioso di me."
+    ],
+    "hedonistic": [
+      "Tutte cose che suonano meglio con un bicchiere davanti.",
+      "Mi stai descrivendo un problema per domani.",
+      "La vita è breve. Non spendiamola in questa conversazione."
+    ],
+    "apathetic": [
+      "Ho capito.",
+      "Se lo dici tu.",
+      "Sono un sacco di parole per una cosa che non cambierà."
+    ],
+    "any": [
+      "Mi pare giusto.",
+      "Immagino di sì."
+    ]
+  },
+  "closer": {
+    "nervous": [
+      "Possiamo andare adesso? Vorrei andare adesso.",
+      "Ci penserò per giorni."
+    ],
+    "calm": [
+      "In ogni caso. Continuiamo a camminare.",
+      "Allora va bene, e noi stiamo bene."
+    ],
+    "aggressive": [
+      "Fiato sprecato, tutto quanto.",
+      "Indicami qualcosa e mi sentirò meglio."
+    ],
+    "melancholic": [
+      "Non dura niente. Nemmeno questo momento.",
+      "Prima era meglio. Qualunque cosa fosse."
+    ],
+    "sanguine": [
+      "Continuo a dire che è una bella giornata.",
+      "Su con la vita. Non siamo morti."
+    ],
+    "cautious": [
+      "Voglio che venga riesaminato prima di impegnarci.",
+      "Non decidiamo niente stasera."
+    ],
+    "impulsive": [
+      "Troppe chiacchiere. Io vado.",
+      "Deciso. Andiamo."
+    ],
+    "stoic": [
+      "È così e basta.",
+      "Cammina."
+    ],
+    "paranoid": [
+      "Qualcuno verrà a saperlo. Succede sempre.",
+      "Resti fra noi. Tutto quanto."
+    ],
+    "empathetic": [
+      "Stai bene? Davvero?",
+      "Qualunque cosa vi serva. Basta dirlo."
+    ],
+    "authoritative": [
+      "Basta così. Si va.",
+      "Allora è deciso."
+    ],
+    "scholarly": [
+      "Dovrei scriverlo prima di dimenticarlo.",
+      "C'è un precedente per questa cosa, sai."
+    ],
+    "artistic": [
+      "Lì dentro c'è una canzone, raccontata male.",
+      "Ricorderò la luce più delle parole."
+    ],
+    "adventurous": [
+      "Bene. Avanti.",
+      "Oltre la prossima salita c'è qualcosa di meglio. C'è sempre."
+    ],
+    "nurturing": [
+      "Tutti e due. Mangiate qualcosa prima di ripartire.",
+      "Nessuno va avanti a stomaco vuoto."
+    ],
+    "mischievous": [
+      "Questa la ripeto sicuramente più tardi.",
+      "Siete stati entrambi molto divertenti."
+    ],
+    "cynical": [
+      "Meraviglioso. Davvero.",
+      "Ed è così che verrà ricordato, in modo sbagliato."
+    ],
+    "disciplined": [
+      "Siamo in ritardo. Muoversi.",
+      "Con le chiacchiere la strada non si fa."
+    ],
+    "fatalistic": [
+      "Finisce come deve finire.",
+      "Di' quello che vuoi. Decide la strada."
+    ],
+    "grumpy": [
+      "Abbiamo finito?",
+      "Che per una volta porti qualcosa qualcun altro."
+    ],
+    "loyal": [
+      "Qualunque cosa facciamo, la facciamo insieme.",
+      "Sto con quello di voi che ha ragione."
+    ],
+    "brave": [
+      "Basta parlare. Diamoci da fare.",
+      "Vado io per primo, come al solito."
+    ],
+    "timid": [
+      "Io resto qui. In fondo.",
+      "Se a nessuno dispiace, preferirei di no."
+    ],
+    "hedonistic": [
+      "Voglio da bere e una sedia con lo schienale.",
+      "Tutto questo andrebbe meglio a stomaco pieno."
+    ],
+    "apathetic": [
+      "Mm.",
+      "Camminiamo o no?"
+    ],
+    "any": [
+      "Bene. Andiamo.",
+      "Basta così."
+    ]
+  },
+  "stranger": {
+    "nervous": [
+      "Siamo solo di passaggio. Non daremo fastidio.",
+      "È sicura quella strada? Sinceramente?"
+    ],
+    "calm": [
+      "Buonasera. Stiamo solo attraversando, tutto qui.",
+      "C'è qualcosa che dovremmo sapere prima di proseguire?"
+    ],
+    "aggressive": [
+      "Vogliamo la strada e nessuna discussione. Da che parte?",
+      "Indicaci l'uscita e non ci sono problemi."
+    ],
+    "melancholic": [
+      "Posto tranquillo. È sempre stato così?",
+      "Da quanto tempo stai qui fuori da solo?"
+    ],
+    "sanguine": [
+      "Buonasera a te. Bel posto che hai.",
+      "Ci sono notizie che valga la pena sentire? Buone, possibilmente."
+    ],
+    "cautious": [
+      "Prima di avvicinarci di più. Ci sono guai qui?",
+      "Noi ci facciamo gli affari nostri. E tu?"
+    ],
+    "impulsive": [
+      "Dov'è il posto più vicino con un fuoco e un tavolo?",
+      "Ehi tu. Cosa c'è da vedere da queste parti?"
+    ],
+    "stoic": [
+      "Siamo di passaggio. Nient'altro.",
+      "La strada a nord. È aperta?"
+    ],
+    "paranoid": [
+      "Chi altro è passato di qui oggi?",
+      "Tu non ci hai visti. Ci accordiamo su questo?"
+    ],
+    "empathetic": [
+      "Sembra che tu abbia avuto una giornata lunga.",
+      "Come vanno le cose qui, davvero?"
+    ],
+    "authoritative": [
+      "Chi parla per questo posto?",
+      "Non ci fermiamo molto. Con chi dovrei parlare?"
+    ],
+    "scholarly": [
+      "Qual è la storia di questo posto? C'è qualcosa di scritto?",
+      "Sai quanti anni ha quella struttura?"
+    ],
+    "artistic": [
+      "Qualcuno ha costruito tutto questo splendidamente, e molto tempo fa.",
+      "Si canta ancora qualcosa da queste parti?"
+    ],
+    "adventurous": [
+      "Cosa c'è oltre il crinale?",
+      "C'è qualche posto qui intorno dove non va nessuno da un pezzo?"
+    ],
+    "nurturing": [
+      "Ti serve qualcosa? Qualcosa da darti ce l'abbiamo.",
+      "C'è qualcuno che sta male qui?"
+    ],
+    "mischievous": [
+      "Dimmi la cosa che non dovresti dire ai viaggiatori.",
+      "Chi gestisce gli affari interessanti da queste parti?"
+    ],
+    "cynical": [
+      "Lascia che indovini. Qui non succede mai niente.",
+      "Quanto fanno pagare un letto a un forestiero, qui?"
+    ],
+    "disciplined": [
+      "Distanza dal prossimo insediamento, e le condizioni della strada.",
+      "Ci servono acqua e indicazioni. Nient'altro."
+    ],
+    "fatalistic": [
+      "Strada brutta più avanti, immagino. Di solito è così.",
+      "Tutti ci dicono di tornare indietro. Anche tu?"
+    ],
+    "grumpy": [
+      "C'è un posto dove sedersi da queste parti?",
+      "Non dirmi che c'è un'altra ora di cammino."
+    ],
+    "loyal": [
+      "Ci prendiamo cura dei nostri. Hai visto qualcuno come noi?",
+      "Viaggiamo insieme. È un problema qui?"
+    ],
+    "brave": [
+      "Se su quella strada c'è qualcosa, ce ne occupiamo. Dov'è?",
+      "Non torniamo indietro. Cosa ci aspetta?"
+    ],
+    "timid": [
+      "Scusa. Scusa il disturbo. Da che parte è la strada?",
+      "Non vogliamo guai. Davvero."
+    ],
+    "hedonistic": [
+      "Dove si mangia meglio qui? Non il più economico. Il migliore.",
+      "C'è un posto al caldo dove mangiare qui vicino?"
+    ],
+    "apathetic": [
+      "La strada. Da che parte.",
+      "Siamo di passaggio. È tutto quello che ho."
+    ],
+    "any": [
+      "Buonasera. Visto niente di strano da queste parti?",
+      "Siamo solo di passaggio."
+    ]
+  },
+  "solo": {
+    "thought": {
+      "nervous": [
+        "C'è qualcosa che non va e non riesco ancora a dargli un nome.",
+        "Avrei dovuto dire qualcosa là dietro.",
+        "Sto contando i modi in cui va male. Di nuovo."
+      ],
+      "calm": [
+        "Buon terreno. Buona luce. Nessuna lamentela.",
+        "Quello che viene, viene.",
+        "È un posto decente dove fermarsi un po'."
+      ],
+      "aggressive": [
+        "Oggi qualcuno proverà a fare qualcosa. Lo sento.",
+        "Sono stato civile troppo a lungo.",
+        "Che comincino loro."
+      ],
+      "melancholic": [
+        "Tutti quelli con cui ho camminato sono da qualche parte dietro di me.",
+        "Prima era meglio. Non saprei dire quando fosse prima.",
+        "Nessuno ricorderà questa ora tranne me."
+      ],
+      "sanguine": [
+        "Non è una brutta vita, se strizzi gli occhi.",
+        "Sono stato in posti peggiori divertendomi di meno.",
+        "Sta per succedere qualcosa di bello. Ce lo devono."
+      ],
+      "cautious": [
+        "Due vie d'uscita da qui. Bastano.",
+        "Nessuno controlla dietro di noi da un'ora.",
+        "Piano va bene. Piano ci si arriva."
+      ],
+      "impulsive": [
+        "Dovremmo muoverci. Adesso, idealmente.",
+        "Stare fermi è la cosa peggiore che facciamo.",
+        "Voglio vedere cosa c'è dietro quell'angolo."
+      ],
+      "stoic": [
+        "Piedi. Strada. Non serve altro.",
+        "È solo il tempo che fa.",
+        "Lamentarsi non l'accorcerebbe."
+      ],
+      "paranoid": [
+        "Qualcuno è stato qui di recente. Lo dice l'erba.",
+        "Al gruppo manca una cosa e nessuno ammette di averla presa.",
+        "Non mi piace quanto sono diventati silenziosi gli uccelli."
+      ],
+      "empathetic": [
+        "Qui c'è qualcuno che non sta bene e lo nasconde bene.",
+        "Dovrei chiederglielo. Più tardi, quando c'è più calma.",
+        "Tutti portano addosso più degli zaini."
+      ],
+      "authoritative": [
+        "A questo gruppo serve un piano per stanotte.",
+        "Nessuno copre i fianchi. Dovrò dirlo di nuovo.",
+        "Qualcuno deve tenere insieme tutto questo."
+      ],
+      "scholarly": [
+        "Quella formazione non dovrebbe esistere a questa quota.",
+        "E siamo a tre. Non è una coincidenza.",
+        "Mi serve più la carta che la cena."
+      ],
+      "artistic": [
+        "Il colore di quel cielo è impossibile ed eccolo lì.",
+        "Darei la paga di una settimana per un pezzo di tela.",
+        "Nessun altro sta guardando niente di tutto questo."
+      ],
+      "adventurous": [
+        "Ci deve essere un modo per salire lassù.",
+        "Nessuno scende là sotto da anni. Allettante.",
+        "La mappa smette di servire più o meno qui. Bene."
+      ],
+      "nurturing": [
+        "Qualcuno deve mangiare. Ci penso io.",
+        "Prima gli tremavano le mani. L'ho notato.",
+        "Uno di noi deve tenere tutti in piedi."
+      ],
+      "mischievous": [
+        "Potrei farla franca. Il problema è quello.",
+        "Nessuno controlla il proprio zaino da stamattina.",
+        "Questo posto ha bisogno di essere ravvivato."
+      ],
+      "cynical": [
+        "Un altro glorioso giorno passato a farsi mentire da estranei.",
+        "Qualcuno ci sta guadagnando e non siamo noi.",
+        "Andrà storta. È solo questione di quale parte."
+      ],
+      "disciplined": [
+        "Equipaggiamento, acqua, turni di guardia. In quest'ordine.",
+        "Siamo indietro di due ore rispetto a dove dovremmo essere.",
+        "Gli standard si abbassano in silenzio. È così che si abbassano."
+      ],
+      "fatalistic": [
+        "Succederà quando succederà.",
+        "Ho smesso di aspettarmi di vedere l'anno prossimo.",
+        "Decide la strada. È sempre stato così."
+      ],
+      "grumpy": [
+        "I miei piedi hanno delle opinioni su questa strada.",
+        "Nessuno si è offerto di portare niente. Annotato.",
+        "Un giorno mi pagheranno per tutto questo."
+      ],
+      "loyal": [
+        "Non sarei qui fuori per nessun altro.",
+        "Finché camminano tutti, è una buona giornata.",
+        "Qualunque cosa decidano, ci sto."
+      ],
+      "brave": [
+        "Che venga. Sono pronto e preferirei fosse adesso.",
+        "Qualcuno deve andare per primo. Va bene.",
+        "La paura è solo informazione. L'ho letta."
+      ],
+      "timid": [
+        "Spero che nessuno mi chieda di andare davanti.",
+        "Se resto zitto, forse passa.",
+        "Tutti gli altri sembrano così sicuri."
+      ],
+      "hedonistic": [
+        "Sto pensando a un pasto caldo con dovizia di particolari.",
+        "Alla fine di tutto questo è meglio che ci sia una taverna.",
+        "Che senso ha tutto quanto senza una bella serata?"
+      ],
+      "apathetic": [
+        "Ancora in cammino. Ancora qui.",
+        "Non saprei dirti che giorno è.",
+        "Un posto vale l'altro."
+      ],
+      "any": [
+        "Un buon posto per riprendere fiato.",
+        "Ancora nessuna idea di dove stiamo andando.",
+        "Qualcuno deve fare la guardia. Tanto vale che sia io."
+      ]
+    },
+    "look": {
+      "any": [
+        "Qualcuno l'ha fatto a mano, e molto tempo fa.",
+        "Quello è qui da prima della strada.",
+        "Meglio non toccarlo finché non lo fa qualcun altro.",
+        "Forse vale qualcosa. Vale la pena portarselo dietro? No.",
+        "Ne ho già visto uno. In un posto peggiore.",
+        "Non lo pulisce nessuno da una vita.",
+        "Strano. Qui sta crollando tutto tranne quello."
+      ],
+      "scholarly": [
+        "L'incastro del legno è più vecchio del resto di un secolo.",
+        "Dovrei registrarlo prima di ripartire."
+      ],
+      "paranoid": [
+        "Qualcuno l'ha lasciato qui di proposito.",
+        "Quello è stato spostato. Di recente."
+      ],
+      "artistic": [
+        "A qualcuno importava di questa cosa, una volta. Ci si vede la mano.",
+        "È bellissimo e non lo sta guardando nessuno."
+      ],
+      "mischievous": [
+        "Chissà cosa succede se lo sposto.",
+        "Nessuno si accorgerebbe se questo sparisse."
+      ]
+    },
+    "rest": {
+      "any": [
+        "Cinque minuti. È tutto quello che chiedo.",
+        "I miei piedi se lo sono guadagnato e lo sanno.",
+        "Non dite agli altri che mi sono seduto.",
+        "Riposo solo gli occhi. Continuate a camminarmi intorno.",
+        "Questo è il posto a sedere migliore di tutto il paese, ed è un sasso."
+      ]
+    },
+    "recall": {
+      "any": [
+        "Aspettami.",
+        "Sono subito dietro di te.",
+        "Dove andiamo adesso?",
+        "Rallenta, qualcuno qui sta portando della roba.",
+        "Arrivo. Arrivo."
+      ]
+    },
+    "need": {
+      "hunger": {
+        "any": [
+          "Stavo cominciando a masticarmi la cinghia.",
+          "Mi tiene fino a sera. Per un pelo.",
+          "Freddo, ma è cibo. E finora non avevamo né il caldo né il cibo.",
+          "Non guardarmi così. Avevo fame."
+        ]
+      },
+      "sleep": {
+        "any": [
+          "Un letto. Un letto vero senza nessun altro dentro.",
+          "Svegliatemi se finisce il mondo. Solo in quel caso.",
+          "Potrei dormire una settimana e poi ricominciare.",
+          "Basta un posto piano. Piano e asciutto."
+        ]
+      },
+      "hygiene": {
+        "any": [
+          "Mi ero dimenticato com'erano fatte le mie mani.",
+          "Tre giorni di strada, finalmente via.",
+          "Adesso sono di nuovo presentabile in mezzo alla gente.",
+          "Quell'acqua era più fredda di una tomba e ne è valsa la pena."
+        ]
+      },
+      "social": {
+        "any": [
+          "Fa bene sentire una voce che non sia la mia.",
+          "Gente. Mi mancava la gente, e la cosa mi sorprende.",
+          "Non parlavo così tanto da una settimana."
+        ]
+      },
+      "leisure": {
+        "any": [
+          "Un'altra partita. Solo una.",
+          "Ne avevo bisogno più di quanto pensassi.",
+          "Nessuno dica al gruppo quanto ho perso.",
+          "Per un attimo mi sono dimenticato completamente della strada."
+        ]
+      }
+    }
+  },
+  "crash": {
+    "opener": [
+      "Quel rumore era il {vehicle}. Era il nostro.",
+      "L'abbiamo preso in pieno. Preso in pieno sul serio.",
+      "Siete tutti interi? Dite qualcosa.",
+      "Il {vehicle} ha incassato. Meglio lui che noi, ma ha incassato.",
+      "Be'. Addio a quanto costava quel pannello."
+    ],
+    "opinion": {
+      "nervous": [
+        "L'avevo detto che la strada era troppo stretta. L'ho detto ad alta voce.",
+        "Reggerà? Dimmi la verità, reggerà?"
+      ],
+      "calm": [
+        "Nessuno sanguina. Tutto il resto è un conto dal meccanico.",
+        "Accosta, guardalo bene, e poi decidi."
+      ],
+      "aggressive": [
+        "Qualunque cosa fosse, ne è uscita peggio.",
+        "La prossima volta guido io e non freno di certo."
+      ],
+      "melancholic": [
+        "Tutto quello che possediamo prima o poi si ammacca.",
+        "Era l'ultima cosa di noi che sembrava ancora curata."
+      ],
+      "sanguine": [
+        "Va ancora. È l'unica prova che conta.",
+        "Una cicatrice su un veicolo è una storia che ti resta."
+      ],
+      "cautious": [
+        "Ci fermiamo qui e guardiamo sotto prima di fare un altro chilometro.",
+        "È così che cominciano quelli seri. Con uno piccolo che nessuno ha guardato."
+      ],
+      "impulsive": [
+        "Va bene così. Vai avanti, lo guardiamo dopo.",
+        "Su quel fondo è più facile andare veloci. Davvero."
+      ],
+      "stoic": [
+        "È metallo. Si piega. Andiamo avanti.",
+        "Siamo vivi, quindi ci è costato poco."
+      ],
+      "paranoid": [
+        "Dieci minuti fa quello non era sulla strada. Pensaci.",
+        "Qualcuno l'ha messo lì. Voglio che venga detto ad alta voce."
+      ],
+      "empathetic": [
+        "Lascia stare il pannello. Qualcuno è scosso? Scosso sul serio?",
+        "Sei bianco come un lenzuolo. Vieni a sederti dietro un po'."
+      ],
+      "authoritative": [
+        "Ferma il veicolo. Tutti fuori, e li contiamo.",
+        "Da qui in poi il guidatore lo scelgo io, non chi si siede per primo."
+      ],
+      "scholarly": [
+        "Un impatto su quel lato vuol dire geometria dell'assale sballata. Adesso tirerà a sinistra.",
+        "Segnati i chilometri. Un danno è un mistero solo se nessuno lo mette per iscritto."
+      ],
+      "artistic": [
+        "Adesso ha una forma. Non bella, ma una forma.",
+        "Quel suono. Me lo sentirò in testa per una settimana."
+      ],
+      "adventurous": [
+        "Ogni veicolo che valga qualcosa ha un'ammaccatura con una storia dietro.",
+        "Quindi la strada morde. Bene. Stava diventando noiosa."
+      ],
+      "nurturing": [
+        "Prima le teste, poi le mani, poi il veicolo. In quest'ordine.",
+        "Qualcuno stia fermo e mi lasci guardare quel braccio."
+      ],
+      "mischievous": [
+        "Nessuno fuori da questo veicolo deve mai sapere com'è successo.",
+        "Per la cronaca, io dormivo e non ho visto niente."
+      ],
+      "cynical": [
+        "Ma certo. L'unica cosa che ci teneva fuori dal fango.",
+        "Lascia che indovini. Non è stata colpa di nessuno. Non lo è mai."
+      ],
+      "disciplined": [
+        "La velocità era sbagliata per quel fondo. Tutto qui.",
+        "Registro danni, riparazioni al prossimo paese, e nessuno discute il costo."
+      ],
+      "fatalistic": [
+        "Doveva succedere. Meglio qui che su un ponte.",
+        "Prima o poi la strada si riprende qualcosa. Oggi si è presa un pannello."
+      ],
+      "grumpy": [
+        "Magnifico. Un'altra cosa da tenere insieme col fil di ferro.",
+        "L'ho sentito nei denti. Mi devono qualcosa per questo."
+      ],
+      "loyal": [
+        "Nessuno dà la colpa al guidatore. Voglio che sia chiaro prima che si cominci.",
+        "Lo aggiustiamo insieme e non ne parliamo più."
+      ],
+      "brave": [
+        "Ancora dritti, ancora col muso in avanti. Avanti.",
+        "Scendo io a guardare. Voi restate dove siete."
+      ],
+      "timid": [
+        "Possiamo andare più piano? Solo un po'. Vi prego.",
+        "Questo tratto preferirei farlo a piedi. Davvero."
+      ],
+      "hedonistic": [
+        "Ho rovesciato tutto quanto. La vera tragedia è questa.",
+        "Ci fermiamo al prossimo paese e ci fermiamo come si deve. Con un tavolo."
+      ],
+      "apathetic": [
+        "Va ancora. Svegliatemi quando non andrà più.",
+        "Ammaccato. Va bene."
+      ],
+      "any": [
+        "Bisognerà darci un'occhiata.",
+        "Ha tenuto. È il massimo che posso dirne."
+      ]
+    }
+  },
+  "handover": {
+    "opener": [
+      "{driver} prende il volante. {tired}, dormi un po'.",
+      "Cambio. {tired} guida da prima che facesse luce.",
+      "Adesso guida {driver}. Non è in discussione.",
+      "Fuori da quel sedile, {tired}. Ci pensa {driver}."
+    ],
+    "opinion": {
+      "nervous": [
+        "Sei abbastanza sveglio per farlo? Sveglio davvero?",
+        "Dimmelo se cominci a perdere colpi. Dimmelo per tempo."
+      ],
+      "calm": [
+        "Bene. Nessuno dovrebbe guidare così stanco.",
+        "Per il primo chilometro vacci tranquillo. Le mani imparano la strada."
+      ],
+      "aggressive": [
+        "Era ora. Andavamo a passo d'uomo.",
+        "Prova a stare dietro alla strada, per una volta."
+      ],
+      "melancholic": [
+        "Continuiamo a passarcelo, ora dopo ora.",
+        "In questo gruppo ci sarà sempre qualcuno sveglio. È quella la parte triste."
+      ],
+      "sanguine": [
+        "Mani fresche, strada fresca. Si parte.",
+        "Mi piace questo momento. Dall'altro sedile sembra tutto nuovo."
+      ],
+      "cautious": [
+        "Specchietti, sedile, e poi si parte. Non prima.",
+        "Svegliami se cambia il tempo. Preferisco che in due siamo svegli, in quel caso."
+      ],
+      "impulsive": [
+        "Il prossimo turno è mio. Me lo prendo adesso.",
+        "E allora dai, accelera. È un rettilineo."
+      ],
+      "stoic": [
+        "Il sedile è caldo. È tutto il passaggio di consegne che mi serve.",
+        "Uno di noi guida, uno di noi dorme. Funziona."
+      ],
+      "paranoid": [
+        "Tieni d'occhio quello che ci sta dietro oltre a quello che ci sta davanti.",
+        "Non fermarti per nessuno. Non qui fuori, per nessuno."
+      ],
+      "empathetic": [
+        "Hai resistito più di quanto avresti dovuto. Grazie.",
+        "Dormi per bene. Non startene lì ad ascoltare il motore."
+      ],
+      "authoritative": [
+        "Quattro ore a testa, e d'ora in poi lo rispettiamo.",
+        "Bene. Un guidatore stanco è una decisione che non si prende due volte."
+      ],
+      "scholarly": [
+        "Oltre una certa ora i tempi di reazione crollano di colpo. È la scelta giusta.",
+        "Se puoi, dormi nel senso di marcia. Aiuta sul serio."
+      ],
+      "artistic": [
+        "Ti perderai la luce che sale. Vale la pena restare svegli.",
+        "Dal sedile del passeggero la strada sembra tutta un'altra cosa."
+      ],
+      "adventurous": [
+        "Faccio io il navigatore. Ho delle opinioni sul percorso.",
+        "Prendi la strada alta finché sei fresco. I panorami sono migliori."
+      ],
+      "nurturing": [
+        "C'è una coperta dietro il sedile. Usala.",
+        "Mangia qualcosa prima di dormire o ti sveglierai peggio."
+      ],
+      "mischievous": [
+        "Ho regolato il sedile. Non c'è di che.",
+        "Il primo che si addormenta se lo ritrova disegnato in faccia. Regola della casa."
+      ],
+      "cynical": [
+        "Meraviglioso. Adesso scopriamo come guidi tu.",
+        "Un guidatore stanco sostituito da uno un po' meno stanco. Progresso."
+      ],
+      "disciplined": [
+        "Registra il cambio. Le ore al volante non sono materia di opinione.",
+        "Ecco i turni che funzionano. Funzionano solo se li rispettiamo."
+      ],
+      "fatalistic": [
+        "Mani diverse, stessa strada, stesso finale.",
+        "Poco importa chi sta al volante. Arriviamo quando arriviamo."
+      ],
+      "grumpy": [
+        "Finalmente. La mia schiena presentava petizioni da un pezzo.",
+        "Non toccare gli specchietti. Li ho appena sistemati."
+      ],
+      "loyal": [
+        "Hai guidato più della tua parte. L'ho notato.",
+        "Dormi. Ci pensiamo noi."
+      ],
+      "brave": [
+        "Prendo io il tratto notturno. Il buio non mi dà fastidio.",
+        "Dammi i chilometri difficili. Sono fresco per quelli."
+      ],
+      "timid": [
+        "Per favore non chiedetemi di guidare dopo. Per favore.",
+        "Ti tengo compagnia. Tanto non dormo."
+      ],
+      "hedonistic": [
+        "Svegliatemi in un posto con del cibo. È la mia unica condizione.",
+        "Chiunque guidi, qualcuno passi qui dietro la fiaschetta buona."
+      ],
+      "apathetic": [
+        "Va bene. La strada è la stessa in ogni caso.",
+        "Mm. Svegliatemi al confine."
+      ],
+      "any": [
+        "Bene. Cambio, e continuiamo ad andare.",
+        "Mossa sensata."
+      ]
+    }
+  },
+  "fuel": {
+    "opener": [
+      "Il {vehicle} è sceso al {fuel} per cento. Qualcuno dovrebbe saperlo.",
+      "Siamo in riserva e andiamo avanti a speranza. Resta il {fuel} per cento.",
+      "Indicatore del carburante. {fuel} per cento. Lo dico prima che sia un problema.",
+      "Al {fuel} per cento non stiamo più viaggiando, stiamo scommettendo."
+    ],
+    "opinion": {
+      "nervous": [
+        "E quanto dista il prossimo distributore? Qualcuno lo sa davvero?",
+        "Non voglio ritrovarmi qui fuori a piedi. Non qui."
+      ],
+      "calm": [
+        "Allora troviamo un distributore. È un problema con una forma.",
+        "Togli velocità e dura più di quanto pensi."
+      ],
+      "aggressive": [
+        "Allora ci fermiamo alla prossima stazione a qualunque prezzo facciano.",
+        "Qui fuori qualcuno ha del carburante. Scopriremo chi."
+      ],
+      "melancholic": [
+        "Tutto si esaurisce. Anche questo.",
+        "Finiremo di nuovo a piedi. Finiamo sempre a piedi."
+      ],
+      "sanguine": [
+        "Ce l'abbiamo fatta con meno. Lo ricordo con affetto.",
+        "Un distributore c'è sempre. Un po' più lontano di quanto vorresti."
+      ],
+      "cautious": [
+        "Nessuno accende il riscaldamento e nessuno accelera finché non è pieno.",
+        "O torniamo indietro adesso che possiamo, o ci impegniamo. Scegliete."
+      ],
+      "impulsive": [
+        "Allora vai più veloce. Arrivaci prima che diventi un problema.",
+        "Fai il pieno al prossimo posto, a qualunque prezzo, e smettiamo di discuterne."
+      ],
+      "stoic": [
+        "Va finché va. Poi spingiamo.",
+        "Camminare non è la cosa peggiore che ci sia capitata."
+      ],
+      "paranoid": [
+        "Quell'indicatore ci mente. L'ho tenuto d'occhio.",
+        "Non fare il pieno al primo posto che vediamo. I primi posti sono trappole."
+      ],
+      "empathetic": [
+        "Nessuno si agiti. Lo risolviamo, e nessuno dà la colpa a nessuno.",
+        "Ci stai pensando da un'ora, vero."
+      ],
+      "authoritative": [
+        "Al prossimo insediamento facciamo il pieno. Non a quello dopo."
+      ],
+      "scholarly": [
+        "A velocità costante consuma un terzo in meno di questo continuo fermarsi e ripartire.",
+        "L'autonomia di un serbatoio non è una linea retta. In salita costa il doppio."
+      ],
+      "artistic": [
+        "C'è qualcosa di onesto in una macchina che ti dice quando è stanca.",
+        "Se proprio deve succedere, preferirei restare a secco in un posto bello."
+      ],
+      "adventurous": [
+        "Allora diventa una giornata interessante. Tutto qui.",
+        "Scendere in folle conta come viaggiare. L'ho dimostrato."
+      ],
+      "nurturing": [
+        "Allora ci fermiamo, mangiamo, e ci ragioniamo con qualcosa di caldo in corpo.",
+        "Nessuno cammina da nessuna parte a stomaco vuoto. Prima ci fermiamo."
+      ],
+      "mischievous": [
+        "Dietro c'è un tubo per travasare. Non aggiungo altro.",
+        "Definisci vuoto. Più di una volta, a serbatoio vuoto, ho trovato ancora qualcosa."
+      ],
+      "cynical": [
+        "Carburante al prezzo che fanno qui fuori. Meraviglioso.",
+        "Quindi il piano è sperare. Di solito è così."
+      ],
+      "disciplined": [
+        "Si fa il pieno a metà serbatoio. Era la regola ed è stata ignorata.",
+        "Il carburante esce dalla cassa prima di ogni altra cosa. Prima del cibo, prima delle riparazioni."
+      ],
+      "fatalistic": [
+        "Ci porterà fin dove ci porterà.",
+        "È la strada a decidere dove ci fermiamo. Lo ha sempre fatto."
+      ],
+      "grumpy": [
+        "E chi spinge? So benissimo chi spinge.",
+        "Meraviglioso. Un'altra cosa che richiede soldi che non abbiamo."
+      ],
+      "loyal": [
+        "Qualunque cosa decidiamo, non lascio nessuno solo col veicolo.",
+        "O camminiamo tutti o viaggiamo tutti. Funziona così."
+      ],
+      "brave": [
+        "Allora vado avanti a piedi fino al prossimo posto e torno con una tanica.",
+        "È una camminata lunga, non uno scontro. Nessuno si preoccupi."
+      ],
+      "timid": [
+        "Non possiamo fermarci in un posto sicuro finché non sappiamo?",
+        "Preferirei restare a secco vicino alla gente che qui fuori."
+      ],
+      "hedonistic": [
+        "Se comunque ci fermiamo, che sia in un posto con una cucina.",
+        "Carburante per lui, cibo per noi. Entrambi o niente."
+      ],
+      "apathetic": [
+        "O si ferma o non si ferma.",
+        "Ditemi quando si spinge."
+      ],
+      "any": [
+        "Allora facciamo il pieno al prossimo posto che vediamo.",
+        "Annotato. Non facciamone una storia."
+      ]
+    }
+  },
+  "country": {
+    "opener": [
+      "Quel cartello era un confine. Adesso siamo in {country}.",
+      "{country}. Qualunque cosa dicano le mappe, questa è terra di qualcun altro.",
+      "L'abbiamo passato un po' fa. Questa è {country}.",
+      "Paese nuovo. {country}. Per la prima ora attento a cosa dici."
+    ],
+    "opinion": {
+      "nervous": [
+        "I nostri documenti vanno bene qui? Vanno bene?",
+        "Paese nuovo, regole nuove che nessuno ci ha detto. Splendido."
+      ],
+      "calm": [
+        "Stessa strada, bandiera diversa. Andiamo avanti.",
+        "Allora impariamo come si fanno le cose qui, e le facciamo così."
+      ],
+      "aggressive": [
+        "Il loro confine, la nostra strada. Che provino a dire qualcosa.",
+        "Il primo che mi chiede un pedaggio riceve una risposta."
+      ],
+      "melancholic": [
+        "Un altro posto che attraverseremo e non rivedremo mai.",
+        "I confini sono solo linee su cui la gente si è accordata per essere triste."
+      ],
+      "sanguine": [
+        "Un intero paese che non abbiamo ancora deluso.",
+        "Cibo nuovo, se non altro. Lo conto come una vittoria."
+      ],
+      "cautious": [
+        "Non si compra e non si vende niente finché non sappiamo che leggi ci sono.",
+        "Nel primo paese tenete le armi fuori vista."
+      ],
+      "impulsive": [
+        "Allora andiamo a vedere il paese più vicino prima che qualcuno mi dissuada.",
+        "Paese nuovo. Dovremmo fare qualcosa di cui a casa ci pentiremmo."
+      ],
+      "stoic": [
+        "Terra è terra.",
+        "Non cambia niente del camminare."
+      ],
+      "paranoid": [
+        "Qualcuno a quel confine ci ha messi a verbale. Lo fa sempre qualcuno.",
+        "Sapevano che stavamo arrivando. Pensa a come."
+      ],
+      "empathetic": [
+        "Qui ci sarà qualcuno contento di vedere dei viaggiatori. Ce n'è sempre uno.",
+        "Per il primo giorno sii gentile con la gente. Adesso gli strani siamo noi."
+      ],
+      "authoritative": [
+        "Entriamo da ospiti e ci comportiamo di conseguenza finché non dico altrimenti.",
+        "A un posto di blocco per questo gruppo parlo solo io."
+      ],
+      "scholarly": [
+        "Il dialetto cambia più o meno qui. Ascoltalo, vale la pena.",
+        "Questo confine si è spostato due volte a memoria d'uomo. Non fidarti delle mappe vecchie."
+      ],
+      "artistic": [
+        "Guarda come cambiano i tetti. Una linea su una mappa e i tetti cambiano.",
+        "Qui la luce è diversa. Non me lo sto immaginando."
+      ],
+      "adventurous": [
+        "Bene. Non ci sono mai stato. Le strade servono a questo.",
+        "Da qualche parte qui dentro c'è qualcosa che nessuno ha messo per iscritto."
+      ],
+      "nurturing": [
+        "Mangiamo prima del primo paese. Nessuno tratta a stomaco vuoto.",
+        "Nei paesi di frontiera restiamo insieme. Tutti quanti."
+      ],
+      "mischievous": [
+        "Qui nessuno sa una sola cosa di noi. Considera le possibilità.",
+        "Paese nuovo, reputazione pulita. Per circa una settimana."
+      ],
+      "cynical": [
+        "Bandiera diversa, stesse tre domande agli stessi tre sportelli.",
+        "Lascia che indovini. Ci adoreranno anche qui."
+      ],
+      "disciplined": [
+        "Valuta, leggi e via d'uscita. In quest'ordine, prima di sistemarci.",
+        "D'ora in poi i documenti a portata di mano."
+      ],
+      "fatalistic": [
+        "Sarà come il precedente. Sotto sotto lo sono tutti.",
+        "Saremo altrove per quando la cosa conterà qualcosa."
+      ],
+      "grumpy": [
+        "Spero che le loro strade siano migliori. Non lo saranno.",
+        "Un altro confine, un'altra fila. Ne sento una in arrivo."
+      ],
+      "loyal": [
+        "Ovunque sia questo posto, noi siamo sempre noi. È abbastanza.",
+        "Qui nessuno se ne va in giro da solo. Non in un posto che non conosciamo."
+      ],
+      "brave": [
+        "Allora entriamo a testa alta. Non abbiamo niente da nascondere.",
+        "Se ci sono guai al valico, io starò in prima fila."
+      ],
+      "timid": [
+        "Dobbiamo per forza parlare con qualcuno? Non possiamo solo passare?",
+        "Io resto vicino al veicolo. A parlare ci pensa qualcun altro."
+      ],
+      "hedonistic": [
+        "Ogni paese ha una cosa che vale la pena mangiare. La troviamo per prima.",
+        "Il loro vino, il loro pane, i loro letti. Nell'ordine in cui arrivano."
+      ],
+      "apathetic": [
+        "Va bene. Paese.",
+        "Ditemi se cambia la strada."
+      ],
+      "any": [
+        "Allora nel primo paese teniamo un profilo basso.",
+        "Annotato. Stessa strada, bandiera nuova."
+      ]
+    }
+  }
+}

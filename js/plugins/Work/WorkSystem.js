@@ -230,26 +230,79 @@
       case 'Substance':
       case 'Stealth':
       case 'Intimidation': {
-        // ItemSystemEquipment writes custom stats to vars 121-124 (actor 1),
-        // 125-128 (actor 2), 129-132 (actor 3). Compute the base for the
-        // passed actor instead of reading unrelated vars 86-89.
-        const actorId = actor.actorId ? actor.actorId() : 1;
-        if (actorId < 1 || actorId > 3) {
-          // No custom-stat variables allocated for this actor; derive live if possible.
-          if (typeof actor.calculateCustomStats === 'function') {
-            const s = actor.calculateCustomStats();
-            const key = stat.toLowerCase();
-            return s[key] || 0;
-          }
-          return 0;
-        }
-        const base = 121 + (actorId - 1) * 4;
-        const offset = { 'Arcane': 0, 'Substance': 1, 'Stealth': 2, 'Intimidation': 3 }[stat];
+        // The equip-derived stats live on the actor (ActorCharacterFields'
+        // pvArcane/pvSubstance/pvStealth/pvIntimidation), written by
+        // ItemSystemEquipment on every equip change. They used to be mirrored
+        // into variables 121-132 and this read those variables, so once the
+        // mirror was dropped every aesthetic requirement scored 0 no matter
+        // what the worker was wearing.
+        const getter = {
+          'Arcane': 'pvArcane', 'Substance': 'pvSubstance',
+          'Stealth': 'pvStealth', 'Intimidation': 'pvIntimidation'
+        }[stat];
         // i18n-ignore-end
-        return $gameVariables.value(base + offset);
+        if (typeof actor[getter] === 'function') return actor[getter]() || 0;
+        // Background NPCs come through as plain stat proxies carrying the
+        // lowercase profile fields (NPCSociety), not as Game_Actors.
+        const key = stat.toLowerCase();
+        if (typeof actor[key] === 'number') return actor[key];
+        // Anything else that can still be asked what it is wearing.
+        if (typeof actor.calculateCustomStats === 'function') {
+          return actor.calculateCustomStats()[key] || 0;
+        }
+        return 0;
       }
       default: return 0;
     }
+  };
+
+  // The four equip-derived stats. They are percentages of the worker's kit
+  // (ItemSystemEquipment), so they read 0-100 and always sum to about 100:
+  // dressing for one job is dressing against another.
+  const AESTHETIC_STATS = ['Arcane', 'Substance', 'Stealth', 'Intimidation']; // i18n-ignore: stat ids
+
+  // What a job wants you to look like when it does not say so itself. A job
+  // with explicit aesthetic requirements is judged on those instead.
+  const CATEGORY_LOOK = { // i18n-ignore: Jobs.json category ids -> stat ids
+    'Combat': 'Intimidation',
+    'Criminal': 'Stealth',
+    'Magical': 'Arcane',
+    'Social': 'Substance',
+    'Technical': 'Substance',
+    'Labor': 'Substance',
+    'General': 'Substance',
+    'Faction': 'Arcane'
+  };
+
+  // Looking half the part is already dressed enough; the rest is polish.
+  const LOOK_FULL = 50;
+
+  // What a perfect look is worth: up to +15 points of success chance, and up to
+  // a third again on the pay. Enough to feel, not enough to replace the stats.
+  const LOOK_SUCCESS_WEIGHT = 0.15;
+  const LOOK_PAY_WEIGHT = 0.33;
+
+  // How well this worker is turned out for this job, 0-1. Meeting an aesthetic
+  // requirement exactly is half marks - the bar is what gets you hired, not
+  // what makes you good at it - and twice the bar is full marks, except that
+  // full marks never arrive before half a wardrobe: a job asking for Arcane 10
+  // should still tell a robed mage apart from someone in one lucky hat.
+  window.WorkSystem.aestheticScore = function (actor, job) {
+    const reqs = job.requirements || {};
+    const named = AESTHETIC_STATS.filter(s => reqs[s] > 0);
+    if (named.length) {
+      let total = 0;
+      for (const stat of named) {
+        const full = Math.max(reqs[stat] * 2, LOOK_FULL);
+        total += Math.min(1, this.getActorStat(actor, stat) / full);
+      }
+      return total / named.length;
+    }
+    // Jobs that name no look still have one: the shift goes better for a mage
+    // who turns up in robes even when the posting never asked for them.
+    const look = CATEGORY_LOOK[job.category];
+    if (!look) return 0;
+    return Math.min(1, this.getActorStat(actor, look) / LOOK_FULL);
   };
 
   // Helper function to check if actor meets requirements
@@ -286,8 +339,12 @@
     const trained = (job.spec && window.SpecializationXP)
       ? (window.SpecializationXP.levelOf(actor, job.spec) - 1) * 0.03 : 0;
 
+    // Clearing the aesthetic bar is not the same as clearing it twice over:
+    // without this, 60% Arcane on a job asking 25 read exactly like 25.
+    const look = this.aestheticScore(actor, job) * LOOK_SUCCESS_WEIGHT;
+
     if (check.meets) {
-      return Math.min(0.95, 0.80 + trained); // 80% base success rate if requirements met
+      return Math.min(0.97, 0.80 + trained + look); // 80% base success rate if requirements met
     }
 
     // Calculate penalty based on deficits
@@ -300,18 +357,114 @@
     }
 
     const deficitRatio = totalDeficit / totalRequired;
-    // Training partly covers for stats the worker does not have.
-    const successChance = Math.max(0.10, 0.80 + trained - (deficitRatio * 2)); // Minimum 10% chance
+    // Training and turning up dressed for it partly cover for stats the worker
+    // does not have.
+    const successChance = Math.max(0.10, 0.80 + trained + look - (deficitRatio * 2)); // Minimum 10% chance
 
     return successChance;
   };
+
+  // ============================================================================
+  // Shift events
+  // ----------------------------------------------------------------------------
+  // Something out of the ordinary happens on roughly a third of shifts. A shift
+  // is not only a dice roll against the job's requirements: it is also the rich
+  // customer who takes a liking to how you are dressed, the inspector who does
+  // not, and - on the jobs that carry a weapon - the fight that pays hazard
+  // rates if you win it.
+  //
+  // Each entry may carry:
+  //   categories  Jobs.json categories it can happen on (omitted = any job)
+  //   outcomes    shift outcomes it can attach to (omitted = any)
+  //   stat        the aesthetic stat it turns on. A good event grows far more
+  //               likely the better the worker looks; a bad one is warded off
+  //               by the same stat.
+  //   payBonus    fraction of the job's base pay, added (or removed, if negative)
+  //   hp / mp     damage taken
+  //   state       status name or state id, resolved like the job's own
+  //   specXp      extra specialization points for the job's trade
+  //   battle      the event is a fight; see WorkManager.buildEventTroop
+  // Every id needs a matching WorkSystem.event.<id> line in the i18n files.
+  // ============================================================================
+
+  const EVENT_CHANCE = 0.35;
+
+  const WORK_EVENTS = [ // i18n-ignore-start  Jobs.json category ids and stat ids
+    // --- Good -----------------------------------------------------------------
+    {
+      id: 'richCustomer', tone: 'good', weight: 4, payBonus: 0.55,
+      categories: ['Social', 'General', 'Labor'], outcomes: ['success', 'partial'],
+      stat: 'Substance'
+    },
+    {
+      id: 'collector', tone: 'good', weight: 3, payBonus: 0.6, specXp: 2,
+      categories: ['Magical', 'Technical'], outcomes: ['success', 'partial'],
+      stat: 'Arcane'
+    },
+    {
+      id: 'skimmed', tone: 'good', weight: 4, payBonus: 0.75,
+      categories: ['Criminal'], outcomes: ['success', 'partial'],
+      stat: 'Stealth'
+    },
+    {
+      id: 'shakedown', tone: 'good', weight: 3, payBonus: 0.45,
+      categories: ['Combat', 'Faction'], outcomes: ['success', 'partial'],
+      stat: 'Intimidation'
+    },
+    {
+      id: 'headhunted', tone: 'good', weight: 2, payBonus: 0.4, specXp: 3,
+      outcomes: ['success'], stat: 'Substance'
+    },
+    {
+      id: 'quietShift', tone: 'good', weight: 3, payBonus: 0.15,
+      outcomes: ['success', 'partial']
+    },
+    {
+      id: 'apprentice', tone: 'good', weight: 2, specXp: 4,
+      outcomes: ['success']
+    },
+    // --- Fights ---------------------------------------------------------------
+    // Only where carrying a weapon is part of the job. Never on remote work:
+    // nobody is ambushed over the Hypernet.
+    {
+      id: 'ambush', tone: 'mixed', weight: 5, battle: true, payBonus: 0.5,
+      categories: ['Combat', 'Criminal', 'Faction'],
+      stat: 'Intimidation', wards: true
+    },
+    {
+      id: 'raid', tone: 'mixed', weight: 3, battle: true, payBonus: 0.35,
+      categories: ['Labor', 'General'], outcomes: ['success', 'partial', 'failure'],
+      stat: 'Intimidation', wards: true
+    },
+    // --- Bad ------------------------------------------------------------------
+    {
+      id: 'difficultCustomer', tone: 'bad', weight: 3, payBonus: -0.3,
+      categories: ['Social', 'General'], stat: 'Substance', wards: true
+    },
+    {
+      id: 'inspection', tone: 'bad', weight: 3, payBonus: -0.35,
+      categories: ['Faction', 'Criminal'], stat: 'Stealth', wards: true
+    },
+    {
+      id: 'nearMiss', tone: 'mixed', weight: 3, hp: 25, payBonus: 0.2,
+      categories: ['Labor', 'Technical'], stat: 'Substance', wards: true
+    },
+    {
+      id: 'backlash', tone: 'bad', weight: 3, mp: 30, state: 'Nausea',
+      categories: ['Magical'], stat: 'Arcane', wards: true
+    },
+    {
+      id: 'docked', tone: 'bad', weight: 2, payBonus: -0.25,
+      outcomes: ['partial', 'failure', 'disaster']
+    }
+  ]; // i18n-ignore-end
 
   // ============================================================================
   // Work Manager - Core Logic
   // ============================================================================
 
   class WorkManager {
-    static executeWork(actor, job) {
+    static executeWork(actor, job, options) {
       const successChance = window.WorkSystem.calculateSuccessChance(actor, job);
       const roll = Math.random();
 
@@ -331,10 +484,82 @@
         outcomeType = 'failure';
       }
 
-      return this.processOutcome(actor, job, outcomeType);
+      return this.processOutcome(actor, job, outcomeType, options);
     }
 
-    static processOutcome(actor, job, outcomeType) {
+    // Pick the one thing worth telling about this shift, or nothing. A good
+    // event's odds ride on how well the worker is dressed for it; a bad one's
+    // odds fall the same way, so the wardrobe is felt in both directions.
+    static rollEvent(actor, job, outcomeType, options) {
+      const opts = options || {};
+      if (Math.random() >= EVENT_CHANCE) return null;
+
+      const pool = [];
+      let total = 0;
+      for (const ev of WORK_EVENTS) {
+        if (ev.categories && !ev.categories.includes(job.category)) continue;
+        if (ev.outcomes && !ev.outcomes.includes(outcomeType)) continue;
+        // opts.remote, not job.remote: a job that *can* be done from home is
+        // still ambushable when the worker went in person.
+        if (ev.battle && opts.remote) continue;
+
+        let weight = ev.weight;
+        if (ev.stat) {
+          const look = Math.min(1, window.WorkSystem.getActorStat(actor, ev.stat) / LOOK_FULL);
+          // `wards` reads the stat as protection against the event rather than
+          // an invitation to it.
+          weight *= ev.wards ? (1.3 - look) : (0.2 + look * 1.8);
+        }
+        if (weight <= 0) continue;
+        total += weight;
+        pool.push({ ev, weight });
+      }
+      if (!pool.length) return null;
+
+      let pick = Math.random() * total;
+      for (const entry of pool) {
+        pick -= entry.weight;
+        if (pick <= 0) return entry.ev;
+      }
+      return pool[pool.length - 1].ev;
+    }
+
+    // An ad-hoc troop of enemies near the party's level, the same way the
+    // anomaly encounters build theirs (ProceduralAdventureSystem).
+    static buildEventTroop() {
+      if (typeof $dataEnemies === 'undefined' || typeof $dataTroops === 'undefined') return 0;
+      const members = $gameParty.battleMembers();
+      const level = members.length
+        ? Math.round(members.reduce((s, m) => s + m.level, 0) / members.length) : 1;
+      const levelOf = (e) => (window.BSE && window.BSE.Helpers)
+        ? (window.BSE.Helpers.getEnemyLevel(e.note) || 0) : 0;
+
+      const pool = [];
+      for (let i = 1; i < $dataEnemies.length; i++) {
+        const e = $dataEnemies[i];
+        if (!e || !e.name || !e.battlerName) continue;
+        const lv = levelOf(e);
+        if (lv > 0 && Math.abs(lv - level) <= Math.max(5, level * 0.25)) pool.push(i);
+      }
+      if (!pool.length) {
+        for (let i = 1; i < $dataEnemies.length; i++) {
+          if ($dataEnemies[i] && $dataEnemies[i].battlerName) pool.push(i);
+        }
+      }
+      if (!pool.length) return 0;
+
+      const enemyId = pool[Math.floor(Math.random() * pool.length)];
+      const count = 1 + Math.floor(Math.random() * 2);
+      const troopMembers = [];
+      for (let m = 0; m < count; m++) {
+        troopMembers.push({ enemyId, x: 360 + m * 180, y: 320, hidden: false });
+      }
+      const troopId = $dataTroops.length;
+      $dataTroops.push({ id: troopId, members: troopMembers, name: $dataEnemies[enemyId].name, pages: [] });
+      return troopId;
+    }
+
+    static processOutcome(actor, job, outcomeType, options) {
       const outcome = job.outcomes[outcomeType];
 
       // Select random message
@@ -342,10 +567,16 @@
       const message = messages[Math.floor(Math.random() * messages.length)];
 
       // Calculate pay. A tradesman is worth more than a warm body, so the
-      // shift pays better once the job's specialization is trained.
+      // shift pays better once the job's specialization is trained, and a
+      // worker who looks the part is tipped, trusted and sent the good work.
       const skill = (job.spec && window.SpecializationXP)
         ? window.SpecializationXP.multiplierFor(actor, job.spec, 0.08) : 1;
-      const pay = Math.floor(job.basePay * outcome.payMultiplier * skill);
+      const look = window.WorkSystem.aestheticScore(actor, job);
+      // A botched shift is a botched shift however well dressed.
+      const paidForLook = (outcomeType === 'success' || outcomeType === 'partial')
+        ? 1 + look * LOOK_PAY_WEIGHT : 1;
+      const basePay = Math.floor(job.basePay * outcome.payMultiplier * skill);
+      const pay = Math.floor(basePay * paidForLook);
 
       // Get damage
       const damage = outcome.damage || {};
@@ -355,16 +586,42 @@
       // Get status effects
       const statuses = outcome.status || [];
 
-      return {
+      const result = {
         outcomeType: outcomeType,
         message: message,
         pay: pay,
+        lookScore: look,
+        lookBonus: pay - basePay,
         hpDamage: hpDamage,
         mpDamage: mpDamage,
         statuses: statuses,
         jobName: job.name,
         jobNameIt: job.name_it
       };
+
+      const event = this.rollEvent(actor, job, outcomeType, options);
+      // A fight with nobody to fight is no event at all: the troop is built
+      // first so a database too thin to supply one drops the whole event
+      // rather than paying out hazard rates for an ambush that never came.
+      const troopId = event && event.battle ? this.buildEventTroop() : 0;
+      if (event && (!event.battle || troopId)) {
+        result.event = { id: event.id, tone: event.tone };
+        const bonus = event.payBonus ? Math.round(job.basePay * event.payBonus) : 0;
+        if (troopId) {
+          // Hazard rates are earned in the fight, not by being in it: the bonus
+          // is paid out by the victory callback in startWorkEventBattle.
+          result.battle = { troopId, reward: bonus };
+        } else if (bonus) {
+          result.eventPay = bonus;
+          result.pay += bonus;
+        }
+        if (event.hp) result.hpDamage += event.hp;
+        if (event.mp) result.mpDamage += event.mp;
+        if (event.state) result.statuses = statuses.concat([event.state]);
+        if (event.specXp) result.eventSpecXp = event.specXp;
+      }
+
+      return result;
     }
 
     // options.timeAlreadyPassed: the caller ran the clock (and the worker's
@@ -389,7 +646,9 @@
       // A shift worked is a shift learned from, and it is the worker who
       // learns it rather than whoever happens to be leading the party.
       if (job.spec && window.SpecializationXP) {
-        window.SpecializationXP.awardCapped(job.spec, 2, { actor, soloist: true });
+        // A shift with something to it teaches more than a quiet one.
+        const xp = 2 + (result.eventSpecXp || 0);
+        window.SpecializationXP.awardCapped(job.spec, xp, { actor, soloist: true });
       }
 
       // Apply damage
@@ -1479,6 +1738,11 @@
     if ($gameTemp._pendingWork && !$gameMessage.isBusy() && !$gamePlayer.isMoving()) {
       this.processWork();
     }
+
+    if ($gameTemp._workPendingBattle && !$gameMessage.isBusy() && !$gamePlayer.isMoving()
+        && !this.isBusy() && !SceneManager.isSceneChanging()) {
+      this.startWorkEventBattle();
+    }
   };
 
   Scene_Map.prototype.processWork = function () {
@@ -1614,7 +1878,7 @@
 
     const actor = s.actor;
     const job = s.job;
-    const result = WorkManager.executeWork(actor, job);
+    const result = WorkManager.executeWork(actor, job, { remote: true });
     WorkManager.applyWorkEffects(actor, job, result, { timeAlreadyPassed: true });
 
     // The shift itself is over; the travel window drops with the fade-in.
@@ -1707,6 +1971,13 @@
     $gameMessage.add(result.message);
     window.skipLocalization = false;
 
+    // What made this shift worth talking about, if anything did.
+    if (result.event) {
+      window.skipLocalization = true;
+      $gameMessage.add(T('WorkSystem.event.' + result.event.id, { actor: actor.name() }));
+      window.skipLocalization = false;
+    }
+
     // Pay information
     if (result.pay > 0) {
       window.skipLocalization = true;
@@ -1719,6 +1990,25 @@
     } else {
       window.skipLocalization = true;
       $gameMessage.add(T('WorkSystem.noPay'));
+      window.skipLocalization = false;
+    }
+
+    // Break out what the wardrobe and the event were worth, so the player can
+    // see the aesthetic stats doing something rather than having to infer it.
+    // Outside the branch above on purpose: a shift docked into the red still
+    // owes the player the reason.
+    if (result.lookBonus > 0) {
+      window.skipLocalization = true;
+      $gameMessage.add(T('WorkSystem.lookBonus', { amount: (result.lookBonus / 100).toFixed(2) }));
+      window.skipLocalization = false;
+    }
+    if (result.eventPay > 0) {
+      window.skipLocalization = true;
+      $gameMessage.add(T('WorkSystem.eventBonus', { amount: (result.eventPay / 100).toFixed(2) }));
+      window.skipLocalization = false;
+    } else if (result.eventPay < 0) {
+      window.skipLocalization = true;
+      $gameMessage.add(T('WorkSystem.eventPenalty', { amount: (Math.abs(result.eventPay) / 100).toFixed(2) }));
       window.skipLocalization = false;
     }
 
@@ -1753,6 +2043,37 @@
     window.skipLocalization = true;
     $gameMessage.add(T('WorkSystem.hoursPassed', { hours: job.duration }));
     window.skipLocalization = false;
+
+    // The fight comes after the shift is reported, once the player has read
+    // through: Scene_Map.update picks it up when the message window clears.
+    if (result.battle) {
+      $gameTemp._workPendingBattle = { troopId: result.battle.troopId, reward: result.battle.reward || 0 };
+    }
+  };
+
+  // A work event that turned into a fight. Escapable and losable both: a shift
+  // that goes wrong should cost the party the hazard pay, not the game.
+  Scene_Map.prototype.startWorkEventBattle = function () {
+    const pending = $gameTemp._workPendingBattle;
+    $gameTemp._workPendingBattle = null;
+    if (!pending || !pending.troopId) return;
+
+    BattleManager.setup(pending.troopId, true, true);
+    BattleManager.setEventCallback((battleResult) => {
+      // 0 is victory; escaping or being beaten pays nothing.
+      if (battleResult === 0 && pending.reward > 0) {
+        $gameParty.gainGold(pending.reward);
+        const line = T('WorkSystem.hazardPay', { amount: (pending.reward / 100).toFixed(2) });
+        if (window.ParchmentToast) {
+          window.ParchmentToast.show(line, { severity: 'good' });
+        } else {
+          window.skipLocalization = true;
+          $gameMessage.add(line);
+          window.skipLocalization = false;
+        }
+      }
+    });
+    SceneManager.push(Scene_Battle);
   };
 
   // ============================================================================

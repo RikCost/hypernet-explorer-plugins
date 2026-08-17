@@ -3066,6 +3066,13 @@
     $gameVariables.setValue(25, $gameMap.mapId());          // RespawnMapID
     $gameVariables.setValue(26, $gamePlayer.x);             // RespawnX
     $gameVariables.setValue(27, $gamePlayer.y);             // RespawnY
+    // A camp made out on the procedural map: the map id (636) is the whole
+    // world, so the square being slept on is recorded with the tile, otherwise
+    // waking up dead somewhere else would come back to the wrong one. Null when
+    // the party sleeps on any authored map, which clears a stale wild camp.
+    $gameSystem._respawnProcSurface =
+        (window.WorldMapReturn && window.WorldMapReturn.snapshotProcRespawn)
+            ? window.WorldMapReturn.snapshotProcRespawn() : null;
     // Mark that a respawn point has been explicitly set, so the death system
     // does not treat the new-game default respawn vars as a real respawn.
     $gameSystem._respawnPointSet = true;

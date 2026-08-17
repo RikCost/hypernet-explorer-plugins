@@ -34,6 +34,9 @@
   "chooseAnArchetype": "Choose an archetype",
   "chooseYourClass": "Choose your class",
   "selectYourTraits": "Select your traits",
+  "selectYourPersonality": "Select your personality",
+  "personalityVoice": "How they think",
+  "personalityBody": "What it does to the body",
   "chooseYourBirthDate": "Choose your birth date",
   "addAnotherPartyMember": "Add another party member?",
   "chooseYourOrigin": "Choose your origin",
@@ -193,6 +196,8 @@
   "creatureSynthesisComplete": "Creature synthesis complete",
   "selectSprite": "SELECT SPRITE",
   "spriteIndex": "INDEX",
+  "varlenianSprites": "VARLENIAN SPRITES",
+  "alienSprites": "ALIEN SPRITES",
   "betaSprites": "BETA SPRITES",
   "continue2": "Continue",
   "presets": "PRESETS",
@@ -307,6 +312,10 @@
     "randomTraits": {
       "name": "Randomize traits",
       "desc": "Have traits randomly assigned to your character."
+    },
+    "randomPersonality": {
+      "name": "Random",
+      "desc": "Let a disposition be dealt to your character."
     },
     "pickTraits": {
       "name": "Pick traits",

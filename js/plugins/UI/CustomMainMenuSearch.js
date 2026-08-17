@@ -59,11 +59,9 @@
         })[c]);
     }
 
-    // Rows are cheap to build but there can be thousands of them; past this
-    // many the list stops rendering and says how many it left out, the same way
-    // the sandbox's action list does.
-    const MAX_ROWS = 200;
-
+    // There is no cap on how many rows a query may return: the list is windowed
+    // (UI/MenuVirtualList.js), so a match on everything in the game costs the
+    // same dozen cards on screen as a match on one thing.
 
     // =========================================================================
     // State
@@ -365,37 +363,48 @@
     // Rendering, left page
     // =========================================================================
 
-    function resultsHTML() {
-        const rows = state.results;
-        if (!rows.length) {
-            return `<div class="item-grid-empty" style="grid-column:1/-1;">${T('MainMenu.search.noResults', { query: escapeHtml(ensureBar() ? ensureBar().query : '') })}</div>`;
-        }
+    function rowHTML(i) {
+        const row = state.results[i];
+        if (!row) return '';
+        const selected = i === state.selected ? ' selected' : '';
+        const meta = row.kind === 'item'
+            ? `<span>${row.weight > 0 ? (row.weight * row.count).toFixed(2) + ' kg' : ''}</span><span class="item-slot-count">x${row.count}</span>`
+            : `<span>${escapeHtml(row.sub)}</span><span class="item-slot-count">${T('MainMenu.search.kind.' + row.kind)}</span>`;
+        // Rows are NOT `focusable`: while a search is live the field keeps
+        // the keyboard (Up/Down/Enter are answered in onKey), so handing the
+        // menu's own navigator a second, competing highlight would only
+        // fight the row the player is actually on.
+        return `
+            <div class="item-slot${selected}" onclick="window.MenuSearch.select(${i})">
+                <div class="item-slot-icon"><canvas id="menu-search-canvas-${i}" width="32" height="32" style="width:32px;height:32px;"></canvas></div>
+                <div class="item-slot-info">
+                    <div class="item-slot-name">${escapeHtml(row.name)}</div>
+                    <div class="item-slot-meta">${meta}</div>
+                </div>
+            </div>`;
+    }
 
-        const shown = Math.min(rows.length, MAX_ROWS);
-        let html = '';
-        for (let i = 0; i < shown; i++) {
-            const row = rows[i];
-            const selected = i === state.selected ? ' selected' : '';
-            const meta = row.kind === 'item'
-                ? `<span>${row.weight > 0 ? (row.weight * row.count).toFixed(2) + ' kg' : ''}</span><span class="item-slot-count">x${row.count}</span>`
-                : `<span>${escapeHtml(row.sub)}</span><span class="item-slot-count">${T('MainMenu.search.kind.' + row.kind)}</span>`;
-            // Rows are NOT `focusable`: while a search is live the field keeps
-            // the keyboard (Up/Down/Enter are answered in onKey), so handing the
-            // menu's own navigator a second, competing highlight would only
-            // fight the row the player is actually on.
-            html += `
-                <div class="item-slot${selected}" onclick="window.MenuSearch.select(${i})">
-                    <div class="item-slot-icon"><canvas id="menu-search-canvas-${i}" width="32" height="32" style="width:32px;height:32px;"></canvas></div>
-                    <div class="item-slot-info">
-                        <div class="item-slot-name">${escapeHtml(row.name)}</div>
-                        <div class="item-slot-meta">${meta}</div>
-                    </div>
-                </div>`;
-        }
-        if (rows.length > shown) {
-            html += `<div class="item-grid-empty" style="grid-column:1/-1;">${T('MainMenu.search.andMore', { count: rows.length - shown })}</div>`;
-        }
-        return html;
+    // The results grid, windowed: a query matching thousands of things builds
+    // only the cards the page can show, and paints only their icons
+    // (UI/MenuVirtualList.js). This is why the list needs no cap.
+    function mountResults() {
+        const list = document.getElementById('menu-search-results');
+        if (!list) return;
+        const b = ensureBar();
+        window.MenuVirtualList.render(list, {
+            key: `${b ? b.query : ''}|${b ? b.kind : ''}|${b ? b.category : ''}|${b ? b.sortKey + b.sortDir : ''}`,
+            count: state.results.length,
+            renderItem: rowHTML,
+            emptyHTML: `<div class="item-grid-empty" style="grid-column:1/-1;">${T('MainMenu.search.noResults', { query: escapeHtml(b ? b.query : '') })}</div>`,
+            onWindow: (win, from, to) => {
+                for (let i = from; i < to; i++) {
+                    const row = state.results[i];
+                    if (!row) continue;
+                    if (row.kind === 'enemy') drawCreatureSprite(row.mon.character, `menu-search-canvas-${i}`);
+                    else if (window.ItemInspect) window.ItemInspect.drawIcon(row.iconIndex, `menu-search-canvas-${i}`);
+                }
+            }
+        });
     }
 
     // =========================================================================
@@ -578,13 +587,7 @@
     // if the selected row is one. Called after every render and every patch.
     function mountVisuals() {
         disposePreviews();
-
-        const shown = Math.min(state.results.length, MAX_ROWS);
-        for (let i = 0; i < shown; i++) {
-            const row = state.results[i];
-            if (row.kind === 'enemy') drawCreatureSprite(row.mon.character, `menu-search-canvas-${i}`);
-            else if (window.ItemInspect) window.ItemInspect.drawIcon(row.iconIndex, `menu-search-canvas-${i}`);
-        }
+        mountResults();
 
         const row = currentRow();
         if (!row) return;
@@ -658,8 +661,9 @@
         gather();
         disposePreviews();
         if (rebuildFilters) filters.innerHTML = ensureBar() ? ensureBar().filtersHTML() : '';
-        results.innerHTML = resultsHTML();
         detail.innerHTML = detailHTML();
+        // The results list is repainted inside mountVisuals: it is a window onto
+        // the rows now, not a wall of markup (UI/MenuVirtualList.js).
         mountVisuals();
     }
 
@@ -671,11 +675,11 @@
         if (b) b.restoreFocus();
     }
 
+    // By index: the selected row exists in the DOM only while the window is
+    // over it (UI/MenuVirtualList.js).
     function scrollSelectedIntoView() {
         const list = document.getElementById('menu-search-results');
-        if (!list) return;
-        const el = list.querySelector('.item-slot.selected');
-        if (el) el.scrollIntoView({ block: 'nearest' });
+        if (list) window.MenuVirtualList.scrollToIndex(list, state.selected);
     }
 
     // =========================================================================
@@ -806,7 +810,7 @@
                     </div>
                     ${b ? b.fieldHTML() : ''}
                     <div id="menu-search-filters">${b ? b.filtersHTML() : ''}</div>
-                    <div class="backpack-grid" id="menu-search-results">${resultsHTML()}</div>
+                    <div class="backpack-grid" id="menu-search-results"></div>
                 </div>`;
         },
 
@@ -916,7 +920,7 @@
                 event.preventDefault();
                 event.stopPropagation();
                 const step = event.key === 'ArrowDown' ? 1 : -1;
-                const max = Math.min(rows.length, MAX_ROWS);
+                const max = rows.length;
                 state.selected = (state.selected + step + max) % max;
                 SoundManager.playCursor();
                 patchRefresh(false);
@@ -952,7 +956,7 @@
             if (state.justOpened) { state.justOpened = false; return; }
             const rows = state.results;
             if (!rows.length) return;
-            const max = Math.min(rows.length, MAX_ROWS);
+            const max = rows.length;
             let step = 0;
             if (Input.isTriggered('down') || Input.isRepeated('down')) step = 1;
             else if (Input.isTriggered('up') || Input.isRepeated('up')) step = -1;

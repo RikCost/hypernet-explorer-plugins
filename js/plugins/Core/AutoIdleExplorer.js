@@ -1965,6 +1965,27 @@
             this._pool.push(b.el);
         },
 
+        // How tall the speaker is actually drawn. A flat one-tile guess is right
+        // for a person on foot but far too short for a vehicle: those sheets are
+        // several tiles high, so the bubble a driving party pops came out on top
+        // of the hull it was meant to float above. The sprite is looked up once
+        // per bubble and re-resolved whenever the spriteset is rebuilt.
+        _spriteHeight(b) {
+            const scene = SceneManager._scene;
+            const spriteset = scene ? scene._spriteset : null;
+            const list = spriteset ? spriteset._characterSprites : null;
+            if (!list) return $gameMap.tileHeight();
+            if (!b.sprite || b.sprite._character !== b.char || b.spriteset !== spriteset) {
+                b.sprite = list.find((s) => s._character === b.char) || null;
+                b.spriteset = spriteset;
+            }
+            const sprite = b.sprite;
+            if (!sprite || !sprite.bitmap || !sprite.bitmap.isReady()) return $gameMap.tileHeight();
+            const scale = sprite.scale ? Math.abs(sprite.scale.y) || 1 : 1;
+            const h = sprite.patternHeight() * scale;
+            return h > 0 ? h : $gameMap.tileHeight();
+        },
+
         // Anchored off the character's own screen projection (so it tracks zoom,
         // jumps and camera shifts) and scaled onto the canvas' real on-page size.
         update() {
@@ -1987,7 +2008,7 @@
                     continue;
                 }
                 const x = b.char.screenX();
-                const y = b.char.screenY() - $gameMap.tileHeight() - (b.h || 32) - 16;
+                const y = b.char.screenY() - this._spriteHeight(b) - (b.h || 32) - 16;
                 b.el.style.left = Math.round(ox + x * sx) + "px";
                 b.el.style.top = Math.round(oy + y * sy) + "px";
             }
@@ -2100,6 +2121,19 @@
             return this.modeFor(f) === FORM_LOOSE && this.conditionsMet();
         },
 
+        // Riding, the party is normally stowed inside the hull with the leader and
+        // has no business walking anywhere. The Bike is the exception: there is no
+        // hull, every member is on a bicycle of their own out in the open
+        // (Vehicle/VehicleSystem.js swaps their sheets for it), and they can keep
+        // to the same ground the leader is pedalling over. The Broom cannot -
+        // nobody walks after somebody flying across a lake - so
+        // isPartyRidingAlong() is false for that one.
+        stowedInVehicle() {
+            if (!$gamePlayer || !$gamePlayer.isInVehicle()) return false;
+            const vs = window.MergedVehicleSystem;
+            return !(vs && vs.isPartyRidingAlong && vs.isPartyRidingAlong());
+        },
+
         // Everything except the formation itself: the states of the game in
         // which no follower may be walking itself.
         conditionsMet() {
@@ -2108,7 +2142,7 @@
             if (!(SceneManager._scene instanceof Scene_Map)) return false;
             if ($gameParty.inBattle()) return false;
             if (!$gamePlayer.followers().isVisible()) return false;
-            if ($gamePlayer.isInVehicle()) return false;
+            if (this.stowedInVehicle()) return false;
             if ($gamePlayer._vehicleGettingOn || $gamePlayer._vehicleGettingOff) return false;
             const ss = window.SplitScreenManager;
             if (ss && ss.active) return false;
@@ -2685,7 +2719,7 @@
         // Another of their own close enough to be part of a conversation that
         // is starting here.
         nearbyPartyChar(f, exclude) {
-            if (!$gamePlayer || $gamePlayer.isInVehicle()) return null;
+            if (!$gamePlayer || this.stowedInVehicle()) return null;
             let best = null;
             let bestD = PARTY_THIRD_RANGE + 1;
             const consider = (c) => {
@@ -3257,7 +3291,7 @@
         // them. A pet or a child is company to walk up to like anybody else,
         // but it holds no conversation, so nothing is settled over it.
         findPartyCompany(f) {
-            if (!$gamePlayer || $gamePlayer.isInVehicle()) return null;
+            if (!$gamePlayer || this.stowedInVehicle()) return null;
             const s = this.stateOf(f);
             let best = null;
             let bestD = LOOSE_SCAN + 1;
@@ -3341,8 +3375,10 @@
         gatherNear() {
             if (!$gamePlayer || !$gameMap) return;
             // Riding, the party is inside the vehicle with the leader; putting
-            // them on the tiles around it would drop them in the water.
-            if ($gamePlayer.isInVehicle()) return;
+            // them on the tiles around it would drop them in the water. On a bike
+            // they are already on the tiles around it, each on their own, so they
+            // are gathered like anybody else.
+            if (this.stowedInVehicle()) return;
             const taken = new Set([$gamePlayer.x + "," + $gamePlayer.y]);
             for (const f of $gamePlayer.followers().data()) {
                 if (!f.isVisible()) continue;
@@ -3381,6 +3417,17 @@
     };
 
     AutoIdle.loose = Loose;
+    // The chatter bubble on its own, for the talk that happens where the loose
+    // walkers are not: over a vehicle the whole party is sitting in (the
+    // travelling half of NPC/PartyBanter.js). Same element, same stylesheet, same
+    // anchoring off a character's screen projection - the character simply happens to be a
+    // camper rather than a follower. Honours the Loose Chatter option, since it
+    // is the same chatter.
+    AutoIdle.bubble = {
+        show(char, text) { Bubbles.show(char, text); },
+        clearFor(char) { Bubbles.clearFor(char); },
+        clear() { Bubbles.clear(); },
+    };
     window.AutoIdleExplorer = AutoIdle;
 
     // ========================================================================

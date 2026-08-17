@@ -152,6 +152,12 @@
       return text;
     }, text);
 
+  // The name an item is shown under. The engine's own windows get their text
+  // localized on the way to the bitmap, but this shop paints most of itself as
+  // DOM, which that hook never sees, so every name that reaches the overlay --
+  // and every name compared for sort order -- goes through here first.
+  const itemName = (item) => (item && item.name ? translate(item.name) : "");
+
   // A data param slot that a malformed or third-party item may simply not have.
   const paramOf = (item, paramId) => {
     const raw = item && Array.isArray(item.params) ? item.params[paramId] : 0;
@@ -1204,7 +1210,7 @@
     // the cursor walks the page the way it looks.
     items.sort((a, b) => {
       if (a.category !== b.category) return a.category.localeCompare(b.category);
-      const byName = String(a.item.name).localeCompare(String(b.item.name));
+      const byName = itemName(a.item).localeCompare(itemName(b.item));
       return byName !== 0 ? byName : a.price - b.price;
     });
 
@@ -2065,7 +2071,7 @@
               <div class="detail-header">
                   <div class="item-card-icon" style="${this.getIconStyle(selectedItem.iconIndex)} scale: 1.25;"></div>
                   <div class="detail-info">
-                      <span class="detail-name">${esc(selectedItem.name)}</span>
+                      <span class="detail-name">${esc(itemName(selectedItem))}</span>
                   </div>
               </div>
 
@@ -2163,7 +2169,7 @@
           <div class="modal-overlay">
               <div class="quantity-box">
                   <h3 class="quantity-title">${esc(promptTitle)}</h3>
-                  <div style="font-weight:bold; font-size:17px; color:var(--text-success-active); margin-bottom:10px;">${esc(numItem.name)}</div>
+                  <div style="font-weight:bold; font-size:17px; color:var(--text-success-active); margin-bottom:10px;">${esc(itemName(numItem))}</div>
 
                   <div class="quantity-slider-row">
                       <div class="qty-arrow" id="qty-dec">－</div>
@@ -2341,7 +2347,8 @@
     // item.name edits the shared $dataItems/$dataWeapons entry, and any throw
     // between the two assignments left the truncated name in the database for
     // the rest of the session.
-    const displayName = this.truncateItemName ? this.truncateItemName(item.name) : item.name;
+    const localized = itemName(item);
+    const displayName = this.truncateItemName ? this.truncateItemName(localized) : localized;
     this.drawItemName(item, rect.x, rect.y, nameWidth, displayName);
 
     this.drawText(priceDisplay, rect.x + rect.width - priceWidth - stockWidth - 10, rect.y, priceWidth, "right");
@@ -2421,7 +2428,11 @@
     this.changePaintOpacity(this.isEnabled(item));
     // The widest item name the price column leaves room for, in characters.
     const maxNameLength = 18;
-    const displayName = safe("truncate", () => utils.truncateTextWithEllipsis(item.name || "", maxNameLength), item.name);
+    // Localize before cutting: the name is measured and clipped in the
+    // language it is shown in, and a name shortened first would reach the
+    // draw hook as a fragment matching no translation at all.
+    const localized = itemName(item);
+    const displayName = safe("truncate", () => utils.truncateTextWithEllipsis(localized, maxNameLength), localized);
     this.drawItemName(item, x, y, nameWidth, displayName);
     this.changePaintOpacity(true);
 
@@ -2974,7 +2985,7 @@
       const catA = categoryLabelOf(a).toLowerCase();
       const catB = categoryLabelOf(b).toLowerCase();
       if (catA !== catB) return catA.localeCompare(catB);
-      return String(a.name).localeCompare(String(b.name));
+      return itemName(a).localeCompare(itemName(b));
     });
   };
 
@@ -3598,7 +3609,7 @@
                   <div class="item-card-left">
                       <div class="item-card-icon" style="${this.getIconStyle(item.iconIndex)}"></div>
                       <div class="item-card-info">
-                          <span class="item-card-name">${esc(item.name)}</span>
+                          <span class="item-card-name">${esc(itemName(item))}</span>
                           <span class="item-card-sub">${esc(formatWeight(weightOf(item)))}</span>
                       </div>
                   </div>

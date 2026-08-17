@@ -1681,8 +1681,8 @@
     "markovDB": "archivist",
     "source": "Archivist#7"
   },
-  "NPCs/!$CarPilot1": {
-    "varlenian": false,
+  "Varlenian/!$CarPilot1": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -1704,8 +1704,8 @@
     "markovDB": "dungeon_explorer",
     "source": "Dungeon_HeroMan1#0"
   },
-  "NPCs/!$CarPilot2": {
-    "varlenian": false,
+  "Varlenian/!$CarPilot2": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -1727,8 +1727,8 @@
     "markovDB": "dungeon_explorer",
     "source": "Dungeon_HeroMan1#1"
   },
-  "NPCs/!$CarPilot3": {
-    "varlenian": false,
+  "Varlenian/!$CarPilot3": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -1750,8 +1750,8 @@
     "markovDB": "dungeon_explorer",
     "source": "Dungeon_HeroMan1#2"
   },
-  "NPCs/!$CarPilot4": {
-    "varlenian": false,
+  "Animations/!$CarPilot4": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -1773,8 +1773,8 @@
     "markovDB": "dungeon_explorer",
     "source": "Dungeon_HeroMan1#3"
   },
-  "NPCs/!$CarPilot5": {
-    "varlenian": false,
+  "Animations/!$CarPilot5": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -1796,8 +1796,8 @@
     "markovDB": "dungeon_explorer",
     "source": "Dungeon_HeroMan1#4"
   },
-  "NPCs/!$CarPilot6": {
-    "varlenian": false,
+  "Animations/!$CarPilot6": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -2903,7 +2903,7 @@
     "markovDB": "thug",
     "source": "Evil01Color#7"
   },
-  "NPCs/!$CarPilot7": {
+  "Varlenian/!$CarPilot7": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -2926,7 +2926,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters1#0"
   },
-  "NPCs/!$Bubba1": {
+  "Varlenian/!$Bubba1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -2949,7 +2949,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters1#1"
   },
-  "NPCs/!$DrivingInstructor1": {
+  "Varlenian/!$DrivingInstructor1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -2972,7 +2972,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters1#2"
   },
-  "NPCs/!$Mage2": {
+  "Varlenian/!$Mage2": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -2995,7 +2995,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters1#3"
   },
-  "NPCs/!$Witch12": {
+  "Varlenian/!$Witch12": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3018,7 +3018,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters1#4"
   },
-  "NPCs/!$WarWitch2": {
+  "Varlenian/!$WarWitch2": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3041,7 +3041,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters1#5"
   },
-  "NPCs/!$Innkeeper1": {
+  "Varlenian/!$Innkeeper1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3064,7 +3064,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters1#6"
   },
-  "NPCs/!$HighCommand1": {
+  "Varlenian/!$HighCommand1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3087,7 +3087,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters1#7"
   },
-  "NPCs/!$Librarian1": {
+  "Varlenian/!$Librarian1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3109,7 +3109,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters2#0"
   },
-  "NPCs/!$TravelingSalesman1": {
+  "Varlenian/!$TravelingSalesman1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3131,7 +3131,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters2#1"
   },
-  "NPCs/!$Sage1": {
+  "Varlenian/!$Sage1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3153,7 +3153,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters2#2"
   },
-  "NPCs/!$WastelandThinkerer2": {
+  "Varlenian/!$WastelandThinkerer2": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3175,7 +3175,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters2#3"
   },
-  "NPCs/!$Librarian2": {
+  "Varlenian/!$Librarian2": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3197,7 +3197,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters2#4"
   },
-  "NPCs/!$Fantasy_Characters26": {
+  "Animations/!$Fantasy_Characters26": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3219,7 +3219,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters2#5"
   },
-  "NPCs/!$Fantasy_Characters27": {
+  "Varlenian/!$Fantasy_Characters27": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3241,7 +3241,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters2#6"
   },
-  "NPCs/!$RoyalPage1": {
+  "Varlenian/!$RoyalPage1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3263,7 +3263,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters2#7"
   },
-  "NPCs/!$ElvenBotanic1": {
+  "Varlenian/!$ElvenBotanic1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3287,7 +3287,7 @@
     "markovDB": "elven_ambassador",
     "source": "Fantasy_Characters3#0"
   },
-  "NPCs/!$SchoolTeacher2": {
+  "Varlenian/!$SchoolTeacher2": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3311,7 +3311,7 @@
     "markovDB": "elven_ambassador",
     "source": "Fantasy_Characters3#1"
   },
-  "NPCs/!$Scarf1": {
+  "Varlenian/!$Scarf1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3335,7 +3335,7 @@
     "markovDB": "elven_ambassador",
     "source": "Fantasy_Characters3#2"
   },
-  "NPCs/!$SushiCook1": {
+  "Varlenian/!$SushiCook1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3359,7 +3359,7 @@
     "markovDB": "elven_ambassador",
     "source": "Fantasy_Characters3#3"
   },
-  "NPCs/!$NobleGuard1": {
+  "Varlenian/!$NobleGuard1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3383,7 +3383,7 @@
     "markovDB": "elven_ambassador",
     "source": "Fantasy_Characters3#4"
   },
-  "NPCs/!$ElvenJeweler1": {
+  "Varlenian/!$ElvenJeweler1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3407,7 +3407,7 @@
     "markovDB": "elven_ambassador",
     "source": "Fantasy_Characters3#5"
   },
-  "NPCs/!$ElvenGuard2": {
+  "Varlenian/!$ElvenGuard2": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3431,7 +3431,7 @@
     "markovDB": "elven_ambassador",
     "source": "Fantasy_Characters3#6"
   },
-  "NPCs/!$ElvenEnchantress2": {
+  "Varlenian/!$ElvenEnchantress2": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3455,7 +3455,7 @@
     "markovDB": "elven_ambassador",
     "source": "Fantasy_Characters3#7"
   },
-  "NPCs/!$Coroner1": {
+  "Varlenian/!$Coroner1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3480,7 +3480,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters4#0"
   },
-  "NPCs/!$NobleScout1": {
+  "Varlenian/!$NobleScout1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3505,7 +3505,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters4#1"
   },
-  "NPCs/!$Stablemaster1": {
+  "Varlenian/!$Stablemaster1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3530,7 +3530,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters4#2"
   },
-  "NPCs/!$SwordInstructor1": {
+  "Varlenian/!$SwordInstructor1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3555,7 +3555,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters4#3"
   },
-  "NPCs/!$RoyalPage2": {
+  "Varlenian/!$RoyalPage2": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3580,7 +3580,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters4#4"
   },
-  "NPCs/!$TribeArcher1": {
+  "Varlenian/!$TribeArcher1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3605,7 +3605,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters4#5"
   },
-  "NPCs/!$StreetShopkeeper1": {
+  "Varlenian/!$StreetShopkeeper1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3630,7 +3630,7 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters4#6"
   },
-  "NPCs/!$RoyalChef1": {
+  "Varlenian/!$RoyalChef1": {
     "varlenian": true,
     "npc": true,
     "aliens": false,
@@ -3655,8 +3655,8 @@
     "markovDB": "medieval",
     "source": "Fantasy_Characters4#7"
   },
-  "NPCs/!$Wrestler1": {
-    "varlenian": false,
+  "Varlenian/!$Wrestler1": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -7240,8 +7240,8 @@
     "markovDB": "npc4",
     "source": "NPCs03Color#7"
   },
-  "NPCs/!$Trucker1": {
-    "varlenian": false,
+  "Varlenian/!$Trucker1": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -7265,8 +7265,8 @@
     "markovDB": "medieval",
     "source": "Occult_Characters#0"
   },
-  "NPCs/!$ExoticMerchant1": {
-    "varlenian": false,
+  "Varlenian/!$ExoticMerchant1": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -7315,8 +7315,8 @@
     "markovDB": "medieval",
     "source": "Occult_Characters#2"
   },
-  "NPCs/!$Scientist3": {
-    "varlenian": false,
+  "Varlenian/!$Scientist3": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -7365,8 +7365,8 @@
     "markovDB": "medieval",
     "source": "Occult_Characters#4"
   },
-  "NPCs/!$OrcTrader3": {
-    "varlenian": false,
+  "Varlenian/!$OrcTrader3": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": true,
@@ -7390,8 +7390,8 @@
     "markovDB": "medieval",
     "source": "Occult_Characters#5"
   },
-  "NPCs/!$Archivist3": {
-    "varlenian": false,
+  "Varlenian/!$Archivist3": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -7415,8 +7415,8 @@
     "markovDB": "medieval",
     "source": "Occult_Characters#6"
   },
-  "NPCs/!$Astrologist6": {
-    "varlenian": false,
+  "Varlenian/!$Astrologist6": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": false,
@@ -7602,8 +7602,8 @@
     "markovDB": "zombie_alien",
     "source": "Occult_Enemies#5"
   },
-  "NPCs/!$Enchantress1": {
-    "varlenian": false,
+  "Varlenian/!$Enchantress1": {
+    "varlenian": true,
     "npc": true,
     "aliens": false,
     "magical": true,
@@ -21323,7 +21323,7 @@
     "busts": [
       "1"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -21421,7 +21421,7 @@
     "busts": [
       "5"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -21442,7 +21442,7 @@
     "busts": [
       "6"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -21463,7 +21463,7 @@
     "busts": [
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -21484,7 +21484,7 @@
     "busts": [
       "8"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -24139,7 +24139,7 @@
     "classes": [],
     "markovDB": "npc"
   },
-  "Skab/!$AndreottiSitting": {
+  "Animations/!$AndreottiSitting": {
     "varlenian": false,
     "npc": false,
     "aliens": false,
@@ -24424,7 +24424,7 @@
     "classes": [],
     "markovDB": "npc"
   },
-  "Skab/!$RatzingerAngelus": {
+  "Animations/!$RatzingerAngelus": {
     "varlenian": false,
     "npc": false,
     "aliens": false,
@@ -24462,7 +24462,7 @@
     "classes": [],
     "markovDB": "npc"
   },
-  "Skab/!$RichardBensonGuitar": {
+  "Animations/!$RichardBensonGuitar": {
     "varlenian": false,
     "npc": false,
     "aliens": false,

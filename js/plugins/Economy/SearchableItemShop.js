@@ -52,6 +52,12 @@
     // three different desktop shortcuts and taskbar tabs wore the same picture.
     const APP_ICON = 209;
 
+    // The name an item is listed under. Window text is localized on its way to
+    // the bitmap, but this shop draws its catalogue as DOM, which that hook
+    // never sees, so every name headed for markup passes through here first.
+    const itemNameOf = (item) =>
+        item && item.name && window.translateText ? window.translateText(item.name) : (item && item.name) || "";
+
     // --- HypercapitalisEmporiumApp ---
     window.HypercapitalisEmporiumApp = {
         appInstance: null,
@@ -1319,7 +1325,9 @@
 
             // Draw item name with reduced width to fit
             const nameWidth = rect.width - iconBoxWidth - 4;
-            const itemName = item.name;
+            // Localized first, then clipped: a name cut down while still in
+            // English reaches the draw hook as a fragment matching nothing.
+            const itemName = itemNameOf(item);
 
             // Calculate available space based on smaller font
             this.contents.fontSize -= 2;
@@ -2147,7 +2155,7 @@
                         <div style="border: 1px solid #c5c2af; border-radius: 4px; padding: 6px 10px; margin-bottom: 6px; background: #fdfcfa; display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); box-sizing: border-box;">
                             <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
                                 ${getIconSpriteHTML(entry.iconIndex, 20)}
-                                <strong style="font-size: 14px; color: #333;">${entry.name}</strong>
+                                <strong style="font-size: 14px; color: #333;">${window.translateText ? window.translateText(entry.name) : entry.name}</strong>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
                                 <span style="font-size: 14px; color: ${timeColor}; font-weight: bold;">${timeLabel}</span>
@@ -2222,7 +2230,7 @@
                     <div ${isSelected ? 'data-selected="1"' : ''} style="padding: 8px 12px; margin-bottom: 4px; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 2px rgba(0,0,0,0.02); ${activeStyle} ${borderStyle} ${orderedStyle}" onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.selectShopItem(${idx})">
                         <div style="display: flex; align-items: center; gap: 8px; overflow: hidden; flex-grow: 1; margin-right: 8px; box-sizing: border-box;">
                             ${getIconSpriteHTML(item.iconIndex, 20)}
-                            <span style="font-weight: bold; font-size: 14px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 150px;">${item.name}</span>
+                            <span style="font-weight: bold; font-size: 14px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 150px;">${itemNameOf(item)}</span>
                         </div>
                         <div style="font-weight: bold; font-size: 14px; flex-shrink: 0;">${priceText}</div>
                     </div>
@@ -2287,7 +2295,7 @@
                         <!-- Detail Header -->
                         <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; border-bottom: 1px solid #ccc; padding-bottom: 10px; box-sizing: border-box;">
                             ${getIconSpriteHTML(selectedItem.iconIndex, 36)}
-                            <div style="font-weight: bold; font-size: 16px; color: #0b2f70; text-align: center; word-break: break-all;">${selectedItem.name}</div>
+                            <div style="font-weight: bold; font-size: 16px; color: #0b2f70; text-align: center; word-break: break-all;">${itemNameOf(selectedItem)}</div>
                         </div>
                         
                         <!-- Description -->
@@ -2341,7 +2349,7 @@
                 modalContent.innerHTML = `
                     <h2 style="margin-top: 0; color: #0054e3; border-bottom: 2px solid #0054e3; padding-bottom: 10px; font-size: 17px;">${T('Stockbusters.text.confirmTransaction')}</h2>
                     <p style="font-size: 16px; margin: 15px 0 20px 0;">
-                        ${T('Stockbusters.text.transfer')} <strong>${formatPrice(price)}</strong> ${T('Stockbusters.text.for')} <strong>${selectedItem.name}</strong>?
+                        ${T('Stockbusters.text.transfer')} <strong>${formatPrice(price)}</strong> ${T('Stockbusters.text.for')} <strong>${itemNameOf(selectedItem)}</strong>?
                     </p>
                     <div style="display: flex; gap: 10px; justify-content: center;">
                         <button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.onBuyOk()" style="padding: 6px 18px; font-weight: bold; background: #0054e3; border: 1px solid #1a3c75; border-radius: 3px; color: white; cursor: pointer;">${T('Stockbusters.text.authorize')}</button>

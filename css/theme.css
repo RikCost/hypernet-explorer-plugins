@@ -337,6 +337,15 @@
     overflow-wrap: break-word;
 }
 
+/* The personality step's three-across list: the archetypes are single words, so
+   they stay centred rather than left-aligned like the origins, but they sit in
+   cells just as narrow and a long translation still has to wrap inside one
+   instead of running past its card. */
+.cc-select-grid.cc-compact.cc-three-col:not(.cc-align-left) .cc-option-title {
+    line-height: 1.2;
+    overflow-wrap: break-word;
+}
+
 /* Keyboard/controller cursor on a compact card that is not a committed pick. */
 .cc-card-option.highlighted {
     border-color: var(--border-focus-hover);
@@ -2874,6 +2883,21 @@
     color: var(--bg-secondary-hover) !important;
     border-color: var(--text-primary-hover);
     box-shadow: 0 2px 4px var(--shadow-gold-amber-50);
+}
+
+/* The loadout presets on the Skills menu's tab rail (Best / Random). They ride
+   the same rail as the filters but act on the carried row rather than on what
+   the list shows, so they are inked in the gold the loadout's own chips wear
+   and never take the active tab's fill. */
+.backpack-tab.preset-tab {
+    color: var(--text-gold-dark);
+    border-color: var(--border-gold-amber);
+    border-style: dashed;
+}
+.backpack-tab.preset-tab:hover {
+    background: var(--bg-primary-hover-translucent-35);
+    color: var(--text-primary-hover);
+    border-style: solid;
 }
 
 /* Search bar */

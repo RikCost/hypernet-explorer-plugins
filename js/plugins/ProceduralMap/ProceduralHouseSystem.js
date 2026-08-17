@@ -138,7 +138,7 @@
       // calls enterDoorFeatureAt with the door's own tile), the same way the
       // StairsUp / StairsDown / Cave / Grate entrances beside them work.
       // tryProcMapInteract is the action-button path, which the signposts
-      // (SignPark camper recall / SignBus fast-travel) still need, and which
+      // (SignPark vehicle recall / SignBus fast-travel) still need, and which
       // keeps working on a door the party is already standing on.
       enterDoorFeatureAt(name, x, y) { return enterDoorFeatureAt(name, x, y); },
       isInteractFeature(name) { return INTERACT_FEATURES.has(name); },
@@ -1076,7 +1076,7 @@
   //   DoorShop       -> a shop
   //   DoorSkyscraper -> a 4-to-10-floor building  (seeded from the tile)
   //   DoorDungeon    -> a coordinate-seeded dungeon (Dungeon/Crypt/Sewer/... by biome)
-  //   SignPark       -> recalls (summons) the camper to the player
+  //   SignPark       -> recalls (summons) the last vehicle driven to the player
   //   SignBus        -> the fast-travel map, boarding as a Bus
   const PROC_MAP_ID = 636;
 
@@ -1239,12 +1239,14 @@
     const sc = SceneManager._scene;
     if (sc instanceof Scene_Map && typeof sc.startFastTravel === "function") sc.startFastTravel("bus");
   }
-  // SignPark recalls (summons) the camper to the player via VehicleSystem's
-  // summonCamper plugin command. No-op if VehicleSystem is absent.
-  function recallCamper() {
-    const key = "VehicleSystem:summonCamper";
+  // SignPark recalls (summons) the vehicle the party last drove — the camper,
+  // the car, the bike or the broom, never the Starship or the Boat — via
+  // VehicleSystem's summonLastVehicle plugin command, which says so itself when
+  // the party owns no vehicle. No-op if VehicleSystem is absent.
+  function recallLastVehicle() {
+    const key = "VehicleSystem:summonLastVehicle";
     if (PluginManager._commands && PluginManager._commands[key]) {
-      PluginManager.callCommand($gameMap._interpreter || {}, "VehicleSystem", "summonCamper", {});
+      PluginManager.callCommand($gameMap._interpreter || {}, "VehicleSystem", "summonLastVehicle", {});
     } else {
       console.warn("VehicleSystem not available for SignPark.");
     }
@@ -1281,7 +1283,7 @@
         enterSeededDungeon();
         return true;
       case "SignPark":
-        recallCamper();
+        recallLastVehicle();
         return true;
       case "SignBus":
         openBusFastTravel();

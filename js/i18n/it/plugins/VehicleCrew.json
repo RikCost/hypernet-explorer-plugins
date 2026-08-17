@@ -1,0 +1,14 @@
+{
+  "drivingTag": "(Alla guida)",
+  "tookWheel": "{name} prende il volante.",
+  "allTired": "{name} guida ormai di riserva e a bordo nessuno è abbastanza riposato per dare il cambio.",
+  "aboard": {
+    "hunger": "In cambusa sta cuocendo qualcosa.",
+    "sleep": "L'equipaggio smontato va a dormire.",
+    "hygiene": "L'equipaggio fa a turno nella doccia sonica.",
+    "social": "L'equipaggio passa le ore a parlare.",
+    "leisure": "Qualcuno tira fuori le carte da un armadietto.",
+    "meal": "{name} mangia {item} a bordo.",
+    "noFood": "Nella stiva non c'è più cibo."
+  }
+}

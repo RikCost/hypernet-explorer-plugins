@@ -33,14 +33,31 @@
  *   Anomaly.biomes.<Biome>           alien surfaces: { label, scenarios, tokens }
  *   Anomaly.earth.tokens.<bank>      word banks for the Earth adventures
  *   Anomaly.earth.aliases.<Biome>    biome -> the biome whose adventure it plays
- *   Anomaly.earth.biomes.<Biome>     { scenarios: [id], tokens: {bank} }
+ *   Anomaly.earth.biomes.<Biome>     { scenarios: [id], tokens, openers, markers }
+ *   Anomaly.earth.places.<Name>      one Destinations.json place has its own
+ *                                    adventures (Paris, the Vatican Citadel...)
+ *   Anomaly.earth.countries.<Name>   one Countries.json country has its own
+ *   Anomaly.earth.powers.<Name>      every country a hyperpower holds or controls
  *   Anomaly.earth.fallbackScenarios  played on a biome nothing was written for
  *   Anomaly.scenarios.<id>           { title, start, nodes: { <id>: node } }
  *   node                             { text, choices: [{ text, to }] }
  *   terminal node                    { text, outcome: { kind, mag } }
  *
  * outcome.kind: artifact | gear | loot | gold | schrodingerite | harm | heal |
- *               battle (with `reward` naming what winning pays) | none
+ *               battle (with `reward` naming what winning pays, `fail` what
+ *               losing or running costs) | minigame (`game` names it, `reward`
+ *               pays for a win, `fail` for a loss) | date (an evening with Eris,
+ *               handed to ErisDateSystem) | reputation | none
+ *
+ * Any outcome may also carry:
+ *   rep: { <factionSlug>: delta }    standing moved with one or more factions
+ *   kp / stars                       what the ending is worth in Knowledge
+ *                                    (SkillMaster's KP, on the quest curve)
+ *
+ * Every marker is one square of the world map, and the set is redrawn once a
+ * day: a biome carries as many as it has ground to spread them over, and a
+ * named place, a country, or a hyperpower's territory carries its own on top of
+ * that. A square answered is answered for good, whichever day it came round on.
  *
  * ----------------------------------------------------------------------------
  * API
@@ -49,6 +66,7 @@
  *   ProceduralAdventure.Earth.tiles()          Set of "x,y" carrying a marker
  *   ProceduralAdventure.Earth.isPendingAt(x,y) is there one to play here?
  *   ProceduralAdventure.Earth.beginAt(x,y)     play it (drives the map messages)
+ *   ProceduralAdventure.Earth.markerAt(x,y)    what kind of marker stands there
  * ============================================================================
  */
 
@@ -126,6 +144,63 @@
   function biomeEntry(session) {
     const pack = packOf(session);
     return (pack.biomes && pack.biomes[session.biome]) || {};
+  }
+
+  // An Earth square can belong to something narrower than its biome: a named
+  // place (Paris), a country (France), or the territory of a hyperpower (every
+  // country the Holy Vatican Empire holds). That entry, when there is one, owns
+  // the square's adventures and its word banks; the biome underneath still
+  // contributes its own banks behind it.
+  const EARTH_SCOPES = ["places", "countries", "powers"];   // i18n-ignore: pack section ids
+  function exclusiveEntry(session) {
+    if (!session || !session.earth || !session.scope) return null;
+    const pack = packOf(session);
+    const section = pack[session.scope];
+    return (section && section[session.scopeId]) || null;
+  }
+  // Where a session's scenarios and banks come from, narrowest first.
+  function contentEntries(session) {
+    const out = [];
+    const ex = exclusiveEntry(session);
+    if (ex) out.push(ex);
+    out.push(biomeEntry(session));
+    return out;
+  }
+
+  // ---- Factions -----------------------------------------------------------
+  // Content names a faction by the slug in its Factions.json i18n key
+  // ("hexorcistscorp"), which is the only stable id it has: the numeric ids are
+  // positional and the display names are translated.
+  function factionIndexBySlug(slug) {
+    const FDM = window.FactionDataManager && window.FactionDataManager.instance;
+    const list = FDM && FDM._factions;
+    if (!Array.isArray(list)) return -1;
+    const want = String(slug || "").toLowerCase();
+    for (let i = 0; i < list.length; i++) {
+      const key = String((list[i] && list[i].name) || "");
+      const m = /^factions\.([^.]+)\.name$/.exec(key);
+      if (m && m[1].toLowerCase() === want) return i;
+    }
+    return -1;
+  }
+  function factionDisplayName(index) {
+    const FDM = window.FactionDataManager && window.FactionDataManager.instance;
+    const entry = FDM && FDM._factions && FDM._factions[index];
+    if (!entry) return "";
+    return FDM.t ? FDM.t(entry.name) : String(entry.name || "");
+  }
+
+  // ---- Knowledge ----------------------------------------------------------
+  // Adventures pay Knowledge on the same curve quest contracts do (the star
+  // rating is the pay grade, and anything fought along the way is measured
+  // against the party's own level), so what an afternoon out here teaches is
+  // worth what a board contract of the same weight teaches.
+  function anomStars(out) {
+    if (out && out.stars > 0) return Math.max(1, Math.min(5, Math.round(out.stars)));
+    const mag = out && out.mag;
+    if (mag === "large") return 4;
+    if (mag === "small") return 1;
+    return 2;
   }
 
   // Which worlds in a system are signalling. Deterministic from the world seed:
@@ -233,11 +308,15 @@
       .trim();
   }
 
-  // Biome bank first, then the pack's own shared bank, then the global one.
+  // Narrowest bank first (the place, then the biome), then the pack's own shared
+  // bank, then the global one. A country that writes its own {stranger} list
+  // therefore replaces the biome's without having to restate anything else.
   function anomBanks(session) {
     const db = anomalyDB();
     const pack = packOf(session);
-    return [biomeEntry(session).tokens || {}, pack.tokens || {}, db.tokens || {}];
+    const banks = contentEntries(session).map((e) => e.tokens || {});
+    banks.push(pack.tokens || {}, db.tokens || {});
+    return banks;
   }
 
   function anomResolve(session, tpl) {
@@ -384,6 +463,39 @@
     return out;
   }
 
+  // Standing moved by an ending. `rep` is { slug: delta }, so one ending can
+  // please the Hexorcists and cost the party the Guild in the same breath.
+  function anomApplyReputation(out, lines) {
+    const rep = out && out.rep;
+    if (!rep || typeof $gameFactions === "undefined" || !$gameFactions) return;
+    Object.keys(rep).forEach((slug) => {
+      const delta = Math.round(Number(rep[slug]) || 0);
+      if (!delta) return;
+      const index = factionIndexBySlug(slug);
+      if (index < 0) return;
+      $gameFactions.changeReputation(index, delta);
+      const name = factionDisplayName(index) || slug;
+      lines.push(anomText(delta > 0 ? "reward.reputation" : "reward.reputationLost",
+        { faction: name, amount: Math.abs(delta) }));
+    });
+  }
+
+  // Knowledge, on the quest curve. Anything the ending had the party fight is
+  // priced into it, which is why a battle ending teaches more than a walk.
+  function anomAwardKnowledge(out, lines) {
+    if (!window.KnowledgePoints || typeof $gameSystem === "undefined" || !$gameSystem) return;
+    if (!$gameSystem.addKnowledge) return;
+    if (out && out.kp === 0) return;
+    const levels = [];
+    if (out && out.enemyLevel > 0) levels.push(out.enemyLevel);
+    let kp = out && out.kp > 0
+      ? Math.round(out.kp)
+      : window.KnowledgePoints.forQuest(anomStars(out), levels, anomPartyLevel());
+    if (!(kp > 0)) return;
+    $gameSystem.addKnowledge(kp);
+    lines.push(anomText("reward.knowledge", { kp: kp }));
+  }
+
   // Everything a terminal node can hand over. Returns the lines the panel and
   // the toasts read out; a battle instead arms the handover (see startBattle).
   function anomApplyOutcome(session, out) {
@@ -447,15 +559,96 @@
       $gameParty.allMembers().forEach((a) => a.gainExp(exp));
       lines.push(anomText("reward.exp", { exp: exp }));
     }
+    // What was worked out down there is worth Knowledge as well as levels: the
+    // skill masters charge KP for everything they teach, and an afternoon spent
+    // on something nobody has written up is exactly how it is earned.
+    anomAwardKnowledge(out, lines);
+    anomApplyReputation(out, lines);
     if (kind === "none") spec(session.earth ? "Survival" : "Astrobiology", 1);   // i18n-ignore: specialization id
     return lines;
   }
 
-  // ---- Battle handover ----------------------------------------------------
-  // A fight cannot start inside the star map, so a battle ending arms this and
-  // the scene pops back to the map before calling startBattle(). On Earth the
-  // party is already standing on a map, so the presenter starts it directly.
+  // ---- Handovers ----------------------------------------------------------
+  // Three endings finish somewhere this engine cannot reach from where it is
+  // standing: a fight (which cannot start inside the star map), a minigame, and
+  // an evening with Eris. Each arms a pending handover, and the presenter runs
+  // it once the last message has closed.
   let _anomPendingBattle = null;
+  let _anomPendingMinigame = null;
+  let _anomPendingDate = null;
+  let _anomMinigameSettle = null;   // a contest being played right now
+
+  // An ending that was not reached: the party ran, or the party lost. It pays
+  // what the node's `fail` says (an ordinary outcome, usually harm or a
+  // standing lost) and never pays what winning promised.
+  function anomApplyFailure(session, out) {
+    const fail = out && out.fail;
+    const lines = [anomText("reward.failed")];
+    if (fail && typeof fail === "object") {
+      // The failure branch is an outcome in its own right, minus its own
+      // experience: nothing was learned that the walk back did not teach.
+      anomApplyOutcome(session, Object.assign({ exp: 0, kp: 0 }, fail))
+        .forEach((l) => lines.push(l));
+    }
+    if (session) session.failed = true;
+    return lines;
+  }
+
+  // ---- Minigames ----------------------------------------------------------
+  // The scene each `game` id opens, looked up late: a minigame plugin that is
+  // switched off simply is not there, and the ending falls back to paying out.
+  const ANOM_MINIGAMES = {   // i18n-ignore-start: minigame ids and scene names
+    bowling: "Scene_BowlingMinigame",
+    pool: "Scene_Pool",
+    chess: "Scene_Chess",
+    basketball: "Scene_BasketballMinigame",
+    target: "Scene_TargetRange",
+    fishing: "Scene_FishingMinigame",
+    surfing: "Scene_SurfingGame",
+    tetris: "Scene_HexphoneTetris",
+    cards: "Scene_Tarot",
+    horses: "Scene_HorseRace",
+  };   // i18n-ignore-end
+
+  function minigameScene(game) {
+    const name = ANOM_MINIGAMES[game];
+    const ctor = name ? window[name] : null;
+    return (typeof ctor === "function") ? ctor : null;
+  }
+
+  // How the party did, read off the shared MinigameFun hook every minigame in
+  // the game already calls on its way out. Wrapping it is what lets one engine
+  // score bowling, chess, the range and the rest without knowing anything about
+  // any of them. The FIRST decisive call is the answer, so a fishing trip that
+  // lands a second fish does not overwrite the first.
+  let _anomMinigameResult = null;   // "won" | "lost" | "draw"
+  let _anomMinigameHook = null;
+
+  function hookMinigameResult() {
+    const MF = window.MinigameFun;
+    if (!MF || _anomMinigameHook) return;
+    _anomMinigameResult = null;
+    _anomMinigameHook = { won: MF.won, lost: MF.lost, draw: MF.draw };
+    ["won", "lost", "draw"].forEach((kind) => {   // i18n-ignore: result ids
+      MF[kind] = function () {
+        if (_anomMinigameResult === null) _anomMinigameResult = kind;
+        return _anomMinigameHook[kind].apply(this, arguments);
+      };
+    });
+  }
+
+  function unhookMinigameResult() {
+    const MF = window.MinigameFun;
+    if (MF && _anomMinigameHook) {
+      MF.won = _anomMinigameHook.won;
+      MF.lost = _anomMinigameHook.lost;
+      MF.draw = _anomMinigameHook.draw;
+    }
+    _anomMinigameHook = null;
+    const result = _anomMinigameResult;
+    _anomMinigameResult = null;
+    return result;
+  }
 
   // A synthetic troop of 1-3 of whatever lives out here, picked from the enemies
   // whose <Level:> sits nearest the party's own. Session-local: $dataTroops is
@@ -490,17 +683,90 @@
     return troopId;
   }
 
+  // A terminal node, resolved. Most endings pay out here and now; the three
+  // that finish somewhere else arm their handover and say so, and the presenter
+  // runs it once the prose has been read.
+  function anomArm(session, outcome) {
+    if (!outcome) return [];
+    if (outcome.kind === "battle") {
+      const troopId = anomBuildTroop(session, outcome.count);
+      if (troopId) {
+        _anomPendingBattle = { troopId, outcome, key: session.key };
+        return [anomText("reward.battle")];
+      }
+      // No enemy could be built (a database this thin should not happen, but an
+      // ending has to pay out something).
+      return anomApplyOutcome(session, Object.assign({}, outcome,
+        { kind: outcome.reward || "loot" }));
+    }
+    if (outcome.kind === "minigame") {
+      if (minigameScene(outcome.game)) {
+        _anomPendingMinigame = { outcome, key: session.key };
+        return [anomText("reward.minigame")];
+      }
+      // The minigame is not installed: the contest is taken as won, since the
+      // party was never given the chance to lose it.
+      return anomApplyOutcome(session, Object.assign({}, outcome,
+        { kind: outcome.reward || "gold" }));
+    }
+    if (outcome.kind === "date") {
+      // What the evening itself is worth is Eris's business. The ending still
+      // pays its own way first, so a date that never opens is not a dead end.
+      const lines = anomApplyOutcome(session, Object.assign({}, outcome,
+        { kind: outcome.reward || "none" }));
+      if (window.ErisDateSystem && window.ErisDateSystem.start) {
+        _anomPendingDate = {
+          mood: outcome.mood || null,
+          biome: outcome.dateBiome || session.rawBiome || session.biome || null,
+        };
+        lines.push(anomText("reward.date"));
+      }
+      return lines;
+    }
+    if (outcome.kind === "reputation") {
+      return anomApplyOutcome(session, Object.assign({}, outcome, { kind: "none" }));
+    }
+    return anomApplyOutcome(session, outcome);
+  }
+
   // ---- The encounter itself ----------------------------------------------
-  function anomScenarioFor(session) {
+  // The adventures a square can tell, narrowest first: what its place, country
+  // or hyperpower wrote, and the biome's own only when nothing narrower did.
+  function anomScenarioList(session) {
     const db = anomalyDB();
     const pack = packOf(session);
-    const entry = biomeEntry(session);
-    const list = (entry.scenarios && entry.scenarios.length)
-      ? entry.scenarios : (pack.fallbackScenarios || []);
-    const usable = list.filter((id) => db.scenarios && db.scenarios[id]);
+    let list = null;
+    for (const entry of contentEntries(session)) {
+      if (entry.scenarios && entry.scenarios.length) { list = entry.scenarios; break; }
+    }
+    if (!list) list = pack.fallbackScenarios || [];
+    return list.filter((id) => db.scenarios && db.scenarios[id]);
+  }
+
+  function anomScenarioFor(session) {
+    const usable = anomScenarioList(session);
     if (!usable.length) return null;
     const idx = Math.floor(seededFloat(session.key, 7717) * usable.length) % usable.length;
     return usable[idx];
+  }
+
+  // The line the encounter opens on, ahead of the scenario's own first
+  // paragraph: where the party is standing, what the weather is doing, who else
+  // is about. Written per biome and per place, drawn from the same banks and
+  // resolved through the same passes, so the same adventure played on two
+  // squares does not open the same way twice.
+  function anomOpener(session) {
+    let bank = null;
+    for (const entry of contentEntries(session)) {
+      if (Array.isArray(entry.openers) && entry.openers.length) { bank = entry.openers; break; }
+    }
+    if (!bank) {
+      const pack = packOf(session);
+      bank = Array.isArray(pack.openers) ? pack.openers : null;
+    }
+    if (!bank || !bank.length) return "";
+    const rng = anomRng(session);
+    return anomResolve(session, bank[Math.floor(rng() * bank.length)]);
   }
 
   // Resolve the node the session is sitting on into the panel's view. Resolved
@@ -513,9 +779,16 @@
       session.view = { title: session.placeName, text: anomText("ui.signalLost"), choices: [], done: true };
       return session.view;
     }
+    let text = anomResolve(session, node.text);
+    if (session.node === sc.start) {
+      // Resolved once and pinned: a re-render of the opening node (a reload, a
+      // panel redraw) must not roll a different afternoon.
+      if (session.opener === undefined) session.opener = anomOpener(session);
+      if (session.opener) text = session.opener + "\n" + text;
+    }
     const view = {
       title: session.title || anomResolve(session, sc.title || ""),
-      text: anomResolve(session, node.text),
+      text,
       choices: [],
       done: !!node.outcome,
       rewards: [],
@@ -626,29 +899,18 @@
       const db = anomalyDB();
       const sc = db.scenarios && db.scenarios[s.scenario];
       const node = sc && sc.nodes && sc.nodes[s.node];
-      if (node && node.outcome) {
-        if (node.outcome.kind === "battle") {
-          const troopId = anomBuildTroop(s, node.outcome.count);
-          if (troopId) {
-            _anomPendingBattle = { troopId, outcome: node.outcome, key: s.key };
-            s.rewards = [anomText("reward.battle")];
-          } else {
-            // No enemy could be built (a database this thin should not happen,
-            // but an ending has to pay out something).
-            s.rewards = anomApplyOutcome(s, Object.assign({}, node.outcome,
-              { kind: node.outcome.reward || "loot" }));
-          }
-        } else {
-          s.rewards = anomApplyOutcome(s, node.outcome);
-        }
-      }
+      if (node && node.outcome) s.rewards = anomArm(s, node.outcome);
       return anomBuildView(s);
     },
     // Close the encounter for good and record how it ended.
     end() {
       if (typeof $gameSystem === "undefined" || !$gameSystem) return;
       const s = Anomaly.session();
-      if (s) anomalyStore()[s.key] = { started: true, done: true, scenario: s.scenario };
+      if (s) {
+        anomalyStore()[s.key] = {
+          started: true, done: true, scenario: s.scenario, failed: !!s.failed,
+        };
+      }
       $gameSystem._gsAnomalySession = null;
     },
     // A fight was the answer. The star map pops back to the map, then calls this.
@@ -661,21 +923,93 @@
       // No map to fight on (a load that never streamed one in): close the
       // encounter rather than leaving it half-open forever.
       if (!$dataMap || typeof $dataMap.width !== "number") { Anomaly.end(); return false; }
-      BattleManager.setup(pend.troopId, true, false);
+      // Escapable and losable both: what is down there is an adventure, not a
+      // sentence. Running from it and being beaten by it are the same answer -
+      // the party does not get what they came for, and the square is spent.
+      BattleManager.setup(pend.troopId, true, true);
       BattleManager.setEventCallback((result) => {
-        // Victory pays what the ending promised; anything else is the walk back.
-        if (result === 0 && session) {
-          const lines = anomApplyOutcome(session, Object.assign({}, pend.outcome, { kind: pend.outcome.reward || "loot" }));
-          if (window.ParchmentToast) {
-            window.ParchmentToast.group(lines.map((l) => ({ text: l, severity: "good" })));
-          }
+        // Victory pays what the ending promised; running or losing fails it.
+        if (session) {
+          const lines = result === 0
+            ? anomApplyOutcome(session, Object.assign({}, pend.outcome,
+                { kind: pend.outcome.reward || "loot" }))
+            : anomApplyFailure(session, pend.outcome);
+          anomToast(lines, result === 0);
         }
         Anomaly.end();
       });
       SceneManager.push(Scene_Battle);
       return true;
     },
+    // A contest was the answer: the party plays the game itself, and the ending
+    // pays out on the result the minigame reports.
+    hasPendingMinigame() { return !!_anomPendingMinigame; },
+    startMinigame() {
+      const pend = _anomPendingMinigame;
+      _anomPendingMinigame = null;
+      if (!pend) return false;
+      const Scene = minigameScene(pend.outcome.game);
+      const session = Anomaly.session();
+      if (!Scene) {
+        // Between arming and running, the minigame went away. Pay the win.
+        if (session) {
+          anomToast(anomApplyOutcome(session, Object.assign({}, pend.outcome,
+            { kind: pend.outcome.reward || "gold" })), true);
+        }
+        Anomaly.end();
+        return false;
+      }
+      _anomMinigameSettle = { outcome: pend.outcome };
+      hookMinigameResult();
+      SceneManager.push(Scene);
+      return true;
+    },
+    // Called on the way back to the map, once the minigame's scene is gone.
+    settleMinigame() {
+      const pend = _anomMinigameSettle;
+      const result = unhookMinigameResult();
+      if (!pend) return false;
+      _anomMinigameSettle = null;
+      const session = Anomaly.session();
+      if (session) {
+        // Anything but a loss is taken as good enough: a draw is not a defeat,
+        // and a game closed without a verdict was not lost either.
+        const won = result !== "lost";   // i18n-ignore: result id
+        const lines = won
+          ? anomApplyOutcome(session, Object.assign({}, pend.outcome,
+              { kind: pend.outcome.reward || "gold" }))
+          : anomApplyFailure(session, pend.outcome);
+        anomToast(lines, won);
+      }
+      Anomaly.end();
+      return true;
+    },
+    // An evening was the answer. Handed to ErisDateSystem, which owns
+    // everything about it from here.
+    hasPendingDate() { return !!_anomPendingDate; },
+    startDate() {
+      const pend = _anomPendingDate;
+      _anomPendingDate = null;
+      if (!pend) return false;
+      Anomaly.end();
+      const EDS = window.ErisDateSystem;
+      if (!EDS || !EDS.start || EDS.isActive()) return false;
+      try { return !!EDS.start(pend.biome, pend.mood); } catch (e) {
+        console.error("[ProceduralAdventure] date failed", e);
+        return false;
+      }
+    },
   };
+
+  // What a handover pays is reported after the fact, on the map the party is
+  // standing on rather than in the encounter's own message window: by the time
+  // it is known, the encounter has closed.
+  function anomToast(lines, good) {
+    if (!window.ParchmentToast || !lines || !lines.length) return;
+    window.ParchmentToast.group(lines.map((l) => ({
+      text: l, severity: good ? "good" : "bad",
+    })));
+  }
 
   // ==========================================================================
   // EARTH: one adventure per biome, on the world map's "???" squares
@@ -744,47 +1078,228 @@
            $gameMap.isPassable(x, y, 6) || $gameMap.isPassable(x, y, 8);
   }
 
-  let _earthTiles = null;      // Map<"x,y", biome> for this world
-  let _earthTilesSeed = null;  // the world the set was built for
+  // Countries.json by the region id painted on the world map. Built once, because
+  // the daily rebuild asks this of every square the biome cache holds and the
+  // stock lookup walks the whole country list every time it is asked.
+  let _earthCountryById = null;
+  function earthCountriesById() {
+    if (_earthCountryById) return _earthCountryById;
+    const list = (window.WorldGen && window.WorldGen.Countries) || [];
+    if (!list.length) return null;   // not loaded yet: do not cache the emptiness
+    _earthCountryById = {};
+    // Duplicated ids (Albania/Montenegro, Germany/Portugal) resolve to the first
+    // match, exactly as getCountryFromWorldCoordinates does.
+    list.forEach((c) => {
+      if (c && c.id && _earthCountryById[c.id] === undefined) _earthCountryById[c.id] = c;
+    });
+    return _earthCountryById;
+  }
 
-  // One square per biome, seeded: walk the biome's own coordinate list from a
-  // seeded offset and take the first square the party could actually stand on.
+  // The country a square belongs to. A country entry names two hyperpowers: the
+  // one whose banner flies over it (`faction`) and the one occupying it
+  // (`controller`), and an adventure written for either is at home there.
+  function earthCountryAt(x, y) {
+    try {
+      if (!$gameSystem) return null;
+      const byId = earthCountriesById();
+      if (byId && $gameSystem.getWorldRegionId) {
+        const id = $gameSystem.getWorldRegionId(x, y);
+        return id ? (byId[id] || null) : null;
+      }
+      return $gameSystem.getCountryFromWorldCoordinates
+        ? $gameSystem.getCountryFromWorldCoordinates(x, y) : null;
+    } catch (e) { return null; }
+  }
+  const EARTH_NO_POWER = ["Neutral", "None", ""];   // i18n-ignore: Countries.json sentinels
+  function earthPowersOf(country) {
+    if (!country) return [];
+    return [country.faction, country.controller]
+      .filter((p) => p && EARTH_NO_POWER.indexOf(String(p)) < 0);
+  }
+
+  let _earthTiles = null;      // Map<"x,y", marker> for this world, today
+  let _earthTilesRev = null;   // the world and the day the set was built for
+
+  // Which calendar day it is. The marker set is drawn fresh at midnight: what is
+  // worth walking out to look at is a different set of squares this morning than
+  // it was yesterday, and a square the party never got to is not lost, it simply
+  // comes round again.
+  //
+  // The clock (Variable 114) counts minutes from 10:00 on 1 January 2001, so the
+  // minute count alone rolls over at ten in the morning. The date it resolves to
+  // is what the day is taken from, and that turns at midnight.
+  const CLOCK_VAR = 114;
+  const CLOCK_EPOCH_MINUTES = 10 * 60;   // 1 Jan 2001 10:00, TimeDateSystem's zero
+  function clockMinutes() {
+    try {
+      if (window.TimeDateSystem && window.TimeDateSystem.getGameTimeMinutes) {
+        return window.TimeDateSystem.getGameTimeMinutes() || 0;
+      }
+    } catch (e) { /* clock not up yet */ }
+    if (typeof $gameVariables !== "undefined" && $gameVariables) {
+      return $gameVariables.value(CLOCK_VAR) || 0;
+    }
+    return 0;
+  }
+  function dayIndex() {
+    return Math.floor((clockMinutes() + CLOCK_EPOCH_MINUTES) / 1440);
+  }
+
+  // The token that identifies the set standing on the map right now: the world,
+  // and the day. WorldMapReturn watches this to know when to redraw.
+  function earthRevision() { return worldSeed() + "|" + dayIndex(); }   // i18n-ignore: cache key
+
+  // How many squares one entry is worth on any given day. Explicitly written
+  // markers win; otherwise it goes on how much of that ground the map paints.
+  const EARTH_MARKERS_CAP = 10;
+  const EARTH_MARKERS_SPREAD = 10;   // squares two markers of one entry keep apart
+  function markerCount(entry, coordCount) {
+    if (entry && entry.markers > 0) return Math.min(entry.markers, EARTH_MARKERS_CAP);
+    const byArea = Math.max(1, Math.round(Math.sqrt(coordCount / 16)));
+    return Math.max(1, Math.min(EARTH_MARKERS_CAP, byArea));
+  }
+
+  // Walk a coordinate list from a seeded offset in a stride that is coprime with
+  // nothing in particular, and take squares the party can stand on, keeping them
+  // apart so one biome's markers are not all in one valley. Ground too small to
+  // spread them over takes them anyway on a second pass: a district of four
+  // village squares still gets its adventure.
+  function claimTiles(tiles, coords, want, salt, marker) {
+    if (!coords || !coords.length || want <= 0) return 0;
+    const day = salt + "|" + dayIndex();   // i18n-ignore: seed salt
+    const start = Math.floor(seededFloat(day, 5443) * coords.length) % coords.length;
+    const taken = [];
+    for (let pass = 0; pass < 2 && taken.length < want; pass++) {
+      const spread = pass === 0 ? EARTH_MARKERS_SPREAD : 0;
+      for (let i = 0; i < coords.length && taken.length < want; i++) {
+        const c = coords[(start + i * 7919) % coords.length];
+        if (!c || typeof c.x !== "number") continue;
+        const key = c.x + "," + c.y;   // i18n-ignore: coordinate key
+        if (tiles.has(key)) continue;
+        if (spread && taken.some((t) => Math.abs(t.x - c.x) + Math.abs(t.y - c.y) < spread)) continue;
+        if (!isFreeWorldTile(c.x, c.y)) continue;
+        taken.push(c);
+        tiles.set(key, Object.assign({ biome: marker.biome }, marker));
+      }
+    }
+    return taken.length;
+  }
+
+  // The square a named place's own adventure stands on: as close to the place
+  // as the map allows, since the place itself is a teleport event and cannot
+  // carry a marker.
+  const EARTH_PLACE_RADIUS = 6;
+  function tileNearPlace(tiles, base) {
+    for (let r = 1; r <= EARTH_PLACE_RADIUS; r++) {
+      for (let dy = -r; dy <= r; dy++) {
+        for (let dx = -r; dx <= r; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          const x = base.x + dx, y = base.y + dy;
+          const key = x + "," + y;   // i18n-ignore: coordinate key
+          if (tiles.has(key)) continue;
+          if (!isFreeWorldTile(x, y)) continue;
+          return { x, y };
+        }
+      }
+    }
+    return null;
+  }
+
+  // Everything the world map carries, narrowest claim first: a place's own
+  // adventure beats the country's, the country's beats its hyperpower's, and
+  // the biomes fill in what is left.
   function buildEarthTiles() {
     const tiles = new Map();
     const cache = biomeCoordinateCache();
     if (!cache) return tiles;
     const pack = earthDB();
-    const written = Object.keys(pack.biomes || {});
-    if (!written.length) return tiles;
-    // Biomes the map actually paints, each resolved to the adventure it plays,
-    // so the road variants do not each claim a marker of their own.
+    if (!Object.keys(pack.biomes || {}).length) return tiles;
+
+    // ---- Named places (Destinations.json) ----------------------------------
+    const places = pack.places || {};
+    const destinations = (window.WorkSystem && window.WorkSystem.Destinations) || {};
+    Object.keys(places).sort().forEach((name) => {
+      const dest = destinations[name];
+      const base = dest && dest.base;
+      if (!base || typeof base.x !== "number") return;
+      const spot = tileNearPlace(tiles, base);
+      if (!spot) return;
+      tiles.set(spot.x + "," + spot.y, {   // i18n-ignore: coordinate key
+        scope: "places", scopeId: name,    // i18n-ignore: pack section id
+        biome: earthBiomeKey(earthBiomeAt(spot.x, spot.y)),
+        place: name,
+      });
+    });
+
+    // ---- Biome squares, grouped by the adventure they play ------------------
+    // (Road variants do not each claim a marker of their own.) The same pass
+    // groups every square by its country, which is what the country and
+    // hyperpower adventures are placed out of.
     const byAdventure = {};
+    const byCountry = {};
     Object.keys(cache).forEach((biome) => {
       const coords = cache[biome];
       if (!Array.isArray(coords) || !coords.length) return;
       const key = earthBiomeKey(biome);
-      if (!key) return;
-      (byAdventure[key] = byAdventure[key] || []).push(...coords);
+      coords.forEach((c) => {
+        if (!c || typeof c.x !== "number") return;
+        if (key) (byAdventure[key] = byAdventure[key] || []).push(c);
+        const country = earthCountryAt(c.x, c.y);
+        if (country && country.country) {
+          (byCountry[country.country] = byCountry[country.country] || []).push(c);
+        }
+      });
     });
+
+    // ---- Countries, then hyperpowers ---------------------------------------
+    const countries = pack.countries || {};
+    Object.keys(countries).sort().forEach((name) => {
+      claimTiles(tiles, byCountry[name], markerCount(countries[name], (byCountry[name] || []).length),
+        "country|" + name,   // i18n-ignore: seed salt
+        { scope: "countries", scopeId: name, country: name, biome: null });   // i18n-ignore: pack section id
+    });
+
+    const powers = pack.powers || {};
+    const list = (window.WorldGen && window.WorldGen.Countries) || [];
+    Object.keys(powers).sort().forEach((power) => {
+      const held = list.filter((c) => c && earthPowersOf(c).indexOf(power) >= 0);
+      if (!held.length) return;
+      // Spread over the countries the power holds rather than filling one of
+      // them: the Empire's business is the Empire's business everywhere.
+      const want = markerCount(powers[power], held.length * 40);
+      let placed = 0;
+      const order = held.slice().sort((a, b) =>
+        seededFloat(power + "|" + a.country, 3323) - seededFloat(power + "|" + b.country, 3323));
+      for (let pass = 0; pass < 2 && placed < want; pass++) {
+        for (const country of order) {
+          if (placed >= want) break;
+          placed += claimTiles(tiles, byCountry[country.country], 1,
+            "power|" + power + "|" + country.country + "|" + pass,   // i18n-ignore: seed salt
+            { scope: "powers", scopeId: power, power, country: country.country, biome: null });   // i18n-ignore: pack section id
+        }
+      }
+    });
+
+    // ---- The biomes themselves ---------------------------------------------
     Object.keys(byAdventure).sort().forEach((biome) => {
       const coords = byAdventure[biome];
-      const start = Math.floor(seededFloat(biome, 5443) * coords.length) % coords.length;
-      for (let i = 0; i < coords.length; i++) {
-        const c = coords[(start + i * 7919) % coords.length];
-        if (!c || typeof c.x !== "number") continue;
-        const key = c.x + "," + c.y;   // i18n-ignore: coordinate key
-        if (tiles.has(key)) continue;
-        if (!isFreeWorldTile(c.x, c.y)) continue;
-        tiles.set(key, biome);
-        return;
-      }
+      claimTiles(tiles, coords, markerCount((pack.biomes || {})[biome], coords.length),
+        biome, { biome });
+    });
+
+    // A marker placed before the biome pass knows where it is standing only
+    // now: fill in what it is painted on, for the word banks underneath.
+    tiles.forEach((marker, key) => {
+      if (marker.biome) return;
+      const parts = key.split(",");
+      marker.biome = earthBiomeKey(earthBiomeAt(Number(parts[0]), Number(parts[1])));
     });
     return tiles;
   }
 
   function earthTiles() {
-    const seed = worldSeed();
-    if (_earthTiles && _earthTilesSeed === seed) return _earthTiles;
+    const rev = earthRevision();
+    if (_earthTiles && _earthTilesRev === rev) return _earthTiles;
     if (typeof $gameMap === "undefined" || !$gameMap || $gameMap.mapId() !== WORLD_MAP_ID) {
       return _earthTiles || new Map();
     }
@@ -794,7 +1309,7 @@
     // never cached, so the markers appear as soon as it is.
     if (!built.size) return built;
     _earthTiles = built;
-    _earthTilesSeed = seed;
+    _earthTilesRev = rev;
     return _earthTiles;
   }
 
@@ -804,7 +1319,7 @@
     tiles() {
       const out = new Set();
       const store = anomalyStore();
-      earthTiles().forEach((biome, key) => {
+      earthTiles().forEach((marker, key) => {
         const rec = store[earthKey.apply(null, key.split(","))];
         if (rec && rec.done) return;
         out.add(key);
@@ -812,6 +1327,14 @@
       return out;
     },
     biomeAt(x, y) { return earthBiomeAt(x, y); },
+    // Changes whenever the set on the map does, which is once a day (and on a
+    // change of world). Anything drawing the markers redraws when this moves.
+    revision() { return earthRevision(); },
+    // What kind of marker stands here: a biome's, a place's, a country's or a
+    // hyperpower's. Null on a square that never carried one.
+    markerAt(x, y) {
+      return earthTiles().get(x + "," + y) || null;   // i18n-ignore: coordinate key
+    },
     // Is there an adventure to play on this square? Answered squares say no,
     // and so does every square that never carried one.
     isPendingAt(x, y) {
@@ -820,26 +1343,33 @@
       const rec = anomalyStore()[earthKey(x, y)];
       return !rec || !rec.done;
     },
-    // Open the adventure written for this square's biome and hand it to the
-    // map presenter. Returns false when there was nothing to play.
+    // Open the adventure written for this square and hand it to the map
+    // presenter. Returns false when there was nothing to play.
     beginAt(x, y) {
       if (typeof $gameSystem === "undefined" || !$gameSystem) return false;
       if (!Earth.isPendingAt(x, y)) return false;
       const key = earthKey(x, y);
       const live = Anomaly.session();
       if (live && live.key === key) { MapPlay.start(live); return true; }
-      const biomeName = earthBiomeAt(x, y) || earthTiles().get(x + "," + y);
-      const biome = earthBiomeKey(biomeName) || earthTiles().get(x + "," + y);
+      const marker = Earth.markerAt(x, y) || {};
+      const biomeName = earthBiomeAt(x, y) || marker.biome;
+      const biome = earthBiomeKey(biomeName) || marker.biome;
       const display = window.BiomeNames
         ? window.BiomeNames.display(biomeName || biome) : String(biomeName || biome);
-      const region = earthRegionName(x, y);
+      const country = earthCountryAt(x, y);
+      const region = (country && country.country) || null;
       const session = {
         key,
         earth: true,
         biome: biome || "",
-        // What a relic lifted here is named after: the country if the world map
-        // knows one, the biome itself otherwise.
-        placeName: region || display,
+        rawBiome: biomeName || biome || "",
+        // The narrower pack this square belongs to, if any: its place, its
+        // country, or the hyperpower whose ground it is.
+        scope: marker.scope || null,
+        scopeId: marker.scopeId || null,
+        // What a relic lifted here is named after: the place if this is one of
+        // theirs, the country if the world map knows one, the biome otherwise.
+        placeName: marker.place || region || display,
         roll: seededHash(key, 8191) || 1,
         ctx: {},
         rewards: [],
@@ -847,23 +1377,18 @@
         scenario: null,
       };
       session.ctx.biome = display;
-      session.ctx.place = display;
+      session.ctx.place = marker.place || display;
       session.ctx.region = region || display;
+      session.ctx.country = region || display;
+      const powers = earthPowersOf(country);
+      if (marker.power) session.ctx.power = marker.power;
+      else if (powers.length) session.ctx.power = powers[0];
+      if (marker.place) session.ctx.city = marker.place;
       if (!anomOpen(session)) return false;
       MapPlay.start(session);
       return true;
     },
   };
-
-  // The country the square belongs to, for the one line of prose that wants to
-  // name where in the world this is. Nothing on file: the biome name stands.
-  function earthRegionName(x, y) {
-    try {
-      const c = $gameSystem && $gameSystem.getCountryFromWorldCoordinates
-        ? $gameSystem.getCountryFromWorldCoordinates(x, y) : null;
-      return (c && c.country) ? c.country : null;
-    } catch (e) { return null; }
-  }
 
   // ==========================================================================
   // MAP PRESENTER
@@ -909,6 +1434,19 @@
     return pages.length ? pages : [[""]];
   }
 
+  // A line shown from a plugin has to say that it is already in the player's
+  // language. Hendrix_Localization.js routes $gameMessage.add() into a
+  // translation buffer that only the event interpreter ever flushes, so prose
+  // added from here would never reach the window at all: the branch's choices
+  // would open over an empty screen, and the paragraphs would surface later in
+  // the middle of somebody else's message. This prose is read out of
+  // Anomaly.json, which is translated already.
+  function messageAdd(line) {
+    const before = window.skipLocalization;
+    window.skipLocalization = true;
+    try { $gameMessage.add(line); } finally { window.skipLocalization = before; }
+  }
+
   const MapPlay = {
     _steps: [],
     _running: false,
@@ -935,7 +1473,7 @@
         const head = (i === 0 && title) ? [title] : [];
         const last = i === pages.length - 1;
         this.queue(() => {
-          head.concat(lines).forEach((l) => $gameMessage.add(l));
+          head.concat(lines).forEach((l) => messageAdd(l));
           if (last && !view.done) this.askChoices(view);
         });
       });
@@ -950,7 +1488,7 @@
       $gameMessage.setChoiceCallback((index) => {
         if (index >= view.choices.length) {
           this.queue(() => {
-            $gameMessage.add(anomText("ui.walkedAway"));
+            messageAdd(anomText("ui.walkedAway"));
             this.queue(() => this.finish());
           });
           return;
@@ -967,17 +1505,25 @@
       const lines = (view.rewards || []).filter((l) => l);
       if (lines.length) {
         paginate(lines.join("\n")).forEach((page) => {
-          this.queue(() => page.forEach((l) => $gameMessage.add(l)));
+          this.queue(() => page.forEach((l) => messageAdd(l)));
         });
       }
       this.queue(() => this.finish());
     },
 
+    // The prose is read out; whatever the ending owes somewhere else runs now.
+    // Each of these closes the encounter itself, once it knows how it went.
     finish() {
       this._running = false;
       this._steps = [];
       if (Anomaly.hasPendingBattle()) {
         try { Anomaly.startBattle(); return; } catch (e) { console.error(e); }
+      }
+      if (Anomaly.hasPendingMinigame()) {
+        try { Anomaly.startMinigame(); return; } catch (e) { console.error(e); }
+      }
+      if (Anomaly.hasPendingDate()) {
+        try { Anomaly.startDate(); return; } catch (e) { console.error(e); }
       }
       Anomaly.end();
     },
@@ -1003,10 +1549,13 @@
   // ==========================================================================
 
   // A branch that ended in a fight leaves the star map and lands here: the map
-  // scene is the only place a battle can be pushed from safely.
+  // scene is the only place a battle can be pushed from safely. A branch that
+  // ended in a contest lands here on the way BACK, once the minigame's own scene
+  // has closed and the result it reported can be read.
   const _PAS_Scene_Map_start = Scene_Map.prototype.start;
   Scene_Map.prototype.start = function () {
     _PAS_Scene_Map_start.call(this);
+    try { Anomaly.settleMinigame(); } catch (e) { console.error(e); Anomaly.end(); }
     if (Anomaly.hasPendingBattle() && !this._transfer) {
       try { Anomaly.startBattle(); } catch (e) { console.error(e); Anomaly.end(); }
     }

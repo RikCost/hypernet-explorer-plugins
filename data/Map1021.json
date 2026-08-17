@@ -1385,7 +1385,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$CarPilot1",
+            "characterName": "Varlenian/!$CarPilot1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -1464,7 +1464,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$CarPilot6",
+            "characterName": "Animations/!$CarPilot6",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -1534,7 +1534,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$CarPilot6",
+            "characterName": "Animations/!$CarPilot6",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -3062,7 +3062,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "NPCs/!$CarPilot1",
+            "characterName": "Varlenian/!$CarPilot1",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0

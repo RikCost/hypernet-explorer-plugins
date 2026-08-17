@@ -1213,9 +1213,12 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
   // that traveller's own. See Game_Factions.getReputationFor.
   const viewed = this.viewedActor();
 
-  // Generate Left Page: Faction Politics Spread
-  let listHTML = "";
-  factionList.forEach((item, idx) => {
+  // Generate Left Page: Faction Politics Spread. The rows themselves are filled
+  // in by the windowed list further down (UI/MenuVirtualList.js): reading one
+  // standing costs a lookup per row, and only the rows on the page are worth
+  // paying for.
+  const factionRowHTML = (item, idx) => {
+    if (!item) return "";
     const isFocused = this._dndSelectedIndex === idx ? "selected" : "";
     const isSub = item.isSub ? "faction-sub" : "";
     const subMarker = item.isSub ? `<span class="faction-sub-marker">⤍</span>` : "";
@@ -1223,14 +1226,13 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
     const reputation = $gameFactions.getReputationFor(viewed, item.standingKey);
     const reputationLevel = $gameFactions.reputationLevelOf(reputation);
     const reputationColor = $gameFactions.reputationColorOf(reputation);
-    const canvasId = `fac-canvas-${idx}`;
 
-    listHTML += `
+    return `
       <div class="faction-row ${isFocused} ${isSub}" onclick="SceneManager._scene.selectUIFaction(${idx})">
         ${subMarker}
         ${!item.isSub && item.iconIndex ? `
           <div class="faction-icon-frame">
-            <canvas id="${canvasId}" width="32" height="32" style="width:24px; height:24px"></canvas>
+            <canvas id="fac-canvas-${idx}" width="32" height="32" style="width:24px; height:24px"></canvas>
           </div>
         ` : ""}
         <div class="faction-info">
@@ -1239,7 +1241,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         <span class="faction-rep-badge" style="color: ${reputationColor}">${reputationLevel} (${reputation})</span>
       </div>
     `;
-  });
+  };
 
   const backBtnText = T("Factions.back");
   const factionsTitle = T("Factions.title");
@@ -1253,9 +1255,7 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         <h2 class="title" style="border: none; margin: 0; padding: 0">${factionsTitle}</h2>
       </div>
       ${this._factionBar ? this._factionBar.html() : ""}
-      <div class="backpack-grid" style="display:flex; flex-direction:column; flex: 1 1 auto; min-height: 0" id="factions-grid">
-        ${listHTML}
-      </div>
+      <div class="backpack-grid" style="display:flex; flex-direction:column; flex: 1 1 auto; min-height: 0" id="factions-grid"></div>
     </div>
   `;
 
@@ -1440,40 +1440,39 @@ Scene_FactionStatus.prototype.refreshUIFactions = function () {
         ${rightPageHTML}
       </div>
     `;
-
-    // Draw emblems on canvases
-    factionList.forEach((item, idx) => {
-      if (!item.isSub && item.iconIndex) {
-        this.drawUIFactionEmblem(item.iconIndex, `fac-canvas-${idx}`);
-      }
-    });
   } else {
-    // Left page already drawn! Update only dynamic classes in-place
-    // 1. Faction rows
-    const rows = leftPageContainer.querySelectorAll(".faction-row");
-    rows.forEach((row, idx) => {
-      if (this._dndSelectedIndex === idx) {
-        row.classList.add("selected");
-      } else {
-        row.classList.remove("selected");
-      }
-    });
-
-    // 2. Update right page in-place
+    // Left page already drawn! Update only the right page in-place (the rows
+    // themselves are repainted with the window below).
     const rightPageContainer = this._dndContainer.querySelector(".right-page");
     if (rightPageContainer) {
       rightPageContainer.outerHTML = rightPageHTML;
     }
   }
 
-  if (selectedRecord && selectedRecord.iconIndex) {
-    this.drawUIFactionEmblem(selectedRecord.iconIndex, "heraldry-canvas");
+  // The roll of factions, windowed, with each visible row's emblem drawn as it
+  // comes on screen (UI/MenuVirtualList.js).
+  const grid = this._dndContainer.querySelector("#factions-grid");
+  if (grid) {
+    window.MenuVirtualList.render(grid, {
+      key: leftPageKey,
+      count: factionList.length,
+      renderItem: (idx) => factionRowHTML(factionList[idx], idx),
+      onWindow: (win, from, to) => {
+        for (let idx = from; idx < to; idx++) {
+          const item = factionList[idx];
+          if (item && !item.isSub && item.iconIndex) {
+            this.drawUIFactionEmblem(item.iconIndex, `fac-canvas-${idx}`);
+          }
+        }
+      }
+    });
+    // Scroll active item into view, by index: the row is only in the DOM once
+    // the window reaches it.
+    window.MenuVirtualList.scrollToIndex(grid, this._dndSelectedIndex);
   }
 
-  // Scroll active item into view
-  const selectedElem = this._dndContainer.querySelector(".faction-row.selected");
-  if (selectedElem) {
-    selectedElem.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  if (selectedRecord && selectedRecord.iconIndex) {
+    this.drawUIFactionEmblem(selectedRecord.iconIndex, "heraldry-canvas");
   }
 };
 

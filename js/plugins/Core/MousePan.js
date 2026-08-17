@@ -17,6 +17,8 @@
  * - Mouse wheel, the + and - keys, or L2/R2 on a controller zoom the camera,
  *   on the world map (315) only.
  * - Right stick pans the camera, the controller twin of click & drag.
+ * - Hold ALT, or click the right stick (R3), to label every event on screen
+ *   at once instead of only the one under the cursor.
  *
  * Note: If you move the player character using the keyboard or a gamepad
  * after panning away, the camera will naturally snap back to center on
@@ -809,6 +811,24 @@
     // Hover Window for Event Names (updated for ALT reveal)
     // ------------------------------------------------------------------------
 
+    // Held down, the reveal modifier labels every event on screen at once
+    // instead of only the one under the cursor: ALT on the keyboard, R3 (right
+    // stick click) on a controller - the stick that pans the camera, so the
+    // hand already looking around is the one that names what it finds.
+    //
+    // ALT is registered under its own action name rather than core's unmapped
+    // 'alt' for the same reason the zoom keys are (see ZOOM_KEY_MAP above):
+    // CustomCommandMapper.js drops the keys of every action it manages on each
+    // Input.clear(), and a name it does not know survives that.
+    const REVEAL_NAMES_KEY = 18; // ALT
+    if (!Input.keyMapper[REVEAL_NAMES_KEY]) Input.keyMapper[REVEAL_NAMES_KEY] = 'mapRevealNames';
+
+    function isRevealNamesHeld() {
+        if (Input.isPressed('mapRevealNames')) return true;
+        const pad = window.AnalogStickInput;
+        return !!(pad && pad.isButtonPressed && pad.isButtonPressed(pad.BUTTON.R3));
+    }
+
     let _classI18n = null;
 
     const loadClassI18n = async () => {
@@ -1055,7 +1075,7 @@
         const rect = new Rectangle(10, 10, 300, 70);
         this._eventHoverWindow = new Window_EventHover(rect);
         this.addWindow(this._eventHoverWindow);
-        // Pool for ALTâ€‘key reveal windows
+        // Pool for the ALT / R3 reveal windows
         this._eventHoverWindows = [];
     };
 
@@ -1117,8 +1137,8 @@
             return;
         }
 
-        // ALT key reveals every event name on screen
-        if (Input.isPressed('alt')) {
+        // ALT (or R3) reveals every event name on screen
+        if (isRevealNamesHeld()) {
             const allEvents = $gameMap.events();
             let used = 0;
             for (const ev of allEvents) {
@@ -1127,6 +1147,13 @@
                 const name = ev.event().name;
                 if (shouldHideEvent(name)) continue;
                 if ($gameMap.fogOfWarState && $gameMap.fogOfWarState(ev.x, ev.y) < 2) continue;
+
+                // Only what is actually in view: an off-screen event would
+                // otherwise have its label clamped onto the nearest screen edge,
+                // stacking the whole map's names in a pile there.
+                const tilePos = getTileScreenPosition(ev._realX, ev._realY);
+                if (tilePos.x < 0 || tilePos.x > Graphics.boxWidth) continue;
+                if (tilePos.y < 0 || tilePos.y > Graphics.boxHeight + 70) continue;
 
                 // Ensure a window exists for this event
                 let win = this._eventHoverWindows[used];
@@ -1163,8 +1190,7 @@
                 const winWidth = win._neededWidth;
                 const winHeight = 70;
                 const eventOffset = Number((ev.event().meta || {}).xOffset || X_OFFSET);
-                
-                const tilePos = getTileScreenPosition(ev._realX, ev._realY);
+
                 let x = tilePos.x - winWidth / 2 + eventOffset;
                 let y = tilePos.y - winHeight - 8;
                 

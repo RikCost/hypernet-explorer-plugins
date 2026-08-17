@@ -583,12 +583,16 @@
       const job = this.getJob(profile);
       if (!job) return;
       // Build a plain stat proxy so WorkSystem.calculateSuccessChance gets standard prop names.
-      // Custom stats (Arcane etc.) are not used in success-chance calc for background NPCs.
+      // The equip-derived stats ride along under their lowercase profile names,
+      // which is how WorkSystem.getActorStat reads them off a non-Game_Actor:
+      // without them every NPC scored 0 against the jobs that ask for a look.
       const proxy = {
         atk: profile.atk || 0, def: profile.def || 0,
         mat: profile.mat || 0, mdf: profile.mdf || 0,
         agi: profile.agi || 0, luk: profile.luk || 0,
         mhp: profile.mhp || 0, mmp: profile.mmp || 0,
+        arcane: profile.arcane || 0, substance: profile.substance || 0,
+        stealth: profile.stealth || 0, intimidation: profile.intimidation || 0,
         level: profile.level || 1,
       };
       let chance = 0.7;

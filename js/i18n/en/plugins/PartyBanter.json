@@ -1,4 +1,5 @@
 {
+  "said": "{name}: {line}",
   "script": {
     "general": [
       [
@@ -951,7 +952,103 @@
           "The road always takes longer than they said."
         ]
       ]
-    }
+    },
+    "driving": [
+      [
+        "Whose turn is it to watch the road? Properly watch it.",
+        "Mine, apparently, since I am the one holding it."
+      ],
+      [
+        "I could sleep sitting up. I have proved it twice this week.",
+        "You snore sitting up. You proved that too."
+      ],
+      [
+        "Every mile in this thing is a mile we are not walking.",
+        "Say that again in an hour, when your back has an opinion."
+      ],
+      [
+        "Slow down for the corners. Just the corners.",
+        "I slow down for the ones that need it.",
+        "They all need it. That is the point I am making."
+      ],
+      [
+        "There is a noise. Under the floor, on the left.",
+        "There has been a noise under the floor since we bought it.",
+        "Then it is a noise we own. Wonderful."
+      ],
+      [
+        "Nothing out there for miles and we are still checking the mirrors.",
+        "That is why there is nothing out there. We check."
+      ],
+      [
+        "Do you want me to take over? Say yes before you have to.",
+        "Ask me at the next straight bit. I will have a better answer."
+      ],
+      [
+        "Anyone else find it strange, sitting still while the ground moves?",
+        "Give it a week. Then walking feels strange instead."
+      ],
+      [
+        "Pass me something to eat that does not need two hands.",
+        "Everything we have needs two hands. That is the state of the larder."
+      ],
+      [
+        "We should have named it. It has carried us far enough to deserve a name.",
+        "It has broken down far enough to deserve a worse one."
+      ]
+    ],
+    "transit": [
+      [
+        "Somebody else driving. I do not know what to do with my hands.",
+        "Sit on them. That is what the rest of us are doing."
+      ],
+      [
+        "We paid for this and we are still sitting on our packs.",
+        "We paid for the distance. The seat was optimism."
+      ],
+      [
+        "Look at them all. Going somewhere ordinary, every one of them.",
+        "Do not stare. Ordinary people notice being looked at."
+      ],
+      [
+        "I cannot get comfortable and I refuse to stop trying.",
+        "You have tried four positions. There are not five."
+      ],
+      [
+        "It stops at every single halt on the line.",
+        "Then we sleep between them. Two minutes at a time is still sleep."
+      ],
+      [
+        "Strange, being carried. Nothing to do but arrive.",
+        "Enjoy it. Nothing carries us where we are going next."
+      ]
+    ],
+    "cabin": [
+      [
+        "It is smaller inside than it looks from outside.",
+        "Everything is. Including the plans we make in here."
+      ],
+      [
+        "Whose kit is this on my bunk?",
+        "It is the party's kit. It sleeps where there is room, same as us."
+      ],
+      [
+        "Rain on a roof you own is a completely different sound.",
+        "We do not own it. We are two payments from the road again."
+      ],
+      [
+        "First still evening in a week. Nobody move.",
+        "I was not going to. I cannot, actually. My legs have finished."
+      ],
+      [
+        "Do we talk about what happened out there, or do we not?",
+        "Not tonight. Tonight we sit inside and let it be behind us."
+      ],
+      [
+        "Someone should cook. I am saying it, not volunteering.",
+        "Noted, and ignored, and I will do it anyway."
+      ]
+    ]
   },
   "shop": {
     "opener": [
@@ -1760,6 +1857,462 @@
           "For a moment there I forgot the road entirely."
         ]
       }
+    }
+  },
+  "crash": {
+    "opener": [
+      "That was the {vehicle}, that noise. That was ours.",
+      "We hit it. We properly hit it.",
+      "Everyone still in one piece? Say something.",
+      "The {vehicle} took that. Better it than us, but it took it.",
+      "Well. There goes whatever that panel cost."
+    ],
+    "opinion": {
+      "nervous": [
+        "I said the road was too narrow. I said it out loud.",
+        "Is it going to hold? Tell me honestly, is it going to hold?"
+      ],
+      "calm": [
+        "Nobody is bleeding. Everything after that is a repair bill.",
+        "Pull over, look at it properly, then decide."
+      ],
+      "aggressive": [
+        "Whatever that was, it came off worse.",
+        "Next time I am driving and I am not braking for it."
+      ],
+      "melancholic": [
+        "Everything we own ends up dented eventually.",
+        "It was the last thing about us that still looked cared for."
+      ],
+      "sanguine": [
+        "Still moving. That is the only test that matters.",
+        "A scar on a vehicle is a story you get to keep."
+      ],
+      "cautious": [
+        "We stop here and we check underneath before another mile.",
+        "That is how the serious ones start. With a small one nobody looked at."
+      ],
+      "impulsive": [
+        "It is fine. Drive on, we will look at it later.",
+        "Faster is easier over that surface. It is."
+      ],
+      "stoic": [
+        "It is metal. It bends. Keep going.",
+        "We are alive, so it was cheap."
+      ],
+      "paranoid": [
+        "That was not in the road ten minutes ago. Think about that.",
+        "Somebody put that there. I want it said out loud."
+      ],
+      "empathetic": [
+        "Never mind the panel. Is anyone shaken? Properly shaken?",
+        "You are white as a sheet. Come and sit at the back for a while."
+      ],
+      "authoritative": [
+        "Stop the vehicle. Everybody out, everybody counted.",
+        "From here the driver is chosen by me, not by whoever sat down first."
+      ],
+      "scholarly": [
+        "Impact on that side means the axle geometry is out. It will pull left now.",
+        "Note the mileage. Damage is only a mystery if nobody writes it down."
+      ],
+      "artistic": [
+        "It has a shape now. Not a good one, but a shape.",
+        "That sound. I will be hearing that sound for a week."
+      ],
+      "adventurous": [
+        "Every vehicle worth having has a dent with a story.",
+        "So the road bites. Good. It was getting dull."
+      ],
+      "nurturing": [
+        "Heads first, then hands, then the vehicle. In that order.",
+        "Somebody hold still and let me look at that arm."
+      ],
+      "mischievous": [
+        "Nobody outside this vehicle ever needs to know how that happened.",
+        "For the record, I was asleep and saw nothing."
+      ],
+      "cynical": [
+        "Of course. The one thing keeping us out of the mud.",
+        "Let me guess. It was not anybody's fault. It never is."
+      ],
+      "disciplined": [
+        "Speed was wrong for that ground. That is the whole of it.",
+        "Damage log, repairs at the next town, and no arguing about the cost."
+      ],
+      "fatalistic": [
+        "It was always going to happen. Better here than on a bridge.",
+        "The road takes something back eventually. Today it took a panel."
+      ],
+      "grumpy": [
+        "Marvellous. Something else for me to hold together with wire.",
+        "I felt that in my teeth. I am owed something for that."
+      ],
+      "loyal": [
+        "Nobody is blaming the driver. I want that clear before it starts.",
+        "We fix it together and we say nothing more about it."
+      ],
+      "brave": [
+        "Still upright, still pointing forward. Onwards.",
+        "I will get out and look. Stay where you are."
+      ],
+      "timid": [
+        "Can we go slower? Just for a bit. Please.",
+        "I would rather walk this stretch. I really would."
+      ],
+      "hedonistic": [
+        "I spilled the whole thing. That is the real tragedy here.",
+        "We stop at the next town and we stop properly. With a table."
+      ],
+      "apathetic": [
+        "It still goes. Wake me when it does not.",
+        "Dented. Right."
+      ],
+      "any": [
+        "That will need looking at.",
+        "It held. That is the most I will say for it."
+      ]
+    }
+  },
+  "handover": {
+    "opener": [
+      "{driver} is taking the wheel. {tired}, get some sleep.",
+      "Swap over. {tired} has been driving since before it was light.",
+      "{driver} drives now. That is not a discussion.",
+      "Out of that seat, {tired}. {driver} has it."
+    ],
+    "opinion": {
+      "nervous": [
+        "Are you awake enough for this? Truly awake?",
+        "Tell me if you start drifting. Tell me early."
+      ],
+      "calm": [
+        "Good. Nobody should be driving that tired.",
+        "Take it steadily for the first mile. Hands learn the road."
+      ],
+      "aggressive": [
+        "About time. We were crawling.",
+        "Try keeping up with the road for once."
+      ],
+      "melancholic": [
+        "We just keep handing it on, hour after hour.",
+        "Someone will always be awake in this party. That is the sad part."
+      ],
+      "sanguine": [
+        "Fresh hands, fresh road. Off we go.",
+        "I like this bit. Everything looks new from the other seat."
+      ],
+      "cautious": [
+        "Mirrors, seat, then move off. Not before.",
+        "Wake me if the weather turns. I would rather two of us were awake for that."
+      ],
+      "impulsive": [
+        "My turn next. I am claiming it now.",
+        "Go on then, put your foot down. It is a straight road."
+      ],
+      "stoic": [
+        "Seat is warm. That is all the handover I need.",
+        "One of us drives, one of us sleeps. It works."
+      ],
+      "paranoid": [
+        "Keep your eyes on what is behind us as well as in front.",
+        "Do not stop for anyone. Not out here, not for anyone."
+      ],
+      "empathetic": [
+        "You held on longer than you should have. Thank you for that.",
+        "Sleep properly. Do not lie there listening to the engine."
+      ],
+      "authoritative": [
+        "Four hours each, and we hold to it from now on.",
+        "Good. A tired driver is a decision nobody gets to make twice."
+      ],
+      "scholarly": [
+        "Reaction times fall off a cliff past a certain hour. This is the correct call.",
+        "Sleep in the direction of travel if you can. It genuinely helps."
+      ],
+      "artistic": [
+        "You will miss the light coming up. It is worth staying awake for.",
+        "The road looks completely different from the passenger side."
+      ],
+      "adventurous": [
+        "I will navigate. I have opinions about the route.",
+        "Take the high road while you are fresh. The views are better."
+      ],
+      "nurturing": [
+        "There is a blanket behind the seat. Use it.",
+        "Eat something before you sleep or you will wake up worse."
+      ],
+      "mischievous": [
+        "I have adjusted the seat. You are welcome.",
+        "Whoever falls asleep first gets drawn on. House rule."
+      ],
+      "cynical": [
+        "Wonderful. Now we get to find out how you drive.",
+        "One tired driver replaced with a slightly less tired one. Progress."
+      ],
+      "disciplined": [
+        "Log the swap. Hours at the wheel are not a matter of opinion.",
+        "That is the rota working. It only works if we keep to it."
+      ],
+      "fatalistic": [
+        "Different hands, same road, same ending.",
+        "It hardly matters who steers. We arrive when we arrive."
+      ],
+      "grumpy": [
+        "Finally. My spine has been petitioning for this.",
+        "Do not adjust the mirrors. I have only just got them right."
+      ],
+      "loyal": [
+        "You drove longer than your share. I noticed.",
+        "Sleep. We have you."
+      ],
+      "brave": [
+        "I will take the night stretch. I do not mind the dark.",
+        "Give me the difficult miles. I am fresh for them."
+      ],
+      "timid": [
+        "Please do not ask me to drive next. Please.",
+        "I will keep you company. I am not sleeping anyway."
+      ],
+      "hedonistic": [
+        "Wake me somewhere with food. That is my only condition.",
+        "Whoever drives, someone pass the good flask back here."
+      ],
+      "apathetic": [
+        "Fine. Same road either way.",
+        "Mm. Wake me at the border."
+      ],
+      "any": [
+        "Right. Swap, and let us keep moving.",
+        "Sensibly done."
+      ]
+    }
+  },
+  "fuel": {
+    "opener": [
+      "The {vehicle} is down to {fuel} percent. Somebody should know that.",
+      "We are running on fumes and hope. {fuel} percent left.",
+      "Fuel gauge. {fuel} percent. I am saying it before it is a problem.",
+      "At {fuel} percent we are no longer travelling, we are gambling."
+    ],
+    "opinion": {
+      "nervous": [
+        "And how far is the next pump? Does anyone actually know?",
+        "I do not want to be out here on foot. Not out here."
+      ],
+      "calm": [
+        "Then we find a pump. It is a problem with a shape.",
+        "Ease off the speed and it stretches further than you think."
+      ],
+      "aggressive": [
+        "Then we take the next station whatever they are charging.",
+        "Somebody out here has fuel. We will find out who."
+      ],
+      "melancholic": [
+        "Everything runs out. Even this.",
+        "We will end up walking again. We always end up walking."
+      ],
+      "sanguine": [
+        "We have made it on less. I remember it fondly.",
+        "There is always a pump. Slightly further than you would like."
+      ],
+      "cautious": [
+        "Nobody uses the heater and nobody dashes until it is filled.",
+        "We turn back now while we still can, or we commit. Choose."
+      ],
+      "impulsive": [
+        "Then go faster. Get there before it matters.",
+        "Fill it at the next place, whatever it costs, and stop discussing it."
+      ],
+      "stoic": [
+        "It goes until it stops. Then we push.",
+        "Walking is not the worst thing that has happened to us."
+      ],
+      "paranoid": [
+        "That gauge has been lying to us. I have been watching it.",
+        "Do not fill up at the first place we see. First places are traps."
+      ],
+      "empathetic": [
+        "Nobody panic. We sort it out, and nobody blames anybody.",
+        "You have been worrying about this for an hour, have you not."
+      ],
+      "authoritative": [
+        "Next settlement, we fill up. Not the one after."
+      ],
+      "scholarly": [
+        "Steady speed burns a third less than this stop-start business.",
+        "A tank's range is not a straight line. Uphill costs double."
+      ],
+      "artistic": [
+        "There is something honest about a machine that tells you when it is tired.",
+        "I would rather run out somewhere beautiful, if it comes to it."
+      ],
+      "adventurous": [
+        "Then it becomes an interesting day. That is all.",
+        "Coasting downhill counts as travelling. I have proved it."
+      ],
+      "nurturing": [
+        "Then we stop, we eat, and we think about it with something warm in us.",
+        "Nobody is walking anywhere hungry. We stop first."
+      ],
+      "mischievous": [
+        "There is a siphon in the back. I am saying nothing more.",
+        "Define empty. I have found more than once at empty."
+      ],
+      "cynical": [
+        "Fuel at the price they charge out here. Marvellous.",
+        "So the plan is hope. It usually is."
+      ],
+      "disciplined": [
+        "We fill at half a tank. That was the rule and it was ignored.",
+        "Fuel comes out of the fund before anything else. Before food, before repairs."
+      ],
+      "fatalistic": [
+        "It will get us as far as it gets us.",
+        "The road decides where we stop. It always did."
+      ],
+      "grumpy": [
+        "And who is pushing? I know exactly who is pushing.",
+        "Wonderful. Another thing that needs money we do not have."
+      ],
+      "loyal": [
+        "Whatever we decide, I am not leaving anyone with the vehicle.",
+        "We all walk or we all ride. That is how this works."
+      ],
+      "brave": [
+        "Then I will walk ahead to the next place and bring a can back.",
+        "It is a long walk, not a fight. Nobody worry."
+      ],
+      "timid": [
+        "Can we not just stop somewhere safe until we know?",
+        "I would rather run out near people than out here."
+      ],
+      "hedonistic": [
+        "If we are stopping anyway, let it be somewhere with a kitchen.",
+        "Fuel for it, food for us. Both or neither."
+      ],
+      "apathetic": [
+        "It will stop or it will not.",
+        "Tell me when we are pushing."
+      ],
+      "any": [
+        "Then we fill it at the next place we see.",
+        "Noted. Let us not make it a story."
+      ]
+    }
+  },
+  "country": {
+    "opener": [
+      "That sign was a border. We are in {country} now.",
+      "{country}. Whatever the maps say, this is somebody else's ground.",
+      "We crossed over a while back. This is {country}.",
+      "New country. {country}. Watch what you say for the first hour."
+    ],
+    "opinion": {
+      "nervous": [
+        "Are our papers all right for here? Are they?",
+        "New country, new rules nobody told us about. Lovely."
+      ],
+      "calm": [
+        "Same road, different flag. We keep going.",
+        "Then we learn how things are done here, and we do them that way."
+      ],
+      "aggressive": [
+        "Their border, our road. Let them make something of it.",
+        "First person who asks me for a fee gets an answer."
+      ],
+      "melancholic": [
+        "Another place we will pass through and never see again.",
+        "Borders are only lines people agreed to be sad about."
+      ],
+      "sanguine": [
+        "A whole country we have not disappointed yet.",
+        "New food, if nothing else. I am counting that as a win."
+      ],
+      "cautious": [
+        "Nothing bought, nothing sold, until we know the law here.",
+        "Keep the weapons out of sight through the first town."
+      ],
+      "impulsive": [
+        "Then let us see the nearest town before anybody talks me out of it.",
+        "New country. We should do something we would regret at home."
+      ],
+      "stoic": [
+        "Ground is ground.",
+        "It changes nothing about the walking."
+      ],
+      "paranoid": [
+        "Somebody at that border wrote us down. Somebody always does.",
+        "They knew we were coming. Think about how."
+      ],
+      "empathetic": [
+        "Somebody here will be glad to see travellers. There always is one.",
+        "Be gentle with people for the first day. We are the strange ones now."
+      ],
+      "authoritative": [
+        "We enter as guests and behave like it until I say otherwise.",
+        "Nobody speaks for this party at a checkpoint but me."
+      ],
+      "scholarly": [
+        "The dialect shifts about here. Listen for it, it is worth hearing.",
+        "This border has moved twice in living memory. Do not trust old maps."
+      ],
+      "artistic": [
+        "Look how the roofs change. One line on a map and the roofs change.",
+        "Different light here. I am not imagining it."
+      ],
+      "adventurous": [
+        "Good. I have never been. That is the whole point of roads.",
+        "Somewhere in here there is something nobody has written down."
+      ],
+      "nurturing": [
+        "We eat before the first town. Nobody negotiates hungry.",
+        "Stay together through the crossing towns. All of us."
+      ],
+      "mischievous": [
+        "Nobody here knows a single thing about us. Consider the possibilities.",
+        "New country, clean reputation. For about a week."
+      ],
+      "cynical": [
+        "Different flag, same three questions at the same three counters.",
+        "Let me guess. They will love us here too."
+      ],
+      "disciplined": [
+        "Currency, laws, and the road out. In that order, before we settle.",
+        "Papers where you can reach them from now on."
+      ],
+      "fatalistic": [
+        "It will be like the last one. They all are, underneath.",
+        "We will be somewhere else by the time it matters."
+      ],
+      "grumpy": [
+        "I hope their roads are better. They will not be.",
+        "Another border, another queue. I can feel one coming."
+      ],
+      "loyal": [
+        "Wherever this is, we are still us. That is enough.",
+        "Nobody wanders off alone here. Not in a place we do not know."
+      ],
+      "brave": [
+        "Then we walk in with our heads up. We have nothing to hide.",
+        "If there is trouble at the crossing, I will stand at the front of it."
+      ],
+      "timid": [
+        "Do we have to talk to anyone? Can we just pass through?",
+        "I will stay by the vehicle. Someone else can do the talking."
+      ],
+      "hedonistic": [
+        "Every country has one thing worth eating. We find it first.",
+        "Their wine, their bread, their beds. In whatever order they come."
+      ],
+      "apathetic": [
+        "Right. Country.",
+        "Tell me if the road changes."
+      ],
+      "any": [
+        "Then we keep our heads down through the first town.",
+        "Noted. Same road, new flag."
+      ]
     }
   }
 }

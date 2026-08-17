@@ -34,6 +34,9 @@
   "chooseAnArchetype": "Scegli un archetipo",
   "chooseYourClass": "Scegli la tua classe",
   "selectYourTraits": "Seleziona i tuoi tratti",
+  "selectYourPersonality": "Seleziona la tua personalità",
+  "personalityVoice": "Come pensa",
+  "personalityBody": "Cosa fa al corpo",
   "chooseYourBirthDate": "Scegli la tua data di nascita",
   "addAnotherPartyMember": "Aggiungere un altro membro del gruppo?",
   "chooseYourOrigin": "Scegli la tua origine",
@@ -193,6 +196,8 @@
   "creatureSynthesisComplete": "Sintesi della creatura completata.",
   "selectSprite": "SELEZIONA SPRITE",
   "spriteIndex": "INDICE",
+  "varlenianSprites": "SPRITE VARLENIANI",
+  "alienSprites": "SPRITE ALIENI",
   "betaSprites": "SPRITE BETA",
   "continue2": "Conferma",
   "presets": "PRESET",
@@ -307,6 +312,10 @@
     "randomTraits": {
       "name": "Tratti casuali",
       "desc": "I tratti verranno assegnati casualmente al tuo personaggio."
+    },
+    "randomPersonality": {
+      "name": "Casuale",
+      "desc": "Lascia che al tuo personaggio venga assegnata un'indole."
     },
     "pickTraits": {
       "name": "Scegli tratti",

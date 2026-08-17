@@ -468,57 +468,67 @@
             }
         }
 
+        // The list is a flat run of lines — its heading, then either the trades
+        // or one row per piece — mounted in a window, so a smith with the whole
+        // catalogue open only ever builds the rows on screen
+        // (UI/MenuVirtualList.js). Row clicks are read off the spread by
+        // delegation (onSpreadClick), so a row swapped in mid-scroll needs no
+        // wiring of its own.
         renderList() {
             const el = document.getElementById('forge-list');
             if (!el) return;
             const t = bsText();
-            let html = '';
+            const lines = [];
+            let focusedLine = -1;
 
             if (this._selectedTrade === null) {
-                html += `<div class="left-header"><span class="category-name">${escapeHtml(t.trades)}</span></div>`;
+                lines.push(() => `<div class="left-header"><span class="category-name">${escapeHtml(t.trades)}</span></div>`);
                 const trades = this.trades();
                 if (!trades.length) {
-                    html += `<div class="workbench-empty">${escapeHtml(t.noTrades)}</div>`;
+                    lines.push(() => `<div class="workbench-empty">${escapeHtml(t.noTrades)}</div>`);
                 } else {
                     this._tradeIndex = Math.max(0, Math.min(trades.length - 1, this._tradeIndex));
                     trades.forEach((row, idx) => {
                         const focused = (this._activeArea === 'trades' && idx === this._tradeIndex) ? 'focused' : '';
-                        html += `
+                        if (focused) focusedLine = lines.length;
+                        lines.push(() => `
                             <div class="category-row ${focused}" data-trade="${escapeHtml(row.name)}" data-idx="${idx}">
                                 <div class="category-meta-left">
                                     <span class="category-name">${escapeHtml(tr(row.name))}</span>
                                 </div>
                                 <span class="category-count">${row.total}</span>
-                            </div>`;
+                            </div>`);
                     });
                 }
             } else {
-                html += `
+                lines.push(() => `
                     <div class="left-header">
                         <span class="category-name">${escapeHtml(tr(this._selectedTrade))}</span>
                         <span class="back-btn" id="forge-back-trades">&#9664; ${escapeHtml(t.back)}</span>
-                    </div>`;
+                    </div>`);
                 const items = this.itemsForTrade();
                 if (!items.length) {
-                    html += `<div class="workbench-empty">${escapeHtml(t.noRecipes)}</div>`;
+                    lines.push(() => `<div class="workbench-empty">${escapeHtml(t.noRecipes)}</div>`);
                 } else {
                     this._itemIndex = Math.max(0, Math.min(items.length - 1, this._itemIndex));
                     items.forEach((item, idx) => {
                         const focused = (this._activeArea === 'items' && idx === this._itemIndex) ? 'focused' : '';
-                        const rarity = rarityOf(item);
-                        // Each tab already says why a piece is on it, so the
-                        // mark answers the question the tab leaves open: the
-                        // tier a locked piece waits for, how much of the bill a
-                        // short one is missing, a plain tick for the rest.
-                        let mark;
-                        if (this._tab === 'locked') {
-                            mark = `<span class="forge-tier-need">${escapeHtml(levelName(craftTier(item)))}</span>`;
-                        } else if (this._tab === 'materials') {
-                            mark = `<span class="forge-mat-state short">&#10006; ${missingCount(parseRecipe(item))}</span>`;
-                        } else {
-                            mark = `<span class="forge-mat-state ok">&#10004;</span>`;
-                        }
-                        html += `
+                        if (focused) focusedLine = lines.length;
+                        lines.push(() => {
+                            const rarity = rarityOf(item);
+                            // Each tab already says why a piece is on it, so the
+                            // mark answers the question the tab leaves open: the
+                            // tier a locked piece waits for, how much of the bill
+                            // a short one is missing, a plain tick for the rest.
+                            let mark;
+                            if (this._tab === 'locked') {
+                                mark = `<span class="forge-tier-need">${escapeHtml(levelName(craftTier(item)))}</span>`;
+                            } else if (this._tab === 'materials') {
+                                mark = `<span class="forge-mat-state short">&#10006; ${missingCount(parseRecipe(item))}</span>`;
+                            } else {
+                                mark = `<span class="forge-mat-state ok">&#10004;</span>`;
+                            }
+                            return `
                             <div class="category-row forge-row ${focused}" data-item="${item.id}" data-kind="${DataManager.isWeapon(item) ? 'w' : 'a'}" data-idx="${idx}">
                                 <div class="category-meta-left">
                                     <span class="icon" style="${iconStyle(item.iconIndex, 24)}"></span>
@@ -526,12 +536,17 @@
                                 </div>
                                 ${mark}
                             </div>`;
+                        });
                     });
                 }
             }
-            el.innerHTML = html;
-            const focused = el.querySelector('.focused');
-            if (focused) focused.scrollIntoView({ block: 'nearest' });
+
+            window.MenuVirtualList.render(el, {
+                key: `${this._selectedTrade || ''}|${this._tab}|${this._forgeBar ? this._forgeBar.query : ''}`,
+                count: lines.length,
+                renderItem: idx => lines[idx]()
+            });
+            if (focusedLine >= 0) window.MenuVirtualList.scrollToIndex(el, focusedLine);
         }
 
         // ------------------------------------------------------ the anvil page

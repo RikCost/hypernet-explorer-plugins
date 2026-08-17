@@ -25,6 +25,9 @@
  * - Optionally re-enables RPG Maker's built-in CTRL noclip (hold CTRL to walk
  *   through walls and events) in deployed builds, where the engine normally
  *   gates it behind playtest mode.
+ * - In playtest only: if Player 1 reaches the map with no character graphic,
+ *   a random NPC sheet from js/db/WorldGen/NPCs.json is dealt to them so the
+ *   party leader is never invisible while testing.
  *
  * @param autoOpen
  * @text Auto-Open Console
@@ -258,6 +261,57 @@
             console.warn('Could not take screenshot:', e);
         }
     }
+
+    //=========================================================================
+    // Playtest: a Player 1 with no sprite gets one
+    //=========================================================================
+
+    // A playtest can reach the map with actor 1 holding no character graphic at
+    // all: a test start that skipped character creation, a save written before
+    // the creation wizard ran, an actor edited down to an empty sheet. The map
+    // then draws nothing where the party leader stands, which reads as a broken
+    // scene rather than a missing graphic. Deal that actor one of the ordinary
+    // inhabitant sheets so testing always has a visible player.
+    //
+    // SpriteCatalog (Core/DataService.js) owns the pool: it reads
+    // js/db/WorldGen/NPCs.json and already applies this world's beta, magic and
+    // population answers, so a goblin world deals a goblin. The raw file is the
+    // fallback for the case where the catalogue has not been built yet.
+    // Playtest only, on purpose: a released build showing an empty leader is a
+    // bug worth seeing rather than one worth papering over.
+    function fillEmptyPlayerSprite() {
+        if (!window.$gameTemp || !$gameTemp.isPlaytest()) return;
+        const actor = window.$gameActors && $gameActors.actor(1);
+        if (!actor || actor.characterName()) return;
+
+        let key = (window.SpriteCatalog && window.SpriteCatalog.pickNpcKey)
+            ? window.SpriteCatalog.pickNpcKey(Math.random())
+            : null;
+        if (!key) {
+            const npcs = (window.WorldGen && window.WorldGen.NPCs) || null;
+            const keys = npcs
+                ? Object.keys(npcs).filter(k => npcs[k] && npcs[k].npc === true)
+                : [];
+            if (keys.length === 0) return;
+            key = keys[Math.floor(Math.random() * keys.length)];
+        }
+
+        // "$" sheets are single-character (index 0 only); a standard sheet holds 8.
+        const index = key.includes("$") ? 0 : Math.floor(Math.random() * 8);
+        actor.setCharacterImage(key, index);
+        if (window.$gamePlayer) $gamePlayer.refresh();
+        console.log(`ForceConsole: Player 1 had no sprite, dealt ${key}#${index}`);
+    }
+
+    const _Scene_Map_start = Scene_Map.prototype.start;
+    Scene_Map.prototype.start = function() {
+        _Scene_Map_start.call(this);
+        try {
+            fillEmptyPlayerSprite();
+        } catch (e) {
+            console.warn('Could not assign a fallback sprite to Player 1:', e);
+        }
+    };
 
     //=========================================================================
     // CTRL noclip outside playtest

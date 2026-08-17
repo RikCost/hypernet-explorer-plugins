@@ -19,6 +19,14 @@
  * Items can be excluded from crafting with:
  * <Uncraftable>
  *
+ * An item can name the trade it is made in, overriding the one its category
+ * would answer for, with the forge's own tag:
+ * <Craft: Blacksmithing>
+ *
+ * An item everybody already knows how to make - legible and buildable at any
+ * level of that trade, from the first morning - is marked:
+ * <StarterRecipe>
+ *
  * Where 869 is the item ID and x2 is the quantity required.
  *
  * NOTE: Items without a <Recipe> tag or with the <Uncraftable> tag cannot
@@ -129,6 +137,17 @@
     function isUncraftable(item) {
         if (!item || !item.note) return false;
         return /<Uncraftable>/i.test(item.note);
+    }
+
+    // The recipes a party already has on the first morning. A starter recipe is
+    // not learned from anybody and not read off a trade: it is the sort of thing
+    // everyone in this world grew up watching being made, so it is legible and
+    // buildable at Untrained and stays that way at Master. Written on the entry
+    // itself as <StarterRecipe>, so what is common knowledge is a property of the
+    // thing rather than a list some plugin has to keep in step.
+    function isStarterRecipe(item) {
+        if (!item || !item.note) return false;
+        return /<StarterRecipe>/i.test(item.note);
     }
 
     // ---- Database-spanning helpers (items + weapons are craftable here; armor
@@ -246,9 +265,11 @@
         return window.SpecializationXP.levelOf(benchActor(), FAB_SPEC);
     }
 
-    // Whether the party is trained enough to attempt this recipe at all.
+    // Whether the party is trained enough to attempt this recipe at all. A
+    // starter recipe asks for no training at any tier: everybody can already
+    // make one.
     function tierMet(item) {
-        return isSandbox() || fabLevel() >= recipeTier(item);
+        return isSandbox() || isStarterRecipe(item) || fabLevel() >= recipeTier(item);
     }
 
     // The name of the tier a recipe wants, for the notice on a locked one.
@@ -329,8 +350,14 @@
         return level;
     }
 
-    // The one trade a recipe belongs to.
+    // The one trade a recipe belongs to. An entry may name it outright with the
+    // forge's own <Craft:> tag, which is how a thing filed on one shelf is made
+    // at another bench: a lockpick sits under Espionage with the rest of the
+    // burglar's kit, but it is two bits of steel and a smith makes it. Failing
+    // that, the shelf answers for it.
     function recipeSpec(item) {
+        const declared = item && item.meta && item.meta.Craft;
+        if (declared) return String(declared).trim();
         if (DataManager.isWeapon(item)) return WEAPON_SPEC;
         if (DataManager.isArmor(item)) return ARMOR_SPEC;
         return CATEGORY_SPECS[parseCategory(item)] || CATEGORY_SPECS.Misc;
@@ -343,17 +370,29 @@
         return { name, level: readLevel(name) };
     }
 
+    // How far along the trade a pair of hands has to be before this recipe is
+    // legible on sight. A tier is not enough by itself: Untrained is where
+    // everyone starts, and a level everyone has cannot be what distinguishes a
+    // recipe they recognise from one they do not, so the whole book used to open
+    // on its tier-1 half already read. Untrained therefore reveals nothing, and
+    // the first tier is a Beginner's to recognise. What the party can make on
+    // the first morning is only what is marked <StarterRecipe>.
+    function revealLevel(item) {
+        return Math.max(2, recipeTier(item));
+    }
+
     // The training that puts this recipe on the page, or null when it does not
     // reach that far.
     function revealingSpec(item) {
         const trade = readingSpec(item);
-        return trade.level >= recipeTier(item) ? trade : null;
+        return trade.level >= revealLevel(item) ? trade : null;
     }
 
-    // Whether the blueprint reads at all: built once before, or recognised off
-    // the trade it belongs to.
+    // Whether the blueprint reads at all: common knowledge, built once before,
+    // or recognised off the trade it belongs to.
     function knowsRecipe(item) {
         if (isSandbox()) return true;
+        if (isStarterRecipe(item)) return true;
         if ($gameSystem && $gameSystem.hasCrafted(item.id)) return true;
         return !!revealingSpec(item);
     }
@@ -377,8 +416,11 @@
         tier: recipeTier,
         // The bill is covered by what the party carries.
         hasMaterials: (item) => canCraft(parseRecipe(item)),
-        // The blueprint reads at all: built before, or recognised off the trade.
+        // The blueprint reads at all: common knowledge, built before, or
+        // recognised off the trade.
         knows: knowsRecipe,
+        // Known to everybody from the first morning, whatever their training.
+        isStarter: isStarterRecipe,
         // Trained far enough to attempt it.
         tierMet,
         // Reading, making, and holding the reagents for it, all at once.
@@ -549,10 +591,6 @@
                 this._recipeFilter = 'all';
             }
 
-            this._lastRenderedMode = null;
-            this._lastRenderedCategory = null;
-            this._lastRenderedFilter = null;
-            this._forceListRebuild = true;
 
             this._fabActorIndex = 0;
 
@@ -566,7 +604,6 @@
                 onChange: () => {
                     this._itemIndex = 0;
                     this._thinkerItemsDirty = true;
-                    this._forceListRebuild = true;
                     this.refreshUIThinker();
                     if (this._thinkerBar) this._thinkerBar.restoreFocus();
                 }
@@ -601,7 +638,6 @@
             SoundManager.playCursor();
             // A different pair of hands opens (or closes) whole tiers, so the
             // category counts and the workbench both have to be rebuilt.
-            this._forceListRebuild = true;
             this._thinkerItemsDirty = true;
             this.refreshUIThinker();
         }
@@ -619,7 +655,6 @@
             this._itemIndex = 0;
             this._categoryIndex = 0;
             SoundManager.playCursor();
-            this._forceListRebuild = true;
             this._thinkerItemsDirty = true;
             this.refreshUIThinker();
         }
@@ -709,7 +744,6 @@
                         this._selectedItem = null;
                         this._activeArea = 'categories';
                         SoundManager.playCancel();
-                        this._forceListRebuild = true;
                         this.refreshUIThinker();
                         return;
                     }
@@ -734,7 +768,6 @@
                         this._categoryIndex = 0;
                         this._itemIndex = 0;
                         SoundManager.playOk();
-                        this._forceListRebuild = true;
                         this.refreshUIThinker();
                         return;
                     }
@@ -750,7 +783,6 @@
                         this._itemIndex = 0;
                         this._selectedItem = null;
                         SoundManager.playOk();
-                        this._forceListRebuild = true;
                         this.refreshUIThinker();
                         return;
                     }
@@ -871,41 +903,38 @@
                 }
             }
 
-            // 4. Render Left Page List Viewport (with smart rebuilding to preserve scroll position)
+            // 4. Render Left Page List Viewport, as a window onto the lines
+            // rather than the whole shelf (UI/MenuVirtualList.js). Each line is
+            // a closure, so the work a row costs — reading its recipe, counting
+            // what the sack holds — is only paid for the rows on screen. Clicks
+            // are read off the spread by delegation, so a row swapped in
+            // mid-scroll needs no wiring of its own.
             const listViewport = spread.querySelector(".list-viewport");
             if (listViewport) {
-                const needsRebuild = this._lastRenderedMode !== this._mode ||
-                    this._lastRenderedCategory !== this._selectedCategory ||
-                    this._lastRenderedFilter !== this._recipeFilter ||
-                    this._forceListRebuild;
+                const lines = [];
+                let focusedLine = -1;
 
-                if (needsRebuild) {
-                    this._lastRenderedMode = this._mode;
-                    this._lastRenderedCategory = this._selectedCategory;
-                    this._lastRenderedFilter = this._recipeFilter;
-                    this._forceListRebuild = false;
+                if (this._mode === 'assemble') {
+                    if (this._selectedCategory === null) {
+                        // Category list
+                        lines.push(() => `
+                            <div class="left-header">
+                                <span class="category-name">${t.categories}</span>
+                            </div>
+                        `);
 
-                    let leftListHTML = "";
+                        const categories = getAvailableCategories(this._recipeFilter);
+                        const sortedCategories = Object.keys(categories).sort();
 
-                    if (this._mode === 'assemble') {
-                        if (this._selectedCategory === null) {
-                            // Category list
-                            leftListHTML += `
-                                <div class="left-header">
-                                    <span class="category-name">${t.categories}</span>
-                                </div>
-                            `;
+                        if (sortedCategories.length === 0) {
+                            lines.push(() => `<div class="workbench-empty">${T('Thinker.noCategories')}</div>`);
+                        } else {
+                            this._categoryIndex = Math.max(0, Math.min(sortedCategories.length - 1, this._categoryIndex));
 
-                            const categories = getAvailableCategories(this._recipeFilter);
-                            const sortedCategories = Object.keys(categories).sort();
-
-                            if (sortedCategories.length === 0) {
-                                leftListHTML += `<div class="workbench-empty">${T('Thinker.noCategories')}</div>`;
-                            } else {
-                                this._categoryIndex = Math.max(0, Math.min(sortedCategories.length - 1, this._categoryIndex));
-
-                                sortedCategories.forEach((cat, idx) => {
-                                    const isFocused = idx === this._categoryIndex && this._activeArea === 'categories';
+                            sortedCategories.forEach((cat, idx) => {
+                                const isFocused = idx === this._categoryIndex && this._activeArea === 'categories';
+                                if (isFocused) focusedLine = lines.length;
+                                lines.push(() => {
                                     const data = categories[cat];
                                     const iconIdx = getCategoryIcon(cat);
                                     const iconStyle = `
@@ -920,41 +949,43 @@
                                         spec: specLabel(trade),
                                         level: levelLabel(readLevel(trade))
                                     });
-
-                                    leftListHTML += `
-                                        <div class="category-row ${isFocused ? 'focused' : ''}" data-cat="${cat}" data-idx="${idx}">
-                                            <div class="category-meta-left">
-                                                <div class="category-icon" style="${iconStyle}"></div>
-                                                <span class="category-name">${categoryLabel(cat)}
-                                                    <span class="category-trade">${tradeLine}</span>
-                                                </span>
-                                            </div>
-                                            <span class="category-count">${data.craftable} / ${data.total}</span>
+                                    return `
+                                    <div class="category-row ${isFocused ? 'focused' : ''}" data-cat="${cat}" data-idx="${idx}">
+                                        <div class="category-meta-left">
+                                            <div class="category-icon" style="${iconStyle}"></div>
+                                            <span class="category-name">${categoryLabel(cat)}
+                                                <span class="category-trade">${tradeLine}</span>
+                                            </span>
                                         </div>
-                                    `;
+                                        <span class="category-count">${data.craftable} / ${data.total}</span>
+                                    </div>
+                                `;
                                 });
-                            }
+                            });
+                        }
+                    } else {
+                        // Item list in category
+                        lines.push(() => `
+                            <div class="left-header">
+                                <span class="category-name">${categoryLabel(this._selectedCategory)}</span>
+                                <span class="back-btn" id="back-categories">◀ ${t.back}</span>
+                            </div>
+                        `);
+
+                        // One list for the page and for the cursor: they are
+                        // indexed against each other, so they cannot be cut
+                        // or sorted twice.
+                        const categoryItems = this.thinkerItemsList();
+
+                        if (categoryItems.length === 0) {
+                            lines.push(() => `<div class="workbench-empty">${T('Thinker.noRecipes')}</div>`);
                         } else {
-                            // Item list in category
-                            leftListHTML += `
-                                <div class="left-header">
-                                    <span class="category-name">${categoryLabel(this._selectedCategory)}</span>
-                                    <span class="back-btn" id="back-categories">◀ ${t.back}</span>
-                                </div>
-                            `;
+                            this._itemIndex = Math.max(0, Math.min(categoryItems.length - 1, this._itemIndex));
 
-                            // One list for the page and for the cursor: they are
-                            // indexed against each other, so they cannot be cut
-                            // or sorted twice.
-                            const categoryItems = this.thinkerItemsList();
-
-                            if (categoryItems.length === 0) {
-                                leftListHTML += `<div class="workbench-empty">${T('Thinker.noRecipes')}</div>`;
-                            } else {
-                                this._itemIndex = Math.max(0, Math.min(categoryItems.length - 1, this._itemIndex));
-
-                                categoryItems.forEach((item, idx) => {
-                                    const isFocused = idx === this._itemIndex && this._activeArea === 'items';
+                            categoryItems.forEach((item, idx) => {
+                                const isFocused = idx === this._itemIndex && this._activeArea === 'items';
+                                if (isFocused) focusedLine = lines.length;
+                                lines.push(() => {
                                     const isSelected = this._selectedItem && this._selectedItem.id === item.id;
 
                                     let rowClasses = "blueprint-row";
@@ -986,34 +1017,37 @@
                                     const craftColor = canAssemble ? "#27ae60" : "#c0392b";
                                     const ownedCount = $gameParty.numItems(item);
 
-                                    leftListHTML += `
-                                        <div class="${rowClasses}" data-item-id="${item.id}" data-db="${dbKindOf(item)}" data-idx="${idx}">
-                                            <div class="blueprint-meta">
-                                                ${itemMetaHTML}
-                                            </div>
-                                            <span class="blueprint-count" style="color: ${craftColor}; font-weight: bold">(x${ownedCount})</span>
+                                    return `
+                                    <div class="${rowClasses}" data-item-id="${item.id}" data-db="${dbKindOf(item)}" data-idx="${idx}">
+                                        <div class="blueprint-meta">
+                                            ${itemMetaHTML}
                                         </div>
-                                    `;
+                                        <span class="blueprint-count" style="color: ${craftColor}; font-weight: bold">(x${ownedCount})</span>
+                                    </div>
+                                `;
                                 });
-                            }
+                            });
                         }
+                    }
+                } else {
+                    // Disassemble list
+                    lines.push(() => `
+                        <div class="left-header">
+                            <span class="category-name">${t.disassemble}</span>
+                        </div>
+                    `);
+
+                    const salvageItems = this.thinkerItemsList();
+
+                    if (salvageItems.length === 0) {
+                        lines.push(() => `<div class="workbench-empty" style="margin-top: 24px">${t.noOwned}</div>`);
                     } else {
-                        // Disassemble list
-                        leftListHTML += `
-                            <div class="left-header">
-                                <span class="category-name">${t.disassemble}</span>
-                            </div>
-                        `;
+                        this._itemIndex = Math.max(0, Math.min(salvageItems.length - 1, this._itemIndex));
 
-                        const salvageItems = this.thinkerItemsList();
-
-                        if (salvageItems.length === 0) {
-                            leftListHTML += `<div class="workbench-empty" style="margin-top: 24px">${t.noOwned}</div>`;
-                        } else {
-                            this._itemIndex = Math.max(0, Math.min(salvageItems.length - 1, this._itemIndex));
-
-                            salvageItems.forEach((item, idx) => {
-                                const isFocused = idx === this._itemIndex && this._activeArea === 'items';
+                        salvageItems.forEach((item, idx) => {
+                            const isFocused = idx === this._itemIndex && this._activeArea === 'items';
+                            if (isFocused) focusedLine = lines.length;
+                            lines.push(() => {
                                 const isSelected = this._selectedItem && this._selectedItem.id === item.id;
 
                                 let rowClasses = "blueprint-row";
@@ -1027,62 +1061,26 @@
                                 const rarity = getItemRarity(item);
                                 const ownedCount = $gameParty.numItems(item);
 
-                                leftListHTML += `
-                                    <div class="${rowClasses}" data-item-id="${item.id}" data-db="${dbKindOf(item)}" data-idx="${idx}">
-                                        <div class="blueprint-meta">
-                                            <div class="blueprint-icon" style="${iconStyle}"></div>
-                                            <span class="blueprint-name" style="color: ${rarity.colorCode}">${item.name}</span>
-                                        </div>
-                                        <span class="blueprint-count" style="font-weight: bold; color: #5c2c16">x${ownedCount}</span>
+                                return `
+                                <div class="${rowClasses}" data-item-id="${item.id}" data-db="${dbKindOf(item)}" data-idx="${idx}">
+                                    <div class="blueprint-meta">
+                                        <div class="blueprint-icon" style="${iconStyle}"></div>
+                                        <span class="blueprint-name" style="color: ${rarity.colorCode}">${item.name}</span>
                                     </div>
-                                `;
+                                    <span class="blueprint-count" style="font-weight: bold; color: #5c2c16">x${ownedCount}</span>
+                                </div>
+                            `;
                             });
-                        }
-                    }
-
-                    listViewport.innerHTML = leftListHTML;
-                } else {
-                    // Update only selected and focused states of existing rows (FLICKER FREE & KEEPS SCROLL POSITION!)
-                    if (this._mode === 'assemble') {
-                        if (this._selectedCategory === null) {
-                            // Category focus
-                            const rows = listViewport.querySelectorAll(".category-row");
-                            rows.forEach((row, idx) => {
-                                if (idx === this._categoryIndex && this._activeArea === 'categories') {
-                                    row.classList.add("focused");
-                                } else {
-                                    row.classList.remove("focused");
-                                }
-                            });
-                        } else {
-                            // Blueprint focus
-                            const rows = listViewport.querySelectorAll(".blueprint-row");
-                            rows.forEach((row, idx) => {
-                                const isFocused = idx === this._itemIndex && this._activeArea === 'items';
-                                const isSelected = this._selectedItem && parseInt(row.getAttribute("data-item-id")) === this._selectedItem.id && (row.getAttribute("data-db") || 'i') === dbKindOf(this._selectedItem);
-
-                                if (isFocused) row.classList.add("focused");
-                                else row.classList.remove("focused");
-
-                                if (isSelected) row.classList.add("active");
-                                else row.classList.remove("active");
-                            });
-                        }
-                    } else {
-                        // Disassemble focus
-                        const rows = listViewport.querySelectorAll(".blueprint-row");
-                        rows.forEach((row, idx) => {
-                            const isFocused = idx === this._itemIndex && this._activeArea === 'items';
-                            const isSelected = this._selectedItem && parseInt(row.getAttribute("data-item-id")) === this._selectedItem.id;
-
-                            if (isFocused) row.classList.add("focused");
-                            else row.classList.remove("focused");
-
-                            if (isSelected) row.classList.add("active");
-                            else row.classList.remove("active");
                         });
                     }
                 }
+
+                window.MenuVirtualList.render(listViewport, {
+                    key: `${this._mode}|${this._selectedCategory}|${this._recipeFilter}|${this._thinkerBar ? this._thinkerBar.query : ''}`,
+                    count: lines.length,
+                    renderItem: idx => lines[idx]()
+                });
+                if (focusedLine >= 0) window.MenuVirtualList.scrollToIndex(listViewport, focusedLine);
             }
 
             // 5. Render Right Page Workbench
@@ -1115,7 +1113,7 @@
                         const lockedDesc = T('Thinker.lockedRecipeHint');
                         const revealHint = T('Thinker.revealHint', {
                             spec: specLabel(trade.name),
-                            level: levelLabel(recipeTier(item))
+                            level: levelLabel(revealLevel(item))
                         });
                         descHTML = `<p class="workbench-desc">${lockedDesc}</p>
                             <p class="workbench-desc">${revealHint}</p>`;
@@ -1217,17 +1215,23 @@
                     let skillNotice = "";
                     if (recipe && this._mode === 'assemble') {
                         const trained = tierMet(item);
+                        const starter = isStarterRecipe(item);
                         const risk = Math.round(botchChance(item) * 100);
                         const reclaim = Math.round(reclaimChance(item) * 100);
+                        // A starter recipe has no tier to be measured against, so
+                        // the line that would report one says the truth instead:
+                        // anybody can make this.
                         skillNotice = `<div class="workbench-skill ${trained ? '' : 'locked'}">
-                            <span>${T('Thinker.tierLabel', { tier: recipeTier(item), level: tierLevelName(item) })}</span>
+                            <span>${starter
+                                ? T('Thinker.starterRecipe')
+                                : T('Thinker.tierLabel', { tier: recipeTier(item), level: tierLevelName(item) })}</span>
                             ${trained && risk > 0 ? `<span class="workbench-risk">${T('Thinker.botchRisk', { pct: risk })}</span>` : ''}
                         </div>`;
                         skillNotice += `<div class="workbench-skill">
                             <span>${T('Thinker.tradeLabel', { spec: specLabel(trade.name), level: levelLabel(trade.level) })}</span>
                             ${reclaim > 0 ? `<span class="workbench-reclaim">${T('Thinker.reclaimChance', { pct: reclaim })}</span>` : ''}
                         </div>`;
-                        if (known && !$gameSystem.hasCrafted(item.id) && !isSandbox()) {
+                        if (known && !starter && !$gameSystem.hasCrafted(item.id) && !isSandbox()) {
                             skillNotice += `<div class="workbench-skill"><span>${T('Thinker.knownBySkill', { spec: specLabel(trade.name), level: levelLabel(trade.level) })}</span></div>`;
                         }
                         if (!trained) {
@@ -1345,7 +1349,6 @@
                     }
                 }
 
-                this._forceListRebuild = true;
                 this._thinkerItemsDirty = true;
                 this.refreshUIThinker();
             } else {
@@ -1386,7 +1389,6 @@
                     window.SpecializationXP.award(FAB_SPEC, SALVAGE_POINTS, { actor: benchActor() });
                     window.SpecializationXP.award(recipeSpec(item), SALVAGE_POINTS, { actor: benchActor() });
                 }
-                this._forceListRebuild = true;
                 this._thinkerItemsDirty = true;
 
                 // If item is completely exhausted, clean selection
@@ -1495,7 +1497,6 @@
                     this._activeArea = 'items';
                     this._itemIndex = 0;
                     SoundManager.playCursor();
-                    this._forceListRebuild = true;
                     this.refreshUIThinker();
                 } else if (Input.isTriggered('left')) {
                     this._modeIndex = 0;
@@ -1505,7 +1506,6 @@
                     this._activeArea = 'categories';
                     this._categoryIndex = 0;
                     SoundManager.playCursor();
-                    this._forceListRebuild = true;
                     this.refreshUIThinker();
                 } else if (Input.isRepeated('down')) {
                     if (this._mode === 'assemble') {
@@ -1554,13 +1554,11 @@
                         this._itemIndex = 0;
                         this._selectedItem = null;
                         SoundManager.playOk();
-                        this._forceListRebuild = true;
                         this.refreshUIThinker();
                     }
                 } else if (cancelTriggered) {
                     this._activeArea = 'modes';
                     SoundManager.playCancel();
-                    this._forceListRebuild = true;
                     this.refreshUIThinker();
                 }
             } else if (this._activeArea === 'items') {
@@ -1580,7 +1578,6 @@
                             this._activeArea = 'modes';
                         }
                         SoundManager.playCancel();
-                        this._forceListRebuild = true;
                         this.refreshUIThinker();
                     }
                     return;
@@ -1602,7 +1599,6 @@
                             this._selectedCategory = null;
                             this._selectedItem = null;
                             this._activeArea = 'categories';
-                            this._forceListRebuild = true;
                         } else {
                             this._activeArea = 'modes';
                         }
@@ -1647,7 +1643,6 @@
                         this._activeArea = 'modes';
                     }
                     SoundManager.playCancel();
-                    this._forceListRebuild = true;
                     this.refreshUIThinker();
                 }
             } else if (this._activeArea === 'workbench') {

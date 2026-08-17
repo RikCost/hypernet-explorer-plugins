@@ -1253,38 +1253,57 @@
                     </div>`;
             };
 
+            // The page is a flat run of entries — section headings, the odd
+            // note, and one entry per specialization — so the windowed list can
+            // address it by index without caring which is which
+            // (UI/MenuVirtualList.js). `_rowEntry` maps a place in the cursor's
+            // own order back to its line, for scrolling onto a row that is not
+            // currently built.
+            const header = (label, colour) =>
+                `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:${colour}; padding:8px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15)">${label}</div>`;
+            const note = (label) =>
+                `<div style="opacity:0.6; padding:8px 10px; font-family:'Lora',serif">${label}</div>`;
+
             // A search answers with what it found, so it never prints "nothing
             // trained yet" under a heading the query itself emptied.
             const searching = !!(this._specBar && this._specBar.query.trim());
-            let listHTML = '';
-            if (searching && !order.length) {
-                listHTML += `<div style="opacity:0.6; padding:8px 10px; font-family:'Lora',serif">${T('SpecMenu.ui.noMatches')}</div>`;
-            }
+            const entries = [];
+            this._rowEntry = [];
+            const pushRow = (spec, orderIndex) => {
+                this._rowEntry[orderIndex] = entries.length;
+                entries.push(() => rowHTML(spec, orderIndex));
+            };
+
+            if (searching && !order.length) entries.push(() => note(T('SpecMenu.ui.noMatches')));
             if (trained.length > 0 || !searching) {
-                listHTML += `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:var(--text-secondary-active); padding:8px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15)">${T('SpecMenu.ui.trained')}</div>`;
+                entries.push(() => header(T('SpecMenu.ui.trained'), 'var(--text-secondary-active)'));
             }
             if (trained.length === 0) {
-                if (!searching) listHTML += `<div style="opacity:0.6; padding:8px 10px; font-family:'Lora',serif">${T('SpecMenu.ui.noneTrained')}</div>`;
+                if (!searching) entries.push(() => note(T('SpecMenu.ui.noneTrained')));
             } else {
-                trained.forEach((spec, i) => { listHTML += rowHTML(spec, i); });
+                trained.forEach((spec, i) => pushRow(spec, i));
             }
             if (untrained.length > 0) {
-                listHTML += `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:var(--text-card-medium); padding:10px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15)">${T('SpecMenu.ui.untrained')}</div>`;
-                untrained.forEach((spec, i) => { listHTML += rowHTML(spec, trained.length + i); });
+                entries.push(() => header(T('SpecMenu.ui.untrained'), 'var(--text-card-medium)'));
+                untrained.forEach((spec, i) => pushRow(spec, trained.length + i));
             }
 
             const listBox = document.getElementById('spec-list-content');
             if (listBox) {
-                const savedScroll = listBox.scrollTop;
-                listBox.innerHTML = listHTML;
-                listBox.scrollTop = savedScroll;
-                listBox.querySelectorAll('.spec-row').forEach(row => {
-                    row.addEventListener('click', () => {
-                        this._selectedIndex = parseInt(row.getAttribute('data-idx'), 10);
-                        this._activeArea = 'list';
-                        SoundManager.playCursor();
-                        this.refreshSpecDOM();
-                    });
+                window.MenuVirtualList.render(listBox, {
+                    key: `${this._currentActorIndex}|${this._categoryIndex}|${this._specBar ? this._specBar.query : ''}`,
+                    count: entries.length,
+                    renderItem: idx => entries[idx](),
+                    onWindow: win => {
+                        win.querySelectorAll('.spec-row').forEach(row => {
+                            row.addEventListener('click', () => {
+                                this._selectedIndex = parseInt(row.getAttribute('data-idx'), 10);
+                                this._activeArea = 'list';
+                                SoundManager.playCursor();
+                                this.refreshSpecDOM();
+                            });
+                        });
+                    }
                 });
             }
 
@@ -1469,9 +1488,12 @@
             }
         }
 
+        // By line, not by element: the row being moved onto is only in the DOM
+        // once the viewport reaches it (UI/MenuVirtualList.js).
         scrollSelectedIntoView() {
-            const focused = document.querySelector('#spec-list-content .spec-row.focused');
-            if (focused) focused.scrollIntoView({ block: 'nearest' });
+            const listBox = document.getElementById('spec-list-content');
+            const line = this._rowEntry ? this._rowEntry[this._selectedIndex] : undefined;
+            if (listBox && line !== undefined) window.MenuVirtualList.scrollToIndex(listBox, line);
         }
     }
 

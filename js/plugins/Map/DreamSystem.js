@@ -100,6 +100,12 @@
  *     (not RPG Maker choices). "Pinch cheeks" wakes; "Keep dreaming" resumes.
  *   - TOUCHING a dream entity triggers an LSD-emulator strobe and drops you into
  *     another dream.
+ *   - WALKING STRAIGHT INTO A WALL does the same: lean on any solid face-first
+ *     for a moment on foot and the screen strobes and the sleeper is somewhere
+ *     else, the way a wall is a link in LSD Dream Emulator. Only head-on
+ *     contact counts, so a wall clipped while running past it or slid along a
+ *     corner is nothing; a wall met in mid-air is still a wall kick, and one
+ *     met in flight is still a wall.
  *
  * ============================================================================
  * The world is rolled, never read off a map
@@ -323,6 +329,7 @@
     const INSIGHT_MAX = Math.max(INSIGHT_MIN, parseInt(parameters['insightMax'] || '12', 10));
     const INSIGHT_PERIOD = 60;   // seconds of dreaming per roll
     const DRIFT_SECONDS = 7;     // how long a drift region is stood in before the dream moves on
+    const WALL_SECONDS = 0.4;    // how long a wall is walked face-first into before it gives way
     // A hole in the dream has no bottom. Fall this far under the lowest ground
     // and the sleeper has fallen out of this dream and into another.
     const VOID_FLOOR = -520;
@@ -3072,6 +3079,12 @@
             // Together they are what a second jump in mid-air is bought with.
             this.wallN = { x: 0, z: 0 };
             this.wallAge = 99;
+            // Walking face-first into a wall, LSD-emulator style: how long the
+            // sleeper has been pushing into one, and the direction they are
+            // asking to go in, which is what says pushing from brushing past.
+            this.wallPush = 0;
+            this._wishX = 0;
+            this._wishZ = 0;
             this._solids = [];
 
             this._onMouseMove = this._onMouseMove.bind(this);
@@ -3251,6 +3264,10 @@
             }
 
             if (this.flying) {
+                // A wall met in the air is a wall; only a wall walked into on
+                // foot is a way out of the dream.
+                this.wallPush = 0;
+                this._wishX = this._wishZ = 0;
                 const spd = 150 * (sprint ? 1.9 : 1);
                 // Fly along the full look direction (pitch included) for W/S.
                 const dir = new THREE.Vector3();
@@ -3291,6 +3308,10 @@
                     tx = (wx / len) * spd;
                     tz = (wz / len) * spd;
                 }
+                // Kept unit-length and unscaled by speed: the wall test asks
+                // which way the sleeper is leaning, not how fast.
+                this._wishX = tx / spd;
+                this._wishZ = tz / spd;
                 // On the ground the sleeper goes where they are told almost at
                 // once, and stops nearly as fast. In the air only a third of
                 // that authority is left, and with nothing asked for there is
@@ -3378,6 +3399,7 @@
 
             feet = p.y - this.eye;
             const head = p.y + this.headroom;
+            let hitWall = false;
             for (let i = 0; i < list.length; i++) {
                 const b = list[i];
                 if (b.y0 >= head || b.y1 <= feet + 0.4) continue;      // clear above or below
@@ -3406,6 +3428,20 @@
                     if (this.vz * sign < 0) this.vz = 0;
                 }
                 this.wallAge = 0;
+                hitWall = true;
+            }
+
+            // A wall walked STRAIGHT into is a door in a dream. The contact
+            // normal points back out of the surface, so leaning on it means the
+            // asked-for direction runs against that normal; a wall clipped
+            // while running past it, or slid along a corner, never does. Only
+            // on foot: in mid-air the same contact is a wall kick, and in
+            // flight a wall is only a wall.
+            if (hitWall && this.onGround && !this.flying &&
+                (this._wishX * this.wallN.x + this._wishZ * this.wallN.z) < -0.55) {
+                this.wallPush += delta;
+            } else {
+                this.wallPush = 0;
             }
         }
 
@@ -5549,6 +5585,20 @@
                 this._transitioning = true;
                 this._hideSubtitle();
                 dreamSe(this._dream.sfx.gone[0], 80, 70, 0);
+                DreamSystem.collideShift();
+                return;
+            }
+
+            // Walk face-first into a wall and hold against it: the dream
+            // strobes and lets go, and the sleeper is somewhere else. The same
+            // grace as the entities, so a dream that opens with the sleeper's
+            // nose against a monolith is not over before it starts.
+            if (!this._transitioning && !this._menuOpen && this._time > 1.2 &&
+                this._controller.wallPush > WALL_SECONDS) {
+                this._transitioning = true;
+                this._controller.wallPush = 0;
+                this._hideSubtitle();
+                dreamSe(this._dream.sfx.gone[0], 80, 110, 0);
                 DreamSystem.collideShift();
                 return;
             }

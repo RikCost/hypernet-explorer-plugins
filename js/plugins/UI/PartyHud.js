@@ -566,9 +566,16 @@
                 card.deadKey = dead;
                 card.root.classList.toggle('phud-down', dead);
             }
-            if (card.nameKey !== actor.name()) {
-                card.nameKey = actor.name();
-                card.name.textContent = actor.name();
+            // Whoever is holding the wheel is named as holding it: on a long
+            // drive the rota changes hands by itself (VehicleCrew.js), so the
+            // card is the only place the party can see who is driving and who
+            // is asleep in the back.
+            const label = window.VehicleCrew?.isDriver?.(actor)
+                ? actor.name() + ' ' + T('VehicleCrew.drivingTag')
+                : actor.name();
+            if (card.nameKey !== label) {
+                card.nameKey = label;
+                card.name.textContent = label;
             }
             this._writeFlash(card, actor.actorId(), actor.hp);
             this._writeBar(card.hp, TextManager.hpA, actor.hp, actor.mhp, 'hp');

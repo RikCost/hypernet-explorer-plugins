@@ -17,7 +17,7 @@
   "Favorites": "Preferiti",
   "Food": "Cibo",
   "Medical": "Medicinali",
-  "Tools": "Attrezzi",
+  "Tools": "Strumenti",
   "Weapons": "Armi",
   "Armor": "Armature",
   "Materials": "Materiali",
@@ -29,13 +29,13 @@
   "Quest": "Missioni"
  },
  "itemType": {
-  "standard": "Oggetto comune",
-  "weapon": "Arma temprata",
-  "armor": "Scudo intrecciato",
-  "food": "Provvista culinaria",
+  "standard": "Oggetto",
+  "weapon": "Arma",
+  "armor": "Armatura",
+  "food": "CIbo",
   "medical": " Rimedio",
-  "tools": "Apparato tecnico",
-  "materials": "Elemento grezzo"
+  "tools": "Strumento",
+  "materials": "Materiale"
  },
  "spec": {
   "stat": "Statistica",

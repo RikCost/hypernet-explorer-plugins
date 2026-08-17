@@ -591,6 +591,9 @@
         $gameVariables.setValue(BSE.Params.respawnMapVar, Number(args.mapId));
         $gameVariables.setValue(BSE.Params.respawnXVar, Number(args.x));
         $gameVariables.setValue(BSE.Params.respawnYVar, Number(args.y));
+        // An authored map id and tile: no procedural square to put back, and
+        // any wild camp the party had set is no longer where they wake up.
+        $gameSystem._respawnProcSurface = null;
         $gameSystem._respawnPointSet = true;
     });
 

@@ -110,14 +110,39 @@
   // the NPCSystem character pool uses). SPRITE_SHEET_CONFIG is kept only as an
   // optional per-sheet cutoff override (see loop below); it no longer decides
   // which sheets appear. Falls back to the config keys if the DB is unavailable.
-  // ONE rule decides what is on the board: "npc": true, nothing else. Beta
-  // sheets (NPCs.json -> beta, a sheet outside the original folder) are on it
-  // too, but they are dealt AFTER every ordinary sheet, under their own header,
-  // so the top of the board is always the curated set. The grid lazy-loads a
-  // page at a time, so the longer list costs nothing to enter.
+  // ONE rule decides what is on the board: "npc": true, nothing else. The
+  // sheets a flag sets apart are on it too, but each is dealt AFTER every
+  // ordinary sheet under its own header (see SPRITE_BLOCKS), so the top of the
+  // board is always the curated set. The grid lazy-loads a page at a time, so
+  // the longer list costs nothing to enter.
   const npcDatabase = window.WorldGen && window.WorldGen.NPCs;
-  const isBetaSheet = (name) =>
-    !!(npcDatabase && npcDatabase[name] && npcDatabase[name].beta === true);
+  // The blocks the board is dealt in, in this order. The first holds everything
+  // no flag speaks for and carries no header; each of the others is the sheets
+  // one NPCs.json flag marks, under a band that names it:
+  //
+  //   varlenian , from Varlenia, only ever dealt on Varlenian ground
+  //   aliens    , not a person of this world at all
+  //   beta      , outside the original folder, never dealt automatically
+  //
+  // A sheet answering two flags belongs to the LAST block it answers, so beta
+  // stays the bottom of the board exactly as before (three of the six alien
+  // sheets are beta sheets and have always been dealt with the beta block).
+  // i18n-ignore-start: block ids, the labels are the i18n keys beside them
+  const SPRITE_BLOCKS = [
+    { id: "ordinary", label: null, holds: null },
+    { id: "varlenian", label: "CharCreate.varlenianSprites", holds: (e) => e.varlenian === true },
+    { id: "aliens", label: "CharCreate.alienSprites", holds: (e) => e.aliens === true },
+    { id: "beta", label: "CharCreate.betaSprites", holds: (e) => e.beta === true },
+  ];
+  // i18n-ignore-end
+  const blockOfSheet = (name) => {
+    const entry = npcDatabase && npcDatabase[name];
+    if (!entry) return 0;
+    for (let i = SPRITE_BLOCKS.length - 1; i > 0; i--) {
+      if (SPRITE_BLOCKS[i].holds(entry)) return i;
+    }
+    return 0;
+  };
   // A goblin world offers goblin faces and a monster world offers nothing that
   // reads as a person: the board is the world's own wardrobe, so it answers to
   // the same rule the procedural inhabitants are dealt from
@@ -141,7 +166,7 @@
     if (SC.allowedInPopulation && !SC.allowedInPopulation(name, entry)) return false;
     return true;
   };
-  // Inside each of those two blocks the Skab folder is dealt first: it holds the
+  // Inside each of those blocks the Skab folder is dealt first: it holds the
   // faces this world was drawn for, so it leads whichever block it lands in.
   const isSkabSheet = (name) => name.startsWith("Skab/");
   const spriteSheets = [];
@@ -153,23 +178,24 @@
         )
       : Object.keys(SPRITE_SHEET_CONFIG)
     ).filter(allowedSheet);
-    const deal = (beta) => {
+    const deal = (block) => {
       for (const name of offered) {
-        if (isBetaSheet(name) === beta && isSkabSheet(name)) spriteSheets.push(name);
+        if (blockOfSheet(name) === block && isSkabSheet(name)) spriteSheets.push(name);
       }
       for (const name of offered) {
-        if (isBetaSheet(name) === beta && !isSkabSheet(name)) spriteSheets.push(name);
+        if (blockOfSheet(name) === block && !isSkabSheet(name)) spriteSheets.push(name);
       }
     };
-    deal(false);
-    deal(true);
+    for (let i = 0; i < SPRITE_BLOCKS.length; i++) deal(i);
   }
   rebuildSpriteSheets();
 
   // Build a comprehensive list of all sprite options (file + index) considering cutoffs
   const spriteOptions = [];
-  // Where the beta block starts in that list, -1 when the board holds none.
-  let BETA_START = -1;
+  // Where each block of SPRITE_BLOCKS begins in that list, -1 for a block this
+  // world has no sheet in (a severed world has no Varlenian faces, a goblin
+  // world no aliens): an empty block is on the board nowhere, header included.
+  const blockStart = [];
 
   const decamelCase = (str) => {
     if (!str) return "";
@@ -183,7 +209,8 @@
 
   function rebuildSpriteOptions() {
     spriteOptions.length = 0;
-    BETA_START = -1;
+    blockStart.length = 0;
+    for (let i = 0; i < SPRITE_BLOCKS.length; i++) blockStart.push(-1);
     for (const name of spriteSheets) {
       const config = SPRITE_SHEET_CONFIG[name];
       // Determine cutoff index for this sheet (use config or default based on sheet type)
@@ -201,7 +228,8 @@
       }
 
       // Add each sprite (up to cutoff index) as a separate option
-      if (BETA_START < 0 && isBetaSheet(name)) BETA_START = spriteOptions.length;
+      const block = blockOfSheet(name);
+      if (blockStart[block] < 0) blockStart[block] = spriteOptions.length;
       for (let index = 0; index <= cutoffIndex; index++) {
         spriteOptions.push({ name: name, index: index });
       }
@@ -350,44 +378,54 @@
   // turns through. Both were read off Graphics.frameCount before.
   const SPRITE_WALK_FRAMES = 12;
   const SPRITE_TURN_FRAMES = 48;
-  // The band the "Beta sprites" header sits in, between the two blocks.
+  // The band a block's header sits in, between one block and the next.
   const SPRITE_HEADER_H = 36;
 
-  // The rows of the board, laid out once. A row belongs to one block or the
-  // other and carries its own top, so the header's band is folded in here and
-  // nowhere else: every other reader (the cursor, the virtualiser, the cell
-  // placer) asks this table where a row stands rather than multiplying an
-  // index by a row height. Columns stay plain arithmetic within a row, since a
-  // block always starts a fresh one.
+  // The rows of the board, laid out once. A row belongs to one block and
+  // carries its own top, so the header bands are folded in here and nowhere
+  // else: every other reader (the cursor, the virtualiser, the cell placer)
+  // asks this table where a row stands rather than multiplying an index by a
+  // row height. Columns stay plain arithmetic within a row, since a block
+  // always starts a fresh one.
   const spriteRows = [];
   const spriteRowOfIndex = [];
-  // Where the header band stands, -1 when the board holds no beta sheets.
-  let spriteHeaderTop = -1;
+  // Where each block's header band stands, -1 for a block that is not on the
+  // board or is the first thing on it (nothing to divide it from).
+  const blockHeaderTop = [];
   let spriteCanvasH = 0;
   function rebuildSpriteRows() {
     spriteRows.length = 0;
     spriteRowOfIndex.length = 0;
     for (let i = 0; i < spriteOptions.length; i++) spriteRowOfIndex.push(0);
-    spriteHeaderTop = -1;
+    blockHeaderTop.length = 0;
+    for (let i = 0; i < SPRITE_BLOCKS.length; i++) blockHeaderTop.push(-1);
     let top = 0;
-    const pushBlock = (from, to, beta) => {
+    const pushBlock = (from, to, block) => {
       for (let i = from; i <= to; i += SPRITE_GRID_COLS) {
         const last = Math.min(to, i + SPRITE_GRID_COLS - 1);
         for (let k = i; k <= last; k++) spriteRowOfIndex[k] = spriteRows.length;
-        spriteRows.push({ from: i, to: last, top, beta });
+        spriteRows.push({ from: i, to: last, top, block });
         top += SPRITE_CELL_H + SPRITE_GRID_GAP;
       }
     };
     const end = spriteOptions.length - 1;
-    const ordinaryEnd = (BETA_START < 0 ? spriteOptions.length : BETA_START) - 1;
-    if (ordinaryEnd >= 0) pushBlock(0, ordinaryEnd, false);
-    if (BETA_START >= 0 && BETA_START <= end) {
-      // A board that is nothing but beta sheets needs no divider.
-      if (ordinaryEnd >= 0) {
-        spriteHeaderTop = top;
+    for (let block = 0; block < SPRITE_BLOCKS.length; block++) {
+      const from = blockStart[block];
+      if (from < 0 || from > end) continue;
+      // The block runs to the start of the next one that is on the board.
+      let to = end;
+      for (let next = block + 1; next < SPRITE_BLOCKS.length; next++) {
+        if (blockStart[next] >= 0) { to = blockStart[next] - 1; break; }
+      }
+      if (to < from) continue;
+      // A block that is the whole top of the board needs no divider above it,
+      // which is the ordinary block and, in a world down to one flagged kind,
+      // whichever block came first.
+      if (SPRITE_BLOCKS[block].label && top > 0) {
+        blockHeaderTop[block] = top;
         top += SPRITE_HEADER_H + SPRITE_GRID_GAP;
       }
-      pushBlock(BETA_START, end, true);
+      pushBlock(from, to, block);
     }
     spriteCanvasH = Math.max(0, top - SPRITE_GRID_GAP);
   }
@@ -503,7 +541,7 @@
       this._index = 0;
       this._cells = new Map();
       this._pool = [];
-      this._headerEl = null;
+      this._headerEls = [];
       this._cellW = 0;
       this._gridDirty = true;
       this._needsCursorScroll = false;
@@ -543,7 +581,7 @@
       window.removeEventListener("resize", this._resizeListener);
       this._cells.clear();
       this._pool.length = 0;
-      this._headerEl = null;
+      this._headerEls = [];
       if (this._overlay) {
         this._overlay.innerHTML = "";
         this._overlay.style.display = "none";
@@ -636,23 +674,33 @@
         (width - SPRITE_GRID_GAP * (SPRITE_GRID_COLS - 1)) / SPRITE_GRID_COLS,
       );
       this._canvasEl.style.height = `${spriteCanvasH}px`;
-      this.placeSectionHeader();
+      this.placeSectionHeaders();
       return true;
     }
 
-    // The "Beta sprites" band between the two blocks. It scrolls with the
-    // board, so it lives in the canvas beside the cards rather than over the
-    // pane, and it is built once: the virtualiser never recycles it.
-    placeSectionHeader() {
-      if (spriteHeaderTop < 0) return;
-      if (!this._headerEl) {
-        this._headerEl = document.createElement("div");
-        this._headerEl.className = "cc-sprite-section";
-        this._headerEl.textContent = T("CharCreate.betaSprites");
-        this._canvasEl.appendChild(this._headerEl);
+    // The band that names each block, between it and the block above. They
+    // scroll with the board, so they live in the canvas beside the cards rather
+    // than over the pane, and they are built once per block: the virtualiser
+    // never recycles them. A block the board dropped keeps no band behind it.
+    placeSectionHeaders() {
+      for (let block = 0; block < SPRITE_BLOCKS.length; block++) {
+        const top = blockHeaderTop[block];
+        let el = this._headerEls[block];
+        if (top < 0) {
+          if (el) el.style.display = "none";
+          continue;
+        }
+        if (!el) {
+          el = document.createElement("div");
+          el.className = "cc-sprite-section";
+          el.textContent = T(SPRITE_BLOCKS[block].label);
+          this._canvasEl.appendChild(el);
+          this._headerEls[block] = el;
+        }
+        el.style.display = "";
+        el.style.top = `${top}px`;
+        el.style.height = `${SPRITE_HEADER_H}px`;
       }
-      this._headerEl.style.top = `${spriteHeaderTop}px`;
-      this._headerEl.style.height = `${SPRITE_HEADER_H}px`;
     }
 
     takeCell() {
@@ -763,9 +811,10 @@
       }
       const row = spriteRows[spriteRowOfIndex[this._index]];
       if (!row) return;
-      // Stepping onto the first beta row shows the header that names it.
-      const top = row.beta && row.top === spriteHeaderTop + SPRITE_HEADER_H + SPRITE_GRID_GAP
-        ? spriteHeaderTop
+      // Stepping onto the first row of a block shows the header that names it.
+      const band = blockHeaderTop[row.block];
+      const top = band >= 0 && row.top === band + SPRITE_HEADER_H + SPRITE_GRID_GAP
+        ? band
         : row.top;
       if (top < pane.scrollTop) pane.scrollTop = top;
       else if (top + SPRITE_CELL_H > pane.scrollTop + pane.clientHeight) {

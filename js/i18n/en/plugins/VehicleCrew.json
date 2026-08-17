@@ -1,0 +1,14 @@
+{
+  "drivingTag": "(Driving)",
+  "tookWheel": "{name} takes the wheel.",
+  "allTired": "{name} is driving on fumes — nobody aboard is rested enough to take over.",
+  "aboard": {
+    "hunger": "Something is cooking in the galley.",
+    "sleep": "The off-shift crew turns in.",
+    "hygiene": "The crew takes turns in the sonic shower.",
+    "social": "The crew talks the hours away.",
+    "leisure": "Somebody digs the cards out of a locker.",
+    "meal": "{name} eats {item} aboard.",
+    "noFood": "The hold is out of food."
+  }
+}

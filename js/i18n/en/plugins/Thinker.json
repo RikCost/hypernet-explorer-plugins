@@ -31,6 +31,7 @@
   "reclaimChance": "{pct}% chance to save each material",
   "reclaimed": "Saved from the bench: {items}",
   "tierLabel": "Tier {tier} work - Fabrication: {level}",
+  "starterRecipe": "Common knowledge - anyone can make this, trained or not",
   "botchRisk": "{pct}% chance of botching it",
   "needFabrication": "Too complex for these hands. Requires Fabrication: {level}",
   "botchTitle": "Botched",

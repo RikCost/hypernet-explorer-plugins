@@ -34,6 +34,9 @@
   "chooseAnArchetype": "CHOOSE AN ARCHETYPE",
   "chooseYourClass": "CHOOSE YA CLASS",
   "selectYourTraits": "SELECT YA TRAITS",
+  "selectYourPersonality": "SELECT YA PERSONALITY",
+  "personalityVoice": "HOW DEY THINK",
+  "personalityBody": "WHAT IT DOES TA DA BODY",
   "chooseYourBirthDate": "CHOOSE YA BIRTH DATE",
   "addAnotherPartyMember": "ADD ANOTHER PARTY MEMBER?",
   "chooseYourOrigin": "CHOOSE YA ORIGIN",
@@ -193,6 +196,8 @@
   "creatureSynthesisComplete": "CREATURE SYNTHESIS COMPLETE",
   "selectSprite": "SELECT SPRITE",
   "spriteIndex": "INDEX",
+  "varlenianSprites": "VARLENIAN SPRITES",
+  "alienSprites": "ALIEN SPRITES",
   "betaSprites": "BETA SPRITES",
   "continue2": "CONTINUE",
   "presets": "PRESETS",
@@ -307,6 +312,10 @@
     "randomTraits": {
       "name": "RANDOMIZE TRAITS",
       "desc": "HAB TRAITS RANDOMLY ASSIGNED TA YA CHARACTER!"
+    },
+    "randomPersonality": {
+      "name": "RANDOM",
+      "desc": "LET A DISPOSITION BE DEALT TA YA CHARACTER!"
     },
     "pickTraits": {
       "name": "PICK TRAITS",

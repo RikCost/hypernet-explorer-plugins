@@ -88,9 +88,12 @@
   // and img/busts). `key` is the label the skin reads by, resolved from
   // CharPresets.skin.<key>; only the walk-cycle sheets qualify, since a skin is
   // what the player then walks around as.
-  const skin = (key, asset) => ({
+  // `folder` names the sprite's own folder for the few sheets that do not sit
+  // in Skab: the pose sheets live in img/characters/Animations. The bust is
+  // unaffected either way, since a bust is one flat folder.
+  const skin = (key, asset, folder) => ({
     key,
-    sprite: "Skab/!$" + asset,
+    sprite: (folder || "Skab") + "/!$" + asset,
     spriteIndex: 0,
     busts: asset,
   });
@@ -103,7 +106,7 @@
       name: "Bubba",
       characterType: "humanoid",
       classId: 54,
-      sprite: "NPCs/!$Bubba1",
+      sprite: "Varlenian/!$Bubba1",
       spriteIndex: 0,
       mapId: 722,
       x: 55,
@@ -250,7 +253,7 @@
         skin("statesman", "Andreotti"),
         skin("arcane", "AndreottiArcane"),
         skin("pontiff", "AndreottiPope"),
-        skin("seated", "AndreottiSitting"),
+        skin("seated", "AndreottiSitting", "Animations"),
       ],
     },
     {

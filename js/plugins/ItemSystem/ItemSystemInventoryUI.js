@@ -434,7 +434,6 @@
     this._searchText          = '';
     this._dndSortKey          = 'name';
     this._dndSortDirection    = 'asc';
-    this._lastGridDataKey     = '';
 
     this.createUIbackpackOverlay();
   };
@@ -527,26 +526,6 @@
 
     const itemsList = this.getFilteredUIItems();
 
-    const setupLazyLoading = (gridContainer) => {
-      if (!gridContainer) return;
-      if (typeof IntersectionObserver === 'undefined') {
-        itemsList.forEach((item, idx) => this.drawUIItemIcon(item.iconIndex, `item-canvas-${idx}`));
-        return;
-      }
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const slot      = entry.target;
-            const canvasId  = slot.getAttribute('data-canvas-id');
-            const iconIndex = parseInt(slot.getAttribute('data-icon-index'), 10);
-            this.drawUIItemIcon(iconIndex, canvasId);
-            observer.unobserve(slot);
-          }
-        });
-      }, { root: gridContainer, rootMargin: '50px' });
-      gridContainer.querySelectorAll('.item-slot').forEach(slot => observer.observe(slot));
-    };
-
     if (this._dndSelectedIndex >= itemsList.length) {
       this._dndSelectedIndex = Math.max(0, itemsList.length - 1);
     }
@@ -578,37 +557,51 @@
     `;
 
     // ---- Item grid ----
-    let gridHTML = '';
+    // The pockets are a window onto the roll, not the whole of it: a sack with
+    // a thousand things in it builds only the slots the page can show, and
+    // paints only their icons (UI/MenuVirtualList.js). Every line is a closure,
+    // so a slot costs nothing until it is on screen.
+    //
     // Signature of what the grid actually shows (identity, order, stack size,
     // favorite mark). Equipping swaps one weapon out and the replaced one back
     // in, so the list length alone never notices the change and the slots keep
     // their stale onclick indices.
     let gridSignature = '';
+    itemsList.forEach(item => {
+      const kind = DataManager.isWeapon(item) ? 'w' : DataManager.isArmor(item) ? 'a' : 'i';
+      gridSignature += `${kind}${item.id}x${$gameParty.numItems(item)}${this.isItemFavorited(item) ? '*' : ''},`;
+    });
+
     // Under All the pockets are read as a categorized list: a full-width
     // heading opens each group. The headings are not .item-slot elements, so
     // the slot indices the grid is navigated and clicked by stay untouched.
     const grouped = this.isUIGroupedView();
+    const gridLines = [];
+    // Which of those lines are headings rather than slots: they span both
+    // columns, so the window has to give them a line of their own.
+    const gridHeadings = [];
+    // Where each item sits among the lines, so the cursor can scroll onto a
+    // slot that has not been built yet.
+    const gridLineOf = [];
     let lastGroup = null;
-    if (itemsList.length === 0) {
-      gridHTML = `<div class="item-grid-empty">${T('Inventory.empty')}</div>`;
-    } else {
-      itemsList.forEach((item, idx) => {
-        if (grouped) {
-          const group = this.uiGroupOf(item);
-          if (group !== lastGroup) {
-            lastGroup = group;
-            gridHTML += `<div class="backpack-group-title">${escapeHtml(this.uiCategoryLabel(group))}</div>`;
-          }
+    itemsList.forEach((item, idx) => {
+      if (grouped) {
+        const group = this.uiGroupOf(item);
+        if (group !== lastGroup) {
+          lastGroup = group;
+          gridHeadings[gridLines.length] = true;
+          gridLines.push(() => `<div class="backpack-group-title">${escapeHtml(this.uiCategoryLabel(group))}</div>`);
         }
+      }
+      gridLineOf[idx] = gridLines.length;
+      gridLines.push(() => {
         const isFocused  = (this._dndActiveSection === 'items' && this._dndSelectedIndex === idx) ? 'selected' : '';
         const count      = $gameParty.numItems(item);
         const weight     = window.ItemSystemUtils && window.ItemSystemUtils.getItemWeight ? window.ItemSystemUtils.getItemWeight(item) : 0;
         const weightTotal = ((weight * count) / 1000).toFixed(2);
         const canvasId   = `item-canvas-${idx}`;
         const rarity     = this.getUIItemRarity(item);
-        const kind       = DataManager.isWeapon(item) ? 'w' : DataManager.isArmor(item) ? 'a' : 'i';
-        gridSignature   += `${kind}${item.id}x${count}${this.isItemFavorited(item) ? '*' : ''},`;
-        gridHTML += `
+        return `
           <div class="item-slot ${isFocused}" data-icon-index="${item.iconIndex}" data-canvas-id="${canvasId}" onclick="SceneManager._scene.selectUIItem(${idx})">
             <div class="item-rarity-bar" style="background:${rarity.color};"></div>
             <div class="item-slot-icon">
@@ -623,7 +616,7 @@
             </div>
           </div>`;
       });
-    }
+    });
 
     // ---- Weight bar ----
     const currentWeight  = (window.ItemSystemUtils ? window.ItemSystemUtils.calculateTotalWeight() : 0) / 1000;
@@ -675,7 +668,7 @@
             onkeypress="event.stopPropagation();"/>
           <div class="backpack-sort-tags">${sortTagsHTML}</div>
         </div>
-        <div class="backpack-grid" id="backpack-grid">${gridHTML}</div>
+        <div class="backpack-grid" id="backpack-grid"></div>
         ${window.ItemHotbar ? window.ItemHotbar.inventoryBarHTML(weightGaugeHTML) : `<div class="backpack-hotbar"><div class="backpack-hotbar-head">${weightGaugeHTML}</div></div>`}
       </div>`;
 
@@ -771,10 +764,8 @@
     const rightPageHTML = `<div class="right-page">${rightPageInnerHTML}</div>`;
 
     if (!leftPageContainer) {
-      this._lastGridDataKey = gridDataKey;
       this._lastTabsKey = categories.join('|');
       this._dndContainer.innerHTML = `<div class="book-spread inspect-pockets">${leftPageHTML}${rightPageHTML}</div>`;
-      setupLazyLoading(this._dndContainer.querySelector('#backpack-grid'));
     } else {
       // In-place update: tabs. The row itself is only rebuilt when the set of
       // categories changes — using the last of something takes its tab away —
@@ -792,20 +783,6 @@
         tab.classList.toggle('selected',  this._dndActiveSection === 'categories' && this._activeCategoryIndex === idx);
       });
 
-      // Grid: full rebuild only on data change; otherwise just toggle selection
-      const gridContainer = leftPageContainer.querySelector('#backpack-grid');
-      if (gridContainer) {
-        if (this._lastGridDataKey !== gridDataKey) {
-          this._lastGridDataKey = gridDataKey;
-          gridContainer.innerHTML = gridHTML;
-          setupLazyLoading(gridContainer);
-        } else {
-          gridContainer.querySelectorAll('.item-slot').forEach((slot, idx) => {
-            slot.classList.toggle('selected', idx === this._dndSelectedIndex && this._dndActiveSection === 'items');
-          });
-        }
-      }
-
       // Sort tags + weight bar
       const sortTagsContainer = leftPageContainer.querySelector('.backpack-sort-tags');
       if (sortTagsContainer) sortTagsContainer.innerHTML = sortTagsHTML;
@@ -819,15 +796,35 @@
       if (rightPageContainer) rightPageContainer.innerHTML = rightPageInnerHTML;
     }
 
+    // The pockets themselves, drawn as a window over the roll. Slot clicks are
+    // inline handlers carrying their own index, so a slot swapped in mid-scroll
+    // needs no wiring of its own.
+    const gridContainer = this._dndContainer.querySelector('#backpack-grid');
+    if (gridContainer) {
+      window.MenuVirtualList.render(gridContainer, {
+        key: gridDataKey,
+        count: gridLines.length,
+        renderItem: idx => gridLines[idx](),
+        fullWidth: idx => !!gridHeadings[idx],
+        emptyHTML: `<div class="item-grid-empty">${T('Inventory.empty')}</div>`,
+        onWindow: (win) => {
+          win.querySelectorAll('.item-slot').forEach(slot => {
+            this.drawUIItemIcon(parseInt(slot.getAttribute('data-icon-index'), 10),
+              slot.getAttribute('data-canvas-id'));
+          });
+        }
+      });
+    }
+
     // The mount point survives the in-place updates above, so the bar is only
     // ever re-rendered into it, never rebuilt from scratch with the page.
     if (window.ItemHotbar) window.ItemHotbar.renderInventoryBar(this);
 
     if (selectedItem) this.drawUIItemIcon(selectedItem.iconIndex, 'inspect-canvas');
 
-    if (this._dndActiveSection === 'items') {
-      const selectedElem = this._dndContainer.querySelector('.item-slot.selected');
-      if (selectedElem) selectedElem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    if (this._dndActiveSection === 'items' && gridContainer) {
+      const line = gridLineOf[this._dndSelectedIndex];
+      if (line !== undefined) window.MenuVirtualList.scrollToIndex(gridContainer, line);
     }
   };
 
@@ -1300,20 +1297,12 @@
         const total = items.length;
         const idx   = scene._dndSelectedIndex;
 
-        const scrollToSelected = () => {
-          const container = document.getElementById('menu-container');
-          if (container) {
-            const focused = container.querySelector('.item-slot.selected');
-            if (focused) focused.scrollIntoView({ block: 'nearest' });
-          }
-        };
-
         if (dir === 'up') {
           if (idx - COLS >= 0) {
             SoundManager.playCursor();
             scene._dndSelectedIndex = idx - COLS;
+            // The refresh scrolls the window onto the new slot itself.
             scene.refreshUIbackpack();
-            scrollToSelected();
           } else {
             SoundManager.playCursor();
             scene._dndActiveSection = 'categories';
@@ -1324,7 +1313,6 @@
             SoundManager.playCursor();
             scene._dndSelectedIndex = idx + COLS;
             scene.refreshUIbackpack();
-            scrollToSelected();
           }
           // bottom row: stay put
         } else if (dir === 'left') {

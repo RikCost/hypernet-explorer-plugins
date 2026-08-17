@@ -34,6 +34,9 @@
   "chooseAnArchetype": "",
   "chooseYourClass": "",
   "selectYourTraits": "",
+  "selectYourPersonality": "",
+  "personalityVoice": "",
+  "personalityBody": "",
   "chooseYourBirthDate": "",
   "addAnotherPartyMember": "",
   "chooseYourOrigin": "",
@@ -298,6 +301,10 @@
       "desc": ""
     },
     "randomTraits": {
+      "name": "",
+      "desc": ""
+    },
+    "randomPersonality": {
       "name": "",
       "desc": ""
     },

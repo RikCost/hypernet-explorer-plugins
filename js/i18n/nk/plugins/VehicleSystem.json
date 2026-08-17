@@ -35,6 +35,7 @@
   "cancel": "CANCEL",
   "cannotFit": "DA {vehicle} NO CAN FIT DERE!",
   "notInsideVehicle": "YOU IZ NOT INSIDE A VEHICLE",
+  "noVehiclesOwned": "YOU AINT GOT NO VEHICLES",
   "noVehicleHere": "DERE IZ NO VEHICLE HERE",
   "cannotFindVehicle": "NO CAN FIND DAT VEHICLE",
   "vehicleNotHere": "DA {vehicle} IZ NOT HERE",

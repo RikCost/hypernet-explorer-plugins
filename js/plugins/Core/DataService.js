@@ -327,6 +327,52 @@
             return legacyIndex;
         }
 
+        // ── The folder moves ────────────────────────────────────────────────
+        // A sheet also travels when it changes FOLDER rather than being cut in
+        // two. Two moves have happened: the Varlenian sheets were lifted out of
+        // img/characters/NPCs/ into img/characters/Varlenian/, so that folder
+        // holds exactly what the `varlenian` flag marks and nothing else; and
+        // the pose sheets (a sheet of stances rather than a walk cycle) were
+        // gathered into img/characters/Animations/. Every map, prefab and preset
+        // in the repository was repointed with them, but a stored name records
+        // nothing about the folder it was written under, so a world folder's
+        // poolCache or a savegame written before a move still names the old
+        // folder, which is a 404.
+        //
+        // The moves are stated as this one table rather than derived from bare
+        // sheet names, because a name-only rule is not safe here:
+        // img/characters/Skab/Originals holds a second copy of most of the Skab
+        // folder under the SAME sheet name, and matching on the name alone
+        // would drag every deliberate Originals reference out of that folder.
+        //
+        // A folder lists every folder its sheets may have gone to, in the order
+        // they are tried, so a sheet that moved twice (out of NPCs/ into
+        // Varlenian/ and on into Animations/) is still answered from the name
+        // the oldest save holds. A name is only answered when the wardrobe knows
+        // the destination and does not know the stored name, so a sheet that
+        // still exists where it was written is never touched.
+        const MOVED_FOLDERS = {
+            "NPCs/": ["Varlenian/", "Animations/"],
+            "Varlenian/": ["Animations/"],
+            "Skab/": ["Animations/"],
+        };
+
+        // Where a stored sheet name lives now, or null when the name is one the
+        // wardrobe still knows (which is every name written since the moves).
+        function movedSheet(name) {
+            if (typeof name !== "string" || !name) return null;
+            const data = db();
+            if (data[name]) return null;
+            for (const [from, folders] of Object.entries(MOVED_FOLDERS)) {
+                if (!name.startsWith(from)) continue;
+                const sheet = name.slice(from.length);
+                for (const to of folders) {
+                    if (data[to + sheet]) return to + sheet;
+                }
+            }
+            return null;
+        }
+
         // ====================================================================
         // window.MagicNature , how much magic this world has
         // ====================================================================
@@ -446,10 +492,17 @@
             // { name, index }, or null when the sheet was never one of them
             // (which is every sheet still on disk). The replacement is a
             // single-character !$ sheet, so the index is always 0.
+            // A sheet that only changed folder keeps its cell, so that answer
+            // carries the stored index through untouched.
             legacySheet(name, index) {
                 if (typeof name !== "string" || !name) return null;
                 const slots = legacyMap()[name];
-                if (!slots) return null;
+                if (!slots) {
+                    const moved = movedSheet(name);
+                    if (!moved) return null;
+                    const cell = Number(index);
+                    return { name: moved, index: Number.isFinite(cell) ? cell : 0 };
+                }
                 const cell = Number(index);
                 const key = slots[Number.isFinite(cell) ? cell : 0];
                 return { name: key || "", index: 0 };

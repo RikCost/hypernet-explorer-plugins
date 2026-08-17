@@ -3,7 +3,7 @@
 //=============================================================================
 /*:
  * @target MZ
- * @plugindesc v1.0.0 The party's own talk: multi-beat discussions between companions, keyed to personality, biome, what just happened and how everyone is holding up.
+ * @plugindesc v1.1.0 The party's own talk: multi-beat discussions between companions, keyed to personality, biome, what just happened and how everyone is holding up - on foot and on the road.
  * @author Omni-Lex
  * @url https://nocoldiz.itch.io/hypernet-explorer
  *
@@ -80,6 +80,39 @@
  * party is now short of. Party of one: nothing is queued at all.
  *
  * ==========================================================================
+ * ON THE ROAD
+ * ==========================================================================
+ * Walking about, the talk is driven by Core/AutoIdleExplorer.js: it owns the
+ * loose walkers, and two of them drifting together is what starts a discussion.
+ * The moment everybody gets into a vehicle there are no loose walkers left, and
+ * the party used to fall silent - which is the wrong way round, since a long
+ * drive is exactly when people talk. So this file drives the talk itself in the
+ * three places a travelling party is not on its feet:
+ *
+ *   driving   riding a vehicle on the map. Nobody has a body to speak from (the
+ *             engine hides the whole party inside the hull), so the bubbles go
+ *             OVER THE VEHICLE, each one prefixed with who is saying it.
+ *   transit   somebody else is driving: the train (map 718), the coach (719) and
+ *             the taxi (720) the fast travel system puts the party inside.
+ *   cabin     parked up inside a vehicle's own interior (the camper, the car,
+ *             the Starship), as MergedVehicleSystem reckons it.
+ *
+ * In transit and in the cabin the party is standing about as ordinary
+ * characters, so each member speaks from their own body, the way they do on foot.
+ *
+ * Four things that happen on a journey are worth an immediate word, and each one
+ * is answered in the speaker's own archetype, the same shape as the purchase:
+ *
+ *   crash     the vehicle took damage (a ram, a splash-down, a wall)
+ *   handover  the wheel changed hands (Vehicle/VehicleCrew.js swaps a tired
+ *             driver out)
+ *   fuel      the tank fell past a fifth
+ *   country   a border was crossed (Variable 86, set by WeatherSystem)
+ *
+ * Every one of them is on a cooldown, and the border is on a long one with a
+ * coin toss on top: the point is that it happens rarely enough to be noticed.
+ *
+ * ==========================================================================
  * API
  * ==========================================================================
  *   PartyBanter.active()                    is there a party to talk?
@@ -96,8 +129,17 @@
  *   PartyBanter.noteEvent(topic, ctx)       queue a pending topic by hand
  *   PartyBanter.noteShopBuy(item, price, place)
  *
+ *   PartyBanter.travelSetting()             'driving' | 'transit' | 'cabin' | null
+ *   PartyBanter.react(kind, ctx)            raise one of the four reactions NOW
+ *                                           (noteEvent queues; this speaks)
+ *   PartyBanter.travelTalk()                start a travelling exchange now, if
+ *                                           one fits
+ *   PartyBanter.speaking()                  is a travelling exchange being played
+ *                                           out
+ *
  * Consumed by Core/AutoIdleExplorer.js, which owns the walking, the bubbles and
- * the opinion ledger; this file owns only what is said.
+ * the opinion ledger; this file owns what is said, and says it itself only in a
+ * vehicle, where there is nobody walking about for AutoIdle to work with.
  */
 
 (() => {
@@ -377,14 +419,18 @@
         return $gameTemp._partyBanterPending;
     }
 
-    // Topics the engine builds itself rather than reading a script for, so
-    // they are worth queueing even though script.<topic> holds nothing.
-    const BUILT_TOPICS = ['shop'];
+    // A topic is worth queueing if the bank can answer it either way: as a
+    // written script (script.<topic>) or as a reaction everybody gives their own
+    // version of (<topic>.opener plus <topic>.opinion.<archetype>, which is how
+    // the shop, the crash and the border are all put together).
+    function knownTopic(topic) {
+        return has('script.' + topic) || has(topic + '.opener');
+    }
 
     function noteEvent(topic, ctx) {
         if (!active()) return;              // one person has nobody to tell
         if (!topic) return;
-        if (!BUILT_TOPICS.includes(topic) && !has('script.' + topic)) return;
+        if (!knownTopic(topic)) return;
         const list = pendingList();
         if (!list) return;
         list.push({ topic, ctx: ctx || {}, until: Graphics.frameCount + PENDING_LIFE });
@@ -437,15 +483,33 @@
     }
 
     // ---------------------------------------------------------------- topics
-    function chooseTopic(cast) {
+    // Where the conversation is happening, when that is not simply "outdoors, on
+    // foot". A setting brings its own bank in at a strong weight, because a party
+    // in a moving vehicle talks about the vehicle; and the two indoor ones drop
+    // the biome, since the swamp going past the window is not the room they are
+    // sitting in.
+    const SETTINGS = {
+        driving: { path: 'script.driving', weight: 44, outdoors: true },
+        transit: { path: 'script.transit', weight: 46, outdoors: false },
+        cabin: { path: 'script.cabin', weight: 46, outdoors: false },
+    };
+
+    function chooseTopic(cast, setting) {
         const options = [];
+        const where = SETTINGS[setting] || null;
         const add = (weight, path, extra) => {
             if (weight > 0 && has(path)) options.push({ weight, path, extra: extra || null });
         };
 
         // News first, and only once: it stops being news the moment it is out.
         const pending = takePending();
-        if (pending) return { path: 'script.' + pending.topic, extra: pending.ctx };
+        if (pending) {
+            return has(pending.topic + '.opener')
+                ? { reaction: pending.topic, extra: pending.ctx }
+                : { path: 'script.' + pending.topic, extra: pending.ctx };
+        }
+
+        if (where) add(where.weight, where.path);
 
         if (everyoneBattered()) add(30, 'script.battered');
         if (everyoneRunDown()) add(28, 'script.needAll');
@@ -458,7 +522,7 @@
         const recent = recentTopic();
         if (recent) add(32, 'script.recent.' + recent.kind, Object.assign({ _sig: recent.signature }, recent.params));
 
-        const family = biomeFamily(biomeId());
+        const family = (!where || where.outdoors) ? biomeFamily(biomeId()) : null;
         if (family) add(24, 'script.biome.' + family);
 
         add(26, 'script.general');
@@ -514,12 +578,25 @@
         return beats;
     }
 
-    // The purchase. One member states what was bought, and then every other
-    // member judges it out of their own archetype, which is the whole point of
-    // the topic: the Disciplined one and the Hedonistic one are looking at the
-    // same receipt and seeing two different mistakes.
-    function shopBeats(cast, ctx) {
-        const opening = pick(pool('shop.opener'));
+    // A thing that just happened, and what each of them makes of it. One member
+    // states it out of `<section>.opener` and everybody else answers out of their
+    // own archetype, which is the whole point of the shape: the Disciplined one
+    // and the Hedonistic one are looking at the same receipt, or the same dented
+    // wing, and seeing two different mistakes.
+    //
+    // The purchase was the first of these; the road brought the rest (a crash, a
+    // handover at the wheel, a tank going dry, a border sign).
+    function reactionPool(actor, section) {
+        const key = personalityKey(actor);
+        if (key && has(section + '.opinion.' + key)) return pool(section + '.opinion.' + key);
+        if (has(section + '.opinion.any')) return pool(section + '.opinion.any');
+        // Nobody has written this archetype's line for this event: they answer
+        // the way they answer anything, which is still their own voice.
+        return personalPool(actor, 'reply');
+    }
+
+    function reactionBeats(section, cast, ctx) {
+        const opening = pick(pool(section + '.opener'));
         if (!opening) return null;
         const first = fill(opening, ctx);
         if (unresolved(first)) return null;
@@ -528,7 +605,7 @@
         if (cast.length > 2) judges.push(2);
         else if (Math.random() < 0.45) judges.push(0);
         for (const who of judges) {
-            const line = pick(personalPool(cast[who], 'shop.opinion'));
+            const line = pick(reactionPool(cast[who], section));
             if (!line) continue;
             const text = fill(line, ctx);
             if (!unresolved(text)) beats.push({ who, text });
@@ -547,6 +624,340 @@
         return [{ who: 0, text: first }, { who: 1, text: second }];
     }
 
+    // =====================================================================
+    // ON THE ROAD
+    // =====================================================================
+    // Everything above answers a caller. Everything below is a caller: the one
+    // that runs while the party is inside a vehicle, where AutoIdleExplorer has
+    // no loose walkers to hang a conversation on.
+
+    // The maps the fast travel system carries a seated party through (see
+    // travelMaps in FastTravelSystem.js). A vehicle's OWN cabin is not listed
+    // here: MergedVehicleSystem.isOnVehicleInteriorMap() already knows which map
+    // belongs to which vehicle, and asking it means this file cannot fall out of
+    // step with the interiors the vehicle configs declare.
+    const TRANSIT_MAPS = [718, 719, 720];          // train, coach, taxi
+
+    // Ambient pacing, in frames. A journey is hours long; a word every minute or
+    // two is company, and anything faster is a radio play.
+    const TALK_MIN = 60 * 45;
+    const TALK_MAX = 60 * 110;
+
+    // A beat is up for as long as it takes to read, which is the same reckoning
+    // AutoIdleExplorer uses for a loose conversation.
+    function beatFrames(text) {
+        return 95 + Math.min(80, Math.round(String(text).length * 1.4));
+    }
+
+    // How long each reaction keeps quiet for afterwards. The border is
+    // deliberately the rarest: crossing one is only interesting if it is not
+    // remarked on every time the party drifts back and forth over a line in the
+    // sand.
+    const COOLDOWN = {
+        crash: 60 * 20,
+        handover: 60 * 30,
+        fuel: 60 * 180,
+        country: 60 * 360,
+    };
+    // ...and the border also has to win a coin toss to be mentioned at all.
+    const COUNTRY_CHANCE = 0.55;
+
+    // Nothing reacts on top of something else being said.
+    const REACTION_GAP = 60 * 8;
+
+    // The tank has to fall this low to be worth mentioning, and climb back over
+    // the second figure before it is worth mentioning again.
+    const FUEL_LOW = 0.20;
+    const FUEL_REARM = 0.35;
+
+    // -------------------------------------------------------- where they are
+    function onMap() {
+        return SceneManager._scene instanceof Scene_Map
+            && typeof $gameParty !== 'undefined' && !!$gameParty
+            && typeof $gameMap !== 'undefined' && !!$gameMap;
+    }
+
+    function ridingVehicle() {
+        if (typeof $gamePlayer === 'undefined' || !$gamePlayer) return null;
+        return $gamePlayer.isInVehicle() ? $gamePlayer.vehicle() : null;
+    }
+
+    function travelSetting() {
+        if (!onMap()) return null;
+        if (ridingVehicle()) return 'driving';
+        if (TRANSIT_MAPS.includes($gameMap.mapId())) return 'transit';
+        const vs = window.MergedVehicleSystem;
+        if (vs && vs.isOnVehicleInteriorMap && vs.isOnVehicleInteriorMap()) return 'cabin';
+        return null;
+    }
+
+    function busy() {
+        if (!onMap()) return true;
+        if ($gameParty.inBattle && $gameParty.inBattle()) return true;
+        if (typeof $gameMessage !== 'undefined' && $gameMessage && $gameMessage.isBusy()) return true;
+        if ($gameMap.isEventRunning && $gameMap.isEventRunning()) return true;
+        return false;
+    }
+
+    // ------------------------------------------- who says it, and from where
+    // The party member's own body on this map: the player for the leader, the
+    // matching follower for everybody else. A follower nobody can see (hidden
+    // formation, a vehicle) is no use as a mouth, so the player stands in.
+    function characterFor(actor) {
+        if (typeof $gamePlayer === 'undefined' || !$gamePlayer) return null;
+        const list = members();
+        const index = list.indexOf(actor);
+        if (index <= 0) return $gamePlayer;
+        const followers = $gamePlayer.followers().data();
+        const follower = followers[index - 1];
+        if (!follower || !follower.isVisible() || follower.isTransparent()) return $gamePlayer;
+        return follower;
+    }
+
+    // Up to three of them, the one at the wheel first: they are the one with
+    // something to say about the road.
+    function travelCast() {
+        const list = members().filter((a) => !!a && (!a.isDead || !a.isDead()));
+        if (list.length < 2) return null;
+        const driver = (window.VehicleCrew && window.VehicleCrew.driver && window.VehicleCrew.driver())
+            || ($gameParty && $gameParty.leader());
+        const rest = list.filter((a) => a !== driver);
+        for (let i = rest.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [rest[i], rest[j]] = [rest[j], rest[i]];
+        }
+        const ordered = (driver && list.indexOf(driver) >= 0) ? [driver].concat(rest) : rest;
+        return ordered.slice(0, 3);
+    }
+
+    // The bubble itself belongs to AutoIdleExplorer: same element, same
+    // stylesheet, same Loose Chatter option, whether it is hanging over a
+    // follower or over a camper.
+    function bubble(char, text) {
+        const api = window.AutoIdleExplorer && window.AutoIdleExplorer.bubble;
+        if (!api || !char || !text) return;
+        api.show(char, text);
+    }
+
+    // --------------------------------------------------------- the runner
+    // Transient by design: an exchange interrupted by a save, a battle or a map
+    // change is simply dropped. Half a remembered conversation is worse than none.
+    const travel = {
+        queue: [],        // remaining beats: { char, text }
+        settingAt: null,  // where the party was when the exchange started
+        next: 0,          // frame the next beat is shown on
+        nextTalk: 0,      // frame ambient talk may next start
+        lastLine: 0,      // frame something was last said
+        cool: {},         // kind -> frame that reaction may fire again
+        country: null,    // last country id seen (null = not read yet)
+        fuelLow: false,   // is the low-tank remark already spent
+        mapId: 0,
+    };
+
+    function scheduleAmbient() {
+        travel.nextTalk = Graphics.frameCount + TALK_MIN
+            + Math.floor(Math.random() * (TALK_MAX - TALK_MIN));
+    }
+
+    function stopTravel() {
+        travel.queue.length = 0;
+    }
+
+    // Turn a set of beats into a queue of bubbles. Riding a vehicle, every line
+    // comes out of the same hull, so each one is prefixed with the name of
+    // whoever said it; standing in a cabin, people have their own bodies and need
+    // no label.
+    function enqueue(beats, people, overVehicle) {
+        const vehicle = overVehicle ? ridingVehicle() : null;
+        const queue = [];
+        for (const beat of beats) {
+            const actor = people[beat.who];
+            if (!actor) continue;
+            const char = vehicle || characterFor(actor);
+            if (!char) continue;
+            const text = vehicle
+                ? T(BANK + '.said', { name: actor.name(), line: beat.text })
+                : beat.text;
+            queue.push({ char, text });
+        }
+        if (!queue.length) return false;
+        travel.queue = queue;
+        travel.next = Graphics.frameCount;
+        // Remembered so the exchange can be dropped if the party gets out halfway
+        // through it: a bubble anchored to a vehicle nobody is in any more would
+        // go on hanging over the parked hull.
+        travel.settingAt = travelSetting();
+        return true;
+    }
+
+    function startTravelTalk(opts) {
+        const where = travelSetting();
+        if (!where && !(opts && opts.topic)) return false;
+        const people = travelCast();
+        if (!people || people.length < 2) return false;
+        let beats = null;
+        try {
+            beats = PartyBanter.discussion(people, {
+                setting: where,
+                topic: opts && opts.topic,
+                ctx: opts && opts.ctx,
+            });
+        } catch (e) {
+            return false;                   // a conversation never breaks a journey
+        }
+        if (!beats || !beats.length) return false;
+        return enqueue(beats, people, where === 'driving');
+    }
+
+    function updateTravel() {
+        if (!onMap()) { stopTravel(); return; }
+
+        // A map change ends whatever was being said and re-arms the pacing, so the
+        // party does not walk out of a train still finishing a sentence.
+        const mapId = $gameMap.mapId();
+        if (mapId !== travel.mapId) {
+            travel.mapId = mapId;
+            stopTravel();
+            scheduleAmbient();
+        }
+
+        watchCountry();
+        watchFuel();
+
+        if (busy()) return;
+        const now = Graphics.frameCount;
+
+        // Play out what has already been drawn, one beat at a time.
+        if (travel.queue.length) {
+            if (travelSetting() !== travel.settingAt) { stopTravel(); return; }
+            if (now < travel.next) return;
+            const beat = travel.queue.shift();
+            bubble(beat.char, beat.text);
+            travel.lastLine = now;
+            travel.next = now + beatFrames(beat.text);
+            if (!travel.queue.length) scheduleAmbient();
+            return;
+        }
+
+        const where = travelSetting();
+        if (!where) return;
+        // On the road the clock only runs while the wheels are turning: a vehicle
+        // stopped in a field is a party that has got out in all but name.
+        if (where === 'driving' && !$gamePlayer.isMoving()) return;
+        if (!travel.nextTalk) { scheduleAmbient(); return; }
+        if (now < travel.nextTalk) return;
+        if (!startTravelTalk({})) scheduleAmbient();
+    }
+
+    // ------------------------------------------------------------ reactions
+    function react(kind, ctx) {
+        if (!kind || !onMap()) return false;
+        const now = Graphics.frameCount;
+        if (now - travel.lastLine < REACTION_GAP) return false;
+        if (travel.cool[kind] && now < travel.cool[kind]) return false;
+        if (kind === 'country' && Math.random() > COUNTRY_CHANCE) {
+            // A border missed is a border that stays quiet for the full cooldown:
+            // otherwise every crossing rolls the dice again a second later.
+            travel.cool[kind] = now + (COOLDOWN[kind] || 0);
+            return false;
+        }
+        stopTravel();
+        if (!startTravelTalk({ topic: kind, ctx: ctx || {} })) return false;
+        travel.cool[kind] = now + (COOLDOWN[kind] || 0);
+        return true;
+    }
+
+    // What the party is aboard, as the HUD reads it: the vehicle's shown name,
+    // its upgrade key, its tank. Null on foot outside a cabin.
+    function aboard() {
+        const vs = window.MergedVehicleSystem;
+        if (!vs || !vs.getHudVehicleStatus) return null;
+        try {
+            return vs.getHudVehicleStatus();
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function vehicleLabel(status) {
+        return (status && status.name) || T('VehicleSystem.genericVehicle');
+    }
+
+    // A border. Variable 86 is the country the party is standing in
+    // (WeatherSystem writes it); the first reading of a session is only
+    // remembered, never spoken about, or loading a save would announce the
+    // country the party was already in.
+    function watchCountry() {
+        if (typeof $gameVariables === 'undefined' || !$gameVariables) return;
+        const id = Number($gameVariables.value(86)) || 0;
+        if (!id) return;
+        if (travel.country === null) { travel.country = id; return; }
+        if (id === travel.country) return;
+        travel.country = id;
+        const name = countryName(id);
+        if (!name) return;
+        react('country', { country: name });
+    }
+
+    function countryName(id) {
+        try {
+            const current = (typeof $gameWeather !== 'undefined' && $gameWeather)
+                ? $gameWeather.currentCountry : null;
+            if (current && current.id === id && current.country) return String(current.country);
+            const list = window.WorldGen && window.WorldGen.Countries;
+            if (Array.isArray(list)) {
+                const found = list.find((c) => c && c.id === id);
+                if (found && found.country) return String(found.country);
+            }
+        } catch (e) { /* an unnamed country is not worth a line */ }
+        return '';
+    }
+
+    // The tank, read off the same status the fuel bar draws, so the remark and
+    // the HUD can never disagree. Only while somebody is actually driving it: a
+    // tank does not empty while the party is asleep in the back of the cabin.
+    function watchFuel() {
+        const status = aboard();
+        if (!status || !status.driving || !status.usesFuel || !(status.maxFuel > 0)) {
+            travel.fuelLow = false;
+            return;
+        }
+        const rate = status.fuel / status.maxFuel;
+        if (rate > FUEL_REARM) { travel.fuelLow = false; return; }
+        if (travel.fuelLow || rate > FUEL_LOW) return;
+        travel.fuelLow = true;
+        react('fuel', {
+            vehicle: vehicleLabel(status),
+            fuel: String(Math.max(1, Math.round(rate * 100))),
+        });
+    }
+
+    // Damage to the vehicle the party is sitting in. Everything that dents a
+    // vehicle goes through VehicleUpgrades.applyDamage (a ram on the road, a
+    // splash-down, a wall in the driving scene), so that is the one place to
+    // listen; hooked on the first map rather than at load, since the repair
+    // plugin may not have published its API yet.
+    let _damageHooked = false;
+    function hookDamage() {
+        if (_damageHooked) return;
+        const api = window.VehicleUpgrades;
+        if (!api || typeof api.applyDamage !== 'function') return;
+        _damageHooked = true;
+        const original = api.applyDamage;
+        api.applyDamage = function (vehicleType, damagePercent, options) {
+            const result = original.call(this, vehicleType, damagePercent, options);
+            try {
+                // Only the party's own crash: damage to a vehicle parked three
+                // countries away is not something anybody in here felt.
+                const status = aboard();
+                if (status && status.driving && status.key === vehicleType && Number(damagePercent) > 0) {
+                    react('crash', { vehicle: vehicleLabel(status) });
+                }
+            } catch (e) { /* the dent still happened */ }
+            return result;
+        };
+    }
+
     // ------------------------------------------------------------------- API
     const PartyBanter = {
         active,
@@ -556,22 +967,44 @@
         // The whole exchange, in order. `cast` is the party members standing in
         // it, speaker first; `who` on each beat indexes back into it, so the
         // caller decides which character on the map says what.
-        discussion(cast) {
+        //
+        // `opts.setting` says where they are when it is not on foot in the open
+        // ('driving', 'transit', 'cabin'), which brings that bank into the mix.
+        // `opts.topic` names something that has just happened and is to be talked
+        // about NOW rather than queued ('crash', 'handover', 'fuel', 'country'),
+        // with `opts.ctx` carrying its details.
+        discussion(cast, opts) {
             if (!active()) return null;
             const people = (cast || []).filter((actor) => !!actor);
             if (people.length < 2) return null;
+            const options = opts || {};
 
             const ctx = baseContext(people);
+
+            // A reaction is not drawn against the other topics: it is the thing
+            // in front of them, and it is why the caller asked.
+            if (options.topic) {
+                const merged = mergeContext(ctx, options.ctx);
+                let beats = reactionBeats(options.topic, people, merged);
+                if (!beats) {
+                    const entry = pick(pool('script.' + options.topic));
+                    beats = entry ? scriptBeats(entry, people, merged) : null;
+                }
+                if (!beats || beats.length < 2) return null;
+                if (beats.length < 4 && Math.random() < 0.45) appendCloser(beats, people, true);
+                return beats;
+            }
+
             for (let attempt = 0; attempt < 4; attempt++) {
-                const topic = chooseTopic(people);
+                const topic = chooseTopic(people, options.setting);
                 if (!topic) return null;
 
                 let beats;
                 const merged = mergeContext(ctx, topic.extra);
-                if (!topic.path) {
+                if (topic.reaction) {
+                    beats = reactionBeats(topic.reaction, people, merged);
+                } else if (!topic.path) {
                     beats = personalityBeats(people, ctx);
-                } else if (topic.path === 'script.shop') {
-                    beats = shopBeats(people, merged);
                 } else {
                     const entry = pick(pool(topic.path));
                     if (!entry) continue;
@@ -583,7 +1016,7 @@
                 // Most exchanges get a personality-flavoured last word; a party
                 // that always ran to four beats would read as a stage play.
                 if (beats.length < 4 && Math.random() < 0.55) {
-                    appendCloser(beats, people, topic.path === 'script.shop');
+                    appendCloser(beats, people, !!topic.reaction);
                 }
                 return beats;
             }
@@ -630,6 +1063,27 @@
                 shop: place || placeLabel(),
             });
         },
+
+        // ------------------------------------------------------- on the road
+        // Where the party is, when it is not on foot in the open.
+        travelSetting,
+
+        // A thing that has just happened on the journey, said NOW rather than
+        // queued: 'crash', 'handover', 'fuel', 'country'. Answers false when it
+        // was turned down (a cooldown, a lost coin toss, a party of one).
+        react,
+
+        // Start a travelling exchange this instant, if one fits.
+        travelTalk() { return startTravelTalk({}); },
+
+        // Is a travelling exchange still being played out.
+        speaking() { return travel.queue.length > 0; },
+
+        stopTravel,
+
+        // Testing seams.
+        _travel: travel,
+        _travelCast: travelCast,
     };
 
     window.PartyBanter = PartyBanter;
@@ -678,5 +1132,21 @@
     Scene_Map.prototype.start = function () {
         _Scene_Map_start.call(this);
         _hookOrder();
+        hookDamage();
+        scheduleAmbient();
+    };
+
+    // The travelling talk runs off the map's own update: there is nobody walking
+    // about for AutoIdleExplorer to drive it from.
+    const _Scene_Map_update = Scene_Map.prototype.update;
+    Scene_Map.prototype.update = function () {
+        _Scene_Map_update.call(this);
+        try { updateTravel(); } catch (e) { console.error('PartyBanter: ' + e.message); }
+    };
+
+    const _Scene_Map_terminate = Scene_Map.prototype.terminate;
+    Scene_Map.prototype.terminate = function () {
+        stopTravel();
+        _Scene_Map_terminate.call(this);
     };
 })();

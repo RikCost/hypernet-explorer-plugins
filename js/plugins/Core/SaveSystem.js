@@ -126,10 +126,16 @@
         if (!window.$gamePlayer || !window.$gameMap || !window.$gameSystem) return;
         const mapId = $gameMap.mapId();
         if (!(mapId > 0)) return;
-        const loc = { mapId, x: $gamePlayer.x, y: $gamePlayer.y, dir: $gamePlayer.direction() };
+        // Out on the procedural map the map id says nothing about where the party
+        // is standing (636 is the whole world), so the square itself is recorded
+        // with the tile. Null anywhere else, and inside a structure entered off
+        // the procedural map.
+        const proc = (window.WorldMapReturn && window.WorldMapReturn.snapshotProcRespawn)
+            ? window.WorldMapReturn.snapshotProcRespawn() : null;
+        const loc = { mapId, x: $gamePlayer.x, y: $gamePlayer.y, dir: $gamePlayer.direction(), proc };
         $gameSystem._lastSaveLocation = loc;
         if (!$gameSystem._creationStartLocation) {
-            $gameSystem._creationStartLocation = { mapId: loc.mapId, x: loc.x, y: loc.y, dir: loc.dir };
+            $gameSystem._creationStartLocation = { mapId: loc.mapId, x: loc.x, y: loc.y, dir: loc.dir, proc };
             // First time we know where the player actually started (their chosen
             // origin's spawn tile): in normal / peaceful play, where death is
             // non-terminal, register it as the BattleSystemEnhanced respawn point
@@ -144,6 +150,7 @@
                 $gameVariables.setValue(27, loc.y);
                 const countryId = $gameVariables.value(86);
                 if (countryId > 0) $gameVariables.setValue(112, countryId);
+                $gameSystem._respawnProcSurface = proc;
                 $gameSystem._respawnPointSet = true;
             }
         }

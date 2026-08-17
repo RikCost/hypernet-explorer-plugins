@@ -35,6 +35,7 @@
   "cancel": "Cancel",
   "cannotFit": "The {vehicle} can't fit there!",
   "notInsideVehicle": "You are not inside a vehicle",
+  "noVehiclesOwned": "You don't have vehicles",
   "noVehicleHere": "There is no vehicle here",
   "cannotFindVehicle": "Cannot find that vehicle",
   "vehicleNotHere": "The {vehicle} is not here",

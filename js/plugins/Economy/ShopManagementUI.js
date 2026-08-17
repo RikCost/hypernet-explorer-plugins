@@ -21,6 +21,12 @@
   const SM = window.ShopManagement;
   const _TABS = ['overview', 'stock', 'warehouse', 'catalog'];
 
+  // The name an item is listed under. Window text is localized on its way to
+  // the bitmap, but this book-spread is DOM, which that hook never sees, so
+  // every name headed for markup passes through here first.
+  const _itemName = (item) =>
+    item && item.name && window.translateText ? window.translateText(item.name) : (item && item.name) || '';
+
   // ── Localisation ──────────────────────────────────────────────────────────
   function _lang() { return (typeof ConfigManager !== 'undefined' && ConfigManager.language === 'it') ? 'it' : 'en'; }
 
@@ -347,7 +353,7 @@
           return `<div class="item-slot${sel}" data-idx="${i}">
             <div class="item-slot-icon"><canvas data-icon="${s.item.iconIndex}" width="32" height="32"></canvas></div>
             <div class="item-slot-info">
-              <span class="item-slot-name">${s.slotIndex}. ${s.item.name}</span>
+              <span class="item-slot-name">${s.slotIndex}. ${_itemName(s.item)}</span>
               <span class="item-slot-meta">
                 <span class="item-slot-count">${s.amount}/${shop.maxItemsPerSlot}</span>
                 ${price ? `<span class="item-slot-rarity">${SM.formatEuroPrice(price)}</span>` : ''}
@@ -363,7 +369,7 @@
           return `<div class="item-slot${sel}" data-idx="${i}">
             <div class="item-slot-icon"><canvas data-icon="${e.item.iconIndex}" width="32" height="32"></canvas></div>
             <div class="item-slot-info">
-              <span class="item-slot-name">${e.item.name}</span>
+              <span class="item-slot-name">${_itemName(e.item)}</span>
               <span class="item-slot-count">×${e.amount}</span>
             </div>
           </div>`;
@@ -377,7 +383,7 @@
           return `<div class="item-slot${sel}" data-idx="${i}">
             <div class="item-slot-icon"><canvas data-icon="${item.iconIndex}" width="32" height="32"></canvas></div>
             <div class="item-slot-info">
-              <span class="item-slot-name">${item.name}</span>
+              <span class="item-slot-name">${_itemName(item)}</span>
               <span class="item-slot-count">${SM.formatEuroPrice(price)}</span>
             </div>
           </div>`;
@@ -490,7 +496,7 @@
             <canvas data-icon="${item.iconIndex}" width="36" height="36" style="image-rendering:pixelated;display:block;"></canvas>
           </div>
           <div class="inspect-title-box">
-            <div class="inspect-name">${item.name}</div>
+            <div class="inspect-name">${_itemName(item)}</div>
             <div class="inspect-rarity">${SM.formatEuroPrice(price)}</div>
           </div>
         </div>

@@ -764,9 +764,11 @@
 
     // The squares still holding an unplayed adventure, straight from the plugin
     // that owns them. Without it there is simply nothing to draw.
+    let mysteryRevision = null;   // which day's set is on screen
     function buildMysteryTiles() {
         const Earth = adventureSystem();
         mysteryTiles = Earth ? Earth.tiles() : new Set();
+        mysteryRevision = (Earth && Earth.revision) ? Earth.revision() : null;
     }
 
     class Sprite_MysteryMarker extends Sprite {
@@ -1286,8 +1288,13 @@
         else if (++markerRecheck >= MARKER_RECHECK_FRAMES) {
             markerRecheck = 0;
             const before = mysteryTiles.size;
+            const wasRevision = mysteryRevision;
             buildMysteryTiles();
-            if (mysteryTiles.size !== before) removeMysteryMarkers();
+            // The set is redrawn once a game day, so a change of day is a change
+            // of markers even when the count happens to come out the same.
+            if (mysteryTiles.size !== before || mysteryRevision !== wasRevision) {
+                removeMysteryMarkers();
+            }
         }
         // Sprites are parented to the active spriteset's tilemap. On a scene
         // change (leaving and re-entering the world map) that tilemap is rebuilt
@@ -1580,6 +1587,49 @@
         $gameVariables.setValue(110, 1);
         $gameVariables.setValue(111, 1);
         return !!pg.generatedMapData;
+    }
+
+    // ----------------------------------------------------------------------------
+    // RESPAWN POINTS ON THE PROCEDURAL MAP
+    //
+    // "Map 636, tile 21,30" is not a place. Map 636 is the one map the whole
+    // world is played on, so a respawn point registered out in the wild -- the
+    // square an origin began on, a camp slept in, the last autosave -- only means
+    // something if it also says WHICH square: the world coordinates and the biome
+    // description it was built from. Without them a death out on the map wakes
+    // the party on whatever square happened to be loaded when they died, which is
+    // the square that just killed them (or, worse, the cave they died in).
+    //
+    // The tiles are deliberately left out of these snapshots: a square is
+    // deterministic from (world seed, coordinates, layer depth), so it is rebuilt
+    // on the way back rather than parking a 64x64x6 array in the savegame for
+    // every respawn point the save keeps.
+    // ----------------------------------------------------------------------------
+
+    // The square the party is standing on, in the form a respawn point stores.
+    // Answers null anywhere but the procedural map, and inside a structure
+    // entered off it (a cellar, a vault, a house): those are sessions the party
+    // is INSIDE, and a respawn puts them back out on the world's own squares.
+    function snapshotProcRespawn() {
+        if (!$gameMap || $gameMap.mapId() !== procMapId) return null;
+        const pg = $gameSystem && $gameSystem._procGenData;
+        if (!pg || pg._dungeonSession) return null;
+        return snapshotProcSurface();
+    }
+
+    // Rebuild a stored respawn square, ready for a transfer to map 636 to land on
+    // it. Whatever square the party died on is cleared out of the way first, so
+    // the restore cannot keep its tiles, its descent or its structure session.
+    // Answers false when there is nothing usable to rebuild, so the caller can
+    // send the party somewhere that does exist instead of onto a blank 636.
+    function restoreProcRespawn(snap) {
+        const pg = $gameSystem && $gameSystem._procGenData;
+        if (!pg || !snap || !snap.currentBiome) return false;
+        surfaceProcGenLayers(pg);
+        pg._surfaceSnapshot = null;
+        pg.generatedMapData = null;
+        $gameSystem._procEntryBorder = null;
+        return restoreProcSurface(snap);
     }
 
     // Descending into a layer of the same square -- a cave through goDown or
@@ -4522,7 +4572,12 @@
         // ProceduralHouseSystem for interiors and tower floors, this plugin's own
         // forced-biome structures for cellars, sewers, temples, dens and vaults.
         snapshotProcSurface,
-        restoreProcSurface
+        restoreProcSurface,
+        // The same pair, in the form a respawn point stores and puts back: no
+        // tiles (they are rebuilt), no descent and no structure session. Used by
+        // everything that registers where a death sends the party back to.
+        snapshotProcRespawn,
+        restoreProcRespawn
     };
 
     // ========================================================================

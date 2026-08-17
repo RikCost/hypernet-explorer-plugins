@@ -1044,6 +1044,7 @@
     // another plugin can open one without going through the two hooks above.
     for (const name of [
         "showSwimFishOptions", "showDiveOption", "showResurfaceOption",
+        "showBoatFishingOption",
         "showNonProcDiveOption", "showNonProcResurfaceOption",
         "showClimbOptions", "showSitOptions", "showChangeSeatOptions"
     ]) {

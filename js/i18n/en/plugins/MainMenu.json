@@ -199,7 +199,6 @@
   "title": "Search ({count})",
   "clear": "Clear the search",
   "noResults": "Nothing found for “{query}”.",
-  "andMore": "…and {count} more.",
   "detailTitle": "Details",
   "detailHint": "Pick a result on the left to read it here.",
   "carried": "Carried x{n}",

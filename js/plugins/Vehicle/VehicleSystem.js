@@ -86,6 +86,10 @@
  * @text Summon Airship
  * @desc Teleports the airship (Starship) to a nearby location
  *
+ * @command summonLastVehicle
+ * @text Summon Last Used Vehicle
+ * @desc Teleports the last vehicle driven (never the Starship or the Boat) to a nearby location. Used by roadside parking signs.
+ *
  * @command teleportToVehicle
  * @text Teleport To Vehicle
  * @desc Teleports player to specified vehicle
@@ -429,7 +433,27 @@
       usesFuel: false,
       canRefuelAtPump: false,
       boatSubType: 'boat',
-      summonItemId: 167
+      summonItemId: 167,
+      // Where the crew sits. A vehicle that declares riderSeats has its party
+      // drawn aboard it (see "Riders aboard" near the end of this file) instead
+      // of vanishing into the hull the way the engine hides them.
+      //
+      // Offsets are in pixels from the sprite's anchor point - the middle of its
+      // bottom edge - on the LARGE sheet (Vehicles/!$Boat_large, 231x216 per
+      // frame), which is the sheet used everywhere except the world map. They
+      // were measured off the three bench slats in each of the four direction
+      // rows, listed bow first: the first seat is the one at the end the boat is
+      // pointing (the bow ring marks it), so the party always faces the way it
+      // is travelling. The fourth is the stern, one bench-space on, for the pet.
+      // The fourth seat sits in the tapering end past the last bench, which is
+      // where a dog rides anyway, so it is pulled a few pixels back towards the
+      // middle to keep a sprite from hanging over the tip of the hull.
+      riderSeats: {
+        2: [[10, -77], [10, -104], [10, -132], [10, -152]],   // facing down: bow at the bottom
+        4: [[-24, -64], [10, -64], [41, -64], [66, -64]],     // facing left: bow to the left
+        6: [[34, -76], [0, -76], [-34, -76], [-60, -76]],     // facing right: bow to the right
+        8: [[4, -130], [4, -103], [4, -77], [4, -57]]         // facing up: bow at the top
+      }
     };
 
     static GENERAL = {
@@ -2045,7 +2069,12 @@
     this._rideSpecSteps = (this._rideSpecSteps || 0) + 1;
     if (this._rideSpecSteps < RIDE_STEPS_PER_POINT) return;
     this._rideSpecSteps = 0;
-    specs.forEach((name) => window.SpecializationXP.award(name, 1));
+    // Only the member at the wheel is learning to drive or to sail; the rest of
+    // the party is asleep in the back (VehicleCrew.js names the driver, and
+    // returns undefined for the vehicles nobody drives for anybody else - the
+    // Bike, the Broom, the Starship - which keeps the party-wide split).
+    const opts = window.VehicleCrew?.xpOptions?.();
+    specs.forEach((name) => window.SpecializationXP.award(name, 1, opts));
   };
 
   const _Game_Vehicle_getOn = Game_Vehicle.prototype.getOn;
@@ -2633,6 +2662,7 @@
    * its tile before mounting.
    */
   function startDrivingVehicle(vehicle) {
+    rememberVehicleUsed(vehicleManager.getConfig(vehicle));
     if (vehicle.isAirship()) {
       const airship = $gameMap.airship();
       if (!airship) return;
@@ -3593,6 +3623,12 @@
         vehicleManager.summon('airship');
       });
 
+      // What a roadside parking sign calls up: the last vehicle driven, Starship
+      // and Boat excluded. See MergedVehicleSystem.summonLastUsedVehicle.
+      this._registerCommand('summonLastVehicle', () => {
+        window.MergedVehicleSystem.summonLastUsedVehicle();
+      });
+
       this._registerCommand('initializeCamperPosition', function () {
         const eventId = this._eventId;
         const event = $gameMap.event(eventId);
@@ -3885,6 +3921,28 @@
     return VEHICLE_MENU_CONFIGS.find(c => upgradeTypeForConfig(c) === key) || null;
   }
 
+  // The vehicle the party last took the wheel of, remembered on $gameSystem so it
+  // travels in the save. Roadside parking signs call that one back rather than
+  // always the camper.
+  function rememberVehicleUsed(config) {
+    const key = upgradeTypeForConfig(config);
+    if (!key || typeof $gameSystem === 'undefined' || !$gameSystem) return;
+    $gameSystem._lastVehicleUsed = key;
+  }
+
+  // Vehicles a parking sign may call up: everything owned except the Starship
+  // (nothing that size sets down at a lay-by) and the Boat (it wants water under
+  // it, not a parking space).
+  const PARKING_SIGN_EXCLUDED_KEYS = ['airship', 'boat'];
+
+  // Owned, sign-summonable vehicles as keys, in Vehicles-menu order.
+  function parkingSignVehicleKeys() {
+    return VEHICLE_MENU_CONFIGS
+      .filter(c => ownsVehicleConfig(c))
+      .map(c => upgradeTypeForConfig(c))
+      .filter(key => key && !PARKING_SIGN_EXCLUDED_KEYS.includes(key));
+  }
+
   // The camper interior carries no map name of its own (a single blank space in
   // the map data). For the crew that named it, standing inside it is standing
   // inside The Beast, so the map banner says so.
@@ -4021,6 +4079,24 @@
       return !!getConfigByInteriorMapId($gameMap.mapId());
     },
 
+    // True while the leader is on a vehicle that is RIDDEN rather than sat in:
+    // the Bike or the Broom. There is no hull, so every member is on one of their
+    // own out in the open (see "Followers ride along too" below), which is why
+    // this is not the same question as isInVehicle().
+    isRidingPortable() {
+      return !!riddenPortableConfig();
+    },
+
+    // ...and true when that vehicle keeps to the same ground the party walks on,
+    // which is the Bike and not the Broom: a party can pedal along beside a
+    // cyclist and cannot walk after somebody flying over a lake. What the loose
+    // formation (Core/AutoIdleExplorer.js) asks before letting members go on
+    // living their own lives while the leader rides.
+    isPartyRidingAlong() {
+      const config = riddenPortableConfig();
+      return !!config && !config.flying;
+    },
+
     // Puts the party out of whatever they are riding on the spot, without the
     // land-ok tile Game_Player#getOffVehicle insists on, leaving the vehicle
     // parked where it stands. Answers whether anybody actually got out.
@@ -4066,6 +4142,24 @@
       if (typeof $gameMap === 'undefined' || !$gameMap) return false;
       if (!mapCache.isInterior($gameMap.mapId())) return true;
       return keyAllowedIndoors(key);
+    },
+
+    // Summons the vehicle the party last drove to a tile beside them: what a
+    // roadside parking sign (SignPark) does. The Starship and the Boat are never
+    // called up this way, so the last of the others driven answers; with nothing
+    // driven yet (or only excluded ones) the first owned vehicle comes instead.
+    // Says so and summons nothing when the party owns no vehicle at all.
+    summonLastUsedVehicle() {
+      const keys = parkingSignVehicleKeys();
+      if (!keys.length) {
+        showLocalizedMessage(T('VehicleSystem.noVehiclesOwned'));
+        return false;
+      }
+      const last = $gameSystem ? $gameSystem._lastVehicleUsed : null;
+      const config = configByVehicleKey(keys.includes(last) ? last : keys[0]);
+      if (!config) return false;
+      vehicleManager.summon(config.type, config.boatSubType);
+      return true;
     },
 
     // Summon an owned vehicle to a nearby valid tile. Returns false if unowned
@@ -4203,31 +4297,231 @@
   // ============================================================================
 
   /**
-   * The riding sprite the party's followers should wear, or null. The Bike and
-   * the Broom are ridden one to a body rather than sat in, so while the player
-   * is on one every follower shows the same sheet and the party appears to
-   * travel on their own bikes / brooms. Both are the shared 'boat' vehicle,
-   * distinguished by $gameSystem._boatType.
+   * The config of the portable vehicle the player is riding, or null. The Bike
+   * and the Broom are ridden one to a body rather than sat in, so the whole party
+   * is on one of its own rather than stowed inside a hull. Both are the shared
+   * 'boat' vehicle, distinguished by $gameSystem._boatType.
    */
-  function followerRidingSprite() {
-    if (!$gamePlayer.isInBoat()) return null;
+  function riddenPortableConfig() {
+    if (!$gamePlayer || !$gamePlayer.isInBoat()) return null;
     const config = configForVehicleKey(vehicleManager.boatKey());
-    if (!config || !isPortableConfig(config)) return null;
-    return config.sprites.riding || null;
+    return (config && isPortableConfig(config)) ? config : null;
+  }
+
+  /**
+   * The riding sprite this follower should wear, or null. A pet, a child or a
+   * creature that walks with the party (PetFollowerSystem.js) is NOT given one:
+   * a dog does not ride a bicycle, it runs alongside one.
+   */
+  function followerRidingSprite(follower) {
+    if (window.Game_PetFollower && follower instanceof window.Game_PetFollower) return null;
+    // A loose member who has gone into the water or onto a wall of their own
+    // accord (Map/MovementInteractionSystem.js) is swimming or climbing, not
+    // cycling: a bicycle drawn in the middle of a lake is worse than no bicycle.
+    if (follower && (follower._isSwimming || follower._isClimbing)) return null;
+    const config = riddenPortableConfig();
+    return (config && config.sprites.riding) || null;
   }
 
   const _Game_Follower_characterName = Game_Follower.prototype.characterName;
   Game_Follower.prototype.characterName = function () {
-    const sprite = this.isVisible() ? followerRidingSprite() : null;
+    const sprite = this.isVisible() ? followerRidingSprite(this) : null;
     if (sprite) return sprite.name;
     return _Game_Follower_characterName.call(this);
   };
 
   const _Game_Follower_characterIndex = Game_Follower.prototype.characterIndex;
   Game_Follower.prototype.characterIndex = function () {
-    const sprite = this.isVisible() ? followerRidingSprite() : null;
+    const sprite = this.isVisible() ? followerRidingSprite(this) : null;
     if (sprite) return sprite.index || 0;
     return _Game_Follower_characterIndex.call(this);
+  };
+
+  // Swapping the sheet was only ever half of it. Game_Follower.update copies the
+  // leader's transparency onto every follower, and the engine makes the leader
+  // transparent the moment they board anything (the vehicle sprite is drawn in
+  // their place) - so the whole party was being handed a bicycle and then made
+  // invisible, and the swap above was never seen.
+  //
+  // On a portable vehicle the party is NOT inside anything: each member is on
+  // their own bike, or on their own broom, out in the open where they were a
+  // moment ago. So they keep their transparency, and the pet trotting behind them
+  // keeps its own body.
+  const _Game_Follower_update_VS = Game_Follower.prototype.update;
+  Game_Follower.prototype.update = function () {
+    _Game_Follower_update_VS.call(this);
+    // A game that hides the party by configuration (Options > transparent) is
+    // left alone: that is a choice, not the vehicle.
+    if ($dataSystem && $dataSystem.optTransparent) return;
+    if (this.isTransparent() && riddenPortableConfig()) this.setTransparent(false);
+  };
+
+  // ============================================================================
+  // Riders aboard
+  // ============================================================================
+  //
+  // The engine hides everybody the moment they board: the player is made
+  // transparent and the followers, who copy that transparency, go with them. On a
+  // small world-map sprite that is fine, because there is nowhere to draw a
+  // person. On the big off-world sheets there is: a dinghy is mostly bench.
+  //
+  // So a vehicle whose config declares `riderSeats` gets its crew drawn on top of
+  // it, one to a seat, in the order the party is sat down: the member at the wheel
+  // (VehicleCrew.js) in the bow, the rest of the party behind them, and the active
+  // pet (PetFollowerSystem.js) in the last seat. Everyone faces the way the
+  // vehicle is pointing, because the seat table is per direction and the frame is
+  // taken from the same direction row of their own character sheet.
+  //
+  // These are extra sprites in the tilemap rather than the real follower
+  // characters: a follower is a Game_Character standing on a tile, and no amount
+  // of nudging its position makes it sit on a bench three tiles away from the one
+  // it occupies. They are added at the vehicle's own z, so the tilemap's z/y sort
+  // draws them over the hull and in the right order among themselves.
+
+  function Sprite_VehicleRider() {
+    this.initialize(...arguments);
+  }
+
+  Sprite_VehicleRider.prototype = Object.create(Sprite.prototype);
+  Sprite_VehicleRider.prototype.constructor = Sprite_VehicleRider;
+
+  Sprite_VehicleRider.prototype.initialize = function () {
+    Sprite.prototype.initialize.call(this);
+    this.anchor.x = 0.5;
+    this.anchor.y = 1;
+    this.visible = false;
+    this._riderName = '';
+    this._riderIndex = 0;
+    this._frameKey = '';
+  };
+
+  // The sheet this rider wears. Nothing is reloaded unless it actually changed,
+  // so this is safe to call every frame.
+  Sprite_VehicleRider.prototype.setRider = function (name, index) {
+    if (this._riderName === name && this._riderIndex === index) return;
+    this._riderName = name || '';
+    this._riderIndex = index || 0;
+    this._frameKey = '';
+    this.bitmap = this._riderName ? ImageManager.loadCharacter(this._riderName) : null;
+    this._isBig = this._riderName ? ImageManager.isBigCharacter(this._riderName) : false;
+  };
+
+  // One frame out of the sheet, by the same arithmetic Sprite_Character uses:
+  // the direction picks the row, and a seated rider always uses the middle
+  // (standing) column rather than walking on the spot.
+  Sprite_VehicleRider.prototype.updateRiderFrame = function (direction) {
+    if (!this.bitmap || !this.bitmap.isReady()) return;
+    const key = direction + '|' + this.bitmap.width + 'x' + this.bitmap.height;
+    if (key === this._frameKey) return;
+    this._frameKey = key;
+    const pw = this._isBig ? this.bitmap.width / 3 : this.bitmap.width / 12;
+    const ph = this._isBig ? this.bitmap.height / 4 : this.bitmap.height / 8;
+    const blockX = this._isBig ? 0 : (this._riderIndex % 4) * 3;
+    const blockY = this._isBig ? 0 : Math.floor(this._riderIndex / 4) * 4;
+    const sx = (blockX + 1) * pw;                       // 1 = the standing column
+    const sy = (blockY + (direction - 2) / 2) * ph;
+    this.setFrame(sx, sy, pw, ph);
+  };
+
+  /**
+   * The vehicle the player is riding and its seat table, or null when nobody is
+   * riding anything with seats. The world map is excluded: there it wears the
+   * small sprite, which is a boat the size of a person and has nowhere to sit.
+   */
+  function ridingSeats() {
+    if ($gameMap.mapId() === 315) return null;
+    if (!isPlayerRidingCustomVehicle()) return null;
+    const vehicle = $gamePlayer.vehicle();
+    const config = vehicle && vehicleManager.getConfig(vehicle);
+    if (!config || !config.riderSeats) return null;
+    const seats = config.riderSeats[vehicle.direction()];
+    if (!seats || !seats.length) return null;
+    return { vehicle, seats };
+  }
+
+  /**
+   * Who is aboard, in the order they are sat down: the driver first (the bow
+   * seat), then the rest of the party, then the pet. Each entry is the sheet and
+   * index to draw, which is all the sprite needs - a pet is not an actor.
+   */
+  function ridersAboard() {
+    const out = [];
+    if (typeof $gameParty === 'undefined' || !$gameParty) return out;
+    const members = $gameParty.members().filter(a => !!a);
+    const driver = (window.VehicleCrew && window.VehicleCrew.driver && window.VehicleCrew.driver())
+      || $gameParty.leader();
+    const ordered = driver && members.indexOf(driver) >= 0
+      ? [driver].concat(members.filter(a => a !== driver))
+      : members;
+    for (const actor of ordered) {
+      out.push({ name: actor.characterName(), index: actor.characterIndex() });
+    }
+    const pet = window.PetSystem && window.PetSystem.getActivePet
+      ? window.PetSystem.getActivePet() : null;
+    if (pet && pet.characterName) {
+      out.push({ name: pet.characterName, index: pet.characterIndex || 0 });
+    }
+    return out.filter(r => !!r.name);
+  }
+
+  const _Spriteset_Map_createCharacters_VS = Spriteset_Map.prototype.createCharacters;
+  Spriteset_Map.prototype.createCharacters = function () {
+    _Spriteset_Map_createCharacters_VS.call(this);
+    // One sprite per seat of the roomiest seat table any vehicle declares, made
+    // once and reused: which of them is showing, and who is in it, changes every
+    // frame.
+    let most = 0;
+    for (const key of VEHICLE_KEYS) {
+      const config = configForVehicleKey(key);
+      if (!config || !config.riderSeats) continue;
+      for (const seats of Object.values(config.riderSeats)) most = Math.max(most, seats.length);
+    }
+    this._vehicleRiderSprites = [];
+    for (let i = 0; i < most; i++) {
+      const sprite = new Sprite_VehicleRider();
+      this._vehicleRiderSprites.push(sprite);
+      this._tilemap.addChild(sprite);
+    }
+  };
+
+  const _Spriteset_Map_update_VS = Spriteset_Map.prototype.update;
+  Spriteset_Map.prototype.update = function () {
+    _Spriteset_Map_update_VS.call(this);
+    this.updateVehicleRiders();
+  };
+
+  Spriteset_Map.prototype.updateVehicleRiders = function () {
+    const sprites = this._vehicleRiderSprites;
+    if (!sprites || !sprites.length) return;
+    const ride = ridingSeats();
+    const riders = ride ? ridersAboard() : [];
+    // The hull bobs and jumps with the vehicle character, and the seats are
+    // measured against the sprite's own anchor, so both come from the vehicle
+    // itself and the crew never slides off it.
+    const baseX = ride ? ride.vehicle.screenX() : 0;
+    const baseY = ride ? ride.vehicle.screenY() : 0;
+    const direction = ride ? ride.vehicle.direction() : 2;
+    const z = ride ? ride.vehicle.screenZ() : 3;
+    for (let i = 0; i < sprites.length; i++) {
+      const sprite = sprites[i];
+      const seat = ride && i < riders.length ? ride.seats[i] : null;
+      if (!seat) {
+        sprite.visible = false;
+        continue;
+      }
+      sprite.setRider(riders[i].name, riders[i].index);
+      sprite.updateRiderFrame(direction);
+      sprite.x = baseX + seat[0];
+      sprite.y = baseY + seat[1];
+      // One layer over the hull. The tilemap sorts equal z by y, and a seat is
+      // always ABOVE the vehicle's anchor point, so sharing the vehicle's z would
+      // sort every rider behind the boat they are sitting in.
+      sprite.z = z + 1;
+      sprite.opacity = $gamePlayer.opacity();
+      // Nothing is shown until the sheet has loaded and a frame has been cut out
+      // of it, or the first frames would draw the whole character sheet.
+      sprite.visible = !!sprite.bitmap && !!sprite._frameKey;
+    }
   };
 
 })();

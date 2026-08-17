@@ -35,6 +35,7 @@
   "cancel": "Annulla",
   "cannotFit": "{vehicle} non ci passa!",
   "notInsideVehicle": "Non sei dentro un veicolo",
+  "noVehiclesOwned": "Non hai veicoli",
   "noVehicleHere": "Qui non c'è nessun veicolo",
   "cannotFindVehicle": "Non riesco a trovare quel veicolo",
   "vehicleNotHere": "{vehicle} non è qui",

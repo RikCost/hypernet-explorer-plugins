@@ -212,7 +212,7 @@
   //   SignPost -> readable place name + dismantle (villages only, 1-3)
   //   SignBus  -> boards the fast-travel map in Bus mode (one per map, at the
   //               bus stop it serves - never a second one down the road)
-  //   SignPark -> recalls the camper (one per settlement)
+  //   SignPark -> recalls the last vehicle driven (one per settlement)
   // They sit on feature layer 2 so the interaction plugins detect them when the
   // player faces them from the adjacent road tile. Placement is deterministic
   // for a given map seed, so the same tile always shows the same signs.
